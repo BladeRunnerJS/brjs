@@ -2,18 +2,17 @@ package org.bladerunnerjs.testing.specutility;
 
 import static org.junit.Assert.assertFalse;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
@@ -72,9 +71,10 @@ public class AppCommander extends NodeCommander<App> {
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				UrlContentAccessor contentOutputStream = new StaticContentAccessor(app);
-				Reader contentOutput = app.handleLogicalRequest(requestPath, contentOutputStream);
-				response.append( IOUtils.toString(contentOutput) );
+				ResponseContent contentOutput = app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+				ByteArrayOutputStream pluginContent = new ByteArrayOutputStream();
+				contentOutput.write(pluginContent);
+				response.append( pluginContent );
 			}
 		});
 		

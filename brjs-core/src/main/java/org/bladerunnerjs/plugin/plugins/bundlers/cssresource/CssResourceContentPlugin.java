@@ -1,9 +1,8 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.cssresource;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +24,8 @@ import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.BinaryResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -126,7 +127,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		String theme = contentPath.properties.get("theme");
@@ -198,7 +199,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		try
 		{
-			return new FileReader(resourceFile);
+			return new BinaryResponseContent( new FileInputStream(resourceFile) );
 		}
 		catch (FileNotFoundException ex)
 		{

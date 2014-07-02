@@ -2,7 +2,6 @@ package org.bladerunnerjs.appserver;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -21,6 +19,7 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 
 
 public class BRJSDevServlet extends HttpServlet {
@@ -74,9 +73,9 @@ public class BRJSDevServlet extends HttpServlet {
 		try {
 			ThreadSafeStaticBRJSAccessor.aquireModel();
 			UrlContentAccessor contentAccessor = new ServletContentAccessor(app, servletContext, request, response);
-			Reader requestReader = app.handleLogicalRequest(requestPath, contentAccessor);
+			ResponseContent content = app.handleLogicalRequest(requestPath, contentAccessor);
 			if (!response.isCommitted()) { // check the ServletContentAccessor hasnt been used to handle a request and sent headers
-				IOUtils.copy( requestReader, response.getOutputStream());
+				content.write( response.getOutputStream() );
 			}
 		}
 		catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException e) {

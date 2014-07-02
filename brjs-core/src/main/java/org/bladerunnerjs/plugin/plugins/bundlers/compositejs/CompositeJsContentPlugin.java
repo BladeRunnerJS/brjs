@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.compositejs;
 
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +10,8 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.Locale;
@@ -68,13 +69,13 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		if (contentPath.formName.equals(DEV_BUNDLE_REQUEST) || contentPath.formName.equals(PROD_BUNDLE_REQUEST)) {
 			String minifierSetting = contentPath.properties.get("minifier-setting");
 			MinifierPlugin minifierPlugin = brjs.plugins().minifierPlugin(minifierSetting);
 			
 			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, contentAccessor, version);
-			return minifierPlugin.minify(minifierSetting, inputSources);
+			return new CharResponseContent( bundleSet.getBundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
 		}
 		else {
 			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");

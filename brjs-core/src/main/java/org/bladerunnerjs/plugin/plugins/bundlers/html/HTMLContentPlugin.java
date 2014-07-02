@@ -25,14 +25,14 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.ServedAppMetadataUtility;
-
-import com.Ostermiller.util.ConcatReader;
 
 
 public class HTMLContentPlugin extends AbstractContentPlugin
@@ -42,6 +42,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	private final List<String> requestPaths = new ArrayList<>();
 	
 	private AssetPlugin htmlAssetPlugin;
+	private BRJS brjs;
 	
 	{
 		try {
@@ -59,6 +60,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		htmlAssetPlugin = brjs.plugins().assetPlugin(HTMLAssetPlugin.class);
+		this.brjs = brjs;
 	}
 	
 	@Override
@@ -90,7 +92,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
 		identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
@@ -118,7 +120,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 			}
 		}
 		
-		return new ConcatReader( readerList.toArray(new Reader[0]) );		
+		return new CharResponseContent( brjs, readerList );		
 	}
 	
 	private List<String> getValidContentPaths(BundleSet bundleSet) {

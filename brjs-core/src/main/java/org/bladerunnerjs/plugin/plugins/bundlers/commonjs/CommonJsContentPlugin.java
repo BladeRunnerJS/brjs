@@ -16,15 +16,14 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin;
 import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-
-import com.Ostermiller.util.ConcatReader;
-
 
 public class CommonJsContentPlugin extends AbstractContentPlugin
 {
@@ -37,6 +36,8 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
+
+	private BRJS brjs;
 
 	{
 		try
@@ -56,6 +57,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		this.brjs = brjs;
 	}
 
 	@Override
@@ -111,14 +113,14 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
 		try
 		{
 			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
 				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-				return jsModule.getReader();
+				return new CharResponseContent(brjs, jsModule.getReader());
 				
 			}
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
@@ -133,7 +135,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 						readerList.add(new StringReader("\n\n"));
 					}
 				}
-				return new ConcatReader( readerList.toArray(new Reader[0]) );
+				return new CharResponseContent( brjs, readerList );
 			}
 			else
 			{
