@@ -1,12 +1,10 @@
 TextTest = TestCase("TextTest");
 
 require('br/test/ViewFixture');
-var Errors = require('br/Errors');
-var ViewFixture = require('br/test/ViewFixture');
 
 TextTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new ViewFixture("view.*");
+	this.m_oViewFixture = new br.test.ViewFixture("view.*");
 	this.m_eElement = this.getElement();
 	document.body.appendChild(this.m_eElement);
 	this.m_oViewFixture.setViewElement(this.m_eElement);
@@ -76,5 +74,5 @@ TextTest.prototype.test_cannotUseTextOnInputElements = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doThen("view.(input:first).text", "blah");
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 };

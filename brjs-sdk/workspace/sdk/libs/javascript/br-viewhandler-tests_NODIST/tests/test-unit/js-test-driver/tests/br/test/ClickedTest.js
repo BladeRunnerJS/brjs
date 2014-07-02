@@ -1,13 +1,12 @@
-require("jquery");
+br.Core.thirdparty("jquery");
 
-var Errors = require('br/Errors');
-var ViewFixture = require('br/test/ViewFixture');
+require('br/test/ViewFixture');
 
 ClickedTest = TestCase("ClickedTest");
 
 ClickedTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new ViewFixture("view.*");
+	this.m_oViewFixture = new br.test.ViewFixture("view.*");
 	this.m_eElement = this.getElement();
 	document.body.appendChild(this.m_eElement);
 	this.m_oViewFixture.setViewElement(this.m_eElement);
@@ -43,5 +42,5 @@ ClickedTest.prototype.test_cannotGetClickedProperty= function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doThen("view.(#click-target).clicked", true);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 };

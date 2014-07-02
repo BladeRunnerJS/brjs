@@ -1,11 +1,4 @@
-'use strict';
-
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
-
 /**
- * @name br.test.viewhandler.Readonly
  * @class
  * <code>ReadOnly ViewFixtureHandler</code> can be used to set or get the <code>readonly</code> attribute of an input view element
  * Example usage:
@@ -15,16 +8,16 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-function Readonly() {
-}
-br.implement(Readonly, ViewFixtureHandler);
-
-Readonly.prototype.set = function(eElement, vValue) {
+br.test.viewhandler.Readonly = function()
+{
+};
+br.Core.implement(br.test.viewhandler.Readonly, br.test.viewhandler.ViewFixtureHandler);
+br.test.viewhandler.Readonly.prototype.set = function(eElement, vValue)
+{
 	eElement.readOnly= (vValue === true);
 };
-
-Readonly.prototype.get = function(eElement) {
+br.test.viewhandler.Readonly.prototype.get = function(eElement)
+{
 	return eElement.readOnly;
 };
 
-module.exports = Readonly;

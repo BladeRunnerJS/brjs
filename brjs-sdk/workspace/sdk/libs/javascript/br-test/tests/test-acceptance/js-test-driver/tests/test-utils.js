@@ -1,4 +1,5 @@
-require("jquery");
+br.Core.thirdparty("jquery");
+br.Core.thirdparty('sl4bdummy');
 
 var testHtml = null;
 setupPage = function() {

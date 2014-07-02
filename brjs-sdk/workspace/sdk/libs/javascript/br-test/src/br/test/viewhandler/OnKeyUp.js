@@ -1,25 +1,19 @@
-'use strict';
-
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
-var Utils = require('br/test/Utils');
-
 /**
- * @name br.test.viewhandler.OnKeyUp
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-function OnKeyUp() {
-}
-br.implement(OnKeyUp, ViewFixtureHandler);
-
-OnKeyUp.prototype.set = function(eElement, mValues) {
-	Utils.fireKeyEvent(eElement, "keyup", mValues.sKey, mValues);
+br.test.viewhandler.OnKeyUp = function()
+{
 };
 
-OnKeyUp.prototype.get = function(eElement) {
-	throw new Errors.InvalidTestError("The keyUp event cannot be used in a doGiven or doThen");
+br.Core.implement(br.test.viewhandler.OnKeyUp, br.test.viewhandler.ViewFixtureHandler);
+
+br.test.viewhandler.OnKeyUp.prototype.set = function(eElement, mValues)
+{
+	br.test.Utils.fireKeyEvent(eElement, "keyup", mValues.sKey, mValues);
 };
 
-module.exports = OnKeyUp;
+br.test.viewhandler.OnKeyUp.prototype.get = function(eElement)
+{
+	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The keyUp event cannot be used in a doGiven or doThen");
+};

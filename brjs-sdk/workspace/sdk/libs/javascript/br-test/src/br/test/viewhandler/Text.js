@@ -1,13 +1,6 @@
-'use strict';
-
-require('jquery');
-
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+br.Core.thirdparty("jquery");
 
 /**
- * @name br.test.viewhandler.Text
  * @class
  * <code>Text ViewFixtureHandler</code> can be used to set or get <code>text</code> property of a view element.
  * Example usage:
@@ -17,22 +10,26 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-function Text() {
-}
-br.implement(Text, ViewFixtureHandler);
+br.test.viewhandler.Text = function()
+{
+};
 
-Text.prototype.get = function(eElement) {
-	if (eElement.tagName.toLowerCase() === "input") {
-		throw new Errors.InvalidTestError("Can not use the 'text' property on INPUT elements, try using 'value'.");
+br.Core.implement(br.test.viewhandler.Text, br.test.viewhandler.ViewFixtureHandler);
+
+br.test.viewhandler.Text.prototype.get = function(eElement)
+{
+	if (eElement.tagName.toLowerCase() === "input")
+	{
+		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Can not use the 'text' property on INPUT elements, try using 'value'.");
 	}
 	return jQuery(eElement).text();
 };
 
-Text.prototype.set = function(eElement, vValue) {
-	if (eElement.tagName.toLowerCase() === "input") {
-		throw new Errors.InvalidTestError("Can not use the 'text' property on INPUT elements, try using 'value'.");
+br.test.viewhandler.Text.prototype.set = function(eElement, vValue)
+{
+	if (eElement.tagName.toLowerCase() === "input")
+	{
+		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Can not use the 'text' property on INPUT elements, try using 'value'.");
 	}
 	jQuery(eElement).text(vValue);
 };
-
-module.exports = Text;

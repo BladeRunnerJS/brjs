@@ -1,42 +1,36 @@
-'use strict';
-
 /* global br, require, presenter_ko, jQuery */
-require('jquery');
-require('presenter-knockout');
-
-var Errors = require('br/Errors');
+br.Core.thirdparty('jquery');
+br.Core.thirdparty('presenter-knockout');
 
 /**
- * @name br.test.Utils
  * @class
  * Utility class containing static methods that can be useful for tests.
  */
-function Utils() {
-};
+br.test.Utils = function() {};
 
-Utils.pLoadedAndAttachedCSSElements = [];
+br.test.Utils.pLoadedAndAttachedCSSElements = [];
 
 /**
  * Fires a DOM Event in a cross Browser compatible way.
  *
  * @static
- * @param {DOM Element} element The DOM Element the Event is fired from.
- * @param {String} eventString The Event to be fired without 'on', e.g. 'click', 'keydown'.
- * @param {String} [character] A character associated with typing events.
+ * @param {DOM Element} element The DOM Element the Event is fired from
+ * @param {String} eventString The Event to be fired without 'on', e.g. 'click', 'keydown'
+ * @param {String} [character] A character associated with typing events
  */
-Utils.fireDomEvent = function(element, eventString, character) {
+br.test.Utils.fireDomEvent = function(element, eventString, character) {
 	var evt;
 	if (document.createEventObject) {
 		evt = jQuery.Event(eventString);
 		if (character) {
-			evt.which = Utils.getKeyCodeForChar(character);
+			evt.which = br.test.Utils.getKeyCodeForChar(character);
 		}
 		jQuery(element).trigger(evt);
 	} else if (document.createEvent) {
 		//FF, WEBKIT etc..
 		evt = document.createEvent('HTMLEvents');
 		if (typeof character !== 'undefined') {
-			evt.which = Utils.getKeyCodeForChar(character);
+			evt.which = br.test.Utils.getKeyCodeForChar(character);
 		}
 		evt.initEvent(eventString, true, true);
 		return !element.dispatchEvent(evt);
@@ -47,12 +41,15 @@ Utils.fireDomEvent = function(element, eventString, character) {
  * Returns the Keycode of a letter.
  *
  * @static
- * @param {String} character a single Character to get the Keycode for.
+ * @param {String} character a single Character to get the Keycode for
  * @returns {Number} keyCode The key code for the specified char.
  */
-Utils.getKeyCodeForChar = function(character) {
+br.test.Utils.getKeyCodeForChar = function(character) {
 	if (character.toString().length !== 1){
-		throw Errors.InvalidTestError('getKeyCodeForChar Error! ' + character + ' should only be a single Character');
+		throw br.Errors.CustomError(
+			br.Errors.INVALID_TEST,
+			'getKeyCodeForChar Error! ' + character + ' should only be a single Character'
+		);
 	}
 
 	return character.charCodeAt(0);
@@ -62,14 +59,14 @@ Utils.getKeyCodeForChar = function(character) {
  * Fires a DOM KeyboardEvent in a cross Browser compatible way.
  *
  * @static
- * @param {DOM Element} element The DOM Element the Event is fired from.
- * @param {String} eventString The Event to be fired without 'on', e.g. 'keydown'.
+ * @param {DOM Element} element The DOM Element the Event is fired from
+ * @param {String} eventString The Event to be fired without 'on', e.g. 'keydown'
  * @param {String} character a character associated with typing events.
  * @param {Map} options a map of values, passed in to <code>initKeyboardEvent</code>, associated with typing events.
  */
-Utils.fireKeyEvent = function(element, eventString, character, options) {
-	var keyCode = Utils.getKeyCodeForChar(character),
-		args = Utils._mergeDefaultKeyEventArgumentsWithArgumentsMap(options || {}),
+br.test.Utils.fireKeyEvent = function(element, eventString, character, options) {
+	var keyCode = br.test.Utils.getKeyCodeForChar(character),
+		args = br.test.Utils._mergeDefaultKeyEventArgumentsWithArgumentsMap(options || {}),
 		evt;
 
 	if (document.createEvent) {
@@ -78,50 +75,16 @@ Utils.fireKeyEvent = function(element, eventString, character, options) {
 
 		if (evt.initKeyboardEvent) {
 			if (navigator.userAgent.indexOf('WebKit') !== -1) {
-				//https://bugs.webkit.org/show_bug.cgi?id=16735 Due to bug in Webkit and Chrome we must use 
-				// keyIdentifier instead of keycode - which is the standard anyway.
-
+				//https://bugs.webkit.org/show_bug.cgi?id=16735 Due to bug in Webkit and Chrome we must use keyIdentifier instead of keycode - which is the standard anyway.
 				//Webkit.
-				evt.initKeyboardEvent(
-					eventString,
-					args.canBubble,
-					args.cancelable,
-					args.view,
-					args.keyIdentifier,
-					0,
-					args.ctrlKey,
-					args.altKey,
-					args.shiftKey,
-					args.metaKey
-				);
+				evt.initKeyboardEvent(eventString, args.canBubble, args.cancelable, args.view, args.keyIdentifier, 0, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey);
 			} else {
 				//IE.
-				evt.initKeyboardEvent(
-					eventString,
-					args.canBubble,
-					args.cancelable,
-					args.view,
-					args.key,
-					0,
-					args.modifiersListArg,
-					0,
-					'en-US'
-				);
+				evt.initKeyboardEvent(eventString, args.canBubble, args.cancelable, args.view, args.key, 0, args.modifiersListArg, 0, 'en-US');
 			}
 		} else if (evt.initKeyEvent) {
 			//Gecko.
-			evt.initKeyEvent(
-				eventString,
-				args.canBubble,
-				args.cancelable,
-				args.view,
-				args.ctrlKey,
-				args.altKey,
-				args.shiftKey,
-				args.metaKey,
-				keyCode,
-				0
-			);
+			evt.initKeyEvent(eventString, args.canBubble, args.cancelable, args.view, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, keyCode, 0);
 		}
 
 		return !element.dispatchEvent(evt);
@@ -145,35 +108,22 @@ Utils.fireKeyEvent = function(element, eventString, character, options) {
  * Fires a DOM MouseEvents in a cross Browser compatible way.
  *
  * @static
- * @param {DOM Element} element The DOM Element the Event is fired from.
- * @param {String} eventString The Event to be fired without 'on', e.g. 'click'.
+ * @param {DOM Element} element The DOM Element the Event is fired from
+ * @param {String} eventString The Event to be fired without 'on', e.g. 'click'
  * @param {Map} options a map of values, passed in to <code>initMouseEvent</code>, associated with mouse events.
  */
-Utils.fireMouseEvent = function(element, eventString, options) {
-	var args = Utils.fireMouseEvent._mergeDefaultMouseEventArgumentsWithArgumentsMap(options || {}),
+br.test.Utils.fireMouseEvent = function(element, eventString, options) {
+	var args = br.test.Utils.fireMouseEvent._mergeDefaultMouseEventArgumentsWithArgumentsMap(options || {}),
 		evt;
 
 	if (document.createEvent) {
-		evt = Utils.fireMouseEvent._getMouseEventDOMStandard(
-			eventString,
-			args.canBubble,
-			args.cancelable,
-			args.view,
-			args.detail,
-			args.screenX,
-			args.screenY,
-			args.clientX,
-			args.clientY,
-			args.ctrlKey,
-			args.altKey,
-			args.shiftKey,
-			args.metaKey,
-			args.button,
-			args.relatedTarget
-		);
+		evt = br.test.Utils.fireMouseEvent._getMouseEventDOMStandard(eventString, args.canBubble, args.cancelable, args.view, args.detail, args.screenX, args.screenY,
+			args.clientX, args.clientY, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, args.button, args.relatedTarget);
 		element.dispatchEvent(evt);
+
 	} else if (element.fireEvent) {
-		if (Utils._isClickEventWithNoEventOptionsAndKOIsAvailable(eventString, element, options)) {
+
+		if (br.test.Utils._isClickEventWithNoEventOptionsAndKOIsAvailable(eventString, element, options)) {
 			/*
 			 * The reason for this KO call is due to jQuery not behaving like a browser and only setting a checked value
 			 * after calling the event handlers. This code should only run in IE8 (element.fireEvent check above).
@@ -181,25 +131,11 @@ Utils.fireMouseEvent = function(element, eventString, options) {
 			 * There is a comment in the KO code which explains why this is required.
 			 */
 			presenter_ko.utils.triggerEvent(element, eventString);
-		} else if (Utils._isClickEventWithNoEventOptions(eventString, element, options)) {
+		} else if (br.test.Utils._isClickEventWithNoEventOptions(eventString, element, options)) {
 			jQuery(element).click();
 		} else {
-			evt = Utils.fireMouseEvent._getMouseEventIENonStandard(
-				args.canBubble,
-				args.cancelable,
-				args.view,
-				args.detail,
-				args.screenX,
-				args.screenY,
-				args.clientX,
-				args.clientY,
-				args.ctrlKey,
-				args.altKey,
-				args.shiftKey,
-				args.metaKey,
-				args.button,
-				args.relatedTarget
-			);
+			evt = br.test.Utils.fireMouseEvent._getMouseEventIENonStandard(args.canBubble, args.cancelable, args.view, args.detail, args.screenX, args.screenY,
+					args.clientX, args.clientY, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, args.button, args.relatedTarget);
 			element.fireEvent('on' + eventString, evt);
 		}
 	}
@@ -212,11 +148,10 @@ Utils.fireMouseEvent = function(element, eventString, options) {
  * @static
  * @param {Array} cssFiels list of css file URLs to be loaded into the test page.
  */
-Utils.loadCSSAndAttachToPage = function(cssFiles) {
+br.test.Utils.loadCSSAndAttachToPage = function(cssFiles) {
 	var FileUtility = require('br/core/File'),
 		elHead = document.getElementsByTagName('head')[0],
 		cssCode, cssEl;
-
 	for (var i = 0, len = cssFiles.length; i < len; ++i) {
 		cssCode = FileUtility.readFileSync(cssFiles[i]);
 		cssEl = document.createElement('style');
@@ -234,7 +169,7 @@ Utils.loadCSSAndAttachToPage = function(cssFiles) {
 			}
 		}
 
-		Utils.pLoadedAndAttachedCSSElements.push(elHead.appendChild(cssEl));
+		br.test.Utils.pLoadedAndAttachedCSSElements.push(elHead.appendChild(cssEl));
 	}
 };
 
@@ -245,8 +180,8 @@ Utils.loadCSSAndAttachToPage = function(cssFiles) {
  * @static
  * @param {Array} cssFiles list of css file URLs to be loaded into the test page.
  */
-Utils.removeLoadedAndAttachedCSSFromPage = function() {
-	var cssElements = Utils.pLoadedAndAttachedCSSElements,
+br.test.Utils.removeLoadedAndAttachedCSSFromPage = function() {
+	var cssElements = br.test.Utils.pLoadedAndAttachedCSSElements,
 		cssEl;
 
 	while (cssElements.length) {
@@ -261,7 +196,7 @@ Utils.removeLoadedAndAttachedCSSFromPage = function() {
  * @static
  * @param {DOM Element} element The DOM Element the Event is fired from
  */
-Utils.fireScrollEvent = function(element) {
+br.test.Utils.fireScrollEvent = function(element) {
 	if (document.createEvent) {
 		// FF
 		var evt = document.createEvent('HTMLEvents');
@@ -274,7 +209,7 @@ Utils.fireScrollEvent = function(element) {
 };
 
 /** @private */
-Utils.fireMouseEvent._mergeDefaultMouseEventArgumentsWithArgumentsMap = function(config) {
+br.test.Utils.fireMouseEvent._mergeDefaultMouseEventArgumentsWithArgumentsMap = function(config) {
 	return {
 		canBubble : config.canBubble !== false ? true : false,
 		cancelable : config.cancelable !== false ? true : false,
@@ -294,14 +229,14 @@ Utils.fireMouseEvent._mergeDefaultMouseEventArgumentsWithArgumentsMap = function
 };
 
 /** @private */
-Utils.fireMouseEvent._getMouseEventDOMStandard = function(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget) {
+br.test.Utils.fireMouseEvent._getMouseEventDOMStandard = function(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget) {
 	var evt = document.createEvent('MouseEvents');
 	evt.initMouseEvent(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget);
 	return evt;
 };
 
 /** @private */
-Utils.fireMouseEvent._getMouseEventIENonStandard = function(canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget) {
+br.test.Utils.fireMouseEvent._getMouseEventIENonStandard = function(canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget) {
 	//create an IE event object
 	var customEvent = document.createEventObject();
 
@@ -343,7 +278,7 @@ Utils.fireMouseEvent._getMouseEventIENonStandard = function(canBubble, cancelabl
 };
 
 /** @private */
-Utils._mergeDefaultKeyEventArgumentsWithArgumentsMap = function(config) {
+br.test.Utils._mergeDefaultKeyEventArgumentsWithArgumentsMap = function(config) {
 	return {
 		canBubble : config.canBubble !== false ? true : false,
 		cancelable : config.cancelable !== false ? true : false,
@@ -359,14 +294,12 @@ Utils._mergeDefaultKeyEventArgumentsWithArgumentsMap = function(config) {
 };
 
 /** @private */
-Utils._isClickEventWithNoEventOptions = function(eventString, element, options) {
+br.test.Utils._isClickEventWithNoEventOptions = function(eventString, element, options) {
 	var Utility = require('br/core/Utility');
 	return eventString === 'click' && element.click && Utility.isEmpty(options);
 };
 
 /** @private */
-Utils._isClickEventWithNoEventOptionsAndKOIsAvailable = function(eventString, element, options) {
-	return Utils._isClickEventWithNoEventOptions(eventString, element, options) && presenter_ko && presenter_ko.utils;
+br.test.Utils._isClickEventWithNoEventOptionsAndKOIsAvailable = function(eventString, element, options) {
+	return br.test.Utils._isClickEventWithNoEventOptions(eventString, element, options) && presenter_ko && presenter_ko.utils;
 };
-
-module.exports = Utils;

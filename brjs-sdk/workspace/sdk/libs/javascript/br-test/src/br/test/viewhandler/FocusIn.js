@@ -1,13 +1,6 @@
-'use strict';
-
-require('jquery');
-
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+br.Core.thirdparty("jquery");
 
 /**
- * @name br.test.viewhandler.FocusIn
  * @class
  * <code>FocusIn ViewFixtureHandler</code> can be used to trigger <code>focusin</code> on a view element.
  * Example usage:
@@ -17,16 +10,19 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-function FocusIn() {
-}
-br.implement(FocusIn, ViewFixtureHandler);
+br.test.viewhandler.FocusIn = function()
+{
+};
 
-FocusIn.prototype.set = function(eElement) {
+br.Core.implement(br.test.viewhandler.FocusIn, br.test.viewhandler.ViewFixtureHandler);
+
+
+br.test.viewhandler.FocusIn.prototype.set = function(eElement)
+{
 	jQuery(eElement).trigger('focusin');
 };
 
-FocusIn.prototype.get = function(eElement) {
-	throw new Errors.InvalidTestError("The focusIn event cannot be used in a doGiven or doThen");
+br.test.viewhandler.FocusIn.prototype.get = function(eElement)
+{
+	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The focusIn event cannot be used in a doGiven or doThen");
 };
-
-module.exports = FocusIn;
