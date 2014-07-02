@@ -122,6 +122,12 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	from (configurations.system)
 	{
 		into "sdk/libs/java/system"
+		rename { String fileName ->
+		if ( !fileName.startsWith("brjs-") )
+		{
+			fileName = "brjs-"+fileName
+		}
+	}
 	}
 	from (configurations.javadocs.collect { zipTree(it) }) {
 		eachFile {
