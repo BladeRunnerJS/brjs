@@ -1,14 +1,12 @@
-require('jsunitextensions');
-require('mock4js');
-
-var ArrayUtility = require('br/util/ArrayUtility');
+br.Core.thirdparty('jsunitextensions');
+br.Core.thirdparty('mock4js');
 
 ArrayUtilityTest = TestCase('ArrayUtilityTest');
 
 ArrayUtilityTest.prototype.test_inArray_ThrowsExceptionOnWrongArguments = function() {
 	assertException(
 		function() {
-			ArrayUtility.inArray('not an array', 42);
+			br.util.ArrayUtility.inArray('not an array', 42);
 		},
 		'InvalidParametersError'
 	);
@@ -17,18 +15,18 @@ ArrayUtilityTest.prototype.test_inArray_ThrowsExceptionOnWrongArguments = functi
 ArrayUtilityTest.prototype.test_inArray_FindsValues = function() {
 	var testArray = [1, null, 2, undefined, 3, NaN];
 
-	assertTrue('finds 1', ArrayUtility.inArray(testArray, 1));
-	assertTrue('finds null', ArrayUtility.inArray(testArray, null));
-	assertTrue('finds undefined', ArrayUtility.inArray(testArray, undefined));
-	assertTrue('finds NaN', ArrayUtility.inArray(testArray, NaN));
+	assertTrue('finds 1', br.util.ArrayUtility.inArray(testArray, 1));
+	assertTrue('finds null', br.util.ArrayUtility.inArray(testArray, null));
+	assertTrue('finds undefined', br.util.ArrayUtility.inArray(testArray, undefined));
+	assertTrue('finds NaN', br.util.ArrayUtility.inArray(testArray, NaN));
 
-	assertFalse('doesn\'t find 42', ArrayUtility.inArray(testArray, 42));
+	assertFalse('doesn\'t find 42', br.util.ArrayUtility.inArray(testArray, 42));
 };
 
 ArrayUtilityTest.prototype.test_removeItem_ThrowsExceptionOnWrongArguments = function() {
 	assertException(
 		function() {
-			ArrayUtility.removeItem('not an array', 42);
+			br.util.ArrayUtility.removeItem('not an array', 42);
 		},
 		'InvalidParametersError'
 	);
@@ -37,7 +35,7 @@ ArrayUtilityTest.prototype.test_removeItem_ThrowsExceptionOnWrongArguments = fun
 ArrayUtilityTest.prototype.test_removeItem_ThrowsExceptionIfValueToRemoveIsNaN = function() {
 	assertException(
 		function() {
-			ArrayUtility.removeItem([1, 2, 3], NaN);
+			br.util.ArrayUtility.removeItem([1, 2, 3], NaN);
 		},
 		'InvalidParametersError'
 	);
@@ -46,11 +44,11 @@ ArrayUtilityTest.prototype.test_removeItem_ThrowsExceptionIfValueToRemoveIsNaN =
 ArrayUtilityTest.prototype.test_removeItem_RemovesAnItemThatIsInArray = function() {
 	var testArray = [1, 2, 3];
 
-	assertEquals(ArrayUtility.removeItem(testArray, 1), [2, 3]);
+	assertEquals(br.util.ArrayUtility.removeItem(testArray, 1), [2, 3]);
 };
 
 ArrayUtilityTest.prototype.test_removeItem_ReturnsOriginalArrayIfNoItemIsFound = function() {
 	var testArray = [1, 2, 3];
 
-	assertEquals(ArrayUtility.removeItem(testArray, 42), testArray);
+	assertEquals(br.util.ArrayUtility.removeItem(testArray, 42), testArray);
 };

@@ -1,27 +1,25 @@
-require('jsunitextensions');
+br.Core.thirdparty('jsunitextensions');
 
-var MapUtility = require('br/util/MapUtility');
-
-var MapUtilityTest = TestCase("MapUtilityTest");
+MapUtilityTest = TestCase("MapUtilityTest");
 
 MapUtilityTest.prototype.test_isEmpty = function()
 {
-	assertTrue("a1", MapUtility.isEmpty({}));
-	assertFalse("a2", MapUtility.isEmpty({foo:1}));
-	assertFalse("a3", MapUtility.isEmpty({foo:1, bar:2}));
+	assertTrue("a1", br.util.MapUtility.isEmpty({}));
+	assertFalse("a2", br.util.MapUtility.isEmpty({foo:1}));
+	assertFalse("a3", br.util.MapUtility.isEmpty({foo:1, bar:2}));
 };
 
 MapUtilityTest.prototype.test_size = function()
 {
-	assertEquals("a1", 0, MapUtility.size({}));
-	assertEquals("a2", 1, MapUtility.size({foo:1}));
-	assertEquals("a3", 2, MapUtility.size({foo:1, bar:2}));
+	assertEquals("a1", 0, br.util.MapUtility.size({}));
+	assertEquals("a2", 1, br.util.MapUtility.size({foo:1}));
+	assertEquals("a3", 2, br.util.MapUtility.size({foo:1, bar:2}));
 };
 
 MapUtilityTest.prototype.test_valuesToAray = function()
 {
-	assertArrayEquals("a1", [], MapUtility.valuesToArray({}));
-	assertArrayEquals("a2", [1, 2], MapUtility.valuesToArray({foo:1, bar:2}));
+	assertArrayEquals("a1", [], br.util.MapUtility.valuesToArray({}));
+	assertArrayEquals("a2", [1, 2], br.util.MapUtility.valuesToArray({foo:1, bar:2}));
 };
 
 MapUtilityTest.prototype.test_addArrayToAnEmptyMap = function()
@@ -38,7 +36,7 @@ MapUtilityTest.prototype.test_addArrayToANonEmptyMap = function()
 
 MapUtilityTest.prototype.test_mapIsReturnedSoCanImmediatelyBeAssignedToNewVariable = function()
 {
-	var mMap = MapUtility.addArrayToMap({}, ["foo", "bar"]);
+	var mMap = br.util.MapUtility.addArrayToMap({}, ["foo", "bar"]);
 	
 	assertEquals("a1", {foo: true, bar: true}, mMap);
 };
@@ -50,7 +48,7 @@ MapUtilityTest.prototype.test_addArrayOverwritesExisitingValueInMap = function()
 
 function verifyMapAddition(sMessage, mExpectedMap, mTestMap, pTestArray)
 {
-	MapUtility.addArrayToMap(mTestMap, pTestArray);
+	br.util.MapUtility.addArrayToMap(mTestMap, pTestArray);
 	assertMapEquals(sMessage, mExpectedMap, mTestMap);
 }
 
@@ -79,7 +77,7 @@ MapUtilityTest.prototype.test_removeKeyForAValueThatIsExplicitlyUndefinedRemoves
 
 function verifyMapDeletion(sMessage, mExpectedMap, mExpectedDeletionsMap, mTestMap, pTestArray)
 {
-	var mDeletedMap = MapUtility.removeArrayFromMap(mTestMap, pTestArray);
+	var mDeletedMap = br.util.MapUtility.removeArrayFromMap(mTestMap, pTestArray);
 	assertMapEquals(sMessage + " - specified map did not contain the expected entries", mExpectedMap, mTestMap);
 	assertMapEquals(sMessage + " - deleted map did not contain the expected entries", mExpectedDeletionsMap, mDeletedMap);
 }
@@ -89,7 +87,7 @@ MapUtilityTest.prototype.test_mapsDefinedLiterallyCanBeMerged = function()
 	var mMap1 = { a: "one", b: "two" };
 	var mMap2 = { c: "three" };
 	
-	var mMergedMap = MapUtility.mergeMaps([mMap1, mMap2]);
+	var mMergedMap = br.util.MapUtility.mergeMaps([mMap1, mMap2]);
 	
 	assertMapEquals("1.1", { a: "one", b: "two", c: "three" }, mMergedMap);
 };
@@ -102,7 +100,7 @@ MapUtilityTest.prototype.test_mapsDefinedAsNewObjectsCanBeMerged = function()
 	var mMap2 = new Object();
 	mMap2["c"] = "C";
 	
-	var mMergedMap = MapUtility.mergeMaps([mMap1, mMap2]);
+	var mMergedMap = br.util.MapUtility.mergeMaps([mMap1, mMap2]);
 	
 	assertMapEquals("1.1", { a: "A", b: "B", c: "C" }, mMergedMap);
 };
@@ -112,7 +110,7 @@ MapUtilityTest.prototype.test_emptyMapsCanBeMerged = function()
 	var mMap1 = {};
 	var mMap2 = {};
 	
-	var mMergedMap = MapUtility.mergeMaps([mMap1, mMap2]);
+	var mMergedMap = br.util.MapUtility.mergeMaps([mMap1, mMap2]);
 	
 	assertMapEquals("1.1", {}, mMergedMap);
 };
@@ -125,7 +123,7 @@ MapUtilityTest.prototype.test_manyMapsCanBeMerged = function()
 	var mMap4 = {};
 	var mMap5 = { f: "6", g: "7", h: "8", i: "9" };
 	
-	var mMergedMap = MapUtility.mergeMaps([mMap1, mMap2, mMap3, mMap4, mMap5]);
+	var mMergedMap = br.util.MapUtility.mergeMaps([mMap1, mMap2, mMap3, mMap4, mMap5]);
 	
 	assertMapEquals("1.1", { a: "1", b: "2", c: "3", d: "4", e: "5", f: "6", g: "7", h: "8", i: "9" }, mMergedMap);
 };
@@ -136,7 +134,7 @@ MapUtilityTest.prototype.test_exceptionIsThrownIfNonMapIsAttemptedToBeMerged = f
 	var mMap2 = "";
 	
 	assertException("1.1", 
-				function() { MapUtility.mergeMaps([mMap1, mMap2]); },
+				function() { br.util.MapUtility.mergeMaps([mMap1, mMap2]); },
 				"InvalidParametersError");
 };
 
@@ -146,7 +144,7 @@ MapUtilityTest.prototype.test_exceptionIsThrownIfNullMapIsAttemptedToBeMerged = 
 	var mMap2 = null;
 	
 	assertException("1.1", 
-				function() { MapUtility.mergeMaps([mMap1, mMap2]); },
+				function() { br.util.MapUtility.mergeMaps([mMap1, mMap2]); },
 				"InvalidParametersError");
 };
 
@@ -156,7 +154,7 @@ MapUtilityTest.prototype.test_exceptionIsThrownIfUndefinedMapIsAttemptedToBeMerg
 	var mMap2 = undefined;
 	
 	assertException("1.1", 
-				function() { MapUtility.mergeMaps([mMap1, mMap2]); },
+				function() { br.util.MapUtility.mergeMaps([mMap1, mMap2]); },
 				"InvalidParametersError");
 };
 
@@ -166,7 +164,7 @@ MapUtilityTest.prototype.test_exceptionIsThrownIfDuplicateIsFound = function()
 	var mMap2 = { b: "3" };
 	
 	assertException("1.1", 
-				function() { MapUtility.mergeMaps([mMap1, mMap2]); },
+				function() { br.util.MapUtility.mergeMaps([mMap1, mMap2]); },
 				"InvalidParametersError");
 };
 
@@ -178,7 +176,7 @@ MapUtilityTest.prototype.test_exceptionIsThrownIfDuplicateIsFoundAndThrowExcepti
 	
 	assertException("1.1", 
 				// pMapsToMerge, bOverwriteDuplicates, bDuplicatesThrowsExceptions, bDeepCopy
-				function() { MapUtility.mergeMaps([mMap1, mMap2], false, true); },
+				function() { br.util.MapUtility.mergeMaps([mMap1, mMap2], false, true); },
 				"InvalidParametersError");
 }
 
@@ -188,7 +186,7 @@ MapUtilityTest.prototype.test_exceptionIsThrownIfDuplicateIsFoundEvenIfValuesAre
 	var mMap2 = { b: "2" };
 	
 	assertException("1.1", 
-				function() { MapUtility.mergeMaps([mMap1, mMap2]); },
+				function() { br.util.MapUtility.mergeMaps([mMap1, mMap2]); },
 				"InvalidParametersError");
 };
 
@@ -197,7 +195,7 @@ MapUtilityTest.prototype.test_duplicateKeysCanBeMergedWhenFlagIsSet = function()
 	var mMap1 = { a: "1", b: "2" };
 	var mMap2 = { b: "3" };
 	
-	var mMergedMap = MapUtility.mergeMaps([mMap1, mMap2], true);
+	var mMergedMap = br.util.MapUtility.mergeMaps([mMap1, mMap2], true);
 	
 	assertMapEquals("1.1", { a: "1", b: "3" }, mMergedMap);
 };
@@ -208,7 +206,7 @@ MapUtilityTest.prototype.test_duplicateKeysAreIgnoredWhenThrowExceptionFlagIsSet
 	var mMap2 = { b: "3" };
 	
 	// pMapsToMerge, bOverwriteDuplicates, bDuplicatesThrowsExceptions, bDeepCopy
-	var mMergedMap = MapUtility.mergeMaps([mMap1, mMap2], false, false);
+	var mMergedMap = br.util.MapUtility.mergeMaps([mMap1, mMap2], false, false);
 	
 	assertMapEquals("original map value should have been kept", { a: "1", b: "2" }, mMergedMap);
 };
@@ -217,14 +215,14 @@ MapUtilityTest.prototype.test_toStringWithSingleStringNameValuePairMap = functio
 {
 	var mMap = { a: "1" };
 	
-	assertEquals("1.1", "map#1{ a: 1 }", MapUtility.toString(mMap));
+	assertEquals("1.1", "map#1{ a: 1 }", br.util.MapUtility.toString(mMap));
 };
 
 MapUtilityTest.prototype.test_toStringWithSeveralStringNameValuePairsMap = function()
 {
 	var mMap = { a: "1", b: "2", c: "3" };
 	
-	assertEquals("1.1", "map#1{ a: 1, b: 2, c: 3 }", MapUtility.toString(mMap));
+	assertEquals("1.1", "map#1{ a: 1, b: 2, c: 3 }", br.util.MapUtility.toString(mMap));
 };
 
 MapUtilityTest.prototype.test_toStringWithAMapContainingAnotherMap = function()
@@ -232,7 +230,7 @@ MapUtilityTest.prototype.test_toStringWithAMapContainingAnotherMap = function()
 	var mSubMap = { x: "24", y: "25", z: "26" };
 	var mMap = { a: "1", b: "2", c: "3", nextMap: mSubMap };
 	
-	assertEquals("1.1", "map#1{ a: 1, b: 2, c: 3, nextMap: [object Object] }", MapUtility.toString(mMap));
+	assertEquals("1.1", "map#1{ a: 1, b: 2, c: 3, nextMap: [object Object] }", br.util.MapUtility.toString(mMap));
 };
 
 MapUtilityTest.prototype.test_toStringWithAMapContainingAnObjectWithNoToStringMethod = function()
@@ -242,7 +240,7 @@ MapUtilityTest.prototype.test_toStringWithAMapContainingAnObjectWithNoToStringMe
 	};
 	var mMap = { obj: oObject };
 	
-	assertEquals("1.1", "map#1{ obj: [object Object] }", MapUtility.toString(mMap));
+	assertEquals("1.1", "map#1{ obj: [object Object] }", br.util.MapUtility.toString(mMap));
 };
 
 MapUtilityTest.prototype.test_toStringWithAMapContainingAnObjectWithAReferenceToAnotherMap = function()
@@ -250,12 +248,12 @@ MapUtilityTest.prototype.test_toStringWithAMapContainingAnObjectWithAReferenceTo
 	var oObject = {
 		mMyMap: { x: "24", y: "25", z: "26" },
 		toString: function() {
-			return "myObject<" + MapUtility.toString(this.mMyMap) + ">";
+			return "myObject<" + br.util.MapUtility.toString(this.mMyMap) + ">";
 		}
 	};
 	var mMap = { obj: oObject };
 	
-	assertEquals("1.1", "map#1{ obj: myObject<map#2{ x: 24, y: 25, z: 26 }> }", MapUtility.toString(mMap));
+	assertEquals("1.1", "map#1{ obj: myObject<map#2{ x: 24, y: 25, z: 26 }> }", br.util.MapUtility.toString(mMap));
 };
 
 MapUtilityTest.prototype.test_toStringWithAMapContainingAnObjectWithAReferenceBackToMap = function()
@@ -264,12 +262,12 @@ MapUtilityTest.prototype.test_toStringWithAMapContainingAnObjectWithAReferenceBa
 	var oObject = {
 		mMyMap: mMap,
 		toString: function() {
-			return "myObject(" + MapUtility.toString(this.mMyMap) + ")";
+			return "myObject(" + br.util.MapUtility.toString(this.mMyMap) + ")";
 		}
 	};
 	mMap["obj"] = oObject;
 	
-	assertEquals("1.1", "map#1{ obj: myObject(map#1{<see-earlier-definition>}) }", MapUtility.toString(mMap));
+	assertEquals("1.1", "map#1{ obj: myObject(map#1{<see-earlier-definition>}) }", br.util.MapUtility.toString(mMap));
 };
 
 MapUtilityTest.prototype.test_shallowMergeTest = function()
@@ -279,7 +277,7 @@ MapUtilityTest.prototype.test_shallowMergeTest = function()
 	
 	var mMergingMap = {"hello":"world", "goodbye":"universe"};
 	
-	var mMergeResult = MapUtility.mergeMaps([mOrgMap,mMergingMap] );
+	var mMergeResult = br.util.MapUtility.mergeMaps([mOrgMap,mMergingMap] );
 	
 	assertTrue("should be fish:pie", mOrgMap.fish == mMergeResult.fish);
 	assertTrue("should be monkey:cheese", mOrgMap.monkey == mMergeResult.monkey);
@@ -299,7 +297,7 @@ MapUtilityTest.prototype.test_deepMergeTest = function()
 	mMergingMap.deep2 = {"funky":"chicken"};
 
 	// pMapsToMerge, bOverwriteDuplicates, bDuplicatesThrowsExceptions, bDeepCopy
-	var mMergeResult = MapUtility.mergeMaps([mOrgMap,mMergingMap], false, false, true);
+	var mMergeResult = br.util.MapUtility.mergeMaps([mOrgMap,mMergingMap], false, false, true);
 	
 	assertTrue("should be fish:pie", mOrgMap.fish == mMergeResult.fish);
 	assertTrue("should be monkey:cheese", mOrgMap.monkey == mMergeResult.monkey);
@@ -321,7 +319,7 @@ MapUtilityTest.prototype.test_deepMergeAllowingDuplicatesTest = function()
 	mMergingMap.deep2 = {"funky":"chicken"};
 
 	// pMapsToMerge, bOverwriteDuplicates, bDuplicatesThrowsExceptions, bDeepCopy
-	var mMergeResult = MapUtility.mergeMaps([mOrgMap,mMergingMap], true, false, true);
+	var mMergeResult = br.util.MapUtility.mergeMaps([mOrgMap,mMergingMap], true, false, true);
 	
 	assertTrue("should be fish:pie", mOrgMap.fish == mMergeResult.fish);
 	assertTrue("should be monkey:cheese", mOrgMap.monkey == mMergeResult.monkey);
@@ -338,12 +336,12 @@ MapUtilityTest.prototype.test_shallowCopyTest = function()
 {
 	var mOrgMap = {"fish":"pie","monkey":"cheese"};
 	mOrgMap.deep = mOrgMap; // if a deep copy were to happen this may cause stack overflow
-	var mCopy = MapUtility.copy(mOrgMap);
+	var mCopy = br.util.MapUtility.copy(mOrgMap);
 	assertTrue("should be fish:pie", mOrgMap.fish == mCopy.fish);
 	assertTrue("should be monkey:cheese", mOrgMap.monkey == mCopy.monkey);
 	assertTrue("shallow copied objects should be reference", mOrgMap.deep == mCopy.deep);
 	
-	assertEquals("sizes differ", MapUtility.size(mOrgMap), MapUtility.size(mCopy));
+	assertEquals("sizes differ", br.util.MapUtility.size(mOrgMap), br.util.MapUtility.size(mCopy));
 };
 
 MapUtilityTest.prototype.test_deepCopyTest = function()
@@ -351,13 +349,13 @@ MapUtilityTest.prototype.test_deepCopyTest = function()
 	var mOrgMap = {"fish":"pie","monkey":"cheese"};
 	mOrgMap.deep = {"ferret":"trousers"};
 
-	var mCopy = MapUtility.copy(mOrgMap, {}, true);
+	var mCopy = br.util.MapUtility.copy(mOrgMap, {}, true);
 	assertTrue("should be fish:pie", mOrgMap.fish == mCopy.fish);
 	assertTrue("should be monkey:cheese", mOrgMap.monkey == mCopy.monkey);
 	assertFalse("deep copied objects should be copies and not the same reference", mOrgMap.deep == mCopy.deep);
 	assertTrue("should be ferret:trousers", mOrgMap.deep.ferret == mCopy.deep.ferret);
 	
-	assertTrue("sizes differ", MapUtility.size(mOrgMap) == MapUtility.size(mCopy));
+	assertTrue("sizes differ", br.util.MapUtility.size(mOrgMap) == br.util.MapUtility.size(mCopy));
 };
 
 MapUtilityTest.prototype.test_hasAllKeys_mapsContainSameKeys = function()
@@ -365,7 +363,7 @@ MapUtilityTest.prototype.test_hasAllKeys_mapsContainSameKeys = function()
 	var mSource = {a:1, b:2, c:3};
 	var mMap = {a:4, b:5, c:6};
 
-	assertTrue(MapUtility.hasAllKeys(mSource, mMap));
+	assertTrue(br.util.MapUtility.hasAllKeys(mSource, mMap));
 };
 
 MapUtilityTest.prototype.test_hasAllKeys_mapsDoesntContainSameKeys = function()
@@ -373,7 +371,7 @@ MapUtilityTest.prototype.test_hasAllKeys_mapsDoesntContainSameKeys = function()
 	var mSource = {a:1, b:2, d:3};
 	var mMap = {a:4, b:5, c:6};
 
-	assertFalse(MapUtility.hasAllKeys(mSource, mMap));
+	assertFalse(br.util.MapUtility.hasAllKeys(mSource, mMap));
 };
 
 MapUtilityTest.prototype.test_hasAllKeys_mapsContainNullKeys = function()
@@ -381,7 +379,7 @@ MapUtilityTest.prototype.test_hasAllKeys_mapsContainNullKeys = function()
 	var mSource = {a:null, b:2, c:3};
 	var mMap = {a:4, b:5, c:6};
 
-	assertTrue(MapUtility.hasAllKeys(mSource, mMap));
+	assertTrue(br.util.MapUtility.hasAllKeys(mSource, mMap));
 };
 
 MapUtilityTest.prototype.test_hasAllKeys_emptyArguments = function()
@@ -390,17 +388,17 @@ MapUtilityTest.prototype.test_hasAllKeys_emptyArguments = function()
 	var mSource = {};
 	var mMap = {};
 
-	assertTrue(MapUtility.hasAllKeys(mSource, mMap));
+	assertTrue(br.util.MapUtility.hasAllKeys(mSource, mMap));
 
 	// test first empty
 	mSource = {};
 	mMap = {a:1};
 
-	assertFalse(MapUtility.hasAllKeys(mSource, mMap));
+	assertFalse(br.util.MapUtility.hasAllKeys(mSource, mMap));
 
 	// test second empty
 	mSource = {a:1};
 	mMap = {};
 
-	assertTrue(MapUtility.hasAllKeys(mSource, mMap));
+	assertTrue(br.util.MapUtility.hasAllKeys(mSource, mMap));
 };

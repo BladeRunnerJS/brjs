@@ -1,86 +1,90 @@
-'use strict';
-
-var Errors = require('br/Errors');
-var fell = require('fell');
-
 /**
- * @private
  * This is a static utility class and does not need to be instantiated.
+ * @private
  */
-function Utility() {
-}
+br.util.Utility = function()
+{
+};
 
 /**
  * @private
  * Used when creating a unique ID
  */
-Utility.UNIQUE_ID = 0;
+br.util.Utility.UNIQUE_ID = 0;
 
 /**
+ * Creates an ID in the form of a GUID that is unique for a single application
+ * instance. This ID is NOT globally unique so multiple users of the same application
+ * could create the same ID.
+ * @type String
+ * @returns a unique ID for the the present instance of the application
  * @private
- * Creates an ID in the form of a GUID that is unique for a single application instance. This ID is NOT globally unique 
- *  so multiple users of the same application could create the same ID.
- * @returns {String} a unique ID for the the present instance of the application.
  */
-Utility.createApplicationInstanceUniqueId = function() {
-	return 'ApplicationInstanceUniqueId_' + (++Utility.UNIQUE_ID);
+br.util.Utility.createApplicationInstanceUniqueId = function()
+{
+	return "ApplicationInstanceUniqueId_" + (++br.util.Utility.UNIQUE_ID);
 };
 
-Utility.nextObjectIdentifier = 1;
+br.util.Utility.nextObjectIdentifier = 1;
+
 
 /**
  * @private
  * @throws br.util.Error Always throws exception when called
- * @param {String} className
- * @param {String} methodName
+ * @param {String} sClassName
+ * @param {String} sMethodName
  */
-Utility.interfaceMethod = function(className, methodName) {
-	var errorMsg = 'Error in ' + className + ' base class: ' + methodName + '() has not been implemented.';
+br.util.Utility.interfaceMethod = function(sClassName, sMethodName) {
+	var fell = require('fell');
+	var Errors = require('br/Errors');
+	
+	var sErrorMsg = "Error in " + sClassName + " base class: " + sMethodName + "() has not been implemented.";
 
 	// log the problem
-	fell.error(errorMsg);
-
+	fell.error(sErrorMsg);
+	
 	// since we cannot recover, throw an exception
-	throw new Errors.UnimplementedInterfaceError(errorMsg);
+	throw new Errors.UnimplementedInterfaceError(sErrorMsg);
 };
 
 /**
  * @private
- * Allows you to execute a method called several times just once. This is useful when you need several actions to be 
- *  executed as an atomic operation.
+ * Allows you to execute a method called several times just once. 
+ * This is useful when you need several actions to be executed as an
+ * atomic operation.
  * 
- * @param {Object} obj The caller object.
- * @param {String} methodName The method name to be executed.
+ * @param {Object} The caller object
+ * @param {String} The method name to be executed
  */
-Utility.performOnce = function(obj, methodName) {
-	if (!this.m_mObjects) {
+br.util.Utility.performOnce = function(oObj, sMethod)
+{
+ if (!this.m_mObjects) {
 		this.m_mObjects = {};
 
-		var self = this;
+		var oThis = this;
 		window.setTimeout(function() {
 
-			for ( var sObjId in self.m_mObjects) {
-				var mMethods = self.m_mObjects[sObjId];
+			for ( var sObjId in oThis.m_mObjects) 
+			{
+				var mMethods = oThis.m_mObjects[sObjId];
 
-				for ( var methodName in mMethods) {
-					var fCallback = mMethods[methodName];
+				for ( var sMethod in mMethods) 
+				{
+					var fCallback = mMethods[sMethod];
 					fCallback();
 				}
 			}
-
-			self.m_mObjects = null;
+			oThis.m_mObjects = null;
 		}, 0);
 	}
 
-	if (!obj.__objId) {
-		obj.__objId = br.util.Utility.nextObjectIdentifier++;
+	if (!oObj.__objId) {
+		oObj.__objId = br.util.Utility.nextObjectIdentifier++;
 	}
 
-	if (!this.m_mObjects[obj.__objId]) {
-		this.m_mObjects[obj.__objId] = {};
+	if (!this.m_mObjects[oObj.__objId]) {
+		this.m_mObjects[oObj.__objId] = {};
 	}
 
-	this.m_mObjects[obj.__objId][methodName] = obj[methodName].bind(obj);
+	this.m_mObjects[oObj.__objId][sMethod] = oObj[sMethod].bind(oObj);
 };
-
-module.exports = Utility;
