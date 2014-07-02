@@ -342,6 +342,25 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 			);
 	}
 	
+	@Test
+	public void requiresInsideInlineMapsAreNotStripped() throws Exception {
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"(function() {",
+				"var someMap = {",
+				" key: require('package/subpkg/Class')",
+				" key: require('package/subpkg/Class').function()",
+				"}",
+				")()"),
+			lines(
+				"(function() {",
+				"var someMap = {",
+				" key: require('package/subpkg/Class')",
+				" key: require('package/subpkg/Class').function()",
+				"}",
+				")()")
+			);
+	}
 	
 	private String zeroPad(int size) {
 		return StringUtils.leftPad("", size, '0')+"\n";
