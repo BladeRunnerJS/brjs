@@ -35,7 +35,8 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	}
 	
 	private void doLog(LogLevel logLevel, String message, Throwable throwable) {
-		if(enabled && (logLevel.ordinal() >= loggerStore.getLogLevel().ordinal())) {
+		if (  (enabled && (logLevel.ordinal() >= loggerStore.getLogLevel().ordinal()))
+				|| logLevel == LogLevel.ERROR  ) {
 			PrintStream outputStream = loggerStore.getOutputStream();
 			
 			if(loggerStore.getLogClassNames()) {
