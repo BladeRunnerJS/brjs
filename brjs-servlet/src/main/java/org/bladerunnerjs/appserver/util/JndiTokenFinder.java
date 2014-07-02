@@ -1,4 +1,4 @@
-package org.bladerunnerjs.appserver;
+package org.bladerunnerjs.appserver.util;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;

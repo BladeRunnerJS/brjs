@@ -1,4 +1,4 @@
-package org.bladerunnerjs.appserver;
+package org.bladerunnerjs.appserver.filter;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -16,6 +16,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.bladerunnerjs.appserver.util.LockedHeaderResponseWrapper;
 
 public class BRJSHeaderFilter implements Filter {
 	private static final String E_TAG = "ETag";
@@ -42,7 +44,6 @@ public class BRJSHeaderFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		LockedHeaderResponseWrapper responseWrapper = new LockedHeaderResponseWrapper(response, LOCKED_HEADERS);
 		
-		response.setCharacterEncoding("UTF-8");
 		setCachingHeaders(request, responseWrapper);
 		
 		chain.doFilter(request, responseWrapper);
@@ -54,7 +55,7 @@ public class BRJSHeaderFilter implements Filter {
 	}
 	
 	private void setCachingHeaders(HttpServletRequest request, LockedHeaderResponseWrapper responseWrapper) {
-		if(request.getRequestURI().matches("/v/[0-9]+/")) {
+		if (request.getRequestURI().matches("/v/[0-9]+/")) {
 			responseWrapper.forceSetHeader(CACHE_CONTROL, CACHE_CONTROL_ALLOW_CACHE);
 			responseWrapper.forceSetHeader(EXPIRES, getExpiresHeader());
 		}

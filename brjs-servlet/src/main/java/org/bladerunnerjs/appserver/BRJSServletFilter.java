@@ -11,6 +11,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.bladerunnerjs.appserver.filter.BRJSHeaderFilter;
+import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
+import org.bladerunnerjs.appserver.util.VirtualFilterChain;
+
 public class BRJSServletFilter implements Filter {
 	private final List<Filter> filters = new ArrayList<Filter>();
 	
