@@ -27,5 +27,11 @@ public class StaticContentAccessor extends UrlContentAccessor
 			IOUtils.copy(fileInput, output);
 		}
 	}
+
+	@Override
+	public void handleRequest(String urlPath, OutputStream output) throws IOException
+	{
+		writeLocalUrlContentsToOutputStream(urlPath, output);
+	}
 	
 }

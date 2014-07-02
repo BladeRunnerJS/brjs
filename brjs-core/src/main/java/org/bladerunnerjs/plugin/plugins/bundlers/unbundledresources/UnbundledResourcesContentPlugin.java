@@ -85,7 +85,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     			}
 				
     			ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
-    			contentAccessor.writeLocalUrlContentsToOutputStream(requestedFilePathRelativeToApp, outputBuffer);
+    			contentAccessor.handleRequest(requestedFilePathRelativeToApp, outputBuffer);
     			return new StringReader( outputBuffer.toString() );
     		}
 			else {

@@ -19,7 +19,7 @@ public class ServletContentAccessor extends StaticContentAccessor
 	private final ServletContext servletContext;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
-
+	
 	public ServletContentAccessor(App app, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
 		super( app );
@@ -34,8 +34,22 @@ public class ServletContentAccessor extends StaticContentAccessor
 			if (urlPath.endsWith(".jsp")) {
 				urlPath = (!urlPath.startsWith("/")) ? "/"+urlPath : urlPath;
     			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-    			servletContext.getRequestDispatcher(urlPath).forward(request, responseWrapper);
+    			servletContext.getRequestDispatcher(urlPath).include(request, responseWrapper);
     			IOUtils.copy(responseWrapper.getReader(), output);
+    		} else {
+    			super.writeLocalUrlContentsToOutputStream(urlPath, output);
+    		}
+		} catch (ServletException ex) {
+			throw new IOException(ex);
+		}
+	}
+	
+	@Override
+	public void handleRequest(String urlPath, OutputStream output) throws IOException {		
+		try {
+			if (urlPath.endsWith(".jsp")) {
+				urlPath = (!urlPath.startsWith("/")) ? "/"+urlPath : urlPath;
+    			servletContext.getRequestDispatcher(urlPath).forward(request, response);
     		} else {
     			super.writeLocalUrlContentsToOutputStream(urlPath, output);
     		}

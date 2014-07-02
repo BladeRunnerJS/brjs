@@ -2,6 +2,7 @@ package org.bladerunnerjs.appserver;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -73,7 +74,10 @@ public class BRJSDevServlet extends HttpServlet {
 		try {
 			ThreadSafeStaticBRJSAccessor.aquireModel();
 			UrlContentAccessor contentAccessor = new ServletContentAccessor(app, servletContext, request, response);
-			IOUtils.copy( app.handleLogicalRequest(requestPath, contentAccessor), response.getOutputStream());
+			Reader requestReader = app.handleLogicalRequest(requestPath, contentAccessor);
+			if (!response.isCommitted()) { // check the ServletContentAccessor hasnt been used to handle a request and sent headers
+				IOUtils.copy( requestReader, response.getOutputStream());
+			}
 		}
 		catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException e) {
 			throw new ServletException(e);
