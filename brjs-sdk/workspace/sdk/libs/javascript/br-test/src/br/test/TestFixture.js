@@ -1,39 +1,42 @@
-'use strict';
+/**
+ * @private
+ *
+ * @implements br.test.Fixture
+ */
+br.test.TestFixture = function(oGwtTestRunner)
+{
+	this.m_oGwtTestRunner = oGwtTestRunner;
+};
 
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var Fixture = require('br/test/Fixture');
-var ViewFixture = require('br/test/ViewFixture');
+br.Core.inherit(br.test.TestFixture, br.test.Fixture);
 
-/** @private */
-function TestFixture(gwtTestRunner) {
-	this.m_oGwtTestRunner = gwtTestRunner;
-}
-br.inherit(TestFixture, Fixture);
-
-TestFixture.prototype.canHandleExactMatch = function() {
+br.test.TestFixture.prototype.canHandleExactMatch = function()
+{
 	return false;
 };
 
-TestFixture.prototype.canHandleProperty = function(property) {
-	return property == 'continuesFrom';
+br.test.TestFixture.prototype.canHandleProperty = function(sProperty)
+{
+	return sProperty == "continuesFrom";
 };
 
-TestFixture.prototype.addSubFixtures = function(fixtureRegistry) {
-	fixtureRegistry.addFixture('page', new ViewFixture('body'));
+br.test.TestFixture.prototype.addSubFixtures = function(oFixtureRegistry)
+{
+	oFixtureRegistry.addFixture("page", new br.test.ViewFixture("body"));
 };
 
-TestFixture.prototype.doGiven = function(propertyName, value) {
-	startingContinuesFrom(value);
+br.test.TestFixture.prototype.doGiven = function(sPropertyName, vValue)
+{
+	startingContinuesFrom(vValue);
 	finishedContinuesFrom();
 };
 
-TestFixture.prototype.doWhen = function(propertyName, value) {
-	throw new Errors.InvalidTestError('when is not supported by TestFixture');
+br.test.TestFixture.prototype.doWhen = function(sPropertyName, vValue)
+{
+	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "when is not supported by TestFixture");
 };
 
-TestFixture.prototype.doThen = function(propertyName, value) {
-	throw new Errors.InvalidTestError('then is not supported by TestFixture');
+br.test.TestFixture.prototype.doThen = function(sPropertyName, vValue)
+{
+	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "then is not supported by TestFixture");
 };
-
-module.exports = TestFixture;

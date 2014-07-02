@@ -1,25 +1,20 @@
-'use strict';
-
-var br = require('br/Core');
-var FixtureRegistry = require('br/test/FixtureRegistry');
-
 /**
- * @name br.test.SubFixtureRegistry
  * @constructor
  * @private
  *
  * @implements br.test.FixtureRegistry
  */
-function SubFixtureRegistry(parentFixtureRegistry, scope) {
-	this.m_oParentFixtureRegistry = parentFixtureRegistry;
-	this.m_sScope = scope;
+br.test.SubFixtureRegistry = function(oParentFixtureRegistry, sScope)
+{
+	this.m_oParentFixtureRegistry = oParentFixtureRegistry;
+	this.m_sScope = sScope;
 };
 
-br.inherit(SubFixtureRegistry, FixtureRegistry);
+br.Core.inherit(br.test.SubFixtureRegistry, br.test.FixtureRegistry);
 
-/** @see br.test.FixtureRegistry#addFixture */
-SubFixtureRegistry.prototype.addFixture = function(scope, fixture) {
-	this.m_oParentFixtureRegistry.addFixture(this.m_sScope + '.' + scope, fixture);
+//*** FixtureRegistry Interface ***
+
+br.test.SubFixtureRegistry.prototype.addFixture = function(sScope, oFixture)
+{
+	this.m_oParentFixtureRegistry.addFixture(this.m_sScope + "." + sScope, oFixture);
 };
-
-module.exports = SubFixtureRegistry;

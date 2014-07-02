@@ -1,13 +1,9 @@
-'use strict';
-
-function RegExpUtil() {
-}
-
-RegExpUtil.SPECIALS = ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'];
-RegExpUtil.ESCAPE_REGEXP = new RegExp('(\\' + RegExpUtil.SPECIALS.join('|\\') + ')', 'g');
-
-RegExpUtil.escape = function(expression) {
-	return expression.replace(RegExpUtil.ESCAPE_REGEXP, '$1');
+br.util.RegExp = function() {
 };
 
-module.exports = RegExpUtil;
+br.util.RegExp.SPECIALS = ["/", ".", "*", "+", "?", "|", "(", ")", "[", "]", "{", "}", "\\"];
+br.util.RegExp.ESCAPE_REGEXP = new RegExp("(\\" + br.util.RegExp.SPECIALS.join("|\\") + ")", "g");
+
+br.util.RegExp.escape = function(sRegExp) {
+	return sRegExp.replace(br.util.RegExp.ESCAPE_REGEXP, "$1");
+};

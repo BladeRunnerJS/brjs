@@ -1,11 +1,4 @@
-'use strict'
-
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
-
 /**
- * @name br.test.viewhandler.ClassName
  * @class
  * <code>ClassName ViewFixtureHandler</code> can be used to get a class of a view element.
  * Example usage:
@@ -14,20 +7,22 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-function ClassName() {
-}
-br.implement(ClassName, ViewFixtureHandler);
+br.test.viewhandler.ClassName = function()
+{
+};
 
-ClassName.prototype.get = function(eElement) {
+br.Core.implement(br.test.viewhandler.ClassName, br.test.viewhandler.ViewFixtureHandler);
+
+br.test.viewhandler.ClassName.prototype.get = function(eElement)
+{
 	return eElement.className;
 };
 
-ClassName.prototype.set = function(eElement, vValue) {
+br.test.viewhandler.ClassName.prototype.set = function(eElement, vValue)
+{
 	if (typeof vValue !== "string") {
-		throw new Errors.InvalidTestError("className can only be set to a String.");
+		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "className can only be set to a String.");
 	} else {
 		eElement.className = vValue;
 	}
 };
-
-module.exports = ClassName;

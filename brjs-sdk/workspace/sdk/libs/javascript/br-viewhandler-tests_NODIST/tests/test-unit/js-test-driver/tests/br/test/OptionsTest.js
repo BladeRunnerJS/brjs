@@ -1,12 +1,10 @@
 OptionsTest = TestCase("OptionsTest");
 
 require('br/test/ViewFixture');
-var Errors = require('br/Errors');
-var ViewFixture = require('br/test/ViewFixture');
 
 OptionsTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new ViewFixture("view.*");
+	this.m_oViewFixture = new br.test.ViewFixture("view.*");
 	this.m_oViewFixture.setViewElement(this.getElement());
 };
 
@@ -77,10 +75,10 @@ OptionsTest.prototype.test_tryingToUseOptionsOnNonSelectElementThrowsException =
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doThen("view.(input:first).options", ["some", "thing"]);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(div.not-a-form).options", []);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 };
 
 OptionsTest.prototype.test_canEmptyASelectElementWithAnEmptyArray = function()
@@ -116,13 +114,13 @@ OptionsTest.prototype.test_tryingToSetOptionsWithNonArrayValueThrowsException = 
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(#filled-select).options", "naughty value");
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(#filled-select).options", 43);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(#filled-select).options", null);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 
 	this.m_oViewFixture.doThen("view.(#filled-select).options", ["AB34", "CD78"]);
 };

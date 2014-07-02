@@ -1,12 +1,10 @@
 SelectedTest = TestCase("SelectedTest");
 
 require('br/test/ViewFixture');
-var Errors = require('br/Errors');
-var ViewFixture = require('br/test/ViewFixture');
 
 SelectedTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new ViewFixture("view.*");
+	this.m_oViewFixture = new br.test.ViewFixture("view.*");
 	this.m_eElement = this.getElement();
 	document.body.appendChild(this.m_eElement);
 	this.m_oViewFixture.setViewElement(this.m_eElement);
@@ -74,8 +72,8 @@ SelectedTest.prototype.test_cannotUseSelectedOnNonOptionElements = function()
 	var _self = this;
 	assertException(function(){
 		_self.m_oViewFixture.doThen("view.(input#gender-m).selected", false);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException(function(){
 		_self.m_oViewFixture.doWhen("view.(div.not-a-form).selected", true);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 };

@@ -1,6 +1,4 @@
-var GwtTestRunner = require('br/test/GwtTestRunner');
-
-GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 describe("User performs click events", function() {
 	fixtures("ViewFixtureTestsFixtureFactory");

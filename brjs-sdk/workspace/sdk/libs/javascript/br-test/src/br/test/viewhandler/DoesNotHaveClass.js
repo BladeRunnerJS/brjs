@@ -1,11 +1,4 @@
-'use strict';
-
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
-
 /**
- * @name br.test.viewhandler.DoesNotHaveClass
  * @class
  * <code>DoesNotHaveClass ViewFixtureHandler</code> can be used to verify that a view element
  * does not have a particular class. Example usage:
@@ -15,20 +8,23 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-function DoesNotHaveClass() {
-}
-br.implement(DoesNotHaveClass, ViewFixtureHandler);
+br.test.viewhandler.DoesNotHaveClass = function()
+{
+};
 
-DoesNotHaveClass.prototype.get = function(eElement, sClassName) {
-	if (eElement.className.match("(^| )" + sClassName + "($| )")) {
+br.Core.implement(br.test.viewhandler.DoesNotHaveClass, br.test.viewhandler.ViewFixtureHandler);
+
+br.test.viewhandler.DoesNotHaveClass.prototype.get = function(eElement, sClassName)
+{
+	if(eElement.className.match("(^| )" + sClassName + "($| )")) {
 		return null;
-	} else {
+	}
+	else {
 		return sClassName;
 	}
 };
 
-DoesNotHaveClass.prototype.set = function(eElement, sClassName) {
-	throw new Errors.InvalidTestError("doesNotHaveClass can't be used in a Given or When clause.");
+br.test.viewhandler.DoesNotHaveClass.prototype.set = function(eElement, sClassName)
+{
+	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "doesNotHaveClass can't be used in a Given or When clause.");
 };
-
-module.exports = DoesNotHaveClass;

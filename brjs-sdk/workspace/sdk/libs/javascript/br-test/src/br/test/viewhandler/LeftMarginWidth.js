@@ -1,13 +1,6 @@
-'use strict';
-
-require('jquery');
-
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+br.Core.thirdparty("jquery");
 
 /**
- * @name br.test.viewhandler.LeftMarginWidth
  * @class
  * <code>LeftMarginWidth ViewFixtureHandler</code> can be used to test the left margin width of an element.
  * Example usage:
@@ -18,20 +11,22 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-function LeftMarginWidth() {
-}
-br.implement(LeftMarginWidth, ViewFixtureHandler);
-
-LeftMarginWidth.prototype.set = function(eElement) {
-	throw new Errors.InvalidTestError("LeftMarginWidth can't be used in a Given or When clause.");
+br.test.viewhandler.LeftMarginWidth = function()
+{
 };
 
-LeftMarginWidth.prototype.get = function(eElement) { 
+br.Core.implement(br.test.viewhandler.LeftMarginWidth, br.test.viewhandler.ViewFixtureHandler);
+
+br.test.viewhandler.LeftMarginWidth.prototype.set = function(eElement)
+{
+	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "LeftMarginWidth can't be used in a Given or When clause.");
+};
+
+br.test.viewhandler.LeftMarginWidth.prototype.get = function(eElement)
+{ 
 	var sMargin = jQuery(eElement)[0].style.margin;
 	
 	var	pWidthValues = sMargin.match(/\d+/g);
 	
 	return pWidthValues.length == 4 ? pWidthValues[3] : pWidthValues.length == 2 ? pWidthValues[1] : pWidthValues[0] ;
 };
-
-module.exports = LeftMarginWidth;
