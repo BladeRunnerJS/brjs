@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
@@ -62,6 +63,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer containsResourceFileWithContents(String resourceFileName, String contents) throws Exception 
 	{
 		fileUtil.write(node.assetLocation("resources").file(resourceFileName), contents);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer containsFileCopiedFrom(String resourceFileName, String srcFile) throws Exception 
+	{
+		FileUtils.copyFile( new File(srcFile), node.file(resourceFileName) );
 		
 		return builderChainer;
 	}
