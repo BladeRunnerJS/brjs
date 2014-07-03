@@ -87,7 +87,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		Locale locale = new Locale(languageCode, countryCode);
 
 		List<Reader> readerList = new ArrayList<Reader>();
-		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
+		List<Asset> cssAssets = getCssAssets(bundleSet, cssAssetPlugin);
 		for(Asset cssAsset : cssAssets) {
 			String assetThemeName = getThemeName(cssAsset.assetLocation());
 			
@@ -104,7 +104,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			}
 		}
 		
-		return new CharResponseContent( brjs, readerList.toArray(new Reader[0]) );
+		return new CharResponseContent( brjs, readerList );
 	}
 	
 	// protected so the CT CSS plugin that uses a different CSS ordering can override it

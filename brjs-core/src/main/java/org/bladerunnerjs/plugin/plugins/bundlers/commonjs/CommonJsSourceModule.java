@@ -88,7 +88,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		try
 		{
 			String defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			Reader assetReader = new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding));
+			Reader assetReader = new UnicodeReader(assetFile, defaultFileCharacterEncoding);
 			if (patch.patchAvailable()){
 				return new ConcatReader( new Reader[] { assetReader, patch.getReader() });
 			} else {
