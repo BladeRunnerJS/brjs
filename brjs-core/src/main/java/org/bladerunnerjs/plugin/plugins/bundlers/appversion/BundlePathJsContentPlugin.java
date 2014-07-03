@@ -18,7 +18,7 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-import org.bladerunnerjs.utility.ServedAppMetadataUtility;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 
 
 public class BundlePathJsContentPlugin extends AbstractContentPlugin
@@ -59,7 +59,7 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 		{
 			try
 			{
-				return new CharResponseContent( brjs, ServedAppMetadataUtility.getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
+				return new CharResponseContent( brjs, AppMetadataUtility.getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
 			}
 			catch (ConfigException ex)
 			{

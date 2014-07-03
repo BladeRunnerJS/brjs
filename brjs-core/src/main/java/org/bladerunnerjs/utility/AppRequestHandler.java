@@ -156,7 +156,7 @@ public class AppRequestHandler
 			localeForwardingPage.write("<head>\n");
 			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			localeForwardingPage.write("<script type='text/javascript'>\n");
-			IOUtils.write(ServedAppMetadataUtility.getBundlePathJsData(app, version), localeForwardingPage);
+			IOUtils.write(AppMetadataUtility.getBundlePathJsData(app, version), localeForwardingPage);
 			localeForwardingPage.write("\n");
 			IOUtils.copy(localeForwarderReader, localeForwardingPage);
 			localeForwardingPage.write("\n");			

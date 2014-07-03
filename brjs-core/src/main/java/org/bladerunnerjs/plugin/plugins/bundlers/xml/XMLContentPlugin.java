@@ -21,7 +21,7 @@ import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-import org.bladerunnerjs.utility.ServedAppMetadataUtility;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 
 
 public class XMLContentPlugin extends AbstractContentPlugin
@@ -96,10 +96,10 @@ public class XMLContentPlugin extends AbstractContentPlugin
 				bundleWriter.concatenateBundle(xmlAssets, bufferedOutput);
 			}
 			
-			String bundlePath = ServedAppMetadataUtility.getVersionedBundlePath(version);
-			String unversionedBundlePath = ServedAppMetadataUtility.getUnversionedBundlePath();
-			String xmlBundlePathToken = ServedAppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
-			String xmlUnversionedBundlePathToken = ServedAppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
+			String bundlePath = AppMetadataUtility.getVersionedBundlePath(version);
+			String unversionedBundlePath = AppMetadataUtility.getUnversionedBundlePath();
+			String xmlBundlePathToken = AppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
+			String xmlUnversionedBundlePathToken = AppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
 			//TODO: Can we do a streaming replacement rather than buffer into  string?
 			String result = bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath);
 			

@@ -32,7 +32,7 @@ import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.NamespaceUtility;
-import org.bladerunnerjs.utility.ServedAppMetadataUtility;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 
 
 public class HTMLContentPlugin extends AbstractContentPlugin
@@ -105,10 +105,10 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 				try(Reader reader = htmlAsset.getReader()) {
 					readerList.add(new StringReader("\n<!-- " + htmlAsset.getAssetName() + " -->\n"));
 
-					String bundlePath = ServedAppMetadataUtility.getVersionedBundlePath(version);
-					String unversionedBundlePath = ServedAppMetadataUtility.getUnversionedBundlePath();
-					String xmlBundlePathToken = ServedAppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
-					String xmlUnversionedBundlePathToken = ServedAppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
+					String bundlePath = AppMetadataUtility.getVersionedBundlePath(version);
+					String unversionedBundlePath = AppMetadataUtility.getUnversionedBundlePath();
+					String xmlBundlePathToken = AppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
+					String xmlUnversionedBundlePathToken = AppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
 
 					String htmlContent = IOUtils.toString(reader);
 					String replaced =  htmlContent.replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath);
