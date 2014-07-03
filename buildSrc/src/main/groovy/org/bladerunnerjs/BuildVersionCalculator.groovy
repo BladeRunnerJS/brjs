@@ -44,7 +44,7 @@ class BuildVersionCalculator
 				standardOutput = stdout
 				errorOutput = stderr
 			}
-			return stdout.toString().trim()
+			return stdout.toString().trim().replaceFirst("-",".");
 		}
 		catch (ex)
 		{
