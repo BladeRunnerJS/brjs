@@ -1,10 +1,8 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
@@ -59,15 +57,6 @@ public abstract class NodeBuilder<N extends Node> {
 	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		fileUtil.write(node.file(filePath), fileContents);
-		
-		return builderChainer;
-	}
-	
-	public BuilderChainer containsBinaryFileWithContents(String filePath, byte... binaryData) throws Exception {
-		File outputFile = node.file(filePath);
-		outputFile.getParentFile().mkdirs();
-		outputFile.createNewFile();
-		IOUtils.write( binaryData, new FileOutputStream(outputFile) );
 		
 		return builderChainer;
 	}

@@ -2,6 +2,7 @@
 
 var br = require('br/Core');
 var BundlePathService = require('br/services/BundlePathService');
+var BundlePathUtil = require("./BundlePathUtil");
 
 /**
  * @name br.services.bundlepath.BRBundlePathService
@@ -14,22 +15,12 @@ function BRBundlePathService() {
 };
 
 BRBundlePathService.prototype.getBundlePath = function(bundlePath)	{
-	return getBundlePath(window.$BRJS_BUNDLE_PATH, bundlePath);
+	return BundlePathUtil.getBundlePath(window.$BRJS_BUNDLE_PATH, bundlePath);
 }
 
 BRBundlePathService.prototype.getUnversionedBundlePath = function(bundlePath) {
-	return getBundlePath(window.$BRJS_UNVERSIONED_BUNDLE_PATH, bundlePath);
+	return BundlePathUtil.getBundlePath(window.$BRJS_UNVERSIONED_BUNDLE_PATH, bundlePath);
 };
-
-function getBundlePath(prefix, bundlePath) {
-	if (bundlePath != undefined) {
-		/* make sure there are no leading /s that might mess up the generated path */
-		bundlePath = bundlePath.replace(/^\/|\/$/g, '');
-		prefix = prefix.replace(/^\/|\/$/g, '');
-		return prefix + "/" + bundlePath
-	}
-	return prefix;
-}
 
 br.implement(BRBundlePathService, BundlePathService);
 

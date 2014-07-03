@@ -36,6 +36,7 @@ public class LogTestCommand extends AbstractCommandPlugin {
 	
 	@Override
 	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
+		logger.error("error-level");
 		logger.warn("warn-level");
 		logger.info("info-level");
 		logger.console("console-level");

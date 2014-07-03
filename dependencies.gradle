@@ -44,7 +44,6 @@ Dependencies.putAll([
 	'dom4j'						:	'dom4j:dom4j:1.6.1',
 	
 	'utils'						:	'org.ostermiller:utils:1.07.00',
-	'reflections'				:	'org.reflections:reflections:0.9.9-RC1',
 
 	'jsap'						:	'com.martiansoftware:jsap:2.1',
 
@@ -59,11 +58,9 @@ Dependencies.putAll([
 	'fluent-hc'					:	'org.apache.httpcomponents:fluent-hc:4.2.5',
 
 	'selenium-java'				:	'org.seleniumhq.selenium:selenium-java:2.41.0',
-
-	'log4j'						:	'log4j:log4j:1.2.17',
-
-	'slf4j-api'					:	'org.slf4j:slf4j-api:1.6.6',
-	'slf4j-log4j12'				:	'org.slf4j:slf4j-log4j12:1.6.6',
+	
+	'slf4j-api'					:	'org.slf4j:slf4j-api:1.7.7',
+	'slf4j-log4j12'				:	'org.slf4j:slf4j-log4j12:1.7.7',
 	'yamlbeans'					:	'com.esotericsoftware.yamlbeans:yamlbeans:1.06',
 
 	'ant'						:	'org.apache.ant:ant:1.8.4',
@@ -95,8 +92,6 @@ Dependencies.putAll([
 
 	'db-derby'					:	'db-derby:db-derby:10.9.1.0@zip',
 	'hsqldb'					:	'hsqldb:hsqldb:1.8.0.10',
-
-	'rhino'						:	'org.mozilla:rhino:1.7R4',
 	
 	'saxon-dom'					:	'net.sf.saxon:saxon-dom:8.7',
 	

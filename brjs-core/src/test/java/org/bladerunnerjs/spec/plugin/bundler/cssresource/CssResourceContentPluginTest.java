@@ -317,9 +317,9 @@ public class CssResourceContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
     		.and(aspect).hasBeenCreated()
-    		.and(aspect).containsFileCopiedFrom("resources/br-logo.png", "src/test/resources/CssResourceContentPluginTest/br-logo.png");
+    		.and(aspect).containsFileCopiedFrom("resources/br-logo.png", "src/test/resources/br-logo.png");
     	when(aspect).requestReceived("cssresource/aspect_default_resource/resources/br-logo.png", binaryResponse);
-    	then(binaryResponseFile).sameAsFile("src/test/resources/CssResourceContentPluginTest/br-logo.png");
+    	then(binaryResponseFile).sameAsFile("src/test/resources/br-logo.png");
 	}
 	
 }
