@@ -195,7 +195,7 @@ task generateReleaseNotes, {
 		def releaseNoteFile = file("releases/${tagVersion}.md")
 		def milestoneJson = getReleaseNoteJson(project,tagVersion).milestone
 		def milestoneIds = (milestoneJson instanceof Integer) ? [milestoneJson] : milestoneJson.split(",").collect { it.trim().toInteger()  }
-		def includeIssueLabels = ["bug", "feature", "enhancement", "experience", "breaking-change"]
+		def includeIssueLabels = ["bug", "feature", "enhancement", "experience", "breaking-change", "java-api", "js-api"]
 		def issueIncludeLabelsString = includeIssueLabels.join(", ").replaceAll(/^(.*),(.*)$/,'$1 or$2'); /* regex replaces the last ',' with 'or' */
 
 		def excludeIssueLabels = ["invalid", "duplicate", "wont-fix", "ignore-release-note"]
