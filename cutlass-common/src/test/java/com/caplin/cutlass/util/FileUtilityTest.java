@@ -3,7 +3,6 @@ package com.caplin.cutlass.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import com.caplin.cutlass.util.FileUtility;
 import org.junit.After;
 import org.junit.Before;
@@ -51,20 +50,6 @@ public class FileUtilityTest
 	public void setUp() throws Exception
 	{
 		tempDir = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
-	}
-	
-	@Test
-	public void testCreateResourcesFromSdkTemplateDoesntCopyHiddenFiles() throws Exception
-	{
-		File folderContainingSubfoldersAndHiddenFiles = new File("src/test/resources/FileUtiltyTest/folderContainingSubfoldersAndHiddenFiles");
-		
-		FileUtility.createResourcesFromSdkTemplate(folderContainingSubfoldersAndHiddenFiles, tempDir, TrueFileFilter.TRUE);
-		String temp = tempDir.getAbsolutePath();
-
-		assertTrue(tempDir.listFiles().length == 2);
-		assertTrue(new File(temp + "/aFolder/fileA.txt").exists());
-		assertTrue(new File(temp + "/anotherFolder/fileB.txt").exists());
-		assertTrue(new File(temp + "/anotherFolder/folderC/fileC.txt").exists());
 	}
 	
 	@Test
