@@ -176,7 +176,10 @@ def getGitHubToken = { project ->
 
 def getReleaseNoteJson = { project, tagVersion ->
 	def releaseDataFile = file("releases/${tagVersion}.json")
-	def releaseNoteJson = new groovy.json.JsonSlurper().parseText( releaseDataFile.text )
+	def releaseDataText = releaseDataFile.text
+	releaseDataText = releaseDataText.replaceAll("@tagVersion@", tagVersion)
+	releaseDataText = releaseDataText.replaceAll("@buildVersion@", buildVersion)
+	def releaseNoteJson = new groovy.json.JsonSlurper().parseText( releaseDataText )
 	return releaseNoteJson
 }
 
@@ -218,6 +221,11 @@ task generateReleaseNotes, {
 		appendToReleaseNotes << ""
 		appendToReleaseNotes << "<br/>"
 		appendToReleaseNotes << "-------------"
+		appendToReleaseNotes << "### API Documentation"		
+		appendToReleaseNotes << ""
+		appendToReleaseNotes << "- [@tagVersion@ JavaScript API](http://apidocs.bladerunnerjs.org/@tagVersion@/js/)"
+		appendToReleaseNotes << "- [@tagVersion@ Java Model API](http://apidocs.bladerunnerjs.org/@tagVersion@/java/)"
+		appendToReleaseNotes << ""
 		appendToReleaseNotes << "**Travis Build Status for @tagVersion@:**&nbsp;&nbsp;&nbsp;[![Build Status](https://travis-ci.org/BladeRunnerJS/brjs.svg?branch=@tagVersion@)](https://travis-ci.org/BladeRunnerJS/brjs)"
 		appendToReleaseNotes << ""
 		appendToReleaseNotes << "### Closed Issues"
