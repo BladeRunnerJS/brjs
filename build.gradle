@@ -264,7 +264,7 @@ task generateReleaseNotes, {
     	}
 	}
 }
-
+generateReleaseNotes.shouldRunAfter ':brjs-sdk:distZip'
 
 task githubRelease, dependsOn:[generateReleaseNotes, ':brjs-sdk:distZip', build], {
 	doLast {
