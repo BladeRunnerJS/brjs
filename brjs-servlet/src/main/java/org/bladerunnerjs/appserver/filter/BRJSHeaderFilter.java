@@ -44,6 +44,7 @@ public class BRJSHeaderFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		LockedHeaderResponseWrapper responseWrapper = new LockedHeaderResponseWrapper(response, LOCKED_HEADERS);
 		
+		response.setCharacterEncoding("UTF-8");
 		setCachingHeaders(request, responseWrapper);
 		
 		chain.doFilter(request, responseWrapper);
