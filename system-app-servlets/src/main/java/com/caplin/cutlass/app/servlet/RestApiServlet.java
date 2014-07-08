@@ -34,11 +34,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 
 import com.caplin.cutlass.app.service.RestApiService;
-import com.caplin.cutlass.ServletModelAccessor;
 
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
-import org.bladerunnerjs.logging.NullLogConfigurator;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
@@ -107,12 +105,10 @@ public class RestApiServlet extends HttpServlet
 			context = config.getServletContext();
 			
 			File contextDir = new File( context.getRealPath("/") );
-			brjs = new BRJS(contextDir, new NullLogConfigurator(), new PessimisticFileModificationService());
-			
-			ServletModelAccessor.initializeModel( brjs );
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel( contextDir, new PessimisticFileModificationService() );
 			
 			if (apiService == null) { apiService = new RestApiService(brjs); };
-			logger = brjs.logger(LoggerType.SERVLET, this.getClass());
+			logger = brjs.logger(this.getClass());
 		}
 		catch (InvalidSdkDirectoryException e) {
 			throw new ServletException(e);
@@ -122,7 +118,7 @@ public class RestApiServlet extends HttpServlet
 	@Override
 	public void destroy()
 	{
-		ServletModelAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.destroy();
 	}
 	
 	@Override

@@ -29,9 +29,9 @@ public class BundleDepsCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new BundleDepsCommand())
-			.and(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
+		given(brjs).hasCommandPlugins(new BundleDepsCommand())
+			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
@@ -86,7 +86,7 @@ public class BundleDepsCommandTest extends SpecTest {
 			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).classRequires("appns/Class1", "./Class2");
 		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Bundle 'apps/app/default-aspect' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
@@ -99,7 +99,7 @@ public class BundleDepsCommandTest extends SpecTest {
 			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(blade).classRequires("appns/bs/b1/Class1", "./Class2");
 		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Bundle 'apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver' dependencies found:",
 			"    +--- 'bs-bladeset/blades/b1/tests/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
 			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'",

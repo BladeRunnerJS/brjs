@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.OutputStream;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -16,11 +15,12 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 
 
 public interface BundlableNode extends Node, AssetContainer {
 	AliasesFile aliasesFile();
-	SourceModule getSourceModule(String requirePath) throws RequirePathException;
+	LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException;
 	List<AssetLocation> seedAssetLocations();
 	List<LinkedAsset> seedAssets();
 	
@@ -28,7 +28,7 @@ public interface BundlableNode extends Node, AssetContainer {
 	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException;
 	List<AliasDefinitionsFile> aliasDefinitionFiles();
 	
-	void handleLogicalRequest(String logicalRequestPath, OutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
-	void handleLogicalRequest(String logicalRequestPath, OutputStream os, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
-	List<SourceModule> getSourceModules(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
+	ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
+	ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
+	List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
 }

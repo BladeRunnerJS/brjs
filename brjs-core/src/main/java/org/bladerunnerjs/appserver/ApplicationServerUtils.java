@@ -2,12 +2,9 @@ package org.bladerunnerjs.appserver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -28,18 +25,14 @@ public class ApplicationServerUtils
 	public class Messages
 	{
 
-		public static final String DEPLOYING_APP_MSG = "Deploying new app to app server '%s'";
+		public static final String DEPLOYING_APP_MSG = "Deploying new app to app server '%s'.";
 	}
 
 	static Map<App, WebAppContext> addAppContexts(BRJS brjs, ContextHandlerCollection contexts) throws Exception
 	{
 		Map<App, WebAppContext> contextMap = new HashMap<App, WebAppContext>();
 
-		List<App> deployApps = new ArrayList<>();
-		deployApps.addAll(brjs.systemApps());
-		deployApps.addAll(brjs.apps());
-
-		for (App app : deployApps)
+		for (App app : brjs.apps())
 		{
 			if (app.dirExists())
 			{
@@ -51,7 +44,7 @@ public class ApplicationServerUtils
 
 	static WebAppContext addAppContext(App app, ContextHandlerCollection contexts) throws Exception
 	{
-		app.root().logger(LoggerType.APP_SERVER, ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
+		app.root().logger(ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
 
 		contexts.addHandler(appContext);

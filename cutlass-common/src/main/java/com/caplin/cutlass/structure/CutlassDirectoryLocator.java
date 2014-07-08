@@ -9,10 +9,7 @@ import java.util.List;
 
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.BRJSAccessor;
-
-import org.bladerunnerjs.logging.LoggerType;
-
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.NodeType;
 import com.caplin.cutlass.structure.model.SdkModel;
@@ -50,32 +47,6 @@ public class CutlassDirectoryLocator
 				return getScope(nodeForLocation.getParentNode().getDir());
 			default:
 				return ScopeLevel.UNKNOWN_SCOPE;
-		}
-	}
-
-	public static File getScopePath(File fullRequestPath)
-	{
-		ScopeLevel requestScope = getScope(fullRequestPath);
-
-		switch (requestScope)
-		{
-			case APP_SCOPE:
-				return getParentApp(fullRequestPath);
-			case ASPECT_SCOPE:
-				return getParentAppAspect(fullRequestPath);
-			case BLADESET_SCOPE:
-				return getParentBladeset(fullRequestPath);
-			case BLADE_SCOPE:
-				return getParentBlade(fullRequestPath);
-			case WORKBENCH_SCOPE:
-				return getParentWorkbench(fullRequestPath);
-			case SDK_SCOPE:
-				return SdkModel.getSdkPath(fullRequestPath).getDir();
-			case LIB_SCOPE:
-				return SdkModel.getUserLibsPath(fullRequestPath).getDir();
-			case UNKNOWN_SCOPE:
-			default:
-				return null;
 		}
 	}
 	
@@ -489,7 +460,7 @@ public class CutlassDirectoryLocator
 			}
 			else
 			{
-				BRJSAccessor.root.logger(LoggerType.UTIL, CutlassDirectoryLocator.class).info("Could not find thirdparty directory at '" + sdkThirdpartyDir.getPath() + "'.");
+				ThreadSafeStaticBRJSAccessor.root.logger(CutlassDirectoryLocator.class).info("Could not find thirdparty directory at '" + sdkThirdpartyDir.getPath() + "'.");
 				return null;
 			}
 		}

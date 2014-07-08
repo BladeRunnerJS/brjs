@@ -21,12 +21,16 @@ import org.bladerunnerjs.utility.SizedStack;
  */
 public class JsCodeBlockStrippingDependenciesReader extends Reader
 {
-	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "^.*([\\(\\!\\~\\-\\+]|(new\\s+))function\\s*\\([^)]*\\)\\s*\\{$";
+	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "^.*([\\(\\!\\~\\-\\+]|(new\\s+))function\\s*\\([^)]*\\)\\s*\\{";
 	private static final Pattern SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN = Pattern.compile(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX, Pattern.DOTALL);
+	
+	private static final String INLINE_MAP_DEFINITION_REGEX = "[a-zA-Z][\\w]+[\\s]+=[\\s]+\\{";
+	private static final Pattern INLINE_MAP_DEFINITION_REGEX_PATTERN = Pattern.compile(INLINE_MAP_DEFINITION_REGEX);
 	
 	private final Reader sourceReader;
 	private final char[] sourceBuffer = new char[4096];
-	private final SizedStack<Character> lookbehindBuffer = new SizedStack<>( SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() ); // buffer the length of the function definition
+	// buffer the length of the function definition + 10 to allow for things like new(<IIFE>) etc.
+	private final SizedStack<Character> lookbehindBuffer = new SizedStack<>( SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 10); 
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private int depthCount = 0;
@@ -47,7 +51,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 		char nextChar;
 		
 		while(currentOffset < maxOffset) {
-			if(nextCharPos == lastCharPos) {
+			if (nextCharPos == lastCharPos) {
 				nextCharPos = 0;
 				lastCharPos = sourceReader.read(sourceBuffer, 0, sourceBuffer.length - 1);
 				
@@ -59,20 +63,20 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			nextChar = sourceBuffer[nextCharPos++];
 			lookbehindBuffer.push(nextChar);
 			
-			if(depthCount == 0) {
+			if (depthCount == 0) {
 				destBuffer[currentOffset++] = nextChar;
 			}
 			
-			if(nextChar == '{') {
-				if((depthCount > 0) || (!isImmediatelyInvokingFunction())) {
+			if (nextChar == '{') {
+				if ((depthCount > 0) || (!isImmediatelyInvokingFunction() && !isInlineMapDefiniton())) {
 					++depthCount;
 				}
 			}
-			else if(nextChar == '}') {
-				if(depthCount > 0) {
+			else if (nextChar == '}') {
+				if (depthCount > 0) {
 					--depthCount;
 					
-					if(depthCount == 0) {
+					if (depthCount == 0) {
 						destBuffer[currentOffset++] = nextChar;
 					}
 				}
@@ -92,5 +96,11 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 		Matcher immedidatelyInvokingFunctionMatcher = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher( lookbehindBuffer.toString() );
 		
 		return immedidatelyInvokingFunctionMatcher.matches();
+	}
+	
+	private boolean isInlineMapDefiniton() {
+		Matcher inlineMapDefinitionMatcher = INLINE_MAP_DEFINITION_REGEX_PATTERN.matcher( lookbehindBuffer.toString() );
+		
+		return inlineMapDefinitionMatcher.find();
 	}
 }

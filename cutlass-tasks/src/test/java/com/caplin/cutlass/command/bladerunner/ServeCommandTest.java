@@ -3,6 +3,7 @@ package com.caplin.cutlass.command.bladerunner;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,9 +14,7 @@ import com.caplin.cutlass.command.CommandTaskTest;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
-
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.testing.BRJSTestFactory;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 public class ServeCommandTest extends CommandTaskTest
 {
@@ -28,11 +27,10 @@ public class ServeCommandTest extends CommandTaskTest
 		mockAppServer = mock(ApplicationServer.class);
 		when(mockAppServer.getPort()).thenReturn(1234);
 		File brjsDir = new File("src/test/resources/ServeCommandTest");
-		brjs = BRJSTestFactory.createBRJS(brjsDir);
-		BRJSAccessor.initialize(brjs);
+		brjs = createModel(brjsDir);
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		commandTask = new ServeCommand(mockAppServer);
 		commandTask.setBRJS(brjs);
-		out = BRJSAccessor.root.getConsoleWriter();
 	}
 
 	@Test

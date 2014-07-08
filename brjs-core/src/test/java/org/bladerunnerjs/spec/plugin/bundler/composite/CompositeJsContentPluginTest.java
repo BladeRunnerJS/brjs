@@ -21,8 +21,8 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -36,7 +36,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	@Test
 	public void ifThereAreNoJsFilesThenNoRequestsWillBeGenerated() throws Exception {
 		given(aspect).indexPageHasContent("index page");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("js");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("js");
 	}
 	
 	@Test
@@ -85,7 +85,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void bundlesAreIncludedInTheRightOrder() throws Exception {
-		given(aspect).hasNodeJsPackageStyle("src/appns/node")
+		given(aspect).hasCommonJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
@@ -107,7 +107,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void i18nBundleIsNotIncluded() throws Exception {
-		given(aspect).hasNodeJsPackageStyle("src/appns/node")
+		given(aspect).hasCommonJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")

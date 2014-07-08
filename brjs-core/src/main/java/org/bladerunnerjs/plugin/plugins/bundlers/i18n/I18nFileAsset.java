@@ -3,11 +3,11 @@ package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
@@ -15,6 +15,8 @@ import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
@@ -25,21 +27,19 @@ public class I18nFileAsset implements Asset
 		public static final String PROPERTY_NAMESPACE_EXCEPTION = "i18n property '%s' in property file '%s' is invalid. It must start with the same namespace as it's container, '%s'.";
 	}
 	
-	public static final String I18N_REGEX = "([a-z]{2})(_([A-Z]{2}))?";
-	public static final String I18N_PROPERTIES_FILE_REGEX = I18N_REGEX+"\\.properties";
-	public static final Pattern I18N_PROPERTIES_FILE_REGEX_PATTERN = Pattern.compile(I18N_PROPERTIES_FILE_REGEX);
-	
 	private AssetLocation assetLocation;
 	private File assetFile;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
+	private Locale locale;
 	
 	public I18nFileAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = assetFile;
-			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
+			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			locale = Locale.createLocaleFromFilepath(getAssetName());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -76,14 +76,15 @@ public class I18nFileAsset implements Asset
 		return assetPath;
 	}
 	
-	public String getLocaleLanguage()
-	{
-		return getMatchedValueFromPropertiesPattern(1);
+	@Override
+	public List<String> getRequirePaths() {
+		// TODO: we should return the complete list of i18n tokens
+		return Collections.emptyList();
 	}
 	
-	public String getLocaleLocation()
-	{
-		return getMatchedValueFromPropertiesPattern(3);
+	@Override
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 
 	public Map<String,String> getLocaleProperties() throws IOException, RequirePathException, NamespaceException
@@ -103,14 +104,8 @@ public class I18nFileAsset implements Asset
 		return propertiesMap;
 	}
 	
-	private String getMatchedValueFromPropertiesPattern(int groupNum)
-	{
-		Matcher m = I18N_PROPERTIES_FILE_REGEX_PATTERN.matcher( getAssetName() );
-		if (m.matches() && m.groupCount() >= groupNum)
-		{
-			return (m.group(groupNum) != null) ? m.group(groupNum) : "";
-		}
-		return "";
+	public Locale getLocale() {
+		return locale;
 	}
 
 }

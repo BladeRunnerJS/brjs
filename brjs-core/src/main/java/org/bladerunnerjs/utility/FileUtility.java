@@ -10,7 +10,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 public class FileUtility {
@@ -27,18 +26,6 @@ public class FileUtility {
 		File tempSubDir = new File(tempdir, prependedFolderName);
 		tempSubDir.mkdir();
 		return tempSubDir;
-	}
-	
-	public static void copyFileIfExists(File srcFile, File destFile) throws IOException {
-		if(srcFile.exists()) {
-			FileUtils.copyFile(srcFile, destFile);
-		}
-	}
-	
-	public static void copyDirectoryIfExists(File srcDir, File destDir) throws IOException {
-		if(srcDir.exists()) {
-			FileUtils.copyDirectory(srcDir, destDir);
-		}
 	}
 	
 	public static void zipFolder(File srcFolder, File destZipFile, boolean zipOnlySrcFolderContentsAndNotSrcFolder) throws IOException
@@ -166,7 +153,7 @@ public class FileUtility {
 	 * Deletes directories from deepest to shallowest to prevent file locking issues caused by the Watch Service on Windows 
 	 * (see https://stackoverflow.com/questions/6255463/java7-watchservice-access-denied-error-trying-to-delete-recursively-watched-ne) 
 	 */ 
-	public static void deleteDirectory(File dir) throws IOException
+	public static void deleteDirectoryFromBottomUp(File dir) throws IOException
 	{
 		if (dir.isFile())
 		{
@@ -183,7 +170,7 @@ public class FileUtility {
 		{
 			if (child.isDirectory())
 			{
-				deleteDirectory(child);
+				deleteDirectoryFromBottomUp(child);
 			}
 			dir.delete();
 		}

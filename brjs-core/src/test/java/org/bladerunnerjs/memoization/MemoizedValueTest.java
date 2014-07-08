@@ -7,8 +7,7 @@ import java.io.IOException;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FileInfo;
-import org.bladerunnerjs.testing.specutility.engine.ConsoleMessageStore;
-import org.bladerunnerjs.testing.specutility.engine.ConsoleStoreWriter;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
@@ -19,7 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MemoizedValueTest {
+public class MemoizedValueTest extends TestModelAccessor {
 	private File tempDir;
 	private File sdkDir;
 	private File watchFile;
@@ -33,10 +32,10 @@ public class MemoizedValueTest {
 		sdkDir = new File(tempDir, "sdk");
 		
 		sdkDir.mkdir();
-		brjs = new BRJS(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new ConsoleStoreWriter(new ConsoleMessageStore()), new MockAppVersionGenerator());
+		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator());
 		watchFileInfo = brjs.getFileInfo(watchFile);
 	}
-	
+
 	@After
 	public void tearDown() {
 		brjs.close();

@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AspectBundlingOfHTML extends SpecTest {
@@ -21,8 +20,8 @@ public class AspectBundlingOfHTML extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 		
 			app = brjs.app("app1");
@@ -39,7 +38,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.Class1");
+		then(response).containsCommonJsClasses("appns.Class1");
 	}
 
 	// Bladeset
@@ -48,7 +47,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.bs.Class1");
+		then(response).containsCommonJsClasses("appns.bs.Class1");
 	}
 	
 	// Blade
@@ -57,7 +56,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 		given(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.b1.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
+		then(response).containsCommonJsClasses("appns.bs.b1.Class1");
 	}
 	
 	// SDK BRJS Lib
@@ -71,10 +70,10 @@ public class AspectBundlingOfHTML extends SpecTest {
 			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(aspect).requestReceived("html/bundle.html", response);
 		then(response).containsOrderedTextFragments(
-				"<!-- aspect.html -->",
-				"<div id='appns.aspect-view'></div>",
 				"<!-- workbench.html -->",
-				"<div id='br.workbench-view'></div>");
+				"<div id='br.workbench-view'></div>",
+				"<!-- aspect.html -->",
+				"<div id='appns.aspect-view'></div>");
 	}
 	
 	
@@ -104,11 +103,20 @@ public class AspectBundlingOfHTML extends SpecTest {
     	then(response).containsText("<some-xml/>");
 	}
 	
-	@Test @Ignore
+	@Test
 	public void bladeResourcesAreLoadedEvenIfTheBladesetHasNoSource() throws Exception {
-		given(blade).containsResourceFileWithContents("file.xml", "<some-xml/>");
-    	when(app).requestReceived("/default-aspect/bundle.xml", response);
-    	then(response).containsText("<some-xml/>");
+		given(blade).containsResourceFileWithContents("file.xml", "<some-xml id='appns.bs.b1.someId'></some-xml>")
+			.and(aspect).indexPageHasContent("appns.bs.b1.someId");
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText("<some-xml id='appns.bs.b1.someId'></some-xml>");
+	}
+	
+	@Test
+	public void bladeResourcesAreLoadedEvenIfTheBladesetHasNoSourceAndSecondaryIdIsUsed() throws Exception {
+		given(blade).containsResourceFileWithContents("file.xml", "<some-xml id='appns.bs.b1.someId'></some-xml><some-xml id='appns.bs.b1.anotherId'></some-xml>")
+			.and(aspect).indexPageHasContent("appns.bs.b1.anotherId");
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText("<some-xml id='appns.bs.b1.someId'></some-xml><some-xml id='appns.bs.b1.anotherId'></some-xml>");
 	}
 	
 }

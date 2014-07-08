@@ -1,20 +1,22 @@
 package org.bladerunnerjs.testing.specutility;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.IOException;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.SimplePageAccessor;
 
 
 public class AppBuilder extends NodeBuilder<App> {
@@ -35,13 +37,16 @@ public class AppBuilder extends NodeBuilder<App> {
 	}
 	
 	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
-		app.build(targetDir);
+		File appExportDir = new File(targetDir, app.getName());
+		app.build( appExportDir );
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasBeenBuiltAsWar(File targetDir) throws Exception {
-		app.buildWar(targetDir);
+		File warExportFile = new File(targetDir, app.getName()+".war");
+		warExportFile.getParentFile().mkdir();
+		app.buildWar( warExportFile );
 		
 		return builderChainer;
 	}
@@ -55,7 +60,11 @@ public class AppBuilder extends NodeBuilder<App> {
 
 	public BuilderChainer hasSupportedLocales(String locales) throws ConfigException
 	{
-		app.appConf().setLocales( locales );
+		List<Locale> createdLocales = new ArrayList<Locale>();
+		for (String locale : locales.split(",")) {
+			createdLocales.add( new Locale(locale) );
+		}
+		app.appConf().setLocales( createdLocales.toArray(new Locale[0]) );
 		
 		return builderChainer;
 	}
@@ -67,11 +76,17 @@ public class AppBuilder extends NodeBuilder<App> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException 
+	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException 
 	{
-		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-		app.handleLogicalRequest(requestPath, responseOutput, new SimplePageAccessor());
+		app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
 		
 		return builderChainer;	
+	}
+
+	public BuilderChainer hasLocaleCookieName(String cookieName) throws ConfigException
+	{
+		app.appConf().setLocaleCookieName(cookieName);
+		
+		return builderChainer;
 	}
 }

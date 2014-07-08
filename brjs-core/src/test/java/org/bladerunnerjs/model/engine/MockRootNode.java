@@ -2,9 +2,7 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
@@ -39,7 +37,7 @@ public class MockRootNode implements RootNode
 	}
 	
 	@Override
-	public File[] scopeFiles()
+	public File[] memoizedScopeFiles()
 	{
 		return null;
 	}
@@ -85,7 +83,7 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public Logger logger(LoggerType type, Class<?> clazz)
+	public Logger logger(Class<?> clazz)
 	{
 		return new Logger()
 		{
@@ -94,11 +92,6 @@ public class MockRootNode implements RootNode
 			public String getName()
 			{
 				return null;
-			}
-
-			@Override
-			public void fatal(String message, Object... params)
-			{
 			}
 
 			@Override
@@ -120,18 +113,17 @@ public class MockRootNode implements RootNode
 			public void debug(String message, Object... params)
 			{
 			}
+
+			@Override
+			public void println(String message, Object... params)
+			{
+			}
+
+			@Override
+			public void console(String message, Object... params)
+			{	
+			}
 		};
-	}
-
-	@Override
-	public ConsoleWriter getConsoleWriter()
-	{
-		return null;
-	}
-
-	@Override
-	public void setConsoleWriter(ConsoleWriter consoleWriter)
-	{
 	}
 
 	@Override

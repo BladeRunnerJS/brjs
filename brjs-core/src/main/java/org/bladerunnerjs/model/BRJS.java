@@ -3,6 +3,8 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
@@ -11,13 +13,8 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.console.ConsoleWriter;
-import org.bladerunnerjs.console.PrintStreamConsoleWriter;
-import org.bladerunnerjs.logging.LogConfiguration;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.logging.LoggerType;
-import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -29,7 +26,6 @@ import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
-import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
@@ -39,7 +35,6 @@ import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
-import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 
 
 public class BRJS extends AbstractBRJSRootNode
@@ -47,14 +42,14 @@ public class BRJS extends AbstractBRJSRootNode
 	public static final String PRODUCT_NAME = "BladeRunnerJS";
 	
 	public class Messages {
-		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "performing node discovery";
-		public static final String CREATING_PLUGINS_LOG_MSG = "creating plugins";
-		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "making plugins available via model";
-		public static final String PLUGIN_FOUND_MSG = "found plugin %s";
-		public static final String CLOSE_METHOD_NOT_INVOKED = "the BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
+		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "Performing node discovery.";
+		public static final String CREATING_PLUGINS_LOG_MSG = "Creating plugins.";
+		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "Making plugins available via model.";
+		public static final String PLUGIN_FOUND_MSG = "Found plugin '%s'.";
+		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 	}
 	
-	private final NodeList<App> apps = new NodeList<>(this, App.class, "apps", null);
+	private final NodeList<App> userApps = new NodeList<>(this, App.class, "apps", null);
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
 	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript", null);
@@ -65,8 +60,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");
 	private final NodeItem<DirNode> testJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/testRunner");
 	private final NodeItem<DirNode> userJars = new NodeItem<>(this, DirNode.class, "conf/java");
-	private final NodeItem<DirNode> logs = new NodeItem<>(this, DirNode.class, "sdk/log");
-	private final NodeItem<DirNode> apiDocs = new NodeItem<>(this, DirNode.class, "sdk/docs/jsdoc");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
 	private WorkingDirNode workingDir;
@@ -82,17 +75,17 @@ public class BRJS extends AbstractBRJSRootNode
 	private boolean closed = false;
 	private AppVersionGenerator appVersionGenerator;
 	
-	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
-			LoggerFactory loggerFactory, ConsoleWriter consoleWriter, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+	BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
+			LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
-		super(brjsDir, loggerFactory, consoleWriter);
+		super(brjsDir, loggerFactory);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		
-		fileModificationService.setRootDir(dir);
+		fileModificationService.initialise(this, dir);
 		
 		this.fileModificationService = fileModificationService;
 		
-		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
+		logger = loggerFactory.getLogger(BRJS.class);
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
 		pluginLocator.createPlugins(this);
@@ -107,25 +100,6 @@ public class BRJS extends AbstractBRJSRootNode
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
 		this.appVersionGenerator = appVersionGenerator;
-	}
-
-	public BRJS(File brjsDir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException {
-		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(loggerFactory), loggerFactory, consoleWriter, new TimestampAppVersionGenerator());
-	}
-	
-	public BRJS(File brjsDir, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
-		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
-	}
-	
-	public BRJS(File brjsDir, LogConfiguration logConfiguration) throws InvalidSdkDirectoryException
-	{
-		// TODO: what was the logConfiguration parameter going to be used for?
-		this(brjsDir, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
-	}
-	
-	public BRJS(File brjsDir, LogConfiguration logConfigurator, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
-		// TODO: what was the logConfiguration parameter going to be used for?
-		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
 	}
 	
 	@Override
@@ -188,7 +162,7 @@ public class BRJS extends AbstractBRJSRootNode
 			node = node.parentNode();
 		}
 		
-		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(dir(), file) );
+		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(this, dir(), file) );
 		
 		return bundlableNode;
 	}
@@ -208,12 +182,36 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> apps()
 	{
-		return apps.list();
+		Set<String> addedApps = new HashSet<>();
+		List<App> allApps = new ArrayList<>(userApps.list());
+		allApps.addAll(systemApps.list());
+		List<App> apps = new ArrayList<>();
+		
+		for(App app : allApps) {
+			if(addedApps.add(app.getName())) {
+				apps.add(app);
+			}
+		}
+		
+		return apps;
 	}
 	
 	public App app(String appName)
 	{
-		return apps.item(appName);
+		App userApp = userApps.item(appName);
+		App systemApp = systemApps.item(appName);
+		
+		return(systemApp.dirExists()) ? systemApp : userApp;
+	}
+	
+	public List<App> userApps()
+	{
+		return userApps.list();
+	}
+	
+	public App userApp(String appName)
+	{
+		return userApps.item(appName);
 	}
 	
 	public List<App> systemApps()
@@ -285,16 +283,6 @@ public class BRJS extends AbstractBRJSRootNode
 	public DirNode userJars()
 	{
 		return userJars.item();
-	}
-	
-	public DirNode logs()
-	{
-		return logs.item();
-	}
-	
-	public DirNode apiDocs()
-	{
-		return apiDocs.item();
 	}
 	
 	public VersionInfo versionInfo()

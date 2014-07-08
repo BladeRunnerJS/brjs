@@ -12,7 +12,6 @@ import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
@@ -51,7 +50,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		logger = brjs.logger(LoggerType.APP_SERVER, this.getClass());
+		logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -96,8 +95,8 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 			throw new CommandOperationException("Could not create application zip for application '" + appName + "'", e);  
 		}
 
-		logger.info("Successfully exported application '" + appName + "'");
-		logger.info(" " + destinationZipLocation.getAbsolutePath());
+		logger.println("Successfully exported application '" + appName + "'");
+		logger.println(" " + destinationZipLocation.getAbsolutePath());
 		
 		return 0;
 	}

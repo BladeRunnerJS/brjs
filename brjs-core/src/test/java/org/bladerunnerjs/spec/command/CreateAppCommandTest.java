@@ -25,7 +25,7 @@ public class CreateAppCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new CreateAppCommand())
+		given(brjs).hasCommandPlugins(new CreateAppCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			badApp = brjs.app("app#$@/");
@@ -96,8 +96,8 @@ public class CreateAppCommandTest extends SpecTest {
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(app).dirExists()
 			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, app.getName(), app.dir().getPath())
-			.and(output).containsLine(APP_CREATED_CONSOLE_MSG, app.getName())
-			.and(output).containsLine(APP_DEPLOYED_CONSOLE_MSG, app.getName());
+			.and(logging).containsFormattedConsoleMessage(APP_CREATED_CONSOLE_MSG, app.getName())
+			.and(logging).containsFormattedConsoleMessage(APP_DEPLOYED_CONSOLE_MSG, app.getName());
 	}
 	
 	@Test
@@ -114,8 +114,8 @@ public class CreateAppCommandTest extends SpecTest {
 	public void appCreationConsoleOutputOccursEvenIfAppDeploymentFails() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(app).dirExists()
-			.and(output).containsLine(APP_CREATED_CONSOLE_MSG, app.getName())
-			.and(output).doesNotContain(APP_DEPLOYED_LOG_MSG, app.getName())
+			.and(logging).containsFormattedConsoleMessage(APP_CREATED_CONSOLE_MSG, app.getName())
+			.and(logging).doesNotcontainConsoleText(APP_DEPLOYED_LOG_MSG, app.getName())
 			.and(logging).errorMessageReceived(APP_DEPLOYMENT_FAILED_LOG_MSG, app.getName(), app.dir())
 			.and(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}

@@ -10,16 +10,20 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	private final char nodeChar;
 	private List<TrieNode<T>> children = new LinkedList<>();
 	private int size = 0;
+	private List<Character> separators;
+	private char primarySeparator;
 	
-	public BasicTrieNode(char nodeChar)
+	public BasicTrieNode(char nodeChar, char primarySeperator, List<Character> seperators)
 	{
-		this(nodeChar, null);
+		this(nodeChar, null, primarySeperator, seperators);
 	}
 	
-	public BasicTrieNode(char nodeChar, T value)
+	public BasicTrieNode(char nodeChar, T value, char primarySeperator, List<Character> seperators)
 	{
 		this.nodeChar = nodeChar;
 		this.value = value;
+		this.primarySeparator = primarySeperator;
+		this.separators = seperators;
 	}
 	
 	@Override
@@ -29,7 +33,7 @@ public class BasicTrieNode<T> implements TrieNode<T>
 		if (node != null) {
 			return node;
 		}
-		node = new BasicTrieNode<T>(character);
+		node = new BasicTrieNode<T>(character, primarySeparator, separators);
 		children.add( node );
 		size++;
 		return node;
@@ -39,9 +43,17 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	public TrieNode<T> getNextNode(char character)
 	{
 		for (TrieNode<T> trieNode : children) {
-			if (trieNode.getChar() == character) {
+			char trieChar = trieNode.getChar();
+			if (trieChar == character) {
 				return trieNode;
 			}
+/*
+ * TODO: investigate why this causes CT dependency issues 
+ * (see comment in AbstractOptimisedNode and TrieFactory too)
+ */
+//			if (trieChar == primarySeparator && separators.contains(character)) {
+//				return trieNode;
+//			}
 		}
 		return null;
 	}

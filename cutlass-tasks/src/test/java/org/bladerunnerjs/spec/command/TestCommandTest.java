@@ -6,6 +6,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class TestCommandTest extends SpecTest
 		//TODO::have to create brjs first should remove when moved over to core
 		given(brjs).hasBeenCreated();
 		
-		given(brjs).hasCommands(new TestCommand());
+		given(brjs).hasCommandPlugins(new TestCommand());
 			app = brjs.app("myapp");
 			app.aspect("myaspect");
 			bladeset = app.bladeset("mybladeset");

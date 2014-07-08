@@ -26,8 +26,8 @@ public class WorkbenchBundlingTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 
 		app = brjs.app("app1");
@@ -168,8 +168,9 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbench).containsResourceFileWithContents("workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
 			.and(workbench).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(workbench).requestReceived("html/bundle.html", response);
-		then(response).containsOrderedTextFragments("<div id='appns.bs.b1.workbench-view'></div>",
-													"<div id='br.tree-view'></div>");
+		then(response).containsOrderedTextFragments("<div id='br.tree-view'></div>",
+													"<div id='appns.bs.b1.workbench-view'></div>");
+													
 	}
 	
 	@Test

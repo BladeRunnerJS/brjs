@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.plugins.appdeployer;
 
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
@@ -27,7 +26,7 @@ public class AppDeploymentObserverPlugin extends AbstractModelObserverPlugin imp
 	public void setBRJS(BRJS brjs)
 	{
 		brjs.addObserver( AppDeployedEvent.class, this );
-		logger = brjs.logger(LoggerType.APP_SERVER, this.getClass());
+		logger = brjs.logger(this.getClass());
 	}
 
 	@Override

@@ -80,7 +80,28 @@ public class LoggerVerifier
 		
 		return verifierChainer;
 	}
+	
+	public VerifierChainer containsFormattedConsoleMessage(String message, Object... params)
+	{
+		logStore.verifyFormattedConsoleLogMessage(message, params);
 
+		return verifierChainer;
+	}
+
+	public VerifierChainer containsConsoleText(String... messages)
+	{
+		logStore.verifyConsoleLogMessages(messages);
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer doesNotcontainConsoleText(String message, Object... params)
+	{
+		logStore.verifyNoConsoleLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+	
 	public VerifierChainer infoMessageReceived(String message, Object... params)
 	{
 		logStore.verifyInfoLogMessage(message, params);

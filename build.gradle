@@ -39,31 +39,31 @@ ext {
 }
 
 allprojects {
-	
+
 	ext {
 		buildVersion = projectBuildVersion
 		buildDate = projectBuildDate
 		buildHostname = projectBuildHostname
 	}
-	
+
 	def projectContainingSharedLogic = (project.parent) ? project.parent : project
 	apply from: projectContainingSharedLogic.file('dependencies.gradle')
-	
+
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
 	apply plugin: 'base'
-	
+
 	repositories {
 		mavenCentral()
 		maven { url "http://bladerunnerjs.github.io/brjs-build-dependencies/repo" }
 	}
-	
+
 	buildscript {
     	repositories {
     		mavenCentral()
     	}
 	}
-		
+
 	tasks.withType(Copy) {
 		fileMode = 0755
 		includeEmptyDirs = false
@@ -76,16 +76,16 @@ allprojects {
 		fileMode = 0755
 		includeEmptyDirs = false
 	}
-	
+
 }
 
 subprojects { p ->
-		
+
 	version = buildVersion
 	group = 'org.bladerunnerjs'
-	
+
 	afterEvaluate { project ->
-		
+
 		if (project.plugins.hasPlugin(JavaPlugin)) {
 			if(project.name == 'brjs-core') {
 				sourceCompatibility = '1.8'
@@ -99,7 +99,7 @@ subprojects { p ->
 				sourceCompatibility = '1.7'
 				targetCompatibility = '1.7'
 			}
-			
+
 			project.tasks.withType(Test) { testTask ->
 				test {
 					testLogging {
@@ -111,15 +111,15 @@ subprojects { p ->
 					}
 				}
 			}
-			
+
 			project.tasks.withType(JavaCompile) {
 				options.compilerArgs += ['-Xlint:all,-path']
 				options.encoding = 'UTF-8'
 			}
 		}
-	
+
 	}
-	
+
 }
 
 
@@ -176,7 +176,10 @@ def getGitHubToken = { project ->
 
 def getReleaseNoteJson = { project, tagVersion ->
 	def releaseDataFile = file("releases/${tagVersion}.json")
-	def releaseNoteJson = new groovy.json.JsonSlurper().parseText( releaseDataFile.text )
+	def releaseDataText = releaseDataFile.text
+	releaseDataText = releaseDataText.replaceAll("@tagVersion@", tagVersion)
+	releaseDataText = releaseDataText.replaceAll("@buildVersion@", buildVersion)
+	def releaseNoteJson = new groovy.json.JsonSlurper().parseText( releaseDataText )
 	return releaseNoteJson
 }
 
@@ -191,35 +194,40 @@ task generateReleaseNotes, {
     	def gitHubToken = getGitHubToken(project)
 		def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
     	def tagVersion = projectBuildMajorVersion
-		
+
 		def releaseNoteFile = file("releases/${tagVersion}.md")
 		def milestoneJson = getReleaseNoteJson(project,tagVersion).milestone
 		def milestoneIds = (milestoneJson instanceof Integer) ? [milestoneJson] : milestoneJson.split(",").collect { it.trim().toInteger()  }
-		def includeIssueLabels = ["bug", "feature", "enhancement", "experience"]
-		def issueIncludeLabelsString = includeIssueLabels.join(", ").replaceAll(/^(.*),(.*)$/,'$1 or$2'); /* regex replaces the last ',' with 'or' */	
-		
-		def excludeIssueLabels = ["invalid", "duplicate"]
-		
+		def includeIssueLabels = ["bug", "feature", "enhancement", "experience", "breaking-change", "java-api", "js-api"]
+		def issueIncludeLabelsString = includeIssueLabels.join(", ").replaceAll(/^(.*),(.*)$/,'$1 or$2'); /* regex replaces the last ',' with 'or' */
+
+		def excludeIssueLabels = ["invalid", "duplicate", "wont-fix", "ignore-release-note"]
+
 		List<Issue> issues = new ArrayList<Issue>();
 		milestoneIds.each { milestoneId ->
 			issues.addAll( githubApi.getClosedIssuesForMilestone(milestoneId) )
 		}
-		
+
 		List<Issue> releaseNoteIssues = new LinkedList<Issue>()
 		issues.each {
 			if (it.labels.intersect(includeIssueLabels) && !it.labels.intersect(excludeIssueLabels)) {
 				releaseNoteIssues.add(it)
 			}
 		}
-		
-		
+
+
 		def appendToReleaseNotes = []
-		
+
 		appendToReleaseNotes << ""
 		appendToReleaseNotes << "<br/>"
 		appendToReleaseNotes << "-------------"
+		appendToReleaseNotes << "### API Documentation"		
+		appendToReleaseNotes << ""
+		appendToReleaseNotes << "- [@tagVersion@ JavaScript API](http://apidocs.bladerunnerjs.org/@tagVersion@/js/)"
+		appendToReleaseNotes << "- [@tagVersion@ Java Model API](http://apidocs.bladerunnerjs.org/@tagVersion@/java/)"
+		appendToReleaseNotes << ""
 		appendToReleaseNotes << "**Travis Build Status for @tagVersion@:**&nbsp;&nbsp;&nbsp;[![Build Status](https://travis-ci.org/BladeRunnerJS/brjs.svg?branch=@tagVersion@)](https://travis-ci.org/BladeRunnerJS/brjs)"
-		appendToReleaseNotes << ""		
+		appendToReleaseNotes << ""
 		appendToReleaseNotes << "### Closed Issues"
 		appendToReleaseNotes << "The following issues labelled ${issueIncludeLabelsString} have been closed:"
 		appendToReleaseNotes << ""
@@ -229,27 +237,27 @@ task generateReleaseNotes, {
 		appendToReleaseNotes << ""
 		appendToReleaseNotes << "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} from ${milestoneIds.size} milestones: "
 		milestoneIds.each { milestoneId ->
-			if (milestoneId != milestoneIds.first()) { 
+			if (milestoneId != milestoneIds.first()) {
 				appendToReleaseNotes << "; "
 			}
 			def milestoneUrl = githubApi.getMilestoneUrl(milestoneId)
 					appendToReleaseNotes << "<a href=\"${milestoneUrl}\">${milestoneUrl}</a>"
 		}
 		appendToReleaseNotes << "</sub>"
-		appendToReleaseNotes << ""		
+		appendToReleaseNotes << ""
 		appendToReleaseNotes << "### Found an Issue?"
 		appendToReleaseNotes << "- [https://github.com/BladeRunnerJS/brjs/issues](https://github.com/BladeRunnerJS/brjs/issues) for any existing issues"
 		appendToReleaseNotes << "- [https://github.com/BladeRunnerJS/brjs/issues/new](https://github.com/BladeRunnerJS/brjs/issues/new) to raise a new issues."
 		appendToReleaseNotes << ""
 		appendToReleaseNotes << ""
-		appendToReleaseNotes << '<sub>Parts of this release note have been auto-generated. If you notice any problems with it <a href="https://github.com/BladeRunnerJS/brjs/issues/new">tell us</a></sub>' 
+		appendToReleaseNotes << '<sub>Parts of this release note have been auto-generated. If you notice any problems with it <a href="https://github.com/BladeRunnerJS/brjs/issues/new">tell us</a></sub>'
 		appendToReleaseNotes << ""
 		appendToReleaseNotes << ""
-	
+
 		assembledReleaseNotesFile.parentFile.mkdirs()
 		assembledReleaseNotesFile.createNewFile()
 		assembledReleaseNotesFile.text = releaseNoteFile.text + "\n" + appendToReleaseNotes.join("\n")
-		
+
     	ant.replace(file: assembledReleaseNotesFile) {
     		replacefilter(token:"@tagVersion@", value:tagVersion)
     		replacefilter(token:"@buildVersion@", value:buildVersion)
@@ -258,25 +266,25 @@ task generateReleaseNotes, {
 }
 
 
-task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', build], {
+task githubRelease, dependsOn:[generateReleaseNotes, ':brjs-sdk:distZip', build], {
 	doLast {
-		def cutlassSdkProject = project(':cutlass-sdk')
+		def cutlassSdkProject = project(':brjs-sdk')
 		def brjsZipPattern = "**/BladeRunnerJS-${projectBuildVersion}.zip"
 		def brjsZip = fileTree(dir:cutlassSdkProject.buildDir, include:brjsZipPattern).singleFile
 
 		if (!projectCurrentBranch.equals(RELEASE_BRANCH))
 		{
-			throw new GradleException("BladeRunnerJS ${projectBuildVersion} can only be released from '${RELEASE_BRANCH}' branch, you are currently on '${projectCurrentBranch}'.")			
-		}		
+			throw new GradleException("BladeRunnerJS ${projectBuildVersion} can only be released from '${RELEASE_BRANCH}' branch, you are currently on '${projectCurrentBranch}'.")
+		}
 		if (projectVersionIsDirty)
 		{
 			throw new GradleException("Project version is dirty, this version (${projectBuildVersion}) cannot be released.")
 		}
-		
+
     	def gitHubToken = getGitHubToken(project)
     	def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
     	def tagVersion = projectBuildMajorVersion
-    	
+
 		def releaseNoteFile = generateReleaseNotes.outputs.files.singleFile
     	Release release = githubApi.createReleaseForTag(tagVersion, getReleaseNoteJson(project,tagVersion), releaseNoteFile.text)
 		githubApi.uploadAssetForRelease(brjsZip, release)
@@ -292,12 +300,12 @@ if (org.bladerunnerjs.OSCalculator.isWin32())
 	dependencies {
 		curlDep dependency('curl-win32')
 	}
-	
+
     task downloadCurl, type:Copy, dependsOn:configurations.curlDep, {
     	from { configurations.curlDep.collect { zipTree(it) } }
 		into "${buildDir}/curl"
     }
-	
+
 	githubRelease.doFirst {
 		GitHubAPIBridge.CURL_PATH = fileTree(dir:downloadCurl.outputs.files.singleFile, include:"**/curl.exe").singleFile.path
 	}

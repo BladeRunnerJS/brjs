@@ -1,5 +1,8 @@
 package org.bladerunnerjs.logger;
 
+import java.io.PrintStream;
+import java.util.List;
+
 import org.bladerunnerjs.logger.LogLevel;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MarkerIgnoringBase;
@@ -7,33 +10,66 @@ import org.slf4j.helpers.MessageFormatter;
 
 public class ConsoleLogger extends MarkerIgnoringBase
 {
+	public static final String LOG_ALL_PACKAGES_PACKAGE_NAME = "ALL";
+	
 	private static final long serialVersionUID = 1L;
 	
-	private final String name;
-	private final RootConsoleLogger rootLogger;
+	private final String className;
+	private final ConsoleLoggerStore loggerStore;
+	private boolean enabled = false;
 	
-	public ConsoleLogger(String name, RootConsoleLogger rootLogger)
+	public ConsoleLogger(String className, ConsoleLoggerStore loggerStore)
 	{
-		this.name = name;
-		this.rootLogger = rootLogger;
+		this.className = className;
+		this.loggerStore = loggerStore;
+	}
+	
+	public void setWhiteListedPackages(List<String> whitelistedPackages) {
+		enabled = false;
+		
+		for(String whitelistedPackage : whitelistedPackages) {
+			if(whitelistedPackage.toUpperCase().equals(LOG_ALL_PACKAGES_PACKAGE_NAME) || className.startsWith(whitelistedPackage)) {
+				enabled = true;
+			}
+		}
+	}
+	
+	private void doLog(LogLevel logLevel, String message, Throwable throwable) {
+		if (  (enabled && (logLevel.ordinal() >= loggerStore.getLogLevel().ordinal()))
+				|| logLevel == LogLevel.ERROR  ) {
+			PrintStream outputStream = loggerStore.getOutputStream();
+			
+			if(loggerStore.getLogClassNames()) {
+				outputStream.println(className + ": " + message);
+			}
+			else {
+				outputStream.println(message);
+			}
+			
+			if (throwable != null) {
+				throwable.printStackTrace(loggerStore.getErrorStream());
+			}
+			
+			outputStream.flush();
+		}
 	}
 	
 	private void formatAndLog(LogLevel logLevel, String format, Object arg)
 	{
 		FormattingTuple formattingTuple = MessageFormatter.format(format, arg);
-		rootLogger.log(logLevel, name, formattingTuple.getMessage(), formattingTuple.getThrowable());
+		doLog(logLevel, formattingTuple.getMessage(), formattingTuple.getThrowable());
 	}
 	
 	private void formatAndLog(LogLevel logLevel, String format, Object arg1, Object arg2)
 	{
 		FormattingTuple formattingTuple = MessageFormatter.format(format, arg1, arg2);
-		rootLogger.log(logLevel, name, formattingTuple.getMessage(), formattingTuple.getThrowable());
+		doLog(logLevel, formattingTuple.getMessage(), formattingTuple.getThrowable());
 	}
 	
 	private void formatAndLog(LogLevel logLevel, String format, Object[] argArray)
 	{
 		FormattingTuple formattingTuple = MessageFormatter.arrayFormat(format, argArray);
-		rootLogger.log(logLevel, name, formattingTuple.getMessage(), formattingTuple.getThrowable());
+		doLog(logLevel, formattingTuple.getMessage(), formattingTuple.getThrowable());
 	}
 	
 	@Override
@@ -45,7 +81,7 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	@Override
 	public void trace(String msg)
 	{
-		rootLogger.log(LogLevel.DEBUG, name, msg, null);
+		doLog(LogLevel.DEBUG, msg, null);
 	}
 	
 	@Override
@@ -69,19 +105,19 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	@Override
 	public void trace(String msg, Throwable t)
 	{
-		rootLogger.log(LogLevel.DEBUG, name, msg, t);
+		doLog(LogLevel.DEBUG, msg, t);
 	}
 	
 	@Override
 	public boolean isDebugEnabled()
 	{
-		return (rootLogger.getLogLevel().ordinal() <= LogLevel.DEBUG.ordinal());
+		return (loggerStore.getLogLevel().ordinal() <= LogLevel.DEBUG.ordinal());
 	}
 	
 	@Override
 	public void debug(String msg)
 	{
-		rootLogger.log(LogLevel.DEBUG, name, msg, null);
+		doLog(LogLevel.DEBUG, msg, null);
 	}
 	
 	@Override
@@ -105,19 +141,19 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	@Override
 	public void debug(String msg, Throwable t)
 	{
-		rootLogger.log(LogLevel.DEBUG, name, msg, t);
+		doLog(LogLevel.DEBUG, msg, t);
 	}
 	
 	@Override
 	public boolean isInfoEnabled()
 	{
-		return (rootLogger.getLogLevel().ordinal() <= LogLevel.INFO.ordinal());
+		return (loggerStore.getLogLevel().ordinal() <= LogLevel.INFO.ordinal());
 	}
 	
 	@Override
 	public void info(String msg)
 	{
-		rootLogger.log(LogLevel.INFO, name, msg, null);
+		doLog(LogLevel.INFO, msg, null);
 	}
 	
 	@Override
@@ -141,19 +177,19 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	@Override
 	public void info(String msg, Throwable t)
 	{
-		rootLogger.log(LogLevel.INFO, name, msg, t);
+		doLog(LogLevel.INFO, msg, t);
 	}
 	
 	@Override
 	public boolean isWarnEnabled()
 	{
-		return (rootLogger.getLogLevel().ordinal() <= LogLevel.WARN.ordinal());
+		return (loggerStore.getLogLevel().ordinal() <= LogLevel.WARN.ordinal());
 	}
 	
 	@Override
 	public void warn(String msg)
 	{
-		rootLogger.log(LogLevel.WARN, name, msg, null);
+		doLog(LogLevel.WARN, msg, null);
 	}
 	
 	@Override
@@ -177,19 +213,19 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	@Override
 	public void warn(String msg, Throwable t)
 	{
-		rootLogger.log(LogLevel.WARN, name, msg, t);
+		doLog(LogLevel.WARN, msg, t);
 	}
 	
 	@Override
 	public boolean isErrorEnabled()
 	{
-		return (rootLogger.getLogLevel().ordinal() <= LogLevel.ERROR.ordinal());
+		return (loggerStore.getLogLevel().ordinal() <= LogLevel.ERROR.ordinal());
 	}
 	
 	@Override
 	public void error(String msg)
 	{
-		rootLogger.log(LogLevel.ERROR, name, msg, null);
+		doLog(LogLevel.ERROR, msg, null);
 	}
 	
 	@Override
@@ -213,6 +249,6 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	@Override
 	public void error(String msg, Throwable t)
 	{
-		rootLogger.log(LogLevel.ERROR, name, msg, t);
+		doLog(LogLevel.ERROR, msg, t);
 	}
 }

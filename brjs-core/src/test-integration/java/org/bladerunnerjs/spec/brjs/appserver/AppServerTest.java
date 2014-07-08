@@ -36,10 +36,10 @@ public class AppServerTest extends SpecTest
 
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasModelObservers(new AppDeploymentObserverPlugin())
+		given(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
-			.and(brjs.sdkLibsDir()).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
 			appServer = brjs.applicationServer(appServerPort);
@@ -172,7 +172,8 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void otherServletsCanBeAddedWithRootMapping() throws Exception
 	{
-		given(app1).hasBeenPopulated()
+		given(brjs).usedForServletModel()
+			.and(app1).hasBeenPopulated()
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "/servlet/hello/*");
 		then(appServer).requestForUrlReturns("/app1/servlet/hello", "Hello World!");
@@ -181,7 +182,8 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void otherServletsCanBeAddedWithExtensionMapping() throws Exception
 	{
-		given(app1).hasBeenPopulated()
+		given(brjs).usedForServletModel()
+			.and(app1).hasBeenPopulated()
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "*.mock");
 		then(appServer).requestForUrlReturns("/app1/hello.mock", "Hello World!");

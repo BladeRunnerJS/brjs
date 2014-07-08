@@ -10,17 +10,18 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.bladerunnerjs.model.BRJS;
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.testing.BRJSTestFactory;
+import org.bladerunnerjs.model.TestModelAccessor;
+
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 
-public class ImportApplicationCommandTest
+public class ImportApplicationCommandTest extends TestModelAccessor
 {
 	
 	private static final File TEST_BASE = new File("src/test/resources/ImportApplicationCommandUtility");
@@ -35,8 +36,9 @@ public class ImportApplicationCommandTest
 		FileUtility.copyDirectoryContents(TEST_BASE, tempDir);
 		
 		sdkBaseDir = new File(tempDir, "sdk-only/"+CutlassConfig.SDK_DIR);
-		brjs = BRJSTestFactory.createBRJS( sdkBaseDir.getParentFile() );
-		BRJSAccessor.initialize( brjs );
+		brjs = createModel( sdkBaseDir.getParentFile() );
+		ThreadSafeStaticBRJSAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.initializeModel( brjs );
 		
 		applicationsDirectory = new File(sdkBaseDir.getParent(), CutlassConfig.APPLICATIONS_DIR);
 		
@@ -137,14 +139,15 @@ public class ImportApplicationCommandTest
 	@Test 
 	public void zippedApplicationWithParentFolderHasSpacesCanBeImported() throws Exception
 	{
+		ThreadSafeStaticBRJSAccessor.destroy();
 		sdkBaseDir = new File(tempDir, "folder with spaces/" + CutlassConfig.SDK_DIR);
-		brjs = BRJSTestFactory.createBRJS(sdkBaseDir);
+		brjs = createModel(sdkBaseDir);
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		
 		File applicationsDirectory = new File(sdkBaseDir.getParent(), CutlassConfig.APPLICATIONS_DIR);
 		File appDirectory = new File(applicationsDirectory, "novotrader");
 		importApplicationCommand = new ImportApplicationCommand(brjs);
 
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(sdkBaseDir));
 		
 		assertFalse(appDirectory.exists());
 

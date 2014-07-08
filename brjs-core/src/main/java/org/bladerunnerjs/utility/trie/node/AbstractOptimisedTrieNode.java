@@ -1,8 +1,22 @@
 package org.bladerunnerjs.utility.trie.node;
 
+import java.util.List;
+
 
 public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 {
+	
+	@SuppressWarnings("unused")
+	private List<Character> separators;
+	@SuppressWarnings("unused")
+	private char primarySeparator;
+
+	public AbstractOptimisedTrieNode(char primarySeperator, List<Character> seperators)
+	{
+		this.separators = seperators;
+		this.primarySeparator = primarySeperator;
+	}
+	
 	@Override
 	public TrieNode<T> getNextNode(char character)
 	{
@@ -57,11 +71,22 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 		throw new RuntimeException("This is an optimised TrieNode and doesn't support this method.");
 	}
 	
-	protected static final <T> TrieNode<T> getNextNode(TrieNode<T>[] children, char character) {
+	protected final TrieNode<T> getNextNode(TrieNode<T>[] children, char character) {
 		for (TrieNode<T> trieNode : children) {
-			if (trieNode != null && trieNode.getChar() == character) {
+			if (trieNode == null){
+				return null;
+			}
+			char trieChar = trieNode.getChar();
+			if(trieChar == character) {
 				return trieNode;
 			}
+/*
+ * TODO: investigate why this causes CT dependency issues 
+ * (see comment in BasicTrieNode and TrieFactory too)
+ */
+//			if (trieChar == primarySeparator && separators.contains(character)) {
+//				return trieNode;
+//			}
 		}
 		return null;
 	}

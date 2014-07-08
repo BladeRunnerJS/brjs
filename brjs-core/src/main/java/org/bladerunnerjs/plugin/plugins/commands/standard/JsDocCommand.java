@@ -1,19 +1,15 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
@@ -22,8 +18,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.testing.utility.CommandRunner;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -35,19 +30,19 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	public static final String APP_STORAGE_DIR_NAME = "jsdoc";
 
 	public class Messages {
-		public static final String API_DOCS_GENERATED_MSG = "API docs correctly generated in '%s'";
+		public static final String API_DOCS_GENERATED_MSG = "API docs successfully generated in '%s'";
 	}
 	
 	private BRJS brjs;
-	private ConsoleWriter out;
-	private FileUtil fileUtil;
+	private EncodedFileUtil fileUtil;
+	private Logger logger;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {	
 		try {
 			this.brjs = brjs;
-			out = brjs.getConsoleWriter();
-			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+			this.logger = brjs.logger(this.getClass());
+			fileUtil = new EncodedFileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -79,27 +74,28 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
-		CommandRunner.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
+		CommandRunnerUtility.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
 		
 		try {
 			replaceBuildDateToken(new File(outputDir, "index.html"));
+			replaceVersionToken(new File(outputDir, "index.html"));
 		}
 		catch(IOException | ConfigException e) {
 			throw new CommandOperationException(e);
 		}
 		
-		out.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
+		logger.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
 		
 		return 0;
 	}
 	
-	private List<String> generateCommand(App app, boolean isVerbose, File outputDir) {
+	private List<String> generateCommand(App app, boolean isVerbose, File outputDir) throws CommandOperationException {
 		List<String> command = new ArrayList<>();
 		
 		try {
 			File jsdocToolkitInstallDir = installJsdocToolkit();
 			File jsDocToolkitDir = new File(jsdocToolkitInstallDir, "jsdoc-toolkit");
-			File jsDocTemplatesDir = new File(jsdocToolkitInstallDir, "jsdoc-templates/Caplin");
+			File jsDocTemplatesDir = new File(jsdocToolkitInstallDir, "jsdoc-template");
 			List<String> libraryPaths = new ArrayList<>();
 			
 			for (JsLib jsLib : app.jsLibs()) {
@@ -117,50 +113,22 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			command.add("-d=" + outputDir.getAbsolutePath());
 			command.add((isVerbose) ? "-v" : "-q");
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new CommandOperationException(ex);
 		}
 		
 		return command;
 	}
 	
-	private File installJsdocToolkit() {
-		File installDir = brjs.storageDir("jsdoc-toolkit/install");
+	private File installJsdocToolkit() throws IOException {
+		File installDir = brjs.storageDir("jsdoc-toolkit-install");
 		
 		if(!installDir.exists()) {
 			installDir.mkdirs();
-			
-			try (InputStream jsdocZipStream = getClass().getClassLoader().getResourceAsStream("org/bladerunnerjs/core/plugin/command/standard/jsdoc-resources.zip")) {
-				unzipInputStream(jsdocZipStream, installDir);
-			}
-			catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			FileUtils.copyDirectory(brjs.template("jsdoc").dir(), installDir);
 		}
 		
 		return installDir;
-	}
-	
-	private void unzipInputStream(InputStream zipArchiveInputStream, File targetDir) {
-		try (ZipInputStream zipEntryInputStream = new ZipInputStream(zipArchiveInputStream)) {
-			ZipEntry entry;
-			
-			while ((entry = zipEntryInputStream.getNextEntry()) != null) {
-				File targetFile = new File(targetDir, entry.getName());
-				
-				if(entry.isDirectory()) {
-					targetFile.mkdirs();
-				}
-				else {
-					try (FileOutputStream targetFileOutputStream = new FileOutputStream(targetFile)) {
-						IOUtils.copy(zipEntryInputStream, targetFileOutputStream);
-					}
-				}
-			}
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 	private void replaceBuildDateToken(File indexFile) throws IOException, ConfigException {
@@ -170,6 +138,13 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		Date date = new Date();
 		
 		String resultFileContent = fileContent.replace("@buildDate@", dateFormat.format(date));
+		fileUtil.writeStringToFile(indexFile, resultFileContent);
+	}
+	
+	private void replaceVersionToken(File indexFile) throws IOException, ConfigException {
+		String fileContent = fileUtil.readFileToString(indexFile);
+		
+		String resultFileContent = fileContent.replace("@sdkVersion@", brjs.versionInfo().getVersionNumber());
 		fileUtil.writeStringToFile(indexFile, resultFileContent);
 	}
 }

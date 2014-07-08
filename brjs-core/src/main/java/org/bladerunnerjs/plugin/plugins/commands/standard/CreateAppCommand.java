@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -27,7 +27,7 @@ public class CreateAppCommand extends ArgsParsingCommandPlugin
 	}
 	
 	private BRJS brjs;
-	private ConsoleWriter out;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -39,7 +39,7 @@ public class CreateAppCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -67,11 +67,11 @@ public class CreateAppCommand extends ArgsParsingCommandPlugin
 			requirePrefix = (requirePrefix == null) ? NameValidator.generateRequirePrefixFromApp(app) : requirePrefix;
 			
 			app.populate(requirePrefix);
-			out.println(Messages.APP_CREATED_CONSOLE_MSG, appName);
-			out.println(" " + app.dir().getPath());
+			logger.println(Messages.APP_CREATED_CONSOLE_MSG, appName);
+			logger.println(" " + app.dir().getPath());
 			
 			app.deploy();
-			out.println(Messages.APP_DEPLOYED_CONSOLE_MSG, appName);
+			logger.println(Messages.APP_DEPLOYED_CONSOLE_MSG, appName);
 		}
 		catch(InvalidNameException e) {
 			throw new CommandArgumentsException(e, this);

@@ -1,13 +1,7 @@
 package com.caplin.cutlass.util;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.comparator.NameFileComparator;
 import org.apache.commons.io.comparator.PathFileComparator;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.NameFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
-import org.apache.commons.io.filefilter.PrefixFileFilter;
 
 import com.caplin.cutlass.CutlassConfig;
 
@@ -17,14 +11,7 @@ import java.io.*;
 import java.util.*;
 
 public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
-	public static List<File> listDirs(File dir)
-	{
-		FileFilter filter = FileFilterUtils.and( DirectoryFileFilter.INSTANCE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")) );
-		List<File> files = Arrays.asList( dir.listFiles(filter) );
-		Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
-		
-		return files;
-	}
+	
 	
 	public static Collection<File> sortFiles(Collection<File> files)
 	{		
@@ -72,108 +59,6 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 			in.close();
 			out.close();
 		}
-	}
-	
-	public static void deleteDirContent(File dir) throws IOException {
-		File[] content = dir.listFiles();
-		for (int i=0; i < content.length; i++)
-		{
-			deleteDirAndContents(content[i]);
-		}
-	}
-
-	public static void deleteDirAndContents(File content) throws IOException 
-	{
-		if (content.isDirectory()) {
-			String[] children = content.list();
-			for (int i=0; i<children.length; i++) {
-			   	deleteDirAndContents(new File(content, children[i]));
-			}
-		}
-
-		// The directory is now empty so delete it
-		if(!content.delete())
-		{
-			 throw new IOException("Failed to delete the file " + content.getAbsolutePath());
-		}
-	}
-	
-	public static boolean dirsExist(List<File> fileList, PrintStream out) {
-		boolean exists = true;
-		for (int i = 0; i < fileList.size(); i++)
-		{
-			if(!fileList.get(i).exists())
-			{
-				out.append("Could not find: " +fileList.get(i).getAbsolutePath());
-				exists = false;
-				break;
-			}
-		}		
-		return exists;
-	}
-	
-	public static void createResourcesFromSdkTemplate(File templateDir, File targetDir) throws IOException
-	{
-		createResourcesFromSdkTemplate(templateDir, targetDir, new NotFileFilter(new NameFileFilter("null.txt")));
-	}
-	
-	public static void createResourcesFromSdkTemplate(File templateDir, File targetDir, FileFilter fileFilter) throws IOException
-	{
-		List<File> list = getAllFilesAndFoldersMatchingFilterIncludingSubdirectories(templateDir, fileFilter);
-		
-		if (targetDir.exists() == false)
-		{
-			targetDir.mkdirs();
-		}
-		
-		for (File f : list)
-		{			
-			String relativePathFromTemplateDir = f.getAbsolutePath().replace(templateDir.getAbsolutePath(), "");
-			File newResourceToAdd = new File(targetDir, relativePathFromTemplateDir);
-
-			if (f.isDirectory() == true)
-			{
-				createFolder(newResourceToAdd);
-			}
-			else 
-			{
-				createFile(f, newResourceToAdd);
-			}
-		}
-	}
-	
-	public static void createFile(File source, File newFileLocation) throws IOException
-	{
-		if (source.exists() == true)
-		{
-			if (newFileLocation.exists() == false)
-			{
-				if (newFileLocation.getParentFile().exists() == false)
-				{
-					createFolder(newFileLocation.getParentFile());
-				}
-				
-				FileUtils.copyFile(source, newFileLocation);
-			}
-		}
-	}
-	
-	public static void createFolder(File folderToAdd)
-	{
-		if(!folderToAdd.exists())
-		{
-			folderToAdd.mkdirs();	
-		}		
-	}
-	
-	public static File createTemporaryDirectoryWithSpecifiedFolderName(String folderName) throws IOException
-	{
-		File tempFolder = createTemporaryDirectory("temp");
-		File folder = new File(tempFolder, folderName);
-		
-		folder.mkdir();
-		
-		return folder;
 	}
 	
 	public static File createTemporaryFile(String prefix, String suffix) throws IOException
@@ -227,18 +112,5 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 		FileUtils.copyDirectory(existingSDK, tempDir);
 		return new File(tempDir, CutlassConfig.SDK_DIR);
 	}
-
-	public static String normalizeLineEndings(String content)
-	{
-		return content.replaceAll("\r", "");
-	}
 	
-	public static void createHiddenFileAndFolder(File location) throws IOException
-	{
-		if(!System.getProperty("os.name").toLowerCase().contains("windows"))
-		{
-			new File(location, ".hiddenDir").mkdirs();
-			new File(location, ".hiddenFile").createNewFile();	
-		}
-	}
 }

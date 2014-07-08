@@ -1,0 +1,6 @@
+#!/bin/sh
+
+SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
+BRJS_CLASSPATH="$SCRIPT_DIR/libs/java/system/*:$SCRIPT_DIR/../conf/java/*"
+
+java $JAVA_OPTS -cp "$BRJS_CLASSPATH" org.bladerunnerjs.runner.CommandRunner "$SCRIPT_DIR" "$@"

@@ -52,7 +52,7 @@ public class NodeList<N extends Node> {
 	
 	public List<N> list() {
 		if(list == null) {
-			list = new MemoizedValue<>("NodeList.list", node.root(), node.dir());
+			list = new MemoizedValue<>("NodeList.list "+node.toString(), node.root(), node.dir());
 		}
 		
 		return list.value(() -> {

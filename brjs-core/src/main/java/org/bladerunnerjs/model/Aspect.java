@@ -34,7 +34,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	}
 	
 	@Override
-	public File[] scopeFiles() {
+	public File[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
 			scopeFiles = new File[] {app().dir(), root().sdkLibsDir().dir(), root().file("js-patches"), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
 		}
@@ -91,8 +91,19 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public List<AssetContainer> scopeAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
+		for (JsLib jsLib : parent().jsLibs())
+		{
+			assetContainers.add( jsLib );			
+		}
+		
+		for(Bladeset bladeset : parent().bladesets()) {			
+			for(Blade blade : bladeset.blades()) {
+				assetContainers.add(blade);				
+			}
+			assetContainers.add(bladeset);
+		}
+		
 		assetContainers.add(this);
-		assetContainers.addAll(parent().getNonAspectAssetContainers());
 		
 		return assetContainers;
 	}

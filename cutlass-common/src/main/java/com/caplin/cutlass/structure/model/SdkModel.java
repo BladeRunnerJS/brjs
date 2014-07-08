@@ -70,12 +70,6 @@ public class SdkModel
 		return (UserLibNode) getNodeOfType(path, NodeType.LIB);
 	}
 	
-	public static UserLibsPath getUserLibsPath(File path)
-	{
-		AppNode appNode = getAppNode(path);
-		return (appNode == null) ? new UserLibsPath((File) null) : appNode.getUserLibrariesNode().getPath();
-	}
-	
 	public static WorkbenchNode getWorkbenchNode(File path)
 	{
 		return (WorkbenchNode) getNodeOfType(path, NodeType.WORKBENCH);

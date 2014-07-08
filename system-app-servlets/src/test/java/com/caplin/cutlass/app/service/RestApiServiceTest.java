@@ -14,14 +14,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.testing.BRJSTestFactory;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.util.FileUtility;
 
 
-public class RestApiServiceTest
+public class RestApiServiceTest extends TestModelAccessor
 {
 
 	private static final String NO_APPS_PATH = "src/test/resources/RestApiServiceTest/no-apps"; 
@@ -334,7 +334,7 @@ public class RestApiServiceTest
 	{
 		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
-		App app1 = BRJSAccessor.root.app("app1");
+		App app1 = ThreadSafeStaticBRJSAccessor.root.userApp("app1");
 		File indexFile = new File(app1.storageDir("jsdoc"), "output/index.html");
 		
 		assertFalse(indexFile.exists());
@@ -347,8 +347,9 @@ public class RestApiServiceTest
 	
 	private void setupService(File sdkRoot) throws InvalidSdkDirectoryException
 	{
-		BRJS brjs = BRJSTestFactory.createBRJS(sdkRoot);
-		BRJSAccessor.initialize(brjs);
+		BRJS brjs = createModel(sdkRoot);
+		ThreadSafeStaticBRJSAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		service = new RestApiService(brjs);
 	}
 	

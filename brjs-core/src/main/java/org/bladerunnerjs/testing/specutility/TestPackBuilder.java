@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.AssetContainerBuilder;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -54,8 +54,8 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 		File testFile = testPack.tests().file(testFilePath);
 		String jsStyle = JsStyleUtility.getJsStyle(testFile.getParentFile());
 		
-		if(!jsStyle.equals(NodeJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + NodeJsContentPlugin.JS_STYLE + "'");
+		if(!jsStyle.equals(CommonJsContentPlugin.JS_STYLE)) {
+			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + CommonJsContentPlugin.JS_STYLE + "'");
 		}
 		
 		fileUtil.write(testFile, "require('"+className+"');");

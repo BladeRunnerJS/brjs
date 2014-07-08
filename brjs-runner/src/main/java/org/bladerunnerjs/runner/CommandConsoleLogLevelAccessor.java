@@ -1,24 +1,23 @@
 package org.bladerunnerjs.runner;
 
 import org.bladerunnerjs.model.LogLevelAccessor;
-
+import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.logger.LogLevel;
-import org.bladerunnerjs.logger.RootConsoleLogger;
 
 public class CommandConsoleLogLevelAccessor implements LogLevelAccessor {
-	private final RootConsoleLogger rootLogger;
+	private final ConsoleLoggerStore consoleLoggerStore;
 
-	public CommandConsoleLogLevelAccessor(RootConsoleLogger rootLogger) {
-		this.rootLogger = rootLogger;
+	public CommandConsoleLogLevelAccessor(ConsoleLoggerStore consoleLoggerStore) {
+		this.consoleLoggerStore = consoleLoggerStore;
 	}
 	
 	@Override
 	public LogLevel getLogLevel() {
-		return rootLogger.getLogLevel();
+		return consoleLoggerStore.getLogLevel();
 	}
 	
 	@Override
 	public void setLogLevel(LogLevel logLevel) {
-		rootLogger.setLogLevel(logLevel);
+		consoleLoggerStore.setLogLevel(logLevel);
 	}
 }

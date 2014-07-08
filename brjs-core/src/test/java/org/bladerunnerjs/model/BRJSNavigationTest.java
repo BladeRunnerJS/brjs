@@ -5,19 +5,19 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.testing.utility.BRJSTestFactory;
+import org.bladerunnerjs.testing.utility.LogMessageStore;
+import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class BRJSNavigationTest
+public class BRJSNavigationTest extends TestModelAccessor
 {
 	private NodeTesterFactory<BRJS> nodeTesterFactory;
 	private final File testBase = new File("src/test/resources/BRJSTest");
@@ -26,7 +26,7 @@ public class BRJSNavigationTest
 	@Before
 	public void setup() throws Exception
 	{
-		brjs = BRJSTestFactory.createBRJS(testBase);
+		brjs = createModel(testBase, new TestLoggerFactory(new LogMessageStore()));
 		nodeTesterFactory = new NodeTesterFactory<>(brjs, BRJS.class);
 	}
 	
@@ -37,9 +37,9 @@ public class BRJSNavigationTest
 	}
 
 	@Test
-	public void apps()
+	public void userApps()
 	{
-		nodeTesterFactory.createSetTester(App.class, "apps", "app")
+		nodeTesterFactory.createSetTester(App.class, "userApps", "userApp")
 			.addChild("a1", "apps/a1")
 			.addChild("a2", "apps/a2")
 			.assertModelIsOK();
@@ -124,23 +124,9 @@ public class BRJSNavigationTest
 	}
 	
 	@Test
-	public void logs()
-	{
-		nodeTesterFactory.createItemTester(DirNode.class, "logs", "sdk/log")
-			.assertModelIsOK();
-	}
-	
-	@Test
-	public void apiDocs()
-	{
-		nodeTesterFactory.createItemTester(DirNode.class, "apiDocs", "sdk/docs/jsdoc")
-			.assertModelIsOK();
-	}
-	
-	@Test
 	public void testGettingLoggerForClass() throws Exception
 	{
-		Logger logger = brjs.logger(LoggerType.BUNDLER, this.getClass());
-		assertEquals("brjs.bundler.BRJSNavigationTest", logger.getName());
+		Logger logger = brjs.logger(this.getClass());
+		assertEquals("org.bladerunnerjs.model", logger.getName());
 	}
 }

@@ -6,7 +6,9 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 
 
 public class BundlePathTagHandlerPlugin extends AbstractTagHandlerPlugin
@@ -19,15 +21,25 @@ public class BundlePathTagHandlerPlugin extends AbstractTagHandlerPlugin
 	}
 
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException
 	{
 		writeProdTagContent(tagAttributes, bundleSet, locale, writer, version);
 	}
 
 	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
+	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException
 	{
-		writer.write("../v/"+version);		
+		boolean includeVersion = true;
+		if (tagAttributes.containsKey("version")) {
+			String versionAttribute = tagAttributes.get("version");
+			includeVersion = versionAttribute.toLowerCase().equals("yes") || Boolean.parseBoolean(versionAttribute);
+		}
+		
+		if (includeVersion) {
+			writer.write( AppMetadataUtility.getVersionedBundlePath(version) );
+		} else {
+			writer.write( AppMetadataUtility.getUnversionedBundlePath() );
+		}
 	}
 
 	@Override

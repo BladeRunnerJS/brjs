@@ -14,7 +14,7 @@ public class CommandRunner
 	{
 		String commandName = extractCommandFromArgs(args);
 		String[] commandArgs = extractCommandArgsFromArgs(args);
-		CommandPlugin commandPlugin = commandList.lookupTask(commandName);
+		CommandPlugin commandPlugin = commandList.lookupCommand(commandName);
 		
 		if(commandPlugin == null) throw new NoSuchCommandException(commandName);
 		

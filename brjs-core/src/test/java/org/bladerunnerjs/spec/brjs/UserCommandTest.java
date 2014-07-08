@@ -11,7 +11,7 @@ import org.junit.Test;
 public class UserCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasCommands(new CreateBladeCommand(), new ExplodingCommand())
+		given(brjs).hasCommandPlugins(new CreateBladeCommand(), new ExplodingCommand())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).containsFileWithContents("sdk/version.txt", "{'Version': 'the-version', 'BuildDate': 'the-build-date'}");
 	}
@@ -19,9 +19,7 @@ public class UserCommandTest extends SpecTest {
 	@Test
 	public void messageIsDisplayedIfRunUserCommandIsInvokedWithANonExistentCommandName() {
 		when(brjs).runUserCommand("no-such-command");
-		then(output).containsText(
-			"BladeRunnerJS version: the-version, built: the-build-date",
-			"",
+		then(logging).containsConsoleText(
 			"No such command 'no-such-command'",
 			"--------",
 			"");
@@ -31,7 +29,7 @@ public class UserCommandTest extends SpecTest {
 	@Test
 	public void usageIsDisplayedIfIncorrectArgumentsAreProvided() {
 		when(brjs).runUserCommand("create-blade");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"BladeRunnerJS version: the-version, built: the-build-date",
 			"",
 			"Problem:",
@@ -47,12 +45,10 @@ public class UserCommandTest extends SpecTest {
 	@Test
 	public void TEMP_usageIsDisplayedIfIncorrectArgumentsAreProvided() {
 		when(brjs).runUserCommand("create-blade");
-		then(output).containsText(
-			"BladeRunnerJS version: the-version, built: the-build-date",
-			"",
+		then(logging).containsConsoleText(
 			"Problem:",
 			"  Parameter '")
-		.and(output).containsText(
+		.and(logging).containsConsoleText(
 			"' is required.",
 			"",
 			"Usage:",
@@ -62,9 +58,7 @@ public class UserCommandTest extends SpecTest {
 	@Test
 	public void stackTraceIsDisplayedIfArgumentsAreInvalid() {
 		when(brjs).runUserCommand("explode");
-		then(output).containsText(
-			"BladeRunnerJS version: the-version, built: the-build-date",
-			"",
+		then(logging).containsConsoleText(
 			"Error:",
 			"  Bang!",
 			"",
@@ -73,5 +67,5 @@ public class UserCommandTest extends SpecTest {
 			.and(exceptions).verifyException(CommandOperationException.class);
 	}
 	
-	// TODO: add some tests around the --verbose and --debug flags
+	// TODO: add some tests around the --info and --debug flags
 }

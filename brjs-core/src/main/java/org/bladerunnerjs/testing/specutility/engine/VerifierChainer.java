@@ -55,7 +55,6 @@ public class VerifierChainer {
 	public DirNodeVerifier and(DirNode dirNode) { return new DirNodeVerifier(specTest, dirNode); }
 	public NamedDirNodeVerifier and(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(specTest, namedDirNode); }
 	public LoggerVerifier and(LogMessageStore logStore) { return new LoggerVerifier(specTest, logStore); }
-	public ConsoleWriterVerifier and(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(specTest, consoleMessageStore); }
 	public AppServerVerifier and(ApplicationServer appServer) { return new AppServerVerifier(specTest, appServer); }
 	public JettyServerVerifier and(Server jettyServer) { return new JettyServerVerifier(specTest, jettyServer); }
 	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(specTest, appConf); }

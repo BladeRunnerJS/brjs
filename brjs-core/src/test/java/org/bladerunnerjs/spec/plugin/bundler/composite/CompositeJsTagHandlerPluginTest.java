@@ -24,8 +24,8 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -82,7 +82,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	
 	@Test
 	public void theAliasBlobRequestIsOutputLast() throws Exception {
-		given(aspect).hasNodeJsPackageStyle("src/appns/node")
+		given(aspect).hasCommonJsPackageStyle("src/appns/node")
 		.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 		.and(aspect).hasClass("appns/node/Class")
 		.and(aspect).hasClass("appns.namespaced.Class")
@@ -106,7 +106,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	
 	@Test
 	public void seperateScriptTagsAreGeneratedInTheCorrectOrder() throws Exception {
-		given(aspect).hasNodeJsPackageStyle("src/appns/node")
+		given(aspect).hasCommonJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")

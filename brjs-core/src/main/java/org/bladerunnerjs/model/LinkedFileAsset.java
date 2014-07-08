@@ -3,13 +3,16 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
+import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 import org.bladerunnerjs.utility.reader.factory.JsAndXmlCommentStrippingReaderFactory;
 
 /**
@@ -23,18 +26,24 @@ public class LinkedFileAsset implements LinkedAsset {
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
+	private InfoFileModifiedChecker modificationChecker;
 	
 	public LinkedFileAsset(File assetFile, AssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
 			app = assetLocation.assetContainer().app();
 			this.assetFile = assetFile;
-			assetPath = RelativePathUtility.get(app.dir(), assetFile);
+			modificationChecker = new InfoFileModifiedChecker(assetLocation.root().getFileInfo(assetFile));
+			assetPath = RelativePathUtility.get(app.root(), app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public boolean haveFileContentsChanged()  {
+		return modificationChecker.hasChangedSinceLastCheck();
 	}
 	
 	@Override
@@ -43,9 +52,9 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {		
+	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			return bundlableNode.getSourceModules(assetLocation, getDependencyCalculator().getRequirePaths());
+			 return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -62,6 +71,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	{
 		return assetFile.getParentFile();
 	}
+	
 	
 	@Override
 	public String getAssetName() {
@@ -85,5 +95,14 @@ public class LinkedFileAsset implements LinkedAsset {
 		}
 		return trieBasedDependenciesCalculator;
 	}
+
+	@Override
+	public List<String> getRequirePaths() {
+		return Collections.emptyList();
+	}
 	
+	@Override
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+	}
 }

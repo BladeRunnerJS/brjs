@@ -3,6 +3,7 @@ package org.bladerunnerjs.model.app.build;
 import static org.bladerunnerjs.utility.AppRequestHandler.BUNDLE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.INDEX_PAGE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.LOCALE_FORWARDING_REQUEST;
+import static org.bladerunnerjs.utility.AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,38 +15,46 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.UrlContentAccessor;
+import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtility;
-import org.bladerunnerjs.utility.PageAccessor;
-import org.bladerunnerjs.utility.SimplePageAccessor;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.WebXmlCompiler;
 
 
 public abstract class AbstractAppBuilder
 {
 
-	abstract void preBuild(App app, File targetDir) throws ModelOperationException;
-	abstract void postBuild(File exportDir, App app, File targetDir) throws ModelOperationException;
+	abstract void preBuild(App app, File target) throws ModelOperationException;
+	abstract void postBuild(File exportDir, App app, File target) throws ModelOperationException;
 	
-	public void build(App app, File targetDir) throws ModelOperationException {
+	public void build(App app, File target) throws ModelOperationException {
+		File targetContainer = target.getParentFile();
+		
 		AppRequestHandler appRequestHandler = new AppRequestHandler(app);
 		
 		File temporaryExportDir = getTemporaryExportDir(app);
 		
-		if(!targetDir.isDirectory()) throw new ModelOperationException("'" + targetDir.getPath() + "' is not a directory.");
-		this.preBuild(app, targetDir);
+		if(!targetContainer.isDirectory()) throw new ModelOperationException("'" + targetContainer.getPath() + "' is not a directory.");
+		this.preBuild(app, target);
 		
 		try {
-			String[] locales = app.appConf().getLocales();
+			Locale[] locales = app.appConf().getLocales();
 			String version = app.root().getAppVersionGenerator().getProdVersion();
-			PageAccessor pageAcessor = new SimplePageAccessor();
+			UrlContentAccessor contentPluginUtility = new StaticContentAccessor(app);
 			
 			File appWebInf = app.file("WEB-INF");
 			if(appWebInf.exists()) {
@@ -54,6 +63,9 @@ public abstract class AbstractAppBuilder
 				File exportedWebXml = new File(exportedWebInf, "web.xml");
 				if (exportedWebXml.isFile()) {
 					WebXmlCompiler.compile(exportedWebXml);					
+					String webXmlContents = FileUtils.readFileToString(exportedWebXml);
+					webXmlContents = webXmlContents.replace(AppMetadataUtility.APP_VERSION_TOKEN, version);
+					FileUtils.writeStringToFile(exportedWebXml, webXmlContents, false);
 				}
 			}
 			
@@ -63,39 +75,52 @@ public abstract class AbstractAppBuilder
 				File localeForwardingFile = new File(temporaryExportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
 				
 				localeForwardingFile.getParentFile().mkdirs();
-				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
-					appRequestHandler.writeLocaleForwardingPage(os);
+				
+				try (OutputStream os = new FileOutputStream(localeForwardingFile)) {
+					ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(app.root(), contentPluginUtility, version);
+					content.write(os);
 				}
 				
-				for(String locale : locales) {
+				for(Locale locale : locales) {
 					String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
-					File localeIndexPageFile = new File(temporaryExportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale) + indexPageName);
+					File localeIndexPageFile = new File(temporaryExportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale.toString()) + indexPageName);
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						appRequestHandler.writeIndexPage(aspect, locale, version, pageAcessor, os, RequestMode.Prod);
+						ResponseContent content = appRequestHandler.getIndexPageContent(aspect, locale, version, contentPluginUtility, RequestMode.Prod);
+						content.write(os);
 					}
 				}
 				
-				for(ContentPlugin contentPlugin : app.root().plugins().contentProviders()) {
+				for(ContentPlugin contentPlugin : app.root().plugins().contentPlugins()) {
 					if(contentPlugin.getCompositeGroupName() == null) {
 						for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-							File bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
-							
-							bundleFile.getParentFile().mkdirs();
-							try(OutputStream os = new FileOutputStream(bundleFile)) {
-								contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os, version);
+							File bundleFile;
+							if (contentPath.startsWith("/")) {
+								bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(UNVERSIONED_BUNDLE_REQUEST, aspectPrefix, contentPath));								
+							} else {
+								bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));																
 							}
+							
+							ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
+							ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);
+							bundleFile.getParentFile().mkdirs();
+							bundleFile.createNewFile();
+							pluginContent.write( new FileOutputStream(bundleFile) );
 						}
+					} else {
+						ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
+						app.root().logger(this.getClass()).info("The content plugin '%s' is part of a composite content plugin so no files will be generated. " + 
+								"If content bundles should be generated for this content plugin, you should set it's composite group name to null.", plugin.getClass().getSimpleName());
 					}
 				}
 			}
 		}
-		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException | ParseException e) {
+		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException | ParseException | ResourceNotFoundException e) {
 			throw new ModelOperationException(e);
 		}
 		
-		this.postBuild(temporaryExportDir, app, targetDir);
+		this.postBuild(temporaryExportDir, app, target);
 		FileUtils.deleteQuietly(temporaryExportDir);
 	}
 	

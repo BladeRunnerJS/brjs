@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.FileAccessLimitScope;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -25,14 +24,14 @@ public class MemoizedValue<T extends Object> {
 	private static final String RECOMPUTING_LOG_MSG = "Recomputing '%s'.";
 	
 	public MemoizedValue(String valueIdentifier, Node node) {
-		this(valueIdentifier, node.root(), node.scopeFiles());
+		this(valueIdentifier, node.root(), node.memoizedScopeFiles());
 	}
 	
 	public MemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) {
 		this.valueIdentifier = valueIdentifier;
 		this.rootNode = rootNode;
 		this.watchItems = watchItems;
-		logger = rootNode.logger(LoggerType.UTIL, getClass());
+		logger = rootNode.logger(getClass());
 		
 		if(watchItems.length == 0) {
 			throw new IllegalStateException("At least one directory or file must be provided within the watch list.");

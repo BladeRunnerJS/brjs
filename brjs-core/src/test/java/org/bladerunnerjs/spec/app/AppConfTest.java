@@ -31,7 +31,7 @@ public class AppConfTest extends SpecTest {
 	public void appConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(app).appConf().write();
-		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: appns");
+		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appns");
 	}
 	
 	@Ignore
@@ -46,14 +46,14 @@ public class AppConfTest extends SpecTest {
 	public void updateLocaleInAppConf() throws Exception {
 		given(app).hasBeenPopulated("appx");
 		when(app).appConf().setLocales("de").write();
-		then(app).fileHasContents("app.conf", "locales: de\nrequirePrefix: appx");
+		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: de\nrequirePrefix: appx");
 	}
 	
 	@Test
 	public void updateAppNamespaceInAppConf() throws Exception {
 		given(app).hasBeenPopulated("appx");
 		when(app).appConf().setAppNamespace("newns").write();
-		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: newns");
+		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: newns");
 	}
 	
 	@Test
@@ -72,7 +72,7 @@ public class AppConfTest extends SpecTest {
 	public void readingAnAppConfFileWithMissingLocaleWillUseADefault() throws Exception {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "requirePrefix: appns");
-		then(app.appConf().getDefaultLocale()).textEquals("en");
+		then(app.appConf().getDefaultLocale().toString()).textEquals("en");
 	}
 
 	@Test
@@ -126,6 +126,7 @@ public class AppConfTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "requirePrefix: app\nlocales: en, en_GB, 123, de");
 		when(app).appConf();
-		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'123' not a valid locale"));
+		then(exceptions).verifyException(IllegalArgumentException.class, unquoted("'123' is not a valid locale"))
+			.whereTopLevelExceptionIs(ConfigException.class, unquoted(app.file("app.conf").getPath()));
 	}
 }

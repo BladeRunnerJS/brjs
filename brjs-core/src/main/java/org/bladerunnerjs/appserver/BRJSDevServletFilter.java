@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 
@@ -27,14 +28,14 @@ public class BRJSDevServletFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		try {
 			servletContext = filterConfig.getServletContext();
-			BRJSThreadSafeModelAccessor.initializeModel(servletContext);
+			ThreadSafeStaticBRJSAccessor.initializeModel( new File(servletContext.getRealPath("/")) );
 			
 			try {
-				brjs = BRJSThreadSafeModelAccessor.aquireModel();
-				app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath(".")), App.class);
+				brjs = ThreadSafeStaticBRJSAccessor.aquireModel();
+				app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
 			}
 			finally {
-				BRJSThreadSafeModelAccessor.releaseModel();
+				ThreadSafeStaticBRJSAccessor.releaseModel();
 			}
 		}
 		catch (InvalidSdkDirectoryException e) {
@@ -44,7 +45,7 @@ public class BRJSDevServletFilter implements Filter {
 	
 	@Override
 	public void destroy() {
-		BRJSThreadSafeModelAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.destroy();
 	}
 	
 	@Override
@@ -61,4 +62,5 @@ public class BRJSDevServletFilter implements Filter {
 			chain.doFilter(request, response);
 		}
 	}
+	
 }

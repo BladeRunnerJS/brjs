@@ -1,6 +1,8 @@
 package org.bladerunnerjs.spec.plugin.bundler.unbundledresources;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,8 @@ import org.junit.Test;
 
 public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private StringBuffer response = new StringBuffer();
+	private OutputStream binaryResponse;
+	private File binaryResponseFile;
 	private List<String> requestsList;
 	private ContentPlugin unbundledResourcesPlugin;
 	private App app;
@@ -25,8 +29,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			appAspect = app.aspect("default");
@@ -34,14 +38,16 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
 			
-		unbundledResourcesPlugin = brjs.plugins().contentProvider("unbundled-resources");
+		binaryResponseFile = File.createTempFile("CssResourceContentPluginTest", "tmp");
+		binaryResponse = new FileOutputStream(binaryResponseFile);
+		unbundledResourcesPlugin = brjs.plugins().contentPlugin("unbundled-resources");
 		requestsList = new ArrayList<String>();
 	}
 	
 	@Test
 	public void ifThereAreNoFilesInUnbundledResourcesThenNoRequestsWillBeGenerated() throws Exception {
 		given(appAspect).indexPageHasContent("index page");
-		then(appAspect).prodAndDevRequestsForContentPluginsAre("unbundled-resources");
+		then(appAspect).prodAndDevRequestsForContentPluginsAreEmpty("unbundled-resources");
 	}
 	
 	@Test
@@ -110,6 +116,30 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 				"unbundled-resources/someFile.txt",
 				"unbundled-resources/a/dir/someFile.txt"
 		);
+	}
+	
+	@Test
+	public void jspsCanBeUsedInUnbundledResources() throws Exception
+	{
+		try {
+    		given(app).hasBeenPopulated()
+        		.and(appAspect).containsFileWithContents("unbundled-resources/file.jsp", "2 + 2 = <%= 2 + 2 %>")
+        		.and(brjs).hasDevVersion("1234")
+        		.and(brjs.applicationServer(appServerPort)).started();
+        	then(brjs.applicationServer(appServerPort)).requestForUrlReturns("/app1/v/123/unbundled-resources/file.jsp", "2 + 2 = 4");
+		} finally {
+			brjs.applicationServer().stop();
+		}
+	}
+	
+	@Test
+	public void imagesArentCorrupt() throws Exception
+	{
+		given(app).hasBeenCreated()
+    		.and(appAspect).hasBeenCreated()
+    		.and(appAspect).containsFileCopiedFrom("unbundled-resources/br-logo.png", "src/test/resources/br-logo.png");
+    	when(appAspect).requestReceived("unbundled-resources/br-logo.png", binaryResponse);
+    	then(binaryResponseFile).sameAsFile("src/test/resources/br-logo.png");
 	}
 	
 }

@@ -39,7 +39,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	}
 	
 	@Override
-	public File[] scopeFiles() {
+	public File[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
 			// TODO: perhaps all library objects should be app specific (even when they are only in the sdk) so that libraries can be cached better
 			scopeFiles = new File[] {root().dir()};
@@ -63,8 +63,10 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	@Override
 	public String getName()
 	{
-		// TODO: remove this 'caplin' to 'br' hack once all the code is using the new model
-		return (name != null) ? name : dir().getName().replaceAll("^caplin$", "br");
+		if(name == null){
+			 name = dir().getName();
+		}
+		return name;
 	}
 	
 	@Override

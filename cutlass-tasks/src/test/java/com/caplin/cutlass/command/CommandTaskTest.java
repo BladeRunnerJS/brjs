@@ -4,10 +4,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.CommandPlugin;
@@ -22,10 +24,9 @@ import org.bladerunnerjs.plugin.base.AbstractPlugin;
  * It should be extended by any tests that are testing a class that implements CommandTask
  * and the commandTask variable replaced with an instance of the class being tested.
  */
-public class CommandTaskTest
+public class CommandTaskTest extends TestModelAccessor
 {
 	protected CommandPlugin commandTask;
-	protected ConsoleWriter out;
 	
 	@Before
 	public void setup() throws Exception
@@ -41,6 +42,8 @@ public class CommandTaskTest
 
 	private class DummyCommandTask extends AbstractPlugin implements LegacyCommandPlugin
 	{
+		private Logger logger;
+
 		public DummyCommandTask(File sdkBaseDir, String commandName)
 		{
 		}
@@ -48,6 +51,7 @@ public class CommandTaskTest
 		@Override
 		public void setBRJS(BRJS brjs)
 		{
+			this.logger = brjs.logger(this.getClass());
 		}
 		
 		@Override
@@ -76,7 +80,7 @@ public class CommandTaskTest
 		@Override
 		public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 		{
-			out.println("DummyCommandTask.doCommand");
+			logger.println("DummyCommandTask.doCommand");
 			return 0;
 		}
 	}

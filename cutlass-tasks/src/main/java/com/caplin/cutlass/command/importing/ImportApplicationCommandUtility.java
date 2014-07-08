@@ -5,10 +5,9 @@ import java.io.IOException;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import com.caplin.cutlass.BRJSAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 
 import com.caplin.cutlass.CutlassConfig;
@@ -18,7 +17,6 @@ import org.bladerunnerjs.utility.ServerUtility;
 
 public class ImportApplicationCommandUtility
 {
-	private Logger logger = BRJSAccessor.root.logger(LoggerType.COMMAND, ImportApplicationCommandUtility.class);
 	
 	public File createApplicationDirIfItDoesNotAlreadyExist(File sdkBaseDir, String applicationName) throws CommandOperationException
 	{
@@ -65,7 +63,11 @@ public class ImportApplicationCommandUtility
 		File newApplicationDirectoryWEBINFLibFolder = new File(applicationDir, "/WEB-INF/lib");
 		
 		FileUtility.copyDirectoryContents(installedSDKJavaApplicationLibFolder, newApplicationDirectoryWEBINFLibFolder);
-		logger.info("Successfully copied SDK application jars to '" + applicationDir.getName() + "/WEB-INF/lib'");
+		
+		if (ThreadSafeStaticBRJSAccessor.root != null) {
+			Logger logger = ThreadSafeStaticBRJSAccessor.root.logger(ImportApplicationCommandUtility.class);
+			logger.println("Successfully copied SDK application jars to '" + applicationDir.getName() + "/WEB-INF/lib'");
+		}
 	}
 
 	public String getCurrentApplicationName(File temporaryDirectoryForNewApplication) throws CommandOperationException

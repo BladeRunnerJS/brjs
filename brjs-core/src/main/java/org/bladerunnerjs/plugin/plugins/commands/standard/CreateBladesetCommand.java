@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Bladeset;
@@ -26,8 +26,8 @@ public class CreateBladesetCommand extends ArgsParsingCommandPlugin
 		public static final String BLADESET_PATH_CONSOLE_MSG = "  %s";
 	}
 	
-	private ConsoleWriter out;
 	private BRJS brjs;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -39,7 +39,7 @@ public class CreateBladesetCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -75,8 +75,8 @@ public class CreateBladesetCommand extends ArgsParsingCommandPlugin
 			throw new CommandOperationException("Cannot create bladeset '" + bladeset.dir().getPath() + "'", e);
 		}
 		
-		out.println(Messages.BLADESET_CREATE_SUCCESS_CONSOLE_MSG, bladesetName);
-		out.println(Messages.BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
+		logger.println(Messages.BLADESET_CREATE_SUCCESS_CONSOLE_MSG, bladesetName);
+		logger.println(Messages.BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
 		
 		return 0;
 	}

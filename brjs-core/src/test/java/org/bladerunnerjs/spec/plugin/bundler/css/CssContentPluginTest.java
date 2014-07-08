@@ -22,7 +22,9 @@ public class CssContentPluginTest extends SpecTest {
 	private File commonTheme;
 	private File mainTheme;
 	private File bladeMainTheme;
+	private JsLib brBoostrapLib;
 	private JsLib nonConformantLib;
+	private JsLib nonConformantLib2;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer requestResponse = new StringBuffer();
 	private Workbench workbench;
@@ -31,14 +33,16 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers()
+		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			appConf = app.appConf();
 			aspect = app.aspect("default");
 			commonTheme = aspect.file("themes/common");
 			mainTheme = aspect.file("themes/main");
+			brBoostrapLib = brjs.sdkLib("br-bootstrap");
 			nonConformantLib = app.jsLib("non-conformant-lib");
+			nonConformantLib2 = app.jsLib("non-conformant-lib2");
 			bladerunnerConf = brjs.bladerunnerConf();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
@@ -49,14 +53,14 @@ public class CssContentPluginTest extends SpecTest {
 	@Test
 	public void ifThereAreNoCssFilesThenNoRequestsWillBeGenerated() throws Exception {
 		given(aspect).indexPageHasContent("index page");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("css");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("css");
 	}
 	
 	@Test
 	public void onlyCssFilesAreValid() throws Exception {
 		given(commonTheme).containsFile("style.style")
 		.and(aspect).indexPageHasContent("index page");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("css");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("css");
 	}
 	
 	@Test
@@ -180,6 +184,37 @@ public class CssContentPluginTest extends SpecTest {
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style1.css")
 			.and(requestResponse).doesNotContainText("style2.css");
+	}
+
+	@Test
+	public void cssFilesForTransitivelyDependantThirdpartyLibrariesAppearInTheCommonTheme() throws Exception {
+		given(aspect).indexPageRequires(nonConformantLib2)
+			.and(nonConformantLib2).containsFileWithContents("thirdparty-lib.manifest", "depends: non-conformant-lib\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFile("style1.css");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("style1.css");
+	}
+	
+	@Test
+	public void cssFilesForDependenciesOfBoostrapAppearInTheCommonTheme() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRequires("appns/Class1")
+			.and(brBoostrapLib).containsFileWithContents("thirdparty-lib.manifest", "depends: non-conformant-lib\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFile("style1.css");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("style1.css");
+	}
+	
+	@Test
+	public void cssFilesForDependantThirdpartyLibrariesAppearInTheCommonTheme() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRequires(nonConformantLib)
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFile("style1.css");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("style1.css");
 	}
 
 	@Test
@@ -322,7 +357,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img.png');}");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img.png\");}");
+		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/img.png');}");
 	}
 	
 	@Test
@@ -331,7 +366,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img/img.png');}");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img/img.png\");}");
+		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/img/img.png');}");
 	}
 	
 	@Test
@@ -340,7 +375,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/img.png');}");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/wibble/img.png\");}");
+		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/wibble/img.png');}");
 	}
 
 	@Test
@@ -430,5 +465,13 @@ public class CssContentPluginTest extends SpecTest {
     		.and(requestResponse).doesNotContainText("stylesheet_ab_cd.css");
 	}
 	
+	@Test
+	public void rewrittenImageURLsCanHaveAnyExcetion() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/image.with-my-super-cool-extension');}");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/wibble/image.with-my-super-cool-extension');}");
+	}
 	
 }

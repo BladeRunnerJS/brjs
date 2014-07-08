@@ -27,8 +27,8 @@ public class BuildAppCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsCommands()
-			.and(brjs).automaticallyFindsBundlers()
+		given(brjs).automaticallyFindsCommandPlugins()
+			.and(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
@@ -65,7 +65,7 @@ public class BuildAppCommandTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("build-app", "app");
 		then(brjs).hasDir("generated/built-apps/app")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
 	}
 	
 	@Test
@@ -74,7 +74,7 @@ public class BuildAppCommandTest extends SpecTest {
 			.and(brjs).commandHasBeenRun("build-app", "app");
 		when(brjs).runCommand("build-app", "app");
 		then(brjs).hasDir("generated/built-apps/app")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath())
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath())
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -84,7 +84,7 @@ public class BuildAppCommandTest extends SpecTest {
 			.and(brjs).commandHasBeenRun("build-app", "app", "-w");
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).hasFile("generated/built-apps/app.war")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath())
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath())
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -125,7 +125,7 @@ public class BuildAppCommandTest extends SpecTest {
 			.and(brjs).hasDir("sdk/target");
 		when(brjs).runCommand("build-app", "app", "target");
 		then(brjs).hasDir("sdk/target/app")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
 	}
 	
 	@Test
@@ -144,7 +144,7 @@ public class BuildAppCommandTest extends SpecTest {
 			.and(brjs).hasDir("sdk/target");
 		when(brjs).runCommand("build-app", "app", brjs.file("sdk/target").getAbsolutePath());
 		then(brjs).hasDir("sdk/target/app")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
 	}
 	
 	@Test
@@ -153,7 +153,7 @@ public class BuildAppCommandTest extends SpecTest {
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath());
 	}
 	
 	@Test
@@ -162,11 +162,11 @@ public class BuildAppCommandTest extends SpecTest {
 			.and(brjs.appJars()).containsFile("some-jar.jar")
 			.and(brjs).commandHasBeenRun("create-app", "app")
 			.and(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
-			.and(brjs.sdkLibsDir()).containsFileWithContents("locale-forwarder.js", "Locale Forwarder");
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js");
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath());
 	}	
 	
 	@Test
@@ -209,6 +209,16 @@ public class BuildAppCommandTest extends SpecTest {
     	then(brjs).fileContentsContains("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "<prod-config")
     		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "start-env")
     		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "end-env");
+	}
+	
+	@Test
+	public void appVersionTokenIsReplaced() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>")
+			.and(brjs).hasProdVersion("1234");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234</web-xml>")
+			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@appVersion@");
 	}
 	
 	@Test

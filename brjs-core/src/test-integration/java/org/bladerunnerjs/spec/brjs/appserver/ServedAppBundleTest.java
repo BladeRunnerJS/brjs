@@ -19,9 +19,11 @@ public class ServedAppBundleTest extends SpecTest
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated()
-			.and(brjs).usesProductionTemplates();
+			.and(brjs).usesProductionTemplates()
+			.and(brjs).usedForServletModel();
 		
 		// generate the app structure
 		App app = brjs.app("app");
@@ -63,23 +65,5 @@ public class ServedAppBundleTest extends SpecTest
 		
 		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
 			.and(appServer).requestForUrlContains(jsBundleUrlPath, "appns/bs/b1/Class");
-	}
-	
-	@Test
-	public void javascriptContentTypeAndCharacterEncodingAreCorrectlySet() throws Exception {
-		String jsBundleUrlPath = "/app/v/dev/js/dev/combined/bundle.js";
-		
-		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
-			.and(appServer).contentTypeForRequestIs(jsBundleUrlPath, "application/javascript")
-			.and(appServer).characterEncodingForRequestIs(jsBundleUrlPath, "UTF-8");
-	}
-	
-	@Test
-	public void htmlContentTypeAndCharacterEncodingAreCorrectlySet() throws Exception {
-		String htmlBundleUrlPath = "/app/v/dev/html/bundle.html";
-		
-		then(appServer).requestCanBeMadeFor(htmlBundleUrlPath)
-			.and(appServer).contentTypeForRequestIs(htmlBundleUrlPath, "text/html")
-			.and(appServer).characterEncodingForRequestIs(htmlBundleUrlPath, "UTF-8");
 	}
 }

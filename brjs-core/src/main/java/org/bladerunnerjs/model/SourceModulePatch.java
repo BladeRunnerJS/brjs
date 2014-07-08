@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.util.TreeMap;
 import java.util.Map;
 
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -41,11 +40,15 @@ public class SourceModulePatch
 		return patchFile;
 	}
 	
+	public boolean patchAvailable() {
+		return patchFile.isFile() && assetLocation.assetContainer() instanceof JsLib;
+	}
+	
 	public Reader getReader()
 	{
 		Reader reader;
 		
-		if ( (!patchFile.exists()) || !(assetLocation.assetContainer() instanceof JsLib) )
+		if ( !(assetLocation.assetContainer() instanceof JsLib) )
 		{
 			reader = new StringReader("");
 		}
@@ -53,7 +56,7 @@ public class SourceModulePatch
 		{
     		if (patchFile.isFile())
     		{
-    			brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
+    			brjs.logger(SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(assetLocation.root(), brjs.dir(), patchFile));
     			try
     			{
     				reader = new BufferedReader(new UnicodeReader(patchFile, brjs.bladerunnerConf().getDefaultFileCharacterEncoding()));
@@ -65,7 +68,7 @@ public class SourceModulePatch
     		}
     		else
     		{
-				brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
+				brjs.logger(SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(assetLocation.root(), brjs.dir(),patchFile));
 				reader = new StringReader("");
     		}
 		}
@@ -74,7 +77,7 @@ public class SourceModulePatch
 	}
 	
 	
-	/*----- static methods for getting patches so we can caches them -----*/
+	/*----- static methods for getting patches so we can cache them -----*/
 	
 	public static SourceModulePatch getPatchForRequirePath(AssetLocation assetLocation, String requirePath)
 	{

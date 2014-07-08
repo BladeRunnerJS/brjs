@@ -2,10 +2,11 @@ package org.bladerunnerjs.spec.app;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,35 +16,42 @@ public class AppServeTest extends SpecTest {
 	private Aspect alternateAspect;
 	private Workbench workbench;
 	private StringBuffer response = new StringBuffer();
-	private DirNode sdkLibsDir;
 	
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
+		given(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsContentPlugins()
-			.and(brjs).hasTagPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
+			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
+			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");
 			alternateAspect = app.aspect("alternate");
 			workbench = app.bladeset("bs").blade("b1").workbench();
-			sdkLibsDir = brjs.sdkLibsDir();
 	}
 	
 	@Test
 	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecified() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
-			.and(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "locale forwarding page");
+			.and(brjs).localeForwarderHasContents("locale forwarding page");
 		when(app).requestReceived("", response);
 		then(response).containsText("locale forwarding page");
 	}
 	
 	@Test
+	public void exceptionIsThrownIfAnInvalidLocaleIsRequested() throws Exception {
+		given(defaultAspect).indexPageHasContent("index page")
+    		.and(brjs).localeForwarderHasContents("locale forwarding page");
+    	when(app).requestReceived("zz/", response);
+    	then(exceptions).verifyException(ResourceNotFoundException.class, "zz");
+	}
+	
+	@Test
 	public void indexPageCanBeAccessed() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js");
+			.and(brjs).localeForwarderHasContents("");
 		when(app).requestReceived("en/", response);
 		then(response).textEquals("index page");
 	}
@@ -51,7 +59,7 @@ public class AppServeTest extends SpecTest {
 	@Test
 	public void tagsWithinIndexPagesAreProcessed() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@tagToken @/>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js");
+			.and(brjs).localeForwarderHasContents("");
 		when(app).requestReceived("en/", response);
 		then(response).textEquals("dev replacement");
 	}
@@ -59,7 +67,8 @@ public class AppServeTest extends SpecTest {
 	@Test
 	public void localesCanBeUsedInTagHandlers() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@localeToken @/>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js");
+			.and(brjs).localeForwarderHasContents("")
+			.and(app).hasSupportedLocales("en_GB");
 		when(app).requestReceived("en_GB/", response);
 		then(response).textEquals("- en_GB");
 	}
@@ -67,7 +76,7 @@ public class AppServeTest extends SpecTest {
 	@Test
 	public void workbenchPageCanBeAccessed() throws Exception {
 		given(workbench).indexPageHasContent("workbench index page")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js");
+			.and(brjs).localeForwarderHasContents("");
 		when(app).requestReceived("workbench/bs/b1/en/", response);
 		then(response).textEquals("workbench index page");
 	}
@@ -97,5 +106,13 @@ public class AppServeTest extends SpecTest {
 			.and(workbench).containsFileWithContents("src/appns/template.html", "<div id='template-id'>workbench template file</div>");
 		when(app).requestReceived("workbench/bs/b1/v/dev/html/bundle.html", response);
 		then(response).containsText("workbench template file");
+	}
+	
+	@Test
+	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
+	{
+		given(app).hasBeenPopulated();
+		when(app).requestReceived("static/mock-content-plugin/unversioned/url", response);
+		then(response).containsText(MockContentPlugin.class.getCanonicalName());
 	}
 }

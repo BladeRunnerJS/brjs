@@ -11,11 +11,12 @@ import java.util.Set;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.BundleSetCreator;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
@@ -43,7 +44,7 @@ public class BundleSetBuilder {
 	
 	public BundleSetBuilder(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
-		logger = bundlableNode.root().logger(LoggerType.BUNDLER, BundleSetCreator.class);
+		logger = bundlableNode.root().logger(BundleSetCreator.class);
 	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
@@ -52,8 +53,14 @@ public class BundleSetBuilder {
 		
 		if (bundlableNode instanceof Workbench) {
 			for ( AssetLocation assetLocation : bundlableNode.app().aspect("default").seedAssetLocations() ) {
-				addUncopedAssetLocation( assetLocation );				
+				addUnscopedAssetLocation( assetLocation );				
 			}
+		}
+		
+		List<SourceModule> bootstrappingSourceModules = new ArrayList<SourceModule>();
+		if (!sourceModules.isEmpty())
+		{
+			addBootstrapAndDependencies(bootstrappingSourceModules);
 		}
 		
 		try {
@@ -61,27 +68,12 @@ public class BundleSetBuilder {
 			resourceLocationList.addAll(assetLocations);
 			orderAssetLocations(bundlableNode, resourceLocationList);
 			
-			
 			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases)) {
-				addSourceModule(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
+				addSourceModule((SourceModule)bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
 			}
 		}
 		catch(RequirePathException e) {
 			throw new ModelOperationException(e);
-		}
-		
-		SourceModule bootstrapSourceModule = null;
-		List<SourceModule> bootstrappingSourceModules = new ArrayList<SourceModule>();
-		try {
-			if (!sourceModules.isEmpty())
-			{
-				bootstrapSourceModule = bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME);
-				addSourceModule( bootstrapSourceModule );
-				addAllSourceModuleDependencies(bootstrapSourceModule, bootstrappingSourceModules);
-			}
-		}
-		catch(RequirePathException e) {
-			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
 		}
 		
 		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules, orderDependentSourceModuleDependencies).getOrderedSourceModules();
@@ -105,7 +97,7 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		
 		if(linkedAssets.add(linkedAsset)) {
-			List<SourceModule> moduleDependencies = new ArrayList<>(linkedAsset.getDependentSourceModules(bundlableNode));
+			List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
 			
 			if (linkedAsset instanceof SourceModule) {
 				moduleDependencies.addAll( ((SourceModule) linkedAsset).getOrderDependentSourceModules(bundlableNode) );
@@ -117,15 +109,20 @@ public class BundleSetBuilder {
 				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
 			}
 			else {
-				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), sourceFilePaths(moduleDependencies));
+				
+				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), assetFilePaths(moduleDependencies));
 			}
 			
 			if (linkedAsset instanceof SourceModule) {
 				addSourceModule((SourceModule) linkedAsset);
 			}
 			
-			for(SourceModule sourceModule : moduleDependencies) {
-				addSourceModule(sourceModule);
+			for(Asset asset : moduleDependencies) {
+				if(asset instanceof SourceModule){
+					addSourceModule((SourceModule)asset);
+				}else{
+					addAssetLocation(asset.assetLocation());
+				}
 			}
 			
 			addAssetLocation(linkedAsset.assetLocation());
@@ -135,7 +132,7 @@ public class BundleSetBuilder {
 	
 	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
 		
-		if(assetLocations.add(assetLocation)) {
+		if (assetLocations.add(assetLocation)) {
 			for(LinkedAsset resourceSeedFile : assetLocation.linkedAssets()) {
 				addLinkedAsset(resourceSeedFile);
 			}
@@ -146,7 +143,7 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private void addUncopedAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
+	private void addUnscopedAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
 		if (assetLocation == null) { return; }
 		if (assetLocations.add(assetLocation)) {			
 			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
@@ -165,11 +162,12 @@ public class BundleSetBuilder {
 				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
 				if (alias != null)
 				{
-					SourceModule sourceModule = bundlableNode.getSourceModule(alias.getRequirePath());
+					SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
 					addSourceModule(sourceModule);
 					
 					if(alias.getInterfaceName() != null) {
-						addOrderDependentSourceModuleDependency(sourceModule, bundlableNode.getSourceModule(alias.getInterfaceRequirePath()));
+						LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
+						addOrderDependentSourceModuleDependency(sourceModule, (SourceModule)linkedAsset);
 					}
 					
 					aliases.add(alias);
@@ -194,11 +192,11 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private String sourceFilePaths(List<SourceModule> sourceModules) {
+	private String assetFilePaths(List<Asset> assets) {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
-		for(SourceModule sourceModule : sourceModules) {
-			sourceFilePaths.add(sourceModule.getAssetPath());
+		for(Asset asset : assets) {
+			sourceFilePaths.add(asset.getAssetPath());
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
@@ -218,10 +216,12 @@ public class BundleSetBuilder {
 		}
 		processedModules.add(sourceModule);
 		
-		for (SourceModule dependency : sourceModule.getDependentSourceModules(bundlableNode))
+		for (Asset asset : sourceModule.getDependentAssets(bundlableNode))
 		{
-			if (!sourceModules.contains(dependency)) {
-				addAllSourceModuleDependencies(dependency, sourceModules, processedModules);
+			if (!sourceModules.contains(asset)) {
+				if(asset instanceof SourceModule){
+					addAllSourceModuleDependencies((SourceModule)asset, sourceModules, processedModules);
+				}
 			}
 		}
 		sourceModules.add(sourceModule);
@@ -241,7 +241,21 @@ public class BundleSetBuilder {
 				}
 			}
 			unorderedAssetLocations.removeAll(assetLocationsForThisContainer);
-			unorderedAssetLocations.addAll(0, assetLocationsForThisContainer);
+			unorderedAssetLocations.addAll(assetLocationsForThisContainer);
+		}
+	}
+	
+	private void addBootstrapAndDependencies(List<SourceModule> bootstrappingSourceModules) throws ModelOperationException
+	{
+		JsLib boostrapLib = bundlableNode.app().jsLib(BOOTSTRAP_LIB_NAME);
+		for (Asset asset : boostrapLib.linkedAssets()) {
+			if (asset instanceof SourceModule) {
+				addSourceModule( (SourceModule) asset );
+				addAllSourceModuleDependencies( (SourceModule) asset, bootstrappingSourceModules );						
+			}
+		}
+		for (AssetLocation assetLocation : boostrapLib.assetLocations()) {
+			addUnscopedAssetLocation(assetLocation);					
 		}
 	}
 	

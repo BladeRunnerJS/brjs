@@ -1,7 +1,5 @@
 package org.bladerunnerjs.model.exception;
 
-import java.io.IOException;
-
 public class ConfigException extends Exception
 {
 	private static final long serialVersionUID = 1L;
@@ -14,7 +12,7 @@ public class ConfigException extends Exception
 		super(e);
 	}
 
-	public ConfigException(String message, IOException e) {
+	public ConfigException(String message, Exception e) {
 		super(message, e);
 	}
 }

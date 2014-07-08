@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -64,7 +65,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 		{
 			return Arrays.asList(value.split(commaWithOptionalSpacesSeparator));
 		}
-		return new ArrayList<String>();
+		return Collections.emptyList();
 	}
 	
 	private List<File> getFilesForConfigPaths(List<String> configPaths, String fileExtension) throws ConfigException
@@ -91,23 +92,17 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	private List<File> getFilesWithPaths(List<String> filePaths) throws ConfigException
 	{
 		List<File> foundFiles = new ArrayList<File>();
-		List<File> files = fileInfo.nestedFiles();
+		String assetLocationDirPath = assetLocationDir.getAbsolutePath();
 		
 		for (String filePath : filePaths)
 		{
-			boolean foundMatchingFilePath = false;
-			for (File f : files)
-			{
-				String relativePath = RelativePathUtility.get(assetLocationDir, f);
-				if ( relativePath.equals(filePath) )
-				{
-					foundFiles.add(f);
-					foundMatchingFilePath = true;
-				}
-			}
-			if (!foundMatchingFilePath)
-			{
-				String relativeManifestPath = RelativePathUtility.get(assetLocation.assetContainer().root().dir(), assetLocation.file(LIBRARY_MANIFEST_FILENAME));
+			String fullFilePath = assetLocationDirPath + File.separator + filePath;
+			File file = new File(fullFilePath);
+			
+			if(file.exists()){
+				foundFiles.add(file);
+			}else{
+				String relativeManifestPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().root().dir(), assetLocation.file(LIBRARY_MANIFEST_FILENAME));
 				throw new ConfigException("Unable to find the file '" + filePath + "' required in the manifest at '" + relativeManifestPath + "'.");
 			}
 		}

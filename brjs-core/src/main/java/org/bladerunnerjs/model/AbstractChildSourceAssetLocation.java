@@ -16,7 +16,7 @@ public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAs
 		super(rootNode, parent, dir, dependentAssetLocations);
 		assetContainer = (AssetContainer) parent;
 		// take the relative path from the asset container and then strip off the first dir - do it this way so it isn't tied to specific subdir of asset container (e.g. the src dir)
-		locationRequirePrefix = RelativePathUtility.get(assetContainer().dir(), dir()).replaceAll("/$", "");
+		locationRequirePrefix = RelativePathUtility.get(root(), assetContainer().dir(), dir()).replaceAll("/$", "");
 		locationRequirePrefix = StringUtils.substringAfter(locationRequirePrefix, "/");
 		
 	}

@@ -1,9 +1,8 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-
+import java.io.IOException;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -16,9 +15,8 @@ public class BundlableNodeBuilder<N extends BundlableNode> extends AssetContaine
 		this.bundlableNode = bundlableNode;
 	}
 	
-	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
-		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-		bundlableNode.handleLogicalRequest(requestPath, responseOutput, bundlableNode.root().getAppVersionGenerator().getDevVersion());
+	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException {
+		bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getDevVersion());
 		
 		return builderChainer;
 	}

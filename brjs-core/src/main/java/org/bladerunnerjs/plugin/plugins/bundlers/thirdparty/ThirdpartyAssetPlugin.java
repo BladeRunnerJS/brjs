@@ -5,8 +5,6 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ThirdpartyLibManifest;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
@@ -21,15 +19,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		try {
-			ThirdpartyLibManifest manifest = new ThirdpartyLibManifest(assetLocation);
-			ThirdpartySourceModule sourceModule = new ThirdpartySourceModule(assetLocation);
-			sourceModule.initManifest(manifest);
-			
-			return sourceModule;
-		}
-		catch(ConfigException e) {
-			throw new AssetFileInstantationException(e);
-		}
+		ThirdpartySourceModule sourceModule = new ThirdpartySourceModule((ThirdpartyAssetLocation)assetLocation);
+		return sourceModule;
 	}
 }

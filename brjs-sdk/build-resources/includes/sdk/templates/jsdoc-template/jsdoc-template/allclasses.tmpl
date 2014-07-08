@@ -1,0 +1,14 @@
+
+<div>
+	{+new Link().toFile("index.html").withText("Home")+} | {+new Link().toFile("classesindex.html").withText("Class Index")+} <br>
+	<div id="sdk_info_panel">
+		<p class="generated-on">Documentation generated on <span id="sdk_generation_date">@buildDate@</span></p>
+		<p class="brjs-version">BRJS version <span id="sdk_version">@sdkVersion@</span></p>
+	</div>
+</div>
+
+<div id="api_tree">
+	{!
+		output += data.html
+	!}
+</div>

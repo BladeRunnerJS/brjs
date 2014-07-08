@@ -11,13 +11,11 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.SdkJsLib;
-
-import com.caplin.cutlass.BRJSAccessor;
-
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
@@ -25,11 +23,11 @@ import org.bladerunnerjs.plugin.base.AbstractPlugin;
 public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 {
 	private FileFilter CAPLIN_JAR_FILE_NAME_FILTER = new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar"));
-	private ConsoleWriter out;
+	private Logger logger;
 	
 	public CheckCommand()
 	{
-		out = BRJSAccessor.root.getConsoleWriter();
+		this.logger = ThreadSafeStaticBRJSAccessor.root.logger(this.getClass());
 	}
 	
 	@Override
@@ -72,10 +70,10 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 		
 		messageToShowUser.append("-- Application Details --\n");
 		
-		List<File> sdkLibsApplicationJars = Arrays.asList(BRJSAccessor.root.appJars().dir().listFiles(CAPLIN_JAR_FILE_NAME_FILTER));
-		List<SdkJsLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkLibs();
+		List<File> sdkLibsApplicationJars = Arrays.asList(ThreadSafeStaticBRJSAccessor.root.appJars().dir().listFiles(CAPLIN_JAR_FILE_NAME_FILTER));
+		List<SdkJsLib> sdkThirdpartyLibraries = ThreadSafeStaticBRJSAccessor.root.sdkLibs();
 		
-		for(App application : BRJSAccessor.root.apps())
+		for(App application : ThreadSafeStaticBRJSAccessor.root.userApps())
 		{
 			checkUtility.checkJarDifferencesAndAddMessageListingThem(messageToShowUser, sdkLibsApplicationJars, application.dir());
 			checkUtility.checkForApplicationThirdpartyLibraries(messageToShowUser, sdkThirdpartyLibraries, application);
@@ -83,7 +81,7 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 		
 		checkUtility.checkThatWeHaveNothingInPatchesDirectory(messageToShowUser);
 		
-		out.println(messageToShowUser.toString());
+		logger.println(messageToShowUser.toString());
 		return 0;
 	}
 }

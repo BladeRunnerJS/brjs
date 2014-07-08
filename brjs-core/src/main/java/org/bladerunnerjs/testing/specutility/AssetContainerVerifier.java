@@ -1,16 +1,18 @@
 package org.bladerunnerjs.testing.specutility;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -24,8 +26,14 @@ public class AssetContainerVerifier {
 	}
 	
 	public void hasSourceModules(String... expectedSourceModules) throws Exception {
-		Set<SourceModule> actualSourceModules = assetContainer.sourceModules();
 		
+		Set<LinkedAsset> assets = assetContainer.linkedAssets();
+		Set<SourceModule> actualSourceModules = new LinkedHashSet<SourceModule>();
+		for(LinkedAsset asset : assets){
+			if(asset instanceof SourceModule){
+				actualSourceModules.add((SourceModule)asset);
+			}
+		}
 		assertEquals("Source modules [" + renderSourceModules(actualSourceModules) + "] was expected to contain " + expectedSourceModules.length + " item(s).", expectedSourceModules.length, actualSourceModules.size());
 		
 		int i = 0;
@@ -33,7 +41,7 @@ public class AssetContainerVerifier {
 			String expectedSourceModule = expectedSourceModules[i++];
 			StringWriter sourceModuleContents = new StringWriter();
 			
-			assertEquals("Source module " + i + " differs from what's expected.", expectedSourceModule, actualSourceModule.getRequirePath());
+			assertEquals("Source module " + i + " differs from what's expected.", expectedSourceModule, actualSourceModule.getPrimaryRequirePath());
 			try (Reader reader = actualSourceModule.getReader()) { IOUtils.copy(reader, sourceModuleContents); }
 		}
 	}
@@ -46,7 +54,7 @@ public class AssetContainerVerifier {
 		int i = 0;
 		for(AssetLocation actualAssetLocation : actualAssetLocations) {
 			String expectedAssetLocation = expectedAssetLocations[i++];
-			String actualDependentAssetLocationPath = RelativePathUtility.get(assetContainer.dir(), actualAssetLocation.dir());
+			String actualDependentAssetLocationPath = RelativePathUtility.get(assetContainer.root(), assetContainer.dir(), actualAssetLocation.dir());
 			
 			if(actualDependentAssetLocationPath.equals("")) {
 				actualDependentAssetLocationPath = ".";
@@ -76,7 +84,7 @@ public class AssetContainerVerifier {
 		int i = 0;
 		for(AssetLocation actualDependentAssetLocation : actualDependentAssetLocations) {
 			String expectedAssetLocationDependency = expectedAssetLocationDependencies[i++];
-			String actualDependentAssetLocationPath =  RelativePathUtility.get(assetContainer.dir(), actualDependentAssetLocation.dir());
+			String actualDependentAssetLocationPath =  RelativePathUtility.get(assetContainer.root(), assetContainer.dir(), actualDependentAssetLocation.dir());
 			
 			assertEquals(expectedAssetLocationDependency, actualDependentAssetLocationPath);
 		}
@@ -86,7 +94,7 @@ public class AssetContainerVerifier {
 		List<String> sourceModulePaths = new ArrayList<>();
 		
 		for(SourceModule sourceModule : sourceModules) {
-			sourceModulePaths.add(sourceModule.getRequirePath());
+			sourceModulePaths.add(sourceModule.getPrimaryRequirePath());
 		}
 		
 		return Joiner.on(", ").join(sourceModulePaths);
@@ -96,7 +104,7 @@ public class AssetContainerVerifier {
 		List<String> assetLocationPaths = new ArrayList<>();
 		
 		for(AssetLocation assetLocation : assetLocations) {
-			assetLocationPaths.add(RelativePathUtility.get(assetLocation.assetContainer().dir(), assetLocation.dir()));
+			assetLocationPaths.add(RelativePathUtility.get(assetContainer.root(), assetLocation.assetContainer().dir(), assetLocation.dir()));
 		}
 		
 		return Joiner.on(", ").join(assetLocationPaths);

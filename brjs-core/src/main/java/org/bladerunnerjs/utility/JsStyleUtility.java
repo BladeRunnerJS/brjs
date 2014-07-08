@@ -2,22 +2,38 @@ package org.bladerunnerjs.utility;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
 
 public class JsStyleUtility {
 		
+	private static Map<String, String> dirStyleCache = new HashMap<String, String>();
+	
+	
 	public static String getJsStyle(File dir) {
-		String jsStyle = null;
-		
-		do {
+		// TODO: if any .js-style files change (or are added/removed) the server must restart
+		// We also recurse up out of BRJS root - should stop doing that.
+		String path = dir.getAbsolutePath();
+		String jsStyle = dirStyleCache.get(path);
+		if(jsStyle == null){
 			jsStyle = readJsStyleFile(dir);
-			
-			dir = dir.getParentFile();
-		} while((jsStyle == null) && (dir != null));
-		
-		return (jsStyle != null) ? jsStyle.intern() : NodeJsContentPlugin.JS_STYLE;
+			if(jsStyle == null){
+				File parent = dir.getParentFile();
+				if(parent == null){
+					jsStyle = CommonJsContentPlugin.JS_STYLE;
+				}else{
+					jsStyle = getJsStyle(parent);
+				}
+			}
+			dirStyleCache.put(path, jsStyle);
+		}
+		return jsStyle;
+	}
+	public  static void clear(){
+		dirStyleCache = new HashMap<String, String>();
 	}
 	
 	public static void setJsStyle(File dir, String jsStyle) {
@@ -29,6 +45,8 @@ public class JsStyleUtility {
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		//TODO: Dont invalidate whole tree, just sub branches
+		dirStyleCache = new HashMap<String, String>();
 	}
 	
 	private static String readJsStyleFile(File dir) {

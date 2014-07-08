@@ -87,7 +87,7 @@ public class TemplateUtility
 	
 	private static void transformFile(File file, Map<String, String> transformations) throws TemplateInstallationException
 	{
-		FileUtil fileUtil = new FileUtil("UTF-8");
+		EncodedFileUtil fileUtil = new EncodedFileUtil("UTF-8");
 		
 		try {
 			String fileContents = fileUtil.readFileToString(file);
@@ -144,7 +144,11 @@ public class TemplateUtility
 		@Override
 		public boolean accept(File dir, String name)
 		{
-			return !(new File(destDir, name).exists());
+			File destFile = new File(destDir, name);
+			if (destFile.isDirectory()) {
+				return true;
+			}
+			return !(destFile.exists());
 		}
 	}
 }

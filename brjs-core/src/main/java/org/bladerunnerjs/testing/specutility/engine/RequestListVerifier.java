@@ -23,5 +23,14 @@ public class RequestListVerifier
 		Assert.assertEquals( StringUtils.join(expectedRequests, ", ") , StringUtils.join(requests, ", ") );
 		return verifierChainer;
 	}
+	
+	public VerifierChainer entriesDoNotContain(String... unexpectedRequests)
+	{
+		for (String request : unexpectedRequests) {
+			Assert.assertFalse( requests.contains(request) );			
+		}
+		
+		return verifierChainer;
+	}	
 
 }

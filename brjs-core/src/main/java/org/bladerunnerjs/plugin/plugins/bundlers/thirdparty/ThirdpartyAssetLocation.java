@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.TheAbstractAssetLocation;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.TheAbstractAssetLocation;
 import org.bladerunnerjs.model.ThirdpartyLibManifest;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -23,6 +23,10 @@ public final class ThirdpartyAssetLocation extends TheAbstractAssetLocation {
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public ThirdpartyLibManifest getManifest(){
+		return manifest;
 	}
 	
 	protected List<File> getCandidateFiles() {

@@ -12,7 +12,7 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
@@ -78,7 +78,7 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
-	public File[] scopeFiles()
+	public File[] memoizedScopeFiles()
 	{
 		return scopeFiles;
 	}
@@ -114,7 +114,7 @@ public abstract class AbstractNode implements Node
 	@Override
 	public void create() throws InvalidNameException, ModelUpdateException
 	{
-		Logger logger = rootNode.logger(LoggerType.CORE, Node.class);
+		Logger logger = rootNode.logger(Node.class);
 		
 		try {
 			if(dirExists()) throw new DirectoryAlreadyExistsModelException(this);
@@ -146,7 +146,7 @@ public abstract class AbstractNode implements Node
 	@Override
 	public void delete() throws ModelUpdateException
 	{
-		Logger logger = rootNode.logger(LoggerType.CORE, Node.class);
+		Logger logger = rootNode.logger(Node.class);
 		
 		try {
 			if(!dirExists()) throw new NoSuchDirectoryException(this);
@@ -251,7 +251,7 @@ public abstract class AbstractNode implements Node
 		}
 		catch (IOException ex)
 		{
-			root().logger(LoggerType.CORE, this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
+			root().logger(this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
 			
 			normalizedPath = dir.getAbsolutePath();
 		}
@@ -312,6 +312,9 @@ public abstract class AbstractNode implements Node
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName()+", dir: " + RelativePathUtility.get(root().dir(), dir());
+		if (root() instanceof BRJS) { // check the type since root() is a TestRootNode in some tests
+			return getClass().getSimpleName()+", dir: " + RelativePathUtility.get((BRJS)root(), root().dir(), dir());
+		}
+		return getClass().getSimpleName()+", dir: " + dir().getPath();
 	}
 }

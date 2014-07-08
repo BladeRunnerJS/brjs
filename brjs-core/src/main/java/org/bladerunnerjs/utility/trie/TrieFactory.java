@@ -1,5 +1,7 @@
 package org.bladerunnerjs.utility.trie;
 
+import java.util.List;
+
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.memoization.Getter;
@@ -7,8 +9,7 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.TestAssetLocation;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -38,7 +39,7 @@ public class TrieFactory {
 		return trie.value(new Getter<ModelOperationException>() {
 			@Override
 			public Object get() throws RuntimeException, ModelOperationException {
-				Trie<AssetReference> trie = new Trie<AssetReference>();
+				Trie<AssetReference> trie = new Trie<AssetReference>( '/', new Character[]{'.', '/'} );
 				
 				for (AssetContainer assetContainer : assetContainer.scopeAssetContainers()) {
 					try {
@@ -50,14 +51,16 @@ public class TrieFactory {
 							}
 						}
 						
-						for(SourceModule sourceModule : assetContainer.sourceModules()) {
-							if(!(sourceModule.assetLocation() instanceof TestAssetLocation)) {
-								addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
-								
-								String moduleClassname = sourceModule.getRequirePath().replaceAll("/", ".");
-								if (moduleClassname != null) {
-									addToTrie(trie, moduleClassname, new SourceModuleReference(sourceModule));
-								}
+						for(LinkedAsset asset : assetContainer.linkedAssets()) {
+							List<String> requirePaths = asset.getRequirePaths();
+							
+							for(String requirePath : requirePaths) {
+								addToTrie(trie, requirePath, new LinkedAssetReference(asset));
+/*
+ * TODO: investigate why removing this causes CT dependency issues 
+ * (see comment in AbstractOptimisedNode and BasicTrieNode too)
+ */
+								addToTrie(trie, requirePath.replace('/', '.'), new LinkedAssetReference(asset));
 							}
 						}
 						

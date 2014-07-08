@@ -28,8 +28,8 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	}
 	
 	@Override
-	public File[] scopeFiles() {
-		List<File> scopeFiles = new ArrayList<>(Arrays.asList(app().scopeFiles()));
+	public File[] memoizedScopeFiles() {
+		List<File> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
 		scopeFiles.add(dir());
 		
 		return scopeFiles.toArray(new File[scopeFiles.size()]);
@@ -67,15 +67,17 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	
 	@Override
 	public List<AssetContainer> scopeAssetContainers() {
-		List<AssetContainer> assetContainers = new ArrayList<>();
+List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		assetContainers.add( this );
-		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
-		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
-		
-		for(JsLib jsLib : app().jsLibs()) {
-			assetContainers.add(jsLib);
+		for (JsLib jsLib : app().jsLibs())
+		{
+			assetContainers.add( jsLib );			
 		}
+		
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
+		
+		assetContainers.add(this);
 		
 		return assetContainers;
 	}

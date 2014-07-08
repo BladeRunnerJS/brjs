@@ -68,7 +68,7 @@ public class AppTest extends SpecTest {
 	public void theAppConfIsWrittenOnPopulate() throws Exception {
 		given(appTemplate).hasBeenCreated();
 		when(app).populate("appx");
-		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: appx");
+		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appx");
 	}
 	
 	@Test
@@ -83,7 +83,7 @@ public class AppTest extends SpecTest {
 		given(appTemplate).hasBeenCreated()
 			.and(app).hasBeenPopulated();
 		when(app).appConf().write();
-		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: appns");
+		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appns");
 	}
 	
 	@Test
@@ -201,6 +201,12 @@ public class AppTest extends SpecTest {
 			.and(globalOverriddenNonBRLib).hasBeenCreated()
 			.and(appOverriddenNonBRLib).hasBeenCreated();
 		then(app).libWithNameIs("overridden-lib", appOverriddenNonBRLib);
-	}	
+	}
 	
+	@Test
+	public void appIsAvailableImmediatelyAfterCreationSinceFileModificationServiceListensForReadyEvent() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated();
+		when(brjs.app("app1")).populate();
+		then(brjs).hasApps("app1");
+	}
 }

@@ -4,20 +4,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+
 import com.caplin.cutlass.util.FileUtility;
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.testing.BRJSTestFactory;
+
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
-public class CopyBladesetCommandTest
+public class CopyBladesetCommandTest extends TestModelAccessor
 {
 
 	private static final File testDirectory = new File("src/test/resources/CopyBladesetCommandTest");
@@ -32,7 +34,8 @@ public class CopyBladesetCommandTest
 		FileUtils.copyDirectory(testDirectory.getAbsoluteFile(), tempDir);
 		
 		tempSdkBaseDir = new File(tempDir, SDK_DIR);
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempSdkBaseDir));
+		ThreadSafeStaticBRJSAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(tempSdkBaseDir));
 		
 		copyBladesetCommand = new CopyBladesetCommand(tempSdkBaseDir);
 		
@@ -135,4 +138,7 @@ public class CopyBladesetCommandTest
 	{
 		copyBladesetCommand.doCommand(new String[] { "sourceApplication", "b", "targetApplication" });
 	}
+	
+	
+	
 }

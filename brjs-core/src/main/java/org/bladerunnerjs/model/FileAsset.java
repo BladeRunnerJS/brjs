@@ -3,8 +3,11 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
@@ -19,7 +22,7 @@ public class FileAsset implements Asset {
 			this.file = assetFile;
 			this.assetLocation = assetLocation;
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), file);
+			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), file);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -50,5 +53,15 @@ public class FileAsset implements Asset {
 	@Override
 	public String getAssetPath() {
 		return assetPath;
+	}
+
+	@Override
+	public List<String> getRequirePaths() {
+		return Collections.emptyList();
+	}
+	
+	@Override
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 }

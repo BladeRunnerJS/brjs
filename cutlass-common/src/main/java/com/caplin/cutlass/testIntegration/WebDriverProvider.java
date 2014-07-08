@@ -10,9 +10,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 
-import com.caplin.cutlass.BRJSAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 
@@ -53,7 +52,7 @@ public class WebDriverProvider
 	
 	public static WebDriver getDriver(String testSpecifiedBrowser, Map<String, String> driverOptions) throws Exception
 	{
-		Logger logger = BRJSAccessor.root.logger(LoggerType.UTIL, WebDriverProvider.class);
+		Logger logger = ThreadSafeStaticBRJSAccessor.root.logger(WebDriverProvider.class);
 		
 		String browserName = (commandLineSpecifiedBrowser != null) ? commandLineSpecifiedBrowser : testSpecifiedBrowser;
 		WebDriver driver = null;

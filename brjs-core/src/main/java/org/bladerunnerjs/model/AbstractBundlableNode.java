@@ -1,11 +1,8 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -26,6 +23,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
@@ -43,7 +41,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public List<AssetLocation> seedAssetLocations() {
 		List<AssetLocation> seedAssetLocations = new ArrayList<>();
 		
-		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
 			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
 				for(String seedAssetLocationName : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
 					AssetLocation seedAssetLocation = assetLocation(seedAssetLocationName);
@@ -84,29 +82,30 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public SourceModule getSourceModule(String requirePath) throws RequirePathException {
-		SourceModule sourceModule = null;
-		
+	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
+		LinkedAsset asset = null;
 		for(AssetContainer assetContainer : scopeAssetContainers()) {
-			SourceModule locationSourceModule = assetContainer.sourceModule(requirePath);
+			LinkedAsset locationAsset = assetContainer.linkedAsset(requirePath);
 			
-			if(locationSourceModule != null) {
-				if(sourceModule == null) {
-					sourceModule = locationSourceModule;
+			if(locationAsset != null) {
+				if(asset == null) {
+					asset = locationAsset;
 				}
 				else {
-					throw new AmbiguousRequirePathException("'" + sourceModule.getAssetPath() + "' and '" +
-						locationSourceModule.getAssetPath() + "' source files both available via require path '" +
-						sourceModule.getRequirePath() + "'.");
+					throw new AmbiguousRequirePathException("'" + asset.getAssetPath() + "' and '" +
+						locationAsset.getAssetPath() + "' source files both available via require path '" +
+						requirePath + "'.");
 				}
 			}
+			
 		}
 		
-		if(sourceModule == null) {
+		
+		if(asset == null) {
 			throw new UnresolvableRequirePathException(requirePath);
 		}
 		
-		return sourceModule;
+		return asset   ;
 	}
 	
 	@Override
@@ -162,9 +161,9 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public void handleLogicalRequest(String logicalRequestPath, OutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
-			BundleSetRequestHandler.handle(this.getBundleSet(), logicalRequestPath, os, version);
+			return BundleSetRequestHandler.handle(this.getBundleSet(), logicalRequestPath, contentAccessor, version);
 		}
 		catch (ModelOperationException e) {
 			throw new ContentProcessingException(e);
@@ -172,9 +171,9 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public void handleLogicalRequest(String logicalRequestPath, OutputStream os, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
-			BundleSetRequestHandler.handle(new FilteredBundleSet(this.getBundleSet(), bundleSetFilter), logicalRequestPath, os, version);
+			return BundleSetRequestHandler.handle(new FilteredBundleSet(this.getBundleSet(), bundleSetFilter), logicalRequestPath, contentAccessor, version);
 		}
 		catch (ModelOperationException e) {
 			throw new ContentProcessingException(e);
@@ -182,16 +181,15 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
-		Set<SourceModule> sourceModules = new LinkedHashSet<>();
+	public List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
+		List<Asset> assets = new ArrayList<Asset>();
 		
 		for(String requirePath : requirePaths) {				
 			String canonicalRequirePath = assetLocation.canonicaliseRequirePath(requirePath);
-			SourceModule sourceModule = getSourceModule(canonicalRequirePath);
-			sourceModules.add(sourceModule);
+			assets.add(getLinkedAsset(canonicalRequirePath));
 		}
 		
-		return new ArrayList<SourceModule>( sourceModules );
+		return assets;
 	}
 	
 	

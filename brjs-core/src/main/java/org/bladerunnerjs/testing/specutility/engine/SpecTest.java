@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -71,17 +72,15 @@ import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
-import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ServerUtility;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
 
 
-public abstract class SpecTest
+public abstract class SpecTest extends TestModelAccessor
 {
 	public static final String HTTP_REQUEST_PREFIX = "http://localhost";
 	
@@ -89,7 +88,6 @@ public abstract class SpecTest
 	private String activeClientCharacterEncoding = "UTF-8";
 	
 	public LogMessageStore logging;
-	public ConsoleMessageStore output;
 	public List<Throwable> exceptions;
 	public boolean catchAndVerifyExceptions = true;
 	public EventObserver observer;
@@ -109,7 +107,6 @@ public abstract class SpecTest
 		appServerPort = ServerUtility.getTestPort();
 		
 		logging = new LogMessageStore();
-		output = new ConsoleMessageStore();
 		exceptions = new ArrayList<>();
 		observer = mock(EventObserver.class);
 		testSdkDirectory = createTestSdkDirectory();
@@ -128,11 +125,11 @@ public abstract class SpecTest
 	
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return new BRJS(testSdkDirectory, pluginLocator, new PessimisticFileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output), appVersionGenerator);
+		return super.createModel(testSdkDirectory, pluginLocator, logging, appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
-		return new BRJS(testSdkDirectory, new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return super.createNonTestModel(testSdkDirectory, logging);
 	}
 	
 	public String getActiveCharacterEncoding() {
@@ -178,9 +175,6 @@ public abstract class SpecTest
 	// logging
 	public LoggerBuilder given(LogMessageStore logStore) { return new LoggerBuilder(this, logStore); }
 	public LoggerVerifier then(LogMessageStore logStore) { return new LoggerVerifier(this, logStore); }
-	
-	// console
-	public ConsoleWriterVerifier then(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(this, consoleMessageStore); }
 	
 	// node observer
 	public NodeObserverBuilder given(EventObserver observer) { return new NodeObserverBuilder(this, observer); }

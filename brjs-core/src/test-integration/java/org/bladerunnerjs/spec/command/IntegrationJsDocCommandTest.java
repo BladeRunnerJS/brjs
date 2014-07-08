@@ -18,8 +18,9 @@ public class IntegrationJsDocCommandTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasCommands(new JsDocCommand())
-			.and(brjs).hasBeenCreated();
+		given(brjs).hasCommandPlugins(new JsDocCommand())
+			.and(brjs).hasBeenCreated()
+			.and(brjs).usesProductionTemplates();
 		app = brjs.app("app");
 		appLib = app.jsLib("lib");
 		jsdocOutputDir = app.storageDir("jsdoc");
@@ -31,7 +32,7 @@ public class IntegrationJsDocCommandTest extends SpecTest {
 			.and(appLib).containsFileWithContents("src/MyClass.js", "/** @constructor */MyClass = function() {};");
 		when(brjs).runCommand("jsdoc", "app", "-v");
 		then(jsdocOutputDir).containsFile("MyClass.html")
-			.and(output).containsLine(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
+			.and(logging).containsFormattedConsoleMessage(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
 	}
 	
 	@Test 
@@ -40,6 +41,6 @@ public class IntegrationJsDocCommandTest extends SpecTest {
 			.and(appLib).containsFileWithContents("src/MyClass.js", "/** @constructor */MyClass = function() {};");
 		when(brjs).runCommand("jsdoc", "app");
 		then(jsdocOutputDir).containsFile("MyClass.html")
-			.and(output).containsLine(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
+			.and(logging).containsFormattedConsoleMessage(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
 	}
 }

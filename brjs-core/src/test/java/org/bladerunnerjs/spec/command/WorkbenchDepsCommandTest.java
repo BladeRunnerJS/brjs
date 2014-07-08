@@ -28,9 +28,9 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new WorkbenchDepsCommand())
-			.and(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
+		given(brjs).hasCommandPlugins(new WorkbenchDepsCommand())
+			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
@@ -115,7 +115,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			.and(blade).hasClasses("appns/bladeset/blade/Class1", "appns/bladeset/blade/Class2")
 			.and(blade).classRequires("appns/bladeset/blade/Class1", "./Class2");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Workbench dependencies found:",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
 			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
@@ -129,7 +129,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			.and(blade).classRequires("appns/bladeset/blade/Class1", "./Class2")
 			.and(workbench).containsResourceFileWithContents("config.xml", "'appns/bladeset/blade/Class1'"); // TODO: if we make this an aspect resource it doesn't work suggesting a bug -- make me feel even more strongly there should be a method which provides all asset locations, including transitive deps.
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Workbench dependencies found:",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
 			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js' (*)",
@@ -146,7 +146,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			.and(blade).classRequires("appns/bladeset/blade/Class1", "./Class2")
 			.and(workbench).containsResourceFileWithContents("config.xml", "'appns/bladeset/blade/Class1'");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade", "--all");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Workbench dependencies found:",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
 			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
@@ -164,7 +164,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			.and(blade).classFileHasContent("appns/bladeset/blade/Class1", "ServiceRegistry.getService('br.alias')")
 			.and(workbench).indexPageRequires("appns/bladeset/blade/Class1");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 				"Workbench dependencies found:",
 				"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
 				"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",

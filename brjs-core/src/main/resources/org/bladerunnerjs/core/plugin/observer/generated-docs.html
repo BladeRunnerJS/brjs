@@ -42,7 +42,7 @@
 			xhr.onload = function (e) {
 			  if (xhr.readyState === 4) {
 			    if (xhr.status === 200) {
-			    	window.location = "/dashboard-services/appjsdoc/" + getAppName() + "/jsdoc-toolkit/index.html";
+			    	window.location = "/dashboard-services/appjsdoc/" + getAppName() + "/jsdoc/index.html";
 			    } else {
 			    	showError(xhr);
 			    }
@@ -57,7 +57,7 @@
 		var getAppName = function()
 		{
 			var initialIndex = window.location.pathname.indexOf("jsdoc/") + 6;
-			var lastIndex = window.location.pathname.indexOf("/jsdoc-toolkit");
+			var lastIndex = window.location.pathname.indexOf("/jsdoc");
 			return window.location.pathname.substring(initialIndex, lastIndex);
 		}
 		

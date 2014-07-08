@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -18,16 +19,16 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	private Aspect otherAspect;
 	private Bladeset bladeset;
 	private Blade blade;
-	private JsLib thirdpartyLib, thirdpartyLib2, bootstrapLib, secondBootstrapLib;
+	private JsLib appThirdpartyLib, thirdpartyLib, thirdpartyLib2, bootstrapLib, secondBootstrapLib, thirdBootstrapLib, brLib;
 	private StringBuffer response = new StringBuffer();
 	private StringBuffer otherResponse = new StringBuffer();
-	private JsLib thirdBootstrapLib;
+	private TestPack brLibTests;
 	
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 		
 			app = brjs.app("app1");
@@ -35,11 +36,14 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			otherAspect = app.aspect("other");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
+			appThirdpartyLib = app.appJsLib("thirdparty-lib1");
 			thirdpartyLib = brjs.sdkLib("thirdparty-lib1");
 			thirdpartyLib2 = brjs.sdkLib("thirdparty-lib2");
 			bootstrapLib = brjs.sdkLib("br-bootstrap");
 			secondBootstrapLib = brjs.sdkLib("secondBootstrapLib");
 			thirdBootstrapLib = brjs.sdkLib("thirdBootstrapLib");
+			brLib = brjs.sdkLib("brlib");
+			brLibTests = brLib.testType("unit").testTech("js-test-driver");
 	}
 	
 	// Bootstrap tests --
@@ -280,7 +284,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	}
 
 	
-	//TODO: remove this test when we have a NodeJS library plugin that reads the Package.json - also remove the check in ThirdpartySourceModule
+	//TODO: remove this test when we have a CommonJs library plugin that reads the Package.json - also remove the check in ThirdpartySourceModule
 	@Test
 	public void librariesAreNotWrappedIfPackageJsonExistsr() throws Exception {
 		given(thirdpartyLib).hasBeenCreated()
@@ -303,4 +307,35 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		then(response).containsText("window.thirdpartyLib = { }")
 			.and(otherResponse).doesNotContainText("window.thirdpartyLib = { }");
 	}
+	
+	@Test
+	public void weDontIncludeLibraryTestClassesInAnAspectBundle() throws Exception {
+		given(brLib).hasBeenCreated()
+			.and(aspect).indexPageHasContent("'brlib/Class'")
+    		.and(brLibTests).hasTestClass("brlib/Class");
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).doesNotContainText("brlib/Class");
+	}
+	
+	@Test
+	public void transitiveDependenciesOfBootstrapCanBeOverriddenByAppLibraries() throws Exception {
+		StringBuffer jsResponse = new StringBuffer();   StringBuffer cssResponse = new StringBuffer();
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRequires("appns/Class1")
+			.and(bootstrapLib).containsFileWithContents("thirdparty-lib.manifest", "depends: thirdparty-lib1\n"+"exports: lib")
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: lib")
+			.and(thirdpartyLib).containsFile("style.css")
+			.and(thirdpartyLib).containsFile("script.js")
+    		.and(appThirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: lib")
+    		.and(appThirdpartyLib).containsFile("overridden.css")
+    		.and(appThirdpartyLib).containsFile("overridden.js");
+		when(aspect).requestReceived("css/common/bundle.css", cssResponse)
+			.and(aspect).requestReceived("js/dev/combined/bundle.js", jsResponse);
+		then(cssResponse).containsText("overridden.css")
+			.and(cssResponse).doesNotContainText("style.css")
+			.and(jsResponse).containsText("overridden.js")
+			.and(jsResponse).doesNotContainText("script.js");
+	}
+    
+	
 }

@@ -7,19 +7,19 @@ import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 
 
 public abstract class NodeBuilder<N extends Node> {
 	protected BuilderChainer builderChainer;
 	protected SpecTest specTest;
 	protected N node;
-	private FileUtil fileUtil;
+	private EncodedFileUtil fileUtil;
 	
 	public NodeBuilder(SpecTest specTest, N node) {
 		this.specTest = specTest;
 		this.node = node;
-		fileUtil = new FileUtil(specTest.getActiveCharacterEncoding());
+		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
 		builderChainer = new BuilderChainer(specTest);
 	}
 	

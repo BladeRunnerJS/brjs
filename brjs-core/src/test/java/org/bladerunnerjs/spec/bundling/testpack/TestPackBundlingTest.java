@@ -17,8 +17,8 @@ public class TestPackBundlingTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -59,7 +59,7 @@ public class TestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void testCodeCanUseRequires() throws Exception {
-		given(aspect).hasNodeJsPackageStyle()
+		given(aspect).hasCommonJsPackageStyle()
     		.and(aspect).hasClasses("appns/Class1")
     		.and(aspectUTs).testRequires("pkg/test.js", "appns/Class1");
     	then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
