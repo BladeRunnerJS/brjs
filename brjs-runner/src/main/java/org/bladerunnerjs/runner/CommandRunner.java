@@ -17,7 +17,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -157,17 +156,12 @@ public class CommandRunner {
 	}
 
 	private void injectLegacyCommands(BRJS brjs) {
-		try {
-			brjs.plugins().addCommandPlugin(new CheckCommand());
-			brjs.plugins().addCommandPlugin(new CopyBladesetCommand( brjs.root().file("sdk") ));
-			brjs.plugins().addCommandPlugin(new ImportApplicationCommand( brjs ));
-			brjs.plugins().addCommandPlugin(new TestCommand());
-			brjs.plugins().addCommandPlugin(new TestServerCommand());
-			brjs.plugins().addCommandPlugin(new TestIntegrationCommand( brjs.root().dir() ));
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
+		brjs.plugins().addCommandPlugin(new CheckCommand());
+		brjs.plugins().addCommandPlugin(new CopyBladesetCommand( brjs ));
+		brjs.plugins().addCommandPlugin(new ImportApplicationCommand( brjs ));
+		brjs.plugins().addCommandPlugin(new TestCommand());
+		brjs.plugins().addCommandPlugin(new TestServerCommand());
+		brjs.plugins().addCommandPlugin(new TestIntegrationCommand( brjs.root().dir() ));
 	}
 	
 	private ConsoleLoggerStore getLoggerStore() {

@@ -8,6 +8,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -35,9 +36,9 @@ public class CopyBladesetCommandTest extends TestModelAccessor
 		
 		tempSdkBaseDir = new File(tempDir, SDK_DIR);
 		ThreadSafeStaticBRJSAccessor.destroy();
-		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(tempSdkBaseDir));
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel(createModel(tempSdkBaseDir));
 		
-		copyBladesetCommand = new CopyBladesetCommand(tempSdkBaseDir);
+		copyBladesetCommand = new CopyBladesetCommand(brjs);
 		
 		targetBladesetDirectory = new File(tempDir, APPLICATIONS_DIR + "/targetApplication/a-bladeset");
 		targetBladeJsFile = new File(targetBladesetDirectory, "blades/a-blade/src/novox/a/a-blade/ABladeClass.js");

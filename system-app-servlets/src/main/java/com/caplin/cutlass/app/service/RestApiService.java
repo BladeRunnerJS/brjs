@@ -153,7 +153,7 @@ public class RestApiService
 			String newBladesetName = bladesetMap.get(IMPORT_BLADESETS_NEWBLADESET_NAME_KEY).get(0);
 			List<String> blades = bladesetMap.get(IMPORT_BLADESETS_BLADES_KEY);
 			
-			CopyBladesetCommand cmd = new CopyBladesetCommand( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) );
+			CopyBladesetCommand cmd = new CopyBladesetCommand( brjs );
 			String[] args = new String[]{ sourceApp, bladeset, targetApp, newBladesetName };		
 			doCommand( cmd, args );
 			
