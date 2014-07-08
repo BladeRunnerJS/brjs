@@ -1,5 +1,5 @@
 {
     "milestone": "17",
     "name": "BladeRunnerJS @tagVersion@",
-    "prerelease": false
+    "prerelease": "false"
 }

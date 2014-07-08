@@ -286,7 +286,8 @@ task githubRelease, dependsOn:[generateReleaseNotes, ':brjs-sdk:distZip', build]
     	def tagVersion = projectBuildMajorVersion
 
 		def releaseNoteFile = generateReleaseNotes.outputs.files.singleFile
-    	Release release = githubApi.createReleaseForTag(tagVersion, getReleaseNoteJson(project,tagVersion), releaseNoteFile.text)
+		def releaseJson = getReleaseNoteJson(project,tagVersion)
+    	Release release = githubApi.createReleaseForTag(tagVersion, releaseJson, releaseNoteFile.text)
 		githubApi.uploadAssetForRelease(brjsZip, release)
 	}
 }
