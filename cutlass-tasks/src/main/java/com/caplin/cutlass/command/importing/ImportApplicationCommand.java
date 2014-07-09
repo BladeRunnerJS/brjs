@@ -1,40 +1,40 @@
 package com.caplin.cutlass.command.importing;
 
 import java.io.File;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.base.AbstractCommandPlugin;
-
-import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.util.FileUtility;
-
+import org.bladerunnerjs.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
+import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.NameValidator;
 
-import com.caplin.cutlass.command.LegacyCommandPlugin;
-import com.caplin.cutlass.structure.RequirePrefixCalculator;
+import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPException;
+import com.martiansoftware.jsap.JSAPResult;
+import com.martiansoftware.jsap.UnflaggedOption;
 
-public class ImportApplicationCommand extends AbstractCommandPlugin implements LegacyCommandPlugin
+public class ImportApplicationCommand extends ArgsParsingCommandPlugin
 {
-	private final File sdkBaseDir;
-	private final int jettyPort;
 	private Logger logger;
+	private BRJS brjs;
 	
-	public ImportApplicationCommand(BRJS brjs) throws ConfigException
+	public ImportApplicationCommand(BRJS brjs)
 	{
-		this.sdkBaseDir = new File( brjs.root().dir(), CutlassConfig.SDK_DIR);
-		this.jettyPort = brjs.bladerunnerConf().getJettyPort();
-		this.logger = brjs.logger(this.getClass());
 		setBRJS(brjs);
 	}
 	
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		this.brjs = brjs;
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -50,95 +50,69 @@ public class ImportApplicationCommand extends AbstractCommandPlugin implements L
 	}
 	
 	@Override
-	public String getCommandUsage()
-	{
-		return "<app-zip> <new-app-name> <new-app-namespace>";
-	}
-
-	@Override
-	public String getCommandHelp() {
-		return getCommandUsage();
+	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
+		argsParser.registerParameter(new UnflaggedOption("app-zip").setRequired(true).setHelp("the path to the zip containing the application"));
+		argsParser.registerParameter(new UnflaggedOption("new-app-name").setRequired(true).setHelp("the name of the newly imported app"));
+		argsParser.registerParameter(new UnflaggedOption("new-app-namespace").setRequired(true).setHelp("the namespace that the new app will have")); // TODO: switch to <new-app-require-path>
 	}
 	
 	@Override
-	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
-	{
-		assertValidArgs(args);
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+		String appZipName = parsedArgs.getString("app-zip");
+		String newAppName = parsedArgs.getString("new-app-name");
+		String newAppNamespace = parsedArgs.getString("new-app-namespace");
 		
-		String applicationZip = args[0];
-		String newApplicationName = args[1];
-		String newApplicationNamespace = args[2];
+		File appZip = (new File(appZipName).exists()) ? new File(appZipName) : new File(brjs.file("sdk"), appZipName);
+		App app = brjs.app(newAppName);
+		
+		if(!appZip.exists()) throw new CommandOperationException("Couldn't find zip file at '" + appZip.getAbsolutePath() + "'.");
+		if(app.dirExists()) throw new CommandOperationException("Application name '" + newAppName + "' is already in use.");
 		
 		try
 		{
-			File temporaryDirectoryForNewApplication = FileUtility.createTemporaryDirectory("tempApplicationDir");
-			ImportApplicationCommandUtility importApplicationCommandUtility = new ImportApplicationCommandUtility();
+			NameValidator.assertValidDirectoryName(app);
+			NameValidator.assertValidRootPackageName(app, newAppNamespace);
 			
-			importApplicationCommandUtility.unzipApplicationToTemporaryDirectoryForNewApplication(applicationZip, sdkBaseDir, temporaryDirectoryForNewApplication);
-			String currentApplicationName = importApplicationCommandUtility.getCurrentApplicationName(temporaryDirectoryForNewApplication);
-
-			File temporaryApplicationDir = new File(temporaryDirectoryForNewApplication, currentApplicationName);
+			File tempDir = FileUtility.createTemporaryDirectory("import-app-command");
+			FileUtility.unzip(new ZipFile(appZip), tempDir);
 			
-			importApplicationCommandUtility.copyCutlassSDKJavaLibsIntoApplicationWebInfDirectory(sdkBaseDir, temporaryApplicationDir);
+			String unzippedAppName = getUnzippedAppName(tempDir);
+			File unzippedAppDir = new File(tempDir, unzippedAppName);
+			File unzippedLibDir = new File(unzippedAppDir, "/WEB-INF/lib");
 			
-			File newApplicationDirectory = importApplicationCommandUtility.createApplicationDirIfItDoesNotAlreadyExist(sdkBaseDir, newApplicationName);
-			File currentApplicationDirectoryInTempDir = temporaryApplicationDir;
-			FileUtility.copyDirectoryContents(currentApplicationDirectoryInTempDir, newApplicationDirectory);
-
-			/* we cant use the directory locator here since the exploded zip isnt inside an sdk structure so they locator wont recognise it
-			 *  - as it happens we know the app.conf is in the root of the app so we can just create a new file object relative to the app path
-			 */
-			File temporaryDirAppConf = new File(temporaryApplicationDir, CutlassConfig.APP_CONF_FILENAME);
-			File newAppDirConf = new File(newApplicationDirectory, CutlassConfig.APP_CONF_FILENAME);
-			FileUtils.copyFile(temporaryDirAppConf, newAppDirConf);
+			FileUtils.copyDirectory(brjs.appJars().dir(), unzippedLibDir);
+			FileUtils.copyDirectory(unzippedAppDir, app.dir());
 			
-			String applicationNamespace = RequirePrefixCalculator.getAppRequirePrefix(newApplicationDirectory);
-			Renamer.renameApplication(newApplicationDirectory, applicationNamespace, newApplicationNamespace, currentApplicationName, newApplicationName);
+			Renamer.renameApplication(app.dir(), app.appConf().getRequirePrefix(), newAppNamespace, unzippedAppName, newAppName);
 			
-			RequirePrefixCalculator.purgeCachedApplicationNamespaces();
+			app.deploy();
 			
-			importApplicationCommandUtility.createAutoDeployFileForApp(newApplicationDirectory, jettyPort);
-			
-			logger.println("Successfully imported '" + new File(applicationZip).getName() + "' as new application '" + newApplicationName + "'");
-			logger.println(" " + newApplicationDirectory.getAbsolutePath());
+			logger.println("Successfully imported '" + new File(appZipName).getName() + "' as new application '" + newAppName + "'");
+			logger.println(" " + app.dir().getAbsolutePath());
 		}
 		catch (CommandOperationException e)
 		{
 			throw e;
 		}
+		catch(InvalidDirectoryNameException | InvalidRootPackageNameException e) {
+			throw new CommandArgumentsException("Failed to import application from zip '" + appZipName + "'.", e, this);
+		}
 		catch (Exception e)
 		{
-			throw new CommandOperationException("Failed to import application from zip '" + applicationZip + "'.", e);
-		}
-		return 0;
-	}
-
-	private void assertValidArgs(String[] args) throws CommandArgumentsException
-	{
-		if (args.length != 3)
-		{
-			if (args.length > 3)
-			{
-				throw new CommandArgumentsException("Too many arguments provided.", this);
-			}
-			throw new CommandArgumentsException("Not enough arguments provided.", this);
+			throw new CommandOperationException("Failed to import application from zip '" + appZipName + "'.", e);
 		}
 		
-		if (NameValidator.legacyIsValidDirectoryName(args[1]) == false)
-		{
-			throw new CommandArgumentsException(
-					"The <new-app-name> parameter can only contain alphanumeric, - and _ characters.", this);
-		}
-		if (NameValidator.legacyIsValidPackageName(args[2]) == false)
-		{
-			throw new CommandArgumentsException(
-					"The <namespace> parameter can only contain lower-case alphanumeric characters.", this);
-		}
-		if (NameValidator.legacyIsReservedNamespace(args[2]))
-		{
-			throw new CommandArgumentsException("Could not import application using reserved namespace '" + args[2] + "'\n"
-														+ "  " + NameValidator.getReservedNamespaces(), this);
-		}
+		return 0;
 	}
 	
+	private String getUnzippedAppName(File temporaryDirectoryForNewApplication) throws CommandOperationException {
+		String[] applicationsUnzippedIntoTemporaryDirectory = temporaryDirectoryForNewApplication.list();
+		
+		if(applicationsUnzippedIntoTemporaryDirectory.length > 1)
+		{
+			throw new CommandOperationException("More than one folder at root of application zip.");
+		}
+		
+		return applicationsUnzippedIntoTemporaryDirectory[0];
+	}
 }
