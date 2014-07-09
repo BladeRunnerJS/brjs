@@ -18,6 +18,13 @@ Getting Started
     or IE8).
 
 
+Increasing JVM Resources
+------------------------
+
+ - BladeRunnerJS uses the default 'JAVA_OPTS' environment variable. The default operating system value for this
+   is usually sufficient. If you experience "Out of Memory" errors, or wish to improve performance by allocating
+   more memory, you can add the relevant options to the JAVA_OPTS environment variable. 
+
 
 Thirdparty Licenses
 -------------------

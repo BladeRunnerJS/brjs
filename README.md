@@ -53,10 +53,10 @@ If you install Java using the Windows installer than it places a 'java' executab
 From the root `brjs` source directory:
 
     $ ./gradlew brjs-sdk:distZip
-    
+
 The built zip file will be found in `BRJS_ROOT/brjs-sdk/build/distributions/` in the format `BladeRunner-VERSION.zip`.
 
-### More information    
+### More information
 
 See the [BRJS Developer Setup Guide](https://github.com/BladeRunnerJS/brjs/wiki/BRJS-Developer-Setup) for more information.
-
+See how the [BRJS team use Github and git](https://github.com/BladeRunnerJS/brjs/wiki/How-do-we-use-GitHub-and-Git%3F).

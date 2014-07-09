@@ -12,7 +12,6 @@ configurations {
 	}
 	testRunner
 	javadocs
-	srcJars
 
 	browsers_dep
 	browsers_webdriver
@@ -29,8 +28,6 @@ dependencies {
 	application project(path: ':brjs-servlet')
 
 	javadocs project(path: ':brjs-core', configuration:'javadocs')
-
-	srcJars project(path: ':brjs-core', configuration:'srcJar')
 
 	systemAppServlets (project(path: ':system-app-servlets'))
 
@@ -74,7 +71,7 @@ task copyBrowsers(type: Sync) {
 		}
 }
 
-task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemAppServlets, configurations.testRunner, configurations.javadocs, configurations.srcJars], {
+task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemAppServlets, configurations.testRunner, configurations.javadocs], {
 	def includesDir = "build-resources/includes"
 
 	destinationDir file("${projectDir.path}/workspace")
@@ -122,15 +119,18 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	from (configurations.system)
 	{
 		into "sdk/libs/java/system"
+		rename { String fileName ->
+		if ( !fileName.startsWith("brjs-") )
+		{
+			fileName = "brjs-"+fileName
+		}
+	}
 	}
 	from (configurations.javadocs.collect { zipTree(it) }) {
 		eachFile {
 			it.path = it.path.replaceFirst("(javadoc)/","")
 		}
 		into "sdk/docs/java"
-	}
-	from (configurations.srcJars.collect { it } ) {
-		into "sdk/docs"
 	}
 	from (configurations.application)
 	{

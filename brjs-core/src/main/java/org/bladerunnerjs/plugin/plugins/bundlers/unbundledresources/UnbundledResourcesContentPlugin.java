@@ -1,5 +1,7 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.unbundledresources;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,10 +10,12 @@ import java.util.List;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.BinaryResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -62,7 +66,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
 	{
 		try
 		{
@@ -81,8 +85,13 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
     			}
 				
-    			os.writeLocalUrlContents(requestedFilePathRelativeToApp);
+    			ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+    			contentAccessor.handleRequest(requestedFilePathRelativeToApp, outputBuffer);
+    			return new BinaryResponseContent( new ByteArrayInputStream(outputBuffer.toByteArray()) );
     		}
+			else {
+				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+			}
 		}
 		catch (IOException e)
 		{

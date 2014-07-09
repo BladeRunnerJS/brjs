@@ -14,7 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.caplin.cutlass.util.FileUtility;
+
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+
 import com.caplin.cutlass.structure.model.SdkModel;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
@@ -451,7 +453,11 @@ public class CutlassDirectoryLocatorTest extends TestModelAccessor
 													new File(appsDir, "no-app-conf"),
 													new File(appsDir, "no-namespace"));
 			
-			FileUtility.createHiddenFileAndFolder(appsDir);
+			if(!System.getProperty("os.name").toLowerCase().contains("windows")) // hidden files dont work on Windows
+			{
+				new File(appsDir, ".hiddenDir").mkdirs();
+				new File(appsDir, ".hiddenFile").createNewFile();
+			}
 			assertTrue(new File(appsDir, ".hiddenDir").exists());
 			assertTrue(new File(appsDir, ".hiddenFile").exists());
 			

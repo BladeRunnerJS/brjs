@@ -1,4 +1,4 @@
-package org.bladerunnerjs.appserver;
+package org.bladerunnerjs.appserver.filter;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -15,7 +15,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bladerunnerjs.appserver.CharResponseWrapper;
+import org.bladerunnerjs.appserver.util.CharResponseWrapper;
+import org.bladerunnerjs.appserver.util.JndiTokenFinder;
+import org.bladerunnerjs.appserver.util.StreamTokeniser;
 
 public class TokenisingServletFilter implements Filter
 {

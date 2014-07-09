@@ -13,11 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 
 
 public class BRJSDevServlet extends HttpServlet {
@@ -70,8 +72,11 @@ public class BRJSDevServlet extends HttpServlet {
 		
 		try {
 			ThreadSafeStaticBRJSAccessor.aquireModel();
-			ServletContentOutputStream os = new ServletContentOutputStream(app, servletContext, request, response);
-			app.handleLogicalRequest(requestPath, os);
+			UrlContentAccessor contentAccessor = new ServletContentAccessor(app, servletContext, request, response);
+			ResponseContent content = app.handleLogicalRequest(requestPath, contentAccessor);
+			if (!response.isCommitted()) { // check the ServletContentAccessor hasnt been used to handle a request and sent headers
+				content.write( response.getOutputStream() );
+			}
 		}
 		catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException e) {
 			throw new ServletException(e);

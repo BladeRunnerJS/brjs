@@ -5,10 +5,11 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
-
 
 public class HTMLContentPluginTest extends SpecTest
 {
@@ -18,6 +19,8 @@ public class HTMLContentPluginTest extends SpecTest
 	private StringBuffer response = new StringBuffer();
 	private Bladeset bladeset;
 	private Blade blade;
+	private Workbench workbench;
+	private NamedDirNode workbenchTemplate;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -30,6 +33,12 @@ public class HTMLContentPluginTest extends SpecTest
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
+			workbench = blade.workbench();
+			workbenchTemplate = brjs.template("workbench");
+			
+			given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
+				.and(workbenchTemplate).containsFolder("resources")
+				.and(workbenchTemplate).containsFolder("src");
 	}
 	
 	@Test
@@ -172,6 +181,16 @@ public class HTMLContentPluginTest extends SpecTest
 		.and(brjs).hasProdVersion("1234");
 		when(aspect).requestReceivedInProd("html/bundle.html", response);
 		then(response).containsText("../v/1234/some/path ../some/path");
+	}
+	
+	@Test
+	public void bundlePathTagIsReplacedForWorkbench() throws Exception {
+		given(blade).containsResourceFileWithContents("html/view.html", "<div id='appns.bs.b1.id'>@bundlePath@/some/path @unversionedBundlePath@/some/path</div>")
+			.and(brjs).hasDevVersion("dev")
+			.and(blade).hasClass("appns/bs/b1/Class1")
+			.and(workbench).indexPageRefersTo("appns/bs/b1/Class1");
+		when(workbench).requestReceived("html/bundle.html", response);
+		then(response).containsText("../v/dev/some/path ../some/path");
 	}
 	
 }

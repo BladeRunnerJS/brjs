@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: com.caplin.gradle.plugins.CompileOnly
 
+/* do not add any dependencies here, this should be a very small project that is used in prod */
 dependencies {
 	compileOnly dependency('servlet-api')
 }

@@ -2,12 +2,10 @@ package org.bladerunnerjs.plugin.plugins.bundlers.cssresource;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
@@ -17,7 +15,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
@@ -26,6 +24,8 @@ import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.BinaryResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -127,7 +127,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException {
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		String theme = contentPath.properties.get("theme");
@@ -197,25 +197,13 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			throw new ContentProcessingException("Cannot handle request with form name " + contentPath.formName);
 		}
 		
-		//TODO: remove this line once all request types are handled
-		if (resourceFile == null) { return; }
-		
-		try(InputStream input = new FileInputStream(resourceFile);)
+		try
 		{
-			IOUtils.copy(input, os);
+			return new BinaryResponseContent( new FileInputStream(resourceFile) );
 		}
-		catch(IOException e) {
-			throw new ContentProcessingException(e);
-		}
-		finally
+		catch (FileNotFoundException ex)
 		{
-			// TODO: see if we can remove this flush() since there doesn't seem to be any particular reason for it
-			try {
-				os.flush();
-			}
-			catch (IOException e) {
-				throw new ContentProcessingException(e);
-			}
+			throw new ContentProcessingException(ex);
 		}
 	}
 	

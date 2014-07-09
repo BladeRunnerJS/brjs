@@ -34,6 +34,7 @@ public class CommandRunnerTest {
 	public void setUp() throws IOException, InvalidSdkDirectoryException {
 		StaticLoggerBinder.getSingleton().getLoggerFactory().setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
 		commandRunner = new CommandRunner();
+		
 		tempDir = FileUtility.createTemporaryDirectory(getClass().getSimpleName());
 		ThreadSafeStaticBRJSAccessor.destroy();
 		oldSysOut = System.out;
@@ -140,6 +141,18 @@ public class CommandRunnerTest {
 		String output = outputStream.toString("UTF-8");
 		assertContains("warn-level", output);
 		assertContains("info-level", output);
+		assertDoesNotContain("debug-level", output);
+	}
+	
+	@Test
+	public void errorsForAllPackagesAreDisplayedEvenIfNotLoggingThatPackage() throws Exception {
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--info"});
+		
+		String output = outputStream.toString("UTF-8");
+		assertContains("error-level", output);
+		assertDoesNotContain("warn-level", output);
+		assertDoesNotContain("info-level", output);
 		assertDoesNotContain("debug-level", output);
 	}
 	

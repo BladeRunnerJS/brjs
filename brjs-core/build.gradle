@@ -77,9 +77,12 @@ dependencies {
 	testRuntime dependency('jetty-jsp')
 }
 
+jar {
+	from sourceSets.main.allJava // include all src in the jar
+}
+
 javadoc {
 	title = "BladeRunnerJS ${buildVersion}"
-	classpath += project.configurations.compileOnly
 	/* info for JavaDoc options http://docs.oracle.com/javase/6/docs/technotes/tools/windows/javadoc.html#overviewcomment */
 	options.overview = "${sourceSets.main.java.srcDirs.toArray()[0]}/overview-summary.html"
 	maxMemory = "128m"
@@ -91,12 +94,6 @@ task javadocZip, type:Zip, dependsOn:javadoc, {
 	into "javadoc"
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-
 artifacts {
 	javadocs javadocZip
-	srcJar sourcesJar
 }

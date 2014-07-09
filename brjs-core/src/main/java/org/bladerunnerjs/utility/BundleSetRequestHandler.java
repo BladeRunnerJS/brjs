@@ -4,12 +4,13 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.ContentPlugin;
 
 
@@ -21,7 +22,7 @@ public class BundleSetRequestHandler {
 		public static final String BUNDLER_IDENTIFIED_MSG = "Bundler '%s' identified as handler for request '%s'.";
 	}
 	
-	public static void handle(BundleSet bundleSet, String logicalRequestpath, ContentOutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public static ResponseContent handle(BundleSet bundleSet, String logicalRequestpath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		App app = bundlableNode.app();
 		Logger logger = app.root().logger(BundleSetRequestHandler.class);
@@ -40,6 +41,6 @@ public class BundleSetRequestHandler {
 		logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), logicalRequestpath);
 		
 		ParsedContentPath contentPath = contentProvider.getContentPathParser().parse(logicalRequestpath);
-		contentProvider.writeContent(contentPath, bundleSet, os, version);
+		return contentProvider.handleRequest(contentPath, bundleSet, contentAccessor, version);
 	}
 }

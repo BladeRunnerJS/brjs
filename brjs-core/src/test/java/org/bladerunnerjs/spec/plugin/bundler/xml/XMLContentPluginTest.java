@@ -6,6 +6,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -23,6 +24,7 @@ public class XMLContentPluginTest extends SpecTest{
 	private Bladeset bladeset;
 	private Blade blade = null;
 	private Workbench workbench = null;
+	private NamedDirNode workbenchTemplate;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -37,6 +39,11 @@ public class XMLContentPluginTest extends SpecTest{
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
+		workbenchTemplate = brjs.template("workbench");
+		
+		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
+			.and(workbenchTemplate).containsFolder("resources")
+			.and(workbenchTemplate).containsFolder("src");
 	}
 	
 	@Test
@@ -354,6 +361,15 @@ public class XMLContentPluginTest extends SpecTest{
 		then(response).containsText(bundleElem("\n", templateElem("../v/1234/some/path ../some/path")));
 	}
 	
+	@Test
+	public void bundlePathTagIsReplacedForWorkbench() throws Exception {
+		given(blade).containsResourceFileWithContents("xml/myconfig.xml", "@bundlePath@/some/path @unversionedBundlePath@/some/path")
+			.and(brjs).hasDevVersion("dev")
+			.and(blade).hasClass("appns/bs/b1/Class1")
+			.and(workbench).indexPageRefersTo("appns/bs/b1/Class1");
+		when(workbench).requestReceived("xml/bundle.xml", response);
+		then(response).containsText("../v/dev/some/path ../some/path"); 
+	}
 	
 	private String bundleConfig(){
 		String content = "<?xml version=\"1.0\"?> "

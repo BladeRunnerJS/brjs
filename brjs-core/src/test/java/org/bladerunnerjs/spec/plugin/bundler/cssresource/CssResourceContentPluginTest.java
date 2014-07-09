@@ -1,5 +1,8 @@
 package org.bladerunnerjs.spec.plugin.bundler.cssresource;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,8 @@ import org.junit.Test;
 public class CssResourceContentPluginTest extends SpecTest {
 	private App app;
 	private StringBuffer response = new StringBuffer();
+	private OutputStream binaryResponse;
+	private File binaryResponseFile;
 	private JsLib sdkJsLib;
 	private Aspect aspect;
 	private Bladeset bladeset;
@@ -36,7 +41,9 @@ public class CssResourceContentPluginTest extends SpecTest {
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
 			sdkJsLib = brjs.sdkLib("sdkLib");
-			
+		
+		binaryResponseFile = File.createTempFile("CssResourceContentPluginTest", "tmp");
+		binaryResponse = new FileOutputStream(binaryResponseFile);
 		cssResourcePlugin = brjs.plugins().contentPlugin("cssresource");
 		requestsList = new ArrayList<String>();
 	}
@@ -303,6 +310,16 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(sdkJsLib).containsResourceFileWithContents("some dir/another dir/someFile.txt", "someFile.txt contents");
 		when(workbench).requestReceived("cssresource/lib_sdkLib/resources/some%20dir/another%20dir/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
+	public void imagesArentCorrupt() throws Exception
+	{
+		given(app).hasBeenCreated()
+    		.and(aspect).hasBeenCreated()
+    		.and(aspect).containsFileCopiedFrom("resources/br-logo.png", "src/test/resources/br-logo.png");
+    	when(aspect).requestReceived("cssresource/aspect_default_resource/resources/br-logo.png", binaryResponse);
+    	then(binaryResponseFile).sameAsFile("src/test/resources/br-logo.png");
 	}
 	
 }

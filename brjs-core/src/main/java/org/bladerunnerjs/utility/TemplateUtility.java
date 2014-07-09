@@ -144,7 +144,11 @@ public class TemplateUtility
 		@Override
 		public boolean accept(File dir, String name)
 		{
-			return !(new File(destDir, name).exists());
+			File destFile = new File(destDir, name);
+			if (destFile.isDirectory()) {
+				return true;
+			}
+			return !(destFile.exists());
 		}
 	}
 }

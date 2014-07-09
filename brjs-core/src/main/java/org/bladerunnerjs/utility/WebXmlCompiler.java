@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -15,6 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,28 +24,20 @@ import org.xml.sax.SAXException;
 
 public class WebXmlCompiler {
 	public static void compile(File webXmlFile) throws IOException, ParseException {
-		FileWriter webXmlFileWriter = null;
-		Boolean withinDevBlock = false;
-		
 		try {
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document webXml = documentBuilder.parse(webXmlFile);
 			
-			processWebXmlNode(webXml.getDocumentElement().getChildNodes(), withinDevBlock);
+			processWebXmlNode(webXml.getDocumentElement().getChildNodes(), false);
 			
 			StringWriter buffer = new StringWriter();
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			webXmlFileWriter = new FileWriter(webXmlFile, false);
 			transformer.transform(new DOMSource(webXml.getDocumentElement()), new StreamResult(buffer));
-			webXmlFileWriter.write(buffer.toString());
+			
+			FileUtils.write(webXmlFile, buffer.toString());
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-		finally {
-			if (webXmlFileWriter != null) {
-				webXmlFileWriter.close();
-			}
 		}
 	}
 	

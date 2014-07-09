@@ -1,7 +1,5 @@
 #!/bin/sh
 
-JAVA_OPTS="-Xms64m -Xmx1024m -XX:MaxPermSize=128M $JAVA_OPTS"
-
 SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
 BRJS_CLASSPATH="$SCRIPT_DIR/libs/java/system/*:$SCRIPT_DIR/../conf/java/*"
 

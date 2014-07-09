@@ -61,56 +61,6 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 		}
 	}
 	
-	
-	public static void createResourcesFromSdkTemplate(File templateDir, File targetDir, FileFilter fileFilter) throws IOException
-	{
-		List<File> list = getAllFilesAndFoldersMatchingFilterIncludingSubdirectories(templateDir, fileFilter);
-		
-		if (targetDir.exists() == false)
-		{
-			targetDir.mkdirs();
-		}
-		
-		for (File f : list)
-		{			
-			String relativePathFromTemplateDir = f.getAbsolutePath().replace(templateDir.getAbsolutePath(), "");
-			File newResourceToAdd = new File(targetDir, relativePathFromTemplateDir);
-
-			if (f.isDirectory() == true)
-			{
-				createFolder(newResourceToAdd);
-			}
-			else 
-			{
-				createFile(f, newResourceToAdd);
-			}
-		}
-	}
-	
-	public static void createFile(File source, File newFileLocation) throws IOException
-	{
-		if (source.exists() == true)
-		{
-			if (newFileLocation.exists() == false)
-			{
-				if (newFileLocation.getParentFile().exists() == false)
-				{
-					createFolder(newFileLocation.getParentFile());
-				}
-				
-				FileUtils.copyFile(source, newFileLocation);
-			}
-		}
-	}
-	
-	public static void createFolder(File folderToAdd)
-	{
-		if(!folderToAdd.exists())
-		{
-			folderToAdd.mkdirs();	
-		}		
-	}
-	
 	public static File createTemporaryFile(String prefix, String suffix) throws IOException
 	{
 		final File temp = File.createTempFile(prefix, suffix);
@@ -163,12 +113,4 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 		return new File(tempDir, CutlassConfig.SDK_DIR);
 	}
 	
-	public static void createHiddenFileAndFolder(File location) throws IOException
-	{
-		if(!System.getProperty("os.name").toLowerCase().contains("windows"))
-		{
-			new File(location, ".hiddenDir").mkdirs();
-			new File(location, ".hiddenFile").createNewFile();	
-		}
-	}
 }

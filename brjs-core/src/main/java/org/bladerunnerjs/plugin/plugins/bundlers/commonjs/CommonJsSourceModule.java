@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -88,7 +87,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		try
 		{
 			String defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			Reader assetReader = new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding));
+			Reader assetReader = new UnicodeReader(assetFile, defaultFileCharacterEncoding);
 			if (patch.patchAvailable()){
 				return new ConcatReader( new Reader[] { assetReader, patch.getReader() });
 			} else {

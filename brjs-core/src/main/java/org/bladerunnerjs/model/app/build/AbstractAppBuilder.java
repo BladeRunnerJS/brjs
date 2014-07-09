@@ -1,9 +1,9 @@
 package org.bladerunnerjs.model.app.build;
 
-import static org.bladerunnerjs.utility.AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.BUNDLE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.INDEX_PAGE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.LOCALE_FORWARDING_REQUEST;
+import static org.bladerunnerjs.utility.AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,21 +15,23 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
+import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtility;
-import org.bladerunnerjs.utility.ServedAppMetadataUtility;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.WebXmlCompiler;
 
 
@@ -52,6 +54,7 @@ public abstract class AbstractAppBuilder
 		try {
 			Locale[] locales = app.appConf().getLocales();
 			String version = app.root().getAppVersionGenerator().getProdVersion();
+			UrlContentAccessor contentPluginUtility = new StaticContentAccessor(app);
 			
 			File appWebInf = app.file("WEB-INF");
 			if(appWebInf.exists()) {
@@ -61,7 +64,7 @@ public abstract class AbstractAppBuilder
 				if (exportedWebXml.isFile()) {
 					WebXmlCompiler.compile(exportedWebXml);					
 					String webXmlContents = FileUtils.readFileToString(exportedWebXml);
-					webXmlContents = webXmlContents.replace(ServedAppMetadataUtility.APP_VERSION_TOKEN, version);
+					webXmlContents = webXmlContents.replace(AppMetadataUtility.APP_VERSION_TOKEN, version);
 					FileUtils.writeStringToFile(exportedWebXml, webXmlContents, false);
 				}
 			}
@@ -72,8 +75,10 @@ public abstract class AbstractAppBuilder
 				File localeForwardingFile = new File(temporaryExportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
 				
 				localeForwardingFile.getParentFile().mkdirs();
-				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
-					appRequestHandler.writeLocaleForwardingPage(os, version);
+				
+				try (OutputStream os = new FileOutputStream(localeForwardingFile)) {
+					ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(app.root(), contentPluginUtility, version);
+					content.write(os);
 				}
 				
 				for(Locale locale : locales) {
@@ -82,7 +87,8 @@ public abstract class AbstractAppBuilder
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						appRequestHandler.writeIndexPage(aspect, locale, version, new StaticContentOutputStream(app, os), RequestMode.Prod);
+						ResponseContent content = appRequestHandler.getIndexPageContent(aspect, locale, version, contentPluginUtility, RequestMode.Prod);
+						content.write(os);
 					}
 				}
 				
@@ -96,10 +102,11 @@ public abstract class AbstractAppBuilder
 								bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));																
 							}
 							
+							ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
+							ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);
 							bundleFile.getParentFile().mkdirs();
-							try(ContentOutputStream os = new StaticContentOutputStream(app, bundleFile)) {
-								contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os, version);
-							}
+							bundleFile.createNewFile();
+							pluginContent.write( new FileOutputStream(bundleFile) );
 						}
 					} else {
 						ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;

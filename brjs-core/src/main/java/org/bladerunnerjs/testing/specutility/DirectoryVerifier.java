@@ -4,6 +4,7 @@ import static org.bladerunnerjs.testing.utility.BRJSAssertions.assertContains;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -41,6 +42,15 @@ public class DirectoryVerifier {
 		File file = new File(dir, filePath);
 		assertTrue("file " + file.getPath() + " didn't exist.", file.exists());
 		assertContains(contents, FileUtils.readFileToString(file));
+		
+		return verifierChainer;
+	}
+
+	public VerifierChainer sameAsFile(String filePath) throws IOException
+	{
+		File checkAgainstFile = new File(filePath);
+		
+		assertTrue( "file contents wasnt equal", FileUtils.contentEquals(dir, checkAgainstFile) );
 		
 		return verifierChainer;
 	}

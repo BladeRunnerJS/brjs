@@ -1,15 +1,16 @@
 package org.bladerunnerjs.spec.brjs;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -69,11 +70,9 @@ public class MockContentPluginWithIncorrectContentPaths extends AbstractContentP
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
 	{
-		PrintWriter out = new PrintWriter(os);
-		out.print(this.getClass().getCanonicalName());
-		out.flush();
+		return new CharResponseContent( bundleSet.getBundlableNode().root(), this.getClass().getCanonicalName() );
 	}
 
 	@Override
