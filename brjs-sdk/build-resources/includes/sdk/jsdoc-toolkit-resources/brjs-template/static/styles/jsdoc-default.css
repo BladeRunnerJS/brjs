@@ -331,3 +331,28 @@ h6
 .disabled {
     color: #454545;
 }
+
+
+header .interface {
+    background: url("../icons/interface.gif") no-repeat;
+}
+header .package,
+header .namespace {
+    background: url("../icons/package.gif") no-repeat;
+}
+header .singleton {
+    background: url("../icons/singleton.gif") no-repeat;
+}
+header .class {
+    background: url("../icons/class.gif") no-repeat;
+}
+
+header .interface,
+header .package,
+header .namespace,
+header .singleton,
+header .class {
+    padding-left: 55px;
+    min-height: 50px;
+    line-height: 2;
+}

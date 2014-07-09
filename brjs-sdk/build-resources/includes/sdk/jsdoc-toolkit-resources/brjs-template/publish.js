@@ -437,6 +437,8 @@ exports.publish = function(taffyData, opts, tutorials) {
     data().each(function(doclet) {
          doclet.attribs = '';
 
+console.log(doclet);
+
         if (doclet.examples) {
             doclet.examples = doclet.examples.map(function(example) {
                 var caption, code;

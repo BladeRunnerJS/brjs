@@ -11,11 +11,50 @@
 
 <section>
 
+<?js
+    var docType = null;
+
+    ["component", "control", "interface", "package", "namespace", "singleton"].forEach(function(typeTag) {
+        if (doc.tags) {
+            for (var i = 0; i < doc.tags.length; i++) {
+                var tag = doc.tags[i];
+                if (tag.title == typeTag) {
+                    docType = (typeTag == "namespace") ? "package" : typeTag;
+                }
+            }
+        }
+    });
+
+    if (docType == null) {
+        ["class", "namespace"].forEach(function(kind) {
+            if (doc.kind == kind) {
+                docType = kind;
+            }
+        });
+    }
+?>
+
 <header>
-    <h2><?js if (doc.ancestors && doc.ancestors.length) { ?>
+    <?js if (docType != null) { ?>
+        <h4 class="docced-type <?js= docType ?>">
+        <?js= docType.charAt(0).toUpperCase() + docType.slice(1) ?>
+        </h4>
+    <?js } ?>
+
+    <?js if (doc.kind != "package" && docType != "package") { ?>
+        <h3 class="memberof">
+            <?js= doc.memberof ?>
+        </h3>
+    <?js } ?>
+
+    <h2 class="name"><?js if (doc.ancestors && doc.ancestors.length) { ?>
         <span class="ancestors"><?js= doc.ancestors.join('') ?></span>
     <?js } ?>
-    <?js= doc.name ?>
+    <?js if (doc.kind != "package" && docType != "package") { ?>
+        <?js= doc.name ?>
+    <?js } else { ?>
+        <?js= doc.longname ?>
+    <?js } ?>
     <?js if (doc.variation) { ?>
         <sup class="variation"><?js= doc.variation ?></sup>
     <?js } ?></h2>
