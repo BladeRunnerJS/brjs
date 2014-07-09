@@ -97,7 +97,7 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	}
 	
 	@Override
-	public void trace(String format, Object[] argArray)
+	public void trace(String format, Object... argArray)
 	{
 		formatAndLog(LogLevel.DEBUG, format, argArray);
 	}
@@ -133,7 +133,7 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	}
 	
 	@Override
-	public void debug(String format, Object[] argArray)
+	public void debug(String format, Object... argArray)
 	{
 		formatAndLog(LogLevel.DEBUG, format, argArray);
 	}
@@ -169,7 +169,7 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	}
 	
 	@Override
-	public void info(String format, Object[] argArray)
+	public void info(String format, Object... argArray)
 	{
 		formatAndLog(LogLevel.INFO, format, argArray);
 	}
@@ -205,7 +205,7 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	}
 	
 	@Override
-	public void warn(String format, Object[] argArray)
+	public void warn(String format, Object... argArray)
 	{
 		formatAndLog(LogLevel.WARN, format, argArray);
 	}
@@ -241,7 +241,7 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	}
 	
 	@Override
-	public void error(String format, Object[] argArray)
+	public void error(String format, Object... argArray)
 	{
 		formatAndLog(LogLevel.ERROR, format, argArray);
 	}
