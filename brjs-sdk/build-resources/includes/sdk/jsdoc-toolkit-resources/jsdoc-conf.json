@@ -5,7 +5,8 @@
     "source": {
         "includePattern": ".+\\.js(doc)?$",
         "include": [
-            "sdk/libs/javascript"
+            "sdk/jsdoc-toolkit-resources/README.md",
+            "sdk/libs/javascript/br-presenter"
         ],
         "exclude": [
             "sdk/libs/javascript/es5-shim",
@@ -31,7 +32,10 @@
         ],
         "excludePattern": "(^|\\/|\\\\)_|[\\\\|//]test(s)?[\\\\|//]|[\\\\|//]spec[\\\\|//]|[\\\\|//]bundles[\\\\|//]"
     },
-    "encoding": "utf8",
+    "opts": {
+        "encoding": "utf8",
+        "template": "sdk/jsdoc-toolkit-resources/brjs-template"
+    },
     "plugins": [],
     "templates": {
         "cleverLinks": false,

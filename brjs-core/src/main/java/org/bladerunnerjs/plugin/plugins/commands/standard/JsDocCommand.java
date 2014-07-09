@@ -92,9 +92,8 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		List<String> commandArgs = new ArrayList<>();
 		
 		File workingDir = brjs.dir();
-		File jsdocToolkitInstallDir = getSystemOrUserConfPath(brjs, brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
+		File jsdocToolkitInstallDir = new File(brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
 		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
-		File jsDocTemplatesDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-template");
 		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
 		
 		commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc");
@@ -104,8 +103,6 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		commandArgs.add("-c"); // set the config file
 			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocConfFile) );
 		commandArgs.add("-r"); // recurse into dirs
-		commandArgs.add("-t"); // the JsDoc template to use
-			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocTemplatesDir) ); 
 		commandArgs.add("-d"); // the output dir
 			commandArgs.add( RelativePathUtility.get(brjs, workingDir, outputDir) ); 
 		
