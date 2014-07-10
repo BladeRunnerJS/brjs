@@ -1,19 +1,15 @@
 package com.caplin.cutlass.command;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AndFileFilter;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.NameFileFilter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
@@ -27,11 +23,9 @@ import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
+import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
 import org.mockito.Mockito;
-
-import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.util.FileUtility;
 
 
 public class NodeImporter {
@@ -46,7 +40,7 @@ public class NodeImporter {
 		tempBrjsApp.appConf().write();
 		
 		for(Aspect aspect : tempBrjsApp.aspects()) {
-			renameAspect(aspect, sourceAppRequirePrefix, targetAppRequirePrefix);
+			updateRequirePrefix(aspect.assetLocations(), sourceAppRequirePrefix, targetAppRequirePrefix);
 		}
 		
 		for(Bladeset bladeset : tempBrjsApp.bladesets()) {
@@ -76,68 +70,30 @@ public class NodeImporter {
 		return new BRJS(FileUtility.createTemporaryDirectory("node-importer"), pluginLocator, new OptimisticFileModificationService(), new StubLoggerFactory(), new MockAppVersionGenerator());
 	}
 	
-	private static void renameAspect(Aspect aspect, String sourceAppRequirePrefix, String targetAppRequirePrefix) throws IOException {
-		findAndReplaceInAllTextFiles(aspect.dir(), sourceAppRequirePrefix, targetAppRequirePrefix);
-		moveSrcDirectoryContentToNewNamespaceDirectoryStructure(sourceAppRequirePrefix, targetAppRequirePrefix, aspect.dir());
-	}
-	
 	private static void renameBladeset(Bladeset bladeset, String sourceBladesetRequirePrefix) throws IOException {
-		findAndReplaceInAllTextFiles(bladeset.dir(), sourceBladesetRequirePrefix, bladeset.requirePrefix());
-		renameSrcSubfoldersAndBladeOrBladesetDirectory(sourceBladesetRequirePrefix, bladeset.requirePrefix(), bladeset.dir(), bladeset.getName() + CutlassConfig.BLADESET_SUFFIX);
+		updateRequirePrefix(bladeset.assetLocations(), sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		for(Blade blade : bladeset.blades()) {
-			renameBlade(blade, sourceBladesetRequirePrefix + "/" + blade.getName());
+			updateRequirePrefix(blade.assetLocations(), sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
 		}
 	}
 	
-	private static void renameBlade(Blade blade, String sourceBladeRequirePrefix) throws IOException {
-		renameSrcSubfoldersAndBladeOrBladesetDirectory(sourceBladeRequirePrefix, blade.requirePrefix(), blade.dir(), blade.getName());
-	}
-	
-	private static void renameSrcSubfoldersAndBladeOrBladesetDirectory(String oldNamespace, String newNamespace, File resource, String newResourceFolderName) throws IOException
-	{
-		moveSrcDirectoryContentToNewNamespaceDirectoryStructure(oldNamespace, newNamespace, resource);
-		renameDirectory(resource, newResourceFolderName);
-	}
-	
-	private static void moveSrcDirectoryContentToNewNamespaceDirectoryStructure(String oldNamespace, String newNamespace, File resourceThatCanHoldSrcDirectory)	throws IOException
-	{
-		List<File> srcFolders = new ArrayList<File>();
-		
-		for (String dirName : CutlassConfig.POSSIBLE_SRC_DIR_NAMES)
-		{
-			srcFolders.addAll( FileUtility.getAllFilesAndFoldersMatchingFilterIncludingSubdirectories(resourceThatCanHoldSrcDirectory, 
-					(FileFilter) new AndFileFilter(new NameFileFilter(dirName), DirectoryFileFilter.INSTANCE)) );			
-		}
-		
-		for(File srcFolder : srcFolders)
-		{
-			if (srcFolder.listFiles().length > 0)
-			{
-				moveNamespaceDirectory(srcFolder, oldNamespace.replace('.', '/'), newNamespace.replace('.', '/'));
+	private static void updateRequirePrefix(List<AssetLocation> assetLocations, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
+		for(AssetLocation assetLocation : assetLocations) {
+			if(assetLocation.dir().exists()) {
+				if(assetLocation.file(sourceRequirePrefix).exists()) {
+					FileUtils.moveDirectory(assetLocation.file(sourceRequirePrefix), assetLocation.file(targetRequirePrefix));
+				}
+				
+				findAndReplaceInAllTextFiles(assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
 			}
 		}
 	}
 	
-	private static void moveNamespaceDirectory(File srcDirectory, String oldNamespace, String newNamespace) throws IOException
+	// TODO: change this so it processes all files containing the 'sourceRequirePrefix'
+	private static void findAndReplaceInAllTextFiles(File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
-		File oldNamespaceDirectory = new File(srcDirectory, oldNamespace);
-		File newNamespaceDirectory = new File(srcDirectory, newNamespace);
-		File oldApplicationNamespaceDirectory = srcDirectory.listFiles()[0];
-		
-		boolean namespaceIsTheSame = oldNamespace.equalsIgnoreCase(newNamespace);
-		
-		if(oldNamespaceDirectory.exists() && !namespaceIsTheSame)
-		{
-			FileUtils.moveDirectory(oldNamespaceDirectory, newNamespaceDirectory);
-		}
-		
-		FileUtility.recursivelyDeleteEmptyDirectories(oldApplicationNamespaceDirectory);
-	}
-	
-	private static void findAndReplaceInAllTextFiles(File rootRenameDirectory, String oldNamespace, String newNamespace) throws IOException
-	{
-		HashMap<String, String> replaceMap = getReplaceMap(oldNamespace, newNamespace);
+		HashMap<String, String> replaceMap = getReplaceMap(sourceRequirePrefix, targetRequirePrefix);
 		for(File file : FileUtils.listFiles(rootRenameDirectory, textBasedFileExtensions, true))
 		{
 			String content = FileUtils.readFileToString(file);
@@ -163,14 +119,5 @@ public class NodeImporter {
 			content = content.replaceAll(find, replace);	
 		}
 		return content;
-	}
-	
-	private static void renameDirectory(File directoryToRename, String newDirectoryName) throws IOException
-	{
-		if(!directoryToRename.getName().equals(newDirectoryName))
-		{
-			File newFolder = new File(directoryToRename.getParentFile(), newDirectoryName);
-			FileUtils.moveDirectory(directoryToRename, newFolder);
-		}
 	}
 }
