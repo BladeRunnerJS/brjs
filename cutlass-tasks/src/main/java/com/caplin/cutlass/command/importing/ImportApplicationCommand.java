@@ -6,6 +6,7 @@ import java.util.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -15,6 +16,7 @@ import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.NameValidator;
 
+import com.caplin.cutlass.command.NodeImporter;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
@@ -53,14 +55,14 @@ public class ImportApplicationCommand extends ArgsParsingCommandPlugin
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-zip").setRequired(true).setHelp("the path to the zip containing the application"));
 		argsParser.registerParameter(new UnflaggedOption("new-app-name").setRequired(true).setHelp("the name of the newly imported app"));
-		argsParser.registerParameter(new UnflaggedOption("new-app-namespace").setRequired(true).setHelp("the namespace that the new app will have")); // TODO: switch to <new-app-require-path>
+		argsParser.registerParameter(new UnflaggedOption("new-app-require-prefix").setRequired(true).setHelp("the require-prefix that the new app will have")); // TODO: switch to <new-app-require-path>
 	}
 	
 	@Override
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appZipName = parsedArgs.getString("app-zip");
 		String newAppName = parsedArgs.getString("new-app-name");
-		String newAppNamespace = parsedArgs.getString("new-app-namespace");
+		String newAppNamespace = parsedArgs.getString("new-app-require-prefix");
 		
 		File appZip = (new File(appZipName).exists()) ? new File(appZipName) : new File(brjs.file("sdk"), appZipName);
 		App app = brjs.app(newAppName);
@@ -81,9 +83,9 @@ public class ImportApplicationCommand extends ArgsParsingCommandPlugin
 			File unzippedLibDir = new File(unzippedAppDir, "/WEB-INF/lib");
 			
 			FileUtils.copyDirectory(brjs.appJars().dir(), unzippedLibDir);
-			FileUtils.copyDirectory(unzippedAppDir, app.dir());
 			
-			Renamer.renameApplication(app.dir(), app.appConf().getRequirePrefix(), newAppNamespace, unzippedAppName, newAppName);
+			String unzippedAppRequirePrefix = (new AppConf(brjs, new File(unzippedAppDir, "app.conf"))).getRequirePrefix();
+			NodeImporter.importApp(unzippedAppDir, unzippedAppRequirePrefix, app, newAppNamespace);
 			
 			app.deploy();
 			

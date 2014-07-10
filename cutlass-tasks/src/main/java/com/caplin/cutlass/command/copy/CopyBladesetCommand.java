@@ -2,18 +2,18 @@ package com.caplin.cutlass.command.copy;
 
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.NameValidator;
 
-import com.caplin.cutlass.command.importing.Renamer;
+import com.caplin.cutlass.command.NodeImporter;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
@@ -85,12 +85,14 @@ public class CopyBladesetCommand  extends ArgsParsingCommandPlugin
 		if (targetBladeset.dirExists()) throw new CommandOperationException("The target bladeset '" + targetBladeset.getName() + "' already exists inside application '" + targetAppName + "'.");
 		
 		try {
-			FileUtils.copyDirectory(sourceBladeset.dir(), targetBladeset.dir());
-			Renamer.renameBladeset(targetBladeset.dir(), sourceApp.appConf().getRequirePrefix() + "." + sourceBladesetName, targetApp.appConf().getRequirePrefix() + "." + targetBladesetName);
+			NodeImporter.importBladeset(sourceBladeset.dir(), sourceApp.appConf().getRequirePrefix() + "/" + sourceBladesetName, targetBladeset);
+			
+//			FileUtils.copyDirectory(sourceBladeset.dir(), targetBladeset.dir());
+//			Renamer.renameBladeset(targetBladeset.dir(), sourceApp.appConf().getRequirePrefix() + "." + sourceBladesetName, targetApp.appConf().getRequirePrefix() + "." + targetBladesetName);
 			
 			logger.println("Successfully copied " + sourceAppName + "/" + sourceBladesetName + " to " + targetAppName + "/" + targetBladesetName);
 		}
-		catch (IOException | ConfigException e) {
+		catch (IOException | ConfigException | InvalidSdkDirectoryException e) {
 			throw new CommandOperationException(e);
 		}
 		

@@ -65,7 +65,7 @@ public class ImportApplicationCommandTest extends TestModelAccessor
 		assertTrue(appConf.exists());
 		
 		List<String> appConfLines = FileUtils.readLines(appConf);
-		assertEquals("requirePrefix: novox", appConfLines.get(1));
+		assertEquals("requirePrefix: novox", appConfLines.get(2));
 	}
 
 	// <app-name> exception test cases
