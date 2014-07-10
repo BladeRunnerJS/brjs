@@ -320,7 +320,7 @@ function buildNav(members) {
     if (members.classes.length) {
         members.classes.forEach(function(c) {
             if ( !hasOwnProp.call(seen, c.longname) ) {
-                classNav += '<li>' + linkto(c.longname, c.name) + '</li>';
+                classNav += '<li>' + linkto(c.longname, c.longname) + '</li>';
             }
             seen[c.longname] = true;
         });
