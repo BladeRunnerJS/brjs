@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import com.caplin.cutlass.util.FileUtility;
 
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CopyBladesetCommand;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
@@ -38,7 +39,8 @@ public class CopyBladesetCommandTest extends TestModelAccessor
 		ThreadSafeStaticBRJSAccessor.destroy();
 		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel(createModel(tempSdkBaseDir));
 		
-		copyBladesetCommand = new CopyBladesetCommand(brjs);
+		copyBladesetCommand = new CopyBladesetCommand();
+		copyBladesetCommand.setBRJS(brjs);
 		
 		targetBladesetDirectory = new File(tempDir, APPLICATIONS_DIR + "/targetApplication/a-bladeset");
 		targetBladeJsFile = new File(targetBladesetDirectory, "blades/a-blade/src/novox/a/a-blade/ABladeClass.js");

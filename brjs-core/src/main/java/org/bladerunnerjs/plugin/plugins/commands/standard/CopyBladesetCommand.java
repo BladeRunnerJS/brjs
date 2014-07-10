@@ -1,4 +1,4 @@
-package com.caplin.cutlass.command.copy;
+package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.IOException;
 
@@ -23,11 +23,6 @@ public class CopyBladesetCommand  extends ArgsParsingCommandPlugin
 {
 	private Logger logger;
 	private BRJS brjs;
-	
-	public CopyBladesetCommand(BRJS brjs)
-	{
-		setBRJS(brjs);
-	}
 	
 	@Override
 	public void setBRJS(BRJS brjs)

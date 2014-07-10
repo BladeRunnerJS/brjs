@@ -13,9 +13,9 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.logger.ConsoleLogger;
 import org.bladerunnerjs.logger.ConsoleLoggerStore;
+import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -24,8 +24,6 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.command.check.CheckCommand;
-import com.caplin.cutlass.command.copy.CopyBladesetCommand;
-import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.TestServerCommand;
 import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
@@ -157,8 +155,6 @@ public class CommandRunner {
 
 	private void injectLegacyCommands(BRJS brjs) {
 		brjs.plugins().addCommandPlugin(new CheckCommand());
-		brjs.plugins().addCommandPlugin(new CopyBladesetCommand( brjs ));
-		brjs.plugins().addCommandPlugin(new ImportApplicationCommand( brjs ));
 		brjs.plugins().addCommandPlugin(new TestCommand());
 		brjs.plugins().addCommandPlugin(new TestServerCommand());
 		brjs.plugins().addCommandPlugin(new TestIntegrationCommand( brjs.root().dir() ));

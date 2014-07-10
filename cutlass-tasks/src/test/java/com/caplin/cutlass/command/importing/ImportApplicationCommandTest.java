@@ -12,11 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
-
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
@@ -26,7 +25,7 @@ public class ImportApplicationCommandTest extends TestModelAccessor
 	
 	private static final File TEST_BASE = new File("src/test/resources/ImportApplicationCommandUtility");
 	private File sdkBaseDir, applicationsDirectory, tempDir;
-	private ImportApplicationCommand importApplicationCommand;
+	private ImportAppCommand importApplicationCommand;
 	private BRJS brjs;
 	
 	@Before
@@ -42,7 +41,8 @@ public class ImportApplicationCommandTest extends TestModelAccessor
 		
 		applicationsDirectory = new File(sdkBaseDir.getParent(), CutlassConfig.APPLICATIONS_DIR);
 		
-		importApplicationCommand = new ImportApplicationCommand(brjs);
+		importApplicationCommand = new ImportAppCommand();
+		importApplicationCommand.setBRJS(brjs);
 		tempDir.deleteOnExit();
 		
 	}
@@ -146,8 +146,8 @@ public class ImportApplicationCommandTest extends TestModelAccessor
 		
 		File applicationsDirectory = new File(sdkBaseDir.getParent(), CutlassConfig.APPLICATIONS_DIR);
 		File appDirectory = new File(applicationsDirectory, "novotrader");
-		importApplicationCommand = new ImportApplicationCommand(brjs);
-
+		importApplicationCommand = new ImportAppCommand();
+		importApplicationCommand.setBRJS(brjs);
 		
 		assertFalse(appDirectory.exists());
 

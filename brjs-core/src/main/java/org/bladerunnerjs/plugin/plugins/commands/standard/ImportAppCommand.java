@@ -1,4 +1,4 @@
-package com.caplin.cutlass.command.importing;
+package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.File;
 import java.util.zip.ZipFile;
@@ -22,15 +22,10 @@ import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class ImportApplicationCommand extends ArgsParsingCommandPlugin
+public class ImportAppCommand extends ArgsParsingCommandPlugin
 {
 	private Logger logger;
 	private BRJS brjs;
-	
-	public ImportApplicationCommand(BRJS brjs)
-	{
-		setBRJS(brjs);
-	}
 	
 	@Override
 	public void setBRJS(BRJS brjs)
