@@ -6,7 +6,7 @@
         "includePattern": ".+\\.js(doc)?$",
         "include": [
             "sdk/jsdoc-toolkit-resources/README.md",
-            "sdk/libs/javascript/br-presenter"
+            "sdk/libs/javascript"
         ],
         "exclude": [
             "sdk/libs/javascript/es5-shim",
