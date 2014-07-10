@@ -1,4 +1,4 @@
-package com.caplin.cutlass.command;
+package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,12 +7,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;

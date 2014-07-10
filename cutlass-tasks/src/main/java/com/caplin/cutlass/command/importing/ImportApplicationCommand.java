@@ -8,6 +8,7 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.NodeImporter;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
@@ -16,7 +17,6 @@ import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.NameValidator;
 
-import com.caplin.cutlass.command.NodeImporter;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;

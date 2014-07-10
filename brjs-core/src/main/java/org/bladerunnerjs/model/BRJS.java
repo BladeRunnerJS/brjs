@@ -75,8 +75,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private boolean closed = false;
 	private AppVersionGenerator appVersionGenerator;
 	
-	// TODO: make this package private again once NodeImporter has been moved into brjs-core
-	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
+	BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
 			LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
