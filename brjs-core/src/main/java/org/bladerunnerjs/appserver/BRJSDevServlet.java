@@ -77,6 +77,7 @@ public class BRJSDevServlet extends HttpServlet {
 			if (!response.isCommitted()) { // check the ServletContentAccessor hasnt been used to handle a request and sent headers
 				content.write( response.getOutputStream() );
 			}
+			content.closeQuietly();
 		}
 		catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException e) {
 			throw new ServletException(e);

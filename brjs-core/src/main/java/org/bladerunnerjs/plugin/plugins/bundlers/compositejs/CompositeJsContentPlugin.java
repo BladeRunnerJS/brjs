@@ -75,13 +75,30 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			MinifierPlugin minifierPlugin = brjs.plugins().minifierPlugin(minifierSetting);
 			
 			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, contentAccessor, version);
-			return new CharResponseContent( bundleSet.getBundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
+			ResponseContent content = new CharResponseContent( bundleSet.getBundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
+			
+			closeInputSources(inputSources);
+			
+			return content;
 		}
 		else {
 			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 		}
 	}
 	
+	private void closeInputSources(List<InputSource> inputSources)
+	{
+		for (InputSource input : inputSources) {
+			try
+			{
+				input.getContentPluginReader().close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+	}
+
 	private List<String> generateRequiredRequestPaths(BundleSet bundleSet, String requestFormName, Locale... locales) throws ContentProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
@@ -123,4 +140,6 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		
 		return inputSources;
 	}
+	
+	
 }

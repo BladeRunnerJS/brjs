@@ -58,6 +58,7 @@ public class BundlerHandler
 		String modelRequestPath = getModelRequestPath(bundlePath);
 		ResponseContent content = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentAccessor(app), version);
 		content.write( new FileOutputStream(bundleFile) );
+		content.closeQuietly();
 	}
 
 	private String getModelRequestPath(String bundlerPath)

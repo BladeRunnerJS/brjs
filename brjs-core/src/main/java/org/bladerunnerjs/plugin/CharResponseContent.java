@@ -47,5 +47,23 @@ public class CharResponseContent implements ResponseContent
 	{
 		IOUtils.copy( reader, outputStream );
 	}
+
+	@Override
+	public void close() throws Exception
+	{
+		reader.close();
+	}
+
+	@Override
+	public void closeQuietly()
+	{
+		try
+		{
+			close();
+		}
+		catch (Exception e)
+		{
+		}
+	}
 	
 }
