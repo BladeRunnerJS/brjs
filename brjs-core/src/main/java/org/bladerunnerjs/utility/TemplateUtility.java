@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
 
 
 public class TemplateUtility
@@ -48,6 +49,10 @@ public class TemplateUtility
 			
 			
 			FileUtils.copyDirectory(tempDir, node.dir());
+			
+			if(!JsStyleUtility.getJsStyle(node.dir()).equals(CommonJsContentPlugin.JS_STYLE)) {
+				JsStyleUtility.setJsStyle(node.dir(), CommonJsContentPlugin.JS_STYLE);
+			}
 		}
 		catch(IOException e) {
 			throw new TemplateInstallationException(e);

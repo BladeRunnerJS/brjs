@@ -102,4 +102,18 @@ public class BladeTest extends SpecTest {
 		when(aspect).getBundleInfo();
 //		then(exceptions).verifyException(BundleSetException.class, blade2.getName() //some other information);
 	}
+	
+	@Test
+	public void populatingABladeIntoANamespacedJsBladesetCausesAJsStyleFileToBeCreated() throws Exception {
+		given(bladeset).hasNamespacedJsPackageStyle();
+		when(blade1).populate();
+		then(blade1).hasFile(".js-style");
+	}
+	
+	@Test
+	public void populatingABladeIntoACommonJsBladesetDoesNotCausesAJsStyleFileToBeCreated() throws Exception {
+		given(bladeset).hasBeenCreated();
+		when(blade1).populate();
+		then(blade1).doesNotHaveFile(".js-style");
+	}
 }
