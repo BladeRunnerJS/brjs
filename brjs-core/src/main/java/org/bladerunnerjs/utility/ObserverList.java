@@ -11,7 +11,7 @@ import org.bladerunnerjs.plugin.EventObserver;
 
 public class ObserverList
 {
-	// TODO: these messages aren't currently covered within our spec tests
+	
 	public class Messages {
 		public static final String NODE_OBSERVER_EXCEPTION_MSG = "node observer '%s' threw an exception. the exception was: %s";
 	}
