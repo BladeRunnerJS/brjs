@@ -9,8 +9,8 @@ import org.bladerunnerjs.yaml.YamlAppConf;
 
 public class AppConf extends ConfFile<YamlAppConf> {
 	
-	public AppConf(File confFile) throws ConfigException {
-		super(null, YamlAppConf.class, confFile);	//TODO: remove this - we only need it while we have to use servlets in Wars
+	public AppConf(BRJS brjs, File confFile) throws ConfigException {
+		super(brjs, YamlAppConf.class, confFile);
 	}
 	
 	public AppConf(App app) throws ConfigException {

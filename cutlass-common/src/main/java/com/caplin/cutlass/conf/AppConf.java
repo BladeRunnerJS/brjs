@@ -35,7 +35,7 @@ public class AppConf
 		org.bladerunnerjs.model.AppConf appConf;
 		if (app == null)
 		{
-			appConf = new org.bladerunnerjs.model.AppConf( new File(applicationDirectory, "app.conf") );
+			appConf = new org.bladerunnerjs.model.AppConf( null, new File(applicationDirectory, "app.conf") );
 		}
 		else
 		{
