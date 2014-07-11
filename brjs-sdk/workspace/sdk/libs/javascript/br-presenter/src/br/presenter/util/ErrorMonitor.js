@@ -1,6 +1,6 @@
 /**
  * ErrorMonitor is responsible for monitoring the status of fields that contain
- * an error and failure message property. It is used to set the tool tip class that 
+ * an error and failure message property. It is used to set the tool tip class that
  * the tooltip control will scan in order to create the tool tip box.
  *
  * @constructor
@@ -11,12 +11,12 @@ br.presenter.util.ErrorMonitor = function(oTooltipNode)
 	if (!oTooltipNode || !(oTooltipNode instanceof br.presenter.node.ToolTipNode))
     {
     	throw new br.Errors.CustomError(br.Errors.INVALID_PARAMETERS, "The ErrorMonitor has to be constructed with an instance of a br.presenter.node.ToolTipNode");
-    } 
-	
+    }
+
 	this.m_oPropertyHelper = new br.presenter.property.PropertyHelper();
 
 	this.oTooltipNode = oTooltipNode;
-	
+
 	this.m_pErrorStack = [];
 };
 
@@ -24,7 +24,7 @@ br.presenter.util.ErrorMonitor.prototype.addErrorListeners = function(pGroups)
 {
     for (var i=0; i<pGroups.length; i++)
     {
-        if(pGroups[i].hasError && pGroups[i].failureMessage)
+        if(pGroups[i].hasError && pGroups[i].failureMessage && pGroups[i].tooltipClassName)
         {
             this.monitorField(pGroups[i]);
         }
@@ -60,11 +60,11 @@ br.presenter.util.ErrorMonitor.prototype.replaceErrorListeners = function(pGroup
  */
 br.presenter.util.ErrorMonitor.prototype.monitorField = function(oField)
 {
-	if (!oField instanceof br.presenter.node.ToolTipField)
+	if (!(oField instanceof br.presenter.node.ToolTipField))
     {
     	throw new br.Errors.CustomError(br.Errors.INVALID_PARAMETERS, "The field to monitor has to be an instance of br.presenter.node.ToolTipField");
     }
-	
+
 	var oTicketErrorProperty = this;
     var fValidationSuccessHandler = function()
     {
