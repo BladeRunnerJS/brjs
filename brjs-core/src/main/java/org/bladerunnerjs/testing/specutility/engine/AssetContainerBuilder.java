@@ -25,27 +25,6 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
 	}
 	
-	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
-		JsStyleUtility.setJsStyle(node.file(packagePath), jsStyle);
-		return builderChainer;
-	}
-	
-	public BuilderChainer hasNamespacedJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, NamespacedJsContentPlugin.JS_STYLE);
-	}
-	
-	public BuilderChainer hasNamespacedJsPackageStyle() {
-		return hasNamespacedJsPackageStyle("");
-	}
-	
-	public BuilderChainer hasCommonJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, CommonJsContentPlugin.JS_STYLE);
-	}
-	
-	public BuilderChainer hasCommonJsPackageStyle() {
-		return hasCommonJsPackageStyle("");
-	}
-	
 	public BuilderChainer containsResourceFile(String resourceFilePath) throws Exception {
 		fileUtil.write(node.assetLocation("resources").file(resourceFilePath), resourceFilePath + "\n");
 		
