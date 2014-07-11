@@ -66,10 +66,6 @@ public class CopyBladesetCommand  extends ArgsParsingCommandPlugin
 		String targetAppName = parsedArgs.getString("target-app-name");
 		String targetBladesetName = (parsedArgs.getString("target-bladeset-name") == null) ? sourceBladesetName : parsedArgs.getString("target-bladeset-name");
 		
-		// TODO: stop doing this when we have the new spec tests
-		sourceBladesetName = sourceBladesetName.replaceAll("-bladeset$", "");
-		targetBladesetName = targetBladesetName.replaceAll("-bladeset$", "");
-		
 		App sourceApp = brjs.app(sourceAppName);
 		Bladeset sourceBladeset = sourceApp.bladeset(sourceBladesetName);
 		App targetApp = brjs.app(targetAppName);
