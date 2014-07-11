@@ -47,8 +47,7 @@ public class TemplateUtility
 				transformDir(tempDir, transformations);
 			}
 			
-			
-			FileUtils.copyDirectory(tempDir, node.dir());
+			FileUtility.moveDirectoryContents(tempDir, node.dir());
 			
 			if(!JsStyleUtility.getJsStyle(node.dir()).equals(CommonJsContentPlugin.JS_STYLE)) {
 				JsStyleUtility.setJsStyle(node.dir(), CommonJsContentPlugin.JS_STYLE);
