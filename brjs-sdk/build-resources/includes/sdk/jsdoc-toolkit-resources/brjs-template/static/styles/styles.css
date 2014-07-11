@@ -437,3 +437,10 @@ table.params code {
 .subsection-title {
     font-size: 30px;
 }
+
+.sdk_info_panel {
+    font-size:0.8em;
+}
+.sdk_info_panel p {
+    margin: 2px 0;
+}

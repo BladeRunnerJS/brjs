@@ -73,7 +73,12 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
 		
 		try {
-			FileUtils.cleanDirectory(outputDir);
+			if (outputDir.isDirectory()) {
+				FileUtils.cleanDirectory(outputDir);
+			} else {
+				outputDir.mkdirs();
+			}
+			copyJsDocPlaceholder(app);
 			runCommand(app, outputDir);
 			replaceBuildDateToken(outputDir);
 			replaceVersionToken(outputDir);
@@ -91,7 +96,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		List<String> commandArgs = new ArrayList<>();
 		
 		File workingDir = brjs.dir();
-		File jsdocToolkitInstallDir = new File(brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
+		File jsdocToolkitInstallDir = getToolkitResourcesDir(brjs);
 		// this allows the toolkit and the conf to be overridden
 		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
 		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
@@ -143,5 +148,28 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			FileUtils.write(file, replacedContents);
 		}
 	}
+	
+	
+	
+	public static void copyJsDocPlaceholder(App app) throws IOException {
+		File placeholderSrcDir = new File(getToolkitResourcesDir(app.root()), "jsdoc-placeholders");
+		if (!placeholderSrcDir.exists()) {
+			return;
+		}
+		File placeholderDestDir = app.storageDir(APP_STORAGE_DIR_NAME);
+		placeholderDestDir.mkdirs();
+		for (File srcFile : FileUtils.listFiles(placeholderSrcDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
+			String pathRelativeToDestDir = RelativePathUtility.get(app.root(), placeholderSrcDir, srcFile);
+			File destFile = new File(placeholderDestDir, pathRelativeToDestDir);
+			if (!destFile.exists()) {
+				FileUtils.copyFile(srcFile, destFile);
+			}
+		}
+	}
+
+    private static File getToolkitResourcesDir(BRJS brjs)
+    {
+    	return new File(brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
+    }
 	
 }

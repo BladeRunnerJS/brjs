@@ -287,11 +287,19 @@ function attachModuleSymbols(doclets, modules) {
  * @return {string} The HTML for the navigation sidebar.
  */
 function buildNav(members) {
-    var nav = '<h2><a href="index.html">Index</a></h2>',
+    var nav = '',
         seen = {},
         hasClassList = false,
         classNav = '',
         globalNav = '';
+
+
+    nav += '<div id="sdk_info_panel">'+
+        '<p class="generated-on">Documentation generated on <span id="sdk_generation_date">@buildDate@</span></p>'+
+        '<p class="brjs-version">BRJS version <span id="sdk_version">@sdkVersion@</span></p>'+
+    '</div>';
+
+    nav += '<h2><a href="index.html">Index</a></h2>';
 
     if (members.modules.length) {
         nav += '<h3>Modules</h3><ul>';
