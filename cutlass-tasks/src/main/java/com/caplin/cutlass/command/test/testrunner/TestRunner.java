@@ -555,7 +555,7 @@ public class TestRunner {
 	}
 	
 	private String verboseFlag() {
-		return (verbose) ? "--info" : "";
+		return (verbose) ? "--verbose" : "";
 	}
 	
 	private String getClassPath(File testRunnnerDependencies) {
