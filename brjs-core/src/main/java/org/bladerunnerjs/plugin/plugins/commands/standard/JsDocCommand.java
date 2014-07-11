@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
@@ -17,7 +20,6 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.martiansoftware.jsap.JSAP;
@@ -25,6 +27,8 @@ import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
+
+//TODO: we have very few (if any) tests around this command
 
 public class JsDocCommand extends ArgsParsingCommandPlugin {
 	public static final String APP_STORAGE_DIR_NAME = "jsdoc";
@@ -34,19 +38,13 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	private BRJS brjs;
-	private EncodedFileUtil fileUtil;
 	private Logger logger;
 	
 	@Override
-	public void setBRJS(BRJS brjs) {	
-		try {
-			this.brjs = brjs;
-			this.logger = brjs.logger(this.getClass());
-			fileUtil = new EncodedFileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
+	public void setBRJS(BRJS brjs) {
+		this.brjs = brjs;
+		this.logger = brjs.logger(this.getClass());
+
 	}
 	
 	@Override
@@ -73,11 +71,12 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
-		runCommand(app, outputDir);
 		
 		try {
-			replaceBuildDateToken(new File(outputDir, "index.html"));
-			replaceVersionToken(new File(outputDir, "index.html"));
+			FileUtils.cleanDirectory(outputDir);
+			runCommand(app, outputDir);
+			replaceBuildDateToken(outputDir);
+			replaceVersionToken(outputDir);
 		}
 		catch(IOException | ConfigException e) {
 			throw new CommandOperationException(e);
@@ -93,6 +92,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		
 		File workingDir = brjs.dir();
 		File jsdocToolkitInstallDir = new File(brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
+		// this allows the toolkit and the conf to be overridden
 		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
 		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
 		
@@ -125,20 +125,23 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		return new File(systemDirBase, dirName);
 	}
 	
-	private void replaceBuildDateToken(File indexFile) throws IOException, ConfigException {
-		String fileContent = fileUtil.readFileToString(indexFile);
-		
+	private void replaceBuildDateToken(File dir) throws IOException, ConfigException {
 		DateFormat dateFormat = new SimpleDateFormat("dd MMMMM yyyy");
 		Date date = new Date();
-		
-		String resultFileContent = fileContent.replace("@buildDate@", dateFormat.format(date));
-		fileUtil.writeStringToFile(indexFile, resultFileContent);
+		replaceToken("buildDate", dateFormat.format(date), dir);
 	}
 	
-	private void replaceVersionToken(File indexFile) throws IOException, ConfigException {
-		String fileContent = fileUtil.readFileToString(indexFile);
-		
-		String resultFileContent = fileContent.replace("@sdkVersion@", brjs.versionInfo().getVersionNumber());
-		fileUtil.writeStringToFile(indexFile, resultFileContent);
+	private void replaceVersionToken(File dir) throws IOException, ConfigException {
+		replaceToken("sdkVersion", brjs.versionInfo().getVersionNumber(), dir);
 	}
+	
+	private void replaceToken(String key, String value, File dir) throws IOException {
+		String token = "@"+key+"@";
+		for (File file : FileUtils.listFiles(dir, new SuffixFileFilter(".html"), TrueFileFilter.INSTANCE)) {
+			String contents = FileUtils.readFileToString(file);
+			String replacedContents = contents.replace(token, value);
+			FileUtils.write(file, replacedContents);
+		}
+	}
+	
 }
