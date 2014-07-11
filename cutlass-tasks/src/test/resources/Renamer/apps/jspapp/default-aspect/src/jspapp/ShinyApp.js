@@ -1,4 +1,0 @@
-jspapp.ShinyApp = function()
-{
-};
-

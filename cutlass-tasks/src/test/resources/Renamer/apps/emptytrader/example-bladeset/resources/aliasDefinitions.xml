@@ -1,7 +1,0 @@
-<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
-
-	<alias name="emptycorp.example.input"
-			defaultClass="emptycorpsexamples.InputControl">
-	</alias>
-
-</aliasDefinitions>
