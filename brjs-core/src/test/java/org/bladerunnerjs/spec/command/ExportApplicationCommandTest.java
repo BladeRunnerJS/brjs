@@ -61,7 +61,7 @@ public class ExportApplicationCommandTest extends SpecTest {
 	then(brjs).fileHasContents("generated/exported-app/app1/app1/default-aspect/src/appns/Class1.js", "default aspect src")
 		.and(brjs).fileHasContents("generated/exported-app/app1/app1/libs/appLib/Class1.js", 
 			"/*" + "\n" +
-			"* DISCLAIMER!" + "\n" +
+			"DISCLAIMER!" + "\n" +
 			"*/" + "\n" +
 			"\n" +
 			"library class");
