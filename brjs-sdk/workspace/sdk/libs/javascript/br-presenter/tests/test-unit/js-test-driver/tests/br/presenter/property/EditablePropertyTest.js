@@ -14,7 +14,7 @@ EditablePropertyTest.prototype.tearDown = function()
 };
 
 EditablePropertyTest.prototype._getTestValidator = function(bAsync)
-{	
+{
 	var fValidator = function(bAsync)
 	{
 		this.m_bAsync = (bAsync === true);
@@ -22,12 +22,12 @@ EditablePropertyTest.prototype._getTestValidator = function(bAsync)
 		this.m_pValidationRequests = [];
 	};
 	br.Core.implement(fValidator, br.presenter.validator.Validator);
-	
+
 	fValidator.prototype.validate = function(sText, mConfig, oValidationResult)
 	{
 		var bIsValid = (sText.match(mConfig.failText)) ? false : true;
 		this.m_pValidationRequests.push({isValid:bIsValid, result:oValidationResult});
-		
+
 		//only set results *now* if a synchronous validator, otherwise async
 		// and done manually later by calling provideValidationResult().
 		if(!this.m_bAsync)
@@ -39,7 +39,7 @@ EditablePropertyTest.prototype._getTestValidator = function(bAsync)
 	fValidator.prototype.provideValidationResult = function()
 	{
 		var oValidationRequest = this.m_pValidationRequests.pop();
-		
+
 		oValidationRequest.result.setResult(oValidationRequest.isValid, this.m_sResultMessage);
 	};
 
@@ -65,6 +65,23 @@ EditablePropertyTest.prototype.test_setUserEnteredValueSetsValue = function()
 	assertEquals("value", oEditableProperty.getValue());
 };
 
+EditablePropertyTest.prototype.test_onlyRunsEachSuccessfulParserOnce = function()
+{
+	var fParser = function(){};
+	br.Core.implement(fParser, br.presenter.parser.Parser);
+
+	fParser.prototype.parse = function(sValue, mConfig){
+		return sValue / 10;
+	};
+	var oParser = new fParser();
+	assertEquals("1", oParser.parse("10", {}));
+
+	var oEditableProperty = new br.presenter.property.EditableProperty().addParser(oParser, {});
+	oEditableProperty.setUserEnteredValue("10");
+	assertEquals("1", oEditableProperty.getValue());
+};
+
+
 EditablePropertyTest.prototype.test_setUserEnteredValueSetsParsedValueWhenParsersAreAdded = function()
 {
 	var fParser = function(){};
@@ -82,7 +99,7 @@ EditablePropertyTest.prototype.test_setUserEnteredValueSetsParsedValueWhenParser
 
 	var oEditableProperty = new br.presenter.property.EditableProperty().addParser(oParser, mParser1).addParser(oParser, mParser2);
 	oEditableProperty.setUserEnteredValue("xx");
-	assertEquals("zz", oEditableProperty.getValue());
+	assertEquals("zx", oEditableProperty.getValue());
 };
 
 EditablePropertyTest.prototype.test_whenThereAreNoValidatorsValidationAlwaysSucceed = function()
@@ -240,27 +257,27 @@ EditablePropertyTest.prototype.test_previousValidationResultsAreIgnoredIfTheUser
 	var oAsyncValidatorSecond = this._getTestValidator(true);
 	var oMockListener = mock(br.presenter.property.PropertyListener);
 	var oEditableProperty = new br.presenter.property.EditableProperty().addListener(oMockListener.proxy());
-	
+
 	oEditableProperty
 		.addValidator(oAsyncValidatorFirst, {failText:"fail"})
 		.addValidator(oAsyncValidatorSecond, {failText:"fail"});
-	
+
 	oMockListener.expects(exactly(2)).onPropertyUpdated();
 	oMockListener.expects(exactly(1)).onPropertyChanged();
 	oMockListener.expects(never()).onValidationSuccess();
 	oMockListener.expects(never()).onValidationError();
 	oMockListener.expects(never()).onValidationComplete();
-	
+
 	oEditableProperty.setUserEnteredValue("pass");
 	oAsyncValidatorFirst.provideValidationResult();
 	oEditableProperty.setUserEnteredValue("pass");
 	oAsyncValidatorSecond.provideValidationResult();
 	Mock4JS.verifyAllMocks();
-	
+
 	oMockListener.expects(once()).onValidationSuccess();
 	oMockListener.expects(never()).onValidationError();
 	oMockListener.expects(once()).onValidationComplete();
-	
+
 	oAsyncValidatorFirst.provideValidationResult();
 	oAsyncValidatorSecond.provideValidationResult();
 };
@@ -270,13 +287,13 @@ EditablePropertyTest.prototype.test_validatorsAreNotQueriedIfAnEarlierValidatorF
 	var oMockValidator1 = new br.presenter.validator.Validator();
 	var oMockValidator2 = mock(br.presenter.validator.Validator);
 	var oEditableProperty = new br.presenter.property.EditableProperty().addValidator(oMockValidator1).addValidator(oMockValidator2.proxy());
-	
+
 	oMockValidator1.validate = function(vValue, mAttributes, oValidationResult)
 	{
 		// by synchronously failing validation, the next validator shouldn't ever be queried
 		oValidationResult.setResult(false, "validation failed!");
 	};
-	
+
 	oMockValidator2.expects(never()).validate();
 	oEditableProperty.setUserEnteredValue("some value");
 };
@@ -309,21 +326,21 @@ EditablePropertyTest.prototype.test_multipleSynchronousValidatorsAreHandledCorre
 
 	var oEditableProperty = new br.presenter.property.EditableProperty().addListener(oMockListener.proxy());
 	oEditableProperty.addValidator(oValidator, {failText:"x"}).addValidator(oValidator, {failText:"y"});
-	
+
 	oMockListener.expects(once()).onPropertyUpdated();
 	oMockListener.expects(once()).onPropertyChanged();
 	oMockListener.expects(once()).onValidationError(ANYTHING, ANYTHING);
 	oMockListener.expects(once()).onValidationComplete();
 	oEditableProperty.setUserEnteredValue("x");
 	Mock4JS.verifyAllMocks();
-	
+
 	oMockListener.expects(once()).onPropertyUpdated();
 	oMockListener.expects(once()).onPropertyChanged();
 	oMockListener.expects(once()).onValidationError(ANYTHING, ANYTHING);
 	oMockListener.expects(once()).onValidationComplete();
 	oEditableProperty.setUserEnteredValue("y");
 	Mock4JS.verifyAllMocks();
-	
+
 	oMockListener.expects(once()).onPropertyUpdated();
 	oMockListener.expects(once()).onPropertyChanged();
 	oMockListener.expects(once()).onValidationSuccess();
@@ -353,12 +370,12 @@ EditablePropertyTest.prototype.test_immediateNotificationListenerCallbackCanFire
 	var oMockListener = mock(br.presenter.property.PropertyListener);
 
 	var oEditableProperty = new br.presenter.property.EditableProperty("pass").addValidator(oValidator, {failText:"fail"});
-	
+
 	oMockListener.expects(once()).onPropertyUpdated();
 	oMockListener.expects(once()).onPropertyChanged();
 	oMockListener.expects(once()).onValidationSuccess();
 	oMockListener.expects(once()).onValidationComplete();
-	
+
 	oEditableProperty.addListener(oMockListener.proxy(), true);
 };
 
@@ -368,7 +385,7 @@ EditablePropertyTest.prototype.test_immediateNotificationListenerCallbackCanFire
 	var oMockListener = mock(br.presenter.property.PropertyListener);
 
 	var oEditableProperty = new br.presenter.property.EditableProperty("fail").addValidator(oValidator, {failText:"fail"});
-	
+
 	oMockListener.expects(once()).onPropertyUpdated();
 	oMockListener.expects(once()).onPropertyChanged();
 	oMockListener.expects(once()).onValidationError(ANYTHING, ANYTHING);
@@ -379,7 +396,7 @@ EditablePropertyTest.prototype.test_immediateNotificationListenerCallbackCanFire
 EditablePropertyTest.prototype.test_exceptionIsThrownIfParserDoesNotImplementParserInterface = function()
 {
 	var oEditableProperty = new br.presenter.property.EditableProperty("value");
-	
+
 	assertException("1a", function(){
 		oEditableProperty.addParser({});
 	}, br.Errors.INVALID_PARAMETERS);
@@ -388,7 +405,7 @@ EditablePropertyTest.prototype.test_exceptionIsThrownIfParserDoesNotImplementPar
 EditablePropertyTest.prototype.test_exceptionIsThrownIfValidatorDoesNotImplementValidatorInterface = function()
 {
 	var oEditableProperty = new br.presenter.property.EditableProperty("value");
-	
+
 	assertException("1a", function(){
 		oEditableProperty.addValidator({});
 	}, br.Errors.INVALID_PARAMETERS);
@@ -397,12 +414,12 @@ EditablePropertyTest.prototype.test_exceptionIsThrownIfValidatorDoesNotImplement
 EditablePropertyTest.prototype.test_setUserEnteredValueProvidesADefaultParserAttributeMapIfNotProvided = function()
 {
 	var oParserMock = mock(br.presenter.parser.Parser);
-	
+
 	// passes through any config we do provide
 	oParserMock.expects(once()).parse("1.23456789", {key:"value"});
 	var oEditableProperty = new br.presenter.property.EditableProperty().addParser(oParserMock.proxy(), {key:"value"});
 	oEditableProperty.setUserEnteredValue("1.23456789");
-	
+
 	// defaults if not provided
 	oParserMock.expects(once()).parse("1.23456789", {});
 	var oEditableProperty = new br.presenter.property.EditableProperty().addParser(oParserMock.proxy());
@@ -412,12 +429,12 @@ EditablePropertyTest.prototype.test_setUserEnteredValueProvidesADefaultParserAtt
 EditablePropertyTest.prototype.test_setUserEnteredValueProvidesADefaultValidatorAttributeMapIfNotProvided = function()
 {
 	var oValidatorMock = mock(br.presenter.validator.Validator);
-	
+
 	// passes through any config we do provide
 	oValidatorMock.expects(once()).validate("1.23456789", {key:"value"}, and(NOT_NULL, NOT_UNDEFINED)).will(returnValue({isValid:function(){return true;}}));
 	var oEditableProperty = new br.presenter.property.EditableProperty().addValidator(oValidatorMock.proxy(), {key:"value"});
 	oEditableProperty.setUserEnteredValue("1.23456789");
-	
+
 	// defaults if not provided
 	oValidatorMock.expects(once()).validate("1.23456789", {}, and(NOT_NULL, NOT_UNDEFINED)).will(returnValue({isValid:function(){return true;}}));
 	var oEditableProperty = new br.presenter.property.EditableProperty().addValidator(oValidatorMock.proxy());
@@ -429,11 +446,11 @@ EditablePropertyTest.prototype.getListenerClass = function()
 	var fListenerClass = function()
 	{
 	};
-	
+
 	fListenerClass.prototype.invocationMethod = function()
 	{
 	};
-	
+
 	return fListenerClass;
 };
 
@@ -443,11 +460,11 @@ EditablePropertyTest.prototype.test_weCanAddAndRemoveAValidationErrorOnlyListene
 	var oProperty = new br.presenter.property.EditableProperty();
 	var oValidator = this._getTestValidator();
 	var oPropertyListener = oProperty.addValidationErrorListener(oListenerMock.proxy(), "invocationMethod");
-	
+
 	oProperty.addValidator(oValidator, {failText:"fail"});
 	oListenerMock.expects(once()).invocationMethod("fail", "sync");
 	oProperty.setUserEnteredValue("fail");
-	
+
 	oProperty.removeListener(oPropertyListener);
 };
 
@@ -455,7 +472,7 @@ EditablePropertyTest.prototype.test_specifyingANonExistentValidationErrorListene
 {
 	var oListenerMock = mock(this.getListenerClass());
 	var oProperty = new br.presenter.property.EditableProperty();
-	
+
 	assertException("1a", function(){
 		oProperty.addValidationErrorListener(oListenerMock.proxy(), "noSuchMethod");
 	}, 'TypeError');
@@ -466,7 +483,7 @@ EditablePropertyTest.prototype.test_weCanRequestForTheListenerToInvokeCallbackIm
 	var oListenerMock = mock(this.getListenerClass());
 	var oValidator = this._getTestValidator();
 	var oProperty = new br.presenter.property.EditableProperty("fail").addValidator(oValidator, {failText:"fail"});
-	
+
 	oListenerMock.expects(once()).invocationMethod("fail", "sync");
 	oProperty.addValidationErrorListener(oListenerMock.proxy(), "invocationMethod", true);
 };
@@ -517,9 +534,9 @@ EditablePropertyTest.prototype.test_hasValidationErrorReturnsTrueIfAtLeastOneVal
 	oEditableProperty.addValidator(oValidator2, {failText:"fail2"});
 
 	oEditableProperty.setUserEnteredValue("fail");
-	
+
 	assertTrue(oEditableProperty.hasValidationError());
-	
+
 };
 
 EditablePropertyTest.prototype.test_hasValidationErrorReturnsFalseIfAllValidatorsAreCorrect = function()
@@ -532,7 +549,7 @@ EditablePropertyTest.prototype.test_hasValidationErrorReturnsFalseIfAllValidator
 	oEditableProperty.addValidator(oValidator2, {failText:"fail2"});
 
 	oEditableProperty.setUserEnteredValue("success");
-	
+
 	assertFalse(oEditableProperty.hasValidationError());
 };
 
