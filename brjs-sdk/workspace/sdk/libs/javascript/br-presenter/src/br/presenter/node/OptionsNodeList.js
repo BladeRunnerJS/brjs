@@ -1,11 +1,11 @@
 /**
  * Constructs a new <code>OptionsNodeList</code> instance.
- * 
+ *
  * @class
  * The <code>OptionsNodeList</code> class is used to store the options available within
  * {@link br.presenter.node.SelectionField} and {@link br.presenter.node.MultiSelectionField}
  * instances.
- * 
+ *
  * @constructor
  * @param {Object} vOptions The set of available options, either as an array (keys only) or a map (keys to label).
  * @extends br.presenter.node.NodeList
@@ -19,8 +19,8 @@ br.Core.extend(br.presenter.node.OptionsNodeList, br.presenter.node.NodeList);
 
 /**
  * Retrieve the array of {@link br.presenter.node.Option} instances contained by this object.
- * 
- * @type Array
+ *
+ * @returns {Array}
  */
 br.presenter.node.OptionsNodeList.prototype.getOptions = function()
 {
@@ -29,8 +29,8 @@ br.presenter.node.OptionsNodeList.prototype.getOptions = function()
 
 /**
  * Retrieve an array of values for each {@link br.presenter.node.Option} contained within this object.
- * 
- * @type Array
+ *
+ * @returns {Array}
  */
 br.presenter.node.OptionsNodeList.prototype.getOptionValues = function()
 {
@@ -45,8 +45,8 @@ br.presenter.node.OptionsNodeList.prototype.getOptionValues = function()
 
 /**
  * Retrieve an array of labels for each {@link br.presenter.node.Option} contained within this object.
- * 
- * @type Array
+ *
+ * @returns {Array}
  */
 br.presenter.node.OptionsNodeList.prototype.getOptionLabels = function()
 {
@@ -61,7 +61,7 @@ br.presenter.node.OptionsNodeList.prototype.getOptionLabels = function()
 
 /**
  * Reset the list of available options using the given array or map.
- * 
+ *
  * @param {Object} vOptions The set of available options, either as an array (keys only) or a map (keys to label).
  */
 br.presenter.node.OptionsNodeList.prototype.setOptions = function(vOptions)
@@ -71,8 +71,8 @@ br.presenter.node.OptionsNodeList.prototype.setOptions = function(vOptions)
 
 /**
  * Retrieve the first option in the list &mdash; typically the default option.
- * 
- * @type br.presenter.node.Option
+ *
+ * @returns {br.presenter.node.Option}
  */
 br.presenter.node.OptionsNodeList.prototype.getFirstOption = function()
 {
@@ -85,11 +85,11 @@ br.presenter.node.OptionsNodeList.prototype.getFirstOption = function()
 };
 
 /**
- * Retrieve the option with the given label. (If there is more than one option which has the given label, 
+ * Retrieve the option with the given label. (If there is more than one option which has the given label,
  * the first instance is returned.)
- * 
+ *
  * @param {String} sLabel Label to search.
- * @type {@link br.presenter.node.Option}
+ * @returns {@link br.presenter.node.Option}
  */
 br.presenter.node.OptionsNodeList.prototype.getOptionByLabel = function(sLabel)
 {
@@ -105,10 +105,10 @@ br.presenter.node.OptionsNodeList.prototype.getOptionByLabel = function(sLabel)
 };
 
 /**
- * Retrieve the option with the given unique value. 
- * 
+ * Retrieve the option with the given unique value.
+ *
  * @param {String} sValue Value to search.
- * @type {@link br.presenter.node.Option}
+ * @param {@link br.presenter.node.Option}
  */
 br.presenter.node.OptionsNodeList.prototype.getOptionByValue = function(sValue)
 {
@@ -125,7 +125,6 @@ br.presenter.node.OptionsNodeList.prototype.getOptionByValue = function(sValue)
 
 /**
  * @private
- * @see br.presenter.node.NodeList#updateList
  */
 br.presenter.node.OptionsNodeList.prototype.updateList = function(vOptions)
 {
@@ -135,8 +134,6 @@ br.presenter.node.OptionsNodeList.prototype.updateList = function(vOptions)
 
 /**
  * @private
- * @param {Object} vOptions
- * @type Array
  */
 br.presenter.node.OptionsNodeList.prototype._getOptionObjects = function(vOptions)
 {

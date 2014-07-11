@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
@@ -13,16 +13,16 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.utility.ProcessLogger;
 
 public class CommandRunnerUtility {
-	private static final Runtime runTime = Runtime.getRuntime();
 	
-	public static void runCommand(BRJS brjs, List<String> command) throws CommandOperationException {
+	public static void runCommand(BRJS brjs, ProcessBuilder processBuilder) throws CommandOperationException {
 		try {
-			Process process = runTime.exec(command.toArray(new String[0]));
+			Process process = processBuilder.start();
 			ProcessLogger processLogger = new ProcessLogger(brjs, process, LogLevel.INFO, LogLevel.WARN, null);
 			int exitCode = waitForProcess(process, brjs.logger(CommandRunnerUtility.class));
 			processLogger.waitFor();
 			
-			if(exitCode != 0) throw new CommandOperationException("Error while running command '" + command + "' (" + exitCode + ")");
+			if(exitCode != 0) throw new CommandOperationException("Error while running command '" + 
+					StringUtils.join(processBuilder.command(), " ") + "' (" + exitCode + ")");
 		}
 		catch(IOException | InterruptedException e) {
 			throw new CommandOperationException(e);

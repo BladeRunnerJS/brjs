@@ -1,15 +1,15 @@
 /**
  * Constructs a new instance of <code>NodeList</code> containing the given
  * {@link br.presenter.node.PresentationNode} instances.
- * 
+ *
  * @class
  * <code>NodeList</code> is a {@link br.presenter.node.PresentationNode}, that is itself a
  * list of presentation nodes.
- * 
+ *
  * <p>The <code>NodeList</code> class is useful when you have a list of nodes of the same type
  * that all need to be rendered to screen. It supports the case where some or all of the nodes
  * need to be rendered with different templates.</p>
- * 
+ *
  * <p>The contents of the <code>NodeList</code> class can be modified using the {@link #updateList}
  * method, and this will cause the view to immediately update to reflect the contents of the new
  * list. Node lists whose presentation nodes aren't all rendered with the same template can achieve
@@ -18,7 +18,7 @@
  *
  * <p>If <code>fNodeClass</code> is provided, then only instances of that class can be added to the
  * node list; An {@link br.Errors.CustomError} will be thrown if this is violated.</p>
- * 
+ *
  * @constructor
  * @param {Array} pPresentationNodes The initial array of {@link br.presenter.node.PresentationNode} instances
  * @param {Function} fNodeClass (optional) The class/interface that all nodes in this list should be an instance of
@@ -28,10 +28,10 @@ br.presenter.node.NodeList = function(pPresentationNodes, fNodeClass)
 {
 	// call super constructor
 	br.presenter.view.knockout.KnockoutNodeList.call(this);
-	
+
 	/** @private */
 	this.m_fPermittedClass = fNodeClass || br.presenter.node.PresentationNode;
-	
+
 	/** @private */
 	this.m_pUpdateListeners = [];
 
@@ -40,7 +40,7 @@ br.presenter.node.NodeList = function(pPresentationNodes, fNodeClass)
 
 	/** @private */
 	this.m_oChangeListenerFactory = new br.util.ListenerFactory(br.presenter.node.NodeListListener, "onNodeListChanged");
-	
+
 	this._copiesAndChecksNodesAndClearsNodePaths(pPresentationNodes);
 };
 br.Core.extend(br.presenter.node.NodeList, br.presenter.node.PresentationNode);
@@ -48,7 +48,7 @@ br.Core.inherit(br.presenter.node.NodeList, br.presenter.view.knockout.KnockoutN
 
 /**
  * Returns the list of {@link br.presenter.node.PresentationNode} instances as an array.
- * 
+ *
  * @type Array
  */
 br.presenter.node.NodeList.prototype.getPresentationNodesArray = function()
@@ -58,7 +58,7 @@ br.presenter.node.NodeList.prototype.getPresentationNodesArray = function()
 
 /**
  * Returns the name of the template used to render the given presentation node.
- * 
+ *
  * @param {br.presenter.node.PresentationNode} oPresentationNode The presentation node being queried.
  * @type String
  */
@@ -69,10 +69,10 @@ br.presenter.node.NodeList.prototype.getTemplateForNode = function(oPresentation
 
 /**
  * Updates the node list with a new array of {@link br.presenter.node.PresentationNode} instances.
- * 
+ *
  * <p>Care must be taken to always invoke this method when the contents of the node list change. The
  * array returned by {@link #getPresentationNodesArray} should be treated as being immutable.</p>
- * 
+ *
  * @param {Array} pPresentationNodes The new list of {@link br.presenter.node.PresentationNode} instances.
  */
 br.presenter.node.NodeList.prototype.updateList = function(pPresentationNodes)
@@ -162,7 +162,6 @@ br.presenter.node.NodeList.prototype.addChangeListener = function(oListener, sMe
 
 /**
  * @private
- * @type br.util.Observable
  */
 br.presenter.node.NodeList.prototype._$getObservable = function()
 {
@@ -171,7 +170,6 @@ br.presenter.node.NodeList.prototype._$getObservable = function()
 
 /**
  * @private
- * @type br.util.Observable
  */
 br.presenter.node.NodeList.prototype._$setPath = function(sPath, oPresenterComponent)
 {
@@ -182,7 +180,6 @@ br.presenter.node.NodeList.prototype._$setPath = function(sPath, oPresenterCompo
 
 /**
  * @private
- * Recursively sets the the node path and property paths to undefined so that paths are recalculated when node are moved.
  */
 br.presenter.node.NodeList.prototype._$clearNodePaths = function()
 {
@@ -198,32 +195,30 @@ br.presenter.node.NodeList.prototype._$clearNodePaths = function()
 
 /**
  * @private
- * @see br.presenter.node.PresentationNode#_getNodes
  */
 br.presenter.node.NodeList.prototype._getNodes = function(sNodeName, pPropertyList, pNodes)
 {
 	for(var i = 0, l = this.m_pItems.length; i < l; ++i)
 	{
 		var oPresentationNode = this.m_pItems[i];
-		
+
 		if(this._nodeMatchesQuery(oPresentationNode, i, sNodeName, pPropertyList))
 		{
 			pNodes.push(oPresentationNode);
 		}
-		
+
 		oPresentationNode._getNodes(sNodeName, pPropertyList, pNodes);
 	}
 };
 
 /**
  * @private
- * @param {Array} pNodes
  */
 br.presenter.node.NodeList.prototype._copyAndCheckNodes = function(pNodes)
 {
 	var pResult = [];
 	if (!pNodes || !pNodes.length) return pResult;
-	
+
 	for(var i = 0; i < pNodes.length; i++){
 		var oNode = pNodes[i];
 		if(this.m_fPermittedClass && !(oNode instanceof this.m_fPermittedClass)) {
@@ -237,13 +232,11 @@ br.presenter.node.NodeList.prototype._copyAndCheckNodes = function(pNodes)
 
 /**
  * @private
- * Recursively sets the the node path and property paths to undefined so that paths are recalculated when node are moved.
- * @param {Array} pPresentationNodes A list of {@link br.presenter.node.PresentationNode} instances.
  */
 br.presenter.node.NodeList.prototype._copiesAndChecksNodesAndClearsNodePaths = function(pPresentationNodes)
 {
 	this.m_pItems = this._copyAndCheckNodes(pPresentationNodes);
-	
+
 	for(var i = 0; i < this.m_pItems.length; i++)
 	{
 		this.m_pItems[i]._$clearNodePaths();
@@ -252,7 +245,6 @@ br.presenter.node.NodeList.prototype._copiesAndChecksNodesAndClearsNodePaths = f
 
 /**
  * @private
- * Recursively sets the the node and property paths for newly added nodes.
  */
 br.presenter.node.NodeList.prototype._setPathsOfNewlyAddedNodes = function()
 {

@@ -1,7 +1,5 @@
 /**
- *
  * @private
- * @constructor
  */
 br.presenter.control.tooltip.TooltipHelper = function()
 {
@@ -10,14 +8,12 @@ br.presenter.control.tooltip.TooltipHelper = function()
 	this.m_eMessage = document.createElement('div');
 	this.m_eMessage.className = "tooltip-content";
 	this.m_eContainer.appendChild(this.m_eMessage);
-	
+
 	this.m_vParent = document.body;
 };
 
 /**
  * @private
- * @param {String} sMessage
- * @returns {br.presenter.control.tooltip.helper.TooltipHelper}
  */
 br.presenter.control.tooltip.TooltipHelper.prototype.updateTooltip = function(sMessage)
 {
@@ -27,8 +23,6 @@ br.presenter.control.tooltip.TooltipHelper.prototype.updateTooltip = function(sM
 
 /**
  * @private
- * @param {HTMLElement} oContainer
- * @returns {br.presenter.control.tooltip.helper.TooltipHelper}
  */
 br.presenter.control.tooltip.TooltipHelper.prototype.containWithin = function(oContainer)
 {
@@ -38,8 +32,6 @@ br.presenter.control.tooltip.TooltipHelper.prototype.containWithin = function(oC
 
 /**
  * @private
- * @param {HTMLElement} eErrorElement
- * @returns {br.presenter.control.tooltip.helper.TooltipHelper}
  */
 br.presenter.control.tooltip.TooltipHelper.prototype.pointTo = function(eErrorElement)
 {
@@ -58,13 +50,12 @@ br.presenter.control.tooltip.TooltipHelper.prototype.pointTo = function(eErrorEl
 	this.m_eContainer.style.left = oTooltipProperties.left + "px";
 	this.m_eContainer.style.top = oTooltipProperties.top + "px";
 	this.m_vParent.appendChild(this.m_eContainer);
-	
+
 	return this;
 };
 
 /**
  * @private
- * Removes the ToolTip from the document
  */
 br.presenter.control.tooltip.TooltipHelper.prototype.remove = function()
 {
@@ -73,10 +64,10 @@ br.presenter.control.tooltip.TooltipHelper.prototype.remove = function()
 
 /**
  * @private
+ */
+/*
  * Gets the dimensions of the tooltip, assuming the current content will not be changed. Do not call this function
  * in quick succession as it requires some heavy DOM lifting by the browser.
- *
- * @returns {{height: *, width: *}}
  */
 br.presenter.control.tooltip.TooltipHelper.prototype._getTooltipDimensions = function()
 {
@@ -85,7 +76,7 @@ br.presenter.control.tooltip.TooltipHelper.prototype._getTooltipDimensions = fun
 	eClone.style.position = "absolute";
 	eClone.style.display = "block";
 	this.m_vParent.appendChild(eClone);
-	
+
 	var oDimensions = {
 		height: eClone.offsetHeight,
 		width: eClone.offsetWidth

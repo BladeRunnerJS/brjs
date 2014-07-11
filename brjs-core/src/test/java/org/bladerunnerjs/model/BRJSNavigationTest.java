@@ -57,7 +57,7 @@ public class BRJSNavigationTest extends TestModelAccessor
 	@Test
 	public void sdkLibsDir()
 	{
-		nodeTesterFactory.createItemTester(DirNode.class, "sdkLibsDir", "sdk/libs/javascript")
+		nodeTesterFactory.createItemTester(DirNode.class, "sdkJsLibsDir", "sdk/libs/javascript")
 			.assertModelIsOK();
 	}
 	

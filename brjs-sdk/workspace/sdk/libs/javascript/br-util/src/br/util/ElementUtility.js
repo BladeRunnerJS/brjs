@@ -1,7 +1,7 @@
 var Errors = require("br/Errors");
 
 /**
- * @class 
+ * @class
  * This class provides static, browser agnostic, utility methods for DOM interactions such as adding / removing event listeners,
  * adjusting CSS classes, finding element positions etc.
  */
@@ -28,7 +28,7 @@ br.util.ElementUtility.m_bIsIe = undefined;
  * Returns TRUE if the specified class name exists on the element.
  * @param {Element} eElement The DOMElement to check.
  * @param {String} sClass The class name to check.
- * 
+ *
  * @type boolean
  * @returns TRUE if the specified class name exists on the element.
  */
@@ -64,7 +64,7 @@ br.util.ElementUtility.addClassName = function(eElement, sClass)
  */
 br.util.ElementUtility.removeClassName = function(eElement, sClass)
 {
-	br.util.ElementUtility.replaceClassName(eElement, sClass, "");	
+	br.util.ElementUtility.replaceClassName(eElement, sClass, "");
 };
 
 /**
@@ -78,12 +78,12 @@ br.util.ElementUtility.replaceClassName = function(eElement, sCurrentClass, sNew
 {
 	var sTrimmedNewClass = (sNewClass.trim());
 	var sReplacableClassName = sTrimmedNewClass.length == 0 ? ' ' : ' ' + sTrimmedNewClass + ' ';
-	var oClassMatcher = br.util.ElementUtility._getClassNameRegExFor(sCurrentClass); 
-	eElement.className = (eElement.className.replace(oClassMatcher, sReplacableClassName)).trim();	
+	var oClassMatcher = br.util.ElementUtility._getClassNameRegExFor(sCurrentClass);
+	eElement.className = (eElement.className.replace(oClassMatcher, sReplacableClassName)).trim();
 };
 
 /**
- * Adds and/or removes the specified class names from the specified element. This operation is performed 
+ * Adds and/or removes the specified class names from the specified element. This operation is performed
  * in a single DOM action, making this more efficient than adding/removing the classes individually. If a
  * class exists in both the add and remove lists, the class will be added to the element.
  *
@@ -105,7 +105,7 @@ br.util.ElementUtility.addAndRemoveClassNames = function(eElement, pClassesToAdd
 	}
 	if (pClassesToAdd && pClassesToAdd.length)
 	{
-		for (i = 0, l = pClassesToAdd.length; i < l; i++) 
+		for (i = 0, l = pClassesToAdd.length; i < l; i++)
 		{
 			var sClassToAdd = pClassesToAdd[i];
 			var sSpace = (sNewClassName == "") ? "" : " ";
@@ -129,7 +129,7 @@ br.util.ElementUtility.addAndRemoveClassNames = function(eElement, pClassesToAdd
  * @param {DOMElement} eDomElement The DOM element that should be used as the root of the search.
  * @param {String} sTagName The tag name (can be *) of elements to search for.
  * @param {String} sClassName The CSS class name of the elements to search for.
- * 
+ *
  * @type DOMElement[]
  * @returns An array of elements that match the specified criteria.
  */
@@ -154,27 +154,27 @@ br.util.ElementUtility.getElementsByClassName = function(eDomElement, sTagName, 
 
 /**
  * Returns the first element that contains the given class as part of its <code>className</code> string.
- * 
+ *
  * @param {Element} eElement the element to start the search at.
  * @param {String} sClassName the class name to look for.
- * 
+ *
  * @type DOMElement
- * @returns The ancestor element with the specified class, or null. 
+ * @returns The ancestor element with the specified class, or null.
  */
 br.util.ElementUtility.getAncestorElementWithClass = function(eElement, sClassName)
 {
 	var rClassMatcher = new RegExp("(^| )" + sClassName + "($| )");
-	
+
 	while (!eElement.className || !eElement.className.match(rClassMatcher))
 	{
 		if (!eElement.parentNode)
 		{
 			return null;
 		}
-		
+
 		eElement = eElement.parentNode;
 	}
-	
+
 	return eElement;
 };
 
@@ -182,7 +182,7 @@ br.util.ElementUtility.getAncestorElementWithClass = function(eElement, sClassNa
  * Returns the node index of the element as it exists in the parent.
  *
  * @param {Element} eElement The element to get the index for.
- * 
+ *
  * @type int
  * @returns the node index
  * @throws Error If the specified element does not have a parent.
@@ -217,17 +217,17 @@ br.util.ElementUtility.getNodeIndex = function(eElement)
 
 /**
  * Inserts the specified node immediately after the reference element.
- * 
+ *
  * <p>This convenience method saves the programmer from having to determine whether to call <code>insertBefore()</code> or
  * <code>appendChild()</code>, depending on whether the reference element is the last child node.</p>
- * 
+ *
  * @param {Element} eElement The element to insert
  * @param {Element} eReferenceElement The reference element to insert the element after.
  */
 br.util.ElementUtility.insertAfter = function(eElement, eReferenceElement)
 {
 	var eParentElement = eReferenceElement.parentNode;
-	
+
 	if (eReferenceElement == eParentElement.lastChild)
 	{
 		eParentElement.appendChild(eElement);
@@ -240,10 +240,10 @@ br.util.ElementUtility.insertAfter = function(eElement, eReferenceElement)
 
 /**
  * Checks to see if the specified ancestor element contains the specified child element.
- * 
+ *
  *  @param {Element} ePossibleAncestor the element that is presumed to be a parent node.
  *  @param {Element} ePossibleChildElement the element to start the search at.
- *  
+ *
  *  @type boolean
  *  @returns TRUE if the specified ancestor element contains the child element.
  */
@@ -257,7 +257,7 @@ br.util.ElementUtility.isAncestorOfElement = function(ePossibleAncestor, ePossib
 		}
 		ePossibleChildElement = ePossibleChildElement.parentNode;
 	}
-	
+
 	return false;
 };
 
@@ -289,7 +289,7 @@ br.util.ElementUtility.setInnerHtml = function(eElement, sHtml)
 
 /**
  * Removes the specified child from its parent.
- * 
+ *
  * @param {Element} eChildElement The child to remove.
  */
 br.util.ElementUtility.removeChild = function(eChildElement)
@@ -321,22 +321,22 @@ br.util.ElementUtility.removeChild = function(eChildElement)
 /**
  * Discards one or more elements (all arguments passed will be discarded) by removing children, and removing
  * it from any parentNode.
- * 
+ *
  * @param {Element} eFirstElement First Element DOM Element
  */
 br.util.ElementUtility.discardChild = function(eFirstElement)
 {
-	for (var i = 0; elem = arguments[i]; ++i) 
+	for (var i = 0; elem = arguments[i]; ++i)
 	{
-		if (br.util.ElementUtility._isFirefox()) 
+		if (br.util.ElementUtility._isFirefox())
 		{
 			while(elem.lastChild) elem.removeChild(elem.lastChild);
-		} 
-		else 
+		}
+		else
 		{
 			elem.innerHTML = "";
 		}
-		if (elem.parentNode) 
+		if (elem.parentNode)
 		{
 			br.util.ElementUtility.removeChild(elem);
 		}
@@ -344,12 +344,12 @@ br.util.ElementUtility.discardChild = function(eFirstElement)
 };
 
 /**
- * Returns the absolute position of the element relative to the window in pixels. 
+ * Returns the absolute position of the element relative to the window in pixels.
  * The position also takes into account any scrolling of parents.
- * 
+ *
  * @param {DOMElement} elem The DOM element to calculate the position of
  * @type Object
- * @return {left:x,top:y}
+ * @return Object An object with two properties, x and y.
  */
 br.util.ElementUtility.getPosition = function(elem)
 {
@@ -371,7 +371,7 @@ br.util.ElementUtility.getPosition = function(elem)
  *
  * @param {Object} elem The element to get the bounding recangle for.
  * @type Object
- * @returns {left:x,right:y}
+ * @return Object An object with two properties, x and y.
  */
 br.util.ElementUtility.getSize = function(elem)
 {
@@ -381,7 +381,7 @@ br.util.ElementUtility.getSize = function(elem)
 	{
 		return elem.getBoundingClientRect();
 	}
-	else 
+	else
 	{
 		var nLeft = 0;
 		var nRight = 0;
@@ -409,7 +409,7 @@ br.util.ElementUtility.getSize = function(elem)
  *
  * @param {Element} elem The DOM element to calculate the scrolled offset of.
  * @type Object
- * @returns {left:x,top:y}
+ * @return Object An object with two properties, x and y.
  */
 br.util.ElementUtility.getScrollOffset = function(elem)
 {
@@ -432,7 +432,7 @@ br.util.ElementUtility._getClassNameRegExFor = function(sClassName)
 	var sPatternForFirstWord = "^" + sClassName + "\\s";
 	var sPatternForInBetweenWords = "\\s" + sClassName + "\\s";
 	var sPatternForLastWord = "\\s" + sClassName + "$";
-	return new RegExp(sPatternForTheOnlyWord + '|' + sPatternForFirstWord + '|' + sPatternForInBetweenWords + '|' + sPatternForLastWord, "g");	
+	return new RegExp(sPatternForTheOnlyWord + '|' + sPatternForFirstWord + '|' + sPatternForInBetweenWords + '|' + sPatternForLastWord, "g");
 };
 
 /**

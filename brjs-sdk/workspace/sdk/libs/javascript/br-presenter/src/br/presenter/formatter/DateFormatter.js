@@ -2,7 +2,7 @@ br.Core.thirdparty("momentjs");
 
 /**
  * @class
- * 
+ *
  * Formats a date value by converting it from a specified input format to a new output format.
  * <p/>
  * <code>DateFormatter</code> is typically used with Presenter, but can be invoked programmatically
@@ -26,7 +26,7 @@ br.Core.implement(br.presenter.formatter.DateFormatter, br.presenter.formatter.F
 
 /**
  * Formats a date by converting it from a specified input format to a new output format.
- * 
+ *
  * <p>
  * Attribute Options:
  * </p>
@@ -41,7 +41,7 @@ br.Core.implement(br.presenter.formatter.DateFormatter, br.presenter.formatter.F
  * <tr><td>outputFormat</td><td>format of the output date, expressed with <a href="http://momentjs.com/docs/#/displaying/format/">Moment.js format tokens</a> (defaults to DD-MM-YYYY HH:mm:ss).</td></tr>
  * <tr><td>adjustForTimezone</td><td> boolean value representing whether the formatter should adjust the date according to the client's timezone</td></tr>
  * </table>
- * 
+ *
  * @param {Variant} vValue  the input date (String or Date type).
  * @param {Map} mAttributes  the map of attributes.
  * @return  the output date.
@@ -62,10 +62,8 @@ br.presenter.formatter.DateFormatter.prototype.format = function(vValue, mAttrib
 
 /**
  * @private
- * 
- * Convert from a specified date format to a JavaScript date object
  */
-br.presenter.formatter.DateFormatter.prototype.parseDate = function(vDate, sDateFormat) 
+br.presenter.formatter.DateFormatter.prototype.parseDate = function(vDate, sDateFormat)
 {
 	if (!vDate)
 	{
@@ -79,7 +77,7 @@ br.presenter.formatter.DateFormatter.prototype.parseDate = function(vDate, sDate
 	{
 		sDateFormat = this.getDateFormat(sDateFormat);
 	}
-	
+
 	switch (sDateFormat) {
 		case "java":
 			var oDate = new Date();
@@ -98,13 +96,11 @@ br.presenter.formatter.DateFormatter.prototype.parseDate = function(vDate, sDate
 
 /**
  * @private
- * 
- * Convert from a JavaScript date object to a specified format 
  */
 br.presenter.formatter.DateFormatter.prototype.formatDate = function(oDate, sDateFormat, bAdjustForTimezone) {
 	if(bAdjustForTimezone)
 	{
-		
+
 		oDate = this._adjustDateForTimezone(oDate);
 	}
 	sDateFormat = this.getDateFormat(sDateFormat);

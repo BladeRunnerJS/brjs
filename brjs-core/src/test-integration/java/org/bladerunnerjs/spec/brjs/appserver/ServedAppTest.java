@@ -51,7 +51,7 @@ public class ServedAppTest extends SpecTest
 			workbench = blade.workbench();
 			appJars = brjs.appJars();
 			appJars.create();
-			sdkLibsDir = brjs.sdkLibsDir();
+			sdkLibsDir = brjs.sdkJsLibsDir();
 	}
 	
 	@After

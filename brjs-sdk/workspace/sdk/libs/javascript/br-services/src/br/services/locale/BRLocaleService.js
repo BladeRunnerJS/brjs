@@ -1,14 +1,20 @@
 "use strict";
 
+/**
+* @module br/services/locale/BRLocaleService
+*/
+
 var Errors = require('br/Errors');
 var br = require('br/Core');
 var LocaleService = require('br/services/LocaleService');
 
 /**
-* @name br.services.locale.BRLocaleService
-* @constructor
+* The default locale service for BRJS apps. This class should not be constructed
+* directly, but instead used via the service registry.
+* @alias module:br/services/locale/BRLocaleService
+* @param {LocaleUtility} localeUtility The locale utility to use
 * @class
-* @interface
+* @implements module:br/services/locale/BRLocaleServices
 */
 function BRLocaleService( localeUtility ) {
 	if (localeUtility) {
@@ -28,7 +34,7 @@ BRLocaleService.prototype.setLocaleCookie = function(locale, days) {
 	var localePath = pageUrl.substring(0, lastSlashIndex);
 	if (localePath.charAt(0) != '/') {
 		localePath = "/"+localePath;
-	} 
+	}
 	this.localeUtility.setCookie( window.$BRJS_LOCALE_COOKIE_NAME, locale, days, localePath );
 };
 

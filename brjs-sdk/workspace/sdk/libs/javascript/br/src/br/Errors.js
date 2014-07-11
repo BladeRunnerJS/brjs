@@ -1,30 +1,32 @@
 "use strict";
 
+/**
+* @module br/Errors
+* @exports CustomError
+*/
+
 var br = require('br/Core');
-/** @module br/Errors */
 
 /**
- * Constructs a new <code>Errors</code> of the provided type.
- *
- * @param {String} type The error type to be thrown.
- * @param {String} message A human-readable description of the error.
- * @param {String} fileName (Optional) The name of the file containing the code that caused the error.
- * @param {int} lineNumber (Optional) The line number of the code that caused the error.
- *
- * @name br.Errors
- * @class
- * <code>br/Errors</code> extends the built in <code>Errors</code> and allows the
- * error type to be specified in the constructor. The <code>name</code>
- * property is set to the specified type.
- */
+* Constructs a new <code>Error</code> of the provided type.
+*
+* <code>br/Errors</code> extends the built in <code>Error</code> and allows the
+* error type to be specified in the constructor. The <code>name</code>
+* property is set to the specified type.
+*
+* @class
+* @param {String} type The error type to be thrown.
+* @param {String} message A human-readable description of the error.
+* @param {String} [fileName] (Optional) The name of the file containing the code that caused the error.
+* @param {int} [lineNumber] (Optional) The line number of the code that caused the error.
+*/
 function CustomError(type, message, fileName, lineNumber) {
 	this.name = type || "";
 	this.message = message || "";
 	this.fileName = fileName;
 	this.lineNumber = lineNumber;
 
-	// If the browser we're in provides an ability to
-	// get the stack, then get it here.
+	// If the browser we're in provides an ability to get the stack, then get it here.
 	var e = new Error();
 	if (e.stack) {
 		this.realStack = e.stack;
@@ -34,6 +36,9 @@ function CustomError(type, message, fileName, lineNumber) {
 
 br.extend(CustomError, Error);
 
+/**
+* Returns the string representation of this error
+*/
 CustomError.prototype.toString = function toString() {
 	return this.stack || this.message;
 };
@@ -118,8 +123,10 @@ exports.SyntaxError = SyntaxError;
 exports.TYPE = "TypeError";
 exports.TypeError = TypeError;
 
+
 // static private methods /////////////////////////////////////////////////////
 
+/** @private */
 function normaliseStack(stackString) {
 	var stack;
 
@@ -139,6 +146,7 @@ function normaliseStack(stackString) {
 	return stack;
 }
 
+/** @private */
 var irrelevantStack = normaliseStack((new (getCustomErrorConstructor('irrelevant'))()).realStack);
 
 /** @private */

@@ -12,7 +12,10 @@ import org.bladerunnerjs.testing.utility.BRJSEventObserverCreator;
 import org.bladerunnerjs.testing.utility.ExceptionThrowingEventObserver;
 import org.bladerunnerjs.testing.utility.MockCommandPlugin;
 import org.bladerunnerjs.testing.utility.MockModelObserverPlugin;
+import org.bladerunnerjs.utility.ObserverList;
+import org.bladerunnerjs.utility.ObserverList.Messages;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -27,7 +30,7 @@ public class BRJSStartupTest extends SpecTest {
 	ModelObserverPlugin failingModelObserverPlugin;
 	
 	EventObserver failingEventObserver = new ExceptionThrowingEventObserver(pluginException);
-	ModelObserverPlugin failingEventObserverModelObserver = new BRJSEventObserverCreator(observer);
+	ModelObserverPlugin failingEventObserverModelObserver = new BRJSEventObserverCreator(failingEventObserver);
 	
 	
 	@Before
@@ -75,14 +78,13 @@ public class BRJSStartupTest extends SpecTest {
 		
 	}
 	
-	//TODO: this doesnt verify the error log if model observers fail during node discovery
-	@Test
+	@Test @Ignore //TODO: how do we handle exceptions with stack traces?
 	public void modelObserverExceptionsAreLoggedAsWarningsDuringNodeDiscovery() {
 		given(logging).enabled()
 			.and(brjs).hasModelObserverPlugins(failingEventObserverModelObserver);
 		when(brjs).hasBeenCreated();
 			then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
-//				.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLGUIN_ERROR_MSG, failingModelObserverPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
+				.and(logging).warnMessageReceived(ObserverList.Messages.NODE_OBSERVER_EXCEPTION_MSG, failingModelObserverPlugin.getClass(), unquoted("java.lang.RuntimeException: FAIL!"))
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}

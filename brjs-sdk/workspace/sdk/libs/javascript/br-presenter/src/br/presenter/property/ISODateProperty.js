@@ -1,11 +1,11 @@
 br.Core.thirdparty("momentjs");
 /**
  * Constructs a new <code>ISODateProperty</code> instance.
- * 
+ *
  * @class
  * <code>ISODateProperty</code> is a {@link br.presenter.property.WritableProperty},
  * representing an ISO date
- * 
+ *
  * @constructor
  * @param vValue (optional) A valid ISO Date string (YYYY-MM-DD) or a native Date object
  * @extends br.presenter.property.WritableProperty
@@ -49,9 +49,6 @@ br.presenter.property.ISODateProperty.prototype.setValue = function(vValue)
 
 /**
  * @private
- * Returns a date string if the parameter passed in is a valid ISO string or date object.
- * @param vDate A valid ISO Date string (YYYY-MM-DD) or a native Date object
- * @type String
  */
 br.presenter.property.ISODateProperty.prototype._validateDate = function(vDate)
 {

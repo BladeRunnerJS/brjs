@@ -1,5 +1,9 @@
 "use strict";
 
+/**
+* @module br/i18n/Translator
+*/
+
 var LocalisedNumber = require('./LocalisedNumber');
 // LocalisedDate and LocalisedTime use br/i18n which depends on this class,
 // so they have to be required where they are used or there would be a circular
@@ -11,19 +15,17 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 
 
 /**
- * Do not instantiate this class directly. To access the localization token
- * translator use the global <code>br.i18n(token, args)</code> function which
- * maps to the <code>getMessage()</code> function.
- *
- * @see Translator#getMessage
- * @constructor
- *
- * @name br.i18n.Translator
- * @class
- * The class within the <code>br.I18N</code> package that is responsible
- * for translating localization tokens in the form of
- * <code>&#64;{key.name}</code> into translated text.
- */
+* <p>The class within the <code>br.I18N</code> package that is responsible
+* for translating localization tokens in the form of
+* <code>&#64;{key.name}</code> into translated text.</p>
+* <p>This class should not be instantiated directly. To access i18n functions
+* use the [br/i18n]{@link module:br/i18n} class which returns the
+* [br/i18n/I18N]{@link module:br/i18n/I18N} accessor class.
+* For example <code>require("br/i18n").i18n("some.i18n.key")</code>.</p>
+*
+* @class
+* @alias module:br/i18n/Translator
+*/
 function Translator(messages) {
 	var unproccessedMessages = messages;
 
@@ -41,21 +43,22 @@ function Translator(messages) {
 };
 
 /**
- * Translate is used to convert raw localization tokens in the form
- * <code>&#64;{key.name}</code> into translated text.
- *
- * <p>By default this method also converts reserved XML characters (<,>,",',&)
- * into XML entity references (> into &gt; etc). If you require raw text
- * translation without the XML entity reference conversion, pass a type of
- * "text" as an argument to this method.</p>
- *
- * @param {String} sText The string within which to replace localization tokens.
- * @param {String} sType The type of text to translate (defaults to "xml", pass
- *      "text" for translation without XML entity reference conversion).
- * @type String
- * @returns A string with localization tokens replaced with the current locale's
- *         messages.
- */
+* Translate is used to convert raw localization tokens in the form
+* <code>&#64;{key.name}</code> into translated text.
+*
+* <p>By default this method also converts reserved XML characters (<,>,",',&)
+* into XML entity references (> into &gt; etc). If you require raw text
+* translation without the XML entity reference conversion, pass a type of
+* "text" as an argument to this method.</p>
+*
+* @param {String} sText The string within which to replace localization tokens.
+* @param {String} sType The type of text to translate (defaults to "xml", pass
+*      "text" for translation without XML entity reference conversion).
+* @function
+* @this Translator
+* @returns A string with localization tokens replaced with the current locale's
+*         messages.
+*/
 Translator.prototype.translate = function(text, type) {
 	var message;
 	var match = regExp.exec(text);
@@ -86,24 +89,13 @@ Translator.prototype.tokenExists = function(token) {
 };
 
 /**
- * @private
- *
- * <p>Change the translation list for testing i18n purposes</p>
- *
- * @param {Map} messages
- */
-Translator.prototype._setMessages = function(messages) {
-	this.messages = messages;
-};
-
-/**
- * Converts XML reserved characters (<,>,",',&) into XML entity references.
- *
- * @param {String} text The string within which to replace localization tokens.
- * @type String
- * @returns A string with every XML reserved character replaced with it's
- *         corresponding XML entity reference.
- */
+* Converts XML reserved characters (<,>,",',&) into XML entity references.
+*
+* @param {String} text The string within which to replace localization tokens.
+* @type String
+* @returns A string with every XML reserved character replaced with it's
+*         corresponding XML entity reference.
+*/
 Translator.prototype.convertXMLEntityChars = function(text) {
 	text = text.replace(/&/g, "&amp;");
 	text = text.replace(/</g, "&lt;");
@@ -347,17 +339,21 @@ Translator.prototype.setLocalizationPreferences = function(localizationPrefs) {
 	this.localizationPrefs = localizationPrefs;
 };
 
+
 /**
- * @private
- */
+* @private
+*/
+Translator.prototype._setMessages = function(messages) {
+	this.messages = messages;
+};
+
+/** @private */
 Translator.prototype._getTranslationForKey = function(token) {
 	var text = this._getTranslationForKeyOrUndefinedIfKeyIsUnknown(token);
 	return formatTranslationResponseIfTranslationWasUnknown(token, text);
 };
 
-/**
- * @private
- */
+/** @private */
 Translator.prototype._getTranslationForKeyOrUndefinedIfKeyIsUnknown = function(token) {
 	token = token.toLowerCase();
 	if (this.testMode === true) {
