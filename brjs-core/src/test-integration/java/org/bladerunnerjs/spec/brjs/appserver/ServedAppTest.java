@@ -172,14 +172,14 @@ public class ServedAppTest extends SpecTest
 	}
 	
 	@Test
-	public void userAppsTakePriorityOverSystemApps() throws Exception
+	public void systemAppsTakePriorityOverUserApps() throws Exception
 	{
 		given(app).hasBeenPopulated()
 			.and(systemApp).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "User App")
 			.and(systemAspect).containsFileWithContents("index.html", "System App")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "User App");
+		then(appServer).requestForUrlReturns("/app/en/", "System App");
 	}
 	
 	@Test

@@ -3,8 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
@@ -183,18 +181,18 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> apps()
 	{
-		Set<String> addedApps = new HashSet<>();
-		List<App> allApps = new ArrayList<>(userApps.list());
-		allApps.addAll(systemApps.list());
-		List<App> apps = new ArrayList<>();
+		Map<String,App> apps = new HashMap<>();
 		
-		for(App app : allApps) {
-			if(addedApps.add(app.getName())) {
-				apps.add(app);
-			}
+		for (App app : systemApps()) {
+			apps.put(app.getName(), app);
 		}
+		for (App app : userApps()) {
+			if (!apps.containsKey(app.getName())) {
+				apps.put(app.getName(), app);				
+			}
+		}		
 		
-		return apps;
+		return new ArrayList<>( apps.values() );
 	}
 	
 	public App app(String appName)

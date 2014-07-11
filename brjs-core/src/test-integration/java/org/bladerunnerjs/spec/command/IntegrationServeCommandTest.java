@@ -99,4 +99,18 @@ public class IntegrationServeCommandTest extends SpecTest
 	{
 		// TODO
 	}
+	
+	@Test
+	public void warningIsPrintedIfTheServletJarIsOutdated() throws Exception
+	{
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(logging).enabled()
+			.and(brjs.appJars()).containsFileWithContents("brjs-servlet-1.2.3.jar", "some jar contents")
+			.and(brjs.app("app1")).hasBeenPopulated()
+			.and(aspect).indexPageHasContent("")
+			.and(app).containsFileWithContents("WEB-INF/lib/brjs-servlet-1.2.2.jar", "old jar contents");
+		when(brjs).runThreadedCommand("serve");
+		then(logging).warnMessageReceived(ServeCommand.Messages.OUTDATED_JAR_MESSAGE, "app1", "brjs-", "sdk/libs/java/application");
+	}
+	
 }

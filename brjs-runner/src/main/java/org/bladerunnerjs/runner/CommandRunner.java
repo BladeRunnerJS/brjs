@@ -23,7 +23,6 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import com.caplin.cutlass.command.check.CheckCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.TestServerCommand;
 import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
@@ -154,7 +153,6 @@ public class CommandRunner {
 	}
 
 	private void injectLegacyCommands(BRJS brjs) {
-		brjs.plugins().addCommandPlugin(new CheckCommand());
 		brjs.plugins().addCommandPlugin(new TestCommand());
 		brjs.plugins().addCommandPlugin(new TestServerCommand());
 		brjs.plugins().addCommandPlugin(new TestIntegrationCommand( brjs.root().dir() ));

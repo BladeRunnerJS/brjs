@@ -13,7 +13,6 @@ import org.bladerunnerjs.testing.utility.ExceptionThrowingEventObserver;
 import org.bladerunnerjs.testing.utility.MockCommandPlugin;
 import org.bladerunnerjs.testing.utility.MockModelObserverPlugin;
 import org.bladerunnerjs.utility.ObserverList;
-import org.bladerunnerjs.utility.ObserverList.Messages;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
