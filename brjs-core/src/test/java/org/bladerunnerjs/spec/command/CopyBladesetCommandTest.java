@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CopyBladesetCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -148,6 +147,14 @@ public class CopyBladesetCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void sourceFilesAreLeftInTheirOriginalLocationIfTheRequirePrefixIsUnchanged() throws Exception {
+		given(sourceBladeset).hasClass("appns/bs/Class")
+			.and(targetApp).hasBeenCreated();
+		when(brjs).runCommand("copy-bladeset", "app", "bs", "target-app");
+		then(targetBladeset).hasFile("src/appns/bs/Class.js");
+	}
+	
+	@Test
 	public void commonJsClassesAreUpdatedBasedOnTheNewRequirePrefix() throws Exception {
 		given(sourceBladeset).hasBeenCreated()
 			.and(sourceBladeset).hasClass("appns/bs/Class1")
@@ -168,15 +175,20 @@ public class CopyBladesetCommandTest extends SpecTest {
 		then(namedTargetBladeset).fileContentsContains("src/targetns/bs2/Class.js", "targetns.bs2.Class = function() {");
 	}
 	
-	@Ignore
 	@Test
 	public void aJsStyleFileShouldBeAddedIfTheImportedBladesetHasADifferentStyleToWhereItsBeingImported() throws Exception {
-		// TODO
+		given(sourceApp).hasNamespacedJsPackageStyle()
+			.and(sourceBladeset).hasClass("appns.bs.Class")
+			.and(targetApp).hasBeenCreated();
+		when(brjs).runCommand("copy-bladeset", "app", "bs", "target-app");
+		then(targetBladeset).hasFile(".js-style");
 	}
 	
-	@Ignore
 	@Test
 	public void aJsStyleFileShouldNotBeAddedIfTheImportedBladesetHasTheSameStyleAsWhereItsBeingImported() throws Exception {
-		// TODO
+		given(sourceBladeset).hasClass("appns/bs/Class")
+			.and(targetApp).hasBeenCreated();
+		when(brjs).runCommand("copy-bladeset", "app", "bs", "target-app");
+		then(targetBladeset).doesNotHaveFile(".js-style");
 	}
 }

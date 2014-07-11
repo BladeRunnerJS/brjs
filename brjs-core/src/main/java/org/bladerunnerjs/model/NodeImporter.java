@@ -18,6 +18,7 @@ import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.JsStyleUtility;
 import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
 import org.mockito.Mockito;
 
@@ -52,6 +53,10 @@ public class NodeImporter {
 		FileUtils.copyDirectory(sourceBladesetDir, tempBrjsBladeset.dir());
 		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
 		
+		if(!JsStyleUtility.getJsStyle(sourceBladesetDir).equals(JsStyleUtility.getJsStyle(targetBladeset.dir()))) {
+			JsStyleUtility.setJsStyle(tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(sourceBladesetDir));
+		}
+		
 		renameBladeset(tempBrjsBladeset, sourceBladesetRequirePrefix);
 		FileUtils.moveDirectory(tempBrjsBladeset.dir(), targetBladeset.dir());
 	}
@@ -73,13 +78,15 @@ public class NodeImporter {
 	}
 	
 	private static void updateRequirePrefix(List<AssetLocation> assetLocations, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
-		for(AssetLocation assetLocation : assetLocations) {
-			if(assetLocation.dir().exists()) {
-				if(assetLocation.file(sourceRequirePrefix).exists()) {
-					FileUtils.moveDirectory(assetLocation.file(sourceRequirePrefix), assetLocation.file(targetRequirePrefix));
+		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
+			for(AssetLocation assetLocation : assetLocations) {
+				if(assetLocation.dir().exists()) {
+					if(assetLocation.file(sourceRequirePrefix).exists()) {
+						FileUtils.moveDirectory(assetLocation.file(sourceRequirePrefix), assetLocation.file(targetRequirePrefix));
+					}
+					
+					findAndReplaceInAllTextFiles(assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
 				}
-				
-				findAndReplaceInAllTextFiles(assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
 			}
 		}
 	}
