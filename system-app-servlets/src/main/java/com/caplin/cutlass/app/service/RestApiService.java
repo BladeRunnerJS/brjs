@@ -19,14 +19,14 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CopyBladesetCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
 
 import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.command.copy.CopyBladesetCommand;
-import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
 import com.caplin.cutlass.structure.model.SdkModel;
@@ -124,7 +124,8 @@ public class RestApiService
 	
 	public void importMotif(String appName, String requirePrefix, File appZip) throws Exception
 	{
-		ImportApplicationCommand cmd = new ImportApplicationCommand( brjs );
+		ImportAppCommand cmd = new ImportAppCommand();
+		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appZip.getAbsolutePath(), appName, requirePrefix };		
 		doCommand( cmd, args );
 	}
@@ -153,7 +154,8 @@ public class RestApiService
 			String newBladesetName = bladesetMap.get(IMPORT_BLADESETS_NEWBLADESET_NAME_KEY).get(0);
 			List<String> blades = bladesetMap.get(IMPORT_BLADESETS_BLADES_KEY);
 			
-			CopyBladesetCommand cmd = new CopyBladesetCommand( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) );
+			CopyBladesetCommand cmd = new CopyBladesetCommand();
+			cmd.setBRJS(brjs);
 			String[] args = new String[]{ sourceApp, bladeset, targetApp, newBladesetName };		
 			doCommand( cmd, args );
 			
