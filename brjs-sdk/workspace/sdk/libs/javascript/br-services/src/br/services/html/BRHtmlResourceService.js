@@ -1,5 +1,3 @@
-"use strict";
-
 /**
 * @module br/services/html/BRHtmlResourceService
 */
@@ -73,7 +71,7 @@ function sanitizeHtml(html) {
 	 	// TODO: Log the fact there is a script tag in the template and that it should be replaced with a div.
 	 	html = html.replace(/<script(.*)type=\"text\/html\"/g, replacer).replace(/<\/script>/g, '</div>');
 	}
-		
+
 	return html;
 };
 

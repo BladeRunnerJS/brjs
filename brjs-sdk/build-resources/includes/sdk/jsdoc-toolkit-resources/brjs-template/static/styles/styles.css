@@ -1,45 +1,175 @@
-header .interface {
-    background: url("../icons/interface.gif") no-repeat;
-}
-header .package,
-header .namespace {
-    background: url("../icons/package.gif") no-repeat;
-}
-header .singleton {
-    background: url("../icons/singleton.gif") no-repeat;
-}
-header .class {
-    background: url("../icons/class.gif") no-repeat;
+/**********************
+* Navbar
+***********************/
+#topnav {
+    background-color: #FFF;
+    display: inline-block;
+    height: 40px;
+    left: 0;
+    margin: 0 auto;
+    position: relative;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+
+    -webkit-box-shadow: 0px 2px 3px #999;
+    -moz-box-shadow: 0px 2px 3px #999;
+    box-shadow: 0px 2px 3px #999;
+
+    background-image: -moz-linear-gradient(top, #595959, #1f1f1f);
+    background-image: -ms-linear-gradient(top, #595959, #1f1f1f);
+    background-image: -o-linear-gradient(top, #595959, #1f1f1f);
+    background-image: -webkit-gradient(linear, center top, center bottom, from(#595959), to(#1f1f1f));
+    background-image: -webkit-linear-gradient(top, #595959, #1f1f1f);
+    background-image: linear-gradient(top, #595959, #1f1f1f);
+    background: linear-gradient(to bottom, rgba(89,89,89,1) 0%,rgba(31,31,31,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#595959', endColorstr='#1f1f1f',GradientType=0 ); /* IE6-9 */
+
 }
 
-header .interface,
-header .package,
-header .namespace,
-header .singleton,
-header .class {
-    padding-left: 55px;
-    min-height: 50px;
-    line-height: 2;
+#topnav a {
+    display: block;
+}
+
+#topnav ul {
+    font-size: 12px;
+    list-style: none;
+    padding: 0;
+    margin-right: 20px;
+}
+
+#topnav li {
+    display: inline-block;
+    float: left;
+    line-height: 40px;
+    position: relative;
+}
+
+#topnav li a {
+    border-right: solid;
+    -webkit-transition: all 0.25s ease-out 0s;
+    margin-right: 5px;
+    margin-left: 5px;
+    border-right-color: #888;
+    border-right-width: 1px;
+    text-decoration: none;
+    padding-left: 5px;
+    padding-right: 10px;
+    color: #fff;
+    font-family: "HelveticaNeueW01-55Roma", Arial, sans-serif;
+    font-weight: normal;
+    font-size: 12px;
+}
+
+#topnav li:last-child a {
+    border-right: 0px;
+}
+
+#topnav li a:hover {
+    color: #54B0CB;
+}
+
+.subnav {
+	position:relative;
+	display:inline-block;
+	top:-3px;
+	width: 100%;
+	height: 31px;
+	background-image:url(../images/sub-nav.png);
+	background-repeat:repeat-x;
+}
+
+.subnav ul,
+.subnav li {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.subnav-extend-btn {
+	width: 30px;
+	height: 30px;
+	background-image:url(../images/home-up.png);
+	background-repeat:no-repeat;
+	display:inline-block;
+
+	-webkit-transition: background-image 300ms ease;
+	-moz-transition: background-image 300ms ease;
+}
+
+.subnav-extend-btn:hover {
+	width: 30px;
+	height: 30px;
+	background-image:url(../images/home-hover.png);
+
+	background-repeat:no-repeat;
+	display:inline-block;
+}
+
+.subnav-btn {
+	position: relative;
+	display: inline;
+	top: -33px;
+	left: 30px;
+	float: left;
+	height: 26px;
+	width: auto;
+	font-size: 12px;
+	color: #888;
+	background-image:url(../images/chevron-left2.png);
+	background-position:left;
+	background-repeat:no-repeat;
+
+	line-height: 30px;
+	padding: 0px 10px 0px;
+	padding-left: 20px;
+	margin-right:8px;
+	text-decoration: none;
+
+}
+
+.subnav-btn:hover, .subnav-btn:active {
+	color:#000;
 }
 
 
+.subnav-selected {
+	position: relative;
+	display: inline;
+	top: -33px;
+	left: 22px;
+	float: left;
+	height: 26px;
+	width: auto;
+	font-size:12px;
+	font-weight:bold;
 
-
+	background-image:url(../images/chevron-left2.png);
+	background-position: 0% 50%;
+	background-repeat:no-repeat;
+	color:#2884a0;
+	line-height: 30px;
+	padding:0px 10px 0px;
+	padding-left: 20px;
+	margin-right:8px;
+	text-decoration: none;
+}
 
 /**********************
 * Generate docs styling
-**********************/
+***********************/
 .right-align {
     float: right;
 }
 
 .regeneratedDocsBtn .button-image {
-    background-image: url(refresh-up.png);
+    background-image: url(../images/refresh-up.png);
+    background-position: -5px -4px;
 }
 
 button.round-button {
     float: right;
-    margin: 15px 10px 0px 0px;
+    margin: 15px 20px 15px 15px;
     border-width:0;
 
     -moz-transition: all 0.25s ease-out 0s;
@@ -132,14 +262,11 @@ button.round-button .button-image {
     line-height: 18px;
     display: block;
     left: -11px;
-    margin-bottom: -110px;
+    margin-bottom: -100px;
     opacity: 0;
-    padding: 15px;
+    padding: 10px;
     position: absolute;
     visibility: hidden;
-    width: 100%;
-
-
 
      -webkit-text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
        -moz-text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
@@ -197,4 +324,116 @@ button.round-button .button-image {
         -ms-transform: translateY(0px);
          -o-transform: translateY(0px);
             transform: translateY(0px);
+}
+
+
+
+
+
+/**********************
+* General styling
+***********************/
+header .interface {
+    background: url("../icons/interface.gif") no-repeat;
+}
+header .package,
+header .namespace {
+    background: url("../icons/package.gif") no-repeat;
+}
+header .singleton {
+    background: url("../icons/singleton.gif") no-repeat;
+}
+header .class {
+    background: url("../icons/class.gif") no-repeat;
+}
+
+header .docced-type {
+    padding-left: 55px;
+    min-height: 50px;
+    line-height: 2.5;
+    color: #999;
+}
+header .memberof {
+    margin-top: 0;
+    padding-top: 0;
+    font-size: 17px;
+}
+header .name {
+    margin-top: 0;
+}
+
+
+
+/** Left nav styling **/
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+nav ul a {
+    display: block;
+    word-wrap: break-word;
+}
+
+
+/** Doc content stying **/
+#main article h1,
+#main article h2 {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+#main article h3,
+#main article h4 {
+    margin-top: 30px;
+}
+#main article h5,
+#main article h6 {
+    margin-top: 15px;
+}
+
+
+#main header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.container-overview,
+.subsection-title {
+    margin-bottom: 20px;
+}
+.container-overview {
+    border-bottom: 1px solid #F0F0F0;
+}
+
+table.params {
+    width: 100%;
+    margin: 0px 0px 8px 0px;
+    line-height: 1.8;
+}
+table.params th {
+    background-color: #f9f9f9;
+}
+table.params th,
+table.params td {
+    border: 1px solid #f0f0f0;
+    padding: 4px;
+}
+table.params code {
+    background: none;
+}
+
+.details {
+    margin-top:15px;
+}
+
+.tag-source {
+    font-size: 0.9em;
+}
+.tag-source,
+.tag-source a {
+    color: #999;
+}
+
+.subsection-title {
+    font-size: 30px;
 }
