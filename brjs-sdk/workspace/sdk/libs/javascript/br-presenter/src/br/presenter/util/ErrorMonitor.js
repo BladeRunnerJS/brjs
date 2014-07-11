@@ -20,13 +20,22 @@ br.presenter.util.ErrorMonitor = function(oTooltipNode)
 	this.m_pErrorStack = [];
 };
 
+/**
+ *
+ * Filters all nodes of type {@see br.presenter.node.ToolTipField} and monitors them using
+ * {@see br.presenter.util.ErrorMonitor#monitorField}
+ *
+ * @type {<br.presenter.node.PresentationNode>[]} pGroups
+ */
 br.presenter.util.ErrorMonitor.prototype.addErrorListeners = function(pGroups)
 {
+	var node;
 	for (var i=0; i<pGroups.length; i++)
 	{
-		if(pGroups[i].hasError && pGroups[i].failureMessage)
+		node = pGroups[i];
+		if(node instanceof br.presenter.node.ToolTipField)
 		{
-			this.monitorField(pGroups[i]);
+			this.monitorField(node);
 		}
 	}
 };
@@ -60,7 +69,7 @@ br.presenter.util.ErrorMonitor.prototype.replaceErrorListeners = function(pGroup
  */
 br.presenter.util.ErrorMonitor.prototype.monitorField = function(oField)
 {
-	if (!oField instanceof br.presenter.node.ToolTipField)
+	if (!(oField instanceof br.presenter.node.ToolTipField))
 	{
 		throw new br.Errors.CustomError(br.Errors.INVALID_PARAMETERS, "The field to monitor has to be an instance of br.presenter.node.ToolTipField");
 	}
@@ -259,5 +268,5 @@ br.presenter.util.ErrorMonitor.prototype._addTooltipTo = function(oField)
  */
 br.presenter.util.ErrorMonitor.prototype._removeTooltipFrom = function(oField)
 {
-		oField.tooltipClassName.setValue("")
+	oField.tooltipClassName.setValue("")
 };
