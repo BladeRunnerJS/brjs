@@ -24,8 +24,6 @@ import org.mockito.Mockito;
 
 
 public class NodeImporter {
-	private static final String[] textBasedFileExtensions = {"txt", "js", "xml", "properties", "bundle", "conf", "css", "html", "jsp", "java"};
-	
 	public static void importApp(File sourceAppDir, String sourceAppRequirePrefix, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		BRJS tempBrjs = createTemporaryBRJSModel();
 		App tempBrjsApp = tempBrjs.app(targetApp.getName());
@@ -91,15 +89,17 @@ public class NodeImporter {
 		}
 	}
 	
-	// TODO: change this so it processes all files containing the 'sourceRequirePrefix'
 	private static void findAndReplaceInAllTextFiles(File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
 		HashMap<String, String> replaceMap = getReplaceMap(sourceRequirePrefix, targetRequirePrefix);
-		for(File file : FileUtils.listFiles(rootRenameDirectory, textBasedFileExtensions, true))
+		for(File file : FileUtils.listFiles(rootRenameDirectory, null, true))
 		{
 			String content = FileUtils.readFileToString(file);
-			content = findAndReplaceInText(content, replaceMap);
-			FileUtils.writeStringToFile(file, content);
+			String updatedContent = findAndReplaceInText(content, replaceMap);
+			
+			if(content != updatedContent) {
+				FileUtils.writeStringToFile(file, updatedContent);
+			}
 		}
 	}
 	
