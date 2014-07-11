@@ -153,9 +153,9 @@ public class CommandRunner {
 	}
 
 	private void injectLegacyCommands(BRJS brjs) {
-		brjs.plugins().addCommandPlugin(new TestCommand());
-		brjs.plugins().addCommandPlugin(new TestServerCommand());
-		brjs.plugins().addCommandPlugin(new TestIntegrationCommand( brjs.root().dir() ));
+		brjs.plugins().addCommandPlugin(brjs, new TestCommand());
+		brjs.plugins().addCommandPlugin(brjs, new TestServerCommand());
+		brjs.plugins().addCommandPlugin(brjs, new TestIntegrationCommand());
 	}
 	
 	private ConsoleLoggerStore getLoggerStore() {

@@ -12,17 +12,18 @@ import java.util.List;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.model.path.AppPath;
 
 public class TestCompiler
 {
 
-	public List<File> compileTestDirs(List<File> testContainerDirs) throws CommandOperationException 
+	public List<File> compileTestDirs(BRJS brjs, List<File> testContainerDirs) throws CommandOperationException 
 	{
 		List<File> classRoots = new ArrayList<File>();
 		
@@ -45,7 +46,7 @@ public class TestCompiler
 			
 			try
 			{
-				compiledClassDir = getCompiledClassDir(testContainerDir);
+				compiledClassDir = getCompiledClassDir(brjs, testContainerDir);
 			}
 			catch (IOException ex)
 			{
@@ -144,9 +145,9 @@ public class TestCompiler
 		return loadedClasses;
 	}
 
-	public File getCompiledClassDir(File testDir) throws IOException 
+	public File getCompiledClassDir(BRJS brjs, File testDir) throws IOException 
 	{
-		File parentApplication = CutlassDirectoryLocator.getAppRootDir(testDir.getAbsoluteFile());
+		File parentApplication = brjs.locateAncestorNodeOfClass(testDir, App.class).dir();
 		String applicationPath = parentApplication.getAbsolutePath();
 		String testDirPath = testDir.getAbsolutePath();
 		String testPathRelativeToParentApp = testDirPath.replace(applicationPath, "").replace("\\", "/");
