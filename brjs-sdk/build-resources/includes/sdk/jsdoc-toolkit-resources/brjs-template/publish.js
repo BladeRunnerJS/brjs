@@ -295,8 +295,8 @@ function buildNav(members) {
 
 
     nav += '<div id="sdk_info_panel">'+
-        '<p class="generated-on">Documentation generated on <span id="sdk_generation_date">@buildDate@</span></p>'+
-        '<p class="brjs-version">BRJS version <span id="sdk_version">@sdkVersion@</span></p>'+
+        '<p class="generated-on">Documentation generated on <span id="sdk_generation_date">'+env.opts.query.date+'</span></p>'+
+        '<p class="brjs-version">BRJS version <span id="sdk_version">'+env.opts.query.version+'</span></p>'+
     '</div>';
 
     nav += '<h2><a href="index.html">Index</a></h2>';

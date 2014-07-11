@@ -9,13 +9,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
@@ -80,10 +78,8 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			}
 			copyJsDocPlaceholder(app);
 			runCommand(app, outputDir);
-			replaceBuildDateToken(outputDir);
-			replaceVersionToken(outputDir);
 		}
-		catch(IOException | ConfigException e) {
+		catch(IOException e) {
 			throw new CommandOperationException(e);
 		}
 		
@@ -109,7 +105,10 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocConfFile) );
 		commandArgs.add("-r"); // recurse into dirs
 		commandArgs.add("-d"); // the output dir
-			commandArgs.add( RelativePathUtility.get(brjs, workingDir, outputDir) ); 
+			commandArgs.add( RelativePathUtility.get(brjs, workingDir, outputDir) );
+		commandArgs.add("-q");
+			commandArgs.add( "date="+getBuildDate()+"&version="+brjs.versionInfo().getVersionNumber() );
+		
 		
 		logger.info("running command: " + StringUtils.join(commandArgs, " "));
 		logger.info("working directory: " + workingDir);
@@ -119,7 +118,6 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		processBuilder.command(commandArgs);
 		
 		CommandRunnerUtility.runCommand(brjs, processBuilder);
-		
 	}
 	
 	private File getSystemOrUserConfPath(BRJS brjs, File systemDirBase, String dirName) {
@@ -130,25 +128,11 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		return new File(systemDirBase, dirName);
 	}
 	
-	private void replaceBuildDateToken(File dir) throws IOException, ConfigException {
+	private String getBuildDate() {
 		DateFormat dateFormat = new SimpleDateFormat("dd MMMMM yyyy");
 		Date date = new Date();
-		replaceToken("buildDate", dateFormat.format(date), dir);
+		return dateFormat.format(date);
 	}
-	
-	private void replaceVersionToken(File dir) throws IOException, ConfigException {
-		replaceToken("sdkVersion", brjs.versionInfo().getVersionNumber(), dir);
-	}
-	
-	private void replaceToken(String key, String value, File dir) throws IOException {
-		String token = "@"+key+"@";
-		for (File file : FileUtils.listFiles(dir, new SuffixFileFilter(".html"), TrueFileFilter.INSTANCE)) {
-			String contents = FileUtils.readFileToString(file);
-			String replacedContents = contents.replace(token, value);
-			FileUtils.write(file, replacedContents);
-		}
-	}
-	
 	
 	
 	public static void copyJsDocPlaceholder(App app) throws IOException {
