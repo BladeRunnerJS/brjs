@@ -17,8 +17,11 @@
 br.presenter.parser.DateParser = function()
 {
 	this.m_pAmericanFormats = ["MM-DD-YYYY", "MM-DD-YY", "MMM-DD-YYYY", "MMM-DD-YY", "MM-DD"];
-	this.m_pEuropeanFormats = ["DD-MM-YYYY", "DD-MMM-YYYY", "DD-MM"];
-	this.m_pCommonFormats = ["DD-MMM-YYYY HH:mm:ss", "DD-MMM-YY HH:mm:ss", "DD-MMM-YYYY HH:mm", "YYYY-MM-DD", "YYYYMMDDHHmmss", "YYYYMMDDHHmm", "YYYYMMDD"];
+	this.m_pEuropeanFormats = ["DD-MM-YYYY", "DD-MMM-YYYY", "DD-MM", "DD-MM-YY", "DDMMYY", "DDMMYYYY"];
+	this.m_pCommonFormats = [
+		"DD-MMM-YYYY HH:mm:ss", "DD-MMM-YY HH:mm:ss", "DD-MMM-YYYY HH:mm", "YYYY-MM-DD", "YYYYMMDDHHmmss", 
+		"YYYYMMDDHHmm", "YYYYMMDD"
+	];
 	this.m_sSeparatorsDefault = "\\/.-";
 	this.m_oDateFormatter = new br.presenter.formatter.DateFormatter();
 };
