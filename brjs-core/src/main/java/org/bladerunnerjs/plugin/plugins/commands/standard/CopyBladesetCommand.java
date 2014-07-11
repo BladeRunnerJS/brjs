@@ -11,6 +11,9 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
+import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
+import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.NameValidator;
 
@@ -67,23 +70,26 @@ public class CopyBladesetCommand  extends ArgsParsingCommandPlugin
 		sourceBladesetName = sourceBladesetName.replaceAll("-bladeset$", "");
 		targetBladesetName = targetBladesetName.replaceAll("-bladeset$", "");
 		
-		if(!NameValidator.legacyIsValidPackageName(targetBladesetName)) throw new CommandArgumentsException("The <target-bladeset-name> parameter can only contain lower-case alphanumeric characters.\n" + "  The first character must be a letter.", this);
-		
 		App sourceApp = brjs.app(sourceAppName);
 		Bladeset sourceBladeset = sourceApp.bladeset(sourceBladesetName);
 		App targetApp = brjs.app(targetAppName);
+		
+		try {
+			NameValidator.assertValidPackageName(targetApp, targetBladesetName);
+		}
+		catch (InvalidPackageNameException e) {
+			throw new CommandArgumentsException(e, this);
+		}
+		
 		Bladeset targetBladeset = targetApp.bladeset(targetBladesetName);
 		
-		if (!sourceApp.dirExists()) throw new CommandOperationException("The source application '" + sourceAppName + "' does not exist at location '" + sourceApp.dir().getPath() + "'");
-		if (!sourceBladeset.dirExists()) throw new CommandOperationException("The source bladeset '" + sourceBladesetName + "' does not exist.");
-		if (!targetApp.dirExists()) throw new CommandOperationException("The target application '" + targetAppName + "' does not exist at location '" + targetApp.dir().getPath() + "'");
-		if (targetBladeset.dirExists()) throw new CommandOperationException("The target bladeset '" + targetBladeset.getName() + "' already exists inside application '" + targetAppName + "'.");
+		if (!sourceApp.dirExists()) throw new NodeDoesNotExistException(sourceApp, this);
+		if (!sourceBladeset.dirExists()) throw new NodeDoesNotExistException(sourceBladeset, this);
+		if (!targetApp.dirExists()) throw new NodeDoesNotExistException(targetApp, this);
+		if (targetBladeset.dirExists()) throw new NodeAlreadyExistsException(targetBladeset, this);
 		
 		try {
 			NodeImporter.importBladeset(sourceBladeset.dir(), sourceApp.appConf().getRequirePrefix() + "/" + sourceBladesetName, targetBladeset);
-			
-//			FileUtils.copyDirectory(sourceBladeset.dir(), targetBladeset.dir());
-//			Renamer.renameBladeset(targetBladeset.dir(), sourceApp.appConf().getRequirePrefix() + "." + sourceBladesetName, targetApp.appConf().getRequirePrefix() + "." + targetBladesetName);
 			
 			logger.println("Successfully copied " + sourceAppName + "/" + sourceBladesetName + " to " + targetAppName + "/" + targetBladesetName);
 		}

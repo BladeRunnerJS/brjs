@@ -96,12 +96,14 @@ public class NodeImporter {
 		}
 	}
 	
-	private static HashMap<String, String> getReplaceMap(String oldNamespace, String newNamespace) {
+	private static HashMap<String, String> getReplaceMap(String oldRequirePrefix, String newRequirePrefix) {
 		HashMap<String,String> replaceMap = new HashMap<String,String>();
-		replaceMap.put("^"+oldNamespace, newNamespace);
+		String oldNamespace = oldRequirePrefix.replace('/', '.');
+		String newNamespace = newRequirePrefix.replace('/', '.');
 		
-		replaceMap.put("([\\W_])"+Pattern.quote(oldNamespace), "$1"+newNamespace.replace("$", "\\$"));
-		replaceMap.put("([\\W_])"+Pattern.quote(oldNamespace.replace('.', '/')), "$1"+newNamespace.replace('.', '/').replace("$", "\\$"));
+		replaceMap.put("^" + oldNamespace, newNamespace);
+		replaceMap.put("([\\W_])"+Pattern.quote(oldNamespace), "$1" + newNamespace.replace("$", "\\$"));
+		replaceMap.put("([\\W_])"+Pattern.quote(oldRequirePrefix), "$1" + newRequirePrefix.replace("$", "\\$"));
 		
 		return replaceMap;
 	}
