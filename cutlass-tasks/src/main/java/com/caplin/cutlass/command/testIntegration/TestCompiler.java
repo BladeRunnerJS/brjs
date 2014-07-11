@@ -18,7 +18,6 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import com.caplin.cutlass.structure.model.path.AppPath;
 
 public class TestCompiler
 {
@@ -29,7 +28,7 @@ public class TestCompiler
 		
 		for (File testContainerDir : testContainerDirs) 
 		{
-			File commonSrcDir = AppPath.locateAncestorPath(testContainerDir).testIntegrationSrcPath().getDir();
+			File commonSrcDir = new File(testContainerDir, "test-integration");
 			commonSrcDir = (commonSrcDir.exists()) ? commonSrcDir : null;
 			
 			File testDir = new File(testContainerDir, "tests");

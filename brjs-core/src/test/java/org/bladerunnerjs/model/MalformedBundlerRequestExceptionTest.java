@@ -1,4 +1,4 @@
-package com.caplin.cutlass.bundler.exception;
+package org.bladerunnerjs.model;
 
 import static org.junit.Assert.*;
 
