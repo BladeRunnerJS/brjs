@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.NodeImporter;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
@@ -62,8 +63,8 @@ public class ImportAppCommand extends ArgsParsingCommandPlugin
 		File appZip = (new File(appZipName).exists()) ? new File(appZipName) : new File(brjs.file("sdk"), appZipName);
 		App app = brjs.app(newAppName);
 		
-		if(!appZip.exists()) throw new CommandOperationException("Couldn't find zip file at '" + appZip.getAbsolutePath() + "'.");
-		if(app.dirExists()) throw new CommandOperationException("Application name '" + newAppName + "' is already in use.");
+		if(!appZip.exists()) throw new CommandArgumentsException("Couldn't find zip file at '" + appZipName + "'.", this);
+		if(app.dirExists()) throw new NodeAlreadyExistsException(app, this);
 		
 		try
 		{
