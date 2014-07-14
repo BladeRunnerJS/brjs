@@ -343,4 +343,16 @@ public class AliasBundlingTest extends SpecTest {
 		then(exceptions).verifyException(AliasNameIsTheSameAsTheClassException.class, "appns.AliasClass");
 	}
 	
+	@Test
+	public void theAliasBlobContainsAliasDefinitionsOnlyOnceEvenIfTheyAreReferencedMultipleTimes() throws Exception {
+		given(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classFileHasContent("appns/Class1", "require('br/AliasRegistry').getService('the-alias');")
+			.and(aspect).classFileHasContent("appns/Class2", "require('br/AliasRegistry').getService('the-alias');")
+			.and(brLib).hasClass("br/AliasRegistry")
+			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
+			.and(aspect).indexPageRequires("appns/Class1");
+		when(aspect).requestReceived("aliasing/bundle.js", response);
+		then(response).containsText("setAliasData({'the-alias':{'class':require('appns/Class1'),'className':'appns.Class1'}})");
+	}
+	
 }
