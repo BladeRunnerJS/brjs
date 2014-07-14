@@ -240,8 +240,8 @@ task generateReleaseNotes, {
 			if (milestoneId != milestoneIds.first()) {
 				appendToReleaseNotes << "; "
 			}
-			def milestoneUrl = githubApi.getMilestoneUrl(milestoneId)
-					appendToReleaseNotes << "<a href=\"${milestoneUrl}\">${milestoneUrl}</a>"
+			def milestoneUrl = "${githubApi.getMilestoneUrl(milestoneId)}&state=closed"
+			appendToReleaseNotes << "<a href=\"${milestoneUrl}\">${milestoneUrl}</a>"
 		}
 		appendToReleaseNotes << "</sub>"
 		appendToReleaseNotes << ""
