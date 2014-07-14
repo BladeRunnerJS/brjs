@@ -115,8 +115,7 @@ public class AppRequestHandler
 			
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
-			String browserCharacterEncoding = browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding();
-			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, browserCharacterEncoding)) {
+			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, "UTF-8")) {
 				browsableNode.filterIndexPage(indexPageContent.toString(), locale, version, writer, requestMode);
 			}
 

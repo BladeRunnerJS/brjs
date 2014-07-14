@@ -30,16 +30,6 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 		conf.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
 		verifyAndAutoWrite();
 	}
-	
-	public String getBrowserCharacterEncoding() throws ConfigException {
-		reloadConfIfChanged();
-		return conf.browserCharacterEncoding;
-	}
-	
-	public void setBrowserCharacterEncoding(String browserCharacterEncoding) throws ConfigException {
-		conf.browserCharacterEncoding = browserCharacterEncoding;
-		verifyAndAutoWrite();
-	}
 
 	public String getLoginRealm() throws ConfigException
 	{

@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.ConfigException;
 
 import com.Ostermiller.util.ConcatReader;
 
@@ -22,14 +21,7 @@ public class CharResponseContent implements ResponseContent
 	
 	public CharResponseContent(BRJS brjs, Reader reader) {
 		this.reader = reader;
-		try
-		{
-			this.outputEncoding = brjs.bladerunnerConf().getBrowserCharacterEncoding();
-		}
-		catch (ConfigException e)
-		{
-			throw new RuntimeException(e);
-		}
+		this.outputEncoding = "UTF-8";
 	}
 	
 	public CharResponseContent(App app, Reader reader) {
