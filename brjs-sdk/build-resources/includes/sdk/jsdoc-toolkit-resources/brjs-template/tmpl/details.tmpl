@@ -3,12 +3,25 @@ var data = obj;
 var self = this;
 var defaultObjectClass = '';
 
+["alpha", "beta"].forEach(function(tag) {
+	if (data.tags) {
+        for (var i = 0; i < data.tags.length; i++) {
+            var dataTag = data.tags[i];
+            var dataTagTitle = dataTag.title;
+            if (dataTagTitle == tag) {
+                data[dataTagTitle] = true;
+            }
+        }
+    }
+});
+
 // Check if the default value is an object or array; if so, apply code highlighting
 if (data.defaultvalue && (data.defaultvaluetype === 'object' || data.defaultvaluetype === 'array')) {
     data.defaultvalue = "<pre class=\"prettyprint\"><code>" + data.defaultvalue + "</code></pre>";
     defaultObjectClass = ' class="object-value"';
 }
 ?>
+
 <dl class="details">
     <?js
         var properties = data.properties;
@@ -104,4 +117,20 @@ if (data.defaultvalue && (data.defaultvaluetype === 'object' || data.defaultvalu
         <?js }); ?></ul>
     </dd>
     <?js } ?>
+    
+    <?js
+    var kind = (data.kind == "function") ? "function" : "class"; 
+    if (data.alpha) {
+    	var alphaMessage = "This "+kind+" is still an Alpha release. It should only be used for experimental development as substantial changes may occur.";
+		print( '<div class="alert alert-danger alpha">'+alphaMessage+'</div>' );
+	}
+	if (data.beta) {
+		var betaMessage = "This "+kind+" is still in Beta and is subject to changes or removal.";
+		print( '<div class="alert alert-warning beta">'+betaMessage+'</div>' );
+	}
+	if (data.deprecated) {
+		var deprecatedMessage = "This "+kind+" has been deprecated and may be removed in future releases.";
+		print( '<div class="alert alert-info deprecated">'+deprecatedMessage+'</div>' );
+	} 
+	?>
 </dl>
