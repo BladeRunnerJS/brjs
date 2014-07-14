@@ -60,7 +60,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	@Override
 	public String getCommandDescription()
 	{
-		return "Starts the embedded application server and database.";
+		return "Starts the embedded application server.";
 	}
 	
 	
