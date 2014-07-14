@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.aliasing;
 
+import org.bladerunnerjs.aliasing.AliasNameIsTheSameAsTheClassException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
@@ -321,6 +322,25 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspect).indexPageHasAliasReferences("appns.alias1 appns.alias2 appns.alias3");	
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.Class1", "appns.Class2", "appns.Class3");
+	}
+	
+	@Test
+	public void anExceptionIsThrownInTheAliasNameIsTheSameAsTheDefaultClass() throws Exception {
+		given(aspect).hasClasses("appns/Class1")
+			.and(aspect.assetLocation("src").aliasDefinitionsFile()).hasAlias("appns.Class1", "appns.Class1")
+			.and(aspect).indexPageHasAliasReferences("appns.Class1");	
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(AliasNameIsTheSameAsTheClassException.class, "appns.Class1");
+	}
+	
+	@Test
+	public void anExceptionIsThrownInTheAliasNameIsTheSameAsTheAssignedClass() throws Exception {
+		given(aspect).hasClasses("appns/Class1", "appns/AliasClass")
+			.and(aspect.assetLocation("src").aliasDefinitionsFile()).hasAlias("appns.AliasClass", "appns.Class1")
+			.and(aspectAliasesFile).hasAlias("appns.AliasClass", "appns.AliasClass")
+			.and(aspect).indexPageHasAliasReferences("appns.AliasClass");	
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(AliasNameIsTheSameAsTheClassException.class, "appns.AliasClass");
 	}
 	
 }

@@ -161,7 +161,7 @@ public class BundleSetBuilder {
 				
 				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
 				if (alias != null)
-				{
+				{					
 					SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
 					addSourceModule(sourceModule);
 					
