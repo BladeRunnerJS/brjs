@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.ConfigException;
 
 import com.Ostermiller.util.ConcatReader;
 
@@ -17,9 +18,18 @@ public class CharResponseContent implements ResponseContent
 {
 
 	private Reader reader;
+	private String outputEncoding;
 	
 	public CharResponseContent(BRJS brjs, Reader reader) {
 		this.reader = reader;
+		try
+		{
+			this.outputEncoding = brjs.bladerunnerConf().getBrowserCharacterEncoding();
+		}
+		catch (ConfigException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public CharResponseContent(App app, Reader reader) {
@@ -45,7 +55,7 @@ public class CharResponseContent implements ResponseContent
 	@Override
 	public void write(OutputStream outputStream) throws IOException
 	{
-		IOUtils.copy( reader, outputStream );
+		IOUtils.copy( reader, outputStream, outputEncoding );
 	}
 
 	@Override
