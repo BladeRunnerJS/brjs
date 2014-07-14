@@ -79,6 +79,7 @@ public abstract class AbstractAppBuilder
 				try (OutputStream os = new FileOutputStream(localeForwardingFile)) {
 					ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(app.root(), contentPluginUtility, version);
 					content.write(os);
+					content.closeQuietly();
 				}
 				
 				for(Locale locale : locales) {
@@ -89,6 +90,7 @@ public abstract class AbstractAppBuilder
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
 						ResponseContent content = appRequestHandler.getIndexPageContent(aspect, locale, version, contentPluginUtility, RequestMode.Prod);
 						content.write(os);
+						content.closeQuietly();
 					}
 				}
 				
@@ -106,7 +108,11 @@ public abstract class AbstractAppBuilder
 							ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);
 							bundleFile.getParentFile().mkdirs();
 							bundleFile.createNewFile();
-							pluginContent.write( new FileOutputStream(bundleFile) );
+							try(FileOutputStream bundleFileOutputStream = new FileOutputStream(bundleFile) )
+							{
+								pluginContent.write( bundleFileOutputStream );
+							}							
+							pluginContent.closeQuietly();
 						}
 					} else {
 						ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
