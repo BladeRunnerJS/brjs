@@ -3,6 +3,7 @@ package com.caplin.cutlass.command.test.testrunner;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,9 +57,12 @@ public class BundlerHandler
 		
 		bundleFile.getParentFile().mkdirs();
 		String modelRequestPath = getModelRequestPath(bundlePath);
-		ResponseContent content = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentAccessor(app), version);
-		content.write( new FileOutputStream(bundleFile) );
-		content.closeQuietly();
+		try(OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile)) {
+			ResponseContent content = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentAccessor(app), version);
+			content.write( bundleFileOutputStream );
+			content.closeQuietly();
+		}
+		
 	}
 
 	private String getModelRequestPath(String bundlerPath)
