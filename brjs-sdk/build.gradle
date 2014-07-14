@@ -158,7 +158,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	file("workspace/apps").listFiles().each {
 		if (it.isDirectory()) {
 			into ("apps/${it.name}/WEB-INF/lib") {
-				from configurations.systemAppServlets
+				from configurations.application
 				rename { String fileName ->
 					if ( !fileName.startsWith("brjs-") )
 					{
