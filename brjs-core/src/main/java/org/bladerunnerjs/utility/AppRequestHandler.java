@@ -56,7 +56,7 @@ public class AppRequestHandler
 	public AppRequestHandler(App app)
 	{
 		this.app = app;
-		contentPathParser = new MemoizedValue<>("AppRequestHandler.contentPathParser", app.root(), app.dir());
+		contentPathParser = new MemoizedValue<>(app.getName()+" - AppRequestHandler.contentPathParser", app.root(), app.dir());
 	}
 
 	public boolean canHandleLogicalRequest(String requestPath)

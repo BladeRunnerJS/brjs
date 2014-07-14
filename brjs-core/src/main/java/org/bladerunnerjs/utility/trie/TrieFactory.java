@@ -32,7 +32,7 @@ public class TrieFactory {
 	
 	private TrieFactory(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
-		trie = new MemoizedValue<>("TrieFactory.trie", assetContainer);
+		trie = new MemoizedValue<>(assetContainer.dir()+" - TrieFactory.trie", assetContainer);
 	}
 	
 	public Trie<AssetReference> createTrie() throws ModelOperationException {

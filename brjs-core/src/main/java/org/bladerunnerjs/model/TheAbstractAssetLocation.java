@@ -23,7 +23,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private final Assets emptyAssets;
-	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
+	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
 	private String relativeRequirePath;
 	
 	public TheAbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {

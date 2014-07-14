@@ -21,7 +21,7 @@ public class AssetLocator {
 	
 	public AssetLocator(AssetLocation assetLocation) {
 		this.assetLocation = assetLocation;
-		assetsList = new MemoizedValue<>("AssetLocation.assets", assetLocation.root(), assetLocation.root().dir());
+		assetsList = new MemoizedValue<>(assetLocation.dir()+" - AssetLocation.assets", assetLocation.root(), assetLocation.root().dir());
 	}
 	
 	public Assets assets(List<File> assetFiles) {

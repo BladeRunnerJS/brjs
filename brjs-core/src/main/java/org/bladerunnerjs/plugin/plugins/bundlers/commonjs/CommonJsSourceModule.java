@@ -58,7 +58,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
-		computedValue = new MemoizedValue<>("CommonJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
+		computedValue = new MemoizedValue<>(getAssetPath()+" - computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
 	}
 	
 	@Override
