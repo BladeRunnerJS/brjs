@@ -60,11 +60,13 @@ public class NodeImporter {
 	}
 	
 	private static BRJS createTemporaryBRJSModel() throws InvalidSdkDirectoryException, IOException {
+		File tempSdkDir = FileUtility.createTemporaryDirectory("node-importer");
+		new File(tempSdkDir, "sdk").mkdir();
 		MockPluginLocator pluginLocator = new MockPluginLocator();
 		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
 		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
 		
-		return new BRJS(FileUtility.createTemporaryDirectory("node-importer"), pluginLocator, new OptimisticFileModificationService(), new StubLoggerFactory(), new MockAppVersionGenerator());
+		return new BRJS(tempSdkDir, pluginLocator, new OptimisticFileModificationService(), new StubLoggerFactory(), new MockAppVersionGenerator());
 	}
 	
 	private static void renameBladeset(Bladeset bladeset, String sourceBladesetRequirePrefix) throws IOException {
