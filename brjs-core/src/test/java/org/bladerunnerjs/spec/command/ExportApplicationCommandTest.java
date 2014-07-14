@@ -7,6 +7,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ExportApplicationCommandTest extends SpecTest {
@@ -86,5 +87,18 @@ public class ExportApplicationCommandTest extends SpecTest {
 			.and(brjs).hasFile("generated/exported-app/app1/app1/WEB-INF/classes/hibernate.cfg.xml")
 			.and(brjs).doesNotHaveFile("generated/exported-app/app1/app1/WEB-INF/lib/brjs-core.jar");
 	}
+	
+	@Ignore // failing - should be fixed with #802
+	@Test
+	public void maintainsJsStyleFileWhenAppIsExported() throws Exception {
+		given(app).hasBeenCreated()
+			.and(aspect).classFileHasContent("appns.Class1", "default aspect src")
+			.and(aspect).containsFile("default-aspect/src/.js-style");
+		when(brjs).runCommand("export-app", "app1")
+			.and(brjs).zipFileIsExtractedTo("generated/exported-app/app1.zip", "generated/exported-app/app1");
+		then(brjs).hasFile("generated/exported-app/app1/app1/default-aspect/src/.js-style");
+	}
+	
+	
 
 }
