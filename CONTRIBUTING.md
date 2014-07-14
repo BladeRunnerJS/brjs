@@ -18,3 +18,10 @@ The following information will also be of use:
 * BRJS usage documentation is maintained on the [brjs-site github repo](https://github.com/BladeRunnerJS/brjs-site) and contributions can also be made there
 
 For more information about contributing please see the [BRJS wiki](https://github.com/BladeRunnerJS/brjs/wiki/).
+
+## Contributor License Agreement
+
+Before we can accept patches, there's a CLA we need you to agree to: 
+http://bladerunnerjs.org/docs/reference/contribution/
+
+Other projects require a similar agreement: jQuery, Firefox, Apache, and many more.
