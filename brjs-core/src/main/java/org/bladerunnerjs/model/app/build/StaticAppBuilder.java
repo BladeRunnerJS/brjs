@@ -8,20 +8,17 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.FileUtility;
 
-
-
-public class WarAppBuilder implements AppBuilder
-{
-
-	public void build(App app, File appWarFile) throws ModelOperationException {
-		if(appWarFile.exists()) throw new ModelOperationException("'" + appWarFile.getPath() + "' already exists.");
+public class StaticAppBuilder implements AppBuilder {
+	
+	public void build(App app, File appBuildDir) throws ModelOperationException {
+		if(appBuildDir.exists()) throw new ModelOperationException("'" + appBuildDir.getPath() + "' already exists.");
 		
 		File exportDir = AppBuilderUtilis.getTemporaryExportDir(app);
 		AppBuilderUtilis.build(app, exportDir);
 		
 		try
 		{
-			FileUtility.zipFolder(exportDir, appWarFile, true);
+			FileUtility.moveDirectoryContents(exportDir, appBuildDir);
 			FileUtils.deleteQuietly(exportDir);
 		}
 		catch (IOException ex)
