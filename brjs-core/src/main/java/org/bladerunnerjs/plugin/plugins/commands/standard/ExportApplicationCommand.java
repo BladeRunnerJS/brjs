@@ -42,8 +42,9 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the name of the application to be exported"));
-		argsParser.registerParameter(new UnflaggedOption("banner").setRequired(false).setHelp("a banner that will be added to every exported class"));
+		argsParser.registerParameter(new FlaggedOption("banner").setLongFlag("banner").setRequired(false).setHelp("a banner that will be added to every exported class"));
 		argsParser.registerParameter(new FlaggedOption("bannerExtensions").setLongFlag("bannerExtensions").setRequired(false).setDefault("js").setHelp("a comma seperated list of extensions to apply the banner to"));
+		argsParser.registerParameter(new UnflaggedOption("target").setRequired(false).setDefault("").setHelp("the target dir for the exported app"));
 	}
 	
 	@Override
@@ -71,11 +72,22 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		String appName = parsedArgs.getString("app-name");
 		String banner = "/*\n" + parsedArgs.getString("banner") + "\n*/\n\n";
 		String[] bannerExtensions = parsedArgs.getString("bannerExtensions").split(",");
+		String targetPath = parsedArgs.getString("target");
+
 		App app = brjs.app(appName);
-		
 		if(!app.dirExists()) throw new CommandArgumentsException("Could not find application '" + appName + "'", this);
 		
-		File destinationZipLocation = new File(brjs.storageDir("exported-app").getAbsolutePath() + "/" + appName + ".zip");
+		File targetDir;
+		if (targetPath.equals("")) {
+			targetDir = brjs.storageDir("exported-apps");
+		} else {
+    		targetDir = new File(targetPath);
+    		if (!targetDir.isDirectory()) 
+    		{
+    			targetDir = brjs.file("sdk/" + targetPath);
+    		}
+		}
+		File destinationZipLocation = new File(targetDir, appName + ".zip");
 
 		try 
 		{

@@ -86,7 +86,7 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(aspect).classRequires("appns/Class2", "appns/Class1")
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
-		when(brjs).runCommand("import-app", "../generated/exported-app/app.zip", "imported-app", "importedns");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedAspect).fileContentsContains("src/importedns/Class2.js", "require('importedns/Class1')")
 			.and(importedApp).hasFile("WEB-INF/lib/brjs-lib1.jar");
 	}
