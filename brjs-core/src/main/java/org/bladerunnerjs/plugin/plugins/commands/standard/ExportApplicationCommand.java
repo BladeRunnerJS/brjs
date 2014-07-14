@@ -75,7 +75,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		
 		if(!app.dirExists()) throw new CommandArgumentsException("Could not find application '" + appName + "'", this);
 		
-		File destinationZipLocation = new File(brjs.storageDir("exported-app").getAbsolutePath() + "/" + appName + ".zip");
+		File destinationZipLocation = new File(brjs.storageDir("exported-apps").getAbsolutePath() + "/" + appName + ".zip");
 
 		try 
 		{
