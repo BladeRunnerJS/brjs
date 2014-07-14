@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.bladerunnerjs.utility.FileUtility;
@@ -15,6 +16,7 @@ public class AppBuildTest extends SpecTest {
 	private Aspect defaultAspect;
 	private Aspect nonDefaultAspect;
 	private File targetDir;
+	private BladerunnerConf bladerunnerConf;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -26,6 +28,7 @@ public class AppBuildTest extends SpecTest {
 			defaultAspect = app.aspect("default");
 			nonDefaultAspect = app.aspect("aspect2");
 			targetDir = FileUtility.createTemporaryDirectory(AppBuildTest.class.getSimpleName());
+			bladerunnerConf = brjs.bladerunnerConf();
 	}
 	
 	@Test
@@ -151,6 +154,36 @@ public class AppBuildTest extends SpecTest {
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("app1/static/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName())
 			.and(targetDir).doesNotContainFile("app1/v/1234/static/mock-content-plugin/unversioned/url");
+	}
+	
+	@Test
+	public void outputFilesAreEncodedProperlyAsUTF8() throws Exception {
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).containsEmptyFile("index.html")
+			.and(defaultAspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£€\"")
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).hasProdVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("app1/v/1234/i18n/en.js", "window._brjsI18nProperties = [{\n"+
+        				"  \"appns.p1\": \"\\\"$£€\\\"\"\n"+
+        		"}];");
+	}
+	
+	@Test
+	public void outputFilesAreEncodedProperlyAsLatin1() throws Exception {
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
+			.and().activeEncodingIs("ISO-8859-1")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).containsEmptyFile("index.html")
+			.and(defaultAspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£\"")
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).hasProdVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("app1/v/1234/i18n/en.js", "window._brjsI18nProperties = [{\n"+
+        				"  \"appns.p1\": \"\\\"$£\\\"\"\n"+
+        		"}];");
 	}
 	
 }
