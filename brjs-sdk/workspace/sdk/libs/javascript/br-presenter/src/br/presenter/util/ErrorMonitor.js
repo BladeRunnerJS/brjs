@@ -25,7 +25,7 @@ br.presenter.util.ErrorMonitor = function(oTooltipNode)
  * Filters all nodes of type {@see br.presenter.node.ToolTipField} and monitors them using
  * {@see br.presenter.util.ErrorMonitor#monitorField}
  *
- * @type {<br.presenter.node.PresentationNode>[]} pGroups
+ * @type {br.presenter.node.PresentationNode[]}
  */
 br.presenter.util.ErrorMonitor.prototype.addErrorListeners = function(pGroups)
 {
