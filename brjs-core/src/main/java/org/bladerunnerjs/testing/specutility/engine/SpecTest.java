@@ -95,17 +95,15 @@ public abstract class SpecTest extends TestModelAccessor
 	public MockPluginLocator pluginLocator;
 	public BRJS brjs;
 	public int appServerPort;
-	
 	public WebappTester webappTester;
-
 	public MockAppVersionGenerator appVersionGenerator;
-
-		
+	
 	@Before
 	public void resetTestObjects()
 	{
-		appServerPort = ServerUtility.getTestPort();
+		BRJS.allowInvalidRootDirectories = false;
 		
+		appServerPort = ServerUtility.getTestPort();
 		logging = new LogMessageStore();
 		exceptions = new ArrayList<>();
 		observer = mock(EventObserver.class);
@@ -117,6 +115,8 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	@After
 	public void cleanUp() {
+		BRJS.allowInvalidRootDirectories = true;
+		
 		if(brjs != null) {
 			brjs.io().uninstallFileAccessChecker();
 			brjs.close();
