@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -22,6 +23,7 @@ public class I18nContentPluginTest extends SpecTest
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;
+	private BladerunnerConf bladerunnerConf;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -35,6 +37,7 @@ public class I18nContentPluginTest extends SpecTest
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
+			bladerunnerConf = brjs.bladerunnerConf();
 	}
 	
 	@Test
@@ -282,5 +285,33 @@ public class I18nContentPluginTest extends SpecTest
 				"window._brjsI18nProperties = [{\n"+
 						"  \"appns.p1\": \"\\\"quoted\\\"\"\n"+
 				"}];");
+	}
+	
+	@Test
+	public void weCanUseUTF8() throws Exception {
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£€\"");
+		when(aspect).requestReceived("i18n/en_GB.js", response);
+		then(response).textEquals(	
+				"window._brjsI18nProperties = [{\n"+
+						"  \"appns.p1\": \"\\\"$£€\\\"\"\n"+
+				"}];");
+	}
+	
+	@Test
+	public void weCanUseLatin1() throws Exception {
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
+    		.and().activeEncodingIs("ISO-8859-1")
+    		.and(aspect).hasBeenCreated()
+    		.and(aspect).containsEmptyFile("index.html")
+    		.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£\"");
+    	when(aspect).requestReceived("i18n/en_GB.js", response);
+    	then(response).textEquals(	
+    			"window._brjsI18nProperties = [{\n"+
+    					"  \"appns.p1\": \"\\\"$£\\\"\"\n"+
+    			"}];");
 	}
 }
