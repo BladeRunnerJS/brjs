@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model.app.build;
+package org.bladerunnerjs.model.app.building;
 
 import java.io.File;
 import org.bladerunnerjs.model.App;

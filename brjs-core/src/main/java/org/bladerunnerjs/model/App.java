@@ -12,8 +12,8 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.app.build.StaticAppBuilder;
-import org.bladerunnerjs.model.app.build.WarAppBuilder;
+import org.bladerunnerjs.model.app.building.StaticAppBuilder;
+import org.bladerunnerjs.model.app.building.WarAppBuilder;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
