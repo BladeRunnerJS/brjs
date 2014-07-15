@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.UserCommandRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,7 +88,7 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(aspect).indexPageHasContent("")
 			.and(app).containsFileWithContents("WEB-INF/lib/brjs-servlet-1.2.2.jar", "old jar contents");
 		when(brjs).runThreadedCommand("serve");
-		then(logging).warnMessageReceived(ServeCommand.Messages.OUTDATED_JAR_MESSAGE, "app1", "brjs-", "sdk/libs/java/application");
+		then(logging).warnMessageReceived(UserCommandRunner.Messages.OUTDATED_JAR_MESSAGE, "app1", "brjs-", "sdk/libs/java/application");
 	}
 	
 }
