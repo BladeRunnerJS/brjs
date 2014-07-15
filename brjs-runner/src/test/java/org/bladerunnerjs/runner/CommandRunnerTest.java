@@ -7,12 +7,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.runner.CommandRunner;
 import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
+import org.bladerunnerjs.utility.UserCommandRunner;
 
 import com.caplin.cutlass.util.FileUtility;
 
@@ -174,6 +176,21 @@ public class CommandRunnerTest {
 		String output = outputStream.toString("UTF-8");
 		assertContains("arg1, arg2", output);
 		assertContains("argX", output);
+	}
+	
+	@Test
+	public void warningIsPrintedIfTheServletJarIsOutdated() throws Exception
+	{
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		dirFile("valid-sdk-directory/sdk/libs/java").mkdirs();
+		FileUtils.write( dirFile("valid-sdk-directory/sdk/libs/java/application/brjs-servlet-1.2.3.jar"), "some jar contents" );
+		dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib").mkdirs();
+		FileUtils.write( dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
+		
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
+		String output = outputStream.toString("UTF-8");
+		String warnMessage = String.format(UserCommandRunner.Messages.OUTDATED_JAR_MESSAGE, "myApp", "brjs-", "sdk/libs/java/application");
+		assertContains(warnMessage, output);
 	}
 	
 	private File dirFile(String dirName) {
