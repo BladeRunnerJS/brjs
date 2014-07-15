@@ -259,6 +259,13 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			resourcesRequestName = WORKBENCH_RESOURCE_REQUEST;
 			requestArgs = new String[] { bladeset.getName(), blade.getName() };
 		}
+		else if (assetContainer instanceof JsLib)
+		{
+			JsLib lib = (JsLib) assetContainer;
+			themeRequestName = null;
+			resourcesRequestName = LIB_REQUEST;
+			requestArgs = new String[] { lib.getName() };
+		}
 		else {
 			return contentPaths;
 		}
@@ -291,14 +298,18 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 					File assetLocationParentDir = assetLocation.dir().getParentFile();
 					//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'
 					if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-						String assetPath = RelativePathUtility.get(container.root(), assetLocation.dir(), file);
-						String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetLocation.getThemeName(), assetPath } );
-						String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
-						contentPaths.add(request );
-					} else{
-						String assetPath = RelativePathUtility.get(container.root(), container.dir(), file);
-						String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
-						contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
+						if (themeRequestName != null) {
+    						String assetPath = RelativePathUtility.get(container.root(), assetLocation.dir(), file);
+    						String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetLocation.getThemeName(), assetPath } );
+    						String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
+    						contentPaths.add(request );
+						}
+					} else {
+						if (resourcesRequestName != null) {
+    						String assetPath = RelativePathUtility.get(container.root(), container.dir(), file);
+    						String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
+    						contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
+						}
 					}
 				}
 			}

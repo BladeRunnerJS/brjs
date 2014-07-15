@@ -322,4 +322,22 @@ public class CssResourceContentPluginTest extends SpecTest {
     	then(binaryResponseFile).sameAsFile("src/test/resources/br-logo.png");
 	}
 	
+	@Test
+	public void assetsInAnSDKLibraryAreAvailableInDev() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
+		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+	}
+	
+	@Test
+	public void assetsInAnSDKLibraryAreAvailableInProd() throws Exception
+	{
+		given(app).hasBeenCreated()
+		.and(aspect).hasBeenCreated()
+		.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
+		then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+	}
+	
 }
