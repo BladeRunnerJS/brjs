@@ -24,16 +24,14 @@ public class BRJSHeaderFilter implements Filter {
 	
 	private static final Pattern VERSION_REGEX = Pattern.compile("/v/[0-9]+/");
 	
-	private static final String E_TAG = "ETag";
 	private static final String EXPIRES = "Expires";
 	private static final String CACHE_CONTROL = "Cache-Control";
-	private static final String LAST_MODIFIED = "Last-Modified";
 	
 	private static final long MAX_AGE = TimeUnit.DAYS.toSeconds(365);
 	private static final String HEADER_DATE_FORMAT = "dd MMM yyyy kk:mm:ss z";
 	private static final String CACHE_CONTROL_ALLOW_CACHE = "max-age=" + MAX_AGE + ", public, must-revalidate";
 	
-	private static final List<String> LOCKED_HEADERS = Arrays.asList(LAST_MODIFIED, CACHE_CONTROL, EXPIRES, E_TAG);
+	private static final List<String> LOCKED_HEADERS = Arrays.asList(CACHE_CONTROL, EXPIRES);
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
