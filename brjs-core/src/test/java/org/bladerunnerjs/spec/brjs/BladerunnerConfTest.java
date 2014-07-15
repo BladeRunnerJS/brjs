@@ -17,7 +17,7 @@ public class BladerunnerConfTest extends SpecTest {
 	@Test
 	public void bladerunnerConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		when(brjs).bladerunnerConf().write();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test
@@ -30,7 +30,7 @@ public class BladerunnerConfTest extends SpecTest {
 	public void bladerunnerConfThatAlreadyExistsCanBeReadAndModified() throws Exception {
 		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf().setJettyPort(8888).setDefaultFileCharacterEncoding("ISO-8859-1").write();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: ISO-8859-1\njettyPort: 8888\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: ISO-8859-1\nignoredPaths: .svn, .git\njettyPort: 8888\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test

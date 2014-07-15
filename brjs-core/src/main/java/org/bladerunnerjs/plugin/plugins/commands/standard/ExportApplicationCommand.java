@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
@@ -95,7 +97,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 			
 			IOFileFilter excludeUserLibraryTestsFilter = createExcludeUserLibsTestsFilter(appName);
 			NotFileFilter brjsJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar")));
-			IOFileFilter combinedFilter = new AndFileFilter(new ExcludeDirFileFilter("js-test-driver", "bundles"), brjsJarFilter);
+			IOFileFilter combinedFilter = new AndFileFilter(new ExcludeDirFileFilter("bundles"), brjsJarFilter);
 			
 			combinedFilter = new AndFileFilter(combinedFilter, excludeUserLibraryTestsFilter);
 			
@@ -115,10 +117,10 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	}
 
 	
-	private void createResourcesFromSdkTemplate(File templateDir, File targetDir, FileFilter fileFilter) throws IOException
+	private void createResourcesFromSdkTemplate(File templateDir, File targetDir, FileFilter fileFilter) throws IOException, ConfigException
 	{
 		ArrayList<File> addList = new ArrayList<File>();
-		recurseIntoSubfoldersAndAddAllFilesMatchingFilter(addList, templateDir, fileFilter);
+		recurseIntoSubfoldersAndAddAllFilesMatchingFilter( Arrays.asList(brjs.bladerunnerConf().getIgnoredPaths()) , addList, templateDir, fileFilter );
 		
 		if (!targetDir.exists())
 		{
@@ -157,20 +159,21 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		}
 	}
 
-	private ArrayList<File> recurseIntoSubfoldersAndAddAllFilesMatchingFilter(ArrayList<File> addList, File file, FileFilter filter)
+	private ArrayList<File> recurseIntoSubfoldersAndAddAllFilesMatchingFilter(List<String> ignoredFiles, ArrayList<File> addList, File file, FileFilter filter)
 	{
-		if(file.isDirectory())
+		if (ignoredFiles.contains(file.getName())) {
+			return addList;
+		}
+		
+		if (file.isDirectory())
 		{
-			for(File r : file.listFiles(filter))
+			for (File r : file.listFiles(filter))
 			{
-				if (!r.getName().startsWith("."))
-				{
-					recurseIntoSubfoldersAndAddAllFilesMatchingFilter(addList, r, filter);
-				}
+				recurseIntoSubfoldersAndAddAllFilesMatchingFilter(ignoredFiles, addList, r, filter);
 			}
 		}
 		
-		if(filter.accept(file) && !file.getName().startsWith("."))
+		if (filter.accept(file))
 		{
 			addList.add(file);
 		}

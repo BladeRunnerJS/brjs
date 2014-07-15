@@ -27,11 +27,15 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	@NotEmpty
 	public final String LOGIN_MODULE_NAME = "BladeRunnerLoginModule";
 	
+	@NotNull
+	public String ignoredPaths;
+	
 	@Override
 	public void initialize() {
 		jettyPort = getDefault(jettyPort, 7070);
 		defaultFileCharacterEncoding = getDefault(defaultFileCharacterEncoding, "UTF-8");
 		loginRealm = getDefault(loginRealm, "BladeRunnerLoginRealm");
+		ignoredPaths = getDefault(ignoredPaths, ".svn, .git");
 	}
 	
 	@Override

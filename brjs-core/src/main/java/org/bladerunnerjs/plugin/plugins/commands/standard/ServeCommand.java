@@ -26,7 +26,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 		public static final String SERVER_STARTUP_MESSAGE = "BladerunnerJS server is now running and can be accessed at http://localhost:";
 		public static final String SERVER_STOP_INSTRUCTION_MESSAGE = "Press Ctrl + C to stop the server";
 		public static final String INVALID_PORT_MESSAGE = "Unable to serve BladeRunnerJS with invalid port value";
-		public static final String OUTDATED_JAR_MESSAGE = "The app '%s' contains outdated BRJS jar(s)."+
+		public static final String OUTDATED_JAR_MESSAGE = "The app '%s' is either missing BRJS jar(s) or they are outdated."+
 		" You should delete all jars prefixed with '%s' in the WEB-INF/lib directory and copy in new versions from %s.";
 	}
 	

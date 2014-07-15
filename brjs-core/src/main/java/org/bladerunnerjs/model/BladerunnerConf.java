@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.yaml.YamlBladerunnerConf;
 
@@ -41,6 +42,17 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	{
 		reloadConfIfChanged();
 		return conf.LOGIN_MODULE_NAME;
+	}
+	
+	public String[] getIgnoredPaths() throws ConfigException {
+		reloadConfIfChanged();
+		String[] ignoredFileStrings = conf.ignoredPaths.split("\\s*,\\s*");
+		return ignoredFileStrings;
+	}
+	
+	public void setIgnoredPaths(String... ignoredFiles) throws ConfigException {
+		conf.ignoredPaths = StringUtils.join(ignoredFiles,",");
+		verifyAndAutoWrite();
 	}
 	
 	public static File getConfigFilePath(BRJS brjs) {

@@ -2,17 +2,20 @@ package org.bladerunnerjs.spec.command;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ExportApplicationCommandTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
+	private Bladeset bladeset;
+	private Blade blade;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -23,6 +26,8 @@ public class ExportApplicationCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			bladeset = app.bladeset("bs");
+			blade = bladeset.blade("b1");
 	}
 	
 	@Test
@@ -88,15 +93,33 @@ public class ExportApplicationCommandTest extends SpecTest {
 			.and(brjs).doesNotHaveFile("generated/exported-apps/app1/app1/WEB-INF/lib/brjs-core.jar");
 	}
 	
-	@Ignore // failing - should be fixed with #802
 	@Test
 	public void maintainsJsStyleFileWhenAppIsExported() throws Exception {
 		given(app).hasBeenCreated()
+			.and(aspect).hasBeenPopulated()
 			.and(aspect).classFileHasContent("appns.Class1", "default aspect src")
-			.and(aspect).containsFile("default-aspect/src/.js-style");
+			.and(aspect).containsFile("src/.js-style")
+			.and(bladeset).hasBeenPopulated()
+			.and(bladeset).containsFile("src/.js-style")
+			.and(blade).hasBeenPopulated()
+			.and(blade).containsFile("src/.js-style");
 		when(brjs).runCommand("export-app", "app1")
 			.and(brjs).zipFileIsExtractedTo("generated/exported-apps/app1.zip", "generated/exported-apps/app1");
-		then(brjs).hasFile("generated/exported-apps/app1/app1/default-aspect/src/.js-style");
+		then(brjs).hasFile("generated/exported-apps/app1/app1/default-aspect/src/.js-style")
+			.and(brjs).hasFile("generated/exported-apps/app1/app1/bs-bladeset/src/.js-style")
+			.and(brjs).hasFile("generated/exported-apps/app1/app1/bs-bladeset/blades/b1/src/.js-style");
+	}
+	
+	@Test
+	public void dotSvnDirsNotExported() throws Exception {
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenPopulated()
+			.and(aspect).classFileHasContent("appns.Class1", "default aspect src")
+			.and(aspect).containsFile("src/.svn/some-file");
+		when(brjs).runCommand("export-app", "app1")
+			.and(brjs).zipFileIsExtractedTo("generated/exported-apps/app1.zip", "generated/exported-apps/app1");
+		then(brjs).hasFile("generated/exported-apps/app1/app1/default-aspect/src/appns/Class1.js")
+			.and(brjs).doesNotHaveDir("generated/exported-apps/app1/app1/default-aspect/src/.svn");
 	}
 	
 	@Test
