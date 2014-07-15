@@ -5,7 +5,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -119,29 +118,6 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void assetsInALibCanBeRequestedIndividually() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("/some/lib/dirs/some-file.ext", "some file contents");
-		when(aspect).requestReceived("thirdparty/thirdparty-lib/some/lib/dirs/some-file.ext", pageResponse);
-		then(pageResponse).textEquals("some file contents");
-	}
-	
-	@Test
-	public void testLibraryResourceForLibraryPresentBothInAppAndSdkIsBundledFromApp() throws Exception
-	{
-		JsLib appLib = app.jsLib("lib1");
-		JsLib sdkLib = brjs.sdkLib("lib1");
-		
-		given(appLib).hasBeenCreated()
-			.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "js: app-lib.js")
-			.and(appLib).containsFile("app-lib.js")
-			.and(sdkLib).hasBeenCreated()
-			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "js: sdk-lib.js")
-			.and(sdkLib).containsFile("sdk-lib.js");
-		when(aspect).requestReceived("thirdparty/lib1/app-lib.js", pageResponse);
-		then(pageResponse).textEquals("app-lib.js\n");
-	}
-	
-	@Test
 	public void testLibraryResourceRequestCanNotHaveAQueryString() throws Exception
 	{
 		JsLib appLib = app.jsLib("myLib");
@@ -151,23 +127,6 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(appLib).containsFile("myFile.js");
 		when(aspect).requestReceived("thirdparty/myLib/myFile.js?q=1234", pageResponse);
 		then(exceptions).verifyException(MalformedRequestException.class);
-	}
-	
-	@Test
-	public void weGetAGoodMessageIfTheLibraryDoesntExist() throws Exception
-	{
-		given(app).hasBeenCreated();
-		when(aspect).requestReceived("thirdparty/libThatDoesntExist/myFile.js", pageResponse);
-		then(exceptions).verifyException(ContentProcessingException.class, "libThatDoesntExist");
-	}
-	
-	@Test
-	public void weGetAGoodMessageIfTheFileInTheLibraryDoesntExist() throws Exception
-	{
-		given(app).hasBeenCreated()
-			.and(thirdpartyLib).hasBeenCreated();
-		when(aspect).requestReceived("thirdparty/thirdparty-lib/myFile.js", pageResponse);
-		then(exceptions).verifyException(ContentProcessingException.class, thirdpartyLib.file("myFile.js").getAbsolutePath());
 	}
 	
 	@Test

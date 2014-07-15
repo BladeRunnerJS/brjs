@@ -1,5 +1,6 @@
 org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyContentPlugin
+org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyResourceContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin
