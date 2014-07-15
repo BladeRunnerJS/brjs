@@ -119,7 +119,6 @@ public class CommandRunnerTest {
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--debug"});
 		
 		String output = outputStream.toString("UTF-8");
-		assertDoesNotContain("warn-level", output);
 		assertDoesNotContain("info-level", output);
 		assertDoesNotContain("debug-level", output);
 	}
@@ -147,13 +146,13 @@ public class CommandRunnerTest {
 	}
 	
 	@Test
-	public void errorsForAllPackagesAreDisplayedEvenIfNotLoggingThatPackage() throws Exception {
+	public void errorsAndWarningsForAllPackagesAreDisplayedEvenIfNotLoggingThatPackage() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--info"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("error-level", output);
-		assertDoesNotContain("warn-level", output);
+		assertContains("warn-level", output);
 		assertDoesNotContain("info-level", output);
 		assertDoesNotContain("debug-level", output);
 	}
