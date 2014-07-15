@@ -104,6 +104,14 @@ public class XMLContentPluginTest extends SpecTest{
 	}
 	
 	@Test
+	public void xmlPrologIsStrippedFromXmlDocuments() throws Exception {
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig()).
+		and(aspect).containsResourceFileWithContents("config.xml", rootElemWithXmlProlog(mergeElem("id1")));
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(bundleElem(bundleResourceElem("rootElem", rootElem(mergeElem("id1")))));
+	}
+	
+	@Test
 	public void bundlingFailsWhenInvalidNamespaceIsUsed() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(blade).hasClass("appns/bs/b1/Class")
@@ -406,6 +414,10 @@ public class XMLContentPluginTest extends SpecTest{
 			+ Joiner.on("").join(input)
 			+ "</rootElem>";
 			return result;
+	}
+	
+	private String rootElemWithXmlProlog(String... input) {
+		return "<?xml version='1.0' encoding='UTF-8'?>\n" + rootElem(input);
 	}
 	
 	private String rootElem2(String... input) {
