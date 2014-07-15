@@ -41,7 +41,6 @@ Dependencies.putAll([
 	'bval-jsr303'				:	'org.apache.bval:bval-jsr303:0.5',
 	'java-xmlbuilder'			:	'com.jamesmurty.utils:java-xmlbuilder:0.6',
 	'sjsxp'						:	'com.sun.xml.stream:sjsxp:1.0.2',
-	'dom4j'						:	'dom4j:dom4j:1.6.1',
 	
 	'utils'						:	'org.ostermiller:utils:1.07.00',
 
