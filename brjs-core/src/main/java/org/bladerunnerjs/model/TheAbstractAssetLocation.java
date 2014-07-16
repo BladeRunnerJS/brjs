@@ -56,7 +56,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	}
 	
 	@Override
-	public AliasDefinitionsFile rootAliasDefinitionsFile() {
+	public AliasDefinitionsFile aliasDefinitionsFile() {
 		if(aliasDefinitionsFile == null) {
 			aliasDefinitionsFile = new AliasDefinitionsFile(this, dir(), "aliasDefinitions.xml");
 		}
@@ -68,8 +68,8 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	public List<AliasDefinitionsFile> aliasDefinitionsFiles() {
 		List<AliasDefinitionsFile> aliasDefinitionsFiles = new ArrayList<>();
 		
-		if(rootAliasDefinitionsFile().getUnderlyingFile().exists()) {
-			aliasDefinitionsFiles.add(rootAliasDefinitionsFile());
+		if(aliasDefinitionsFile().getUnderlyingFile().exists()) {
+			aliasDefinitionsFiles.add(aliasDefinitionsFile());
 		}
 		
 		// TODO: fix this dependency from the model to plug-in code (ResourcesAssetLocation)

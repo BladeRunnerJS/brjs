@@ -33,9 +33,9 @@ public class AliasModelTest extends SpecTest {
 			aspect = app.aspect("default");
 			aspectAliasesFile = aspect.aliasesFile();
 			bladeset = app.bladeset("bs");
-			bladesetAliasDefinitionsFile = bladeset.assetLocation("resources").rootAliasDefinitionsFile();
+			bladesetAliasDefinitionsFile = bladeset.assetLocation("resources").aliasDefinitionsFile();
 			blade = bladeset.blade("b1");
-			bladeAliasDefinitionsFile = blade.assetLocation("resources").rootAliasDefinitionsFile();
+			bladeAliasDefinitionsFile = blade.assetLocation("resources").aliasDefinitionsFile();
 	}
 	
 	@Test

@@ -16,7 +16,7 @@ public interface AssetLocation extends BRJSNode {
 	String requirePrefix();
 	AssetContainer assetContainer();
 	List<AssetLocation> dependentAssetLocations();
-	AliasDefinitionsFile rootAliasDefinitionsFile();
+	AliasDefinitionsFile aliasDefinitionsFile();
 	List<AliasDefinitionsFile> aliasDefinitionsFiles();
 	List<LinkedAsset> linkedAssets();
 	List<Asset> bundlableAssets(AssetPlugin assetProducer);

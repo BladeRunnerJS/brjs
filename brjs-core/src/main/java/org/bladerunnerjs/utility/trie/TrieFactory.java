@@ -65,7 +65,7 @@ public class TrieFactory {
 						}
 						
 						for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-							for(AliasDefinition aliasDefintion : assetLocation.rootAliasDefinitionsFile().aliases()) {
+							for(AliasDefinition aliasDefintion : assetLocation.aliasDefinitionsFile().aliases()) {
 								String aliasName = aliasDefintion.getName();
 								addToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion));
 							}

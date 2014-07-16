@@ -42,11 +42,11 @@ public class AliasBundlingTest extends SpecTest {
 			aspectAliasesFile = aspect.aliasesFile();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
-			bladeAliasDefinitionsFile = blade.assetLocation("src").rootAliasDefinitionsFile();
+			bladeAliasDefinitionsFile = blade.assetLocation("src").aliasDefinitionsFile();
 			workbench = blade.workbench();
 			worbenchAliasesFile = workbench.aliasesFile();
 			brLib = app.jsLib("br");
-			brLibAliasDefinitionsFile = brLib.assetLocation("resources").rootAliasDefinitionsFile();
+			brLibAliasDefinitionsFile = brLib.assetLocation("resources").aliasDefinitionsFile();
 			otherBrLib = brjs.sdkLib("otherBrLib");
 			
 	}
@@ -289,9 +289,9 @@ public class AliasBundlingTest extends SpecTest {
 	public void multipleAliasDefinitionsCanBeInAnAssetContainer() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns/pkg1/Class1", "appns/pkg1/pkg2/Class2", "appns/pkg1/pkg2/pkg3/Class3")
-			.and(aspect.assetLocation("src/appns/pkg1").rootAliasDefinitionsFile()).hasAlias("appns.alias1", "appns.pkg1.Class1")
-			.and(aspect.assetLocation("src/appns/pkg1/pkg2").rootAliasDefinitionsFile()).hasAlias("appns.alias2", "appns.pkg1.pkg2.Class2")
-			.and(aspect.assetLocation("src/appns/pkg1/pkg2/pkg3").rootAliasDefinitionsFile()).hasAlias("appns.alias3", "appns.pkg1.pkg2.pkg3.Class3")
+			.and(aspect.assetLocation("src/appns/pkg1").aliasDefinitionsFile()).hasAlias("appns.alias1", "appns.pkg1.Class1")
+			.and(aspect.assetLocation("src/appns/pkg1/pkg2").aliasDefinitionsFile()).hasAlias("appns.alias2", "appns.pkg1.pkg2.Class2")
+			.and(aspect.assetLocation("src/appns/pkg1/pkg2/pkg3").aliasDefinitionsFile()).hasAlias("appns.alias3", "appns.pkg1.pkg2.pkg3.Class3")
 			.and(aspect).indexPageHasAliasReferences("appns.alias1 appns.alias2 appns.alias3");	
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.pkg1.Class1", "appns.pkg1.pkg2.Class2", "appns.pkg1.pkg2.pkg3.Class3");
@@ -310,7 +310,7 @@ public class AliasBundlingTest extends SpecTest {
 	@Test @Ignore
 	public void multipleAliasDefinitionsCanBeInsideResourcesFolderAndSubfolders() throws Exception {
 		given(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/Class3")
-			.and(aspect.assetLocation("resources").rootAliasDefinitionsFile()).hasAlias("appns.alias1", "appns.Class1")
+			.and(aspect.assetLocation("resources").aliasDefinitionsFile()).hasAlias("appns.alias1", "appns.Class1")
 			.and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml",
 					"<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" +
 						"<alias defaultClass=\"appns.Class2\" name=\"appns.alias2\"/>\n" +
@@ -327,7 +327,7 @@ public class AliasBundlingTest extends SpecTest {
 	@Test
 	public void anExceptionIsThrownInTheAliasNameIsTheSameAsTheDefaultClass() throws Exception {
 		given(aspect).hasClasses("appns/Class1")
-			.and(aspect.assetLocation("src").rootAliasDefinitionsFile()).hasAlias("appns.Class1", "appns.Class1")
+			.and(aspect.assetLocation("src").aliasDefinitionsFile()).hasAlias("appns.Class1", "appns.Class1")
 			.and(aspect).indexPageHasAliasReferences("appns.Class1");	
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(AliasNameIsTheSameAsTheClassException.class, "appns.Class1");
@@ -336,7 +336,7 @@ public class AliasBundlingTest extends SpecTest {
 	@Test
 	public void anExceptionIsThrownInTheAliasNameIsTheSameAsTheAssignedClass() throws Exception {
 		given(aspect).hasClasses("appns/Class1", "appns/AliasClass")
-			.and(aspect.assetLocation("src").rootAliasDefinitionsFile()).hasAlias("appns.AliasClass", "appns.Class1")
+			.and(aspect.assetLocation("src").aliasDefinitionsFile()).hasAlias("appns.AliasClass", "appns.Class1")
 			.and(aspectAliasesFile).hasAlias("appns.AliasClass", "appns.AliasClass")
 			.and(aspect).indexPageHasAliasReferences("appns.AliasClass");	
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);

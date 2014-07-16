@@ -31,7 +31,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			app = brjs.app("app");
 			aspect = app.aspect("default");
 			aliasesFile = aspect.aliasesFile();
-			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").rootAliasDefinitionsFile();
+			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").aliasDefinitionsFile();
 			brLib = brjs.sdkLib("br");
 	}
 	
