@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import javax.validation.constraints.*;
 
 import org.apache.bval.constraints.NotEmpty;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 
@@ -31,7 +32,7 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	public String ignoredPaths;
 	
 	@Override
-	public void initialize() {
+	public void initialize(BRJSNode node) {
 		jettyPort = getDefault(jettyPort, 7070);
 		defaultFileCharacterEncoding = getDefault(defaultFileCharacterEncoding, "UTF-8");
 		loginRealm = getDefault(loginRealm, "BladeRunnerLoginRealm");

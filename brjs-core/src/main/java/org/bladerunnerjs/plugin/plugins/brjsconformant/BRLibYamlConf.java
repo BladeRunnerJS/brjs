@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.brjsconformant;
 
 import javax.validation.constraints.NotNull;
 
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 import org.bladerunnerjs.utility.RelativePathUtility;
@@ -20,7 +21,7 @@ public class BRLibYamlConf extends AbstractYamlConfFile {
 	public String requirePrefix;
 	
 	@Override
-	public void initialize() {
+	public void initialize(BRJSNode node) {
 		requirePrefix = getDefault(requirePrefix, "");
 	}
 	
