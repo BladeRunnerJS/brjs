@@ -450,6 +450,7 @@ System.out.println("browser-dir-path: " + browserDirPath.getCanonicalPath());
 System.out.println("browser-dir-path-exists: " + browserDirPath.exists());
 System.out.println("browser-path: " + browserPath.getCanonicalPath());
 System.out.println("browser-path-exists: " + browserPath.exists());
+System.out.println("browser-path-is-executable: " + browserPath.canExecute());
 List<String> browserFiles = new ArrayList<>();
 for(File browserFile : browserDirPath.listFiles()) {
 	browserFiles.add(browserFile.getName());
