@@ -98,14 +98,20 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).hasFile("WEB-INF/lib/brjs-lib1.jar");
 	}
 	
-	@Ignore //test fails - please uncomment when #794
+	@Ignore //test fails, blade/bladeset namespaced folders are duplicated - please unignore when #794 is fixed
 	@Test
-	public void bladeDirectoriesAreNotDuplicatedWhenExportedAppsAreImportedWithNewNamespace() throws Exception {
-		given(blade).containsFile("src/appns/bs/b1/Class1.js")
+	public void directoriesAreNotDuplicatedWhenExportedAppsAreImportedWithNewNamespace() throws Exception {
+		given(aspect).containsFile("src/appns/AspectClass.js")
+			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
+			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedApp).hasDir("bs-bladeset/blades/b1/src/importedns")
-			.and(importedApp).doesNotHaveDir("bs-bladeset/blades/b1/src/appns");
+			.and(importedApp).hasDir("bs-bladeset/src/importedns")
+			.and(importedApp).hasDir("default-aspect/src/importedns")
+			.and(importedApp).doesNotHaveDir("bs-bladeset/src/appns")
+			.and(importedApp).doesNotHaveDir("bs-bladeset/blades/b1/src/appns")
+			.and(importedApp).doesNotHaveDir("default-aspect/src/appns");
 	}
 }
