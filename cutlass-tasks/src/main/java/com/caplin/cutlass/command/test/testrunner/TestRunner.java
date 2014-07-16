@@ -27,7 +27,7 @@ import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
+import org.bladerunnerjs.model.exception.test.BrowserStartupException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
 import com.caplin.cutlass.CutlassConfig;
@@ -454,10 +454,8 @@ System.out.println("args: " + Joiner.on(" ").join(args));
 			}
 			catch (IOException e)
 			{
-				String browserString = browser == null ? "" : "'" + browser + "' "; 
-				throw new BrowserNotFoundException(browserString, config.getRelativeDir().getPath());
+				throw new BrowserStartupException(e, args, config.getRelativeDir().getPath());
 			}
-			
 		}
 		waitForServer(browsers.size());
 	}
