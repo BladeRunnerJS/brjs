@@ -22,6 +22,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
+	private Map<String, AliasDefinitionsFile> aliasDefinitionsFilesMap = new HashMap<>();
 	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
 	private String relativeRequirePath;
@@ -55,12 +56,38 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	}
 	
 	@Override
-	public AliasDefinitionsFile aliasDefinitionsFile() {		
+	public AliasDefinitionsFile rootAliasDefinitionsFile() {
 		if(aliasDefinitionsFile == null) {
 			aliasDefinitionsFile = new AliasDefinitionsFile(this, dir(), "aliasDefinitions.xml");
 		}
 		
 		return aliasDefinitionsFile;
+	}
+	
+	@Override
+	public List<AliasDefinitionsFile> aliasDefinitionsFiles() {
+		List<AliasDefinitionsFile> aliasDefinitionsFiles = new ArrayList<>();
+		
+		if(rootAliasDefinitionsFile().getUnderlyingFile().exists()) {
+			aliasDefinitionsFiles.add(rootAliasDefinitionsFile());
+		}
+		
+		// TODO: fix this dependency from the model to plug-in code (ResourcesAssetLocation)
+		if(dir().exists() && (this instanceof ResourcesAssetLocation)) {
+			for(File dir : root().getFileInfo(dir()).nestedDirs()) {
+				if(new File(dir, "aliasDefinitions.xml").exists()) {
+					String dirPath = dir.getAbsolutePath();
+					
+					if(!aliasDefinitionsFilesMap.containsKey(dirPath)) {
+						aliasDefinitionsFilesMap.put(dirPath, new AliasDefinitionsFile(this, dir, "aliasDefinitions.xml"));
+					}
+					
+					aliasDefinitionsFiles.add(aliasDefinitionsFilesMap.get(dirPath));
+				}
+			}
+		}
+		
+		return aliasDefinitionsFiles;
 	}
 	
 	@Override

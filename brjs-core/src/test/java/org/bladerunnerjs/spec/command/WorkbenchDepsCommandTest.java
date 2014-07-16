@@ -38,7 +38,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			blade = bladeset.blade("blade");
 			workbench = blade.workbench();
 			brLib = brjs.sdkLib("br");
-			brLibAliasDefinitionsFile = brLib.assetLocation("resources").aliasDefinitionsFile();
+			brLibAliasDefinitionsFile = brLib.assetLocation("resources").rootAliasDefinitionsFile();
 	}
 	
 	@Test

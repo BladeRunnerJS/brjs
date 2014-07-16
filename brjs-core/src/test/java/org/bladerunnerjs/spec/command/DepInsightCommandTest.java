@@ -30,7 +30,7 @@ public class DepInsightCommandTest extends SpecTest {
 			app = brjs.app("app");
 			aspect = app.aspect("default");
 			aliasesFile = aspect.aliasesFile();
-			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").aliasDefinitionsFile();
+			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").rootAliasDefinitionsFile();
 	}
 	
 	@Test
