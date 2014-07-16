@@ -331,4 +331,12 @@ public class CssRewriterTest extends SpecTest
 		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1/workbench_resource/resources/images/flower.png);");
 	}
 	
+	@Test
+	public void inlineSVGIsntRewritten() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css", "background: url('data:image/svg+xml;base64,PD94bWwgd...IiB5Mj0iMTAwJSI);");
+		when(aspect).requestReceived("css/common/bundle.css", response);
+		then(response).containsText("background: url('data:image/svg+xml;base64,PD94bWwgd...IiB5Mj0iMTAwJSI);");
+	}
+	
 }
