@@ -73,6 +73,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		}
 		
 		// TODO: fix this dependency from the model to plug-in code (ResourcesAssetLocation)
+		//       we instead need a way to either know this asset-location has a deep directory structure, or have way of getting it to list it's nested directories
 		if(dir().exists() && (this instanceof ResourcesAssetLocation)) {
 			for(File dir : root().getFileInfo(dir()).nestedDirs()) {
 				if(new File(dir, "aliasDefinitions.xml").exists()) {
