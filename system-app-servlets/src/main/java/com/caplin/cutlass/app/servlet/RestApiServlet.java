@@ -34,11 +34,12 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 
 import com.caplin.cutlass.app.service.RestApiService;
-import com.caplin.cutlass.ServletModelAccessor;
 
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 import com.caplin.cutlass.util.FileUtility;
 import com.google.gson.Gson;
@@ -100,16 +101,24 @@ public class RestApiServlet extends HttpServlet
 	@Override
 	public void init(final ServletConfig config) throws ServletException
 	{
-		context = config.getServletContext();
-		brjs = ServletModelAccessor.initializeAndGetModel(context);
-		if (apiService == null) { apiService = new RestApiService(brjs); };
-		logger = brjs.logger(LoggerType.SERVLET, this.getClass());
+		try {
+			context = config.getServletContext();
+			
+			File contextDir = new File( context.getRealPath("/") );
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel( contextDir, new PessimisticFileModificationService() );
+			
+			if (apiService == null) { apiService = new RestApiService(brjs); };
+			logger = brjs.logger(this.getClass());
+		}
+		catch (InvalidSdkDirectoryException e) {
+			throw new ServletException(e);
+		}
 	}
 	
 	@Override
 	public void destroy()
 	{
-		ServletModelAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.destroy();
 	}
 	
 	@Override
@@ -145,7 +154,8 @@ public class RestApiServlet extends HttpServlet
 			}
 			else if (EXPORT_APP_PATTERN.matcher(requestPath).matches())
 			{
-				File warTempFile = FileUtility.createTemporaryFile(appName, ".war");
+				File targetDir = FileUtility.createTemporaryDirectory(RestApiServlet.class.getSimpleName());
+				File warTempFile = new File(targetDir, "x.war");
 				apiService.exportWar(appName, warTempFile);
 				response.setContentType("application/octet-stream");
 				response.setHeader("Content-Disposition", "attachment; filename=\""+appName+".war\"");

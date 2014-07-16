@@ -12,19 +12,27 @@ import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsException;
+import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
 
 
 public class TemplateUtility
 {
 	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations) throws TemplateInstallationException {
+		installTemplate(node, templateName, transformations, false);
+	}
+	
+	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
+		File tempDir = null; 
 		try {
+			tempDir = FileUtility.createTemporaryDirectory(TemplateUtility.class.getCanonicalName()+"_"+templateName);
+			
 			if(node.dirExists() && !(node instanceof BRJS)) {
-				List<File> dirContents = node.root().getFileIterator(node.dir()).files();
+				List<File> dirContents = node.root().getFileInfo(node.dir()).filesAndDirs();
 				
-				if(dirContents.size() != 0) {
-					throw new DirectoryAlreadyExistsException(node);
+				if((dirContents.size() != 0) && !allowNonEmptyDirectories) {
+					throw new TemplateDirectoryAlreadyExistsException(node);
 				}
 			}
 			
@@ -32,15 +40,26 @@ public class TemplateUtility
 			
 			if(templateDir.exists()) {
 				IOFileFilter fileFilter = FileFilterUtils.and(new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
-				FileUtils.copyDirectory(templateDir, node.dir(), fileFilter);
+				FileUtils.copyDirectory(templateDir, tempDir, fileFilter);
 			}
 			
 			if(!transformations.isEmpty()) {
-				transformDir(node.dir(), transformations);
+				transformDir(tempDir, transformations);
+			}
+			
+			FileUtility.moveDirectoryContents(tempDir, node.dir());
+			
+			if(!JsStyleUtility.getJsStyle(node.dir()).equals(CommonJsContentPlugin.JS_STYLE)) {
+				JsStyleUtility.setJsStyle(node.dir(), CommonJsContentPlugin.JS_STYLE);
 			}
 		}
 		catch(IOException e) {
 			throw new TemplateInstallationException(e);
+		}
+		finally {
+			if (tempDir != null) {
+				FileUtils.deleteQuietly(tempDir);
+			}
 		}
 	}
 	
@@ -72,7 +91,7 @@ public class TemplateUtility
 	
 	private static void transformFile(File file, Map<String, String> transformations) throws TemplateInstallationException
 	{
-		FileUtil fileUtil = new FileUtil("UTF-8");
+		EncodedFileUtil fileUtil = new EncodedFileUtil("UTF-8");
 		
 		try {
 			String fileContents = fileUtil.readFileToString(file);
@@ -129,7 +148,11 @@ public class TemplateUtility
 		@Override
 		public boolean accept(File dir, String name)
 		{
-			return !(new File(destDir, name).exists());
+			File destFile = new File(destDir, name);
+			if (destFile.isDirectory()) {
+				return true;
+			}
+			return !(destFile.exists());
 		}
 	}
 }

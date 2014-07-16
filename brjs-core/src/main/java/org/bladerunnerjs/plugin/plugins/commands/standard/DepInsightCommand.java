@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
@@ -20,8 +20,8 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 public class DepInsightCommand extends ArgsParsingCommandPlugin
 {
-	private ConsoleWriter out;
 	private BRJS brjs;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -37,7 +37,7 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
 		String aspectName = parsedArgs.getString("aspect-name");
 		String requirePathOrAlias = parsedArgs.getString("require-path");
@@ -70,17 +70,19 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 		
 		try {
 			if(isRequirePrefix) {
-				out.println(DependencyGraphReportBuilder.createReportForRequirePrefix(aspect, requirePathOrAlias, showAllDependencies));
+				logger.println(DependencyGraphReportBuilder.createReportForRequirePrefix(aspect, requirePathOrAlias, showAllDependencies));
 			}
 			if(isAlias) {
-				out.println(DependencyGraphReportBuilder.createReportForAlias(aspect, requirePathOrAlias, showAllDependencies));
+				logger.println(DependencyGraphReportBuilder.createReportForAlias(aspect, requirePathOrAlias, showAllDependencies));
 			}
 			else {
-				out.println(DependencyGraphReportBuilder.createReport(aspect, requirePathOrAlias, showAllDependencies));
+				logger.println(DependencyGraphReportBuilder.createReport(aspect, requirePathOrAlias, showAllDependencies));
 			}
 		}
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
 		}
+		
+		return 0;
 	}
 }

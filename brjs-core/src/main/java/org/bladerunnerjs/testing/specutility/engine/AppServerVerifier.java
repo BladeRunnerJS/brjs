@@ -58,6 +58,14 @@ public class AppServerVerifier
 		return verifierChainer;		
 	}
 	
+	public VerifierChainer requestForUrlHasResponseCode(String urlPath, int statusCode) throws ClientProtocolException, IOException
+	{
+		String url = getUrl(urlPath);
+		specTest.webappTester.whenRequestMadeTo(url,false).statusCodeIs(statusCode);
+		
+		return verifierChainer;
+	}
+	
 	public VerifierChainer requestForUrlContains(String urlPath, String contains) throws ClientProtocolException, IOException
 	{
 		String url = getUrl(urlPath);
@@ -74,11 +82,16 @@ public class AppServerVerifier
 		return verifierChainer;		
 	}
 	
-	
+	public VerifierChainer characterEncodingForRequestIs(String urlPath, String characterEncoding) throws ClientProtocolException, IOException
+	{
+		String url = getUrl(urlPath);
+		specTest.webappTester.whenRequestMadeTo(url,false).characterEncodingIs(characterEncoding);
+		
+		return verifierChainer;		
+	}
 	
 	private String getUrl(String urlPath)
 	{
 		return String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, specTest.appServerPort, urlPath);
 	}
-
 }

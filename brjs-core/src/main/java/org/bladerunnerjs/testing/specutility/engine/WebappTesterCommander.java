@@ -1,5 +1,6 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.testing.utility.WebappTester;
 
 
@@ -18,9 +19,9 @@ public class WebappTesterCommander
 		verifierChainer = new VerifierChainer(specTest);
 	}
 
-	public VerifierChainer makesRequestWithLocale(String locale)
+	public VerifierChainer makesRequestWithLocale(Locale locale)
 	{
-		webappTester.requestLocale = locale;
+		webappTester.requestLocale = locale.toString();
 		
 		return verifierChainer;
 	}

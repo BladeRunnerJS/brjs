@@ -1,6 +1,23 @@
 
 apply plugin: 'java'
+apply plugin: 'retrolambda'
 apply plugin: com.caplin.gradle.plugins.CompileOnly
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath dependency('gradle-retrolambda')
+	}
+}
+
+retrolambda {
+	javaVersion JavaVersion.VERSION_1_7
+}
+project.afterEvaluate {
+	compileTestJava.dependsOn compileRetrolambdaMain
+}
 
 sourceSets {
 	test {
@@ -19,13 +36,14 @@ configurations {
 }
 
 dependencies {
+	retrolambdaConfig dependency('retrolambda')
+	
+	compile project(":brjs-servlet")
 	compile project(":brjs-logger")
 	compile dependency('commons-io')
 	compile dependency('commons-lang3')
-	compile dependency('guava')
 	compile dependency('slf4j-api')
 	compile dependency('gson')
-	compile dependency('json-simple')
 	compile dependency('yamlbeans')
 	compile dependency('validation-api')
 	compile dependency('bval-jsr303')
@@ -34,11 +52,10 @@ dependencies {
 	compile dependency('jta')
 	compile dependency('closure-compiler')
 	compile dependency('java-xmlbuilder')
-	compile dependency('xalan')
 	compile dependency('sjsxp')
-	compile dependency('dom4j')
 	compile dependency('utils')
 	compile dependency('jericho-html')
+	compile dependency('xalan')
 	
 	/* woodstox deps */
 	compile dependency('woodstox-core-asl')
@@ -46,32 +63,29 @@ dependencies {
 	compile dependency('msv-core')
 	compile dependency('trang')
 	
-	compileOnly dependency('servlet-api')
-	compileOnly dependency('junit')
-	compileOnly dependency('mockito-core')
-	compileOnly dependency('fluent-hc')
-	compileOnly dependency('httpclient')
-	compileOnly dependency('hamcrest-all')
+	/* dependencies for the spec test framework */
+	compile dependency('junit')
+	compile dependency('mockito-core')
+	compile dependency('fluent-hc')
+	compile dependency('httpclient')
+	compile dependency('hamcrest-all')
 	
-	testCompile dependency('junit')
-	testCompile dependency('mockito-core')
-	testCompile dependency('httpclient')
-	testCompile dependency('hamcrest-all')
+	compileOnly dependency('servlet-api')
 	
 	testRuntime project(path: ':brjs-logger-binding')
+	testRuntime dependency('jetty-jsp')
+}
+
+jar {
+	from sourceSets.main.allJava // include all src in the jar
 }
 
 javadoc {
 	title = "BladeRunnerJS ${buildVersion}"
-	classpath += project.configurations.compileOnly
 	/* info for JavaDoc options http://docs.oracle.com/javase/6/docs/technotes/tools/windows/javadoc.html#overviewcomment */
 	options.overview = "${sourceSets.main.java.srcDirs.toArray()[0]}/overview-summary.html"
 	maxMemory = "128m"
-}
-
-javadoc {
-	title = "BladeRunnerJS ${buildVersion}"
-	classpath += project.configurations.compileOnly
+	executable = "$System.env.JAVA8_HOME/bin/javadoc"
 }
 
 task javadocZip, type:Zip, dependsOn:javadoc, {
@@ -79,19 +93,6 @@ task javadocZip, type:Zip, dependsOn:javadoc, {
 	into "javadoc"
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-
 artifacts {
 	javadocs javadocZip
-	srcJar sourcesJar
 }
-
-task zipJsDocResources, type:Zip, dependsOn: processResources, {
-	from "jsdoc-resources"
-	archiveName "jsdoc-resources.zip"
-	destinationDir = file("${sourceSets.main.output.resourcesDir}/org/bladerunnerjs/core/plugin/command/standard/")
-}
-classes.dependsOn zipJsDocResources

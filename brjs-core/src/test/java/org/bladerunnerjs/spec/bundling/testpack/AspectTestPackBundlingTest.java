@@ -22,8 +22,8 @@ public class AspectTestPackBundlingTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			bladeset = app.bladeset("bs");
@@ -66,7 +66,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1", "appns.bs.Class1");
 		then(aspectUTs).bundledFilesEquals(
 				aspect.assetLocation("src").file("appns/Class1.js"),
@@ -80,7 +80,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 			.and(aspect).hasClass("appns.Class1")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1", "appns.bs.b1.Class1");
 		then(aspectUTs).bundledFilesEquals(
 				aspect.assetLocation("src").file("appns/Class1.js"),
@@ -90,11 +90,11 @@ public class AspectTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void allTestResourcesAreBundled() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspectUTs).hasNamespacedJsPackageStyle()
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1")
-			.and(aspectUTs).containsFileWithContents("resources/en.properties", "appns.prop=val");
+			.and(aspectUTs).containsResourceFileWithContents("en.properties", "appns.prop=val");
 		when(aspectUTs).requestReceived("i18n/en.js", response);
-		then(response).containsText("\"appns.prop\":\"val\"");
+		then(response).containsText("\"appns.prop\": \"val\"");
 	}
 }

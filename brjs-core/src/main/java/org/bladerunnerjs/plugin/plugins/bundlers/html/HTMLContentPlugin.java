@@ -1,12 +1,11 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.html;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
+import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,32 +18,36 @@ import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+import org.bladerunnerjs.utility.NamespaceUtility;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 
 
 public class HTMLContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
-	private Map<String, Asset> identifiers = new HashMap<String, Asset>();
-	private List<String> requestPaths = new ArrayList<>();
+	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
+	private final List<String> requestPaths = new ArrayList<>();
 	
-	private BRJS brjs;
 	private AssetPlugin htmlAssetPlugin;
+	private BRJS brjs;
+	
 	{
-		try{
+		try {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("bundle.html").as("bundle-request");
-			contentPathParser = contentPathParserBuilder.build();
-		
+			contentPathParserBuilder.accepts("html/bundle.html").as("bundle-request");
 			contentPathParser = contentPathParserBuilder.build();
 			requestPaths.add(contentPathParser.createRequest("bundle-request"));
 		}
@@ -56,28 +59,18 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		htmlAssetPlugin = brjs.plugins().assetPlugin(HTMLAssetPlugin.class);
 		this.brjs = brjs;
-		htmlAssetPlugin = brjs.plugins().assetProducer(HTMLAssetPlugin.class);
 	}
 	
 	@Override
 	public String getRequestPrefix() {
-		return "bundle.html";
+		return "html";
 	}
 
 	@Override
-	public String getGroupName() {
-		return "text/html";
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
+	public String getCompositeGroupName() {
+		return null;
 	}
 	
 	@Override
@@ -87,43 +80,51 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
-		return requestPaths;
+		return getValidContentPaths(bundleSet);
+	}
+	
+	@Override
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	{
+		return getValidContentPaths(bundleSet);
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
-		return requestPaths;
-	}
-
-	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
-	{
-		identifiers = new HashMap<String, Asset>();
+		identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
 		
-		// TODO: try removing the @SuppressWarnings once we upgrade past Eclipse Kepler, as the need for this appears to be a bug
-		try (@SuppressWarnings("resource") Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-			for(Asset htmlAsset : htmlAssets){
-				try {
-					validateSourceHtml(htmlAsset);
-					
-					try(Reader reader = htmlAsset.getReader()) {
-						writer.write("\n<!-- " + htmlAsset.getAssetName() + " -->\n");
-						IOUtils.copy(reader, writer);
-						writer.flush();
-					}
-				}
-				catch (IOException | NamespaceException | RequirePathException e) {
-					throw new ContentProcessingException(e, "Error while bundling asset '" + htmlAsset.getAssetPath() + "'.");
+		List<Reader> readerList = new ArrayList<Reader>();
+		for(Asset htmlAsset : htmlAssets){
+			try {
+				validateSourceHtml(htmlAsset);
+
+				try(Reader reader = htmlAsset.getReader()) {
+					readerList.add(new StringReader("\n<!-- " + htmlAsset.getAssetName() + " -->\n"));
+
+					String bundlePath = AppMetadataUtility.getVersionedBundlePath(version);
+					String unversionedBundlePath = AppMetadataUtility.getUnversionedBundlePath();
+					String xmlBundlePathToken = AppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
+					String xmlUnversionedBundlePathToken = AppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
+
+					String htmlContent = IOUtils.toString(reader);
+					String replaced =  htmlContent.replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath);
+					readerList.add(new StringReader(replaced));
 				}
 			}
+			catch (IOException | NamespaceException | RequirePathException e) {
+				throw new ContentProcessingException(e, "Error while bundling asset '" + htmlAsset.getAssetPath() + "'.");
+			}
 		}
-		catch( IOException | ConfigException e) {
-			throw new ContentProcessingException(e);
-		}
+		
+		return new CharResponseContent( brjs, readerList );		
+	}
+	
+	private List<String> getValidContentPaths(BundleSet bundleSet) {
+		return (bundleSet.getResourceFiles(htmlAssetPlugin).isEmpty()) ? Collections.emptyList() : requestPaths;
 	}
 	
 	private void validateSourceHtml(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException
@@ -134,7 +135,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		if(identifier == null)
 		{
 			String idMessage = (htmlAsset.assetLocation().assetContainer().isNamespaceEnforced()) ?
-				"a namespaced ID of '" + htmlAsset.assetLocation().namespace() + ".*'" : "an ID";
+				"a namespaced ID of '" + NamespaceUtility.convertToNamespace(htmlAsset.assetLocation().requirePrefix()) + ".*'" : "an ID";
 			
 			throw new NamespaceException( "HTML template found without an identifier: '" +
 					startTag.toString() + "'.  Root element should have " + idMessage + ".");

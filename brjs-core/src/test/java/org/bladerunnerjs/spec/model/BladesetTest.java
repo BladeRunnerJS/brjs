@@ -63,8 +63,7 @@ public class BladesetTest extends SpecTest {
 			.and(observer).allNotificationsHandled();
 		when(bladeset).populate();
 		then(observer).notified(NodeReadyEvent.class, bladeset)
-			.and(observer).notified(NodeReadyEvent.class, bladeset.testType("unit").testTech("js-test-driver"))
-			.and(observer).notified(NodeReadyEvent.class, bladeset.theme("standard"));
+			.and(observer).notified(NodeReadyEvent.class, bladeset.testType("unit").testTech("js-test-driver"));
 	}
 	
 	@Test

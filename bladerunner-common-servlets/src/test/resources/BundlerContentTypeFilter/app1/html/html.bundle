@@ -1,8 +1,0 @@
-
-<!-- File: view.html -->
-<div id="emptytrader.helloworld.view-template">
-	<div class="hello-world-message" data-bind="text:message"></div>
-	<div class="hello-world-logo"></div>
-	<img src="images/bladeset_emptytrader-bladeset/blade_hello-world/theme_common/cutlass.jpg_image.bundle" />
-	<div class="bladeset-logo"></div>
-</div>

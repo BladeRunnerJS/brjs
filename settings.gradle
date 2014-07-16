@@ -1,14 +1,9 @@
-include "bundlers",
- 		"bladerunner-dev-servlets",
-		"bladerunner-common-servlets",
-		"bladerunner-prod-servlets",
-		"cutlass-tasks",
+include "cutlass-tasks",
 		"cutlass-common",
-		"js-test-driver-bundler-plugin",
-		"cutlass-sdk",
+		"brjs-sdk",
 		"system-app-servlets",
 		"brjs-core",
+		"brjs-servlet",
         "brjs-logger",
         "brjs-logger-binding",
-        "brjs-runner",
-		"old-bladerunner-tests"
+        "brjs-runner"

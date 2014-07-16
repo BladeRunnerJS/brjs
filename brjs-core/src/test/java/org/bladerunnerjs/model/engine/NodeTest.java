@@ -27,7 +27,7 @@ public class NodeTest
 	private RootNode mockRootNode = new MockRootNode();
 	
 	@Test
-	public void rootNodeIsReturned()
+	public void rootNodeIsReturned() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode( new File(TEST_DIR, "root") );
 		TestNode midNode = new TestNode(rootNode, rootNode, new File(rootNode.dir(), "path" ) );
@@ -194,10 +194,15 @@ public class NodeTest
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
 		// add node to cache
-		new TestNode(rootNode, null, childDir);
+		TestNode child = new TestNode(rootNode, null, childDir);
+		rootNode.registerNode(child);
 		
-		assertEquals(childDir.getCanonicalPath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestNode.class).dir().getPath());
-		assertEquals(childDir.getCanonicalPath(), rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestNode.class).dir().getPath());
+		TestNode locateAncestorNodeOfClass1 = rootNode.locateAncestorNodeOfClass(grandchildDir, TestNode.class);
+		assertEquals(childDir.getCanonicalPath(), locateAncestorNodeOfClass1.dir().getPath());
+		
+		TestNode locateAncestorNodeOfClass2 = rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestNode.class);
+		assertEquals(childDir.getCanonicalPath(), locateAncestorNodeOfClass2.dir().getPath());
+
 	}
 	
 	@Test
@@ -216,9 +221,10 @@ public class NodeTest
 	}
 	
 	@Test
-	public void locateAncestorNodeOfClassShouldSucceedTheImmediateAncestorIsARootNode()
+	public void locateAncestorNodeOfClassShouldSucceedTheImmediateAncestorIsARootNode() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		File childDir = new File(rootNode.dir(), "child-1");
 		
 		assertTrue(childDir.exists());
@@ -226,19 +232,22 @@ public class NodeTest
 	}
 	
 	@Test
-	public void locateAncestorNodeOfClassShouldSucceedIfOneOfTheAncestorsIsARootNode()
+	public void locateAncestorNodeOfClassShouldSucceedIfOneOfTheAncestorsIsARootNode() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		File grandchildDir = new File(TEST_DIR, "root/child-1/grandchild/1");
 		
 		assertTrue(grandchildDir.exists());
-		assertEquals(grandchildDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestGrandChildNode.class).dir().getPath());
+		TestGrandChildNode locatedGrandChild = rootNode.locateAncestorNodeOfClass(grandchildDir, TestGrandChildNode.class);
+		assertEquals(grandchildDir.getAbsolutePath(), locatedGrandChild.dir().getPath());
 	}
 	
 	@Test
-	public void locateAncestorNodeOfClassShouldSucceedIfOneOfTheDistantAncestorsIsARootNode()
+	public void locateAncestorNodeOfClassShouldSucceedIfOneOfTheDistantAncestorsIsARootNode() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		File greatGrandchildDir = new File(TEST_DIR, "root/child-1/grandchild/1/2-greatgrandchild");
 		
 		assertTrue(greatGrandchildDir.exists());
@@ -246,7 +255,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void locateAncestorNodeOfClassShouldReturnNullIfNoneOfTheAncestorsAreRootNodes()
+	public void locateAncestorNodeOfClassShouldReturnNullIfNoneOfTheAncestorsAreRootNodes() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		File rootParent = new File(TEST_DIR).getParentFile();
@@ -255,31 +264,33 @@ public class NodeTest
 	}
 	
 	@Test
-	public void locateFirstAncestorNodeShouldWorkIfGivenTheNodesActualDir()
+	public void locateFirstAncestorNodeShouldWorkIfGivenTheNodesActualDir() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
-		
+		rootNode.registerNode(rootNode);
 		assertEquals(rootNode.dir().getPath(), rootNode.locateFirstAncestorNode(rootNode.dir()).dir().getPath());
 	}
 	
 	@Test
-	public void locateFirstAncestorNodeShouldWorkIfGivenAChildDir()
+	public void locateFirstAncestorNodeShouldWorkIfGivenAChildDir() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		
 		assertEquals(rootNode.dir().getPath(), rootNode.locateFirstAncestorNode(rootNode.file("child")).dir().getPath());
 	}
 	
 	@Test
-	public void locateFirstAncestorNodeShouldWorkIfGivenAGrandChildDir()
+	public void locateFirstAncestorNodeShouldWorkIfGivenAGrandChildDir() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		
 		assertEquals(rootNode.dir().getPath(), rootNode.locateFirstAncestorNode(rootNode.file("child")).dir().getPath());
 	}
 	
 	@Test
-	public void locateFirstAncestorNodeShouldReturnNullIfGivenAParentDir()
+	public void locateFirstAncestorNodeShouldReturnNullIfGivenAParentDir() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		
@@ -287,7 +298,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void requestingANonExistentChildWorks()
+	public void requestingANonExistentChildWorks() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		TestChildNode childNode = rootNode.childNode("non-existent");
@@ -296,7 +307,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void requestingAnExistentChildWorks()
+	public void requestingAnExistentChildWorks() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		TestChildNode childNode = rootNode.childNode("1");
@@ -305,7 +316,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void theNameOfANonExistentChildNodeIsCorrect()
+	public void theNameOfANonExistentChildNodeIsCorrect() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		TestChildNode childNode = rootNode.childNode("non-existent");
@@ -314,7 +325,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void theNameOfAnExistentChildNodeIsCorrect()
+	public void theNameOfAnExistentChildNodeIsCorrect() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		TestChildNode childNode = rootNode.childNode("1");
@@ -323,7 +334,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void requestingAllChildrenWorks()
+	public void requestingAllChildrenWorks() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		List<TestChildNode> children = rootNode.childNodes();
@@ -334,7 +345,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void requestingAllChildrenWhenSomeOfThemAreCachedWorks()
+	public void requestingAllChildrenWhenSomeOfThemAreCachedWorks() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		TestChildNode child1 = rootNode.childNode("1");
@@ -348,7 +359,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void requestingAllChildrenDoesntReturnNonExistentItemsThatAreCached()
+	public void requestingAllChildrenDoesntReturnNonExistentItemsThatAreCached() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		rootNode.childNode("non-existent");
@@ -410,7 +421,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void newNodesArentCreatedWhenTheItemIsAlreadyCached()
+	public void newNodesArentCreatedWhenTheItemIsAlreadyCached() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		Node childNode1 = rootNode.childNode("1");
@@ -453,6 +464,7 @@ public class NodeTest
 		File itemDir = new File(rootDir, "single-item");
 		itemDir.mkdirs();
 		TestRootNode rootNode = new TestRootNode(rootDir);
+		rootNode.registerNode(rootNode);
 		
 		Node itemNode = rootNode.locateAncestorNodeOfClass(itemDir, TestItemNode.class);
 		
@@ -495,6 +507,7 @@ public class NodeTest
 		
 		itemDir.mkdirs();
 		TestRootNode rootNode = new TestRootNode(rootDir);
+		rootNode.registerNode(rootNode);
 		
 		Node singleItemNode = rootNode.locateAncestorNodeOfClass(itemDir, TestItemNode.class);
 		assertEquals(itemDir.getCanonicalPath(), singleItemNode.dir().getPath());
@@ -576,6 +589,7 @@ public class NodeTest
 		primaryItemDir.mkdirs();
 		
 		TestRootNode rootNode = new TestRootNode(rootDir);
+		rootNode.registerNode(rootNode);
 		Node itemNode = rootNode.locateAncestorNodeOfClass(primaryItemDir, TestMultiLocationItemNode.class);
 		
 		assertEquals(primaryItemDir.getCanonicalPath(), itemNode.dir().getPath());
@@ -590,6 +604,7 @@ public class NodeTest
 		secondaryItemDir.mkdirs();
 		
 		TestRootNode rootNode = new TestRootNode(rootDir);
+		rootNode.registerNode(rootNode);
 		Node itemNode = rootNode.locateAncestorNodeOfClass(secondaryItemDir, TestMultiLocationItemNode.class);
 		
 		assertEquals(secondaryItemDir.getCanonicalPath(), itemNode.dir().getPath());
@@ -680,7 +695,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void rootOutputDirShouldBeCorrect()
+	public void rootOutputDirShouldBeCorrect() throws Exception
 	{
 		File rootDir = new File(TEST_DIR, "root");
 		TestRootNode rootNode = new TestRootNode(rootDir);
@@ -689,7 +704,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void childOutputDirShouldBeCorrect()
+	public void childOutputDirShouldBeCorrect() throws Exception
 	{
 		File rootDir = new File(TEST_DIR, "root");
 		TestRootNode rootNode = new TestRootNode(rootDir);
@@ -698,7 +713,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void namedChildOutputDirShouldBeCorrect()
+	public void namedChildOutputDirShouldBeCorrect() throws Exception
 	{
 		File rootDir = new File(TEST_DIR, "root");
 		TestRootNode rootNode = new TestRootNode(rootDir);
@@ -707,7 +722,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void nestedChildOutputDirsShouldBeCorrect()
+	public void nestedChildOutputDirsShouldBeCorrect() throws Exception
 	{
 		File rootDir = new File(TEST_DIR, "root");
 		TestRootNode rootNode = new TestRootNode(rootDir);
@@ -716,7 +731,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void outputDirWithChildNodeAndPluginNameShouldBeCorrect()
+	public void outputDirWithChildNodeAndPluginNameShouldBeCorrect() throws Exception
 	{
 		File rootDir = new File(TEST_DIR, "root");
 		TestRootNode rootNode = new TestRootNode(rootDir);
@@ -725,7 +740,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void observersGetNotifiedOnReady()
+	public void observersGetNotifiedOnReady() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode( new File(TEST_DIR, "root") );
 		EventObserver observer = mock(EventObserver.class);
@@ -737,7 +752,7 @@ public class NodeTest
 	}
 
 	@Test
-	public void multipleObserversGetNotifiedOnReady()
+	public void multipleObserversGetNotifiedOnReady() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode( new File(TEST_DIR, "root") );
 		EventObserver observer1 = mock(EventObserver.class);
@@ -753,7 +768,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void parentsObserversGetNotified ()
+	public void parentsObserversGetNotified() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode( new File(TEST_DIR, "root") );
 		TestNode node = new TestNode(rootNode, rootNode, new File(rootNode.dir(), "path/to-file" ) );
@@ -766,7 +781,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void notificationsBubbleUpToParentsParent ()
+	public void notificationsBubbleUpToParentsParent() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode( new File(TEST_DIR, "root") );
 		TestNode midNode = new TestNode(rootNode, rootNode, new File(rootNode.dir(), "path" ) );
@@ -780,7 +795,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void notificationsDontBubbleDown ()
+	public void notificationsDontBubbleDown() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode( new File(TEST_DIR, "root") );
 		TestNode midNode = new TestNode(rootNode, rootNode, new File(rootNode.dir(), "path" ) );
@@ -798,7 +813,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void notificationsAreCalledOnCorrectObserversForLevelAndInCorrectOrder ()
+	public void notificationsAreCalledOnCorrectObserversForLevelAndInCorrectOrder() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode( new File(TEST_DIR, "root") );
 		TestNode midNode = new TestNode(rootNode, rootNode, new File(rootNode.dir(), "path" ) );
@@ -820,7 +835,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void readyIsCalledOnInitIfDirExists ()
+	public void readyIsCalledOnInitIfDirExists() throws Exception
 	{
 		File nodeDir = new File(TEST_DIR, "root");
 		TestRootNode rootNode = new TestRootNode( nodeDir );
@@ -829,13 +844,13 @@ public class NodeTest
 		rootNode.addObserver(observer);
 		
 		assertTrue(nodeDir.exists());
-		rootNode.registerInitializedNode();
+		rootNode.registerNode(rootNode);
 		
 		verify(observer).onEventEmitted( any(NodeReadyEvent.class), eq(rootNode) );
 	}
 	
 	@Test
-	public void readyIsNotCalledOnInitIfDirDoesntExist ()
+	public void readyIsNotCalledOnInitIfDirDoesntExist() throws Exception
 	{
 		File nodeDir = new File(TEST_DIR, "root2");
 		TestRootNode rootNode = new TestRootNode( nodeDir );
@@ -844,13 +859,13 @@ public class NodeTest
 		rootNode.addObserver(observer);
 		
 		assertFalse(nodeDir.exists());
-		rootNode.registerInitializedNode();
+		rootNode.registerNode(rootNode);
 		
 		verifyNoMoreInteractions(observer);
 	}
 	
 	@Test
-	public void exceptionsFromANodeObserverDoNotGetPropagatedAndAnErrorIsLogged()
+	public void exceptionsFromANodeObserverDoNotGetPropagatedAndAnErrorIsLogged() throws Exception
 	{
 		LogMessageStore logStore = new LogMessageStore(true);
 		TestRootNode rootNode = new TestRootNode( new File(TEST_DIR, "root"), new TestLoggerFactory(logStore) );
@@ -866,7 +881,7 @@ public class NodeTest
 	}
 	
 	@Test
-	public void observersOnlyGetNotifiedForCorrectEvents()
+	public void observersOnlyGetNotifiedForCorrectEvents() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode( new File(TEST_DIR, "root") );
 		TestNode midNode = new TestNode(rootNode, rootNode, new File(rootNode.dir(), "path" ) );

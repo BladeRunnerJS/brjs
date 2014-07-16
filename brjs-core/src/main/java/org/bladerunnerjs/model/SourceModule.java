@@ -9,12 +9,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
  *
  */
 public interface SourceModule extends LinkedAsset {	
-	String getRequirePath();
-	String getClassname();
-	
 	boolean isEncapsulatedModule();
-	
-	void addPatch(SourceModulePatch patch);
 	
 	/**
 	 * Returns a list of source files that *must* precede this source file in the output 

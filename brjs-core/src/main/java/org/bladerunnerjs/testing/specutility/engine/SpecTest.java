@@ -13,6 +13,7 @@ import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
@@ -20,10 +21,12 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.testing.specutility.AppBuilder;
@@ -33,6 +36,7 @@ import org.bladerunnerjs.testing.specutility.AppVerifier;
 import org.bladerunnerjs.testing.specutility.AspectBuilder;
 import org.bladerunnerjs.testing.specutility.AspectCommander;
 import org.bladerunnerjs.testing.specutility.AspectVerifier;
+import org.bladerunnerjs.testing.specutility.AssetLocationBuilder;
 import org.bladerunnerjs.testing.specutility.BRJSBuilder;
 import org.bladerunnerjs.testing.specutility.BRJSCommander;
 import org.bladerunnerjs.testing.specutility.BRJSVerifier;
@@ -65,19 +69,18 @@ import org.bladerunnerjs.testing.specutility.WorkbenchBuilder;
 import org.bladerunnerjs.testing.specutility.WorkbenchCommander;
 import org.bladerunnerjs.testing.specutility.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
+import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
-import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ServerUtility;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
 
 
-public abstract class SpecTest
+public abstract class SpecTest extends TestModelAccessor
 {
 	public static final String HTTP_REQUEST_PREFIX = "http://localhost";
 	
@@ -85,7 +88,6 @@ public abstract class SpecTest
 	private String activeClientCharacterEncoding = "UTF-8";
 	
 	public LogMessageStore logging;
-	public ConsoleMessageStore output;
 	public List<Throwable> exceptions;
 	public boolean catchAndVerifyExceptions = true;
 	public EventObserver observer;
@@ -93,38 +95,41 @@ public abstract class SpecTest
 	public MockPluginLocator pluginLocator;
 	public BRJS brjs;
 	public int appServerPort;
-	
 	public WebappTester webappTester;
-
-		
+	public MockAppVersionGenerator appVersionGenerator;
+	
 	@Before
 	public void resetTestObjects()
 	{
-		appServerPort = ServerUtility.getTestPort();
+		BRJS.allowInvalidRootDirectories = false;
 		
+		appServerPort = ServerUtility.getTestPort();
 		logging = new LogMessageStore();
-		output = new ConsoleMessageStore();
 		exceptions = new ArrayList<>();
 		observer = mock(EventObserver.class);
 		testSdkDirectory = createTestSdkDirectory();
 		pluginLocator = new MockPluginLocator();
 		webappTester = new WebappTester(testSdkDirectory);
+		appVersionGenerator = new MockAppVersionGenerator();
 	}
 	
 	@After
 	public void cleanUp() {
+		BRJS.allowInvalidRootDirectories = true;
+		
 		if(brjs != null) {
+			brjs.io().uninstallFileAccessChecker();
 			brjs.close();
 		}
 	}
 	
-	public BRJS createModel() 
+	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return new BRJS(testSdkDirectory, pluginLocator, new PessimisticFileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return super.createModel(testSdkDirectory, pluginLocator, logging, appVersionGenerator);
 	}
 	
-	public BRJS createNonTestModel() {
-		return new BRJS(testSdkDirectory, new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
+		return super.createNonTestModel(testSdkDirectory, logging);
 	}
 	
 	public String getActiveCharacterEncoding() {
@@ -171,9 +176,6 @@ public abstract class SpecTest
 	public LoggerBuilder given(LogMessageStore logStore) { return new LoggerBuilder(this, logStore); }
 	public LoggerVerifier then(LogMessageStore logStore) { return new LoggerVerifier(this, logStore); }
 	
-	// console
-	public ConsoleWriterVerifier then(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(this, consoleMessageStore); }
-	
 	// node observer
 	public NodeObserverBuilder given(EventObserver observer) { return new NodeObserverBuilder(this, observer); }
 	public NodeObserverVerifier then(EventObserver observer) { return new NodeObserverVerifier(this, observer); }
@@ -188,6 +190,7 @@ public abstract class SpecTest
 	
 	// StringBuffer
 	public StringVerifier then(StringBuffer stringBuffer) { return new StringVerifier(this, stringBuffer); }
+	public StringVerifier then(String string) { return new StringVerifier(this, string); }
 	
 	// BRJS
 	public BRJSBuilder given(BRJS brjs) { return new BRJSBuilder(this, brjs); }
@@ -236,6 +239,9 @@ public abstract class SpecTest
 	public JsLibBuilder given(JsLib jsLib) { return new JsLibBuilder(this, jsLib); }
 	public JsLibCommander when(JsLib jsLib) { return new JsLibCommander(this, jsLib); }
 	public JsLibVerifier then(JsLib jsLib) { return new JsLibVerifier(this, jsLib); }
+	
+	// AssetLocation
+	public AssetLocationBuilder given(AssetLocation assetLocation) { return new AssetLocationBuilder(this, assetLocation); }
 	
 	// DirNode
 	public DirNodeBuilder given(DirNode dirNode) { return new DirNodeBuilder(this, dirNode); }

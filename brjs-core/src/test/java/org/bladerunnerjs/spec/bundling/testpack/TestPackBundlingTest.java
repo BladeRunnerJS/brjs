@@ -17,8 +17,8 @@ public class TestPackBundlingTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -37,12 +37,21 @@ public class TestPackBundlingTest extends SpecTest
 	}
 	
 	@Test
+	public void srcTestCanLiveAtTechnologyLevel() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasTestClass("appns.Class1")
+			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
+		then(aspectUTs).bundledFilesEquals(
+				aspect.assetLocation("src-test").file("appns/Class1.js"));
+	}
+	
+	@Test
 	public void srcTestCanLiveAtTestsAndTechnologyLevel() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspectUTs).hasClass("aspectUT.Class1")
 			.and(aspect).hasTestClass("appns.Class1")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "aspectUT.Class1")
-			.and(aspectUTs).classRefersTo("aspectUT.Class1", "appns.Class1");
+			.and(aspectUTs).classDependsOn("aspectUT.Class1", "appns.Class1");
 		then(aspectUTs).bundledFilesEquals(
 				aspectUTs.testSource().file("aspectUT/Class1.js"),
 				aspect.assetLocation("src-test").file("appns/Class1.js"));
@@ -50,8 +59,8 @@ public class TestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void testCodeCanUseRequires() throws Exception {
-		given(aspect).hasNodeJsPackageStyle()
-    		.and(aspect).hasClasses("appns.Class1")
+		given(aspect).hasCommonJsPackageStyle()
+    		.and(aspect).hasClasses("appns/Class1")
     		.and(aspectUTs).testRequires("pkg/test.js", "appns/Class1");
     	then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
 	}

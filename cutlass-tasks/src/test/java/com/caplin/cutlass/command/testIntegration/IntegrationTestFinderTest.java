@@ -7,25 +7,26 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.testing.BRJSTestFactory;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
-public class IntegrationTestFinderTest
+public class IntegrationTestFinderTest extends TestModelAccessor
 {
 
 	private static final String TEST_ROOT = "src/test/resources/TestIntegrationCommand";
 	private IntegrationTestFinder testFinder;
+	private BRJS brjs;
 	
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
-		BRJS brjs = BRJSTestFactory.createBRJS(new File(TEST_ROOT));
-		BRJSAccessor.initialize(brjs);
+		brjs = createModel(new File(TEST_ROOT));
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		testFinder = new IntegrationTestFinder();
 	}
 	
@@ -36,7 +37,7 @@ public class IntegrationTestFinderTest
 				new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-integration/webdriver"),
 				new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1/workbench/tests/test-integration/webdriver")
 		);
-		assertEquals( expectedFiles, testFinder.findTestDirs(new File(TEST_ROOT)) );
+		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, new File(TEST_ROOT)) );
 	}
 	
 	@Test
@@ -45,7 +46,7 @@ public class IntegrationTestFinderTest
 		List<File> expectedFiles = Arrays.asList(
 				new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1/workbench/tests/test-integration/webdriver")
 		);
-		assertEquals( expectedFiles, testFinder.findTestDirs(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1")) );
+		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1")) );
 	}
 	
 	@Test
@@ -54,14 +55,14 @@ public class IntegrationTestFinderTest
 		List<File> expectedFiles = Arrays.asList(
 				new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-integration/webdriver")
 		);
-		assertEquals( expectedFiles, testFinder.findTestDirs(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect")) );
+		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect")) );
 	}
 	
 	@Test
 	public void testEmptyListReturnedIfNoTestsFound() 
 	{
 		List<File> expectedFiles = Arrays.asList(new File[0]);
-		assertEquals( expectedFiles, testFinder.findTestDirs(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-unit")) );
+		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-unit")) );
 	}
 	
 }

@@ -9,7 +9,7 @@ import javax.xml.transform.TransformerException;
 
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.testing.specutility.XmlBuilderSerializer;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.esotericsoftware.yamlbeans.parser.Parser.ParserException;
 import com.google.common.base.Joiner;
@@ -18,12 +18,12 @@ import com.jamesmurty.utils.XMLBuilder;
 public class AliasesWriter {
 	private final AliasesData data;
 	private final File file;
-	private final FileUtil fileUtil;
+	private final EncodedFileUtil fileUtil;
 	
 	public AliasesWriter(AliasesData data, File file, String defaultFileCharacterEncoding) {
 		this.data = data;
 		this.file = file;
-		fileUtil = new FileUtil(defaultFileCharacterEncoding);
+		fileUtil = new EncodedFileUtil(defaultFileCharacterEncoding);
 	}
 	
 	public void write() throws IOException {

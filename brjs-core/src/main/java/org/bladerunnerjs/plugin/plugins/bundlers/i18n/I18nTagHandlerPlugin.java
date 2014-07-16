@@ -2,18 +2,15 @@ package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyTagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
 
@@ -24,7 +21,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		VirtualProxyContentPlugin virtualProxyContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentProvider("i18n");
+		VirtualProxyContentPlugin virtualProxyContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentPlugin("i18n");
 		i18nContentPlugin = (I18nContentPlugin) virtualProxyContentPlugin.getUnderlyingPlugin();
 	}
 	
@@ -33,29 +30,13 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		return "i18n.bundle";
 	}
-
-	@Override
-	public String getGroupName()
-	{
-		return "text/javascript";
-	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList(ThirdpartyTagHandlerPlugin.class.getCanonicalName());
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException
 	{
 		try
 		{
-			writeTagContent(tagAttributes, bundleSet, locale, writer);
+			writeTagContent(true, tagAttributes, bundleSet, locale, writer, version);
 		}
 		catch (Exception ex)
 		{
@@ -64,11 +45,11 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	}
 
 	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException
 	{
 		try
 		{
-			writeTagContent(tagAttributes, bundleSet, locale, writer);
+			writeTagContent(false, tagAttributes, bundleSet, locale, writer, version);
 		}
 		catch (Exception ex)
 		{
@@ -76,15 +57,18 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 		}
 	}
 
-	private void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws ConfigException, IOException, MalformedTokenException
+	private void writeTagContent(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws ConfigException, IOException, MalformedTokenException
 	{
-		String requestUrl = "";
-		if (locale.contains("_")) {
-			requestUrl = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, StringUtils.substringBefore(locale, "_"), StringUtils.substringAfter(locale, "_"));			
+		String contentPath = "";
+		if (locale.isCompleteLocale()) {
+			contentPath = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, locale.getLanguageCode(), locale.getCountryCode());
 		} else {
-			requestUrl = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
+			contentPath = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale.getLanguageCode());				
 		}
-		writer.write("<script type=\"text/javascript\" src=\""+requestUrl+"\"></script>\n");
+		App app = bundleSet.getBundlableNode().app();
+		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
+		
+		writer.write("<script type=\"text/javascript\" src=\"" + requestPath + "\"></script>\n");
 	}
 
 }

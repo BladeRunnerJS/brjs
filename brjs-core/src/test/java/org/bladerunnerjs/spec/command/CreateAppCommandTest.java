@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.model.App.Messages.*;
-import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand.Messages.*;
+import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand.Messages.*;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.DirNode;
@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class CreateAppCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new CreateApplicationCommand())
+		given(brjs).hasCommandPlugins(new CreateAppCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			badApp = brjs.app("app#$@/");
@@ -85,7 +85,7 @@ public class CreateAppCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheAppAlreadyExists() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-app", "app", "appx");
-		then(exceptions).verifyException(NodeAlreadyExistsException.class, unquoted(app.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeAlreadyExistsException.class, unquoted(app.getName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -96,8 +96,8 @@ public class CreateAppCommandTest extends SpecTest {
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(app).dirExists()
 			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, app.getName(), app.dir().getPath())
-			.and(output).containsLine(APP_CREATED_CONSOLE_MSG, app.getName())
-			.and(output).containsLine(APP_DEPLOYED_CONSOLE_MSG, app.getName());
+			.and(logging).containsFormattedConsoleMessage(APP_CREATED_CONSOLE_MSG, app.getName())
+			.and(logging).containsFormattedConsoleMessage(APP_DEPLOYED_CONSOLE_MSG, app.getName());
 	}
 	
 	@Test
@@ -114,8 +114,8 @@ public class CreateAppCommandTest extends SpecTest {
 	public void appCreationConsoleOutputOccursEvenIfAppDeploymentFails() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(app).dirExists()
-			.and(output).containsLine(APP_CREATED_CONSOLE_MSG, app.getName())
-			.and(output).doesNotContain(APP_DEPLOYED_LOG_MSG, app.getName())
+			.and(logging).containsFormattedConsoleMessage(APP_CREATED_CONSOLE_MSG, app.getName())
+			.and(logging).doesNotcontainConsoleText(APP_DEPLOYED_LOG_MSG, app.getName())
 			.and(logging).errorMessageReceived(APP_DEPLOYMENT_FAILED_LOG_MSG, app.getName(), app.dir())
 			.and(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}

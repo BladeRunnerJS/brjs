@@ -19,7 +19,7 @@ public abstract class ArgsParsingCommandPlugin extends AbstractCommandPlugin imp
 	private final JSAP argsParser = new JSAP();
 	
 	protected abstract void configureArgsParser(JSAP argsParser) throws JSAPException;
-	protected abstract void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException;
+	protected abstract int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException;
 	
 	public ArgsParsingCommandPlugin() {
 		try {
@@ -40,9 +40,9 @@ public abstract class ArgsParsingCommandPlugin extends AbstractCommandPlugin imp
 	}
 	
 	@Override
-	public final void doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
+	public final int doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
 		JSAPResult parsedArgs = parseArgs(args);
-		doCommand(parsedArgs);
+		return doCommand(parsedArgs);
 	}
 	
 	private JSAPResult parseArgs(String[] args) throws ArgumentParsingException {

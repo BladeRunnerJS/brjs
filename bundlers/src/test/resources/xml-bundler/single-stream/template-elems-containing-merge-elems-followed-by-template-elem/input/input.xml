@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<unitTest>
-	<templateElem>
-		<mergeElem id="1"/>
-		<mergeElem id="2"/>
-	</templateElem>
-	<templateElem/>
-</unitTest>

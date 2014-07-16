@@ -6,12 +6,11 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.testing.specutility.engine.NodeVerifier;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 
 
-public class AspectVerifier extends NodeVerifier<Aspect> {
+public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 	private Aspect aspect;
 	private AssetContainerVerifier assetContainerVerifier;
 	
@@ -36,7 +35,7 @@ public class AspectVerifier extends NodeVerifier<Aspect> {
 		return verifierChainer;
 	}
 	
-	public VerifierChainer hasSourceModules(SourceModuleDescriptor... sourceModules) throws Exception {
+	public VerifierChainer hasSourceModules(String... sourceModules) throws Exception {
 		assetContainerVerifier.hasSourceModules(sourceModules);
 		
 		return verifierChainer;
@@ -49,7 +48,7 @@ public class AspectVerifier extends NodeVerifier<Aspect> {
 	}
 	
 	public VerifierChainer sourceModuleHasAssetLocation(String sourceModulePath, String assetLocationPath) throws Exception {
-		SourceModule sourceModule = aspect.getSourceModule(sourceModulePath);
+		SourceModule sourceModule = (SourceModule)aspect.getLinkedAsset(sourceModulePath);
 		AssetLocation assetLocation = aspect.assetLocation(assetLocationPath);
 		
 		assertEquals("Source module '" + sourceModulePath + "' did not have the asset location '" + assetLocationPath + "'.", assetLocation.dir().getPath(), sourceModule.assetLocation().dir().getPath());

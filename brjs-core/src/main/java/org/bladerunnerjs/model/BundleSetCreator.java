@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.BundleSetBuilder;
@@ -24,10 +23,10 @@ public class BundleSetCreator {
 	}
 	
 	public static BundleSet createBundleSet(BundlableNode bundlableNode) throws ModelOperationException {
-		Logger logger = bundlableNode.root().logger(LoggerType.BUNDLER, BundleSetCreator.class);
+		Logger logger = bundlableNode.root().logger(BundleSetCreator.class);
 		
 		BundleSetBuilder bundleSetBuilder = new BundleSetBuilder(bundlableNode);
-		List<LinkedAsset> seedFiles = bundlableNode.seedFiles();
+		List<LinkedAsset> seedFiles = bundlableNode.seedAssets();
 		
 		String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 		if(seedFiles.isEmpty()) {
@@ -58,8 +57,8 @@ public class BundleSetCreator {
 		List<String> assetContainerPaths = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
-			File baseDir = assetContainer instanceof JsLibAppWrapper ? app.root().dir() : app.dir();
-			assetContainerPaths.add(RelativePathUtility.get(baseDir, assetContainer.dir()));
+			File baseDir = assetContainer instanceof AppSdkJsLib ? app.root().dir() : app.dir();
+			assetContainerPaths.add(RelativePathUtility.get(assetContainer.root(), baseDir, assetContainer.dir()));
 		}
 		
 		return "'" + Joiner.on("', '").join(assetContainerPaths) + "'";

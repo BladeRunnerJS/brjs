@@ -9,10 +9,11 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
-import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.MockTagHandler;
 import org.bladerunnerjs.utility.FileUtility;
@@ -23,7 +24,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
-public class TagPluginUtilityTest
+public class TagPluginUtilityTest extends TestModelAccessor
 {
 
 	@Rule
@@ -54,14 +55,14 @@ public class TagPluginUtilityTest
 		mockPluginLocator.assetLocationPlugins.add(new VirtualProxyAssetLocationPlugin(new BRJSConformantAssetLocationPlugin()));
 		
 		File tempDir = createTestSdkDirectory();
-		brjs = BRJSTestFactory.createBRJS(tempDir, mockPluginLocator);
+		brjs = createModel(tempDir, mockPluginLocator);
 		
 		app = brjs.app("app");
 			app.create();
 		aspect = app.aspect("default");
 			aspect.create();
 	}
-	
+
 	@After
 	public void tearDown() {
 		brjs.close();
@@ -137,11 +138,19 @@ public class TagPluginUtilityTest
 	}
 	
 	@Test
-	public void tagsMustMatchExactly() throws Exception
+	public void tagStartMustMatchExactly() throws Exception
 	{
 		filterAndAssert( "this is a < @tag@/>", "this is a < @tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
 		filterAndAssert( "this is a <@ tag@/>", "this is a <@ tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
-		filterAndAssert( "this is a <@tag@ >", "this is a <@tag@ >", aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	@Test
+	public void extraWhitespaceCanPrefixTheClosingBrackets() throws Exception
+	{
+		filterAndAssert( "this is a <@tag@ />", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag@/ >", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag@ / >", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag @ / >", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
@@ -165,7 +174,6 @@ public class TagPluginUtilityTest
 		filterAndAssert( "<@tag ~=* @/>", "<@tag ~=* @/>", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
-	@Ignore //TODO: add this test back in once old tag handlers have been moved across to new style plugins
 	@Test
 	public void exceptionIsThrownIfTagHandlerCantBeFound() throws Exception
 	{		
@@ -178,7 +186,7 @@ public class TagPluginUtilityTest
 	private void filterAndAssert(String input, String expectedOutput, BundleSet bundleSet, RequestMode opMode, String locale) throws Exception
 	{
 		StringWriter writer = new StringWriter();
-		TagPluginUtility.filterContent(input, bundleSet, writer, opMode, locale);
+		TagPluginUtility.filterContent(input, bundleSet, writer, opMode, new Locale(locale), brjs.getAppVersionGenerator().getDevVersion());
 		assertEquals(expectedOutput, writer.toString());
 	}
 	

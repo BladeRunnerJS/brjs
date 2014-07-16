@@ -1,6 +1,0 @@
-<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
-	<alias name="novox.example.blade1.alias #1" defaultClass="novox.g1.AliasClass1">
-		<scenario name="dev" class="novox.g1.FakeAliasClass1"/>
-	</alias>
-	<alias name="novox.example.blade1.alias #2" defaultClass="novox.g1.AliasClass2"/>
-</aliasDefinitions>

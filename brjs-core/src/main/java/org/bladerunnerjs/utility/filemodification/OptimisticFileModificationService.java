@@ -2,11 +2,13 @@ package org.bladerunnerjs.utility.filemodification;
 
 import java.io.File;
 
+import org.bladerunnerjs.model.BRJS;
+
 public class OptimisticFileModificationService implements FileModificationService {
 	OptimisticFileModificationInfo optimisticFileModificationInfo = new OptimisticFileModificationInfo();
 	
 	@Override
-	public void setRootDir(File rootDir) {
+	public void initialise(BRJS brjs, File rootDir) {
 		// do nothing
 	}
 	

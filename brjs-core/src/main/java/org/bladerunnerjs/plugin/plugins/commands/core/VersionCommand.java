@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -22,7 +22,8 @@ public class VersionCommand extends ArgsParsingCommandPlugin
 	private static final String ASCII_ART_RESOURCE_PATH = "org/bladerunnerjs/core/plugin/command/core/bladerunner-ascii-art.txt";
 	
 	private BRJS brjs;
-	private ConsoleWriter out;
+
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -33,7 +34,7 @@ public class VersionCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{	
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -49,18 +50,20 @@ public class VersionCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		try (InputStream asciiArtInputStream = getClass().getClassLoader().getResourceAsStream( ASCII_ART_RESOURCE_PATH )) {
 			StringWriter asciiArtWriter = new StringWriter();
 			IOUtils.copy(asciiArtInputStream, asciiArtWriter, "UTF-8");
 			
-			out.println( brjs.versionInfo().toString() );
-			out.println("");
-			out.println(asciiArtWriter.toString());
-			out.println("");
+			logger.println( brjs.versionInfo().toString() );
+			logger.println("");
+			logger.println(asciiArtWriter.toString());
+			logger.println("");
 		}
 		catch(IOException e) {
 			throw new CommandOperationException("error reading ascii art resource file", e);
 		}
+		
+		return 0;
 	}
 }

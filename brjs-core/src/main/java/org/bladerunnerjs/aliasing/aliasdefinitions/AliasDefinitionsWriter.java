@@ -11,19 +11,19 @@ import javax.xml.transform.TransformerException;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.testing.specutility.XmlBuilderSerializer;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasDefinitionsWriter {
 	private final AliasDefinitionsData data;
 	private final File file;
-	private final FileUtil fileUtil;
+	private final EncodedFileUtil fileUtil;
 	
 	public AliasDefinitionsWriter(AliasDefinitionsData data, File file, String defaultFileCharacterEncoding) {
 		this.data = data;
 		this.file = file;
-		fileUtil = new FileUtil(defaultFileCharacterEncoding);
+		fileUtil = new EncodedFileUtil(defaultFileCharacterEncoding);
 	}
 	
 	public void write() throws IOException {

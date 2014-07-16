@@ -4,20 +4,19 @@ import java.io.File;
 
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.TypedTestPack;
-import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TypedTestPackNavigationTest
+public class TypedTestPackNavigationTest extends TestModelAccessor
 {
 	private BRJS brjs;
 	private TypedTestPack typedTestPack;
 	private NodeTesterFactory<TypedTestPack> nodeTesterFactory;
 	
 	@Before
-	public void setUp() {
-		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
+	public void setUp() throws Exception {
+		brjs = createModel(new File("src/test/resources/BRJSTest"));
 		typedTestPack = brjs.app("a1").bladeset("bs1").testType("type1");
 		nodeTesterFactory = new NodeTesterFactory<>(typedTestPack, TypedTestPack.class);
 	}

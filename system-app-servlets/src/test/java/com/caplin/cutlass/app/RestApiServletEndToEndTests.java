@@ -6,20 +6,24 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.bladerunnerjs.model.SdkJsLib;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.BRJS;
 
 import com.caplin.cutlass.util.FileUtility;
 
 import org.bladerunnerjs.utility.ServerUtility;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
-import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.app.servlet.RestApiServlet;
 
 
@@ -39,8 +43,11 @@ public class RestApiServletEndToEndTests
 	public void setup() throws Exception
 	{
 		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
-		ServletModelAccessor.destroy();
-		brjs = ServletModelAccessor.initializeAndGetModel( sdkRoot );
+		
+		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot, new PessimisticFileModificationService() );
+		
+		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
+		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), "");
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
 		server.start();
@@ -50,7 +57,7 @@ public class RestApiServletEndToEndTests
 	@After
 	public void tearDown() throws Exception
 	{
-		ServletModelAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.destroy();
 		
 		if (server != null)
 		{
@@ -84,10 +91,11 @@ public class RestApiServletEndToEndTests
 	{
 		createApp("newApp","appx");
 		
-		assertTrue( brjs.app("newApp").dirExists() );
-		assertTrue( brjs.app("newApp").aspect("default").assetLocation("src").file("appx").exists() );
+		assertTrue( brjs.userApp("newApp").dirExists() );
+		assertTrue( brjs.userApp("newApp").aspect("default").assetLocation("src").file("appx").exists() );
 	}
 	
+	@Ignore // this test has been disabled since it is incompatible with the Java7FileModificationService
 	@Test
 	public void testGettingASingleApp() throws Exception
 	{
@@ -179,7 +187,8 @@ public class RestApiServletEndToEndTests
 				"}";
 		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "POST", URL_BASE+"/apps/"+app, jsonBody);
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		assertTrue( brjs.app(app).dirExists() );
+		assertTrue( brjs.userApp(app).dirExists() );
+		FileUtils.write(brjs.userApp(app).aspect("default").file("index.html"), "");
 		if (releaseConnection)
 		{
 			RestApiServletTestUtils.getResponseTextFromResponse(response);
@@ -198,7 +207,7 @@ public class RestApiServletEndToEndTests
 				"}";
 		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "POST", URL_BASE+"/apps/"+app+"/"+bladeset, jsonBody);
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		assertTrue( brjs.app(app).bladeset(bladeset).dirExists() );
+		assertTrue( brjs.userApp(app).bladeset(bladeset).dirExists() );
 		if (releaseConnection)
 		{
 			RestApiServletTestUtils.getResponseTextFromResponse(response);
@@ -217,7 +226,7 @@ public class RestApiServletEndToEndTests
 				"}";
 		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "POST", URL_BASE+"/apps/"+app+"/"+bladeset+"/"+blade, jsonBody);
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		assertTrue( brjs.app(app).bladeset(bladeset).blade(blade).dirExists() );
+		assertTrue( brjs.userApp(app).bladeset(bladeset).blade(blade).dirExists() );
 		if (releaseConnection)
 		{
 			RestApiServletTestUtils.getResponseTextFromResponse(response);

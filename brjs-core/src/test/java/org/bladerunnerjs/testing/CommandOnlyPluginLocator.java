@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
@@ -30,31 +30,31 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	
 	@Override
 	public List<ModelObserverPlugin> getModelObserverPlugins() {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
 	@Override
 	public List<MinifierPlugin> getMinifierPlugins() {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
 	@Override
 	public List<ContentPlugin> getContentPlugins() {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
 	@Override
 	public List<TagHandlerPlugin> getTagHandlerPlugins() {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
 	@Override
 	public List<AssetPlugin> getAssetPlugins() {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
 	@Override
 	public List<AssetLocationPlugin> getAssetLocationPlugins() {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 }

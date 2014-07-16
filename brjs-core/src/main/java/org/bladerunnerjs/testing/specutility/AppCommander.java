@@ -1,19 +1,23 @@
 package org.bladerunnerjs.testing.specutility;
 
+import static org.junit.Assert.assertFalse;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.ValueCommand;
-
 
 public class AppCommander extends NodeCommander<App> {
 	private final App app;
@@ -67,10 +71,10 @@ public class AppCommander extends NodeCommander<App> {
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				BladerunnerUri bladerunnerUri = new BladerunnerUri(app.root(), app.dir(), "/" + app.getName(), requestPath, null);
-				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri.logicalPath, responseOutput);
-				response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
+				ResponseContent contentOutput = app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+				ByteArrayOutputStream pluginContent = new ByteArrayOutputStream();
+				contentOutput.write(pluginContent);
+				response.append( pluginContent );
 			}
 		});
 		
@@ -81,7 +85,9 @@ public class AppCommander extends NodeCommander<App> {
 	{
 		call(new Command() {
 			public void call() throws Exception {
-				app.file(filePath).delete();
+				File deleteFile = app.file(filePath);
+				FileUtils.forceDelete( deleteFile );
+				assertFalse( "failed to delete " + deleteFile.getAbsolutePath(), deleteFile.exists() );
 			}
 		});
 		

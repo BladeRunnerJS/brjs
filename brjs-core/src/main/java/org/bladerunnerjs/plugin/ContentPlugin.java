@@ -1,9 +1,9 @@
 package org.bladerunnerjs.plugin;
 
-import java.io.OutputStream;
 import java.util.List;
 
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -33,7 +33,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
  * 
  * <ul>
  *   <li>{@link #getRequestPrefix}</li>
- *   <li>{@link #getGroupName}</li>
+ *   <li>{@link #getCompositeGroupName}</li>
  * </ul>
  */
 public interface ContentPlugin extends OrderedPlugin {
@@ -55,7 +55,7 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * 
 	 * @return the group name if one exists, or <code>null</code> otherwise.
 	 */
-	String getGroupName();
+	String getCompositeGroupName();
 	
 	/**
 	 * Returns the content-path parser that will be used to parse all requests for this plug-in.
@@ -66,15 +66,15 @@ public interface ContentPlugin extends OrderedPlugin {
 	ContentPathParser getContentPathParser();
 	
 	/**
-	 * Write content for the given request.
+	 * Get a reader for the content generated for the given request.
 	 * 
 	 * @param contentPath The parsed content path created using the content path parser available from {@link #getContentPathParser}.
 	 * @param bundleSet The bundle-set for the bundlable node to which this request is related to.
-	 * @param os The output stream the content will be written to.
-	 * 
+	 * @param contentAccessor The output stream the content will be written to.
+	 * @param version TODO
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException;
+	ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in development, for the given bundle-set and locale.
@@ -84,7 +84,7 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * 
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException;
+	List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in production, for the given bundle-set and locale.
@@ -94,5 +94,5 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * 
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException;
+	List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException;
 }

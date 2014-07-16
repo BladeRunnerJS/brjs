@@ -12,6 +12,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.SocketTimeoutException;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -41,10 +42,12 @@ public class WebappTester
 	
 	private File filePathBase;
 	private int statusCode;
+	private String statusText;
 	
 	private HttpResponse httpResponse;
 	private String response;
 	private String contentType;
+	private String characterEncoding;
 	private String url;
 	
 	public String requestLocale = "";
@@ -93,8 +96,11 @@ public class WebappTester
 		
 		httpResponse = httpClient.execute( get );
 		statusCode = httpResponse.getStatusLine().getStatusCode();
+		statusText = httpResponse.getStatusLine().getReasonPhrase();
 		response = EntityUtils.toString(httpResponse.getEntity());
 		contentType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
+		Charset charset = ContentType.getOrDefault(httpResponse.getEntity()).getCharset();
+		characterEncoding = (charset == null) ? "" : charset.displayName();
 		EntityUtils.consume(httpResponse.getEntity());
 		httpClient.getConnectionManager().shutdown();
 		return this;
@@ -155,9 +161,23 @@ public class WebappTester
 		return this;
 	}
 	
+	public WebappTester characterEncodingIs(String characterEncoding)
+	{
+		if(!characterEncoding.equals(this.characterEncoding)) {
+			assertEquals("Character encodings don't match.", contentTypeText(characterEncoding, null), characterEncodingText(this.characterEncoding, response));
+		}
+		return this;
+	}
+	
 	public WebappTester responseIs(String response)
 	{
 		assertEquals("response wasnt the same", response, this.response);
+		return this;
+	}
+	
+	public WebappTester statusTextIs(String statusText)
+	{
+		assertEquals("response wasnt the same", statusText, this.statusText);
 		return this;
 	}
 	
@@ -223,6 +243,10 @@ public class WebappTester
 	
 	private String contentTypeText(String contentType, String contentBody) {
 		return contentBodyText("Content Type", contentType, contentBody);
+	}
+	
+	private String characterEncodingText(String characterEncoding, String contentBody) {
+		return contentBodyText("Character Encoding", characterEncoding, contentBody);
 	}
 	
 	private String contentBodyText(String comparisonTitle, Object comparisonValue, String contentBody) {

@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
@@ -22,8 +22,8 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 {
-	private ConsoleWriter out;
 	private BRJS brjs;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -37,7 +37,7 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
 		String bladesetName = parsedArgs.getString("bladeset-name");
 		String bladeName = parsedArgs.getString("blade-name");
@@ -70,10 +70,11 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 		if(!workbench.dirExists()) throw new NodeDoesNotExistException(workbench, "workbench", this);
 		
 		try {
-			out.println(DependencyGraphReportBuilder.createReport(workbench, showAllDependencies));
+			logger.println(DependencyGraphReportBuilder.createReport(workbench, showAllDependencies));
 		}
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
 		}
+		return 0;
 	}
 }

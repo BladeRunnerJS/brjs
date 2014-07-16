@@ -12,29 +12,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CopyBladesetCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
-import org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand;
 
 import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.command.copy.CopyBladesetCommand;
-import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
-import com.caplin.cutlass.structure.model.SdkModel;
-import com.caplin.cutlass.structure.model.node.BladeNode;
-import com.caplin.cutlass.structure.model.node.BladesetNode;
 
 
 public class RestApiService
@@ -52,7 +46,7 @@ public class RestApiService
 	public RestApiService(BRJS brjs)
 	{
 		this.brjs = brjs;
-		logger = brjs.logger(LoggerType.REST_API, RestApiService.class);
+		logger = brjs.logger(RestApiService.class);
 	}
 	
 	public String getApps()
@@ -60,7 +54,7 @@ public class RestApiService
 		StringBuilder response = new StringBuilder();
 		response.append("[");
 		
-		List<App> applications = brjs.apps();
+		List<App> applications = brjs.userApps();
 		response.append(joinListOfNodes( new ArrayList<NamedNode>(applications),", "));
 		
 		response.append("]");
@@ -72,7 +66,7 @@ public class RestApiService
 		StringBuilder response = new StringBuilder();
 		response.append("{");
 		
-		App app = brjs.app(appName);
+		App app = brjs.userApp(appName);
 		if (!app.dirExists())
 		{
 			throw new Exception("App " + app.getName() + " does not exist");
@@ -113,7 +107,7 @@ public class RestApiService
 	
 	public File getAppImageLocation(String app) throws Exception
 	{
-		File appPath = brjs.app(app).dir();
+		File appPath = brjs.userApp(app).dir();
 		File appImage = new File(appPath,"thumb.png"); 
 		if (appImage.exists())
 		{
@@ -127,7 +121,8 @@ public class RestApiService
 	
 	public void importMotif(String appName, String requirePrefix, File appZip) throws Exception
 	{
-		ImportApplicationCommand cmd = new ImportApplicationCommand( brjs );
+		ImportAppCommand cmd = new ImportAppCommand();
+		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appZip.getAbsolutePath(), appName, requirePrefix };		
 		doCommand( cmd, args );
 	}
@@ -138,10 +133,13 @@ public class RestApiService
 		{
 			destinationWar.delete();
 		}
-		WarCommand cmd = new WarCommand();
-		cmd.setBRJS(brjs);
-		String[] args = new String[]{ appName, destinationWar.getAbsolutePath() };		
-		doCommand( cmd, args );
+		
+		App app = brjs.userApp(appName);
+		if (!app.dirExists()) {
+			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
+		}
+		
+		app.buildWar(destinationWar);
 	}
 	
 	public void importBladeset(String sourceApp, Map<String,Map<String,List<String>>> bladesets, String targetApp) throws Exception
@@ -153,22 +151,17 @@ public class RestApiService
 			String newBladesetName = bladesetMap.get(IMPORT_BLADESETS_NEWBLADESET_NAME_KEY).get(0);
 			List<String> blades = bladesetMap.get(IMPORT_BLADESETS_BLADES_KEY);
 			
-			CopyBladesetCommand cmd = new CopyBladesetCommand( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) );
+			CopyBladesetCommand cmd = new CopyBladesetCommand();
+			cmd.setBRJS(brjs);
 			String[] args = new String[]{ sourceApp, bladeset, targetApp, newBladesetName };		
 			doCommand( cmd, args );
 			
-			BladesetNode bladesetNode = SdkModel.getRootNode( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) ).getPath().appsPath().appPath(targetApp).bladesetPath(newBladesetName).getNode();
-			
-			if(bladesetNode != null)
+			Bladeset bladesetNode = brjs.app(targetApp).bladeset(newBladesetName);
+			for (Blade bladeNode : bladesetNode.blades())
 			{
-				List<BladeNode> bladeNodes = bladesetNode.getBladeNodes();
-				
-				for (BladeNode bladeNode : bladeNodes)
-				{
-					if (!blades.contains(bladeNode.getName()))
-					{						
-						FileUtils.deleteDirectory(bladeNode.getDir());
-					}
+				if (!blades.contains(bladeNode.getName()))
+				{						
+					FileUtils.deleteDirectory(bladeNode.dir());
 				}
 			}
 		}
@@ -176,7 +169,7 @@ public class RestApiService
 	
 	public void createApp(String appName, String requirePrefix) throws Exception
 	{
-		CreateApplicationCommand cmd = new CreateApplicationCommand();
+		CreateAppCommand cmd = new CreateAppCommand();
 		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appName, requirePrefix };		
 		doCommand( cmd, args );
@@ -201,7 +194,7 @@ public class RestApiService
 	public String runBladesetTests(String appName, String bladesetName, String testType) throws Exception
 	{
 		TestCommand cmd = new TestCommand();
-		String bladesetPath = SdkModel.getRootNode( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) ).getPath().appsPath().appPath(appName).bladesetPath(bladesetName).getPathStr();
+		String bladesetPath = brjs.app(appName).bladeset(bladesetName).dir().getAbsolutePath();
 		String[] args = new String[]{ bladesetPath, testType, JS_TEST_REPORT_SWITCH };	
 		OutputStream out = doCommand( cmd, args );
 		return out.toString();
@@ -210,8 +203,7 @@ public class RestApiService
 	public String runBladeTests(String appName, String bladesetName, String bladeName, String testType) throws Exception
 	{
 		TestCommand cmd = new TestCommand();
-		String bladePath = SdkModel.getRootNode( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) ).getPath().appsPath(
-			).appPath(appName).bladesetPath(bladesetName).bladesPath().bladePath(bladeName).getPathStr();
+		String bladePath = brjs.app(appName).bladeset(bladesetName).blade(bladeName).dir().getAbsolutePath();
 		String[] args = new String[]{ bladePath, testType, JS_TEST_REPORT_SWITCH };
 		OutputStream out = doCommand( cmd, args );
 		return out.toString();
@@ -258,20 +250,43 @@ public class RestApiService
 	}
 	
 	private OutputStream doCommand(CommandPlugin command, String[] args) throws Exception
-	{
-		OutputStream out = new ByteArrayOutputStream();
-		ConsoleWriter oldConsoleWriter = brjs.getConsoleWriter();
-		brjs.setConsoleWriter( new PrintStream(out) );
+	{	
+		ByteArrayOutputStream commandOutput = new ByteArrayOutputStream();
 		
-		command.doCommand(args);
+		PrintStream oldSysOut = System.out;
+		System.setOut( new MultiOutputPrintStream(System.out, new PrintStream(commandOutput)) );
 		
-		brjs.setConsoleWriter( oldConsoleWriter );
-		return out;
+		try {
+			command.doCommand(args);
+		} finally {
+			System.setOut(oldSysOut);
+		}
+		
+		return commandOutput;
 	}
 	
 	private File getLatestReleaseNoteFile() 
 	{
 		return new File( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) , "docs/release-notes/latest.html");
+	}
+
+	
+	
+	private class MultiOutputPrintStream extends PrintStream {
+		private PrintStream secondary;
+
+		MultiOutputPrintStream(PrintStream primary, PrintStream secondary) {
+			super(primary);
+			this.secondary = secondary;
+		}
+		public void write(byte buf[], int off, int len) {
+			super.write(buf, off, len);
+			secondary.write(buf, off, len);
+		}
+		public void flush() {
+			super.flush();
+			secondary.flush();
+		}
 	}
 	
 }

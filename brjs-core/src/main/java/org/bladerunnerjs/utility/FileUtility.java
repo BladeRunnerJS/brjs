@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 public class FileUtility {
 	public static File createTemporaryDirectory(String prependedFolderName) throws IOException
@@ -25,20 +29,10 @@ public class FileUtility {
 		return tempSubDir;
 	}
 	
-	public static void copyFileIfExists(File srcFile, File destFile) throws IOException {
-		if(srcFile.exists()) {
-			FileUtils.copyFile(srcFile, destFile);
-		}
-	}
-	
-	public static void copyDirectoryIfExists(File srcDir, File destDir) throws IOException {
-		if(srcDir.exists()) {
-			FileUtils.copyDirectory(srcDir, destDir);
-		}
-	}
-	
 	public static void zipFolder(File srcFolder, File destZipFile, boolean zipOnlySrcFolderContentsAndNotSrcFolder) throws IOException
 	{
+		destZipFile.getParentFile().mkdirs();
+		
 		FileOutputStream fileWriter = new FileOutputStream(destZipFile);
 		ZipOutputStream zip = new ZipOutputStream(fileWriter);
 		
@@ -105,6 +99,103 @@ public class FileUtility {
 				else
 				{
 					addFileToZip(path + "/" + srcFolder.getName(), file, zip, false);
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static void unzip(ZipFile zipFile, File targetLocation) throws IOException {			 
+		Enumeration files = zipFile.entries();
+		File f = null;
+		FileOutputStream fos = null;
+		
+		while (files.hasMoreElements()) {
+			try {
+				ZipEntry entry = (ZipEntry) files.nextElement();
+				InputStream eis = zipFile.getInputStream(entry);
+				
+				f = new File(targetLocation, entry.getName());
+				
+				if (entry.isDirectory()) 
+				{
+					f.mkdirs();
+					continue;
+				} 
+				else {
+					f.getParentFile().mkdirs();
+					f.createNewFile();
+				}
+			
+				fos = new FileOutputStream(f);
+				IOUtils.copy(eis, fos);
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+				continue;		  
+			} 
+			finally {
+				if (fos != null) 
+				{
+					try {
+						fos.close();
+					}
+					catch (IOException e) {
+						// ignore
+					}
+				}
+			}
+		}
+		zipFile.close();
+	}
+	
+	/** 
+	 * Deletes directories from deepest to shallowest to prevent file locking issues caused by the Watch Service on Windows 
+	 * (see https://stackoverflow.com/questions/6255463/java7-watchservice-access-denied-error-trying-to-delete-recursively-watched-ne) 
+	 */ 
+	public static void deleteDirectoryFromBottomUp(File dir) throws IOException
+	{
+		if (dir.isFile())
+		{
+			throw new IOException("Expected as dir as an argument, got a file");
+		}
+		
+		File[] files = dir.listFiles();
+		if (files == null)
+		{
+			return;
+		}
+		
+		for (File child : files)
+		{
+			if (child.isDirectory())
+			{
+				deleteDirectoryFromBottomUp(child);
+			}
+			dir.delete();
+		}
+	}
+	
+	public static void moveDirectoryContents(File srcDir, File destDir) throws IOException {
+		if(!destDir.exists()) {
+			FileUtils.moveDirectory(srcDir, destDir);
+		}
+		else {
+			for(File srcFile : srcDir.listFiles()) {
+				File destFile = new File(destDir, srcFile.getName());
+				
+				if(!destFile.exists()) {
+					FileUtils.moveToDirectory(srcFile, destDir, false);
+				}
+				else {
+					if(srcFile.isFile()) {
+						destFile.delete();
+						FileUtils.moveToDirectory(srcFile, destDir, false);
+					}
+					else {
+						moveDirectoryContents(srcFile, destFile);
+					}
 				}
 			}
 		}

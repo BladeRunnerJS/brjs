@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -42,7 +41,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		logger = brjs.logger(LoggerType.APP_SERVER, this.getClass());
+		logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -54,7 +53,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	@Override
 	public String getCommandDescription()
 	{
-		return "Starts the embedded application server and database.";
+		return "Starts the embedded application server.";
 	}
 	
 	
@@ -70,7 +69,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	}
 
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException
 	{
 		try
 		{	
@@ -81,8 +80,9 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 			
 			appServer.start();
 			
-			logger.info("\n\t" + Messages.SERVER_STARTUP_MESSAGE + appServer.getPort() + "/");
-			logger.info("\t" + Messages.SERVER_STOP_INSTRUCTION_MESSAGE + "\n");
+			logger.println("\n");
+			logger.println(Messages.SERVER_STARTUP_MESSAGE + appServer.getPort() + "/");
+			logger.println(Messages.SERVER_STOP_INSTRUCTION_MESSAGE + "\n");
 			
 			appServer.join();
 		}
@@ -99,8 +99,10 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 		{
 			throw new CommandOperationException("Error creating application server.", ex);
 		}
+		
+		return 0;
 	}
-	
+
 	private ApplicationServer getApplicationServer(JSAPResult parsedArgs) throws NumberFormatException, ConfigException
 	{
 		if(parsedArgs.contains("port"))

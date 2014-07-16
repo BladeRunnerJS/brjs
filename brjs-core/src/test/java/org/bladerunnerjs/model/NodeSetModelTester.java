@@ -67,6 +67,8 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 		List<CN> childrenNodes = (List<CN>) getAllItemsMethod.invoke(parentNode);
 		int nextChild = 0;
 		
+		assertEquals("list lengths differ", childPaths.size(), childrenNodes.size());
+
 		for(Map.Entry<String, File> entry : childPaths.entrySet())
 		{
 			File entryPath = entry.getValue();
@@ -75,7 +77,6 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 			assertEquals(entryPath.getAbsolutePath(), childNode.dir().getPath());
 		}
 		
-		assertEquals("list lengths differ", childPaths.size(), childrenNodes.size());
 	}
 	
 	private void verifyTopDownNamedItems(PN parentNode) throws Exception

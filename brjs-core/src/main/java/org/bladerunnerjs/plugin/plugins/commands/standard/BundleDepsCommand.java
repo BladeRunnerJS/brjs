@@ -2,13 +2,13 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.File;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistException;
+import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.deps.DependencyGraphReportBuilder;
 
@@ -21,8 +21,8 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 public class BundleDepsCommand extends ArgsParsingCommandPlugin
 {
-	private ConsoleWriter out;
 	private BRJS brjs;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -34,7 +34,7 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -50,22 +50,25 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String bundleDir = parsedArgs.getString("bundle-dir");
 		boolean showAllDependencies = parsedArgs.getBoolean("all");
 		File bundlableDir = brjs.file("sdk/" + bundleDir);
+		String relativePath = brjs.file("sdk").toPath().relativize(bundlableDir.toPath()).toString().replace("\\", "/");
 		
-		if(!bundlableDir.exists()) throw new DirectoryDoesNotExistException(bundlableDir, this);
+		if(!bundlableDir.exists()) throw new DirectoryDoesNotExistCommandException(relativePath, this);
 		
-		BundlableNode bundlableNode = brjs.locateFirstBundlableAncestorNode(bundlableDir);
-		
-		if(bundlableNode == null) throw new InvalidBundlableNodeException(bundlableDir, this);
 		
 		try {
-			out.println(DependencyGraphReportBuilder.createReport(bundlableNode, showAllDependencies));
+			BundlableNode bundlableNode = brjs.locateFirstBundlableAncestorNode(bundlableDir);
+			logger.println(DependencyGraphReportBuilder.createReport(bundlableNode, showAllDependencies));
 		}
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
 		}
+		catch (InvalidBundlableNodeException e) {
+			throw new CommandArgumentsException(e, this);
+		}
+		return 0;
 	}
 }

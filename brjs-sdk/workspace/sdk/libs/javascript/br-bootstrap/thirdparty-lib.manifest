@@ -1,0 +1,3 @@
+depends: browser-modules, br-shims
+exports: "{}"
+js: bootstrap.js

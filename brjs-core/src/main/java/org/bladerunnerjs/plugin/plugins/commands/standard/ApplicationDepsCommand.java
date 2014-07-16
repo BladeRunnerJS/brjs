@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
@@ -20,8 +20,8 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 public class ApplicationDepsCommand extends ArgsParsingCommandPlugin
 {
-	private ConsoleWriter out;
 	private BRJS brjs;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -34,7 +34,7 @@ public class ApplicationDepsCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -50,7 +50,7 @@ public class ApplicationDepsCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
 		String aspectName = parsedArgs.getString("aspect-name");
 		boolean showAllDependencies = parsedArgs.getBoolean("all");
@@ -62,10 +62,11 @@ public class ApplicationDepsCommand extends ArgsParsingCommandPlugin
 		if(!aspect.dirExists()) throw new NodeDoesNotExistException(aspect, this);
 		
 		try {
-			out.println(DependencyGraphReportBuilder.createReport(aspect, showAllDependencies));
+			logger.println(DependencyGraphReportBuilder.createReport(aspect, showAllDependencies)+"\n");
 		}
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
 		}
+		return 0;
 	}
 }

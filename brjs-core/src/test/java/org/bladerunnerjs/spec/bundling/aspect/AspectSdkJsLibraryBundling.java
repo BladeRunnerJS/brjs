@@ -21,8 +21,8 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -32,10 +32,10 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 
 	@Test
 	public void aspectBundlesContainsNodeStyleSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(sdkLib).hasNodeJsPackageStyle()
-			.and(sdkLib).hasClass("br.SdkClass")
+		given(sdkLib).hasCommonJsPackageStyle()
+			.and(sdkLib).hasClass("br/SdkClass")
 			.and(aspect).indexPageHasContent("require('br/SdkClass');");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("br/SdkClass");
 	}
 	
@@ -44,37 +44,37 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		given(sdkLib).hasNamespacedJsPackageStyle()
 			.and(sdkLib).hasClass("br.SdkClass")
 			.and(aspect).indexPageHasContent("require('br/SdkClass');");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("br/SdkClass");
 	}
 	
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInAClass() throws Exception {
-		given(aspect).hasClass("appns.AspectClass")
-			.and(sdkLib).hasClass("br.SdkClass")
+		given(aspect).hasClass("appns/AspectClass")
+			.and(sdkLib).hasClass("br/SdkClass")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRefersTo("appns.AspectClass", "br.SdkClass");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("br.SdkClass");
+			.and(aspect).classDependsOn("appns.AspectClass", "br.SdkClass");
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("br.SdkClass");
 	}
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreRequiredInAClass() throws Exception {
-		given(aspect).hasClass("appns.AspectClass")
-			.and(sdkLib).hasClass("br.SdkClass")
+		given(aspect).hasClass("appns/AspectClass")
+			.and(sdkLib).hasClass("br/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns.AspectClass", "br.SdkClass");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("br.SdkClass");
+			.and(aspect).classRequires("appns/AspectClass", "br.SdkClass");
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("br.SdkClass");
 	}
 	
 	@Test
 	public void weCanGenerateABundleForJsLibTestPacks() throws Exception {
 		given(sdkLib).hasClass("br/SdkClass")
 			.and(sdkLibTestPack).testRequires("test.js", "br/SdkClass");
-		when(sdkLibTestPack).requestReceived("js/dev/en_GB/combined/bundle.js", response);
+		when(sdkLibTestPack).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("define('br/SdkClass'");
 	}
 	

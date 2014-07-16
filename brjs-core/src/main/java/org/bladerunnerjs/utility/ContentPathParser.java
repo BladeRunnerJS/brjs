@@ -8,10 +8,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bladerunnerjs.model.BladerunnerUri;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.eclipse.jetty.util.URIUtil;
 
 
 public class ContentPathParser
@@ -49,32 +50,23 @@ public class ContentPathParser
 			
 			validateRequestToken(token, arg);
 			
-			requestForm = requestForm.replaceAll("<" + token + ">", arg);
+			// use StringUtils so we dont do a regex replace incase 'arg' contains $ which causes it to fail
+			requestForm = StringUtils.replace(requestForm, "<" + token + ">", arg);
 		}
 		
 		return requestForm;
 	}
 	
-	public boolean canParseRequest(BladerunnerUri request)
-	{
+	public boolean canParseRequest(String requestPath) {
 		try
 		{
-			parse(request);
+			parse(requestPath);
 			return true;
 		}
-		catch (MalformedRequestException e)
+		catch (MalformedRequestException | IndexOutOfBoundsException e)
 		{
 			return false;
 		}
-		catch (IndexOutOfBoundsException e)
-		{
-			return false;
-		}
-	}
-	
-	public ParsedContentPath parse(BladerunnerUri request) throws MalformedRequestException
-	{
-		return parse(request.logicalPath);
 	}
 	
 	public ParsedContentPath parse(String request) throws MalformedRequestException
@@ -95,7 +87,14 @@ public class ContentPathParser
 
 					for (int gi = 0; gi < requestMatcher.groupCount() && gi < tokens.size(); ++gi)
 					{
-						contentPath.properties.put(tokens.get(gi), requestMatcher.group(gi + 1));
+						String property = requestMatcher.group(gi + 1);
+						try {
+							String decodedProperty = URIUtil.decodePath(property);
+							contentPath.properties.put(tokens.get(gi), decodedProperty);
+						} catch (Exception ex) {
+							/* TODO: investigate whether we need this - if the URL fails to decode should we really catch the exception? */ 
+							contentPath.properties.put(tokens.get(gi), property);							
+						}
 					}
 
 					return contentPath;

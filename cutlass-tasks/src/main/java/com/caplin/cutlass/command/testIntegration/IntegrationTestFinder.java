@@ -5,24 +5,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+import org.bladerunnerjs.model.Workbench;
 
-import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 
 public class IntegrationTestFinder
 {
 	
-	private Logger logger = BRJSAccessor.root.logger(LoggerType.UTIL, IntegrationTestFinder.class);
+	private Logger logger = ThreadSafeStaticBRJSAccessor.root.logger(IntegrationTestFinder.class);
 	
-	public List<File> findTestDirs(File root)
+	public List<File> findTestDirs(BRJS brjs, File root)
 	{
-		return findTestContainerDirs(root, false);
+		return findTestContainerDirs(brjs, root, false);
 	}
 	
-	public List<File> findTestContainerDirs(File root, boolean ignoreWorkbenches)
+	public List<File> findTestContainerDirs(BRJS brjs, File root, boolean ignoreWorkbenches)
 	{
 		List<File> testDirs = new ArrayList<File>();
 		
@@ -34,17 +34,17 @@ public class IntegrationTestFinder
 		File[] children = FileUtility.sortFiles(root.listFiles());
 		for (File child : children) 
 		{
-			if (child.isDirectory() && !child.isHidden() && isValidTestDir(child, ignoreWorkbenches)) 
+			if (child.isDirectory() && !child.isHidden() && isValidTestDir(brjs, child, ignoreWorkbenches)) 
 			{
 				testDirs.add(child);
 			} else {
-				testDirs.addAll(findTestContainerDirs(child, ignoreWorkbenches));
+				testDirs.addAll(findTestContainerDirs(brjs, child, ignoreWorkbenches));
 			}
 		}
 		return testDirs;
 	}
 	
-	private boolean isValidTestDir(File dir, boolean ignoreWorkbenches)
+	private boolean isValidTestDir(BRJS brjs, File dir, boolean ignoreWorkbenches)
 	{		
 		boolean validTestDir = dir.isDirectory() 
 				&& dir.getName().equals(CutlassConfig.WEBDRIVER_DIRNAME) 
@@ -58,7 +58,7 @@ public class IntegrationTestFinder
 					"\tIntegration tests are only allowed in an aspect or workbench - this directory will be ignored.");
 		}
 		
-		boolean isWorkbenchDir = CutlassDirectoryLocator.isWorkbenchDir( dir.getParentFile().getParentFile().getParentFile() );
+		boolean isWorkbenchDir = (brjs.locateFirstAncestorNode(dir.getParentFile().getParentFile().getParentFile()) instanceof Workbench);
 		if (ignoreWorkbenches && isWorkbenchDir)
 		{
 			validTestDir = false;

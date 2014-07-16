@@ -11,6 +11,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.bladerunnerjs.memoization.Getter;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.w3c.dom.Document;
@@ -25,13 +27,17 @@ public class XmlBundlerConfig {
 	public static final String CONFIG_FILE_NAME = "bundleConfig.xml";
 	private Map<String, XmlResourceConfig> configMap = null;
 	private BRJS brjs;
-
+	private File configFile;
+	private MemoizedValue<Map<String, XmlResourceConfig>> computedConfigValue;
+	
 	public XmlBundlerConfig(BRJS brjs) {
 		this.brjs = brjs;
+		configFile = brjs.conf().file(CONFIG_FILE_NAME);
+		computedConfigValue = new MemoizedValue<>(configFile.getPath()+" - XmlBundlerConfig.computedConfigValue", brjs, configFile);
 	}
 	
 	
-	public boolean isbundleConigAvailable(){
+	public boolean isbundleConfigAvailable(){
 		File file = brjs.conf().file(CONFIG_FILE_NAME);
 		return file.exists();
 	}
@@ -45,17 +51,20 @@ public class XmlBundlerConfig {
 
 	private Map<String, XmlResourceConfig>  createConfigMap() throws ContentProcessingException
 	{
-		
-		File file = brjs.conf().file(CONFIG_FILE_NAME);
-		Map<String, XmlResourceConfig> result = new HashMap<String, XmlResourceConfig>();
-		try 
-		{
-			InputStream is = new FileInputStream(file);
-			result = processBundlerConfig(is);
-		} catch (ParserConfigurationException | SAXException | IOException e) {
-			throw new ContentProcessingException(e);
-		}
-		return result;
+		return computedConfigValue.value(new Getter<ContentProcessingException>() {
+			@Override
+			public Object get() throws ContentProcessingException {
+        		Map<String, XmlResourceConfig> result = new HashMap<String, XmlResourceConfig>();
+        		try 
+        		{
+        			InputStream is = new FileInputStream(configFile);
+        			result = processBundlerConfig(is);
+        		} catch (ParserConfigurationException | SAXException | IOException e) {
+        			throw new ContentProcessingException(e);
+        		}
+        		return result;
+			}
+		});
 	}
 
 	private Map<String, XmlResourceConfig> processBundlerConfig(

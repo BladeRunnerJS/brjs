@@ -14,18 +14,23 @@ import org.bladerunnerjs.utility.TemplateUtility;
 
 public class BRJSNodeHelper {
 	public static void populate(BRJSNode node) throws InvalidNameException, ModelUpdateException {
-		populate(node, new HashMap<String,String>());
+		populate(node, false);
 	}
 	
-	public static void populate(BRJSNode node, Map<String, String> overrideTransformations) 
-			throws InvalidNameException, ModelUpdateException {
-		node.create();
+	public static void populate(BRJSNode node, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException {
+		populate(node, new HashMap<String,String>(), allowNonEmptyDirectories);
+	}
+	
+	public static void populate(BRJSNode node, Map<String, String> overrideTransformations, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException {
+		if(!allowNonEmptyDirectories) {
+			node.create();
+		}
 		
 		try {
 			Map<String, String> transformations = getNodeTransformations(node);
 			transformations.putAll( overrideTransformations );
 			
-			TemplateUtility.installTemplate(node, node.getTemplateName(), transformations);
+			TemplateUtility.installTemplate(node, node.getTemplateName(), transformations, allowNonEmptyDirectories);
 		}
 		catch(TemplateInstallationException e) {
 			throw new ModelUpdateException(e);

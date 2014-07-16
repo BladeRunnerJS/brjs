@@ -28,9 +28,9 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new WorkbenchDepsCommand())
-			.and(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
+		given(brjs).hasCommandPlugins(new WorkbenchDepsCommand())
+			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
@@ -111,29 +111,29 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void dependenciesAreShownWhenAllArgumentsAreValid() throws Exception {
-		given(workbench).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
+		given(workbench).indexPageRequires("appns/bladeset/blade/Class1")
+			.and(blade).hasClasses("appns/bladeset/blade/Class1", "appns/bladeset/blade/Class2")
+			.and(blade).classRequires("appns/bladeset/blade/Class1", "./Class2");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Workbench dependencies found:",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
+			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
+			"    |    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class2.js'");
 	}
 	
 	@Test
 	public void ifTheSameAssetIsFoundTwiceThenOnlyTheFirstEncounteredInstanceIsShownByDefault() throws Exception {
-		given(workbench).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2")
-			.and(workbench).containsFileWithContents("resources/config.xml", "'appns/Class1'"); // TODO: if we make this an aspect resource it doesn't work suggesting a bug -- make me feel even more strongly there should be a method which provides all asset locations, including transitive deps.
+		given(workbench).indexPageRequires("appns/bladeset/blade/Class1")
+			.and(blade).hasClasses("appns/bladeset/blade/Class1", "appns/bladeset/blade/Class2")
+			.and(blade).classRequires("appns/bladeset/blade/Class1", "./Class2")
+			.and(workbench).containsResourceFileWithContents("config.xml", "'appns/bladeset/blade/Class1'"); // TODO: if we make this an aspect resource it doesn't work suggesting a bug -- make me feel even more strongly there should be a method which provides all asset locations, including transitive deps.
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Workbench dependencies found:",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
-			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
+			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js' (*)",
+			"    |    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class2.js'",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/resources/config.xml' (seed file)",
 			"",
 			"    (*) - subsequent instances not shown (use -A or --all to show)");
@@ -141,35 +141,35 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void withTheAllSwitchIfTheSameAssetIsFoundTwiceThenItsDependenciesAreOnlyShownTheFirstTime() throws Exception {
-		given(workbench).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2")
-			.and(workbench).containsFileWithContents("resources/config.xml", "'appns/Class1'");
+		given(workbench).indexPageRequires("appns/bladeset/blade/Class1")
+			.and(blade).hasClasses("appns/bladeset/blade/Class1", "appns/bladeset/blade/Class2")
+			.and(blade).classRequires("appns/bladeset/blade/Class1", "./Class2")
+			.and(workbench).containsResourceFileWithContents("config.xml", "'appns/bladeset/blade/Class1'");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade", "--all");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Workbench dependencies found:",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
+			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
+			"    |    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class2.js'",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/resources/config.xml' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
+			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js' (*)",
 			"",
 			"    (*) - dependencies omitted (listed previously)");
 	}
 	
 	@Test
 	public void dependenciesAreShownForWorkbenchUsingAliasWhenAllArgumentsAreValid() throws Exception {
-		given(brLib).hasClasses("br.Class1", "br.Class2")
+		given(brLib).hasClasses("br/Class1", "br/Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
 			.and(blade).classFileHasContent("appns/bladeset/blade/Class1", "ServiceRegistry.getService('br.alias')")
 			.and(workbench).indexPageRequires("appns/bladeset/blade/Class1");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 				"Workbench dependencies found:",
 				"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
 				"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
 				"    |    |    \\--- 'alias!br.alias' (alias dep.)",
-				"    |    |    |    \\--- '../../libs/javascript/br-libs/br/src/br/Class2.js'" );
+				"    |    |    |    \\--- '../../libs/javascript/br/src/br/Class2.js'" );
 	}
 	
 	

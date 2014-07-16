@@ -1,29 +1,24 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.testing.utility.CommandRunner;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -31,30 +26,28 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
 
+//TODO: we have very few (if any) tests around this command
+
 public class JsDocCommand extends ArgsParsingCommandPlugin {
+	public static final String APP_STORAGE_DIR_NAME = "jsdoc";
+
 	public class Messages {
-		public static final String API_DOCS_GENERATED_MSG = "API docs correctly generated in '%s'";
+		public static final String API_DOCS_GENERATED_MSG = "API docs successfully generated in '%s'";
 	}
 	
 	private BRJS brjs;
-	private ConsoleWriter out;
-	private FileUtil fileUtil;
+	private Logger logger;
 	
 	@Override
-	public void setBRJS(BRJS brjs) {	
-		try {
-			this.brjs = brjs;
-			out = brjs.getConsoleWriter();
-			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
+	public void setBRJS(BRJS brjs) {
+		this.brjs = brjs;
+		this.logger = brjs.logger(this.getClass());
+
 	}
 	
 	@Override
 	public String getCommandName() {
-		return "jsdoc";
+		return APP_STORAGE_DIR_NAME;
 	}
 	
 	@Override
@@ -69,103 +62,105 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
-		boolean isVerbose = parsedArgs.getBoolean("verbose-flag");
 		App app = brjs.app(appName);
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
-		File outputDir = app.storageDir("jsdoc-toolkit");
-		CommandRunner.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
+		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
 		
 		try {
-			replaceBuildDateToken(new File(outputDir, "index.html"));
+			if (outputDir.isDirectory()) {
+				FileUtils.cleanDirectory(outputDir);
+			} else {
+				outputDir.mkdirs();
+			}
+			copyJsDocPlaceholder(app);
+			runCommand(app, outputDir);
 		}
-		catch(IOException | ConfigException e) {
+		catch(IOException e) {
 			throw new CommandOperationException(e);
 		}
 		
-		out.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
+		logger.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
+		
+		return 0;
 	}
 	
-	private List<String> generateCommand(App app, boolean isVerbose, File outputDir) {
-		List<String> command = new ArrayList<>();
+	private void runCommand(App app, File outputDir) throws CommandOperationException {
+		List<String> commandArgs = new ArrayList<>();
 		
-		try {
-			File jsdocToolkitInstallDir = installJsdocToolkit();
-			File jsDocToolkitDir = new File(jsdocToolkitInstallDir, "jsdoc-toolkit");
-			File jsDocTemplatesDir = new File(jsdocToolkitInstallDir, "jsdoc-templates/Caplin");
-			List<String> libraryPaths = new ArrayList<>();
-			
-			for (JsLib jsLib : app.jsLibs()) {
-				libraryPaths.add(jsLib.file("src").getCanonicalFile().getAbsolutePath());
-			}
-			
-			// See <https://code.google.com/p/jsdoc-toolkit/wiki/CmdlineOptions>
-			command.add("java");
-			command.add("-jar");
-			command.add(new File(jsDocToolkitDir, "jsrun.jar").getAbsolutePath());
-			command.add(new File(jsDocToolkitDir, "app/run.js").getAbsolutePath());
-			command.addAll(libraryPaths);
-			command.add("-r=20");
-			command.add("-t=" + jsDocTemplatesDir.getAbsolutePath());
-			command.add("-d=" + outputDir.getAbsolutePath());
-			command.add((isVerbose) ? "-v" : "-q");
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		File workingDir = brjs.dir();
+		File jsdocToolkitInstallDir = getToolkitResourcesDir(brjs);
+		// this allows the toolkit and the conf to be overridden
+		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
+		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
 		
-		return command;
+		String command = RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc";
+		if(System.getProperty("os.name").split(" ")[0].toLowerCase().equals("windows"))
+		{
+			command = command.replace("/", "\\") + ".cmd";
+			commandArgs.add("cmd");
+			commandArgs.add("/c");
+		}
+		commandArgs.add(command);
+		
+		commandArgs.add( RelativePathUtility.get(brjs, workingDir, app.dir())+"/" ); // add the app dir
+		// sdk/libs/javascript is added via config file so dirs can be optionally ignored
+		commandArgs.add("-c"); // set the config file
+			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocConfFile) );
+		commandArgs.add("-r"); // recurse into dirs
+		commandArgs.add("-d"); // the output dir
+			commandArgs.add( RelativePathUtility.get(brjs, workingDir, outputDir) );
+		commandArgs.add("-q");
+			commandArgs.add( "date="+getBuildDate()+"&version="+brjs.versionInfo().getVersionNumber() );
+		
+		
+		logger.info("running command: " + StringUtils.join(commandArgs, " "));
+		logger.info("working directory: " + workingDir);
+			
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		processBuilder.directory( workingDir );
+		processBuilder.command(commandArgs);
+		
+		CommandRunnerUtility.runCommand(brjs, processBuilder);
 	}
 	
-	private File installJsdocToolkit() {
-		File installDir = brjs.storageDir("jsdoc-toolkit/install");
-		
-		if(!installDir.exists()) {
-			installDir.mkdirs();
-			
-			try (InputStream jsdocZipStream = getClass().getClassLoader().getResourceAsStream("org/bladerunnerjs/core/plugin/command/standard/jsdoc-resources.zip")) {
-				unzipInputStream(jsdocZipStream, installDir);
-			}
-			catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+	private File getSystemOrUserConfPath(BRJS brjs, File systemDirBase, String dirName) {
+		File userConfDir = brjs.conf().file(dirName);
+		if (userConfDir.exists()) {
+			return userConfDir;
 		}
-		
-		return installDir;
+		return new File(systemDirBase, dirName);
 	}
 	
-	private void unzipInputStream(InputStream zipArchiveInputStream, File targetDir) {
-		try (ZipInputStream zipEntryInputStream = new ZipInputStream(zipArchiveInputStream)) {
-			ZipEntry entry;
-			
-			while ((entry = zipEntryInputStream.getNextEntry()) != null) {
-				File targetFile = new File(targetDir, entry.getName());
-				
-				if(entry.isDirectory()) {
-					targetFile.mkdirs();
-				}
-				else {
-					try (FileOutputStream targetFileOutputStream = new FileOutputStream(targetFile)) {
-						IOUtils.copy(zipEntryInputStream, targetFileOutputStream);
-					}
-				}
-			}
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private void replaceBuildDateToken(File indexFile) throws IOException, ConfigException {
-		String fileContent = fileUtil.readFileToString(indexFile);
-		
+	private String getBuildDate() {
 		DateFormat dateFormat = new SimpleDateFormat("dd MMMMM yyyy");
 		Date date = new Date();
-		
-		String resultFileContent = fileContent.replace("@buildDate@", dateFormat.format(date));
-		fileUtil.writeStringToFile(indexFile, resultFileContent);
+		return dateFormat.format(date);
 	}
+	
+	
+	public static void copyJsDocPlaceholder(App app) throws IOException {
+		File placeholderSrcDir = new File(getToolkitResourcesDir(app.root()), "jsdoc-placeholders");
+		if (!placeholderSrcDir.exists()) {
+			return;
+		}
+		File placeholderDestDir = app.storageDir(APP_STORAGE_DIR_NAME);
+		placeholderDestDir.mkdirs();
+		for (File srcFile : FileUtils.listFiles(placeholderSrcDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
+			String pathRelativeToDestDir = RelativePathUtility.get(app.root(), placeholderSrcDir, srcFile);
+			File destFile = new File(placeholderDestDir, pathRelativeToDestDir);
+			if (!destFile.exists()) {
+				FileUtils.copyFile(srcFile, destFile);
+			}
+		}
+	}
+
+    private static File getToolkitResourcesDir(BRJS brjs)
+    {
+    	return new File(brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
+    }
+	
 }

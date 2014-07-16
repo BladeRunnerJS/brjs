@@ -1,0 +1,24 @@
+<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+	<alias name="br.html-service" defaultClass="br.services.html.BRHtmlResourceService">
+		<scenario name="dev" class="br.services.html.JSTDHtmlResourceService" />
+	</alias>
+	<alias name="br.event-hub" defaultClass="br.EventHub"/>
+	<alias name="br.xml-service" defaultClass="br.services.xml.BRXmlResourceService">
+		<scenario name="dev" class="br.services.xml.JSTDXmlResourceService" />
+	</alias>
+	<alias name="br.bundle-path-service" defaultClass="br.services.bundlepath.BRBundlePathService">
+		<scenario name="dev" class="br.services.bundlepath.JSTDBundlePathService" />
+	</alias>
+	<alias name="br.app-version-service" defaultClass="br.services.appversion.BRAppVersionService">
+		<scenario name="dev" class="br.services.appversion.JSTDAppVersionService" />
+	</alias>
+	<alias name="br.locale-service" defaultClass="br.services.locale.BRLocaleService" />
+
+	<!-- TODO: remove these aliases from presenter once the new style classes can be brought out of thirdparty -->
+	<alias name="br.date-picker" defaultClass="br.presenter.control.datefield.JQueryDatePickerControl" />
+	<alias name="br.toggle-switch" defaultClass="br.presenter.control.selectionfield.ToggleSwitchControl" />
+	<alias name="br.combo-box" defaultClass="br.presenter.control.selectionfield.ExtJsComboBoxControl" />
+	<alias name="br.select-box" defaultClass="br.presenter.control.selectionfield.ExtJsSelectBoxControl" />
+	<alias name="br.autocomplete-box" defaultClass="br.presenter.control.selectionfield.JQueryAutoCompleteControl" />
+	<alias name="br.tooltip" defaultClass="br.presenter.control.tooltip.TooltipControl" />
+</aliasDefinitions>

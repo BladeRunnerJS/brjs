@@ -9,16 +9,15 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.testing.specutility.engine.BundlableNodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
-import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
-import org.dom4j.DocumentException;
 
-
-public class AspectCommander extends NodeCommander<Aspect> {
+public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	private final Aspect aspect;
 	private AspectBuilder aspectBuilder;
 	
@@ -36,7 +35,7 @@ public class AspectCommander extends NodeCommander<Aspect> {
 	public CommanderChainer indexPageLoadedInDev(final StringBuffer pageResponse, final String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
 		call(new Command() {
 			public void call() throws Exception {
-				pageLoaded(pageResponse, locale, RequestMode.Dev);
+				pageLoaded(pageResponse, new Locale(locale), RequestMode.Dev);
 			}
 		});
 		
@@ -46,7 +45,7 @@ public class AspectCommander extends NodeCommander<Aspect> {
 	public CommanderChainer indexPageLoadedInProd(final StringBuffer pageResponse, final String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
 		call(new Command() {
 			public void call() throws Exception {
-				pageLoaded(pageResponse, locale, RequestMode.Prod);
+				pageLoaded(pageResponse, new Locale(locale), RequestMode.Prod);
 			}
 		});
 		
@@ -63,10 +62,12 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		return commanderChainer;
 	}
 	
-	private void pageLoaded(StringBuffer pageResponse, String locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException, RequirePathException {
+	private void pageLoaded(StringBuffer pageResponse, Locale locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, RequirePathException {
 		StringWriter writer = new StringWriter();	
 		
-		TagPluginUtility.filterContent(fileUtil.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale);
+		String version = (opMode == RequestMode.Dev) ? aspect.root().getAppVersionGenerator().getDevVersion() : aspect.root().getAppVersionGenerator().getProdVersion();
+		
+		TagPluginUtility.filterContent(fileUtil.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale, version);
 		
 		pageResponse.append(writer.toString());
 	}
@@ -102,21 +103,21 @@ public class AspectCommander extends NodeCommander<Aspect> {
 	
 	public CommanderChainer classRefersTo(String sourceClass, String... referencedClasses) throws Exception
 	{
-		aspectBuilder.classRefersTo(sourceClass, referencedClasses);
+		aspectBuilder.classDependsOn(sourceClass, referencedClasses);
 		
 		return commanderChainer;
 	}
 	
 	public CommanderChainer classDependsOn(String dependentClass, String referencedClass) throws Exception
 	{
-		aspectBuilder.classDependsOn(dependentClass, referencedClass);
+		aspectBuilder.classExtends(dependentClass, referencedClass);
 		
 		return commanderChainer;
 	}
 	
-	public CommanderChainer classRefersToThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
+	public CommanderChainer classDependsOnThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
-		aspectBuilder.classRefersToThirdpartyLib(sourceClass, thirdpartyLib);
+		aspectBuilder.classDependsOnThirdpartyLib(sourceClass, thirdpartyLib);
 		
 		return commanderChainer;
 	}
@@ -144,7 +145,7 @@ public class AspectCommander extends NodeCommander<Aspect> {
 
 	public CommanderChainer resourceFileContains(String resourceFileName, String contents) throws Exception 
 	{
-		aspectBuilder.resourceFileContains(resourceFileName, contents);
+		aspectBuilder.containsResourceFileWithContents(resourceFileName, contents);
 		return commanderChainer;
 	}
 }

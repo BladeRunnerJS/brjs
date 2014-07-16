@@ -1,6 +1,6 @@
 package org.bladerunnerjs.spec.bundling.aspect;
 
-import static org.bladerunnerjs.utility.LogicalRequestHandler.Messages.*;
+import static org.bladerunnerjs.utility.BundleSetRequestHandler.Messages.*;
 import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
 
 import org.bladerunnerjs.model.App;
@@ -25,8 +25,8 @@ public class AspectBundlingLoggingTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 		
 			app = brjs.app("app1");
@@ -39,17 +39,17 @@ public class AspectBundlingLoggingTest extends SpecTest {
 	@Test
 	public void helpfulLoggingMessagesAreEmitted() throws Exception {
 		given(logging).enabled()
-			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.bs.b1.Class1")
-			.and(blade).classRequires("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(blade).classRequires("appns/bs/b1/Class1", "appns.bs.b1.Class2")
 			.and(sdkLib).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/bundle.js", "app1")
-			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/bundle.js")
-			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsContentPlugin", "js/dev/en_GB/combined/bundle.js")
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/combined/bundle.js", "app1")
+			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/combined/bundle.js")
+			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsContentPlugin", "js/dev/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'default-aspect/index.html', 'default-aspect/resources/xml/config.xml'"))
-			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect', 'bs-bladeset', 'bs-bladeset/blades/b1', 'bs-bladeset/blades/b1/workbench', 'sdk/libs/javascript/br-libs/br'")
+			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect', 'bs-bladeset', 'bs-bladeset/blades/b1', 'bs-bladeset/blades/b1/workbench', 'sdk/libs/javascript/br'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "default-aspect/index.html", "'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js", "'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js'")
 			.and(logging).debugMessageReceived(FILE_HAS_NO_DEPENDENCIES_MSG, "bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js")
@@ -59,15 +59,15 @@ public class AspectBundlingLoggingTest extends SpecTest {
 	@Test
 	public void helpfulLoggingMessagesAreEmittedWhenThereAreNoSeedFiles() throws Exception {
 		given(logging).enabled()
-			.and(blade).hasClasses("appns.Class1", "appns.Class2")
-			.and(blade).classRequires("appns.Class1", "appns.Class2")
+			.and(blade).hasClasses("appns/Class1", "appns/Class2")
+			.and(blade).classRequires("appns/Class1", "appns.Class2")
 			.and(aspect).hasBeenCreated()
 			.and(sdkLib).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/bundle.js", "app1")
-			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, unquoted("Aspect"), "default", "js/dev/en_GB/combined/bundle.js")
-			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsContentPlugin", "js/dev/en_GB/combined/bundle.js")
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/combined/bundle.js", "app1")
+			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, unquoted("Aspect"), "default", "js/dev/combined/bundle.js")
+			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsContentPlugin", "js/dev/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, unquoted("Aspect"), "default")
-			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", unquoted("'default-aspect', 'bs-bladeset', 'bs-bladeset/blades/b1', 'bs-bladeset/blades/b1/workbench', 'sdk/libs/javascript/br-libs/br'"));
+			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", unquoted("'default-aspect', 'bs-bladeset', 'bs-bladeset/blades/b1', 'bs-bladeset/blades/b1/workbench', 'sdk/libs/javascript/br'"));
 	}
 }

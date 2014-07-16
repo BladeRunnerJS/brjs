@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
@@ -12,7 +11,7 @@ import org.bladerunnerjs.plugin.EventObserver;
 
 public class ObserverList
 {
-	// TODO: these messages aren't currently covered within our spec tests
+	
 	public class Messages {
 		public static final String NODE_OBSERVER_EXCEPTION_MSG = "node observer '%s' threw an exception. the exception was: %s";
 	}
@@ -34,7 +33,7 @@ public class ObserverList
 			}
 			catch (Throwable ex)
 			{
-				node.root().logger(LoggerType.UTIL, this.getClass()).warn(Messages.NODE_OBSERVER_EXCEPTION_MSG, observerEntry.observerClass(), ExceptionUtils.getStackTrace(ex));
+				node.root().logger(this.getClass()).warn(Messages.NODE_OBSERVER_EXCEPTION_MSG, observerEntry.observerClass(), ExceptionUtils.getStackTrace(ex));
 			}
 		}
 	}

@@ -3,8 +3,10 @@ package org.bladerunnerjs.yaml;
 import javax.validation.constraints.NotNull;
 
 import org.apache.bval.constraints.NotEmpty;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 import org.bladerunnerjs.utility.NameValidator;
 
@@ -18,10 +20,13 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	@NotEmpty
 	public String locales;
 	
+	public String localeCookieName;
+	
 	@Override
-	public void initialize() {
-		requirePrefix = "appns";
-		locales = "en";
+	public void initialize(BRJSNode node) {
+		requirePrefix = getDefault(requirePrefix, "appns");
+		locales = getDefault(locales, "en");
+		localeCookieName = getDefault(localeCookieName, "BRJS.LOCALE");
 	}
 	
 	@Override
@@ -37,10 +42,16 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	}
 	
 	private void verifyLocales(String locales) throws ConfigException {
-		for(String locale : locales.split("\\s*,\\s*")) {
-			if(!locale.matches("^[a-z]{2}(_[A-Z]{2})?$")) {
-				throw new ConfigException("'" + locale + "' not a valid locale within '" + getUnderlyingFile().getPath() + "'");
-			}
+		try {
+    		String[] localeStrings = locales.split("\\s*,\\s*");
+    		for (int i = 0; i < localeStrings.length; i++) {
+    			Locale locale = new Locale(localeStrings[i]);
+    			if (locale.isEmptyLocale()) {
+    				throw new ConfigException("Locales cannot be empty and must be in the format " + Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT);
+    			}
+    		}
+		} catch (IllegalArgumentException ex) {
+			throw new ConfigException("Error in the config file " + getUnderlyingFile().getPath(), ex);
 		}
 	}
 }

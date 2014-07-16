@@ -4,23 +4,37 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetFilter;
-import org.bladerunnerjs.model.DeepAssetLocation;
-import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
+import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.TheAbstractAssetLocation;
+import org.bladerunnerjs.model.ThirdpartyLibManifest;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 
-public class ThirdpartyAssetLocation extends DeepAssetLocation {
-	private final NonBladerunnerJsLibManifest manifest;
+public final class ThirdpartyAssetLocation extends TheAbstractAssetLocation {
+	private final ThirdpartyLibManifest manifest;
 	
 	public ThirdpartyAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 		
 		try {
-			manifest = new NonBladerunnerJsLibManifest(this);
+			manifest = new ThirdpartyLibManifest(this);
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public ThirdpartyLibManifest getManifest(){
+		return manifest;
+	}
+	
+	protected List<File> getCandidateFiles() {
+		try {
+			List<File> assetFiles = new ArrayList<>(manifest.getCssFiles());
+			assetFiles.add(file("thirdparty-lib.manifest"));
+			
+			return assetFiles;
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -28,42 +42,12 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 	}
 	
 	@Override
+	public String requirePrefix() {
+		return ((JsLib) assetContainer()).getName();
+	}
+	
+	@Override
 	public String jsStyle() {
 		return ThirdpartyAssetLocation.class.getSimpleName();
-	}
-	
-	@Override
-	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
-		A asset;
-		
-		if(!dir.equals(this.dir())) {
-			throw new AssetFileInstantationException("directory '" + dir.getPath() + "' was not the asset location directory '" + dir().getPath() + "'.");
-		}
-		else if(!assetName.equals("")) {
-			throw new AssetFileInstantationException("asset name '" + assetName + "' was not empty.");
-		}
-		else {
-			asset = assetLocator.obtainAsset(assetClass, dir, assetName);
-		}
-		
-		return asset;
-	}
-	
-	@Override
-	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
-		List<A> assets = new ArrayList<>();
-		
-		try {
-			for(File cssAssetFile : manifest.getCssFiles()) {
-				if(assetFilter.accept(cssAssetFile.getName())) {
-					assets.add(assetLocator.obtainAsset(assetClass, cssAssetFile.getParentFile(), cssAssetFile.getName()));
-				}
-			}
-		}
-		catch (ConfigException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return assets;
 	}
 }

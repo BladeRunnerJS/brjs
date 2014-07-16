@@ -2,7 +2,6 @@ package org.bladerunnerjs.testing.utility;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.logging.LoggerType;
 
 public class TestLoggerFactory implements LoggerFactory
 {
@@ -13,8 +12,8 @@ public class TestLoggerFactory implements LoggerFactory
 		this.logStore = logStore;
 	}
 
-	public Logger getLogger(LoggerType type, Class<?> clazz)
+	public Logger getLogger(Class<?> clazz)
 	{
-		return new TestLogger( type.getTypedLoggerName(clazz), logStore);
+		return new TestLogger( clazz.getPackage().getName(), logStore);
 	}
 }

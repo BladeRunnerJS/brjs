@@ -29,8 +29,8 @@ public class BladeTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
+		given(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
@@ -54,7 +54,6 @@ public class BladeTest extends SpecTest {
 		when(blade1).populate();
 		then(observer).notified(NodeReadyEvent.class, blade1)
 			.and(observer).notified(NodeReadyEvent.class, blade1.testType("unit").testTech("js-test-driver"))
-			.and(observer).notified(NodeReadyEvent.class, blade1.theme("standard"))
 			.and(observer).notified(NodeReadyEvent.class, blade1.workbench());
 	}
 	
@@ -86,7 +85,7 @@ public class BladeTest extends SpecTest {
 	public void bladeHasClassNameTranformAddedDuringPopulation() throws Exception {
 		String expectedClassName = WordUtils.capitalize( blade1.getName() );
 		given(bladeTemplate).containsFolder("@blade")
-			.and(bladeTemplate).containsFileWithContents("@class-name.js", "function @class-name(){}");
+			.and(bladeTemplate).containsFileWithContents("@bladeTitle.js", "function @bladeTitle(){}");
 		when(blade1).populate();
 		then(blade1).hasDir(blade1.getName())
 			.and(blade1).fileHasContents(expectedClassName + ".js", "function " + expectedClassName + "(){}");
@@ -98,9 +97,23 @@ public class BladeTest extends SpecTest {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(blade1).hasClass("appns.bs.b1.Class1")
 			.and(blade2).hasClass("appns.bs.b2.Class1")
-			.and(blade2).classRefersTo("appns.bs.b2.Class1", "appns.bs.b1.blade.Class1")
+			.and(blade2).classDependsOn("appns.bs.b2.Class1", "appns.bs.b1.blade.Class1")
 			.and(aspect).indexPageRefersTo("blade2.Class2");
 		when(aspect).getBundleInfo();
 //		then(exceptions).verifyException(BundleSetException.class, blade2.getName() //some other information);
+	}
+	
+	@Test
+	public void populatingABladeIntoANamespacedJsBladesetCausesAJsStyleFileToBeCreated() throws Exception {
+		given(bladeset).hasNamespacedJsPackageStyle();
+		when(blade1).populate();
+		then(blade1).hasFile(".js-style");
+	}
+	
+	@Test
+	public void populatingABladeIntoACommonJsBladesetDoesNotCausesAJsStyleFileToBeCreated() throws Exception {
+		given(bladeset).hasBeenCreated();
+		when(blade1).populate();
+		then(blade1).doesNotHaveFile(".js-style");
 	}
 }

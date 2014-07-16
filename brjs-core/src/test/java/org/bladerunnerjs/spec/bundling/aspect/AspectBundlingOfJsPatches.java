@@ -21,8 +21,8 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			
 		app = brjs.app("app1");
@@ -32,10 +32,10 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 	
 	@Test
 	public void weDoNoIncludePatchesForClassesThatArentUsed() throws Exception {
-		given(sdkJsLib).hasClasses("sdkLib.Class", "sdkLib.AnotherClass")
+		given(sdkJsLib).hasClasses("sdkLib/Class", "sdkLib/AnotherClass")
     		.and(aspect).indexPageRequires("sdkLib/Class")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/AnotherClass.js", "sdkLib.AnotherClass.patch = function() {}");
-    	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+    	when(aspect).requestReceived("js/dev/combined/bundle.js", response);
     	then(response).doesNotContainText("sdkLib.AnotherClass.patch = function() {}")
     		.and(response).containsText("define('sdkLib/Class'");
 	}
@@ -44,34 +44,34 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 	@Test
 	public void usefulLoggingIsOutputWhenAPatchIsApplied() throws Exception {
 		given(logging).enabled()
-			.and(sdkJsLib).hasClasses("sdkLib.Class", "sdkLib.AnotherClass")
+			.and(sdkJsLib).hasClasses("sdkLib/Class", "sdkLib/AnotherClass")
     		.and(aspect).indexPageRequires("sdkLib/Class")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}");
-    	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+    	when(aspect).requestReceived("js/dev/combined/bundle.js", response);
     	then(response).containsText("sdkLib.Class.patch = ")
     		.and(logging).debugMessageReceived(SourceModulePatch.PATCH_APPLIED_MESSAGE, "sdkLib/Class", "js-patches/sdkLib/Class.js");
 	}
 	
 	@Test
 	public void updatedPatchesAreIncludedInEachBundle_WeDoNotCacheThePatchContent() throws Exception {
-    	given(sdkJsLib).hasClasses("sdkLib.Class")
+    	given(sdkJsLib).hasClasses("sdkLib/Class")
     		.and(aspect).indexPageRequires("sdkLib/Class")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}")
-			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
+			.and(aspect).hasReceivedRequest("js/dev/combined/bundle.js");
 		when(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.newPatchMethod = function() {}")
-    		.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+    		.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
     	then(response).containsText("sdkLib.Class.newPatchMethod = ");
 	}
 	
 	@Test
 	public void newRequiresAreIncludedInTheBundle_WeDontNotCacheThePatchRequires() throws Exception {
-    	given(sdkJsLib).hasClasses("sdkLib.Class1", "sdkLib.Class2")
+    	given(sdkJsLib).hasClasses("sdkLib/Class1", "sdkLib/Class2")
     		.and(aspect).indexPageRequires("sdkLib/Class1")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "sdkLib.Class1.patch = function() {}")
-			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
+			.and(aspect).hasReceivedRequest("js/dev/combined/bundle.js");
 		when(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "require('sdkLib/Class2')")
-    		.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-    	then(response).containsClasses("sdkLib.Class2");
+    		.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("sdkLib.Class2");
 	}
 	
 }

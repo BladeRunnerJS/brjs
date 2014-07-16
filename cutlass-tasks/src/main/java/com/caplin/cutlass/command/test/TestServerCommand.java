@@ -46,8 +46,8 @@ public class TestServerCommand extends AbstractPlugin implements LegacyCommandPl
 	}
 	
 	@Override
-	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
+	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
-		testRunner.run(args, this);
+		return testRunner.run(args, this);
 	}
 }

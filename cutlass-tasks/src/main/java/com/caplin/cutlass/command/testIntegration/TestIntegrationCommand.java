@@ -9,40 +9,39 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
-import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
 import com.caplin.cutlass.testIntegration.WebDriverProvider;
 
 public class TestIntegrationCommand extends AbstractPlugin implements LegacyCommandPlugin 
 {
-	// TODO: get rid of the idea of alpha commands now that commands are plugins, and so can easily be kept separate from the product
-	private static final String ALPHA_PREFIX = "alpha-";
-	
 	private static final String URL_FLAG = "--url";
 	private static final String NO_WORKBENCH_FLAG = "--no-workbench";
-	private ConsoleWriter out;
+	private Logger logger;
+	private BRJS brjs;
 	
-	public TestIntegrationCommand(File sdkBaseDir)
+	public TestIntegrationCommand()
 	{
-		out = BRJSAccessor.root.getConsoleWriter();
+		this.logger = ThreadSafeStaticBRJSAccessor.root.logger(this.getClass());
 	}
 	
 	@Override
 	public void setBRJS(BRJS brjs)
-	{	
+	{
+		this.brjs = brjs;
 	}
 	
 	@Override
 	public String getCommandName()
 	{
-		return ALPHA_PREFIX + "test-integration";
+		return "test-integration";
 	}
 	
 	@Override
@@ -63,7 +62,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 	}
 	
 	@Override
-	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
+	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		validateArguments(args);
 		File testRoot = getTestRoot(args);
@@ -71,9 +70,9 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 				
 		TestCompiler testCompiler = new TestCompiler();
 		
-		out.println("Running integration tests in " + testRoot.getPath());
-		out.println("Running integration tests using root URL: " + WebDriverProvider.getBaseUrl(""));
-		out.println("");
+		logger.println("Running integration tests in " + testRoot.getPath());
+		logger.println("Running integration tests using root URL: " + WebDriverProvider.getBaseUrl(""));
+		logger.println("");
 		
 		File classesRoot = null;
 		try
@@ -89,14 +88,14 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 			FileUtils.deleteQuietly(classesRoot);
 		}
 		
-		List<File> testContainerDirs = new IntegrationTestFinder().findTestContainerDirs(testRoot, ignoreWorkbenches(args));
+		List<File> testContainerDirs = new IntegrationTestFinder().findTestContainerDirs(brjs, testRoot, ignoreWorkbenches(args));
 		if (testContainerDirs.size() < 1) 
 		{
 			throw new CommandOperationException("No tests found.");
 		}
-		out.println("Found tests in " + testContainerDirs.size() + " location(s).");
+		logger.println("Found tests in " + testContainerDirs.size() + " location(s).");
 		
-		List<File> classDirs = testCompiler.compileTestDirs(testContainerDirs);
+		List<File> classDirs = testCompiler.compileTestDirs(brjs, testContainerDirs);
 		
 		List<Class<?>> testClasses = testCompiler.loadClasses(classDirs);
 		
@@ -115,30 +114,30 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		{
 			throw new CommandOperationException("There were failing tests.");
 		}
+		return 0;
 	}
 	
 	private void printTestReport(Result testResult) 
 	{
-		out.println("");
-		out.println("== Test report ==");
-		out.println("Tests run: " + testResult.getRunCount());
-		out.println("Failed tests: " + testResult.getFailureCount());
-		out.println("Ignored tests: " + testResult.getIgnoreCount());
-		out.println("");
-		BRJSAccessor.root.getConsoleWriter().flush();
+		logger.println("");
+		logger.println("== Test report ==");
+		logger.println("Tests run: " + testResult.getRunCount());
+		logger.println("Failed tests: " + testResult.getFailureCount());
+		logger.println("Ignored tests: " + testResult.getIgnoreCount());
+		logger.println("");
 		if (testResult.getFailures().size() > 0)
 		{
-			out.println("- Failures -");
+			logger.println("- Failures -");
 			for (Failure fail : testResult.getFailures())
 			{
-				out.println("");
-				out.println("--------------------------------");
-				out.println(fail.getDescription().toString());
-				out.println(fail.getException().toString());
-				out.println(fail.getTrace());
-				out.println("--------------------------------");
-				out.println("");
-				out.println("");
+				logger.println("");
+				logger.println("--------------------------------");
+				logger.println(fail.getDescription().toString());
+				logger.println(fail.getException().toString());
+				logger.println(fail.getTrace());
+				logger.println("--------------------------------");
+				logger.println("");
+				logger.println("");
 			}
 		}
 		System.out.flush();

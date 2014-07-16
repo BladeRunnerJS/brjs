@@ -14,7 +14,7 @@ public class BladeVerifier extends NodeVerifier<Blade> {
 		assetContainerVerifier = new AssetContainerVerifier(blade);
 	}
 	
-	public VerifierChainer hasSourceModules(SourceModuleDescriptor... sourceModules) throws Exception {
+	public VerifierChainer hasSourceModules(String... sourceModules) throws Exception {
 		assetContainerVerifier.hasSourceModules(sourceModules);
 		
 		return verifierChainer;

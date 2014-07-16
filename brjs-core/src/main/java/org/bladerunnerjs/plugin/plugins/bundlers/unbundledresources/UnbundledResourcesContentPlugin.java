@@ -1,19 +1,22 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.unbundledresources;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.BinaryResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -51,19 +54,9 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getGroupName()
+	public String getCompositeGroupName()
 	{
-		return "";
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
+		return null;
 	}
 	
 	@Override
@@ -73,7 +66,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
 	{
 		try
 		{
@@ -82,16 +75,23 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     			String relativeFilePath = contentPath.properties.get(FILE_PATH_REQUEST_FORM);
     			
     			File unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
-    			
+    			App app = bundleSet.getBundlableNode().app();
     			File requestedFile = new File(unbundledResourcesDir, relativeFilePath);
+    			String requestedFilePathRelativeToApp = RelativePathUtility.get(app.root(), app.dir(), requestedFile);
+    			
     			if (!requestedFile.isFile())
     			{
-    				App app = bundleSet.getBundlableNode().app();
-    				String requestedFilePathRelativeToApp = RelativePathUtility.get(app.dir().getParentFile(), requestedFile);
-    				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToApp+"' does not exist or is not a file.");
+    				String requestedFilePathRelativeToRoot = RelativePathUtility.get(brjs, app.dir().getParentFile(), requestedFile);
+    				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
     			}
-				IOUtils.copy(new FileInputStream(requestedFile), os);
+				
+    			ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+    			contentAccessor.handleRequest(requestedFilePathRelativeToApp, outputBuffer);
+    			return new BinaryResponseContent( new ByteArrayInputStream(outputBuffer.toByteArray()) );
     		}
+			else {
+				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+			}
 		}
 		catch (IOException e)
 		{
@@ -100,13 +100,13 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
 		return calculatValidRequestPaths(bundleSet);
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
 		return calculatValidRequestPaths(bundleSet);
 	}
@@ -125,14 +125,11 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		
 		try
 		{
-			for (File file : brjs.getFileIterator(unbundledResourcesDir).nestedFiles())
+			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFiles())
 			{
-				if (file.isFile())
-				{
-        			String relativePath = RelativePathUtility.get(unbundledResourcesDir, file);
-        			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);
-        			requestPaths.add(calculatedPath);
-				}
+    			String relativePath = RelativePathUtility.get(brjs, unbundledResourcesDir, file);
+    			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);
+    			requestPaths.add(calculatedPath);
 			}
 		}
 		catch (MalformedTokenException e)

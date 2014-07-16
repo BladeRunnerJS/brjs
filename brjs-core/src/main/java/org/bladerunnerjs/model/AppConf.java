@@ -2,13 +2,15 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.yaml.YamlAppConf;
 
 public class AppConf extends ConfFile<YamlAppConf> {
 	
-	public AppConf(File confFile) throws ConfigException {
-		super(null, YamlAppConf.class, confFile);	//TODO: remove this - we only need it while we have to use servlets in Wars
+	public AppConf(BRJS brjs, File confFile) throws ConfigException {
+		super(brjs, YamlAppConf.class, confFile);
 	}
 	
 	public AppConf(App app) throws ConfigException {
@@ -25,13 +27,31 @@ public class AppConf extends ConfFile<YamlAppConf> {
 		verifyAndAutoWrite();
 	}
 	
-	public String getLocales() throws ConfigException {
+	public Locale[] getLocales() throws ConfigException {
 		reloadConfIfChanged();
-		return conf.locales;
+		String[] localeStrings = conf.locales.split("\\s*,\\s*");
+		Locale[] locales = new Locale[localeStrings.length];
+		for (int i = 0; i < localeStrings.length; i++) {
+			locales[i] = new Locale(localeStrings[i]);
+		}
+		return locales;
 	}
 	
-	public void setLocales(String locales) throws ConfigException {
-		conf.locales = locales;
+	public void setLocales(Locale[] locales) throws ConfigException {
+		conf.locales = StringUtils.join(locales,",");
+		verifyAndAutoWrite();
+	}
+	
+	public Locale getDefaultLocale() throws ConfigException {
+		return getLocales()[0];
+	}
+	
+	public String getLocaleCookieName() throws ConfigException {
+		return conf.localeCookieName;
+	}
+	
+	public void setLocaleCookieName(String cookieName) throws ConfigException {
+		conf.localeCookieName = cookieName;
 		verifyAndAutoWrite();
 	}
 }

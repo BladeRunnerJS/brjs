@@ -24,7 +24,7 @@ public class CreateAspectCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new CreateAspectCommand())
+		given(brjs).hasCommandPlugins(new CreateAspectCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("aspect");
@@ -75,8 +75,8 @@ public class CreateAspectCommandTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-aspect", "app", "aspect");
 		then(aspect).dirExists()
-			.and(output).containsLine(ASPECT_CREATE_SUCCESS_CONSOLE_MSG, "aspect")
-			.and(output).containsLine(ASPECT_PATH_CONSOLE_MSG, aspect.dir().getPath());
+			.and(logging).containsFormattedConsoleMessage(ASPECT_CREATE_SUCCESS_CONSOLE_MSG, "aspect")
+			.and(logging).containsFormattedConsoleMessage(ASPECT_PATH_CONSOLE_MSG, aspect.dir().getPath());
 	}
 	
 	@Test

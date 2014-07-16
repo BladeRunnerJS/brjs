@@ -1,68 +1,111 @@
 package org.bladerunnerjs.utility;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.PrefixFileFilter;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LogLevelAccessor;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.plugin.plugins.commands.core.HelpCommand;
-import org.bladerunnerjs.plugin.plugins.commands.core.VersionCommand;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class UserCommandRunner {
-	public static void run(BRJS brjs, CommandList commandList, LogLevelAccessor logLevelAccessor, String args[]) throws CommandOperationException {
-		ConsoleWriter out = brjs.getConsoleWriter();
-		
-		if (!CommandRunner.extractCommandFromArgs(args).equals(new VersionCommand().getCommandName())) {
-			out.println(brjs.versionInfo().toString());
-			out.println("");
-		}
-		
-		doRunCommand(brjs, args, out);
+	
+	public class Messages {
+		public static final String OUTDATED_JAR_MESSAGE = "The app '%s' is either missing BRJS jar(s) or they are outdated."+
+				" You should delete all jars prefixed with '%s' in the WEB-INF/lib directory and copy in new versions from %s.";
+	}
+	
+	public static int run(BRJS brjs, CommandList commandList, LogLevelAccessor logLevelAccessor, String args[]) throws CommandOperationException {
+		return doRunCommand(brjs, args);
 	}
 
-	private static void doRunCommand(BRJS brjs, String[] args, ConsoleWriter out) throws CommandOperationException
+	private static int doRunCommand(BRJS brjs, String[] args) throws CommandOperationException
 	{
+		Logger logger = brjs.logger(UserCommandRunner.class);
 		try {
-			brjs.runCommand(args);
+			checkApplicationLibVersions(brjs, logger);
+			return brjs.runCommand(args);
 		}
 		catch (NoSuchCommandException e) {
 			if (e.getCommandName().length() > 0)
 			{
-				out.println(e.getMessage());
-				out.println("--------");
-				out.println("");
+				logger.println(e.getMessage());
+				logger.println("--------");
+				logger.println("");
 			}
-			doRunCommand(brjs, new String[] {new HelpCommand().getCommandName() }, out);
+			return doRunCommand(brjs, new String[] {new HelpCommand().getCommandName() });
 		}
 		catch (CommandArgumentsException e) {
-			out.println("Problem:");
-			out.println("  " + e.getMessage());
-			out.println("");
-			out.println("Usage:");
-			out.println("  brjs " + e.getCommand().getCommandName() + " " + e.getCommand().getCommandUsage());
+			logger.println("Problem:");
+			logger.println("  " + e.getMessage());
+			logger.println("");
+			logger.println("Usage:");
+			logger.println("  brjs " + e.getCommand().getCommandName() + " " + e.getCommand().getCommandUsage());
 		}
 		catch (CommandOperationException e) {
-			out.println("Error:");
-			out.println("  " + e.getMessage());
+			logger.println("Error:");
+			logger.println("  " + e.getMessage());
 			
 			if (e.getCause() != null) {
-				out.println("");
-				out.println("Caused By:");
-				out.println("  " + e.getCause().getMessage());
+				logger.println("");
+				logger.println("Caused By:");
+				logger.println("  " + e.getCause().getMessage());
 			}
 			
-			out.println("");
-			out.println("Stack Trace:");
+			logger.println("");
+			logger.println("Stack Trace:");
 			StringWriter stackTrace = new StringWriter();
 			e.printStackTrace(new PrintWriter(stackTrace));
-			out.println(stackTrace.toString());
+			logger.println(stackTrace.toString());
 			
 			throw e;
 		}
+		return -1;
 	}
+	
+	
+	private static void checkApplicationLibVersions(BRJS brjs, Logger logger)
+	{
+		for (App app : brjs.userApps()) {
+			checkApplicationLibVersions(app, logger);
+		}
+	}
+	
+	private static void checkApplicationLibVersions(App app, Logger logger)
+	{
+		File webinfLib = app.file("WEB-INF/lib");
+		File appJarsDir = app.root().appJars().dir();
+		if (!webinfLib.exists() || !appJarsDir.exists()) {
+			return;
+		}
+		
+		boolean containsInvalidJars = false;
+		
+		for (File appJar : FileUtils.listFiles(webinfLib, new PrefixFileFilter("brjs-"), null)) {
+			File sdkJar = app.root().appJars().file(appJar.getName());
+			if (!sdkJar.exists()) {
+				containsInvalidJars = true;
+			}
+		}
+		
+		for (File sdkJar : FileUtils.listFiles(appJarsDir, new PrefixFileFilter("brjs-"), null)) {
+			File appJar = new File(webinfLib, sdkJar.getName());
+			if (!appJar.exists()) {
+				containsInvalidJars = true;
+			}
+		}
+		
+		if (containsInvalidJars) {
+			logger.warn( Messages.OUTDATED_JAR_MESSAGE, app.getName(), "brjs-", RelativePathUtility.get(app.root(), app.root().dir(), appJarsDir) );
+		}
+	}
+	
 }

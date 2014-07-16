@@ -1,5 +1,7 @@
 package org.bladerunnerjs.github
 
+import org.gradle.api.GradleException;
+
 import java.security.SecureRandom
 import java.util.List;
 import javax.net.ssl.SSLContext
@@ -76,16 +78,15 @@ class GitHubAPIBridge
 		return issues
 	}
 	
-	Release createReleaseForTag(String tagVersion, HashMap releaseJson, String releaseDescription)
+	Release createReleaseForTag(String tagVersion, Map releaseJson, String releaseDescription)
 	{	
-		logger.quiet "creating/editting release for tag ${tagVersion}"
+		logger.quiet "creating release for tag ${tagVersion}"
 		
 		String httpMethod = "post"
 		String httpUrl = 'releases'
 		int releaseId = getIdForExistingRelease(tagVersion)
 		if (releaseId >= 0) {
-			 httpMethod = "patch"
-			 httpUrl += '/'+releaseId
+			 throw new GradleException("Unable to create release for ${tagVersion} as release already exists. Either delete it and restart the build or update the release notes manually");
 		}
 		String restUrl = getRestUrl(httpUrl)
 		

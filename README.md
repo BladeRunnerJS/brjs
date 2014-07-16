@@ -2,6 +2,8 @@
 
 **Divide & conquer complex web apps**
 
+[![Build Status](https://travis-ci.org/BladeRunnerJS/brjs.svg)](https://travis-ci.org/BladeRunnerJS/brjs)
+
 ## Getting Started
 
 The best way to get started depends on why you're here.
@@ -32,15 +34,29 @@ If you are interested in contributing to the BRJS core toolkit then the followin
 
 You may need to run `git submodule sync` and `git submodule update` when changing branches if submodules have changed.
 
+#### Install JDK
+
+BRJS is written and compiled using Java 8, but we distribute it and run the tests against it using Java 7, courtesy of [retrolambda](https://github.com/orfjackal/retrolambda). Because of this, you will need to do the following:
+
+  * Install both Java 7 and Java 8 JDKs.
+  * Configure `JAVA7_HOME` to point to the Java 7 JDK home directory.
+  * Configure `JAVA8_HOME` to point to the Java 8 JDK home directory.
+  * Configure `JAVA_HOME` to point to either the Java 7 or the Java 8 JDK home directory, as you prefer.
+  * Configure the `path` environment variable to include `$JAVA_HOME/bin`.
+
+If you install Java using the Windows installer than it places a 'java' executable in 'C:\windows\system32' that proxies to the most recently installed version of Java. You will either need to install your preferred implementation of Java last, or ensure that the path to the Java 'bin' directory appears before 'C:\windows\system32'.
+
+
+
 #### Build a Distributable Zip
 
 From the root `brjs` source directory:
 
-    $ ./gradlew cutlass-sdk:distZip
-    
-The built zip file will be found in `BRJS_ROOT/cutlass-sdk/build/distributions/` in the format `BladeRunner-VERSION.zip`.
+    $ ./gradlew brjs-sdk:distZip
 
-### More information    
+The built zip file will be found in `BRJS_ROOT/brjs-sdk/build/distributions/` in the format `BladeRunner-VERSION.zip`.
+
+### More information
 
 See the [BRJS Developer Setup Guide](https://github.com/BladeRunnerJS/brjs/wiki/BRJS-Developer-Setup) for more information.
-
+See how the [BRJS team use Github and git](https://github.com/BladeRunnerJS/brjs/wiki/How-do-we-use-GitHub-and-Git%3F).

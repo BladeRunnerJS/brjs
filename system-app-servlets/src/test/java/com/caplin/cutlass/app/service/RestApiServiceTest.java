@@ -14,14 +14,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.testing.BRJSTestFactory;
-
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.util.FileUtility;
 
 
-public class RestApiServiceTest
+public class RestApiServiceTest extends TestModelAccessor
 {
 
 	private static final String NO_APPS_PATH = "src/test/resources/RestApiServiceTest/no-apps"; 
@@ -34,21 +34,21 @@ public class RestApiServiceTest
 	/* get apps tests */
 	
 	@Test
-	public void testGettingApps_NoApps()
+	public void testGettingApps_NoApps() throws Exception
 	{
 		setupService(new File(NO_APPS_PATH));
 		assertEquals( "[]", service.getApps() );
 	}
 	
 	@Test
-	public void testGettingApps_SingleApp()
+	public void testGettingApps_SingleApp() throws Exception
 	{
 		setupService(new File(ONE_APP_PATH));
 		assertEquals( "[\"app1\"]", service.getApps() );
 	}
 	
 	@Test
-	public void testGettingApps_MultipleApps()
+	public void testGettingApps_MultipleApps() throws Exception
 	{
 		setupService(new File(THREE_APPS_PATH));
 		assertEquals( "[\"app1\", \"app2\", \"app3\"]", service.getApps() );
@@ -157,9 +157,8 @@ public class RestApiServiceTest
 	{
 		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(ONE_APP_PATH));
 		setupService(temporarySdk);
-		File warFile = FileUtility.createTemporaryFile("app1-war", ".war");
-		warFile.delete();
-		assertFalse( warFile.exists() );
+		File targetDir = FileUtility.createTemporaryDirectory("app1-war");
+		File warFile = new File(targetDir.getParentFile(), "app1-war.war");
 		service.exportWar("app1", warFile);
 		assertTrue( warFile.exists() );
 	}
@@ -335,8 +334,8 @@ public class RestApiServiceTest
 	{
 		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
-		App app1 = BRJSAccessor.root.app("app1");
-		File indexFile = new File(app1.storageDir("jsdoc-toolkit"), "output/index.html");
+		App app1 = ThreadSafeStaticBRJSAccessor.root.userApp("app1");
+		File indexFile = new File(app1.storageDir("jsdoc"), "output/index.html");
 		
 		assertFalse(indexFile.exists());
 		
@@ -346,10 +345,11 @@ public class RestApiServiceTest
 		assertTrue(indexFile.exists());
 	}
 	
-	private void setupService(File sdkRoot)
+	private void setupService(File sdkRoot) throws InvalidSdkDirectoryException
 	{
-		BRJS brjs = BRJSTestFactory.createBRJS(sdkRoot);
-		BRJSAccessor.initialize(brjs);
+		BRJS brjs = createModel(sdkRoot);
+		ThreadSafeStaticBRJSAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		service = new RestApiService(brjs);
 	}
 	

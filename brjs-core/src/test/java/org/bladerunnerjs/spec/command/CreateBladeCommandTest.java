@@ -26,7 +26,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new CreateBladeCommand())
+		given(brjs).hasCommandPlugins(new CreateBladeCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			bladeset = app.bladeset("bladeset");
@@ -52,7 +52,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfTheAppDoesntExist() throws Exception {
 		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(app.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, "app", unquoted(app.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -60,7 +60,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheBladesetDoesntExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(bladeset.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, "bladeset", unquoted(bladeset.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -68,7 +68,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheBladeAlreadyExists() throws Exception {
 		given(blade).hasBeenCreated();
 		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeAlreadyExistsException.class, unquoted(blade.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeAlreadyExistsException.class, "blade", unquoted(blade.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -87,8 +87,8 @@ public class CreateBladeCommandTest extends SpecTest {
 		given(bladeset).hasBeenCreated();
 		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
 		then(blade).dirExists()
-			.and(output).containsLine(BLADE_CREATE_SUCCESS_CONSOLE_MSG, "blade")
-			.and(output).containsLine(BLADE_PATH_CONSOLE_MSG, blade.dir().getPath());
+			.and(logging).containsFormattedConsoleMessage(BLADE_CREATE_SUCCESS_CONSOLE_MSG, "blade")
+			.and(logging).containsFormattedConsoleMessage(BLADE_PATH_CONSOLE_MSG, blade.dir().getPath());
 	}
 	
 	@Test

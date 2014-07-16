@@ -1,5 +1,10 @@
 package org.bladerunnerjs.testing.specutility;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.plugin.Event;
@@ -9,6 +14,7 @@ import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.ValueCommand;
 import org.bladerunnerjs.testing.specutility.logging.MockLogLevelAccessor;
+import org.bladerunnerjs.utility.FileUtility;
 
 
 public class BRJSCommander extends NodeCommander<BRJS> {
@@ -63,7 +69,7 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 	{
 		call(new Command() {
 			public void call() throws Exception {
-				brjs.apps();
+				brjs.userApps();
 			}
 		});
 		
@@ -105,7 +111,9 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 			{
 				try
 				{
+					specTest.logging.storeLogsIfEnabled();
 					runCommand(args);
+					specTest.logging.stopStoringLogs();
 				}
 				catch (Exception e)
 				{
@@ -122,5 +130,15 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	public void zipFileIsExtractedTo(String pathToZip, String pathToExtractZip) throws ZipException, IOException 
+	{
+		ZipFile zipFile = new ZipFile(new File(brjs.dir(), pathToZip));
+		File unzippedContentFolder = new File(brjs.dir(), pathToExtractZip);
+		
+		unzippedContentFolder.mkdirs();
+		
+		FileUtility.unzip(zipFile, unzippedContentFolder);		
 	}
 }

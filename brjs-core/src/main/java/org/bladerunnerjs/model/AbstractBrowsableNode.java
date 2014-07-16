@@ -7,9 +7,9 @@ import java.io.Writer;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
-import org.dom4j.DocumentException;
 
 public abstract class AbstractBrowsableNode extends AbstractBundlableNode implements BrowsableNode {
 	public AbstractBrowsableNode(RootNode rootNode, Node parent, File dir) {
@@ -17,11 +17,11 @@ public abstract class AbstractBrowsableNode extends AbstractBundlableNode implem
 	}
 	
 	@Override
-	public void filterIndexPage(String indexPage, String locale, Writer writer, RequestMode requestMode) throws ModelOperationException {
+	public void filterIndexPage(String indexPage, Locale locale, String version, Writer writer, RequestMode requestMode) throws ModelOperationException {
 		try {
-			TagPluginUtility.filterContent(indexPage, getBundleSet(), writer, requestMode, locale);
+			TagPluginUtility.filterContent(indexPage, getBundleSet(), writer, requestMode, locale, version);
 		}
-		catch (IOException | NoTagHandlerFoundException | DocumentException e) {
+		catch (IOException | NoTagHandlerFoundException e) {
 			throw new ModelOperationException(e);
 		}
 	}

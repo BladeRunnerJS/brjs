@@ -4,9 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.naming.InvalidNameException;
+
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.SdkJsLib;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
@@ -46,7 +51,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 
-	public BuilderChainer hasCommands(CommandPlugin... commands)
+	public BuilderChainer hasCommandPlugins(CommandPlugin... commands)
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.pluginCommands);
@@ -59,7 +64,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasModelObservers(ModelObserverPlugin... modelObservers)
+	public BuilderChainer hasModelObserverPlugins(ModelObserverPlugin... modelObservers)
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.modelObservers);
@@ -102,7 +107,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasMinifiers(MinifierPlugin... minifyPlugins)
+	public BuilderChainer hasMinifierPlugins(MinifierPlugin... minifyPlugins)
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.minifiers);
@@ -115,7 +120,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasTagPlugins(TagHandlerPlugin... tagHandlers)
+	public BuilderChainer hasTagHandlerPlugins(TagHandlerPlugin... tagHandlers)
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.tagHandlers);
@@ -128,7 +133,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsCommands()
+	public BuilderChainer automaticallyFindsCommandPlugins()
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.pluginCommands);
@@ -158,7 +163,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsTagHandlers() 
+	public BuilderChainer automaticallyFindsTagHandlerPlugins() 
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.tagHandlers);
@@ -168,7 +173,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsAssetProducers() {
+	public BuilderChainer automaticallyFindsAssetPlugins() {
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.assetPlugins);
 		
@@ -177,7 +182,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsAssetLocationProducers() {
+	public BuilderChainer automaticallyFindsAssetLocationPlugins() {
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.assetLocationPlugins);
 		
@@ -186,17 +191,17 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsBundlers()
+	public BuilderChainer automaticallyFindsBundlerPlugins()
 	{
 		automaticallyFindsContentPlugins();
-		automaticallyFindsTagHandlers();
-		automaticallyFindsAssetProducers();
-		automaticallyFindsAssetLocationProducers();
+		automaticallyFindsTagHandlerPlugins();
+		automaticallyFindsAssetPlugins();
+		automaticallyFindsAssetLocationPlugins();
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsMinifiers() 
+	public BuilderChainer automaticallyFindsMinifierPlugins() 
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.minifiers);
@@ -206,10 +211,23 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer automaticallyFindsAllPlugins() {
+		automaticallyFindsContentPlugins();
+		automaticallyFindsTagHandlerPlugins();
+		automaticallyFindsAssetPlugins();
+		automaticallyFindsAssetLocationPlugins();
+		automaticallyFindsCommandPlugins();
+		automaticallyFindsModelObservers();
+		
+		return builderChainer;
+	}
+	
+	
 	@Override
 	public BuilderChainer hasBeenCreated() throws Exception
 	{
 		brjs = specTest.createModel();
+		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
 		
@@ -221,16 +239,25 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenAuthenticallyCreated() throws Exception
 	{
 		brjs = specTest.createNonTestModel();
+		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
 		
 		return builderChainer;
 	}
-
-	public BuilderChainer usedForServletModel()
+	
+	public BuilderChainer hasBeenAuthenticallyReCreated() throws Exception
 	{
-		BRJSThreadSafeModelAccessor.destroy();
-		BRJSThreadSafeModelAccessor.initializeModel(brjs);
+		if (brjs != null) {
+			brjs.close();
+		}
+		return hasBeenAuthenticallyCreated();
+	}
+
+	public BuilderChainer usedForServletModel() throws InvalidSdkDirectoryException
+	{
+		ThreadSafeStaticBRJSAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		return builderChainer;
 	}
 	
@@ -270,8 +297,35 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer usesProductionTemplates() throws IOException {
 		verifyBrjsIsSet();
-		File templateDir = new File("../cutlass-sdk/build-resources/includes/sdk/templates");
+		File templateDir = new File("../brjs-sdk/build-resources/includes/sdk/templates");
 		FileUtils.copyDirectory(templateDir, brjs.template("template").dir().getParentFile());
+		
+		File jsdocResourcesDir = new File("../brjs-sdk/build-resources/includes/sdk/jsdoc-toolkit-resources");
+		File jsdocResourcesDest = brjs.sdkRoot().file("jsdoc-toolkit-resources");
+		FileUtils.copyDirectory(jsdocResourcesDir, jsdocResourcesDest);
+		new File(jsdocResourcesDest, "jsdoc-toolkit/jsdoc").setExecutable(true);
+		
+		return builderChainer;
+	}
+
+	public BuilderChainer hasProdVersion(String version)
+	{
+		specTest.appVersionGenerator.setProdVersion(version);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasDevVersion(String version)
+	{
+		specTest.appVersionGenerator.setDevVersion(version);
+		
+		return builderChainer;
+	}
+
+	public BuilderChainer localeForwarderHasContents(String string) throws IOException, InvalidNameException, ModelUpdateException
+	{
+		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
+		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), string);
 		
 		return builderChainer;
 	}

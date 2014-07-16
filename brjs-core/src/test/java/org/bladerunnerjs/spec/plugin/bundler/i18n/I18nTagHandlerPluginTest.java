@@ -17,8 +17,8 @@ public class I18nTagHandlerPluginTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -28,7 +28,7 @@ public class I18nTagHandlerPluginTest extends SpecTest
 	public void i18nTokenPluginContainsJsRequest() throws Exception {
 		given(aspect).indexPageHasContent("<@i18n.bundle@/>");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
-		then(response).containsText("<script type=\"text/javascript\" src=\"i18n/en_GB.js\"></script>");
+		then(response).containsText("<script type=\"text/javascript\" src=\"../v/dev/i18n/en_GB.js\"></script>");
 	}
 	
 }

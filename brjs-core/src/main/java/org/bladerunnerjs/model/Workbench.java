@@ -2,47 +2,52 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.utility.IndexPageSeedFileLocator;
+import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public final class Workbench extends AbstractBrowsableNode implements TestableNode, ThemeableNode
+public final class Workbench extends AbstractBrowsableNode implements TestableNode
 {
-	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
-	private final NodeMap<TypedTestPack> testTypes;
-	private final NodeMap<Theme> themes;
+	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
+	private final IndexPageSeedLocator seedLocator;
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
-		testTypes = TypedTestPack.createNodeSet(rootNode);
-		themes = Theme.createNodeSet(rootNode);
+		seedLocator = new IndexPageSeedLocator(root());
+	}
+	
+	@Override
+	public File[] memoizedScopeFiles() {
+		List<File> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
+		scopeFiles.add(dir());
 		
-		registerInitializedNode();
+		return scopeFiles.toArray(new File[scopeFiles.size()]);
 	}
 
 	public DirNode styleResources()
 	{
-		return item(styleResources);
+		return styleResources.item();
 	}
 		
 	public Blade parent()
 	{
 		return (Blade) parentNode();
 	}
-		
+	
 	@Override
-	public List<LinkedAsset> getSeedFiles() {
-		return IndexPageSeedFileLocator.getSeedFiles(this);
+	public List<LinkedAsset> modelSeedAssets() {
+		return seedLocator.seedAssets(this);
 	}
 	
 	@Override
@@ -61,18 +66,18 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	}
 	
 	@Override
-	public List<AssetContainer> assetContainers() {
-		List<AssetContainer> assetContainers = new ArrayList<>();
+	public List<AssetContainer> scopeAssetContainers() {
+List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		assetContainers.add( app().aspect("default") );
-		
-		assetContainers.add( this );
-		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
-		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
-		
-		for(JsLib jsLib : app().jsLibs()) {
-			assetContainers.add(jsLib);
+		for (JsLib jsLib : app().jsLibs())
+		{
+			assetContainers.add( jsLib );			
 		}
+		
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
+		
+		assetContainers.add(this);
 		
 		return assetContainers;
 	}
@@ -86,24 +91,14 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return children(testTypes);
+		return testTypes.list();
 	}
 	
 	@Override
 	public TypedTestPack testType(String typedTestPackName)
 	{
-		return child(testTypes, typedTestPackName);
+		return testTypes.item(typedTestPackName);
 	}
 	
-	@Override
-	public List<Theme> themes()
-	{
-		return children(themes);
-	}
 	
-	@Override
-	public Theme theme(String themeName)
-	{
-		return child(themes, themeName);
-	}
 }

@@ -1,3 +1,0 @@
-<aliases xmlns="http://schema.caplin.com/CaplinTrader/aliases">
-	<alias name="alias #1" class="novox.g1.AliasClass1" no-such-property="fail"/>
-</aliases>

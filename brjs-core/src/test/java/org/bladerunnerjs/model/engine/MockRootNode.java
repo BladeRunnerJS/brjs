@@ -2,23 +2,22 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.IO;
+import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
-import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.ObserverList;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
 
 
 public class MockRootNode implements RootNode
 {
-
 	@Override
 	public Node parentNode()
 	{
@@ -36,7 +35,13 @@ public class MockRootNode implements RootNode
 	{
 		return null;
 	}
-
+	
+	@Override
+	public File[] memoizedScopeFiles()
+	{
+		return null;
+	}
+	
 	@Override
 	public boolean dirExists()
 	{
@@ -78,7 +83,7 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public Logger logger(LoggerType type, Class<?> clazz)
+	public Logger logger(Class<?> clazz)
 	{
 		return new Logger()
 		{
@@ -87,11 +92,6 @@ public class MockRootNode implements RootNode
 			public String getName()
 			{
 				return null;
-			}
-
-			@Override
-			public void fatal(String message, Object... params)
-			{
 			}
 
 			@Override
@@ -113,18 +113,17 @@ public class MockRootNode implements RootNode
 			public void debug(String message, Object... params)
 			{
 			}
+
+			@Override
+			public void println(String message, Object... params)
+			{
+			}
+
+			@Override
+			public void console(String message, Object... params)
+			{	
+			}
 		};
-	}
-
-	@Override
-	public ConsoleWriter getConsoleWriter()
-	{
-		return null;
-	}
-
-	@Override
-	public void setConsoleWriter(ConsoleWriter consoleWriter)
-	{
 	}
 
 	@Override
@@ -149,6 +148,13 @@ public class MockRootNode implements RootNode
 	public void registerNode(Node node)
 	{
 	}
+	
+	@Override
+	public void registerNode(Node node, boolean makeUnique)
+	{
+	}
+	
+	
 	
 	@Override
 	public void clearRegisteredNode(Node node)
@@ -200,13 +206,18 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public FileIterator getFileIterator(File dir) {
-		return new FileIterator(this, new PessimisticFileModificationService(), null);
+	public FileInfo getFileInfo(File dir) {
+		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo());
 	}
 
 	@Override
 	public <N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass)
 	{
+		return null;
+	}
+
+	@Override
+	public IO io() {
 		return null;
 	}
 }

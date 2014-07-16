@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Joiner;
 
@@ -18,6 +19,7 @@ public class LogMessageStore
 	public static final String UNEXPECTED_LOG_MESSAGES = "Unexpected %s log messages: [%s]";
 	
 	private boolean storeLogs = false; /* enable capturing log messages for 'when' actions */
+	private boolean storeConsoleLogs = false; /* enable capturing console log messages for 'when' actions */
 	private boolean echoLogs = false;
 	private boolean loggingEnabled = false;
 	private boolean assertionMade = false;
@@ -25,6 +27,7 @@ public class LogMessageStore
 	private LinkedList<LogMessage> fatalMessages = new LinkedList<LogMessage>();
 	private LinkedList<LogMessage> errorMessages = new LinkedList<LogMessage>();
 	private LinkedList<LogMessage> warnMessages = new LinkedList<LogMessage>();
+	private LinkedList<LogMessage> consoleMessages = new LinkedList<LogMessage>();
 	private LinkedList<LogMessage> infoMessages = new LinkedList<LogMessage>();
 	private LinkedList<LogMessage> debugMessages = new LinkedList<LogMessage>();
 
@@ -38,6 +41,7 @@ public class LogMessageStore
 		fatalMessages.clear();
 		errorMessages.clear();
 		warnMessages.clear();
+		consoleMessages.clear();
 		infoMessages.clear();
 		debugMessages.clear();
 	}
@@ -45,6 +49,7 @@ public class LogMessageStore
 	public LogMessageStore(boolean storeLogs)
 	{
 		this.storeLogs = storeLogs;
+		this.storeConsoleLogs = storeLogs;
 	}
 	
 	public void enableEchoingLogs()
@@ -58,6 +63,11 @@ public class LogMessageStore
 	public void enableStoringLogs()
 	{
 		storeLogs = true;
+	}
+	
+	public void enableStoringConsoleLogs()
+	{
+		storeConsoleLogs = true;
 	}
 
 	public void disableStoringLogs()
@@ -84,56 +94,90 @@ public class LogMessageStore
 	public void verifyFatalLogMessage(String message, Object... params)
 	{
 		assertionMade = true;
-		verifyLogMessage("fatal", true, fatalMessages, message, params);
+		verifyLogMessage("fatal", true, fatalMessages, new LogMessage(message, params));
 	}
 	
 	public void verifyErrorLogMessage(String message, Object... params)
 	{
 		assertionMade = true;
-		verifyLogMessage("error", true, errorMessages, message, params);
+		verifyLogMessage("error", true, errorMessages, new LogMessage(message, params));
 	}
 	
 	public void verifyWarnLogMessage(String message, Object... params)
 	{
 		assertionMade = true;
-		verifyLogMessage("warn", true, warnMessages, message, params);
+		verifyLogMessage("warn", true, warnMessages, new LogMessage(message, params));
+	}
+	
+	public void verifyFormattedConsoleLogMessage(String message, Object... params)
+	{
+		verifyConsoleLogMessages( new ConsoleLogMessage(message, params).toString() );
+	}
+	
+	public void verifyConsoleLogMessages(String... messages)
+	{
+		String acutalConsoleMessages = StringUtils.join(consoleMessages, "\n");
+		String expectedMessages = StringUtils.join(messages, "\n");
+		if ( !acutalConsoleMessages.contains(expectedMessages) ) {
+			assertEquals("console messages didnt contain expected text", expectedMessages, acutalConsoleMessages);
+		}
+	}
+	
+	public void verifyConsoleLogDoesNotContain(String... messages)
+	{
+		String acutalConsoleMessages = StringUtils.join(consoleMessages, "\n");
+		for (String message : messages) {
+			if ( acutalConsoleMessages.contains(message) ) {
+				assertEquals("console messages contain unexpected text", message, acutalConsoleMessages);
+			}			
+		}
+	}
+	
+	public void verifyNoConsoleLogMessage(String message, Object... params)
+	{
+		verifyNoLogMessage("console", consoleMessages, new ConsoleLogMessage(message, params));
 	}
 	
 	public void verifyInfoLogMessage(String message, Object... params)
 	{
 		assertionMade = true;
-		verifyLogMessage("info", true, infoMessages, message, params);
+		verifyLogMessage("info", true, infoMessages, new LogMessage(message, params));
 	}
 	
 	public void verifyDebugLogMessage(String message, Object... params)
 	{
 		assertionMade = true;
-		verifyLogMessage("debug", false, debugMessages, message, params);
+		verifyLogMessage("debug", false, debugMessages, new LogMessage(message, params));
 	}
 	
 	public void addFatal(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(fatalMessages, loggerName, message, params);
+		registerLogMessage(fatalMessages, loggerName, new LogMessage(message, params));
 	}
 
 	public void addError(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(errorMessages, loggerName, message, params);
+		registerLogMessage(errorMessages, loggerName, new LogMessage(message, params));
 	}
 	
 	public void addWarn(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(warnMessages, loggerName, message, params);
+		registerLogMessage(warnMessages, loggerName, new LogMessage(message, params));
 	}
 
+	public void addConsole(String loggerName, String message, Object[] params)
+	{
+		registerLogMessage(consoleMessages, loggerName, new ConsoleLogMessage(message, params));
+	}
+	
 	public void addInfo(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(infoMessages, loggerName, message, params);
+		registerLogMessage(infoMessages, loggerName, new LogMessage(message, params));
 	}
 
 	public void addDebug(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(debugMessages, loggerName, message, params);
+		registerLogMessage(debugMessages, loggerName, new LogMessage(message, params));
 	}
 
 	public void verifyNoMoreFatalMessages()
@@ -156,22 +200,29 @@ public class LogMessageStore
 		verifyNoMoreMessageOnList("info", infoMessages);
 	}
 
-	private void registerLogMessage(LinkedList<LogMessage> messages, String loggerName, String message, Object[] params)
+	private void registerLogMessage(LinkedList<LogMessage> messages, String loggerName, LogMessage logMessage)
 	{
-		if(echoLogs ) {
-			System.out.println(String.format(message, params));
+		if (echoLogs ) {
+			System.out.println(logMessage.getFormattedMessage());
 		}
 		
-		boolean isFatalOrErrorLog = (messages == fatalMessages) || (messages == errorMessages);
-		if (storeLogs || isFatalOrErrorLog)
+		if (messages == fatalMessages || messages == errorMessages) {
+			messages.add(logMessage);
+		}
+		else if (messages == consoleMessages) {
+			if (storeConsoleLogs) {
+				messages.add(logMessage);
+			}
+		}
+		else if (storeLogs)
 		{
-			messages.add(new LogMessage(message, params));
+			messages.add(logMessage);
 		}
 	}
 
-	private void verifyLogMessage(String logLevel, boolean strictCheck, LinkedList<LogMessage> messages, String message, Object... params)
+	private void verifyLogMessage(String logLevel, boolean strictCheck, LinkedList<LogMessage> messages, LogMessage expectedMessage)
 	{
-		assertTrue("log message can't be empty", message.length() > 0);
+		assertTrue("log message can't be empty", expectedMessage.message.length() > 0);
 		
 		LogMessage foundMessage;
 		String isNullFailMessage;
@@ -180,18 +231,25 @@ public class LogMessageStore
 			foundMessage = (!messages.isEmpty()) ? messages.removeFirst() : null;
 			isNullFailMessage = NO_MESSAGES_RECIEVED;
 		} else {
-			foundMessage = findFirstMessageMatching(messages, message);
+			foundMessage = findFirstMessageMatching(messages, expectedMessage.message);
 			isNullFailMessage = NO_MESSAGE_MATCHING_RECIEVED;
 		}
-		assertNotNull( String.format(isNullFailMessage, logLevel, message) , foundMessage );
+		assertNotNull( String.format(isNullFailMessage, logLevel, expectedMessage.message) , foundMessage );
 		
-		String failMessage = String.format(MESSAGE_NOT_LOGGED, logLevel, message, ArrayUtils.toString(params));
-		String expectedMessage = new LogMessage(message, params).toString();
+		String failMessage = String.format(MESSAGE_NOT_LOGGED, logLevel, expectedMessage.message, ArrayUtils.toString(expectedMessage.params));
 		if (!strictCheck)
 		{
 			failMessage += "Got message: " + concatenateMessages(messages);
 		}
-		assertEquals( failMessage, expectedMessage, foundMessage.toString() );
+		assertEquals( failMessage, expectedMessage.toString(), foundMessage.toString() );
+	}
+	
+	private void verifyNoLogMessage(String logLevel, LinkedList<LogMessage> messages, LogMessage logMessage)
+	{
+		assertTrue("log message can't be empty", logMessage.message.length() > 0);
+		
+		LogMessage foundMessage = findFirstMessageMatching(messages, logMessage.message);
+		assertNull( String.format("found log message, expected not to", logLevel, logMessage.message) , foundMessage );
 	}
 
 	private String concatenateMessages(LinkedList<LogMessage> messages)
@@ -244,6 +302,7 @@ public class LogMessageStore
 		{
 			enableStoringLogs();
 		}
+		enableStoringConsoleLogs();
 	}
 
 	public void stopStoringLogs() {
@@ -254,4 +313,5 @@ public class LogMessageStore
 	{
 		clearLogs();
 	}
+	
 }

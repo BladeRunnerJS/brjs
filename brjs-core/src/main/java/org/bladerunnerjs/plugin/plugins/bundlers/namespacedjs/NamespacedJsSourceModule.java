@@ -4,125 +4,160 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocationUtility;
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
-import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.AssetLocationUtility;
+import org.bladerunnerjs.model.AugmentedContentSourceModule;
+import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.LinkedFileAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
-import org.bladerunnerjs.utility.FileModifiedChecker;
-import org.bladerunnerjs.utility.JsCommentStrippingReader;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.reader.factory.JsCommentAndCodeBlockStrippingReaderFactory;
+import org.bladerunnerjs.utility.reader.factory.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NamespacedJsSourceModule implements SourceModule {
-	private static final Pattern extendPattern = Pattern.compile("(caplin|br\\.Core)\\.(extend|implement|inherit)\\([^,]+,\\s*([^)]+)\\)");
+public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
-	private List<SourceModule> orderDependentSourceModules;
-	private FileModifiedChecker fileModifiedChecker;
-	private LinkedAsset linkedAsset;
+	public static final String STATIC_DEPENDENCIES_BLOCK_START = "requireAll([";
+	public static final String STATIC_DEPENDENCIES_BLOCK_END = "]);";
+	
 	private AssetLocation assetLocation;
-	private String requirePath;
-	private String className;
-
+	private File assetFile;
+	private LinkedFileAsset linkedFileAsset;
+	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;
-	private FileModifiedChecker patchFileModifiedChecker;
-
-	private TrieBasedDependenciesCalculator dependencyCalculator;
-
+	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedStaticDependenciesCalculator;
 	
-	@Override
-	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
-	{
-		try {
-			File assetFile = new File(dir, assetName);
-			
-			this.assetLocation = assetLocation;
-			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-			className = requirePath.replaceAll("/", ".");
-			fileModifiedChecker = new FileModifiedChecker(assetFile);
-			linkedAsset = new FullyQualifiedLinkedAsset();
-			linkedAsset.initialize(assetLocation, dir, assetName);
-			dependencyCalculator = new TrieBasedDependenciesCalculator(this);
-		}
-		catch(RequirePathException e) {
-			throw new AssetFileInstantationException(e);
-		}
+	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+		this.assetLocation = assetLocation;
+		this.assetFile = assetFile;
+		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetLocation);
+		
+		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		requirePaths.add(requirePath);
+
+		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 	}
 	
 	@Override
- 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return dependencyCalculator.getCalculatedDependentSourceModules();
+ 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
+		try {
+			return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return dependencyCalculator.getCalculataedAliases();
+		return getDependencyCalculator().getAliases();
+	}
+	
+	@Override
+	public Reader getUnalteredContentReader() throws IOException {
+		if (patch.patchAvailable()){
+			return new ConcatReader( new Reader[] { linkedFileAsset.getReader(), patch.getReader() });
+		} else {
+			return linkedFileAsset.getReader();
+		}
 	}
 	
 	@Override
 	public Reader getReader() throws IOException {
+		String staticDependenciesRequireDefinition;
+		try
+		{
+			staticDependenciesRequireDefinition = calculateStaticDependenciesRequireDefinition();
+			staticDependenciesRequireDefinition = (staticDependenciesRequireDefinition.isEmpty()) ? "" : " "+staticDependenciesRequireDefinition;
+		}
+		catch (ModelOperationException e)
+		{
+			throw new IOException("Unable to create the SourceModule reader", e);
+		}
 		
-		String defineBlock = "\ndefine('%s', function(require, exports, module) { " +
-							 	"module.exports = %s;" +
-							 " });";
-		String formattedDefineBlock = String.format(defineBlock, requirePath, className);
-		Reader[] readers = new Reader[] { linkedAsset.getReader(), patch.getReader(), new StringReader(formattedDefineBlock) };
+		String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
+		
+		Reader[] readers = new Reader[] { 
+				new StringReader( String.format(defineBlockHeader, getPrimaryRequirePath()) ), 
+				getUnalteredContentReader(),
+				new StringReader( "\n" ),
+				new StringReader( "module.exports = " + getPrimaryRequirePath().replaceAll("/", ".") + ";" ),
+				new StringReader(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER), 
+		};
 		return new ConcatReader( readers );
 	}
 	
 	@Override
-	public String getRequirePath() {
-		return requirePath;
-	}
-	
-	@Override
-	public String getClassname() {
-		return className;
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 	
 	@Override
 	public boolean isEncapsulatedModule() {
-		return false;
+		return true;
 	}
 	
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck() || patchFileModifiedChecker.fileModifiedSinceLastCheck()) {
-			recalculateOrderedDependencies(bundlableNode);
+		
+		List<SourceModule> result = new ArrayList<SourceModule>();
+		try {
+			
+			 List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, getStaticDependencyCalculator().getRequirePaths());
+			 for(Asset asset : assets){
+				 if(asset instanceof SourceModule)
+					 result.add((SourceModule)asset);
+			 }
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
+		return result;
+	}
+	
+	public String calculateStaticDependenciesRequireDefinition() throws ModelOperationException {
+		List<String> staticDependencyRequirePaths = getStaticDependencyCalculator().getRequirePaths(SourceModule.class);
+		if (staticDependencyRequirePaths.isEmpty()) {
+			return "";
 		}
 		
-		return orderDependentSourceModules;
+		StringBuilder staticDependenciesRequireDefinition = new StringBuilder( STATIC_DEPENDENCIES_BLOCK_START );
+		for (String staticDependencyRequirePath : staticDependencyRequirePaths) {
+			staticDependenciesRequireDefinition.append( "'"+staticDependencyRequirePath+"'," );
+		}
+		staticDependenciesRequireDefinition.setLength( +staticDependenciesRequireDefinition.length() - 1 ); // remove the final ',' we added
+		staticDependenciesRequireDefinition.append( STATIC_DEPENDENCIES_BLOCK_END );
+		
+		return staticDependenciesRequireDefinition.toString()+"\n";
 	}
 	
 	@Override
 	public File dir()
 	{
-		return linkedAsset.dir();
+		return linkedFileAsset.dir();
 	}
 	
 	@Override
 	public String getAssetName() {
-		return linkedAsset.getAssetName();
+		return linkedFileAsset.getAssetName();
 	}
 	
 	@Override
 	public String getAssetPath() {
-		return linkedAsset.getAssetPath();
+		return linkedFileAsset.getAssetPath();
 	}
 	
 	@Override
@@ -136,35 +171,24 @@ public class NamespacedJsSourceModule implements SourceModule {
 		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 	}
 	
-	private void recalculateOrderedDependencies(BundlableNode bundlableNode) throws ModelOperationException {
-		try(Reader reader = new JsCommentStrippingReader(getReader(), false)) {
-			orderDependentSourceModules = new ArrayList<>();
-			
-			StringWriter stringWriter = new StringWriter();
-			IOUtils.copy(reader, stringWriter);
-			Matcher matcher = extendPattern.matcher(stringWriter.toString());
-			
-			while (matcher.find()) {
-				String referencedClass = matcher.group(3);
-				String requirePath = referencedClass.replaceAll("\\.", "/");
-				
-				try {
-					orderDependentSourceModules.add(bundlableNode.getSourceModule(requirePath));
-				}
-				catch(UnresolvableRequirePathException e) {
-					// TODO: log the fact that the thing being extended was not found to be a fully qualified class name (probably a variable name), and so is being ignored for the purposes of bundling.
-				}
-			}
+	
+	private TrieBasedDependenciesCalculator getDependencyCalculator() {
+		if (trieBasedDependenciesCalculator == null) {
+			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
 		}
-		catch(IOException | RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
+		return trieBasedDependenciesCalculator;
 	}
-
+	
+	private TrieBasedDependenciesCalculator getStaticDependencyCalculator() {
+		if (trieBasedStaticDependenciesCalculator == null) {
+			trieBasedStaticDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+		}
+		return trieBasedStaticDependenciesCalculator;
+	}
+	
 	@Override
-	public void addPatch(SourceModulePatch patch)
-	{
-		this.patch = patch;
-		patchFileModifiedChecker = new FileModifiedChecker(patch.getPatchFile());
+	public List<String> getRequirePaths() {
+		return requirePaths;
 	}
+	
 }

@@ -24,7 +24,7 @@ public class CreateBladesetCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new CreateBladesetCommand())
+		given(brjs).hasCommandPlugins(new CreateBladesetCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			bladeset = app.bladeset("bladeset");
@@ -76,8 +76,8 @@ public class CreateBladesetCommandTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-bladeset", "app", "bladeset");
 		then(bladeset).dirExists()
-			.and(output).containsLine(BLADESET_CREATE_SUCCESS_CONSOLE_MSG, "bladeset")
-			.and(output).containsLine(BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
+			.and(logging).containsFormattedConsoleMessage(BLADESET_CREATE_SUCCESS_CONSOLE_MSG, "bladeset")
+			.and(logging).containsFormattedConsoleMessage(BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
 	}
 	
 	@Test

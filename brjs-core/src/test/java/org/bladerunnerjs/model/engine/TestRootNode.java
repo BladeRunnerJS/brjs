@@ -4,38 +4,37 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.IO;
+import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
-import org.bladerunnerjs.testing.utility.MockLoggerFactory;
-import org.bladerunnerjs.utility.FileIterator;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
+import org.bladerunnerjs.testing.utility.StubLoggerFactory;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
 
 
 public final class TestRootNode extends AbstractRootNode
 {
-	NodeMap<TestChildNode> childNodes = new NodeMap<>(this, TestChildNode.class, null, "^child-");
-	NodeMap<TestChildNode> multiLocationChildNodes = new NodeMap<>(this, TestChildNode.class, "set-primary-location", "^child-");
-	NodeItem<TestItemNode> itemNode = new NodeItem<>(TestItemNode.class, "single-item");
-	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(TestMultiLocationItemNode.class, "single-item-primary-location");
+	NodeList<TestChildNode> childNodes = new NodeList<>(this, TestChildNode.class, null, "^child-");
+	NodeList<TestChildNode> multiLocationChildNodes = new NodeList<>(this, TestChildNode.class, "set-primary-location", "^child-");
+	NodeItem<TestItemNode> itemNode = new NodeItem<>(this, TestItemNode.class, "single-item");
+	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(this, TestMultiLocationItemNode.class, "single-item-primary-location");
+	private final IO io = new IO();
 	
-	public TestRootNode(File dir)
+	public TestRootNode(File dir) throws InvalidSdkDirectoryException
 	{
-		this(dir, new MockLoggerFactory());
-		
-		registerInitializedNode();
+		this(dir, new StubLoggerFactory());
 	}
 	
-	public TestRootNode(File dir, LoggerFactory loggerFactory)
+	public TestRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{
-		super(dir, loggerFactory, null);
+		super(dir, loggerFactory);
 		
 		multiLocationChildNodes.addAlternateLocation("set-secondary-location", "^child-");
 		multiLocationChildNodes.addAdditionalNamedLocation("X", "set-single-item-location");
 		multiLocationItemNode.addLegacyLocation("single-item-secondary-location");
-		
-		registerInitializedNode();
 	}
 	
 	@Override
@@ -44,9 +43,13 @@ public final class TestRootNode extends AbstractRootNode
 			super.registerNode(node);
 		}
 		catch(NodeAlreadyRegisteredException e) {
+			if (node.dir().exists()) {
+				node.ready();
+			}
 			// do nothing -- the node engine test code was designed at a time when we didn't fail fast if you registered multiple nodes for the same directory path
 			// additionally, these tests are now of less importance now that the domain model is more thoroughly tested
 		}
+		
 	};
 	
 	@Override
@@ -57,36 +60,41 @@ public final class TestRootNode extends AbstractRootNode
 	
 	public List<TestChildNode> childNodes()
 	{
-		return children(childNodes);
+		return childNodes.list();
 	}
 	
 	public TestChildNode childNode(String childName)
 	{
-		return child(childNodes, childName);
+		return childNodes.item(childName);
 	}
 	
 	public List<TestChildNode> multiLocationChildNodes()
 	{
-		return children(multiLocationChildNodes);
+		return multiLocationChildNodes.list();
 	}
 	
 	public TestChildNode multiLocationChildNode(String childName)
 	{
-		return child(multiLocationChildNodes, childName);
+		return multiLocationChildNodes.item(childName);
 	}
 	
 	public TestItemNode itemNode()
 	{
-		return item(itemNode);
+		return itemNode.item();
 	}
 	
 	public TestMultiLocationItemNode multiLocationItemNode()
 	{
-		return item(multiLocationItemNode);
+		return multiLocationItemNode.item();
 	}
 	
 	@Override
-	public FileIterator getFileIterator(File dir) {
-		return new FileIterator(this, new PessimisticFileModificationService(), dir);
+	public FileInfo getFileInfo(File dir) {
+		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo());
+	}
+	
+	@Override
+	public IO io() {
+		return io ;
 	}
 }

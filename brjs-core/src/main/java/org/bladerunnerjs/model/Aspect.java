@@ -7,46 +7,50 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.utility.IndexPageSeedFileLocator;
+import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode, ThemeableNode
+public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
 {
-	private final NodeMap<TypedTestPack> testTypes;
-	private final NodeMap<Theme> themes;
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
 	private String name;
+	private File[] scopeFiles;
+	private IndexPageSeedLocator indexPageSeedLocator;
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		testTypes = TypedTestPack.createNodeSet(rootNode);
-		themes = Theme.createNodeSet(rootNode);
 		
-		registerInitializedNode();
-	}
-	
-	public static NodeMap<Aspect> createNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, Aspect.class, null, "-aspect$");
+		indexPageSeedLocator = new IndexPageSeedLocator(root());
 	}
 	
 	@Override
-	public List<LinkedAsset> getSeedFiles() {
-		return IndexPageSeedFileLocator.getSeedFiles(this);
+	public File[] memoizedScopeFiles() {
+		if(scopeFiles == null) {
+			scopeFiles = new File[] {app().dir(), root().sdkJsLibsDir().dir(), root().file("js-patches"), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
+		}
+		
+		return scopeFiles;
+	}
+	
+	@Override
+	public List<LinkedAsset> modelSeedAssets() {
+		return indexPageSeedLocator.seedAssets(this);
 	}
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
+		transformations.put("aspectTitle", WordUtils.capitalize(getName()) );
 	}
 	
 	@Override
@@ -71,7 +75,6 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		super.populate();
-		theme("standard").populate();
 	}
 	
 	@Override
@@ -85,11 +88,22 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	}
 	
 	@Override
-	public List<AssetContainer> assetContainers() {
+	public List<AssetContainer> scopeAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
+		for (JsLib jsLib : parent().jsLibs())
+		{
+			assetContainers.add( jsLib );			
+		}
+		
+		for(Bladeset bladeset : parent().bladesets()) {			
+			for(Blade blade : bladeset.blades()) {
+				assetContainers.add(blade);				
+			}
+			assetContainers.add(bladeset);
+		}
+		
 		assetContainers.add(this);
-		assetContainers.addAll(parent().getNonAspectAssetContainers());
 		
 		return assetContainers;
 	}
@@ -108,24 +122,14 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return children(testTypes);
+		return testTypes.list();
 	}
 	
 	@Override
 	public TypedTestPack testType(String typedTestPackName)
 	{
-		return child(testTypes, typedTestPackName);
+		return testTypes.item(typedTestPackName);
 	}
 	
-	@Override
-	public List<Theme> themes()
-	{
-		return children(themes);
-	}
 	
-	@Override
-	public Theme theme(String themeName)
-	{
-		return child(themes, themeName);
-	}
 }

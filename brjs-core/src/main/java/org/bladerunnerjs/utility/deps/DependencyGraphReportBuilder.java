@@ -33,33 +33,33 @@ public class DependencyGraphReportBuilder {
 	public static String createReport(BundlableNode bundlableNode, boolean showAllDependencies) throws ModelOperationException {
 		fixIncompleteAliases(bundlableNode);
 		
-		return "Bundle '" + RelativePathUtility.get(bundlableNode.root().dir(), bundlableNode.dir()) + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(bundlableNode.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(bundlableNode), showAllDependencies).createReport();
+		return "Bundle '" + RelativePathUtility.get(bundlableNode.root(), bundlableNode.root().dir(),bundlableNode.dir()) + "' dependencies found:\n" +
+			new DependencyGraphReportBuilder(bundlableNode.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(bundlableNode), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(Aspect aspect, boolean showAllDependencies) throws ModelOperationException {
 		fixIncompleteAliases(aspect);
 		
 		return "Aspect '" + aspect.getName() + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(aspect.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(aspect), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(aspect.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(aspect), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(Workbench workbench, boolean showAllDependencies) throws ModelOperationException {
 		fixIncompleteAliases(workbench);
 		
 		return "Workbench dependencies found:\n" +
-			new DependencyGraphReportBuilder(workbench.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(workbench), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(workbench.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(workbench), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(BrowsableNode browsableNode, String requirePath, boolean showAllDependencies) throws ModelOperationException {
 		try {
 			fixIncompleteAliases(browsableNode);
 			
-			SourceModule sourceModule = browsableNode.getSourceModule(requirePath);
+			SourceModule sourceModule =  (SourceModule)browsableNode.getLinkedAsset(requirePath);
 			List<LinkedAsset> linkedAssets = new ArrayList<>();
 			linkedAssets.add(sourceModule);
 			
-			return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" +
+			return "Source module '" + sourceModule.getPrimaryRequirePath() + "' dependencies found:\n" +
 			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
 		}
 		catch(RequirePathException e) {
@@ -73,7 +73,7 @@ public class DependencyGraphReportBuilder {
 		fixIncompleteAliases(browsableNode);
 		
 		for(SourceModule sourceModule : browsableNode.getBundleSet().getSourceModules()) {
-			if(sourceModule.getRequirePath().startsWith(requirePathPrefix)) {
+			if(sourceModule.getPrimaryRequirePath().startsWith(requirePathPrefix)) {
 				linkedAssets.add(sourceModule);
 			}
 		}
@@ -89,7 +89,7 @@ public class DependencyGraphReportBuilder {
 			fixIncompleteAliases(browsableNode);
 			
 			AliasDefinition alias = browsableNode.getAlias(aliasName);
-			SourceModule sourceModule = browsableNode.getSourceModule(alias.getRequirePath());
+			SourceModule sourceModule =  (SourceModule)browsableNode.getLinkedAsset(alias.getRequirePath());
 			linkedAssets.add(sourceModule);
 			
 			return "Alias '" + aliasName + "' dependencies found:\n" +

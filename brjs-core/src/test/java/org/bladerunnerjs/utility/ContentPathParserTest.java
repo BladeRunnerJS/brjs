@@ -301,4 +301,13 @@ public class ContentPathParserTest
 		assertEquals( "token-path", parser.parse("path/123/some/file/path.txt").formName );
 	}
 	
+	@Test
+	public void specialCharactersAreDecodedBeforeParsing() throws MalformedRequestException
+	{
+		builder.accepts("<name>").as("content-form").where("name").hasForm(".*");
+		parser = builder.build();
+		ParsedContentPath parsedContent = parser.parse("some%20path");
+		assertEquals("some path", parsedContent.properties.get("name"));
+	}
+	
 }

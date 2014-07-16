@@ -26,7 +26,7 @@ public class BRJSTest extends SpecTest {
 	public void theBrjsConfIsWrittenOnPopulate() throws Exception {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/bladerunner.conf", "browserCharacterEncoding: UTF-8\ndefaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test
@@ -51,12 +51,23 @@ public class BRJSTest extends SpecTest {
 	@Test
 	public void brjsConfDirIsntOverwrittenIfItExists() throws Exception {
 		given(brjsTemplate).hasBeenCreated()
-			.and(brjs).hasDir("conf")
-			.and(brjs).containsFile("conf/some-config.xml")
-			.and(brjs).hasDir("conf")
-			.and(brjs).containsFileWithContents("conf/my.conf", "some config");
+			.and(brjsTemplate).containsFileWithContents("conf/some-config.xml", "some config")
+			.and(brjs).containsFileWithContents("conf/my.conf", "my custom config");
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/my.conf", "some config");
+		then(brjs).fileHasContents("conf/my.conf", "my custom config");
+	}
+	
+	@Test
+	public void brjsConfPopulatesFilesThatDontExist() throws Exception {
+		given(brjsTemplate).hasBeenCreated()
+			.and(brjsTemplate).hasDir("conf")
+			.and(brjsTemplate).containsFileWithContents("conf/some.conf", "some config")
+			.and(brjsTemplate).containsFileWithContents("conf/more.conf", "more config")
+			.and(brjs).hasDir("conf")
+			.and(brjs).containsFileWithContents("conf/some.conf", "custom config");
+		when(brjs).populate();
+		then(brjs).fileHasContents("conf/some.conf", "custom config")
+			.and(brjs).fileHasContents("conf/more.conf", "more config");
 	}
 	
 	@Test

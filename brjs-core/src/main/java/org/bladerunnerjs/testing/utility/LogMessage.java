@@ -27,9 +27,20 @@ public class LogMessage
 		return ( message.equals(m.message) && Arrays.equals(params, m.params) );
 	}
 	
+	@Override /* overridden to keep the compiler happy */
+	public int hashCode()
+	{
+		return toString().hashCode();
+	}
+	
 	@Override
 	public String toString()
 	{
 		return "\"" + message + "\" with params [" + Joiner.on(", ").join(params) + "]";
+	}
+
+	public String getFormattedMessage()
+	{
+		return String.format(message, params);
 	}
 }

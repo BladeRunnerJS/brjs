@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
@@ -20,79 +19,85 @@ import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class PluginAccessor {
+	
 	private final CommandList commandList;
-	private final List<ContentPlugin> contentProviders;
-	private final List<TagHandlerPlugin> tagHandlers;
-	private final List<MinifierPlugin> minifiers;
-	private final List<ModelObserverPlugin> modelObservers;
-	private final List<AssetPlugin> assetProducers;
-	private final List<AssetLocationPlugin> assetLocationProducers;
+	private final List<ContentPlugin> contentPlugins;
+	private final List<TagHandlerPlugin> tagHandlerPlugins;
+	private final List<MinifierPlugin> minifierPlugins;
+	private final List<ModelObserverPlugin> modelObserverPlugins;
+	private final List<AssetPlugin> assetPlugins;
+	private final List<AssetLocationPlugin> assetLocationPlugins;
 	
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
-		contentProviders = sort(pluginLocator.getContentPlugins());
-		tagHandlers = sort(pluginLocator.getTagHandlerPlugins());
-		minifiers = pluginLocator.getMinifierPlugins();
-		modelObservers = pluginLocator.getModelObserverPlugins();
-		assetProducers = pluginLocator.getAssetPlugins();
-		assetLocationProducers = sort(pluginLocator.getAssetLocationPlugins());
+		contentPlugins = sort(pluginLocator.getContentPlugins());
+		tagHandlerPlugins = pluginLocator.getTagHandlerPlugins();
+		minifierPlugins = pluginLocator.getMinifierPlugins();
+		modelObserverPlugins = pluginLocator.getModelObserverPlugins();
+		assetPlugins = sort(pluginLocator.getAssetPlugins());
+		assetLocationPlugins = sort(pluginLocator.getAssetLocationPlugins());
 	}
 	
 	public List<Plugin> allPlugins() {
 		List<Plugin> plugins = new ArrayList<>();
 		
-		plugins.addAll(commands());
-		plugins.addAll(contentProviders());
-		plugins.addAll(tagHandlers());
-		plugins.addAll(minifiers());
-		plugins.addAll(modelObservers());
-		plugins.addAll(assetProducers());
-		plugins.addAll(assetLocationProducers());
+		plugins.addAll(commandPlugins());
+		plugins.addAll(contentPlugins());
+		plugins.addAll(tagHandlerPlugins());
+		plugins.addAll(minifierPlugins());
+		plugins.addAll(modelObserverPlugins());
+		plugins.addAll(assetPlugins());
+		plugins.addAll(assetLocationPlugins());
 		
 		return plugins;
 	}
 	
-	public CommandList commandList() {
-		return commandList;
-	}
-	
-	public List<CommandPlugin> commands() {
+	public List<CommandPlugin> commandPlugins() {
 		return commandList.getPluginCommands();
 	}
 	
-	public ContentPlugin contentProvider(BladerunnerUri requestUri) {
-		return contentProviderForLogicalPath(requestUri.logicalPath);
+	public CommandPlugin commandPlugin(String commandName) {
+		return commandList.lookupCommand(commandName);
 	}
 	
-	public ContentPlugin contentProviderForLogicalPath(String logicalRequestpath)
+	public List<CommandPlugin> getCoreCommandPlugins() {
+		return commandList.getCoreCommands();
+	}
+	
+	public List<CommandPlugin> getNonCoreCommandPlugins() {
+		return commandList.getPluginCommands();
+	}
+	
+	public void addCommandPlugin(BRJS brjs, CommandPlugin commandPlugin) {
+		commandList.addCommand(commandPlugin);
+		commandPlugin.setBRJS(brjs);
+	}
+	
+	public ContentPlugin contentPluginForLogicalPath(String logicalRequestpath)
 	{
-		String requestPrefix = (logicalRequestpath.indexOf('/') == -1) ? logicalRequestpath : logicalRequestpath.substring(0, logicalRequestpath.indexOf('/'));
+		String requestPrefix = logicalRequestpath.replaceFirst("^/", "").split("/")[0];
 		
-		return contentProvider(requestPrefix);
+		return contentPlugin(requestPrefix);
 	}
 	
-	public ContentPlugin contentProvider(String requestPrefix) {
-		ContentPlugin contentProvider = null;
-		
-		for (ContentPlugin nextContentPlugin : contentProviders()) {
-			if(nextContentPlugin.getRequestPrefix().equals(requestPrefix)) {
-				contentProvider = nextContentPlugin;
-				break;
+	public ContentPlugin contentPlugin(String requestPrefix) {
+		for (ContentPlugin contentPlugin : contentPlugins()) {
+			if(contentPlugin.getRequestPrefix().equals(requestPrefix)) {
+				return contentPlugin;
 			}
 		}
-		
-		return contentProvider;
+		return null;
 	}
 	
-	public List<ContentPlugin> contentProviders() {
-		return contentProviders;
+	public List<ContentPlugin> contentPlugins() {
+		return contentPlugins;
 	}
 	
-	public List<ContentPlugin> contentProviders(String groupName) {
+	public List<ContentPlugin> contentPlugins(String groupName) {
 		List<ContentPlugin> contentProviders = new LinkedList<>();
 		
-		for (ContentPlugin contentPlugin : contentProviders()) {
-			if (groupName.equals(contentPlugin.getGroupName())) {
+		for (ContentPlugin contentPlugin : contentPlugins()) {
+			if (groupName.equals(contentPlugin.getCompositeGroupName())) {
 				contentProviders.add(contentPlugin);
 			}
 		}
@@ -100,31 +105,28 @@ public class PluginAccessor {
 		return contentProviders;
 	}
 	
-	public List<TagHandlerPlugin> tagHandlers() {
-		return tagHandlers;
-	}
-	
-	public List<TagHandlerPlugin> tagHandlers(String groupName) {
-		List<TagHandlerPlugin> tagHandlerPlugins = new LinkedList<>();
-		
-		for (TagHandlerPlugin tagHandlerPlugin : tagHandlers()) {
-			if (groupName.equals(tagHandlerPlugin.getGroupName())) {
-				tagHandlerPlugins.add(tagHandlerPlugin);
-			}
-		}
-		
+	public List<TagHandlerPlugin> tagHandlerPlugins() {
 		return tagHandlerPlugins;
 	}
 	
-	public List<MinifierPlugin> minifiers() {
-		return minifiers;
+	public TagHandlerPlugin tagHandlerPlugin(String tagName) {
+		for (TagHandlerPlugin tagHandler : tagHandlerPlugins()) {
+			if(tagHandler.getTagName().equals(tagName)) {
+				return tagHandler;
+			}
+		}
+		return null;
 	}
 	
-	public MinifierPlugin minifier(String minifierSetting) {
+	public List<MinifierPlugin> minifierPlugins() {
+		return minifierPlugins;
+	}
+	
+	public MinifierPlugin minifierPlugin(String minifierSetting) {
 		List<String> validMinificationSettings = new LinkedList<String>();
 		MinifierPlugin pluginForMinifierSetting = null;
 		
-		for (MinifierPlugin minifierPlugin : minifiers()) {
+		for (MinifierPlugin minifierPlugin : minifierPlugins()) {
 			for (String setting : minifierPlugin.getSettingNames()) {
 				validMinificationSettings.add(setting);
 				
@@ -142,21 +144,25 @@ public class PluginAccessor {
 			+ StringUtils.join(validMinificationSettings, ", "));
 	}
 	
-	public List<ModelObserverPlugin> modelObservers() {
-		return modelObservers;
+	public List<ModelObserverPlugin> modelObserverPlugins() {
+		return modelObserverPlugins;
 	}
 	
-	public List<AssetPlugin> assetProducers() {
-		return assetProducers;
+	public void addModelObserverPlugin(ModelObserverPlugin modelObserver) {
+		modelObserverPlugins.add(modelObserver);
 	}
 	
-	public List<AssetLocationPlugin> assetLocationProducers() {
-		return assetLocationProducers;
+	public List<AssetPlugin> assetPlugins() {
+		return assetPlugins;
 	}
 	
-	public AssetPlugin assetProducer(Class<?> pluginClass ) {
+	public List<AssetLocationPlugin> assetLocationPlugins() {
+		return assetLocationPlugins;
+	}
+	
+	public AssetPlugin assetPlugin(Class<?> pluginClass ) {
 		AssetPlugin result = null;
-		List<AssetPlugin> assetProducers = assetProducers();
+		List<AssetPlugin> assetProducers = assetPlugins();
 		for(AssetPlugin producer: assetProducers){
 			Class<?> possiblePluginClass = producer.getPluginClass();
 			if(possiblePluginClass.equals(pluginClass)){

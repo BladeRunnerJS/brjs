@@ -5,30 +5,24 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Map;
 
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
-import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 
 public class SourceModulePatch
 {
-
 	public static final String PATCH_APPLIED_MESSAGE = "Patch found for %s, applying patch from %s.";
 	public static final String NO_PATCH_APPLIED_MESSAGE = "No patch found for %s, there was no patch file at %s so no patch will be applied.";
 	
-	private static Map<String, SourceModulePatch> patchesCache = new HashMap<String, SourceModulePatch>();
-	
+	private static Map<String, SourceModulePatch> patchesCache = new TreeMap<String, SourceModulePatch>();
 	
 	private File patchFile;
-	private FileModificationInfo fileModificationInfo;
 	private BRJS brjs;
 	private AssetLocation assetLocation;
 	private String requirePath;
-	private Reader patchFileReader;
 	
 	//TODO: this only supports patching files with a .js extension
 	private SourceModulePatch(AssetLocation assetLocation, String requirePath)
@@ -46,50 +40,44 @@ public class SourceModulePatch
 		return patchFile;
 	}
 	
+	public boolean patchAvailable() {
+		return patchFile.isFile() && assetLocation.assetContainer() instanceof JsLib;
+	}
+	
 	public Reader getReader()
-	{		
-		if (fileModificationInfo == null || fileModificationInfo.getLastModified() < lastModified())
+	{
+		Reader reader;
+		
+		if ( !(assetLocation.assetContainer() instanceof JsLib) )
 		{
-    		if ( !(assetLocation.assetContainer() instanceof JsLib) )
+			reader = new StringReader("");
+		}
+		else
+		{
+    		if (patchFile.isFile())
     		{
-    			patchFileReader = new StringReader("");
+    			brjs.logger(SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(assetLocation.root(), brjs.dir(), patchFile));
+    			try
+    			{
+    				reader = new BufferedReader(new UnicodeReader(patchFile, brjs.bladerunnerConf().getDefaultFileCharacterEncoding()));
+    			}
+    			catch (IOException | ConfigException e)
+    			{
+    				throw new RuntimeException(e);
+    			}			
     		}
     		else
     		{
-        		if (patchFile.isFile())
-        		{
-        			brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
-        			try
-        			{
-        				patchFileReader = new BufferedReader(new UnicodeReader(patchFile, brjs.bladerunnerConf().getDefaultFileCharacterEncoding()));
-        			}
-        			catch (IOException | ConfigException e)
-        			{
-        				throw new RuntimeException(e);
-        			}			
-        		}
-        		else
-        		{
-    				brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
-        			patchFileReader = new StringReader("");
-        		}
+				brjs.logger(SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(assetLocation.root(), brjs.dir(),patchFile));
+				reader = new StringReader("");
     		}
 		}
 		
-		return patchFileReader;
-	}
-	
-	private long lastModified() {
-		if((fileModificationInfo == null) && patchFile.isFile()) {
-			fileModificationInfo = brjs.getModificationInfo(patchFile);
-		}
-		
-		return (fileModificationInfo != null) ? fileModificationInfo.getLastModified() : 0;
+		return reader;
 	}
 	
 	
-	
-	/*----- static methods for getting patches so we can caches them -----*/
+	/*----- static methods for getting patches so we can cache them -----*/
 	
 	public static SourceModulePatch getPatchForRequirePath(AssetLocation assetLocation, String requirePath)
 	{

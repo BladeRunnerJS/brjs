@@ -5,11 +5,12 @@ public interface Logger
 
 	String getName();
 	
-	public void fatal(String message, Object... params);
-	
 	public void error(String message, Object... params);
 
 	public void warn(String message, Object... params);
+	
+	public void println(String message, Object... params);
+	public void console(String message, Object... params);
 
 	public void info(String message, Object... params);
 

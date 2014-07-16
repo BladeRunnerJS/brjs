@@ -1,9 +1,18 @@
 language: java
+jdk:
+- oraclejdk7
+git:
+ depth: 200
 before_install:
-    - "export DISPLAY=:99.0"
-    - "sh -e /etc/init.d/xvfb start"
+- export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
+- export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
 install:
-    - TERM=dumb ./gradlew compileJava
 script:
-    - TERM=dumb ./gradlew testJava
-    - TERM=dumb ./gradlew :cutlass-sdk:test
+- TERM=dumb ./gradlew testJava
+- TERM=dumb ./gradlew :brjs-sdk:test
+notifications:
+  hipchat:
+    rooms:
+      secure: kCMCO2aez+lZZtBi1g4O3z92teXx2rxifVWgwwTloE/Oyi8t3+NPu7932QOg1ZlHiIFRh9ncSsM00y/gN3pp1f6Q7nm+5UxFflTHqTRrrsHe0Tgjj+bl86yGjoY4KWEhuNq9rxEo7ciMB5aYcXEeGVc34XghUaa/3FNQWg2NArA=

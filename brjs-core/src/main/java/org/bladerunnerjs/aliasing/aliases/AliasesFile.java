@@ -8,7 +8,6 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
-import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.BundlableNode;
@@ -17,6 +16,8 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
 
 public class AliasesFile {
+	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
+	
 	private final AliasesData data = new AliasesData();
 	private final AliasesReader reader;
 	private final AliasesWriter writer;
@@ -79,12 +80,12 @@ public class AliasesFile {
 		data.aliasOverrides.add(aliasOverride);
 	}
 	
-	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException {
+	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
 		AliasOverride aliasOverride = getLocalAliasOverride(aliasName);
 		AliasDefinition aliasDefinition = getAliasDefinition(aliasName);
 		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName);
 		
-		if((aliasOverride == null) && (groupAliasOverride != null)) {
+		if ((aliasOverride == null) && (groupAliasOverride != null)) {
 			aliasOverride = groupAliasOverride;
 		}
 		
@@ -100,7 +101,7 @@ public class AliasesFile {
 		}
 		
 		if((aliasDefinition.getClassName() == null)) {
-			throw new IncompleteAliasException(file, aliasDefinition.getName());
+			aliasDefinition = new AliasDefinition(aliasDefinition.getName(), BR_UNKNOWN_CLASS_NAME, aliasDefinition.getInterfaceName());
 		}
 		
 		return aliasDefinition;
@@ -122,7 +123,7 @@ public class AliasesFile {
 		return hasAlias;
 	}
 	
-	public AliasDefinition getAliasDefinition(String aliasName) throws ContentFileProcessingException, AmbiguousAliasException {
+	public AliasDefinition getAliasDefinition(String aliasName) throws ContentFileProcessingException, AliasException {
 		AliasDefinition aliasDefinition = null;
 		String scenarioName = scenarioName();
 		List<String> groupNames = groupNames();
@@ -130,12 +131,12 @@ public class AliasesFile {
 		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.aliasDefinitionFiles()) {
 			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
 
-			if (aliasDefinition != null && nextAliasDefinition != null) {
-				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, scenarioName);
-			}
-			
 			if (nextAliasDefinition != null)
-			{
+			{    			
+    			if (aliasDefinition != null && nextAliasDefinition != null) {
+    				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, scenarioName);
+    			}
+			
 				aliasDefinition = nextAliasDefinition;
 			}
 		}

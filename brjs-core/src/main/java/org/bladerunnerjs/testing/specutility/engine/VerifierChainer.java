@@ -46,6 +46,7 @@ public class VerifierChainer {
 	public NamedNodeVerifier and(NamedNode namedDirNode) { return new NamedNodeVerifier(specTest, namedDirNode); }
 	public BRJSVerifier and(BRJS brjs) { return new BRJSVerifier(specTest, brjs); }
 	public AppVerifier and(App app) { return new AppVerifier(specTest, app); }
+	public AppConfVerifier then(AppConf appConf) { return new AppConfVerifier(specTest, appConf); }
 	public AspectVerifier and(Aspect aspect) { return new AspectVerifier(specTest, aspect); }
 	public BladeVerifier and(Blade blade) { return new BladeVerifier(specTest, blade); }
 	public BladesetVerifier and(Bladeset bladeset) { return new BladesetVerifier(specTest, bladeset); }
@@ -54,7 +55,6 @@ public class VerifierChainer {
 	public DirNodeVerifier and(DirNode dirNode) { return new DirNodeVerifier(specTest, dirNode); }
 	public NamedDirNodeVerifier and(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(specTest, namedDirNode); }
 	public LoggerVerifier and(LogMessageStore logStore) { return new LoggerVerifier(specTest, logStore); }
-	public ConsoleWriterVerifier and(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(specTest, consoleMessageStore); }
 	public AppServerVerifier and(ApplicationServer appServer) { return new AppServerVerifier(specTest, appServer); }
 	public JettyServerVerifier and(Server jettyServer) { return new JettyServerVerifier(specTest, jettyServer); }
 	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(specTest, appConf); }

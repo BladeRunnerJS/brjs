@@ -1,56 +1,86 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
+
 public class NodeItem<N extends Node>
 {
+	private final Node node;
+	private final Class<N> nodeClass;
+	private final List<NodeLocator> nodeItemLocators = new ArrayList<>();
 	public N item;
-	public Class<N> nodeClass;
 	
-	private List<NodeItemLocator> nodeItemLocators = new ArrayList<>();
-	
-	public NodeItem(Class<N> nodeClass, String subDirPath)
+	public NodeItem(Node node, Class<N> nodeClass, String subDirPath)
 	{
+		this.node = node;
 		this.nodeClass = nodeClass;
-		nodeItemLocators.add(new DirNodeItemLocator(subDirPath));
+		nodeItemLocators.add(new DirectoryNodeLocator(subDirPath));
 	}
 	
 	public void addLegacyLocation(String subDirPath)
 	{
-		nodeItemLocators.add(new DirNodeItemLocator(subDirPath));
+		nodeItemLocators.add(new DirectoryNodeLocator(subDirPath));
 	}
 	
-	public File getItemDir(File sourceDir)
+	public boolean itemExists()
 	{
-		File itemDir = null;
-		
-		for(NodeItemLocator nodeItemLocator : nodeItemLocators)
+		return getNodeDir(node.dir()).exists();
+	}
+	
+	public N item()
+	{
+		if(item == null)
 		{
-			File nextItemDir = nodeItemLocator.getDir(sourceDir);
-			
-			if(nextItemDir.exists())
+			try
 			{
-				if(itemDir == null)
+				Constructor<N> classConstructor = nodeClass.getConstructor(RootNode.class, Node.class, File.class);
+				item = classConstructor.newInstance(node.root(), node, getNodeDir(node.dir()));
+				item.root().registerNode(item);
+			}
+			catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+				NoSuchMethodException | SecurityException | NodeAlreadyRegisteredException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+		
+		return item;
+	}
+	
+	private File getNodeDir(File dir)
+	{
+		File nodeDir = null;
+		
+		for(NodeLocator nodeItemLocator : nodeItemLocators)
+		{
+			File nextNodeDir = nodeItemLocator.getNodeDir(dir);
+			
+			if(nextNodeDir.exists())
+			{
+				if(nodeDir == null)
 				{
-					itemDir = nextItemDir;
+					nodeDir = nextNodeDir;
 				}
 				else
 				{
-					throw new BladeRunnerDirectoryException("Directory ambiguity: new directory '" + itemDir.getAbsolutePath() +
-						"' and legacy directory '" + nextItemDir.getAbsolutePath() + "' can't both exist at the same time.");
+					throw new BladeRunnerDirectoryException("Directory ambiguity: new directory '" + nodeDir.getAbsolutePath() +
+						"' and legacy directory '" + nextNodeDir.getAbsolutePath() + "' can't both exist at the same time.");
 				}
 			}
 		}
 		
 		// if the directory doesn't presently exist at any of the potential locations then ensure it will be created in the
 		// currently recommended location if create() or populate() are ever called
-		if(itemDir == null)
+		if(nodeDir == null)
 		{
-			itemDir = nodeItemLocators.get(0).getDir(sourceDir);
+			nodeDir = nodeItemLocators.get(0).getNodeDir(dir);
 		}
 		
-		return itemDir;
+		return nodeDir;
 	}
 }

@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsException;
+import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsModelException;
 import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -72,24 +72,14 @@ public class NamedNodeTest extends SpecTest {
 				return brjs.app("app1").bladeset(nodeName);
 			}
 		};
-		NamedNodeFactory jsLibFactory = new NamedNodeFactory() {
-			@Override
-			public NamedNode createNamedNode(BRJS brjs, String nodeName) {
-				return brjs.app("app1").jsLib(nodeName);
-			}
-		};
 		NamedNodeFactory technologyTestPackFactory = new NamedNodeFactory() {
 			@Override
 			public NamedNode createNamedNode(BRJS brjs, String nodeName) {
 				return brjs.app("app1").aspect("aspect1").testType("type1").testTech(nodeName);
 			}
 		};
-		NamedNodeFactory themeFactory = new NamedNodeFactory() {
-			@Override
-			public NamedNode createNamedNode(BRJS brjs, String nodeName) {
-				return brjs.app("app1").aspect("aspect1").theme(nodeName);
-			}
-		};
+
+		
 		NamedNodeFactory typedTestPackFactory = new NamedNodeFactory() {
 			@Override
 			public NamedNode createNamedNode(BRJS brjs, String nodeName) {
@@ -102,10 +92,7 @@ public class NamedNodeTest extends SpecTest {
 			{"Aspect", aspectFactory},
 			{"Blade", bladeFactory},
 			{"Bladeset", bladesetFactory},
-			{"JsLib", jsLibFactory},
-//			{"JsNonBladeRunnerLib", jsNonBladeRunnerLibFactory},
 			{"TechnologyTestPack", technologyTestPackFactory},
-			{"Theme", themeFactory},
 			{"TypedTestPack", typedTestPackFactory}
 		});
 	}
@@ -158,7 +145,7 @@ public class NamedNodeTest extends SpecTest {
 			.and(node).hasBeenCreated();
 		when(node).create();
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, node.getClass().getSimpleName(), node.dir().getPath())
-			.and(exceptions).verifyException(DirectoryAlreadyExistsException.class, node.dir().getPath());
+			.and(exceptions).verifyException(DirectoryAlreadyExistsModelException.class, node.dir().getPath());
 	}
 	
 	@Test
@@ -208,7 +195,7 @@ public class NamedNodeTest extends SpecTest {
 			.and(logging).enabled();
 		when(node).populate();
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, node.getClass().getSimpleName(), node.dir().getPath())
-			.and(exceptions).verifyException(DirectoryAlreadyExistsException.class, node.dir().getPath());
+			.and(exceptions).verifyException(DirectoryAlreadyExistsModelException.class, node.dir().getPath());
 	}
 	
 	@Test

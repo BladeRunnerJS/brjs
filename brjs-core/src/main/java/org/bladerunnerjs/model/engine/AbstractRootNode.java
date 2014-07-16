@@ -1,67 +1,78 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
-import java.io.PrintStream;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
-import org.bladerunnerjs.console.ConsoleWriter;
-import org.bladerunnerjs.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
 public abstract class AbstractRootNode extends AbstractNode implements RootNode
 {
-	private Map<String, Node> nodeCache = new HashMap<>();
-	private LoggerFactory loggerFactory;
-	private ConsoleWriter consoleWriter;
+	// TODO: remove this flag once we delete all old BladerRunner code
+	public static boolean allowInvalidRootDirectories = true;
 	
-	public AbstractRootNode(File dir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
+	private Map<String, Node> nodeCache = new TreeMap<>();
+	private LoggerFactory loggerFactory;
+	
+	public AbstractRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{
 		super();
 		
 		File rootDir = locateRootDir(dir);
-		this.dir = (rootDir == null) ? null : new File(getNormalizedPath(rootDir));
-		this.loggerFactory = loggerFactory;
-		this.consoleWriter = consoleWriter;
 		
-		// TODO: we should never call registerInitializedNode() from a non-final class
-		registerInitializedNode();
+		if(rootDir == null) {
+			if(!allowInvalidRootDirectories) {
+				throw new InvalidSdkDirectoryException("'" + dir.getPath() + "' is not a valid SDK directory");
+			}
+			
+			rootDir = dir;
+		}
+		
+		this.dir = new File(getNormalizedPath(rootDir));
+		this.loggerFactory = loggerFactory;
+		
+		try
+		{
+			registerNode(this);
+		}
+		catch (NodeAlreadyRegisteredException e)
+		{
+			throw new RuntimeException(e);
+		}
+		
 	}
 	
 	@Override
-	public Logger logger(LoggerType type, Class<?> clazz)
+	public Logger logger(Class<?> clazz)
 	{
-		return loggerFactory.getLogger(type, clazz);
-	}
-	
-	@Override
-	public ConsoleWriter getConsoleWriter()
-	{
-		return consoleWriter;
-	}
-	
-	@Override
-	public void setConsoleWriter(ConsoleWriter consoleWriter)
-	{
-		this.consoleWriter = consoleWriter;
-	}
-	
-	public void setConsoleWriter(PrintStream printStream)
-	{
-		this.consoleWriter = new PrintStreamConsoleWriter(printStream);
+		return loggerFactory.getLogger(clazz);
 	}
 	
 	@Override
 	public void registerNode(Node node) throws NodeAlreadyRegisteredException
 	{
+		this.registerNode(node, false);
+	}
+	
+	
+	
+	public void registerNode(Node node, boolean makeUnique) throws NodeAlreadyRegisteredException
+	{
 		String normalizedPath = node.dir().getPath();
+		if(makeUnique){
+			normalizedPath += "/.";
+		}
 		
 		if(nodeCache.containsKey(normalizedPath)) {
 			throw new NodeAlreadyRegisteredException("A node has already been registered for path '" + normalizedPath + "'");
+		}
+
+		if (node.dir().exists()) {
+			node.ready();
 		}
 		
 		nodeCache.put(normalizedPath, node);

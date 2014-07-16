@@ -1,0 +1,55 @@
+<web-app>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	
+	<servlet>
+		<servlet-name>RestAPIServlet</servlet-name>
+		<servlet-class>com.caplin.cutlass.app.servlet.RestApiServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RestAPIServlet</servlet-name>
+		<url-pattern>/servlet/app-manager/*</url-pattern>
+	</servlet-mapping>
+	
+	<filter>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.appserver.BRJSServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<url-pattern>/*</url-pattern> 
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	
+	<!-- start-env: dev -->
+	<servlet>
+		<servlet-name>BRJSDevServlet</servlet-name>
+		<servlet-class>org.bladerunnerjs.appserver.BRJSDevServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BRJSDevServlet</servlet-name>
+		<url-pattern>/brjs/*</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>BRJSDevServletFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.appserver.BRJSDevServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>BRJSDevServletFilter</filter-name> 
+		<url-pattern>/*</url-pattern> 
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	<!-- end-env -->
+	
+	<!-- mime mappings -->
+	<mime-mapping>
+		<extension>woff</extension>
+		<mime-type>application/x-font-woff</mime-type>
+	</mime-mapping>
+</web-app>

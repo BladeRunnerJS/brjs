@@ -4,51 +4,63 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.bladerunnerjs.logger.RootConsoleLogger;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.logger.ConsoleLogger;
+import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.logger.LogLevel;
-import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
-import org.bladerunnerjs.logging.LogConfiguration;
-import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+import org.bladerunnerjs.model.engine.AbstractRootNode;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.command.check.CheckCommand;
-import com.caplin.cutlass.command.copy.CopyBladesetCommand;
-import com.caplin.cutlass.command.export.ExportApplicationCommand;
-import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.TestServerCommand;
 import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
+import com.martiansoftware.jsap.FlaggedOption;
+import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPException;
+import com.martiansoftware.jsap.JSAPResult;
+import com.martiansoftware.jsap.Switch;
 
-// TODO: move all classes in brjs-runner into 'org.bladerunnerjs.runner'?
 public class CommandRunner {
-	private static final int SUCCESS_EXIT_CODE = 0;
-	private static final int ERR_EXIT_CODE = 1;
-
+	private static final JSAP argsParser = new JSAP();
+	
+	static {
+		try {
+			argsParser.registerParameter(new Switch("info").setShortFlag('i').setLongFlag("info").setDefault("false").setHelp("info level logging"));
+			argsParser.registerParameter(new Switch("debug").setShortFlag('d').setLongFlag("debug").setDefault("false").setHelp("debug level logging"));
+			argsParser.registerParameter(new FlaggedOption("pkg").setLongFlag("pkg").setHelp("the comma delimited list of packages to show messages from, or '"+
+					ConsoleLogger.LOG_ALL_PACKAGES_PACKAGE_NAME+"' to show everything"));
+			argsParser.registerParameter(new Switch("show-pkg").setLongFlag("show-pkg").setDefault("false").setHelp("show which class each log line comes from"));
+		}
+		catch (JSAPException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public static void main(String[] args) {
-		int exitCode = SUCCESS_EXIT_CODE;
+		int exitCode = -1;
 		try 
 		{
-			new CommandRunner().run(args);
+			exitCode = new CommandRunner().run(args);
 		}
 		catch (CommandArgumentsException e) 
 		{
 			System.err.println(e.getMessage());
-			exitCode = ERR_EXIT_CODE;
 		}
 		catch (Exception ex) 
 		{
 			System.err.println(formatException(ex));
-			exitCode = ERR_EXIT_CODE;
 		}
 		finally
 		{
@@ -64,7 +76,8 @@ public class CommandRunner {
 		return byteStreamOutputStream.toString().trim();
 	}
 	
-	public void run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
+	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
+		AbstractRootNode.allowInvalidRootDirectories = false;
 		BRJS brjs = null;
 		
 		try {
@@ -77,19 +90,25 @@ public class CommandRunner {
 			sdkBaseDir = sdkBaseDir.getCanonicalFile();
 			
 			args = processGlobalCommandFlags(args);
-			brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
 			
-			if (!brjs.dirExists()) throw new InvalidSdkDirectoryException("'" + sdkBaseDir.getPath() + "' is not a valid SDK directory");
+			try {
+				brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
+			}
+			catch(InvalidSdkDirectoryException e) {
+				throw new CommandOperationException(e);
+			}
 			
 			brjs.populate();
 			
 			injectLegacyCommands(brjs);
-			brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getRootLogger()), args);
+			return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);
 		}
 		finally {
+			AbstractRootNode.allowInvalidRootDirectories = true;
+			
 			if(brjs != null) {
 				brjs.close();
 			}
@@ -97,59 +116,50 @@ public class CommandRunner {
 	}
 	
 	private String[] processGlobalCommandFlags(String[] args) {
-		if (args.length > 0) {
-			String lastArg = args[args.length - 1];
+		JSAPResult parsedArgs;
+		int i = 0;
+		while(i < args.length) {
+			parsedArgs = argsParser.parse(Arrays.copyOfRange(args, i, args.length));
 			
-			if(lastArg.equals("--quiet") || lastArg.equals("--verbose") || lastArg.equals("--debug")) {
-				args = ArrayUtils.subarray(args, 0, args.length - 1);
-				setExplicitLogLevel(lastArg);
+			if(parsedArgs.success()) {
+				args = Arrays.copyOfRange(args, 0, i);
+				processedParsedArgs(parsedArgs);
+				break;
 			}
-			else {
-				setDefaultLogLevel();
-			}
-		}
-		else {
-			setDefaultLogLevel();
+			++i;
 		}
 		
 		return args;
 	}
 	
-	private void setExplicitLogLevel(String levelFlag) {
-		RootConsoleLogger rootLogger = getRootLogger();
-		LogLevel logLevel = (levelFlag.equals("--quiet")) ? LogLevel.WARN : LogLevel.DEBUG;
-		rootLogger.setLogLevel(logLevel);
+	private void processedParsedArgs(JSAPResult parsedArgs) {
+		boolean isInfo = parsedArgs.getBoolean("info");
+		boolean isDebug = parsedArgs.getBoolean("debug");
+		List<String> whitelistedPackages = (parsedArgs.getString("pkg") != null) ? Arrays.asList(parsedArgs.getString("pkg").split("\\s*,\\s*")) : new ArrayList<String>();
+		boolean logClassNames = parsedArgs.getBoolean("show-pkg");
 		
-		if(levelFlag.equals("--debug")) {
-			rootLogger.setDebugMode(true);
+		if(isDebug) {
+			getLoggerStore().setLogLevel(LogLevel.DEBUG);
 		}
+		else if(isInfo) {
+			getLoggerStore().setLogLevel(LogLevel.INFO);
+		}
+		
+		if(logClassNames) {
+			getLoggerStore().setLogClassNames(true);
+		}
+		
+		getLoggerStore().setWhitelistedPackages(whitelistedPackages);
 	}
-	
-	private void setDefaultLogLevel() {
-		LogConfiguration logConfigurator = new ConsoleLoggerConfigurator(getRootLogger());
-		logConfigurator.ammendProfile(LogLevel.INFO)
-			.pkg("org.hibernate").logsAt(LogLevel.WARN); // TODO: this is a plugin concern, so should be handled within the model
-		logConfigurator.setLogLevel(LogLevel.INFO);
-	}
-	
+
 	private void injectLegacyCommands(BRJS brjs) {
-		try {
-			CommandList commandList = brjs.plugins().commandList();
-			commandList.addCommand(new CheckCommand());
-			commandList.addCommand(new CopyBladesetCommand( brjs.root().dir() ));
-			commandList.addCommand(new ImportApplicationCommand( brjs ));
-			commandList.addCommand(new TestCommand());
-			commandList.addCommand(new TestServerCommand());
-			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
-			commandList.addCommand(new ExportApplicationCommand(  ));
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
+		brjs.plugins().addCommandPlugin(brjs, new TestCommand());
+		brjs.plugins().addCommandPlugin(brjs, new TestServerCommand());
+		brjs.plugins().addCommandPlugin(brjs, new TestIntegrationCommand());
 	}
 	
-	private RootConsoleLogger getRootLogger() {
-		return StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger();
+	private ConsoleLoggerStore getLoggerStore() {
+		return StaticLoggerBinder.getSingleton().getLoggerFactory();
 	}
 	
 	class NoSdkArgumentException extends CommandOperationException {
@@ -164,14 +174,6 @@ public class CommandRunner {
 		private static final long serialVersionUID = 1L;
 		
 		public InvalidDirectoryException(String msg) {
-			super(msg);
-		}
-	}
-	
-	class InvalidSdkDirectoryException extends CommandOperationException {
-		private static final long serialVersionUID = 1L;
-		
-		public InvalidSdkDirectoryException(String msg) {
 			super(msg);
 		}
 	}

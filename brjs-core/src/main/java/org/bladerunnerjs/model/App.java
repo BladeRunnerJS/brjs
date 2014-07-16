@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,16 +12,24 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.app.building.StaticAppBuilder;
+import org.bladerunnerjs.model.app.building.WarAppBuilder;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.plugin.ResponseContent;
+import org.bladerunnerjs.utility.AppMetadataUtility;
+import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
 
 
@@ -31,36 +40,31 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeMap<StandardJsLib> nonBladeRunnerLibs;
-	private final NodeMap<Bladeset> bladesets;
-	private final NodeMap<Aspect> aspects;
-	private final NodeMap<StandardJsLib> jsLibs;
+	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$");
+	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
+	private final NodeList<AppJsLib> bladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
 	
 	private String name;
 	private AppConf appConf;
 	private final Logger logger;
+	private File[] scopeFiles;
+	private final AppRequestHandler appRequestHandler;
 	
 	public App(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		nonBladeRunnerLibs = StandardJsLib.createAppNonBladeRunnerLibNodeSet(rootNode);
-		bladesets = Bladeset.createNodeSet(rootNode);
-		aspects = Aspect.createNodeSet(rootNode);
-		jsLibs = BRLib.createAppNodeSet(rootNode);
-		logger = rootNode.logger(LoggerType.CORE, Node.class);
+		logger = rootNode.logger(Node.class);
+		appRequestHandler = new AppRequestHandler(this);
+	}
+	
+	@Override
+	public File[] memoizedScopeFiles() {
+		if(scopeFiles == null) {
+			scopeFiles = new File[] {dir(), root().sdkJsLibsDir().dir(), BladerunnerConf.getConfigFilePath(root())};
+		}
 		
-		registerInitializedNode();
-	}
-	
-	public static NodeMap<App> createAppNodeSet(BRJS brjs)
-	{
-		return new NodeMap<>(brjs, App.class, "apps", null);
-	}
-	
-	public static NodeMap<App> createSystemAppNodeSet(BRJS brjs)
-	{
-		return new NodeMap<>(brjs, App.class, "sdk/system-applications", null);
+		return scopeFiles;
 	}
 	
 	/**
@@ -68,16 +72,16 @@ public class App extends AbstractBRJSNode implements NamedNode
 	 * This is different to BundleableNode.getAssetContainers which returns only the valid AssetContainers for a given BundleableNode.
 	 */
 	public List<AssetContainer> getAllAssetContainers() {
-		List<AssetContainer> assetContainers = new ArrayList<>();
+		List<AssetContainer> assetContainersList = new ArrayList<>();
 		
 		for(Aspect aspect : aspects()) {
-			assetContainers.add(aspect);
-			addAllTestPacks(assetContainers, aspect.testTypes());
+			assetContainersList.add(aspect);
+			addAllTestPacks(assetContainersList, aspect.testTypes());
 		}
 		
-		assetContainers.addAll(getNonAspectAssetContainers());
+		assetContainersList.addAll(getNonAspectAssetContainers());
 		
-		return assetContainers;
+		return assetContainersList;
 	}
 	
 	public List<AssetContainer> getNonAspectAssetContainers() {
@@ -161,47 +165,62 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<Bladeset> bladesets()
 	{
-		return children(bladesets);
+		return bladesets.list();
 	}
 	
 	public Bladeset bladeset(String bladesetName)
 	{
-		return child(bladesets, bladesetName);
+		return bladesets.item(bladesetName);
 	}
 
 	public List<Aspect> aspects()
 	{
-		return children(aspects);
+		return aspects.list();
 	}
 	
 	public Aspect aspect(String aspectName)
 	{
-		return child(aspects, aspectName);
+		return aspects.item(aspectName);
 	}
 	
 	public List<JsLib> jsLibs()
 	{
-		List<JsLib> appJsLibs = new ArrayList<JsLib>();
-		appJsLibs.addAll( children(jsLibs) );
-		for (JsLib lib : root().sdkLibs())
+		Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
+		
+		for (SdkJsLib lib : root().sdkLibs())
 		{
-			appJsLibs.add( new JsLibAppWrapper(this, lib) );
+			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
 		}
-		appJsLibs.addAll( nonBladeRunnerLibs() );
-		return appJsLibs;
+		for (JsLib lib : bladeRunnerLibs.list())
+		{
+			libs.put(lib.getName(), lib );			
+		}
+		
+		return new ArrayList<JsLib>( libs.values() );
 	}
 	
 	public JsLib jsLib(String jsLibName)
 	{
-		for (JsLib lib : jsLibs()) 
+		JsLib appLib = appJsLib(jsLibName);
+		SdkJsLib sdkLib = root().sdkLib(jsLibName);
+		
+		if (!appLib.dirExists())
 		{
-			if (lib.getName().equals(jsLibName))
-			{
-				return lib;
+			if (sdkLib.dirExists()) {
+				return new AppSdkJsLib(this, sdkLib);
 			}
 		}
-		
-		return child(jsLibs, jsLibName);
+		return appLib;
+	}
+	
+	public List<AppJsLib> appJsLibs()
+	{
+		return bladeRunnerLibs.list();
+	}
+	
+	public AppJsLib appJsLib(String jsLibName)
+	{
+		return bladeRunnerLibs.item(jsLibName);
 	}
 	
 	@Override
@@ -254,43 +273,31 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 	}
 	
-	public BundlableNode getBundlableNode(BladerunnerUri bladerunnerUri) throws ResourceNotFoundException
-	{
-		File baseDir = new File(dir(), bladerunnerUri.scopePath);
-		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
-		
-		if(bundlableNode == null) {
-			throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
-		}
-		
-		return bundlableNode;
+	public File libsDir() {
+		return file("libs");
 	}
 	
-	public List<JsLib> nonBladeRunnerLibs()
-	{
-		Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
-		
-		for (JsLib lib : root().sdkNonBladeRunnerLibs())
-		{
-			libs.put(lib.getName(), new JsLibAppWrapper(this, lib) );			
-		}
-		for (JsLib lib : children(nonBladeRunnerLibs))
-		{
-			libs.put(lib.getName(), lib );			
-		}
-		
-		return new ArrayList<JsLib>( libs.values() );
+	public boolean canHandleLogicalRequest(String requestPath) {
+		return appRequestHandler.canHandleLogicalRequest(requestPath);
 	}
 	
-	public JsLib nonBladeRunnerLib(String libName)
-	{
-		JsLib appLib = child(nonBladeRunnerLibs, libName);
-		JsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
-		
-		if (!appLib.dirExists() && sdkLib.dirExists())
-		{
-			return new JsLibAppWrapper(this, sdkLib);
-		}
-		return appLib;
+	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		return appRequestHandler.handleLogicalRequest(requestPath, contentAccessor);
+	}
+	
+	public String createDevBundleRequest(String contentPath, String version) throws MalformedTokenException {
+		return AppMetadataUtility.getUnversionedBundlePath( "/"+appRequestHandler.createRequest("bundle-request", "", version, contentPath) );
+	}
+	
+	public String createProdBundleRequest(String contentPath, String version) throws MalformedTokenException {
+		return AppMetadataUtility.getUnversionedBundlePath( "/"+appRequestHandler.createRequest("bundle-request", "", version, contentPath) );
+	}
+	
+	public void build(File targetDir) throws ModelOperationException {
+		new StaticAppBuilder().build(this, targetDir);
+	}
+	
+	public void buildWar(File targetFile) throws ModelOperationException {
+		new WarAppBuilder().build(this, targetFile);
 	}
 }

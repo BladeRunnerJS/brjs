@@ -2,25 +2,23 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.filemodification.NodeFileModifiedChecker;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private AssetLocationPlugin previousAssetLocationPlugin;
-	private Map<String, AssetLocation> assetLocationCache;
-	
-	private List<AssetLocation> assetLocations;
-	private NodeFileModifiedChecker assetLocationsFileModifiedChecker = new NodeFileModifiedChecker(this);
-	private List<SourceModule> sourceModules;
-	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
+	private final MemoizedValue<Map<String, LinkedAsset>> linkedAssetMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
+	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
+	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -38,78 +36,100 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public String namespace() {
-		return requirePrefix().replace("/", ".");
+	public Set<LinkedAsset> linkedAssets() {
+		return new LinkedHashSet<LinkedAsset>(linkedAssetsMap().values());
 	}
 	
 	@Override
-	public List<SourceModule> sourceModules() {
-		if(sourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (sourceModules == null)) {
-			sourceModules = new ArrayList<SourceModule>();
-			
-			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
-				for (AssetLocation assetLocation : assetLocations())
-				{
-					sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
-				}
-			}
-		}
-		
-		return sourceModules;
-	}
-	
-	@Override
-	public SourceModule sourceModule(String requirePath) {
-		for(SourceModule sourceModule : sourceModules()) {
-			if(sourceModule.getRequirePath().equals(requirePath)) {
-				return sourceModule;
-			}
-		}
-		
-		return null;
+	public LinkedAsset linkedAsset(String requirePath) {
+		return linkedAssetsMap().get(requirePath);
 	}
 	
 	@Override
 	public AssetLocation assetLocation(String locationPath) {
-		String normalizedLocationPath = normalizePath(locationPath);
-		AssetLocation assetLocation = null;
-		
-		List<AssetLocation> assetLocations = assetLocations();
-		if (assetLocations != null)
-		{
-			for(AssetLocation nextAssetLocation : assetLocations) {
-				String nextLocationPath = normalizePath(RelativePathUtility.get(dir(), nextAssetLocation.dir()));
-				
-				if(nextLocationPath.equals(normalizedLocationPath)) {
-					assetLocation = nextAssetLocation;
-					break;
-				}
-			}
-		}
-		
-		return assetLocation;
+		return assetLocationsMap().get(locationPath);
 	}
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		if(assetLocationsFileModifiedChecker.hasChangedSinceLastCheck() || (assetLocations == null)) {
-			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
-				if(assetLocationPlugin.canHandleAssetContainer(this)) {
-					if(assetLocationPlugin != previousAssetLocationPlugin) {
-						previousAssetLocationPlugin = assetLocationPlugin;
-						assetLocationCache = new HashMap<>();
-					}
-					
-					assetLocations = assetLocationPlugin.getAssetLocations(this, assetLocationCache);
-					break;
-				}
-			}
-		}
-		
-		return assetLocations;
+		return new ArrayList<>(assetLocationsMap().values());
 	}
 	
-	private String normalizePath(String path) {
-		return path.replaceAll("/$", "");
+	@Override
+	public RootAssetLocation rootAssetLocation() {
+		AssetLocation assetLocation = assetLocation(".");
+		return ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
+	}
+	
+	@Override
+	public List<String> getAssetLocationPaths()
+	{
+		List<String> assetLocationPaths = new ArrayList<String>();
+		assetLocationPaths.addAll( assetLocationsMap().keySet() );
+		return assetLocationPaths;
+	}
+	
+	private Map<String, LinkedAsset> linkedAssetsMap() {
+		return linkedAssetMap.value(() -> {
+			Map<String, LinkedAsset> linkedAssetsMap = new LinkedHashMap<>();
+			
+			for (AssetLocation assetLocation : assetLocations())
+			{
+				for(SourceModule sourceModule : assetLocation.sourceModules()) {
+					linkedAssetsMap.put(sourceModule.getPrimaryRequirePath(), sourceModule);
+				}
+				for(LinkedAsset asset : assetLocation.linkedAssets()) {
+					linkedAssetsMap.put(asset.getPrimaryRequirePath(), asset);
+				}
+			}
+			
+			return linkedAssetsMap;
+		});
+	}
+	
+	private Map<String, AssetLocation> assetLocationsMap() {
+			return assetLocationsMap.value(() -> {
+				Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
+				
+				for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
+					List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
+					
+					if(assetLocationDirectories.size() > 0) {
+						for(String locationPath : assetLocationDirectories) {
+							createAssetLocation(locationPath, assetLocations, assetLocationPlugin);
+						}
+						
+						if(!assetLocationPlugin.allowFurtherProcessing()) {
+							break;
+						}
+					}
+				}
+				
+				return assetLocations;
+			});
+	}
+	
+	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, AssetLocationPlugin assetLocationPlugin ){
+		
+		if(!assetLocations.containsKey(locationPath)) {
+			if(!cachedAssetLocations.containsKey(locationPath)) {
+				AssetLocation assetLocation = assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations);
+				
+//TODO: have a proper solution to know when duplicate node names are valid				
+				try {
+					rootNode.registerNode(assetLocation, false);
+				} catch (NodeAlreadyRegisteredException e) {
+					try {
+						rootNode.registerNode(assetLocation, true);
+					} catch (NodeAlreadyRegisteredException e1) {
+						throw new RuntimeException(e);
+					}
+					
+				}
+				cachedAssetLocations.put(locationPath, assetLocation);
+			}
+			
+			assetLocations.put(locationPath, cachedAssetLocations.get(locationPath));
+		}
 	}
 }

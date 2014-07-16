@@ -37,8 +37,7 @@ public class XmlBundleWriter
 		try {
 			writer.write("<bundle>\n");
 			for(Asset asset : xmlAssets){
-				Reader reader = asset.getReader();
-				IOUtils.copy(reader, writer);
+				try (Reader reader = asset.getReader()) { IOUtils.copy(reader, writer); }
 			}
 			writer.write("</bundle>");
 		} catch (IOException e) {
@@ -58,7 +57,7 @@ public class XmlBundleWriter
 			XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
 			writeBundleInternal(resourceReaders, xmlWriter);
 		}
-		catch(   XmlSiblingReaderException | XMLStreamException e) {
+		catch (XmlSiblingReaderException | XMLStreamException e) {
 			throw new ContentProcessingException(e, "Error while bundling XML assets '" );
 		}	
 		finally

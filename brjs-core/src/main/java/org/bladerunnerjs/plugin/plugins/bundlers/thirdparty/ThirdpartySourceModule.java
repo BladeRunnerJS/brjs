@@ -5,21 +5,24 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
+import org.bladerunnerjs.model.ThirdpartyLibManifest;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsSourceModule;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
@@ -29,21 +32,19 @@ import com.Ostermiller.util.ConcatReader;
 public class ThirdpartySourceModule implements SourceModule
 {
 
-	private AssetLocation assetLocation;
-	private File dir;
-	private NonBladerunnerJsLibManifest manifest;
+	private ThirdpartyAssetLocation assetLocation;
+	private ThirdpartyLibManifest manifest;
 	private String assetPath;
 	private SourceModulePatch patch;
 	private String defaultFileCharacterEncoding;
 	
-	@Override
-	public void initialize(AssetLocation assetLocation, File dir, String assetName)
-	{
+	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
-			this.dir = dir;
-			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), dir);
+			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetLocation.dir());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
+			manifest = assetLocation.getManifest();
 		}
 		catch (ConfigException e) {
 			throw new RuntimeException(e);
@@ -61,10 +62,10 @@ public class ThirdpartySourceModule implements SourceModule
 			boolean shouldDefineLibrary = hasPackageJson && !assetLocation.assetContainer().file(".no-define").isFile();
 			
 			
-			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
+			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath());
 			String defineBlockBody = "module.exports = " + manifest.getExports();
-			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
-			String globaliseModuleContent = manifest.getExports() + " = require('" + getRequirePath() + "');\n";
+			String defineBlockFooter = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER;
+			String globaliseModuleContent = manifest.getExports() + " = require('" + getPrimaryRequirePath() + "');\n";
 			
 			//TODO: once we have proper node lib support remove this block and the 'else' block below
 			if (shouldDefineLibrary)
@@ -94,7 +95,9 @@ public class ThirdpartySourceModule implements SourceModule
 				}
 			}
 			
-			fileReaders.add(patch.getReader());
+			if (patch.patchAvailable()){
+				fileReaders.add(patch.getReader());
+			}
 		}
 		catch (ConfigException e)
 		{
@@ -119,7 +122,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public File dir()
 	{
-		return dir;
+		return assetLocation.dir();
 	}
 	
 	@Override
@@ -132,29 +135,21 @@ public class ThirdpartySourceModule implements SourceModule
 		return assetPath;
 	}
 	
-	public void initManifest(NonBladerunnerJsLibManifest manifest)
-	{
-		if (this.manifest == null)
-		{
-			this.manifest= manifest;
-		}
-	}
-
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
+	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		Set<SourceModule> dependentLibs = new LinkedHashSet<SourceModule>();
+		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
 		
 		try 
 		{
 			for (String dependentLibName : manifest.getDepends())
 			{
-				JsLib dependentLib = assetLocation.assetContainer().app().nonBladeRunnerLib(dependentLibName);
+				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
 				if (!dependentLib.dirExists())
 				{
 					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
 				}
-				dependentLibs.addAll(dependentLib.sourceModules());
+				dependentLibs.addAll(dependentLib.linkedAssets());
 			}
 		}
 		catch (ConfigException ex)
@@ -162,24 +157,19 @@ public class ThirdpartySourceModule implements SourceModule
 			throw new ModelOperationException( ex );
 		}
 		
-		return new ArrayList<SourceModule>( dependentLibs );
+		return new ArrayList<Asset>( dependentLibs );
 	}
 
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException
 	{
-		return new ArrayList<String>();
+		return Collections.emptyList();
 	}
 
 	@Override
-	public String getRequirePath()
+	public String getPrimaryRequirePath()
 	{
-		return dir.getName();
-	}
-	
-	@Override
-	public String getClassname() {
-		return null;
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 	
 	@Override
@@ -190,13 +180,21 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return getDependentSourceModules(bundlableNode);
+		List<SourceModule> result = new ArrayList<SourceModule>();
+		for(Asset dependentAsset : getDependentAssets(bundlableNode)){
+			if(dependentAsset instanceof SourceModule){
+				result.add((SourceModule)dependentAsset);
+			}
+		}
+		return result;
 	}
-
+	
 	@Override
-	public void addPatch(SourceModulePatch patch)
-	{
-		this.patch = patch;
+	public List<String> getRequirePaths() {
+		List<String> requirePaths = new ArrayList<String>();
+		requirePaths.add(assetLocation.dir().getName());
+		
+		return requirePaths;
 	}
 	
 }

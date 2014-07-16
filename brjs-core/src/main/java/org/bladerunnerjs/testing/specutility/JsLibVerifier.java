@@ -36,7 +36,7 @@ public class JsLibVerifier extends NodeVerifier<JsLib> {
 		return verifierChainer;
 	}
 	
-	public VerifierChainer hasSourceModules(SourceModuleDescriptor... sourceModules) throws Exception {
+	public VerifierChainer hasSourceModules(String... sourceModules) throws Exception {
 		assetContainerVerifier.hasSourceModules(sourceModules);
 		
 		return verifierChainer;

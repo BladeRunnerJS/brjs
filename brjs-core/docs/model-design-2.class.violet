@@ -180,7 +180,7 @@ List&lt;SourceModule&gt; getOrderDependentSourceModules()</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode2">
     <void property="name">
      <void property="text">
-      <string>NodeJsSourceModule</string>
+      <string>CommonJsSourceModule</string>
      </void>
     </void>
    </object>

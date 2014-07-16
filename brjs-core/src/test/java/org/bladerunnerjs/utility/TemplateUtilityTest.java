@@ -11,8 +11,8 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsException;
-import org.bladerunnerjs.testing.utility.BRJSTestFactory;
+import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.TemplateUtility;
 import org.junit.After;
@@ -21,18 +21,18 @@ import org.junit.Test;
 
 
 
-public class TemplateUtilityTest
+public class TemplateUtilityTest extends TestModelAccessor
 {
 	private BRJS brjs;
-	private FileUtil fileUtil;
+	private EncodedFileUtil fileUtil;
 	
 	@Before
 	public void setUp() throws Exception
 	{
 		File tempDir = FileUtility.createTemporaryDirectory("TemplateUtilityTest");
 		FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
-		brjs = BRJSTestFactory.createBRJS(tempDir);
-		fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+		brjs = createModel(tempDir);
+		fileUtil = new EncodedFileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 	}
 	
 	@After
@@ -40,7 +40,7 @@ public class TemplateUtilityTest
 		brjs.close();
 	}
 	
-	@Test(expected=DirectoryAlreadyExistsException.class)
+	@Test(expected=TemplateDirectoryAlreadyExistsException.class)
 	public void installingATemplateToAPreExistingDirectoryCausesAnException() throws Exception
 	{
 		TemplateUtility.installTemplate(brjs.app("pre-existing-app"), "app", new HashMap<String, String>());
