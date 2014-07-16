@@ -22,6 +22,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
+	private Map<String, AliasDefinitionsFile> aliasDefinitionsFilesMap = new HashMap<>();
 	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
 	private String relativeRequirePath;
@@ -55,12 +56,39 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	}
 	
 	@Override
-	public AliasDefinitionsFile aliasDefinitionsFile() {		
+	public AliasDefinitionsFile aliasDefinitionsFile() {
 		if(aliasDefinitionsFile == null) {
 			aliasDefinitionsFile = new AliasDefinitionsFile(this, dir(), "aliasDefinitions.xml");
 		}
 		
 		return aliasDefinitionsFile;
+	}
+	
+	@Override
+	public List<AliasDefinitionsFile> aliasDefinitionsFiles() {
+		List<AliasDefinitionsFile> aliasDefinitionsFiles = new ArrayList<>();
+		
+		if(aliasDefinitionsFile().getUnderlyingFile().exists()) {
+			aliasDefinitionsFiles.add(aliasDefinitionsFile());
+		}
+		
+		// TODO: fix this dependency from the model to plug-in code (ResourcesAssetLocation)
+		//       we instead need a way to either know this asset-location has a deep directory structure, or have way of getting it to list it's nested directories
+		if(dir().exists() && (this instanceof ResourcesAssetLocation)) {
+			for(File dir : root().getFileInfo(dir()).nestedDirs()) {
+				if(new File(dir, "aliasDefinitions.xml").exists()) {
+					String dirPath = dir.getAbsolutePath();
+					
+					if(!aliasDefinitionsFilesMap.containsKey(dirPath)) {
+						aliasDefinitionsFilesMap.put(dirPath, new AliasDefinitionsFile(this, dir, "aliasDefinitions.xml"));
+					}
+					
+					aliasDefinitionsFiles.add(aliasDefinitionsFilesMap.get(dirPath));
+				}
+			}
+		}
+		
+		return aliasDefinitionsFiles;
 	}
 	
 	@Override
