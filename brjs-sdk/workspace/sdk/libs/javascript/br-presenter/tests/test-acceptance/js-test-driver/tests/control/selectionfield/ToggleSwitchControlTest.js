@@ -40,6 +40,13 @@ describe("View to model interactions for toggle switch", function() {
 		then("demo.view.(#toggleSwitch1).isVisible = false");
 			and("demo.view.(#toggleSwitch1).doesNotHaveClass = 'disabled'");
 	});
+
+	it("becomes visible again when requested to do so", function() {
+		given("test.continuesFrom = 'becomes invisible when requested to do so'");
+		when("demo.model.selectionField.visible => true");
+		then("demo.view.(#toggleSwitch1).isVisible = true");
+			and("demo.view.(#toggleSwitch1).doesNotHaveClass = 'disabled'");
+	});
 	
 	it("becomes disabled and invisible when requested to do so", function() {
 		given("demo.viewOpened = true");
@@ -84,6 +91,24 @@ describe("View to model interactions for toggle switch", function() {
 			
 	});
 	
+	it("sets the correct value on the presentation node (option a)", function() {
+		given("demo.viewOpened = true");
+		when("demo.view.(#toggleSwitch4 .choiceA).clicked => true");
+		then("demo.model.labelValueSelectionField.value = 'a'");
+	});
+	
+	it("sets the correct value on the presentation node (option b)", function() {
+		given("test.continuesFrom = 'sets the correct value on the presentation node (option a)'");
+		when("demo.view.(#toggleSwitch4 .choiceB).clicked => true");
+		then("demo.model.labelValueSelectionField.value = 'b'");
+	});
+	
+	it("has the correct labels for each of the options", function() {
+		given("demo.viewOpened = true");
+		then("demo.view.(#toggleSwitch4 .choiceA).text = 'A-Label'");
+			and("demo.view.(#toggleSwitch4 .choiceB).text = 'B-Label'");
+	});
+
 	// view interaction tests: these need to be performed because this is a brjs control, and is not tested elsewhere
 	
 	it("selects b when a is currently selected and b is clicked", function() {
