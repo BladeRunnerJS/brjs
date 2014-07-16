@@ -443,10 +443,18 @@ public class TestRunner {
 			try 
 			{
 // temp debugging
-File browserPath = new File("../../build/browsers/chrome-linux");
+File browserDirPath = new File("../../build/browsers/chrome-linux");
+File browserPath = new File("../../build/browsers/chrome-linux/chrome");
 System.out.println("cwd: " + new File(".").getCanonicalPath());
+System.out.println("browser-dir-path: " + browserDirPath.getCanonicalPath());
+System.out.println("browser-dir-path-exists: " + browserDirPath.exists());
 System.out.println("browser-path: " + browserPath.getCanonicalPath());
 System.out.println("browser-path-exists: " + browserPath.exists());
+List<String> browserFiles = new ArrayList<>();
+for(File browserFile : browserDirPath.listFiles()) {
+	browserFiles.add(browserFile.getName());
+}
+System.out.println("browser-dir-files: " + Joiner.on(", ").join(browserFiles));
 System.out.println("args: " + Joiner.on(" ").join(args));
 				Process process = runTime.exec(args);
 				childProcesses.add(process);
