@@ -30,8 +30,8 @@ public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation im
 	}
 	
 	@Override
-	public void setNamespace(String namespace) throws ConfigException {
+	public void setRequirePrefix(String requirePrefix) throws ConfigException {
 		// TODO: us throwing an exception here means that we have broken the interface-segregation principle -- fix this
-		throw new RuntimeException("setNamespace() only makes sense if the asset-container is of type JsLib");
+		throw new RuntimeException("requirePrefix() only makes sense if the asset-container is of type JsLib");
 	}
 }

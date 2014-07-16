@@ -32,7 +32,7 @@ public class BRJSConformantJsLibRootAssetLocation extends BRJSConformantRootAsse
 	}
 	
 	@Override
-	public void setNamespace(String namespace) throws ConfigException {
-		libManifest.setRequirePrefix(namespace.replace('.', '/'));
+	public void setRequirePrefix(String requirePrefix) throws ConfigException {
+		libManifest.setRequirePrefix(requirePrefix);
 	}
 }
