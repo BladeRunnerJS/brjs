@@ -18,7 +18,7 @@ public class ThirdpartyLibYamlManifest extends AbstractYamlConfFile
 		depends = getDefault(depends, "");
 		js = getDefault(js, "");
 		css = getDefault(css, "");
-		String defaultExports = node.dir().getName().replaceAll("\\.-_+%","");
+		String defaultExports = "window."+node.dir().getName().replaceAll("\\.-_+%","");
 		exports = getDefault(exports, defaultExports);
 	}
 	

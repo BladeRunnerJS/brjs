@@ -135,7 +135,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 			.and(lib).doesNotHaveDir("src/lib")
 			.and(lib).doesNotHaveDir("resources/lib")
 			.and(lib).doesNotHaveDir("tests/test-unit/js-test-driver/")
-			.and(lib.dir()).containsFileWithContents("thirdparty-lib.manifest", "css: \n"+"depends: \n"+"exports: lib\n"+"js: ")
+			.and(lib.dir()).containsFileWithContents("thirdparty-lib.manifest", "css: \n"+"depends: \n"+"exports: window.lib\n"+"js: ")
 			.and(lib).doesNotHaveFile("br-lib.conf");
 	}
 	
