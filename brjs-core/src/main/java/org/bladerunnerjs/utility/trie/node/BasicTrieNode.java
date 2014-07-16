@@ -47,13 +47,10 @@ public class BasicTrieNode<T> implements TrieNode<T>
 			if (trieChar == character) {
 				return trieNode;
 			}
-/*
- * TODO: investigate why this causes CT dependency issues 
- * (see comment in AbstractOptimisedNode and TrieFactory too)
- */
-//			if (trieChar == primarySeparator && separators.contains(character)) {
-//				return trieNode;
-//			}
+
+			if (trieChar == primarySeparator && separators.contains(character)) {
+				return trieNode;
+			}
 		}
 		return null;
 	}
