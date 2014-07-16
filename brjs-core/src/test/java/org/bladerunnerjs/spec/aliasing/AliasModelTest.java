@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.aliasing;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.NamespaceException;
@@ -295,4 +296,18 @@ public class AliasModelTest extends SpecTest {
 			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1");
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "Class2", "TheInterface");
 	}
+	
+	@Test
+	public void nestedAliasDefinitionsFilesCanBeUsedInResourcesDirectories() throws Exception {
+		// TODO: think of a way of doing this in a more BDD way
+		FileUtils.write(blade.assetLocation("resources").file("aliasDefinitions.xml"), "<aliasDefinitions/>");
+		FileUtils.write(blade.assetLocation("resources").file("dir/aliasDefinitions.xml"), "<aliasDefinitions/>");
+		AliasDefinitionsFile nestedBladeAliasDefinitionsFile = blade.assetLocation("resources").aliasDefinitionsFiles().get(1);
+		
+		given(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias1", "Class1", "TheInterface")
+			.and(nestedBladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias2", "Class2", "TheInterface");
+		then(aspect).hasAlias("appns.bs.b1.alias1", "Class1", "TheInterface")
+			.and(aspect).hasAlias("appns.bs.b1.alias2", "Class2", "TheInterface");
+	}
+	
 }
