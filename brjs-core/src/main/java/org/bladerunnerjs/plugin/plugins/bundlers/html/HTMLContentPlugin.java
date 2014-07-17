@@ -105,13 +105,11 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 				try(Reader reader = htmlAsset.getReader()) {
 					readerList.add(new StringReader("\n<!-- " + htmlAsset.getAssetName() + " -->\n"));
 
-					String bundlePath = AppMetadataUtility.getVersionedBundlePath(version);
-					String unversionedBundlePath = AppMetadataUtility.getUnversionedBundlePath();
+					String bundlePath = AppMetadataUtility.getRelativeVersionedBundlePath(version, "").replaceFirst("/$", "");
 					String xmlBundlePathToken = AppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
-					String xmlUnversionedBundlePathToken = AppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
 
 					String htmlContent = IOUtils.toString(reader);
-					String replaced =  htmlContent.replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath);
+					String replaced =  htmlContent.replace(xmlBundlePathToken, bundlePath);
 					readerList.add(new StringReader(replaced));
 				}
 			}

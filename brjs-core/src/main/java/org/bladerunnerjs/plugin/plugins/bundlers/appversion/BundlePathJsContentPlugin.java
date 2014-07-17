@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.appversion;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
@@ -19,6 +20,8 @@ import org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsContentP
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.AppMetadataUtility;
+
+import com.google.common.base.Joiner;
 
 
 public class BundlePathJsContentPlugin extends AbstractContentPlugin
@@ -59,7 +62,12 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 		{
 			try
 			{
-				return new CharResponseContent( brjs, AppMetadataUtility.getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
+				App app = bundleSet.getBundlableNode().app();
+				return new CharResponseContent( brjs, "window.$BRJS_APP_VERSION = '"+version+"';\n" +
+						"window.$BRJS_BUNDLE_PATH = '"+AppMetadataUtility.getVersionedBundlePath(version, "")+"';\n" +
+						"window.$BRJS_UNVERSIONED_BUNDLE_PATH = '"+AppMetadataUtility.getUnversionedBundlePath("")+"';\n" +
+						"window.$BRJS_LOCALE_COOKIE_NAME = '"+app.appConf().getLocaleCookieName()+"';\n" +
+						"window.$BRJS_APP_LOCALES = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n" );
 			}
 			catch (ConfigException ex)
 			{

@@ -29,7 +29,9 @@ public class BuildAppCommandTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsCommandPlugins().and(brjs).automaticallyFindsBundlerPlugins().and(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsCommandPlugins()
+			.and(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
 		aspect = app.aspect("default");
 		otherApp = brjs.app("other-app");

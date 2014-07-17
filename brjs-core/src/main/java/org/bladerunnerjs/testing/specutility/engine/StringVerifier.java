@@ -174,7 +174,7 @@ public class StringVerifier {
 			if (StringUtils.countMatches(string, fragment) != 1) {
 				String failMessage = "Expected " + fragment + " to be present only once. "+
 						"If fragments can be present multiple times use 'containsOrderedTextFragmentsAnyNumberOfTimes' instaed";
-				assertEquals(failMessage, fragment, string);
+				assertEquals(failMessage, string, fragment);
 			}
 		}
 		

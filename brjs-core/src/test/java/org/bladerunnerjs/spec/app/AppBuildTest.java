@@ -5,6 +5,7 @@ import java.io.File;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.plugin.plugins.bundlers.appversion.BundlePathJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.bladerunnerjs.utility.FileUtility;
@@ -23,6 +24,7 @@ public class AppBuildTest extends SpecTest {
 		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
+			.and(brjs).hasContentPlugins(new BundlePathJsContentPlugin())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");

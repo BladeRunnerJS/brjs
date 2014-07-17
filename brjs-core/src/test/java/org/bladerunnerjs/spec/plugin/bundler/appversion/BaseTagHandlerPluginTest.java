@@ -42,7 +42,7 @@ public class BaseTagHandlerPluginTest extends SpecTest {
 	public void unversionedBundlePathContentIsIncluded() throws Exception {
 		given(brjs).hasDevVersion("dev");
 		when(aspect).requestReceived("app-version/version.js", requestResponse);
-		then(requestResponse).containsTextOnce( "window.$BRJS_UNVERSIONED_BUNDLE_PATH = '..';" );
+		then(requestResponse).containsTextOnce( "window.$BRJS_UNVERSIONED_BUNDLE_PATH = '../';" );
 	}
 	
 	@Test
@@ -58,7 +58,7 @@ public class BaseTagHandlerPluginTest extends SpecTest {
 				"// br-bootstrap",
 				"window.$BRJS_APP_VERSION = 'dev';",
 				"window.$BRJS_BUNDLE_PATH = '../v/dev';",
-				"window.$BRJS_UNVERSIONED_BUNDLE_PATH = '..';",
+				"window.$BRJS_UNVERSIONED_BUNDLE_PATH = '../';",
 				"appns/Class" );
 	}
 	

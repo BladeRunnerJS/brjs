@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -79,7 +80,7 @@ public class BRJSDevServlet extends HttpServlet {
 			}
 			content.closeQuietly();
 		}
-		catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException e) {
+		catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException | ModelOperationException e) {
 			throw new ServletException(e);
 		}
 		finally {

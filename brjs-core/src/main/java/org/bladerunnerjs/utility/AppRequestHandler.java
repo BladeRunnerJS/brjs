@@ -19,6 +19,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BrowsableNode;
+import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
@@ -30,6 +31,7 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 
@@ -64,7 +66,7 @@ public class AppRequestHandler
 		return getContentPathParser().canParseRequest(requestPath);
 	}
 	
-	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException {
 		ParsedContentPath parsedContentPath = getContentPathParser().parse(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
@@ -75,7 +77,7 @@ public class AppRequestHandler
 		{
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.root(), contentAccessor, devVersion);
+				return getLocaleForwardingPageContent(app.root(), app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
 
 			case INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
@@ -146,7 +148,7 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public ResponseContent getLocaleForwardingPageContent(BRJS brjs, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent getLocaleForwardingPageContent(BRJS brjs, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		StringWriter localeForwardingPage = new StringWriter();
 		
 		SdkJsLib localeForwarderLib = app.root().sdkLib(BR_LOCALE_UTILITY_LIBNAME);
@@ -155,7 +157,15 @@ public class AppRequestHandler
 			localeForwardingPage.write("<head>\n");
 			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			localeForwardingPage.write("<script type='text/javascript'>\n");
-			IOUtils.write(AppMetadataUtility.getBundlePathJsData(app, version), localeForwardingPage);
+			
+			ContentPlugin appVersionContentPlugin = brjs.plugins().contentPlugin("app-version");
+			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.getContentPathParser();
+			String appVersionContentPath = appVersionContentPathParser.createRequest("app-version-request");
+			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPathParser.parse(appVersionContentPath), bundleSet, contentAccessor, appVersionContentPath);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			responseContent.write(baos);
+			localeForwardingPage.write( baos.toString() );
+			
 			localeForwardingPage.write("\n");
 			IOUtils.copy(localeForwarderReader, localeForwardingPage);
 			localeForwardingPage.write("\n");			
@@ -173,7 +183,7 @@ public class AppRequestHandler
 			
 			return new CharResponseContent( brjs, localeForwardingPage.toString() );
 		}
-		catch (IOException | ConfigException e) {
+		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException e) {
 			throw new ContentProcessingException(e);
 		}
 	}
