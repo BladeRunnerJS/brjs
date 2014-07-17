@@ -2,6 +2,7 @@ package org.bladerunnerjs.utility;
 
 import java.util.Arrays;
 
+// Note: this class was copied from <http://blog.glassdiary.com/post/60623345900/character-tail-buffer-in-java>
 
 /**
  * A "tail buffer". It keeps the finite number of elements that have been added last.
