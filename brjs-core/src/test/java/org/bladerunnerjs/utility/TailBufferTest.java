@@ -1,19 +1,9 @@
 package org.bladerunnerjs.utility;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.io.StringReader;
-import java.util.List;
-
-import org.bladerunnerjs.utility.trie.Trie;
-import org.bladerunnerjs.utility.trie.TrieLockedException;
-import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
-import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 
 public class TailBufferTest
@@ -32,6 +22,7 @@ public class TailBufferTest
 		unit.push('a');
 		unit.push('b');
 		assertEquals("ab", new String(unit.toArray()));
+		assertEquals(2, unit.size());
 	}
 	
 	@Test
@@ -48,6 +39,8 @@ public class TailBufferTest
 		unit.push('9');
 		unit.push('0');
 		assertEquals("234567890", new String(unit.toArray()));
+		assertEquals(9, unit.size());
+		assertEquals(9, unit.maxCapacity());
 	}
 	
 }

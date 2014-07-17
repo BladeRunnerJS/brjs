@@ -31,7 +31,7 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 	
 	private final Reader sourceReader;
 	private final char[] sourceBuffer = new char[4096];
-	private final TailBuffer tailBuffer = new TailBuffer(COMMENT_START.length() + 2);
+	private final TailBuffer tailBuffer = new TailBuffer(COMMENT_START.length() + 1);
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private CommentStripperState state;

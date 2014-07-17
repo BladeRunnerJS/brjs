@@ -30,7 +30,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	private final Reader sourceReader;
 	private final char[] sourceBuffer = new char[4096];
 	// buffer the length of the function definition + 10 to allow for things like new(<IIFE>) etc.
-	private final TailBuffer tailBuffer = new TailBuffer(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 10 + 2);
+	private final TailBuffer tailBuffer = new TailBuffer(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 10 + 1);
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private int depthCount = 0;
