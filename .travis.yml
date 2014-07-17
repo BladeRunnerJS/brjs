@@ -8,6 +8,8 @@ before_install:
 - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
 - "export DISPLAY=:99.0"
 - "sh -e /etc/init.d/xvfb start"
+- sudo apt-get update -qq
+- sudo apt-get install -qq ia32-libs
 install:
 - TERM=dumb ./gradlew compileJava
 script:
