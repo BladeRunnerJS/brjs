@@ -3,7 +3,7 @@ package org.bladerunnerjs.utility.reader;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.bladerunnerjs.utility.SizedStack;
+import org.bladerunnerjs.utility.TailBuffer;
 
 /*
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
@@ -31,7 +31,7 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 	
 	private final Reader sourceReader;
 	private final char[] sourceBuffer = new char[4096];
-	private final SizedStack<Character> lookbehindBuffer = new SizedStack<>( COMMENT_START.length() );
+	private final TailBuffer tailBuffer = new TailBuffer(COMMENT_START.length() + 1);
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private CommentStripperState state;
@@ -64,7 +64,7 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 			}
 			
 			nextChar = sourceBuffer[nextCharPos++];
-			lookbehindBuffer.push(nextChar);
+			tailBuffer.push(nextChar);
 			
 			if (state == CommentStripperState.WITHIN_SOURCE) {
 				destBuffer[currentOffset++] = nextChar;
@@ -88,12 +88,14 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 	
 	private boolean isCommentStart()
 	{
-		return lookbehindBuffer.toString().contains(COMMENT_START);
+		String tail = new String(tailBuffer.toArray());
+		return tail.contains(COMMENT_START);
 	}
 	
 	private boolean isCommentEnd()
 	{
-		return lookbehindBuffer.toString().contains(COMMENT_END);
+		String tail = new String(tailBuffer.toArray());
+		return tail.contains(COMMENT_END);
 	}
 
 	@Override
