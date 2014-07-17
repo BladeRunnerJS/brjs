@@ -43,7 +43,7 @@ public final class TailBuffer
         } else if(maxSize > MAX_BUFFER_SIZE) {
             this.maxSize = MAX_BUFFER_SIZE;
         } else {
-            this.maxSize = maxSize;
+            this.maxSize = maxSize + 1;
         }
         buffer = new char[this.maxSize];
     }
