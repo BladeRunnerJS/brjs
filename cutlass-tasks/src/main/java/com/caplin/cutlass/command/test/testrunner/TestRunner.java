@@ -443,8 +443,8 @@ public class TestRunner {
 			try 
 			{
 // temp debugging
-File browserDirPath = new File("../../build/browsers/chrome-linux");
-File browserPath = new File("../../build/browsers/chrome-linux/chrome");
+File browserDirPath = new File("../../build/browsers/chrome-linux-33.0.1751.0");
+File browserPath = new File("../../build/browsers/chrome-linux-33.0.1751.0/chrome");
 System.out.println("cwd: " + new File(".").getCanonicalPath());
 System.out.println("browser-dir-path: " + browserDirPath.getCanonicalPath());
 System.out.println("browser-dir-path-exists: " + browserDirPath.exists());
