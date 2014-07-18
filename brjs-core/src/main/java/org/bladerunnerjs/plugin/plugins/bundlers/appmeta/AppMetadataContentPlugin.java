@@ -63,7 +63,9 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin
 			try
 			{
 				App app = bundleSet.getBundlableNode().app();
-				return new CharResponseContent( brjs, "window.$BRJS_APP_VERSION = '"+version+"';\n" +
+				//NOTE: this metadata is used by the BRAppMetaService
+				return new CharResponseContent( brjs, "// these variables should not be used directly but accessed via the 'br.app-meta-service' instead\n" + 
+						"window.$BRJS_APP_VERSION = '"+version+"';\n" +
 						"window.$BRJS_VERSIONED_BUNDLE_PATH = '"+AppMetadataUtility.getRelativeVersionedBundlePath(version, "")+"';\n" +
 						"window.$BRJS_LOCALE_COOKIE_NAME = '"+app.appConf().getLocaleCookieName()+"';\n" +
 						"window.$BRJS_APP_LOCALES = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n" );
