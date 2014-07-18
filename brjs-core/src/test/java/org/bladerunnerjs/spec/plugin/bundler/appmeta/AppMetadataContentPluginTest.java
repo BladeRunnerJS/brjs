@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.plugin.bundler.appversion;
+package org.bladerunnerjs.spec.plugin.bundler.appmeta;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -7,7 +7,8 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BundlePathJsContentPluginTest extends SpecTest {
+public class AppMetadataContentPluginTest extends SpecTest {
+	
 	private App app;
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
@@ -27,22 +28,15 @@ public class BundlePathJsContentPluginTest extends SpecTest {
 	@Test
 	public void appVersionContentIsIncluded() throws Exception {
 		given(brjs).hasDevVersion("dev");
-		when(aspect).requestReceived("app-version/version.js", requestResponse);
+		when(aspect).requestReceived("app-meta/version.js", requestResponse);
 		then(requestResponse).containsTextOnce( "window.$BRJS_APP_VERSION = 'dev';" );
 	}
 	
 	@Test
 	public void bundlePathContentIsIncluded() throws Exception {
 		given(brjs).hasDevVersion("dev");
-		when(aspect).requestReceived("app-version/version.js", requestResponse);
-		then(requestResponse).containsTextOnce( "window.$BRJS_BUNDLE_PATH = '../v/dev';" );
-	}
-	
-	@Test
-	public void unversionedBundlePathContentIsIncluded() throws Exception {
-		given(brjs).hasDevVersion("dev");
-		when(aspect).requestReceived("app-version/version.js", requestResponse);
-		then(requestResponse).containsTextOnce( "window.$BRJS_UNVERSIONED_BUNDLE_PATH = '..';" );
+		when(aspect).requestReceived("app-meta/version.js", requestResponse);
+		then(requestResponse).containsTextOnce( "window.$BRJS_VERSIONED_BUNDLE_PATH = 'v/dev';" );
 	}
 	
 	@Test
@@ -57,9 +51,7 @@ public class BundlePathJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments(
 				"// br-bootstrap",
 				"window.$BRJS_APP_VERSION = 'dev';",
-				"window.$BRJS_BUNDLE_PATH = '../v/dev';",
-				"window.$BRJS_UNVERSIONED_BUNDLE_PATH = '..';",
+				"window.$BRJS_VERSIONED_BUNDLE_PATH = 'v/dev';",
 				"appns/Class" );
 	}
-	
 }

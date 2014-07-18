@@ -224,6 +224,15 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated()
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/static/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName());
+	}
+	
+	@Test
+	public void unbundledResourcesCanBeUnversioned() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("unbundled-resources/file.txt", "unbundled resources file content")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/unbundled-resources/file.txt", "unbundled resources file content");
 	}
 }

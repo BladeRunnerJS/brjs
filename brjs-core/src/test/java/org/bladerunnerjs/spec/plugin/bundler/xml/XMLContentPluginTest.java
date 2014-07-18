@@ -357,26 +357,26 @@ public class XMLContentPluginTest extends SpecTest{
 	
 	@Test public void bundlePathTagIsReplacedForDev() throws Exception {
 		given(brjs).hasDevVersion("dev")
-			.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path @unversionedBundlePath@/some/path"));
+			.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path"));
 		when(aspect).requestReceived("xml/bundle.xml", response);
-		then(response).containsText(bundleElem("\n",templateElem("../v/dev/some/path ../some/path")));
+		then(response).containsText(bundleElem("\n",templateElem("v/dev/some/path")));
 	}
 	
 	@Test public void bundlePathTagIsReplacedForProd() throws Exception {
 		given(brjs).hasProdVersion("1234")
-		.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path @unversionedBundlePath@/some/path"));
+		.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path"));
 		when(aspect).requestReceivedInProd("xml/bundle.xml", response);
-		then(response).containsText(bundleElem("\n", templateElem("../v/1234/some/path ../some/path")));
+		then(response).containsText(bundleElem("\n", templateElem("v/1234/some/path")));
 	}
 	
 	@Test
 	public void bundlePathTagIsReplacedForWorkbench() throws Exception {
-		given(blade).containsResourceFileWithContents("xml/myconfig.xml", "@bundlePath@/some/path @unversionedBundlePath@/some/path")
+		given(blade).containsResourceFileWithContents("xml/myconfig.xml", "@bundlePath@/some/path")
 			.and(brjs).hasDevVersion("dev")
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(workbench).indexPageRefersTo("appns/bs/b1/Class1");
 		when(workbench).requestReceived("xml/bundle.xml", response);
-		then(response).containsText("../v/dev/some/path ../some/path"); 
+		then(response).containsText("v/dev/some/path"); 
 	}
 	
 	private String bundleConfig(){

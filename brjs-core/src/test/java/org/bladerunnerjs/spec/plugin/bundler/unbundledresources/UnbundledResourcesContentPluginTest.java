@@ -55,7 +55,11 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		given(appAspect).indexPageHasContent("index page")
 			.and(unbundledResources).containsFile("some-file")
 			.and(unbundledResources).containsFile("some-dir/some-file");
-		then(appAspect).prodAndDevRequestsForContentPluginsAre("unbundled-resources", "unbundled-resources/some-file", "unbundled-resources/some-dir/some-file");
+		then(appAspect).prodAndDevRequestsForContentPluginsAre( "unbundled-resources",
+				"/unbundled-resources/some-file", 
+				"unbundled-resources/some-file", 
+				"/unbundled-resources/some-dir/some-file",
+				"unbundled-resources/some-dir/some-file");
 	}
 	
 	@Test
@@ -64,6 +68,15 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(appAspect).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(appAspect).requestReceived("unbundled-resources/someFile.txt", response);
+		then(response).textEquals("some file contents");
+	}
+	
+	@Test
+	public void unversionedRequestsCanBeMadeForAFileInUnbundledResources() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(appAspect).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
+		when(appAspect).requestReceived("/unbundled-resources/someFile.txt", response);
 		then(response).textEquals("some file contents");
 	}
 	
@@ -101,7 +114,9 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
     		.and(appAspect).containsFiles("unbundled-resources/someFile.txt", "unbundled-resources/a/dir/someFile.txt");
     	when(unbundledResourcesPlugin).getPossibleDevRequests(appAspect, requestsList);
 		thenRequests(requestsList).entriesEqual(
+    			"/unbundled-resources/someFile.txt",
     			"unbundled-resources/someFile.txt",
+    			"/unbundled-resources/a/dir/someFile.txt",
     			"unbundled-resources/a/dir/someFile.txt"
     	);
 	}
@@ -113,7 +128,9 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			.and(appAspect).containsFiles("unbundled-resources/someFile.txt", "unbundled-resources/a/dir/someFile.txt");
 		when(unbundledResourcesPlugin).getPossibleProdRequests(appAspect, requestsList);
 		thenRequests(requestsList).entriesEqual(
+				"/unbundled-resources/someFile.txt",
 				"unbundled-resources/someFile.txt",
+				"/unbundled-resources/a/dir/someFile.txt",
 				"unbundled-resources/a/dir/someFile.txt"
 		);
 	}

@@ -21,7 +21,7 @@ var i18n = require('br/I18n');
 function BRXmlResourceService(sUrl) {
 	var ServiceRegistry = require("br/ServiceRegistry");
 	/** @private */
-	this.url = sUrl || ServiceRegistry.getService('br.bundle-path-service').getBundlePath("/xml/bundle.xml");
+	this.url = url || ServiceRegistry.getService('br.app-meta-service').getVersionedBundlePath("xml/bundle.xml");
 
 	/** @private */
 	this.element = XmlParser.parse("<div></div>");

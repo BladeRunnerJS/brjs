@@ -5,6 +5,7 @@ import java.io.File;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.plugin.plugins.bundlers.appmeta.AppMetadataContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.bladerunnerjs.utility.FileUtility;
@@ -23,6 +24,7 @@ public class AppBuildTest extends SpecTest {
 		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
+			.and(brjs).hasContentPlugins(new AppMetadataContentPlugin())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");
@@ -152,8 +154,8 @@ public class AppBuildTest extends SpecTest {
 			.and(defaultAspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/static/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName())
-			.and(targetDir).doesNotContainFile("app1/v/1234/static/mock-content-plugin/unversioned/url");
+		then(targetDir).containsFileWithContents("app1/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName())
+			.and(targetDir).doesNotContainFile("app1/v/1234/mock-content-plugin/unversioned/url");
 	}
 	
 	@Test

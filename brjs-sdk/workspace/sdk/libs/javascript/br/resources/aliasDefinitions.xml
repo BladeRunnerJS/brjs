@@ -6,12 +6,7 @@
 	<alias name="br.xml-service" defaultClass="br.services.xml.BRXmlResourceService">
 		<scenario name="dev" class="br.services.xml.JSTDXmlResourceService" />
 	</alias>
-	<alias name="br.bundle-path-service" defaultClass="br.services.bundlepath.BRBundlePathService">
-		<scenario name="dev" class="br.services.bundlepath.JSTDBundlePathService" />
-	</alias>
-	<alias name="br.app-version-service" defaultClass="br.services.appversion.BRAppVersionService">
-		<scenario name="dev" class="br.services.appversion.JSTDAppVersionService" />
-	</alias>
+	<alias name="br.app-meta-service" defaultClass="br.services.appmeta.BRAppMetaService" />
 	<alias name="br.locale-service" defaultClass="br.services.locale.BRLocaleService" />
 
 	<!-- TODO: remove these aliases from presenter once the new style classes can be brought out of thirdparty -->
