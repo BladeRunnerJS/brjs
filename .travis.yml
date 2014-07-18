@@ -4,15 +4,13 @@ jdk:
 git:
  depth: 200
 before_install:
+- sudo sh -c "echo 'foreign-architecture i386' > /etc/dpkg/dpkg.cfg.d/architectures"
+- sudo apt-get update -qq
+- sudo apt-get install ia32-libs
 - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
 - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
 - "export DISPLAY=:99.0"
 - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
-- sudo apt-get update -qq
-- sudo sh -c "echo 'foreign-architecture i386' > /etc/dpkg/dpkg.cfg.d/architectures"
-- sudo apt-get install lib32z1 lib32ncurses5 lib32bz2-1.0 lib32asound2
-- sudo apt-get install ia32-libs-multiarch
-- sudo apt-get install ia32-libs
 install:
 - TERM=dumb ./gradlew compileJava
 script:
