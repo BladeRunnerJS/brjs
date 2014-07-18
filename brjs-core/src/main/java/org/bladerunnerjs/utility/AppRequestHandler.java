@@ -63,11 +63,39 @@ public class AppRequestHandler
 
 	public boolean canHandleLogicalRequest(String requestPath)
 	{
-		return getContentPathParser().canParseRequest(requestPath);
+		boolean canHandleRequest = getContentPathParser().canParseRequest(requestPath);
+		if (canHandleRequest) {
+			ParsedContentPath parsedRequest = parseRequest(requestPath);
+			if (parsedRequest.formName.equals(UNVERSIONED_BUNDLE_REQUEST)) {
+				/* since unversioned requests (/myApp/somePlugin/file.txt) could also be a request to a custom servlet
+				 * if the request type is an unversioned bundle request we must first check that a content plugin can ultimately handle it
+				 */
+				String contentPath = parsedRequest.properties.get("content-path");
+				ContentPlugin contentProvider = app.root().plugins().contentPluginForLogicalPath(contentPath);
+				if (contentProvider == null) {
+					return false;
+				}
+				return true;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private ParsedContentPath parseRequest(String requestPath)
+	{
+		try
+		{
+			return getContentPathParser().parse(requestPath);
+		}
+		catch (MalformedRequestException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException {
-		ParsedContentPath parsedContentPath = getContentPathParser().parse(requestPath);
+		ParsedContentPath parsedContentPath = parseRequest(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
 
@@ -193,14 +221,17 @@ public class AppRequestHandler
 		return contentPathParser.value(() -> {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
-				// NOTE: <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
+				/* NOTE: 
+				 * - <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
+				 * - ordering is important here, if two URLs share a similar format, the first type wins
+				 */
 				.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
 					.and("<aspect><locale>/").as(INDEX_PAGE_REQUEST)
-					.and("<aspect>static/<content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
-					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
 					.and("<aspect>workbench/<bladeset>/<blade>/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
 					.and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
 					.and("<aspect>workbench/<bladeset>/<blade>/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
+					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
+					.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
 				.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
 					.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)

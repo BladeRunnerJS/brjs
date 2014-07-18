@@ -154,8 +154,8 @@ public class AppBuildTest extends SpecTest {
 			.and(defaultAspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/static/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName())
-			.and(targetDir).doesNotContainFile("app1/v/1234/static/mock-content-plugin/unversioned/url");
+		then(targetDir).containsFileWithContents("app1/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName())
+			.and(targetDir).doesNotContainFile("app1/v/1234/mock-content-plugin/unversioned/url");
 	}
 	
 	@Test

@@ -114,7 +114,7 @@ public class AppServeTest extends SpecTest {
 	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
 	{
 		given(app).hasBeenPopulated();
-		when(app).requestReceived("static/mock-content-plugin/unversioned/url", response);
+		when(app).requestReceived("mock-content-plugin/unversioned/url", response);
 		then(response).containsText(MockContentPlugin.class.getCanonicalName());
 	}
 }
