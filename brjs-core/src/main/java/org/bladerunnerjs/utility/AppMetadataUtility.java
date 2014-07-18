@@ -13,16 +13,8 @@ public class AppMetadataUtility
 		return "../"+bundlePath;
 	}
 	
-	public static String getVersionedBundlePath(String version, String bundlePath) {
-		return getPathRelativeToIndexPage( getRelativeVersionedBundlePath(version, bundlePath) );
-	}
-	
 	public static String getRelativeVersionedBundlePath(String version, String bundlePath) {
 		return "v/"+version+bundlePath;
-	}
-	
-	public static String getUnversionedBundlePath(String bundlePath) {
-		return getPathRelativeToIndexPage(bundlePath);
 	}
 	
 }

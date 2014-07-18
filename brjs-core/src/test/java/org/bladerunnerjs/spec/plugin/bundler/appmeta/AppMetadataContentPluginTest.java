@@ -36,14 +36,7 @@ public class AppMetadataContentPluginTest extends SpecTest {
 	public void bundlePathContentIsIncluded() throws Exception {
 		given(brjs).hasDevVersion("dev");
 		when(aspect).requestReceived("app-meta/version.js", requestResponse);
-		then(requestResponse).containsTextOnce( "window.$BRJS_BUNDLE_PATH = '../v/dev';" );
-	}
-	
-	@Test
-	public void unversionedBundlePathContentIsIncluded() throws Exception {
-		given(brjs).hasDevVersion("dev");
-		when(aspect).requestReceived("app-meta/version.js", requestResponse);
-		then(requestResponse).containsTextOnce( "window.$BRJS_UNVERSIONED_BUNDLE_PATH = '../';" );
+		then(requestResponse).containsTextOnce( "window.$BRJS_VERSIONED_BUNDLE_PATH = 'v/dev';" );
 	}
 	
 	@Test
@@ -58,8 +51,7 @@ public class AppMetadataContentPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments(
 				"// br-bootstrap",
 				"window.$BRJS_APP_VERSION = 'dev';",
-				"window.$BRJS_BUNDLE_PATH = '../v/dev';",
-				"window.$BRJS_UNVERSIONED_BUNDLE_PATH = '../';",
+				"window.$BRJS_VERSIONED_BUNDLE_PATH = 'v/dev';",
 				"appns/Class" );
 	}
 }

@@ -64,8 +64,7 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin
 			{
 				App app = bundleSet.getBundlableNode().app();
 				return new CharResponseContent( brjs, "window.$BRJS_APP_VERSION = '"+version+"';\n" +
-						"window.$BRJS_BUNDLE_PATH = '"+AppMetadataUtility.getVersionedBundlePath(version, "")+"';\n" +
-						"window.$BRJS_UNVERSIONED_BUNDLE_PATH = '"+AppMetadataUtility.getUnversionedBundlePath("")+"';\n" +
+						"window.$BRJS_VERSIONED_BUNDLE_PATH = '"+AppMetadataUtility.getRelativeVersionedBundlePath(version, "")+"';\n" +
 						"window.$BRJS_LOCALE_COOKIE_NAME = '"+app.appConf().getLocaleCookieName()+"';\n" +
 						"window.$BRJS_APP_LOCALES = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n" );
 			}
