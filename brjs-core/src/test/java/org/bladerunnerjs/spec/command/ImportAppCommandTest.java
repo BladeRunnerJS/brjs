@@ -14,7 +14,6 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationComma
 import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -98,7 +97,6 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).hasFile("WEB-INF/lib/brjs-lib1.jar");
 	}
 	
-	@Ignore //test fails, blade/bladeset namespaced folders are duplicated - please unignore when #794 is fixed
 	@Test
 	public void directoriesAreNotDuplicatedWhenExportedAppsAreImportedWithNewNamespace() throws Exception {
 		given(aspect).containsFile("src/appns/AspectClass.js")
