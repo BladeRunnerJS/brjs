@@ -5,8 +5,7 @@ git:
  depth: 200
 before_install:
 - echo "foreign-architecture i386" | sudo tee /etc/dpkg/dpkg.cfg.d/multiarch && sudo apt-get update
-- sudo apt-get install libgphoto2-2:i386
-- sudo apt-get install ia32-libs-multiarch
+- sudo apt-get install --force-yes ia32-libs ia32-libs-multiarch
 - sudo apt-get install ia32-libs
 - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
 - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
