@@ -158,9 +158,9 @@ public class AppRequestHandler
 			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			localeForwardingPage.write("<script type='text/javascript'>\n");
 			
-			ContentPlugin appVersionContentPlugin = brjs.plugins().contentPlugin("app-version");
+			ContentPlugin appVersionContentPlugin = brjs.plugins().contentPlugin("app-meta");
 			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.getContentPathParser();
-			String appVersionContentPath = appVersionContentPathParser.createRequest("app-version-request");
+			String appVersionContentPath = appVersionContentPathParser.createRequest("app-meta-request");
 			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPathParser.parse(appVersionContentPath), bundleSet, contentAccessor, appVersionContentPath);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			responseContent.write(baos);

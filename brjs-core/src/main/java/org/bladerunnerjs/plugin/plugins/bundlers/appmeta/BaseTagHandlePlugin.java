@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.appversion;
+package org.bladerunnerjs.plugin.plugins.bundlers.appmeta;
 
 import java.io.IOException;
 import java.io.Writer;

@@ -4,7 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.plugin.plugins.bundlers.appversion.BundlePathJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.appmeta.AppMetadataContentPlugin;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
@@ -26,7 +26,7 @@ public class AppServeTest extends SpecTest {
 			.and(brjs).automaticallyFindsContentPlugins()
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
-			.and(brjs).hasContentPlugins(new BundlePathJsContentPlugin())
+			.and(brjs).hasContentPlugins(new AppMetadataContentPlugin())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");
