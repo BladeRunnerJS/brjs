@@ -442,21 +442,6 @@ public class TestRunner {
 			logger.debug("Running command: " + CmdCreator.printCmd(args));
 			try 
 			{
-// temp debugging
-File browserDirPath = new File("../../build/browsers/chrome-linux-23.0.1235.0");
-File browserPath = new File("../../build/browsers/chrome-linux-23.0.1235.0/chrome");
-System.out.println("cwd: " + new File(".").getCanonicalPath());
-System.out.println("browser-dir-path: " + browserDirPath.getCanonicalPath());
-System.out.println("browser-dir-path-exists: " + browserDirPath.exists());
-System.out.println("browser-path: " + browserPath.getCanonicalPath());
-System.out.println("browser-path-exists: " + browserPath.exists());
-System.out.println("browser-path-is-executable: " + browserPath.canExecute());
-List<String> browserFiles = new ArrayList<>();
-for(File browserFile : browserDirPath.listFiles()) {
-	browserFiles.add(browserFile.getName());
-}
-System.out.println("browser-dir-files: " + Joiner.on(", ").join(browserFiles));
-System.out.println("args: " + Joiner.on(" ").join(args));
 				Process process = runTime.exec(args);
 				childProcesses.add(process);
 				childLoggers.add(new ProcessLogger(brjs, process, LogLevel.DEBUG, LogLevel.INFO, "browser #" + browserNo++));
