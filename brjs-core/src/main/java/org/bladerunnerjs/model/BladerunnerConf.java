@@ -9,7 +9,7 @@ import org.bladerunnerjs.yaml.YamlBladerunnerConf;
 public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	
 	public BladerunnerConf(BRJS brjs) throws ConfigException {
-		super(brjs, YamlBladerunnerConf.class, getConfigFilePath(brjs));
+		super(brjs, YamlBladerunnerConf.class, getConfigFilePath(brjs), "UTF-8");
 	}
 	
 	public int getJettyPort() throws ConfigException {

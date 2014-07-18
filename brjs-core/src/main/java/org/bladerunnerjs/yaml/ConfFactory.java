@@ -12,10 +12,8 @@ import com.esotericsoftware.yamlbeans.YamlReader;
 import com.esotericsoftware.yamlbeans.YamlReader.YamlReaderException;
 
 public class ConfFactory {
-	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, File confFile) throws ConfigException {
+	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, File confFile, String defaultFileCharacterEncoding) throws ConfigException {
 		CF conf = null;
-		// TODO: get rid of `node == null` guard once we delete non brjs-core code
-		String defaultFileCharacterEncoding = ((node == null) || confFile.getName().equals("brjs.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		
 		if(confFile.exists()) {
 			conf = readConf(node, confFile, confClass, defaultFileCharacterEncoding);
