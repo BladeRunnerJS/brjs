@@ -203,17 +203,12 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 }
 
 // "libs/javascript" is relative to the sdk directory
-createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
-createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
-createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
+[ "Chrome", "Firefox", "IE", "PhantomJS" ].each {
+	def testJsTask = createTestTask "testJs${it}", "libs/javascript", "ALL", it.toLowerCase()	
+	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase()
+	task "test${it}", dependsOn: [testJsTask, testSystemAppsTask]
+}
 
-createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
-createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
-createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
-
-task testIE, dependsOn: [testJsIE, testSystemAppsIE]
-task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome]
-task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox]
 task test, dependsOn: testChrome
 
 
