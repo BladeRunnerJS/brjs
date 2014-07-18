@@ -9,6 +9,11 @@ BRXmlResourceServiceTest.prototype.test_getXmlResource = function()
 
 BRXmlResourceServiceTest.prototype.test_getMalformedXml = function()
 {
+	if (window.navigator.userAgent == "PhantomJS") {
+		return; // don't run this test on PhantomJS as it doesn't support ActiveX objects or selectSingleNode
+		//TODO: find a way to run this test on PhantomJS 
+	}
+	
 	var error = null;
 	try
 	{
