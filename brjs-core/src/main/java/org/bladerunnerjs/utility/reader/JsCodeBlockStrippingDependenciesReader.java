@@ -28,7 +28,6 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	private static final Pattern INLINE_MAP_DEFINITION_REGEX_PATTERN = Pattern.compile(INLINE_MAP_DEFINITION_REGEX);
 	
 	private final Reader sourceReader;
-	private final char[] sourceBuffer = new char[4096];
 	// buffer the length of the function definition + 10 to allow for things like new(<IIFE>) etc.
 	private final TailBuffer tailBuffer = new TailBuffer(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 10 + 1);
 	private int nextCharPos = 0;
@@ -50,6 +49,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
+		char[] sourceBuffer = CharBufferPool.getBuffer();
 		
 		while(currentOffset < maxOffset) {
 			if (nextCharPos == lastCharPos) {
@@ -84,6 +84,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			}
 		}
 		
+		CharBufferPool.returnBuffer(sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}
