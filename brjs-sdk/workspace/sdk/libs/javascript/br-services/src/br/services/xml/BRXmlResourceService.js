@@ -18,7 +18,7 @@ var i18n = require('br/I18n');
 * @param {String} sUrl The url to load to retrieve the XML resource.
 * @implements module:br/services/XmlResourceService
 */
-function BRXmlResourceService(sUrl) {
+function BRXmlResourceService(url) {
 	var ServiceRegistry = require("br/ServiceRegistry");
 	/** @private */
 	this.url = url || ServiceRegistry.getService('br.app-meta-service').getVersionedBundlePath("xml/bundle.xml");
