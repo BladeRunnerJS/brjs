@@ -20,6 +20,8 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 
 public class BRJSDevServletFilter implements Filter {
+	public static final String IGNORE_REQUEST_ATTRIBUTE = "brjs-ignore-request";
+	
 	private ServletContext servletContext;
 	private BRJS brjs;
 	private App app;
@@ -55,7 +57,7 @@ public class BRJSDevServletFilter implements Filter {
 		String servletPath = request.getServletPath();
 		String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath() + "/", "");
 		
-		if(!servletPath.equals("/brjs") && app.canHandleLogicalRequest(requestPath)) {
+		if (!servletPath.equals("/brjs") && app.canHandleLogicalRequest(requestPath) && request.getAttribute(IGNORE_REQUEST_ATTRIBUTE) == null) {
 			request.getRequestDispatcher("/brjs/" + requestPath).forward(request, response);
 		}
 		else {

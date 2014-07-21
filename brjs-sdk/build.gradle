@@ -39,14 +39,14 @@ dependencies {
 	testRunner project(path: ':brjs-logger')
 	testRunner project(path: ':brjs-logger-binding')
 	testRunner files('build-resources/JsTestDriver.conf')
-
-	browsers_dep dependency('chrome-stable')
-	browsers_dep dependency('firefox-stable')
 	
 	phantomjs dependency('phantomjs_windows')
 	phantomjs dependency('phantomjs_mac')
 	phantomjs dependency('phantomjs_linux')
-
+	
+	browsers_dep dependency('chrome')
+	browsers_dep dependency('firefox')
+	
 	browsers_webdriver dependency('firefox-webdriver')
 }
 
@@ -57,6 +57,9 @@ task copyBrowsers(type: Sync) {
 	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
 	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
 	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
+	eachFile {
+		it.path = it.path.replaceAll("-[0-9\\.]+${File.separator}", "${File.separator}") // strip the version string
+	}
 	into browserRootDir
 	doLast {
 		//TODO: this should probabaly be done in a task listener

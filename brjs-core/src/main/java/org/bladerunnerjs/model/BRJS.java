@@ -3,9 +3,9 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
 
@@ -33,6 +33,7 @@ import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
+import org.bladerunnerjs.utility.reader.CharBufferPool;
 
 
 public class BRJS extends AbstractBRJSRootNode
@@ -73,6 +74,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final IO io = new IO();
 	private boolean closed = false;
 	private AppVersionGenerator appVersionGenerator;
+	private CharBufferPool pool = new CharBufferPool();
 	
 	BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
 			LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
@@ -99,6 +101,10 @@ public class BRJS extends AbstractBRJSRootNode
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
 		this.appVersionGenerator = appVersionGenerator;
+	}
+	
+	public CharBufferPool getCharBufferPool(){
+		return pool;
 	}
 	
 	@Override

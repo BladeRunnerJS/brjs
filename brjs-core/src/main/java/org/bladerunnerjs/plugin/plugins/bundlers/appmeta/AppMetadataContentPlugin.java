@@ -1,8 +1,9 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.appversion;
+package org.bladerunnerjs.plugin.plugins.bundlers.appmeta;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
@@ -20,24 +21,26 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 
+import com.google.common.base.Joiner;
 
-public class BundlePathJsContentPlugin extends AbstractContentPlugin
+
+public class AppMetadataContentPlugin extends AbstractContentPlugin
 {
 
-	private static final String APP_VERSION_REQUEST = "app-version-request";
+	private static final String APP_META_REQUEST = "app-meta-request";
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-		contentPathParserBuilder.accepts("app-version/version.js").as(APP_VERSION_REQUEST);
+		contentPathParserBuilder.accepts("app-meta/version.js").as(APP_META_REQUEST);
 		contentPathParser = contentPathParserBuilder.build();
 	}
 	
 	@Override
 	public String getRequestPrefix()
 	{
-		return "app-version";
+		return "app-meta";
 	}
 
 	@Override
@@ -55,11 +58,17 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
 	{
-		if (contentPath.formName.equals(APP_VERSION_REQUEST))
+		if (contentPath.formName.equals(APP_META_REQUEST))
 		{
 			try
 			{
-				return new CharResponseContent( brjs, AppMetadataUtility.getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
+				App app = bundleSet.getBundlableNode().app();
+				//NOTE: this metadata is used by the BRAppMetaService
+				return new CharResponseContent( brjs, "// these variables should not be used directly but accessed via the 'br.app-meta-service' instead\n" + 
+						"window.$BRJS_APP_VERSION = '"+version+"';\n" +
+						"window.$BRJS_VERSIONED_BUNDLE_PATH = '"+AppMetadataUtility.getRelativeVersionedBundlePath(version, "")+"';\n" +
+						"window.$BRJS_LOCALE_COOKIE_NAME = '"+app.appConf().getLocaleCookieName()+"';\n" +
+						"window.$BRJS_APP_LOCALES = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n" );
 			}
 			catch (ConfigException ex)
 			{
@@ -83,7 +92,7 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 	{
 		try
 		{
-			return Arrays.asList( contentPathParser.createRequest(APP_VERSION_REQUEST) );
+			return Arrays.asList( contentPathParser.createRequest(APP_META_REQUEST) );
 		}
 		catch (MalformedTokenException e)
 		{

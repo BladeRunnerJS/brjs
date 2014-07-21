@@ -27,6 +27,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 {
 
 	private static final String FILE_PATH_REQUEST_FORM = "file-path";
+	public static final String VERSIONED_UNBUNDLED_RESOURCES_REQUEST = "versioned-unbundled-resources-request";
 	public static final String UNBUNDLED_RESOURCES_REQUEST = "unbundled-resources-request";
 	public static final String UNBUNDLED_RESOURCES_DIRNAME = "unbundled-resources";
 	
@@ -35,7 +36,8 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-		contentPathParserBuilder.accepts("unbundled-resources/<file-path>").as(UNBUNDLED_RESOURCES_REQUEST)
+		contentPathParserBuilder.accepts("unbundled-resources/<file-path>").as(VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
+			.and("/unbundled-resources/<file-path>").as(UNBUNDLED_RESOURCES_REQUEST)
 			.where(FILE_PATH_REQUEST_FORM).hasForm(".*");
 
 		contentPathParser = contentPathParserBuilder.build();
@@ -70,7 +72,8 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	{
 		try
 		{
-    		if (contentPath.formName.equals(UNBUNDLED_RESOURCES_REQUEST))
+    		if (contentPath.formName.equals(UNBUNDLED_RESOURCES_REQUEST)
+    				|| contentPath.formName.equals(VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
     		{
     			String relativeFilePath = contentPath.properties.get(FILE_PATH_REQUEST_FORM);
     			
@@ -128,8 +131,8 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFiles())
 			{
     			String relativePath = RelativePathUtility.get(brjs, unbundledResourcesDir, file);
-    			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);
-    			requestPaths.add(calculatedPath);
+    			requestPaths.add( contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath) );
+    			requestPaths.add( contentPathParser.createRequest(VERSIONED_UNBUNDLED_RESOURCES_REQUEST, relativePath) );
 			}
 		}
 		catch (MalformedTokenException e)

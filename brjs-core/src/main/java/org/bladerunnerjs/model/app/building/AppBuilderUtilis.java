@@ -71,7 +71,7 @@ public class AppBuilderUtilis
 				localeForwardingFile.getParentFile().mkdirs();
 				
 				try (OutputStream os = new FileOutputStream(localeForwardingFile)) {
-					ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(app.root(), contentPluginUtility, version);
+					ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(app.root(), bundleSet, contentPluginUtility, version);
 					content.write(os);
 					content.closeQuietly();
 				}
