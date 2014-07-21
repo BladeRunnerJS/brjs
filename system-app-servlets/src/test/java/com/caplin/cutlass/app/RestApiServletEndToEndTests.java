@@ -9,7 +9,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
@@ -51,7 +51,7 @@ public class RestApiServletEndToEndTests
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
 		server.start();
-		client = new DefaultHttpClient();
+		client = HttpClientBuilder.create().build();
 	}
 	
 	@After
@@ -62,10 +62,6 @@ public class RestApiServletEndToEndTests
 		if (server != null)
 		{
 			server.stop();
-		}
-		if (client != null)
-		{
-			client.getConnectionManager().shutdown();
 		}
 	}
 
