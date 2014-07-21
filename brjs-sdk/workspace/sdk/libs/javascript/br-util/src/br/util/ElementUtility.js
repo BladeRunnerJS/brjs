@@ -305,7 +305,7 @@ ElementUtility.discardChild = function(firstElement) {
  * 
  * @param {DOMElement} elem The DOM element to calculate the position of
  * @type Object
- * @return {left:x,top:y}
+ * @return \{left:x,top:y\}
  */
 ElementUtility.getPosition = function(elem) {
 	var offsetTrail = elem;
@@ -323,9 +323,9 @@ ElementUtility.getPosition = function(elem) {
 /**
  * Returns the bounding rectangle of the specified element.
  *
- * @param {Object} elem The element to get the bounding recangle for.
+ * @param {Object} elem The element to get the bounding rectangle for.
  * @type Object
- * @returns {left:x,right:y}
+ * @returns \{left:x,right:y\}
  */
 ElementUtility.getSize = function(elem) {
 	// Firefox 2 does not support getBoundingClientRect so this method abstracts out the box size calculations for figuring out if a column
@@ -355,7 +355,7 @@ ElementUtility.getSize = function(elem) {
  *  properties.
  *
  * @param {Element} elem The DOM element to calculate the scrolled offset of.
- * @returns {Object} {left:x,top:y}
+ * @returns {Object} \{left:x,top:y\}
  */
 ElementUtility.getScrollOffset = function(elem) {
 	var offsetTrail = elem;

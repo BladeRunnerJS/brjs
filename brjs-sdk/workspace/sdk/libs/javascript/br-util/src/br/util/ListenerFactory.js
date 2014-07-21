@@ -1,7 +1,6 @@
-'use stric';
+'use strict';
 
 /**
- * @name br.util.ListenerFactory
  * Construct a new <code>ListenerFactory</code> that can create listeners for the given event, on the given interface.
  * 
  * @param {Function} interfaceFunc The listener interface that objects created with this factory will implement.

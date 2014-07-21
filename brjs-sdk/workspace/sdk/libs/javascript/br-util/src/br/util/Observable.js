@@ -3,7 +3,6 @@
 var Errors = require('br/Errors');
 
 /**
- * @name br.util.Observable
  * Constructs a new <code>Observable</code>.
  *
  * @class
@@ -77,7 +76,7 @@ Observable.prototype.addObserver = function(observer) {
  *  again. The {@link br.util.Observable#addObserver} method should be used if duplicates are allowed.
  *
  * @param {Object} observer The object to be added as an observer.
- * @return {boolean} <code>true</code> if the observer was successfully added or <code>false</code> if it failed 
+ * @return {Boolean} <code>true</code> if the observer was successfully added or <code>false</code> if it failed 
  *  because it had already been added before.
  * @throws {Error} if the specified observer is not an <code>Object</code>, or if it is a native JavaScript 
  *  <code>String</code>, <code>Number</code>, <code>Boolean</code> or <code>Function</code>.
@@ -97,7 +96,7 @@ Observable.prototype.addUniqueObserver = function(observer) {
  * Gets the index of the specified observer within the <code>m_pObservers</code> array.
  *
  * @param {Object} observer The observer the index is required for.
- * @return {int} The index of the observer within the <code>m_pObservers</code> array or <code>-1</code> if the 
+ * @return {Number} The index of the observer within the <code>m_pObservers</code> array or <code>-1</code> if the 
  *  observer has not been registered.
  */
 Observable.prototype._getObserverIndex = function(observer) {
@@ -118,7 +117,7 @@ Observable.prototype._getObserverIndex = function(observer) {
  *  that are raised on this <code>Observable</code>.
  *
  * @param {Object} observer The observer to be removed.
- * @return {boolean} <code>true</code> if the observer has been removed, otherwise <code>false</code>, which indicates 
+ * @return {Boolean} <code>true</code> if the observer has been removed, otherwise <code>false</code>, which indicates 
  *  that the observer was not registered.
  */
 Observable.prototype.removeObserver = function(observer) {
@@ -186,7 +185,7 @@ Observable.prototype.notifyObservers = function(methodName, parameters) {
  * tested to ensure it conforms to the expected interface, and if not it should be rejected.
  *
  * @param {String} methodName The method to be invoked on each of the registered observers.
- * @param {...} (Optional) Additional parameters are passed to the observer.
+ * @param \{...\} (Optional) Additional parameters are passed to the observer.
  */
 Observable.prototype.notify = function(methodName) {
 	this.notifyObservers(methodName, Array.prototype.slice.call(arguments, 1));
