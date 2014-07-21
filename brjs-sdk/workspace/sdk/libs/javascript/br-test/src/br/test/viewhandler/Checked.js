@@ -1,4 +1,12 @@
+'use strict';
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+var Utils = require('br/test/Utils');
+
 /**
+ * @name br.test.viewhandler.Checked
  * @class
  * <code>Checked ViewFixtureHandler</code> can be used to trigger <code>checked</code> property of a checkbox or a radiobutton.
  * Example usage:
@@ -8,33 +16,28 @@
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.Checked = function()
-{
-};
+function Checked() {
+}
+br.implement(Checked, ViewFixtureHandler);
 
-br.Core.implement(br.test.viewhandler.Checked, br.test.viewhandler.ViewFixtureHandler);
-
-br.test.viewhandler.Checked.prototype.get = function(eElement)
-{
-	if (eElement.checked === undefined)
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Only checkboxes and radio buttons have the 'checked' property.");
+Checked.prototype.get = function(eElement) {
+	if (eElement.checked === undefined) {
+		throw new Errors.InvalidTestError("Only checkboxes and radio buttons have the 'checked' property.");
 	}
 	return eElement.checked;
 };
 
-br.test.viewhandler.Checked.prototype.set = function(eElement, vValue)
-{
-	if (eElement.checked === undefined)
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Only checkboxes and radio buttons can have the 'checked' property set.");
+Checked.prototype.set = function(eElement, vValue) {
+	if (eElement.checked === undefined) {
+		throw new Errors.InvalidTestError("Only checkboxes and radio buttons can have the 'checked' property set.");
 	}
-	if (!(vValue === true || vValue === false))
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "the 'checked' property can only be set to true or false.");
+	if (!(vValue === true || vValue === false)) {
+		throw new Errors.InvalidTestError("the 'checked' property can only be set to true or false.");
 	}
 	
-	br.test.Utils.fireDomEvent(eElement, 'click');
-	br.test.Utils.fireDomEvent(eElement, 'change');
+	Utils.fireDomEvent(eElement, 'click');
+	Utils.fireDomEvent(eElement, 'change');
 	eElement.checked = vValue;
 };
+
+module.exports = Checked;

@@ -1,10 +1,12 @@
 IsVisibleTest = TestCase("IsVisibleTest");
 
 require('br/test/ViewFixture');
+var Errors = require('br/Errors');
+var ViewFixture = require('br/test/ViewFixture');
 
 IsVisibleTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new br.test.ViewFixture("view.*");
+	this.m_oViewFixture = new ViewFixture("view.*");
 	this.m_eElement = this.getElement();
 	document.body.appendChild(this.m_eElement);
 	this.m_oViewFixture.setViewElement(this.m_eElement);
@@ -75,7 +77,7 @@ IsVisibleTest.prototype.test_cannotSetIsVisibleProperty = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(div#hidden-div).isVisible", true);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 
 	this.m_oViewFixture.doThen("view.(div#hidden-div).isVisible", false);
 };

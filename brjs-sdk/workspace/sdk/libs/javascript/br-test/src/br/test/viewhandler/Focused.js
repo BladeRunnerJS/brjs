@@ -1,4 +1,11 @@
+'use strict';
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+
 /**
+ * @name br.test.viewhandler.Focused
  * @class
  * <code>Focused ViewFixtureHandler</code> can be used to trigger <code>focus</code> and <code>blur</code> on a view element.
  * Example usage:
@@ -8,51 +15,40 @@
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.Focused = function()
-{
-};
+function Focused() {
+}
+br.implement(Focused, ViewFixtureHandler);
 
-br.Core.implement(br.test.viewhandler.Focused, br.test.viewhandler.ViewFixtureHandler);
-
-br.test.viewhandler.Focused.focusableElements = {"A" : true, "BODY" : true, "BUTTON" : true, "FRAME" : true, "IFRAME" : true, "IMG" : true, "INPUT" : true, "ISINDEX" : true,
+Focused.focusableElements = {"A" : true, "BODY" : true, "BUTTON" : true, "FRAME" : true, "IFRAME" : true, "IMG" : true, "INPUT" : true, "ISINDEX" : true,
 		"OBJECT" : true, "SELECT" : true, "TEXTAREA" : true};
 
-br.test.viewhandler.Focused.isFocusableElement = function(eElement)
-{
+Focused.isFocusableElement = function(eElement) {
 	return (eElement.tabIndex > 0) || ((eElement.tabIndex === 0) && this.focusableElements[eElement.tagName]);
 };
 
-br.test.viewhandler.Focused.prototype.set = function(eElement, vValue)
-{
-	if( !br.test.viewhandler.Focused.isFocusableElement(eElement) || eElement.disabled )
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'focused' property is not available on non-focusable or disabled elements.");
+Focused.prototype.set = function(eElement, vValue) {
+	if ( !Focused.isFocusableElement(eElement) || eElement.disabled ) {
+		throw new Errors.InvalidTestError("The 'focused' property is not available on non-focusable or disabled elements.");
 	}
 
-	if(vValue === true)
-	{
+	if (vValue === true) {
 		eElement.focus();
-	}
-	else if(vValue === false)
-	{
+	} else if (vValue === false) {
 		eElement.blur();
-	}
-	else
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'focused' property only takes boolean values.");
+	} else {
+		throw new Errors.InvalidTestError("The 'focused' property only takes boolean values.");
 	}
 };
 
-br.test.viewhandler.Focused.prototype.get = function(eElement)
-{
-	if(!br.test.viewhandler.Focused.isFocusableElement(eElement))
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'focused' property is not available on non-focusable elements.");
+Focused.prototype.get = function(eElement) {
+	if (!Focused.isFocusableElement(eElement)) {
+		throw new Errors.InvalidTestError("The 'focused' property is not available on non-focusable elements.");
 	}
 
-	if(eElement === document.activeElement)
-	{
+	if (eElement === document.activeElement) {
 		return true;
 	}
 	return false;
 };
+
+module.exports = Focused;
