@@ -79,7 +79,7 @@ public class AppServeTest extends SpecTest {
 	public void workbenchPageCanBeAccessed() throws Exception {
 		given(workbench).indexPageHasContent("workbench index page")
 			.and(brjs).localeForwarderHasContents("");
-		when(app).requestReceived("workbench/bs/b1/en/", response);
+		when(app).requestReceived("bs/b1/workbench/en/", response);
 		then(response).textEquals("workbench index page");
 	}
 	
@@ -106,7 +106,7 @@ public class AppServeTest extends SpecTest {
 		given(workbench).indexPageRequires("appns/SomeClass")
 			.and(workbench).hasClass("appns/SomeClass")
 			.and(workbench).containsFileWithContents("src/appns/template.html", "<div id='template-id'>workbench template file</div>");
-		when(app).requestReceived("workbench/bs/b1/v/dev/html/bundle.html", response);
+		when(app).requestReceived("bs/b1/workbench/v/dev/html/bundle.html", response);
 		then(response).containsText("workbench template file");
 	}
 	

@@ -276,7 +276,7 @@ public class CssResourceContentPluginTest extends SpecTest {
     		.and(bladeset).hasBeenCreated()
     		.and(blade).hasBeenCreated()
     		.and(aspect).containsFileWithContents("themes/common/someFile.txt", "someFile.txt contents");
-		when(app).requestReceived("workbench/bs1/b1/v/dev/cssresource/aspect_default/theme_common/someFile.txt", response);
+		when(app).requestReceived("bs1/b1/workbench/v/dev/cssresource/aspect_default/theme_common/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}
 	
