@@ -227,7 +227,7 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task "test${it}", dependsOn: [testJsTask, testSystemAppsTask]
 }
 
-task test, dependsOn: testChrome
+task test, dependsOn: testPhantomJS
 
 
 task createSdkJsDocs, dependsOn: assembleSdk, {
