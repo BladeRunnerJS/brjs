@@ -332,12 +332,32 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void assetsInASdkLibraryInDevHaveCorrectContent() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(aspect).requestReceived("cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
 	public void assetsInAnSDKLibraryAreAvailableInProd() throws Exception
 	{
 		given(app).hasBeenCreated()
 		.and(aspect).hasBeenCreated()
 		.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
 		then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+	}
+	
+	@Test
+	public void assetsInASdkLibraryInProdHaveCorrectContent() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(aspect).requestReceivedInProd("cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
 	}
 	
 }
