@@ -1,10 +1,11 @@
 EnabledTest = TestCase("EnabledTest");
 
 require('br/test/ViewFixture');
+var ViewFixture = require('br/test/ViewFixture');
 
 EnabledTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new br.test.ViewFixture("view.*");
+	this.m_oViewFixture = new ViewFixture("view.*");
 	this.m_oViewFixture.setViewElement(this.getElement());
 };
 

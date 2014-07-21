@@ -1,6 +1,13 @@
-br.Core.thirdparty("jquery");
+'use strict';
+
+require('jquery');
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
+ * @name br.test.viewhandler.Color
  * @class
  * <code>Color ViewFixtureHandler</code> can be used to test the bottom margin width of an element.
  * Example usage:
@@ -11,26 +18,21 @@ br.Core.thirdparty("jquery");
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.Color = function()
-{
+function Color() {
+}
+br.implement(Color, ViewFixtureHandler);
+
+Color.prototype.set = function(eElement) {
+	throw new Errors.InvalidTestError("Color can't be used in a Given or When clause.");
 };
 
-br.Core.implement(br.test.viewhandler.Color, br.test.viewhandler.ViewFixtureHandler);
-
-br.test.viewhandler.Color.prototype.set = function(eElement)
-{
-	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Color can't be used in a Given or When clause.");
-};
-
-br.test.viewhandler.Color.prototype.get = function(eElement)
-{ 
+Color.prototype.get = function(eElement) { 
 	var sColor = (jQuery(eElement)[0].style.color).toLowerCase(); 
 	
 	var digits = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(sColor);
 	var sHexColor;
 	
-	if (digits)
-	{
+	if (digits) {
 		var red = parseInt(digits[1]);
 		var green = parseInt(digits[2]);
 		var blue = parseInt(digits[3]);
@@ -38,15 +40,12 @@ br.test.viewhandler.Color.prototype.get = function(eElement)
 		var rgb = 1 << 24 | blue | (green << 8) | (red << 16);
 		
 		sHexColor = '#' + rgb.toString(16).substr(1);
-	}
-	else if (sColor.match(/^#[0-9a-f]{6}/i))
-	{
+	} else if (sColor.match(/^#[0-9a-f]{6}/i)) {
 		sHexColor = sColor;
-	}
-	else
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Color format was not expected");
+	} else {
+		throw new Errors.InvalidTestError("Color format was not expected");
 	}
 	return sHexColor.toUpperCase();
 };
 
+module.exports = Color;
