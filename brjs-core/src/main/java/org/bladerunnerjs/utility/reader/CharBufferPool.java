@@ -4,9 +4,9 @@ import java.util.Stack;
 
 public class CharBufferPool {
 	
-	private static Stack<char[]> pool = new Stack<char[]>();
+	private Stack<char[]> pool = new Stack<char[]>();
 	
-	public static synchronized char[] getBuffer(){
+	public  synchronized char[] getBuffer(){
 		char[] result = null;
 		if(pool.isEmpty()){
 			result = new char[4096];
@@ -16,7 +16,7 @@ public class CharBufferPool {
 		return result;
 	}
 	
-	public static synchronized void returnBuffer(char[] buffer){
+	public synchronized void returnBuffer(char[] buffer){
 		pool.push(buffer);
 	}
 }

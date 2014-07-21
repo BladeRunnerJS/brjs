@@ -373,7 +373,8 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	
 	private void stripCodeBlocksAndAssertEquals(String input, String expectedOutput) throws IOException
 	{
-		try(Reader reader = new JsCodeBlockStrippingDependenciesReader(new StringReader(input));
+		CharBufferPool pool = new CharBufferPool();
+		try(Reader reader = new JsCodeBlockStrippingDependenciesReader(new StringReader(input), pool);
 			    StringWriter stringWriter = new StringWriter())
 			{
 				IOUtils.copy(reader, stringWriter);

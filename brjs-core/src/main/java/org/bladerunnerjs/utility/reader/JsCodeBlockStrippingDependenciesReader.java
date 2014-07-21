@@ -33,11 +33,13 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private int depthCount = 0;
+	private CharBufferPool pool;
 	
 	
-	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader) {
+	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, CharBufferPool pool) {
 		super();
 		this.sourceReader = sourceReader;
+		this.pool = pool;
 	}
 	
 	@Override
@@ -49,7 +51,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
-		char[] sourceBuffer = CharBufferPool.getBuffer();
+		char[] sourceBuffer = pool.getBuffer();
 		
 		while(currentOffset < maxOffset) {
 			if (nextCharPos == lastCharPos) {
@@ -84,7 +86,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			}
 		}
 		
-		CharBufferPool.returnBuffer(sourceBuffer);
+		pool.returnBuffer(sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}
