@@ -122,7 +122,7 @@ public class ServedAppTest extends SpecTest
 	public void contentPluginsCanHandleRequestsWithinWorkbenches() throws Exception {
 		given(app).hasBeenPopulated()
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/workbench/bs/b1/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/bs/b1/workbench/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test

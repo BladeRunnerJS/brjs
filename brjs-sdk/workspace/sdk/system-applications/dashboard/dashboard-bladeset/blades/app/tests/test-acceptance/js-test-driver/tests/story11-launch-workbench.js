@@ -19,7 +19,7 @@ describe("story #11", function()
 	it("opens window at the correct url when invoking the lauch workbench button", function() {
 		given("test.continuesFrom = 'can display app details with bladesets'");
 		when("dash.model.appDetailScreen.bladesets[0].blades[0].popoutWorkbench.invoked => true");
-		then("dash.windowOpened = '/myapp/workbench/chart/curve/'");
+		then("dash.windowOpened = '/myapp/chart/curve/workbench/'");
 	});
 
 });
