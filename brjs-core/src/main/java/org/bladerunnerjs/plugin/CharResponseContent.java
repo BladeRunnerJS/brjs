@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
@@ -47,7 +48,9 @@ public class CharResponseContent implements ResponseContent
 	@Override
 	public void write(OutputStream outputStream) throws IOException
 	{
-		IOUtils.copy( reader, outputStream, outputEncoding );
+		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, outputEncoding);
+		IOUtils.copy( reader, outputStreamWriter );
+		outputStreamWriter.flush();
 	}
 
 	@Override
