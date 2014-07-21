@@ -15,6 +15,7 @@ configurations {
 
 	browsers_dep
 	browsers_webdriver
+	phantomjs
 }
 
 dependencies {
@@ -41,6 +42,10 @@ dependencies {
 
 	browsers_dep dependency('chrome-stable')
 	browsers_dep dependency('firefox-stable')
+	
+	phantomjs dependency('phantomjs_windows')
+	phantomjs dependency('phantomjs_mac')
+	phantomjs dependency('phantomjs_linux')
 
 	browsers_webdriver dependency('firefox-webdriver')
 }
@@ -173,9 +178,19 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		into "sdk/libs/java/testRunner"
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
+	
+	from (configurations.phantomjs.collect { zipTree(it) })
+	{
+		into "sdk/phantomjs"
+		eachFile {
+			println it.path
+			it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip the version string
+		}
+	}
 
 	doFirst {
 		delete file("workspace/sdk/libs/java")
+		delete file("workspace/sdk/phantomjs")
 		delete file("workspace/sdk/docs")
 		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }

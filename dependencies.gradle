@@ -110,6 +110,9 @@ Dependencies.putAll([
  	'chromedriver21'			:	'browser:chromedriver_'+os+':21.0.1180.4@zip',
  	'chromedriver23'			:	'browser:chromedriver_'+os+':23.0.1240.0@zip',
 
+ 	'phantomjs_windows'			:	'browser:phantomjs-win32:1.9.7@zip',
+ 	'phantomjs_mac'				:	'browser:phantomjs-mac:1.9.7@zip',
+ 	'phantomjs_linux'			:	'browser:phantomjs-linux:1.9.7@zip',
 ])
 
 Dependencies.put('firefox-stable', dependency('firefox21'));
