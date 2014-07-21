@@ -4,5 +4,5 @@ import java.io.IOException;
 import java.io.Reader;
 
 public interface AssetReaderFactory {
-	Reader createReader() throws IOException;
+	Reader createReader(CharBufferPool pool) throws IOException;
 }

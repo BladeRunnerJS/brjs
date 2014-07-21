@@ -30,16 +30,17 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 	}
 	
 	private final Reader sourceReader;
-	private final char[] sourceBuffer = new char[4096];
 	private final TailBuffer tailBuffer = new TailBuffer(COMMENT_START.length() + 1);
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private CommentStripperState state;
+	private CharBufferPool pool;
 	
-	public XmlCommentStrippingDependenciesReader(Reader sourceReader)
+	public XmlCommentStrippingDependenciesReader(Reader sourceReader, CharBufferPool pool)
 	{
 		super();
 		this.sourceReader = sourceReader;
+		this.pool = pool;
 		state = CommentStripperState.WITHIN_SOURCE;
 	}
 	
@@ -52,6 +53,7 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
+		char[] sourceBuffer = pool.getBuffer();
 		
 		while(currentOffset < maxOffset) {
 			if(nextCharPos == lastCharPos) {
@@ -82,6 +84,7 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 			}
 		}
 		
+		pool.returnBuffer(sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}

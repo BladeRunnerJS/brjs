@@ -14,6 +14,7 @@ import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
+import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.trie.AliasReference;
 import org.bladerunnerjs.utility.trie.AssetReference;
 import org.bladerunnerjs.utility.trie.LinkedAssetReference;
@@ -72,8 +73,9 @@ public class TrieBasedDependenciesCalculator
 			@Override
 			public Object get() throws ModelOperationException {
 				ComputedValue computedValue = new ComputedValue();
+				CharBufferPool pool = assetLocation.root().getCharBufferPool();
 				
-				try(Reader reader = readerFactory.createReader()) {
+				try(Reader reader = readerFactory.createReader(pool)) {
 					Trie<AssetReference> trie = trieFactory.createTrie();
 					
 					for(Object match : trie.getMatches(reader)) {

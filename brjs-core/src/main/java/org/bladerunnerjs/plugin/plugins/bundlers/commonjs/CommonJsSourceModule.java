@@ -160,7 +160,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 			public Object get() throws ModelOperationException {
 				ComputedValue computedValue = new ComputedValue();
 				
-				try(Reader fileReader = new JsCommentStrippingReader(getReader(), false)) {
+				
+				try(Reader fileReader = new JsCommentStrippingReader(getReader(), false, assetLocation.root().getCharBufferPool())) {
 					StringWriter stringWriter = new StringWriter();
 					IOUtils.copy(fileReader, stringWriter);
 					
