@@ -54,7 +54,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thirdpartyLib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
 			.and(workbench).indexPageRequires("thirdparty-lib1");
-		when(workbench).requestReceived("js/dev/combined/bundle.js", response);
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }")
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
@@ -66,7 +66,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");
-		when(workbench).requestReceived("js/dev/combined/bundle.js", response);
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("appns.bs.b1.Class1")
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
@@ -79,7 +79,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.Class1");
-		when(workbench).requestReceived("js/dev/combined/bundle.js", response);
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainClasses("appns.Class1")
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
@@ -91,7 +91,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("thirdparty-lib.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
 			.and(bootstrapLib).containsFileWithContents("sub/dir/bootstrap.js", "// this is bootstrap");
-		when(workbench).requestReceived("js/dev/combined/bundle.js", response);
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("// br-bootstrap");
 		then(response).containsText("// this is bootstrap"); 
 	}
@@ -106,7 +106,7 @@ public class WorkbenchBundlingTest extends SpecTest {
     		.and(bootstrapLib).hasBeenCreated()
     		.and(bootstrapLib).containsFileWithContents("thirdparty-lib.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
     		.and(bootstrapLib).containsFileWithContents("sub/dir/bootstrap.js", "// this is bootstrap");
-    	when(workbench).requestReceived("js/dev/combined/bundle.js", response);
+    	when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(response).containsOrderedTextFragments("// br-bootstrap",
     			"// appLib" );
 	}
@@ -118,7 +118,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 		given(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
 			.and(aspect).hasClass("appns/Class1")
     		.and(workbench).indexPageRefersTo("appns.Class1");
- 		when(workbench).requestReceived("css/standard/bundle.css", response);
+ 		when(workbench).requestReceivedInDev("css/standard/bundle.css", response);
  		then(response).containsText("ASPECT theme content");
  	}
 	
@@ -127,7 +127,7 @@ public class WorkbenchBundlingTest extends SpecTest {
  		given(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
         	.and(workbench).hasClass("appns/workbench/Class1")
         	.and(workbench).indexPageRefersTo("appns.workbench.Class1");
- 		when(workbench).requestReceived("css/standard/bundle.css", response);
+ 		when(workbench).requestReceivedInDev("css/standard/bundle.css", response);
  		then(response).containsText("ASPECT theme content");
  	}
  	
@@ -137,7 +137,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(bladeset).hasClass("appns.bs.Class1")
 			.and(bladeset).containsFileWithContents("themes/standard/style.css", "BLADESET theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.Class1");
-		when(workbench).requestReceived("css/standard/bundle.css", response);
+		when(workbench).requestReceivedInDev("css/standard/bundle.css", response);
  		then(response).containsText("BLADESET theme content");
  	}
 	 
@@ -147,7 +147,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).containsFileWithContents("themes/standard/style.css", "BLADE theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");
-		when(workbench).requestReceived("css/standard/bundle.css", response);
+		when(workbench).requestReceivedInDev("css/standard/bundle.css", response);
  		then(response).containsText("BLADE theme content");
  	}
 	
@@ -167,7 +167,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(brjsLib).hasClass("br.workbench.ui.Workbench")
 			.and(workbench).containsResourceFileWithContents("workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
 			.and(workbench).indexPageRefersTo("br.workbench.ui.Workbench");
-		when(workbench).requestReceived("html/bundle.html", response);
+		when(workbench).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsOrderedTextFragments("<div id='br.tree-view'></div>",
 													"<div id='appns.bs.b1.workbench-view'></div>");
 													
@@ -179,7 +179,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbench).hasClass("appns.WorkbenchClass")
 			.and(blade).classDependsOn("appns.bs.b1.BladeClass", "appns.WorkbenchClass")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.BladeClass");
-		when(workbench).requestReceived("js/dev/combined/bundle.js", response);
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("appns.bs.b1.BladeClass =")
 			.and(response).doesNotContainText("appns.WorkbenchClass =");
 	}

@@ -105,7 +105,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 			.and(aspect).indexPageHasContent("require('lib/someClass');");
 		when(brjs).runCommand("create-library", "app", "lib")
 			.and(lib).containsFileWithContents("src/lib/someClass.js", "lib class")
-			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("lib class");
 	}
 	
@@ -145,7 +145,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 			.and(aspect).indexPageHasContent("require('lib');");
 		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty")
 			.and(lib).containsFileWithContents("someClass.js", "lib class")
-			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("lib class");
 	}
 	

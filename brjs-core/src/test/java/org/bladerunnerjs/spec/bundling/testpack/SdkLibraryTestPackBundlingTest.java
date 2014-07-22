@@ -81,7 +81,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 		given(sdkLib).hasCommonJsPackageStyle()
 			.and(sdkLibUTs).hasClass("brjsLib/SdkClass")
 			.and(sdkLibUTs).testRequires("test.js", "brjsLib/SdkClass");
-		when(sdkLibUTs).requestReceived("js/dev/combined/bundle.js", response);
+		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("define('brjsLib/SdkClass'");
 	}
 	
@@ -91,7 +91,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLib).hasTestClass("brjsLib/TestClass")
 			.and(sdkLibUTs).hasNamespacedJsPackageStyle()			
 			.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.TestClass()");
-		when(sdkLibUTs).requestReceived("js/dev/combined/bundle.js", response);
+		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(sdkLibUTs).bundledFilesEquals( sdkLib.assetLocation("src-test").file("brjsLib/TestClass.js") )
 			.and(response).containsText( "brjsLib.TestClass = require('brjsLib/TestClass');" );
 	}
@@ -102,7 +102,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLib).hasClass("brjsLib/Class")
 			.and(sdkLibUTs).hasNamespacedJsPackageStyle()			
 			.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.Class()");
-		when(sdkLibUTs).requestReceived("js/dev/combined/bundle.js", response);
+		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(sdkLibUTs).bundledFilesEquals( sdkLib.assetLocation("src").file("brjsLib/Class.js") )
 			.and(response).containsText( "brjsLib.Class = require('brjsLib/Class');" );
 	}
@@ -113,7 +113,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
     		.and(sdkLibUTs).hasTestClass("brjsLib/sdkLibUTs/Class")
     		.and(sdkLibUTs).hasNamespacedJsPackageStyle("tests")			
     		.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.sdkLibUTs.Class()");
-    	when(sdkLibUTs).requestReceived("js/dev/combined/bundle.js", response);
+    	when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(sdkLibUTs).bundledFilesEquals( sdkLibUTs.assetLocation("src-test").file("brjsLib/sdkLibUTs/Class.js") )
     		.and(response).containsText( "brjsLib.sdkLibUTs.Class = require('brjsLib/sdkLibUTs/Class');" );
 	}
