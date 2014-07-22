@@ -24,6 +24,10 @@ TestFixture.prototype.addSubFixtures = function(fixtureRegistry) {
 };
 
 TestFixture.prototype.doGiven = function(propertyName, value) {
+	// Note: this line is needed to overcome a strange bug in IE that otherwise causes the exceptions thrown
+	// within startingContinuesFrom() to be converted into a TypeError
+	var startingContinuesFrom = window.startingContinuesFrom;
+	
 	startingContinuesFrom(value);
 	finishedContinuesFrom();
 };
