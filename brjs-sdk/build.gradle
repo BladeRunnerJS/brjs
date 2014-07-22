@@ -53,7 +53,7 @@ task copyBrowsers(type: Sync) {
 	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
 	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
 	eachFile {
-		it.path = it.path.replaceAll("-[0-9\\.]+${File.separator}", "${File.separator}") // strip the version string
+		it.path = it.path.replaceAll("-[0-9\\.]+/", "/") // strip the version string
 	}
 	into browserRootDir
 	doLast {
