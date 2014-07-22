@@ -323,7 +323,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void assetsInAnSDKLibraryAreAvailableInDev() throws Exception
+	public void assetsInABRSDKLibraryAreAvailableInDev() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
@@ -332,7 +332,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void assetsInASdkLibraryInDevHaveCorrectContent() throws Exception
+	public void assetsInBRSdkLibraryInDevHaveCorrectContent() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
@@ -342,7 +342,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void assetsInAnSDKLibraryAreAvailableInProd() throws Exception
+	public void assetsInABRSDKLibraryAreAvailableInProd() throws Exception
 	{
 		given(app).hasBeenCreated()
 		.and(aspect).hasBeenCreated()
@@ -351,11 +351,53 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void assetsInASdkLibraryInProdHaveCorrectContent() throws Exception
+	public void assetsInABRSdkLibraryInProdHaveCorrectContent() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(aspect).requestReceivedInProd("cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}	
+	
+	@Test
+	public void assetsInAThirdpartySDKLibraryAreAvailableInDev() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
+			.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
+		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+	}
+	
+	@Test
+	public void assetsInAThirdpartySdkLibraryInDevHaveCorrectContent() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
+			.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
+		when(aspect).requestReceived("cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
+	public void assetsInAThirdpartySDKLibraryAreAvailableInProd() throws Exception
+	{
+		given(app).hasBeenCreated()
+		.and(aspect).hasBeenCreated()
+		.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
+		.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
+		then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+	}
+	
+	@Test
+	public void assetsInAThirdpartySdkLibraryInProdHaveCorrectContent() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
+			.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
 		when(aspect).requestReceivedInProd("cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}
