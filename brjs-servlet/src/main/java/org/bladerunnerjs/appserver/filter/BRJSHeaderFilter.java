@@ -22,6 +22,8 @@ import org.bladerunnerjs.appserver.util.LockedHeaderResponseWrapper;
 
 public class BRJSHeaderFilter implements Filter {
 	
+	public static final String OUTPUT_ENCODING = "UTF-8";
+
 	private static final Pattern VERSION_REGEX = Pattern.compile("/v/[0-9]+/");
 	
 	private static final String EXPIRES = "Expires";
@@ -43,7 +45,7 @@ public class BRJSHeaderFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		
-		response.setCharacterEncoding("UTF-8");		
+		response.setCharacterEncoding(OUTPUT_ENCODING);		
 		
 		if (VERSION_REGEX.matcher(request.getRequestURI()).find()) {
 			response.setHeader(CACHE_CONTROL, CACHE_CONTROL_ALLOW_CACHE);

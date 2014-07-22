@@ -13,12 +13,14 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.bladerunnerjs.model.BladerunnerConf;
+
 public class CharResponseWrapper extends HttpServletResponseWrapper
 {
 	private ByteArrayOutputStream byteArrayOutputStream;
 	private ServletOutputStream servletOutputStream;
 	private PrintWriter printWriter;
-	private String characterEncoding = "UTF-8";
+	private String characterEncoding = BladerunnerConf.OUTPUT_ENCODING;
 	
 	public CharResponseWrapper(HttpServletResponse response)
 	{

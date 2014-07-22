@@ -8,6 +8,8 @@ import org.bladerunnerjs.yaml.YamlBladerunnerConf;
 
 public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	
+	public static final String OUTPUT_ENCODING = "UTF-8";
+	
 	public BladerunnerConf(BRJS brjs) throws ConfigException {
 		super(brjs, YamlBladerunnerConf.class, getConfigFilePath(brjs), "UTF-8");
 	}

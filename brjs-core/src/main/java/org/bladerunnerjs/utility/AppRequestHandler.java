@@ -18,6 +18,7 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
@@ -145,7 +146,7 @@ public class AppRequestHandler
 			
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
-			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, "UTF-8")) {
+			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, BladerunnerConf.OUTPUT_ENCODING)) {
 				browsableNode.filterIndexPage(indexPageContent.toString(), locale, version, writer, requestMode);
 			}
 
