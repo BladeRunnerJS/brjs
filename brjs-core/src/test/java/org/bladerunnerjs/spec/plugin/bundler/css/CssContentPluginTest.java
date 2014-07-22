@@ -474,4 +474,19 @@ public class CssContentPluginTest extends SpecTest {
 		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/wibble/image.with-my-super-cool-extension');}");
 	}
 	
+	@Test
+	public void invalidCssDoesntPreventOtherContentBeingBundledAndRewritten() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFileWithContents("themes/common/style1.css", "asdaasdjhsadfohaahcsjhfw   div {background:url('image1.png');}")
+			.and(aspect).containsFileWithContents("themes/common/style2.css", "div {background:url('image2.png');}")
+			.and(aspect).containsFileWithContents("themes/common/style3.css", "div {background:url('image3.png'); jhasdjadsja }");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"asdaasdjhsadfohaahcsjhfw   div {background:url('../../cssresource/aspect_default/theme_common/image1.png');}",
+				"div {background:url('../../cssresource/aspect_default/theme_common/image2.png');}",
+				"div {background:url('../../cssresource/aspect_default/theme_common/image3.png'); jhasdjadsja }"
+		);
+	}
+	
 }
