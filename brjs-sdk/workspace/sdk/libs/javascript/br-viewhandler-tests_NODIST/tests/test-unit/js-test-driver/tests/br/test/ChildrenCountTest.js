@@ -1,10 +1,11 @@
 ChildrenCountTest = TestCase("ChildrenCountTest");
 
-require('br/test/ViewFixture');
+var Errors = require('br/Errors');
+var ViewFixture = require('br/test/ViewFixture');
 
 ChildrenCountTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new br.test.ViewFixture("view.*");
+	this.m_oViewFixture = new ViewFixture("view.*");
 	this.m_eElement = this.getElement();
 	document.body.appendChild(this.m_eElement);
 	this.m_oViewFixture.setViewElement(this.m_eElement);
@@ -50,11 +51,11 @@ ChildrenCountTest.prototype.test_cannotSetChildCountForElement = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(form).childrenCount", 0);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(div#main).childrenCount", 100);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(div.level2:first).childrenCount", 42);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };

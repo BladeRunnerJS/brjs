@@ -1,4 +1,11 @@
+'use strict';
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+
 /**
+ * @name br.test.viewhandler.HasClass
  * @class
  * <code>HasClass ViewFixtureHandler</code> can be used to verify that a view element
  * has a particular class. Example usage:
@@ -8,23 +15,20 @@
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.HasClass = function()
-{
-};
+function HasClass() {
+}
+br.implement(HasClass, ViewFixtureHandler);
 
-br.Core.implement(br.test.viewhandler.HasClass, br.test.viewhandler.ViewFixtureHandler);
-
-br.test.viewhandler.HasClass.prototype.get = function(eElement, sClassName)
-{
-	if(eElement.className.match("(^| )" + sClassName + "($| )")) {
+HasClass.prototype.get = function(eElement, sClassName) {
+	if (eElement.className.match("(^| )" + sClassName + "($| )")) {
 		return sClassName;
-	}
-	else {
+	} else {
 		return null;
 	}
 };
 
-br.test.viewhandler.HasClass.prototype.set = function(eElement, sClassName)
-{
-	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "hasClass can't be used in a Given or When clause.");
+HasClass.prototype.set = function(eElement, sClassName) {
+	throw new Errors.InvalidTestError("hasClass can't be used in a Given or When clause.");
 };
+
+module.exports = HasClass;

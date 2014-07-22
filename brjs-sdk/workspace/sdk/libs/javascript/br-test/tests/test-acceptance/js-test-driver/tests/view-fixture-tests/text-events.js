@@ -1,4 +1,6 @@
-br.test.GwtTestRunner.initialize();
+var GwtTestRunner = require('br/test/GwtTestRunner');
+
+GwtTestRunner.initialize();
 
 describe("User performs text events", function() {
 	fixtures("ViewFixtureTestsFixtureFactory");

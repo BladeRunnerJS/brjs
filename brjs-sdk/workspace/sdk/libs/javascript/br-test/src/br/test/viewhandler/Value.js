@@ -1,6 +1,13 @@
-br.Core.thirdparty("jquery");
+'use strict';
+
+require('jquery');
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
+ * @name br.test.viewhandler.Value
  * @class
  * <code>Value ViewFixtureHandler</code> can be used to set or get <code>value</code> property of a view element.
  * Example usage:
@@ -10,29 +17,25 @@ br.Core.thirdparty("jquery");
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.Value = function()
-{
-};
+function Value() {
+}
+br.implement(Value, ViewFixtureHandler);
 
-br.Core.implement(br.test.viewhandler.Value, br.test.viewhandler.ViewFixtureHandler);
-
-br.test.viewhandler.Value.prototype.get = function(eElement)
-{
-	if (eElement.value === undefined)
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The element you tried to use the 'value' property on doesn't have one.");
+Value.prototype.get = function(eElement) {
+	if (eElement.value === undefined) {
+		throw new Errors.InvalidTestError("The element you tried to use the 'value' property on doesn't have one.");
 	}
-	elementValue = jQuery(eElement).val();
+	var elementValue = jQuery(eElement).val();
 	return elementValue;
 };
 
-br.test.viewhandler.Value.prototype.set = function(eElement, vValue)
-{
-	if (eElement.value === undefined)
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The element you tried to use the 'value' property on doesn't have one.");
+Value.prototype.set = function(eElement, vValue) {
+	if (eElement.value === undefined) {
+		throw new Errors.InvalidTestError("The element you tried to use the 'value' property on doesn't have one.");
 	}
 	
 	try { delete eElement.fireOnChange; } catch (e) { }
 	jQuery(eElement).val(vValue).change();
 };
+
+module.exports = Value;
