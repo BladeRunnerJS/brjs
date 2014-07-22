@@ -71,14 +71,13 @@ public class BRJSDevServlet extends HttpServlet {
 			}
 		}
 		
-		try {
-			ThreadSafeStaticBRJSAccessor.aquireModel();
-			UrlContentAccessor contentAccessor = new ServletContentAccessor(app, servletContext, request, response);
-			ResponseContent content = app.handleLogicalRequest(requestPath, contentAccessor);
+		ThreadSafeStaticBRJSAccessor.aquireModel();
+		UrlContentAccessor contentAccessor = new ServletContentAccessor(app, servletContext, request, response);
+		try ( ResponseContent content = app.handleLogicalRequest(requestPath, contentAccessor); )
+		{
 			if (!response.isCommitted()) { // check the ServletContentAccessor hasnt been used to handle a request and sent headers
 				content.write( response.getOutputStream() );
 			}
-			content.closeQuietly();
 		}
 		catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException | ModelOperationException e) {
 			throw new ServletException(e);

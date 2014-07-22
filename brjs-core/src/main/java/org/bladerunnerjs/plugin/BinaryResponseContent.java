@@ -26,22 +26,17 @@ public class BinaryResponseContent implements ResponseContent
 		IOUtils.copy(input, outputStream);
 		outputStream.flush();
 	}
-
+	
 	@Override
-	public void close() throws Exception
-	{
-		input.close();
-	}
-
-	@Override
-	public void closeQuietly()
+	public void close()
 	{
 		try
 		{
-			close();
+			input.close();
 		}
-		catch (Exception e)
+		catch (IOException ex)
 		{
+			throw new RuntimeException(ex);
 		}
 	}
 	

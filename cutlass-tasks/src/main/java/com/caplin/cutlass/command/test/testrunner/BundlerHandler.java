@@ -57,10 +57,10 @@ public class BundlerHandler
 		
 		bundleFile.getParentFile().mkdirs();
 		String modelRequestPath = getModelRequestPath(bundlePath);
-		try(OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile)) {
-			ResponseContent content = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentAccessor(app), version);
+		try (OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
+			ResponseContent content = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentAccessor(app), version); ) 
+		{
 			content.write( bundleFileOutputStream );
-			content.closeQuietly();
 		}
 		
 	}

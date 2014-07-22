@@ -51,20 +51,15 @@ public class CharResponseContent implements ResponseContent
 	}
 
 	@Override
-	public void close() throws Exception
-	{
-		reader.close();
-	}
-
-	@Override
-	public void closeQuietly()
+	public void close()
 	{
 		try
 		{
-			close();
+			reader.close();
 		}
-		catch (Exception e)
+		catch (IOException ex)
 		{
+			throw new RuntimeException(ex);
 		}
 	}
 	

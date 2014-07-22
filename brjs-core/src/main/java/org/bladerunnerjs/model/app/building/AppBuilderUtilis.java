@@ -70,10 +70,10 @@ public class AppBuilderUtilis
 				
 				localeForwardingFile.getParentFile().mkdirs();
 				
-				try (OutputStream os = new FileOutputStream(localeForwardingFile)) {
-					ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(app.root(), bundleSet, contentPluginUtility, version);
+				try (OutputStream os = new FileOutputStream(localeForwardingFile);
+					ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(app.root(), bundleSet, contentPluginUtility, version); )
+				{
 					content.write(os);
-					content.closeQuietly();
 				}
 				
 				for(Locale locale : locales) {
@@ -81,10 +81,10 @@ public class AppBuilderUtilis
 					File localeIndexPageFile = new File(target, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale.toString()) + indexPageName);
 					
 					localeIndexPageFile.getParentFile().mkdirs();
-					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						ResponseContent content = appRequestHandler.getIndexPageContent(aspect, locale, version, contentPluginUtility, RequestMode.Prod);
+					try (OutputStream os = new FileOutputStream(localeIndexPageFile);
+						ResponseContent content = appRequestHandler.getIndexPageContent(aspect, locale, version, contentPluginUtility, RequestMode.Prod); )
+					{
 						content.write(os);
-						content.closeQuietly();
 					}
 				}
 				
@@ -99,14 +99,13 @@ public class AppBuilderUtilis
 							}
 							
 							ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
-							ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);
 							bundleFile.getParentFile().mkdirs();
 							bundleFile.createNewFile();
-							try(FileOutputStream bundleFileOutputStream = new FileOutputStream(bundleFile) )
+							try (FileOutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
+								ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version); )
 							{
 								pluginContent.write( bundleFileOutputStream );
-							}							
-							pluginContent.closeQuietly();
+							}
 						}
 					} else {
 						ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
