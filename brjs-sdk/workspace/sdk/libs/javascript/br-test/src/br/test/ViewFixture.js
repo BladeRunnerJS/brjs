@@ -1,5 +1,36 @@
 'use strict';
 
+/**
+* <p>The <code>ViewFixture</code> enables interacting with the rendered view via <code>ViewFixtureHandlers</code>. An
+*  element in the view can be selected with jQuery selectors. In Given and When phases the selected element in the
+*  view as well as its desired value will be passed as arguments to the <code>set()</code> method of a
+*  <code>ViewFixtureHandler</code> which will update the element accordingly. In the Then phase the same arguments
+*  will be passed to the <code>get()</code> method of a <code>ViewFixtureHandler</code>, which will then inspect the
+*  selected view element and return a value of a particular property of this element to the <code>ViewFixture</code>.
+*  The <code>ViewFixture</code> should mainly be used to check that the bindings between view elements in templates
+*  and the corresponding presentation model properties have been specified correctly. A test might set a value on the
+*  view element in the Given or When phases and then check in the Then phase that this value has been updated after
+*  updating the relevant presentation model property.</p>
+*
+* <p>Assuming that the <code>ViewFixture</code> has been added with the identifier <code>view</code> as a subfixture
+* of the <code>ComponentFixture</code> which has the identifier <code>form</code>, then the <code>ViewFixture</code>
+* can be used in the following way in a test:
+* </p>
+* <p>
+* <code>then("form.view.(.orderSummary [identifier=\'orderStatus\']).text = 'complete'");</code>
+* </p>
+* <p>
+* In the above example the jQuery selector for the element in the view is
+*  <code>.spotGeneralSummary [identifier=\'dealSubmittedFor\']</code> and it must be specified within parentheses. The
+*  following part of the statement, <code>.text = 'test phrase'</code>, specifies the ViewFixtureHandler
+* (<code>Text</code>) and the value (<code>'test phrase'</code>) which will be passed to it. The <code>Text</code>
+* <code>ViewFixtureHandler</code> will then get the text value of the selected view element and return this value to
+* the <code>ViewFixture</code>. The test will pass if the text value of the selected view element is indeed equal to
+*  <code>'test phrase'</code>.
+* </p>
+* @module br/test/ViewFixture
+*/
+
 require('jquery');
 require('es5-shim');
 
@@ -8,40 +39,10 @@ var Errors = require('br/Errors');
 var Fixture = require('br/test/Fixture');
 
 /**
- * @name br.test.ViewFixture
- * @class
- * <p>The <code>ViewFixture</code> enables interacting with the rendered view via <code>ViewFixtureHandlers</code>. An 
- *  element in the view can be selected with jQuery selectors. In Given and When phases the selected element in the 
- *  view as well as its desired value will be passed as arguments to the <code>set()</code> method of a 
- *  <code>ViewFixtureHandler</code> which will update the element accordingly. In the Then phase the same arguments 
- *  will be passed to the <code>get()</code> method of a <code>ViewFixtureHandler</code>, which will then inspect the 
- *  selected view element and return a value of a particular property of this element to the <code>ViewFixture</code>. 
- *  The <code>ViewFixture</code> should mainly be used to check that the bindings between view elements in templates 
- *  and the corresponding presentation model properties have been specified correctly. A test might set a value on the 
- *  view element in the Given or When phases and then check in the Then phase that this value has been updated after 
- *  updating the relevant presentation model property.</p>
- *
- * <p>Assuming that the <code>ViewFixture</code> has been added with the identifier <code>view</code> as a subfixture
- * of the <code>ComponentFixture</code> which has the identifier <code>form</code>, then the <code>ViewFixture</code>
- * can be used in the following way in a test:
- * </p>
- * <p>
- * <code>then("form.view.(.orderSummary [identifier=\'orderStatus\']).text = 'complete'");</code>
- * </p>
- * <p>
- * In the above example the jQuery selector for the element in the view is
- *  <code>.spotGeneralSummary [identifier=\'dealSubmittedFor\']</code> and it must be specified within parentheses. The 
- *  following part of the statement, <code>.text = 'test phrase'</code>, specifies the ViewFixtureHandler
- * (<code>Text</code>) and the value (<code>'test phrase'</code>) which will be passed to it. The <code>Text</code>
- * <code>ViewFixtureHandler</code> will then get the text value of the selected view element and return this value to 
- * the <code>ViewFixture</code>. The test will pass if the text value of the selected view element is indeed equal to 
- *  <code>'test phrase'</code>.
- * </p>
- *
- * @implements br.test.Fixture
- *
- * @constructor
  * Constructs a <code>br.test.ViewFixture</code>.
+ * @implements br.test.Fixture
+ * @alias module:br/test/ViewFixture
+ * @constructor
  * @param {String} viewSelector (optional) CSS selector to identify the parent view element for this fixture
  */
 function ViewFixture(viewSelector) {

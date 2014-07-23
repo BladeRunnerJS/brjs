@@ -20,7 +20,7 @@ Utils.pLoadedAndAttachedCSSElements = [];
  * Fires a DOM Event in a cross Browser compatible way.
  *
  * @static
- * @param {DOM Element} element The DOM Element the Event is fired from.
+ * @param {DOM_Element} element The DOM Element the Event is fired from.
  * @param {String} eventString The Event to be fired without 'on', e.g. 'click', 'keydown'.
  * @param {String} [character] A character associated with typing events.
  */
@@ -62,7 +62,7 @@ Utils.getKeyCodeForChar = function(character) {
  * Fires a DOM KeyboardEvent in a cross Browser compatible way.
  *
  * @static
- * @param {DOM Element} element The DOM Element the Event is fired from.
+ * @param {DOM_Element} element The DOM Element the Event is fired from.
  * @param {String} eventString The Event to be fired without 'on', e.g. 'keydown'.
  * @param {String} character a character associated with typing events.
  * @param {Map} options a map of values, passed in to <code>initKeyboardEvent</code>, associated with typing events.
@@ -78,7 +78,7 @@ Utils.fireKeyEvent = function(element, eventString, character, options) {
 
 		if (evt.initKeyboardEvent) {
 			if (navigator.userAgent.indexOf('WebKit') !== -1) {
-				//https://bugs.webkit.org/show_bug.cgi?id=16735 Due to bug in Webkit and Chrome we must use 
+				//https://bugs.webkit.org/show_bug.cgi?id=16735 Due to bug in Webkit and Chrome we must use
 				// keyIdentifier instead of keycode - which is the standard anyway.
 
 				//Webkit.
@@ -145,7 +145,7 @@ Utils.fireKeyEvent = function(element, eventString, character, options) {
  * Fires a DOM MouseEvents in a cross Browser compatible way.
  *
  * @static
- * @param {DOM Element} element The DOM Element the Event is fired from.
+ * @param {DOM_Element} element The DOM Element the Event is fired from.
  * @param {String} eventString The Event to be fired without 'on', e.g. 'click'.
  * @param {Map} options a map of values, passed in to <code>initMouseEvent</code>, associated with mouse events.
  */
@@ -259,7 +259,7 @@ Utils.removeLoadedAndAttachedCSSFromPage = function() {
  * Fires a DOM scroll event in a cross Browser compatible way.
  *
  * @static
- * @param {DOM Element} element The DOM Element the Event is fired from
+ * @param {DOM_Element} element The DOM Element the Event is fired from
  */
 Utils.fireScrollEvent = function(element) {
 	if (document.createEvent) {
