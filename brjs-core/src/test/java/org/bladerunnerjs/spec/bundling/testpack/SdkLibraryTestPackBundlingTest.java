@@ -101,7 +101,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 		given(sdkLib).hasCommonJsPackageStyle()
 			.and(sdkLib).hasClass("brjsLib/Class")
 			.and(sdkLibUTs).hasNamespacedJsPackageStyle()			
-			.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.Class()");
+			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib/Class");
 		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(sdkLibUTs).bundledFilesEquals( sdkLib.assetLocation("src").file("brjsLib/Class.js") )
 			.and(response).containsText( "brjsLib.Class = require('brjsLib/Class');" );
