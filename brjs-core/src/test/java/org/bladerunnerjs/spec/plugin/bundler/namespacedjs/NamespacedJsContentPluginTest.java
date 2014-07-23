@@ -514,12 +514,12 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	public void methodsWithTheSameNameAsALibraryDontIncludeTheLibrary() throws Exception {
 		JsLib normalizeLib = app.jsLib("normalize");
 		given(normalizeLib).containsFileWithContents("thirdparty-lib.manifest", "depends:")
-			.and(normalizeLib).containsFileWithContents("script.js", "sdkJsLib JS")
+			.and(normalizeLib).containsFileWithContents("script.js", "normalizeLib JS")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classFileHasContent("appns.Class1", "e.normalize()");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
-		then(requestResponse).doesNotContainText("sdkJsLib")
+		then(requestResponse).doesNotContainText("normalizeLib")
 			.and(requestResponse).containsText("e.normalize()");
 	}
 	
