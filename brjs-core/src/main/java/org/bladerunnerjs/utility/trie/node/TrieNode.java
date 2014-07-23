@@ -7,6 +7,8 @@ public interface TrieNode<T> extends Comparable<TrieNode<T>>
 	TrieNode<T> getOrCreateNextNode(char character);
 	T getValue();
 	void setValue(T value);
+	void setValue(T value, String prefixAndSuffixChars);
 	TrieNode<T>[] getChildren();
 	int size();
+	String getPrefixAndSuffixChars();
 }

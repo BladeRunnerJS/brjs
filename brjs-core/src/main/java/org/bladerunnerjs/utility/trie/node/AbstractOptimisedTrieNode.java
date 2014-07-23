@@ -40,6 +40,12 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
     	unsupportedOptimisedTrieMethod();
     }
     
+	@Override
+	public void setValue(T value, String prefixAndSuffixChars)
+	{
+		unsupportedOptimisedTrieMethod();
+	}
+	
     @Override
  	public TrieNode<T>[] getChildren()
  	{
@@ -59,6 +65,12 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 	{
 		unsupportedOptimisedTrieMethod();
 		return -1;
+	}
+	
+	@Override
+	public String getPrefixAndSuffixChars()
+	{
+		return "";
 	}
 	
 	private void unsupportedOptimisedTrieMethod() {

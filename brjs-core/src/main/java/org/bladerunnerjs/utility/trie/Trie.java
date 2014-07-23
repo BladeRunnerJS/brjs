@@ -22,8 +22,7 @@ import org.bladerunnerjs.utility.trie.node.TrieNode;
 public class Trie<T>
 {
 	private static final int CHILD_SIZE_OPTIMIZATION_THRESHOLD = 5;
-
-	private static final char[] INVALID_PREFIX_CHARS = ".".toCharArray();
+	
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"\\\"\'\\'".toCharArray();
 	
 	private TrieNode<T> root;
@@ -47,6 +46,10 @@ public class Trie<T>
 	}
 	
 	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException, TrieLockedException {
+		add(key, value, "");
+	}
+	
+	public void add(String key, T value, String prefixAndSuffixChars) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException, TrieLockedException {
 		if (trieOptimized) {
 			throw new TrieLockedException();
 		}
@@ -69,7 +72,7 @@ public class Trie<T>
 			throw new TrieKeyAlreadyExistsException(key);
 		}
 		
-		node.setValue(value);
+		node.setValue(value, prefixAndSuffixChars);
 		trieLookup.put(key, node);
 		readAheadLimit = Math.max(readAheadLimit, key.length() + 1);
 	}
@@ -94,17 +97,18 @@ public class Trie<T>
 		if (!reader.markSupported()) {
 			reader = new BufferedReader(reader);
 		}
-		
+	
+		char charAtPointOfFirstMatch = '\u0000';
 		List<T> matches = new LinkedList<T>();
 		TrieMatcher matcher = new TrieMatcher();
 		int nextChar, prevChar = 0;
 		
 		while ((nextChar = reader.read()) != -1)
 		{
-			processChar(matches, (char) nextChar, (char) prevChar, matcher, reader);
+			charAtPointOfFirstMatch = processChar(matches, charAtPointOfFirstMatch, (char) nextChar, (char) prevChar, matcher, reader);
 			prevChar = nextChar;
 		}
-		processChar(matches, '\n', (char) prevChar, matcher, reader);
+		charAtPointOfFirstMatch = processChar(matches, charAtPointOfFirstMatch, '\n', (char) prevChar, matcher, reader);
 		
 		return matches;	
 	}
@@ -131,6 +135,7 @@ public class Trie<T>
 	private TrieNode<T> createOptimisedTrieNode(TrieNode<T> trieNode) {
 		char trieNodeChar = trieNode.getChar();
 		T trieNodeValue = trieNode.getValue();
+		String trieNodePrefixAndSuffixChars = trieNode.getPrefixAndSuffixChars();
 		
 		TrieNode<T>[] trieNodeChildren = getOrderedTrieNodeChildren(trieNode);
 		
@@ -151,7 +156,7 @@ public class Trie<T>
 				return new OptimisedTrieTrunkNode<>(trieNodeChar, optimisedTrieNodeChildren, primarySeperator, seperators);
 			}
 		} else {
-			return new OptimisedTrieLeafNode<T>(trieNodeChar, trieNodeValue, primarySeperator, seperators);
+			return new OptimisedTrieLeafNode<T>(trieNodeChar, trieNodeValue, primarySeperator, seperators, trieNodePrefixAndSuffixChars);
 		}
 	}
 	
@@ -180,14 +185,12 @@ public class Trie<T>
 		return node;
 	}
 	
-	private void processChar(List<T> matches, char nextChar, char prevChar, TrieMatcher matcher, Reader reader) throws IOException
+	private char processChar(List<T> matches, char charAtPointOfFirstMatch, char nextChar, char prevChar, TrieMatcher matcher, Reader reader) throws IOException
 	{
 		if (matcher.atRootOfTrie)
 		{
 			reader.mark(readAheadLimit);
-			if (isInvalidPrefixChar(prevChar)) {
-				return;
-			}
+			charAtPointOfFirstMatch = prevChar;
 		}
 		
 		TrieNode<T> nextNode = matcher.next(nextChar);
@@ -199,23 +202,27 @@ public class Trie<T>
 			{
 				//TODO best data structure to make this efficient?
 				if(!matches.contains(previousValue)){
-					matches.add( previousValue );
+					String prefxiAndSuffixChars = matcher.previousNode.getPrefixAndSuffixChars();
+					if (prefxiAndSuffixChars.length() <= 0) {
+						matches.add( previousValue );						
+					} else {
+						if (prefxiAndSuffixChars.contains(charAtPointOfFirstMatch+"") && prefxiAndSuffixChars.contains(nextChar+"")) {
+							matches.add( previousValue );
+						}
+					}
 				}
 				reader.mark(readAheadLimit);
 			}
 			matcher.reset();
 			reader.reset();
 		}
+		
+		return charAtPointOfFirstMatch;
 	}
 
 	private boolean isDelimiter(char nextChar)
 	{
 		return ArrayUtils.contains(DELIMETERS, nextChar);
-	}
-	
-	private boolean isInvalidPrefixChar(char nextChar)
-	{
-		return ArrayUtils.contains(INVALID_PREFIX_CHARS, nextChar);
 	}
 	
 	private class TrieMatcher {

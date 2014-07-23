@@ -244,14 +244,16 @@ public class TrieTest
 	}
 	
 	@Test
-	public void ocurrancesPrefixedWithADorDontMatch() throws Exception
+	public void entriesCanBeSetToBeginAndEndWithASpecifiedCharacter() throws Exception
 	{
-		trie.add("test.object.1", test_object_1);
+		trie.add("test.object.1", test_object_1, "'\"");
+		trie.add("test.object.2", test_object_2, "'\"");
 		
-		StringReader reader = new StringReader("dont match .test.object.1");
+		StringReader reader = new StringReader("the test.object.1 key wont match, but 'test.object.2' will");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
-		assertEquals(0, foundObjects.size());
+		assertEquals(1, foundObjects.size());
+		assertEquals(test_object_2, foundObjects.get(0));
 	}
 	
 	
