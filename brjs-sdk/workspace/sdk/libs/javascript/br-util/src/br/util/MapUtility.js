@@ -200,11 +200,11 @@ MapUtility.toString = function(srcMap) {
 };
 
 /**
- * @private
  * Gets the index that was associated with the specified map when it was output by the {@link #toString} method
  *  during the current callstack invocation, or returns a code indicating that the map has not been processed
  *  previously.
  *
+ * @private
  * @param {Object} srcMap The map the index is required for.
  * @returns {Number} The index of the map, or <code>-1</code> if this map has not been processed before.
  */
@@ -279,8 +279,8 @@ MapUtility.mergeMaps = function(mergeMapArr, overwriteDuplicateKeys, throwOnDupl
 };
 
 /**
- * @private
  * Converts a map to its inverse, which has keys based on the original map's values, and vice-versa.
+ * @private
  */
 MapUtility.invert = function(srcMap) {
 	var inverted = {};
@@ -293,10 +293,10 @@ MapUtility.invert = function(srcMap) {
 
 // TODO: determine whether copy() and mergeMaps() be combined into a more useful method
 /**
- * @private
  * Creates a shallow copy of the supplied map. If the destination map is supplied, then it adds the map values onto
  *  the destination map.
  *
+ * @private
  * @param {Object} srcMap
  * @param {Object} tgtMap (optional)
  * @param {Boolean} isDeepCopy indicates whether a deep copy will occur on the Map.
@@ -329,10 +329,10 @@ MapUtility.clone = function(srcMap) {
 };
 
 /**
- * @private
  * Creates a deep clone of the supplied map. Map references are copied to an arbitrary number of levels deep (note
  *  that non-map objects are not handled correctly)
  *
+ * @private
  * @param {Object} srcMap The map to clone.
  *
  * @returns {Object} A deep clone of the map.
@@ -346,11 +346,11 @@ MapUtility.deepClone = function(srcMap) {
 };
 
 /**
- * @private
  * Helper method to check if parameter values passed in to methods are members of the enumerations they are meant to
  *  be. BEWARE: The check is whether <code>item</code> is a value on a member of the object, such as an entry in an
  *  Array.
  *
+ * @private
  * @param item exact instance that must be equal(===) to one of the members.
  * @param srcObj the object that will have its members checked.
  */

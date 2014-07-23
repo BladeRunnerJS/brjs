@@ -4,22 +4,21 @@ var Errors = require('br/Errors');
 var fell = require('fell');
 
 /**
- * @private
  * This is a static utility class and does not need to be instantiated.
+ * @private
  */
 function Utility() {
 }
 
 /**
- * @private
  * Used when creating a unique ID
+ * @private
  */
 Utility.UNIQUE_ID = 0;
 
 /**
+ * Creates an ID in the form of a GUID that is unique for a single application instance. This ID is NOT globally unique so multiple users of the same application could create the same ID.
  * @private
- * Creates an ID in the form of a GUID that is unique for a single application instance. This ID is NOT globally unique 
- *  so multiple users of the same application could create the same ID.
  * @returns {String} a unique ID for the the present instance of the application.
  */
 Utility.createApplicationInstanceUniqueId = function() {
@@ -45,10 +44,10 @@ Utility.interfaceMethod = function(className, methodName) {
 };
 
 /**
- * @private
- * Allows you to execute a method called several times just once. This is useful when you need several actions to be 
+ * Allows you to execute a method called several times just once. This is useful when you need several actions to be
  *  executed as an atomic operation.
- * 
+ *
+ * @private
  * @param {Object} obj The caller object.
  * @param {String} methodName The method name to be executed.
  */
