@@ -1,7 +1,6 @@
 "use strict";
 
 /**
-* @name br.Core.File
 * @class
 * @module br/Core/File
 */
