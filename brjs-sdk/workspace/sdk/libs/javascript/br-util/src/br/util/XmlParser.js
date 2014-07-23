@@ -1,12 +1,16 @@
 'use strict';
 
 /**
- * @name br.util.XmlParser
  * Constructs a <code>XmlParser</code>. This has been included for backwards compatibility.
  *
- * <p>It is recommended that the {@link br.util.XmlParser#getInstance} method is used to get an instance instead of
+ * <p>It is recommended that the {@link module:br/util/XmlParser#getInstance}
+ * method is used to get an instance instead of
  * generating a new <code>XmlParser</code> every time.</p>
- * @constructor
+ * @module br/util/XmlParser
+ */
+
+/**
+ * @alias module:br/util/XmlParser
  *
  * @class
  * Utility class that provides methods for parsing XML strings into Document Objects. The object is a singleton so

@@ -1,15 +1,19 @@
 'use strict';
 
+/**
+ * @module br/util/ArrayUtility
+ */
+
 var Errors = require('br/Errors');
 
 /**
- * @name br.util.ArrayUtility
  * This is a static class that never needs to be instantiated.
- * 
+ *
+ * @static
  * @class
  * Utility class that provides methods for array manipulation.
- * 
- * @memberOf br.util
+ *
+ * @alias module:br/util/ArrayUtility
  */
 var ArrayUtility = {};
 
@@ -17,7 +21,7 @@ var ArrayUtility = {};
  * Return <code>true</code> if the input array contains the input value, <code>false</code> otherwise.
  *
  * @param {Array} arrayToSearch The Array to test for the presence of the input variant. May not be null or undefined.
- * @param {Variant} valueToFind Variant whose presence in the input array is to be tested.  Works with null, undefined 
+ * @param {Variant} valueToFind Variant whose presence in the input array is to be tested.  Works with null, undefined
  *  and NaN.
  * @return {Boolean} <code>true</code> if the specified value was found in the array, <code>false</code> otherwise.
  */
@@ -40,9 +44,9 @@ ArrayUtility.inArray = function(arrayToSearch, valueToFind) {
 
 /**
  * Removes the first example of the specified item in the specified array, or does nothing if the item is not found.
- * 
- * <p>Since this method uses the built-in <code>indexOf</code> which does work with <code>NaN</code>, it will not work 
- *  if called with NaN and will throw an InvalidParametersError.  If you need to remove <code>NaN</code>, you'll have 
+ *
+ * <p>Since this method uses the built-in <code>indexOf</code> which does work with <code>NaN</code>, it will not work
+ *  if called with NaN and will throw an InvalidParametersError.  If you need to remove <code>NaN</code>, you'll have
  *  to loop over the array and then splice it out.</p>
  *
  * @param {Array} arrayToRemoveFrom The Array from which to remove the specified item. May not be null or undefined.

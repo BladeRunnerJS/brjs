@@ -1,11 +1,14 @@
 'use strict';
 
+/**
+ * @module br/util/Observable
+ */
+
 var Errors = require('br/Errors');
 
 /**
  * Constructs a new <code>Observable</code>.
  *
- * @class
  * An <code>Observable</code> is a generic implementation of the Observer design pattern that allows an object that
  *  wants to notify other objects (the observers) of events that it raises to do so by using the
  *  <code>Observable</code> to handle the boiler plate code, such as the registration and management of the list of
@@ -29,6 +32,8 @@ var Errors = require('br/Errors');
  *  this.m_oObservable.notifyObservers("recordUpdated", [ sRecordName, mRecordDataMap ]);
  * };
  * </pre>
+ * @class
+ * @alias module:br/util/Observable
  */
 function Observable() {
 	/**

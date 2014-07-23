@@ -1,18 +1,22 @@
 'use strict';
 
+/**
+ * Utility methods for numbers
+ * @module br/util/Number
+ */
+
 var StringUtility = require('br/util/StringUtility');
 
 /**
- * @name br.util.Number
+ * @alias module:br/util/Number
  * @class
- * Utility methods for numbers
  */
 function NumberUtil() {
 }
 
 /**
  * Returns a numeric representation of the sign on the number.
- * 
+ *
  * @param {Number} n  The number (or a number as a string)
  * @return {int} 1 for positive values, -1 for negative values, or the original value for zero and non-numeric values.
  */
@@ -22,7 +26,7 @@ NumberUtil.sgn = function(n) {
 
 /**
  * @param {Object} n
- * @return {boolean} true for numbers and their string representations and false for other values including non-numeric 
+ * @return {boolean} true for numbers and their string representations and false for other values including non-numeric
  *  strings, null, Infinity, NaN.
  */
 NumberUtil.isNumber = function(n) {
@@ -54,10 +58,10 @@ NumberUtil.toFixed = function(n, dp) {
 };
 
 /**
- * Formats the number to the specified number of significant figures. This fixes the bugs in the native Number function 
- *  of the same name that are prevalent in various browsers. If the number of significant figures is less than one, 
+ * Formats the number to the specified number of significant figures. This fixes the bugs in the native Number function
+ *  of the same name that are prevalent in various browsers. If the number of significant figures is less than one,
  *  then the function has no effect.
- * 
+ *
  * @param {Number} n The number (or a number as a string).
  * @param {Number} sf The number of significant figures.
  * @return {String} The formatted number.
@@ -97,7 +101,7 @@ NumberUtil.log10 = function(n) {
 };
 
 /**
- * Rounds a floating point number 
+ * Rounds a floating point number
  *
  * @param {Number} n The number (or a number as a string).
  * @return {Number} The formatted number.

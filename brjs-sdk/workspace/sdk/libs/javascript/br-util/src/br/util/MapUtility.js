@@ -1,11 +1,14 @@
 'use strict';
 
+/*
+ * This is a static class that never needs to be instantiated.
+ * @module br/util/MapUtility
+ */
+
 var Errors = require('br/Errors');
 
 /**
- * @name br.util.MapUtility
- * This is a static class that never needs to be instantiated.
- * @constructor
+ * @alias module: br/util/MapUtility
  *
  * @class
  * Utility class providing common operations on maps.

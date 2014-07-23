@@ -1,11 +1,15 @@
 'use strict';
 
+/**
+* @module br/util/ElementUtility
+*/
+
 var Errors = require('br/Errors');
 
 /**
- * @name br.util.ElementUtility
- * @class 
- * This class provides static, browser agnostic, utility methods for DOM interactions such as adding / removing event 
+ * @alias module:br/util/ElementUtility
+ * @class
+ * This class provides static, browser agnostic, utility methods for DOM interactions such as adding / removing event
  *  listeners, adjusting CSS classes, finding element positions etc.
  */
 function ElementUtility() {
@@ -68,13 +72,13 @@ ElementUtility.removeClassName = function(element, className) {
 ElementUtility.replaceClassName = function(element, currentClassName, newClassName) {
 	var trimmedNewClassName = newClassName.trim();
 	var replacableClassName = trimmedNewClassName.length == 0 ? ' ' : ' ' + trimmedNewClassName + ' ';
-	var classMatcher = ElementUtility._getClassNameRegExFor(currentClassName); 
+	var classMatcher = ElementUtility._getClassNameRegExFor(currentClassName);
 	element.className = (element.className.replace(classMatcher, replacableClassName)).trim();
 };
 
 /**
- * Adds and/or removes the specified class names from the specified element. This operation is performed in a single 
- *  DOM action, making this more efficient than adding/removing the classes individually. If a class exists in both the 
+ * Adds and/or removes the specified class names from the specified element. This operation is performed in a single
+ *  DOM action, making this more efficient than adding/removing the classes individually. If a class exists in both the
  *  add and remove lists, the class will be added to the element.
  *
  * @param {Element} element The HTML DOM element to make the class changes to.
@@ -139,7 +143,7 @@ ElementUtility.getElementsByClassName = function(domElement, tagName, className)
 
 /**
  * Returns the first element that contains the given class as part of its <code>className</code> string.
- * 
+ *
  * @param {Element} element the element to start the search at.
  * @param {String} className the class name to look for.
  *
@@ -163,7 +167,7 @@ ElementUtility.getAncestorElementWithClass = function(element, className) {
  * Returns the node index of the element as it exists in the parent.
  *
  * @param {Element} element The element to get the index for.
- * 
+ *
  * @type int
  * @returns the node index
  * @throws Error If the specified element does not have a parent.
@@ -195,7 +199,7 @@ ElementUtility.getNodeIndex = function(element) {
 /**
  * Inserts the specified node immediately after the reference element.
  *
- * <p>This convenience method saves the programmer from having to determine whether to call <code>insertBefore()</code> 
+ * <p>This convenience method saves the programmer from having to determine whether to call <code>insertBefore()</code>
  *  or <code>appendChild()</code>, depending on whether the reference element is the last child node.</p>
  *
  * @param {Element} element The element to insert.
@@ -278,7 +282,7 @@ ElementUtility.removeChild = function(childElement) {
 };
 
 /**
- * Discards one or more elements (all arguments passed will be discarded) by removing children, and removing it from 
+ * Discards one or more elements (all arguments passed will be discarded) by removing children, and removing it from
  *  any parentNode.
  *
  * @param {Element} firstElement First Element DOM Element
@@ -300,9 +304,9 @@ ElementUtility.discardChild = function(firstElement) {
 };
 
 /**
- * Returns the absolute position of the element relative to the window in pixels. 
+ * Returns the absolute position of the element relative to the window in pixels.
  * The position also takes into account any scrolling of parents.
- * 
+ *
  * @param {DOMElement} elem The DOM element to calculate the position of
  * @type Object
  * @return \{left:x,top:y\}
@@ -351,7 +355,7 @@ ElementUtility.getSize = function(elem) {
 };
 
 /**
- * Returns the scrolled offset of the element (if any) in an object containing a <tt>left</tt> and <tt>top</tt> 
+ * Returns the scrolled offset of the element (if any) in an object containing a <tt>left</tt> and <tt>top</tt>
  *  properties.
  *
  * @param {Element} elem The DOM element to calculate the scrolled offset of.
