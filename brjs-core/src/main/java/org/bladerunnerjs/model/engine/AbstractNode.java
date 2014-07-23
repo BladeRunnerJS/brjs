@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
+import org.bladerunnerjs.model.events.NodeDeletedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsModelException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -154,6 +155,7 @@ public abstract class AbstractNode implements Node
 			try {
 				FileUtils.deleteDirectory(dir);
 				logger.debug(Messages.NODE_DELETED_LOG_MSG, getClass().getSimpleName(), dir.getPath());
+				notifyObservers(new NodeDeletedEvent(), this);
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -304,6 +306,7 @@ public abstract class AbstractNode implements Node
 		{
 			return;
 		}
+		
 		ObserverList observers = node.getObservers();
 		if (observers != null) { observers.eventEmitted(event, notifyForNode); }
 		notifyObservers(event, notifyForNode, node.parentNode());

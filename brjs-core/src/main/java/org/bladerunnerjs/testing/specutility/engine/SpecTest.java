@@ -165,6 +165,7 @@ public abstract class SpecTest extends TestModelAccessor
 
 	// File
 	public FileTestBuilder given(File file) { return new FileTestBuilder(this, file); }
+	public FileTestBuilder when(File file) { return new FileTestBuilder(this, file); }
 	
 	// exceptions
 	protected ExceptionsBuilder given(List<Throwable> exceptions) { return new ExceptionsBuilder(this, exceptions); }
