@@ -13,4 +13,9 @@ public class AmbiguousRequirePathException extends RequirePathException {
 	public String getMessage() {
 		return message;
 	}
+
+	public void setSourceRequirePath(String primaryRequirePath) {
+		// TODO Auto-generated method stub
+		
+	}
 }

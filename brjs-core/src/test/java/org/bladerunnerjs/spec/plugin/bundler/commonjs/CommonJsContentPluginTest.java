@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.plugin.bundler.commonjs;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,6 +80,14 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "require('sdkLib/Class2')");
 		when(aspect).requestReceivedInDev("node-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("define('sdkLib/Class2'");
+	}
+	
+	@Test 
+	public void sourceModuleExceptionContainsFilePath() throws Exception{
+		given(aspect).indexPageRequires("appns/Class")
+			.and(aspect).classFileHasContent("appns/Class", "require('randomStuff')");
+		when(aspect).requestReceivedInDev("node-js/bundle.js", requestResponse);
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "randomStuff", "appns/Class.js" );
 	}
 	
 }
