@@ -23,6 +23,7 @@ public class Trie<T>
 {
 	private static final int CHILD_SIZE_OPTIMIZATION_THRESHOLD = 5;
 
+	private static final char[] INVALID_PREFIX_CHARS = ".".toCharArray();
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"\\\"\'\\'".toCharArray();
 	
 	private TrieNode<T> root;
@@ -184,6 +185,9 @@ public class Trie<T>
 		if (matcher.atRootOfTrie)
 		{
 			reader.mark(readAheadLimit);
+			if (isInvalidPrefixChar(prevChar)) {
+				return;
+			}
 		}
 		
 		TrieNode<T> nextNode = matcher.next(nextChar);
@@ -207,6 +211,11 @@ public class Trie<T>
 	private boolean isDelimiter(char nextChar)
 	{
 		return ArrayUtils.contains(DELIMETERS, nextChar);
+	}
+	
+	private boolean isInvalidPrefixChar(char nextChar)
+	{
+		return ArrayUtils.contains(INVALID_PREFIX_CHARS, nextChar);
 	}
 	
 	private class TrieMatcher {

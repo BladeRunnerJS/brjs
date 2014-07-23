@@ -243,6 +243,18 @@ public class TrieTest
 		 trie.add("o.1", test_object_1);
 	}
 	
+	@Test
+	public void ocurrancesPrefixedWithADorDontMatch() throws Exception
+	{
+		trie.add("test.object.1", test_object_1);
+		
+		StringReader reader = new StringReader("dont match .test.object.1");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(0, foundObjects.size());
+	}
+	
+	
 	/* TestObject so the Trie is using Objects to ensure the same object instance is returned, but with a toString() that returns a name to help debugging */
 	class TestObject {
 		String name;
