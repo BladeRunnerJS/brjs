@@ -21,7 +21,7 @@ public class TrieFactory {
 	private final MemoizedValue<Trie<AssetReference>> trie;
 	private final AssetContainer assetContainer;
 	
-	private static final Pattern ALIAS_MATCHER_PATTERN = Pattern.compile("[\"'][\\S ]+[\"']|<\\S+\\s");
+	private static final Pattern ALIAS_MATCHER_PATTERN = Pattern.compile("[\"'][\\S ]+[\"']|<\\S+[\\s/>]");
 	private static final Pattern QUOTED_SOURCE_MODULE_MATCHER_PATTERN = Pattern.compile("[\"']\\S+[\"']");
 	private static final Pattern SOURCE_MODULE_MATCHER_PATTERN = Pattern.compile(".*", Pattern.DOTALL);
 	

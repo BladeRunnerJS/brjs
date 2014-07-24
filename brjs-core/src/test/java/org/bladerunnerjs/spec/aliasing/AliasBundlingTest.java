@@ -147,6 +147,15 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsCommonJsClasses("appns.Class1");
 	}
 	
+	@Test
+	public void weBundleAClassIfItTheAliasReferenceIsInASelfClosingXmlTag() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
+			.and(aspect).indexPageHasContent("<the-alias/>");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.Class1");
+	}
+	
 	// Blade/Aspect AliasDefinitions
 	@Test
 	public void weAlsoBundleAClassIfTheAliasIsDefinedInABladeAliasDefinitionsXml() throws Exception {
