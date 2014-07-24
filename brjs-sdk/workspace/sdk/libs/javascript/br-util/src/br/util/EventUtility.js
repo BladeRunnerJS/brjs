@@ -9,6 +9,7 @@ var MapFactory = require('br/util/MapFactory');
 
 /**
  * @alias module:br/util/EventUtility
+ */
 function EventUtility() {
 }
 
