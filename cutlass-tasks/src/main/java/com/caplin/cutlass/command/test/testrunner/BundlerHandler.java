@@ -13,10 +13,12 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.StaticContentAccessor;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.ResponseContent;
+import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
 
 public class BundlerHandler
@@ -100,13 +102,17 @@ public class BundlerHandler
 
 	private ResponseContent handleBundleRequest(File bundleFile, String brjsRequestPath, UrlContentAccessor outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
 	{
-		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
-		if (bundlableNode == null)
-		{
-			throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundle file: " + bundleFile.getAbsolutePath());
+		try {
+			BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
+			
+			if(bundlableNode == null) {
+				throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundle file: " + bundleFile.getAbsolutePath());
+			}
+			
+			return BundleSetRequestHandler.handle(new JsTestDriverBundleSet(bundlableNode.getBundleSet()), brjsRequestPath, outputStream, version);
 		}
-		
-		return bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, version);
+		catch (ModelOperationException e) {
+			throw new ContentProcessingException(e);
+		}
 	}
-	
 }
