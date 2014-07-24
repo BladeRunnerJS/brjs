@@ -106,7 +106,7 @@ public class BundlerHandler
 			throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundle file: " + bundleFile.getAbsolutePath());
 		}
 		
-		return bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter(), version);
+		return bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, version);
 	}
 	
 }
