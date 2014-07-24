@@ -1,20 +1,21 @@
 package org.bladerunnerjs.utility.trie.node;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class OptimisedTrieLeafNode<T> extends AbstractOptimisedTrieNode<T>
 {
 	
 	private char character;
 	private T value;
-	private String prefixAndSuffixChars;
+	private Pattern matchPattern;
 	
-	public OptimisedTrieLeafNode(char character, T value, char primarySeperator, List<Character> seperators, String prefixAndSuffixChars)
+	public OptimisedTrieLeafNode(char character, T value, char primarySeperator, List<Character> seperators, Pattern matchPattern)
 	{
 		super(primarySeperator, seperators);
 		this.value = value;
 		this.character = character;
-		this.prefixAndSuffixChars = prefixAndSuffixChars;
+		this.matchPattern = matchPattern;
 	}
 
 	@Override
@@ -30,9 +31,9 @@ public class OptimisedTrieLeafNode<T> extends AbstractOptimisedTrieNode<T>
 	}
 
 	@Override
-	public String getPrefixAndSuffixChars()
+	public Pattern getMatchPattern()
 	{
-		return prefixAndSuffixChars;
+		return matchPattern;
 	}
 	
 }

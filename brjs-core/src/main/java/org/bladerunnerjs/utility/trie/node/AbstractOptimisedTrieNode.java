@@ -1,6 +1,7 @@
 package org.bladerunnerjs.utility.trie.node;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
@@ -41,7 +42,7 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
     }
     
 	@Override
-	public void setValue(T value, String prefixAndSuffixChars)
+	public void setValue(T value, Pattern matchPattern)
 	{
 		unsupportedOptimisedTrieMethod();
 	}
@@ -68,9 +69,9 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 	}
 	
 	@Override
-	public String getPrefixAndSuffixChars()
+	public Pattern getMatchPattern()
 	{
-		return "";
+		return null;
 	}
 	
 	private void unsupportedOptimisedTrieMethod() {
