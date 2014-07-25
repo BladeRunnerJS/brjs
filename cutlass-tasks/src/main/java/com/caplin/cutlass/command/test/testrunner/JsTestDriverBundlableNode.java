@@ -22,7 +22,6 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.RootAssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.TestAssetLocation;
-import org.bladerunnerjs.model.TestSourceAssetLocation;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
@@ -36,7 +35,6 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.utility.ObserverList;
 
 public class JsTestDriverBundlableNode implements BundlableNode {
@@ -193,7 +191,7 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
 		LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(requirePath);
 		
-		if((linkedAsset instanceof NamespacedJsSourceModule) && (linkedAsset.assetLocation() instanceof TestAssetLocation)) {
+		if((linkedAsset instanceof SourceModule) && (linkedAsset.assetLocation() instanceof TestAssetLocation)) {
 			linkedAsset = new JsTestDriverEmptyTestSourceModule((SourceModule) linkedAsset);
 		}
 		
