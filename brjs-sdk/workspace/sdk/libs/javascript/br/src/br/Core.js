@@ -24,7 +24,7 @@ topiarist.exportTo(exports);
 * @param {Class} subclass
 * @param {Class} superclass
 */
-// topiarist.extend(subclass, superclass)
+// topiarist.extend(subclass, superclass) - included by 'topiarist.exportTo(exports);' above
 
 /**
 * Delcares that a class has implemented an interface and throws an exception
@@ -74,7 +74,7 @@ exports.implement = function(implementor, theInterface) {
 * @param {Class} class
 * @param {Class} parent
 */
-// topiarist.inherit(class, parent)
+// topiarist.inherit(class, parent) - included by 'topiarist.exportTo(exports);' above
 
 /**
 * Provides mixin inheritance, sandboxing mixin methods that are copied onto the class.
@@ -87,7 +87,7 @@ exports.implement = function(implementor, theInterface) {
 * @param {Class} class
 * @param {Class} mixin
 */
-// topiarist.mixin(class, mixin)
+// topiarist.mixin(class, mixin) - included by 'topiarist.exportTo(exports);' above
 
 /**
 * Returns true if the instance is of a type which has been declared to be
@@ -101,7 +101,7 @@ exports.implement = function(implementor, theInterface) {
 * @param {Object} instance
 * @param {Class} parent
 */
-// topiarist.isA(instance, parent)
+// topiarist.isA(instance, parent) - included by 'topiarist.exportTo(exports);' above
 
 /**
 * Returns true if the class has been declared to be descended from the parent,
@@ -115,7 +115,7 @@ exports.implement = function(implementor, theInterface) {
 * @param {Class}
 * @param {Class} parent
 */
-// topiarist.classIsA(class, parent)
+// topiarist.classIsA(class, parent) - included by 'topiarist.exportTo(exports);' above
 
 /**
 * Returns true if the instance supports everything on the interface.
@@ -128,7 +128,7 @@ exports.implement = function(implementor, theInterface) {
 * @param {Class} instance
 * @param {Class} interfac}
 */
-// topiarist.fulfills(instance, interface)
+// topiarist.fulfills(instance, interface) - included by 'topiarist.exportTo(exports);' above
 
 /**
 * Returns true if instances of the class will be created supporting everything on the interface.
@@ -141,6 +141,6 @@ exports.implement = function(implementor, theInterface) {
 * @param {Object} instance
 * @param {Class} interface
 */
-// topiarist.classFulfills(instance, interface)
+// topiarist.classFulfills(instance, interface) - included by 'topiarist.exportTo(exports);' above
 
 exports.thirdparty = function(library){};

@@ -147,6 +147,15 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsCommonJsClasses("appns.Class1");
 	}
 	
+	@Test
+	public void weBundleAClassIfItTheAliasReferenceIsInASelfClosingXmlTag() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
+			.and(aspect).indexPageHasContent("<the-alias/>");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.Class1");
+	}
+	
 	// Blade/Aspect AliasDefinitions
 	@Test
 	public void weAlsoBundleAClassIfTheAliasIsDefinedInABladeAliasDefinitionsXml() throws Exception {
@@ -292,7 +301,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspect.assetLocation("src/appns/pkg1").aliasDefinitionsFile()).hasAlias("appns.alias1", "appns.pkg1.Class1")
 			.and(aspect.assetLocation("src/appns/pkg1/pkg2").aliasDefinitionsFile()).hasAlias("appns.alias2", "appns.pkg1.pkg2.Class2")
 			.and(aspect.assetLocation("src/appns/pkg1/pkg2/pkg3").aliasDefinitionsFile()).hasAlias("appns.alias3", "appns.pkg1.pkg2.pkg3.Class3")
-			.and(aspect).indexPageHasAliasReferences("appns.alias1 appns.alias2 appns.alias3");	
+			.and(aspect).indexPageHasAliasReferences("\"appns.alias1\" 'appns.alias2' \"appns.alias3\"");	
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.pkg1.Class1", "appns.pkg1.pkg2.Class2", "appns.pkg1.pkg2.pkg3.Class3");
 	}

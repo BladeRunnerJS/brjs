@@ -44,9 +44,9 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
 			.accepts("i18n/<language>.js").as(LANGUAGE_BUNDLE)
-			.and("i18n/<language>_<country>.js").as(LANGUAGE_AND_LOCATION_BUNDLE)
+				.and("i18n/<language>_<country>.js").as(LANGUAGE_AND_LOCATION_BUNDLE)
 			.where(LANGUAGE_PROPERTY_NAME).hasForm(Locale.LANGUAGE_CODE_FORMAT)
-			.and(COUNTRY_PROPERTY_NAME).hasForm(Locale.COUNTRY_CODE_FORMAT);
+				.and(COUNTRY_PROPERTY_NAME).hasForm(Locale.COUNTRY_CODE_FORMAT);
 		
 		contentPathParser = contentPathParserBuilder.build();
 	}

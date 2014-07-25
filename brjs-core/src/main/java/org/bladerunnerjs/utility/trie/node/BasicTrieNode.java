@@ -2,6 +2,7 @@ package org.bladerunnerjs.utility.trie.node;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public class BasicTrieNode<T> implements TrieNode<T>
@@ -12,6 +13,7 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	private int size = 0;
 	private List<Character> separators;
 	private char primarySeparator;
+	private Pattern matchPattern;
 	
 	public BasicTrieNode(char nodeChar, char primarySeperator, List<Character> seperators)
 	{
@@ -57,7 +59,13 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	
 	public void setValue(T value)
 	{
+		setValue(value, null);
+	}
+	
+	public void setValue(T value, Pattern matchPattern)
+	{
 		this.value = value;
+		this.matchPattern = matchPattern;
 	}
 	
 	public T getValue()
@@ -90,6 +98,12 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	public int size()
 	{
 		return size;
+	}
+
+	@Override
+	public Pattern getMatchPattern()
+	{
+		return matchPattern;
 	}
 	
 }

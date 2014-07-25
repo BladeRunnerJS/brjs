@@ -130,6 +130,7 @@ public class TestRunner {
 			try {
 				Thread.sleep(DEFAULT_SLEEP_TIME); // slight pause before we display message in case there is any browser output
 				logger.println("Server running on port " + config.getPortNumber() + ", " + Messages.SERVER_STOP_INSTRUCTION_MESSAGE);
+				logger.println("Connect a browser to the server by visiting http://localhost:"+config.getPortNumber()+"/capture");
 				logger.println("");
 				
 				while(System.in.available() == 0) {

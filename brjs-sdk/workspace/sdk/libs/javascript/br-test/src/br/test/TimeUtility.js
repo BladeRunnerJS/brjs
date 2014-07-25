@@ -3,8 +3,8 @@
 var Errors = require('br/Errors');
 
 /**
- * @private
  * Utility class containing static methods that can be useful for controlling time in tests.
+ * @private
  */
 var TimeUtility = {};
 
@@ -30,8 +30,8 @@ TimeUtility.fCapturedTimersSort = function(firstFunction, secondFunction) {
 };
 
 /**
- * @private 
  * Reset this TimeUtility to its original state. Useful for testing.
+ * @private
  */
 TimeUtility.reset = function() {
 	this.timeMode = this.NEXT_STEP_TIME_MODE;
@@ -42,7 +42,7 @@ TimeUtility.reset = function() {
 };
 
 /**
- * Overrides the default <code>setTimeout</code> and <code>setInterval</code> methods. This allows the storing of all 
+ * Overrides the default <code>setTimeout</code> and <code>setInterval</code> methods. This allows the storing of all
  *  functions passed in to those methods.
  */
 TimeUtility.captureTimerFunctions = function() {
@@ -62,7 +62,7 @@ TimeUtility.captureTimerFunctions = function() {
 };
 
 /**
- * @return {Array} A list of <code>argument</code> objects that were passed into <code>setTimeout</code> and 
+ * @return {Array} A list of <code>argument</code> objects that were passed into <code>setTimeout</code> and
  *  <code>setInterval</code>.
  */
 TimeUtility.getCapturedFunctions = function() {
@@ -77,7 +77,7 @@ TimeUtility.clearCapturedFunctions = function() {
 };
 
 /**
- * Execute all captured functions that are set to be triggered within the passed in millisecond time value. If no value 
+ * Execute all captured functions that are set to be triggered within the passed in millisecond time value. If no value
  *  is passed, this will execute all captured functions.
  */
 TimeUtility.executeCapturedFunctions = function(nMsToExecuteTo) {
@@ -99,7 +99,7 @@ TimeUtility.executeCapturedFunctions = function(nMsToExecuteTo) {
 };
 
 /**
- * Execute all captured functions if we are in NEXT_STEP_TIME_MODE. All functions will be cleared even if an error is 
+ * Execute all captured functions if we are in NEXT_STEP_TIME_MODE. All functions will be cleared even if an error is
  *  thrown, although not all functions will be executed. Returns false if we are not in NEXT_STEP_TIME_MODE
 
  */

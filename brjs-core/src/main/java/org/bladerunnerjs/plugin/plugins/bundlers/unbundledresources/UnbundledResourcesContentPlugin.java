@@ -36,8 +36,9 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-		contentPathParserBuilder.accepts("unbundled-resources/<file-path>").as(VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
-			.and("/unbundled-resources/<file-path>").as(UNBUNDLED_RESOURCES_REQUEST)
+		contentPathParserBuilder
+			.accepts("unbundled-resources/<file-path>").as(VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
+				.and("/unbundled-resources/<file-path>").as(UNBUNDLED_RESOURCES_REQUEST)
 			.where(FILE_PATH_REQUEST_FORM).hasForm(".*");
 
 		contentPathParser = contentPathParserBuilder.build();

@@ -1,5 +1,12 @@
 'use strict';
 
+/**
+ * @module br/util/RegExp
+ */
+
+/**
+ * @alias module:br/util/RegExp
+ */
 function RegExpUtil() {
 }
 

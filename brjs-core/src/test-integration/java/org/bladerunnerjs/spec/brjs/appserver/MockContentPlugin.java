@@ -28,8 +28,8 @@ public class MockContentPlugin extends AbstractContentPlugin
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
 				.accepts("mock-content-plugin/").as("request")
-				.and("mock-content-plugin/some/other/path/").as("long-request")
-				.and("/mock-content-plugin/unversioned/url").as("unversioned-request");
+					.and("mock-content-plugin/some/other/path/").as("long-request")
+					.and("/mock-content-plugin/unversioned/url").as("unversioned-request");
 			
 			contentPathParser = contentPathParserBuilder.build();
 			prodRequestPaths.add(contentPathParser.createRequest("request"));

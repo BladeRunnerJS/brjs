@@ -1,8 +1,15 @@
 'use strict';
 
+/**
+* @module br/util/EventUtility
+*/
+
 var Errors = require("br/Errors");
 var MapFactory = require('br/util/MapFactory');
 
+/**
+ * @alias module:br/util/EventUtility
+ */
 function EventUtility() {
 }
 
@@ -68,13 +75,13 @@ EventUtility.addEventListener = function(oTargetElem, sEvent, fEventListener, bD
 EventUtility.removeEventListener = function(nUniqueListenerId)
 {
 	EventUtility._initMap();
-	
+
 	EventUtility._registerUnloadListener();
 	var oEvent = EventUtility.m_mEvents[nUniqueListenerId];
 	if (!oEvent) {
 		return;
 	}
-	
+
 	if (oEvent.isDirect) {
 		oEvent.elem["on" + oEvent.event] = null;
 	} else if (oEvent.elem.removeEventListener) {
@@ -87,8 +94,8 @@ EventUtility.removeEventListener = function(nUniqueListenerId)
 };
 
 /**
- * Stops the propagation of an event. 
- * 
+ * Stops the propagation of an event.
+ *
  * This method should be used within an event listener to prevent bubbling of an
  * event up to other event listeners.
  *
@@ -108,7 +115,7 @@ EventUtility.stopPropagation = function(oEvent)
  *
  * @param {Event} oEvent Event passed to your event handler. Note that event handlers are not wrapped
  *				so you need to do something like <code>oEvent = oEvent || window.event;</code>
- *				
+ *
  * @type boolean
  * @returns Always returns false
  */
@@ -143,7 +150,7 @@ EventUtility._registerUnloadListener = function()
 };
 
 /**
- * Since event handlers are prone to cause memory leaks in IE, we unregister 
+ * Since event handlers are prone to cause memory leaks in IE, we unregister
  * them all when the page is unloaded.
  *
  * @private
@@ -151,7 +158,7 @@ EventUtility._registerUnloadListener = function()
 EventUtility._handlePageUnload = function()
 {
 	EventUtility._initMap();
-	
+
 	// remove all the event handler registered with addEventListener()
 	for (var nUniqueListenerId in EventUtility.m_mEvents) {
 		EventUtility.removeEventListener(nUniqueListenerId);

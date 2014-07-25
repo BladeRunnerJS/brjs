@@ -1,10 +1,13 @@
 'use strict';
 
 /**
- * @name br.util.StringUtility
  * This is a static class that never needs to be instantiated.
- * @constructor
- * 
+ * @module br/util/StringUtility
+ */
+
+/**
+ * @alias module:br/util/StringUtility
+ *
  * @class
  * Utility class that provides methods for string manipulation.
  */

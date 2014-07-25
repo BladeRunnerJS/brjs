@@ -20,7 +20,7 @@ public class UserCommandRunner {
 	
 	public class Messages {
 		public static final String OUTDATED_JAR_MESSAGE = "The app '%s' is either missing BRJS jar(s), contains BRJS jar(s) it shouldn't or the BRJS jar(s) are outdated."+
-				" You should delete all jars prefixed with '%s' in the WEB-INF/lib directory and copy in new versions from %s.";
+				" You should delete all jars prefixed with '%s' in the WEB-INF/lib directory and copy in all jars contained in %s.";
 	}
 	
 	public static int run(BRJS brjs, CommandList commandList, LogLevelAccessor logLevelAccessor, String args[]) throws CommandOperationException {

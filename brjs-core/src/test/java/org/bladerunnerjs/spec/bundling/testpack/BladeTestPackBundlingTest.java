@@ -16,6 +16,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	private Bladeset bladeset;
 	private Blade blade;
 	private TestPack bladeUTs, bladeATs;
+	private StringBuffer response = new StringBuffer();
 	
 	private JsLib bootsrapThirdparty, browserModules, appThirdparty,sdkJsLib;
 	
@@ -143,5 +144,16 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.BladeClass");
 		then(bladeUTs).bundledFilesEquals(
 				blade.assetLocation("src").file("appns/bs/b1/BladeClass.js"));
+	}
+	
+	@Test
+	public void encapsulatedStyleSourceModulesAreGlobalizedIfTheyAreUsedWithinANamespacedSourceClass() throws Exception {	
+		given(blade).hasCommonJsPackageStyle()
+			.and(blade).hasClass("appns/Class")
+			.and(bladeUTs).hasNamespacedJsPackageStyle()			
+			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.Class");
+		when(bladeUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(bladeUTs).bundledFilesEquals( blade.assetLocation("src").file("appns/Class.js") )
+			.and(response).containsText( "appns.Class = require('appns/Class');" );
 	}
 }

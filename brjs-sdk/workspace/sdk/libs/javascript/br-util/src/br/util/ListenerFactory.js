@@ -1,16 +1,21 @@
 'use strict';
 
 /**
- * Construct a new <code>ListenerFactory</code> that can create listeners for the given event, on the given interface.
- * 
+* Construct a new <code>ListenerFactory</code> that can create listeners for the given event, on the given interface.
+* @module br/util/ListenerFactory
+*/
+
+/**
+ *
+ * @alias module:br/util/ListenerFactory
  * @param {Function} interfaceFunc The listener interface that objects created with this factory will implement.
  * @param {String} eventName The particular event on the listener interface that will be proxied through.
- * 
+ *
  * @class
  * Utility class for creating listener objects that re-route incoming events to a method of your choice.
- * 
+ *
  * <p>This class is useful in the following scenarios:</p>
- * 
+ *
  * <ul>
  *   <li>Objects that are only interested in a single event, and don't want to implement the entire interface.</li>
  *   <li>Objects that need to implement the same interface multiple times so they can observe multiple objects
@@ -28,7 +33,7 @@ function ListenerFactory(interfaceFunc, eventName) {
 
 /**
  * Returns a listener that will forward received events through to the given method on the given object.
- * 
+ *
  * @param {Object} target The object that will be invoked when events are received.
  * @param {String} methodName The name of the method to invoke on the target object.
  * @type Object
