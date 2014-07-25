@@ -55,16 +55,14 @@ MapFactory.createMap = function() {
 MapFactory.removeItem = function(mapToRemoveFrom, keyToRemove) {
 	delete mapToRemoveFrom[keyToRemove];
 
-	if (browserMapsLeakMemory) {
-		if (mapToRemoveFrom.constructor.deleteCount++ >= REMOVAL_LIMIT) {
-			var newMap = MapFactory.createMap();
+	if (mapToRemoveFrom.constructor.deleteCount++ >= REMOVAL_LIMIT) {
+		var newMap = MapFactory.createMap();
 
-			for (var item in mapToRemoveFrom) {
-				newMap[item] = mapToRemoveFrom[item];
-			}
-
-			mapToRemoveFrom = newMap;
+		for (var item in mapToRemoveFrom) {
+			newMap[item] = mapToRemoveFrom[item];
 		}
+
+		mapToRemoveFrom = newMap;
 	}
 
 	return mapToRemoveFrom;
