@@ -36,7 +36,7 @@ public class BundleSetBuilder {
 	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Map<SourceModule, Set<SourceModule>> orderDependentSourceModuleDependencies = new LinkedHashMap<>();
-	private final Set<AliasDefinition> activeAliases = new LinkedHashSet<>();
+	private final Map<String,AliasDefinition> activeAliases = new LinkedHashMap<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
 	private final BundlableNode bundlableNode;
@@ -64,11 +64,11 @@ public class BundleSetBuilder {
 		}
 		
 		try {
-			activeAliasList.addAll(activeAliases);
+			activeAliasList.addAll(activeAliases.values());
 			resourceLocationList.addAll(assetLocations);
 			orderAssetLocations(bundlableNode, resourceLocationList);
 			
-			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases)) {
+			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases.values())) {
 				addSourceModule((SourceModule)bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
 			}
 		}
@@ -89,11 +89,11 @@ public class BundleSetBuilder {
 	
 	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
 		if (sourceModules.add(sourceModule)) {
-			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
+			addAliases( getAliases(sourceModule.getAliasNames()) );
 			addLinkedAsset(sourceModule);
 		}
 	}
-	
+
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		
 		if(linkedAssets.add(linkedAsset)) {
@@ -103,7 +103,7 @@ public class BundleSetBuilder {
 				moduleDependencies.addAll( ((SourceModule) linkedAsset).getOrderDependentSourceModules(bundlableNode) );
 			}
 			
-			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
+			addAliases( getAliases(linkedAsset.getAliasNames()) );
 			
 			if(moduleDependencies.isEmpty()) {
 				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
@@ -161,7 +161,7 @@ public class BundleSetBuilder {
 				
 				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
 				if (alias != null)
-				{
+				{					
 					SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
 					addSourceModule(sourceModule);
 					
@@ -258,5 +258,15 @@ public class BundleSetBuilder {
 			addUnscopedAssetLocation(assetLocation);					
 		}
 	}
+	
+	private void addAliases(List<AliasDefinition> aliases)
+	{
+		for (AliasDefinition alias : aliases) {
+			if (!activeAliases.containsKey(alias.getName())) {
+				activeAliases.put(alias.getName(), alias);
+			}
+		}
+	}
+	
 	
 }

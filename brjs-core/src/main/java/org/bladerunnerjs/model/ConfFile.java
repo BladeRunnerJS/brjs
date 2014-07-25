@@ -18,13 +18,20 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	private InfoFileModifiedChecker fileModifiedChecker;
 	private boolean shouldAutoWriteOnSet = true;
 	private boolean hasUnwrittenChanges = false;
+
+	private String defaultFileCharacterEncoding;
 	
 	public ConfFile(BRJSNode node, Class<CF> confClass, File confFile) throws ConfigException {
+		this(node, confClass, confFile, node.root().bladerunnerConf().getDefaultFileCharacterEncoding());
+	}
+	
+	public ConfFile(BRJSNode node, Class<CF> confClass, File confFile, String defaultFileCharacterEncoding) throws ConfigException {
 		this.node = node;
 		this.confClass = confClass;
 		this.confFile = confFile;
+		this.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
 		fileModifiedChecker = new InfoFileModifiedChecker(node.root().getFileInfo(confFile));
-		this.conf = ConfFactory.createConfFile(node, confClass, confFile);
+		this.conf = ConfFactory.createConfFile(node, confClass, confFile, defaultFileCharacterEncoding);
 	}
 	
 	public void write() throws ConfigException {
@@ -38,7 +45,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	
 	protected void reloadConfIfChanged() throws ConfigException {
 		if (fileModifiedChecker.hasChangedSinceLastCheck() && !hasUnwrittenChanges) {
-			conf = ConfFactory.createConfFile(node, confClass, confFile);
+			conf = ConfFactory.createConfFile(node, confClass, confFile, defaultFileCharacterEncoding);
 		}
 	}
 	

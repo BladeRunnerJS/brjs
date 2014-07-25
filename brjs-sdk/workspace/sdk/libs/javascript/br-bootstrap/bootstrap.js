@@ -1,6 +1,7 @@
 (function(window) {
 	"use strict";
 
+	/** @private */
 	window.mergePackageBlock = function(context, packageBlock) {
 		for (var packageName in packageBlock) {
 			if(!context[packageName]) {
@@ -12,6 +13,7 @@
 		}
 	}
 
+	/** @private */
 	window.requireAll = function(requirePaths) {
 		for (var i = 0; i < requirePaths.length; i++) {
 			var requirePath = requirePaths[i];
@@ -20,8 +22,6 @@
 			globaliseRequirePath(requirePath, namespacePath);
 		}
 	}
-
-
 
 	/* private stuff */
 

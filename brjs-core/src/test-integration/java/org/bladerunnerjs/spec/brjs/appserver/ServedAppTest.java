@@ -51,7 +51,7 @@ public class ServedAppTest extends SpecTest
 			workbench = blade.workbench();
 			appJars = brjs.appJars();
 			appJars.create();
-			sdkLibsDir = brjs.sdkLibsDir();
+			sdkLibsDir = brjs.sdkJsLibsDir();
 	}
 	
 	@After
@@ -122,7 +122,7 @@ public class ServedAppTest extends SpecTest
 	public void contentPluginsCanHandleRequestsWithinWorkbenches() throws Exception {
 		given(app).hasBeenPopulated()
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/workbench/bs/b1/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/bs/b1/workbench/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test
@@ -172,14 +172,14 @@ public class ServedAppTest extends SpecTest
 	}
 	
 	@Test
-	public void userAppsTakePriorityOverSystemApps() throws Exception
+	public void systemAppsTakePriorityOverUserApps() throws Exception
 	{
 		given(app).hasBeenPopulated()
 			.and(systemApp).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "User App")
 			.and(systemAspect).containsFileWithContents("index.html", "System App")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "User App");
+		then(appServer).requestForUrlReturns("/app/en/", "System App");
 	}
 	
 	@Test
@@ -224,6 +224,15 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated()
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/static/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName());
+	}
+	
+	@Test
+	public void unbundledResourcesCanBeUnversioned() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("unbundled-resources/file.txt", "unbundled resources file content")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/unbundled-resources/file.txt", "unbundled resources file content");
 	}
 }

@@ -3,6 +3,7 @@ package org.bladerunnerjs.yaml;
 import javax.validation.constraints.NotNull;
 
 import org.apache.bval.constraints.NotEmpty;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.plugin.Locale;
@@ -22,7 +23,7 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	public String localeCookieName;
 	
 	@Override
-	public void initialize() {
+	public void initialize(BRJSNode node) {
 		requirePrefix = getDefault(requirePrefix, "appns");
 		locales = getDefault(locales, "en");
 		localeCookieName = getDefault(localeCookieName, "BRJS.LOCALE");

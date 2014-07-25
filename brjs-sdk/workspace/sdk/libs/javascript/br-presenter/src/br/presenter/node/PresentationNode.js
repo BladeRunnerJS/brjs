@@ -1,24 +1,24 @@
 /**
  * Constructs a new instance of <code>PresentationNode</code>.
- * 
+ *
  * @class
  * Base class of all complex objects (nodes) within a presentation model.
- * 
+ *
  * <p>A {@link br.presenter.PresentationModel} is a tree of <code>PresentationNode</code>
  * instances, with instances of {@link br.presenter.property.Property} and <code>Function</code>
  * forming the leafs of the tree. Objects that do not extend <code>PresentationNode</code>
  * are not considered to be part of the presentation model, and are not accessible within the
  * view.</p>
- * <p> When a {@link br.presenter.PresentationModel} is created the <code>_$setPath</code> method is called  
+ * <p> When a {@link br.presenter.PresentationModel} is created the <code>_$setPath</code> method is called
  * which throws an exception if the model does not adhere to a tree structure. It also creates a "path" label
  * on each node which identifies the node in standard object notation from the root node.
- * </p> 
+ * </p>
  * <p> The structure is not strictly a tree because nodes are allowed to hold references back up to their
  * direct ancestors. When any of the (recursive) search functions that find descendant nodes are called these
- *  "back links" are ignored, preventing infinite recursion. 
+ *  "back links" are ignored, preventing infinite recursion.
  * </p>
- * 
- * 
+ *
+ *
  * @constructor
  */
 br.presenter.node.PresentationNode = function()
@@ -27,15 +27,15 @@ br.presenter.node.PresentationNode = function()
 
 /**
  * Returns all nested properties matching the search criteria reachable from this node.
- * 
+ *
  * <p>Care is taken not to search up the tree in cyclic presentation models (where
  * some of the presentation nodes have back references to presentation nodes higher
  * up in the tree).</p>
- * 
+ *
  * @param {String} sPropertyName The name of properties to match.
  * @param {Object} vValue The value of properties to match.
  * @type br.presenter.property.Properties
- * 
+ *
  * @see #nodes
  */
 br.presenter.node.PresentationNode.prototype.properties = function(sPropertyName, vValue)
@@ -45,11 +45,11 @@ br.presenter.node.PresentationNode.prototype.properties = function(sPropertyName
 	pNodes.push(this);
 
 	var pProperties = [];
-	
+
 	for(var i = 0, l = pNodes.length; i < l; ++i)
 	{
 		var oNode = pNodes[i];
-		
+
 		for(var sKey in oNode)
 		{
 			var vItem = oNode[sKey];
@@ -57,7 +57,7 @@ br.presenter.node.PresentationNode.prototype.properties = function(sPropertyName
 				if(vItem instanceof br.presenter.property.Property)
 				{
 					var oProperty = vItem;
-					
+
 					if((!sPropertyName || (sKey == sPropertyName)) && (!vValue || (oProperty.getValue() == vValue)))
 					{
 						pProperties.push(oProperty);
@@ -68,21 +68,21 @@ br.presenter.node.PresentationNode.prototype.properties = function(sPropertyName
 			}
 		}
 	}
-	
+
 	return new br.presenter.property.Properties(pProperties);
 };
 
 /**
  * Returns all nested nodes matching the search criteria reachable from this node.
- * 
+ *
  * <p>Care is taken not to search up the tree in cyclic presentation models (where
  * some of the presentation nodes have back references to presentation nodes higher
  * up in the tree).</p>
- * 
+ *
  * @param {String} sNodeName The name of nodes to match.
  * @param {Object} vProperties Only nodes having this array or map of properties will be matched.
  * @type br.presenter.node.Nodes
- * 
+ *
  * @see #properties
  */
 br.presenter.node.PresentationNode.prototype.nodes = function(sNodeName, vProperties)
@@ -96,10 +96,10 @@ br.presenter.node.PresentationNode.prototype.nodes = function(sNodeName, vProper
 
 /**
  * Returns the path that would be required to bind this node from the view.
- * 
+ *
  * <p>This method is used internally, but might also be useful in allowing the dynamic
  * construction of views for arbitrary presentation models.</p>
- * 
+ *
  * @type String
  */
 br.presenter.node.PresentationNode.prototype.getPath = function()
@@ -131,11 +131,11 @@ br.presenter.node.PresentationNode.prototype.removeChildListeners = function()
 br.presenter.node.PresentationNode.prototype._convertToMap = function(vProperties)
 {
 	var mProperties;
-	
+
 	if(vProperties instanceof Array)
 	{
 		mProperties = {};
-		
+
 		for(var i = 0, l = vProperties.length; i < l; ++i)
 		{
 			mProperties[vProperties[i]] = "*";
@@ -145,7 +145,7 @@ br.presenter.node.PresentationNode.prototype._convertToMap = function(vPropertie
 	{
 		mProperties = vProperties || {};
 	}
-	
+
 	return mProperties;
 };
 
@@ -153,21 +153,20 @@ br.presenter.node.PresentationNode.prototype._convertToMap = function(vPropertie
 
 /**
  * @private
- * @param {String} sPath
  */
 br.presenter.node.PresentationNode.prototype._$setPath = function(sPath, oPresenterComponent)
 {
 	this.m_sPath = sPath;
-	
+
 	for(var sChildToBeSet in this)
 	{
 		var oChildToBeSet = this[sChildToBeSet];
-		
+
 		if(this._isPresenterChild(sChildToBeSet, oChildToBeSet) )
 		{
 			var sCurrentPath = oChildToBeSet.getPath();
 			var sChildPath = sPath + '.' + sChildToBeSet;
-			
+
 			if(sCurrentPath === undefined)
 			{
 				oChildToBeSet._$setPath(sChildPath, oPresenterComponent);
@@ -178,7 +177,7 @@ br.presenter.node.PresentationNode.prototype._$setPath = function(sPath, oPresen
 			}
 		}
 	}
-	
+
 	this.__oPresenterComponent = oPresenterComponent;
 };
 
@@ -192,7 +191,7 @@ br.presenter.node.PresentationNode.prototype._checkAncestor = function(sOtherPat
 	if(sOtherPath === ""){ // the toplevel - PresentationModel
 		return;
 	}
-	
+
 	if(sChildPath.indexOf(sOtherPath) != 0){
 		var msg = "OtherPath: '" + sOtherPath + "  'ChildPath:'" + sChildPath + "' are both references to the same instance in PresentationNode.";
 		throw new br.Errors.IllegalStateError(msg);
@@ -206,7 +205,6 @@ br.presenter.node.PresentationNode.prototype._isPresenterChild = function(sChild
 
 /**
  * @private
- * Sets the path on all properties to undefined.
  */
 br.presenter.node.PresentationNode.prototype._$clearPropertiesPath = function()
 {
@@ -218,7 +216,6 @@ br.presenter.node.PresentationNode.prototype._$clearPropertiesPath = function()
 
 /**
  * @private
- * Sets the path on all properties and on this <code>PresentationNode</code> to undefined.
  */
 br.presenter.node.PresentationNode.prototype._$clearNodePaths = function()
 {
@@ -240,9 +237,6 @@ br.presenter.node.PresentationNode.prototype._$clearNodePaths = function()
 
 /**
  * @private
- * @param {String} sNodeName
- * @param {Object} mProperties
- * @param {Array} pNodes
  */
 br.presenter.node.PresentationNode.prototype._getNodes = function(sNodeName, mProperties, pNodes)
 {
@@ -252,22 +246,22 @@ br.presenter.node.PresentationNode.prototype._getNodes = function(sNodeName, mPr
 		if(!this._isPresenterChild(sKey, vItem)){
 			continue;
 		}
-		
+
 		if(vItem instanceof br.presenter.node.PresentationNode){
 
 			if(this._isUpwardReference(this, vItem)){
 				continue;
 			}
-			
+
 			var oPresentationNode = vItem;
 			if(this._containsNode(pNodes, oPresentationNode)){
 				continue;
 			}
-				
+
 			if(this._nodeMatchesQuery(oPresentationNode, sKey, sNodeName, mProperties)){
 				pNodes.push(oPresentationNode);
 			}
-				
+
 			oPresentationNode._getNodes(sNodeName, mProperties, pNodes);
 		}
 	}
@@ -304,11 +298,6 @@ br.presenter.node.PresentationNode.prototype._containsNode = function(pNodes, oN
 
 /**
  * @private
- * @param {br.presenter.node.PresentationNode} oPresentationNode
- * @param {String} sActualNodeName
- * @param {String} sNodeName
- * @param {Object} mProperties
- * @type boolean
  */
 br.presenter.node.PresentationNode.prototype._nodeMatchesQuery = function(oPresentationNode, sActualNodeName, sNodeName, mProperties)
 {
@@ -316,12 +305,12 @@ br.presenter.node.PresentationNode.prototype._nodeMatchesQuery = function(oPrese
 	{
 		return false;
 	}
-	
+
 	for(var sProperty in mProperties)
 	{
 		var sPropertyValue = mProperties[sProperty];
 		var oProperty = oPresentationNode[sProperty];
-		
+
 		if(!(oProperty instanceof br.presenter.property.Property))
 		{
 			return false;
@@ -331,7 +320,6 @@ br.presenter.node.PresentationNode.prototype._nodeMatchesQuery = function(oPrese
 			return false;
 		}
 	}
-	
+
 	return true;
 };
-

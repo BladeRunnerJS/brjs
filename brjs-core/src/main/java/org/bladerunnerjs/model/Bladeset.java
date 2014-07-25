@@ -30,7 +30,7 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	@Override
 	public File[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {dir(), app().libsDir(), app().libsDir(), root().sdkLibsDir().dir(), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
+			scopeFiles = new File[] {dir(), app().libsDir(), app().libsDir(), root().sdkJsLibsDir().dir(), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
 		}
 		
 		return scopeFiles;

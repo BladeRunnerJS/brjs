@@ -1,13 +1,15 @@
-br.Core.thirdparty('jsunitextensions');
-br.Core.thirdparty('mock4js');
+require('jsunitextensions');
+require('mock4js');
 
-ObservableTest = TestCase("ObservableTest");
+var Observable = require('br/util/Observable');
+
+var ObservableTest = TestCase("ObservableTest");
 
 ObservableTest.prototype.setUp = function()
 {
 	Mock4JS.addMockSupport(window);
 	
-	this.m_oObservable = new br.util.Observable();
+	this.m_oObservable = new Observable();
 	this.m_oObserver1 = mock(SimpleObserver);
 	this.m_oObserver2 = mock(SimpleObserver);
 };

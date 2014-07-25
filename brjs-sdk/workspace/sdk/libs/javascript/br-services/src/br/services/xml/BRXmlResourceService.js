@@ -1,3 +1,9 @@
+"use strict";
+
+/**
+* @module br/services/xml/BRXmlResourceService
+*/
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var XmlResourceService = require('br/services/XmlResourceService');
@@ -6,20 +12,16 @@ var File = require('br/core/File');
 var i18n = require('br/I18n');
 
 /**
- * @name br.services.xml.BRXmlResourceService
- * @constructor
- * @class This class provides access to XML documents loaded via the XML
- *        bundler.
- *
- * @param {String}
- *          sUrl The url to load to retrieve the XML resource.
- *
- * @implements br.services.XmlResourceService
- */
-function BRXmlResourceService(sUrl) {
+* This class provides access to XML documents loaded via the XML bundler.
+* @alias module:br/services/xml/BRXmlResourceService
+* @class
+* @param {String} sUrl The url to load to retrieve the XML resource.
+* @implements module:br/services/XmlResourceService
+*/
+function BRXmlResourceService(url) {
 	var ServiceRegistry = require("br/ServiceRegistry");
 	/** @private */
-	this.url = sUrl || ServiceRegistry.getService('br.bundle-path-service').getBundlePath("/xml/bundle.xml");
+	this.url = url || ServiceRegistry.getService('br.app-meta-service').getVersionedBundlePath("xml/bundle.xml");
 
 	/** @private */
 	this.element = XmlParser.parse("<div></div>");

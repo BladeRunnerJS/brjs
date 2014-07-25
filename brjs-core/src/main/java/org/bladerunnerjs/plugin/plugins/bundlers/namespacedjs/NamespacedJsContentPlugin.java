@@ -55,7 +55,12 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		try
 		{
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("namespaced-js/bundle.js").as(BUNDLE_REQUEST).and("namespaced-js/module/<module>.js").as(SINGLE_MODULE_REQUEST).and("namespaced-js/package-definitions.js").as(PACKAGE_DEFINITIONS_REQUEST).and("namespaced-js/globalize-extra-classes.js").as(GLOBALIZE_EXTRA_CLASSES_REQUEST).where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			contentPathParserBuilder
+				.accepts("namespaced-js/bundle.js").as(BUNDLE_REQUEST)
+					.and("namespaced-js/module/<module>.js").as(SINGLE_MODULE_REQUEST)
+					.and("namespaced-js/package-definitions.js").as(PACKAGE_DEFINITIONS_REQUEST)
+					.and("namespaced-js/globalize-extra-classes.js").as(GLOBALIZE_EXTRA_CLASSES_REQUEST)
+				.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 
 			contentPathParser = contentPathParserBuilder.build();
 			prodRequestPaths.add(contentPathParser.createRequest(BUNDLE_REQUEST));

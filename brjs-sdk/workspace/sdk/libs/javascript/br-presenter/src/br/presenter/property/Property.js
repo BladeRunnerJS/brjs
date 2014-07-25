@@ -66,11 +66,6 @@ br.presenter.property.Property.prototype.getValue = function()
 
 /**
  * @private
- * Sets the internal value for this property and notifies listeners of the
- * change.
- *
- * @param vValue The new value for this property.
- * @type br.presenter.property.Property
  */
 br.presenter.property.Property.prototype._$setInternalValue = function(vValue)
 {
@@ -265,7 +260,6 @@ br.presenter.property.Property.prototype._$setPath = function(sPath)
 
 /**
  * @private
- * @type br.util.Observable
  */
 br.presenter.property.Property.prototype._$getObservable = function()
 {
@@ -274,13 +268,6 @@ br.presenter.property.Property.prototype._$getObservable = function()
 
 /**
  * @private
- * Return true if the array pValues contains a {@link br.presenter.node.PresentationNode}.
- * This is used to reject the instantiation of a Property object with an array
- * of PresentationNodes, because the correct way to have a collection of them
- * is to use {@link br.presenter.node.NodeList}.
- *
- * @param {Array} pValues Array of values to become part of the property.
- * @type boolean
  */
 br.presenter.property.Property.prototype._containsPresentationNode = function(pValues)
 {

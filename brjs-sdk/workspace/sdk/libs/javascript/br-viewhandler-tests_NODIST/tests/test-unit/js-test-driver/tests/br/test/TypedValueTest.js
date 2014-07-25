@@ -1,10 +1,12 @@
 TypedValueTest = TestCase("TypedValueTest");
 
 require('br/test/ViewFixture');
+var Errors = require('br/Errors');
+var ViewFixture = require('br/test/ViewFixture');
 
 TypedValueTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new br.test.ViewFixture("view.*");
+	this.m_oViewFixture = new ViewFixture("view.*");
 	this.m_oViewFixture.setViewElement(this.getElement());
 };
 
@@ -57,10 +59,10 @@ TypedValueTest.prototype.test_cannotGetTypedValue = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doThen("view.(input#partial-text).typedValue", "some t");
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doThen("view.(textarea#textArea).typedValue", "Hello, ");
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };
 
 TypedValueTest.prototype.test_usingTypedValueOnNonInputElementsThrowsException = function()
@@ -68,10 +70,10 @@ TypedValueTest.prototype.test_usingTypedValueOnNonInputElementsThrowsException =
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(form).typedValue", "type");
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(.no-value).typedValue", "text");
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };
 
 TypedValueTest.prototype.test_canTypeEnterIntoATextBox = function()

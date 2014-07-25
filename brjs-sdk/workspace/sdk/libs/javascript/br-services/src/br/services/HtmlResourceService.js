@@ -1,12 +1,15 @@
 var Errors = require('br/Errors');
 
 /**
- * @name br.services.HtmlResourceService
- * @constructor
- * @class
- * @interface
- * A service that provides access to HTML templates.
- */
+* @module br/services/HtmlResourceService
+*/
+
+/**
+* A service that provides access to HTML templates.
+* @class
+* @interface
+* @alias module:br/services/HtmlResourceService
+*/
 function HtmlResourceService() {};
 
 /**

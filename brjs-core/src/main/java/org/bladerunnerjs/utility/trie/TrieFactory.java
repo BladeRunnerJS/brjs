@@ -1,6 +1,7 @@
 package org.bladerunnerjs.utility.trie;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
@@ -20,6 +21,10 @@ public class TrieFactory {
 	private final MemoizedValue<Trie<AssetReference>> trie;
 	private final AssetContainer assetContainer;
 	
+	private static final Pattern ALIAS_MATCHER_PATTERN = Pattern.compile("[\"'][\\S ]+[\"']|<\\S+[\\s/>]");
+	private static final Pattern QUOTED_SOURCE_MODULE_MATCHER_PATTERN = Pattern.compile("[\"']\\S+[\"']");
+	private static final Pattern SOURCE_MODULE_MATCHER_PATTERN = Pattern.compile(".*", Pattern.DOTALL);
+	
 	public static TrieFactory getFactoryForAssetContainer(AssetContainer assetContainer) {
 		NodeProperties nodeProperties = assetContainer.nodeProperties("TrieFactory");
 		
@@ -32,7 +37,7 @@ public class TrieFactory {
 	
 	private TrieFactory(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
-		trie = new MemoizedValue<>("TrieFactory.trie", assetContainer);
+		trie = new MemoizedValue<>(assetContainer.dir()+" - TrieFactory.trie", assetContainer);
 	}
 	
 	public Trie<AssetReference> createTrie() throws ModelOperationException {
@@ -47,7 +52,7 @@ public class TrieFactory {
 							BundlableNode bundlableNode = (BundlableNode) assetContainer;
 							
 							for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
-								addToTrie(trie, aliasOverride.getName(), new AliasOverrideReference(aliasOverride));
+								addToTrie(trie, aliasOverride.getName(), new AliasOverrideReference(aliasOverride), ALIAS_MATCHER_PATTERN);
 							}
 						}
 						
@@ -55,19 +60,19 @@ public class TrieFactory {
 							List<String> requirePaths = asset.getRequirePaths();
 							
 							for(String requirePath : requirePaths) {
-								addToTrie(trie, requirePath, new LinkedAssetReference(asset));
-/*
- * TODO: investigate why removing this causes CT dependency issues 
- * (see comment in AbstractOptimisedNode and BasicTrieNode too)
- */
-								addToTrie(trie, requirePath.replace('/', '.'), new LinkedAssetReference(asset));
+								if (requirePath.contains("/")) {
+									addToTrie(trie, requirePath, new LinkedAssetReference(asset), SOURCE_MODULE_MATCHER_PATTERN);
+								} else {
+									// the asset is one that can only be referred to via a string
+									addToTrie(trie, requirePath, new LinkedAssetReference(asset), QUOTED_SOURCE_MODULE_MATCHER_PATTERN);									
+								}
 							}
 						}
 						
 						for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 							for(AliasDefinition aliasDefintion : assetLocation.aliasDefinitionsFile().aliases()) {
 								String aliasName = aliasDefintion.getName();
-								addToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion));
+								addToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion), ALIAS_MATCHER_PATTERN);
 							}
 						}
 					}
@@ -84,11 +89,11 @@ public class TrieFactory {
 		});
 	}
 	
-	private void addToTrie(Trie<AssetReference> trie, String key, AssetReference value) throws EmptyTrieKeyException {
+	private void addToTrie(Trie<AssetReference> trie, String key, AssetReference value, Pattern matchPattern) throws EmptyTrieKeyException {
 		if (!trie.containsKey(key)) {
 			try
 			{
-				trie.add(key, value);
+				trie.add(key, value, matchPattern);
 			}
 			catch (TrieKeyAlreadyExistsException | TrieLockedException e)
 			{

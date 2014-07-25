@@ -53,7 +53,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	@Override
 	public String getCommandDescription()
 	{
-		return "Starts the embedded application server and database.";
+		return "Starts the embedded application server.";
 	}
 	
 	
@@ -102,7 +102,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 		
 		return 0;
 	}
-	
+
 	private ApplicationServer getApplicationServer(JSAPResult parsedArgs) throws NumberFormatException, ConfigException
 	{
 		if(parsedArgs.contains("port"))

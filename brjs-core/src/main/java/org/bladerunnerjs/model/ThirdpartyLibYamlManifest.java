@@ -14,11 +14,12 @@ public class ThirdpartyLibYamlManifest extends AbstractYamlConfFile
 	public String exports;
 	
 	@Override
-	public void initialize() {
+	public void initialize(BRJSNode node) {
 		depends = getDefault(depends, "");
 		js = getDefault(js, "");
 		css = getDefault(css, "");
-		exports = getDefault(exports, "{}");
+		String defaultExports = "window."+node.dir().getName().replaceAll("\\.-_+%","");
+		exports = getDefault(exports, defaultExports);
 	}
 	
 	@Override

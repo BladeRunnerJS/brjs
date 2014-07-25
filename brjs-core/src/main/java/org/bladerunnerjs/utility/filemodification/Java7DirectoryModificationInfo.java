@@ -103,33 +103,35 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 		
 		for(WatchEvent<?> watchEvent : watchEvents) {
 			Path path = (Path) watchEvent.context();
-			File contextFile = new File(dir, path.toString());
-			String directoryPath = relativeDirPath + "/" + path;
-			
-			if(watchEvent.kind().equals(ENTRY_CREATE)) {
-				logger.debug(Messages.NEW_DIRECTORY_DETECTED_MESSAGE, directoryPath);
-			}
-			else if(watchEvent.kind().equals(ENTRY_DELETE)) {
-				logger.debug(Messages.DIRECTORY_DELETED_DETECTED_MESSAGE, directoryPath);
-			}
-			else if(watchEvent.kind().equals(ENTRY_MODIFY)) {
-				logger.debug(Messages.DIRECTORY_MODIFICATION_DETECTED_MESSAGE, directoryPath);
-			}
-			
-			if(!contextFile.isHidden()) {
-				filesUpdated = true;
-				
-				ProxyFileModificationInfo proxyFileModificationInfo = fileModificationService.getModificationInfo(contextFile);
-				
-				if(watchEvent.kind().equals(ENTRY_CREATE)) {
-					fileModificationService.watchDirectory(contextFile, this, lastModified);
-				}
-				else if(watchEvent.kind().equals(ENTRY_MODIFY)) {
-					proxyFileModificationInfo.setLastModified(lastModified);
-				}
-				else if(watchEvent.kind().equals(ENTRY_DELETE)) {
-					proxyFileModificationInfo.delete();
-				}
+			if (path != null) { // guard against NPE - https://github.com/BladeRunnerJS/brjs/issues/800
+				File contextFile = new File(dir, path.toString());
+    			String directoryPath = relativeDirPath + "/" + path;
+    			
+    			if(watchEvent.kind().equals(ENTRY_CREATE)) {
+    				logger.debug(Messages.NEW_DIRECTORY_DETECTED_MESSAGE, directoryPath);
+    			}
+    			else if(watchEvent.kind().equals(ENTRY_DELETE)) {
+    				logger.debug(Messages.DIRECTORY_DELETED_DETECTED_MESSAGE, directoryPath);
+    			}
+    			else if(watchEvent.kind().equals(ENTRY_MODIFY)) {
+    				logger.debug(Messages.DIRECTORY_MODIFICATION_DETECTED_MESSAGE, directoryPath);
+    			}
+    			
+    			if(!contextFile.isHidden()) {
+    				filesUpdated = true;
+    				
+    				ProxyFileModificationInfo proxyFileModificationInfo = fileModificationService.getModificationInfo(contextFile);
+    				
+    				if(watchEvent.kind().equals(ENTRY_CREATE)) {
+    					fileModificationService.watchDirectory(contextFile, this, lastModified);
+    				}
+    				else if(watchEvent.kind().equals(ENTRY_MODIFY)) {
+    					proxyFileModificationInfo.setLastModified(lastModified);
+    				}
+    				else if(watchEvent.kind().equals(ENTRY_DELETE)) {
+    					proxyFileModificationInfo.delete();
+    				}
+    			}
 			}
 		}
 		

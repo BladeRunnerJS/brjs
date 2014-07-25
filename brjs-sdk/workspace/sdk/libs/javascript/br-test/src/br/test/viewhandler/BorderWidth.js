@@ -1,6 +1,13 @@
-br.Core.thirdparty("jquery");
+'use strict';
+
+require('jquery');
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
+ * @name br.test.viewhandler.BorderWidth
  * @class
  * <code>BorderWidth ViewFixtureHandler</code> can be used to test the border width of an element.
  * Example usage:
@@ -11,18 +18,16 @@ br.Core.thirdparty("jquery");
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.BorderWidth = function()
-{
+function BorderWidth() {
+}
+br.implement(BorderWidth, ViewFixtureHandler);
+
+BorderWidth.prototype.set = function(eElement) {
+	throw new Errors.InvalidTestError("BorderWidth can't be used in a Given or When clause.");
 };
 
-br.Core.implement(br.test.viewhandler.BorderWidth, br.test.viewhandler.ViewFixtureHandler);
-
-br.test.viewhandler.BorderWidth.prototype.set = function(eElement)
-{
-	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "BorderWidth can't be used in a Given or When clause.");
-};
-
-br.test.viewhandler.BorderWidth.prototype.get = function(eElement)
-{ 
+BorderWidth.prototype.get = function(eElement) { 
 	return parseInt(jQuery(eElement)[0].style.borderWidth);
 };
+
+module.exports = BorderWidth;

@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.StringReader;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bladerunnerjs.utility.trie.Trie;
 import org.bladerunnerjs.utility.trie.TrieLockedException;
@@ -242,6 +243,20 @@ public class TrieTest
 		 trie.optimize();
 		 trie.add("o.1", test_object_1);
 	}
+	
+	@Test
+	public void entriesCanBeSetToBeginAndEndWithASpecifiedCharacter() throws Exception
+	{
+		trie.add("test.object.1", test_object_1, Pattern.compile("[\"']\\S+[\"']"));
+		trie.add("test.object.2", test_object_2, Pattern.compile("[\"']\\S+[\"']"));
+		
+		StringReader reader = new StringReader("the test.object.1 key wont match, but 'test.object.2' will");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(1, foundObjects.size());
+		assertEquals(test_object_2, foundObjects.get(0));
+	}
+	
 	
 	/* TestObject so the Trie is using Objects to ensure the same object instance is returned, but with a toString() that returns a name to help debugging */
 	class TestObject {

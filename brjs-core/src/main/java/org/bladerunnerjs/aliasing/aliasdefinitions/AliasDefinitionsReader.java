@@ -11,6 +11,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.aliasing.AliasException;
+import org.bladerunnerjs.aliasing.AliasNameIsTheSameAsTheClassException;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.SchemaConverter;
@@ -91,16 +93,20 @@ public class AliasDefinitionsReader {
 				
 				throw new ContentFileProcessingException(file, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
-			catch (IOException | NamespaceException | RequirePathException e) {
+			catch (IOException | NamespaceException | RequirePathException | AliasException e) {
 				throw new ContentFileProcessingException(file, e);
 			}
 		}
 	}
 	
-	private void processAlias(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException, RequirePathException {
+	private void processAlias(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException, RequirePathException, AliasException {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "defaultClass");
 		String aliasInterface = streamReader.getAttributeValue(null, "interface");
+		
+		if (aliasName.equals(aliasClass)) {
+			throw new AliasNameIsTheSameAsTheClassException(file, aliasName);
+		}
 		
 		assetLocation.assertIdentifierCorrectlyNamespaced(aliasName);
 		

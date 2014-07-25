@@ -3,11 +3,9 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
 
@@ -35,6 +33,7 @@ import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
+import org.bladerunnerjs.utility.reader.CharBufferPool;
 
 
 public class BRJS extends AbstractBRJSRootNode
@@ -50,6 +49,7 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	private final NodeList<App> userApps = new NodeList<>(this, App.class, "apps", null);
+	private final NodeItem<DirNode> sdkRoot = new NodeItem<>(this, DirNode.class, "sdk");
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
 	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript", null);
@@ -74,6 +74,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final IO io = new IO();
 	private boolean closed = false;
 	private AppVersionGenerator appVersionGenerator;
+	private CharBufferPool pool = new CharBufferPool();
 	
 	BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
 			LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
@@ -100,6 +101,10 @@ public class BRJS extends AbstractBRJSRootNode
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
 		this.appVersionGenerator = appVersionGenerator;
+	}
+	
+	public CharBufferPool getCharBufferPool(){
+		return pool;
 	}
 	
 	@Override
@@ -182,18 +187,18 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> apps()
 	{
-		Set<String> addedApps = new HashSet<>();
-		List<App> allApps = new ArrayList<>(userApps.list());
-		allApps.addAll(systemApps.list());
-		List<App> apps = new ArrayList<>();
+		Map<String,App> apps = new HashMap<>();
 		
-		for(App app : allApps) {
-			if(addedApps.add(app.getName())) {
-				apps.add(app);
-			}
+		for (App app : systemApps()) {
+			apps.put(app.getName(), app);
 		}
+		for (App app : userApps()) {
+			if (!apps.containsKey(app.getName())) {
+				apps.put(app.getName(), app);				
+			}
+		}		
 		
-		return apps;
+		return new ArrayList<>( apps.values() );
 	}
 	
 	public App app(String appName)
@@ -224,7 +229,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return systemApps.item(appName);
 	}
 	
-	public DirNode sdkLibsDir()
+	public DirNode sdkJsLibsDir()
 	{
 		return sdkLibsDir.item();
 	}
@@ -314,6 +319,10 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		return testRunnerConf;
+	}
+	
+	public DirNode sdkRoot() {
+		return sdkRoot.item();
 	}
 	
 	public PluginAccessor plugins() {

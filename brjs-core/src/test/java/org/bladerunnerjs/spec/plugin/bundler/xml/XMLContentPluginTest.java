@@ -75,7 +75,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String config = bundleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).containsResourceFileWithContents("config.xml", rootElem("<unknownRootElem/>"));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(exceptions).verifyException(ContentProcessingException.class, "unknownRootElem");
 	}
 	
@@ -83,7 +83,7 @@ public class XMLContentPluginTest extends SpecTest{
 	public void badlyFormedXMLFails() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config.xml", rootElem("<xxx=\">"));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(exceptions).verifyException(XMLStreamException2.class);
 	}
 	
@@ -91,7 +91,7 @@ public class XMLContentPluginTest extends SpecTest{
 	public void aspectXmlFilesAreBundled() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig()).
 		and(aspect).containsResourceFileWithContents("config.xml", rootElem(mergeElem("id1")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(bundleElem(bundleResourceElem("rootElem", rootElem(mergeElem("id1")))));
 	}
 	
@@ -99,8 +99,16 @@ public class XMLContentPluginTest extends SpecTest{
 	public void aspectXmlFilesAreBundledFromNestedDirectory() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig()).
 		and(aspect).containsResourceFileWithContents("xml/config.xml", rootElem(mergeElem("id1")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(mergeElem("id1")));
+	}
+	
+	@Test
+	public void xmlPrologIsStrippedFromXmlDocuments() throws Exception {
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig()).
+		and(aspect).containsResourceFileWithContents("config.xml", rootElemWithXmlProlog(mergeElem("id1")));
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText(bundleElem(bundleResourceElem("rootElem", rootElem(mergeElem("id1")))));
 	}
 	
 	@Test
@@ -109,7 +117,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(blade).containsResourceFileWithContents("config.xml", rootElem(mergeElem("xxxxx.Provider")))
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class");
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(exceptions).verifyException(NamespaceException.class, "xxxxx.Provider", "appns.bs.b1.*" );
 	}
 	
@@ -117,7 +125,7 @@ public class XMLContentPluginTest extends SpecTest{
 	public void xmlFilesWithinTheAspectHaveNoNamespaceRestrictions() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig()).
 		and(aspect).containsResourceFileWithContents("config.xml", rootElem(mergeElem("xxxxx.Provider")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -126,7 +134,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(""))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(""));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsTextOnce(rootElem(""));
 	}
 	
@@ -135,7 +143,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(mergeElem("id1", "Class1")))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(mergeElem("id2", "Class2")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(mergeElem("id1", "Class1"), mergeElem("id2", "Class2")));
 	}
 	
@@ -144,7 +152,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(mergeElem("id", "Class1")))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(mergeElem("id", "Class2")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(mergeElem("id", "Class1")))
 			.and(response).doesNotContainText(mergeElem("id", "Class2"));
 	}
@@ -154,7 +162,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(templateElem("")))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(templateElem("")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(templateElem("")));
 	}
 	
@@ -163,7 +171,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(templateElem("")))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(templateElem2("")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(templateElem(""), templateElem2("")));
 	}
 	
@@ -172,7 +180,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(templateElem2("")))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(templateElem(""), templateElem2("")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(templateElem(""), templateElem2("")));
 	}
 	
@@ -181,7 +189,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(templateElem(mergeElem("id1"))))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(templateElem(mergeElem("id2"))));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(templateElem(mergeElem("id1"), mergeElem("id2"))));
 	}
 	
@@ -190,7 +198,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(templateElem(mergeElem("id1"))))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(templateElem2(mergeElem("id2"))));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(templateElem(mergeElem("id1")), templateElem2(mergeElem("id2"))));
 	}
 	
@@ -198,7 +206,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(alternateMergeElem("id1", "Class1")))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(alternateMergeElem("id2", "Class2")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(alternateMergeElem("id1", "Class1"), alternateMergeElem("id2", "Class2")));
 	}
 	
@@ -208,7 +216,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(blade).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElem("Class1")))
 			.and(blade).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem("Class2")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(anonymousMergeElem("Class1"), anonymousMergeElem("Class2")));
 	}
 	
@@ -218,7 +226,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(blade).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElemWithID("appns.bs.b1.ID1", "Class1")))
 			.and(blade).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem("Class2")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(anonymousMergeElemWithID("appns.bs.b1.ID1", "Class1"), anonymousMergeElem("Class2")));
 	}
 	
@@ -228,7 +236,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(blade).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElemWithID("appns.bs.b1.ID1", null)))
 			.and(blade).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem(null)));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(rootElem(anonymousMergeElemWithID("appns.bs.b1.ID1", null), anonymousMergeElem(null)));
 	}
 	
@@ -236,7 +244,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(templateElem(mergeElem("id1"))))
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem2(templateElem(mergeElem("id2"))));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(bundleElem(
 				bundleResourceElem("rootElem2", rootElem2(templateElem(mergeElem("id2")))),
 				bundleResourceElem("rootElem", rootElem(templateElem(mergeElem("id1"))))
@@ -250,7 +258,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 		    .and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config);
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsTextOnce(rootElem( mergeElem("appns.bs.b1.SomeClass1")));
 	}
 	
@@ -265,7 +273,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).classExtends("appns.Class1", "appns.bs.b1.Class1")
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).indexPageRefersTo("appns.Class1");
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsTextOnce(rootElem( mergeElem("appns.bs.b1.SomeClass1")));
 	}
 	
@@ -279,7 +287,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).containsFileWithContents("index.html", "appns.bs.b1.Class1");
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsTextOnce(rootElem( mergeElem("appns.bs.b1.SomeClass1")));
 	}
 	
@@ -295,14 +303,14 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).hasClass("appns.AppClass")
 			.and(aspect).containsResourceFileWithContents("html/aspect-view.html", "<div id='appns.stuff'>appns.bs.b1.Class1</div>")
 			.and(aspect).containsFileWithContents("index.html", "appns.AppClass");
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsTextOnce(rootElem( mergeElem("appns.bs.b1.SomeClass1")));
 	}
 	
 	@Test
 	public void arbritaryXMLIsUnchangedWhenNoBundlerConfig() throws Exception {
 		given(aspect).containsResourceFileWithContents("config.xml", rootElem(arbitraryElem()));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(arbitraryElem());
 	}
 	
@@ -311,7 +319,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String id = "appns.bs1.b1.gridname";
 		given(aspect).containsResourceFileWithContents("aspect-config.xml", rootElem(refElem(id)))
 			.and(blade).containsResourceFileWithContents("blade-config.xml", rootElem(elem(id)));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(refElem(id))
 			.and(response).containsText(elem(id));
 	}
@@ -321,7 +329,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(aspect).indexPageRequires("appns/Class")
 			.and(aspect).classRequires("appns/Class", "appns/bs1/b1/gridname")
 			.and(blade).containsResourceFileWithContents("blade-config.xml", rootElem(elem("appns.bs1.b1.gridname")));
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(elem("appns.bs1.b1.gridname"));
 	}
 	
@@ -332,7 +340,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(bladeset).containsResourceFileWithContents("bladeset-config.xml", rootElem(elem(id)))
 			.and(bladeset).hasClass("appns/bs/Class")
 			.and(aspect).indexPageRefersTo("appns.bs1.Class");
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(refElem(id))
 			.and(response).containsText(elem(id));
 	}
@@ -342,33 +350,33 @@ public class XMLContentPluginTest extends SpecTest{
 		String id = "appns.bs1.b1.gridname";
 		given(workbench).containsResourceFileWithContents("workbench-config.xml", rootElem(refElem(id)))
 			.and(blade).containsResourceFileWithContents("blade-config.xml", rootElem(elem(id)));
-		when(workbench).requestReceived("xml/bundle.xml", response);
+		when(workbench).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(refElem(id))
 			.and(response).containsText(elem(id));
 	}
 	
 	@Test public void bundlePathTagIsReplacedForDev() throws Exception {
 		given(brjs).hasDevVersion("dev")
-			.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path @unversionedBundlePath@/some/path"));
-		when(aspect).requestReceived("xml/bundle.xml", response);
-		then(response).containsText(bundleElem("\n",templateElem("../v/dev/some/path ../some/path")));
+			.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path"));
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText(bundleElem("\n",templateElem("v/dev/some/path")));
 	}
 	
 	@Test public void bundlePathTagIsReplacedForProd() throws Exception {
 		given(brjs).hasProdVersion("1234")
-		.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path @unversionedBundlePath@/some/path"));
+		.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path"));
 		when(aspect).requestReceivedInProd("xml/bundle.xml", response);
-		then(response).containsText(bundleElem("\n", templateElem("../v/1234/some/path ../some/path")));
+		then(response).containsText(bundleElem("\n", templateElem("v/1234/some/path")));
 	}
 	
 	@Test
 	public void bundlePathTagIsReplacedForWorkbench() throws Exception {
-		given(blade).containsResourceFileWithContents("xml/myconfig.xml", "@bundlePath@/some/path @unversionedBundlePath@/some/path")
+		given(blade).containsResourceFileWithContents("xml/myconfig.xml", "@bundlePath@/some/path")
 			.and(brjs).hasDevVersion("dev")
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(workbench).indexPageRefersTo("appns/bs/b1/Class1");
-		when(workbench).requestReceived("xml/bundle.xml", response);
-		then(response).containsText("../v/dev/some/path ../some/path"); 
+		when(workbench).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText("v/dev/some/path"); 
 	}
 	
 	private String bundleConfig(){
@@ -406,6 +414,10 @@ public class XMLContentPluginTest extends SpecTest{
 			+ Joiner.on("").join(input)
 			+ "</rootElem>";
 			return result;
+	}
+	
+	private String rootElemWithXmlProlog(String... input) {
+		return "<?xml version='1.0' encoding='UTF-8'?>\n" + rootElem(input);
 	}
 	
 	private String rootElem2(String... input) {

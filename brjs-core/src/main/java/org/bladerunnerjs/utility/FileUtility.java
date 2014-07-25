@@ -10,6 +10,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 public class FileUtility {
@@ -173,6 +174,30 @@ public class FileUtility {
 				deleteDirectoryFromBottomUp(child);
 			}
 			dir.delete();
+		}
+	}
+	
+	public static void moveDirectoryContents(File srcDir, File destDir) throws IOException {
+		if(!destDir.exists()) {
+			FileUtils.moveDirectory(srcDir, destDir);
+		}
+		else {
+			for(File srcFile : srcDir.listFiles()) {
+				File destFile = new File(destDir, srcFile.getName());
+				
+				if(!destFile.exists()) {
+					FileUtils.moveToDirectory(srcFile, destDir, false);
+				}
+				else {
+					if(srcFile.isFile()) {
+						destFile.delete();
+						FileUtils.moveToDirectory(srcFile, destDir, false);
+					}
+					else {
+						moveDirectoryContents(srcFile, destFile);
+					}
+				}
+			}
 		}
 	}
 }

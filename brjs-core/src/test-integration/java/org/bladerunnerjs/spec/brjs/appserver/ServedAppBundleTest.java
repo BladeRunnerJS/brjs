@@ -61,7 +61,7 @@ public class ServedAppBundleTest extends SpecTest
 	@Test
 	public void weCanMakeARequestForWorkbenchBundles() throws Exception
 	{
-		String jsBundleUrlPath = "/app/workbench/bs/b1/v/dev/js/dev/combined/bundle.js";
+		String jsBundleUrlPath = "/app/bs/b1/workbench/v/dev/js/dev/combined/bundle.js";
 		
 		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
 			.and(appServer).requestForUrlContains(jsBundleUrlPath, "appns/bs/b1/Class");

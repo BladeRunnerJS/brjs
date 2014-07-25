@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.BladeResourcesAssetLocation;
 import org.bladerunnerjs.model.ChildSourceAssetLocation;
 import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
 import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
@@ -83,7 +84,8 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		
 		switch(dirPath) {
 			case ".":
-				assetLocation = new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, dir);
+				assetLocation = (assetContainer instanceof JsLib) ? new BRJSConformantJsLibRootAssetLocation(assetContainer.root(), assetContainer, dir) :
+					new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, dir);
 				break;
 			
 			case "resources":

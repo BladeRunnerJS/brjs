@@ -25,16 +25,17 @@ public class JsCommentStrippingReader extends Reader
 	
 	private final Reader sourceReader;
 	private final boolean preserveJsdoc;
-	private final char[] sourceBuffer = new char[4096];
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private CommentStripperState state;
+	private CharBufferPool pool;
 	
-	public JsCommentStrippingReader(Reader sourceReader, boolean preserveJsdoc)
+	public JsCommentStrippingReader(Reader sourceReader, boolean preserveJsdoc, CharBufferPool pool)
 	{
 		super();
 		this.sourceReader = sourceReader;
 		this.preserveJsdoc = preserveJsdoc;
+		this.pool = pool;
 		state = CommentStripperState.WITHIN_SOURCE;
 	}
 	
@@ -47,6 +48,7 @@ public class JsCommentStrippingReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters - (MAX_SINGLE_WRITE - 1);
 		char previousChar, nextChar = '\0';
+		char[] sourceBuffer = pool.getBuffer();
 		
 		while(currentOffset < maxOffset) {
 			if(nextCharPos == lastCharPos) {
@@ -178,6 +180,7 @@ public class JsCommentStrippingReader extends Reader
 			}
 		}
 		
+		pool.returnBuffer(sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}

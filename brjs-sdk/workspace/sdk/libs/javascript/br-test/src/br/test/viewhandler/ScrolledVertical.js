@@ -1,24 +1,29 @@
+'use strict';
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+var Utils = require('br/test/Utils');
+
 /**
+ * @name br.test.viewhandler.ScrolledVertical
  * @class
  * <code>ScrolledVertical ViewFixtureHandler</code> can be used to trigger a vertical scroll on a view element.
  * </code>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.ScrolledVertical = function()
-{
-};
+function ScrolledVertical() {
+}
+br.implement(ScrolledVertical, ViewFixtureHandler);
 
-br.Core.implement(br.test.viewhandler.ScrolledVertical, br.test.viewhandler.ViewFixtureHandler);
-
-
-br.test.viewhandler.ScrolledVertical.prototype.set = function(eElement, nOffset)
-{
+ScrolledVertical.prototype.set = function(eElement, nOffset) {
 	eElement.scrollTop += parseFloat(nOffset);
-	br.test.Utils.fireScrollEvent(eElement);
+	Utils.fireScrollEvent(eElement);
 };
 
-br.test.viewhandler.ScrolledVertical.prototype.get = function(eElement)
-{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "ScrolledVertical can't be used in a then clause.");
+ScrolledVertical.prototype.get = function(eElement) {
+	throw new Errors.InvalidTestError("ScrolledVertical can't be used in a then clause.");
 };
+
+module.exports = ScrolledVertical;

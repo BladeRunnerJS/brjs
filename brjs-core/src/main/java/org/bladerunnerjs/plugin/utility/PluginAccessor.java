@@ -68,8 +68,9 @@ public class PluginAccessor {
 		return commandList.getPluginCommands();
 	}
 	
-	public void addCommandPlugin(CommandPlugin commandPlugin) {
+	public void addCommandPlugin(BRJS brjs, CommandPlugin commandPlugin) {
 		commandList.addCommand(commandPlugin);
+		commandPlugin.setBRJS(brjs);
 	}
 	
 	public ContentPlugin contentPluginForLogicalPath(String logicalRequestpath)
