@@ -27,13 +27,13 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
 	private String relativeRequirePath;
 	
-	public TheAbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
-		super(rootNode, parent, dir);
+	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation... dependentAssetLocations) {
+		super(rootNode, assetContainer, dir);
 		
 		dirInfo = root().getFileInfo(dir);
 		assetLocator = new AssetLocator(this);
 		emptyAssets = new Assets(root());
-		this.assetContainer = (AssetContainer) parent;
+		this.assetContainer = assetContainer;
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 		relativeRequirePath = RelativePathUtility.get(root(), assetContainer.dir(), dir());
 	}
