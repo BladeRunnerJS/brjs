@@ -410,24 +410,24 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void commonJsTestsInRootTestsDirInAnSdkLibDoNotHaveTheirPathsGlobalized() throws Exception {
+	public void commonJsTestsInRootTestsDirInAnSdkLibAlsoHaveTheirPathsGlobalized() throws Exception {
 		given(sdkJsLib).hasCommonJsPackageStyle()
     		.and(sdkJsLib).hasClasses("sdkLib/Class1")
     		.and(sdkJsLibTests).hasTestClass("sdkLib/TestClass1")
     		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.Class1(); new sdkLib.TestClass1();");
     	when(sdkJsLibTests).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
-    	then(requestResponse).doesNotContainText( "sdkLib.LibTest = require" );
+    	then(requestResponse).containsText( "sdkLib.LibTest = require" );
 	}
 	
 	@Test
-	public void commonJsTestsInRootTestsDirInAnSdkLibWithNestedRequirePrefixDoNotHaveTheirPathsGlobalizedPaths() throws Exception {
+	public void commonJsTestsInRootTestsDirInAnSdkLibWithNestedRequirePrefixAlsoHaveTheirPathsGlobalizedPaths() throws Exception {
 		given(sdkJsLib).hasCommonJsPackageStyle()
 			.and(sdkJsLib).containsFileWithContents("br-lib.conf", "requirePrefix: sdkLib/subPkg")
     		.and(sdkJsLib).hasClasses("sdkLib/subPkg/Class1")
     		.and(sdkJsLibTests).hasTestClass("sdkLib/subPkg/TestClass1")
     		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.subPkg.Class1(); new sdkLib.subPkg.TestClass1();");
     	when(sdkJsLibTests).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
-    	then(requestResponse).doesNotContainText( "sdkLib.subPkg.LibTest = require" );
+    	then(requestResponse).containsText( "sdkLib.subPkg.LibTest = require" );
 	}
 	
 	@Test
