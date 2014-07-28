@@ -7,6 +7,7 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJSNodeHelper;
 import org.bladerunnerjs.model.RootAssetLocation;
 import org.bladerunnerjs.model.TheAbstractAssetLocation;
@@ -15,8 +16,8 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation implements RootAssetLocation {
-	public BRJSConformantRootAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir) {
-		super(rootNode, assetContainer, dir);
+	public BRJSConformantRootAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation) {
+		super(rootNode, assetContainer, dir, parentAssetLocation);
 	}
 	
 	@Override

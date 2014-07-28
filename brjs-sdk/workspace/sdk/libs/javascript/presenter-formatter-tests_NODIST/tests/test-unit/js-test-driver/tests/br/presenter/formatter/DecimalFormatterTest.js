@@ -7,6 +7,7 @@ DecimalFormatterTest.prototype.setUp = function() {
 };
 
 DecimalFormatterTest.prototype.test_FourDp = function() {
+debugger;
 	// 4 Decimal places.
 	var mAttributes = {dp: "4"};
 	assertEquals("123.4500", this.oFormatter.format(123.45, mAttributes));

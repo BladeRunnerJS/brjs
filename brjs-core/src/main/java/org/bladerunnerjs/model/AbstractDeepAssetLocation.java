@@ -6,8 +6,8 @@ import java.util.List;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractDeepAssetLocation extends TheAbstractAssetLocation {
-	public AbstractDeepAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation... dependentAssetLocations) {
-		super(rootNode, assetContainer, dir, dependentAssetLocations);
+	public AbstractDeepAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+		super(rootNode, assetContainer, dir, parentAssetLocation, dependentAssetLocations);
 	}
 	
 	@Override

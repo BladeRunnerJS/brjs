@@ -20,10 +20,7 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	}
 	
 	public Reader getReader() throws IOException {
-		return new StringReader(
-			"define('" + sourceModule.getPrimaryRequirePath() + "', function() {\n" +
-			"\t// tests within js-test-driver are loaded via the 'js-test-driver.conf' file, rather than wtihin the main bundle\n" +
-			"});\n");
+		return new StringReader("");
 	}
 	
 	public AssetLocation assetLocation() {

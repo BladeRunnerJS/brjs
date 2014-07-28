@@ -13,8 +13,8 @@ public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLo
 	private final Map<File, AssetLocation> assetLocations = new TreeMap<>();
 	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>(dir()+" - childAssetLocations", root(), dir());
 	
-	public AbstractSourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation... dependentAssetLocations) {
-		super(rootNode, assetContainer, dir, dependentAssetLocations);
+	public AbstractSourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+		super(rootNode, assetContainer, dir, parentAssetLocation, dependentAssetLocations);
 	}
 	
 	protected abstract AssetLocation createNewAssetLocationForChildDir(File dir, AssetLocation parentAssetLocation);

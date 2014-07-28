@@ -9,6 +9,6 @@ public final class ChildTestSourceAssetLocation extends AbstractChildSourceAsset
 {
 	public ChildTestSourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation)
 	{
-		super(rootNode, assetContainer, dir, parentAssetLocation);
+		super(rootNode, assetContainer, dir, parentAssetLocation, parentAssetLocation);
 	}
 }
