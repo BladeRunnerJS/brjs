@@ -44,7 +44,7 @@ public class BRJSHeaderFilter implements Filter {
 		
 		response.setCharacterEncoding(OUTPUT_ENCODING);		
 		
-		if (VERSION_REGEX.matcher(request.getRequestURI()).find())
+		if (VERSION_REGEX.matcher(request.getRequestURI()).find()) 
 		{
 			response.setHeader(CACHE_CONTROL, CACHE_CONTROL_ALLOW_CACHE);
 			response.setHeader(EXPIRES, getExpiresHeader(MAX_AGE));
