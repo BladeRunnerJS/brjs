@@ -24,16 +24,13 @@ public class BRJSHeaderFilter implements Filter {
 	public static final String OUTPUT_ENCODING = "UTF-8";
 
 	private static final Pattern VERSION_REGEX = Pattern.compile("/v/[0-9]+/");
-	private static final Pattern ROOT_URL_REGEX = Pattern.compile("/(index.html)?$");
 	
 	private static final String EXPIRES = "Expires";
-	private static final String LAST_MODIFIED = "Last-Modified";
 	private static final String CACHE_CONTROL = "Cache-Control";
 	
 	private static final int MAX_AGE = 365;
 	private static final String HEADER_DATE_FORMAT = "dd MMM yyyy kk:mm:ss z";
 	private static final String CACHE_CONTROL_ALLOW_CACHE = "max-age=" + TimeUnit.DAYS.toSeconds(MAX_AGE) + ", public, must-revalidate";
-	private static final String CACHE_CONTROL_NO_CACHE = "max-age=0";
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -47,15 +44,7 @@ public class BRJSHeaderFilter implements Filter {
 		
 		response.setCharacterEncoding(OUTPUT_ENCODING);		
 		
-		if (ROOT_URL_REGEX.matcher(request.getRequestURI()).find()) 
-		{
-			response.setHeader(CACHE_CONTROL, CACHE_CONTROL_NO_CACHE);
-			response.setHeader(EXPIRES, getExpiresHeader(0));
-			response.setHeader(LAST_MODIFIED, getExpiresHeader(0));
-			LockedHeaderResponseWrapper responseWrapper = new LockedHeaderResponseWrapper(response, Arrays.asList(CACHE_CONTROL, LAST_MODIFIED, EXPIRES));
-			chain.doFilter(request, responseWrapper);
-		} 
-		else if (VERSION_REGEX.matcher(request.getRequestURI()).find()) 
+		if (VERSION_REGEX.matcher(request.getRequestURI()).find()) 
 		{
 			response.setHeader(CACHE_CONTROL, CACHE_CONTROL_ALLOW_CACHE);
 			response.setHeader(EXPIRES, getExpiresHeader(MAX_AGE));
