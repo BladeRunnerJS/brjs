@@ -17,7 +17,7 @@ nsUtils.pLoadedAndAttachedCSSElements = [];
 * Fires a DOM Event in a cross Browser compatible way.
 *
 * @static
-* @param {DOM Element} element The DOM Element the Event is fired from
+* @param {DOMElement} element The DOM Element the Event is fired from
 * @param {String} eventString The Event to be fired without 'on', e.g. 'click', 'keydown'
 * @param {String} [character] A character associated with typing events
 */
@@ -62,7 +62,7 @@ nsUtils.getKeyCodeForChar = function(character) {
 * Fires a DOM KeyboardEvent in a cross Browser compatible way.
 *
 * @static
-* @param {DOM Element} element The DOM Element the Event is fired from
+* @param {DOMElement} element The DOM Element the Event is fired from
 * @param {String} eventString The Event to be fired without 'on', e.g. 'keydown'
 * @param {String} character a character associated with typing events.
 * @param {Map} options a map of values, passed in to <code>initKeyboardEvent</code>, associated with typing events.
@@ -111,7 +111,7 @@ nsUtils.fireKeyEvent = function(element, eventString, character, options) {
 * Fires a DOM MouseEvents in a cross Browser compatible way.
 *
 * @static
-* @param {DOM Element} element The DOM Element the Event is fired from
+* @param {DOMElement} element The DOM Element the Event is fired from
 * @param {String} eventString The Event to be fired without 'on', e.g. 'click'
 * @param {Map} options a map of values, passed in to <code>initMouseEvent</code>, associated with mouse events.
 */
@@ -197,7 +197,7 @@ nsUtils.removeLoadedAndAttachedCSSFromPage = function() {
 * Fires a DOM scroll event in a cross Browser compatible way.
 *
 * @static
-* @param {DOM Element} element The DOM Element the Event is fired from
+* @param {DOMElement} element The DOM Element the Event is fired from
 */
 nsUtils.fireScrollEvent = function(element) {
 	if (document.createEvent) {
