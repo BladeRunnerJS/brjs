@@ -79,7 +79,7 @@ public class AliasesReader {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new ContentFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+				throw new ContentFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e);
 			}
 			catch (IOException | AliasException e) {
 				throw new ContentFileProcessingException(aliasesFile, e);

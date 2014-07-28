@@ -91,7 +91,7 @@ public class AliasDefinitionsReader {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new ContentFileProcessingException(file, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+				throw new ContentFileProcessingException(file, location.getLineNumber(), location.getColumnNumber(), e);
 			}
 			catch (IOException | NamespaceException | RequirePathException | AliasException e) {
 				throw new ContentFileProcessingException(file, e);
