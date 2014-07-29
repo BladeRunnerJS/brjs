@@ -106,6 +106,7 @@ function buildItemTypeStrings(item) {
 
     if (item.type && item.type.names) {
         item.type.names.forEach(function(name) {
+            name = name.replace(new RegExp("^module:([a-zA-Z])", "g"), '$1') // replaces module: that prefixes all modules by default
             types.push( linkto(name, htmlsafe(name)) );
         });
     }
@@ -218,6 +219,7 @@ function generate(title, docs, filename, resolveLinks) {
 
     if (resolveLinks) {
         html = helper.resolveLinks(html); // turn {@link foo} into <a href="foodoc.html">foo</a>
+        html = html.replace(new RegExp(">module:([a-zA-Z])", "g"), '>$1') // replaces module: that prefixes all modules by default
     }
 
     fs.writeFileSync(outpath, html, 'utf8');
