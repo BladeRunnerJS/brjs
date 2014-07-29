@@ -41,7 +41,8 @@ public class AliasesReader {
 		}
 	}
 	
-	public static void read(AliasesData aliasesData, File aliasesFile, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
+	public static AliasesData read(File aliasesFile, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
+		AliasesData aliasesData = new AliasesData();
 		aliasesData.aliasOverrides = new ArrayList<>();
 		aliasesData.groupNames = new ArrayList<>();
 		
@@ -74,6 +75,8 @@ public class AliasesReader {
 				throw new ContentFileProcessingException(aliasesFile, e);
 			}
 		}
+		
+		return aliasesData;
 	}
 	
 	private static void processAliases(XMLStreamReader2 streamReader, AliasesData aliasesData) {

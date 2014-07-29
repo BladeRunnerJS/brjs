@@ -18,7 +18,7 @@ import org.bladerunnerjs.utility.FileModifiedChecker;
 public class AliasesFile {
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
 	
-	private final AliasesData data = new AliasesData();
+	private AliasesData data = new AliasesData();
 	private final File file;
 	private final FileModifiedChecker fileModifiedChecker;
 	private BundlableNode bundlableNode;
@@ -44,7 +44,7 @@ public class AliasesFile {
 	
 	public String scenarioName() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			AliasesReader.read(data, file, defaultFileCharacterEncoding);
+			data = AliasesReader.read(file, defaultFileCharacterEncoding);
 		}
 		
 		return data.scenario;
@@ -56,7 +56,7 @@ public class AliasesFile {
 	
 	public List<String> groupNames() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			AliasesReader.read(data, file, defaultFileCharacterEncoding);
+			data = AliasesReader.read(file, defaultFileCharacterEncoding);
 		}
 		
 		return data.groupNames;
@@ -68,7 +68,7 @@ public class AliasesFile {
 	
 	public List<AliasOverride> aliasOverrides() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			AliasesReader.read(data, file, defaultFileCharacterEncoding);
+			data = AliasesReader.read(file, defaultFileCharacterEncoding);
 		}
 		
 		return data.aliasOverrides;
