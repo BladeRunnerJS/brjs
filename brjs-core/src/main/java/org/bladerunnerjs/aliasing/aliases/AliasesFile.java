@@ -19,11 +19,11 @@ public class AliasesFile {
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
 	
 	private final AliasesData data = new AliasesData();
-	private final AliasesReader reader;
-	private final AliasesWriter writer;
 	private final File file;
 	private final FileModifiedChecker fileModifiedChecker;
 	private BundlableNode bundlableNode;
+
+	private final String defaultFileCharacterEncoding;
 	
 	public AliasesFile(File parent, String child, BundlableNode bundlableNode) {
 		try {
@@ -31,9 +31,7 @@ public class AliasesFile {
 			file = new File(parent, child);
 			fileModifiedChecker = new FileModifiedChecker(file);
 			
-			String defaultFileCharacterEncoding = bundlableNode.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			reader = new AliasesReader(data, file, defaultFileCharacterEncoding);
-			writer = new AliasesWriter(data, file, defaultFileCharacterEncoding);
+			defaultFileCharacterEncoding = bundlableNode.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -46,7 +44,7 @@ public class AliasesFile {
 	
 	public String scenarioName() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			reader.read();
+			AliasesReader.read(data, file, defaultFileCharacterEncoding);
 		}
 		
 		return data.scenario;
@@ -58,7 +56,7 @@ public class AliasesFile {
 	
 	public List<String> groupNames() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			reader.read();
+			AliasesReader.read(data, file, defaultFileCharacterEncoding);
 		}
 		
 		return data.groupNames;
@@ -70,7 +68,7 @@ public class AliasesFile {
 	
 	public List<AliasOverride> aliasOverrides() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			reader.read();
+			AliasesReader.read(data, file, defaultFileCharacterEncoding);
 		}
 		
 		return data.aliasOverrides;
@@ -145,7 +143,7 @@ public class AliasesFile {
 	}
 	
 	public void write() throws IOException {
-		writer.write();
+		AliasesWriter.write(data, file, defaultFileCharacterEncoding);
 	}
 	
 	private AliasOverride getLocalAliasOverride(String aliasName) throws ContentFileProcessingException {
