@@ -23,7 +23,7 @@ public class JsStyleUtilityTest extends SpecTest {
 	
 	@Test
 	public void styleNameIsCommonJsByDefault() throws Exception {
-		then(bladeset).jsStyleIs("node.js");
+		then(bladeset).jsStyleIs("common-js");
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class JsStyleUtilityTest extends SpecTest {
 	public void styleNamesCanBeChangedAtMultipleLevels() throws Exception {
 		given(blade).containsFileWithContents(".js-style", "namespaced-js")
 			.and(bladeWorkbench).containsFileWithContents(".js-style", "node.js");
-		then(bladeset).jsStyleIs("node.js")
+		then(bladeset).jsStyleIs("common-js")
 			.and(blade).jsStyleIs("namespaced-js")
 			.and(bladeWorkbench).jsStyleIs("node.js");
 	}

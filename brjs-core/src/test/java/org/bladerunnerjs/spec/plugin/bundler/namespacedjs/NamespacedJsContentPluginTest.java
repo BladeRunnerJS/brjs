@@ -220,13 +220,13 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	@Test
 	public void autoGlobalisationReplacesInvalidCharacters() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-			.and(aspect).hasCommonJsPackageStyle("src/appns/node-js")
-			.and(aspect).hasClasses("appns.namespaced.Class", "appns/node-js/Class")
+			.and(aspect).hasCommonJsPackageStyle("src/appns/common-js")
+			.and(aspect).hasClasses("appns.namespaced.Class", "appns/common-js/Class")
 			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
-			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.node-js.Class");
+			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.common-js.Class");
 		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("appns.namespaced.Class = function() {\n};")
-			.and(requestResponse).containsText("appns.node_js.Class = require('appns/node-js/Class');");
+			.and(requestResponse).containsText("appns.common_js.Class = require('appns/common-js/Class');");
 	}
 	
 	@Test

@@ -45,8 +45,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	public static final String SINGLE_MODULE_REQUEST = "single-module-request";
 	public static final String BUNDLE_REQUEST = "bundle-request";
 
-	public static final String JS_STYLE = "namespaced-js";
-
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	private BRJS brjs;
