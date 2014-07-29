@@ -72,7 +72,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException 
 	{
 		String appName = parsedArgs.getString("app-name");
-		String banner = "/*\n" + parsedArgs.getString("banner") + "\n*/\n\n";
+		String banner = parsedArgs.getString("banner");
 		String[] bannerExtensions = parsedArgs.getString("bannerExtensions").split(",");
 		String targetPath = parsedArgs.getString("target");
 
@@ -102,7 +102,10 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 			combinedFilter = new AndFileFilter(combinedFilter, excludeUserLibraryTestsFilter);
 			
 			createResourcesFromSdkTemplate(app.dir(), temporaryExportDir, combinedFilter);
-			includeBannerInDirectoryClasses(new File(temporaryExportDir, "libs"), banner, bannerExtensions);
+			if (banner != null) {
+				String jsBanner = "/*\n" + banner + "\n*/\n\n";
+				includeBannerInDirectoryClasses(new File(temporaryExportDir, "libs"), jsBanner, bannerExtensions);
+			}
 			FileUtility.zipFolder(temporaryExportDir, destinationZipLocation, false);
 		}
 		catch (Exception e)
