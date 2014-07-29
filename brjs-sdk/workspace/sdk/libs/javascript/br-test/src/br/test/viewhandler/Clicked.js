@@ -51,7 +51,15 @@ Clicked.prototype.set = function(eElement, mArgs) {
 		document.activeElement = eElement;
 	} catch (e) {
 		if (eElement.setActive) {
-			eElement.setActive()
+				try {
+					eElement.setActive();
+				}
+				catch (e) //IE10 and IE11 occasionally throw invalid function error for setActive
+				{
+					if(eElement.focus){
+						eElement.focus();
+					}
+				}
 		}
 	}
 
