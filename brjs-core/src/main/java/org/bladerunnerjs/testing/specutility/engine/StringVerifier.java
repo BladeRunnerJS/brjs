@@ -61,6 +61,7 @@ public class StringVerifier {
 		return verifierChainer;
 	}
 	
+	// TODO: this method needs fixing as it currently allows you to type an require prefix, and as long the class name at the end exists it works
 	public VerifierChainer containsCommonJsClasses(String... classes) {
 		List<String> processedNodeClassNames = new ArrayList<String>();
 		for(String className : classes) {

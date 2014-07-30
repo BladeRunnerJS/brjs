@@ -16,6 +16,7 @@ import org.bladerunnerjs.utility.*;
 
 // TODO Java 8 (1.8.0-b123) compiler throws errors when this class is named 'AbstractAssetLocation'
 public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
+	private final AssetLocation parentAssetLocation;
 	private final AssetContainer assetContainer;
 	private final FileInfo dirInfo;
 	
@@ -25,24 +26,29 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	private Map<String, AliasDefinitionsFile> aliasDefinitionsFilesMap = new HashMap<>();
 	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
-	private String relativeRequirePath;
 	
-	public TheAbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
-		super(rootNode, parent, dir);
+	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+		super(rootNode, assetContainer, dir);
 		
 		dirInfo = root().getFileInfo(dir);
 		assetLocator = new AssetLocator(this);
 		emptyAssets = new Assets(root());
-		this.assetContainer = (AssetContainer) parent;
+		this.parentAssetLocation = parentAssetLocation;
+		this.assetContainer = assetContainer;
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
-		relativeRequirePath = RelativePathUtility.get(root(), assetContainer.dir(), dir());
 	}
 	
 	protected abstract List<File> getCandidateFiles();
 	
 	@Override
 	public String requirePrefix() {
-		return assetContainer.requirePrefix() + "/" + relativeRequirePath;
+		String requirePrefix = (parentAssetLocation == null) ? assetContainer.requirePrefix() : parentAssetLocation.requirePrefix();
+		return requirePrefix + "/" + dir().getName();
+	}
+	
+	@Override
+	public AssetLocation parentAssetLocation() {
+		return parentAssetLocation;
 	}
 	
 	@Override

@@ -8,12 +8,12 @@ public class ResourcesAssetLocation extends AbstractDeepAssetLocation implements
 	
 	private String themeName = "";
 	
-	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file) {
-		this(root, assetContainer, file, "common");
+	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file, AssetLocation parentAssetLocation) {
+		this(root, assetContainer, file, parentAssetLocation, "common");
 	}
 	
-	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file, String themeName) {
-		super(root, assetContainer, file);
+	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file, AssetLocation parentAssetLocation, String themeName) {
+		super(root, assetContainer, file, parentAssetLocation);
 		this.themeName = themeName;
 	}
 	

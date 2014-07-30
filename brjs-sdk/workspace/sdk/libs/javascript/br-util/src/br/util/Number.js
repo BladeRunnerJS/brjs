@@ -5,6 +5,7 @@
  * @module br/util/Number
  */
 
+debugger;
 var StringUtility = require('br/util/StringUtility');
 
 /**
@@ -130,4 +131,5 @@ NumberUtil.pad = function(value, numLength) {
 	return value;
 };
 
+debugger;
 module.exports = NumberUtil;

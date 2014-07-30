@@ -106,6 +106,7 @@ function buildItemTypeStrings(item) {
 
     if (item.type && item.type.names) {
         item.type.names.forEach(function(name) {
+            name = name.replace(new RegExp("^module:([a-zA-Z])", "g"), '$1') // replaces module: that prefixes all modules by default
             types.push( linkto(name, htmlsafe(name)) );
         });
     }
@@ -218,6 +219,7 @@ function generate(title, docs, filename, resolveLinks) {
 
     if (resolveLinks) {
         html = helper.resolveLinks(html); // turn {@link foo} into <a href="foodoc.html">foo</a>
+        html = html.replace(new RegExp(">module:([a-zA-Z])", "g"), '>$1') // replaces module: that prefixes all modules by default
     }
 
     fs.writeFileSync(outpath, html, 'utf8');
@@ -299,7 +301,19 @@ function buildNav(members) {
         '<p class="brjs-version">BRJS version <span id="sdk_version">'+env.opts.query.version+'</span></p>'+
     '</div>';
 
-    nav += '<h2><a href="index.html">Index</a></h2>';
+    nav += '<h3><a href="index.html">JsDoc Home</a></h3>';
+
+    if (members.namespaces.length) {
+        nav += '<h3>Namespaces</h3><ul>';
+        members.namespaces.forEach(function(n) {
+            if ( !hasOwnProp.call(seen, n.longname) ) {
+                nav += '<li>' + linkto(n.longname, n.name) + '</li>';
+            }
+            seen[n.longname] = true;
+        });
+
+        nav += '</ul>';
+    }
 
     if (members.modules.length) {
         nav += '<h3>Modules</h3><ul>';
@@ -308,18 +322,6 @@ function buildNav(members) {
                 nav += '<li>' + linkto(m.longname, m.name) + '</li>';
             }
             seen[m.longname] = true;
-        });
-
-        nav += '</ul>';
-    }
-
-    if (members.externals.length) {
-        nav += '<h3>Externals</h3><ul>';
-        members.externals.forEach(function(e) {
-            if ( !hasOwnProp.call(seen, e.longname) ) {
-                nav += '<li>' + linkto( e.longname, e.name.replace(/(^"|"$)/g, '') ) + '</li>';
-            }
-            seen[e.longname] = true;
         });
 
         nav += '</ul>';
@@ -340,11 +342,11 @@ function buildNav(members) {
         }
     }
 
-    if (members.events.length) {
-        nav += '<h3>Events</h3><ul>';
-        members.events.forEach(function(e) {
+    if (members.externals.length) {
+        nav += '<h3>Externals</h3><ul>';
+        members.externals.forEach(function(e) {
             if ( !hasOwnProp.call(seen, e.longname) ) {
-                nav += '<li>' + linkto(e.longname, e.name) + '</li>';
+                nav += '<li>' + linkto( e.longname, e.name.replace(/(^"|"$)/g, '') ) + '</li>';
             }
             seen[e.longname] = true;
         });
@@ -352,13 +354,13 @@ function buildNav(members) {
         nav += '</ul>';
     }
 
-    if (members.namespaces.length) {
-        nav += '<h3>Namespaces</h3><ul>';
-        members.namespaces.forEach(function(n) {
-            if ( !hasOwnProp.call(seen, n.longname) ) {
-                nav += '<li>' + linkto(n.longname, n.name) + '</li>';
+    if (members.events.length) {
+        nav += '<h3>Events</h3><ul>';
+        members.events.forEach(function(e) {
+            if ( !hasOwnProp.call(seen, e.longname) ) {
+                nav += '<li>' + linkto(e.longname, e.name) + '</li>';
             }
-            seen[n.longname] = true;
+            seen[e.longname] = true;
         });
 
         nav += '</ul>';

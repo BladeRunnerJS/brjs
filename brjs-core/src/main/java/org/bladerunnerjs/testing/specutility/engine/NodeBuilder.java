@@ -6,8 +6,8 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
@@ -96,7 +96,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer hasNamespacedJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, NamespacedJsContentPlugin.JS_STYLE);
+		return hasPackageStyle(packagePath, NamespacedJsSourceModule.JS_STYLE);
 	}
 	
 	public BuilderChainer hasNamespacedJsPackageStyle() {
@@ -104,7 +104,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer hasCommonJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, CommonJsContentPlugin.JS_STYLE);
+		return hasPackageStyle(packagePath, CommonJsSourceModule.JS_STYLE);
 	}
 	
 	public BuilderChainer hasCommonJsPackageStyle() {

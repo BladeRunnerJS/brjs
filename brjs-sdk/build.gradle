@@ -15,6 +15,7 @@ configurations {
 
 	browsers_dep
 	browsers_webdriver
+	phantomjs
 }
 
 dependencies {
@@ -38,10 +39,14 @@ dependencies {
 	testRunner project(path: ':brjs-logger')
 	testRunner project(path: ':brjs-logger-binding')
 	testRunner files('build-resources/JsTestDriver.conf')
-
+	
+	phantomjs dependency('phantomjs_windows')
+	phantomjs dependency('phantomjs_mac')
+	phantomjs dependency('phantomjs_linux')
+	
 	browsers_dep dependency('chrome')
 	browsers_dep dependency('firefox')
-
+	
 	browsers_webdriver dependency('firefox-webdriver')
 }
 
@@ -176,9 +181,19 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		into "sdk/libs/java/testRunner"
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
+	
+	from (configurations.phantomjs.collect { zipTree(it) })
+	{
+		into "sdk/phantomjs"
+		eachFile {
+			println it.path
+			it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip the version string
+		}
+	}
 
 	doFirst {
 		delete file("workspace/sdk/libs/java")
+		delete file("workspace/sdk/phantomjs")
 		delete file("workspace/sdk/docs")
 		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
@@ -206,18 +221,13 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 }
 
 // "libs/javascript" is relative to the sdk directory
-createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
-createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
-createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
+[ "Chrome", "Firefox", "IE", "PhantomJS" ].each {
+	def testJsTask = createTestTask "testJs${it}", "libs/javascript", "ALL", it.toLowerCase()	
+	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase()
+	task "test${it}", dependsOn: [testJsTask, testSystemAppsTask]
+}
 
-createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
-createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
-createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
-
-task testIE, dependsOn: [testJsIE, testSystemAppsIE]
-task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome]
-task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox]
-task test, dependsOn: testChrome
+task test, dependsOn: testPhantomJS
 
 
 task createSdkJsDocs, dependsOn: assembleSdk, {

@@ -51,6 +51,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	private MemoizedValue<ComputedValue> computedValue;
 	private List<String> requirePaths = new ArrayList<>();
+	public static final String JS_STYLE = "common-js";
 	
 	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;

@@ -50,9 +50,7 @@ Clicked.prototype.set = function(eElement, mArgs) {
 	try {
 		document.activeElement = eElement;
 	} catch (e) {
-		if (eElement.setActive) {
-			eElement.setActive()
-		}
+		setActive(eElement);
 	}
 
 	Utils.fireMouseEvent(eElement, 'click', mArgs);
@@ -73,6 +71,20 @@ Clicked.prototype.set = function(eElement, mArgs) {
 
 Clicked.prototype.get = function(eElement) {
 	throw new Errors.InvalidTestError("Clicked can't be used in a then clause.");
+};
+
+function setActive(eElement){
+	if (eElement.setActive) {
+		try {
+			eElement.setActive();
+		}
+		catch (e) //IE10 and IE11 occasionally throw invalid function error for setActive
+		{
+			if(eElement.focus){
+				eElement.focus();
+			}
+		}
+	}
 };
 
 module.exports = Clicked;

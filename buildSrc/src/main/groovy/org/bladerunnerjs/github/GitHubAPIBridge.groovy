@@ -47,6 +47,30 @@ class GitHubAPIBridge
 		this.authToken = authToken
 	}
 	
+	public List<String> getMilestoneIds(List<String> milestones)
+	{
+		def milestoneIds = []
+		for (String milestone : milestones) {
+			milestoneIds += getMilestoneId(milestone)
+		}
+		return milestoneIds
+	}
+	
+	public String getMilestoneId(String milestone)
+	{
+		logger.quiet "getting milestone ID for '${milestone}'"
+		
+		def response = doRequest(apiPrefix, "get", getRestUrl("milestones"), "state=all", JSON, null)
+		def jsonData = response.data
+		
+		for (def milestoneData : jsonData) {
+			if (milestoneData.title == milestone) {
+				return milestoneData.number
+			}
+		}
+		throw new GradleException("Unable to find the milestone ID for '${milestone}'.");
+	}
+	
 	public String getMilestonesUrl()
 	{
 		return getWebUrl("issues/milestones")

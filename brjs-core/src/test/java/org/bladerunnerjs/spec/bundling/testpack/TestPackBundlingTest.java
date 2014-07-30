@@ -29,11 +29,11 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void twoTestPacksCanHaveTestsWithTheSameRequirePath() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspectUTs).hasClass("appTestUtils.Class1")
-			.and(aspectATs).hasClass("appTestUtils.Class1")
-			.and(aspectUTs).testRefersTo("pkg/test.js", "appTestUtils.Class1");
+			.and(aspectUTs).hasClass("appns.appTestUtils.Class1")
+			.and(aspectATs).hasClass("appns.appTestUtils.Class1")
+			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.appTestUtils.Class1");
 		then(aspectUTs).bundledFilesEquals(
-				aspectUTs.testSource().file("appTestUtils/Class1.js"));
+				aspectUTs.testSource().file("appns/appTestUtils/Class1.js"));
 	}
 	
 	@Test
@@ -48,12 +48,12 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void srcTestCanLiveAtTestsAndTechnologyLevel() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspectUTs).hasClass("aspectUT.Class1")
+			.and(aspectUTs).hasClass("appns.aspectUT.Class1")
 			.and(aspect).hasTestClass("appns.Class1")
-			.and(aspectUTs).testRefersTo("pkg/test.js", "aspectUT.Class1")
-			.and(aspectUTs).classDependsOn("aspectUT.Class1", "appns.Class1");
+			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.aspectUT.Class1")
+			.and(aspectUTs).classDependsOn("appns.aspectUT.Class1", "appns.Class1");
 		then(aspectUTs).bundledFilesEquals(
-				aspectUTs.testSource().file("aspectUT/Class1.js"),
+				aspectUTs.testSource().file("appns/aspectUT/Class1.js"),
 				aspect.assetLocation("src-test").file("appns/Class1.js"));
 	}
 	
