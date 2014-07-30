@@ -76,12 +76,12 @@ class GitHubAPIBridge
 		return getWebUrl("issues/milestones")
 	}
 	
-	public String getMilestoneUrl(int milestoneId)
+	public String getMilestoneUrl(Object milestoneId)
 	{
 		return getWebUrl("issues?milestone=${milestoneId}")
 	}
 	
-	List<Issue> getClosedIssuesForMilestone(int milestoneID)
+	List<Issue> getClosedIssuesForMilestone(Object milestoneID)
 	{
 		logger.quiet "getting closed issues for milestoneID ${milestoneID}"
 		
