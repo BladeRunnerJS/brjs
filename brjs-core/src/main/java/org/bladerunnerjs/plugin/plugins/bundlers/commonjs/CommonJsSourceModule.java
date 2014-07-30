@@ -68,13 +68,9 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		try {
 			return bundlableNode.getLinkedAssets(assetLocation, requirePaths());
 		}
-		catch (UnresolvableRequirePathException e) {			
-			e.setSourceRequirePath(getPrimaryRequirePath());
-			throw new ModelOperationException(e);
-		}
-		catch (AmbiguousRequirePathException e) {			
-			e.setSourceRequirePath(getPrimaryRequirePath());
-			throw new ModelOperationException(e);
+		catch (AmbiguousRequirePathException | UnresolvableRequirePathException e) {
+		    e.setSourceRequirePath(getPrimaryRequirePath());
+		    throw new ModelOperationException(e);
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);

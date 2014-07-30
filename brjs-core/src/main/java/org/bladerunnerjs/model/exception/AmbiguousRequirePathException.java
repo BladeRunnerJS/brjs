@@ -12,7 +12,7 @@ public class AmbiguousRequirePathException extends RequirePathException {
 	
 	@Override
 	public String getMessage() {
-		return ((sourceRequirePath != null) ? "In '" + sourceRequirePath + "':" : "") + message;
+		return ((sourceRequirePath != null) ? "In '" + sourceRequirePath + "': " : "") + message;
 	}
 
 	public void setSourceRequirePath(String primaryRequirePath) {
