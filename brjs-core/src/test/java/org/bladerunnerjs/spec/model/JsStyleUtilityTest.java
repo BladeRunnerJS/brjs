@@ -48,9 +48,9 @@ public class JsStyleUtilityTest extends SpecTest {
 	@Test
 	public void styleNamesCanBeChangedAtMultipleLevels() throws Exception {
 		given(blade).containsFileWithContents(".js-style", "namespaced-js")
-			.and(bladeWorkbench).containsFileWithContents(".js-style", "node.js");
+			.and(bladeWorkbench).containsFileWithContents(".js-style", "common-js");
 		then(bladeset).jsStyleIs("common-js")
 			.and(blade).jsStyleIs("namespaced-js")
-			.and(bladeWorkbench).jsStyleIs("node.js");
+			.and(bladeWorkbench).jsStyleIs("common-js");
 	}
 }
