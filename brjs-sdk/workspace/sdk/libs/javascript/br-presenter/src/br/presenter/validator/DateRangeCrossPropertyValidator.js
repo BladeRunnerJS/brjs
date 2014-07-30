@@ -1,8 +1,5 @@
 /**
  * @private
- * @class
- * @constructor
- * @implements br.presenter.validator.CrossPropertyValidator
  */
 br.presenter.validator.DateRangeCrossPropertyValidator = function()
 {
@@ -12,15 +9,6 @@ br.Core.implement(br.presenter.validator.DateRangeCrossPropertyValidator, br.pre
 
 /**
  * @private
- * <p>The properties mapping is expected to look like this:</p>
- * <ul>
- *   <li>selectedDate: instance of {@link br.presenter.property.EditableProperty}</li>
- *   <li>startDate: instance of {@link br.presenter.property.ISODateProperty}</li>
- *   <li>endDate: instance of {@link br.presenter.property.ISODateProperty}</li>
- * </ul>
- * 
- * @param {Object} mProperties A named set of properties to validate.
- * @param {br.presenter.validator.ValidationResult} oValidationResult The result object that the outcome of the validation will be set on.
  */
 br.presenter.validator.DateRangeCrossPropertyValidator.prototype.validate = function(mProperties, oValidationResult)
 {

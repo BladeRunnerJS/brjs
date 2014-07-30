@@ -25,7 +25,7 @@ var Utility = require('br/core/Utility');
  * to be added to the test runner, enabling the testing and manipulation of the view and presentation model
  * of the component.</p>
  *
- * @implements br.test.Fixture
+ * @implements module:br/test/Fixture
  */
 function ComponentFixture(sXml, oModelFixture, oViewFixture) {
 	//TODO: This check should be an isA instead of a fulfills.

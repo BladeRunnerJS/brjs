@@ -58,7 +58,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
-		computedValue = new MemoizedValue<>("CommonJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
+		computedValue = new MemoizedValue<>(getAssetPath()+" - computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
 	}
 	
 	@Override
@@ -160,7 +160,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 			public Object get() throws ModelOperationException {
 				ComputedValue computedValue = new ComputedValue();
 				
-				try(Reader fileReader = new JsCommentStrippingReader(getReader(), false)) {
+				
+				try(Reader fileReader = new JsCommentStrippingReader(getReader(), false, assetLocation.root().getCharBufferPool())) {
 					StringWriter stringWriter = new StringWriter();
 					IOUtils.copy(fileReader, stringWriter);
 					

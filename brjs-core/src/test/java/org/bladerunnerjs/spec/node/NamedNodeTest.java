@@ -10,6 +10,8 @@ import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
+import org.bladerunnerjs.model.events.NodeDeletedEvent;
+import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsModelException;
 import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
@@ -207,11 +209,40 @@ public class NamedNodeTest extends SpecTest {
 	}
 	
 	@Test
-	public void observerIsNotNotifiedAutomaticallyOnCreate()
+	public void observerIsNotifiedAutomaticallyOnCreate()
 	{
 		given(observer).observing(brjs);
 		when(node).create();
 		then(observer).notified(NodeCreatedEvent.class, node)
+			.and(observer).noNotifications();
+	}
+	
+	@Test
+	public void observerIsNotifiedOnDelete()
+	{
+		given(observer).observing(brjs);
+		when(node).create()
+			.and(node).delete();
+		then(observer).notified(NodeDeletedEvent.class, node);
+	}
+	
+	@Test
+	public void nodesAreNotifiedWhenANodeIsDiscovered() throws Exception
+	{
+		given(super.testSdkDirectory).containsFile("apps/myApp/appContent.txt")
+			.and(observer).observing(brjs);
+		when(brjs.userApp("myApp"));
+		then(observer).notified(NodeDiscoveredEvent.class, brjs.userApp("myApp"));
+	}
+	
+	@Test
+	public void nodesAreNotNotifiedOfCeatedWhenANodeIsDiscovered() throws Exception
+	{
+		given(observer).observing(brjs);
+		when(super.testSdkDirectory).containsFile("apps/myApp/appContent.txt")
+			.and(brjs.userApp("myApp"));
+		then(observer).notified(NodeDiscoveredEvent.class, brjs.userApp("myApp"))
+			.and(observer).notified(NodeReadyEvent.class, brjs.userApp("myApp"))
 			.and(observer).noNotifications();
 	}
 	

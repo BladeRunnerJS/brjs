@@ -11,3 +11,5 @@ org.bladerunnerjs.plugin.plugins.commands.standard.BundleDepsCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.ApplicationDepsCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.WorkbenchDepsCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.DepInsightCommand
+org.bladerunnerjs.plugin.plugins.commands.standard.CopyBladesetCommand
+org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand

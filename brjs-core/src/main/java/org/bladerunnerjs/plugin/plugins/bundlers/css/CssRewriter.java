@@ -20,7 +20,7 @@ public class CssRewriter {
 			"(?!['\"])" + // prevent matching a ' or " at the start of the URL (needed because the " and ' in the above regex are optional
 			"(?![a-zA-Z]+://)" +	// prevent matching URLs with protocols		
 			"(?!/)" +	// prevent matching urls starting with a /
-			"(?!data:[a-zA-Z]+/[a-zA-Z]+;)"; 	// prevent matching URLs in the format of a data URI
+			"(?!data:[-+\\w]+/[-+\\w]+;)"; 	// prevent matching URLs in the format of a data URI
 	private static final Pattern URL_PATTERN = Pattern.compile(URL_PATTERN_START+PRE_PATTERN_NEGATIVE_LOOKAHEADS+"(.*?)"+URL_PATTERN_END, Pattern.CASE_INSENSITIVE);
 	private static final char[] postPathSymbols = new char[] { '?', '#' };
 	

@@ -5,7 +5,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -38,7 +37,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file1.js, file2.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("file1.js", "file2.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
-		when(aspect).requestReceived("thirdparty/thirdparty-lib/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("file1.js", "file2.js");
 	}
 	
@@ -47,7 +46,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file1.js, file3.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("file1.js", "file2.js", "file3.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
-		when(aspect).requestReceived("thirdparty/thirdparty-lib/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("file1.js", "file3.js")
 			.and(pageResponse).doesNotContainText("file2.js");
 	}
@@ -57,7 +56,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFiles("file1.js", "file2.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
-		when(aspect).requestReceived("thirdparty/thirdparty-lib/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("file1.js", "file2.js");
 	}
 	
@@ -68,7 +67,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib2).containsFileWithContents("thirdparty-lib.manifest", "exports: lib")
 			.and(thirdpartyLib2).containsFiles("lib2-file1.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
-		when(aspect).requestReceived("thirdparty/thirdparty-lib/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("lib1-file1.js", "lib1-file2.js")
 			.and(pageResponse).doesNotContainText("lib2-file1.js");
 	}
@@ -82,7 +81,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("ingoredFile.xml", "appns.class1'")
 			.and(aspect).hasClass("appns/class1")
 			.and(aspect).indexPageHasContent("require('"+thirdpartyLib.getName()+"')");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
 		then(pageResponse).containsText("file1.js")
 			.and(pageResponse).doesNotContainText("appns.class1");
 	}
@@ -94,7 +93,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib2).containsFileWithContents("thirdparty-lib.manifest", "exports: lib\n"+"exports: lib")
 			.and(thirdpartyLib2).containsFiles("lib2-file1.js")
 			.and(aspect).indexPageRequires(thirdpartyLib);
-		when(aspect).requestReceived("thirdparty/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("lib2-file1", "lib1-file1", "lib1-file2");
 	}
 	
@@ -103,7 +102,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: src1.js, lib/src2.js, lib/dir/src3.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("src1.js", "lib/src2.js", "lib/dir/src3.js")
 			.and(aspect).indexPageRequires(thirdpartyLib);
-		when(aspect).requestReceived("thirdparty/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("src1.js", "lib/src2.js", "lib/dir/src3.js");
 	}
 	
@@ -112,33 +111,10 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: lib.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("lib.js", "X-lib.js", "Y-lib.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
-		when(aspect).requestReceived("thirdparty/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("lib.js")
 			.and(pageResponse).doesNotContainText("X-lib.js")
 			.and(pageResponse).doesNotContainText("Y-lib.js");
-	}
-	
-	@Test
-	public void assetsInALibCanBeRequestedIndividually() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("/some/lib/dirs/some-file.ext", "some file contents");
-		when(aspect).requestReceived("thirdparty/thirdparty-lib/some/lib/dirs/some-file.ext", pageResponse);
-		then(pageResponse).textEquals("some file contents");
-	}
-	
-	@Test
-	public void testLibraryResourceForLibraryPresentBothInAppAndSdkIsBundledFromApp() throws Exception
-	{
-		JsLib appLib = app.jsLib("lib1");
-		JsLib sdkLib = brjs.sdkLib("lib1");
-		
-		given(appLib).hasBeenCreated()
-			.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "js: app-lib.js")
-			.and(appLib).containsFile("app-lib.js")
-			.and(sdkLib).hasBeenCreated()
-			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "js: sdk-lib.js")
-			.and(sdkLib).containsFile("sdk-lib.js");
-		when(aspect).requestReceived("thirdparty/lib1/app-lib.js", pageResponse);
-		then(pageResponse).textEquals("app-lib.js\n");
 	}
 	
 	@Test
@@ -149,25 +125,8 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		given(appLib).hasBeenCreated()
 			.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "js: myFile.js")
 			.and(appLib).containsFile("myFile.js");
-		when(aspect).requestReceived("thirdparty/myLib/myFile.js?q=1234", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/myLib/myFile.js?q=1234", pageResponse);
 		then(exceptions).verifyException(MalformedRequestException.class);
-	}
-	
-	@Test
-	public void weGetAGoodMessageIfTheLibraryDoesntExist() throws Exception
-	{
-		given(app).hasBeenCreated();
-		when(aspect).requestReceived("thirdparty/libThatDoesntExist/myFile.js", pageResponse);
-		then(exceptions).verifyException(ContentProcessingException.class, "libThatDoesntExist");
-	}
-	
-	@Test
-	public void weGetAGoodMessageIfTheFileInTheLibraryDoesntExist() throws Exception
-	{
-		given(app).hasBeenCreated()
-			.and(thirdpartyLib).hasBeenCreated();
-		when(aspect).requestReceived("thirdparty/thirdparty-lib/myFile.js", pageResponse);
-		then(exceptions).verifyException(ContentProcessingException.class, thirdpartyLib.file("myFile.js").getAbsolutePath());
 	}
 	
 	@Test
@@ -177,7 +136,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires(thirdpartyLib)
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file.js", "$£€");
-		when(aspect).requestReceived("thirdparty/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("$£€");
 	}
 	
@@ -188,7 +147,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires(thirdpartyLib)
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file.js", "$£");
-		when(aspect).requestReceived("thirdparty/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("$£");
 	}
 	
@@ -199,7 +158,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires(thirdpartyLib)
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file.js", "$£€");
-		when(aspect).requestReceived("thirdparty/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("$£€");
 	}
 	
@@ -209,7 +168,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: doesnt-exist.js\n"+"exports: lib");
-		when(aspect).requestReceived("thirdparty/thirdparty-lib/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
 		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "apps/app1/libs/thirdparty-lib/thirdparty-lib.manifest");
 	}
 	
@@ -220,7 +179,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires(thirdpartyLib)
 			.and(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: invalid-lib\n"+"exports: lib");
-		when(aspect).requestReceived("thirdparty/bundle.js", pageResponse);
+		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
 		then(exceptions).verifyException(ConfigException.class, "thirdparty-lib", "invalid-lib");
 	}
 	
@@ -230,7 +189,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "")
     		.and(thirdpartyLib).containsFiles("file1.js")
     		.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
-    	when(aspect).requestReceived("thirdparty/thirdparty-lib/bundle.js", pageResponse);
+    	when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
     	then(pageResponse).containsText("file1.js")
     		.and(exceptions).verifyNoOutstandingExceptions();
 	}

@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bladerunnerjs.utility.SizedStack;
+import org.bladerunnerjs.utility.TailBuffer;
 
 /*
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
@@ -28,16 +28,18 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	private static final Pattern INLINE_MAP_DEFINITION_REGEX_PATTERN = Pattern.compile(INLINE_MAP_DEFINITION_REGEX);
 	
 	private final Reader sourceReader;
-	private final char[] sourceBuffer = new char[4096];
 	// buffer the length of the function definition + 10 to allow for things like new(<IIFE>) etc.
-	private final SizedStack<Character> lookbehindBuffer = new SizedStack<>( SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 10); 
+	private final TailBuffer tailBuffer = new TailBuffer(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 10 + 1);
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private int depthCount = 0;
+	private CharBufferPool pool;
 	
-	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader) {
+	
+	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, CharBufferPool pool) {
 		super();
 		this.sourceReader = sourceReader;
+		this.pool = pool;
 	}
 	
 	@Override
@@ -49,6 +51,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
+		char[] sourceBuffer = pool.getBuffer();
 		
 		while(currentOffset < maxOffset) {
 			if (nextCharPos == lastCharPos) {
@@ -61,7 +64,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			}
 			
 			nextChar = sourceBuffer[nextCharPos++];
-			lookbehindBuffer.push(nextChar);
+			tailBuffer.push(nextChar);
 			
 			if (depthCount == 0) {
 				destBuffer[currentOffset++] = nextChar;
@@ -83,6 +86,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			}
 		}
 		
+		pool.returnBuffer(sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}
@@ -93,14 +97,15 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	}
 	
 	private boolean isImmediatelyInvokingFunction() {
-		Matcher immedidatelyInvokingFunctionMatcher = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher( lookbehindBuffer.toString() );
+		String tail = new String(tailBuffer.toArray());
+		Matcher immedidatelyInvokingFunctionMatcher = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(tail);
 		
 		return immedidatelyInvokingFunctionMatcher.matches();
 	}
 	
 	private boolean isInlineMapDefiniton() {
-		Matcher inlineMapDefinitionMatcher = INLINE_MAP_DEFINITION_REGEX_PATTERN.matcher( lookbehindBuffer.toString() );
-		
+		String tail = new String(tailBuffer.toArray());
+		Matcher inlineMapDefinitionMatcher = INLINE_MAP_DEFINITION_REGEX_PATTERN.matcher( tail );
 		return inlineMapDefinitionMatcher.find();
 	}
 }

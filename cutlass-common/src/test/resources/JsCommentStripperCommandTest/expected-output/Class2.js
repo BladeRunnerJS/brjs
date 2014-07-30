@@ -1,3 +1,0 @@
-
-Class2 = function() {
-};

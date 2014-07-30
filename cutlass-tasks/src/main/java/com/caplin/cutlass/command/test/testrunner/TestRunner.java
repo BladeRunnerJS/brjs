@@ -27,7 +27,7 @@ import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
+import org.bladerunnerjs.model.exception.test.BrowserStartupException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
 import com.caplin.cutlass.CutlassConfig;
@@ -130,6 +130,7 @@ public class TestRunner {
 			try {
 				Thread.sleep(DEFAULT_SLEEP_TIME); // slight pause before we display message in case there is any browser output
 				logger.println("Server running on port " + config.getPortNumber() + ", " + Messages.SERVER_STOP_INSTRUCTION_MESSAGE);
+				logger.println("Connect a browser to the server by visiting http://localhost:"+config.getPortNumber()+"/capture");
 				logger.println("");
 				
 				while(System.in.available() == 0) {
@@ -448,10 +449,8 @@ public class TestRunner {
 			}
 			catch (IOException e)
 			{
-				String browserString = browser == null ? "" : "'" + browser + "' "; 
-				throw new BrowserNotFoundException(browserString, config.getRelativeDir().getPath());
+				throw new BrowserStartupException(e, args, config.getRelativeDir().getPath());
 			}
-			
 		}
 		waitForServer(browsers.size());
 	}
@@ -555,7 +554,7 @@ public class TestRunner {
 	}
 	
 	private String verboseFlag() {
-		return (verbose) ? "--info" : "";
+		return (verbose) ? "--verbose" : "";
 	}
 	
 	private String getClassPath(File testRunnnerDependencies) {

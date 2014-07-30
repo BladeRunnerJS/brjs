@@ -12,22 +12,14 @@ import com.esotericsoftware.yamlbeans.YamlReader;
 import com.esotericsoftware.yamlbeans.YamlReader.YamlReaderException;
 
 public class ConfFactory {
-	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, File confFile) throws ConfigException {
+	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, File confFile, String defaultFileCharacterEncoding) throws ConfigException {
 		CF conf = null;
-		// TODO: get rid of `node == null` guard once we delete non brjs-core code
-		String defaultFileCharacterEncoding = ((node == null) || confFile.getName().equals("brjs.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		
-		String absoluteFile = confFile.getAbsolutePath();
-//		System.out.println(absoluteFile);
-		if(absoluteFile.equals("/Users/jamest/Documents/Code/brjs/cutlass-sdk/workspace/sdk/libs/javascript/br/br-lib.conf")){
-//			System.out.println(absoluteFile);
-		}
 		if(confFile.exists()) {
-			conf = readConf(confFile, confClass, defaultFileCharacterEncoding);
+			conf = readConf(node, confFile, confClass, defaultFileCharacterEncoding);
 		}
 		else {
-			conf = newConf(confClass);
-			
+			conf = newConf(node, confClass);
 		}
 		
 		conf.setNode(node);
@@ -37,13 +29,13 @@ public class ConfFactory {
 		return conf;
 	}
 	
-	private static <CF extends AbstractYamlConfFile>  CF newConf(Class<CF> confClass)
+	private static <CF extends AbstractYamlConfFile>  CF newConf(BRJSNode node, Class<CF> confClass)
 	{
 		CF conf = null;
 		
 		try {
 			conf = confClass.newInstance();
-			conf.initialize();
+			conf.initialize(node);
 		}
 		catch(InstantiationException | IllegalAccessException e) {
 			throw new RuntimeException(e);
@@ -51,7 +43,7 @@ public class ConfFactory {
 		return conf;
 	}
 	
-	private static <CF extends AbstractYamlConfFile> CF readConf(File confFile, Class<CF> confClass, String defaultFileCharacterEncoding) throws ConfigException
+	private static <CF extends AbstractYamlConfFile> CF readConf(BRJSNode node, File confFile, Class<CF> confClass, String defaultFileCharacterEncoding) throws ConfigException
 	{
 		CF conf;
 		
@@ -60,12 +52,12 @@ public class ConfFactory {
 			
 			try(Reader fileReader = new UnicodeReader(confFile, defaultFileCharacterEncoding)) {
 				if(!fileReader.ready()) {
-					return newConf(confClass);
+					return newConf(node, confClass);
 				}
 				
 				reader = new YamlReader(fileReader);
 				conf = reader.read(confClass);
-				conf.initialize();
+				conf.initialize(node);
 			}
 			finally {
 				if(reader != null) {

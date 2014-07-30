@@ -48,7 +48,7 @@ public class BundleCachingTest extends SpecTest
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
 		when(aspect).indexPageRefersTo("appns.Class2")
-			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.Class2")
 			.and(response).doesNotContainText("appns.Class1");
 	}
@@ -65,7 +65,7 @@ public class BundleCachingTest extends SpecTest
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file1.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file1.js", "thirdpartyLib content")
 			.and(aspect).classDependsOnThirdpartyLib("appns.Class1", thirdpartyLib)
-			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				"// thirdpartyLib", 
 				"thirdpartyLib content", 
@@ -80,7 +80,7 @@ public class BundleCachingTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.Class1")
 			.and(aspect).hasReceivedRequest("js/dev/combined/bundle.js");
 		when(aspect).resourceFileRefersTo("html/view.html", "appns.Class2")
-			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainText("appns.Class1")
 			.and(response).containsCommonJsClasses("appns.Class2");
 	}
@@ -90,7 +90,7 @@ public class BundleCachingTest extends SpecTest
 		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='appns.view'>TESTCONTENT</div>")
 			.and(aspect).hasReceivedRequest("html/bundle.html");
 		when(aspect).resourceFileContains("html/subdir/extradir/view.html", "<div id='appns.foo'>NEWCONTENT</div>")
-			.and(aspect).requestReceived("html/bundle.html", response);
+			.and(aspect).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsText("TESTCONTENT")
 			.and(response).containsText("NEWCONTENT");
 	}
@@ -104,7 +104,7 @@ public class BundleCachingTest extends SpecTest
 			.and(aspect).indexPageHasContent(
 					"require('appns/widget/time/Class1');\n" +
 					"require('appns/widget/time/Class2');")
-			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("this is class1")
 			.and(response).containsText("this is class2");
 	}
@@ -117,7 +117,7 @@ public class BundleCachingTest extends SpecTest
 			.and(userJquery).containsFileWithContents("jquery.js", "USER jquery-content")
 			.and(aspect).indexPageHasContent("require('jquery');")
 			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("USER jquery-content")
 			.and(response).doesNotContainText("SDK jquery-content");
 	}

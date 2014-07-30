@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
-import org.dom4j.DocumentException;
 
 public abstract class AbstractBrowsableNode extends AbstractBundlableNode implements BrowsableNode {
 	public AbstractBrowsableNode(RootNode rootNode, Node parent, File dir) {
@@ -22,7 +21,7 @@ public abstract class AbstractBrowsableNode extends AbstractBundlableNode implem
 		try {
 			TagPluginUtility.filterContent(indexPage, getBundleSet(), writer, requestMode, locale, version);
 		}
-		catch (IOException | NoTagHandlerFoundException | DocumentException e) {
+		catch (IOException | NoTagHandlerFoundException e) {
 			throw new ModelOperationException(e);
 		}
 	}

@@ -60,7 +60,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 			.and(workbench).hasClass("appns.bs.b1.workbench.Class1")
 			.and(workbench).containsFileWithContents("resources/style.css", "WORKBENCH theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1 appns.bs.b1.workbench.Class1");	
-		when(workbench).requestReceived("css/standard/bundle.css", response);
+		when(workbench).requestReceivedInDev("css/standard/bundle.css", response);
 		then(response).containsOrderedTextFragments("ASPECT theme content",
 													"BLADESET theme content",
 													"BLADE theme content");
@@ -71,7 +71,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	public void workbenchesAlwaysLoadsCommonCssFromTheAspectLevel() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content");
-		when(workbench).requestReceived("css/standard/bundle.css", response);
+		when(workbench).requestReceivedInDev("css/standard/bundle.css", response);
 		then(response).containsText("ASPECT theme content");
 	}
 	
@@ -83,7 +83,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 			.and(blade2).hasClass("appns/bs/b2/Class1")
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");	
-		when(workbench).requestReceived("js/dev/combined/bundle.js", response);		
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);		
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -104,7 +104,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 			.and(sdkLib).containsFileWithContents("themes/standard/style.css", "LIB theme content")
 			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: sdkLib")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1 sdkLib.Class1");	
-		when(aspect).requestReceived("css/standard/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/standard/bundle.css", response);
 		then(response).containsOrderedTextFragments("LIB theme content",
 													"BLADE theme content",
 													"BLADESET theme content",

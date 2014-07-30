@@ -49,6 +49,7 @@ public class ServletContentAccessor extends StaticContentAccessor
 		try {
 			if (urlPath.endsWith(".jsp")) {
 				urlPath = (!urlPath.startsWith("/")) ? "/"+urlPath : urlPath;
+				request.setAttribute(BRJSDevServletFilter.IGNORE_REQUEST_ATTRIBUTE, true);
     			servletContext.getRequestDispatcher(urlPath).forward(request, response);
     		} else {
     			super.writeLocalUrlContentsToOutputStream(urlPath, output);

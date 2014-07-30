@@ -18,7 +18,9 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BrowsableNode;
+import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
@@ -30,6 +32,7 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 
@@ -56,16 +59,44 @@ public class AppRequestHandler
 	public AppRequestHandler(App app)
 	{
 		this.app = app;
-		contentPathParser = new MemoizedValue<>("AppRequestHandler.contentPathParser", app.root(), app.dir());
+		contentPathParser = new MemoizedValue<>(app.getName()+" - AppRequestHandler.contentPathParser", app.root(), app.dir());
 	}
 
 	public boolean canHandleLogicalRequest(String requestPath)
 	{
-		return getContentPathParser().canParseRequest(requestPath);
+		boolean canHandleRequest = getContentPathParser().canParseRequest(requestPath);
+		if (canHandleRequest) {
+			ParsedContentPath parsedRequest = parseRequest(requestPath);
+			if (parsedRequest.formName.equals(UNVERSIONED_BUNDLE_REQUEST)) {
+				/* since unversioned requests (/myApp/somePlugin/file.txt) could also be a request to a custom servlet
+				 * if the request type is an unversioned bundle request we must first check that a content plugin can ultimately handle it
+				 */
+				String contentPath = parsedRequest.properties.get("content-path");
+				ContentPlugin contentProvider = app.root().plugins().contentPluginForLogicalPath(contentPath);
+				if (contentProvider == null) {
+					return false;
+				}
+				return true;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private ParsedContentPath parseRequest(String requestPath)
+	{
+		try
+		{
+			return getContentPathParser().parse(requestPath);
+		}
+		catch (MalformedRequestException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
-	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		ParsedContentPath parsedContentPath = getContentPathParser().parse(requestPath);
+	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException {
+		ParsedContentPath parsedContentPath = parseRequest(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
 
@@ -75,7 +106,7 @@ public class AppRequestHandler
 		{
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.root(), contentAccessor, devVersion);
+				return getLocaleForwardingPageContent(app.root(), app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
 
 			case INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
@@ -115,8 +146,7 @@ public class AppRequestHandler
 			
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
-			String browserCharacterEncoding = browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding();
-			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, browserCharacterEncoding)) {
+			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, BladerunnerConf.OUTPUT_ENCODING)) {
 				browsableNode.filterIndexPage(indexPageContent.toString(), locale, version, writer, requestMode);
 			}
 
@@ -147,7 +177,7 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public ResponseContent getLocaleForwardingPageContent(BRJS brjs, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent getLocaleForwardingPageContent(BRJS brjs, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		StringWriter localeForwardingPage = new StringWriter();
 		
 		SdkJsLib localeForwarderLib = app.root().sdkLib(BR_LOCALE_UTILITY_LIBNAME);
@@ -156,7 +186,15 @@ public class AppRequestHandler
 			localeForwardingPage.write("<head>\n");
 			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			localeForwardingPage.write("<script type='text/javascript'>\n");
-			IOUtils.write(AppMetadataUtility.getBundlePathJsData(app, version), localeForwardingPage);
+			
+			ContentPlugin appVersionContentPlugin = brjs.plugins().contentPlugin("app-meta");
+			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.getContentPathParser();
+			String appVersionContentPath = appVersionContentPathParser.createRequest("app-meta-request");
+			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPathParser.parse(appVersionContentPath), bundleSet, contentAccessor, appVersionContentPath);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			responseContent.write(baos);
+			localeForwardingPage.write( baos.toString() );
+			
 			localeForwardingPage.write("\n");
 			IOUtils.copy(localeForwarderReader, localeForwardingPage);
 			localeForwardingPage.write("\n");			
@@ -174,7 +212,7 @@ public class AppRequestHandler
 			
 			return new CharResponseContent( brjs, localeForwardingPage.toString() );
 		}
-		catch (IOException | ConfigException e) {
+		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException e) {
 			throw new ContentProcessingException(e);
 		}
 	}
@@ -184,14 +222,17 @@ public class AppRequestHandler
 		return contentPathParser.value(() -> {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
-				// NOTE: <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
+				/* NOTE: 
+				 * - <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
+				 * - ordering is important here, if two URLs share a similar format, the first type wins
+				 */
 				.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
 					.and("<aspect><locale>/").as(INDEX_PAGE_REQUEST)
-					.and("<aspect>static/<content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
+					.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
+					.and("<aspect><bladeset>/<blade>/workbench/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
+					.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
 					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
-					.and("<aspect>workbench/<bladeset>/<blade>/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
-					.and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
-					.and("<aspect>workbench/<bladeset>/<blade>/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
+					.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
 				.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
 					.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)

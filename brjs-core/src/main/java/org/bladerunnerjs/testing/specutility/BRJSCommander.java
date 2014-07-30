@@ -111,7 +111,9 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 			{
 				try
 				{
+					specTest.logging.storeLogsIfEnabled();
 					runCommand(args);
+					specTest.logging.stopStoringLogs();
 				}
 				catch (Exception e)
 				{

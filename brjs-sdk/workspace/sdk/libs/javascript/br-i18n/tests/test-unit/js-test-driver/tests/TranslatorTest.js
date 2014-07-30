@@ -332,3 +332,18 @@ TranslatorTest.prototype.test_tokenExistsWithCamelCaseTokens = function() {
 
 	assertTrue(translator.tokenExists(token));
 };
+
+TranslatorTest.prototype.test_parseNumberWorks = function() {
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(this.i18nTimeDateNumberMessages);
+
+	assertEquals(translator.parseNumber('not-a-number'), null);
+	assertEquals(translator.parseNumber('1000'), 1000);
+	assertEquals(translator.parseNumber('1,000'), 1000);
+	assertEquals(translator.parseNumber('1,000.00'), 1000);
+	assertEquals(translator.parseNumber('1,000.'), 1000);
+	assertEquals(translator.parseNumber('1000.'), 1000);
+	assertEquals(translator.parseNumber('1,000.50'), 1000.50);
+	assertEquals(translator.parseNumber('1000.50'), 1000.50);
+	assertEquals(translator.parseNumber('1,000,000'), 1000000);
+};

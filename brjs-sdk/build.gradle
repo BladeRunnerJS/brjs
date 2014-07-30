@@ -39,8 +39,8 @@ dependencies {
 	testRunner project(path: ':brjs-logger-binding')
 	testRunner files('build-resources/JsTestDriver.conf')
 
-	browsers_dep dependency('chrome-stable')
-	browsers_dep dependency('firefox-stable')
+	browsers_dep dependency('chrome')
+	browsers_dep dependency('firefox')
 
 	browsers_webdriver dependency('firefox-webdriver')
 }
@@ -52,6 +52,9 @@ task copyBrowsers(type: Sync) {
 	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
 	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
 	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
+	eachFile {
+		it.path = it.path.replaceAll("-[0-9\\.]+/", "/") // strip the version string
+	}
 	into browserRootDir
 	doLast {
 		//TODO: this should probabaly be done in a task listener
@@ -158,7 +161,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	file("workspace/apps").listFiles().each {
 		if (it.isDirectory()) {
 			into ("apps/${it.name}/WEB-INF/lib") {
-				from configurations.systemAppServlets
+				from configurations.application
 				rename { String fileName ->
 					if ( !fileName.startsWith("brjs-") )
 					{
@@ -309,7 +312,7 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	from "workspace/"
 	into "BladeRunnerJS/"
 	include "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
-	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**", "**/*_NODIST/*"
+	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/libs/**/src-test/*", "**/system-applications/**/tests/*", "**/system-applications/**/src-test/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/libs/javascript/**node_modules/**", "**/*_NODIST/*"
 }
 build.dependsOn distZip
 distZip.mustRunAfter test
@@ -359,6 +362,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/docs/java/**/*",
 		"*/sdk/docs/js/*",
 		"*/sdk/docs/js/**/*",
+		"*/sdk/jsdoc-toolkit-resources/**",
+		"*/sdk/jsdoc-toolkit-resources/jsdoc-toolkit/node_modules/**",
 		"*/README.txt",
 		"*/LICENSE",
 		"*/apps/apps.txt"
@@ -375,11 +380,13 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	   "**/js-test-driver/bundles/**/*",
 	   "**/libs/**/tests/**/*",
 	   "**/system-applications/**/tests/**/*",
+	   "**/system-applications/**/src-test/**/*",
 	   "*/sdk/libs/javascript/**/tests/**",
+	   "*/sdk/libs/javascript/**/src-test/**",
 	   "*/sdk/libs/javascript/thirdparty/**",
 	   "*/sdk/libs/javascript/br-libs/**",
 	   "*/sdk/run*",
-	   "**/node_modules/**",
+	   "*/sdk/libs/**/node_modules/**",
 	   "*/apps/*/*",
 	   "**/*_NODIST/**"
 	]
