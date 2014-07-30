@@ -2,7 +2,11 @@ package org.bladerunnerjs.spec.plugin.bundler.commonjs;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +16,8 @@ public class CommonJsContentPluginTest extends SpecTest {
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
 	private JsLib sdkJsLib;
+	private Bladeset bladeset;
+	private Blade blade;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -21,6 +27,8 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			bladeset = app.bladeset("bs");
+			blade = bladeset.blade("b1");
 			sdkJsLib = brjs.sdkLib("sdkLib");
 	}
 	
@@ -79,6 +87,41 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "require('sdkLib/Class2')");
 		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("define('sdkLib/Class2'");
+	}
+	
+	@Test 
+	public void unresolvableRequirePathExceptionContainsFilePath() throws Exception{
+		given(aspect).indexPageRequires("appns/Class")
+			.and(aspect).classFileHasContent("appns/Class", "require('randomStuff')");
+		when(aspect).requestReceivedInDev("node-js/bundle.js", requestResponse);
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "randomStuff", "appns/Class" );
+	}
+	
+	@Test 
+	public void ambiguousRequirePathExceptionThrownFromIndexContainsFilePath() throws Exception{
+		given(aspect).indexPageRequires("appns/bs/b1/Class")
+			.and(aspect).hasClass("appns/bs/b1/Class")
+			.and(bladeset).hasBeenCreated() 
+			.and(blade).hasClass("appns/bs/b1/Class");
+		when(aspect).requestReceivedInDev("node-js/bundle.js", requestResponse);
+		then(exceptions).verifyException(AmbiguousRequirePathException.class, 	"default-aspect/index.html",
+																					"bs-bladeset/blades/b1/src/appns/bs/b1/Class.js",
+																					"default-aspect/src/appns/bs/b1/Class.js",
+																					"appns/bs/b1/Class");
+	}
+	
+	@Test 
+	public void ambiguousRequirePathExceptionThrownFromSourceModuleContainsFilePath() throws Exception{
+		given(aspect).indexPageRequires("appns/Class")
+			.and(aspect).classRequires("appns/Class", "appns/bs/b1/Class")
+			.and(aspect).hasClass("appns/bs/b1/Class")
+			.and(bladeset).hasBeenCreated() 
+			.and(blade).hasClass("appns/bs/b1/Class");
+		when(aspect).requestReceivedInDev("node-js/bundle.js", requestResponse);
+		then(exceptions).verifyException(AmbiguousRequirePathException.class, 	"appns/Class",
+																					"bs-bladeset/blades/b1/src/appns/bs/b1/Class.js",
+																					"default-aspect/src/appns/bs/b1/Class.js",
+																					"appns/bs/b1/Class");
 	}
 	
 }

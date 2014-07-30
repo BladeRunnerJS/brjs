@@ -95,16 +95,14 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 						locationAsset.getAssetPath() + "' source files both available via require path '" +
 						requirePath + "'.");
 				}
-			}
-			
-		}
-		
+			}			
+		}		
 		
 		if(asset == null) {
 			throw new UnresolvableRequirePathException(requirePath);
 		}
 		
-		return asset   ;
+		return asset;
 	}
 	
 	@Override

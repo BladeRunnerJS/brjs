@@ -25,9 +25,11 @@ import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
+import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -66,6 +68,10 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
 			return bundlableNode.getLinkedAssets(assetLocation, requirePaths());
+		}
+		catch (AmbiguousRequirePathException | UnresolvableRequirePathException e) {
+		    e.setSourceRequirePath(getPrimaryRequirePath());
+		    throw new ModelOperationException(e);
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
