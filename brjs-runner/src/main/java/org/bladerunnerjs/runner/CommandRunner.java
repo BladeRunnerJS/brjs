@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.plugin.utility.PluginLocatorUtils;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.command.test.TestCommand;

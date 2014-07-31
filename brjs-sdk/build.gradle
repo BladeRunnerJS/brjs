@@ -253,7 +253,7 @@ task createSdkJsDocs, dependsOn: assembleSdk, {
 	}
 	doLast {
 		delete file("workspace/apps/${jsDocTmpAppName}")
-	}
+	} 
 }
 
 
