@@ -10,6 +10,7 @@ import java.util.Set;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -19,12 +20,14 @@ public class AliasDefinitionsFile {
 	private AliasDefinitionsData data = new AliasDefinitionsData();
 	private final File aliasDefinitionsFile;
 	private final InfoFileModifiedChecker fileModifiedChecker;
+	private final MemoizedValue<AliasDefinitionsData> aliasDefinitionsData;
 	private AssetLocation assetLocation;
 	
 	public AliasDefinitionsFile(AssetLocation assetLocation, File parent, String child) {
 		this.assetLocation = assetLocation;
 		aliasDefinitionsFile = new File(parent, child);
 		fileModifiedChecker = new InfoFileModifiedChecker(assetLocation.root().getFileInfo(aliasDefinitionsFile));
+		aliasDefinitionsData = new MemoizedValue<>("AliasDefinitionsFile.aliasDefinitionsData", assetLocation.root(), assetLocation.assetContainer().dir(), assetLocation.root().file("conf/brjs.conf"));
 	}
 	
 	public File getUnderlyingFile() {
@@ -153,7 +156,14 @@ public class AliasDefinitionsFile {
 	}
 	
 	private void read() throws ContentFileProcessingException {
-		data = AliasDefinitionsReader.read(aliasDefinitionsFile, assetLocation, getCharacterEncoding());
+//		data = AliasDefinitionsReader.read(aliasDefinitionsFile, assetLocation, getCharacterEncoding());
+		data = getAliasDefinitionsData();
+	}
+	
+	private AliasDefinitionsData getAliasDefinitionsData() throws ContentFileProcessingException {
+		return aliasDefinitionsData.value(() -> {
+			return AliasDefinitionsReader.read(aliasDefinitionsFile, assetLocation, getCharacterEncoding());
+		});
 	}
 	
 	private String getCharacterEncoding() {
