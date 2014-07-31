@@ -29,6 +29,7 @@ public class ServedAppTest extends SpecTest
 	ServerSocket socket;
 	StringBuffer response = new StringBuffer();
 	DirNode sdkLibsDir;
+	private Aspect anotherAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -46,6 +47,7 @@ public class ServedAppTest extends SpecTest
 			app = brjs.userApp("app");
 			systemApp = brjs.systemApp("app");
 			aspect = app.aspect("default");
+			anotherAspect = app.aspect("another");
 			systemAspect = systemApp.aspect("default");
 			blade = app.bladeset("bs").blade("b1");
 			workbench = blade.workbench();
@@ -80,14 +82,41 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/en/", "aspect index.html");
 	}
 	
-	@Ignore // Failure test case for #712
 	@Test
-	public void indexPageCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
+	public void localeForwarderPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(appServer).started();
+		then(appServer).requestIs302Redirected("/app", "/app/");
+	}
+	
+	@Test
+	public void indexPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
 		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en", "aspect index.html");
+		then(appServer).requestIs302Redirected("/app/en", "/app/en/");
+	}
+	
+	@Test
+	public void localeForwarderPageOfANonDefaultAspectCanBeAccessedWithoutEndingInForwardSlash() throws Exception
+	{
+		given(app).hasBeenPopulated()
+    		.and(anotherAspect).hasBeenPopulated()
+			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(appServer).started();
+		then(appServer).requestIs302Redirected("/app/another", "/app/another/");
+	}
+	
+	@Test
+	public void indexPageOfANonDefaultAspectCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(anotherAspect).containsFileWithContents("index.html", "aspect index.html")
+			.and(appServer).started();
+		then(appServer).requestIs302Redirected("/app/another/en", "/app/another/en/");
 	}
 	
 	@Test
@@ -207,7 +236,7 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).containsFileWithContents("unbundled-resources/file.jsp", "<% response.sendRedirect(\"/\");  %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlHasResponseCode("/app/v/123/unbundled-resources/file.jsp", 302)
-			.and(appServer).requestIsRedirected("/app/v/123/unbundled-resources/file.jsp", "/");
+			.and(appServer).requestIs302Redirected("/app/v/123/unbundled-resources/file.jsp", "/");
 	}
 	
 	@Test

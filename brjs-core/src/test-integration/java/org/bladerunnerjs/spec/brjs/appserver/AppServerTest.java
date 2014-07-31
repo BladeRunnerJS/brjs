@@ -77,7 +77,7 @@ public class AppServerTest extends SpecTest
 			.and(app1).hasBeenCreated();
 		when(appServer).started();
 		then(appServer).requestCanBeMadeFor("/app1")
-			.and(appServer).requestIsRedirected("/","/dashboard")
+			.and(appServer).requestIs302Redirected("/","/dashboard")
 			.and(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
 			.and(logging).debugMessageReceived(DEPLOYING_APP_MSG, "app1");
@@ -159,7 +159,7 @@ public class AppServerTest extends SpecTest
 	public void rootContextRedirectsToDashboard() throws Exception
 	{
 		given(appServer).started();
-		then(appServer).requestIsRedirected("/","/dashboard");
+		then(appServer).requestIs302Redirected("/","/dashboard");
 	}
 	
 	@Test
