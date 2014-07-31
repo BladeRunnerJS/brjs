@@ -1,7 +1,6 @@
 package org.bladerunnerjs.aliasing.aliases;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -11,31 +10,19 @@ import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.utility.FileModifiedChecker;
 
 public class AliasesFile {
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
 	
-	private AliasesData data = new AliasesData();
 	private final File file;
-	private final FileModifiedChecker fileModifiedChecker;
-	private BundlableNode bundlableNode;
-
-	private final String defaultFileCharacterEncoding;
+	private final BundlableNode bundlableNode;
+	private final AliasData aliasData;
 	
 	public AliasesFile(File parent, String child, BundlableNode bundlableNode) {
-		try {
-			this.bundlableNode = bundlableNode;
-			file = new File(parent, child);
-			fileModifiedChecker = new FileModifiedChecker(file);
-			
-			defaultFileCharacterEncoding = bundlableNode.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
+		this.bundlableNode = bundlableNode;
+		file = new File(parent, child);
+		aliasData = new AliasData(bundlableNode.root(), file);
 	}
 	
 	public File getUnderlyingFile() {
@@ -43,39 +30,29 @@ public class AliasesFile {
 	}
 	
 	public String scenarioName() throws ContentFileProcessingException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			data = AliasesReader.read(file, defaultFileCharacterEncoding);
-		}
-		
-		return data.scenario;
+		return aliasData.getScenario();
 	}
 	
-	public void setScenarioName(String scenarioName) {
-		data.scenario = scenarioName;
+	public void setScenarioName(String scenarioName) throws ContentFileProcessingException {
+		aliasData.setScenario(scenarioName);
 	}
 	
 	public List<String> groupNames() throws ContentFileProcessingException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			data = AliasesReader.read(file, defaultFileCharacterEncoding);
-		}
-		
-		return data.groupNames;
+		return aliasData.getGroupNames();
 	}
 	
-	public void setGroupNames(List<String> groupNames) {
-		data.groupNames = groupNames;
+	public void setGroupNames(List<String> groupNames) throws ContentFileProcessingException {
+		aliasData.setGroupNames(groupNames);
 	}
 	
 	public List<AliasOverride> aliasOverrides() throws ContentFileProcessingException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			data = AliasesReader.read(file, defaultFileCharacterEncoding);
-		}
-		
-		return data.aliasOverrides;
+		return aliasData.getAliasOverrides();
 	}
 	
-	public void addAlias(AliasOverride aliasOverride) {
-		data.aliasOverrides.add(aliasOverride);
+	public void addAlias(AliasOverride aliasOverride) throws ContentFileProcessingException {
+		List<AliasOverride> aliasOverrides = aliasData.getAliasOverrides();
+		aliasOverrides.add(aliasOverride);
+		aliasData.setAliasOverrides(aliasOverrides);
 	}
 	
 	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
@@ -140,10 +117,6 @@ public class AliasesFile {
 		}
 		
 		return aliasDefinition;
-	}
-	
-	public void write() throws IOException {
-		AliasesWriter.write(data, file, defaultFileCharacterEncoding);
 	}
 	
 	private AliasOverride getLocalAliasOverride(String aliasName) throws ContentFileProcessingException {

@@ -12,7 +12,7 @@ public class ContentFileProcessingException extends ContentProcessingException
 	private int lineNumber = -1;
 	private int characterNumber = -1;
 	
-	public ContentFileProcessingException(ContentProcessingException e, File sourceFile)
+	public ContentFileProcessingException(Exception e, File sourceFile)
 	{
 		super(e);
 		this.sourceFile = sourceFile;

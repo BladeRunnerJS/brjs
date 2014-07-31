@@ -1,7 +1,6 @@
 package org.bladerunnerjs.aliasing.aliases;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasOverride;
@@ -26,7 +25,9 @@ public class AliasData {
 	}
 
 	public void setAliasOverrides(List<AliasOverride> aliasOverrides) throws ContentFileProcessingException {
-		getAliasesData().aliasOverrides = aliasOverrides;
+		AliasesData aliasesData = getAliasesData();
+		aliasesData.aliasOverrides = aliasOverrides;
+		write(aliasesData);
 	}
 	
 	public List<String> getGroupNames() throws ContentFileProcessingException {
@@ -34,7 +35,9 @@ public class AliasData {
 	}
 	
 	public void setGroupNames(List<String> groupNames) throws ContentFileProcessingException {
-		getAliasesData().groupNames = groupNames;
+		AliasesData aliasesData = getAliasesData();
+		aliasesData.groupNames = groupNames;
+		write(aliasesData);
 	}
 	
 	public String getScenario() throws ContentFileProcessingException {
@@ -42,18 +45,17 @@ public class AliasData {
 	}
 	
 	public void setScenario(String scenario) throws ContentFileProcessingException {
-		getAliasesData().scenario = scenario;
+		AliasesData aliasesData = getAliasesData();
+		aliasesData.scenario = scenario;
+		write(aliasesData);
 	}
 	
-	public void write() throws IOException {
+	private void write(AliasesData aliasesData) throws ContentFileProcessingException {
 		try {
-			AliasesWriter.write(getAliasesData(), aliasesFile, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
-		}
-		catch(IOException e) {
-			throw e;
+			AliasesWriter.write(aliasesData, aliasesFile, getCharacterEncoding());
 		}
 		catch(Exception e) {
-			throw new RuntimeException(e);
+			throw new ContentFileProcessingException(e, aliasesFile);
 		}
 	}
 	
