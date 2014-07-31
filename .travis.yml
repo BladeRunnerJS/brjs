@@ -4,12 +4,17 @@ jdk:
 git:
  depth: 200
 before_install:
+- echo "foreign-architecture i386" | sudo tee /etc/dpkg/dpkg.cfg.d/multiarch && sudo apt-get update -qq
+- sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
 - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
 - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
 install:
 - TERM=dumb ./gradlew compileJava
 script:
 - TERM=dumb ./gradlew testJava
+- TERM=dumb ./gradlew :brjs-sdk:test
 notifications:
   hipchat:
     rooms:

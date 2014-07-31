@@ -29,9 +29,6 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
-import com.caplin.cutlass.structure.model.SdkModel;
-import com.caplin.cutlass.structure.model.node.BladeNode;
-import com.caplin.cutlass.structure.model.node.BladesetNode;
 
 
 public class RestApiService
@@ -159,18 +156,12 @@ public class RestApiService
 			String[] args = new String[]{ sourceApp, bladeset, targetApp, newBladesetName };		
 			doCommand( cmd, args );
 			
-			BladesetNode bladesetNode = SdkModel.getRootNode( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) ).getPath().appsPath().appPath(targetApp).bladesetPath(newBladesetName).getNode();
-			
-			if(bladesetNode != null)
+			Bladeset bladesetNode = brjs.app(targetApp).bladeset(newBladesetName);
+			for (Blade bladeNode : bladesetNode.blades())
 			{
-				List<BladeNode> bladeNodes = bladesetNode.getBladeNodes();
-				
-				for (BladeNode bladeNode : bladeNodes)
-				{
-					if (!blades.contains(bladeNode.getName()))
-					{						
-						FileUtils.deleteDirectory(bladeNode.getDir());
-					}
+				if (!blades.contains(bladeNode.getName()))
+				{						
+					FileUtils.deleteDirectory(bladeNode.dir());
 				}
 			}
 		}
@@ -203,7 +194,7 @@ public class RestApiService
 	public String runBladesetTests(String appName, String bladesetName, String testType) throws Exception
 	{
 		TestCommand cmd = new TestCommand();
-		String bladesetPath = SdkModel.getRootNode( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) ).getPath().appsPath().appPath(appName).bladesetPath(bladesetName).getPathStr();
+		String bladesetPath = brjs.app(appName).bladeset(bladesetName).dir().getAbsolutePath();
 		String[] args = new String[]{ bladesetPath, testType, JS_TEST_REPORT_SWITCH };	
 		OutputStream out = doCommand( cmd, args );
 		return out.toString();
@@ -212,8 +203,7 @@ public class RestApiService
 	public String runBladeTests(String appName, String bladesetName, String bladeName, String testType) throws Exception
 	{
 		TestCommand cmd = new TestCommand();
-		String bladePath = SdkModel.getRootNode( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) ).getPath().appsPath(
-			).appPath(appName).bladesetPath(bladesetName).bladesPath().bladePath(bladeName).getPathStr();
+		String bladePath = brjs.app(appName).bladeset(bladesetName).blade(bladeName).dir().getAbsolutePath();
 		String[] args = new String[]{ bladePath, testType, JS_TEST_REPORT_SWITCH };
 		OutputStream out = doCommand( cmd, args );
 		return out.toString();

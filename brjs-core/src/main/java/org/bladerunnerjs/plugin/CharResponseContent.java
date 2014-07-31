@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BladerunnerConf;
 
 import com.Ostermiller.util.ConcatReader;
 
@@ -45,7 +46,21 @@ public class CharResponseContent implements ResponseContent
 	@Override
 	public void write(OutputStream outputStream) throws IOException
 	{
-		IOUtils.copy( reader, outputStream );
+		IOUtils.copy( reader, outputStream, BladerunnerConf.OUTPUT_ENCODING );
+		outputStream.flush();
+	}
+
+	@Override
+	public void close()
+	{
+		try
+		{
+			reader.close();
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 }

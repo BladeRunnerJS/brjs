@@ -1,6 +1,13 @@
-br.Core.thirdparty("jquery");
+'use strict';
+
+require('jquery');
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
+ * @name br.test.viewhandler.Top
  * @class
  * <code>Top ViewFixtureHandler</code> can be used to get style.top value of a view element.
  * Example usage:
@@ -10,19 +17,16 @@ br.Core.thirdparty("jquery");
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.Top = function()
-{
+function Top() {
+}
+br.implement(Top, ViewFixtureHandler);
+
+Top.prototype.set = function(eElement) {
+	throw new Errors.InvalidTestError("The Top attribute for a element cannot be set directly and should be set via the viewModel.");
 };
 
-br.Core.implement(br.test.viewhandler.Top, br.test.viewhandler.ViewFixtureHandler);
-
-
-br.test.viewhandler.Top.prototype.set = function(eElement)
-{
-	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The Top attribute for a element cannot be set directly and should be set via the viewModel.");
-};
-
-br.test.viewhandler.Top.prototype.get = function(eElement)
-{
+Top.prototype.get = function(eElement) {
 	return jQuery(eElement)[0].style.top;
 };
+
+module.exports = Top;

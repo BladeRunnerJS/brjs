@@ -31,7 +31,7 @@ public class TestCompiler
 		{
 			File commonSrcDir = brjs.locateAncestorNodeOfClass(testContainerDir, App.class).file("test-integration-src");
 			commonSrcDir = (commonSrcDir.exists()) ? commonSrcDir : null;
-			
+		
 			File testDir = new File(testContainerDir, "tests");
 			File srcDir = new File(testContainerDir, "src-test");
 			srcDir = (srcDir.exists()) ? srcDir : null;

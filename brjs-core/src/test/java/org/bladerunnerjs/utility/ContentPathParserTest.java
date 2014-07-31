@@ -192,8 +192,10 @@ public class ContentPathParserTest
 	
 	@Test
 	public void useOfCapturingGroupsInTokensDoesntPreventSubsequentTokensFromBeingRetrieved() throws Exception {
-		builder.accepts("<token1>/<token2>").as("content-form")
-			.where("token1").hasForm("foo(bar)?").and("token2").hasForm("baz");
+		builder
+			.accepts("<token1>/<token2>").as("content-form")
+			.where("token1").hasForm("foo(bar)?")
+				.and("token2").hasForm("baz");
 		parser = builder.build();
 		ParsedContentPath contentPath = parser.parse("foo/baz");
 		
@@ -289,9 +291,11 @@ public class ContentPathParserTest
 	@Test
 	public void pathsCanBeSubstringsOfAnother() throws Exception
 	{
-		builder.accepts("path/<token>/somepath.txt").as("fixed-path")
-			.and("path/<token>/<some-path>").as("token-path")
-			.where("token").hasForm("[0-9]+").and("some-path").hasForm("[a-z/\\.]+");
+		builder
+			.accepts("path/<token>/somepath.txt").as("fixed-path")
+				.and("path/<token>/<some-path>").as("token-path")
+			.where("token").hasForm("[0-9]+")
+				.and("some-path").hasForm("[a-z/\\.]+");
 		parser = builder.build();
 		
 		assertEquals("path/123/somepath.txt", parser.createRequest("fixed-path", "123"));

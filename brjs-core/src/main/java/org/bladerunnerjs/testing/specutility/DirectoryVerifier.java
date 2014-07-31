@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 
@@ -41,7 +42,7 @@ public class DirectoryVerifier {
 	public VerifierChainer containsFileWithContents(String filePath, String contents) throws Exception {
 		File file = new File(dir, filePath);
 		assertTrue("file " + file.getPath() + " didn't exist.", file.exists());
-		assertContains(contents, FileUtils.readFileToString(file));
+		assertContains(contents, FileUtils.readFileToString(file, BladerunnerConf.OUTPUT_ENCODING));
 		
 		return verifierChainer;
 	}

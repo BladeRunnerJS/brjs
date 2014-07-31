@@ -27,7 +27,7 @@ public class MockContentPluginWithIncorrectContentPaths extends AbstractContentP
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
 				.accepts("mock-content-plugin/file").as("request")
-				.and("mock-content-plugin/file/some/other/path/").as("nested-request");
+					.and("mock-content-plugin/file/some/other/path/").as("nested-request");
 			
 			contentPathParser = contentPathParserBuilder.build();
 			requestPaths.add(contentPathParser.createRequest("request"));

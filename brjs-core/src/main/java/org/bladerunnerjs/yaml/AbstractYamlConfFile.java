@@ -37,7 +37,7 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 		}
 	}
 	
-	public abstract void initialize();
+	public abstract void initialize(BRJSNode node);
 	public abstract void verify() throws ConfigException;
 	
 	@Override

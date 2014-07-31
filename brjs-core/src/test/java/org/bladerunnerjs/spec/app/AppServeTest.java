@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.plugins.bundlers.appmeta.AppMetadataContentPlugin;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
@@ -25,6 +26,7 @@ public class AppServeTest extends SpecTest {
 			.and(brjs).automaticallyFindsContentPlugins()
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
+			.and(brjs).hasContentPlugins(new AppMetadataContentPlugin())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");
@@ -77,7 +79,7 @@ public class AppServeTest extends SpecTest {
 	public void workbenchPageCanBeAccessed() throws Exception {
 		given(workbench).indexPageHasContent("workbench index page")
 			.and(brjs).localeForwarderHasContents("");
-		when(app).requestReceived("workbench/bs/b1/en/", response);
+		when(app).requestReceived("bs/b1/workbench/en/", response);
 		then(response).textEquals("workbench index page");
 	}
 	
@@ -104,7 +106,7 @@ public class AppServeTest extends SpecTest {
 		given(workbench).indexPageRequires("appns/SomeClass")
 			.and(workbench).hasClass("appns/SomeClass")
 			.and(workbench).containsFileWithContents("src/appns/template.html", "<div id='template-id'>workbench template file</div>");
-		when(app).requestReceived("workbench/bs/b1/v/dev/html/bundle.html", response);
+		when(app).requestReceived("bs/b1/workbench/v/dev/html/bundle.html", response);
 		then(response).containsText("workbench template file");
 	}
 	
@@ -112,7 +114,7 @@ public class AppServeTest extends SpecTest {
 	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
 	{
 		given(app).hasBeenPopulated();
-		when(app).requestReceived("static/mock-content-plugin/unversioned/url", response);
+		when(app).requestReceived("mock-content-plugin/unversioned/url", response);
 		then(response).containsText(MockContentPlugin.class.getCanonicalName());
 	}
 }

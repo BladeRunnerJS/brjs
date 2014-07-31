@@ -24,6 +24,20 @@ public class BinaryResponseContent implements ResponseContent
 	public void write(OutputStream outputStream) throws IOException
 	{
 		IOUtils.copy(input, outputStream);
+		outputStream.flush();
+	}
+	
+	@Override
+	public void close()
+	{
+		try
+		{
+			input.close();
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 }

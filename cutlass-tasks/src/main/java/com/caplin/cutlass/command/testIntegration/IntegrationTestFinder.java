@@ -59,6 +59,7 @@ public class IntegrationTestFinder
 		}
 		
 		boolean isWorkbenchDir = brjs.locateAncestorNodeOfClass(dir, Workbench.class) != null;
+
 		if (ignoreWorkbenches && isWorkbenchDir)
 		{
 			validTestDir = false;

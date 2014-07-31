@@ -17,20 +17,20 @@ public class BladerunnerConfTest extends SpecTest {
 	@Test
 	public void bladerunnerConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		when(brjs).bladerunnerConf().write();
-		then(brjs).fileHasContents("conf/brjs.conf", "browserCharacterEncoding: UTF-8\ndefaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test
 	public void readingBladerunnerConfWithMissingLoginReamlUsesTheDefault() throws Exception {
-		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 7070");
+		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070");
 		then(brjs.bladerunnerConf().getLoginRealm()).textEquals("BladeRunnerLoginRealm");
 	}
 	
 	@Test
 	public void bladerunnerConfThatAlreadyExistsCanBeReadAndModified() throws Exception {
-		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf().setJettyPort(8888).setDefaultFileCharacterEncoding("ISO-8859-1").write();
-		then(brjs).fileHasContents("conf/brjs.conf", "browserCharacterEncoding: UTF-8\ndefaultFileCharacterEncoding: ISO-8859-1\njettyPort: 8888\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: ISO-8859-1\nignoredPaths: .svn, .git\njettyPort: 8888\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test
@@ -38,12 +38,6 @@ public class BladerunnerConfTest extends SpecTest {
 		given(brjs).containsEmptyFile("conf/brjs.conf");
 		then(brjs.bladerunnerConf().getLoginRealm()).textEquals("BladeRunnerLoginRealm")
 			.and(exceptions).verifyNoOutstandingExceptions();
-	}
-	
-	@Test
-	public void readingAnBladerunnerConfFileWithMissingValuesWillUseTheDefault() throws Exception {
-		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
-		then(brjs.bladerunnerConf().getBrowserCharacterEncoding()).textEquals("UTF-8");
 	}
 	
 	@Test
@@ -55,28 +49,28 @@ public class BladerunnerConfTest extends SpecTest {
 	
 	@Test
 	public void jettyPortValuesLessThanOneCauseAnException() throws Exception {
-		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: -1\nloginRealm: BladeRunnerLoginRealm");
+		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: -1\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf();
 		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/brjs.conf").getPath(), unquoted("jettyPort' must be greater than or equal to 1"));
 	}
 	
 	@Test
 	public void jettyPortValuesGreaterThan65KCauseAnException() throws Exception {
-		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 65536\nloginRealm: BladeRunnerLoginRealm");
+		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 65536\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf();
 		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/brjs.conf").getPath(), unquoted("jettyPort' must be less than or equal to 65535"));
 	}
 	
 	@Test
 	public void jettyPortValuesOfTheWrongTypeCauseAnException() throws Exception {
-		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: abcd\nloginRealm: BladeRunnerLoginRealm");
+		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: abcd\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf();
 		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/brjs.conf").getPath(), unquoted("Unable to convert value to required type \"int\""));
 	}
 	
 	@Test
 	public void invalidEncodingValuesWillCauseAnException() throws Exception {
-		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: ZZZ-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: ZZZ-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf();
 		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/brjs.conf").getPath(), "defaultFileCharacterEncoding", "ZZZ-8",
 			unquoted("not a valid character encoding"));
@@ -84,9 +78,9 @@ public class BladerunnerConfTest extends SpecTest {
 	
 	@Test
 	public void readingAnBladerunnerConfFileWithEmptyValuesWillCauseAnException() throws Exception {
-		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding:\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: \njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf();
-		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/brjs.conf").getPath(), unquoted("'browserCharacterEncoding' may not be empty"));
+		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/brjs.conf").getPath(), unquoted("'defaultFileCharacterEncoding' may not be empty"));
 	}
 	
 	@Test
@@ -98,10 +92,10 @@ public class BladerunnerConfTest extends SpecTest {
 	
 	@Test
 	public void theModelUpdatesWhenTheUnderlyingFileIsChanged() throws Exception {
-		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm")
-			.and(brjs.bladerunnerConf()).browserCharacterEncodingIs("UTF-8");
-		when(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: ISO-8859-1\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
-		then(brjs.bladerunnerConf().getBrowserCharacterEncoding().toString()).textEquals("ISO-8859-1");
+		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm")
+			.and(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("UTF-8");
+		when(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: ISO-8859-1\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs.bladerunnerConf().getDefaultFileCharacterEncoding().toString()).textEquals("ISO-8859-1");
 	}
 	
 }

@@ -1,8 +1,11 @@
+var br = require('br/Core');
+var FixtureFactory = require('br/test/FixtureFactory');
+
 ViewFixtureTestsFixtureFactory = function()
 {
 };
 
-br.Core.implement(ViewFixtureTestsFixtureFactory, br.test.FixtureFactory);
+br.implement(ViewFixtureTestsFixtureFactory, FixtureFactory);
 
 ViewFixtureTestsFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

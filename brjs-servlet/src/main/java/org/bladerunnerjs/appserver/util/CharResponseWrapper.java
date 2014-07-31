@@ -13,6 +13,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.bladerunnerjs.appserver.filter.BRJSHeaderFilter;
+
 public class CharResponseWrapper extends HttpServletResponseWrapper
 {
 	private ByteArrayOutputStream byteArrayOutputStream;
@@ -32,7 +34,7 @@ public class CharResponseWrapper extends HttpServletResponseWrapper
 				byteArrayOutputStream.write(i);
 			}
 		};
-		printWriter = new PrintWriter(new OutputStreamWriter(byteArrayOutputStream, "UTF-8"));
+		printWriter = new PrintWriter(new OutputStreamWriter(byteArrayOutputStream, BRJSHeaderFilter.OUTPUT_ENCODING));
 	}
 	
 	@Override
@@ -50,6 +52,6 @@ public class CharResponseWrapper extends HttpServletResponseWrapper
 	public Reader getReader() throws UnsupportedEncodingException
 	{
 		printWriter.flush();
-		return new InputStreamReader(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), "UTF-8");
+		return new InputStreamReader(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), BRJSHeaderFilter.OUTPUT_ENCODING);
 	}
 }

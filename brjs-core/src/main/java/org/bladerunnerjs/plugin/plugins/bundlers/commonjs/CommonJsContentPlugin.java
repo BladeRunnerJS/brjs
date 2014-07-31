@@ -43,7 +43,10 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 		try
 		{
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("node-js/bundle.js").as(BUNDLE_REQUEST).and("node-js/module/<module>.js").as(SINGLE_MODULE_REQUEST).where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			contentPathParserBuilder
+				.accepts("node-js/bundle.js").as(BUNDLE_REQUEST)
+					.and("node-js/module/<module>.js").as(SINGLE_MODULE_REQUEST)
+				.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 
 			contentPathParser = contentPathParserBuilder.build();
 			prodRequestPaths.add(contentPathParser.createRequest(BUNDLE_REQUEST));

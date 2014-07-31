@@ -1,5 +1,4 @@
 org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsTagHandlerPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nTagHandlerPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin
-org.bladerunnerjs.plugin.plugins.bundlers.appversion.BundlePathTagHandlerPlugin
-org.bladerunnerjs.plugin.plugins.bundlers.appversion.AppVersionTagHandlerPlugin
+org.bladerunnerjs.plugin.plugins.bundlers.appmeta.BaseTagHandlePlugin

@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -22,18 +21,16 @@ import org.bladerunnerjs.appserver.util.LockedHeaderResponseWrapper;
 
 public class BRJSHeaderFilter implements Filter {
 	
+	public static final String OUTPUT_ENCODING = "UTF-8";
+
 	private static final Pattern VERSION_REGEX = Pattern.compile("/v/[0-9]+/");
 	
-	private static final String E_TAG = "ETag";
 	private static final String EXPIRES = "Expires";
 	private static final String CACHE_CONTROL = "Cache-Control";
-	private static final String LAST_MODIFIED = "Last-Modified";
 	
-	private static final long MAX_AGE = TimeUnit.DAYS.toSeconds(365);
+	private static final int MAX_AGE = 365;
 	private static final String HEADER_DATE_FORMAT = "dd MMM yyyy kk:mm:ss z";
-	private static final String CACHE_CONTROL_ALLOW_CACHE = "max-age=" + MAX_AGE + ", public, must-revalidate";
-	
-	private static final List<String> LOCKED_HEADERS = Arrays.asList(LAST_MODIFIED, CACHE_CONTROL, EXPIRES, E_TAG);
+	private static final String CACHE_CONTROL_ALLOW_CACHE = "max-age=" + TimeUnit.DAYS.toSeconds(MAX_AGE) + ", public, must-revalidate";
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -45,13 +42,17 @@ public class BRJSHeaderFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		
-		response.setCharacterEncoding("UTF-8");		
+		response.setCharacterEncoding(OUTPUT_ENCODING);		
 		
-		if (VERSION_REGEX.matcher(request.getRequestURI()).find()) {
+		if (VERSION_REGEX.matcher(request.getRequestURI()).find()) 
+		{
 			response.setHeader(CACHE_CONTROL, CACHE_CONTROL_ALLOW_CACHE);
-			response.setHeader(EXPIRES, getExpiresHeader());
-			chain.doFilter(request, new LockedHeaderResponseWrapper(response, LOCKED_HEADERS));
-		} else {
+			response.setHeader(EXPIRES, getExpiresHeader(MAX_AGE));
+			LockedHeaderResponseWrapper responseWrapper = new LockedHeaderResponseWrapper(response, Arrays.asList(CACHE_CONTROL, EXPIRES));
+			chain.doFilter(request, responseWrapper);
+		} 
+		else 
+		{
 			// leave unversioned requests untouched incase they are requests for custom servlets
 			chain.doFilter(request, response);
 		}
@@ -63,9 +64,9 @@ public class BRJSHeaderFilter implements Filter {
 	}
 	
 	
-	private String getExpiresHeader() {
+	private String getExpiresHeader(int expires) {
 		Date expdate = new Date();
-		expdate.setTime(expdate.getTime() + TimeUnit.SECONDS.toMillis(MAX_AGE));
+		expdate.setTime(expdate.getTime() + TimeUnit.SECONDS.toMillis(expires));
 		DateFormat df = new SimpleDateFormat(HEADER_DATE_FORMAT);
 		return df.format(expdate);
 	}

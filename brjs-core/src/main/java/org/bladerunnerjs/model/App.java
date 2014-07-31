@@ -12,8 +12,8 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.app.build.AppBuilder;
-import org.bladerunnerjs.model.app.build.WarAppBuilder;
+import org.bladerunnerjs.model.app.building.StaticAppBuilder;
+import org.bladerunnerjs.model.app.building.WarAppBuilder;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -28,7 +28,6 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
 
@@ -281,20 +280,20 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return appRequestHandler.canHandleLogicalRequest(requestPath);
 	}
 	
-	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException {
 		return appRequestHandler.handleLogicalRequest(requestPath, contentAccessor);
 	}
 	
 	public String createDevBundleRequest(String contentPath, String version) throws MalformedTokenException {
-		return AppMetadataUtility.getUnversionedBundlePath( "/"+appRequestHandler.createRequest("bundle-request", "", version, contentPath) );
+		return appRequestHandler.createRequest("bundle-request", "", version, contentPath);
 	}
 	
 	public String createProdBundleRequest(String contentPath, String version) throws MalformedTokenException {
-		return AppMetadataUtility.getUnversionedBundlePath( "/"+appRequestHandler.createRequest("bundle-request", "", version, contentPath) );
+		return appRequestHandler.createRequest("bundle-request", "", version, contentPath);
 	}
 	
 	public void build(File targetDir) throws ModelOperationException {
-		new AppBuilder().build(this, targetDir);
+		new StaticAppBuilder().build(this, targetDir);
 	}
 	
 	public void buildWar(File targetFile) throws ModelOperationException {

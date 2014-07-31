@@ -33,7 +33,7 @@ public class XmlBundlerConfig {
 	public XmlBundlerConfig(BRJS brjs) {
 		this.brjs = brjs;
 		configFile = brjs.conf().file(CONFIG_FILE_NAME);
-		computedConfigValue = new MemoizedValue<>("XmlBundlerConfig.computedConfigValue", brjs, configFile);
+		computedConfigValue = new MemoizedValue<>(configFile.getPath()+" - XmlBundlerConfig.computedConfigValue", brjs, configFile);
 	}
 	
 	

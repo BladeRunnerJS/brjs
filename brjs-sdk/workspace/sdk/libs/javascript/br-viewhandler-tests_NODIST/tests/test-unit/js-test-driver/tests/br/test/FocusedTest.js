@@ -1,10 +1,12 @@
 FocusedTest = TestCase("FocusedTest");
 
 require('br/test/ViewFixture');
+var Errors = require('br/Errors');
+var ViewFixture = require('br/test/ViewFixture');
 
 FocusedTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new br.test.ViewFixture("view.*");
+	this.m_oViewFixture = new ViewFixture("view.*");
 	this.m_eElement = this.getElement();
 	document.body.appendChild(this.m_eElement);
 	this.m_oViewFixture.setViewElement(this.m_eElement);
@@ -65,10 +67,10 @@ FocusedTest.prototype.test_cannotGetFocusedOnNonFocusableElements = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doThen("view.(form).focused", false);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doThen("view.(div p).focused", false);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };
 
 FocusedTest.prototype.test_cannotSetFocusedOnNonFocusableElements = function()
@@ -76,10 +78,10 @@ FocusedTest.prototype.test_cannotSetFocusedOnNonFocusableElements = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(form).focused", false);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(div p).focused", false);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };
 
 FocusedTest.prototype.test_cannotSetFocusedOnDisabledElements = function()
@@ -87,5 +89,5 @@ FocusedTest.prototype.test_cannotSetFocusedOnDisabledElements = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(#the-form select[disabled]).focused", true);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };

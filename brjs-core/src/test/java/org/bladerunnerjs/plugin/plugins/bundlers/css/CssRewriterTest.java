@@ -43,7 +43,7 @@ public class CssRewriterTest extends SpecTest
 	public void onlyTheUrlIsRewritten_SurroundingQuotesAreUntouched() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png');");
 	}
 	
@@ -51,7 +51,7 @@ public class CssRewriterTest extends SpecTest
 	public void urlsAreCorrectlyRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png');");
 	}
 	
@@ -59,7 +59,7 @@ public class CssRewriterTest extends SpecTest
 	public void urlCanBeInCapitals() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:URL('image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:URL('../../cssresource/aspect_default/theme_common/image.png');");
 		
 	}
@@ -68,7 +68,7 @@ public class CssRewriterTest extends SpecTest
 	public void pathCanBeInDoubleQuotes() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:URL(\"image.png\");");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:URL(\"../../cssresource/aspect_default/theme_common/image.png\");");
 	}
 	
@@ -76,7 +76,7 @@ public class CssRewriterTest extends SpecTest
 	public void spacesCanBeBeforeAndAfterUrl() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:URL(    'image.png'    );");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:URL(    '../../cssresource/aspect_default/theme_common/image.png'    );");
 	}
 	
@@ -84,7 +84,7 @@ public class CssRewriterTest extends SpecTest
 	public void spacesCanBeAfterBackground() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:   URL( 'image.png' );");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:   URL( '../../cssresource/aspect_default/theme_common/image.png' );");
 	}
 	
@@ -92,7 +92,7 @@ public class CssRewriterTest extends SpecTest
 	public void theQuotesInURLAreOptional() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:URL(image.png);");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:URL(../../cssresource/aspect_default/theme_common/image.png);");
 	}
 	
@@ -100,7 +100,7 @@ public class CssRewriterTest extends SpecTest
 	public void relativeUrlsAreCorrectlyRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png');");
 	}
 	
@@ -108,7 +108,7 @@ public class CssRewriterTest extends SpecTest
 	public void relativeUrlsToParentDirectoriesAreCorrectlyRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/dir1/dir2/dir3/style.css", "background:url('../../../image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png');");
 		
 	}
@@ -117,7 +117,7 @@ public class CssRewriterTest extends SpecTest
 	public void urlsToChildDirectoriesAreCorrectlyRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('dir1/dir2/dir3/image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/dir1/dir2/dir3/image.png');");
 	}
 	
@@ -125,7 +125,7 @@ public class CssRewriterTest extends SpecTest
 	public void relativeUrlsToChildDirectoriesAreCorrectlyRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./dir1/dir2/dir3/image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/dir1/dir2/dir3/image.png');");
 	}
 	
@@ -133,7 +133,7 @@ public class CssRewriterTest extends SpecTest
 	public void urlsWithArbitraryExtensionsAreRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./dir1/dir2/dir3/image.some-ext');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/dir1/dir2/dir3/image.some-ext');");
 	}
 	
@@ -141,7 +141,7 @@ public class CssRewriterTest extends SpecTest
 	public void queryStringsAreKeptInTheRewrittenUrl() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./image.png?arg=value');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png?arg=value');");
 	}
 	
@@ -149,7 +149,7 @@ public class CssRewriterTest extends SpecTest
 	public void anchorStringsAreKeptInTheRewrittenUrl() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./image.png#arg');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png#arg');");
 	}
 	
@@ -157,7 +157,7 @@ public class CssRewriterTest extends SpecTest
 	public void anchorAndQueryStringsAreKeptInTheRewrittenUrl() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./image.png?arg=value#arg');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png?arg=value#arg');");
 	}
 	
@@ -165,7 +165,7 @@ public class CssRewriterTest extends SpecTest
 	public void specialCharactersInFilenamesAreEncoded() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./some image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some%20image.png');");
 	}
 	
@@ -174,7 +174,7 @@ public class CssRewriterTest extends SpecTest
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", 
 				"background:url('./some$image.png');\n"+"background:url('./another(image.png');\n");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some$image.png');")
 			.and(response).containsText("background:url('../../cssresource/aspect_default/theme_common/another(image.png');");
 	}
@@ -183,7 +183,7 @@ public class CssRewriterTest extends SpecTest
 	public void poundSignCharactersInFilenamesAreCorrectlyEncoded() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./some£image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some%C2%A3image.png');");
 	}
 	
@@ -191,7 +191,7 @@ public class CssRewriterTest extends SpecTest
 	public void absoluteUrlsAreNotRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('/some/absolute/url/image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('/some/absolute/url/image.png');");
 	}
 	
@@ -199,7 +199,7 @@ public class CssRewriterTest extends SpecTest
 	public void urlsWithAProtocolAreNotRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('http://my-domain.com/some/absolute/url/image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('http://my-domain.com/some/absolute/url/image.png');");
 	}
 	
@@ -207,7 +207,7 @@ public class CssRewriterTest extends SpecTest
 	public void protocolRelativeUrlsAreNotRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('//my-domain.com/some/absolute/url/image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('//my-domain.com/some/absolute/url/image.png');");
 	}
 	
@@ -215,7 +215,7 @@ public class CssRewriterTest extends SpecTest
 	public void dataUrisAreNotRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('data:image/gif;base64,R0lGODlhyAAiALM...DfD0QAADs=');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('data:image/gif;base64,R0lGODlhyAAiALM...DfD0QAADs=');");
 	}
 	
@@ -223,7 +223,7 @@ public class CssRewriterTest extends SpecTest
 	public void dataUrisWithADifferentEncodingAreNotRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('data:image/png;base64,iadsadasidsads...DfD0QAADs=');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('data:image/png;base64,iadsadasidsads...DfD0QAADs=');");
 	}
 	
@@ -231,7 +231,7 @@ public class CssRewriterTest extends SpecTest
 	public void urlsWithAnUnknownProtocolAreNotRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('myProtocol://my-domain.com/some/absolute/url/image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('myProtocol://my-domain.com/some/absolute/url/image.png');");
 	}
 	
@@ -239,7 +239,7 @@ public class CssRewriterTest extends SpecTest
 	public void backgroundRgbValuesAreNotRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background: rgba( 0,0,0,0.5 );");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background: rgba( 0,0,0,0.5 );");
 	}
 	
@@ -247,7 +247,7 @@ public class CssRewriterTest extends SpecTest
 	public void backgroundImageWithMultipleImagesUrlsIsRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background-image: url(flower.png), url(ball.png), url(grass.png);");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: " +
 				"url(../../cssresource/aspect_default/theme_common/flower.png), " +
 				"url(../../cssresource/aspect_default/theme_common/ball.png), " +
@@ -258,7 +258,7 @@ public class CssRewriterTest extends SpecTest
 	public void backgroundImageWithImageUrlAndAdditonalStylingIsRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background-image: url(flower.png) no-repeat center center;");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: url(../../cssresource/aspect_default/theme_common/flower.png) no-repeat center center;");
 	}
 	
@@ -268,7 +268,7 @@ public class CssRewriterTest extends SpecTest
 		given(userLib).containsFileWithContents("style.css", "background: url(images/image.png);")
 			.and(userLib).containsFileWithContents("thirdparty-lib.manifest", "js: Class1.js \ncss: style.css \nexports: userLib")
 			.and(aspect).indexPageHasContent("require('userLib');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background: url(../../cssresource/lib_userLib/images/image.png);").
 			and(exceptions).verifyNoOutstandingExceptions();
 	}
@@ -280,7 +280,7 @@ public class CssRewriterTest extends SpecTest
 			.and(userLib).hasClass("lib/Class1")
     		.and(userLib).containsFileWithContents("resources/style.css", "background: url(images/image.png);")
     		.and(aspect).indexPageHasContent("require('lib/Class1');");
-    	when(aspect).requestReceived("css/common/bundle.css", response);
+    	when(aspect).requestReceivedInDev("css/common/bundle.css", response);
     	then(response).containsText("background: url(../../cssresource/lib_userLib/resources/images/image.png);").
     		and(exceptions).verifyNoOutstandingExceptions();
 	}
@@ -289,7 +289,7 @@ public class CssRewriterTest extends SpecTest
 	public void imagesCanLiveInSrcCode() throws Exception
 	{
 		given(aspect).containsFileWithContents("resources/style.css", "background:url('../src/pk1/pkg2/image.png');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default_resource/src/pk1/pkg2/image.png');");
 	}
 	
@@ -297,7 +297,7 @@ public class CssRewriterTest extends SpecTest
 	public void imagesInAspectResourcesAreRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background-image: url(../../resources/images/flower.png);");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: url(../../cssresource/aspect_default_resource/resources/images/flower.png);");
 	}
 	
@@ -307,7 +307,7 @@ public class CssRewriterTest extends SpecTest
 		given(bladeset).containsFileWithContents("themes/common/style.css", "background-image: url(../../resources/images/flower.png);")
 			.and(bladeset).hasClass("bs/Class1")
 			.and(aspect).indexPageHasContent("require('bs/Class1');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: url(../../cssresource/bladeset_bs_resource/resources/images/flower.png);");
 	}
 	
@@ -317,7 +317,7 @@ public class CssRewriterTest extends SpecTest
 		given(blade).containsFileWithContents("themes/common/style.css", "background-image: url(../../resources/images/flower.png);")
 			.and(blade).hasClass("bs/b1/Class1")
 			.and(aspect).indexPageHasContent("require('bs/b1/Class1');");
-		when(aspect).requestReceived("css/common/bundle.css", response);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1_resource/resources/images/flower.png);");
 	}
 	
@@ -327,8 +327,16 @@ public class CssRewriterTest extends SpecTest
 		given(workbench).containsFileWithContents("resources/style.css", "background-image: url(images/flower.png);")
 			.and(blade).hasClass("bs/b1/Class1")
 			.and(workbench).indexPageHasContent("require('bs/b1/Class1');");
-		when(workbench).requestReceived("css/common/bundle.css", response);
+		when(workbench).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1/workbench_resource/resources/images/flower.png);");
+	}
+	
+	@Test
+	public void inlineSVGIsntRewritten() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css", "background: url('data:image/svg+xml;base64,PD94bWwgd...IiB5Mj0iMTAwJSI);");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
+		then(response).containsText("background: url('data:image/svg+xml;base64,PD94bWwgd...IiB5Mj0iMTAwJSI);");
 	}
 	
 }

@@ -312,7 +312,8 @@ public class JsCommentStrippingReaderTest
 	
 	private String stripComments(String input, boolean preserveJsdoc) throws IOException
 	{
-		try(Reader reader = new JsCommentStrippingReader(new StringReader(input), preserveJsdoc);
+		
+		try(Reader reader = new JsCommentStrippingReader(new StringReader(input), preserveJsdoc, new CharBufferPool());
 		    StringWriter stringWriter = new StringWriter())
 		{
 			IOUtils.copy(reader, stringWriter);

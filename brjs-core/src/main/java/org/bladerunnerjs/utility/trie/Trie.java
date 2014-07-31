@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
@@ -21,8 +22,9 @@ import org.bladerunnerjs.utility.trie.node.TrieNode;
 
 public class Trie<T>
 {
+	private static final Pattern MATCH_ALL_PATTERN = Pattern.compile(".*", Pattern.DOTALL);
 	private static final int CHILD_SIZE_OPTIMIZATION_THRESHOLD = 5;
-
+	
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"\\\"\'\\'".toCharArray();
 	
 	private TrieNode<T> root;
@@ -46,6 +48,10 @@ public class Trie<T>
 	}
 	
 	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException, TrieLockedException {
+		add(key, value, MATCH_ALL_PATTERN);
+	}
+	
+	public void add(String key, T value, Pattern matchPattern) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException, TrieLockedException {
 		if (trieOptimized) {
 			throw new TrieLockedException();
 		}
@@ -68,7 +74,7 @@ public class Trie<T>
 			throw new TrieKeyAlreadyExistsException(key);
 		}
 		
-		node.setValue(value);
+		node.setValue(value, matchPattern);
 		trieLookup.put(key, node);
 		readAheadLimit = Math.max(readAheadLimit, key.length() + 1);
 	}
@@ -93,17 +99,19 @@ public class Trie<T>
 		if (!reader.markSupported()) {
 			reader = new BufferedReader(reader);
 		}
-		
+	
+		char charAtPointOfFirstMatch = '\u0000';
+		StringBuilder matchString = new StringBuilder();
 		List<T> matches = new LinkedList<T>();
 		TrieMatcher matcher = new TrieMatcher();
 		int nextChar, prevChar = 0;
 		
 		while ((nextChar = reader.read()) != -1)
 		{
-			processChar(matches, (char) nextChar, (char) prevChar, matcher, reader);
+			charAtPointOfFirstMatch = processChar(matches, charAtPointOfFirstMatch, (char) nextChar, (char) prevChar, matcher, reader, matchString);
 			prevChar = nextChar;
 		}
-		processChar(matches, '\n', (char) prevChar, matcher, reader);
+		charAtPointOfFirstMatch = processChar(matches, charAtPointOfFirstMatch, '\n', (char) prevChar, matcher, reader, matchString);
 		
 		return matches;	
 	}
@@ -130,6 +138,7 @@ public class Trie<T>
 	private TrieNode<T> createOptimisedTrieNode(TrieNode<T> trieNode) {
 		char trieNodeChar = trieNode.getChar();
 		T trieNodeValue = trieNode.getValue();
+		Pattern trieNodeMatchPattern = trieNode.getMatchPattern();
 		
 		TrieNode<T>[] trieNodeChildren = getOrderedTrieNodeChildren(trieNode);
 		
@@ -150,7 +159,7 @@ public class Trie<T>
 				return new OptimisedTrieTrunkNode<>(trieNodeChar, optimisedTrieNodeChildren, primarySeperator, seperators);
 			}
 		} else {
-			return new OptimisedTrieLeafNode<T>(trieNodeChar, trieNodeValue, primarySeperator, seperators);
+			return new OptimisedTrieLeafNode<T>(trieNodeChar, trieNodeValue, primarySeperator, seperators, trieNodeMatchPattern);
 		}
 	}
 	
@@ -179,11 +188,12 @@ public class Trie<T>
 		return node;
 	}
 	
-	private void processChar(List<T> matches, char nextChar, char prevChar, TrieMatcher matcher, Reader reader) throws IOException
+	private char processChar(List<T> matches, char charAtPointOfFirstMatch, char nextChar, char prevChar, TrieMatcher matcher, Reader reader, StringBuilder matchString) throws IOException
 	{
 		if (matcher.atRootOfTrie)
 		{
 			reader.mark(readAheadLimit);
+			charAtPointOfFirstMatch = prevChar;
 		}
 		
 		TrieNode<T> nextNode = matcher.next(nextChar);
@@ -195,13 +205,21 @@ public class Trie<T>
 			{
 				//TODO best data structure to make this efficient?
 				if(!matches.contains(previousValue)){
-					matches.add( previousValue );
+					Pattern matchPattern = matcher.previousNode.getMatchPattern();
+					if (matchPattern.matcher(charAtPointOfFirstMatch+matchString.toString()+nextChar).matches()) {
+						matches.add( previousValue );
+					}
 				}
 				reader.mark(readAheadLimit);
 			}
 			matcher.reset();
 			reader.reset();
+			matchString.setLength(0);
+		} else {
+			matchString.append(nextChar);
 		}
+		
+		return charAtPointOfFirstMatch;
 	}
 
 	private boolean isDelimiter(char nextChar)

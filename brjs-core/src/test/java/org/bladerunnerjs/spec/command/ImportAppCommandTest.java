@@ -2,6 +2,8 @@ package org.bladerunnerjs.spec.command;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -20,6 +22,8 @@ public class ImportAppCommandTest extends SpecTest {
 	Aspect aspect;
 	App importedApp;
 	Aspect importedAspect;
+	private Bladeset bladeset;
+	private Blade blade;
 	DirNode appJars;
 	
 	@Before
@@ -30,6 +34,8 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
+			bladeset = app.bladeset("bs");
+			blade = bladeset.blade("b1");
 			importedApp = brjs.app("imported-app");
 			importedAspect = importedApp.aspect("default");
 			appJars = brjs.appJars();
@@ -86,8 +92,24 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(aspect).classRequires("appns/Class2", "appns/Class1")
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
-		when(brjs).runCommand("import-app", "../generated/exported-app/app.zip", "imported-app", "importedns");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedAspect).fileContentsContains("src/importedns/Class2.js", "require('importedns/Class1')")
 			.and(importedApp).hasFile("WEB-INF/lib/brjs-lib1.jar");
+	}
+	
+	@Test
+	public void directoriesAreNotDuplicatedWhenExportedAppsAreImportedWithNewNamespace() throws Exception {
+		given(aspect).containsFile("src/appns/AspectClass.js")
+			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
+			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).hasDir("bs-bladeset/blades/b1/src/importedns")
+			.and(importedApp).hasDir("bs-bladeset/src/importedns")
+			.and(importedApp).hasDir("default-aspect/src/importedns")
+			.and(importedApp).doesNotHaveDir("bs-bladeset/src/appns")
+			.and(importedApp).doesNotHaveDir("bs-bladeset/blades/b1/src/appns")
+			.and(importedApp).doesNotHaveDir("default-aspect/src/appns");
 	}
 }

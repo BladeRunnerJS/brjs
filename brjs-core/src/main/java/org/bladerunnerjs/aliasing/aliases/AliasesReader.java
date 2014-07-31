@@ -10,6 +10,8 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.bladerunnerjs.aliasing.AliasException;
+import org.bladerunnerjs.aliasing.AliasNameIsTheSameAsTheClassException;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.SchemaConverter;
@@ -79,7 +81,7 @@ public class AliasesReader {
 				
 				throw new ContentFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
-			catch (IOException | IncompleteAliasException e) {
+			catch (IOException | AliasException e) {
 				throw new ContentFileProcessingException(aliasesFile, e);
 			}
 		}
@@ -94,9 +96,13 @@ public class AliasesReader {
 		}
 	}
 	
-	private void processAlias(XMLStreamReader2 streamReader) throws IncompleteAliasException {
+	private void processAlias(XMLStreamReader2 streamReader) throws AliasException {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "class");
+		
+		if (aliasName.equals(aliasClass)) {
+			throw new AliasNameIsTheSameAsTheClassException(aliasesFile, aliasName);
+		}
 		
 		if((aliasClass == null) || (aliasClass.equals(""))) {
 			throw new IncompleteAliasException(aliasesFile, aliasName);

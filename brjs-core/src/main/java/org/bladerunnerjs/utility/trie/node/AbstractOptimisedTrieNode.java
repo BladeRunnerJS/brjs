@@ -1,14 +1,13 @@
 package org.bladerunnerjs.utility.trie.node;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 {
 	
-	@SuppressWarnings("unused")
 	private List<Character> separators;
-	@SuppressWarnings("unused")
 	private char primarySeparator;
 
 	public AbstractOptimisedTrieNode(char primarySeperator, List<Character> seperators)
@@ -42,6 +41,12 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
     	unsupportedOptimisedTrieMethod();
     }
     
+	@Override
+	public void setValue(T value, Pattern matchPattern)
+	{
+		unsupportedOptimisedTrieMethod();
+	}
+	
     @Override
  	public TrieNode<T>[] getChildren()
  	{
@@ -63,6 +68,12 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 		return -1;
 	}
 	
+	@Override
+	public Pattern getMatchPattern()
+	{
+		return null;
+	}
+	
 	private void unsupportedOptimisedTrieMethod() {
 		/* 
 		 * This breaks Liskov *but* we don't want to store any values that aren't needed in Optimised Trie Nodes to reduce memory usage 
@@ -80,13 +91,9 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 			if(trieChar == character) {
 				return trieNode;
 			}
-/*
- * TODO: investigate why this causes CT dependency issues 
- * (see comment in BasicTrieNode and TrieFactory too)
- */
-//			if (trieChar == primarySeparator && separators.contains(character)) {
-//				return trieNode;
-//			}
+			if (trieChar == primarySeparator && separators.contains(character)) {
+				return trieNode;
+			}
 		}
 		return null;
 	}

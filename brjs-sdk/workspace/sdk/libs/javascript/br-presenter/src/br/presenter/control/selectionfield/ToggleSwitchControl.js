@@ -125,13 +125,11 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateOptions
 {
 	var oOptions = this.m_oPresentationNode.options;
 	var pNewOptions = oOptions.getOptions();
+
 	if(pNewOptions.length != 2) {
 		throw new br.presenter.control.InvalidControlModelError("ToggleSwitchControl",
 			"SelectionField (having exactly two elements)");
 	}
-
-	br.util.ElementUtility.addClassName(this.m_eElement, "choiceASelected");
-	br.util.ElementUtility.removeClassName(this.m_eElement, "choiceBSelected");
 
 	if(oOptions instanceof br.presenter.node.OptionsNodeList)
 	{
@@ -143,6 +141,8 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateOptions
 		this.m_eFirstElementContainer.innerHTML = pNewOptions[0];
 		this.m_eSecondElementContainer.innerHTML = pNewOptions[1];
 	}
+
+	this._refresh();
 };
 
 /**
@@ -166,7 +166,7 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateEnabled
  */
 br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateVisible = function() {
 	var bIsVisible = this.m_oPresentationNode.visible.getValue();
-	this.m_eElement.style.display = (bIsVisible) ? "block" : "none";
+	this.m_eElement.style.display = (bIsVisible) ? "" : "none";
 };
 
 /**
@@ -174,8 +174,7 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateVisible
  */
 br.presenter.control.selectionfield.ToggleSwitchControl.prototype._refresh = function()
 {
-	
-	if(this.m_oPresentationNode.value.getValue() === this.m_oPresentationNode.options.getOptions()[0].label.getValue())
+	if(this.m_oPresentationNode.value.getValue() === this.m_oPresentationNode.options.getOptions()[0].value.getValue())
 	{
 		br.util.ElementUtility.addClassName(this.m_eElement, "choiceASelected");
 		br.util.ElementUtility.removeClassName(this.m_eElement, "choiceBSelected");

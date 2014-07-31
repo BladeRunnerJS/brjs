@@ -26,7 +26,7 @@ public class BRJSTest extends SpecTest {
 	public void theBrjsConfIsWrittenOnPopulate() throws Exception {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/brjs.conf", "browserCharacterEncoding: UTF-8\ndefaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test

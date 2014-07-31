@@ -33,17 +33,17 @@ public class NodeImporter {
 		tempBrjsApp.appConf().write();
 		
 		for(Aspect aspect : tempBrjsApp.aspects()) {
-			updateRequirePrefix(aspect.assetLocations(), sourceAppRequirePrefix, targetAppRequirePrefix);
+			updateRequirePrefix(aspect.assetLocations(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
 		}
 		
 		for(Bladeset bladeset : tempBrjsApp.bladesets()) {
-			renameBladeset(bladeset, sourceAppRequirePrefix + "/" + bladeset.getName());
+			renameBladeset(bladeset, sourceAppRequirePrefix, sourceAppRequirePrefix + "/" + bladeset.getName());
 		}
 		
 		FileUtils.moveDirectory(tempBrjsApp.dir(), targetApp.dir());
 	}
 	
-	public static void importBladeset(File sourceBladesetDir, String sourceBladesetRequirePrefix, Bladeset targetBladeset) throws InvalidSdkDirectoryException, IOException, ConfigException {
+	public static void importBladeset(File sourceBladesetDir, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix, Bladeset targetBladeset) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		BRJS tempBrjs = createTemporaryBRJSModel();
 		App tempBrjsApp = tempBrjs.app(targetBladeset.app().getName());
 		Bladeset tempBrjsBladeset = tempBrjsApp.bladeset(targetBladeset.getName());
@@ -55,32 +55,37 @@ public class NodeImporter {
 			JsStyleUtility.setJsStyle(tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(sourceBladesetDir));
 		}
 		
-		renameBladeset(tempBrjsBladeset, sourceBladesetRequirePrefix);
+		renameBladeset(tempBrjsBladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix);
 		FileUtils.moveDirectory(tempBrjsBladeset.dir(), targetBladeset.dir());
 	}
 	
 	private static BRJS createTemporaryBRJSModel() throws InvalidSdkDirectoryException, IOException {
+		File tempSdkDir = FileUtility.createTemporaryDirectory("node-importer");
+		new File(tempSdkDir, "sdk").mkdir();
 		MockPluginLocator pluginLocator = new MockPluginLocator();
 		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
 		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
 		
-		return new BRJS(FileUtility.createTemporaryDirectory("node-importer"), pluginLocator, new OptimisticFileModificationService(), new StubLoggerFactory(), new MockAppVersionGenerator());
+		return new BRJS(tempSdkDir, pluginLocator, new OptimisticFileModificationService(), new StubLoggerFactory(), new MockAppVersionGenerator());
 	}
 	
-	private static void renameBladeset(Bladeset bladeset, String sourceBladesetRequirePrefix) throws IOException {
-		updateRequirePrefix(bladeset.assetLocations(), sourceBladesetRequirePrefix, bladeset.requirePrefix());
+	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException {
+		updateRequirePrefix(bladeset.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		for(Blade blade : bladeset.blades()) {
-			updateRequirePrefix(blade.assetLocations(), sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+			updateRequirePrefix(blade.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
 		}
 	}
 	
-	private static void updateRequirePrefix(List<AssetLocation> assetLocations, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
+	private static void updateRequirePrefix(List<AssetLocation> assetLocations, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
 		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
 			for(AssetLocation assetLocation : assetLocations) {
 				if(assetLocation.dir().exists()) {
 					if(assetLocation.file(sourceRequirePrefix).exists()) {
 						FileUtils.moveDirectory(assetLocation.file(sourceRequirePrefix), assetLocation.file(targetRequirePrefix));
+						if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && assetLocation.file(sourceAppRequirePrefix).exists()) {
+							FileUtils.deleteDirectory( assetLocation.file(sourceAppRequirePrefix) );
+						}
 					}
 					
 					findAndReplaceInAllTextFiles(assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);

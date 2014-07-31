@@ -190,7 +190,7 @@ public class XmlCommentStrippingDependenciesReaderTest
 	
 	private String stripComments(String input) throws IOException
 	{
-		try(Reader reader = new XmlCommentStrippingDependenciesReader(new StringReader(input)); StringWriter stringWriter = new StringWriter())
+		try(Reader reader = new XmlCommentStrippingDependenciesReader(new StringReader(input), new CharBufferPool()); StringWriter stringWriter = new StringWriter())
 		{
 			IOUtils.copy(reader, stringWriter);
 			return stringWriter.toString();
