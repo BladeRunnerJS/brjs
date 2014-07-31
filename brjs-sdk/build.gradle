@@ -218,7 +218,7 @@ task test, dependsOn: testChrome
 
 
 task createSdkJsDocs, dependsOn: assembleSdk, {
-	def jsDocTmpAppName = "jsdoc-tmp-app"
+/*	def jsDocTmpAppName = "jsdoc-tmp-app"
 	doFirst {
 		delete file("workspace/apps/${jsDocTmpAppName}")
 		exec {
@@ -240,7 +240,7 @@ task createSdkJsDocs, dependsOn: assembleSdk, {
 	}
 	doLast {
 		delete file("workspace/apps/${jsDocTmpAppName}")
-	}
+	} */
 }
 
 

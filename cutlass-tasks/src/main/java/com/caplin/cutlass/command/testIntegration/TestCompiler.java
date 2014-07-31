@@ -12,7 +12,10 @@ import java.util.List;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
@@ -22,13 +25,14 @@ import com.caplin.cutlass.structure.model.path.AppPath;
 public class TestCompiler
 {
 
-	public List<File> compileTestDirs(List<File> testContainerDirs) throws CommandOperationException 
+	public List<File> compileTestDirs(BRJS brjs, List<File> testContainerDirs) throws CommandOperationException 
 	{
 		List<File> classRoots = new ArrayList<File>();
 		
 		for (File testContainerDir : testContainerDirs) 
 		{
-			File commonSrcDir = AppPath.locateAncestorPath(testContainerDir).testIntegrationSrcPath().getDir();
+			//File commonSrcDir = AppPath.locateAncestorPath(testContainerDir).testIntegrationSrcPath().getDir();
+			File commonSrcDir = brjs.locateAncestorNodeOfClass(testContainerDir, App.class).file("test-integration-src");
 			commonSrcDir = (commonSrcDir.exists()) ? commonSrcDir : null;
 			
 			File testDir = new File(testContainerDir, "tests");
@@ -45,7 +49,7 @@ public class TestCompiler
 			
 			try
 			{
-				compiledClassDir = getCompiledClassDir(testContainerDir);
+				compiledClassDir = getCompiledClassDir(brjs, testContainerDir);
 			}
 			catch (IOException ex)
 			{
@@ -54,6 +58,10 @@ public class TestCompiler
 			
 			// see http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.jdt.doc.isv/guide/jdt_api_compile.htm for command line args
 			String[] compilerArgs = new String[]{ "-1.6", "-sourcepath", sourcePath.toString(), "-d", compiledClassDir.getPath(), "-encoding", "UTF-8", "-nowarn", testContainerDir.getPath() };
+			
+			for(int i = 0; i < compilerArgs.length ; i++)
+				System.err.println(compilerArgs[i]);
+			
 			boolean compileReturnValue = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(
 					compilerArgs, 
 					new PrintWriter(System.out), 
@@ -144,15 +152,20 @@ public class TestCompiler
 		return loadedClasses;
 	}
 
-	public File getCompiledClassDir(File testDir) throws IOException 
+	public File getCompiledClassDir(BRJS brjs, File testDir) throws IOException 
 	{
-		File parentApplication = CutlassDirectoryLocator.getAppRootDir(testDir.getAbsoluteFile());
-		String applicationPath = parentApplication.getAbsolutePath();
-		String testDirPath = testDir.getAbsolutePath();
-		String testPathRelativeToParentApp = testDirPath.replace(applicationPath, "").replace("\\", "/");
-		// TODO: fix this broken replace
-		testPathRelativeToParentApp = StringUtils.substringBefore(testPathRelativeToParentApp, CutlassConfig.TEST_INTEGRATION_PATH);
-		return new File(getClassesRoot(testDir), testPathRelativeToParentApp+"/"+CutlassConfig.TEST_INTEGRATION_PATH);
+//		File parentApplication = CutlassDirectoryLocator.getAppRootDir(testDir.getAbsoluteFile());
+//		File parentApplication = brjs.locateAncestorNodeOfClass(testDir, App.class).dir();
+//		String applicationPath = parentApplication.getAbsolutePath();
+//		String testDirPath = testDir.getAbsolutePath();
+//		String testPathRelativeToParentApp = testDirPath.replace(applicationPath, "").replace("\\", "/");
+//		// TODO: fix this broken replace
+//		testPathRelativeToParentApp = StringUtils.substringBefore(testPathRelativeToParentApp, CutlassConfig.TEST_INTEGRATION_PATH);
+		
+		App app = brjs.locateAncestorNodeOfClass(testDir, App.class);
+		String relativePath = RelativePathUtility.get(brjs, app.dir(), testDir);
+		
+		return new File(getClassesRoot(testDir), relativePath);
 	}
 	
 	public String getTestClassName(File testFile) 

@@ -25,8 +25,9 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 	private static final String URL_FLAG = "--url";
 	private static final String NO_WORKBENCH_FLAG = "--no-workbench";
 	private Logger logger;
+	private BRJS brjs;
 	
-	public TestIntegrationCommand(File sdkBaseDir)
+	public TestIntegrationCommand()
 	{
 		this.logger = ThreadSafeStaticBRJSAccessor.root.logger(this.getClass());
 	}
@@ -34,6 +35,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 	@Override
 	public void setBRJS(BRJS brjs)
 	{	
+		this.brjs = brjs;
 	}
 	
 	@Override
@@ -86,14 +88,14 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 			FileUtils.deleteQuietly(classesRoot);
 		}
 		
-		List<File> testContainerDirs = new IntegrationTestFinder().findTestContainerDirs(testRoot, ignoreWorkbenches(args));
+		List<File> testContainerDirs = new IntegrationTestFinder().findTestContainerDirs(brjs, testRoot, ignoreWorkbenches(args));
 		if (testContainerDirs.size() < 1) 
 		{
 			throw new CommandOperationException("No tests found.");
 		}
 		logger.println("Found tests in " + testContainerDirs.size() + " location(s).");
 		
-		List<File> classDirs = testCompiler.compileTestDirs(testContainerDirs);
+		List<File> classDirs = testCompiler.compileTestDirs(brjs, testContainerDirs);
 		
 		List<Class<?>> testClasses = testCompiler.loadClasses(classDirs);
 		
