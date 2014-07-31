@@ -18,7 +18,6 @@ import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -33,12 +32,6 @@ import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 public class AliasDefinitionsReader {
 	private static final XMLValidationSchema aliasDefinitionsSchema;
 	
-	private final AliasDefinitionsData data;
-	private final File file;
-	private final AssetLocation assetLocation;
-	private final String defaultFileCharacterEncoding;
-
-	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
 		
@@ -50,25 +43,14 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	public AliasDefinitionsReader(AliasDefinitionsData data, File file, AssetLocation assetLocation) {
-		try {
-			this.data = data;
-			this.file = file;
-			this.assetLocation = assetLocation;
-			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	public void read() throws ContentFileProcessingException {
+	public static AliasDefinitionsData read(File aliasDefinitionsFile, AssetLocation assetLocation, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
+		AliasDefinitionsData data = new AliasDefinitionsData();
 		data.aliasDefinitions = new ArrayList<>();
 		data.scenarioAliases = new HashMap<>();
 		data.groupAliases = new HashMap<>();
 		
-		if(file.exists()) {
-			try(Reader fileReader = new UnicodeReader(file, defaultFileCharacterEncoding)) {
+		if(aliasDefinitionsFile.exists()) {
+			try(Reader fileReader = new UnicodeReader(aliasDefinitionsFile, defaultFileCharacterEncoding)) {
 				XMLStreamReader2 streamReader = XmlStreamReaderFactory.createReader(fileReader, aliasDefinitionsSchema);
 				XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
 				
@@ -76,11 +58,11 @@ public class AliasDefinitionsReader {
 					if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 						switch(streamReader.getLocalName()) {
 							case "alias":
-								processAlias(streamReader);
+								processAlias(streamReader, data, aliasDefinitionsFile, assetLocation);
 								break;
 							
 							case "group":
-								processGroup(streamReader);
+								processGroup(streamReader, data, assetLocation);
 								break;
 						}
 					}
@@ -91,21 +73,23 @@ public class AliasDefinitionsReader {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new ContentFileProcessingException(file, location.getLineNumber(), location.getColumnNumber(), e);
+				throw new ContentFileProcessingException(aliasDefinitionsFile, location.getLineNumber(), location.getColumnNumber(), e);
 			}
 			catch (IOException | NamespaceException | RequirePathException | AliasException e) {
-				throw new ContentFileProcessingException(file, e);
+				throw new ContentFileProcessingException(aliasDefinitionsFile, e);
 			}
 		}
+		
+		return data;
 	}
 	
-	private void processAlias(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException, RequirePathException, AliasException {
+	private static void processAlias(XMLStreamReader2 streamReader, AliasDefinitionsData data, File aliasDefinitionsFile, AssetLocation assetLocation) throws XMLStreamException, NamespaceException, RequirePathException, AliasException {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "defaultClass");
 		String aliasInterface = streamReader.getAttributeValue(null, "interface");
 		
 		if (aliasName.equals(aliasClass)) {
-			throw new AliasNameIsTheSameAsTheClassException(file, aliasName);
+			throw new AliasNameIsTheSameAsTheClassException(aliasDefinitionsFile, aliasName);
 		}
 		
 		assetLocation.assertIdentifierCorrectlyNamespaced(aliasName);
@@ -117,7 +101,7 @@ public class AliasDefinitionsReader {
 			if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 				switch(streamReader.getLocalName()) {
 					case "scenario":
-						processScenario(aliasName, streamReader);
+						processScenario(aliasName, streamReader, data);
 						break;
 				}
 			}
@@ -126,7 +110,7 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	private void processGroup(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException, RequirePathException {
+	private static void processGroup(XMLStreamReader2 streamReader, AliasDefinitionsData data, AssetLocation assetLocation) throws XMLStreamException, NamespaceException, RequirePathException {
 		String groupName = streamReader.getAttributeValue(null, "name");
 		
 		assetLocation.assertIdentifierCorrectlyNamespaced(groupName);
@@ -137,7 +121,7 @@ public class AliasDefinitionsReader {
 			if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 				switch(streamReader.getLocalName()) {
 					case "alias":
-						processGroupAlias(groupName, streamReader);
+						processGroupAlias(groupName, streamReader, data);
 						break;
 				}
 			}
@@ -146,7 +130,7 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	private void processGroupAlias(String groupName, XMLStreamReader2 streamReader) {
+	private static void processGroupAlias(String groupName, XMLStreamReader2 streamReader, AliasDefinitionsData data) {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "class");
 		AliasOverride groupAlias = new AliasOverride(aliasName, aliasClass);
@@ -154,7 +138,7 @@ public class AliasDefinitionsReader {
 		data.getGroupAliases(groupName).add(groupAlias);
 	}
 	
-	private void processScenario(String aliasName, XMLStreamReader2 streamReader) {
+	private static void processScenario(String aliasName, XMLStreamReader2 streamReader, AliasDefinitionsData data) {
 		String scenarioName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "class");
 		AliasOverride scenarioAlias = new AliasOverride(aliasName, aliasClass);

@@ -16,33 +16,26 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 
 public class AliasDefinitionsFile {
-	private final AliasDefinitionsData data = new AliasDefinitionsData();
-	private final AliasDefinitionsReader aliasDefinitionsReader;
-	private final AliasDefinitionsWriter aliasDefinitionsWriter;
-	private final File file;
+	private AliasDefinitionsData data = new AliasDefinitionsData();
+	private final File aliasDefinitionsFile;
 	private final InfoFileModifiedChecker fileModifiedChecker;
+	private AssetLocation assetLocation;
 	
 	public AliasDefinitionsFile(AssetLocation assetLocation, File parent, String child) {
-		try {
-			file = new File(parent, child);
-			fileModifiedChecker = new InfoFileModifiedChecker(assetLocation.root().getFileInfo(file));
-			aliasDefinitionsReader = new AliasDefinitionsReader(data, file, assetLocation);
-			aliasDefinitionsWriter = new AliasDefinitionsWriter(data, file, assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding());
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
+		this.assetLocation = assetLocation;
+		aliasDefinitionsFile = new File(parent, child);
+		fileModifiedChecker = new InfoFileModifiedChecker(assetLocation.root().getFileInfo(aliasDefinitionsFile));
 	}
 	
 	public File getUnderlyingFile() {
-		return file;
+		return aliasDefinitionsFile;
 	}
 	
 	public List<String> aliasNames() throws ContentFileProcessingException {
 		List<String> aliasNames = new ArrayList<>();
 		
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
+			read();
 		}
 		
 		for(AliasDefinition aliasDefinition : data.aliasDefinitions) {
@@ -70,7 +63,7 @@ public class AliasDefinitionsFile {
 	
 	public List<AliasDefinition> aliases() throws ContentFileProcessingException {
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
+			read();
 		}
 		
 		return data.aliasDefinitions;
@@ -82,7 +75,7 @@ public class AliasDefinitionsFile {
 	
 	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws ContentFileProcessingException {
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
+			read();
 		}
 		
 		return data.scenarioAliases.get(alias.getName());
@@ -94,7 +87,7 @@ public class AliasDefinitionsFile {
 	
 	public Set<String> groupNames() throws ContentFileProcessingException {
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
+			read();
 		}
 		
 		return data.groupAliases.keySet();
@@ -102,7 +95,7 @@ public class AliasDefinitionsFile {
 	
 	public List<AliasOverride> groupAliases(String groupName) throws ContentFileProcessingException {
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
+			read();
 		}
 		
 		return ((data.groupAliases.containsKey(groupName)) ? data.groupAliases.get(groupName) : new ArrayList<AliasOverride>());
@@ -123,7 +116,7 @@ public class AliasDefinitionsFile {
 					}
 					
 					if(aliasDefinition != null) {
-						throw new AmbiguousAliasException(file, aliasName, scenarioName);
+						throw new AmbiguousAliasException(aliasDefinitionsFile, aliasName, scenarioName);
 					}
 					
 					aliasDefinition = nextAliasDefinition;
@@ -131,7 +124,7 @@ public class AliasDefinitionsFile {
 			}
 		}
 		catch(AmbiguousAliasException e) {
-			throw new ContentFileProcessingException(file, e);
+			throw new ContentFileProcessingException(aliasDefinitionsFile, e);
 		}
 		
 		return aliasDefinition;
@@ -144,7 +137,7 @@ public class AliasDefinitionsFile {
 			for(AliasOverride nextGroupAlias : groupAliases(groupName)) {
 				if(nextGroupAlias.getName().equals(aliasName)) {
 					if(aliasOverride != null) {
-						throw new AmbiguousAliasException(file, aliasName, groupNames);
+						throw new AmbiguousAliasException(aliasDefinitionsFile, aliasName, groupNames);
 					}
 					
 					aliasOverride = nextGroupAlias;
@@ -156,6 +149,19 @@ public class AliasDefinitionsFile {
 	}
 	
 	public void write() throws IOException {
-		aliasDefinitionsWriter.write();
+		AliasDefinitionsWriter.write(data, aliasDefinitionsFile, getCharacterEncoding());
+	}
+	
+	private void read() throws ContentFileProcessingException {
+		data = AliasDefinitionsReader.read(aliasDefinitionsFile, assetLocation, getCharacterEncoding());
+	}
+	
+	private String getCharacterEncoding() {
+		try {
+			return assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
