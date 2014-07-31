@@ -19,8 +19,6 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import com.caplin.cutlass.structure.CutlassDirectoryLocator;
-import com.caplin.cutlass.structure.model.path.AppPath;
 
 public class TestCompiler
 {
@@ -31,7 +29,6 @@ public class TestCompiler
 		
 		for (File testContainerDir : testContainerDirs) 
 		{
-			//File commonSrcDir = AppPath.locateAncestorPath(testContainerDir).testIntegrationSrcPath().getDir();
 			File commonSrcDir = brjs.locateAncestorNodeOfClass(testContainerDir, App.class).file("test-integration-src");
 			commonSrcDir = (commonSrcDir.exists()) ? commonSrcDir : null;
 			
@@ -58,9 +55,6 @@ public class TestCompiler
 			
 			// see http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.jdt.doc.isv/guide/jdt_api_compile.htm for command line args
 			String[] compilerArgs = new String[]{ "-1.6", "-sourcepath", sourcePath.toString(), "-d", compiledClassDir.getPath(), "-encoding", "UTF-8", "-nowarn", testContainerDir.getPath() };
-			
-			for(int i = 0; i < compilerArgs.length ; i++)
-				System.err.println(compilerArgs[i]);
 			
 			boolean compileReturnValue = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(
 					compilerArgs, 
@@ -154,18 +148,10 @@ public class TestCompiler
 
 	public File getCompiledClassDir(BRJS brjs, File testDir) throws IOException 
 	{
-//		File parentApplication = CutlassDirectoryLocator.getAppRootDir(testDir.getAbsoluteFile());
-//		File parentApplication = brjs.locateAncestorNodeOfClass(testDir, App.class).dir();
-//		String applicationPath = parentApplication.getAbsolutePath();
-//		String testDirPath = testDir.getAbsolutePath();
-//		String testPathRelativeToParentApp = testDirPath.replace(applicationPath, "").replace("\\", "/");
-//		// TODO: fix this broken replace
-//		testPathRelativeToParentApp = StringUtils.substringBefore(testPathRelativeToParentApp, CutlassConfig.TEST_INTEGRATION_PATH);
-		
 		App app = brjs.locateAncestorNodeOfClass(testDir, App.class);
 		String relativePath = RelativePathUtility.get(brjs, app.dir(), testDir);
 		
-		return new File(getClassesRoot(testDir), relativePath);
+		return new File(getClassesRoot(testDir), relativePath + "/test-integration/webdriver/tests");
 	}
 	
 	public String getTestClassName(File testFile) 

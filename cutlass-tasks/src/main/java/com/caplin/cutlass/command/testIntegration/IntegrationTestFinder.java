@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.Workbench;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 
 public class IntegrationTestFinder
 {
@@ -59,7 +58,6 @@ public class IntegrationTestFinder
 					"\tIntegration tests are only allowed in an aspect or workbench - this directory will be ignored.");
 		}
 		
-		//boolean isWorkbenchDir = CutlassDirectoryLocator.isWorkbenchDir( dir.getParentFile().getParentFile().getParentFile() );
 		boolean isWorkbenchDir = brjs.locateAncestorNodeOfClass(dir, Workbench.class) != null;
 		if (ignoreWorkbenches && isWorkbenchDir)
 		{
