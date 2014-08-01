@@ -145,9 +145,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 			
 			for(AssetContainer assetContainer : scopeAssetContainers()) {
 				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-					for(AliasDefinitionsFile aliasDefinitionsFile : assetLocation.aliasDefinitionsFiles()) {
-						aliasDefinitionFiles.add(aliasDefinitionsFile);
-					}
+					aliasDefinitionFiles.addAll( assetLocation.aliasDefinitionsFiles() );
 				}
 			}
 			
