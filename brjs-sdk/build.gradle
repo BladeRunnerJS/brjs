@@ -200,8 +200,12 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	}
 	doLast {
 		ant {
-			fixcrlf(srcdir:"workspace", includes:"**/brjs", eol:"lf" )
-			fixcrlf(srcdir:"workspace", includes:"**/brjs.cmd", eol:"crlf" )
+			["brjs", "jsdoc"].each {
+				fileTree(dir:'workspace', include:"**/${it}").each { fixFile ->
+					fixcrlf( file:fixFile.path, eol:"lf" )
+					fixcrlf( file:"${fixFile.path}.cmd", eol:"crlf" )
+				}
+			}
 		}
 	}
 }
