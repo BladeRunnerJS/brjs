@@ -17,12 +17,12 @@ public class AliasesFile {
 	
 	private final File file;
 	private final BundlableNode bundlableNode;
-	private final AliasData aliasData;
+	private final PersistentAliasesData persistentAliasesData;
 	
 	public AliasesFile(File parent, String child, BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
 		file = new File(parent, child);
-		aliasData = new AliasData(bundlableNode.root(), file);
+		persistentAliasesData = new PersistentAliasesData(bundlableNode.root(), file);
 	}
 	
 	public File getUnderlyingFile() {
@@ -30,29 +30,29 @@ public class AliasesFile {
 	}
 	
 	public String scenarioName() throws ContentFileProcessingException {
-		return aliasData.getScenario();
+		return persistentAliasesData.getData().scenario;
 	}
 	
 	public void setScenarioName(String scenarioName) throws ContentFileProcessingException {
-		aliasData.setScenario(scenarioName);
+		persistentAliasesData.getData().scenario = scenarioName;
 	}
 	
 	public List<String> groupNames() throws ContentFileProcessingException {
-		return aliasData.getGroupNames();
+		return persistentAliasesData.getData().groupNames;
 	}
 	
 	public void setGroupNames(List<String> groupNames) throws ContentFileProcessingException {
-		aliasData.setGroupNames(groupNames);
+		persistentAliasesData.getData().groupNames = groupNames;
 	}
 	
 	public List<AliasOverride> aliasOverrides() throws ContentFileProcessingException {
-		return aliasData.getAliasOverrides();
+		return persistentAliasesData.getData().aliasOverrides;
 	}
 	
 	public void addAlias(AliasOverride aliasOverride) throws ContentFileProcessingException {
-		List<AliasOverride> aliasOverrides = aliasData.getAliasOverrides();
+		List<AliasOverride> aliasOverrides = aliasOverrides();
 		aliasOverrides.add(aliasOverride);
-		aliasData.setAliasOverrides(aliasOverrides);
+		persistentAliasesData.getData().aliasOverrides = aliasOverrides;
 	}
 	
 	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
@@ -120,7 +120,7 @@ public class AliasesFile {
 	}
 	
 	public void write() throws ContentFileProcessingException {
-		aliasData.write();
+		persistentAliasesData.writeData();
 	}
 	
 	private AliasOverride getLocalAliasOverride(String aliasName) throws ContentFileProcessingException {
