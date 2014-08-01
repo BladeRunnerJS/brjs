@@ -44,7 +44,7 @@ Dependencies.putAll([
 	
 	'utils'						:	'org.ostermiller:utils:1.07.00',
 
-	'jsap'						:	'com.martiansoftware:jsap:2.1',
+	'jsap'						:	'com.martiansoftware:jsap:2.1-brjs-1-6f84c0',
 
 	'commons-io'				:	'commons-io:commons-io:2.4',
 	'commons-lang3'				:	'org.apache.commons:commons-lang3:3.2',
