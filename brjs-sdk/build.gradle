@@ -186,7 +186,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	{
 		into "sdk/phantomjs"
 		eachFile {
-			println it.path
 			it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip the version string
 		}
 	}
