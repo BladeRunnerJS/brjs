@@ -13,6 +13,8 @@ public class AliasData {
 	private final BRJS brjs;
 	private final File aliasesFile;
 	private final MemoizedValue<AliasesData> aliasesData;
+	private AliasesData prevFileAliasesData;
+	private AliasesData liveAliasesData;
 	
 	public AliasData(BRJS brjs, File aliasesFile) {
 		this.brjs = brjs;
@@ -27,7 +29,6 @@ public class AliasData {
 	public void setAliasOverrides(List<AliasOverride> aliasOverrides) throws ContentFileProcessingException {
 		AliasesData aliasesData = getAliasesData();
 		aliasesData.aliasOverrides = aliasOverrides;
-		write(aliasesData);
 	}
 	
 	public List<String> getGroupNames() throws ContentFileProcessingException {
@@ -37,7 +38,6 @@ public class AliasData {
 	public void setGroupNames(List<String> groupNames) throws ContentFileProcessingException {
 		AliasesData aliasesData = getAliasesData();
 		aliasesData.groupNames = groupNames;
-		write(aliasesData);
 	}
 	
 	public String getScenario() throws ContentFileProcessingException {
@@ -47,12 +47,11 @@ public class AliasData {
 	public void setScenario(String scenario) throws ContentFileProcessingException {
 		AliasesData aliasesData = getAliasesData();
 		aliasesData.scenario = scenario;
-		write(aliasesData);
 	}
 	
-	private void write(AliasesData aliasesData) throws ContentFileProcessingException {
+	public void write() throws ContentFileProcessingException {
 		try {
-			AliasesWriter.write(aliasesData, aliasesFile, getCharacterEncoding());
+			AliasesWriter.write(getAliasesData(), aliasesFile, getCharacterEncoding());
 		}
 		catch(Exception e) {
 			throw new ContentFileProcessingException(e, aliasesFile);
@@ -61,7 +60,14 @@ public class AliasData {
 	
 	private AliasesData getAliasesData() throws ContentFileProcessingException {
 		return aliasesData.value(() -> {
-			return AliasesReader.read(aliasesFile, getCharacterEncoding());
+			AliasesData fileAliasesData = AliasesReader.read(aliasesFile, getCharacterEncoding());
+			
+			if((prevFileAliasesData == null) || !prevFileAliasesData.equals(fileAliasesData)) {
+				prevFileAliasesData = fileAliasesData;
+				liveAliasesData = new AliasesData(fileAliasesData);
+			}
+			
+			return liveAliasesData;
 		});
 	}
 	

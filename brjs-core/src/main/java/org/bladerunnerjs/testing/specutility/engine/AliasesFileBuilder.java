@@ -14,20 +14,29 @@ public class AliasesFileBuilder {
 		builderChainer = new BuilderChainer(specTest);
 	}
 	
+	public BuilderChainer exists() throws Exception {
+		aliasesFile.write();
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer usesScenario(String scenario) throws Exception {
 		aliasesFile.setScenarioName(scenario);
+		aliasesFile.write();
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer usesGroups(String... groups) throws Exception {
 		aliasesFile.setGroupNames(Arrays.asList(groups));
+		aliasesFile.write();
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
 		aliasesFile.addAlias(new AliasOverride(aliasName, classRef));
+		aliasesFile.write();
 		
 		return builderChainer;
 	}

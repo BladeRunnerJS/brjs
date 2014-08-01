@@ -119,6 +119,10 @@ public class AliasesFile {
 		return aliasDefinition;
 	}
 	
+	public void write() throws ContentFileProcessingException {
+		aliasData.write();
+	}
+	
 	private AliasOverride getLocalAliasOverride(String aliasName) throws ContentFileProcessingException {
 		AliasOverride aliasOverride = null;
 		
