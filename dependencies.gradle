@@ -60,7 +60,7 @@ Dependencies.putAll([
 	
 	'slf4j-api'					:	'org.slf4j:slf4j-api:1.7.7',
 	'slf4j-log4j12'				:	'org.slf4j:slf4j-log4j12:1.7.7',
-	'yamlbeans'					:	'com.esotericsoftware.yamlbeans:yamlbeans:1.08',
+	'yamlbeans'					:	'com.esotericsoftware.yamlbeans:yamlbeans:1.06',
 
 	'ant'						:	'org.apache.ant:ant:1.9.4',
 	'ant-junit'					:	'org.apache.ant:ant-junit:1.9.4',
