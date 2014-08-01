@@ -11,6 +11,10 @@ public class AliasDefinition {
 		this.interfaceName = interfaceName;
 	}
 	
+	public boolean equals(AliasDefinition aliasDefinition) {
+		return name.equals(aliasDefinition.getName()) && className.equals(aliasDefinition.getClassName()) && interfaceName.equals(aliasDefinition.getInterfaceName());
+	}
+	
 	public String getInterfaceName() {
 		return interfaceName;
 	}
