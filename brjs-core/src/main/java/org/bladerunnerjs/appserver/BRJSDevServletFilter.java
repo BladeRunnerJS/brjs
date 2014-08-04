@@ -66,7 +66,7 @@ public class BRJSDevServletFilter implements Filter {
 			 *  - the model shouldn't have any concept of 'welcome' pages
 			 *  - changing the model would mean that the build-app utils now need to understand the new redirection behavior 
 			 */
-			response.sendRedirect(requestPath+"/");
+			response.sendRedirect(request.getRequestURI()+"/");
 		} else if (!servletPath.equals("/brjs") && app.canHandleLogicalRequest(requestPath) && request.getAttribute(IGNORE_REQUEST_ATTRIBUTE) == null) {
 			request.getRequestDispatcher("/brjs/" + requestPath).forward(request, response);
 		}

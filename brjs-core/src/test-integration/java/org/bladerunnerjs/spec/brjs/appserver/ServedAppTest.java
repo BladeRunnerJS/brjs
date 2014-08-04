@@ -7,6 +7,7 @@ import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -30,6 +31,7 @@ public class ServedAppTest extends SpecTest
 	StringBuffer response = new StringBuffer();
 	DirNode sdkLibsDir;
 	private Aspect anotherAspect;
+	private Bladeset bladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -49,7 +51,8 @@ public class ServedAppTest extends SpecTest
 			aspect = app.aspect("default");
 			anotherAspect = app.aspect("another");
 			systemAspect = systemApp.aspect("default");
-			blade = app.bladeset("bs").blade("b1");
+			bladeset = app.bladeset("bs");
+			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
 			appJars = brjs.appJars();
 			appJars.create();
@@ -86,7 +89,6 @@ public class ServedAppTest extends SpecTest
 	public void localeForwarderPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
 		given(app).hasBeenPopulated()
-			.and(brjs).localeForwarderHasContents("locale forwarder")
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app", "/app/");
 	}
@@ -105,7 +107,6 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated()
     		.and(anotherAspect).hasBeenPopulated()
-			.and(brjs).localeForwarderHasContents("locale forwarder")
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/another", "/app/another/");
 	}
@@ -117,6 +118,30 @@ public class ServedAppTest extends SpecTest
 			.and(anotherAspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/another/en", "/app/another/en/");
+	}
+	
+	@Test
+	public void workbenchLocaleForwarderPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
+	{
+		given(app).hasBeenPopulated()
+    		.and(bladeset).hasBeenCreated()
+    		.and(blade).hasBeenCreated()
+    		.and(workbench).hasBeenCreated()
+			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(appServer).started();
+		then(appServer).requestIs302Redirected("/app/bs/b1/workbench", "/app/bs/b1/workbench/");
+	}
+	
+	@Test
+	public void workbenchIndexPageCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
+	{
+		given(app).hasBeenPopulated()
+    		.and(bladeset).hasBeenCreated()
+    		.and(blade).hasBeenCreated()
+    		.and(workbench).hasBeenCreated()
+    		.and(brjs).localeForwarderHasContents("locale forwarder")
+    		.and(appServer).started();
+    	then(appServer).requestIs302Redirected("/app/bs/b1/workbench/en", "/app/bs/b1/workbench/en/");
 	}
 	
 	@Test
