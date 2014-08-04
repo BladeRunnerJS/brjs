@@ -1,11 +1,13 @@
 package org.bladerunnerjs.utility.filemodification;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 
 public class PessimisticFileModificationService implements FileModificationService {
-	PessimisticFileModificationInfo pessimisticFileModificationInfo = new PessimisticFileModificationInfo();
+	Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
 	
 	@Override
 	public void initialise(BRJS brjs, File rootDir) {
@@ -14,7 +16,13 @@ public class PessimisticFileModificationService implements FileModificationServi
 	
 	@Override
 	public FileModificationInfo getModificationInfo(File file) {
-		return pessimisticFileModificationInfo;
+		String filePath = file.getAbsolutePath();
+		
+		if(!fileModificationInfos.containsKey(filePath)) {
+			fileModificationInfos.put(filePath, new PessimisticFileModificationInfo(file));
+		}
+		
+		return fileModificationInfos.get(filePath);
 	}
 	
 	@Override

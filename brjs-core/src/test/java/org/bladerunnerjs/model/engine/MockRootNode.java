@@ -207,7 +207,7 @@ public class MockRootNode implements RootNode
 
 	@Override
 	public FileInfo getFileInfo(File dir) {
-		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo());
+		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo(dir));
 	}
 
 	@Override

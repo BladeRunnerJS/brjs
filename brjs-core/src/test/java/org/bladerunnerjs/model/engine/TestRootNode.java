@@ -90,7 +90,7 @@ public final class TestRootNode extends AbstractRootNode
 	
 	@Override
 	public FileInfo getFileInfo(File dir) {
-		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo());
+		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo(dir));
 	}
 	
 	@Override

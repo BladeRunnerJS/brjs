@@ -20,7 +20,8 @@ public class PersistentAliasDefinitionsData {
 		this.brjs = assetLocation.root();
 		this.assetLocation = assetLocation;
 		this.aliasesFile = aliasesFile;
-		aliasDefinitionsData = new MemoizedValue<>("AliasData.aliasDefinitionsData", brjs, aliasesFile, assetLocation.assetContainer().dir(), assetLocation.root().file("conf/brjs.conf"));
+		aliasDefinitionsData = new MemoizedValue<>("PersistentAliasDefinitionsData.aliasDefinitionsData", brjs, aliasesFile, assetLocation.assetContainer().dir(),
+			assetLocation.root().file("conf/brjs.conf"), assetLocation.assetContainer().app().file("app.conf"));
 	}
 	
 	public AliasDefinitionsData getData() throws ContentFileProcessingException {
