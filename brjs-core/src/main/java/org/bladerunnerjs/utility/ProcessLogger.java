@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
@@ -101,6 +103,10 @@ public class ProcessLogger {
 	}
 	
 	private void logMessage(LogLevel logLevel, String message, Object[] params) {
+		if(filterMessage(message)){
+			return; //hack for filtering unnecessarily verbose output
+		}
+		
 		switch(logLevel) {			
 			case ERROR:
 				logger.error(message, params);
@@ -118,5 +124,16 @@ public class ProcessLogger {
 				logger.debug(message, params);
 				break;
 		}
+	}
+
+	private boolean filterMessage(String message) {
+		final String regexp = "(.*: Reset)";
+		//final int flags = Pattern.;
+		Pattern pattern = Pattern.compile(regexp);
+		Matcher matcher = pattern.matcher(message);
+		if(matcher.find())
+			return true;
+		
+		return false;
 	}
 }
