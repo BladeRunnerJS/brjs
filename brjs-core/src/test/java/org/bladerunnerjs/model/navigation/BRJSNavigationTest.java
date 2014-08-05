@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.model.navigation;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,8 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.NodeTesterFactory;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.junit.After;
@@ -127,6 +129,6 @@ public class BRJSNavigationTest extends TestModelAccessor
 	public void testGettingLoggerForClass() throws Exception
 	{
 		Logger logger = brjs.logger(this.getClass());
-		assertEquals("org.bladerunnerjs.model", logger.getName());
+		assertEquals("org.bladerunnerjs.model.navigation", logger.getName());
 	}
 }

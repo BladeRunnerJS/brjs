@@ -1,8 +1,11 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.model.navigation;
 
 import java.io.File;
 
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.NodeTesterFactory;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.junit.After;
