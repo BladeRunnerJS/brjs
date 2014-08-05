@@ -21,6 +21,8 @@ public class HTMLContentPluginTest extends SpecTest
 	private Blade blade;
 	private Workbench workbench;
 	private NamedDirNode workbenchTemplate;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -35,6 +37,8 @@ public class HTMLContentPluginTest extends SpecTest
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
 			workbenchTemplate = brjs.template("workbench");
+			defaultBladeset = app.bladeset("default");
+			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 			
 			given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
 				.and(workbenchTemplate).containsFolder("resources")
@@ -191,6 +195,15 @@ public class HTMLContentPluginTest extends SpecTest
 			.and(workbench).indexPageRefersTo("appns/bs/b1/Class1");
 		when(workbench).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsText("v/dev/some/path");
+	}
+	
+	@Test
+	public void bladeHtmlInDefaultBladesetCanBeBundled() throws Exception {
+		given(bladeInDefaultBladeset).hasClass("appns/BladeClass")
+			.and(bladeInDefaultBladeset).containsResourceFileWithContents("html/view.html", "<div id='appns.b1.my.view'>Blade Content</div>")
+			.and(aspect).indexPageRequires("appns/BladeClass");
+		when(aspect).requestReceivedInDev("html/bundle.html", response);
+		then(response).containsText("Blade Content");
 	}
 	
 }

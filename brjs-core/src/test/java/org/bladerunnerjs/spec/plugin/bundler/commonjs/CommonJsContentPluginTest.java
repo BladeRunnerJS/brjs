@@ -18,6 +18,8 @@ public class CommonJsContentPluginTest extends SpecTest {
 	private JsLib sdkJsLib;
 	private Bladeset bladeset;
 	private Blade blade;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -30,6 +32,8 @@ public class CommonJsContentPluginTest extends SpecTest {
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			sdkJsLib = brjs.sdkLib("sdkLib");
+			defaultBladeset = app.bladeset("default");
+			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	
 	@Test
@@ -93,7 +97,7 @@ public class CommonJsContentPluginTest extends SpecTest {
 	public void unresolvableRequirePathExceptionContainsFilePath() throws Exception{
 		given(aspect).indexPageRequires("appns/Class")
 			.and(aspect).classFileHasContent("appns/Class", "require('randomStuff')");
-		when(aspect).requestReceivedInDev("node-js/bundle.js", requestResponse);
+		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "randomStuff", "appns/Class" );
 	}
 	
@@ -103,7 +107,7 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClass("appns/bs/b1/Class")
 			.and(bladeset).hasBeenCreated() 
 			.and(blade).hasClass("appns/bs/b1/Class");
-		when(aspect).requestReceivedInDev("node-js/bundle.js", requestResponse);
+		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
 		then(exceptions).verifyException(AmbiguousRequirePathException.class, 	"default-aspect/index.html",
 																					"bs-bladeset/blades/b1/src/appns/bs/b1/Class.js",
 																					"default-aspect/src/appns/bs/b1/Class.js",
@@ -117,11 +121,19 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClass("appns/bs/b1/Class")
 			.and(bladeset).hasBeenCreated() 
 			.and(blade).hasClass("appns/bs/b1/Class");
-		when(aspect).requestReceivedInDev("node-js/bundle.js", requestResponse);
+		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
 		then(exceptions).verifyException(AmbiguousRequirePathException.class, 	"appns/Class",
 																					"bs-bladeset/blades/b1/src/appns/bs/b1/Class.js",
 																					"default-aspect/src/appns/bs/b1/Class.js",
 																					"appns/bs/b1/Class");
+	}
+	
+	@Test
+	public void bladeClassesInDefaultBladesetCanBeBundled() throws Exception {
+		given(bladeInDefaultBladeset).hasClass("appns/BladeClass")
+			.and(aspect).indexPageRequires("appns/BladeClass");
+		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
+		then(requestResponse).containsCommonJsClasses("appns/BladeClass");
 	}
 	
 }

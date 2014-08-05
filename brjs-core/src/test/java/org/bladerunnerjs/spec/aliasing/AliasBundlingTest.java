@@ -28,6 +28,8 @@ public class AliasBundlingTest extends SpecTest {
 	private StringBuffer response = new StringBuffer();
 	private Workbench workbench;
 	private AliasesFile worbenchAliasesFile;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -47,7 +49,8 @@ public class AliasBundlingTest extends SpecTest {
 			brLib = app.jsLib("br");
 			brLibAliasDefinitionsFile = brLib.assetLocation("resources").aliasDefinitionsFile();
 			otherBrLib = brjs.sdkLib("otherBrLib");
-			
+			defaultBladeset = app.bladeset("default");
+			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	
 	// SDK AliasDefinitions
@@ -382,6 +385,17 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspect).indexPageRequires("appns/Class1");
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
 		then(response).containsText("setAliasData({'the-alias':{'class':require('appns/Class1'),'className':'appns.Class1'}})");
+	}
+	
+	@Test
+	public void aliasesInDefaultBladesetCanBeBundled() throws Exception {
+		given(bladeInDefaultBladeset).hasClasses("appns/BladeClass", "appns/Class1")
+			.and(bladeInDefaultBladeset).classFileHasContent("appns/BladeClass", "require('br/AliasRegistry').getService('the-alias');")
+    		.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
+    		.and(aspect).indexPageRequires("appns/BladeClass")
+    		.and(brLib).hasClass("br/AliasRegistry");
+		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
+    	then(response).containsText("setAliasData({'the-alias':{'class':require('appns/Class1'),'className':'appns.Class1'}})");
 	}
 	
 }
