@@ -44,6 +44,7 @@ public class BRJSNavigationTest extends TestModelAccessor
 		nodeTesterFactory.createSetTester(App.class, "userApps", "userApp")
 			.addChild("a1", "apps/a1")
 			.addChild("a2", "apps/a2")
+			.addChild("a3", "apps/a3")
 			.assertModelIsOK();
 	}
 	

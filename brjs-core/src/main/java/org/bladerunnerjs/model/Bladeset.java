@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 
-public final class Bladeset extends AbstractComponent implements NamedNode
+public class Bladeset extends AbstractComponent implements NamedNode
 {
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;

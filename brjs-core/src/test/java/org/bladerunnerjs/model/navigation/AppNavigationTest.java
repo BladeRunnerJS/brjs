@@ -43,6 +43,17 @@ public class AppNavigationTest extends TestModelAccessor
 			.addChild("bs2", "bs2-bladeset")
 			.assertModelIsOK();
 	}
+	
+	@Test
+	public void defaultBladesets()
+	{
+		app = brjs.app("a3");
+		nodeTesterFactory = new NodeTesterFactory<>(app, App.class);
+		nodeTesterFactory.createSetTester(Bladeset.class, "bladesets", "bladeset")
+			.addChild("default", "blades") // default blade represents 'blades' dir since otherwise 2 nodes are registered for the same path
+			.addChild("bs1", "bs1-bladeset")
+			.assertModelIsOK();
+	}
 
 	@Test
 	public void aspects()
