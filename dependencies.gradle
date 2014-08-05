@@ -104,6 +104,7 @@ Dependencies.putAll([
 	'firefox'					:	'browser:firefox-'+os+':21.0@zip',
 	'firefox-webdriver'			:	'browser:firefox-'+os+':12.0@zip',
 
+ 	'phantomjs'					:	'browser:phantomjs-'+os+':1.9.7@zip',
  	'phantomjs_windows'			:	'browser:phantomjs-win32:1.9.7@zip',
  	'phantomjs_mac'				:	'browser:phantomjs-mac:1.9.7@zip',
  	'phantomjs_linux'			:	'browser:phantomjs-linux:1.9.7@zip',
