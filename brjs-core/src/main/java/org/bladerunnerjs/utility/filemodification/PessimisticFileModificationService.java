@@ -1,7 +1,9 @@
 package org.bladerunnerjs.utility.filemodification;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
@@ -23,6 +25,17 @@ public class PessimisticFileModificationService implements FileModificationServi
 		}
 		
 		return fileModificationInfos.get(filePath);
+	}
+	
+	@Override
+	public List<FileModificationInfo> getModificationInfoSet(File[] files) {
+		List<FileModificationInfo> modificationInfoSet = new ArrayList<>();
+		
+		for(File file : files) {
+			modificationInfoSet.add(getModificationInfo(file));
+		}
+		
+		return modificationInfoSet;
 	}
 	
 	@Override

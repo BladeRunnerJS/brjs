@@ -1,6 +1,8 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.FileInfo;
@@ -209,7 +211,12 @@ public class MockRootNode implements RootNode
 	public FileInfo getFileInfo(File dir) {
 		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo(dir));
 	}
-
+	
+	@Override
+	public List<FileInfo> getFileInfoSet(File[] files) {
+		return Collections.emptyList();
+	}
+	
 	@Override
 	public <N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass)
 	{

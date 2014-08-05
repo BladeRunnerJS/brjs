@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.IO;
@@ -15,6 +16,7 @@ public interface RootNode extends Node {
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
 	FileInfo getFileInfo(File dir);
+	List<FileInfo> getFileInfoSet(File[] files);
 	IO io();
 	
 	// these two methods, implemented by AbstractRootNode, are used by AbstractNode
