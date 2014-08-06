@@ -84,31 +84,31 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		
 		switch(dirPath) {
 			case ".":
-				assetLocation = (assetContainer instanceof JsLib) ? new BRJSConformantJsLibRootAssetLocation(assetContainer.root(), assetContainer, dir) :
-					new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, dir);
+				assetLocation = (assetContainer instanceof JsLib) ? new BRJSConformantJsLibRootAssetLocation(assetContainer.root(), assetContainer, dir, null) :
+					new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, dir, null);
 				break;
 			
 			case "resources":
 				if (assetContainer instanceof Blade) {
-					assetLocation = new BladeResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
+					assetLocation = new BladeResourcesAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("."));
 				} else {
-					assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
+					assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("."));
 				}
 				break;
 			
 			case "src":
-				assetLocation = new SourceAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("resources"));
+				assetLocation = new SourceAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("."), assetLocationsMap.get("resources"));
 				break;
 			
 			case "src-test":
-				assetLocation = new SourceAssetLocation(assetContainer.root(), assetContainer, dir);
+				assetLocation = new SourceAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("."));
 				break;
 			
 			default:
 				if(dirPath.startsWith("themes")){
 					
 					String themeName = dirPath.substring(7);
-					assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir, themeName);
+					assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("."), themeName);
 					break;
 				}
 				
@@ -116,7 +116,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 				AssetLocation parentAssetLocation = assetLocationsMap.get(parentLocationPath);
 				
 				if((parentAssetLocation instanceof ChildSourceAssetLocation) || (parentAssetLocation instanceof SourceAssetLocation)) {
-					assetLocation = new ChildSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
+					assetLocation = new ChildSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation, parentAssetLocation);
 				}
 				else {
 					assetLocation = new ChildTestSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);

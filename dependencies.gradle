@@ -44,7 +44,7 @@ Dependencies.putAll([
 	
 	'utils'						:	'org.ostermiller:utils:1.07.00',
 
-	'jsap'						:	'com.martiansoftware:jsap:2.1',
+	'jsap'						:	'com.martiansoftware:jsap:2.1-brjs-1-6f84c0',
 
 	'commons-io'				:	'commons-io:commons-io:2.4',
 	'commons-lang3'				:	'org.apache.commons:commons-lang3:3.2',
@@ -60,7 +60,7 @@ Dependencies.putAll([
 	
 	'slf4j-api'					:	'org.slf4j:slf4j-api:1.7.7',
 	'slf4j-log4j12'				:	'org.slf4j:slf4j-log4j12:1.7.7',
-	'yamlbeans'					:	'com.esotericsoftware.yamlbeans:yamlbeans:1.08',
+	'yamlbeans'					:	'com.esotericsoftware.yamlbeans:yamlbeans:1.06',
 
 	'ant'						:	'org.apache.ant:ant:1.9.4',
 	'ant-junit'					:	'org.apache.ant:ant-junit:1.9.4',
@@ -104,6 +104,7 @@ Dependencies.putAll([
 	'firefox'					:	'browser:firefox-'+os+':21.0@zip',
 	'firefox-webdriver'			:	'browser:firefox-'+os+':12.0@zip',
 
+ 	'phantomjs'					:	'browser:phantomjs-'+os+':1.9.7@zip',
  	'phantomjs_windows'			:	'browser:phantomjs-win32:1.9.7@zip',
  	'phantomjs_mac'				:	'browser:phantomjs-mac:1.9.7@zip',
  	'phantomjs_linux'			:	'browser:phantomjs-linux:1.9.7@zip',

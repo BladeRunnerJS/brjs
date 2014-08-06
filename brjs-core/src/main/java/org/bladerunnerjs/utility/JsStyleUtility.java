@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class JsStyleUtility {
 		
@@ -23,7 +23,7 @@ public class JsStyleUtility {
 			if(jsStyle == null){
 				File parent = dir.getParentFile();
 				if(parent == null){
-					jsStyle = CommonJsContentPlugin.JS_STYLE;
+					jsStyle = CommonJsSourceModule.JS_STYLE;
 				}else{
 					jsStyle = getJsStyle(parent);
 				}

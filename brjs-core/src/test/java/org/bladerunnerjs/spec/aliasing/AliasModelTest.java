@@ -88,6 +88,13 @@ public class AliasModelTest extends SpecTest {
 		when(aspect).retrievesAlias("the-alias");
 		then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs.*");
 	}
+
+	@Test
+	public void aliasDefinitionsDefinedWithinBladesetsMustBeCorrectlyNamespaced() throws Exception {
+		given(bladesetAliasDefinitionsFile).hasAlias("appns.bsblah.the-alias", "TheClass");
+		when(aspect).retrievesAlias("appns.bsblah.the-alias");
+		then(exceptions).verifyException(NamespaceException.class, "appns.bsblah.the-alias", "appns.bs.*");
+	}
 	
 	@Test
 	public void aliasDefinitionsDefinedWithinBladesMustBeNamespaced() throws Exception {

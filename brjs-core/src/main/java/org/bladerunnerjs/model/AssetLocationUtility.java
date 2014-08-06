@@ -13,10 +13,10 @@ public class AssetLocationUtility
 		return assetLocations;
 	}
 	
-	private static void addAssetLocation(AssetLocation assetLocation, List<AssetLocation> assetLocations) {
-		assetLocations.add(assetLocation);
+	private static void addAssetLocation(AssetLocation parentAssetLocation, List<AssetLocation> assetLocations) {
+		assetLocations.add(parentAssetLocation);
 		
-		for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
+		for(AssetLocation dependentAssetLocation : parentAssetLocation.dependentAssetLocations()) {
 			addAssetLocation(dependentAssetLocation, assetLocations);
 		}
 	}

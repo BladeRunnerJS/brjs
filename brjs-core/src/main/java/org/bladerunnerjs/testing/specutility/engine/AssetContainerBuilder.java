@@ -6,8 +6,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
@@ -139,8 +139,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
+		if(!jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
+			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "'");
 		}
 		
 		fileUtil.write( sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');" + getClassBody(sourceClass) );
@@ -153,7 +153,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(CommonJsContentPlugin.JS_STYLE)) {
+		if(!jsStyle.equals(CommonJsSourceModule.JS_STYLE)) {
 			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
@@ -187,8 +187,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "' for dir '"+sourceFile.getParentFile().getPath()+"'.");
+		if(!jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
+			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "' for dir '"+sourceFile.getParentFile().getPath()+"'.");
 		}
 		
 		String classReferencesContent = "var someFunction = function() {\n";
@@ -210,8 +210,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(CommonJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to '"+CommonJsContentPlugin.JS_STYLE+"' for dir '"+sourceFile.getParentFile().getPath()+"'");
+		if(!jsStyle.equals(CommonJsSourceModule.JS_STYLE)) {
+			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to '"+CommonJsSourceModule.JS_STYLE+"' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
 		dependencyClass = dependencyClass.replaceAll("\\.(\\w)", "/$1");
@@ -227,7 +227,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		String classBody;
 		
-		if(jsStyle.equals(CommonJsContentPlugin.JS_STYLE)) {
+		if(jsStyle.equals(CommonJsSourceModule.JS_STYLE)) {
 			if (className.contains("."))
 			{
 				throw new RuntimeException("Require paths must not contain the '.' character");
@@ -239,7 +239,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 				"\n" +
 				"module.exports = " + commonJsClassName + ";\n";
 		}
-		else if(jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
+		else if(jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
 			if (className.contains("/"))
 			{
 				throw new RuntimeException("Class names must not contain the '/' character");

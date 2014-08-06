@@ -116,7 +116,7 @@ public class AppBuildTest extends SpecTest {
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFile("app1/v/1234/js/prod/combined/bundle.js")
-			.and(targetDir).doesNotContainFile("app1/v/1234/node-js/bundle.js");
+			.and(targetDir).doesNotContainFile("app1/v/1234/common-js/bundle.js");
 	}
 	
 	@Test

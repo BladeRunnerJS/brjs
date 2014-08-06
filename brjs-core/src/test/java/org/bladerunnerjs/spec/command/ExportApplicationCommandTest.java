@@ -53,7 +53,7 @@ public class ExportApplicationCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void appCanBeExportedWithDisclaimerForAppLibraryJsClasses() throws Exception {
+	public void appCanBeExportedWithABannerForAppLibraryJsClasses() throws Exception {
 		given(app).hasBeenCreated()
 		.and(aspect).classFileHasContent("appns.Class1", "default aspect src")
 		.and(app).containsFileWithContents("libs/appLib/Class1.js", "library class")
@@ -71,6 +71,16 @@ public class ExportApplicationCommandTest extends SpecTest {
 			"*/" + "\n" +
 			"\n" +
 			"library class");
+	}
+	
+	@Test
+	public void bannerIsNotIncludedIfTheOptionIsNotSet() throws Exception {
+		given(app).hasBeenCreated()
+    		.and(aspect).classFileHasContent("appns.Class1", "default aspect src")
+    		.and(app).containsFileWithContents("libs/appLib/Class1.js", "library class");
+    	when(brjs).runCommand("export-app", "app1")
+    		.and(brjs).zipFileIsExtractedTo("generated/exported-apps/app1.zip", "generated/exported-apps/app1");
+    	then(brjs).fileContentsDoesNotContain("generated/exported-apps/app1/app1/libs/appLib/Class1.js", "/*");
 	}
 	
 	@Test

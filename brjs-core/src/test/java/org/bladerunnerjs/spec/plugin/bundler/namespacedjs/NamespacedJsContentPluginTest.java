@@ -22,7 +22,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade;
 	private TypedTestPack bladeTestPack, sdkJsLibTestPack;
-	private TestPack bladeTests, sdkJsLibTests;
+	private TestPack aspectTests, bladeTests, sdkJsLibTests;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -32,6 +32,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			aspectTests = aspect.testType("unit").testTech("js-test-driver");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			bladeTestPack = blade.testType("test");
@@ -198,6 +199,16 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void thePackageDefinitionsBlockShouldntContainPackagesForTestClasses() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspectTests).hasClass("appns.pkg1.Class")
+			.and(aspectTests).hasTestClass("appns.pkg2.TestClass")
+			.and(aspectTests).testRefersTo("appns/pkg3/test.js", "appns.pkg1.Class", "appns.pkg2.TestClass");
+		when(aspectTests).requestReceivedInDev("namespaced-js/package-definitions.js", requestResponse);
+		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"pkg1\":{},\"pkg2\":{}}});");
+	}
+	
+	@Test
 	public void eachClassShouldBeReturnedLargelyUnchanged() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function() {\n};");
@@ -220,13 +231,13 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	@Test
 	public void autoGlobalisationReplacesInvalidCharacters() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-			.and(aspect).hasCommonJsPackageStyle("src/appns/node-js")
-			.and(aspect).hasClasses("appns.namespaced.Class", "appns/node-js/Class")
+			.and(aspect).hasCommonJsPackageStyle("src/appns/common-js")
+			.and(aspect).hasClasses("appns.namespaced.Class", "appns/common-js/Class")
 			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
-			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.node-js.Class");
+			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.common-js.Class");
 		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("appns.namespaced.Class = function() {\n};")
-			.and(requestResponse).containsText("appns.node_js.Class = require('appns/node-js/Class');");
+			.and(requestResponse).containsText("appns.common_js.Class = require('appns/common-js/Class');");
 	}
 	
 	@Test
@@ -410,7 +421,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void commonJsTestsInRootTestsDirInAnSdkLibDoNotHaveTheirPathsGlobalized() throws Exception {
+	public void commonJsTestsInRootTestsDirInAnSdkLibDontHaveTheirPathsGlobalized() throws Exception {
 		given(sdkJsLib).hasCommonJsPackageStyle()
     		.and(sdkJsLib).hasClasses("sdkLib/Class1")
     		.and(sdkJsLibTests).hasTestClass("sdkLib/TestClass1")
@@ -420,7 +431,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void commonJsTestsInRootTestsDirInAnSdkLibWithNestedRequirePrefixDoNotHaveTheirPathsGlobalizedPaths() throws Exception {
+	public void commonJsTestsInRootTestsDirInAnSdkLibWithNestedRequirePrefixDontHaveTheirPathsGlobalized() throws Exception {
 		given(sdkJsLib).hasCommonJsPackageStyle()
 			.and(sdkJsLib).containsFileWithContents("br-lib.conf", "requirePrefix: sdkLib/subPkg")
     		.and(sdkJsLib).hasClasses("sdkLib/subPkg/Class1")

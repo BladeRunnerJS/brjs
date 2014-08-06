@@ -39,10 +39,15 @@ public class JsTestDriverBundleCreator
 		File baseDirectory = getBaseDirectory(jsTestDriverConf, configMap);
 		
 		TestPack testPack = brjs.locateAncestorNodeOfClass(jsTestDriverConf, TestPack.class);
+		if(testPack == null){
+			throw new RuntimeException("Unable to find test pack which represents the path " + jsTestDriverConf.getParentFile());
+		}
+		
 		App app = testPack.app();
 		if(app == null){
 			throw new RuntimeException("Cannot find app instance");
 		}
+		
 		BundlerHandler bundlerHandler = new BundlerHandler(brjs, app);
 		
 		for (String resourceToLoad : getListOfResourcesToLoad(configMap))

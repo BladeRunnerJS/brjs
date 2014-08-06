@@ -51,22 +51,22 @@ GwtTestRunnerTest.prototype.stubMockFixture = function(oTestRunner, sFixtureName
 GwtTestRunnerTest.prototype.test_nonExistentFactoryClassCausesException = function()
 {
 	assertException(function(){
-		new br.test.GwtTestRunner("testing.NonExistentTestFixtureFactory");
+		new br.test.GwtTestRunner("br.test.NonExistentTestFixtureFactory");
 	}, "InvalidFactoryError");
 };
 
 GwtTestRunnerTest.prototype.test_factoryClassOfWrongTypeCausesException = function()
 {
-	testing.InvalidTestFixtureFactory = function(){};
+	br.test.InvalidTestFixtureFactory = function(){};
 	
 	assertException(function(){
-		new br.test.GwtTestRunner("testing.InvalidTestFixtureFactory");
+		new br.test.GwtTestRunner("br.test.InvalidTestFixtureFactory");
 	}, "InvalidFactoryError");
 };
 
 GwtTestRunnerTest.prototype.test_whenFirstCausesException = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -76,7 +76,7 @@ GwtTestRunnerTest.prototype.test_whenFirstCausesException = function()
 
 GwtTestRunnerTest.prototype.test_thenFirstCausesException = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -86,7 +86,7 @@ GwtTestRunnerTest.prototype.test_thenFirstCausesException = function()
 
 GwtTestRunnerTest.prototype.test_andFirstCausesException = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -96,7 +96,7 @@ GwtTestRunnerTest.prototype.test_andFirstCausesException = function()
 
 GwtTestRunnerTest.prototype.test_givenOnlyCausesException = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -109,7 +109,7 @@ GwtTestRunnerTest.prototype.test_givenOnlyCausesException = function()
 
 GwtTestRunnerTest.prototype.test_givenWhenOnlyCausesException = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -123,7 +123,7 @@ GwtTestRunnerTest.prototype.test_givenWhenOnlyCausesException = function()
 
 GwtTestRunnerTest.prototype.test_givenAfterWhenCausesException = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -137,7 +137,7 @@ GwtTestRunnerTest.prototype.test_givenAfterWhenCausesException = function()
 
 GwtTestRunnerTest.prototype.test_givenAfterThenCausesException = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -151,7 +151,7 @@ GwtTestRunnerTest.prototype.test_givenAfterThenCausesException = function()
 
 GwtTestRunnerTest.prototype.test_whenAfterThenCausesException = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -162,7 +162,7 @@ GwtTestRunnerTest.prototype.test_whenAfterThenCausesException = function()
 
 GwtTestRunnerTest.prototype.test_givenWhenThenIsAllowed = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -174,7 +174,7 @@ GwtTestRunnerTest.prototype.test_givenWhenThenIsAllowed = function()
 
 GwtTestRunnerTest.prototype.test_givenThenIsAllowed = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -185,7 +185,7 @@ GwtTestRunnerTest.prototype.test_givenThenIsAllowed = function()
 
 GwtTestRunnerTest.prototype.test_andsCanBeChained = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -206,7 +206,7 @@ GwtTestRunnerTest.prototype.test_andsCanBeChained = function()
 
 GwtTestRunnerTest.prototype.test_whensMustUseBecomesAndNotEquals = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -219,7 +219,7 @@ GwtTestRunnerTest.prototype.test_whensMustUseBecomesAndNotEquals = function()
 
 GwtTestRunnerTest.prototype.test_statementsMustHaveAProperty = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -229,7 +229,7 @@ GwtTestRunnerTest.prototype.test_statementsMustHaveAProperty = function()
 
 GwtTestRunnerTest.prototype.test_statementsMustHaveAValue = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -239,7 +239,7 @@ GwtTestRunnerTest.prototype.test_statementsMustHaveAValue = function()
 
 GwtTestRunnerTest.prototype.test_fixtureMustExist = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -249,7 +249,7 @@ GwtTestRunnerTest.prototype.test_fixtureMustExist = function()
 
 GwtTestRunnerTest.prototype.test_propertyMustExist = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -259,7 +259,7 @@ GwtTestRunnerTest.prototype.test_propertyMustExist = function()
 
 GwtTestRunnerTest.prototype.test_fixtureNameCanContainEqualsSign = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "another=fixture");
 
@@ -268,7 +268,7 @@ GwtTestRunnerTest.prototype.test_fixtureNameCanContainEqualsSign = function()
 
 GwtTestRunnerTest.prototype.test_stringValuesAreAllowed = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "fixture").expects(once()).doGiven("prop", "value");
@@ -278,7 +278,7 @@ GwtTestRunnerTest.prototype.test_stringValuesAreAllowed = function()
 
 GwtTestRunnerTest.prototype.test_emptyStringValuesAreAllowed = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "fixture").expects(once()).doGiven("prop", "");
@@ -288,7 +288,7 @@ GwtTestRunnerTest.prototype.test_emptyStringValuesAreAllowed = function()
 
 GwtTestRunnerTest.prototype.test_apostrophesInStringValuesAreAllowed = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "fixture").expects(once()).doGiven("prop", "prop's value");
@@ -297,7 +297,7 @@ GwtTestRunnerTest.prototype.test_apostrophesInStringValuesAreAllowed = function(
 
 GwtTestRunnerTest.prototype.test_numbersValuesAreAllowed = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "fixture").expects(once()).doGiven("prop", 42);
@@ -307,7 +307,7 @@ GwtTestRunnerTest.prototype.test_numbersValuesAreAllowed = function()
 
 GwtTestRunnerTest.prototype.test_booleansValuesAreAllowed = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "fixture").expects(once()).doGiven("prop", true);
@@ -319,7 +319,7 @@ GwtTestRunnerTest.prototype.test_booleansValuesAreAllowed = function()
 
 GwtTestRunnerTest.prototype.test_arrayValuesAreAllowed = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "fixture").expects(once()).doGiven("prop", ["value", 42, true]);
@@ -329,7 +329,7 @@ GwtTestRunnerTest.prototype.test_arrayValuesAreAllowed = function()
 
 GwtTestRunnerTest.prototype.test_stringsMustBeQuoted = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -339,7 +339,7 @@ GwtTestRunnerTest.prototype.test_stringsMustBeQuoted = function()
 
 GwtTestRunnerTest.prototype.test_whitespaceIsNotRequired = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "fixture").expects(exactly(5)).doGiven("prop", "value");
@@ -357,7 +357,7 @@ GwtTestRunnerTest.prototype.test_whitespaceIsNotRequired = function()
 
 GwtTestRunnerTest.prototype.test_normalFixturesCantBeUsedAsPropertyFixtures = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -367,7 +367,7 @@ GwtTestRunnerTest.prototype.test_normalFixturesCantBeUsedAsPropertyFixtures = fu
 
 GwtTestRunnerTest.prototype.test_propertyFixturesDontRequireADot = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "propertyFixture").expects(once()).doGiven("", "value");
@@ -377,7 +377,7 @@ GwtTestRunnerTest.prototype.test_propertyFixturesDontRequireADot = function()
 
 GwtTestRunnerTest.prototype.test_ifYouHaveADotYouMustProvideAPropertyNameToo = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	assertException(function(){
@@ -387,7 +387,7 @@ GwtTestRunnerTest.prototype.test_ifYouHaveADotYouMustProvideAPropertyNameToo = f
 
 GwtTestRunnerTest.prototype.test_StatementValueCanContainSymbols = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 
 	this.getFixture(oTestRunner, "propertyFixture").expects(once()).doGiven("prop", "value & key");
@@ -400,7 +400,7 @@ GwtTestRunnerTest.prototype.test_StatementValueCanContainSymbols = function()
 
 GwtTestRunnerTest.prototype.test_propertyFixturesCanAlsoBeUsedNormally = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "propertyFixture").expects(once()).doGiven("prop", "value");
@@ -410,7 +410,7 @@ GwtTestRunnerTest.prototype.test_propertyFixturesCanAlsoBeUsedNormally = functio
 
 GwtTestRunnerTest.prototype.test_subFixturesCanBeAddressedViaParent = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "parentFixture").getFirstMockFixture().expects(once()).doGiven("prop", "value");
@@ -424,7 +424,7 @@ GwtTestRunnerTest.prototype.test_subFixturesCanBeAddressedViaParent = function()
 
 GwtTestRunnerTest.prototype.test_subFixturesCanBeAddresedViaChainedParents = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	this.getFixture(oTestRunner, "grandParentFixture").getChildMockFixture().getFirstMockFixture().expects(once()).doGiven("prop", "value");
@@ -433,7 +433,7 @@ GwtTestRunnerTest.prototype.test_subFixturesCanBeAddresedViaChainedParents = fun
 
 GwtTestRunnerTest.prototype.test_continuesFromRunsEarlierLinkInTestChain = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -456,7 +456,7 @@ GwtTestRunnerTest.prototype.test_continuesFromRunsEarlierLinkInTestChain = funct
 
 GwtTestRunnerTest.prototype.test_continuesFromsCanBeChainedMultipleTimes = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -483,7 +483,7 @@ GwtTestRunnerTest.prototype.test_continuesFromsCanBeChainedMultipleTimes = funct
 
 GwtTestRunnerTest.prototype.test_continuesFromsCantBeChainedAcrossSuitesWithoutNamespacing = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -511,7 +511,7 @@ GwtTestRunnerTest.prototype.test_continuesFromsCantBeChainedAcrossSuitesWithoutN
 
 GwtTestRunnerTest.prototype.test_continuesFromsCanBeChainedAcrossSuitesUsingNamespacing = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -542,7 +542,7 @@ GwtTestRunnerTest.prototype.test_continuesFromsCanBeChainedAcrossSuitesUsingName
 
 GwtTestRunnerTest.prototype.test_chainedTestsCanReferToOtherLocalTestsUsingLocalNames = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -587,7 +587,7 @@ GwtTestRunnerTest.prototype.test_exceptionIsThrownIfSuiteAlreadyDefined = functi
 
 GwtTestRunnerTest.prototype.test_exceptionIsThrownIfContinuingFromANonExistentTest = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	
 	describe("some test suite", function() {
@@ -612,7 +612,7 @@ GwtTestRunnerTest.prototype.testExceptionIsThrownIfDescriptionContainsInvalidCha
 
 GwtTestRunnerTest.prototype.test_xitCanBeUsedToDisableTestsWithoutBreakingChaining = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	
@@ -639,7 +639,7 @@ GwtTestRunnerTest.prototype.test_xitCanBeUsedToDisableTestsWithoutBreakingChaini
 
 GwtTestRunnerTest.prototype.test_xdescribeCanBeUsedToDisableTestSuitesWithoutBreakingChaining = function()
 {
-	var oTestRunner = new br.test.GwtTestRunner("testing.TestFixtureFactory");
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
 	oTestRunner.startTest();
 	this.stubMockFixture(oTestRunner, "fixture");
 	

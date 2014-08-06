@@ -39,6 +39,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private SourceModulePatch patch;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	private TrieBasedDependenciesCalculator trieBasedStaticDependenciesCalculator;
+	public static final String JS_STYLE = "namespaced-js";
 	
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;

@@ -64,13 +64,13 @@ public class BladeTestPackBundlingTest extends SpecTest
 	@Test
 	public void weBundleBladeSrcTestContentsInUTs() throws Exception {		
 		given(blade).hasNamespacedJsPackageStyle()
-			.and(bladeUTs).containsFile("src-test/pkg/Util.js")
+			.and(bladeUTs).containsFile("src-test/appns/bs/b1/Util.js")
 			.and(blade).hasClasses("appns.bs.b1.Class1")
-			.and(bladeUTs).classExtends("pkg.Util", "appns.bs.b1.Class1")
-			.and(bladeUTs).testRefersTo("pkg/test.js", "pkg.Util");
+			.and(bladeUTs).classExtends("appns.bs.b1.Util", "appns.bs.b1.Class1")
+			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Util");
 		then(bladeUTs).bundledFilesEquals(
 			blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
-			bladeUTs.testSource().file("pkg/Util.js"));
+			bladeUTs.testSource().file("appns/bs/b1/Util.js"));
 	}
 	
 	@Test

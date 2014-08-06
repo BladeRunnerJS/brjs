@@ -40,9 +40,10 @@ dependencies {
 	testRunner project(path: ':brjs-logger-binding')
 	testRunner files('build-resources/JsTestDriver.conf')
 	
-	phantomjs dependency('phantomjs_windows')
-	phantomjs dependency('phantomjs_mac')
-	phantomjs dependency('phantomjs_linux')
+	phantomjs dependency('phantomjs')
+//	phantomjs dependency('phantomjs_windows')
+//	phantomjs dependency('phantomjs_mac')
+//	phantomjs dependency('phantomjs_linux')
 	
 	browsers_dep dependency('chrome')
 	browsers_dep dependency('firefox')
@@ -57,8 +58,10 @@ task copyBrowsers(type: Sync) {
 	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
 	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
 	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
+	from { configurations.phantomjs.collect { browser -> zipTree(browser) } }
 	eachFile {
 		it.path = it.path.replaceAll("-[0-9\\.]+/", "/") // strip the version string
+		it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip phantomjs version
 	}
 	into browserRootDir
 	doLast {
@@ -182,14 +185,13 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
 	
-	from (configurations.phantomjs.collect { zipTree(it) })
-	{
-		into "sdk/phantomjs"
-		eachFile {
-			println it.path
-			it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip the version string
-		}
-	}
+//	from (configurations.phantomjs.collect { zipTree(it) })
+//	{
+//		into "sdk/phantomjs"
+//		eachFile {
+//			it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip the version string
+//		}
+//	}
 
 	doFirst {
 		delete file("workspace/sdk/libs/java")
@@ -200,8 +202,12 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	}
 	doLast {
 		ant {
-			fixcrlf(srcdir:"workspace", includes:"**/brjs", eol:"lf" )
-			fixcrlf(srcdir:"workspace", includes:"**/brjs.cmd", eol:"crlf" )
+			["brjs", "jsdoc"].each {
+				fileTree(dir:'workspace', include:"**/${it}").each { fixFile ->
+					fixcrlf( file:fixFile.path, eol:"lf" )
+					fixcrlf( file:"${fixFile.path}.cmd", eol:"crlf" )
+				}
+			}
 		}
 	}
 }
@@ -253,7 +259,7 @@ task createSdkJsDocs, dependsOn: assembleSdk, {
 	}
 	doLast {
 		delete file("workspace/apps/${jsDocTmpAppName}")
-	}
+	} 
 }
 
 
