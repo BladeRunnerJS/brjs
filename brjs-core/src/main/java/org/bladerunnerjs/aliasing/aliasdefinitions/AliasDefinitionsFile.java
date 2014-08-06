@@ -14,7 +14,6 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class AliasDefinitionsFile {
-	private AliasDefinitionsData data = new AliasDefinitionsData();
 	private final File aliasDefinitionsFile;
 	private final PersistentAliasDefinitionsData persistentAliasDefinitionsData;
 	
@@ -85,7 +84,7 @@ public class AliasDefinitionsFile {
 			for(AliasDefinition nextAliasDefinition : aliases()) {
 				if(nextAliasDefinition.getName().equals(aliasName)) {
 					if(scenarioName != null) {
-						AliasOverride scenarioAlias = data.getScenarioAliases(nextAliasDefinition.getName()).get(scenarioName);
+						AliasOverride scenarioAlias = persistentAliasDefinitionsData.getData().getScenarioAliases(nextAliasDefinition.getName()).get(scenarioName);
 						
 						if(scenarioAlias != null) {
 							nextAliasDefinition = new AliasDefinition(nextAliasDefinition.getName(), scenarioAlias.getClassName(), nextAliasDefinition.getInterfaceName());
