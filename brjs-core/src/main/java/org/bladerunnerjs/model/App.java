@@ -169,7 +169,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<Bladeset> bladesets()
 	{
-		List<Bladeset> childCladesets = bladesets.list();
+		List<Bladeset> childCladesets = new ArrayList<>( bladesets.list() );
 		Bladeset defaultBladeset = defaultBladeset();
 		if (defaultBladeset.dirExists()) {
 			childCladesets.add(0, defaultBladeset);
