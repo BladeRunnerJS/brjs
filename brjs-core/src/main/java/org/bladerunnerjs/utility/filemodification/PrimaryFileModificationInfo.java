@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.FileInfo;
 public class PrimaryFileModificationInfo implements FileModificationInfo {
 	private final FileInfo fileInfo;
 	private final FileModificationInfo fileModificationInfo;
-	private boolean isExistentFile;
+	private boolean isFile;
 	
 	public PrimaryFileModificationInfo(FileInfo fileInfo, FileModificationInfo fileModificationInfo) {
 		this.fileInfo = fileInfo;
@@ -14,7 +14,7 @@ public class PrimaryFileModificationInfo implements FileModificationInfo {
 	
 	@Override
 	public long getLastModified() {
-		isExistentFile = fileInfo.exists() && !fileInfo.isDirectory();
+		isFile = !fileInfo.isDirectory();
 		return fileModificationInfo.getLastModified();
 	}
 	
@@ -23,7 +23,7 @@ public class PrimaryFileModificationInfo implements FileModificationInfo {
 		fileModificationInfo.resetLastModified();
 	}
 	
-	public boolean isExistentFile() {
-		return isExistentFile;
+	public boolean isFile() {
+		return isFile;
 	}
 }

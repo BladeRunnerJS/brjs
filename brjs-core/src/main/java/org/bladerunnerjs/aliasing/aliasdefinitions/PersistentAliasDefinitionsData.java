@@ -13,8 +13,6 @@ public class PersistentAliasDefinitionsData {
 	private final AssetLocation assetLocation;
 	private final File aliasesFile;
 	private final MemoizedValue<AliasDefinitionsData> aliasDefinitionsData;
-	private AliasDefinitionsData prevFileAliasDefinitionsData;
-	private AliasDefinitionsData liveAliasDefinitionsData;
 	
 	public PersistentAliasDefinitionsData(AssetLocation assetLocation, File aliasesFile) {
 		this.brjs = assetLocation.root();
@@ -26,14 +24,7 @@ public class PersistentAliasDefinitionsData {
 	
 	public AliasDefinitionsData getData() throws ContentFileProcessingException {
 		return aliasDefinitionsData.value(() -> {
-			AliasDefinitionsData fileAliasDefinitionsData = AliasDefinitionsReader.read(aliasesFile, assetLocation, getCharacterEncoding());
-			
-			if((prevFileAliasDefinitionsData == null) || !prevFileAliasDefinitionsData.equals(fileAliasDefinitionsData)) {
-				prevFileAliasDefinitionsData = fileAliasDefinitionsData;
-				liveAliasDefinitionsData = new AliasDefinitionsData(fileAliasDefinitionsData);
-			}
-			
-			return liveAliasDefinitionsData;
+			return AliasDefinitionsReader.read(aliasesFile, assetLocation, getCharacterEncoding());
 		});
 	}
 	

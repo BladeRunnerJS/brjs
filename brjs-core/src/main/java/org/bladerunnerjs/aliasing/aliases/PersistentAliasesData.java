@@ -11,8 +11,6 @@ public class PersistentAliasesData {
 	private final BRJS brjs;
 	private final File aliasesFile;
 	private final MemoizedValue<AliasesData> aliasesData;
-	private AliasesData prevFileAliasesData;
-	private AliasesData liveAliasesData;
 	
 	public PersistentAliasesData(BRJS brjs, File aliasesFile) {
 		this.brjs = brjs;
@@ -22,14 +20,7 @@ public class PersistentAliasesData {
 	
 	public AliasesData getData() throws ContentFileProcessingException {
 		return aliasesData.value(() -> {
-			AliasesData fileAliasesData = AliasesReader.read(aliasesFile, getCharacterEncoding());
-			
-			if((prevFileAliasesData == null) || !prevFileAliasesData.equals(fileAliasesData)) {
-				prevFileAliasesData = fileAliasesData;
-				liveAliasesData = new AliasesData(fileAliasesData);
-			}
-			
-			return liveAliasesData;
+			return AliasesReader.read(aliasesFile, getCharacterEncoding());
 		});
 	}
 	

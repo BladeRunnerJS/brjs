@@ -15,7 +15,7 @@ public class SecondaryFileModificationInfo implements FileModificationInfo {
 	
 	@Override
 	public long getLastModified() {
-		return (file.isDirectory() && primaryFileModificationInfo.isExistentFile()) ? primaryFileModificationInfo.getLastModified() : fileModificationInfo.getLastModified();
+		return (file.isDirectory() && primaryFileModificationInfo.isFile()) ? 1 : fileModificationInfo.getLastModified();
 	}
 	
 	@Override
