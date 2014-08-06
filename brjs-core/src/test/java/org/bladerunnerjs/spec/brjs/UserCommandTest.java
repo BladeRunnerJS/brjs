@@ -5,7 +5,6 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.ExplodingCommand;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class UserCommandTest extends SpecTest {
@@ -25,34 +24,16 @@ public class UserCommandTest extends SpecTest {
 			"");
 	}
 	
-	@Ignore // This test can be re-instated once our Java 8 JSAP patch has been merged (see <https://sourceforge.net/p/jsap/patches/2/>)
 	@Test
 	public void usageIsDisplayedIfIncorrectArgumentsAreProvided() {
 		when(brjs).runUserCommand("create-blade");
 		then(logging).containsConsoleText(
-			"BladeRunnerJS version: the-version, built: the-build-date",
-			"",
 			"Problem:",
 			"  Parameter 'target-app-name' is required.",
-			"  Parameter 'target-bladeset-name' is required.",
 			"  Parameter 'new-blade-name' is required.",
 			"",
 			"Usage:",
-			"  brjs create-blade <target-app-name> <target-bladeset-name> <new-blade-name>");
-	}
-	
-	// TODO: this test can be removed once the test above is re-instated
-	@Test
-	public void TEMP_usageIsDisplayedIfIncorrectArgumentsAreProvided() {
-		when(brjs).runUserCommand("create-blade");
-		then(logging).containsConsoleText(
-			"Problem:",
-			"  Parameter '")
-		.and(logging).containsConsoleText(
-			"' is required.",
-			"",
-			"Usage:",
-			"  brjs create-blade <target-app-name> <new-blade-name>");
+			"  brjs create-blade <target-app-name> <new-blade-name> [(-s|--bladeset) <bladeset>]");
 	}
 	
 	@Test
