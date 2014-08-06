@@ -5,32 +5,29 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.LinkedFileAsset;
 
 public class XMLAsset extends LinkedFileAsset {
-
-	private List<String> requirePaths;
+	private final MemoizedValue<List<String>> requirePaths;
 	
 	public XMLAsset(File assetFile, AssetLocation assetLocation) {
 		super(assetFile, assetLocation);
+		requirePaths = new MemoizedValue<>("XMLAsset.requirePaths", assetLocation.root(), assetFile);
 	}
 	
 	@Override
 	public List<String> getRequirePaths() {
-
-		if(haveFileContentsChanged() || requirePaths == null){
-			try {
+		try {
+			return requirePaths.value(() -> {
 				Reader reader = getReader();
 				XMLIdExtractor extractor = new XMLIdExtractor();
-				requirePaths = extractor.getXMLIds(reader);
-
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+				return extractor.getXMLIds(reader);
+			});
 		}
-
-		return requirePaths;
+		catch(IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
-
 }
