@@ -37,7 +37,12 @@ public class AssetLocator {
 							
 							if(!cachedAssets.containsKey(assetFilePath)) {
 								try {
-									cachedAssets.put(assetFilePath, assetPlugin.createAsset(assetFile, assetLocation));
+									Asset createdAsset = assetPlugin.createAsset(assetFile, assetLocation);
+									assetLocation.root().logger(this.getClass()).info("creating new asset for the path '%s'", 
+											createdAsset.getAssetPath());
+									assetLocation.root().logger(this.getClass()).debug("asset at '%s' is a '%s' and it's primary require path is '%s'", 
+											createdAsset.getAssetPath(), createdAsset.getClass().getSimpleName(), createdAsset.getPrimaryRequirePath());
+									cachedAssets.put(assetFilePath, createdAsset);
 								}
 								catch (AssetFileInstantationException e) {
 									throw new RuntimeException(e);
