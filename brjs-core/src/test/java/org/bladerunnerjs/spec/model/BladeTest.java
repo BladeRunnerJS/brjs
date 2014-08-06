@@ -2,7 +2,6 @@ package org.bladerunnerjs.spec.model;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
@@ -12,16 +11,13 @@ import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
 public class BladeTest extends SpecTest {
 	private App app;
-	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade1;
-	private Blade blade2;
 	private Blade bladeWithInvalidName;
 	private Blade bladeWithJSKeyWordName;
 	private NamedDirNode bladeTemplate;
@@ -33,10 +29,8 @@ public class BladeTest extends SpecTest {
 			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
-			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade1 = bladeset.blade("b1");
-			blade2 = bladeset.blade("b2");
 			bladeWithInvalidName = bladeset.blade("_-=+");
 			bladeWithJSKeyWordName = bladeset.blade("export");
 			bladeTemplate = brjs.template("blade");
@@ -70,7 +64,7 @@ public class BladeTest extends SpecTest {
 		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Blade", bladeWithJSKeyWordName.dir())
 			.and(exceptions).verifyException(InvalidPackageNameException.class, bladeWithJSKeyWordName.dir(), "export");
 	}
-	@Ignore //waiting for change to default appConf values, app namespace will be set to app name
+	
 	@Test
 	public void bladeIsBaselinedDuringPopulation() throws Exception {
 		given(bladeTemplate).containsFolder("@blade")
@@ -78,7 +72,7 @@ public class BladeTest extends SpecTest {
 		when(blade1).populate();
 		then(blade1).hasDir(blade1.getName())
 			.and(blade1).doesNotHaveDir("@blade")
-			.and(blade1).fileHasContents("MyClass.js", "app.bs.b1 = function() {};");
+			.and(blade1).fileHasContents("MyClass.js", "appns.bs.b1 = function() {};");
 	}
 	
 	@Test
@@ -89,18 +83,6 @@ public class BladeTest extends SpecTest {
 		when(blade1).populate();
 		then(blade1).hasDir(blade1.getName())
 			.and(blade1).fileHasContents(expectedClassName + ".js", "function " + expectedClassName + "(){}");
-	}
-	
-	//TODO: verify bundleInfo exception
-	@Test
-	public void classesWithinABladeCantReferenceClassesInOtherBlades() throws Exception {
-		given(bladeset).hasNamespacedJsPackageStyle()
-			.and(blade1).hasClass("appns.bs.b1.Class1")
-			.and(blade2).hasClass("appns.bs.b2.Class1")
-			.and(blade2).classDependsOn("appns.bs.b2.Class1", "appns.bs.b1.blade.Class1")
-			.and(aspect).indexPageRefersTo("blade2.Class2");
-		when(aspect).getBundleInfo();
-//		then(exceptions).verifyException(BundleSetException.class, blade2.getName() //some other information);
 	}
 	
 	@Test
