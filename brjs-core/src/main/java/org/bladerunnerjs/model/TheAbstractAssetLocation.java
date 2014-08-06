@@ -121,10 +121,10 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	
 	@Override
 	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
-		String namespace = NamespaceUtility.convertToNamespace(requirePrefix());
+		String namespace = NamespaceUtility.convertToNamespace(requirePrefix()) + ".";
 		
 		if(assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace)) {
-			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + ".*' was expected.");
+			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + "*' was expected.");
 		}
 	}
 	
