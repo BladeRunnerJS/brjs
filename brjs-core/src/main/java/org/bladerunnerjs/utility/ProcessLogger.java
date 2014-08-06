@@ -103,7 +103,7 @@ public class ProcessLogger {
 	}
 	
 	private void logMessage(LogLevel logLevel, String message, Object[] params) {
-		if(filterMessage(message)){
+		if(filterAndModifyMessage(message)){
 			return; //hack for filtering unnecessarily verbose output
 		}
 		
@@ -126,13 +126,14 @@ public class ProcessLogger {
 		}
 	}
 
-	private boolean filterMessage(String message) {
-		final String regexp = "(.*: Reset)";
-		//final int flags = Pattern.;
-		Pattern pattern = Pattern.compile(regexp);
+	private boolean filterAndModifyMessage(String message) {
+		final String regexp = "(.*: Reset)|(Tests failed: Tests failed.*)";
+		final int flags = Pattern.CASE_INSENSITIVE;
+		Pattern pattern = Pattern.compile(regexp,flags);
 		Matcher matcher = pattern.matcher(message);
-		if(matcher.find())
+		if(matcher.find()){
 			return true;
+		}
 		
 		return false;
 	}
