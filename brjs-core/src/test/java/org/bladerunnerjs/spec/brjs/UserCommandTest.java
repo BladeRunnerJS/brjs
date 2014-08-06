@@ -52,7 +52,7 @@ public class UserCommandTest extends SpecTest {
 			"' is required.",
 			"",
 			"Usage:",
-			"  brjs create-blade <target-app-name> <target-bladeset-name> <new-blade-name>");
+			"  brjs create-blade <target-app-name> <new-blade-name>");
 	}
 	
 	@Test

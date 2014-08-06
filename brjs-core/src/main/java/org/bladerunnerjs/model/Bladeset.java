@@ -68,7 +68,9 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	public void assertValidName() throws InvalidNameException
 	{
 		NameValidator.assertValidDirectoryName(this);
-		NameValidator.assertValidPackageName(this, name);
+		if (!name.equals("default")) { // 'default' is a valid bladeset name since its the implicit bladeset name for the optional bladeset
+			NameValidator.assertValidPackageName(this, name);
+		}
 	}
 	
 	@Override

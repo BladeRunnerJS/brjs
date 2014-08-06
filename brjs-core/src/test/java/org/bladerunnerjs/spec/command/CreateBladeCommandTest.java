@@ -37,21 +37,21 @@ public class CreateBladeCommandTest extends SpecTest {
 	
 	@Test
 	public void exceptionIsThrownIfThereAreTooFewArguments() throws Exception {
-		when(brjs).runCommand("create-blade", "a", "b");
+		when(brjs).runCommand("create-blade", "a");
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'new-blade-name' is required"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
 	@Test
 	public void exceptionIsThrownIfThereAreTooManyArguments() throws Exception {
-		when(brjs).runCommand("create-blade", "a", "b", "c", "d");
-		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: d"))
+		when(brjs).runCommand("create-blade", "a", "b", "c");
+		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: c"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
 	@Test
 	public void exceptionIsThrownIfTheAppDoesntExist() throws Exception {
-		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
+		when(brjs).runCommand("create-blade", "app", "blade");
 		then(exceptions).verifyException(NodeDoesNotExistException.class, "app", unquoted(app.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
@@ -59,7 +59,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfTheBladesetDoesntExist() throws Exception {
 		given(app).hasBeenCreated();
-		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
+		when(brjs).runCommand("create-blade", "app", "blade", "-s", "bladeset");
 		then(exceptions).verifyException(NodeDoesNotExistException.class, "bladeset", unquoted(bladeset.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
@@ -67,7 +67,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfTheBladeAlreadyExists() throws Exception {
 		given(blade).hasBeenCreated();
-		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
+		when(brjs).runCommand("create-blade", "app", "blade", "-s", "bladeset");
 		then(exceptions).verifyException(NodeAlreadyExistsException.class, "blade", unquoted(blade.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
@@ -76,7 +76,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	public void exceptionIsThrownIfBladeNameIsInvalid() throws Exception {
 		given(bladeset).hasBeenCreated()
 			.and(logging).enabled();
-		when(brjs).runCommand("create-blade", "app", "bladeset", "!$%$^");
+		when(brjs).runCommand("create-blade", "app", "!$%$^", "-s", "bladeset");
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, "Blade", badBlade.dir().getPath())
 			.and(exceptions).verifyException(InvalidDirectoryNameException.class, "!$%$^", badBlade.dir().getPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
@@ -85,7 +85,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Test
 	public void bladeIsCreatedWhenAllArgumentsAreValid() throws Exception {
 		given(bladeset).hasBeenCreated();
-		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
+		when(brjs).runCommand("create-blade", "app", "blade", "-s", "bladeset");
 		then(blade).dirExists()
 			.and(logging).containsFormattedConsoleMessage(BLADE_CREATE_SUCCESS_CONSOLE_MSG, "blade")
 			.and(logging).containsFormattedConsoleMessage(BLADE_PATH_CONSOLE_MSG, blade.dir().getPath());
@@ -96,7 +96,17 @@ public class CreateBladeCommandTest extends SpecTest {
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(bladeset).hasBeenCreated();
-		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
+		when(brjs).runCommand("create-blade", "app", "blade");
 		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void bladeIsCreatedInTheDefaultBladesetIfBladesetNotSpecified() throws Exception {
+		Blade bladeInDefaultBladeset = app.bladeset("default").blade("blade");
+		given(bladeset).hasBeenCreated();
+		when(brjs).runCommand("create-blade", "app", "blade");
+		then(bladeInDefaultBladeset).dirExists()
+			.and(logging).containsFormattedConsoleMessage(BLADE_CREATE_SUCCESS_CONSOLE_MSG, "blade")
+			.and(logging).containsFormattedConsoleMessage(BLADE_PATH_CONSOLE_MSG, bladeInDefaultBladeset.dir().getPath());
 	}
 }

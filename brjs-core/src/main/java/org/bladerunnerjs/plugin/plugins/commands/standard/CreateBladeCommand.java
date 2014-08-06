@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 
+import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
@@ -24,8 +25,9 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 {
 	private class Parameters {
 		public static final String APP_NAME = "target-app-name";
-		public static final String BLADESET_NAME = "target-bladeset-name";
 		public static final String BLADE_NAME = "new-blade-name";
+		public static final String BLADESET_NAME = "bladeset";
+		public static final char SHORT_BLADESET_OPTION = 's';
 	}
 	
 	public class Messages {
@@ -39,8 +41,9 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
-		argsParser.registerParameter(new UnflaggedOption(Parameters.BLADESET_NAME).setRequired(true).setHelp("the bladeset within which the new blade will be created"));
 		argsParser.registerParameter(new UnflaggedOption(Parameters.BLADE_NAME).setRequired(true).setHelp("the name of the blade that will be created"));
+		argsParser.registerParameter(new FlaggedOption(Parameters.BLADESET_NAME).setLongFlag(Parameters.BLADESET_NAME).setShortFlag(Parameters.SHORT_BLADESET_OPTION)
+				.setRequired(false).setHelp("the bladeset within which the new blade will be created. if ommitted the default is to create the blade without a bladeset."));
 	}
 	
 	@Override
@@ -69,11 +72,17 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		String bladeName = parsedArgs.getString(Parameters.BLADE_NAME);
 		
 		App app = brjs.app(appName);
-		Bladeset bladeset = app.bladeset(bladesetName);
+		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
+
+		Bladeset bladeset;
+		if (bladesetName == null) {
+			bladeset = getDefaultBladeset(app);
+		} else {
+			bladeset = app.bladeset(bladesetName);
+			if(!bladeset.dirExists()) throw new NodeDoesNotExistException(bladeset, this);
+		}
 		Blade blade = bladeset.blade(bladeName);
 		
-		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
-		if(!bladeset.dirExists()) throw new NodeDoesNotExistException(bladeset, this);
 		if(blade.dirExists()) throw new NodeAlreadyExistsException(blade, this);
 		
 		try {
@@ -90,5 +99,20 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		logger.println(Messages.BLADE_PATH_CONSOLE_MSG, blade.dir().getPath());
 		
 		return 0;
+	}
+
+	private Bladeset getDefaultBladeset(App app) throws CommandOperationException
+	{
+		Bladeset bladeset;
+		bladeset = app.defaultBladeset();
+		try
+		{
+			bladeset.create();
+		}
+		catch (InvalidNameException | ModelUpdateException e)
+		{
+			throw new CommandOperationException(e);
+		}
+		return bladeset;
 	}
 }
