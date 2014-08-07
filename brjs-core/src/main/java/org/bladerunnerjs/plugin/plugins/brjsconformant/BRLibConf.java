@@ -21,7 +21,7 @@ public class BRLibConf extends ConfFile<BRLibYamlConf> {
 	
 	public void setRequirePrefix(String requirePrefix) throws ConfigException {
 		getConf().requirePrefix = requirePrefix;
-		verifyAndAutoWrite();
+		verify();
 	}
 	
 	public boolean manifestExists()

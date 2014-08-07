@@ -14,7 +14,6 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	private final BRJSNode node;
 	private final Class<CF> confClass;
 	private final File confFile;
-	private boolean shouldAutoWriteOnSet = true;
 	
 	private String defaultFileCharacterEncoding;
 	
@@ -58,17 +57,8 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		return getConfFile().isFile();
 	}
 	
-	public void autoWriteOnSet(boolean shouldAutoWriteOnSet)
-	{
-		this.shouldAutoWriteOnSet = shouldAutoWriteOnSet;
-	}
-	
-	protected void verifyAndAutoWrite() throws ConfigException
+	protected void verify() throws ConfigException
 	{
 		getConf().verify();
-		if (shouldAutoWriteOnSet)
-		{
-			write();
-		}
 	}
 }
