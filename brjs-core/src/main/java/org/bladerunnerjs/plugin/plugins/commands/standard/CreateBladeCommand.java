@@ -107,7 +107,9 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		bladeset = app.defaultBladeset();
 		try
 		{
-			bladeset.create();
+			if (!bladeset.dirExists()) {
+				bladeset.create();
+			}
 		}
 		catch (InvalidNameException | ModelUpdateException e)
 		{

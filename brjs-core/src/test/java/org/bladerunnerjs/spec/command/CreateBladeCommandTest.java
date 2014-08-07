@@ -22,6 +22,8 @@ public class CreateBladeCommandTest extends SpecTest {
 	Bladeset bladeset;
 	Blade blade;
 	Blade badBlade;
+	Blade blade1InDefaultBladeset;
+	Blade blade2InDefaultBladeset;	
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -32,6 +34,8 @@ public class CreateBladeCommandTest extends SpecTest {
 			bladeset = app.bladeset("bladeset");
 			blade = bladeset.blade("blade");
 			badBlade = bladeset.blade("!$%$^");
+			blade1InDefaultBladeset = app.bladeset("default").blade("blade1");
+			blade2InDefaultBladeset = app.bladeset("default").blade("blade2");
 	}
 	
 	
@@ -102,11 +106,21 @@ public class CreateBladeCommandTest extends SpecTest {
 	
 	@Test
 	public void bladeIsCreatedInTheDefaultBladesetIfBladesetNotSpecified() throws Exception {
-		Blade bladeInDefaultBladeset = app.bladeset("default").blade("blade");
 		given(bladeset).hasBeenCreated();
-		when(brjs).runCommand("create-blade", "app", "blade");
-		then(bladeInDefaultBladeset).dirExists()
-			.and(logging).containsFormattedConsoleMessage(BLADE_CREATE_SUCCESS_CONSOLE_MSG, "blade")
-			.and(logging).containsFormattedConsoleMessage(BLADE_PATH_CONSOLE_MSG, bladeInDefaultBladeset.dir().getPath());
+		when(brjs).runCommand("create-blade", "app", "blade1");
+		then(blade1InDefaultBladeset).dirExists()
+			.and(logging).containsFormattedConsoleMessage(BLADE_CREATE_SUCCESS_CONSOLE_MSG, "blade1")
+			.and(logging).containsFormattedConsoleMessage(BLADE_PATH_CONSOLE_MSG, blade1InDefaultBladeset.dir().getPath());
 	}
+	
+	@Test
+	public void whenASecondBladeIsCreatedInTheDefaultBladesetTheBladesetDirIsntCreatedAgain() throws Exception {
+		given(bladeset).hasBeenCreated();
+		when(brjs).runCommand("create-blade", "app", "blade1")
+			.and(brjs).runCommand("create-blade", "app", "blade2");
+		then(blade1InDefaultBladeset).dirExists()
+			.and(blade2InDefaultBladeset).dirExists()
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
 }
