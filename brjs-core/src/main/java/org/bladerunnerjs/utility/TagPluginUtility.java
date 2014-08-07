@@ -77,6 +77,7 @@ public class TagPluginUtility {
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder domParser = builderFactory.newDocumentBuilder();
 			InputStream stream = new ByteArrayInputStream(xmlContent.getBytes(StandardCharsets.UTF_8));
+			domParser.setErrorHandler(new DocumentBuilderErrorParser(bundleSet.getBundlableNode().root().logger(TagPluginUtility.class)));
 			
 			document = domParser.parse(stream);
 		}
