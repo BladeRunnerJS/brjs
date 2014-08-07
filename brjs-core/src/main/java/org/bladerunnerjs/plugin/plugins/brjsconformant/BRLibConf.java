@@ -16,12 +16,11 @@ public class BRLibConf extends ConfFile<BRLibYamlConf> {
 	}
 	
 	public String getRequirePrefix() throws ConfigException {
-		reloadConfIfChanged();
-		return conf.requirePrefix;
+		return getConf().requirePrefix;
 	}
 	
 	public void setRequirePrefix(String requirePrefix) throws ConfigException {
-		conf.requirePrefix = requirePrefix;
+		getConf().requirePrefix = requirePrefix;
 		verifyAndAutoWrite();
 	}
 	
