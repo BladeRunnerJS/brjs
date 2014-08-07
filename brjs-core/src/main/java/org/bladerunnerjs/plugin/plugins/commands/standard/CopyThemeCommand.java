@@ -1,15 +1,23 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.ResourcesAssetLocation;
+import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
@@ -29,7 +37,7 @@ import com.martiansoftware.jsap.UnflaggedOption;
 public class CopyThemeCommand extends ArgsParsingCommandPlugin
 {
 	public class Messages {
-		public static final String APP_CREATED_CONSOLE_MSG = "Successfully created new app '%s'";
+		public static final String COPY_THEME_SUCCESS_CONSOLE_MSG = "Successfully copied theme %s% in %s% app into new theme called %s%";
 		public static final String APP_DEPLOYED_CONSOLE_MSG = "Successfully deployed '%s' app";
 	}
 	
@@ -65,59 +73,61 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 	
 	@Override
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
-		String topPath = parsedArgs.getString("app-folder-path");
+		String appName = parsedArgs.getString("app-folder-path");
 		String origTheme = parsedArgs.getString("copy-from-theme-name");
 		String newTheme = parsedArgs.getString("copy-to-theme-name");
 		
-		Path path = Paths.get(topPath);
-		
-		String appName = path.getName(0).toString();
 		App app = brjs.app(appName);
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
-		/*
-		Bladeset bladeset = app.bladeset(bladesetName);
-		Blade blade = bladeset.blade(bladeName);
 		
-		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
-		if(!bladeset.dirExists()) throw new NodeDoesNotExistException(bladeset, this);
-		if(blade.dirExists()) throw new NodeAlreadyExistsException(blade, this);
-		
-		try {
-			blade.populate();
-		}
-		catch(InvalidNameException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		catch(ModelUpdateException e) {
-			throw new CommandOperationException("Cannot create blade '" + blade.dir().getPath() + "'", e);
+		for(Bladeset bs : app.bladesets()){
+			for(Blade blade : bs.blades()){
+				for(AssetLocation al : blade.assetLocations()){
+					if(al.dirExists())
+					{
+						//System.out.println(al.dir().getPath());
+						copyTheme(al.assetContainer(), origTheme, newTheme);
+					}
+				}
+			}
 		}
 		
-		logger.println(Messages.BLADE_CREATE_SUCCESS_CONSOLE_MSG, bladeName);
-		logger.println(Messages.BLADE_PATH_CONSOLE_MSG, blade.dir().getPath());
+	
 		
-		return 0;
+		//resources assets locations you will get themes
 		
-		App app = brjs.app(appName);
-		*/
-		if(app.dirExists()) throw new NodeAlreadyExistsException(app, this);
+		//When we have path.getName(1) (it's the app/theme hopefully), then we
+		//work only within that folder structure
 		
-		try {
-			NameValidator.assertValidDirectoryName(app);
-			/*requirePrefix = (requirePrefix == null) ? NameValidator.generateRequirePrefixFromApp(app) : requirePrefix;
-			
-			app.populate(requirePrefix);*/
-			logger.println(Messages.APP_CREATED_CONSOLE_MSG, appName);
-			logger.println(" " + app.dir().getPath());
-			
-			app.deploy();
-			logger.println(Messages.APP_DEPLOYED_CONSOLE_MSG, appName);
-		}
-		catch(InvalidNameException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		catch(TemplateInstallationException e) {
-			throw new CommandOperationException("Cannot create application '" + app.dir().getPath() + "'", e);
-		}
+		
+		//When there is only path.getName(0), then we need to check all theme folders in all nodes
+		
 		return 0;
 	}
+	
+	void copyTheme(AssetContainer assetContainer, String origTheme, String newTheme){
+		
+		//check if newTheme already exists
+		
+		
+		for (AssetLocation location: assetContainer.assetLocations()){			
+			 if (location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0) {
+				 File srcDir = new File(location.dir().getPath());
+				 File dstDir = new File(location.dir().getParentFile().getPath(), newTheme);
+				 System.out.println(location.dir().getPath());
+				 
+				 if(dstDir.exists()){
+					 System.out.println("YAY! It doesn't exist!");
+				 }
+					 
+				 
+				 try {
+					FileUtils.copyDirectory(srcDir, dstDir);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			 }
+		}
+	}
+	
 }

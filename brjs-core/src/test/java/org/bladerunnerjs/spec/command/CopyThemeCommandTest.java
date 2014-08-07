@@ -4,6 +4,7 @@ import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
 import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand.Messages.*;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -19,8 +20,10 @@ import org.junit.Test;
 
 public class CopyThemeCommandTest extends SpecTest {
 	App app;
-	Bladeset bladeset;
-	Bladeset badBladeset;
+	Bladeset bladeset1;
+	Bladeset bladeset2;
+	Blade blade11;
+	Blade blade12;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -28,8 +31,10 @@ public class CopyThemeCommandTest extends SpecTest {
 		given(brjs).hasCommandPlugins(new CopyThemeCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
-			bladeset = app.bladeset("bladeset");
-			badBladeset = app.bladeset("bladeset#$@/");
+			bladeset1 = app.bladeset("bladeset1");
+			bladeset2 = app.bladeset("bladeset2");
+			blade11 = bladeset1.blade("blade11");
+			blade12 = bladeset1.blade("blade12");	
 	}
 	
 	
@@ -47,6 +52,22 @@ public class CopyThemeCommandTest extends SpecTest {
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
+	@Test
+	public void expertiment() throws Exception{
+		given(brjs).hasBeenAuthenticallyCreated()
+		.and(app).hasBeenCreated()
+		.and(bladeset1).hasBeenCreated()
+		.and(bladeset2).hasBeenCreated()
+		.and(blade11).hasBeenCreated()
+		.and(blade12).hasBeenCreated()
+		.and(blade11).containsFolder("themes/red")
+		.and(blade11).containsFolder("themes/pink")
+		.and(blade11).containsFile("themes/red/style.css");
+		when(brjs).runCommand("copy-theme", "app", "red", "blue");
+		//then
+	}
+	
+	/*
 	@Test
 	public void exceptionIsThrownIfTheAppDoesntExist() throws Exception {
 		when(brjs).runCommand("copy-theme", "app", "originalCSS", "newCSS");
@@ -80,13 +101,14 @@ public class CopyThemeCommandTest extends SpecTest {
 			.and(logging).containsFormattedConsoleMessage(BLADESET_CREATE_SUCCESS_CONSOLE_MSG, "bladeset")
 			.and(logging).containsFormattedConsoleMessage(BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
 	}
+	*/
 	
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated();
-		when(brjs).runCommand("copy-theme", "app", "bladeset");
+		when(brjs).runCommand("copy-theme", "app", "red", "blue");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 }
