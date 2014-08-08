@@ -30,10 +30,11 @@ public class UserCommandTest extends SpecTest {
 		then(logging).containsConsoleText(
 			"Problem:",
 			"  Parameter 'target-app-name' is required.",
+			"  Parameter 'target-bladeset-name' is required.",
 			"  Parameter 'new-blade-name' is required.",
 			"",
 			"Usage:",
-			"  brjs create-blade <target-app-name> <new-blade-name> [(-s|--bladeset) <bladeset>]");
+			"  brjs create-blade <target-app-name> <target-bladeset-name> <new-blade-name>");
 	}
 	
 	@Test

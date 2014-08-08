@@ -187,7 +187,7 @@ public class RestApiService
 	{
 		CreateBladeCommand cmd = new CreateBladeCommand();
 		cmd.setBRJS(brjs);
-		String[] args = new String[]{ appName, bladeName, "-s", bladesetName };		
+		String[] args = new String[]{ appName, bladesetName, bladeName };		
 		doCommand( cmd, args );
 	}
 	

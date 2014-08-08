@@ -96,7 +96,7 @@ public class TemplateTests extends SpecTest
 	public void bladeHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns")
 			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
-		when(brjs).runCommand("create-blade", "app", "b1", "-s", "bs");
+		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade).hasFilesAndDirs(
 				Arrays.asList("src/appns/bs/b1/B1ViewModel.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "tests", "workbench", "themes")
@@ -120,7 +120,7 @@ public class TemplateTests extends SpecTest
 	public void bladeTestsHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns")
 			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
-		when(brjs).runCommand("create-blade", "app", "b1", "-s", "bs");
+		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade.testType("unit")).hasFilesAndDirs(
 				Arrays.asList("js-test-driver/jsTestDriver.conf", "js-test-driver/resources/aliases.xml", "js-test-driver/tests/B1ViewModelTest.js"),
 				Arrays.asList("js-test-driver", "js-test-driver/tests", "js-test-driver/resources")
@@ -131,7 +131,7 @@ public class TemplateTests extends SpecTest
 	public void workbenchHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns")
 			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
-		when(brjs).runCommand("create-blade", "app", "b1", "-s", "bs");
+		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(workbench).hasFilesAndDirs(
 				Arrays.asList("index.html", "resources/aliases.xml", "resources/style/workbench.css"),
 				Arrays.asList("resources", "resources/html", "resources/style/", "src")
