@@ -386,10 +386,9 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void bladeXmlInDefaultBladesetCanBeBundled() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
-    		.and(bladeInDefaultBladeset).hasClass("appns/BladeClass")
-    		.and(bladeInDefaultBladeset).containsFileWithContents("resources/en_GB.properties", "appns.b1.property=property value")
+    		.and(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
 			.and(bladeInDefaultBladeset).containsResourceFileWithContents("config.xml", rootElem(mergeElem("appns.b1.ID")))
-			.and(aspect).indexPageRequires("appns/BladeClass");
+			.and(aspect).indexPageRequires("appns/b1/BladeClass");
 		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(bundleElem(bundleResourceElem("rootElem", rootElem(mergeElem("appns.b1.ID")))));
 	}

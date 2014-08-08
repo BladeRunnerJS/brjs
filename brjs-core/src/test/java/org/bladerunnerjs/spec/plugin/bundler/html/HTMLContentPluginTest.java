@@ -199,9 +199,9 @@ public class HTMLContentPluginTest extends SpecTest
 	
 	@Test
 	public void bladeHtmlInDefaultBladesetCanBeBundled() throws Exception {
-		given(bladeInDefaultBladeset).hasClass("appns/BladeClass")
+		given(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
 			.and(bladeInDefaultBladeset).containsResourceFileWithContents("html/view.html", "<div id='appns.b1.my.view'>Blade Content</div>")
-			.and(aspect).indexPageRequires("appns/BladeClass");
+			.and(aspect).indexPageRequires("appns/b1/BladeClass");
 		when(aspect).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsText("Blade Content");
 	}

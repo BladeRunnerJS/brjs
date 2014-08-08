@@ -541,10 +541,10 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	@Test
 	public void bladeClassesInDefaultBladesetCanBeBundled() throws Exception {
 		given(app).hasNamespacedJsPackageStyle()
-			.and(bladeInDefaultBladeset).hasClass("appns.BladeClass")
-			.and(aspect).indexPageRefersTo("appns.BladeClass");
+			.and(bladeInDefaultBladeset).hasClass("appns.b1.BladeClass")
+			.and(aspect).indexPageRefersTo("appns.b1.BladeClass");
 		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
-		then(requestResponse).containsClasses("appns.BladeClass");
+		then(requestResponse).containsClasses("appns.b1.BladeClass");
 	}
 	
 }

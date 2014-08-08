@@ -389,13 +389,13 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void aliasesInDefaultBladesetCanBeBundled() throws Exception {
-		given(bladeInDefaultBladeset).hasClasses("appns/BladeClass", "appns/Class1")
-			.and(bladeInDefaultBladeset).classFileHasContent("appns/BladeClass", "require('br/AliasRegistry').getService('the-alias');")
-    		.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
-    		.and(aspect).indexPageRequires("appns/BladeClass")
+		given(bladeInDefaultBladeset).hasClasses("appns/b1/BladeClass", "appns/b1/Class1")
+			.and(bladeInDefaultBladeset).classFileHasContent("appns/b1/BladeClass", "require('br/AliasRegistry').getService('the-alias');")
+    		.and(aspectAliasesFile).hasAlias("the-alias", "appns.b1.Class1")
+    		.and(aspect).indexPageRequires("appns/b1/BladeClass")
     		.and(brLib).hasClass("br/AliasRegistry");
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
-    	then(response).containsText("setAliasData({'the-alias':{'class':require('appns/Class1'),'className':'appns.Class1'}})");
+    	then(response).containsText("setAliasData({'the-alias':{'class':require('appns/b1/Class1'),'className':'appns.b1.Class1'}})");
 	}
 	
 }

@@ -130,10 +130,10 @@ public class CommonJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void bladeClassesInDefaultBladesetCanBeBundled() throws Exception {
-		given(bladeInDefaultBladeset).hasClass("appns/BladeClass")
-			.and(aspect).indexPageRequires("appns/BladeClass");
+		given(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
+			.and(aspect).indexPageRequires("appns/b1/BladeClass");
 		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
-		then(requestResponse).containsCommonJsClasses("appns/BladeClass");
+		then(requestResponse).containsCommonJsClasses("appns/b1/BladeClass");
 	}
 	
 }

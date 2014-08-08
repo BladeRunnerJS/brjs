@@ -495,9 +495,9 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void bladeCSSInDefaultBladesetCanBeBundled() throws Exception {
-		given(bladeInDefaultBladeset).hasClass("appns/BladeClass")
+		given(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
 			.and(bladeInDefaultBladeset).containsFileWithContents("themes/common/style.css", "blade css")
-			.and(aspect).indexPageRequires("appns/BladeClass");
+			.and(aspect).indexPageRequires("appns/b1/BladeClass");
 		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("blade css");
 	}

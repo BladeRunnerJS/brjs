@@ -339,9 +339,9 @@ public class I18nContentPluginTest extends SpecTest
 	
 	@Test
 	public void bladeI18nPropertiesInDefaultBladesetCanBeBundled() throws Exception {
-		given(bladeInDefaultBladeset).hasClass("appns/BladeClass")
+		given(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
 			.and(bladeInDefaultBladeset).containsFileWithContents("resources/en_GB.properties", "appns.b1.property=property value")
-			.and(aspect).indexPageRequires("appns/BladeClass");
+			.and(aspect).indexPageRequires("appns/b1/BladeClass");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText("\"appns.b1.property\": \"property value\"");
 	}
