@@ -25,9 +25,9 @@
 			}
 
 			function addModelViewer( model, workbench ) {
-				var KnockoutModelTree = require( 'br/knockout/workbench/KnockoutModelTree' );
+				var ExtJsTreeModelKnockoutAdaptor = require( 'br/knockout/workbench/ExtJsTreeModelKnockoutAdaptor' );
 				var PresentationModelViewer = require( 'br/presenter/workbench/ui/PresentationModelViewer' );
-				var presentationModelViewer = new PresentationModelViewer(model, KnockoutModelTree);
+				var presentationModelViewer = new PresentationModelViewer(model, ExtJsTreeModelKnockoutAdaptor);
 				workbench.addToRightWing( presentationModelViewer, "Visualise Knockout View Model", false);
 			}
 

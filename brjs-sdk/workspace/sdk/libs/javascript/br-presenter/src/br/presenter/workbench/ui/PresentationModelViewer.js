@@ -8,7 +8,7 @@ br.presenter.workbench.ui.PresentationModelViewer = function(oPresentationModel,
 		throw "PresentationModelViewer expects a presentation model";
 	}
 
-	ModelTree = ModelTree || br.presenter.workbench.ui.PresentationModelTree;
+	ModelTree = ModelTree || br.presenter.workbench.ui.ExtJsTreeModelPresenterAdaptor;
 
 	this.m_PresentationModel = oPresentationModel;
 	this.m_oTree = new ModelTree(oPresentationModel);

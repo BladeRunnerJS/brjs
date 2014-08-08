@@ -1,7 +1,7 @@
 "use strict";
 
 /**
-* @module br/knockout/workbench/KnockoutModelTree
+* @module br/knockout/workbench/ExtJsTreeModelKnockoutAdaptor
 */
 
 var Ext = require( 'extjs' );
@@ -16,13 +16,13 @@ var ko = require( 'ko' );
 * @param {Object} knockoutViewModel The object with Knockout observables for which
 *                 the tree model is to be built.
 * @class
-* @alias module:br/knockout/workbench/KnockoutModelTree
+* @alias module:br/knockout/workbench/ExtJsTreeModelKnockoutAdaptor
 * @extends br/workbench/ui/WorkbenchComponent
 */
-function KnockoutModelTree( knockoutViewModel ) {
+function ExtJsTreeModelKnockoutAdaptor( knockoutViewModel ) {
   if ( !knockoutViewModel )
   {
-    throw "KnockoutModelTree expects a View Model";
+    throw "ExtJsTreeModelKnockoutAdaptor expects a View Model";
   }
   this._rootNode = null;
   this._tree = null;
@@ -35,13 +35,13 @@ function KnockoutModelTree( knockoutViewModel ) {
 
   this._treeSearcher = new TreeSearcher(this._rootNode);
 }
-br.implement( KnockoutModelTree, WorkbenchComponent );
+br.implement( ExtJsTreeModelKnockoutAdaptor, WorkbenchComponent );
 
 /**
-* Get the element for the KnockoutModelTree
+* Get the element for the ExtJsTreeModelKnockoutAdaptor
 * @see br/workbench/ui/WorkbenchComponent.getElement
 */
-KnockoutModelTree.prototype.getElement = function() {
+ExtJsTreeModelKnockoutAdaptor.prototype.getElement = function() {
   return this.m_eElement;
 };
 
@@ -49,13 +49,13 @@ KnockoutModelTree.prototype.getElement = function() {
 * Search the tree for the given value
 * @param {String} sValue
 */
-KnockoutModelTree.prototype.search = function(sValue)
+ExtJsTreeModelKnockoutAdaptor.prototype.search = function(sValue)
 {
   this._treeSearcher.search(sValue);
 };
 
 /** @private */
-KnockoutModelTree.prototype._buildTree = function( viewModel ) {
+ExtJsTreeModelKnockoutAdaptor.prototype._buildTree = function( viewModel ) {
   this._tree = new Ext.tree.TreePanel({});
   this._rootNode = new Ext.tree.TreeNode( { text : "Knockout View Model", expanded: true } );
 
@@ -93,7 +93,7 @@ function isObservableArray( obj ) {
 }
 
 /** @private */
-KnockoutModelTree.prototype._addObservableToTree = function( treeNode, key, item, expandNode ) {
+ExtJsTreeModelKnockoutAdaptor.prototype._addObservableToTree = function( treeNode, key, item, expandNode ) {
   var label = key;
   var value = item();
   var isArray = false;
@@ -122,7 +122,7 @@ function getSafeJsonValue( obj ) {
 }
 
 /** @private */
-KnockoutModelTree.prototype._buildNodes = function( treeNode, viewModel, expandNode ) {
+ExtJsTreeModelKnockoutAdaptor.prototype._buildNodes = function( treeNode, viewModel, expandNode ) {
   for (var key in viewModel) {
 
     if( isPrivateVariable( key ) ) {
@@ -155,7 +155,7 @@ KnockoutModelTree.prototype._buildNodes = function( treeNode, viewModel, expandN
 };
 
 /** @private */
-KnockoutModelTree.prototype._createListeners = function( observable, treeNode, key ) {
+ExtJsTreeModelKnockoutAdaptor.prototype._createListeners = function( observable, treeNode, key ) {
   var self = this;
   observable.subscribe( function( newValue ) {
 
@@ -178,4 +178,4 @@ KnockoutModelTree.prototype._createListeners = function( observable, treeNode, k
   } );
 };
 
-module.exports = KnockoutModelTree;
+module.exports = ExtJsTreeModelKnockoutAdaptor;

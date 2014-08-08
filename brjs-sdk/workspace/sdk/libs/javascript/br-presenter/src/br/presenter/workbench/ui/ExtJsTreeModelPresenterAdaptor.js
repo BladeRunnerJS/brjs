@@ -1,6 +1,6 @@
 br.Core.thirdparty("extjs");
 
-br.presenter.workbench.ui.PresentationModelTree = function(oPresentationModel)
+br.presenter.workbench.ui.ExtJsTreeModelPresenterAdaptor = function(oPresentationModel)
 {
 	if (!oPresentationModel)
 	{
@@ -14,19 +14,19 @@ br.presenter.workbench.ui.PresentationModelTree = function(oPresentationModel)
 	oTree.render(this.m_eElement);
 };
 
-br.Core.implement(br.presenter.workbench.ui.PresentationModelTree, br.workbench.ui.WorkbenchComponent);
+br.Core.implement(br.presenter.workbench.ui.ExtJsTreeModelPresenterAdaptor, br.workbench.ui.WorkbenchComponent);
 
-br.presenter.workbench.ui.PresentationModelTree.prototype.search = function(sValue)
+br.presenter.workbench.ui.ExtJsTreeModelPresenterAdaptor.prototype.search = function(sValue)
 {
 	this.m_oTreeSearcher.search(sValue);
 };
 
-br.presenter.workbench.ui.PresentationModelTree.prototype.getElement = function()
+br.presenter.workbench.ui.ExtJsTreeModelPresenterAdaptor.prototype.getElement = function()
 {
 	return this.m_eElement;
 };
 
-br.presenter.workbench.ui.PresentationModelTree.prototype._buildTree = function(oPresentationModel)
+br.presenter.workbench.ui.ExtJsTreeModelPresenterAdaptor.prototype._buildTree = function(oPresentationModel)
 {
 	var oTree = new Ext.tree.TreePanel({});
 	this.m_oRootNode = new Ext.tree.TreeNode({text : "Presentation Model", expanded: true});
@@ -37,7 +37,7 @@ br.presenter.workbench.ui.PresentationModelTree.prototype._buildTree = function(
 	return oTree;
 };
 
-br.presenter.workbench.ui.PresentationModelTree.prototype._buildNodes = function(oTreeNode, oPresentationNode, bExpanded)
+br.presenter.workbench.ui.ExtJsTreeModelPresenterAdaptor.prototype._buildNodes = function(oTreeNode, oPresentationNode, bExpanded)
 {
 	var bExpanded = bExpanded;
 	for (var sKey in oPresentationNode)
@@ -79,7 +79,7 @@ br.presenter.workbench.ui.PresentationModelTree.prototype._buildNodes = function
 	}
 };
 
-br.presenter.workbench.ui.PresentationModelTree.prototype._createListeners = function(oProperty, oTreeNode, sKey)
+br.presenter.workbench.ui.ExtJsTreeModelPresenterAdaptor.prototype._createListeners = function(oProperty, oTreeNode, sKey)
 {
 	oProperty.addChangeListener(
 		{
