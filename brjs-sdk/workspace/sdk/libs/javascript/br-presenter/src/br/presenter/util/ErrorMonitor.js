@@ -9,15 +9,9 @@
 br.presenter.util.ErrorMonitor = function(oTooltipNode)
 {
 	if (!oTooltipNode || !(oTooltipNode instanceof br.presenter.node.ToolTipNode))
-<<<<<<< HEAD
-    {
-    	throw new br.Errors.CustomError(br.Errors.INVALID_PARAMETERS, "The ErrorMonitor has to be constructed with an instance of a br.presenter.node.ToolTipNode");
-    }
-=======
 	{
 		throw new br.Errors.CustomError(br.Errors.INVALID_PARAMETERS, "The ErrorMonitor has to be constructed with an instance of a br.presenter.node.ToolTipNode");
 	}
->>>>>>> upstream/develop
 
 	this.m_oPropertyHelper = new br.presenter.property.PropertyHelper();
 
@@ -35,15 +29,6 @@ br.presenter.util.ErrorMonitor = function(oTooltipNode)
  */
 br.presenter.util.ErrorMonitor.prototype.addErrorListeners = function(pGroups)
 {
-<<<<<<< HEAD
-    for (var i=0; i<pGroups.length; i++)
-    {
-        if(pGroups[i].hasError && pGroups[i].failureMessage && pGroups[i].tooltipClassName)
-        {
-            this.monitorField(pGroups[i]);
-        }
-    }
-=======
 	var node;
 	for (var i=0; i<pGroups.length; i++)
 	{
@@ -53,7 +38,6 @@ br.presenter.util.ErrorMonitor.prototype.addErrorListeners = function(pGroups)
 			this.monitorField(node);
 		}
 	}
->>>>>>> upstream/develop
 };
 
 /**
@@ -86,15 +70,9 @@ br.presenter.util.ErrorMonitor.prototype.replaceErrorListeners = function(pGroup
 br.presenter.util.ErrorMonitor.prototype.monitorField = function(oField)
 {
 	if (!(oField instanceof br.presenter.node.ToolTipField))
-<<<<<<< HEAD
-    {
-    	throw new br.Errors.CustomError(br.Errors.INVALID_PARAMETERS, "The field to monitor has to be an instance of br.presenter.node.ToolTipField");
-    }
-=======
 	{
 		throw new br.Errors.CustomError(br.Errors.INVALID_PARAMETERS, "The field to monitor has to be an instance of br.presenter.node.ToolTipField");
 	}
->>>>>>> upstream/develop
 
 	var oTicketErrorProperty = this;
 	var fValidationSuccessHandler = function()
@@ -290,9 +268,5 @@ br.presenter.util.ErrorMonitor.prototype._addTooltipTo = function(oField)
  */
 br.presenter.util.ErrorMonitor.prototype._removeTooltipFrom = function(oField)
 {
-<<<<<<< HEAD
-        oField.tooltipClassName.setValue("")
-=======
 	oField.tooltipClassName.setValue("")
->>>>>>> upstream/develop
 };
