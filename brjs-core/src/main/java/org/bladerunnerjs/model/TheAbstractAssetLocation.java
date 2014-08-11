@@ -16,32 +16,39 @@ import org.bladerunnerjs.utility.*;
 
 // TODO Java 8 (1.8.0-b123) compiler throws errors when this class is named 'AbstractAssetLocation'
 public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
+	private final AssetLocation parentAssetLocation;
 	private final AssetContainer assetContainer;
 	private final FileInfo dirInfo;
 	
 	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
+	private Map<String, AliasDefinitionsFile> aliasDefinitionsFilesMap = new HashMap<>();
 	private final Assets emptyAssets;
-	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
-	private String relativeRequirePath;
+	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
 	
-	public TheAbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
-		super(rootNode, parent, dir);
+	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+		super(rootNode, assetContainer, dir);
 		
 		dirInfo = root().getFileInfo(dir);
 		assetLocator = new AssetLocator(this);
 		emptyAssets = new Assets(root());
-		this.assetContainer = (AssetContainer) parent;
+		this.parentAssetLocation = parentAssetLocation;
+		this.assetContainer = assetContainer;
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
-		relativeRequirePath = RelativePathUtility.get(root(), assetContainer.dir(), dir());
 	}
 	
 	protected abstract List<File> getCandidateFiles();
 	
 	@Override
 	public String requirePrefix() {
-		return assetContainer.requirePrefix() + "/" + relativeRequirePath;
+		String requirePrefix = (parentAssetLocation == null) ? assetContainer.requirePrefix() : parentAssetLocation.requirePrefix();
+		return requirePrefix + "/" + dir().getName();
+	}
+	
+	@Override
+	public AssetLocation parentAssetLocation() {
+		return parentAssetLocation;
 	}
 	
 	@Override
@@ -55,12 +62,39 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	}
 	
 	@Override
-	public AliasDefinitionsFile aliasDefinitionsFile() {		
+	public AliasDefinitionsFile aliasDefinitionsFile() {
 		if(aliasDefinitionsFile == null) {
 			aliasDefinitionsFile = new AliasDefinitionsFile(this, dir(), "aliasDefinitions.xml");
 		}
 		
 		return aliasDefinitionsFile;
+	}
+	
+	@Override
+	public List<AliasDefinitionsFile> aliasDefinitionsFiles() {
+		List<AliasDefinitionsFile> aliasDefinitionsFiles = new ArrayList<>();
+		
+		if(aliasDefinitionsFile().getUnderlyingFile().exists()) {
+			aliasDefinitionsFiles.add(aliasDefinitionsFile());
+		}
+		
+		// TODO: fix this dependency from the model to plug-in code (ResourcesAssetLocation)
+		//       we instead need a way to either know this asset-location has a deep directory structure, or have way of getting it to list it's nested directories
+		if(dir().exists() && (this instanceof ResourcesAssetLocation)) {
+			for(File dir : root().getFileInfo(dir()).nestedDirs()) {
+				if(new File(dir, "aliasDefinitions.xml").exists()) {
+					String dirPath = dir.getAbsolutePath();
+					
+					if(!aliasDefinitionsFilesMap.containsKey(dirPath)) {
+						aliasDefinitionsFilesMap.put(dirPath, new AliasDefinitionsFile(this, dir, "aliasDefinitions.xml"));
+					}
+					
+					aliasDefinitionsFiles.add(aliasDefinitionsFilesMap.get(dirPath));
+				}
+			}
+		}
+		
+		return aliasDefinitionsFiles;
 	}
 	
 	@Override
@@ -87,10 +121,10 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	
 	@Override
 	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
-		String namespace = NamespaceUtility.convertToNamespace(requirePrefix());
+		String namespace = NamespaceUtility.convertToNamespace(requirePrefix()) + ".";
 		
 		if(assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace)) {
-			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + ".*' was expected.");
+			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + "*' was expected.");
 		}
 	}
 	

@@ -15,6 +15,7 @@ configurations {
 
 	browsers_dep
 	browsers_webdriver
+	phantomjs
 }
 
 dependencies {
@@ -38,10 +39,15 @@ dependencies {
 	testRunner project(path: ':brjs-logger')
 	testRunner project(path: ':brjs-logger-binding')
 	testRunner files('build-resources/JsTestDriver.conf')
-
-	browsers_dep dependency('chrome-stable')
-	browsers_dep dependency('firefox-stable')
-
+	
+	phantomjs dependency('phantomjs')
+//	phantomjs dependency('phantomjs_windows')
+//	phantomjs dependency('phantomjs_mac')
+//	phantomjs dependency('phantomjs_linux')
+	
+	browsers_dep dependency('chrome')
+	browsers_dep dependency('firefox')
+	
 	browsers_webdriver dependency('firefox-webdriver')
 }
 
@@ -52,6 +58,11 @@ task copyBrowsers(type: Sync) {
 	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
 	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
 	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
+	from { configurations.phantomjs.collect { browser -> zipTree(browser) } }
+	eachFile {
+		it.path = it.path.replaceAll("-[0-9\\.]+/", "/") // strip the version string
+		it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip phantomjs version
+	}
 	into browserRootDir
 	doLast {
 		//TODO: this should probabaly be done in a task listener
@@ -158,7 +169,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	file("workspace/apps").listFiles().each {
 		if (it.isDirectory()) {
 			into ("apps/${it.name}/WEB-INF/lib") {
-				from configurations.systemAppServlets
+				from configurations.application
 				rename { String fileName ->
 					if ( !fileName.startsWith("brjs-") )
 					{
@@ -173,17 +184,30 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		into "sdk/libs/java/testRunner"
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
+	
+//	from (configurations.phantomjs.collect { zipTree(it) })
+//	{
+//		into "sdk/phantomjs"
+//		eachFile {
+//			it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip the version string
+//		}
+//	}
 
 	doFirst {
 		delete file("workspace/sdk/libs/java")
+		delete file("workspace/sdk/phantomjs")
 		delete file("workspace/sdk/docs")
 		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
 		ant {
-			fixcrlf(srcdir:"workspace", includes:"**/brjs", eol:"lf" )
-			fixcrlf(srcdir:"workspace", includes:"**/brjs.cmd", eol:"crlf" )
+			["brjs", "jsdoc"].each {
+				fileTree(dir:'workspace', include:"**/${it}").each { fixFile ->
+					fixcrlf( file:fixFile.path, eol:"lf" )
+					fixcrlf( file:"${fixFile.path}.cmd", eol:"crlf" )
+				}
+			}
 		}
 	}
 }
@@ -203,18 +227,13 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 }
 
 // "libs/javascript" is relative to the sdk directory
-createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
-createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
-createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
+[ "Chrome", "Firefox", "IE", "PhantomJS" ].each {
+	def testJsTask = createTestTask "testJs${it}", "libs/javascript", "ALL", it.toLowerCase()	
+	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase()
+	task "test${it}", dependsOn: [testJsTask, testSystemAppsTask]
+}
 
-createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
-createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
-createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
-
-task testIE, dependsOn: [testJsIE, testSystemAppsIE]
-task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome]
-task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox]
-task test, dependsOn: testChrome
+task test, dependsOn: testPhantomJS
 
 
 task createSdkJsDocs, dependsOn: assembleSdk, {
@@ -240,7 +259,7 @@ task createSdkJsDocs, dependsOn: assembleSdk, {
 	}
 	doLast {
 		delete file("workspace/apps/${jsDocTmpAppName}")
-	}
+	} 
 }
 
 
@@ -309,7 +328,7 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	from "workspace/"
 	into "BladeRunnerJS/"
 	include "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
-	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**", "**/*_NODIST/*"
+	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/libs/**/src-test/*", "**/system-applications/**/tests/*", "**/system-applications/**/src-test/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/libs/javascript/**node_modules/**", "**/*_NODIST/*"
 }
 build.dependsOn distZip
 distZip.mustRunAfter test
@@ -359,6 +378,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/docs/java/**/*",
 		"*/sdk/docs/js/*",
 		"*/sdk/docs/js/**/*",
+		"*/sdk/jsdoc-toolkit-resources/**",
+		"*/sdk/jsdoc-toolkit-resources/jsdoc-toolkit/node_modules/**",
 		"*/README.txt",
 		"*/LICENSE",
 		"*/apps/apps.txt"
@@ -375,11 +396,13 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	   "**/js-test-driver/bundles/**/*",
 	   "**/libs/**/tests/**/*",
 	   "**/system-applications/**/tests/**/*",
+	   "**/system-applications/**/src-test/**/*",
 	   "*/sdk/libs/javascript/**/tests/**",
+	   "*/sdk/libs/javascript/**/src-test/**",
 	   "*/sdk/libs/javascript/thirdparty/**",
 	   "*/sdk/libs/javascript/br-libs/**",
 	   "*/sdk/run*",
-	   "**/node_modules/**",
+	   "*/sdk/libs/**/node_modules/**",
 	   "*/apps/*/*",
 	   "**/*_NODIST/**"
 	]

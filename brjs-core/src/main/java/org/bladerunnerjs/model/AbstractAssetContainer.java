@@ -111,25 +111,39 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, AssetLocationPlugin assetLocationPlugin ){
 		
-		if(!assetLocations.containsKey(locationPath)) {
-			if(!cachedAssetLocations.containsKey(locationPath)) {
-				AssetLocation assetLocation = assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations);
-				
-//TODO: have a proper solution to know when duplicate node names are valid				
-				try {
-					rootNode.registerNode(assetLocation, false);
-				} catch (NodeAlreadyRegisteredException e) {
-					try {
-						rootNode.registerNode(assetLocation, true);
-					} catch (NodeAlreadyRegisteredException e1) {
-						throw new RuntimeException(e);
-					}
-					
+		if (!assetLocations.containsKey(locationPath)) {
+			AssetLocation newAssetLocation;
+			if (!cachedAssetLocations.containsKey(locationPath)) {
+				newAssetLocation = assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations);
+				initAndCacheAssetLocation(locationPath, newAssetLocation);
+			} else {
+				AssetLocation oldAssetLocation = cachedAssetLocations.get(locationPath);
+				newAssetLocation = assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations);
+				if (newAssetLocation.getClass() != oldAssetLocation.getClass()) {
+					rootNode.clearRegisteredNode(oldAssetLocation);
+					initAndCacheAssetLocation(locationPath, newAssetLocation);
+				} else {
+					newAssetLocation = oldAssetLocation;
 				}
-				cachedAssetLocations.put(locationPath, assetLocation);
 			}
 			
-			assetLocations.put(locationPath, cachedAssetLocations.get(locationPath));
+			assetLocations.put(locationPath, newAssetLocation);
 		}
+	}
+
+	//TODO: have a proper solution to know when duplicate node names are valid				
+	private void initAndCacheAssetLocation(String locationPath, AssetLocation assetLocation)
+	{
+		try {
+			rootNode.registerNode(assetLocation, false);
+		} catch (NodeAlreadyRegisteredException e) {
+			try {
+				rootNode.registerNode(assetLocation, true);
+			} catch (NodeAlreadyRegisteredException e1) {
+				throw new RuntimeException(e);
+			}
+			
+		}
+		cachedAssetLocations.put(locationPath, assetLocation);
 	}
 }

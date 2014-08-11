@@ -15,6 +15,7 @@
  * @implements br.presenter.formatter.Formatter
  * @singleton
  */
+debugger;
 br.presenter.formatter.DecimalFormatter = function() {
 };
 

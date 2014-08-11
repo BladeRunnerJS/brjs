@@ -4,18 +4,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.TheAbstractAssetLocation;
+import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.ThirdpartyLibManifest;
-import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 
-public final class ThirdpartyAssetLocation extends TheAbstractAssetLocation {
+public final class ThirdpartyAssetLocation extends ResourcesAssetLocation {
 	private final ThirdpartyLibManifest manifest;
 	
-	public ThirdpartyAssetLocation(RootNode rootNode, Node parent, File dir) {
-		super(rootNode, parent, dir);
+	public ThirdpartyAssetLocation(BRJS root, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation) {
+		super(root, assetContainer, dir, parentAssetLocation);
 		
 		try {
 			manifest = new ThirdpartyLibManifest(this);

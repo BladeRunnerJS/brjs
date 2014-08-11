@@ -15,7 +15,7 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
-		return (assetLocation.jsStyle().equals(NamespacedJsContentPlugin.JS_STYLE) && assetFile.getName().endsWith(".js"));
+		return (assetLocation.jsStyle().equals(NamespacedJsSourceModule.JS_STYLE) && assetFile.getName().endsWith(".js"));
 	}
 	
 	@Override

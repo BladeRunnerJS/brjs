@@ -425,14 +425,7 @@ table.params code {
 
 .details {
     margin-top:15px;
-}
-
-.tag-source {
     font-size: 0.9em;
-}
-.tag-source,
-.tag-source a {
-    color: #999;
 }
 
 .subsection-title {

@@ -3,7 +3,7 @@ package org.bladerunnerjs.aliasing;
 public class AliasDefinition {
 	private final String name;
 	private final String className;
-	protected String interfaceName; // TODO: change back to 'final' and 'private' once we delete the old bundling code
+	private final String interfaceName;
 	
 	public AliasDefinition(String name, String className, String interfaceName) {
 		this.name = name;
@@ -32,4 +32,5 @@ public class AliasDefinition {
 	public String getName() {
 		return name;
 	}
+	
 }

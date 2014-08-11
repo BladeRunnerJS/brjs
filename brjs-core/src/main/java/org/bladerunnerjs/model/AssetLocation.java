@@ -14,9 +14,11 @@ import org.bladerunnerjs.plugin.AssetPlugin;
  */
 public interface AssetLocation extends BRJSNode {
 	String requirePrefix();
+	AssetLocation parentAssetLocation();
 	AssetContainer assetContainer();
 	List<AssetLocation> dependentAssetLocations();
 	AliasDefinitionsFile aliasDefinitionsFile();
+	List<AliasDefinitionsFile> aliasDefinitionsFiles();
 	List<LinkedAsset> linkedAssets();
 	List<Asset> bundlableAssets(AssetPlugin assetProducer);
 	List<SourceModule> sourceModules();

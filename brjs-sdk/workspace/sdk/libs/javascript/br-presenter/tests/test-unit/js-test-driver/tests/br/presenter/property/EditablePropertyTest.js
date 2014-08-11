@@ -65,6 +65,28 @@ EditablePropertyTest.prototype.test_setUserEnteredValueSetsValue = function()
 	assertEquals("value", oEditableProperty.getValue());
 };
 
+EditablePropertyTest.prototype.test_onlyRunsEachParserOnceIfParserSpecifiesThisBehaviour = function()
+{
+	var fParser = function(parseOperation){
+		this.parseOperation = parseOperation;
+	};
+	br.Core.implement(fParser, br.presenter.parser.Parser);
+
+	fParser.prototype.parse = function(sValue, mConfig){
+		return isNaN(sValue) ? null : this.parseOperation(sValue);
+	};
+	fParser.prototype.isSingleUseParser = function(){
+		return true;
+	};
+	var oParser = new fParser(function(nValue){return nValue / 10});
+	assertEquals("1", oParser.parse("10", {}));
+	
+	var oParser2 = new fParser(function(nValue){return nValue + "K"});
+	var oEditableProperty = new br.presenter.property.EditableProperty().addParser(oParser, {}).addParser(oParser2, {});
+	oEditableProperty.setUserEnteredValue("10");
+	assertEquals("1K", oEditableProperty.getValue());
+};
+
 EditablePropertyTest.prototype.test_setUserEnteredValueSetsParsedValueWhenParsersAreAdded = function()
 {
 	var fParser = function(){};
@@ -72,6 +94,9 @@ EditablePropertyTest.prototype.test_setUserEnteredValueSetsParsedValueWhenParser
 
 	fParser.prototype.parse = function(sText, mConfig){
 		return sText.replace(mConfig.find, mConfig.replace);
+	};
+	fParser.prototype.isSingleUseParser = function(){
+		return false;
 	};
 	var oParser = new fParser();
 	var mParser1 = {find:"y", replace:"z"};

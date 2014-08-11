@@ -7,6 +7,7 @@
 var Errors = require('br/Errors');
 var br = require('br/Core');
 var LocaleService = require('br/services/LocaleService');
+var ServiceRegistry = require('br/ServiceRegistry');
 
 /**
 * The default locale service for BRJS apps. This class should not be constructed
@@ -22,6 +23,7 @@ function BRLocaleService( localeUtility ) {
 	} else {
 		this.localeUtility = require("br-locale-utility");
 	}
+	this.appMetaService = ServiceRegistry.getService("br.app-meta-service");
 };
 
 
@@ -35,16 +37,18 @@ BRLocaleService.prototype.setLocaleCookie = function(locale, days) {
 	if (localePath.charAt(0) != '/') {
 		localePath = "/"+localePath;
 	}
-	this.localeUtility.setCookie( window.$BRJS_LOCALE_COOKIE_NAME, locale, days, localePath );
+	var localeCookieName = this.appMetaService.getLocaleCookieName();
+	this.localeUtility.setCookie( localeCookieName, locale, days, localePath );
 };
 
 /**
 * Gets the current locale preference
 */
 BRLocaleService.prototype.getLocale = function() {
-	var localeCookieValue = this.localeUtility.getCookie( window.$BRJS_LOCALE_COOKIE_NAME );
+	var localeCookieName = this.appMetaService.getLocaleCookieName();
+	var localeCookieValue = this.localeUtility.getCookie( localeCookieName );
 	var browserLocales = this.localeUtility.getBrowserAcceptedLocales();
-	var appLocales = window.$BRJS_APP_LOCALES;
+	var appLocales = this.appMetaService.getLocales();
 	return LocaleUtility.getActiveLocale( localeCookieValue, browserLocales, appLocales );
 };
 

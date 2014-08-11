@@ -265,28 +265,26 @@ Translator.prototype.formatNumber = function(number, thousandsSeparator) {
 };
 
 /**
- * Parses the number appropriately for the locale, by removing the ThousandsSeperators
- * and decimal points.
+ * Parses the number appropriately for the locale, by removing the thousands seperators.
  *
- * <p>By specifying a number grouping separator character (',' for example) as
- * the value of the localization property <code>br.i18n.number.grouping.separator</code>,
- * a number such as '1,000,000' will be parsed as '1000000'.</p>
+ * <p>By specifying a number grouping separator character (',' for example) as the value of the localization property
+ *  <code>br.i18n.number.grouping.separator</code>, a number such as '1,000,000' will be parsed as '1000000'.</p>
  *
  * <p>Try using the following:</p>
  * <pre>
- * var oTranslator = Translator.getTranslator();
- * oTranslator.parseNumber(1,000,000.00);
+ * var translator = Translator.getTranslator();
+ * oTranslator.parseNumber('1,000,000.00');
  * </pre>
  *
- * @param {Variant} number A a string representing the number.
- * @returns A parsed number or null if the value can't be parsed.
+ * @param {String} number A string representing the number.
+ * @param {String} thousandsSeparator (optional) A string representing thousands separator.
  *
- * @type Number
+ * @returns {Number} A parsed number or null if the value can't be parsed.
  */
 Translator.prototype.parseNumber = function(number, thousandsSeparator) {
 	if (!thousandsSeparator) {
 		thousandsSeparator = this.localizationPrefs.thousandsSeparator ||
-				this._getTranslationForKey("br.i18n.number.grouping.separator");
+				this._getTranslationForKey('br.i18n.number.grouping.separator');
 	}
 
 	var decimalPlaceCharacter = this.localizationPrefs.decimalRadixCharacter ||
@@ -296,6 +294,16 @@ Translator.prototype.parseNumber = function(number, thousandsSeparator) {
 	var regEx = new RegExp(thousandsSeparator, "g");
 	number = number.replace(regEx, '');
 	number = number.replace(decimalPlaceCharacter, '.');
+
+	var numberLength = number.length;
+
+	if (number[numberLength - 1] === decimalPlaceCharacter) {
+		number = number.substr(0, numberLength - 1);
+	}
+
+	if (isNaN(number)) {
+		return null;
+	}
 
 	return Number(number);
 };

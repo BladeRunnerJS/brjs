@@ -1,7 +1,7 @@
 "use strict";
 
 /**
-* Returns a [br/i18n/I18n]{@link module:br/i18n/I18N} object that provides access to i18n functions.
+* Returns a {@link module:br/i18n/I18N} object that provides access to i18n functions.
 * @module br/i18n
 * @exports module:br/i18n/I18N
 */

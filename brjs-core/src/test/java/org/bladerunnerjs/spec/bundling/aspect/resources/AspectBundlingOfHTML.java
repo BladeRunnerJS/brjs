@@ -37,7 +37,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void aspectClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.Class1");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.Class1");
 	}
 
@@ -46,7 +46,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void bladesetClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.Class1");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.bs.Class1");
 	}
 	
@@ -55,7 +55,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void bladeClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.b1.Class1");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.bs.b1.Class1");
 	}
 	
@@ -68,7 +68,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 			.and(sdkLib).hasClass("br.workbench.ui.Workbench")
 			.and(aspect).containsResourceFileWithContents("aspect.html", "<div id='appns.aspect-view'></div>")
 			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
-		when(aspect).requestReceived("html/bundle.html", response);
+		when(aspect).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsOrderedTextFragments(
 				"<!-- workbench.html -->",
 				"<div id='br.workbench-view'></div>",
@@ -86,7 +86,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 			.and(userLib).hasClass("userLib.Class1")
 			.and(aspect).containsResourceFileWithContents("aspect.html", "<div id='appns.aspect-view'></div>")
 			.and(aspect).indexPageRefersTo("userLib.Class1");
-		when(aspect).requestReceived("html/bundle.html", response);
+		when(aspect).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsOrderedTextFragments(
 				"<!-- userLib.html -->",
 				"<div id='userLib.my-view'></div>",
@@ -99,7 +99,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 		given(bladeset).containsResourceFileWithContents("file.xml", "<some-xml/>")
 			.and(blade).hasClass("appns/bs/b1/Class1")
     		.and(aspect).indexPageRequires("appns/bs/b1/Class1");
-    	when(aspect).requestReceived("xml/bundle.xml", response);
+    	when(aspect).requestReceivedInDev("xml/bundle.xml", response);
     	then(response).containsText("<some-xml/>");
 	}
 	
@@ -107,7 +107,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void bladeResourcesAreLoadedEvenIfTheBladesetHasNoSource() throws Exception {
 		given(blade).containsResourceFileWithContents("file.xml", "<some-xml id='appns.bs.b1.someId'></some-xml>")
 			.and(aspect).indexPageHasContent("appns.bs.b1.someId");
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText("<some-xml id='appns.bs.b1.someId'></some-xml>");
 	}
 	
@@ -115,7 +115,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void bladeResourcesAreLoadedEvenIfTheBladesetHasNoSourceAndSecondaryIdIsUsed() throws Exception {
 		given(blade).containsResourceFileWithContents("file.xml", "<some-xml id='appns.bs.b1.someId'></some-xml><some-xml id='appns.bs.b1.anotherId'></some-xml>")
 			.and(aspect).indexPageHasContent("appns.bs.b1.anotherId");
-		when(aspect).requestReceived("xml/bundle.xml", response);
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText("<some-xml id='appns.bs.b1.someId'></some-xml><some-xml id='appns.bs.b1.anotherId'></some-xml>");
 	}
 	

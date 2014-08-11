@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 
-public final class Bladeset extends AbstractComponent implements NamedNode
+public class Bladeset extends AbstractComponent implements NamedNode
 {
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
@@ -68,7 +68,9 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	public void assertValidName() throws InvalidNameException
 	{
 		NameValidator.assertValidDirectoryName(this);
-		NameValidator.assertValidPackageName(this, name);
+		if (!name.equals("default")) { // 'default' is a valid bladeset name since its the implicit bladeset name for the optional bladeset
+			NameValidator.assertValidPackageName(this, name);
+		}
 	}
 	
 	@Override

@@ -45,7 +45,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("../v/dev/app-version/version.js", "../v/dev/node-js/module/appns/Class1.js", "../v/dev/aliasing/bundle.js");
+		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/common-js/module/appns/Class1.js", "v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -61,14 +61,14 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("../v/dev/app-version/version.js", "../v/dev/aliasing/bundle.js");
+		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
 	public void devMinifierAttributeCanAllowJsFilesToBeCombinedEvenInDev() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("../v/dev/js/dev/combined/bundle.js");
+		then(pageResponse).containsRequests("v/dev/js/dev/combined/bundle.js");
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("../v/dev/app-version/version.js", "../v/dev/node-js/module/appns/Class1.js", "../v/dev/aliasing/bundle.js");
+		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/common-js/module/appns/Class1.js", "v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	then(pageResponse).containsOrderedTextFragments(
 			"thirdparty/br-bootstrap/bundle.js", 
 			"thirdparty/appLib/bundle.js", 
-			"node-js/module/appns/node/Class.js",
+			"common-js/module/appns/node/Class.js",
 			"namespaced-js/package-definitions.js", 
 			"namespaced-js/module/appns/namespaced/Class.js",
 			"aliasing/bundle.js"); 
@@ -122,7 +122,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		then(pageResponse).containsOrderedTextFragments(
 				"thirdparty/br-bootstrap/bundle.js", 
 				"thirdparty/appLib/bundle.js", 
-				"node-js/module/appns/node/Class.js",
+				"common-js/module/appns/node/Class.js",
 				"namespaced-js/package-definitions.js", 
 				"namespaced-js/module/appns/namespaced/Class.js" ); 
 	}
@@ -144,10 +144,10 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 					"appns.Class1\n");
 		when(workbench).pageLoaded(pageResponse, "en_GB");
 		then(pageResponse).containsOrderedTextFragments(
-				"<script type='text/javascript' src='../v/dev/thirdparty/thirdpartyLib/bundle.js'></script>", 
-				"<script type='text/javascript' src='../v/dev/namespaced-js/package-definitions.js'></script>",
-				"<script type='text/javascript' src='../v/dev/namespaced-js/module/appns/bs/b1/Class1.js'></script>",
-				"<script type='text/javascript' src='../v/dev/aliasing/bundle.js'></script>",
+				"<script type='text/javascript' src='v/dev/thirdparty/thirdpartyLib/bundle.js'></script>", 
+				"<script type='text/javascript' src='v/dev/namespaced-js/package-definitions.js'></script>",
+				"<script type='text/javascript' src='v/dev/namespaced-js/module/appns/bs/b1/Class1.js'></script>",
+				"<script type='text/javascript' src='v/dev/aliasing/bundle.js'></script>",
 				"appns.bs.b1.Class1",
 				"appns.Class1");
 	}

@@ -7,12 +7,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.runner.CommandRunner;
 import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
+import org.bladerunnerjs.utility.UserCommandRunner;
 
 import com.caplin.cutlass.util.FileUtility;
 
@@ -117,7 +120,6 @@ public class CommandRunnerTest {
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--debug"});
 		
 		String output = outputStream.toString("UTF-8");
-		assertDoesNotContain("warn-level", output);
 		assertDoesNotContain("info-level", output);
 		assertDoesNotContain("debug-level", output);
 	}
@@ -145,13 +147,13 @@ public class CommandRunnerTest {
 	}
 	
 	@Test
-	public void errorsForAllPackagesAreDisplayedEvenIfNotLoggingThatPackage() throws Exception {
+	public void errorsAndWarningsForAllPackagesAreDisplayedEvenIfNotLoggingThatPackage() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--info"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("error-level", output);
-		assertDoesNotContain("warn-level", output);
+		assertContains("warn-level", output);
 		assertDoesNotContain("info-level", output);
 		assertDoesNotContain("debug-level", output);
 	}
@@ -176,6 +178,38 @@ public class CommandRunnerTest {
 		assertContains("argX", output);
 	}
 	
+	@Test
+	public void warningIsPrintedIfTheServletJarIsOutdated() throws Exception
+	{
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		dirFile("valid-sdk-directory/sdk/libs/java").mkdirs();
+		FileUtils.write( dirFile("valid-sdk-directory/sdk/libs/java/application/brjs-servlet-1.2.3.jar"), "some jar contents" );
+		dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib").mkdirs();
+		FileUtils.write( dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
+		
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
+		String output = outputStream.toString("UTF-8");
+		String warnMessage = String.format(UserCommandRunner.Messages.OUTDATED_JAR_MESSAGE, "myApp", "brjs-", "sdk/libs/java/application");
+		assertContains(warnMessage, output);
+	}
+	
+	//if I do an incorrect command I get the properties outputted in the right order
+	@Test
+	public void theCommandIsExecutedWithIncorrectParametersExpectCorrectPropertiesOrder() throws Exception {
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "multiple-args-command-test"});
+		
+		String output = systemOutputStream.toString("UTF-8"); //expected val
+		
+		String[] valuesInQuotes = StringUtils.substringsBetween(output , "\'", "\'");
+		
+		assertContains("arg1", valuesInQuotes[0]);
+		assertContains("arg2", valuesInQuotes[1]);
+		assertContains("arg3", valuesInQuotes[2]);
+		assertContains("arg4", valuesInQuotes[3]);
+		assertContains("arg5", valuesInQuotes[4]);
+	}
+	
 	private File dirFile(String dirName) {
 		return new File(tempDir, dirName);
 	}
@@ -183,4 +217,5 @@ public class CommandRunnerTest {
 	private String dir(String dirName) {
 		return dirFile(dirName).getPath();
 	}
+
 }

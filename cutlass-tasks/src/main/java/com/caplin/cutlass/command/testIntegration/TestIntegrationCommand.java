@@ -34,7 +34,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 	
 	@Override
 	public void setBRJS(BRJS brjs)
-	{
+	{	
 		this.brjs = brjs;
 	}
 	

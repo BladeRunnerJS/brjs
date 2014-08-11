@@ -1,26 +1,35 @@
 package org.bladerunnerjs.utility;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
-import org.dom4j.Attribute;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class TagPluginUtility {
 
@@ -31,7 +40,7 @@ public class TagPluginUtility {
 	private static final String XML_TAG_END = "/>";
 	private static final Pattern tagPattern = Pattern.compile(TAG_START+"([A-Za-z][A-Za-z0-9._-]+)([ ]+[^\\s=]+=[^\\s=]+)*[ ]*"+TAG_END);
 	
-	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, Locale locale, String version) throws IOException, NoTagHandlerFoundException, DocumentException
+	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, Locale locale, String version) throws IOException, NoTagHandlerFoundException
 	{
 		BRJS brjs = bundleSet.getBundlableNode().root();
 		List<TagHandlerPlugin> tagHandlerPlugins = brjs.plugins().tagHandlerPlugins();
@@ -59,23 +68,29 @@ public class TagPluginUtility {
 		writer.flush();
 	}
 
-	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, Locale locale, String version, String tagContent) throws IOException, DocumentException, NoTagHandlerFoundException
+	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, Locale locale, String version, String tagContent) throws IOException, NoTagHandlerFoundException
 	{
 		String xmlContent = StringUtils.replaceOnce(tagContent, TAG_START, XML_TAG_START);
 		xmlContent = xmlContent.replaceFirst(TAG_END, XML_TAG_END);
 		
-		StringReader xmlContentReader = new StringReader(xmlContent);
-		
 		Document document;
+		
 		try
 		{
-			document = new SAXReader().read(xmlContentReader);
+			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder domParser = builderFactory.newDocumentBuilder();
+			InputStream stream = new ByteArrayInputStream(xmlContent.getBytes(StandardCharsets.UTF_8));
+			domParser.setErrorHandler(new DocumentBuilderErrorParser(bundleSet.getBundlableNode().root().logger(TagPluginUtility.class)));
+			
+			domParser.setErrorHandler(new SilentDomParserErrorHandler(bundleSet.getBundlableNode().root()));
+			
+			document = domParser.parse(stream);
 		}
-		catch (DocumentException ex)
+		catch (ParserConfigurationException | SAXException ex)
 		{
 			return tagContent;
 		}
-		Element root = document.getRootElement();
+		Element root = document.getDocumentElement();
 		
 		return handleTagXml(tagHandlerPlugins, bundleSet, requestMode, locale, version, root);
 	}
@@ -84,7 +99,7 @@ public class TagPluginUtility {
 	{
 		StringWriter writer = new StringWriter();
 		
-		String tagName = element.getName();
+		String tagName = element.getNodeName();
 		TagHandlerPlugin tagHandler = getTagHandlerForTag(tagHandlerPlugins, tagName);
 		
 		Map<String,String> attributes = getTagAttributes(element);
@@ -113,12 +128,13 @@ public class TagPluginUtility {
 	private static Map<String, String> getTagAttributes(Element element)
 	{
 		Map<String, String> attributes = new LinkedHashMap<String,String>();
+		NamedNodeMap sourceAttributes = element.getAttributes();
 		
-		for (Object o : element.attributes())
-		{
-			Attribute attribute = (Attribute) o;
+		for(int i = 0; i < sourceAttributes.getLength(); ++i) {
+			Attr attribute = (Attr) sourceAttributes.item(i);
 			attributes.put(attribute.getName(), attribute.getValue());
 		}
+		
 		return attributes;
 	}
 
@@ -133,4 +149,34 @@ public class TagPluginUtility {
 		}
 		throw new NoTagHandlerFoundException(tagName);
 	}
+	
+	
+	static class SilentDomParserErrorHandler implements ErrorHandler {
+		private Logger logger;
+		public SilentDomParserErrorHandler(BRJS brjs) {
+			this.logger = brjs.logger(TagPluginUtility.class);
+		}
+		@Override
+		public void warning(SAXParseException exception) throws SAXException
+		{
+			logException(exception);
+			throw exception;	
+		}
+		@Override
+		public void error(SAXParseException exception) throws SAXException
+		{
+			logException(exception);
+			throw exception;
+		}
+		@Override
+		public void fatalError(SAXParseException exception) throws SAXException
+		{
+			logException(exception);
+			throw exception;	
+		}
+		private void logException(SAXException ex) {
+			logger.debug("Error while attempting to replace tags for tag handlers; %s", ex.toString());
+		}
+	}
+	
 }

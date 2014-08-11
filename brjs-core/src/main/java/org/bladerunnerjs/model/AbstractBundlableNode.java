@@ -6,8 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.aliasing.AmbiguousAliasException;
-import org.bladerunnerjs.aliasing.IncompleteAliasException;
+import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
@@ -96,20 +95,18 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 						locationAsset.getAssetPath() + "' source files both available via require path '" +
 						requirePath + "'.");
 				}
-			}
-			
-		}
-		
+			}			
+		}		
 		
 		if(asset == null) {
 			throw new UnresolvableRequirePathException(requirePath);
 		}
 		
-		return asset   ;
+		return asset;
 	}
 	
 	@Override
-	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException {
+	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
 		
 		//TODO: remove the hack that differs in behaviour if an alias starts with "SERVICE!"
 		
@@ -148,11 +145,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 			
 			for(AssetContainer assetContainer : scopeAssetContainers()) {
 				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-					AliasDefinitionsFile aliasDefinitionsFile = assetLocation.aliasDefinitionsFile();
-					
-					if(aliasDefinitionsFile.getUnderlyingFile().exists()) {
-						aliasDefinitionFiles.add(aliasDefinitionsFile);
-					}
+					aliasDefinitionFiles.addAll( assetLocation.aliasDefinitionsFiles() );
 				}
 			}
 			
@@ -164,16 +157,6 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
 			return BundleSetRequestHandler.handle(this.getBundleSet(), logicalRequestPath, contentAccessor, version);
-		}
-		catch (ModelOperationException e) {
-			throw new ContentProcessingException(e);
-		}
-	}
-	
-	@Override
-	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		try {
-			return BundleSetRequestHandler.handle(new FilteredBundleSet(this.getBundleSet(), bundleSetFilter), logicalRequestPath, contentAccessor, version);
 		}
 		catch (ModelOperationException e) {
 			throw new ContentProcessingException(e);

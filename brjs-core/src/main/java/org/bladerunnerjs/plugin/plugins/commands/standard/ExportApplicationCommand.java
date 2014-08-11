@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
@@ -42,8 +44,9 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the name of the application to be exported"));
-		argsParser.registerParameter(new UnflaggedOption("banner").setRequired(false).setHelp("a banner that will be added to every exported class"));
+		argsParser.registerParameter(new FlaggedOption("banner").setLongFlag("banner").setRequired(false).setHelp("a banner that will be added to every exported class"));
 		argsParser.registerParameter(new FlaggedOption("bannerExtensions").setLongFlag("bannerExtensions").setRequired(false).setDefault("js").setHelp("a comma seperated list of extensions to apply the banner to"));
+		argsParser.registerParameter(new UnflaggedOption("target").setRequired(false).setDefault("").setHelp("the target dir for the exported app"));
 	}
 	
 	@Override
@@ -69,13 +72,24 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException 
 	{
 		String appName = parsedArgs.getString("app-name");
-		String banner = "/*\n" + parsedArgs.getString("banner") + "\n*/\n\n";
+		String banner = parsedArgs.getString("banner");
 		String[] bannerExtensions = parsedArgs.getString("bannerExtensions").split(",");
+		String targetPath = parsedArgs.getString("target");
+
 		App app = brjs.app(appName);
-		
 		if(!app.dirExists()) throw new CommandArgumentsException("Could not find application '" + appName + "'", this);
 		
-		File destinationZipLocation = new File(brjs.storageDir("exported-app").getAbsolutePath() + "/" + appName + ".zip");
+		File targetDir;
+		if (targetPath.equals("")) {
+			targetDir = brjs.storageDir("exported-apps");
+		} else {
+    		targetDir = new File(targetPath);
+    		if (!targetDir.isDirectory()) 
+    		{
+    			targetDir = brjs.file("sdk/" + targetPath);
+    		}
+		}
+		File destinationZipLocation = new File(targetDir, appName + ".zip");
 
 		try 
 		{
@@ -83,12 +97,15 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 			
 			IOFileFilter excludeUserLibraryTestsFilter = createExcludeUserLibsTestsFilter(appName);
 			NotFileFilter brjsJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar")));
-			IOFileFilter combinedFilter = new AndFileFilter(new ExcludeDirFileFilter("js-test-driver", "bundles"), brjsJarFilter);
+			IOFileFilter combinedFilter = new AndFileFilter(new ExcludeDirFileFilter("bundles"), brjsJarFilter);
 			
 			combinedFilter = new AndFileFilter(combinedFilter, excludeUserLibraryTestsFilter);
 			
 			createResourcesFromSdkTemplate(app.dir(), temporaryExportDir, combinedFilter);
-			includeBannerInDirectoryClasses(new File(temporaryExportDir, "libs"), banner, bannerExtensions);
+			if (banner != null) {
+				String jsBanner = "/*\n" + banner + "\n*/\n\n";
+				includeBannerInDirectoryClasses(new File(temporaryExportDir, "libs"), jsBanner, bannerExtensions);
+			}
 			FileUtility.zipFolder(temporaryExportDir, destinationZipLocation, false);
 		}
 		catch (Exception e)
@@ -103,10 +120,10 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	}
 
 	
-	private void createResourcesFromSdkTemplate(File templateDir, File targetDir, FileFilter fileFilter) throws IOException
+	private void createResourcesFromSdkTemplate(File templateDir, File targetDir, FileFilter fileFilter) throws IOException, ConfigException
 	{
 		ArrayList<File> addList = new ArrayList<File>();
-		recurseIntoSubfoldersAndAddAllFilesMatchingFilter(addList, templateDir, fileFilter);
+		recurseIntoSubfoldersAndAddAllFilesMatchingFilter( Arrays.asList(brjs.bladerunnerConf().getIgnoredPaths()) , addList, templateDir, fileFilter );
 		
 		if (!targetDir.exists())
 		{
@@ -145,20 +162,21 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		}
 	}
 
-	private ArrayList<File> recurseIntoSubfoldersAndAddAllFilesMatchingFilter(ArrayList<File> addList, File file, FileFilter filter)
+	private ArrayList<File> recurseIntoSubfoldersAndAddAllFilesMatchingFilter(List<String> ignoredFiles, ArrayList<File> addList, File file, FileFilter filter)
 	{
-		if(file.isDirectory())
+		if (ignoredFiles.contains(file.getName())) {
+			return addList;
+		}
+		
+		if (file.isDirectory())
 		{
-			for(File r : file.listFiles(filter))
+			for (File r : file.listFiles(filter))
 			{
-				if (!r.getName().startsWith("."))
-				{
-					recurseIntoSubfoldersAndAddAllFilesMatchingFilter(addList, r, filter);
-				}
+				recurseIntoSubfoldersAndAddAllFilesMatchingFilter(ignoredFiles, addList, r, filter);
 			}
 		}
 		
-		if(filter.accept(file) && !file.getName().startsWith("."))
+		if (filter.accept(file))
 		{
 			addList.add(file);
 		}

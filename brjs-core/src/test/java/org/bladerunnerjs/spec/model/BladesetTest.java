@@ -86,4 +86,14 @@ public class BladesetTest extends SpecTest {
 		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Bladeset", invalidPackageName.dir())
 			.and(exceptions).verifyException(InvalidPackageNameException.class,invalidPackageName.dir(), "_invalid");
 	}
+	
+	@Test
+	public void defaultBladesetIsCorrectlyIdentified() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).hasDir("blades/myBlade");
+		then(app.defaultBladeset()).dirExists()
+			.and(app.defaultBladeset().blade("myBlade")).dirExists();
+	}
+	
 }

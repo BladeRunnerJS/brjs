@@ -29,33 +29,32 @@ Dependencies.putAll([
 	'gradle-retrolambda'		:	'me.tatarka:gradle-retrolambda:1.3.0',
 	'retrolambda'				:	'net.orfjackal.retrolambda:retrolambda:1.1.4',
 	
-	'jetty-all-server'			:	'org.eclipse.jetty.aggregate:jetty-all-server:7.6.4.v20120524',	/* version should be 7.x - this version uses servlet api v2.5 */
-	'jetty-jsp'					:	'org.eclipse.jetty:jetty-jsp:7.6.4.v20120524', /* this must be the same version as the Jetty version above */
+	'jetty-all-server'			:	'org.eclipse.jetty.aggregate:jetty-all-server:7.6.15.v20140411',	/* version should be 7.x - this version uses servlet api v2.5 */
+	'jetty-jsp'					:	'org.eclipse.jetty:jetty-jsp:7.6.15.v20140411', /* this must be the same version as the Jetty version above */
 	'servlet-api'				:	'javax.servlet:servlet-api:2.5',	/* do not update - this is the version Tomcat 6.0.x uses */
 	
 	'jta'						:	'javax.transaction:jta:1.1',
-	'xom'						:	'xom:xom:1.2.5',
-	'javassist'					:	'org.javassist:javassist:3.16.1-GA',
-	'gson'						:	'com.google.code.gson:gson:2.2.2',
+	'xom'						:	'com.io7m.xom:xom:1.2.10',
+	'javassist'					:	'org.javassist:javassist:3.18.2-GA',
+	'gson'						:	'com.google.code.gson:gson:2.2.4',
 	'validation-api'			:	'javax.validation:validation-api:1.1.0.Final',
 	'bval-jsr303'				:	'org.apache.bval:bval-jsr303:0.5',
-	'java-xmlbuilder'			:	'com.jamesmurty.utils:java-xmlbuilder:0.6',
+	'java-xmlbuilder'			:	'com.jamesmurty.utils:java-xmlbuilder:1.0',
 	'sjsxp'						:	'com.sun.xml.stream:sjsxp:1.0.2',
-	'dom4j'						:	'dom4j:dom4j:1.6.1',
 	
 	'utils'						:	'org.ostermiller:utils:1.07.00',
 
-	'jsap'						:	'com.martiansoftware:jsap:2.1',
+	'jsap'						:	'com.martiansoftware:jsap:2.1-brjs-1-6f84c0',
 
-	'commons-io'				:	'commons-io:commons-io:2.3',
-	'commons-lang3'				:	'org.apache.commons:commons-lang3:3.1',
-	'commons-codec'				:	'commons-codec:commons-codec:1.6',
-	'commons-fileupload'		:	'commons-fileupload:commons-fileupload:1.2',
-
-	'httpclient'				:	'org.apache.httpcomponents:httpclient:4.2.5',
-	'httpcore'					:	'org.apache.httpcomponents:httpcore:4.2.5',
-	'httpmime'					:	'org.apache.httpcomponents:httpmime:4.2.5',
-	'fluent-hc'					:	'org.apache.httpcomponents:fluent-hc:4.2.5',
+	'commons-io'				:	'commons-io:commons-io:2.4',
+	'commons-lang3'				:	'org.apache.commons:commons-lang3:3.2',
+	'commons-codec'				:	'commons-codec:commons-codec:1.9',
+	'commons-fileupload'		:	'commons-fileupload:commons-fileupload:1.3.1',
+	
+	'httpclient'				:	'org.apache.httpcomponents:httpclient:4.3.4',
+	'httpcore'					:	'org.apache.httpcomponents:httpcore:4.3.4',
+	'httpmime'					:	'org.apache.httpcomponents:httpmime:4.3.4',
+	'fluent-hc'					:	'org.apache.httpcomponents:fluent-hc:4.3.4',
 
 	'selenium-java'				:	'org.seleniumhq.selenium:selenium-java:2.41.0',
 	
@@ -63,35 +62,34 @@ Dependencies.putAll([
 	'slf4j-log4j12'				:	'org.slf4j:slf4j-log4j12:1.7.7',
 	'yamlbeans'					:	'com.esotericsoftware.yamlbeans:yamlbeans:1.06',
 
-	'ant'						:	'org.apache.ant:ant:1.8.4',
-	'ant-junit'					:	'org.apache.ant:ant-junit:1.8.4',
+	'ant'						:	'org.apache.ant:ant:1.9.4',
+	'ant-junit'					:	'org.apache.ant:ant-junit:1.9.4',
 	'xalan'						:	'xalan:xalan:2.7.1',
 
 	'junit'						:	'junit:junit:4.11',
-	'xmlunit'					:	'xmlunit:xmlunit:1.3',
-	'jmock-junit4'				:	'org.jmock:jmock-junit4:2.5.1',
-	'jmock'						:	'org.jmock:jmock:2.5.1',
-	'mockito-core'				:	'org.mockito:mockito-core:1.9.0',
-	'jetty-servlet-tester'		:	'org.mortbay.jetty:jetty-servlet-tester:6.1H.22',
+	'xmlunit'					:	'xmlunit:xmlunit:1.5',
+	'jmock-junit4'				:	'org.jmock:jmock-junit4:2.6.0',
+	'jmock'						:	'org.jmock:jmock:2.6.0',
+	'mockito-core'				:	'org.mockito:mockito-core:1.9.5',
+	'jetty-servlet-tester'		:	'org.eclipse.jetty:jetty-servlet-tester:7.0.0.M2',
 	'jyaml'						:	'org.jyaml:jyaml:1.3',
 	'hamcrest-all'				:	'org.hamcrest:hamcrest-all:1.3',
 
-	'woodstox-core-asl'			:	'org.codehaus.woodstox:woodstox-core-asl:4.2.0',
-	'stax2-api'					:	'org.codehaus.woodstox:stax2-api:3.1.1',
-	'msv-core'					:	'net.java.dev.msv:msv-core:2013.2.2',
+	'woodstox-core-asl'			:	'org.codehaus.woodstox:woodstox-core-asl:4.4.0',
+	'stax2-api'					:	'org.codehaus.woodstox:stax2-api:3.1.4',
+	'msv-core'					:	'net.java.dev.msv:msv-core:2013.6.1',
 	'trang'						:	'com.thaiopensource:trang:20091111',
 
 	'cobertura'					:	'net.sourceforge.cobertura:cobertura:1.9.4.1',
 	'JsTestDriver'				:	'com.google:JsTestDriver:1.3.3d-brjs2',
 	'ecj'						:	'org.eclipse.jdt.core.compiler:ecj:3.7.2',
-	'closure-compiler'			:	'com.google.javascript:closure-compiler:v20130823',
-	'jericho-html'				:	'net.htmlparser.jericho:jericho-html:3.2',
+	'closure-compiler'			:	'com.google.javascript:closure-compiler:v20140625',
+	'jericho-html'				:	'net.htmlparser.jericho:jericho-html:3.3',
 	'wagon-http'				:	'org.apache.maven.wagon:wagon-http:2.2',
 
 	'apache-tomcat'				:	'org.apache:apache-tomcat:6.0.35@zip',
 
 	'db-derby'					:	'db-derby:db-derby:10.9.1.0@zip',
-	'hsqldb'					:	'hsqldb:hsqldb:1.8.0.10',
 	
 	'saxon-dom'					:	'net.sf.saxon:saxon-dom:8.7',
 	
@@ -101,23 +99,13 @@ Dependencies.putAll([
 /* browsers are defined as browserName+version because we probably want to use multiple versions */
 def os = org.bladerunnerjs.OSCalculator.getOS()
 Dependencies.putAll([
-	'chromium25'				:	'browser:chrome-'+os+':25.0.1339.0@zip',
-	'chromium27'				:	'browser:chromium-'+os+':27.0.1453.0@zip',
-	'chrome27'					:	'browser:chromeportable-'+os+':27.0.1453.110@zip',
+	'chrome'					:	'browser:chrome-'+os+':23.0.1235.0@zip',
 	
-	'firefox12'					:	'browser:firefox-'+os+':12.0@zip',
-	'firefox21'					:	'browser:firefox-'+os+':21.0@zip',
+	'firefox'					:	'browser:firefox-'+os+':21.0@zip',
+	'firefox-webdriver'			:	'browser:firefox-'+os+':12.0@zip',
 
- 	'chromedriver21'			:	'browser:chromedriver_'+os+':21.0.1180.4@zip',
- 	'chromedriver23'			:	'browser:chromedriver_'+os+':23.0.1240.0@zip',
-
+ 	'phantomjs'					:	'browser:phantomjs-'+os+':1.9.7@zip',
+ 	'phantomjs_windows'			:	'browser:phantomjs-win32:1.9.7@zip',
+ 	'phantomjs_mac'				:	'browser:phantomjs-mac:1.9.7@zip',
+ 	'phantomjs_linux'			:	'browser:phantomjs-linux:1.9.7@zip',
 ])
-
-Dependencies.put('firefox-stable', dependency('firefox21'));
-Dependencies.put('firefox-webdriver', dependency('firefox12'));
-if ( os == 'linux' ) {
-	Dependencies.put('chrome-stable', dependency('chromium25'));
-} else {
-	Dependencies.put('chrome-stable', dependency('chrome27'));
-}
-

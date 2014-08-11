@@ -336,20 +336,25 @@ br.presenter.property.EditableProperty.prototype._parse = function(vValue)
 {
 	var vParsedValue = vValue;
 	var bValueChanged;
+	var parsers = this.m_pParsers.slice();
 
 	do
 	{
 		bValueChanged = false;
 
-		for(var i = 0, l = this.m_pParsers.length; i < l; ++i)
+		for(var i = 0, l = parsers.length; i < l; ++i)
 		{
-			var oParser = this.m_pParsers[i];
+			var oParser = parsers[i];
 			var vNewValue = oParser.parser.parse(vParsedValue, oParser.config);
 
 			if(vNewValue !== null && vNewValue !== undefined && vNewValue !== vParsedValue)
 			{
 				vParsedValue = vNewValue;
 				bValueChanged = true;
+				
+				if(oParser.parser.isSingleUseParser()) {
+					parsers.splice(i, 1);
+				}
 				break;
 			}
 		}

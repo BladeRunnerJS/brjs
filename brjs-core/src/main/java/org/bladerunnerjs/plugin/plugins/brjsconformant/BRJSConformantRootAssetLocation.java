@@ -6,29 +6,18 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJSNodeHelper;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.RootAssetLocation;
 import org.bladerunnerjs.model.TheAbstractAssetLocation;
-import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation implements RootAssetLocation {
-	private BRLibConf libManifest;
-	
-	public BRJSConformantRootAssetLocation(RootNode rootNode, Node parent, File dir) {
-		super(rootNode, parent, dir);
-		
-		if(assetContainer() instanceof JsLib) {
-			try {
-				libManifest = new BRLibConf((JsLib) assetContainer());
-			}
-			catch (ConfigException e) {
-				throw new RuntimeException(e);
-			}
-		}
+	public BRJSConformantRootAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation) {
+		super(rootNode, assetContainer, dir, parentAssetLocation);
 	}
 	
 	@Override
@@ -37,27 +26,13 @@ public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation im
 	}
 	
 	@Override
-	public String requirePrefix() {
-		if (!libManifest.manifestExists()) {
-			return ((JsLib) assetContainer()).getName();
-		}
-		
-		try {
-			return libManifest.getRequirePrefix();
-		}
-		catch (ConfigException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	@Override
-	public void setNamespace(String namespace) throws ConfigException {
-		libManifest.setRequirePrefix(namespace.replace('.', '/'));
-	}
-	
-	@Override
 	public void populate() throws InvalidNameException, ModelUpdateException {
 		BRJSNodeHelper.populate(this, true);
 	}
 	
+	@Override
+	public void setRequirePrefix(String requirePrefix) throws ConfigException {
+		// TODO: us throwing an exception here means that we have broken the interface-segregation principle -- fix this
+		throw new RuntimeException("requirePrefix() only makes sense if the asset-container is of type JsLib");
+	}
 }

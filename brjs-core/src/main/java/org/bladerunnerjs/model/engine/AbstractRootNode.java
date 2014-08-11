@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
@@ -71,6 +72,8 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			throw new NodeAlreadyRegisteredException("A node has already been registered for path '" + normalizedPath + "'");
 		}
 
+		notifyObservers(new NodeDiscoveredEvent(), node);
+
 		if (node.dir().exists()) {
 			node.ready();
 		}
@@ -133,7 +136,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			return null;
 		}
 		
-		if (node.getClass() == nodeClass)
+		if (nodeClass.isAssignableFrom(node.getClass()))
 		{
 			return (N) node;
 		}

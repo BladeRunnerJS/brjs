@@ -32,8 +32,6 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 
 	private static final String BUNDLE_REQUEST = "bundle-request";
 
-	public static final String JS_STYLE = "node.js";
-
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 
@@ -43,7 +41,10 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 		try
 		{
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("node-js/bundle.js").as(BUNDLE_REQUEST).and("node-js/module/<module>.js").as(SINGLE_MODULE_REQUEST).where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			contentPathParserBuilder
+				.accepts("common-js/bundle.js").as(BUNDLE_REQUEST)
+					.and("common-js/module/<module>.js").as(SINGLE_MODULE_REQUEST)
+				.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 
 			contentPathParser = contentPathParserBuilder.build();
 			prodRequestPaths.add(contentPathParser.createRequest(BUNDLE_REQUEST));
@@ -63,7 +64,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public String getRequestPrefix()
 	{
-		return "node-js";
+		return "common-js";
 	}
 
 	@Override

@@ -30,6 +30,8 @@ public class CssContentPluginTest extends SpecTest {
 	private Workbench workbench;
 	private Blade blade;
 	private Bladeset bladeset;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -48,6 +50,8 @@ public class CssContentPluginTest extends SpecTest {
 			blade = bladeset.blade("b1");
 			bladeMainTheme = blade.file("themes/main");
 			workbench = blade.workbench();
+			defaultBladeset = app.bladeset("default");
+			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	
 	@Test
@@ -152,7 +156,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsResourceFile("style.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style.css");
 	}
 	
@@ -161,7 +165,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsResourceFile("style.css");
-		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("resources/style.css");
 	}
 	
@@ -170,7 +174,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsResourceFile("dir1/dir2/style.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("dir1/dir2/style.css");
 	}
 	
@@ -181,7 +185,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style1.css")
 			.and(requestResponse).doesNotContainText("style2.css");
 	}
@@ -192,7 +196,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(nonConformantLib2).containsFileWithContents("thirdparty-lib.manifest", "depends: non-conformant-lib\n"+"exports: lib")
 			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style1.css");
 	}
 	
@@ -203,7 +207,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(brBoostrapLib).containsFileWithContents("thirdparty-lib.manifest", "depends: non-conformant-lib\n"+"exports: lib")
 			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style1.css");
 	}
 	
@@ -213,7 +217,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style1.css");
 	}
 
@@ -225,7 +229,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(nonConformantLib).containsFile("foo.js")
 			.and(nonConformantLib).containsFileWithContents("style1.css", "style-1")
 			.and(nonConformantLib).containsFileWithContents("style2.css", "style-2");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsLines("style-1", "style-2");
 	}
 	
@@ -235,7 +239,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style.css");
-		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("style.css");
 	}
 	
@@ -244,7 +248,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/common/style.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("themes/common/style.css");
 	}
 	
@@ -253,7 +257,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/common/style.css");
-		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("themes/common/style.css");
 	}
 	
@@ -262,7 +266,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/theme1/style.css");
-		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).containsText("themes/theme1/style.css");
 	}
 	
@@ -271,7 +275,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/theme1/style.css");
-		when(aspect).requestReceived("css/commmon/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/commmon/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("themes/theme1/style.css");
 	}
 	
@@ -284,7 +288,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css")
 			.and(requestResponse).doesNotContainText("dir/style3.css");
 	}
@@ -297,7 +301,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css")
 			.and(requestResponse).doesNotContainText("dir/style3.css");
 	}
@@ -310,7 +314,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css", "dir/style3.css");
 	}
 	
@@ -319,7 +323,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style.css")
 			.and(requestResponse).doesNotContainText("style_de.css")
 			.and(requestResponse).doesNotContainText("style_de_DE.css")
@@ -331,7 +335,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
-		when(aspect).requestReceived("css/common_de/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common_de/bundle.css", requestResponse);
 		then(requestResponse).containsText("style_de.css")
 			.and(requestResponse).doesNotContainText("style.css")
 			.and(requestResponse).doesNotContainText("style_de_DE.css")
@@ -343,7 +347,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
-		when(aspect).requestReceived("css/common_de_DE/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common_de_DE/bundle.css", requestResponse);
 		then(requestResponse).containsText("style_de_DE.css")
 			.and(requestResponse).doesNotContainText("style.css")
 			.and(requestResponse).doesNotContainText("style_de.css")
@@ -356,7 +360,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img.png');}");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/img.png');}");
 	}
 	
@@ -365,7 +369,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img/img.png');}");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/img/img.png');}");
 	}
 	
@@ -374,7 +378,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/img.png');}");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/wibble/img.png');}");
 	}
 
@@ -385,7 +389,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsResourceFileWithContents("style.css", "/* $£€ */");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
 	
@@ -396,7 +400,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsResourceFileWithContents("style.css", "/* $£ */");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£");
 	}
 	
@@ -407,7 +411,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("resources/style.css", "/* $£€ */");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
 	
@@ -415,7 +419,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void themesFromAspectReferencedInCssTagsForWorbenchesAreIncludedInBundle() throws Exception {
 		given(aspect).containsFileWithContents("themes/standard/file.css", "ASPECT CSS")
 			.and(workbench).hasBeenCreated();
-		when(workbench).requestReceived("css/standard/bundle.css", requestResponse);
+		when(workbench).requestReceivedInDev("css/standard/bundle.css", requestResponse);
 		then(requestResponse).containsText("ASPECT CSS");
 	}
 	
@@ -425,7 +429,7 @@ public class CssContentPluginTest extends SpecTest {
     		.and(aspect).indexPageRefersTo("appns.Class1")
     		.and(aspect).containsFileWithContents("themes/standard/screen.css", "screen.css")
     		.and(aspect).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
-    	when(aspect).requestReceived("css/standard_en/bundle.css", requestResponse);
+    	when(aspect).requestReceivedInDev("css/standard_en/bundle.css", requestResponse);
     	then(requestResponse).containsText("style_en.css")
     		.and(requestResponse).doesNotContainText("screen.css");
 	}
@@ -436,7 +440,7 @@ public class CssContentPluginTest extends SpecTest {
     		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
     		.and(blade).containsFileWithContents("themes/standard/screen.css", "screen.css")
     		.and(blade).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
-    	when(aspect).requestReceived("css/standard_en/bundle.css", requestResponse);
+    	when(aspect).requestReceivedInDev("css/standard_en/bundle.css", requestResponse);
     	then(requestResponse).containsText("style_en.css")
     		.and(requestResponse).doesNotContainText("screen.css");
 	}
@@ -446,7 +450,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(bladeset).containsResourceFileWithContents("style.css", "BLADESET STYLE")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("BLADESET STYLE");
 	}
 	
@@ -458,7 +462,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("themes/standard/stylesheet_1.css", "stylesheet_1.css")
 			.and(aspect).containsFileWithContents("themes/standard/stylesheet_ab.css", "stylesheet_ab.css")
 			.and(aspect).containsFileWithContents("themes/standard/stylesheet_ab_cd.css", "stylesheet_ab_cd.css");
-    	when(aspect).requestReceived("css/standard/bundle.css", requestResponse);
+    	when(aspect).requestReceivedInDev("css/standard/bundle.css", requestResponse);
     	then(requestResponse).containsText("style_sheet.css")
     		.and(requestResponse).containsText("stylesheet_1.css")
     		.and(requestResponse).doesNotContainText("stylesheet_ab.css")
@@ -470,8 +474,32 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/image.with-my-super-cool-extension');}");
-		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/wibble/image.with-my-super-cool-extension');}");
+	}
+	
+	@Test
+	public void invalidCssDoesntPreventOtherContentBeingBundledAndRewritten() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFileWithContents("themes/common/style1.css", "asdaasdjhsadfohaahcsjhfw   div {background:url('image1.png');}")
+			.and(aspect).containsFileWithContents("themes/common/style2.css", "div {background:url('image2.png');}")
+			.and(aspect).containsFileWithContents("themes/common/style3.css", "div {background:url('image3.png'); jhasdjadsja }");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"asdaasdjhsadfohaahcsjhfw   div {background:url('../../cssresource/aspect_default/theme_common/image1.png');}",
+				"div {background:url('../../cssresource/aspect_default/theme_common/image2.png');}",
+				"div {background:url('../../cssresource/aspect_default/theme_common/image3.png'); jhasdjadsja }"
+		);
+	}
+	
+	@Test
+	public void bladeCSSInDefaultBladesetCanBeBundled() throws Exception {
+		given(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
+			.and(bladeInDefaultBladeset).containsFileWithContents("themes/common/style.css", "blade css")
+			.and(aspect).indexPageRequires("appns/b1/BladeClass");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("blade css");
 	}
 	
 }

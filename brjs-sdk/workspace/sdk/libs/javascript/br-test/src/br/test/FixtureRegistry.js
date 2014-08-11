@@ -1,19 +1,21 @@
+'use strict';
+
 /**
+ * @name br.test.FixtureRegistry
  * @class
- * The <code>FixtureRegistry</code> allows for registration of fixtures for a 
- * specified scope. 
+ * The <code>FixtureRegistry</code> allows for registration of fixtures for a specified scope.
  * @interface
  */
-br.test.FixtureRegistry = function()
-{
+function FixtureRegistry() {
 };
 
 /**
- * Adds a fixture to the registry. 
+ * Adds a fixture to the registry.
  * 
- * @param {String} sScope The scope to which the fixture should be registered.
- * @param {br.test.Fixture} oFixture The fixture to register.
+ * @param {String} scope The scope to which the fixture should be registered.
+ * @param {br.test.Fixture} fixture The fixture to register.
  */
-br.test.FixtureRegistry.prototype.addFixture = function(sScope, oFixture)
-{
+FixtureRegistry.prototype.addFixture = function(scope, fixture) {
 };
+
+module.exports = FixtureRegistry;

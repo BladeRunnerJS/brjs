@@ -19,6 +19,7 @@ var br = require('br/Core');
 * @param {String} message A human-readable description of the error.
 * @param {String} [fileName] (Optional) The name of the file containing the code that caused the error.
 * @param {int} [lineNumber] (Optional) The line number of the code that caused the error.
+* @alias module:br/Errors.CustomError
 */
 function CustomError(type, message, fileName, lineNumber) {
 	this.name = type || "";

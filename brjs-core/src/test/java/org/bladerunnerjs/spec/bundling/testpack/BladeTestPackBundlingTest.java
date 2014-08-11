@@ -16,6 +16,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	private Bladeset bladeset;
 	private Blade blade;
 	private TestPack bladeUTs, bladeATs;
+	private StringBuffer response = new StringBuffer();
 	
 	private JsLib bootsrapThirdparty, browserModules, appThirdparty,sdkJsLib;
 	
@@ -63,13 +64,13 @@ public class BladeTestPackBundlingTest extends SpecTest
 	@Test
 	public void weBundleBladeSrcTestContentsInUTs() throws Exception {		
 		given(blade).hasNamespacedJsPackageStyle()
-			.and(bladeUTs).containsFile("src-test/pkg/Util.js")
+			.and(bladeUTs).containsFile("src-test/appns/bs/b1/Util.js")
 			.and(blade).hasClasses("appns.bs.b1.Class1")
-			.and(bladeUTs).classExtends("pkg.Util", "appns.bs.b1.Class1")
-			.and(bladeUTs).testRefersTo("pkg/test.js", "pkg.Util");
+			.and(bladeUTs).classExtends("appns.bs.b1.Util", "appns.bs.b1.Class1")
+			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Util");
 		then(bladeUTs).bundledFilesEquals(
 			blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
-			bladeUTs.testSource().file("pkg/Util.js"));
+			bladeUTs.testSource().file("appns/bs/b1/Util.js"));
 	}
 	
 	@Test
@@ -143,5 +144,16 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.BladeClass");
 		then(bladeUTs).bundledFilesEquals(
 				blade.assetLocation("src").file("appns/bs/b1/BladeClass.js"));
+	}
+	
+	@Test
+	public void encapsulatedStyleSourceModulesAreGlobalizedIfTheyAreUsedWithinANamespacedSourceClass() throws Exception {	
+		given(blade).hasCommonJsPackageStyle()
+			.and(blade).hasClass("appns/bs/b1/Class")
+			.and(bladeUTs).hasNamespacedJsPackageStyle()			
+			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Class");
+		when(bladeUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(bladeUTs).bundledFilesEquals( blade.assetLocation("src").file("appns/bs/b1/Class.js") )
+			.and(response).containsText( "appns.bs.b1.Class = require('appns/bs/b1/Class');" );
 	}
 }

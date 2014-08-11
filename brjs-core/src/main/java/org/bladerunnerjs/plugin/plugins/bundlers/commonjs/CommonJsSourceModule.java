@@ -25,9 +25,11 @@ import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
+import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -49,6 +51,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	private MemoizedValue<ComputedValue> computedValue;
 	private List<String> requirePaths = new ArrayList<>();
+	public static final String JS_STYLE = "common-js";
 	
 	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
@@ -58,13 +61,17 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
-		computedValue = new MemoizedValue<>("CommonJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
+		computedValue = new MemoizedValue<>(getAssetPath()+" - computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
 	}
 	
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
 			return bundlableNode.getLinkedAssets(assetLocation, requirePaths());
+		}
+		catch (AmbiguousRequirePathException | UnresolvableRequirePathException e) {
+		    e.setSourceRequirePath(getPrimaryRequirePath());
+		    throw new ModelOperationException(e);
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -160,7 +167,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 			public Object get() throws ModelOperationException {
 				ComputedValue computedValue = new ComputedValue();
 				
-				try(Reader fileReader = new JsCommentStrippingReader(getReader(), false)) {
+				
+				try(Reader fileReader = new JsCommentStrippingReader(getReader(), false, assetLocation.root().getCharBufferPool())) {
 					StringWriter stringWriter = new StringWriter();
 					IOUtils.copy(fileReader, stringWriter);
 					

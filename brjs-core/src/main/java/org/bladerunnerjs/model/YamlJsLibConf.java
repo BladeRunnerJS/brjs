@@ -16,7 +16,7 @@ public class YamlJsLibConf extends AbstractYamlConfFile {
 	public String libNamespace;
 	
 	@Override
-	public void initialize() {
+	public void initialize(BRJSNode node) {
 		libNamespace = getDefault(libNamespace, "libns");
 	}
 	

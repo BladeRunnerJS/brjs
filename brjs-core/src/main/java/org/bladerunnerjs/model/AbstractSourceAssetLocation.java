@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new TreeMap<>();
-	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>("AssetLocation.childAssetLocations", root(), dir());
+	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>(dir()+" - childAssetLocations", root(), dir());
 	
-	public AbstractSourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
-		super(rootNode, parent, dir, dependentAssetLocations);
+	public AbstractSourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+		super(rootNode, assetContainer, dir, parentAssetLocation, dependentAssetLocations);
 	}
 	
 	protected abstract AssetLocation createNewAssetLocationForChildDir(File dir, AssetLocation parentAssetLocation);

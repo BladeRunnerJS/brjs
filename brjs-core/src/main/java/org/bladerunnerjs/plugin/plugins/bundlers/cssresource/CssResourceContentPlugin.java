@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.model.Aspect;
@@ -116,7 +118,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		ThemedAssetLocation result = null;
 		for(AssetLocation location: container.assetLocations()){
-			if(location instanceof ThemedAssetLocation){
+			if (location instanceof ThemedAssetLocation){
 				String locationThemeName = ((ThemedAssetLocation)location).getThemeName();
 				if(locationThemeName.equals(themeName)){
 					result = ((ThemedAssetLocation)location);
@@ -139,8 +141,8 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String aspectName = contentPath.properties.get("aspect");
 			Aspect aspect =  bundlableNode.app().aspect(aspectName);
 			List<ResourcesAssetLocation> resourceAssetLocations = getResourceAssetLocations(aspect);
-			for(ResourcesAssetLocation location : resourceAssetLocations){
-				if(location.getThemeName().equals(theme)){
+			for (ResourcesAssetLocation location : resourceAssetLocations) {
+				if (location.getThemeName().equals(theme)){
 					resourceFile = location.file(resourcePath);
 				}
 			}
@@ -259,6 +261,13 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			resourcesRequestName = WORKBENCH_RESOURCE_REQUEST;
 			requestArgs = new String[] { bladeset.getName(), blade.getName() };
 		}
+		else if (assetContainer instanceof JsLib)
+		{
+			JsLib lib = (JsLib) assetContainer;
+			themeRequestName = null;
+			resourcesRequestName = LIB_REQUEST;
+			requestArgs = new String[] { lib.getName() };
+		}
 		else {
 			return contentPaths;
 		}
@@ -270,40 +279,49 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	
 	private List<ResourcesAssetLocation> getResourceAssetLocations(AssetContainer container){
 		
-		List<ResourcesAssetLocation> result = new ArrayList<ResourcesAssetLocation>();
+		List<ResourcesAssetLocation> result = new ArrayList<>();
 		for (AssetLocation location: container.assetLocations()){
-			if(location instanceof ResourcesAssetLocation){
-				ResourcesAssetLocation resourcesLocation = (ResourcesAssetLocation)location;
-				result.add(resourcesLocation);
+			if (location instanceof ResourcesAssetLocation) {
+				result.add( (ResourcesAssetLocation) location );
 			}
 		}
 		return result;
 	}
 	
-	private List<String> calculateContentPathsForThemesAndResources(AssetContainer container, String themeRequestName, String resourcesRequestName, String... requestArgs) throws MalformedTokenException
+	private Set<String> calculateContentPathsForThemesAndResources(AssetContainer container, String themeRequestName, String resourcesRequestName, String... requestArgs) throws MalformedTokenException
 	{
-		List<String> contentPaths = new ArrayList<>();
+		Set<String> contentPaths = new LinkedHashSet<>();
 		for (ResourcesAssetLocation assetLocation : getResourceAssetLocations(container)){
 			File assetLocationDir = assetLocation.dir();
 			FileInfo assetLocationDirInfo = brjs.getFileInfo(assetLocationDir);
 			if (assetLocationDirInfo.isDirectory()){
 				for (File file : assetLocationDirInfo.nestedFiles()) {
-					File assetLocationParentDir = assetLocation.dir().getParentFile();
-					//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'
-					if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-						String assetPath = RelativePathUtility.get(container.root(), assetLocation.dir(), file);
-						String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetLocation.getThemeName(), assetPath } );
-						String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
-						contentPaths.add(request );
-					} else{
-						String assetPath = RelativePathUtility.get(container.root(), container.dir(), file);
-						String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
-						contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
-					}
+					createRequestForNestedDir(container, themeRequestName, resourcesRequestName, contentPaths, assetLocation, file, requestArgs);
 				}
 			}
 		}
 		
 		return contentPaths;
+	}
+
+	private void createRequestForNestedDir(AssetContainer container, String themeRequestName, String resourcesRequestName, Set<String> contentPaths, AssetLocation assetLocation, File file, String... requestArgs) throws MalformedTokenException
+	{
+		File assetLocationParentDir = assetLocation.dir().getParentFile();
+		//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'
+		if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
+			if (themeRequestName != null) {
+				ThemedAssetLocation themeAssetLocation = (ThemedAssetLocation) assetLocation;
+				String assetPath = RelativePathUtility.get(container.root(), assetLocation.dir(), file);
+				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themeAssetLocation.getThemeName(), assetPath } );
+				String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
+				contentPaths.add(request );
+			}
+		} else {
+			if (resourcesRequestName != null) {
+				String assetPath = RelativePathUtility.get(container.root(), container.dir(), file);
+				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
+				contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
+			}
+		}
 	}
 }

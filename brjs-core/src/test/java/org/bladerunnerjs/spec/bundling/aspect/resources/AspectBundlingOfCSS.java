@@ -34,7 +34,7 @@ public class AspectBundlingOfCSS extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
 			.and(aspect).indexPageRefersTo("appns.Class1");
- 		when(aspect).requestReceived("css/standard/bundle.css", response);
+ 		when(aspect).requestReceivedInDev("css/standard/bundle.css", response);
  		then(response).containsText("ASPECT theme content");
  	}
 	
@@ -44,7 +44,7 @@ public class AspectBundlingOfCSS extends SpecTest {
 		given(bladeset).hasClass("appns/bs/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
 			.and(bladeset).containsFileWithContents("themes/standard/style.css", "BLADESET theme content");
- 		when(aspect).requestReceived("css/standard/bundle.css", response);
+ 		when(aspect).requestReceivedInDev("css/standard/bundle.css", response);
  		then(response).containsText("BLADESET theme content");
  	}
 	
@@ -54,7 +54,7 @@ public class AspectBundlingOfCSS extends SpecTest {
 		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(blade).containsFileWithContents("themes/standard/style.css", "BLADE theme content");
- 		when(aspect).requestReceived("css/standard/bundle.css", response);
+ 		when(aspect).requestReceivedInDev("css/standard/bundle.css", response);
  		then(response).containsText("BLADE theme content");
  	}
 }

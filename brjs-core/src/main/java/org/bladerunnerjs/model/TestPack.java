@@ -55,7 +55,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public String requirePrefix()
 	{
-		return "";
+		return testScope().requirePrefix();
 	}
 	
 	@Override

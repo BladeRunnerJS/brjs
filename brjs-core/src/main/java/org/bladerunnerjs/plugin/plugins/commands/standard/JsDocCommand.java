@@ -97,7 +97,14 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
 		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
 		
-		commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc");
+		String command = RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc";
+		if(System.getProperty("os.name").split(" ")[0].toLowerCase().equals("windows"))
+		{
+			command = command.replace("/", "\\") + ".cmd";
+			commandArgs.add("cmd");
+			commandArgs.add("/c");
+		}
+		commandArgs.add(command);
 		
 		commandArgs.add( RelativePathUtility.get(brjs, workingDir, app.dir())+"/" ); // add the app dir
 		// sdk/libs/javascript is added via config file so dirs can be optionally ignored

@@ -58,7 +58,8 @@ public class IntegrationTestFinder
 					"\tIntegration tests are only allowed in an aspect or workbench - this directory will be ignored.");
 		}
 		
-		boolean isWorkbenchDir = (brjs.locateFirstAncestorNode(dir.getParentFile().getParentFile().getParentFile()) instanceof Workbench);
+		boolean isWorkbenchDir = brjs.locateAncestorNodeOfClass(dir, Workbench.class) != null;
+
 		if (ignoreWorkbenches && isWorkbenchDir)
 		{
 			validTestDir = false;

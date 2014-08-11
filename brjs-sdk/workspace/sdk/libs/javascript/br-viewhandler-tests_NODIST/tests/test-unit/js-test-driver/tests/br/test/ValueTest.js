@@ -1,10 +1,12 @@
 ValueTest = TestCase("ValueTest");
 
 require('br/test/ViewFixture');
+var Errors = require('br/Errors');
+var ViewFixture = require('br/test/ViewFixture');
 
 ValueTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new br.test.ViewFixture("view.*");
+	this.m_oViewFixture = new ViewFixture("view.*");
 	this.m_oViewFixture.setViewElement(this.getElement());
 };
 
@@ -78,8 +80,8 @@ ValueTest.prototype.test_usingValueOnNonInputElementsThrowsException = function(
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(form).value", "text");
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(.no-value).value", "text");
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };

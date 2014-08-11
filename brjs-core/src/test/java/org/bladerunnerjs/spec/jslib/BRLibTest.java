@@ -36,7 +36,7 @@ public class BRLibTest extends SpecTest {
 			.and(sdkLib).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("foo.bar.SdkClass");
 	}
 	
@@ -47,7 +47,7 @@ public class BRLibTest extends SpecTest {
 			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: foo.bar")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(ConfigException.class, "foo.bar", "sdk/libs/javascript/br/br-lib.conf", BRLibYamlConf.REQUIRE_PREFIX_REGEX);
 	}
 	
@@ -60,7 +60,7 @@ public class BRLibTest extends SpecTest {
 			.and(sdkLib2).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.Bar");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("foo.Bar");
 	}
 	
@@ -70,7 +70,7 @@ public class BRLibTest extends SpecTest {
 			.and(sdkLib).containsFile("no-namespace-enforcement")
 			.and(sdkLib).hasClass("br/SdkClass")
 			.and(sdkLib).hasClass("anotherRootPkg/AnotherSdkClass");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("br.SdkClass", "anotherRootPkg.AnotherSdkClass");
 	}
 	
@@ -80,9 +80,34 @@ public class BRLibTest extends SpecTest {
     		.and(sdkLib).containsFile("no-namespace-enforcement")
     		.and(sdkLib).hasClass("br/SdkClass")
     		.and(sdkLib).containsResourceFileWithContents("en_GB.properties", "br.property=property value\n" + "anotherRootPkg.property=another value");
-		when(aspect).requestReceived("i18n/en_GB.js", response);
+		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText("\"br.property\": \"property value\"")
 			.and(response).containsText("\"anotherRootPkg.property\": \"another value\"");
 	}
 	
+	@Test
+	public void librariesDontHaveToRepeatTheAssetContainerRequirePrefix() throws Exception {
+		given(sdkLib).hasClass("pkg/Class")
+			.and(aspect).indexPageRequires("br/pkg/Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsDefinedClasses("br/pkg/Class");
+	}
+	
+	@Test
+	public void sdkLibrariesCanDefineAnArbitraryRequirePrefix() throws Exception {
+		given(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib/pkg")
+			.and(sdkLib).hasClass("lib/pkg/Class")
+			.and(aspect).indexPageRequires("lib/pkg/Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsDefinedClasses("lib/pkg/Class");
+	}
+	
+	@Test
+	public void librariesDontHaveToRepeatAnExplicitlyDefinedAssetContainerRequirePrefix() throws Exception {
+		given(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib/pkg")
+			.and(sdkLib).hasClass("Class")
+			.and(aspect).indexPageRequires("lib/pkg/Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsDefinedClasses("lib/pkg/Class");
+	}
 }

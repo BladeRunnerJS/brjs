@@ -96,12 +96,10 @@ public class XMLContentPlugin extends AbstractContentPlugin
 				bundleWriter.concatenateBundle(xmlAssets, bufferedOutput);
 			}
 			
-			String bundlePath = AppMetadataUtility.getVersionedBundlePath(version);
-			String unversionedBundlePath = AppMetadataUtility.getUnversionedBundlePath();
+			String bundlePath = AppMetadataUtility.getRelativeVersionedBundlePath(version, "").replaceFirst("/$", "");
 			String xmlBundlePathToken = AppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
-			String xmlUnversionedBundlePathToken = AppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
 			//TODO: Can we do a streaming replacement rather than buffer into  string?
-			String result = bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath);
+			String result = bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath);
 			
 			return new CharResponseContent(brjs, result);
 		}
