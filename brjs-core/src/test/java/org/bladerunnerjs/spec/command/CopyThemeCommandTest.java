@@ -1,24 +1,15 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
 import static org.bladerunnerjs.plugin.plugins.commands.standard.CopyThemeCommand.Messages.*;
-
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AppJsLib;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
-import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CopyThemeCommand;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -124,9 +115,21 @@ public class CopyThemeCommandTest extends SpecTest {
 		.and(bladeset2).hasBeenCreated()
 		.and(bladeset1).containsFile("themes/red/style.css")
 		.and(bladeset2).containsFile("themes/red/style.css");
-		when(brjs).runCommand("copy-theme", "app/bladeset1-bladeset", "red", "blue");
+		when(brjs).runCommand("copy-theme", "app/bladeset1-bladeset/themes", "red", "blue");
 		then(bladeset1).hasFile("themes/blue/style.css")
 		.and(bladeset2).doesNotHaveFile("themes/blue/style.css");
+	}
+	
+	@Test
+	public void successfulThemeCopyGivesSuccessMessage() throws Exception{
+		given(brjs).hasBeenAuthenticallyCreated()
+		.and(app).hasBeenCreated()
+		.and(bladeset1).hasBeenCreated()
+		.and(bladeset1).containsFile("themes/red/style.css");
+		when(brjs).runCommand("copy-theme", "app", "red", "blue");
+		then(bladeset1).hasFile("themes/blue/style.css")
+		.and(bladeset2).doesNotHaveFile("themes/blue/style.css");
+		then(logging).containsFormattedConsoleMessage( COPY_THEME_SUCCESS_CONSOLE_MSG, "bladeset1-bladeset/themes/red", "bladeset1-bladeset/themes/blue");
 	}
 	
 	@Test
