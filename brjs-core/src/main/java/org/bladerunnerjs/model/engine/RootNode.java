@@ -1,10 +1,12 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
@@ -17,9 +19,8 @@ public interface RootNode extends Node {
 	FileInfo getFileInfo(File dir);
 	IO io();
 	
-	// these two methods, implemented by AbstractRootNode, are used by AbstractNode
-	void registerNode(Node node, boolean makeUnique) throws NodeAlreadyRegisteredException;
 	void registerNode(Node node) throws NodeAlreadyRegisteredException;
 	void clearRegisteredNode(Node node);
-	Node getRegisteredNode(File childPath);
+	Node getRegisteredNode(File childPath) throws MultipleNodesForPathException;
+	List<Node> getRegisteredNodes(File childPath);
 }

@@ -1,6 +1,9 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -8,6 +11,7 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
@@ -16,7 +20,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	// TODO: remove this flag once we delete all old BladerRunner code
 	public static boolean allowInvalidRootDirectories = true;
 	
-	private Map<String, Node> nodeCache = new TreeMap<>();
+	private Map<String, Map<String, Node>> nodeCache = new TreeMap<>();
 	private LoggerFactory loggerFactory;
 	
 	public AbstractRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
@@ -56,20 +60,11 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public void registerNode(Node node) throws NodeAlreadyRegisteredException
 	{
-		this.registerNode(node, false);
-	}
-	
-	
-	
-	public void registerNode(Node node, boolean makeUnique) throws NodeAlreadyRegisteredException
-	{
-		String normalizedPath = node.dir().getPath();
-		if(makeUnique){
-			normalizedPath += "/.";
-		}
+		Map<String, Node> nodesForPath = getRegisteredNodesMap(node.dir());
 		
-		if(nodeCache.containsKey(normalizedPath)) {
-			throw new NodeAlreadyRegisteredException("A node has already been registered for path '" + normalizedPath + "'");
+		if (nodesForPath.containsKey(node.getClass().getSimpleName())) {
+			throw new NodeAlreadyRegisteredException("A node of type '" + node.getClass().getSimpleName() + 
+					"' has already been registered for path '" + getNormalizedPath(node.dir()) + "'");
 		}
 
 		notifyObservers(new NodeDiscoveredEvent(), node);
@@ -78,19 +73,33 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			node.ready();
 		}
 		
-		nodeCache.put(normalizedPath, node);
+		nodesForPath.put(node.getClass().getSimpleName(), node);
 	}
 	
 	@Override
 	public void clearRegisteredNode(Node node) {
-		String normalizedPath = node.dir().getPath();
-		nodeCache.remove(normalizedPath);
+		String normalizedPath = getNormalizedPath(node.dir());
+		Map<String, Node> nodesForPath = nodeCache.get(normalizedPath);
+		nodesForPath.remove(node.getClass().getSimpleName());
 	}
 	
 	@Override
-	public Node getRegisteredNode(File childPath)
+	public List<Node> getRegisteredNodes(File childPath)
 	{
-		return nodeCache.get(getNormalizedPath(childPath));
+		return new ArrayList<>( getRegisteredNodesMap(childPath).values() );
+	}
+	
+	@Override
+	public Node getRegisteredNode(File childPath) throws MultipleNodesForPathException
+	{
+		List<Node> nodes = getRegisteredNodes(childPath);
+		if (nodes.size() == 0) {
+			return null;
+		}
+		if (nodes.size() <= 1) {
+			return nodes.get(0);
+		}
+		throw new MultipleNodesForPathException(childPath, "getRegisteredNodes()");
 	}
 	
 	@Override
@@ -111,7 +120,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@SuppressWarnings("unchecked")
 	public <N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass)
 	{
-		Node firstCachedNode = locateFirstCachedNode(file);
+		Node firstCachedNode = locateFirstCachedNode(file, nodeClass);
 		Node node = null;
 		
 		if(firstCachedNode != null)
@@ -144,6 +153,16 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		return locateAncestorNodeOfClass(node.parentNode(), nodeClass);
 	}
 	
+	
+	private Map<String, Node> getRegisteredNodesMap(File childPath)
+	{
+		String normalizedPath = getNormalizedPath(childPath);
+		if (!nodeCache.containsKey(normalizedPath)) {
+			nodeCache.put( normalizedPath, new TreeMap<>() );
+		}
+		return nodeCache.get(normalizedPath);
+	}
+	
 	@SuppressWarnings("unchecked")
 	private <N extends Node> N locateExistentAncestorNodeOfClass(Node node, Class<N> nodeClass)
 	{
@@ -168,21 +187,23 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		return dir;
 	}
 	
-	private Node locateFirstCachedNode(File file)
+	private Node locateFirstCachedNode(File file) {
+		return locateFirstCachedNode(file, null);
+	}
+	
+	private Node locateFirstCachedNode(File file, Class<? extends Node> nodeClass)
 	{
 		Node node = null;
 		File nextFile = file;
 		
 		do
-		{
-			String normalizedFilePath = getNormalizedPath(nextFile);
-			
-			if(nodeCache.containsKey(normalizedFilePath))
-			{
-				node = nodeCache.get(normalizedFilePath);
-			}
-			else
-			{
+		{	
+			Map<String, Node> nodesForFile = getRegisteredNodesMap(nextFile);
+			if (nodeClass != null && nodesForFile.containsKey(nodeClass.getSimpleName())) {
+				node = nodesForFile.get(nodeClass.getSimpleName());
+			} else if (nodesForFile.size() >= 1) {
+				node = nodesForFile.values().toArray(new Node[0])[0];				
+			} else {
 				nextFile = nextFile.getParentFile();
 			}
 		} while((node == null) && (nextFile != null));

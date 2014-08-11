@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 
 public class NodeList<N extends Node> {
 	private final Node node;
@@ -38,7 +39,15 @@ public class NodeList<N extends Node> {
 	public N item(String logicalNodeName) {
 		if (!namedNodes.containsKey(logicalNodeName)) {
 			File childPath = getNodeDir(logicalNodeName);
-			N child = (N) node.root().getRegisteredNode(childPath);
+			N child;
+			try
+			{
+				child = (N) node.root().getRegisteredNode(childPath);
+			}
+			catch (MultipleNodesForPathException ex)
+			{
+				throw new RuntimeException(ex);
+			}
 			
 			if (child == null) {
 				child = (N) NodeCreator.createNode(node.root(), node, childPath, logicalNodeName, nodeClass);

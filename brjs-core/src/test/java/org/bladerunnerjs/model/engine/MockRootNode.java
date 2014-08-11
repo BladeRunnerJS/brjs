@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.FileInfo;
@@ -147,14 +148,7 @@ public class MockRootNode implements RootNode
 	@Override
 	public void registerNode(Node node)
 	{
-	}
-	
-	@Override
-	public void registerNode(Node node, boolean makeUnique)
-	{
-	}
-	
-	
+	}	
 	
 	@Override
 	public void clearRegisteredNode(Node node)
@@ -163,6 +157,12 @@ public class MockRootNode implements RootNode
 	
 	@Override
 	public Node getRegisteredNode(File childPath)
+	{
+		return null;
+	}
+	
+	@Override
+	public List<Node> getRegisteredNodes(File childPath)
 	{
 		return null;
 	}
