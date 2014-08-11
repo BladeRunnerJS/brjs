@@ -66,7 +66,7 @@ public class StringVerifier {
 		List<String> processedNodeClassNames = new ArrayList<String>();
 		for(String className : classes) {
 			className = className.replaceAll("\\.", "/");
-			String commonJsClassName = StringUtils.substringAfterLast(className, "/");
+			String commonJsClassName = (className.contains("/")) ? StringUtils.substringAfterLast(className, "/") : className;
 			if (processedNodeClassNames.contains(commonJsClassName)) {
 				throw new RuntimeException("CommonJS classes must not have the same suffix names as it leads to false positives. e.g. some.Name and another.Name should be some.Name and some.otherName");
 			}
@@ -147,8 +147,7 @@ public class StringVerifier {
 	{
 		for(String className : classes) {
 			doesNotContainText(className + " = function()");
-			String commonJsClassName = className.replaceAll("\\.", "/");
-			commonJsClassName = StringUtils.substringAfterLast(commonJsClassName, "/");
+			String commonJsClassName = (className.contains("/")) ? StringUtils.substringAfterLast(className, "/") : className;
 			doesNotContainText(commonJsClassName + " = function()");
 		}
 		

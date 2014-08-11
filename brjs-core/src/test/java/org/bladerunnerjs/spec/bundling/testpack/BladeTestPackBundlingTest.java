@@ -149,11 +149,11 @@ public class BladeTestPackBundlingTest extends SpecTest
 	@Test
 	public void encapsulatedStyleSourceModulesAreGlobalizedIfTheyAreUsedWithinANamespacedSourceClass() throws Exception {	
 		given(blade).hasCommonJsPackageStyle()
-			.and(blade).hasClass("appns/Class")
+			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(bladeUTs).hasNamespacedJsPackageStyle()			
-			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.Class");
+			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Class");
 		when(bladeUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(bladeUTs).bundledFilesEquals( blade.assetLocation("src").file("appns/Class.js") )
-			.and(response).containsText( "appns.Class = require('appns/Class');" );
+		then(bladeUTs).bundledFilesEquals( blade.assetLocation("src").file("appns/bs/b1/Class.js") )
+			.and(response).containsText( "appns.bs.b1.Class = require('appns/bs/b1/Class');" );
 	}
 }

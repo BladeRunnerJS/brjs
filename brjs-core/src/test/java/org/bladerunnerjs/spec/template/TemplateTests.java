@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -22,7 +23,8 @@ public class TemplateTests extends SpecTest
 	Bladeset bladeset;
 	Blade blade;
 	Workbench workbench;
-	private JsLib userLib, thirdpartyLib;
+	JsLib userLib, thirdpartyLib;
+	Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception {		
@@ -40,6 +42,7 @@ public class TemplateTests extends SpecTest
 		workbench = blade.workbench();
 		userLib = app.jsLib("userlib");
 		thirdpartyLib = app.jsLib("thirdpartyLib");
+		bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
 	}
 	
 	@Test
@@ -96,6 +99,19 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade).hasFilesAndDirs(
 				Arrays.asList("src/appns/bs/b1/B1ViewModel.js", "themes/common/style.css"),
+				Arrays.asList("resources", "resources/html", "src", "tests", "workbench", "themes")
+		);
+	}
+	
+	@Test @Ignore // add this test back in when package directories become optional
+	public void bladeInDefaultBladesetHasCorrectTemplate() throws Exception {
+		given(brjs).commandHasBeenRun("create-app", "app", "appns");
+		when(brjs).runCommand("create-blade", "app", "b1");
+		then(app).hasFilesAndDirs(
+			Arrays.asList("app.conf"),
+			Arrays.asList("WEB-INF", "default-aspect", "libs", "blades")
+		).and(bladeInDefaultBladeset).hasFilesAndDirs(
+				Arrays.asList("src/appns/b1/B1ViewModel.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "tests", "workbench", "themes")
 		);
 	}
