@@ -42,8 +42,8 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-folder-path").setRequired(true).setHelp("required path leading to the app in which themes should be created. If path specifies a themes folder then the CSS theme is created only within that folder."));
-		argsParser.registerParameter(new UnflaggedOption("copy-from-theme-name").setRequired(true).setHelp("the name of the application that will be created"));
-		argsParser.registerParameter(new UnflaggedOption("copy-to-theme-name").setRequired(true).setHelp("the name of the application that will be created"));
+		argsParser.registerParameter(new UnflaggedOption("copy-from-theme-name").setRequired(true).setHelp("the name of the theme that will be copied"));
+		argsParser.registerParameter(new UnflaggedOption("copy-to-theme-name").setRequired(true).setHelp("the name of the new theme into which the content will be copied"));
 		
 	}
 	
