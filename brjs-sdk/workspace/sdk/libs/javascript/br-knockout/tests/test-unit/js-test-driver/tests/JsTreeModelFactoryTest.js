@@ -3,10 +3,6 @@
 	
 	JsTreeModelFactoryTest = TestCase('JsTreeModelFactoryTest');
 	
-	JsTreeModelFactoryTest.prototype.setUp = function() {
-		
-	};
-	
 	JsTreeModelFactoryTest.prototype.testEmptyViewModel = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({});
 		
