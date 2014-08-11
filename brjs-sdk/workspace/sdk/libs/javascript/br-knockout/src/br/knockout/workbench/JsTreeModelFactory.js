@@ -6,8 +6,8 @@ function JsTreeModelFactory() {
 };
 
 JsTreeModelFactory.createTreeModelFromKnockoutViewModel = function(viewModel) {
-	var treeModel = {core:{data:[]}};
-	this._processViewModel(viewModel, treeModel.core.data);
+	var treeModel = {core: {data: [{text: 'Knockout View Model', state: {opened: true}, children: []}]}};
+	this._processViewModel(viewModel, treeModel.core.data[0].children);
 	
 	return treeModel;
 };
@@ -21,7 +21,7 @@ JsTreeModelFactory._processViewModel = function(viewModel, treeModelItems) {
 				treeModelItems.push({text:itemName + ": " + item()});
 			}
 			else if((typeof item === 'object') && this._hasObservables(item)) {
-				var childTreeModel = {text:itemName, children:[]};
+				var childTreeModel = {text:itemName, state: {opened: true}, children:[]};
 				
 				treeModelItems.push(childTreeModel);
 				this._processViewModel(item, childTreeModel.children);

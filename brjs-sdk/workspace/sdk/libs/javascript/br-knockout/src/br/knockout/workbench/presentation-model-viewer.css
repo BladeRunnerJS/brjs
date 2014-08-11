@@ -2,3 +2,7 @@
 	font-size:10px;
 	overflow:hidden;
 }
+
+.jstree .jstree-leaf .jstree-icon {
+	background-position-x: -195px;
+}
