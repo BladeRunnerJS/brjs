@@ -10,12 +10,12 @@
 	JsTreeModelFactoryTest.prototype.testEmptyViewModel = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({});
 		
-		assertEquals([], treeModel.core.data);
+		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: []}], treeModel.core.data);
 	};
 	
 	JsTreeModelFactoryTest.prototype.testViewModelWithOneObservable = function() {
-		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({foo:ko.observable()});
+		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({foo:ko.observable('42')});
 		
-		assertEquals([{text:'foo'}], treeModel.core.data);
+		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: [{text: 'foo: 42'}]}], treeModel.core.data);
 	};
 })();
