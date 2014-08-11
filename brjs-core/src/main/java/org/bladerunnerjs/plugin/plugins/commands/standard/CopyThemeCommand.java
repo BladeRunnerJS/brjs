@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
@@ -46,6 +47,7 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 	}
 	
 	private BRJS brjs;
+	private App app;
 	private Logger logger;
 	
 	@Override
@@ -77,37 +79,62 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 	
 	@Override
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
-		String appName = parsedArgs.getString("app-folder-path");
+		String argPath = parsedArgs.getString("app-folder-path");
 		String origTheme = parsedArgs.getString("copy-from-theme-name");
 		String newTheme = parsedArgs.getString("copy-to-theme-name");
 		
-		App app = brjs.app(appName);
+		Path appPath = Paths.get(argPath);
+		String matchLocation = "";
+				
+		app = brjs.app(appPath.getName(0).toString());
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
+		
+		int pathCount = appPath.getNameCount();
+		if(pathCount > 1){
+			matchLocation = appPath.subpath(1, pathCount).toString();
+		}		
+		
+		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
 		
 		for(Aspect asp : app.aspects()) //asp, hue hue, pun intended
 			for(AssetLocation al : asp.assetLocations())
-				if(al.dirExists())
-					copyTheme(al, origTheme, newTheme);
+				if(al.dirExists()){
+					assetLocations.add(al);			
+				}
 		
-		for(Bladeset bs : app.bladesets())
-			for(Blade blade : bs.blades())
-				for(AssetLocation al : blade.assetLocations())
-					if(al.dirExists())
-						copyTheme(al, origTheme, newTheme);
+			for(Bladeset bs : app.bladesets())
+			{		
+				for(AssetLocation al : bs.assetLocations())
+					if(al.dirExists()){
+						assetLocations.add(al);			
+					}
+			
+				for(Blade blade : bs.blades())
+					for(AssetLocation al : blade.assetLocations())
+						if(al.dirExists()){
+							assetLocations.add(al);
+						}
+			}
+			
+			for(AssetLocation al : assetLocations){
+				copyTheme(al, origTheme, newTheme, matchLocation);
+			}
 		
 		return 0;
 	}
 	
-	void copyTheme(AssetLocation location, String origTheme, String newTheme) throws CommandOperationException{
-		//check if newTheme already exists		
-				
-		 if (location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0) {
+	void copyTheme(AssetLocation location, String origTheme, String newTheme, String matchLocation) throws CommandOperationException{
+		//check if newTheme already exists
+		
+		if (location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
+				&& RelativePathUtility.get(brjs, app.dir(), location.dir()).contains(matchLocation) ) {
 			 File srcDir = new File(location.dir().getPath());
 			 File dstDir = new File(location.dir().getParentFile().getPath(), newTheme);	 			 
 			 
 			 if(dstDir.exists())
 			 {
-				 logger.error(Messages.THEME_FOLDER_EXISTS, RelativePathUtility.get(brjs, brjs.dir(), dstDir));
+				 logger.warn(Messages.THEME_FOLDER_EXISTS, RelativePathUtility.get(brjs, brjs.dir(), dstDir));
+				 return;
 			 }
 			 
 			 try {

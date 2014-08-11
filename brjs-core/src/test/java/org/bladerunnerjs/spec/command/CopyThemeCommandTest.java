@@ -18,6 +18,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.CopyThemeCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -60,6 +61,18 @@ public class CopyThemeCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void themeIsNotCopiedWhenDestinationAlreadyExists() throws Exception{
+		given(brjs).hasBeenAuthenticallyCreated()
+		.and(app).hasBeenCreated()
+		.and(bladeset1).hasBeenCreated()
+		.and(blade11).hasBeenCreated()
+		.and(blade11).containsFile("themes/red/style.css")
+		.and(blade11).containsFile("themes/blue/secondStyle.css");
+		when(brjs).runCommand("copy-theme", "app", "red", "blue");
+		then(blade11).doesNotHaveFile("themes/blue/style.css");
+	}
+	
+	@Test
 	public void styleCopiedInOneBladeProperly() throws Exception{
 		given(brjs).hasBeenAuthenticallyCreated()
 		.and(app).hasBeenCreated()
@@ -78,63 +91,43 @@ public class CopyThemeCommandTest extends SpecTest {
 		.and(aspect).containsFile("themes/red/style.css")
 		.and(bladeset1).hasBeenCreated()
 		.and(bladeset2).hasBeenCreated()
+		.and(bladeset1).containsFile("themes/red/style.css")
 		.and(blade11).hasBeenCreated()
 		.and(blade21).hasBeenCreated()
 		.and(blade11).containsFile("themes/red/style.css")
 		.and(blade21).containsFile("themes/red/style.css");
 		when(brjs).runCommand("copy-theme", "app", "red", "blue");
 		then(aspect).hasFile("themes/blue/style.css")
+		.and(bladeset1).hasFile("themes/blue/style.css")
 		.and(blade11).hasFile("themes/blue/style.css")
 		.and(blade21).hasFile("themes/blue/style.css");
 	}
 	
 	@Test
-	public void existingDestinationThemeDirectoryThrowsError() throws Exception {
-		given(brjs).hasBeenAuthenticallyCreated()				
+	public void existingDestinationThemeDirectoryThrowsWarningWithWarning() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+		.and(logging).enabled()
 		.and(app).hasBeenCreated()
 		.and(bladeset1).hasBeenCreated()
 		.and(blade11).hasBeenCreated()
 		.and(blade11).containsFile("themes/red/style.css")
 		.and(blade11).containsFolder("themes/blue");
 		when(brjs).runCommand("copy-theme", "app", "red", "blue");
-		then(logging).errorMessageReceived(THEME_FOLDER_EXISTS, "apps/app/bladeset1-bladeset/blades/blade11/themes/blue");
-	}
-	
-	/*
-	@Test
-	public void exceptionIsThrownIfTheAppDoesntExist() throws Exception {
-		when(brjs).runCommand("copy-theme", "app", "originalCSS", "newCSS");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(app.getClass().getSimpleName()))
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
+		then(logging).warnMessageReceived(THEME_FOLDER_EXISTS, "apps/app/bladeset1-bladeset/blades/blade11/themes/blue");
 	}
 	
 	@Test
-	public void exceptionIsThrownIfTheBladesetAlreadyExists() throws Exception {
-		given(bladeset).hasBeenCreated();
-		when(brjs).runCommand("copy-theme", "app", "bladeset");
-		then(exceptions).verifyException(NodeAlreadyExistsException.class, unquoted(bladeset.getClass().getSimpleName()))
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
+	public void onlySpecifiedThemeFolderIsCopied() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+		.and(app).hasBeenCreated()
+		.and(bladeset1).hasBeenCreated()
+		.and(bladeset2).hasBeenCreated()
+		.and(bladeset1).containsFile("themes/red/style.css")
+		.and(bladeset2).containsFile("themes/red/style.css");
+		when(brjs).runCommand("copy-theme", "app/bladeset1-bladeset", "red", "blue");
+		then(bladeset1).hasFile("themes/blue/style.css")
+		.and(bladeset2).doesNotHaveFile("themes/blue/style.css");
 	}
-	
-	@Test
-	public void exceptionIsThrownIfBladesetNameIsInvalid() throws Exception {
-		given(bladeset).hasBeenCreated()
-			.and(logging).enabled();
-		when(brjs).runCommand("copy-theme", "app", "bladeset#$@/");
-		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, "Bladeset", badBladeset.dir().getPath())
-			.and(exceptions).verifyException(InvalidDirectoryNameException.class, "bladeset#$@/", badBladeset.dir().getPath())
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
-	}
-	
-	@Test
-	public void bladeIsCreatedWhenAllArgumentsAreValid() throws Exception {
-		given(app).hasBeenCreated();
-		when(brjs).runCommand("copy-theme", "app", "bladeset");
-		then(bladeset).dirExists()
-			.and(logging).containsFormattedConsoleMessage(BLADESET_CREATE_SUCCESS_CONSOLE_MSG, "bladeset")
-			.and(logging).containsFormattedConsoleMessage(BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
-	}
-	*/
 	
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
