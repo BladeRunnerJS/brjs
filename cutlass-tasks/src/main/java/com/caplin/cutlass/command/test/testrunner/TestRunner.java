@@ -291,7 +291,7 @@ public class TestRunner {
 		boolean serverStarted = false;
 		
 		if(isServerRunning()) {
-			logger.info("Server already running, not bothering to start a new instance...");
+			logger.console("Server already running, not bothering to start a new instance...");
 		}
 		else {
 			startServerProcess();
