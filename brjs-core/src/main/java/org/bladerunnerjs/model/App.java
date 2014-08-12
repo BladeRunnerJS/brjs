@@ -43,7 +43,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public final static String DEFAULT_BLADESET_NAME = "default";
 	
 	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$");
-	private final NodeItem<DefaultBladeset> defaultBladeset = new NodeItem<>(this, DefaultBladeset.class, "blades");
+	private final NodeItem<DefaultBladeset> defaultBladeset = new NodeItem<>(this, DefaultBladeset.class, ".");
 		// default blade represents 'blades' dir since otherwise 2 nodes are registered for the same path
 	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
 	private final NodeList<AppJsLib> bladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
@@ -170,8 +170,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public List<Bladeset> bladesets()
 	{
 		List<Bladeset> childCladesets = new ArrayList<>( bladesets.list() );
-		Bladeset defaultBladeset = defaultBladeset();
-		if (defaultBladeset.dirExists()) {
+		DefaultBladeset defaultBladeset = defaultBladeset();
+		if (defaultBladeset.exists()) {
 			childCladesets.add(0, defaultBladeset);
 		}
 		return childCladesets;
@@ -185,7 +185,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return bladesets.item(bladesetName);
 	}
 	
-	public Bladeset defaultBladeset()
+	public DefaultBladeset defaultBladeset()
 	{
 		return defaultBladeset.item();
 	}

@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 public class DefaultBladeset extends Bladeset
 {
 	
-	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, ".", null);
+	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	
 	public DefaultBladeset(RootNode rootNode, Node parent, File dir)
 	{
@@ -48,6 +48,11 @@ public class DefaultBladeset extends Bladeset
 	public Blade blade(String bladeName)
 	{
 		return blades.item(bladeName);
+	}
+
+	public boolean exists()
+	{
+		return file("blades").isDirectory();
 	}
 
 }
