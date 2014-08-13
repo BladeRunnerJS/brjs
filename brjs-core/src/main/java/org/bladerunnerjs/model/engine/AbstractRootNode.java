@@ -57,6 +57,20 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
+	public boolean isNodeRegistered(Node node) {
+		Node registeredNode;
+		try
+		{
+			registeredNode = getRegisteredNode(node.dir(), node.getClass());
+			return registeredNode != null && registeredNode == node;
+		}
+		catch (MultipleNodesForPathException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	@Override
 	public void registerNode(Node node) throws NodeAlreadyRegisteredException
 	{
 		List<Node> nodesForPath = getRegisteredNodes(node.dir());
@@ -119,12 +133,18 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public Node locateFirstAncestorNode(File file)
 	{
-		Node node = locateFirstCachedNode(file);
+		return locateFirstAncestorNode(file, null);
+	}
+	
+	@Override
+	public Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass)
+	{
+		Node node = locateFirstCachedNode(file, nodeClass);
 		
 		if(node != null)
 		{
 			node.discoverAllChildren();
-			node = locateFirstCachedNode(file);
+			node = locateFirstCachedNode(file, nodeClass);
 		}
 		
 		return node;

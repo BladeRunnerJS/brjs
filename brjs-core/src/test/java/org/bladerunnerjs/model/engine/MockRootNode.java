@@ -233,4 +233,16 @@ public class MockRootNode implements RootNode
 	{
 		return null;
 	}
+
+	@Override
+	public Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass)
+	{
+		return null;
+	}
+
+	@Override
+	public boolean isNodeRegistered(Node node)
+	{
+		return false;
+	}
 }

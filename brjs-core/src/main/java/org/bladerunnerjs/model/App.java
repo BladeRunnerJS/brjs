@@ -23,6 +23,7 @@ import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.DuplicateAssetContainerException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -373,12 +374,12 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	private Bladeset defaultBladeset(boolean preferExplicitDefault)
 	{
-		return getImplicitOrExplicitAssetContainer(Bladeset.class, implicitDefaultBladeset.item(), explicitDefaultBladeset.item(), preferExplicitDefault); 
+		return getImplicitOrExplicitAssetContainer(Bladeset.class, implicitDefaultBladeset.item(false), explicitDefaultBladeset.item(false), preferExplicitDefault); 
 	}
 	
 	private Aspect defaultAspect(boolean preferExplicitDefault)
 	{
-		return getImplicitOrExplicitAssetContainer(Aspect.class, implicitDefaultAspect.item(), explicitDefaultAspect.item(), preferExplicitDefault); 
+		return getImplicitOrExplicitAssetContainer(Aspect.class, implicitDefaultAspect.item(false), explicitDefaultAspect.item(false), preferExplicitDefault); 
 	}
 	
 	private <AC extends AssetContainer> AC getImplicitOrExplicitAssetContainer(Class<? extends AC> type, AC implicitAssetContainer, AC explicitAssetContainer, boolean preferExplicitDefault) { 
@@ -388,13 +389,26 @@ public class App extends AbstractBRJSNode implements NamedNode
 							RelativePathUtility.get(root(), root().dir(), explicitAssetContainer.dir())
 			);
 		}
+		AC assetContainer;
 		if (explicitAssetContainer.exists()) {
-			return explicitAssetContainer;
+			assetContainer = explicitAssetContainer;
+		} else if (implicitAssetContainer.exists()) {
+			assetContainer = implicitAssetContainer;
+		} else {
+			assetContainer = (preferExplicitDefault) ? explicitAssetContainer : implicitAssetContainer;
 		}
-		if (implicitAssetContainer.exists()) {
-			return implicitAssetContainer;
+		
+		if (!root().isNodeRegistered(assetContainer)) {
+			try
+			{
+				root().registerNode(assetContainer);
+			}
+			catch (NodeAlreadyRegisteredException ex)
+			{
+				throw new RuntimeException(ex);
+			}
 		}
-		return (preferExplicitDefault) ? explicitAssetContainer : implicitAssetContainer;
+		return assetContainer;
 	}
 	
 }

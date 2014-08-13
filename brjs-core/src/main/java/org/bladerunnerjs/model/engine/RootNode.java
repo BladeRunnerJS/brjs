@@ -14,11 +14,13 @@ public interface RootNode extends Node {
 	Logger logger(Class<?> classRef);	
 	boolean isRootDir(File dir);
 	Node locateFirstAncestorNode(File file);
+	Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
 	FileInfo getFileInfo(File dir);
 	IO io();
 	
+	boolean isNodeRegistered(Node node);
 	void registerNode(Node node) throws NodeAlreadyRegisteredException;
 	void clearRegisteredNode(Node node);
 	Node getRegisteredNode(File childPath) throws MultipleNodesForPathException;
