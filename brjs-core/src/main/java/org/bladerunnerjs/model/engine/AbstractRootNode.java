@@ -38,16 +38,6 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		this.dir = new File(getNormalizedPath(rootDir));
 		this.loggerFactory = loggerFactory;
-		
-		try
-		{
-			registerNode(this);
-		}
-		catch (NodeAlreadyRegisteredException e)
-		{
-			throw new RuntimeException(e);
-		}
-		
 	}
 	
 	@Override
@@ -78,8 +68,8 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		boolean nodeExistsForPath = findFirstNodeOfClass(nodesForPath, node.getClass()) != null;
 		
 		if (nodeExistsForPath) {
-//			throw new NodeAlreadyRegisteredException("A node of type '" + node.getClass().getSimpleName() + 
-//					"' has already been registered for path '" + getNormalizedPath(node.dir()) + "'");
+			throw new NodeAlreadyRegisteredException("A node of type '" + node.getClass().getSimpleName() + 
+					"' has already been registered for path '" + getNormalizedPath(node.dir()) + "'");
 		}
 
 		notifyObservers(new NodeDiscoveredEvent(), node);
