@@ -25,11 +25,12 @@ PresentationModelViewer.prototype.applySearch = function(searchTerm) {
 
 PresentationModelViewer.prototype._renderView = function() {
 	var componentElement = document.createElement('div');
+	componentElement.id = 'presentation-model-viewer';
 	componentElement.innerHTML =
 		'<div id="search-area">' +
 		'	<form>' +
 		'		<input type="text" />' +
-		'		<input type="submit" value="Find">' +
+		'		<button type="submit" class="btn">Find</button>' +
 		'	</form>' +
 		'</div>' +
 		'<div id="tree-view">' +
