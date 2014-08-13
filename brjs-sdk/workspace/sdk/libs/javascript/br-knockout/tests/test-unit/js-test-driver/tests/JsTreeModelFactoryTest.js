@@ -1,33 +1,33 @@
 (function() {
-	var jsTreeModelFactory = require('br/knockout/workbench/JsTreeModelFactory');
+	var jsTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
 	
-	JsTreeModelFactoryTest = TestCase('JsTreeModelFactoryTest');
+	KnockoutJsTreeModelFactoryTest = TestCase('KnockoutJsTreeModelFactoryTest');
 	
-	JsTreeModelFactoryTest.prototype.testEmptyViewModel = function() {
+	KnockoutJsTreeModelFactoryTest.prototype.testEmptyViewModel = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({});
 		
 		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: []}], treeModel.core.data);
 	};
 	
-	JsTreeModelFactoryTest.prototype.testViewModelWithOneObservable = function() {
+	KnockoutJsTreeModelFactoryTest.prototype.testViewModelWithOneObservable = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({foo:ko.observable('42')});
 		
 		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: [{text: 'foo: 42'}]}], treeModel.core.data);
 	};
 	
-	JsTreeModelFactoryTest.prototype.testViewModelWithOneNonObservable = function() {
+	KnockoutJsTreeModelFactoryTest.prototype.testViewModelWithOneNonObservable = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({foo: 42});
 		
 		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: [{text: 'foo: 42'}]}], treeModel.core.data);
 	};
 	
-	JsTreeModelFactoryTest.prototype.testViewModelWithTwoObservables = function() {
+	KnockoutJsTreeModelFactoryTest.prototype.testViewModelWithTwoObservables = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({foo:ko.observable('value #1'), bar:ko.observable('value #2')});
 		
 		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: [{text: 'foo: value #1'}, {text: 'bar: value #2'}]}], treeModel.core.data);
 	};
 	
-	JsTreeModelFactoryTest.prototype.testViewModelWithAnObjectContainingObservables = function() {
+	KnockoutJsTreeModelFactoryTest.prototype.testViewModelWithAnObjectContainingObservables = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({obj: {foo:ko.observable('value #1'), bar:ko.observable('value #2')}});
 		
 		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: [

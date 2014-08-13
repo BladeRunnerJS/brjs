@@ -25,9 +25,9 @@
 			}
 
 			function addModelViewer( model, workbench ) {
-				var JsTreeModelFactory = require('br/knockout/workbench/JsTreeModelFactory');
+				var KnockoutJsTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
 				var PresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
-				var presentationModelViewer = new PresentationModelViewer(JsTreeModelFactory.createTreeModelFromKnockoutViewModel(model));
+				var presentationModelViewer = new PresentationModelViewer(KnockoutJsTreeModelFactory.createTreeModelFromKnockoutViewModel(model));
 				workbench.addToRightWing(presentationModelViewer, "Visualise Knockout View Model", false);
 			}
 

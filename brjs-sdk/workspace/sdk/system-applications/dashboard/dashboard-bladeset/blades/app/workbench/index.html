@@ -24,6 +24,8 @@
 				var oDummyBrowserDetector = new brjs.dashboard.app.service.browserdetector.BrowserDetector();
 				
 				oApp = new brjs.dashboard.app.DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, oDummyLocalStorage, oDummyBrowserDetector);
+				
+				addModelViewer(oApp.m_oPresentationModel);
 			});
 			
 			function onControlPanelClicked()
@@ -44,6 +46,13 @@
 				oApp.m_oInvalidBrowserDecider.isValidBrowser = function(){ return false }
 				oApp._showBrowserWarningDialogIfNeeded();
 			}
+			
+			function addModelViewer( model, workbench ) {
+				var PresenterJsTreeModelFactory = require('br/presenter/workbench/ui/PresenterJsTreeModelFactory');
+				var PresentationModelViewer2 = require('br/knockout/workbench/PresentationModelViewer');
+				var presentationModelViewer2 = new PresentationModelViewer2(PresenterJsTreeModelFactory.createTreeModelFromPresentationModel(model));
+				document.body.querySelector('.workbench-component').appendChild(presentationModelViewer2.getElement());
+			}
 		</script>
 	</head>
 	<body>
@@ -55,5 +64,7 @@
 			</div>
 			<button onclick="showBrowserDialog()">Show Browser Dialog</button>
 		</form>
+		<div class="workbench-component">
+		</div>
 	</body>
 </html>

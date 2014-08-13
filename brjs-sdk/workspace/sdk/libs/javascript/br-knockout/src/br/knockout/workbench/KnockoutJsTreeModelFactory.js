@@ -2,17 +2,17 @@
 
 var ko = require('ko');
 
-function JsTreeModelFactory() {
+function KnockoutJsTreeModelFactory() {
 };
 
-JsTreeModelFactory.createTreeModelFromKnockoutViewModel = function(viewModel) {
+KnockoutJsTreeModelFactory.createTreeModelFromKnockoutViewModel = function(viewModel) {
 	var treeModel = {core: {data: [{text: 'Knockout View Model', state: {opened: true}, children: []}]}};
 	this._processViewModel(viewModel, treeModel.core.data[0].children);
 	
 	return treeModel;
 };
 
-JsTreeModelFactory._processViewModel = function(viewModel, treeModelItems) {
+KnockoutJsTreeModelFactory._processViewModel = function(viewModel, treeModelItems) {
 	for(var itemName in viewModel) {
 		if(!this._isPrivate(itemName)) {
 			var item = viewModel[itemName];
@@ -33,7 +33,7 @@ JsTreeModelFactory._processViewModel = function(viewModel, treeModelItems) {
 	}
 };
 
-JsTreeModelFactory._hasObservables = function(object) {
+KnockoutJsTreeModelFactory._hasObservables = function(object) {
 	var isObservable = false;
 	
 	for(var key in object) {
@@ -47,8 +47,8 @@ JsTreeModelFactory._hasObservables = function(object) {
 	return isObservable;
 };
 
-JsTreeModelFactory._isPrivate = function(itemName) {
+KnockoutJsTreeModelFactory._isPrivate = function(itemName) {
 	return itemName.match(/^m?_/) !== null;
 };
 
-module.exports = JsTreeModelFactory;
+module.exports = KnockoutJsTreeModelFactory;

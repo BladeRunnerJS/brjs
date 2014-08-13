@@ -1,8 +1,8 @@
-.workbench-component .container .jstree {
+.workbench-component #tree-view.jstree {
 	font-size:10px;
 	overflow:hidden;
 }
 
-.jstree .jstree-leaf .jstree-icon {
+.jstree .jstree-leaf .jstree-anchor .jstree-icon {
 	background-position-x: -195px;
 }

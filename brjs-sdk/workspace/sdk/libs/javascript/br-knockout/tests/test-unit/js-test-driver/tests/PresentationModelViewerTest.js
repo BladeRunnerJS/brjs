@@ -1,5 +1,5 @@
 (function() {
-	var jsTreeModelFactory = require('br/knockout/workbench/JsTreeModelFactory');
+	var jsTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
 	var PresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
 	
 	PresentationModelViewerTest = TestCase('PresentationModelViewerTest');
