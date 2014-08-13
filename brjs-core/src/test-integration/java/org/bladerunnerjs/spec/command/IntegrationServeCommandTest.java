@@ -44,7 +44,7 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + appServerPort +"/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
-			.and(appServer).requestIsRedirected("/","/dashboard");
+			.and(appServer).requestIs302Redirected("/","/dashboard");
 	}
 	
 	@Test
@@ -68,7 +68,7 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + "7777/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
-			.and(appServer).requestIsRedirected("/","/dashboard");
+			.and(appServer).requestIs302Redirected("/","/dashboard");
 	}
 	
 }

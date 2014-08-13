@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -55,6 +56,10 @@ public class LinkedFileAsset implements LinkedAsset {
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
 			 return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
+		}
+		catch (AmbiguousRequirePathException e) {			
+			e.setSourceRequirePath(getAssetPath());
+			throw new ModelOperationException(e);
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);

@@ -20,6 +20,9 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade, bladeWithSubstringOfAnotherBlade;
 	private StringBuffer response = new StringBuffer();
+	private Bladeset defaultBladeset;
+	private Blade blade1InDefaultBladeset;
+	private Blade blade2InDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -33,6 +36,9 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			bladeWithSubstringOfAnotherBlade = bladeset.blade("b1b");
+			defaultBladeset = app.bladeset("default");
+			blade1InDefaultBladeset = defaultBladeset.blade("b1");
+			blade2InDefaultBladeset = defaultBladeset.blade("b2");
 	}
 	
 	@Test
@@ -248,6 +254,16 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.bs.b1.Class1");
+	}
+	
+	@Test
+	public void bladeClassesInDefaultBladesetCanBeBundled() throws Exception {
+		given(aspect).classFileHasContent("appns/App", "require('./b1/Blade1Class'); require('./b2/Blade2Class');")
+			.and(blade1InDefaultBladeset).hasClass("appns/b1/Blade1Class")
+			.and(blade2InDefaultBladeset).hasClass("appns/b2/Blade2Class")
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns/b1/Blade1Class", "appns/b2/Blade2Class");
 	}
 	
 }

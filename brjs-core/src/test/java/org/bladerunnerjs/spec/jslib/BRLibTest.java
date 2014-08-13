@@ -85,4 +85,29 @@ public class BRLibTest extends SpecTest {
 			.and(response).containsText("\"anotherRootPkg.property\": \"another value\"");
 	}
 	
+	@Test
+	public void librariesDontHaveToRepeatTheAssetContainerRequirePrefix() throws Exception {
+		given(sdkLib).hasClass("pkg/Class")
+			.and(aspect).indexPageRequires("br/pkg/Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsDefinedClasses("br/pkg/Class");
+	}
+	
+	@Test
+	public void sdkLibrariesCanDefineAnArbitraryRequirePrefix() throws Exception {
+		given(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib/pkg")
+			.and(sdkLib).hasClass("lib/pkg/Class")
+			.and(aspect).indexPageRequires("lib/pkg/Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsDefinedClasses("lib/pkg/Class");
+	}
+	
+	@Test
+	public void librariesDontHaveToRepeatAnExplicitlyDefinedAssetContainerRequirePrefix() throws Exception {
+		given(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib/pkg")
+			.and(sdkLib).hasClass("Class")
+			.and(aspect).indexPageRequires("lib/pkg/Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsDefinedClasses("lib/pkg/Class");
+	}
 }

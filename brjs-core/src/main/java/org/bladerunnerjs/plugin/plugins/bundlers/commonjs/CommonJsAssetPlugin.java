@@ -14,7 +14,7 @@ public class CommonJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
-		return (assetLocation.jsStyle().equals(CommonJsContentPlugin.JS_STYLE) && assetFile.getName().endsWith(".js"));
+		return (assetLocation.jsStyle().equals(CommonJsSourceModule.JS_STYLE) && assetFile.getName().endsWith(".js"));
 	}
 	
 	@Override

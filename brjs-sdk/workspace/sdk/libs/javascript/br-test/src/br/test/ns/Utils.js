@@ -1,5 +1,4 @@
 // this class is here since it seems to be break KO binding tests in some browsers if it's a commonJS module
-// TODO: convert this to a commonJS module and work out why some binding tests fail
 
 /* global br, require, presenter_ko, jQuery */
 br.Core.thirdparty('jquery');

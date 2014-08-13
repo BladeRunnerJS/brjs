@@ -15,3 +15,12 @@
 .serviceModeConfig .controls {
 	margin-left:25px;
 }
+
+.workbench-component {
+	overflow:auto;
+	position: absolute;
+	top: 300px;
+	right: 9px;
+	width: 250px;
+	height: 320px;
+}

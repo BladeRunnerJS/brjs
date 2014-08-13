@@ -8,8 +8,8 @@ public final class BladeResourcesAssetLocation extends ResourcesAssetLocation {
 	
 	private Bladeset parentBladeset;
 
-	public BladeResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file) {
-		super(root, assetContainer, file);
+	public BladeResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file, AssetLocation parentAssetLocation) {
+		super(root, assetContainer, file, parentAssetLocation);
 		parentBladeset = root.locateAncestorNodeOfClass(this, Bladeset.class);
 	}
 	
