@@ -74,6 +74,9 @@ public class NodeImporter {
 		
 		for(Blade blade : bladeset.blades()) {
 			updateRequirePrefix(blade.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+			
+			Workbench workbench = blade.workbench();			
+			updateRequirePrefix(workbench.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
 		}
 	}
 	

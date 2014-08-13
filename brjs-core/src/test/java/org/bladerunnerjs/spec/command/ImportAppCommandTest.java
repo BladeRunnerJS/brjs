@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
@@ -14,6 +15,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationComma
 import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -24,6 +26,7 @@ public class ImportAppCommandTest extends SpecTest {
 	Aspect importedAspect;
 	private Bladeset bladeset;
 	private Blade blade;
+	private Workbench workbench;
 	DirNode appJars;
 	
 	@Before
@@ -36,6 +39,7 @@ public class ImportAppCommandTest extends SpecTest {
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
+			workbench = blade.workbench();
 			importedApp = brjs.app("imported-app");
 			importedAspect = importedApp.aspect("default");
 			appJars = brjs.appJars();
@@ -141,5 +145,19 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedApp).fileContentsContains("blades/b1/src/Class1.js", "default-bladeset/b1/Class");
+	}
+		
+	public void allSrcDirectoriesAreCorrectlyReNamespacedWhenImported() throws Exception {
+		given(aspect).containsFile("src/appns/AspectClass.js")
+			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
+			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(workbench).containsFile("src/appns/bs/b1/WorkbenchClass.js")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).hasDir("bs-bladeset/blades/b1/src/importedns")
+			.and(importedApp).hasDir("bs-bladeset/src/importedns")
+			.and(importedApp).hasDir("default-aspect/src/importedns")
+			.and(importedApp).hasDir("bs-bladeset/blades/b1/workbench/src/importedns/bs/b1/");
 	}
 }
