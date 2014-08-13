@@ -30,6 +30,8 @@ public class CssResourceContentPluginTest extends SpecTest {
 	private Workbench workbench;
 	private ContentPlugin cssResourcePlugin;
 	private List<String> requestsList;
+	private Aspect defaultAspect;
+	private Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -37,10 +39,12 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
 			sdkJsLib = brjs.sdkLib("sdkLib");
+			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
 		
 		binaryResponseFile = File.createTempFile("CssResourceContentPluginTest", "tmp");
 		binaryResponse = new FileOutputStream(binaryResponseFile);
@@ -399,6 +403,26 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 			.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
 		when(aspect).requestReceivedInProd("cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
+	public void assetsInDefaultBladesetBladeCanBeRequested() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(bladeInDefaultBladeset).hasBeenCreated()
+			.and(bladeInDefaultBladeset).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(aspect).requestReceivedInProd("cssresource/bladeset_default/blade_b1_resource/resources/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
+	public void assetsInDefaultAspectCanBeRequested() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(defaultAspect).indexPageHasContent("")
+			.and(defaultAspect).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(defaultAspect).requestReceivedInProd("cssresource/aspect_default_resource/resources/dir1/dir2/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}
 	

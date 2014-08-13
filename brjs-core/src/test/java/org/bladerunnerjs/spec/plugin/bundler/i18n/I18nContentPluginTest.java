@@ -28,6 +28,7 @@ public class I18nContentPluginTest extends SpecTest
 	private SdkJsLib sdkLib;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -38,6 +39,7 @@ public class I18nContentPluginTest extends SpecTest
 			app = brjs.app("app1");
 			appConf = app.appConf();
 			aspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
@@ -344,5 +346,14 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).indexPageRequires("appns/b1/BladeClass");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText("\"appns.b1.property\": \"property value\"");
+	}
+	
+	@Test
+	public void defaultAspectI18nPropertiesCanBeBundled() throws Exception {
+		given(defaultAspect).hasClass("appns/AspectClass")
+			.and(defaultAspect).containsFileWithContents("resources/en_GB.properties", "appns.property=property value")
+			.and(defaultAspect).indexPageRequires("appns/AspectClass");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"appns.property\": \"property value\"");
 	}
 }
