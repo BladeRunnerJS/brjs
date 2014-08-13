@@ -177,6 +177,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return appConf ;
 	}
 	
+	/**
+	 * Get the list of bladesets for the App
+	 * @return list of bladesets
+	 */
 	public List<Bladeset> bladesets()
 	{
 		List<Bladeset> childBladesets = new ArrayList<>( bladesets.list() );
@@ -187,6 +191,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return childBladesets;
 	}
 	
+	/**
+	 * Get a named bladeset. 
+	 * bladeset("default") returns a bladeset with the name 'default' rather than the bladeset that represents the optional bladeset. 
+	 * @return the named bladeset
+	 */
 	public Bladeset bladeset(String bladesetName)
 	{
 		if (bladesetName.equals(DEFAULT_CONTAINER_NAME)) {
@@ -195,11 +204,20 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return bladesets.item(bladesetName);
 	}
 	
+	/**
+	 * Get the default bladeset for the app. This is different from using bladeset("default").
+	 * @return the default bladeset
+	 * @see #bladeset
+	 */
 	public Bladeset defaultBladeset()
 	{
 		return defaultBladeset(false);
 	}
 
+	/**
+	 * Get the list of aspects for the App
+	 * @return list of aspects
+	 */
 	public List<Aspect> aspects()
 	{
 		List<Aspect> childAspects = new ArrayList<>( aspects.list() );
@@ -210,6 +228,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return childAspects;
 	}
 	
+	/**
+	 * Get a named aspects. 
+	 * aspect("default") returns an aspect with the name 'default' rather than the aspect that represents the optional aspect. 
+	 * @return the named bladeset
+	 */
 	public Aspect aspect(String aspectName)
 	{
 		if (aspectName.equals(DEFAULT_CONTAINER_NAME)) {
@@ -218,6 +241,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return aspects.item(aspectName);
 	}
 	
+	/**
+	 * Get the default aspect for the app. This is different from using aspect("default").
+	 * @return the default aspect
+	 * @see #aspect
+	 */
 	public Aspect defaultAspect()
 	{
 		return defaultAspect(false);
