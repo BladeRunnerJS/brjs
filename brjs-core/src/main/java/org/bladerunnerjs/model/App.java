@@ -200,26 +200,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return defaultBladeset(false);
 	}
 
-	public Bladeset defaultBladeset(boolean preferExplicitDefault)
-	{
-		DefaultBladeset implicitDefaultBladesetItem = implicitDefaultBladeset.item(); 
-		Bladeset explicitDefaultBladesetItem = explicitDefaultBladeset.item(); 
-		if (implicitDefaultBladesetItem.exists() && explicitDefaultBladesetItem.exists()) {
-			throw new RuntimeException(
-					new DuplicateAssetContainerException("Bladeset", 
-							RelativePathUtility.get(root(), root().dir(), implicitDefaultBladesetItem.dir()), 
-							RelativePathUtility.get(root(), root().dir(), explicitDefaultBladesetItem.dir()))
-			);
-		}
-		if (explicitDefaultBladesetItem.exists()) {
-			return explicitDefaultBladesetItem;
-		}
-		if (implicitDefaultBladesetItem.exists()) {
-			return implicitDefaultBladesetItem;
-		}
-		return (preferExplicitDefault) ? explicitDefaultBladesetItem: implicitDefaultBladesetItem;
-	}
-
 	public List<Aspect> aspects()
 	{
 		List<Aspect> childAspects = new ArrayList<>( aspects.list() );
@@ -241,26 +221,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public Aspect defaultAspect()
 	{
 		return defaultAspect(false);
-	}
-
-	public Aspect defaultAspect(boolean preferExplicitDefault)
-	{
-		DefaultAspect implicitDefaultAspectItem = implicitDefaultAspect.item(); 
-		Aspect explicitDefaultAspectItem = explicitDefaultAspect.item(); 
-		if (implicitDefaultAspectItem.exists() && explicitDefaultAspectItem.exists()) {
-			throw new RuntimeException(
-					new DuplicateAssetContainerException("Aspect", 
-							RelativePathUtility.get(root(), root().dir(), implicitDefaultAspectItem.dir()), 
-							RelativePathUtility.get(root(), root().dir(), explicitDefaultAspectItem.dir()))
-			);
-		}
-		if (explicitDefaultAspectItem.exists()) {
-			return explicitDefaultAspectItem;
-		}
-		if (implicitDefaultAspectItem.exists()) {
-			return implicitDefaultAspectItem;
-		}
-		return (preferExplicitDefault) ? explicitDefaultAspectItem: implicitDefaultAspectItem;
 	}
 	
 	public List<JsLib> jsLibs()
@@ -380,4 +340,33 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void buildWar(File targetFile) throws ModelOperationException {
 		new WarAppBuilder().build(this, targetFile);
 	}
+	
+	
+	
+	private Bladeset defaultBladeset(boolean preferExplicitDefault)
+	{
+		return getImplicitOrExplicitAssetContainer(Bladeset.class, implicitDefaultBladeset.item(), explicitDefaultBladeset.item(), preferExplicitDefault); 
+	}
+	
+	private Aspect defaultAspect(boolean preferExplicitDefault)
+	{
+		return getImplicitOrExplicitAssetContainer(Aspect.class, implicitDefaultAspect.item(), explicitDefaultAspect.item(), preferExplicitDefault); 
+	}
+	
+	private <AC extends AssetContainer> AC getImplicitOrExplicitAssetContainer(Class<? extends AC> type, AC implicitAssetContainer, AC explicitAssetContainer, boolean preferExplicitDefault) { 
+		if (implicitAssetContainer.exists() && explicitAssetContainer.exists()) {
+			throw new DuplicateAssetContainerException(type.getSimpleName(), 
+							RelativePathUtility.get(root(), root().dir(), implicitAssetContainer.dir()), 
+							RelativePathUtility.get(root(), root().dir(), explicitAssetContainer.dir())
+			);
+		}
+		if (explicitAssetContainer.exists()) {
+			return explicitAssetContainer;
+		}
+		if (implicitAssetContainer.exists()) {
+			return implicitAssetContainer;
+		}
+		return (preferExplicitDefault) ? explicitAssetContainer : implicitAssetContainer;
+	}
+	
 }

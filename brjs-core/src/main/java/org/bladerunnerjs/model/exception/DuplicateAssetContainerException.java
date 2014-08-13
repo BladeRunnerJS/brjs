@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.exception;
 
 
-public class DuplicateAssetContainerException extends Exception
+public class DuplicateAssetContainerException extends RuntimeException
 {
 	private static final long serialVersionUID = -2402426315431900548L;
 
