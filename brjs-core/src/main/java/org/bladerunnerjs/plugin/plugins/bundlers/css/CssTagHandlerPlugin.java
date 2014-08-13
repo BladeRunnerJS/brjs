@@ -84,7 +84,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 				writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
 			} else if (theme != null) {
 				if(themeIsAVariantTheme(theme)){
-					String parentTheme = theme.substring(0, theme.length()-SUBTHEME_SUFFIX.length()); // stripping from -variant
+					String parentTheme = theme.substring(0, theme.length()-SUBTHEME_SUFFIX.length());
 					writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
 					try{
 						writeTagsForMainTheme(isDev, app, writer, contentPaths, parentTheme, version, locale);
@@ -110,7 +110,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 
 	private boolean themeIsAVariantTheme(String theme) {
 		// TODO Auto-generated method stub
-		String pattern = "[a-zA-Z0-9\\-]+-variant";
+		String pattern = "[a-zA-Z0-9\\-]+"+SUBTHEME_SUFFIX;
 		Pattern variantThemeNamePattern = Pattern.compile(pattern);
 		Matcher filenameMatcher = variantThemeNamePattern.matcher(theme);
 		return filenameMatcher.matches();		
