@@ -117,7 +117,6 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).doesNotHaveDir("default-aspect/src/appns");
 	}
 	
-	@Ignore //failing. See: #889
 	@Test
 	public void allSrcDirectoriesAreCorrectlyReNamespacedWhenImported() throws Exception {
 		given(aspect).containsFile("src/appns/AspectClass.js")
