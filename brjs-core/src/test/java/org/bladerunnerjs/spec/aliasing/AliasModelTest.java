@@ -16,6 +16,8 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ctc.wstx.exc.WstxValidationException;
+
 public class AliasModelTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
@@ -61,7 +63,8 @@ public class AliasModelTest extends SpecTest {
 	public void aliasesOverridesMustDefineAClassName() throws Exception {
 		given(aspectAliasesFile).hasAlias("the-alias", null);
 		when(aspect).retrievesAlias("the-alias");
-		then(exceptions).verifyException(ContentFileProcessingException.class, doubleQuoted("alias"), doubleQuoted("class"));
+		then(exceptions).verifyException(WstxValidationException.class, doubleQuoted("alias"), doubleQuoted("class"))
+			.whereTopLevelExceptionIs(ContentFileProcessingException.class);
 	}
 	
 	// TODO - why does this give an IncompleteAliasException at the aspect level, but the test below it for the blade does not
@@ -183,8 +186,8 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void scenarioAliasesAreAlsoNamespaced() throws Exception {
-		given(bladeAliasDefinitionsFile).hasAlias("the-alias", "Class1")
-			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "the-alias", "Class2")
+		given(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "the-alias", "Class2")
+			.and(bladeAliasDefinitionsFile).hasAlias("the-alias", "Class1")
 			.and(aspectAliasesFile).usesScenario("s1");
 		when(aspect).retrievesAlias("the-alias");
 		then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs.b1.*");
@@ -307,8 +310,8 @@ public class AliasModelTest extends SpecTest {
 	@Test
 	public void nestedAliasDefinitionsFilesCanBeUsedInResourcesDirectories() throws Exception {
 		// TODO: think of a way of doing this in a more BDD way
-		FileUtils.write(blade.assetLocation("resources").file("aliasDefinitions.xml"), "<aliasDefinitions/>");
-		FileUtils.write(blade.assetLocation("resources").file("dir/aliasDefinitions.xml"), "<aliasDefinitions/>");
+		FileUtils.write(blade.assetLocation("resources").file("aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
+		FileUtils.write(blade.assetLocation("resources").file("dir/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
 		AliasDefinitionsFile nestedBladeAliasDefinitionsFile = blade.assetLocation("resources").aliasDefinitionsFiles().get(1);
 		
 		given(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias1", "Class1", "TheInterface")
