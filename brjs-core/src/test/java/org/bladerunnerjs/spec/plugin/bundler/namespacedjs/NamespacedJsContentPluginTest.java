@@ -23,6 +23,8 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	private Blade blade;
 	private TypedTestPack bladeTestPack, sdkJsLibTestPack;
 	private TestPack aspectTests, bladeTests, sdkJsLibTests;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -42,6 +44,8 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			bladerunnerConf = brjs.bladerunnerConf();
 			sdkJsLibTestPack = sdkJsLib.testType("test");
 			sdkJsLibTests = sdkJsLibTestPack.testTech("jsTestDriver");
+			defaultBladeset = app.bladeset("default");
+			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	
 	@Test
@@ -532,6 +536,15 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).doesNotContainText("normalizeLib")
 			.and(requestResponse).containsText("e.normalize()");
+	}
+	
+	@Test
+	public void bladeClassesInDefaultBladesetCanBeBundled() throws Exception {
+		given(app).hasNamespacedJsPackageStyle()
+			.and(bladeInDefaultBladeset).hasClass("appns.b1.BladeClass")
+			.and(aspect).indexPageRefersTo("appns.b1.BladeClass");
+		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("appns.b1.BladeClass");
 	}
 	
 }

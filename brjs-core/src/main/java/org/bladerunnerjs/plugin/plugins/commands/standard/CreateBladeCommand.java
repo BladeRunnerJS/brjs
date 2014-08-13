@@ -69,7 +69,7 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		String bladeName = parsedArgs.getString(Parameters.BLADE_NAME);
 		
 		App app = brjs.app(appName);
-		Bladeset bladeset = app.bladeset(bladesetName);
+		Bladeset bladeset = getBladeset(app, bladesetName);
 		Blade blade = bladeset.blade(bladeName);
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
@@ -91,4 +91,23 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		
 		return 0;
 	}
+	
+	private Bladeset getBladeset(App app, String bladesetName) throws CommandOperationException
+	{
+		Bladeset bladeset = app.bladeset(bladesetName);
+		if (bladeset == app.defaultBladeset()) {
+    		try
+    		{
+    			if (!bladeset.dirExists()) {
+    				bladeset.create();
+    			}
+    		}
+    		catch (InvalidNameException | ModelUpdateException e)
+    		{
+    			throw new CommandOperationException(e);
+    		}
+		}
+		return bladeset;
+	}
+
 }
