@@ -50,6 +50,7 @@ public class NodeImporter {
 		
 		FileUtils.copyDirectory(sourceBladesetDir, tempBrjsBladeset.dir());
 		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
+		tempBrjsApp.appConf().write();
 		
 		if(!JsStyleUtility.getJsStyle(sourceBladesetDir).equals(JsStyleUtility.getJsStyle(targetBladeset.dir()))) {
 			JsStyleUtility.setJsStyle(tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(sourceBladesetDir));

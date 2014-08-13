@@ -15,46 +15,41 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	}
 	
 	public int getJettyPort() throws ConfigException {
-		reloadConfIfChanged();
-		return conf.jettyPort;
+		return getConf().jettyPort;
 	}
 	
 	public void setJettyPort(int jettyPort) throws ConfigException {
-		conf.jettyPort = jettyPort;;
-		verifyAndAutoWrite();
+		getConf().jettyPort = jettyPort;;
+		verify();
 	}
 	
 	public String getDefaultFileCharacterEncoding() throws ConfigException {
-		reloadConfIfChanged();
-		return conf.defaultFileCharacterEncoding;
+		return getConf().defaultFileCharacterEncoding;
 	}
 	
 	public void setDefaultFileCharacterEncoding(String defaultFileCharacterEncoding) throws ConfigException {
-		conf.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
-		verifyAndAutoWrite();
+		getConf().defaultFileCharacterEncoding = defaultFileCharacterEncoding;
+		verify();
 	}
 
 	public String getLoginRealm() throws ConfigException
 	{
-		reloadConfIfChanged();
-		return conf.loginRealm;
+		return getConf().loginRealm;
 	}
 
 	public String getLoginModuleName() throws ConfigException
 	{
-		reloadConfIfChanged();
-		return conf.LOGIN_MODULE_NAME;
+		return getConf().LOGIN_MODULE_NAME;
 	}
 	
 	public String[] getIgnoredPaths() throws ConfigException {
-		reloadConfIfChanged();
-		String[] ignoredFileStrings = conf.ignoredPaths.split("\\s*,\\s*");
+		String[] ignoredFileStrings = getConf().ignoredPaths.split("\\s*,\\s*");
 		return ignoredFileStrings;
 	}
 	
 	public void setIgnoredPaths(String... ignoredFiles) throws ConfigException {
-		conf.ignoredPaths = StringUtils.join(ignoredFiles,",");
-		verifyAndAutoWrite();
+		getConf().ignoredPaths = StringUtils.join(ignoredFiles,",");
+		verify();
 	}
 	
 	public static File getConfigFilePath(BRJS brjs) {

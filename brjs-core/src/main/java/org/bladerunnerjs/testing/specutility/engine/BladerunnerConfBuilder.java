@@ -13,6 +13,7 @@ public class BladerunnerConfBuilder {
 	
 	public BuilderChainer defaultFileCharacterEncodingIs(String defaultFileCharacterEncoding) throws Exception {
 		bladerunnerConf.setDefaultFileCharacterEncoding(defaultFileCharacterEncoding);
+		bladerunnerConf.write();
 		
 		return builderChainer;
 	}

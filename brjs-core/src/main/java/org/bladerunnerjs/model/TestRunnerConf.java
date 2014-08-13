@@ -9,12 +9,11 @@ public class TestRunnerConf extends ConfFile<YamlTestRunnerConf> {
 	}
 	
 	public String getDefaultBrowser() throws ConfigException {
-		reloadConfIfChanged();
-		return conf.defaultBrowser;
+		return getConf().defaultBrowser;
 	}
 	
 	public void setDefaultBrowser(String defaultBrowser) throws ConfigException {
-		conf.defaultBrowser = defaultBrowser;
-		conf.verify();
+		getConf().defaultBrowser = defaultBrowser;
+		getConf().verify();
 	}
 }

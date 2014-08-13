@@ -172,7 +172,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public AppConf appConf() throws ConfigException {
 		if(appConf == null) {
 			appConf = new AppConf(this);
-			appConf.autoWriteOnSet(false);
 		}
 		
 		return appConf ;
@@ -306,7 +305,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		try {
 			appConf().setRequirePrefix(requirePrefix);
 			populate();
-			appConf.autoWriteOnSet(true);
 			appConf().write();
 		}
 		catch (ConfigException e) {

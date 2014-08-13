@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.WatchService;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -67,6 +69,17 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		}
 		
 		return fileModificationInfos.get(absoluteFilePath);
+	}
+	
+	@Override
+	public List<FileModificationInfo> getModificationInfoSet(File[] files) {
+		List<FileModificationInfo> modificationInfoSet = new ArrayList<>();
+		
+		for(File file : files) {
+			modificationInfoSet.add(getModificationInfo(file));
+		}
+		
+		return modificationInfoSet;
 	}
 	
 	@Override

@@ -355,6 +355,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
+	@Override
 	public FileInfo getFileInfo(File file) {
 		String filePath = file.getPath();
 		
@@ -365,7 +366,19 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		return fileInfos.get(filePath);
 	}
-
+	
+	@Override
+	public List<FileInfo> getFileInfoSet(File[] files) {
+		List<FileInfo> fileInfoSet = new ArrayList<>();
+		int i = 0;
+		
+		for(FileModificationInfo fileModificationInfo : fileModificationService.getModificationInfoSet(files)) {
+			fileInfoSet.add(new StandardFileInfo(files[i++], this,  fileModificationInfo));
+		}
+		
+		return fileInfoSet;
+	}
+	
 	public AppVersionGenerator getAppVersionGenerator()
 	{
 		return appVersionGenerator;
