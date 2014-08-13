@@ -112,4 +112,34 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).doesNotHaveDir("bs-bladeset/blades/b1/src/appns")
 			.and(importedApp).doesNotHaveDir("default-aspect/src/appns");
 	}
+	
+	@Test
+	public void importingAnAppDoesntChangeTheAppItWasExportedFrom() throws Exception {
+		given(aspect).containsFileWithContents("src/appns/AspectClass.js", "some aspect class contents")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(aspect).containsFileWithContents("src/appns/AspectClass.js", "some NEW aspect class contents")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileHasContents("default-aspect/src/importedns/AspectClass.js", "some aspect class contents");
+	}
+	
+	@Test
+	public void defaultAspectsAreCorrectlyImported() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app.defaultAspect()).indexPageHasContent("default aspect index")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("index.html", "default aspect index");
+	}
+	
+	@Test
+	public void defaultBladesetsAreCorrectlyImported() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app.defaultBladeset().blade("b1")).classFileHasContent("Class1", "default-bladeset/b1/Class")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("blades/b1/src/Class1.js", "default-bladeset/b1/Class");
+	}
 }

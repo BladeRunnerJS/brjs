@@ -225,4 +225,17 @@ public class BuildAppCommandTest extends SpecTest
 		when(brjs).runCommand("build-app", "app");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
+	
+	@Test
+	public void defaultAspectsAreBuiltCorrectly() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(brjs).localeForwarderHasContents("")
+			.and(app.defaultAspect()).hasBeenCreated()
+			.and(app.appConf()).supportsLocales("en_GB")
+			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).fileContentsContains("generated/built-apps/app/en_GB/index.html", "DEFAULT ASPECT INDEX PAGE");
+	}
+	
 }
