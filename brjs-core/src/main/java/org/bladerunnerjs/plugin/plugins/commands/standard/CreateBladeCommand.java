@@ -94,7 +94,7 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 	
 	private Bladeset getBladeset(App app, String bladesetName) throws CommandOperationException
 	{
-		Bladeset bladeset = app.bladeset(bladesetName);
+		Bladeset bladeset = (bladesetName.equals(App.DEFAULT_CONTAINER_NAME)) ? app.defaultBladeset() : app.bladeset(bladesetName);
 		if (bladeset == app.defaultBladeset()) {
     		try
     		{

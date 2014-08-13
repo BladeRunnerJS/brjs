@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
@@ -20,6 +21,10 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
 	private File[] scopeFiles;
+	
+	public Bladeset(RootNode rootNode, Node parent, File dir) {
+		this(rootNode, parent, dir, StringUtils.substringBeforeLast(dir.getName(), "-bladeset"));
+	}
 	
 	public Bladeset(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -56,6 +61,11 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	public String getName()
 	{
 		return name;
+	}
+
+	@Override
+	public String getTypeName() {
+		return this.getClass().getSimpleName();
 	}
 	
 	@Override

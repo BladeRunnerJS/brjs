@@ -65,6 +65,17 @@ public class AppNavigationTest extends TestModelAccessor
 	}
 	
 	@Test
+	public void defaultAspects()
+	{
+		app = brjs.app("a3");
+		nodeTesterFactory = new NodeTesterFactory<>(app, App.class);
+		nodeTesterFactory.createSetTester(Aspect.class, "aspects", "aspect")
+			.addChild("default", ".")
+			.addChild("a1", "a1-aspect")
+			.assertModelIsOK();
+	}
+	
+	@Test
 	public void jsLibs()
 	{
 		nodeTesterFactory.createSetTester(JsLib.class, "jsLibs", "jsLib")

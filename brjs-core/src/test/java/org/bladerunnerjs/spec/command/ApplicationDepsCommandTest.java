@@ -60,7 +60,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheDefaultAspectDoesntExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("app-deps", "app");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(aspect.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(Aspect.class.getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -68,7 +68,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheNamedAspectDoesntExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("app-deps", "app", "aspect");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(aspect.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(Aspect.class.getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	

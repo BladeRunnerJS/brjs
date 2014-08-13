@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.DuplicateAssetContainerException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -31,6 +32,7 @@ import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -40,12 +42,15 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	public final static String DEFAULT_BLADESET_NAME = "default";
+	public final static String DEFAULT_CONTAINER_NAME = "default";
 	
-	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$");
-	private final NodeItem<DefaultBladeset> defaultBladeset = new NodeItem<>(this, DefaultBladeset.class, ".");
+	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$", "^default");
+	private final NodeItem<DefaultBladeset> implicitDefaultBladeset = new NodeItem<>(this, DefaultBladeset.class, ".");
+	private final NodeItem<Bladeset> explicitDefaultBladeset = new NodeItem<>(this, Bladeset.class, "default-bladeset");
 		// default blade represents 'blades' dir since otherwise 2 nodes are registered for the same path
-	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
+	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$", "^default");
+	private final NodeItem<DefaultAspect> implicitDefaultAspect = new NodeItem<>(this, DefaultAspect.class, ".");
+	private final NodeItem<Aspect> explicitDefaultAspect = new NodeItem<>(this, Aspect.class, "default-aspect");
 	private final NodeList<AppJsLib> bladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
 	
 	private String name;
@@ -142,6 +147,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 	}
 	
 	@Override
+	public String getTypeName() {
+		return this.getClass().getSimpleName();
+	}
+	
+	@Override
 	public boolean isValidName()
 	{
 		return NameValidator.isValidDirectoryName(name);
@@ -169,35 +179,88 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<Bladeset> bladesets()
 	{
-		List<Bladeset> childCladesets = new ArrayList<>( bladesets.list() );
-		DefaultBladeset defaultBladeset = defaultBladeset();
+		List<Bladeset> childBladesets = new ArrayList<>( bladesets.list() );
+		Bladeset defaultBladeset = defaultBladeset();
 		if (defaultBladeset.exists()) {
-			childCladesets.add(0, defaultBladeset);
+			childBladesets.add(0, defaultBladeset);
 		}
-		return childCladesets;
+		return childBladesets;
 	}
 	
 	public Bladeset bladeset(String bladesetName)
 	{
-		if (bladesetName.equals(DEFAULT_BLADESET_NAME)) {
-			return defaultBladeset();
+		if (bladesetName.equals(DEFAULT_CONTAINER_NAME)) {
+			return defaultBladeset(true);
 		}
 		return bladesets.item(bladesetName);
 	}
 	
-	public DefaultBladeset defaultBladeset()
+	public Bladeset defaultBladeset()
 	{
-		return defaultBladeset.item();
+		return defaultBladeset(false);
+	}
+
+	public Bladeset defaultBladeset(boolean preferExplicitDefault)
+	{
+		DefaultBladeset implicitDefaultBladesetItem = implicitDefaultBladeset.item(); 
+		Bladeset explicitDefaultBladesetItem = explicitDefaultBladeset.item(); 
+		if (implicitDefaultBladesetItem.exists() && explicitDefaultBladesetItem.exists()) {
+			throw new RuntimeException(
+					new DuplicateAssetContainerException("Bladeset", 
+							RelativePathUtility.get(root(), root().dir(), implicitDefaultBladesetItem.dir()), 
+							RelativePathUtility.get(root(), root().dir(), explicitDefaultBladesetItem.dir()))
+			);
+		}
+		if (explicitDefaultBladesetItem.exists()) {
+			return explicitDefaultBladesetItem;
+		}
+		if (implicitDefaultBladesetItem.exists()) {
+			return implicitDefaultBladesetItem;
+		}
+		return (preferExplicitDefault) ? explicitDefaultBladesetItem: implicitDefaultBladesetItem;
 	}
 
 	public List<Aspect> aspects()
 	{
-		return aspects.list();
+		List<Aspect> childAspects = new ArrayList<>( aspects.list() );
+		Aspect defaultAspect = defaultAspect();
+		if (defaultAspect.exists()) {
+			childAspects.add(0, defaultAspect);
+		}
+		return childAspects;
 	}
 	
 	public Aspect aspect(String aspectName)
 	{
+		if (aspectName.equals(DEFAULT_CONTAINER_NAME)) {
+			return defaultAspect(true);
+		}
 		return aspects.item(aspectName);
+	}
+	
+	public Aspect defaultAspect()
+	{
+		return defaultAspect(false);
+	}
+
+	public Aspect defaultAspect(boolean preferExplicitDefault)
+	{
+		DefaultAspect implicitDefaultAspectItem = implicitDefaultAspect.item(); 
+		Aspect explicitDefaultAspectItem = explicitDefaultAspect.item(); 
+		if (implicitDefaultAspectItem.exists() && explicitDefaultAspectItem.exists()) {
+			throw new RuntimeException(
+					new DuplicateAssetContainerException("Aspect", 
+							RelativePathUtility.get(root(), root().dir(), implicitDefaultAspectItem.dir()), 
+							RelativePathUtility.get(root(), root().dir(), explicitDefaultAspectItem.dir()))
+			);
+		}
+		if (explicitDefaultAspectItem.exists()) {
+			return explicitDefaultAspectItem;
+		}
+		if (implicitDefaultAspectItem.exists()) {
+			return implicitDefaultAspectItem;
+		}
+		return (preferExplicitDefault) ? explicitDefaultAspectItem: implicitDefaultAspectItem;
 	}
 	
 	public List<JsLib> jsLibs()

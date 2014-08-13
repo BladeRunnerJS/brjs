@@ -32,7 +32,7 @@ public class CommonJsContentPluginTest extends SpecTest {
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			sdkJsLib = brjs.sdkLib("sdkLib");
-			defaultBladeset = app.bladeset("default");
+			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	

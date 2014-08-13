@@ -64,8 +64,8 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		boolean nodeExistsForPath = findFirstNodeOfClass(nodesForPath, node.getClass()) != null;
 		
 		if (nodeExistsForPath) {
-			throw new NodeAlreadyRegisteredException("A node of type '" + node.getClass().getSimpleName() + 
-					"' has already been registered for path '" + getNormalizedPath(node.dir()) + "'");
+//			throw new NodeAlreadyRegisteredException("A node of type '" + node.getClass().getSimpleName() + 
+//					"' has already been registered for path '" + getNormalizedPath(node.dir()) + "'");
 		}
 
 		notifyObservers(new NodeDiscoveredEvent(), node);
@@ -97,12 +97,21 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public Node getRegisteredNode(File childPath) throws MultipleNodesForPathException
 	{
+		return getRegisteredNode(childPath, null);
+	}
+	
+	@Override
+	public Node getRegisteredNode(File childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException
+	{
 		List<Node> nodes = getRegisteredNodes(childPath);
 		if (nodes.size() == 0) {
 			return null;
 		}
 		if (nodes.size() <= 1) {
 			return nodes.get(0);
+		}
+		if (nodeClass != null) {
+			return findFirstNodeOfClass(nodes, nodeClass);
 		}
 		throw new MultipleNodesForPathException(childPath, "getRegisteredNodes()");
 	}

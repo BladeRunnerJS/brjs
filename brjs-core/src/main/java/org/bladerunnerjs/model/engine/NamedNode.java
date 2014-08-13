@@ -8,5 +8,6 @@ public interface NamedNode extends Node
 	
 	String getName();
 	boolean isValidName();
+	String getTypeName();
 	void assertValidName() throws InvalidNameException;
 }

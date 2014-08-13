@@ -38,6 +38,11 @@ public final class Theme extends AbstractBRJSNode implements NamedNode
 	{
 		return name;
 	}
+
+	@Override
+	public String getTypeName() {
+		return this.getClass().getSimpleName();
+	}
 	
 	@Override
 	public boolean isValidName()

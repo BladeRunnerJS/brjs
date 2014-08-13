@@ -26,6 +26,11 @@ public final class TestGreatGrandChildNode extends AbstractNode implements Named
 	{
 		return name;
 	}
+
+	@Override
+	public String getTypeName() {
+		return this.getClass().getSimpleName();
+	}
 	
 	@Override
 	public boolean isValidName()

@@ -50,7 +50,7 @@ public class CssContentPluginTest extends SpecTest {
 			blade = bladeset.blade("b1");
 			bladeMainTheme = blade.file("themes/main");
 			workbench = blade.workbench();
-			defaultBladeset = app.bladeset("default");
+			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	

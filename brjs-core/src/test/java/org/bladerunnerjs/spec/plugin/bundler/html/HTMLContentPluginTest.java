@@ -37,7 +37,7 @@ public class HTMLContentPluginTest extends SpecTest
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
 			workbenchTemplate = brjs.template("workbench");
-			defaultBladeset = app.bladeset("default");
+			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 			
 			given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")

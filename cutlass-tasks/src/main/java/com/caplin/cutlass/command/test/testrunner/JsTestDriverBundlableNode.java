@@ -119,6 +119,12 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 	
 	@Override
+	public boolean exists()
+	{
+		return bundlableNode.exists();
+	}
+	
+	@Override
 	public boolean containsFile(String filePath) {
 		return bundlableNode.containsFile(filePath);
 	}

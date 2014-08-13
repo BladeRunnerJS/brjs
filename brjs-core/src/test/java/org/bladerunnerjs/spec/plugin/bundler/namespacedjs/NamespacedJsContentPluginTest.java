@@ -44,7 +44,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			bladerunnerConf = brjs.bladerunnerConf();
 			sdkJsLibTestPack = sdkJsLib.testType("test");
 			sdkJsLibTests = sdkJsLibTestPack.testTech("jsTestDriver");
-			defaultBladeset = app.bladeset("default");
+			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	

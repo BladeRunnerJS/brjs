@@ -17,6 +17,7 @@ public interface Node {
 	File file(String filePath);
 	File[] memoizedScopeFiles();
 	boolean dirExists();
+	boolean exists();
 	boolean containsFile(String filePath);
 	void create() throws InvalidNameException, ModelUpdateException;
 	void ready();

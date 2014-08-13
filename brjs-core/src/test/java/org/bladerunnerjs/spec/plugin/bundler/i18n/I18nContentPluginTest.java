@@ -43,7 +43,7 @@ public class I18nContentPluginTest extends SpecTest
 			workbench = blade.workbench();
 			bladerunnerConf = brjs.bladerunnerConf();
 			sdkLib = brjs.sdkLib("br");
-			defaultBladeset = app.bladeset("default");
+			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	

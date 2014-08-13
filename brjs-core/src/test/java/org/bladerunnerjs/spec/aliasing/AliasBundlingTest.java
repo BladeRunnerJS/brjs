@@ -49,7 +49,7 @@ public class AliasBundlingTest extends SpecTest {
 			brLib = app.jsLib("br");
 			brLibAliasDefinitionsFile = brLib.assetLocation("resources").aliasDefinitionsFile();
 			otherBrLib = brjs.sdkLib("otherBrLib");
-			defaultBladeset = app.bladeset("default");
+			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	

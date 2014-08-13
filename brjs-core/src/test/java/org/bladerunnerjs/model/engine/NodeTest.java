@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.engine.BladeRunnerDirectoryException;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
+import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
@@ -839,14 +840,15 @@ public class NodeTest
 	{
 		File nodeDir = new File(TEST_DIR, "root");
 		TestRootNode rootNode = new TestRootNode( nodeDir );
-		EventObserver observer = mock(EventObserver.class);
-		
-		rootNode.addObserver(observer);
 		
 		assertTrue(nodeDir.exists());
+
+		EventObserver observer = mock(EventObserver.class);
+		rootNode.addObserver(NodeReadyEvent.class, observer);
+		
 		rootNode.registerNode(rootNode);
 		
-		verify(observer).onEventEmitted( any(NodeReadyEvent.class), eq(rootNode) );
+		verify(observer).onEventEmitted( any(NodeDiscoveredEvent.class), eq(rootNode) );
 	}
 	
 	@Test
@@ -861,6 +863,7 @@ public class NodeTest
 		assertFalse(nodeDir.exists());
 		rootNode.registerNode(rootNode);
 		
+		verify(observer).onEventEmitted( any(NodeDiscoveredEvent.class), eq(rootNode) );
 		verifyNoMoreInteractions(observer);
 	}
 	

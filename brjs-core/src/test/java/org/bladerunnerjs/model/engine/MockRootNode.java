@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
@@ -45,6 +46,12 @@ public class MockRootNode implements RootNode
 	
 	@Override
 	public boolean dirExists()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean exists()
 	{
 		return false;
 	}
@@ -218,6 +225,12 @@ public class MockRootNode implements RootNode
 
 	@Override
 	public IO io() {
+		return null;
+	}
+
+	@Override
+	public Node getRegisteredNode(File childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException
+	{
 		return null;
 	}
 }

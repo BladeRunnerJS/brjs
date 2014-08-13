@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
@@ -18,12 +19,16 @@ import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
+public class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
 {
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
 	private String name;
 	private File[] scopeFiles;
 	private IndexPageSeedLocator indexPageSeedLocator;
+	
+	public Aspect(RootNode rootNode, Node parent, File dir) {
+		this(rootNode, parent, dir, StringUtils.substringBeforeLast(dir.getName(), "-aspect"));
+	}
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -57,6 +62,11 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public String getName()
 	{
 		return name;
+	}
+
+	@Override
+	public String getTypeName() {
+		return this.getClass().getSimpleName();
 	}
 	
 	@Override

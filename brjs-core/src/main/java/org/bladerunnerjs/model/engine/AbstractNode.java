@@ -95,6 +95,12 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
+	public boolean exists()
+	{
+		return dirExists();
+	}
+	
+	@Override
 	public File file(String filePath)
 	{
 		File cachedFile = filesMap.get(filePath);
@@ -131,6 +137,24 @@ public abstract class AbstractNode implements Node
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
 			}
+		}
+		catch(Exception e) {
+			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
+			throw e;
+		}
+	}
+	
+	protected void createDefaultNode() throws InvalidNameException, ModelUpdateException
+	{
+		Logger logger = rootNode.logger(Node.class);
+		
+		try {
+			if(this instanceof NamedNode) ((NamedNode) this).assertValidName();
+			
+			notifyObservers(new NodeCreatedEvent(), this);
+			logger.debug(Messages.NODE_CREATED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
+				
+			rootNode.getFileInfo(dir().getParentFile()).resetLastModified();
 		}
 		catch(Exception e) {
 			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getClass().getSimpleName(), dir().getPath());

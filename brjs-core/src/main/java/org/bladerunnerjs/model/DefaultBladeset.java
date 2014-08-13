@@ -25,7 +25,13 @@ public class DefaultBladeset extends Bladeset
 	@Override
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
-		super.populate();
+		BRJSNodeHelper.populate(this, true);
+	}
+	
+	@Override
+	public void create() throws InvalidNameException, ModelUpdateException
+	{
+		super.createDefaultNode();
 	}
 	
 	@Override
@@ -55,4 +61,8 @@ public class DefaultBladeset extends Bladeset
 		return file("blades").isDirectory();
 	}
 
+	@Override
+	public String getTypeName() {
+		return super.getClass().getSimpleName();
+	}
 }
