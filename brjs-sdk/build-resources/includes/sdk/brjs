@@ -11,8 +11,8 @@ if [ -z `which java` ]; then
 	displayJavaInstallMessage "Java is either not installed on your computer or not available on the path."
 fi
 
-JAVA_VERSION=`java -version 2>&1 | head -1 | sed -r "s/^.*\"([^\"]+).*$/\1/"`
-JAVA_VERSION_INT=`echo $JAVA_VERSION | sed -r "s/^([0-9]+)\.([0-9]+).*$/\1\2/"`
+JAVA_VERSION=`java -version 2>&1 | head -n 1 | sed -E "s/^.*\"([^\"]+).*$/\1/"`
+JAVA_VERSION_INT=`echo $JAVA_VERSION | sed -E "s/^([0-9]+)\.([0-9]+).*$/\1\2/"`
 
 if [ $JAVA_VERSION_INT -le 16 ]; then
 	displayJavaInstallMessage "Java $JAVA_VERSION is not new enough to run BladeRunnerJS."
