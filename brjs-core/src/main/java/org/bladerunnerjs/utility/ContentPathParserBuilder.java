@@ -10,8 +10,8 @@ public class ContentPathParserBuilder
 	private final Map<String, String> contentForms = new LinkedHashMap<>();
 	private final Map<String, String> tokens = new HashMap<>();
 	private boolean builderIsMidSentence = false;
-	
-	public static final String NAME_TOKEN = "[a-zA-Z0-9\\-]+";
+
+	public static final String NAME_TOKEN = "[^_/:*?\"]+";
 	public static final String PATH_TOKEN = "[^:*?\"]+";
 	
 	public RequestFormNamer accepts(String contentForm)
