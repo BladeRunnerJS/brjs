@@ -5,7 +5,10 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
@@ -18,17 +21,22 @@ import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private ContentPlugin cssContentPlugin;
+	private Logger logger;
+	private Pattern variantThemeNamePattern = null;
 	
 	private static String COMMON_THEME_NAME = "common";
 	private static String THEME_ATTRIBUTE = "theme";
+	private static String SUBTHEME_SUFFIX = "-variant";
 	private static String ALT_THEME_ATTRIBUTE = "alternateTheme";
 	public static String UNKNOWN_THEME_EXCEPTION = "The theme '%s' is not a valid theme that is available in the aspect, bladeset or blades.";
 	public static String INVALID_THEME_EXCEPTION = String.format("The attribute '%s' should only contain a single theme and cannot contain spaces.", THEME_ATTRIBUTE);
+	public static String NO_PARENT_THEME_WARNING = "The subtheme '%s' has no valid base theme present. Could not find '%s' theme.";
 	
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
 		cssContentPlugin = brjs.plugins().contentPlugin( getContentPluginRequirePrefix() );
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	// protected so the CT CSS plugin that uses a different CSS ordering can override it
@@ -76,8 +84,20 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			if (theme == null && alternateThemes.size() == 0) {
 				writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
 			} else if (theme != null) {
-				writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
-				writeTagsForMainTheme(isDev, app, writer, contentPaths, theme, version, locale);
+				if(isVariantTheme(theme)){
+					String parentTheme = theme.substring(0, theme.length()-SUBTHEME_SUFFIX.length());
+					writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
+					try{
+						writeTagsForMainTheme(isDev, app, writer, contentPaths, parentTheme, version, locale);
+					}
+					catch(IOException e){
+						logger.warn(NO_PARENT_THEME_WARNING, theme, parentTheme);
+					}
+					writeTagsForVariantTheme(isDev, app, writer, contentPaths, theme, version, locale);
+				}else{
+					writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
+					writeTagsForMainTheme(isDev, app, writer, contentPaths, theme, version, locale);
+				}
 			}
 			
 			for (String alternateTheme : alternateThemes) {
@@ -88,7 +108,16 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			throw new IOException(e);
 		}
 	}
-	
+
+	private boolean isVariantTheme(String theme) {
+		if(variantThemeNamePattern == null){
+			String pattern = "[a-zA-Z0-9\\-]+"+SUBTHEME_SUFFIX;
+			variantThemeNamePattern = Pattern.compile(pattern);
+		}
+		Matcher filenameMatcher = variantThemeNamePattern.matcher(theme);
+		return filenameMatcher.matches();		
+	}
+
 	private void writeTagsForCommonTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, COMMON_THEME_NAME)) {
@@ -109,6 +138,15 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 		if (!foundTheme) {
 			throw new IOException( String.format(UNKNOWN_THEME_EXCEPTION, themeName) );
+		}
+	}
+
+	private void writeTagsForVariantTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version, Locale locale) throws MalformedRequestException, MalformedTokenException, IOException {
+		for(String contentPath : contentPaths) {
+			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
+				String requestPath = getRequestPath(isDev, app, contentPath, version);
+				writer.write( String.format("<link rel=\"stylesheet\" title=\"%s\" href=\"%s\"/>\n", themeName, requestPath) );
+			}
 		}
 	}
 	

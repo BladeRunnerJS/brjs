@@ -304,4 +304,80 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(response).containsText("css/common_en_GB/bundle.css");
 	}
 	
+	@Test
+	public void aspectHasASubtheme() throws Exception {
+		given(aspect).containsFiles("themes/theme-variant/style.css", 
+									"themes/theme/style.css")
+			.and(app.appConf()).supportsLocales("en", "en_GB","de")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme-variant\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsText("css/theme/bundle.css")
+			.and(response).containsText("css/theme-variant/bundle.css");
+	}
+	
+	@Test
+	public void aspectHasASubthemeWithNoBaseThemeThrowsWarning() throws Exception {
+		given(aspect).containsFiles("themes/theme-variant/style.css")
+			.and(logging).enabled()
+			.and(app.appConf()).supportsLocales("en", "en_GB","de")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme-variant\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(logging).warnMessageReceived(CssTagHandlerPlugin.NO_PARENT_THEME_WARNING, "theme-variant", "theme");
+	}
+	
+	@Test
+	public void aspectHasASubthemeWithNoBaseThemeButSubthemeIsStillIncluded() throws Exception {
+		given(aspect).containsFiles("themes/theme-variant/style.css")
+			.and(app.appConf()).supportsLocales("en", "en_GB","de")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme-variant\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsText("css/theme-variant/bundle.css");
+	}
+	
+	@Test
+	public void aspectHasASubthemeAndCommonTheme() throws Exception {
+		given(aspect).containsFiles("themes/theme-variant/style.css",
+									"themes/common/style.css")
+			.and(app.appConf()).supportsLocales("en", "en_GB","de")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme-variant\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsText("css/theme-variant/bundle.css")
+			.and(response).containsText("css/common/bundle.css");
+	}
+	
+	@Test
+	public void aspectHasASubthemeAndCorrectBasThemeIsChosen() throws Exception {
+		given(aspect).containsFiles("themes/2theme/style.css",
+									"themes/theme-variant/style.css", 
+									"themes/theme/style.css")
+			.and(app.appConf()).supportsLocales("en", "en_GB","de")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme-variant\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsText("css/theme/bundle.css")
+			.and(response).containsText("css/theme-variant/bundle.css")
+			.and(response).doesNotContainText("css/2theme/bundle.css");
+	}
+	
+	@Test
+	public void aspectHasASubthemeAndIsIncludedInCorrectOrder() throws Exception {
+		given(aspect).containsFiles("themes/theme-variant/style.css", 
+									"themes/theme/style.css")
+			.and(app.appConf()).supportsLocales("en", "en_GB","de")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme-variant\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsOrderedTextFragments("css/theme/bundle.css",
+				"css/theme-variant/bundle.css");
+	}
+	
+	@Test
+	public void localeBasedTokenTagIsIncludedForSubThemes() throws Exception {
+		given(aspect).indexPageHasContent("<@css.bundle theme=\"theme-variant\" @/>")
+			.and(aspect).containsFiles("themes/theme-variant/style.css", "themes/theme-variant/style_en.css", "themes/theme-variant/style_en_GB.css")
+			.and(appConf).supportsLocales("en", "en_GB");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsOrderedTextFragments(
+			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant/bundle.css\"/>",
+			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en/bundle.css\"/>",
+			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en_GB/bundle.css\"/>");
+	}
 }
