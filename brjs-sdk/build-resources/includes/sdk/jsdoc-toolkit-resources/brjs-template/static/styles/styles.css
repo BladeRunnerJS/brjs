@@ -406,6 +406,10 @@ nav ul a {
     border-bottom: 1px solid #F0F0F0;
 }
 
+.description p, .class-description p {
+	margin-top: 10px;
+}
+
 table.params {
     width: 100%;
     margin: 0px 0px 8px 0px;
