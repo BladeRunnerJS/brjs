@@ -9,8 +9,8 @@ var Errors = require('br/Errors');
  * screen. They are created automatically by whatever code is controlling the view and passed
  * in to the component that they are displaying.
  *
- * Frame is an abstract class. The specific implementations will interface with some sort of
- * layout manager.
+ * <p>Frame is an abstract class. The specific implementations will interface with some sort of
+ * layout manager.</p>
  *
  * @constructor
  */
