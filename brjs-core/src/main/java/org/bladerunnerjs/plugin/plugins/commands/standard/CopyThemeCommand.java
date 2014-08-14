@@ -63,7 +63,7 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 	@Override
 	public String getCommandDescription()
 	{
-		return "Copy a CSS theme files into another CSS theme.";
+		return "Duplicate an existing CSS theme";
 	}
 	
 	@Override
@@ -84,24 +84,41 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 		
 		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
 		
-		for(Aspect asp : app.aspects()) //asp, hue hue, pun intended
+		for(Aspect asp : app.aspects())
+		{ //asp, hue hue, pun intended
 			for(AssetLocation al : asp.assetLocations())
+			{
 				if(al.dirExists())
+				{
 					assetLocations.add(al);
+				}
+			}
+		}
 		
 		for(Bladeset bs : app.bladesets())
 		{		
 			for(AssetLocation al : bs.assetLocations())
+			{
 				if(al.dirExists())
+				{
 					assetLocations.add(al);
+				}
+			}
 		
 			for(Blade blade : bs.blades())
+			{
 				for(AssetLocation al : blade.assetLocations())
+				{
 					if(al.dirExists())
+					{
 						assetLocations.add(al);
+					}
+				}
+			}
 		}
 		
-		for(AssetLocation al : assetLocations){
+		for(AssetLocation al : assetLocations)
+		{
 			copyTheme(al, origTheme, newTheme, matchLocation);
 		}
 		
