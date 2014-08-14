@@ -20,6 +20,7 @@ public class ProcessLogger {
 	private boolean running = true;
 	private final LogLevel standardOutLogLevel;
 	private final LogLevel standardErrorLogLevel;
+	Pattern pattern;
 	
 	public ProcessLogger(BRJS brjs, Process process, LogLevel standardOutLogLevel, LogLevel standardErrorLogLevel, String processName) throws IOException {
 		logger = brjs.logger(ProcessLogger.class);
@@ -29,6 +30,10 @@ public class ProcessLogger {
 		
 		logProcessStream(processName, new InfoLogger(), process.getInputStream());
 		logProcessStream(processName, new ErrorLogger(), process.getErrorStream());
+		
+		final String regexp = "(.*: Reset)|(Tests failed: Tests failed.*)";
+		final int flags = Pattern.CASE_INSENSITIVE;
+		pattern = Pattern.compile(regexp,flags);
 	}
 	
 	public void stop() {
@@ -103,7 +108,7 @@ public class ProcessLogger {
 	}
 	
 	private void logMessage(LogLevel logLevel, String message, Object[] params) {
-		if(filterAndModifyMessage(message)){
+		if(catchUnwantedMessages(message)){
 			return; //hack for filtering unnecessarily verbose output
 		}
 		
@@ -126,15 +131,8 @@ public class ProcessLogger {
 		}
 	}
 
-	private boolean filterAndModifyMessage(String message) {
-		final String regexp = "(.*: Reset)|(Tests failed: Tests failed.*)";
-		final int flags = Pattern.CASE_INSENSITIVE;
-		Pattern pattern = Pattern.compile(regexp,flags);
+	private boolean catchUnwantedMessages(String message) {
 		Matcher matcher = pattern.matcher(message);
-		if(matcher.find()){
-			return true;
-		}
-		
-		return false;
+		return matcher.find();
 	}
 }
