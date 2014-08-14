@@ -22,6 +22,7 @@ import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private ContentPlugin cssContentPlugin;
 	private Logger logger;
+	private Pattern variantThemeNamePattern = null;
 	
 	private static String COMMON_THEME_NAME = "common";
 	private static String THEME_ATTRIBUTE = "theme";
@@ -83,7 +84,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			if (theme == null && alternateThemes.size() == 0) {
 				writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
 			} else if (theme != null) {
-				if(themeIsAVariantTheme(theme)){
+				if(isThemeIsAVariantTheme(theme)){
 					String parentTheme = theme.substring(0, theme.length()-SUBTHEME_SUFFIX.length());
 					writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
 					try{
@@ -108,10 +109,11 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 
-	private boolean themeIsAVariantTheme(String theme) {
-		// TODO Auto-generated method stub
-		String pattern = "[a-zA-Z0-9\\-]+"+SUBTHEME_SUFFIX;
-		Pattern variantThemeNamePattern = Pattern.compile(pattern);
+	private boolean isThemeIsAVariantTheme(String theme) {
+		if(variantThemeNamePattern == null){
+			String pattern = "[a-zA-Z0-9\\-]+"+SUBTHEME_SUFFIX;
+			variantThemeNamePattern = Pattern.compile(pattern);
+		}
 		Matcher filenameMatcher = variantThemeNamePattern.matcher(theme);
 		return filenameMatcher.matches();		
 	}
