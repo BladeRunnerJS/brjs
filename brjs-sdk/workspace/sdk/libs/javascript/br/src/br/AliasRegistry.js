@@ -1,7 +1,7 @@
 "use strict";
 
 /**
-* The <code>AliasRegistry</code> is provides access to the aliases used within
+* The <code>AliasRegistry</code> provides access to the aliases used within
 * the application.
 *
 * <p>An alias is simply an alternate logical name for a class, such that specifying
