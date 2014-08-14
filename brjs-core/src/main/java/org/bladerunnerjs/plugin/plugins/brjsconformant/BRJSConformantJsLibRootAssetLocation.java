@@ -35,5 +35,6 @@ public class BRJSConformantJsLibRootAssetLocation extends BRJSConformantRootAsse
 	@Override
 	public void setRequirePrefix(String requirePrefix) throws ConfigException {
 		libManifest.setRequirePrefix(requirePrefix);
+		libManifest.write();
 	}
 }

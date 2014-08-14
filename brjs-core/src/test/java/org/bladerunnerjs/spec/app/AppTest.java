@@ -57,6 +57,13 @@ public class AppTest extends SpecTest {
 	}
 	
 	@Test
+	public void weCanCreateAnAppUsingTheRealTemplate() throws Exception {
+		given(brjs).usesProductionTemplates();
+		when(app).populate("appxyz");
+		then(aspect).hasDir("src/appxyz");
+	}
+	
+	@Test
 	public void populatingAnAppCausesRootObserversToBeNotified() throws Exception {
 		given(observer).observing(brjs);
 		when(app).populate();

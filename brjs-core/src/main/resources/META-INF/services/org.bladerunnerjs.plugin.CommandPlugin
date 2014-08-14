@@ -1,4 +1,5 @@
 org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand
+org.bladerunnerjs.plugin.plugins.commands.standard.CopyThemeCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand

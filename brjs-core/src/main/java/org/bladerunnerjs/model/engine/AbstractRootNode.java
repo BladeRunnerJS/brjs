@@ -136,7 +136,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			return null;
 		}
 		
-		if (node.getClass() == nodeClass)
+		if (nodeClass.isAssignableFrom(node.getClass()))
 		{
 			return (N) node;
 		}

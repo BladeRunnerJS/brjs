@@ -215,7 +215,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		}
 		
 		dependencyClass = dependencyClass.replaceAll("\\.(\\w)", "/$1");
-		String classRef = StringUtils.substringAfterLast(dependencyClass, "/");
+		String classRef = (dependencyClass.contains("/")) ? StringUtils.substringAfterLast(dependencyClass, "/") : dependencyClass;
 		String requireString = "var " + classRef + " = require('" + dependencyClass + "');\n";
 		fileUtil.write(sourceFile, requireString + getClassBody(sourceClass));
 		
@@ -233,7 +233,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 				throw new RuntimeException("Require paths must not contain the '.' character");
 			}
 			className = className.replaceAll("\\.", "/");
-			String commonJsClassName = StringUtils.substringAfterLast(className, "/");
+			String commonJsClassName = (className.contains("/")) ? StringUtils.substringAfterLast(className, "/") : className;
 			classBody = commonJsClassName + " = function() {\n"+
 				"};\n" +
 				"\n" +

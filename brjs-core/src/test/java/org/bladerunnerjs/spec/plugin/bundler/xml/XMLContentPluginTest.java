@@ -25,6 +25,8 @@ public class XMLContentPluginTest extends SpecTest{
 	private Blade blade = null;
 	private Workbench workbench = null;
 	private NamedDirNode workbenchTemplate;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -40,6 +42,8 @@ public class XMLContentPluginTest extends SpecTest{
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
 		workbenchTemplate = brjs.template("workbench");
+		defaultBladeset = app.bladeset("default");
+		bladeInDefaultBladeset = defaultBladeset.blade("b1");
 		
 		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
 			.and(workbenchTemplate).containsFolder("resources")
@@ -378,6 +382,21 @@ public class XMLContentPluginTest extends SpecTest{
 		when(workbench).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText("v/dev/some/path"); 
 	}
+	
+	@Test
+	public void bladeXmlInDefaultBladesetCanBeBundled() throws Exception {
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
+    		.and(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
+			.and(bladeInDefaultBladeset).containsResourceFileWithContents("config.xml", rootElem(mergeElem("appns.b1.ID")))
+			.and(aspect).indexPageRequires("appns/b1/BladeClass");
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText(bundleElem(bundleResourceElem("rootElem", rootElem(mergeElem("appns.b1.ID")))));
+	}
+	
+	
+	/*
+	 * PRIVATE METHODS
+	 */
 	
 	private String bundleConfig(){
 		String content = "<?xml version=\"1.0\"?> "

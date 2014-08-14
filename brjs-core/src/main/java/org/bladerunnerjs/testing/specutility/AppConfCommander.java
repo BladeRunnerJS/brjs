@@ -22,6 +22,7 @@ public class AppConfCommander extends ModelCommander {
 		call(new Command() {
 			public void call() throws Exception {
 				appConf.setRequirePrefix(requirePrefix);
+				appConf.write();
 			}
 		});
 		
@@ -36,6 +37,7 @@ public class AppConfCommander extends ModelCommander {
 					createdLocales.add( new Locale(locale) );
 				}
 				appConf.setLocales( createdLocales.toArray(new Locale[0]) );
+				appConf.write();
 			}
 		});
 		

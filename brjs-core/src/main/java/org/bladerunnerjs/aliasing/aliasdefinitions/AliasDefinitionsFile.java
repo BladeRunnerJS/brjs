@@ -11,39 +11,24 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 
 public class AliasDefinitionsFile {
-	private final AliasDefinitionsData data = new AliasDefinitionsData();
-	private final AliasDefinitionsReader aliasDefinitionsReader;
-	private final AliasDefinitionsWriter aliasDefinitionsWriter;
-	private final File file;
-	private final InfoFileModifiedChecker fileModifiedChecker;
+	private final File aliasDefinitionsFile;
+	private final PersistentAliasDefinitionsData persistentAliasDefinitionsData;
 	
 	public AliasDefinitionsFile(AssetLocation assetLocation, File parent, String child) {
-		try {
-			file = new File(parent, child);
-			fileModifiedChecker = new InfoFileModifiedChecker(assetLocation.root().getFileInfo(file));
-			aliasDefinitionsReader = new AliasDefinitionsReader(data, file, assetLocation);
-			aliasDefinitionsWriter = new AliasDefinitionsWriter(data, file, assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding());
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
+		aliasDefinitionsFile = new File(parent, child);
+		persistentAliasDefinitionsData = new PersistentAliasDefinitionsData(assetLocation, aliasDefinitionsFile);
 	}
 	
 	public File getUnderlyingFile() {
-		return file;
+		return aliasDefinitionsFile;
 	}
 	
 	public List<String> aliasNames() throws ContentFileProcessingException {
+		AliasDefinitionsData data = persistentAliasDefinitionsData.getData();
 		List<String> aliasNames = new ArrayList<>();
-		
-		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
-		}
 		
 		for(AliasDefinition aliasDefinition : data.aliasDefinitions) {
 			aliasNames.add(aliasDefinition.getName());
@@ -64,48 +49,32 @@ public class AliasDefinitionsFile {
 		return aliasNames;
 	}
 	
-	public void addAlias(AliasDefinition aliasDefinition) {
-		data.aliasDefinitions.add(aliasDefinition);
+	public void addAlias(AliasDefinition aliasDefinition) throws ContentFileProcessingException {
+		persistentAliasDefinitionsData.getData().aliasDefinitions.add(aliasDefinition);
 	}
 	
 	public List<AliasDefinition> aliases() throws ContentFileProcessingException {
-		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
-		}
-		
-		return data.aliasDefinitions;
+		return persistentAliasDefinitionsData.getData().aliasDefinitions;
 	}
 	
-	public void addScenarioAlias(String scenarioName, AliasOverride scenarioAlias) {
-		data.getScenarioAliases(scenarioAlias.getName()).put(scenarioName, scenarioAlias);
+	public void addScenarioAlias(String scenarioName, AliasOverride scenarioAlias) throws ContentFileProcessingException {
+		persistentAliasDefinitionsData.getData().getScenarioAliases(scenarioAlias.getName()).put(scenarioName, scenarioAlias);
 	}
 	
 	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws ContentFileProcessingException {
-		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
-		}
-		
-		return data.scenarioAliases.get(alias.getName());
+		return persistentAliasDefinitionsData.getData().scenarioAliases.get(alias.getName());
 	}
 	
-	public void addGroupAliasOverride(String groupName, AliasOverride groupAlias) {
-		data.getGroupAliases(groupName).add(groupAlias);
+	public void addGroupAliasOverride(String groupName, AliasOverride groupAlias) throws ContentFileProcessingException {
+		persistentAliasDefinitionsData.getData().getGroupAliases(groupName).add(groupAlias);
 	}
 	
 	public Set<String> groupNames() throws ContentFileProcessingException {
-		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
-		}
-		
-		return data.groupAliases.keySet();
+		return persistentAliasDefinitionsData.getData().groupAliases.keySet();
 	}
 	
 	public List<AliasOverride> groupAliases(String groupName) throws ContentFileProcessingException {
-		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			aliasDefinitionsReader.read();
-		}
-		
-		return ((data.groupAliases.containsKey(groupName)) ? data.groupAliases.get(groupName) : new ArrayList<AliasOverride>());
+		return ((persistentAliasDefinitionsData.getData().groupAliases.containsKey(groupName)) ? persistentAliasDefinitionsData.getData().groupAliases.get(groupName) : new ArrayList<AliasOverride>());
 	}
 	
 	public AliasDefinition getAliasDefinition(String aliasName, String scenarioName, List<String> groupNames) throws ContentFileProcessingException {
@@ -115,7 +84,7 @@ public class AliasDefinitionsFile {
 			for(AliasDefinition nextAliasDefinition : aliases()) {
 				if(nextAliasDefinition.getName().equals(aliasName)) {
 					if(scenarioName != null) {
-						AliasOverride scenarioAlias = data.getScenarioAliases(nextAliasDefinition.getName()).get(scenarioName);
+						AliasOverride scenarioAlias = persistentAliasDefinitionsData.getData().getScenarioAliases(nextAliasDefinition.getName()).get(scenarioName);
 						
 						if(scenarioAlias != null) {
 							nextAliasDefinition = new AliasDefinition(nextAliasDefinition.getName(), scenarioAlias.getClassName(), nextAliasDefinition.getInterfaceName());
@@ -123,7 +92,7 @@ public class AliasDefinitionsFile {
 					}
 					
 					if(aliasDefinition != null) {
-						throw new AmbiguousAliasException(file, aliasName, scenarioName);
+						throw new AmbiguousAliasException(aliasDefinitionsFile, aliasName, scenarioName);
 					}
 					
 					aliasDefinition = nextAliasDefinition;
@@ -131,7 +100,7 @@ public class AliasDefinitionsFile {
 			}
 		}
 		catch(AmbiguousAliasException e) {
-			throw new ContentFileProcessingException(file, e);
+			throw new ContentFileProcessingException(aliasDefinitionsFile, e);
 		}
 		
 		return aliasDefinition;
@@ -144,7 +113,7 @@ public class AliasDefinitionsFile {
 			for(AliasOverride nextGroupAlias : groupAliases(groupName)) {
 				if(nextGroupAlias.getName().equals(aliasName)) {
 					if(aliasOverride != null) {
-						throw new AmbiguousAliasException(file, aliasName, groupNames);
+						throw new AmbiguousAliasException(aliasDefinitionsFile, aliasName, groupNames);
 					}
 					
 					aliasOverride = nextGroupAlias;
@@ -155,7 +124,7 @@ public class AliasDefinitionsFile {
 		return aliasOverride;
 	}
 	
-	public void write() throws IOException {
-		aliasDefinitionsWriter.write();
+	public void write() throws IOException, ContentFileProcessingException {
+		persistentAliasDefinitionsData.writeData();
 	}
 }

@@ -2,7 +2,10 @@ package org.bladerunnerjs.spec.bundling.aspect;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +15,8 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 	private Aspect aspect, otherAspect;
 	private JsLib sdkNamespaceLib, otherSdkNamespaceLib, sdkCommonJsLib, userLib, otherUserLib, sdkJquery, userJquery;
 	private StringBuffer response = new StringBuffer();
+	private Bladeset bladeset;
+	private Blade blade;
 
 	
 	@Before
@@ -23,6 +28,8 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		
 		app = brjs.app("app1");
 		aspect = app.aspect("default");
+		bladeset = app.bladeset("bladeset");
+		blade = bladeset.blade("blade");
 
 		otherAspect = app.aspect("other");
 		userLib = app.jsLib("userLib");
@@ -127,6 +134,41 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("USER jquery-content")
 			.and(response).doesNotContainText("SDK jquery-content");
+	}
+	
+	@Test
+	public void srcDirectoryFullPackageStructureIsOptionalForEveryNodeType() throws Exception {
+		given(sdkNamespaceLib).hasNamespacedJsPackageStyle()
+			.and(otherUserLib).hasNamespacedJsPackageStyle()
+			.and(sdkNamespaceLib).hasClass("NamespacedLibClass")
+			.and(otherUserLib).hasClass("OtherUserLibNamespacedClass")
+			.and(sdkCommonJsLib).hasClass("CommonJSLibClass")
+			.and(userLib).hasClass("UserLibCommonJSClass")
+			.and(aspect).hasClass("AspectClass")
+			.and(bladeset).hasClass("BladesetClass")
+			.and(blade).hasClass("BladeClass")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("Class1",
+					"require('sdkNamespaceLib/NamespacedLibClass');"+
+					"require('otherUserLib/OtherUserLibNamespacedClass');"+
+					"require('sdkCommonJsLib/CommonJSLibClass');"+
+					"require('userLib/UserLibCommonJSClass');"+
+					"require('./AspectClass');"+
+					"require('./bladeset/BladesetClass');"+
+					"require('./bladeset/blade/BladeClass');");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsClasses("NamespacedLibClass", "OtherUserLibNamespacedClass")
+			.and(response).containsCommonJsClasses("CommonJSLibClass", "UserLibCommonJSClass", "AspectClass", "BladesetClass", "BladeClass");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfClassIsInIncorrectLocationAndSrcPathStartsWithAppRequirePrefix() throws Exception {
+		given(aspect).classRequires("App", "appns/mypackage/Class")
+			.and(aspect).indexPageRefersTo("appns.App")
+			.and(bladeset).hasBeenCreated()
+			.and(blade).hasClass("appns/mypkg/Class");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(exceptions).verifyException(InvalidRequirePathException.class, "bladeset-bladeset/blades/blade/src/appns/mypkg/Class.js", "appns/bladeset/blade/*", "appns/mypkg");
 	}
 	
 }

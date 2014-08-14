@@ -60,7 +60,7 @@
 	 * 
 	 * <p>Authors are encouraged specify the presentation node type the control adaptor accepts within the
 	 * package name (e.g.
-	 * <code>br.presenter.control.<b>selectionfield</b>.ExtJsComboBoxControlAdaptor</code>), and to fail
+	 * <code>br.presenter.control.<b>selectionfield</b>.JQueryAutoCompleteControl</code>), and to fail
 	 * fast by throwing a {@link br.presenter.control.InvalidControlModelError} if they are bound
 	 * to the wrong type of presentation node.</p>
 	 * 
