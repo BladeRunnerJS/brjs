@@ -16,18 +16,9 @@ import org.bladerunnerjs.utility.EncodedFileUtil;
 import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasDefinitionsWriter {
-	private final AliasDefinitionsData data;
-	private final File file;
-	private final EncodedFileUtil fileUtil;
-	
-	public AliasDefinitionsWriter(AliasDefinitionsData data, File file, String defaultFileCharacterEncoding) {
-		this.data = data;
-		this.file = file;
-		fileUtil = new EncodedFileUtil(defaultFileCharacterEncoding);
-	}
-	
-	public void write() throws IOException {
+	public static void write(AliasDefinitionsData data, File file, String defaultFileCharacterEncoding) throws IOException {
 		try {
+			EncodedFileUtil fileUtil = new EncodedFileUtil(defaultFileCharacterEncoding);
 			XMLBuilder builder = XMLBuilder.create("aliasDefinitions").ns("http://schema.caplin.com/CaplinTrader/aliasDefinitions");
 			
 			for (AliasDefinition aliasDefinition : data.aliasDefinitions) {

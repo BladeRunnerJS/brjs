@@ -11,12 +11,14 @@ public class BRJSConfCommander {
 	
 	public BRJSConfCommander setJettyPort(int jettyPort) throws Exception {
 		bladerunnerConf.setJettyPort(jettyPort);
+		bladerunnerConf.write();
 		
 		return this;
 	}
 	
 	public BRJSConfCommander setDefaultFileCharacterEncoding(String defaultFileCharacterEncoding) throws Exception {
 		bladerunnerConf.setDefaultFileCharacterEncoding(defaultFileCharacterEncoding);
+		bladerunnerConf.write();
 		
 		return this;
 	}
