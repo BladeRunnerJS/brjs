@@ -1,15 +1,23 @@
 var KnockoutPresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
-var KnockoutModelTree = require('br/knockout/workbench/KnockoutModelTree');
+var PresenterModelTree = require('br/presenter/workbench/ui/PresenterModelTree');
+var PresenterJsTreeModelFactory = require('br/presenter/workbench/ui/PresenterJsTreeModelFactory');
+var KnockoutTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
 
-br.presenter.workbench.ui.PresentationModelViewer = function(oPresentationModel, modelTree) 
+br.presenter.workbench.ui.PresentationModelViewer = function(viewOrPresentationModel, TreeModelClass) 
 {
-	if(modelTree)
+	var treeModel;
+	
+	if(!TreeModelClass || (TreeModelClass instanceof PresenterModelTree))
 	{
-		var KnockoutJsTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
-		var newTreeModel = KnockoutJsTreeModelFactory.createTreeModelFromKnockoutViewModel(oPresentationModel);
-		KnockoutPresentationModelViewer.call(this,newTreeModel);
-	}		
-}
+		treeModel = PresenterJsTreeModelFactory.createTreeModelFromPresentationModel(viewOrPresentationModel);
+	}
+	else
+	{
+		treeModel = KnockoutTreeModelFactory.createTreeModelFromKnockoutViewModel(viewOrPresentationModel);
+	}
+	
+	KnockoutPresentationModelViewer.call(this,treeModel);
+};
 
-br.Core.implement(br.presenter.workbench.ui.PresentationModelViewer, br.workbench.ui.WorkbenchComponent);
 br.Core.extend(br.presenter.workbench.ui.PresentationModelViewer, KnockoutPresentationModelViewer);
+br.Core.implement(br.presenter.workbench.ui.PresentationModelViewer, br.workbench.ui.WorkbenchComponent);
