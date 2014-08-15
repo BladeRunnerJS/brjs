@@ -30,10 +30,10 @@ public class BundleSetCreator {
 		
 		String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 		if(seedFiles.isEmpty()) {
-			logger.debug(Messages.BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, bundlableNode.getClass().getSimpleName(), name);
+			logger.debug(Messages.BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, bundlableNode.getTypeName(), name);
 		}
 		else {
-			logger.debug(Messages.BUNDLABLE_NODE_SEED_FILES_MSG, bundlableNode.getClass().getSimpleName(), name, seedFilePaths(bundlableNode, seedFiles));
+			logger.debug(Messages.BUNDLABLE_NODE_SEED_FILES_MSG, bundlableNode.getTypeName(), name, seedFilePaths(bundlableNode, seedFiles));
 		}
 		
 		logger.debug(Messages.APP_SOURCE_LOCATIONS_MSG, bundlableNode.app().getName(), assetContainerPaths(bundlableNode.app()));

@@ -136,7 +136,7 @@ public abstract class AbstractNode implements Node
 			try {
 				FileUtils.forceMkdir(dir);
 				notifyObservers(new NodeCreatedEvent(), this);
-				logger.debug(Messages.NODE_CREATED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
+				logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
 				rootNode.getFileInfo(dir().getParentFile()).resetLastModified();
 			}
@@ -145,7 +145,7 @@ public abstract class AbstractNode implements Node
 			}
 		}
 		catch(Exception e) {
-			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
+			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getTypeName(), dir().getPath());
 			throw e;
 		}
 	}
@@ -158,12 +158,12 @@ public abstract class AbstractNode implements Node
 			if(this instanceof NamedNode) ((NamedNode) this).assertValidName();
 			
 			notifyObservers(new NodeCreatedEvent(), this);
-			logger.debug(Messages.NODE_CREATED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
+			logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
 			rootNode.getFileInfo(dir().getParentFile()).resetLastModified();
 		}
 		catch(Exception e) {
-			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
+			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getTypeName(), dir().getPath());
 			throw e;
 		}
 	}
@@ -184,7 +184,7 @@ public abstract class AbstractNode implements Node
 			
 			try {
 				FileUtils.deleteDirectory(dir);
-				logger.debug(Messages.NODE_DELETED_LOG_MSG, getClass().getSimpleName(), dir.getPath());
+				logger.debug(Messages.NODE_DELETED_LOG_MSG, getTypeName(), dir.getPath());
 				notifyObservers(new NodeDeletedEvent(), this);
 			}
 			catch(IOException e) {
@@ -192,7 +192,7 @@ public abstract class AbstractNode implements Node
 			}
 		}
 		catch(Exception e) {
-			logger.error(Messages.NODE_DELETION_FAILED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
+			logger.error(Messages.NODE_DELETION_FAILED_LOG_MSG, getTypeName(), dir().getPath());
 			throw e;
 		}
 	}
@@ -346,8 +346,8 @@ public abstract class AbstractNode implements Node
 	public String toString()
 	{
 		if (root() instanceof BRJS) { // check the type since root() is a TestRootNode in some tests
-			return getClass().getSimpleName()+", dir: " + RelativePathUtility.get((BRJS)root(), root().dir(), dir());
+			return getTypeName()+", dir: " + RelativePathUtility.get((BRJS)root(), root().dir(), dir());
 		}
-		return getClass().getSimpleName()+", dir: " + dir().getPath();
+		return getTypeName()+", dir: " + dir().getPath();
 	}
 }

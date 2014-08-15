@@ -387,6 +387,6 @@ public class BRJS extends AbstractBRJSRootNode
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName()+", dir: " + dir().getPath();
+		return getTypeName()+", dir: " + dir().getPath();
 	}
 }

@@ -68,7 +68,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		boolean nodeExistsForPath = findFirstNodeOfClass(nodesForPath, node.getClass()) != null;
 		
 		if (nodeExistsForPath) {
-			throw new NodeAlreadyRegisteredException("A node of type '" + node.getClass().getSimpleName() + 
+			throw new NodeAlreadyRegisteredException("A node of type '" + node.getTypeName() + 
 					"' has already been registered for path '" + getNormalizedPath(node.dir()) + "'");
 		}
 
@@ -85,7 +85,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	public void clearRegisteredNode(Node node) {
 		String normalizedPath = getNormalizedPath(node.dir());
 		List<Node> nodesForPath = nodeCache.get(normalizedPath);
-		nodesForPath.remove(node.getClass().getSimpleName());
+		nodesForPath.remove(node.getTypeName());
 	}
 	
 	@Override

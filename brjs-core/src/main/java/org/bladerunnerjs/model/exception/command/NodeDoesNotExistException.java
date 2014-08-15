@@ -12,7 +12,7 @@ public class NodeDoesNotExistException extends CommandArgumentsException {
 	}
 	
 	public NodeDoesNotExistException(Node node, String nodeName, CommandPlugin commandPlugin) {
-		this(node.getClass().getSimpleName(), nodeName, commandPlugin);
+		this(node.getTypeName(), nodeName, commandPlugin);
 	}
 	
 	public NodeDoesNotExistException(String type, String nodeName, CommandPlugin commandPlugin) {

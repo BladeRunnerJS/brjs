@@ -63,6 +63,6 @@ public class DefaultBladeset extends Bladeset
 
 	@Override
 	public String getTypeName() {
-		return super.getClass().getSimpleName();
+		return super.getTypeName();
 	}
 }
