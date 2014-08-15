@@ -25,10 +25,10 @@
 			}
 
 			function addModelViewer( model, workbench ) {
-				var KnockoutModelTree = require( 'br/knockout/workbench/KnockoutModelTree' );
-				var PresentationModelViewer = require( 'br/presenter/workbench/ui/PresentationModelViewer' );
-				var presentationModelViewer = new PresentationModelViewer(model, KnockoutModelTree);
-				workbench.addToRightWing( presentationModelViewer, "Visualise Knockout View Model", false);
+				var KnockoutJsTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
+				var PresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
+				var presentationModelViewer = new PresentationModelViewer(KnockoutJsTreeModelFactory.createTreeModelFromKnockoutViewModel(model));
+				workbench.addToRightWing(presentationModelViewer, "Visualise Knockout View Model", false);
 			}
 
 			function addComponent( component, workbench  ) {

@@ -1,0 +1,4 @@
+depends: jquery
+js: dist/jstree.min.js
+css: dist/themes/default/style.css
+exports: jQuery
