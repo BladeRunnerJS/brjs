@@ -253,4 +253,10 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public BRJS root() {
 		return bundlableNode.root();
 	}
+	
+	@Override
+	public String getTypeName()
+	{
+		return this.getClass().getSimpleName();
+	}
 }

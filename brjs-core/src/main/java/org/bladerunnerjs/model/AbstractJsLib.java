@@ -68,11 +68,6 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 		}
 		return name;
 	}
-
-	@Override
-	public String getTypeName() {
-		return this.getClass().getSimpleName();
-	}
 	
 	@Override
 	public boolean isValidName()

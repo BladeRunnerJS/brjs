@@ -16,6 +16,7 @@ public interface Node {
 	File dir();
 	File file(String filePath);
 	File[] memoizedScopeFiles();
+	String getTypeName();
 	boolean dirExists();
 	boolean exists();
 	boolean containsFile(String filePath);

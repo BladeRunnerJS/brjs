@@ -251,4 +251,10 @@ public class MockRootNode implements RootNode
 	{
 		return false;
 	}
+
+	@Override
+	public String getTypeName()
+	{
+		return this.getClass().getSimpleName();
+	}
 }

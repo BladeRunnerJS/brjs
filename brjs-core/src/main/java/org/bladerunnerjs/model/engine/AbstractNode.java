@@ -85,6 +85,12 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
+	public String getTypeName()
+	{
+		return this.getClass().getSimpleName();
+	}
+	
+	@Override
 	public boolean dirExists()
 	{
 		if((dirInfo == null) && (dir != null)) {

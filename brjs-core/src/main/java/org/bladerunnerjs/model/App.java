@@ -148,11 +148,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 	}
 	
 	@Override
-	public String getTypeName() {
-		return this.getClass().getSimpleName();
-	}
-	
-	@Override
 	public boolean isValidName()
 	{
 		return NameValidator.isValidDirectoryName(name);
