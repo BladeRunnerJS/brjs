@@ -121,21 +121,13 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 			}
 		}
 		
-		List<AssetLocation> assetLocationsContainingThemes = new ArrayList<AssetLocation>();
-		
-		for(AssetLocation al : assetLocations)
+		if(themeExists(assetLocations, origTheme, matchLocation))
 		{
-			if(sourceThemeExists(al, origTheme, matchLocation))
+			for(AssetLocation al : assetLocations)
 			{
-				assetLocationsContainingThemes.add(al);
-			}
-		}
-
-		if(assetLocationsContainingThemes.size() > 0)
-		{
-			for(AssetLocation al : assetLocationsContainingThemes)
-			{
-				copyTheme(al, origTheme, newTheme);
+				if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
+					copyTheme(al, origTheme, newTheme);
+				}
 			}
 		}
 		else
@@ -166,14 +158,22 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 		logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, RelativePathUtility.get(brjs, app.dir(), srcDir), RelativePathUtility.get(brjs, app.dir(), dstDir));			
 	}
 	
-	boolean sourceThemeExists(AssetLocation location, String origTheme, String matchLocation) {	
+	private boolean themeExists(List<AssetLocation> assetLocations, String origTheme, String matchLocation) {
+		for(AssetLocation al : assetLocations) {
+			if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean themeExistsWithinAssetLocation(AssetLocation location, String origTheme, String matchLocation) {
 		matchLocation = Paths.get(matchLocation).toString();
 		String pathToCompare = Paths.get(RelativePathUtility.get(brjs, app.dir(), location.dir())).toString();
 		
-		boolean themeExists = location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
-				&& pathToCompare.contains(matchLocation);		
-		
-		return themeExists; 
+		return location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
+				&& pathToCompare.contains(matchLocation);
 	}
 	
 }
