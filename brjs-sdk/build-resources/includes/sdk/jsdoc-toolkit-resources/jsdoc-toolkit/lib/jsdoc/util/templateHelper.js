@@ -99,7 +99,7 @@ var getUniqueFilename = exports.getUniqueFilename = function(str) {
     // and in case we've now stripped the entire basename (uncommon, but possible):
     basename = basename.length ? basename : '_';
 
-    return makeFilenameUnique(basename, str) + exports.fileExtension;
+    return str.replace("module:", "").replace(/\//g, "_") + exports.fileExtension;
 };
 
 // two-way lookup
