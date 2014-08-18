@@ -120,14 +120,25 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 				}
 			}
 		}
-
-		boolean sourceThemeExists = false;
+		
+		List<AssetLocation> assetLocationsContainingThemes = new ArrayList<AssetLocation>();
+		
 		for(AssetLocation al : assetLocations)
 		{
-			sourceThemeExists = copyTheme(al, origTheme, newTheme, matchLocation) ? true : sourceThemeExists;
+			if(sourceThemeExists(al, origTheme, matchLocation))
+			{
+				assetLocationsContainingThemes.add(al);
+			}
 		}
 
-		if(!sourceThemeExists)
+		if(assetLocationsContainingThemes.size() > 0)
+		{
+			for(AssetLocation al : assetLocationsContainingThemes)
+			{
+				copyTheme(al, origTheme, newTheme);
+			}
+		}
+		else
 		{
 			logger.warn(Messages.THEME_FOLDER_DOES_NOT_EXIST, origTheme);
 		}
@@ -135,35 +146,34 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 		return 0;
 	}
 	
-	boolean copyTheme(AssetLocation location, String origTheme, String newTheme, String matchLocation) throws CommandOperationException{
-		//check if newTheme already exists
+	void copyTheme(AssetLocation location, String origTheme, String newTheme) throws CommandOperationException{
+		 File srcDir = new File(location.dir().getPath());
+		 File dstDir = new File(location.dir().getParentFile().getPath(), newTheme);	 			 
+		 
+		 if(dstDir.exists())
+		 {
+			 logger.warn(Messages.THEME_FOLDER_EXISTS, RelativePathUtility.get(brjs, brjs.dir(), dstDir));
+			 return;
+		 }
+		 
+		 try {
+				FileUtils.copyDirectory(srcDir, dstDir);
+		 } 
+		 catch (IOException e) {
+				e.printStackTrace();
+		 }
+		
+		logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, RelativePathUtility.get(brjs, app.dir(), srcDir), RelativePathUtility.get(brjs, app.dir(), dstDir));			
+	}
+	
+	boolean sourceThemeExists(AssetLocation location, String origTheme, String matchLocation) {	
 		matchLocation = Paths.get(matchLocation).toString();
 		String pathToCompare = Paths.get(RelativePathUtility.get(brjs, app.dir(), location.dir())).toString();
-		boolean themeFound = false;
 		
-		if (location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
-				&& pathToCompare.contains(matchLocation) ) 
-		{
-			themeFound = true;
-			 File srcDir = new File(location.dir().getPath());
-			 File dstDir = new File(location.dir().getParentFile().getPath(), newTheme);	 			 
-			 
-			 if(dstDir.exists())
-			 {
-				 logger.warn(Messages.THEME_FOLDER_EXISTS, RelativePathUtility.get(brjs, brjs.dir(), dstDir));
-				 return themeFound;
-			 }
-			 
-			try {
-				FileUtils.copyDirectory(srcDir, dstDir);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, RelativePathUtility.get(brjs, app.dir(), srcDir), RelativePathUtility.get(brjs, app.dir(), dstDir));
-			
-		 }	
-		return themeFound;
+		boolean themeExists = location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
+				&& pathToCompare.contains(matchLocation);		
+		
+		return themeExists; 
 	}
 	
 }
