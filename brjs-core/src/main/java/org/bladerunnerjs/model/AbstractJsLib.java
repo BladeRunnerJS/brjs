@@ -10,6 +10,7 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -23,6 +24,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	private Node parent;
 	private File[] scopeFiles;
 	
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private final MemoizedValue<Boolean> isNamespaceEnforcedValue = new MemoizedValue<Boolean>("AbstractJsLib.isNamespaceEnforcedValue", root(), file("no-namespace-enforcement"));
 	
 	public AbstractJsLib(RootNode rootNode, Node parent, File dir, String name)
@@ -143,5 +145,17 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	public void runTests(TestType... testTypes)
 	{
 		TestRunner.runTests(testTypes);
+	}
+	
+	@Override
+	public List<TypedTestPack> testTypes()
+	{
+		return testTypes.list();
+	}
+	
+	@Override
+	public TypedTestPack testType(String testTypeName)
+	{
+		return testTypes.item(testTypeName);
 	}
 }

@@ -30,12 +30,12 @@ public class TypedTestPack extends SourceResources implements NamedNode
 		this.name = name;
 	}
 	
-	public static NodeList<TypedTestPack> createNodeSet(Node node)
+	public static <T extends TypedTestPack> NodeList<T> createNodeSet(Node node, Class<T> nodeListClass)
 	{
 		if (node.file("tests").isDirectory()) {
-			return new NodeList<>(node, TypedTestPack.class, "tests", "^test-");			
+			return new NodeList<T>(node, nodeListClass, "tests", "^test-");			
 		}
-		return new NodeList<>(node, TypedTestPack.class, ".", "^test-");			
+		return new NodeList<T>(node, nodeListClass, ".", "^test-");
 	}
 	
 	@Override

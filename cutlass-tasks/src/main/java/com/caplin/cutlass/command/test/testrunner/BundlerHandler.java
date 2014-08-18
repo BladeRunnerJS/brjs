@@ -9,9 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -26,9 +24,9 @@ public class BundlerHandler
 	private App app;
 	protected Map<String,String> legacyBundlerHandlerPaths = new HashMap<>();
 	protected Map<String,String> logicalBundlerHandlerPaths = new HashMap<>();
-	private BRJS brjs;
+	private BundlableNode bundlableNode;
 	
-	public BundlerHandler(BRJS brjs, App app)
+	public BundlerHandler(BundlableNode bundlableNode)
 	{
 		// legacy paths - these are matched against the last part of the bundle path - e.g. js/js.bundle would match js.bundle
 		legacyBundlerHandlerPaths.put("js.bundle", "js/dev/combined/bundle.js");
@@ -45,12 +43,11 @@ public class BundlerHandler
 		logicalBundlerHandlerPaths.put("bundle.xml", "bundle.xml");
 		logicalBundlerHandlerPaths.put("bundle.html", "bundle.html");
 		
-		this.brjs = brjs;
-		this.app = app;
+		this.bundlableNode = bundlableNode;
 	}
 
 	
-	public void createBundleFile(File bundleFile, String bundlePath, String version) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException
+	public void createBundleFile(File bundleFile, String bundlePath, String version) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
 	{
 		if (bundlePath.contains("\\"))
 		{
@@ -60,9 +57,10 @@ public class BundlerHandler
 		bundleFile.getParentFile().mkdirs();
 		String modelRequestPath = getModelRequestPath(bundlePath);
 		try (OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
-			ResponseContent content = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentAccessor(app), version); ) 
+			ResponseContent content = BundleSetRequestHandler.handle(new JsTestDriverBundleSet(bundlableNode.getBundleSet()), modelRequestPath, new StaticContentAccessor(app), version); )
 		{
 			content.write( bundleFileOutputStream );
+			bundleFileOutputStream.flush();
 		}
 		
 	}
@@ -98,21 +96,5 @@ public class BundlerHandler
 		}
 		
 		return null;
-	}
-
-	private ResponseContent handleBundleRequest(File bundleFile, String brjsRequestPath, UrlContentAccessor outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
-	{
-		try {
-			BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
-			
-			if(bundlableNode == null) {
-				throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundle file: " + bundleFile.getAbsolutePath());
-			}
-			
-			return BundleSetRequestHandler.handle(new JsTestDriverBundleSet(bundlableNode.getBundleSet()), brjsRequestPath, outputStream, version);
-		}
-		catch (ModelOperationException e) {
-			throw new ContentProcessingException(e);
-		}
 	}
 }

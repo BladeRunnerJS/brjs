@@ -28,8 +28,15 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	public App app() {
 		Node node = this.parentNode();
 		
-		while(!(node instanceof App)) {
+		while(!(node instanceof App) && node != null) {
 			node = node.parentNode();
+		}
+		
+		if (node == null) {
+			AssetContainer assetContainer = root().locateAncestorNodeOfClass(dir().getParentFile(), AssetContainer.class);
+			if (assetContainer != null) {
+				return assetContainer.app();				
+			}
 		}
 		
 		return (App) node;

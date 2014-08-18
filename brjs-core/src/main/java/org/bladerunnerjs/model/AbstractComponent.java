@@ -11,7 +11,7 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public abstract class AbstractComponent extends AbstractAssetContainer implements TestableNode
 {
-	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	
 	public AbstractComponent(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);

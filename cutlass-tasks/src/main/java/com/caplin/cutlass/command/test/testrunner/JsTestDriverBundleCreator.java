@@ -10,10 +10,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -28,10 +29,11 @@ public class JsTestDriverBundleCreator
 	public static final String BUNDLES_DIR_NAME = "bundles";
 	
 	public static void createRequiredBundles(BRJS brjs, File jsTestDriverConf)
-			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException
+			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
 	{
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
 		FileUtility.deleteDirectoryFromBottomUp(bundlesDir);
+		FileUtils.deleteQuietly(bundlesDir);
 		bundlesDir.mkdir();
 		
 		Map<String, Object> configMap = getMapFromYamlConfig(jsTestDriverConf);
@@ -43,12 +45,7 @@ public class JsTestDriverBundleCreator
 			throw new RuntimeException("Unable to find test pack which represents the path " + jsTestDriverConf.getParentFile());
 		}
 		
-		App app = testPack.app();
-		if(app == null){
-			throw new RuntimeException("Cannot find app instance");
-		}
-		
-		BundlerHandler bundlerHandler = new BundlerHandler(brjs, app);
+		BundlerHandler bundlerHandler = new BundlerHandler(testPack);
 		
 		for (String resourceToLoad : getListOfResourcesToLoad(configMap))
 		{

@@ -21,19 +21,17 @@ public class BundlerHandlerSpecTest extends SpecTest
 	{
 		return new JSTDTestPackCommander(testPack);
 	}
-	
+
 	protected JSTDTestPackVerifier thenJstdTests(TestPack testPack)
 	{
 		return new JSTDTestPackVerifier(testPack);
 	}
-	
-	
-	
-	
-	public class JSTDTestPackCommander {
+
+	public class JSTDTestPackCommander
+	{
 
 		private TestPack testPack;
-		
+
 		public JSTDTestPackCommander(TestPack testPack)
 		{
 			this.testPack = testPack;
@@ -42,16 +40,17 @@ public class BundlerHandlerSpecTest extends SpecTest
 		public void runWithPaths(String requestPath) throws Exception
 		{
 			File bundleFile = testPack.file(requestPath);
-			String bundlePath = StringUtils.substringAfterLast(bundleFile.getAbsolutePath(), JsTestDriverBundleCreator.BUNDLES_DIR_NAME+File.separator);
+			String bundlePath = StringUtils.substringAfterLast(bundleFile.getAbsolutePath(), JsTestDriverBundleCreator.BUNDLES_DIR_NAME + File.separator);
 			bundlePath = StringUtils.replace(bundlePath, "\\", "/");
-			new BundlerHandler(brjs, testPack.app()).createBundleFile(bundleFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
+			new BundlerHandler(testPack).createBundleFile(bundleFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
 		}
 	}
-	
-	public class JSTDTestPackVerifier {
-		
+
+	public class JSTDTestPackVerifier
+	{
+
 		private TestPack testPack;
-		
+
 		public JSTDTestPackVerifier(TestPack testPack)
 		{
 			this.testPack = testPack;
@@ -63,7 +62,7 @@ public class BundlerHandlerSpecTest extends SpecTest
 			String bundleFileContents = FileUtils.readFileToString(bundleFile);
 			if (!bundleFileContents.contains(expectedContents))
 			{
-				assertEquals( "bundle file didnt contain expected text", expectedContents, bundleFileContents );				
+				assertEquals("bundle file didnt contain expected text", expectedContents, bundleFileContents);
 			}
 		}
 
@@ -73,11 +72,10 @@ public class BundlerHandlerSpecTest extends SpecTest
 			String bundleFileContents = FileUtils.readFileToString(bundleFile);
 			if (bundleFileContents.contains(doesNotContainContents))
 			{
-				assertEquals( "bundle file didnt contain expected text", doesNotContainContents, bundleFileContents );				
+				assertEquals("bundle file didnt contain expected text", doesNotContainContents, bundleFileContents);
 			}
 		}
-		
+
 	}
-	
-	
+
 }

@@ -2,6 +2,8 @@ package org.bladerunnerjs.spec.bundling.testpack;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -15,6 +17,8 @@ public class TestPackBundlingTest extends SpecTest
 	private TestPack aspectUTs, aspectATs;
 	private StringBuffer response = new StringBuffer();
 	private TestPack implicitDefaultAspectUTs;
+	private SdkJsLib sdkLib;
+	private JsLib appLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -27,6 +31,8 @@ public class TestPackBundlingTest extends SpecTest
 			aspectUTs = aspect.testType("unit").testTech("TEST_TECH");
 			aspectATs = aspect.testType("acceptance").testTech("TEST_TECH");
 			implicitDefaultAspectUTs = aspect.testType("unit").defaultTestTech();
+			sdkLib = brjs.sdkLib("lib");
+			appLib = app.jsLib("lib");
 	}
 	
 	@Test
@@ -107,9 +113,30 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void testTechDirIsOptional() throws Exception {
 		given(aspect).hasClasses("appns/Class1")
-    		.and(implicitDefaultAspectUTs).testRequires("pkg/test.js", "appns/Class1");
+    		.and(implicitDefaultAspectUTs).testRequires("test.js", "appns/Class1");
+		when( implicitDefaultAspectUTs ).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(implicitDefaultAspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"))
-    		.and(aspect).hasFile("test-unit/tests/pkg/test.js");
+    		.and(aspect).hasFile("test-unit/tests/test.js");
+	}
+	
+	@Test
+	public void testTechDirIsOptionalInSdkLibs() throws Exception {
+		given(sdkLib).hasClasses("lib/Class1")
+			.and( sdkLib.testType("unit").defaultTestTech() ).testRequires("test.js", "lib/Class1");
+		when( sdkLib.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then( sdkLib.testType("unit").defaultTestTech() ).bundledFilesEquals(sdkLib.assetLocation("src").file("lib/Class1.js"))
+			.and(response).containsClasses("Class1")
+			.and( sdkLib ).hasFile("test-unit/tests/test.js");
+	}
+	
+	@Test
+	public void testTechDirIsOptionalInAppLibs() throws Exception {
+		given(appLib).hasClasses("lib/Class1")
+			.and( appLib.testType("unit").defaultTestTech() ).testRequires("test.js", "lib/Class1");
+		when( appLib.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then( appLib.testType("unit").defaultTestTech() ).bundledFilesEquals(appLib.assetLocation("src").file("lib/Class1.js"))
+			.and(response).containsClasses("Class1")
+			.and( appLib ).hasFile("test-unit/tests/test.js");
 	}
 	
 }
