@@ -119,6 +119,12 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 	
 	@Override
+	public boolean exists()
+	{
+		return bundlableNode.exists();
+	}
+	
+	@Override
 	public boolean containsFile(String filePath) {
 		return bundlableNode.containsFile(filePath);
 	}
@@ -246,5 +252,11 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	@Override
 	public BRJS root() {
 		return bundlableNode.root();
+	}
+	
+	@Override
+	public String getTypeName()
+	{
+		return this.getClass().getSimpleName();
 	}
 }

@@ -11,6 +11,9 @@ br.Core.thirdparty('jsmockito');
 	var testCase = {
 
 		setUp: function() {
+			JsHamcrest.Integration.JsTestDriver();
+			JsMockito.Integration.JsTestDriver();
+			
 			tooltipNode = new br.presenter.node.ToolTipNode();
 			errorMonitor = new br.presenter.util.ErrorMonitor(tooltipNode);
 		},

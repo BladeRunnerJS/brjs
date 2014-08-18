@@ -6,6 +6,7 @@ import java.util.List;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
@@ -13,15 +14,17 @@ public interface RootNode extends Node {
 	Logger logger(Class<?> classRef);	
 	boolean isRootDir(File dir);
 	Node locateFirstAncestorNode(File file);
+	Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
 	FileInfo getFileInfo(File dir);
 	List<FileInfo> getFileInfoSet(File[] files);
 	IO io();
 	
-	// these two methods, implemented by AbstractRootNode, are used by AbstractNode
-	void registerNode(Node node, boolean makeUnique) throws NodeAlreadyRegisteredException;
+	boolean isNodeRegistered(Node node);
 	void registerNode(Node node) throws NodeAlreadyRegisteredException;
 	void clearRegisteredNode(Node node);
-	Node getRegisteredNode(File childPath);
+	Node getRegisteredNode(File childPath) throws MultipleNodesForPathException;
+	Node getRegisteredNode(File childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException;
+	List<Node> getRegisteredNodes(File childPath);
 }

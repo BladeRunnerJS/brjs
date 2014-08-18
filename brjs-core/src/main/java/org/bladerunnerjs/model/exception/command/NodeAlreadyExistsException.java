@@ -7,6 +7,6 @@ public class NodeAlreadyExistsException extends CommandArgumentsException {
 	private static final long serialVersionUID = 1L;
 	
 	public NodeAlreadyExistsException(NamedNode node, CommandPlugin commandPlugin) {
-		super(node.getClass().getSimpleName() + " '" + node.getName() + "' already exists", commandPlugin);
+		super(node.getTypeName() + " '" + node.getName() + "' already exists", commandPlugin);
 	}
 }

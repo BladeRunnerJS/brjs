@@ -1,48 +1,23 @@
-/**
- * @implements br.workbench.ui.WorkbenchComponent
- */
-br.presenter.workbench.ui.PresentationModelViewer = function(oPresentationModel, ModelTree)
+var KnockoutPresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
+var PresenterModelTree = require('br/presenter/workbench/ui/PresenterModelTree');
+var PresenterJsTreeModelFactory = require('br/presenter/workbench/ui/PresenterJsTreeModelFactory');
+var KnockoutTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
+
+br.presenter.workbench.ui.PresentationModelViewer = function(viewOrPresentationModel, TreeModelClass) 
 {
-	if (!oPresentationModel)
+	var treeModel;
+	
+	if(!TreeModelClass || (TreeModelClass instanceof PresenterModelTree))
 	{
-		throw "PresentationModelViewer expects a presentation model";
+		treeModel = PresenterJsTreeModelFactory.createTreeModelFromPresentationModel(viewOrPresentationModel);
 	}
-
-	ModelTree = ModelTree || br.presenter.workbench.ui.PresentationModelTree;
-
-	this.m_PresentationModel = oPresentationModel;
-	this.m_oTree = new ModelTree(oPresentationModel);
+	else
+	{
+		treeModel = KnockoutTreeModelFactory.createTreeModelFromKnockoutViewModel(viewOrPresentationModel);
+	}
 	
-	this.m_eElement = document.createElement("div");
-	br.util.ElementUtility.addClassName(this.m_eElement, "presentation-model-viewier");
-	
-	this.m_eElement.appendChild(this._getFormElement());
-	this.m_eElement.appendChild(this.m_oTree.getElement());
+	KnockoutPresentationModelViewer.call(this,treeModel);
 };
 
+br.Core.extend(br.presenter.workbench.ui.PresentationModelViewer, KnockoutPresentationModelViewer);
 br.Core.implement(br.presenter.workbench.ui.PresentationModelViewer, br.workbench.ui.WorkbenchComponent);
-
-br.presenter.workbench.ui.PresentationModelViewer.prototype._getFormElement = function()
-{
-	this.m_PresentationModel = new br.presenter.workbench.model.TreeViewerPM(this);
-	this.m_oComponent = new br.presenter.component.PresenterComponent("br.presenter.tree-viewer", this.m_PresentationModel);
-	var eElement = this.m_oComponent.getElement();
-	
-	return eElement;	
-};
-
-br.presenter.workbench.ui.PresentationModelViewer.prototype.getElement = function()
-{
-	return this.m_eElement;
-};
-
-br.presenter.workbench.ui.PresentationModelViewer.prototype.search = function(sValue)
-{
-	this.m_oTree.search(sValue);
-};
-
-br.presenter.workbench.ui.PresentationModelViewer.prototype.close = function()
-{
-	this.m_eElement.parentNode.removeChild(this.m_eElement);
-	this.m_oComponent.onClose();
-};

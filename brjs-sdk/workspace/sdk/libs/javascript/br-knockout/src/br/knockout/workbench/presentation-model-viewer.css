@@ -1,0 +1,13 @@
+#presentation-model-viewer #tree-view {
+	background-color: white;
+	border: 1px solid #333;
+}
+
+#presentation-model-viewer #tree-view.jstree {
+	font-size:10px;
+	overflow:hidden;
+}
+
+#presentation-model-viewer .jstree-leaf .jstree-anchor .jstree-icon {
+	background-position-x: -195px;
+}

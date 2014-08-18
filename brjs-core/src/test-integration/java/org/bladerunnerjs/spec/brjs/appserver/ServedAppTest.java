@@ -32,6 +32,8 @@ public class ServedAppTest extends SpecTest
 	DirNode sdkLibsDir;
 	private Aspect anotherAspect;
 	private Bladeset bladeset;
+	private Aspect defaultAspect;
+	private App appWithDefaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -49,6 +51,8 @@ public class ServedAppTest extends SpecTest
 			app = brjs.userApp("app");
 			systemApp = brjs.systemApp("app");
 			aspect = app.aspect("default");
+			appWithDefaultAspect = brjs.app("anotherApp");
+			defaultAspect = appWithDefaultAspect.defaultAspect();
 			anotherAspect = app.aspect("another");
 			systemAspect = systemApp.aspect("default");
 			bladeset = app.bladeset("bs");
@@ -288,5 +292,15 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).containsFileWithContents("unbundled-resources/file.txt", "unbundled resources file content")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/unbundled-resources/file.txt", "unbundled resources file content");
+	}
+	
+	@Test
+	public void optionalAspectCanBeUsedAsDefaultAspect() throws Exception
+	{
+		given(appWithDefaultAspect).hasBeenCreated()
+			.and(defaultAspect).containsFileWithContents("index.html", "aspect index.html")
+			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/anotherApp/en/", "aspect index.html");
 	}
 }

@@ -43,14 +43,9 @@ public final class TestRootNode extends AbstractRootNode
 		try {
 			super.registerNode(node);
 		}
-		catch(NodeAlreadyRegisteredException e) {
-			if (node.dir().exists()) {
-				node.ready();
-			}
-			// do nothing -- the node engine test code was designed at a time when we didn't fail fast if you registered multiple nodes for the same directory path
-			// additionally, these tests are now of less importance now that the domain model is more thoroughly tested
+		catch(NodeAlreadyRegisteredException ex) {
+			throw new RuntimeException(ex);
 		}
-		
 	};
 	
 	@Override

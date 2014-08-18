@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
+import org.bladerunnerjs.model.exception.DuplicateAssetContainerException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -94,6 +95,25 @@ public class BladesetTest extends SpecTest {
 			.and(app).hasDir("blades/myBlade");
 		then(app.defaultBladeset()).dirExists()
 			.and(app.defaultBladeset().blade("myBlade")).dirExists();
+	}
+	
+	@Test
+	public void defaultBladesetCanHaveItsOwnDirectory() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).hasDir("default-bladeset/blades/myBlade");
+		then(app.defaultBladeset()).dirExists()
+			.and(app.defaultBladeset().blade("myBlade")).dirExists();
+	}
+	
+	@Test
+	public void exceptionIsThrownIfThereAreTwoDefaultBladesets() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).hasDir("default-bladeset/blades/myBlade")
+    		.and(app).hasDir("blades/myBlade");
+		when(app).bladesetsListed();
+		then(exceptions).verifyException(DuplicateAssetContainerException.class, "default Bladeset", "apps/app", "apps/app/default-bladeset");
 	}
 	
 }

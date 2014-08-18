@@ -40,7 +40,7 @@ public class BRJSNodeHelper {
 	}
 	
 	public static String getTemplateName(BRJSNode node) {
-		return node.getClass().getSimpleName().toLowerCase();
+		return node.getTypeName().toLowerCase();
 	}
 	
 	private static Map<String, String> getNodeTransformations(BRJSNode node) throws ModelUpdateException {
