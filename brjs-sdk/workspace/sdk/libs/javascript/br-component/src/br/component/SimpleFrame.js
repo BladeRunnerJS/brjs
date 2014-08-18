@@ -1,6 +1,14 @@
+/**
+* @module br/component/SimpleFrame
+*/
+
 var br = require('br/Core');
 var Frame = require('br/component/Frame');
 
+/**
+ * @class
+ * @alias module:br/component/SimpleFrame
+ */
 function SimpleFrame(component, width, height) {
 	this.width = width;
 	this.height = height;

@@ -1,9 +1,15 @@
 "use strict";
 
+/**
+* @module br/i18n/LocalisedNumber
+*/
+
 var Errors = require('br/Errors');
 
 /**
  * @private
+ * @class
+ * @alias module:br/i18n/LocalisedNumber
  */
 function LocalisedNumber(number) {
 	if (!isValidNumber(number)) {

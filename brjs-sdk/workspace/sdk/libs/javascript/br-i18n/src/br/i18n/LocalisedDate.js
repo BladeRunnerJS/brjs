@@ -1,10 +1,16 @@
 "use strict";
 
+/**
+* @module br/i18n/LocalisedDate
+*/
+
 var moment = require('momentjs');
 var i18n = require('br/I18n');
 
 /**
  * @private
+ * @class
+ * @alias module:br/i18n/LocalisedDate
  */
 function LocalisedDate(date) {
 	this.date = date;

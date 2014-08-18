@@ -13,11 +13,12 @@ var Emitter = require( 'emitr' );
 var br = require( 'br/Core' );
 
 /**
-* Create the event hub. This generally isn't required as it's already construced
-* and made available to apps via the [Service Registry]{@link module:br/ServiceRegistry}
-*
-* @alias module:br/EventHub
 * @class
+* @alias module:br/EventHub
+* 
+* @classdesc
+* Create the event hub. This generally isn't required as it's already constructed
+* and made available to apps via the [Service Registry]{@link module:br/ServiceRegistry}
 */
 var EventHub = function() {
   Emitter.apply( this );

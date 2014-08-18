@@ -1,6 +1,17 @@
 "use strict";
 
 /**
+* @module br/AliasRegistry
+*/
+
+var br = require('br/Core');
+var Errors = require('./Errors');
+
+/**
+* @class
+* @alias module:br/AliasRegistry
+* 
+* @classdesc
 * The <code>AliasRegistry</code> provides access to the aliases used within
 * the application.
 *
@@ -23,16 +34,6 @@
 * <p>Another useful facet of aliases is that they can be used to automatically
 * discover all of the classes which implement a particular interface, which
 * makes it a good candidate for creating SPI type, auto-discovery mechanisms.</p>
-*
-* @module br/AliasRegistry
-*/
-
-var br = require('br/Core');
-var Errors = require('./Errors');
-
-/**
-* @class
-* @alias module:br/AliasRegistry
 */
 var AliasRegistry = function()
 {

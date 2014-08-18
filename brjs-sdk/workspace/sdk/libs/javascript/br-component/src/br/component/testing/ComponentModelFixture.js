@@ -1,16 +1,21 @@
 "use strict";
 
+/**
+ * @module br/component/testing/ComponentModelFixture
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var Fixture = require('br/test/Fixture');
 
 /**
- * The <code>ComponentModelFixture</code> interface
- *
- * @name br.component.testing.ComponentModelFixture
  * @class
  * @interface
- * @extends br.test.Fixture
+ * @alias module:br/component/testing/ComponentModelFixture
+ * @extends module:br/test/Fixture
+ * 
+ * @classdesc
+ * The <code>ComponentModelFixture</code> interface.
  */
 function ComponentModelFixture() {};
 

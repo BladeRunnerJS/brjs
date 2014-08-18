@@ -1,3 +1,7 @@
+/**
+ * @module br/component/testing/ComponentFixture
+ */
+
 var br = require('br/Core');
 var AliasRegistry = require('br/AliasRegistry');
 var Errors = require('br/Errors');
@@ -8,24 +12,23 @@ var ViewFixture = require('br/test/ViewFixture');
 var Utility = require('br/core/Utility');
 
 /**
- * Constructs a <code>ComponentFixture</code>.
- *
- * @name br.component.testing.ComponentFixture
  * @class
- * @constructor
- *
- * @param {String} sXml the component XML required to create the component. Required.
- * @param {br.component.testing.ComponentModelFixture} oModelFixture the presentation model fixture. Required.
- * @param {br.test.ViewFixture} oViewFixture the view fixture. Optional.
- *
+ * @alias module:br/component/testing/ComponentFixture
+ * @implements module:br/test/Fixture
+ * 
+ * @classdesc
+ * Constructs a <code>ComponentFixture</code>.
+ * 
  * The <code>ComponentFixture</code> serves to create components using the ComponentFactory when these are
  * required in the system under test.
  *
  * <p>In addition to creating and opening the component, the ComponentFixture defines several sub-fixtures
  * to be added to the test runner, enabling the testing and manipulation of the view and presentation model
  * of the component.</p>
- *
- * @implements module:br/test/Fixture
+ * 
+ * @param {String} sXml the component XML required to create the component. Required.
+ * @param {br.component.testing.ComponentModelFixture} oModelFixture the presentation model fixture. Required.
+ * @param {br.test.ViewFixture} oViewFixture the view fixture. Optional.
  */
 function ComponentFixture(sXml, oModelFixture, oViewFixture) {
 	//TODO: This check should be an isA instead of a fulfills.

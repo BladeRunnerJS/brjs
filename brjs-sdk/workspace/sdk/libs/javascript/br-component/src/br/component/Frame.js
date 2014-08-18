@@ -1,18 +1,22 @@
+/**
+* @module br/component/Frame
+*/
+
 var Emitter = require('emitr');
 var Errors = require('br/Errors');
 
 /**
- * @name br.component.Frame
  * @beta
  * @class
+ * @alias module:br/component/Frame
+ * 
+ * @classdesc
  * Instances of <code>Frame</code> are used to wrap components before they are displayed on the
  * screen. They are created automatically by whatever code is controlling the view and passed
  * in to the component that they are displaying.
  *
  * <p>Frame is an abstract class. The specific implementations will interface with some sort of
  * layout manager.</p>
- *
- * @constructor
  */
 function Frame() {
 	/**

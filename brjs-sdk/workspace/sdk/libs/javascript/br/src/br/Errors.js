@@ -2,24 +2,25 @@
 
 /**
 * @module br/Errors
-* @exports CustomError
 */
 
 var br = require('br/Core');
 
 /**
+* @class
+* @alias module:br/Errors.CustomError
+* 
+* @classdesc
 * Constructs a new <code>Error</code> of the provided type.
-*
+* 
 * <code>br/Errors</code> extends the built in <code>Error</code> and allows the
 * error type to be specified in the constructor. The <code>name</code>
 * property is set to the specified type.
-*
-* @class
+* 
 * @param {String} type The error type to be thrown.
 * @param {String} message A human-readable description of the error.
 * @param {String} [fileName] (Optional) The name of the file containing the code that caused the error.
 * @param {int} [lineNumber] (Optional) The line number of the code that caused the error.
-* @alias module:br/Errors.CustomError
 */
 function CustomError(type, message, fileName, lineNumber) {
 	this.name = type || "";

@@ -1,9 +1,17 @@
 "use strict";
 
+/**
+* @module br/i18n/LocalisedTime
+*/
+
 var Errors = require('br/Errors');
 var i18n = require('br/I18n');
 
-/** @private */
+/**
+ * @private
+ * @class
+ * @alias module:br/i18n/LocalisedTime
+ */
 function LocalisedTime(time) {
 	if (!isValidTime(time)) {
 		var exceptionMessage = "A LocalisedTime object could not be instantiated from: " + time;

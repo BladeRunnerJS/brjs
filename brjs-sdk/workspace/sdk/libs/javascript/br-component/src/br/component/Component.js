@@ -7,22 +7,23 @@
 var Errors = require('br/Errors');
 
 /**
+* @class
 * @interface
-* @class This interface must be implemented by a presentation-level class. A
-*        presentation-level class represents something that occupies physical
-*        space on the page, such as the content of a panel or a
-*        dialog box.
-*
+* @alias module:br/component/Component
+* 
+* @classdesc
+* This interface must be implemented by a presentation-level class. A
+* presentation-level class represents something that occupies physical
+* space on the page, such as the content of a panel or a
+* dialog box.
+* 
 * <p> Each implementation of a Component represents a different <b>Component type</b>,
 * for example a Grid or a Trade Panel.
-*
+* 
 * <p>A component receives a Frame, on which it can set its content element and attach
 * event listeners.
 *
 * <p>Components that can have their state saved should also implement br.component.Serializable.
-*
-* @class
-* @alias module:br/component/Component
 */
 function Component() {}
 
