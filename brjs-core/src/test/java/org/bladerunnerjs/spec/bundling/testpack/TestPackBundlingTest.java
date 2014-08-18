@@ -14,6 +14,7 @@ public class TestPackBundlingTest extends SpecTest
 	private Aspect aspect;
 	private TestPack aspectUTs, aspectATs;
 	private StringBuffer response = new StringBuffer();
+	private TestPack implicitDefaultAspectUTs;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -25,6 +26,7 @@ public class TestPackBundlingTest extends SpecTest
 			aspect = app.aspect("default");
 			aspectUTs = aspect.testType("unit").testTech("TEST_TECH");
 			aspectATs = aspect.testType("acceptance").testTech("TEST_TECH");
+			implicitDefaultAspectUTs = aspect.testType("unit").defaultTestTech();
 	}
 	
 	@Test
@@ -102,6 +104,12 @@ public class TestPackBundlingTest extends SpecTest
 		then(response).containsCommonJsClasses("appns/Class1");
 	}
 	
-	
+	@Test
+	public void testTechDirIsOptional() throws Exception {
+		given(aspect).hasClasses("appns/Class1")
+    		.and(implicitDefaultAspectUTs).testRequires("pkg/test.js", "appns/Class1");
+    	then(implicitDefaultAspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"))
+    		.and(aspect).hasFile("test-unit/tests/pkg/test.js");
+	}
 	
 }
