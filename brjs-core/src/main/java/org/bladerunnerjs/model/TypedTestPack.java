@@ -12,8 +12,10 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.DuplicateAssetContainerException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public class TypedTestPack extends SourceResources implements NamedNode
@@ -72,19 +74,27 @@ public class TypedTestPack extends SourceResources implements NamedNode
 
 	public TestPack testTech(String technologyName)
 	{
-		if (technologyName.equals(App.DEFAULT_CONTAINER_NAME)) {
+		if (technologyName.equals(App.DEFAULT_CONTAINER_NAME)) {	
 			return defaultTestTech();
+		}
+		if (hasSingleDefaultTestTech()) {
+			throw new DuplicateAssetContainerException("The test pack at '%s' directly contains test configuration and therefore should not contain sub test tech nodes, yet a named test tech was requested.", 
+					RelativePathUtility.get(root(), root().dir(), dir()) );
 		}
 		return technologyTestPacks.item(technologyName);
 	}
 	
 	public TestPack defaultTestTech()
 	{
+		if (!hasSingleDefaultTestTech() && !technologyTestPacks.list().isEmpty()) {
+			throw new DuplicateAssetContainerException("The test pack at '%s' contains test tech nodes and therefore should not contain a 'deafult' test tech, yet the default test tech node was requested.", 
+					RelativePathUtility.get(root(), root().dir(), dir()) );
+		}
 		return defaultTestPack.item();
 	}
 	
 	private boolean hasSingleDefaultTestTech() {
-		for (File file : rootNode.getFileInfo(dir()).filesAndDirs()) {
+		for (File file : root().getFileInfo(dir()).filesAndDirs()) {
 			if (file.getName().equals("tests") || file.getName().endsWith(".conf")) {
 				return true;
 			}
