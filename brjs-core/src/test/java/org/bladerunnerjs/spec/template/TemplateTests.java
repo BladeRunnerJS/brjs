@@ -78,7 +78,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset).hasFilesAndDirs(
 				Arrays.asList("src/appns/bs/BsClass.js", "themes/common/style.css"),
-				Arrays.asList("resources", "resources/html", "src", "tests", "themes")
+				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes")
 		);
 	}
 	
@@ -99,7 +99,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade).hasFilesAndDirs(
 				Arrays.asList("src/appns/bs/b1/B1ViewModel.js", "themes/common/style.css"),
-				Arrays.asList("resources", "resources/html", "src", "tests", "workbench", "themes")
+				Arrays.asList("resources", "resources/html", "src", "test-unit", "workbench", "themes")
 		);
 	}
 	

@@ -13,6 +13,7 @@ public class TestPackBundlingTest extends SpecTest
 	private App app;
 	private Aspect aspect;
 	private TestPack aspectUTs, aspectATs;
+	private StringBuffer response = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -64,4 +65,43 @@ public class TestPackBundlingTest extends SpecTest
     		.and(aspectUTs).testRequires("pkg/test.js", "appns/Class1");
     	then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
 	}
+	
+	@Test
+	public void aspectTestsDirectoryCanStillBeUsed() throws Exception {
+		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
+		given(brjs).containsFileWithContents("apps/app/default-aspect/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
+			.and( brjs.app("app").aspect("default") ).hasClass("appns/Class1");
+		when( brjs.app("app").aspect("default").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("Class1");
+	}
+	
+	@Test
+	public void bladesetTestsDirectoryCanStillBeUsed() throws Exception {
+		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
+		given(brjs).containsFileWithContents("apps/app/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+			.and( brjs.app("app").bladeset("bs") ).hasClass("appns/bs/Class1");
+		when( brjs.app("app").bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns/bs/Class1");
+	}
+	
+	@Test
+	public void bladeTestsDirectoryCanStillBeUsed() throws Exception {
+		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
+		given(brjs).containsFileWithContents("apps/app/bs-bladeset/blades/b1/tests/test-type/tech/tests/myTest.js", "require('appns/bs/b1/Class1');")
+			.and( brjs.app("app").bladeset("bs").blade("b1") ).hasClass("appns/bs/b1/Class1");
+		when( brjs.app("app").bladeset("bs").blade("b1").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns/bs/b1/Class1");
+	}
+	
+	@Test
+	public void workbenchTestsDirectoryCanStillBeUsed() throws Exception {
+		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
+		given( brjs ).containsFileWithContents("apps/app/bs-bladeset/blades/b1/workbench/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
+			.and( brjs.app("app").bladeset("bs").blade("b1").workbench() ).hasClass("Class1");
+		when( brjs.app("app").bladeset("bs").blade("b1").workbench().testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns/Class1");
+	}
+	
+	
+	
 }

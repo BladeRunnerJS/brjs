@@ -23,13 +23,14 @@ public class TypedTestPack extends SourceResources implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		
-		// TODO: we should never call registerInitializedNode() from a non-final class
 	}
 	
 	public static NodeList<TypedTestPack> createNodeSet(Node node)
 	{
-		return new NodeList<>(node, TypedTestPack.class, "tests", "^test-");
+		if (node.file("tests").isDirectory()) {
+			return new NodeList<>(node, TypedTestPack.class, "tests", "^test-");			
+		}
+		return new NodeList<>(node, TypedTestPack.class, ".", "^test-");			
 	}
 	
 	@Override
