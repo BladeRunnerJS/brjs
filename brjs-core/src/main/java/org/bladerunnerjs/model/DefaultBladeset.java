@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 public class DefaultBladeset extends Bladeset
 {
 	
-	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, ".", null);
+	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	
 	public DefaultBladeset(RootNode rootNode, Node parent, File dir)
 	{
@@ -25,7 +25,13 @@ public class DefaultBladeset extends Bladeset
 	@Override
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
-		super.populate();
+		BRJSNodeHelper.populate(this, true);
+	}
+	
+	@Override
+	public void create() throws InvalidNameException, ModelUpdateException
+	{
+		super.createDefaultNode();
 	}
 	
 	@Override
@@ -50,4 +56,13 @@ public class DefaultBladeset extends Bladeset
 		return blades.item(bladeName);
 	}
 
+	public boolean exists()
+	{
+		return file("blades").isDirectory();
+	}
+
+	@Override
+	public String getTypeName() {
+		return super.getTypeName();
+	}
 }

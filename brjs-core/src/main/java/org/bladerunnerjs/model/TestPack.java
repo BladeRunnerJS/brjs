@@ -98,7 +98,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public String getTemplateName()
 	{
-		return testScope().getClass().getSimpleName().toLowerCase() + "-" + name;
+		return testScope().getTypeName().toLowerCase() + "-" + name;
 	}
 	
 	public AssetContainer testScope() {

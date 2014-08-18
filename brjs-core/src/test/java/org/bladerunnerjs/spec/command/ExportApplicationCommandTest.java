@@ -152,5 +152,23 @@ public class ExportApplicationCommandTest extends SpecTest {
 		then(brjs).hasFile("target/app1.zip")
 			.and(brjs).hasFile("target/app1/app1/default-aspect/src/appns/Class1.js");
 	}
+	
+	@Test
+	public void defaultAspectsAreCorrectlyExported() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app.defaultAspect()).indexPageHasContent("default aspect index");
+		when(brjs).runCommand("export-app", "app1")
+			.and(brjs).zipFileIsExtractedTo("generated/exported-apps/app1.zip", "generated/exported-apps/app1");
+		then(brjs).fileContentsContains("generated/exported-apps/app1/app1/index.html", "default aspect index");
+	}
+	
+	@Test
+	public void defaultBladesetsAreCorrectlyExported() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app.defaultBladeset().blade("b1")).classFileHasContent("Class1", "default-bladeset/b1/Class");
+		when(brjs).runCommand("export-app", "app1")
+			.and(brjs).zipFileIsExtractedTo("generated/exported-apps/app1.zip", "generated/exported-apps/app1");
+		then(brjs).fileContentsContains("generated/exported-apps/app1/app1/blades/b1/src/Class1.js", "default-bladeset/b1/Class");
+	}
 
 }

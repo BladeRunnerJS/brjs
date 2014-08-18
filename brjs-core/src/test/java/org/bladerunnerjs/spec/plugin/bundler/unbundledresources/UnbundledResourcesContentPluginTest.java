@@ -25,6 +25,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private App sysapp;
 	private Aspect sysappAspect;
 	private File unbundledResources;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -34,6 +35,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			appAspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			unbundledResources = appAspect.file("unbundled-resources");
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
@@ -157,6 +159,18 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
     		.and(appAspect).containsFileCopiedFrom("unbundled-resources/br-logo.png", "src/test/resources/br-logo.png");
     	when(appAspect).requestReceivedInDev("unbundled-resources/br-logo.png", binaryResponse);
     	then(binaryResponseFile).sameAsFile("src/test/resources/br-logo.png");
+	}
+	
+	@Test
+	public void unbundledResourcesCanBeUsedFromDefaultBladesets() throws Exception {
+		given(defaultAspect).hasBeenCreated()
+    		.and(defaultAspect).containsFileWithContents("unbundled-resources/someFile.txt", "default aspect unbundled-resources file");
+    	when(unbundledResourcesPlugin).getPossibleProdRequests(defaultAspect, requestsList)
+    		.and(defaultAspect).requestReceivedInDev("unbundled-resources/someFile.txt", response);
+    	thenRequests(requestsList).entriesEqual(
+    			"/unbundled-resources/someFile.txt",
+    			"unbundled-resources/someFile.txt")
+    		.and(response).textEquals("default aspect unbundled-resources file");
 	}
 	
 }

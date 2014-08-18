@@ -154,7 +154,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public BundlableNode locateFirstBundlableAncestorNode(File file) throws InvalidBundlableNodeException
 	{
-		Node node = locateFirstAncestorNode(file);
+		Node node = locateFirstAncestorNode(file, BundlableNode.class);
 		BundlableNode bundlableNode = null;
 		
 		while((node != null) && (bundlableNode == null))
@@ -387,6 +387,6 @@ public class BRJS extends AbstractBRJSRootNode
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName()+", dir: " + dir().getPath();
+		return getTypeName()+", dir: " + dir().getPath();
 	}
 }

@@ -36,7 +36,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			bladeWithSubstringOfAnotherBlade = bladeset.blade("b1b");
-			defaultBladeset = app.bladeset("default");
+			defaultBladeset = app.defaultBladeset();
 			blade1InDefaultBladeset = defaultBladeset.blade("b1");
 			blade2InDefaultBladeset = defaultBladeset.blade("b2");
 	}

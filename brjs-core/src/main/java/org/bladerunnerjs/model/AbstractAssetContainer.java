@@ -109,7 +109,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			});
 	}
 	
-	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, AssetLocationPlugin assetLocationPlugin ){
+	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, AssetLocationPlugin assetLocationPlugin ) {
 		
 		if (!assetLocations.containsKey(locationPath)) {
 			AssetLocation newAssetLocation;
@@ -130,20 +130,17 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			assetLocations.put(locationPath, newAssetLocation);
 		}
 	}
-
-	//TODO: have a proper solution to know when duplicate node names are valid				
+	
 	private void initAndCacheAssetLocation(String locationPath, AssetLocation assetLocation)
 	{
-		try {
-			rootNode.registerNode(assetLocation, false);
-		} catch (NodeAlreadyRegisteredException e) {
-			try {
-				rootNode.registerNode(assetLocation, true);
-			} catch (NodeAlreadyRegisteredException e1) {
-				throw new RuntimeException(e);
-			}
-			
+		try
+		{
+			rootNode.registerNode(assetLocation);
 		}
+		catch (NodeAlreadyRegisteredException ex)
+		{
+			throw new RuntimeException(ex);
+		}	
 		cachedAssetLocations.put(locationPath, assetLocation);
 	}
 }

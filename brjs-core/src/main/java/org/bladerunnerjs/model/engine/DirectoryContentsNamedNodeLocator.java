@@ -11,12 +11,14 @@ public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 	private String subDirPath;
 	private String dirNameFilter;
 	private RootNode rootNode;
+	private String dirNameExcludeFilter;
 	
-	public DirectoryContentsNamedNodeLocator(RootNode rootNode, String subDirPath, String dirNameFilter)
+	public DirectoryContentsNamedNodeLocator(RootNode rootNode, String subDirPath, String dirNameFilter, String dirNameExcludeFilter)
 	{
 		this.rootNode = rootNode;
 		this.subDirPath = subDirPath;
 		this.dirNameFilter = dirNameFilter;
+		this.dirNameExcludeFilter = dirNameExcludeFilter;
 	}
 	
 	@Override
@@ -28,14 +30,19 @@ public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 		if(childDir.exists())
 		{
 			String dirNameMatcher = getDirNameMatcher(dirNameFilter);
+			String dirNameExcludeMatcher = getDirNameMatcher(dirNameExcludeFilter);
 			
 			for(File file : rootNode.getFileInfo(childDir).dirs())
 			{
 				FileInfo fileInfo = rootNode.getFileInfo(file);
 				
-				if( fileInfo.isDirectory() && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
+				if ( fileInfo.isDirectory() && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
 				{
 					String childName = file.getName();
+					
+					if (dirNameExcludeMatcher != null && childName.matches(dirNameExcludeMatcher)) {
+						break;
+					}
 					
 					if(dirNameFilter != null)
 					{

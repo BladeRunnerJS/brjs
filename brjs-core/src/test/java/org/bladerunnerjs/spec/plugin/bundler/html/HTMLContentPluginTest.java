@@ -23,6 +23,7 @@ public class HTMLContentPluginTest extends SpecTest
 	private NamedDirNode workbenchTemplate;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -33,11 +34,12 @@ public class HTMLContentPluginTest extends SpecTest
 		
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
 			workbenchTemplate = brjs.template("workbench");
-			defaultBladeset = app.bladeset("default");
+			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 			
 			given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
@@ -204,6 +206,15 @@ public class HTMLContentPluginTest extends SpecTest
 			.and(aspect).indexPageRequires("appns/b1/BladeClass");
 		when(aspect).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsText("Blade Content");
+	}
+	
+	@Test
+	public void htmlInDefaultAspectCanBeBundled() throws Exception {
+		given(defaultAspect).hasClass("appns/AspectClass")
+			.and(defaultAspect).containsResourceFileWithContents("html/view.html", "<div id='appns.my.view'>Aspect Content</div>")
+			.and(defaultAspect).indexPageRequires("appns/AspectClass");
+		when(defaultAspect).requestReceivedInDev("html/bundle.html", response);
+		then(response).containsText("Aspect Content");
 	}
 	
 }

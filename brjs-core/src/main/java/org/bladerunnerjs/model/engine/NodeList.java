@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 
 public class NodeList<N extends Node> {
 	private final Node node;
@@ -19,14 +20,24 @@ public class NodeList<N extends Node> {
 	
 	public NodeList(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter)
 	{
+		this(node, nodeClass, subDirPath, dirNameFilter, null);
+	}
+	
+	public NodeList(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter, String dirNameExcludeFilter)
+	{
 		this.node = node;
 		this.nodeClass = nodeClass;
-		namedNodeLocators.add(new DirectoryContentsNamedNodeLocator(node.root(), subDirPath, dirNameFilter));
+		namedNodeLocators.add(new DirectoryContentsNamedNodeLocator(node.root(), subDirPath, dirNameFilter, dirNameExcludeFilter));
 	}
 	
 	public void addAlternateLocation(String subDirPath, String dirNameFilter)
 	{
-		namedNodeLocators.add(new DirectoryContentsNamedNodeLocator(node.root(), subDirPath, dirNameFilter));
+		addAlternateLocation(subDirPath, dirNameFilter, null);
+	}
+	
+	public void addAlternateLocation(String subDirPath, String dirNameFilter, String dirNameExcludeFilter)
+	{
+		namedNodeLocators.add(new DirectoryContentsNamedNodeLocator(node.root(), subDirPath, dirNameFilter, dirNameExcludeFilter));
 	}
 	
 	public void addAdditionalNamedLocation(String itemName, String subDirPath)
@@ -38,7 +49,15 @@ public class NodeList<N extends Node> {
 	public N item(String logicalNodeName) {
 		if (!namedNodes.containsKey(logicalNodeName)) {
 			File childPath = getNodeDir(logicalNodeName);
-			N child = (N) node.root().getRegisteredNode(childPath);
+			N child;
+			try
+			{
+				child = (N) node.root().getRegisteredNode(childPath, nodeClass);
+			}
+			catch (MultipleNodesForPathException ex)
+			{
+				throw new RuntimeException(ex);
+			}
 			
 			if (child == null) {
 				child = (N) NodeCreator.createNode(node.root(), node, childPath, logicalNodeName, nodeClass);

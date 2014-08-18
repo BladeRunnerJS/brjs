@@ -34,8 +34,8 @@ public class CreateBladeCommandTest extends SpecTest {
 			bladeset = app.bladeset("bladeset");
 			blade = bladeset.blade("blade");
 			badBlade = bladeset.blade("!$%$^");
-			blade1InDefaultBladeset = app.bladeset("default").blade("blade1");
-			blade2InDefaultBladeset = app.bladeset("default").blade("blade2");
+			blade1InDefaultBladeset = app.defaultBladeset().blade("blade1");
+			blade2InDefaultBladeset = app.defaultBladeset().blade("blade2");
 	}
 	
 	
