@@ -6,7 +6,7 @@ var Errors = require('br/Errors');
 
 /**
  * @interface
- * @description
+ * @classdesc
  * A ValidationResultListener is notified when a validator completes.
  */
 br.presenter.validator.ValidationResultListener = function() {};

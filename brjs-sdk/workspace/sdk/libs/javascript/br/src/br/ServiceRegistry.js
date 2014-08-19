@@ -8,7 +8,7 @@
 * @class
 * @alias module:br/ServiceRegistry
 * 
-* @description
+* @classdesc
 * The <code>ServiceRegistry</code> is used to allow a given application access to application
 * services. The <code>ServiceRegistry</code> is a static class and does not need to be constructed.
 * 

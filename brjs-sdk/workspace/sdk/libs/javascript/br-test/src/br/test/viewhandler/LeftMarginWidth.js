@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/LeftMarginWidth
- * @description
+ * @classdesc
  * <code>LeftMarginWidth ViewFixtureHandler</code> can be used to test the left margin width of an element.
  * Example usage:
  * <p>

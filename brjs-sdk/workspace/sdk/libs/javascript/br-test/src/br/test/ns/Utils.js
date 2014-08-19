@@ -9,7 +9,7 @@ br.Core.thirdparty('jquery');
 br.Core.thirdparty('presenter-knockout');
 
 /**
-* @description
+* @classdesc
 * Utility class containing static methods that can be useful for tests.
 */
 var nsUtils = function() {};

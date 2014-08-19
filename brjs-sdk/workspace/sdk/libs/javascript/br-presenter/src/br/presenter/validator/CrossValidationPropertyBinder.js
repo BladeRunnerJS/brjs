@@ -5,7 +5,7 @@
 /**
  * @singleton
  * 
- * @description
+ * @classdesc
  * The <code>CrossValidationPropertyBinder</code> is used to associate a single
  * {@link module:br/presenter/validator/CrossPropertyValidator} instance with multiple
  * {@link module:br/presenter/property/Property} instances.

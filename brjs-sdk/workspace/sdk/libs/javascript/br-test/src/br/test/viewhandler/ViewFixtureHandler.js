@@ -8,7 +8,7 @@ var Errors = require('br/Errors');
 
 /**
  * @alias module:br/test/viewhandler/ViewFixtureHandler
- * @description
+ * @classdesc
  * <p>Classes implementing <code>ViewFixtureHandler</code> interface are used by <code>ViewFixture</code> to interact
  * with the elements in the rendered view.</p>
  * 

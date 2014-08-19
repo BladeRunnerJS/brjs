@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/UpperCaseFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Converts a string to upper case.
  * 
  * <p><code>UpperCaseFormatter</code> is typically used with Presenter, but can be invoked programmatically

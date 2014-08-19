@@ -10,7 +10,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/HasClass
- * @description
+ * @classdesc
  * <code>HasClass ViewFixtureHandler</code> can be used to verify that a view element
  * has a particular class. Example usage:
  * <p>

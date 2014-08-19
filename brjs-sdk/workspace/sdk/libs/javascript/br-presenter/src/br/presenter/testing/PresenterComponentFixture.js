@@ -7,7 +7,7 @@ br.Core.thirdparty("presenter-knockout");
 /**
  * Constructs a <code>br.presenter.testing.PresenterComponentFixture</code>.
  * 
- * @description
+ * @classdesc
  * 
  * The <code>PresenterComponentFixture</code> serves to create presenter components in order to test the 
  * component behavior.

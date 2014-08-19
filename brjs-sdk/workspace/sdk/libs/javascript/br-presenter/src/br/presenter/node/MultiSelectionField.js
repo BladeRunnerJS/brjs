@@ -7,7 +7,7 @@
  * @alias module:br/presenter/node/MultiSelectionField
  * @extends module:br/presenter/node/PresentationNode
  * 
- * @description
+ * @classdesc
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model a multi-selection field on screen.
  * 

@@ -9,7 +9,7 @@ br.Core.thirdparty("jquery");
  * @alias module:br/presenter/control/datefield/JQueryDatePickerControl
  * @implements module:br/presenter/control/ControlAdaptor
  * 
- * @description
+ * @classdesc
  * A control adaptor that allows the JQuery Calendar control to be used to render instances
  * of {@link module:br/presenter/node/DateField} within presenter.
  * This class is constructed by presenter automatically on your behalf.

@@ -7,7 +7,7 @@
  * @alias module:br/presenter/node/Field
  * @extends module:br/presenter/node/PresentationNode
  * 
- * @description
+ * @classdesc
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model an input field on screen.
  * 

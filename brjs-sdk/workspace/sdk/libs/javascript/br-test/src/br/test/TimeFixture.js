@@ -10,7 +10,7 @@ var Fixture = require('br/test/Fixture');
 
 /**
  * @alias module:br/test/TimeFixture
- * @description
+ * @classdesc
  *
  * <code>TimeFixture</code> allows you to control when callbacks passed to window.setTimeout() and window.setInterval() 
  *  are executed.<br/>

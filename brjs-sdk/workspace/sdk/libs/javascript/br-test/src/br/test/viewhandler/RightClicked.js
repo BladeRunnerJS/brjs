@@ -11,7 +11,7 @@ var Utils = require('br/test/Utils');
 
 /**
  * @alias module:br/test/viewhandler/RightClicked
- * @description
+ * @classdesc
  * <code>RightClicked ViewFixtureHandler</code> can be used to trigger <code>contextmenu</code> event for a view element.
  * Example usage:
  * <p>

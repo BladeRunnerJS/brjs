@@ -10,7 +10,7 @@ br.Core.thirdparty("jquery");
  * @extends module:br/presenter/control/ControlAdaptor
  * @extends module:br/presenter/property/PropertyListener
  * 
- * @description
+ * @classdesc
  * Provides an input box that supports auto complete when used in conjunction with a 
  * {@link module:br/presenter/node/AutoCompleteSelectionField}.
  *

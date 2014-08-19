@@ -3,7 +3,7 @@
  */
 
 /**
- * @description
+ * @classdesc
  *
  * Matches a date string and converts it to a specified output format.
  * <p/>

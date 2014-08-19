@@ -6,7 +6,7 @@
  * Create a new <code>Snapshot</code> instance containing the current state
  * of the given properties.
  * 
- * @description
+ * @classdesc
  * <p>The snapshot class allows the state of a collection of properties to be preserved,
  * so that it becomes possible to roll the properties back to a known state at a future
  * point in time. The {@link module:br/presenter/property/Properties} class may be helpful

@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/NullValueFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Substitutes text when the value is <code>null</code>, <code>undefined</code>, or the empty string.
  * 
  * <p><code>NullValueFormatter</code> is typically used with Presenter, but can be invoked programmatically

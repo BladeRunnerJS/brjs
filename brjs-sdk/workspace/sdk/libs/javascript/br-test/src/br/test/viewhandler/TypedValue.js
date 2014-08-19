@@ -13,7 +13,7 @@ var Utils = require('br/test/Utils');
 
 /**
  * @alias module:br/test/viewhandler/TypedValue
- * @description
+ * @classdesc
  * <code>TypedValue ViewFixtureHandler</code> can be used to simulate typing a value into an input view element.
  * Example usage:
  * <p>

@@ -8,7 +8,7 @@
  * @implements module:br/presenter/formatter/Formatter
  * @singleton
  * 
- * @description
+ * @classdesc
  * Converts the number to a percentage.
  * 
  * <p><code>PercentFormatter<code/> is typically used with Presenter, but can be invoked programmatically

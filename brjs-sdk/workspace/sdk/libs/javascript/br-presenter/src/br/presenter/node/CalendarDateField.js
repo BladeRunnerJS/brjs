@@ -7,7 +7,7 @@
  * @alias module:br/presenter/node/CalendarDateField
  * @extends module:br/presenter/node/DateField
  * 
- * @description
+ * @classdesc
  * Represents a DateField that can be updated with a calendar.
  * 
  * @param vDate The initial date

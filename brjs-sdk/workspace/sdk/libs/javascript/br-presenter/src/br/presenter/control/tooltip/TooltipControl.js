@@ -7,7 +7,7 @@
  * @alias module:br/presenter/control/tooltip/TooltipControl
  * @implements module:br/presenter/control/ControlAdaptor
  * 
- * @description
+ * @classdesc
  * A presenter control that places a tooltip next to the field defined by the  {@link module:br/presenter/node/ToolTipNode}.
  * This class is constructed by presenter automatically on your behalf.
  * 

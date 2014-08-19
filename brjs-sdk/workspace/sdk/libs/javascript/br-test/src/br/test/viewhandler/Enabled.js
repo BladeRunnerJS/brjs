@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/Enabled
- * @description
+ * @classdesc
  * <code>Enabled ViewFixtureHandler</code> can be used to enable and disable a view element
  * by setting the <code>disabled<code> attribute.
  * Example usage:

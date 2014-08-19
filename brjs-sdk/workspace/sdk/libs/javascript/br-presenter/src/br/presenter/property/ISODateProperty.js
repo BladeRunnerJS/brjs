@@ -6,7 +6,7 @@ br.Core.thirdparty("momentjs");
 /**
  * Constructs a new <code>ISODateProperty</code> instance.
  *
- * @description
+ * @classdesc
  * <code>ISODateProperty</code> is a {@link module:br/presenter/property/WritableProperty},
  * representing an ISO date
  *

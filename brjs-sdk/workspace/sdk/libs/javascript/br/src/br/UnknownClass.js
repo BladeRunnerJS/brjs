@@ -9,7 +9,7 @@
  * @class
  * @alias module:br/UnknownClass
  * 
- * @description
+ * @classdesc
  * The class that's used to represent an 'abstract' alias.
  */
 function UnknownClass() {

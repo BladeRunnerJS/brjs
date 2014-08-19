@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/FocusIn
- * @description
+ * @classdesc
  * <code>FocusIn ViewFixtureHandler</code> can be used to trigger <code>focusin</code> on a view element.
  * Example usage:
  * <p>

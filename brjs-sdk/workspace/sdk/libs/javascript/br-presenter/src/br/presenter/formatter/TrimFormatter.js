@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/TrimFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Trims whitespace from boths ends of the string.
  */
 br.presenter.formatter.TrimFormatter = function() {

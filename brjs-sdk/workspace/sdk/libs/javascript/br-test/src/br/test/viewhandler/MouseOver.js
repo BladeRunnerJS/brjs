@@ -11,7 +11,7 @@ var Utils = require('br/test/Utils');
 
 /**
  * @alias module:br/test/viewhandler/MouseOver
- * @description
+ * @classdesc
  * <code>MouseOver ViewFixtureHandler</code> can be used to trigger <code>mouseover</code> event for a view element.
  * Example usage:
  * <p>

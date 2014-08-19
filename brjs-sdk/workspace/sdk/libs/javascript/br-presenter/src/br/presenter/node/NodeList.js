@@ -10,7 +10,7 @@
  * @alias module:br/presenter/node/NodeList
  * @extends module:br/presenter/node/PresentationNode
  * 
- * @description
+ * @classdesc
  * <code>NodeList</code> is a {@link module:br/presenter/node/PresentationNode}, that is itself a
  * list of presentation nodes.
  * 

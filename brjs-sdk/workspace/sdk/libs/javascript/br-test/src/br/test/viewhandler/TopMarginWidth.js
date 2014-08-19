@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/TopMarginWidth
- * @description
+ * @classdesc
  * <code>TopMarginWidth ViewFixtureHandler</code> can be used to test the top margin width of an element.
  * Example usage:
  * <p>

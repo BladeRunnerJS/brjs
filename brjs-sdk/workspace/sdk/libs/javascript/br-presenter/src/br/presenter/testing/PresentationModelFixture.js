@@ -5,7 +5,7 @@
 /**
  * Constructs a <code>br.presenter.testing.PresentationModelFixture</code>.
  * 
- * @description
+ * @classdesc
  * 
  * The <code>PresentationModelFixture</code> serves to manipulate and verify the state of the presentation
  * model of a presenter component. 

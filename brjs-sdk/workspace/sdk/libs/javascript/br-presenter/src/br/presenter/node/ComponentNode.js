@@ -7,7 +7,7 @@
  * @alias module:br/presenter/node/ComponentNode
  * @extends module:br/presenter/node/PresentationNode
  * 
- * @description
+ * @classdesc
  * Allows components to be embedded within a presentation model so that they can be displayed as part of the template.
  * 
  * <p><code>Component</code> instances can be embedded within a template as follows:</p>

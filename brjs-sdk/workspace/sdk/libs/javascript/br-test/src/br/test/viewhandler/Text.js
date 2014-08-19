@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/Text
- * @description
+ * @classdesc
  * <code>Text ViewFixtureHandler</code> can be used to set or get <code>text</code> property of a view element.
  * Example usage:
  * <p>

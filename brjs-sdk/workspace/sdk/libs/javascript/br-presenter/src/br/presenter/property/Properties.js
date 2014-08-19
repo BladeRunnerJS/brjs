@@ -6,7 +6,7 @@
  * Constructs a new <code>Properties</code> instance containing the given list
  * of {@link module:br/presenter/property/Property} objects.
  * 
- * @description
+ * @classdesc
  * A class used to hold collections of properties, and providing utility methods for
  * performing operations over those collections.
  * 

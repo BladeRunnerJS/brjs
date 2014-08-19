@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/LocalisedAmountFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Formats a number into a localised string representation.
  * <p/>
  * <code>LocalisedAmountFormatter</code> Formats a number to a configuarble number of decimal placess

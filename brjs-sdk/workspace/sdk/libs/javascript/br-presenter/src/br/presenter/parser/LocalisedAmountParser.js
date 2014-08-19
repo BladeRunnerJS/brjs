@@ -3,7 +3,7 @@
  */
 
 /**
- * @description
+ * @classdesc
  * 
  * Parses an amount containing a thousands, millions or billions token into a number.
  * <p/>

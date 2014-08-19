@@ -7,7 +7,7 @@
  * @alias module:br/presenter/node/AutoCompleteSelectionField
  * @extends module:br/presenter/node/SelectionField
  * 
- * @description
+ * @classdesc
  * Provides a model for auto complete data, typically used with an Auto Complete Box.
  * 
  * @param {module:br/presenter/property/Property} oProperty The initial value of the auto complete field.

@@ -6,7 +6,7 @@ var Errors = require('br/Errors');
 
 /**
  * This is an interface and should not be constructed.
- * @description
+ * @classdesc
  * @interface
  * A validator is a piece of code that can determine whether particular input should be considered valid.
  * 

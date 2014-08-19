@@ -3,7 +3,7 @@
  */
 
 /**
- * @description
+ * @classdesc
  * 
  * Parses an amount and strips any thousands separators.  
  * <p/>

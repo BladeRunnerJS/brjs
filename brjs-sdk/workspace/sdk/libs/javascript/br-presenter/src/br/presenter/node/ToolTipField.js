@@ -5,7 +5,7 @@
 /**
  * Constructs a new instance of <code>ToolTipField</code>.
  *
- * @description
+ * @classdesc
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model an input field on screen with a tool tip box that will be displayed when
  * a validation error has been produced.

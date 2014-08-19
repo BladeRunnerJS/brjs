@@ -7,7 +7,7 @@
  * @alias module:br/presenter/control/InvalidControlModelError
  * @extends module:br/Errors/CustomError
  * 
- * @description
+ * @classdesc
  * The exception thrown when {@link module:br/presenter/control/ControlAdaptor#setPresentationNode} is invoked with an
  * incompatible presentation node for the control being used.
  * 

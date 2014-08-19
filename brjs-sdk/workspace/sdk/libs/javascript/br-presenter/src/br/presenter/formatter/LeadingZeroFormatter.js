@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/LeadingZeroFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Pads the integer part of a number with as many leading zeros needed to reach the specified length.
  * <p/>
  * <code>LeadingZeroFormatter</code> is typically used with Presenter, but can be invoked programmatically

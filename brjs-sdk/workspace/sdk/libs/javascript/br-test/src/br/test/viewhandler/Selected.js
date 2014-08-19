@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/Selected
- * @description
+ * @classdesc
  * <code>Selected ViewFixtureHandler</code> can be used to get or set <code>selected</code>
  * property of an OPTION view element.
  * Example usage:

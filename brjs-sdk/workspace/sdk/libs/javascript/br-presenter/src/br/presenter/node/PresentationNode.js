@@ -5,7 +5,7 @@
 /**
  * Constructs a new instance of <code>PresentationNode</code>.
  *
- * @description
+ * @classdesc
  * Base class of all complex objects (nodes) within a presentation model.
  *
  * <p>A {@link module:br/presenter/PresentationModel} is a tree of <code>PresentationNode</code>

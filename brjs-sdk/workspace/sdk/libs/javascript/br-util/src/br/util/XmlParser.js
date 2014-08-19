@@ -12,7 +12,7 @@
 /**
  * @alias module:br/util/XmlParser
  *
- * @description
+ * @classdesc
  * Utility class that provides methods for parsing XML strings into Document Objects. The object is a singleton so
  *  br.util.XmlParser should be used to obtain an instance of an <code>XmlParser</code>.
  *

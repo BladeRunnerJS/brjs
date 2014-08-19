@@ -10,7 +10,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/ClassName
- * @description
+ * @classdesc
  * <code>ClassName ViewFixtureHandler</code> can be used to get a class of a view element.
  * Example usage:
  * <p>

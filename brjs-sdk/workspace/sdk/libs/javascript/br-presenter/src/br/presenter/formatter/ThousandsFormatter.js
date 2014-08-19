@@ -7,7 +7,7 @@
  * @alias module:br/presenter/formatter/ThousandsFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Adds a separator character for each 'thousand' position (e.g. 1,000,000).
  * 
  * <p><code>ThousandsFormatter</code> is typically used with Presenter, but can be invoked programmatically

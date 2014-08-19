@@ -7,7 +7,7 @@
  * @alias module:br/presenter/node/Button
  * @extends module:br/presenter/node/PresentationNode
  * 
- * @description
+ * @classdesc
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model a button on screen.
  * 

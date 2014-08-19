@@ -8,7 +8,7 @@
  * @implements module:br/presenter/control/ControlAdaptor
  * @implements module:br/presenter/property/PropertyListener
  * 
- * @description
+ * @classdesc
  * A provided toggle-switch control that can be used to render instances
  * of {@link module:br/presenter/node/SelectionField} within presenter.
  * This class is constructed by presenter automatically on your behalf.

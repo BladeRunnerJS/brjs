@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/RegExpFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Transforms a string using a standard JavaScript regular expression.
  * 
  * <p><code>RegExpFormatter</code> is typically used with Presenter, but can be invoked programmatically

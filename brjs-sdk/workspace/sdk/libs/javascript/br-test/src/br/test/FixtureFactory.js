@@ -13,7 +13,7 @@ var Errors = require('br/Errors');
  * @alias module:br/test/FixtureFactory
  * @class
  * @interface
- * @description
+ * @classdesc
  */
 function FixtureFactory() {
 };

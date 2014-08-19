@@ -16,7 +16,7 @@ var Utility = require('br/core/Utility');
  * @alias module:br/component/testing/ComponentFixture
  * @implements module:br/test/Fixture
  * 
- * @description
+ * @classdesc
  * Constructs a <code>ComponentFixture</code>.
  * 
  * The <code>ComponentFixture</code> serves to create components using the ComponentFactory when these are

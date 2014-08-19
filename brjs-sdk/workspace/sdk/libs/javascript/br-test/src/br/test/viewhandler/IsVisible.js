@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/IsVisible
- * @description
+ * @classdesc
  * <code>IsVisible ViewFixtureHandler</code> can be used to check if a view element is visible.
  * Example usage:
  * <p>

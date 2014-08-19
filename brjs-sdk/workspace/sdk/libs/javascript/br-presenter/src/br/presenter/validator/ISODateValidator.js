@@ -4,7 +4,7 @@
 
 /**
  * @private
- * @description
+ * @classdesc
  * @class
  * @implements module:br/core/Validator
  */

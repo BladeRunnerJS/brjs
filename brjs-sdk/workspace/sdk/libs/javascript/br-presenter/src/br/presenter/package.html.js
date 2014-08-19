@@ -3,7 +3,7 @@
 if (false)
 {
 	/**
-	 * @description
+	 * @classdesc
 	 *  The Presenter library enables developers to create screen views using standard HTML
 	 *  templates, and then bind these to business logic that is defined within object-oriented
 	 *  JavaScript classes. This allows a <em>separation of concerns</em>, where UX/UI designers

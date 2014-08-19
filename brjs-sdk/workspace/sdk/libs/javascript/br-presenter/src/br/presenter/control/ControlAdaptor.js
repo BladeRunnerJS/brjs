@@ -11,7 +11,7 @@ var Errors = require('br/Errors');
  * @interface
  * @alias module:br/presenter/control/ControlAdaptor
  * 
- * @description
+ * @classdesc
  * Interface implemented by control adaptor classes, that allow external controls to be used within presenter.
  */
 function ControlAdaptor() {};

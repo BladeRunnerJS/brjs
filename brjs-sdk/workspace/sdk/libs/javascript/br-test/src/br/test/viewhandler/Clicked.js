@@ -13,7 +13,7 @@ var Utils = require('br/test/Utils');
 
 /**
  * @alias module:br/test/viewhandler/Clicked
- * @description
+ * @classdesc
  * <code>Clicked ViewFixtureHandler</code> can be used to trigger a click on a view element.
  * Example usage:
  * <p>

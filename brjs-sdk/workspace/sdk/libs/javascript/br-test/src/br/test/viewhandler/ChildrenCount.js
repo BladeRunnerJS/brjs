@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/ChildrenCount
- * @description
+ * @classdesc
  * <code>ChildrenCount ViewFixtureHandler</code> can be used to get number of child elements for a view element.
  * Example usage:
  * <p>

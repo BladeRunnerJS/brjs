@@ -12,7 +12,7 @@ var BRHtmlResourceService = require('./BRHtmlResourceService');
 * This is the default BRHtmlResourceService
 * @alias module:br/services/html/JSTDHtmlResourceService
 * @param {String} sUrl A URL to load HTML from.
-* @description
+* @classdesc
 * @implements module:br/services/html/BRHtmlResourceService
 */
 function JSTDHtmlResourceService(sUrl) {

@@ -5,7 +5,7 @@
 /**
  * Constructs a new instance of <code>SelectionField</code>.
  * 
- * @description
+ * @classdesc
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model a selection field on screen.
  * 

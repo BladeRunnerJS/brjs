@@ -6,7 +6,7 @@ var Errors = require('br/Errors');
 
 /**
  * This is an interface and should not be constructed.
- * @description
+ * @classdesc
  * @interface
  * Parses a value according to some attributes.
  */

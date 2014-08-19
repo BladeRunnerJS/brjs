@@ -8,7 +8,7 @@ var Errors = require('br/Errors');
 
 /**
 * A service that allows getting and setting the current app locale cookie
-* @description
+* @classdesc
 * @interface
 * @alias module:br/services/LocaleService
 */

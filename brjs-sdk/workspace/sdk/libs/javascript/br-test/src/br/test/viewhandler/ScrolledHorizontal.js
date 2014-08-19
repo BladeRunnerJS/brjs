@@ -11,7 +11,7 @@ var Utils = require('br/test/Utils');
 
 /**
  * @alias module:br/test/viewhandler/ScrolledHorizontal
- * @description
+ * @classdesc
  * <code>ScrolledHorizontal ViewFixtureHandler</code> can be used to trigger a horizontal scroll on a view element.
  * </code>
  * @class

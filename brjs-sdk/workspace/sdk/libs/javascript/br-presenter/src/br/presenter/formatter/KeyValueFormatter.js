@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/KeyValueFormatter
  * @implements module:br/presenter/formatter/Formatter
  *
- * @description
+ * @classdesc
  * Substitues a value with a mapped value if the a mapped value exists othewise it returns the
  * value itself.
  *

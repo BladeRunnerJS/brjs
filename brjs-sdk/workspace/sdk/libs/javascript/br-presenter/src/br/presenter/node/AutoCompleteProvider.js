@@ -7,7 +7,7 @@
  * @interface
  * @alias module:br/presenter/node/AutoCompleteProvider
  * 
- * @description Provides an interface for a provider that can provide auto complete suggestions, typically used 
+ * @classdesc Provides an interface for a provider that can provide auto complete suggestions, typically used 
  * with an {@link module:br/presenter/node/AutoCopleteSelectionField}.
  */
 br.presenter.node.AutoCompleteProvider = function()

@@ -6,7 +6,7 @@ var jQuery = require( 'jquery' );
 
 /**
  * @alias module:br/workbench/ui/WorkbenchPanel
- * @description
+ * @classdesc
  * A <code>WorkbenchPanel</code> is the main container for displaying components
  * within a workbench. Workbench panels can be added to a {@link WorkbenchPanel},
  * either to the left or right side of the screen.

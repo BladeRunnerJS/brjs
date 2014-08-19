@@ -9,7 +9,7 @@ var AliasRegistry = require('br/AliasRegistry');
  * @class
  * @alias module:br/presenter/control/ControlAdaptorFactory
  * 
- * @description
+ * @classdesc
  * Repository for presenter controls referenced in HTML templates.
  * All custom controls are registered here.
  */

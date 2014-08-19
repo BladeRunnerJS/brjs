@@ -18,7 +18,7 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 * @class
 * @alias module:br/i18n/Translator
 * 
-* @description
+* @classdesc
 * <p>The class within the <code>br.I18N</code> package that is responsible
 * for translating localization tokens in the form of
 * <code>&#64;{key.name}</code> into translated text.</p>

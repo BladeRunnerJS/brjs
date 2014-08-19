@@ -8,7 +8,7 @@
  * @implements module:br/presenter/formatter/Formatter
  * @singleton
  * 
- * @description
+ * @classdesc
  * Converts a string to lower case.
  * 
  * <p><code>LowerCaseFormatter</code> is typically used with Presenter, but can be invoked programmatically

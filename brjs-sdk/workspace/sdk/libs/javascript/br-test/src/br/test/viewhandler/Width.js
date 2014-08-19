@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/Width
- * @description
+ * @classdesc
  * <code>Width ViewFixtureHandler</code> can be used to get width of a view element.
  * Example usage:
  * <p>

@@ -10,7 +10,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/Focused
- * @description
+ * @classdesc
  * <code>Focused ViewFixtureHandler</code> can be used to trigger <code>focus</code> and <code>blur</code> on a view element.
  * Example usage:
  * <p>

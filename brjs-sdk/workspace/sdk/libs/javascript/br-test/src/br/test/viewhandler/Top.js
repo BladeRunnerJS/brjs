@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/Top
- * @description
+ * @classdesc
  * <code>Top ViewFixtureHandler</code> can be used to get style.top value of a view element.
  * Example usage:
  * <p>

@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/FocusOut
- * @description
+ * @classdesc
  * <code>FocusOut ViewFixtureHandler</code> can be used to trigger <code>focusout</code> on a view element.
  * Example usage:
  * <p>

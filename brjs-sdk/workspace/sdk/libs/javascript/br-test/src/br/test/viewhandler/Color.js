@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/Color
- * @description
+ * @classdesc
  * <code>Color ViewFixtureHandler</code> can be used to test the bottom margin width of an element.
  * Example usage:
  * <p>

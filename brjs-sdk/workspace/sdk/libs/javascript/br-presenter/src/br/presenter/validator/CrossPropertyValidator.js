@@ -5,7 +5,7 @@
 var Errors = require("br/Errors");
 
 /**
- * @description
+ * @classdesc
  * An interface for validators that need to consider the validity of multiple
  * {@link module:br/presenter/property/Property} instances in relation to each other.
  * 

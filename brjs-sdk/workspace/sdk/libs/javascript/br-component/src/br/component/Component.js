@@ -11,7 +11,7 @@ var Errors = require('br/Errors');
 * @interface
 * @alias module:br/component/Component
 * 
-* @description
+* @classdesc
 * This interface must be implemented by a presentation-level class. A
 * presentation-level class represents something that occupies physical
 * space on the page, such as the content of a panel or a

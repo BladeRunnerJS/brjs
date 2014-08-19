@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/RoundingFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Formats the value to the specified rounding.
  * 
  * <p><code>RoundingFormatter</code> is typically used with Presenter, but can be invoked programmatically

@@ -7,11 +7,11 @@
 var Errors = require('br/Errors');
 
 /**
- * @description
+ * @classdesc
  * @interface
  * @alias module:br/test/Fixture
  * 
- * @description
+ * @classdesc
  * <code>Fixture</code> is the interface for individual fixtures added to the GWTTestRunner. The purpose of a Fixture 
  *  is to enable tests to manipulate and access a specific area of the system under tests using the GWT 
  *  (given-when-then) BDD format.

@@ -4,7 +4,7 @@
 
 /**
  * @private
- * @description
+ * @classdesc
  * This class is to be used via the {@link module:br/presenter/validator/CrossValidationPropertyBinder}.
  *
  * <p>This proxy class implements the {@link module:br/presenter/validator/Validator} interface so that it can be added as a validator

@@ -7,7 +7,7 @@
  * @alias module:br/presenter/node/MappedNodeList
  * @extends module:br/presenter/node/NodeList
  * 
- * @description
+ * @classdesc
  * <code>MappedNodeList</code> is a {@link module:br/presenter/node/NodeList}.
  * 
  * <p>The <code>MappedNodeList</code> class is useful when you want to refer to items in

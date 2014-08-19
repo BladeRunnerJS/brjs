@@ -5,7 +5,7 @@
 /**
  * Constructs a new <code>Alias</code> instance.
  * 
- * @description
+ * @classdesc
  * <code>Alias</code> instances wrap instances of {@link module:br/presenter/property/Property} and keep the
  * values synchronised, to allow access to the same property from multiple paths (e.g. double binding).
  * 

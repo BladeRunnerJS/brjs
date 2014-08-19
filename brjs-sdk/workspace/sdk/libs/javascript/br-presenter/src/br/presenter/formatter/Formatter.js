@@ -9,7 +9,7 @@ var Errors = require("br/Errors");
  * @alias module:br/presenter/formatter/Formatter
  * @interface
  * 
- * @description
+ * @classdesc
  * Represents an object with the capability to format values.
  */
 br.presenter.formatter.Formatter = function() {};

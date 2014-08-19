@@ -7,7 +7,7 @@ br.Core.thirdparty("momentjs");
 /**
  * Constructs a new instance of <code>DateField</code>.
  *
- * @description
+ * @classdesc
  * A <code>PresentationNode</code> containing all of the attributes necessary to model a
  * date input field on screen.
  * 

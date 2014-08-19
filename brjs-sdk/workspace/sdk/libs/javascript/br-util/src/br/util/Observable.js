@@ -32,7 +32,7 @@ var Errors = require('br/Errors');
  *  this.m_oObservable.notifyObservers("recordUpdated", [ sRecordName, mRecordDataMap ]);
  * };
  * </pre>
- * @description
+ * @classdesc
  * @alias module:br/util/Observable
  */
 function Observable() {
@@ -243,7 +243,7 @@ Observable.prototype.notifyObserversWithTryCatch = function(methodName, paramete
  * @param {String} methodName The name of the method that was invoked.
  * @param {Object} exception The exception that was thrown.
  *
- * @description
+ * @classdesc
  * Represents all the information about why a particular observer failed to process a particular event successfully.
  *  These are returned by the {@link module:br/util/Observable#notifyObserversWithTryCatch} method when an exception occurs
  *  whilst processing a particular event for an observer.

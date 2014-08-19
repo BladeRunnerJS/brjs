@@ -16,7 +16,7 @@ var br = require( 'br/Core' );
 * @class
 * @alias module:br/EventHub
 * 
-* @description
+* @classdesc
 * Create the event hub. This generally isn't required as it's already constructed
 * and made available to apps via the [Service Registry]{@link module:br/ServiceRegistry}
 */

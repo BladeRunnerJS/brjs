@@ -5,7 +5,7 @@
 /**
  * Constructs a new <code>WritableProperty</code> instance.
  * 
- * @description
+ * @classdesc
  * <code>WritableProperty</code> is identical to {@link module:br/presenter/property/Property},
  * except that it adds the ability to update the value stored within the property.
  * 

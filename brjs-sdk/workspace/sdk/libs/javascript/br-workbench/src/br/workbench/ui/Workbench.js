@@ -9,7 +9,7 @@ var ElementUtility = require( 'br/util/ElementUtility' );
 
 /**
  * @alias module:br/workbench/ui/Workbench
- * @description
+ * @classdesc
  * Represents a UI component for displaying workbenches. A workbench contains
  * left and right {@link WorkbenchPanel}s to which
  * {@link WorkbenchComponent} components can be added.

@@ -8,7 +8,7 @@ var StringUtility = require('br/util/StringUtility');
 
 /**
  * @alias module:br/util/Number
- * @description
+ * @classdesc
  */
 function NumberUtil() {
 }

@@ -15,7 +15,7 @@ var ServiceRegistry = require('br/ServiceRegistry');
  * @alias module:br/presenter/component/PresenterComponent
  * @implements module:br/component/Component
  * 
- * @description
+ * @classdesc
  * Constructs a new instance of <code>PresenterComponent</code>.
  * 
  * <p>Instances of <code>PresenterComponent</code> can also be created from an XML snippet using the following

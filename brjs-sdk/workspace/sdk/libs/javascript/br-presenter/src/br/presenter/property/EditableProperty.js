@@ -5,7 +5,7 @@
 /**
  * Constructs a new <code>EditableProperty</code> instance.
  * 
- * @description
+ * @classdesc
  * <code>EditableProperty</code> is identical to {@link module:br/presenter/property/WritableProperty},
  * except that it also has the ability to be edited by users.
  * 

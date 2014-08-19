@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/BorderWidth
- * @description
+ * @classdesc
  * <code>BorderWidth ViewFixtureHandler</code> can be used to test the border width of an element.
  * Example usage:
  * <p>

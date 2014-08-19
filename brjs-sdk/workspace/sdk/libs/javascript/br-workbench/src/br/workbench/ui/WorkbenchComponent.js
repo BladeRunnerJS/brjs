@@ -6,7 +6,7 @@ var Errors = require( 'br/Errors' );
 
 /**
  * @alias module:br/workbench/ui/WorkbenchComponent
- * @description
+ * @classdesc
  * @interface
  * <p>Represents a generic component that can be added to a {@link module:br/workbench/ui/WorkbenchPanel}</p>
  */

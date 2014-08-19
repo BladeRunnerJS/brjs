@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/Height
- * @description
+ * @classdesc
  * <code>Height ViewFixtureHandler</code> can be used to get height of a view element.
  * Example usage:
  * <p>

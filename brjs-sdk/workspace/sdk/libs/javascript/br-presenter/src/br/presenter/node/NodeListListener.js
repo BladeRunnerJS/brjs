@@ -3,7 +3,7 @@
  */
 
 /**
- * @description
+ * @classdesc
  * Interface implemented by classes that wish to listen to {@link module:br/presenter/node/NodeList} change events.
  * 
  * @class

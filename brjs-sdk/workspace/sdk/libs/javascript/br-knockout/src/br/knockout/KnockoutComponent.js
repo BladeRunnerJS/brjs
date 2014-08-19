@@ -16,7 +16,7 @@ var ServiceRegistry = require('br/ServiceRegistry');
 * @alias module:br/knockout/KnockoutComponent
 * @implements module:br/component/Component
 * 
-* @description
+* @classdesc
 * Constructs a new instance of <code>KnockoutComponent</code>.
 * 
 * @param {String} sTemplateId The id of a template to render the presentation model with.

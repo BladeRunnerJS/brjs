@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/SignificantFiguresFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Formats a number to the specified number of significant figures.
  * 
  * <p><code>SignificantFiguresFormatter</code> is typically used with Presenter, but can be invoked programmatically

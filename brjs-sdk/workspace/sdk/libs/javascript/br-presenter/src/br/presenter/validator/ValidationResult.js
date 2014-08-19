@@ -4,7 +4,7 @@
 
 /**
  * Creates a new ValidationResult.
- * @description
+ * @classdesc
  * ValidationResults are used to store the output from a {@link module:br/presenter/validator/Validator}.
  * 
  * @param {module:br/presenter/validator/ValidationResultListener} oValidationResultListener (optional) Listener informed when the validation result is available.

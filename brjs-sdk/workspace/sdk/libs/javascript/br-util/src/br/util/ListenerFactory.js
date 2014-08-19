@@ -11,7 +11,7 @@
  * @param {Function} interfaceFunc The listener interface that objects created with this factory will implement.
  * @param {String} eventName The particular event on the listener interface that will be proxied through.
  *
- * @description
+ * @classdesc
  * Utility class for creating listener objects that re-route incoming events to a method of your choice.
  *
  * <p>This class is useful in the following scenarios:</p>

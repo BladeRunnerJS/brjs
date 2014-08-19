@@ -13,7 +13,7 @@ var Focused = require('br/test/viewhandler/Focused');
 
 /**
  * @name br/test.viewhandler.Blurred
- * @description
+ * @classdesc
  * <code>Blurred ViewFixtureHandler</code> can be used to trigger <code>blur</code> or <code>focus</code> events on the view element.
  * Example usage:
  * <p>

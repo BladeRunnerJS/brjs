@@ -6,7 +6,7 @@
  * Constructs a new <code>Property</code> instance &mdash; you will probably never want to
  * construct a <code>Property</code> yourself since they are not writable.
  *
- * @description
+ * @classdesc
  * Instances of <code>Property</code> are used to store all the values held within a
  * presentation model.
  *

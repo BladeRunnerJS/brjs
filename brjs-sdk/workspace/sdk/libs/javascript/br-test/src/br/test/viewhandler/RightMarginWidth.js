@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/RightMarginWidth
- * @description
+ * @classdesc
  * <code>RightMarginWidth ViewFixtureHandler</code> can be used to test the right margin width of an element.
  * Example usage:
  * <p>

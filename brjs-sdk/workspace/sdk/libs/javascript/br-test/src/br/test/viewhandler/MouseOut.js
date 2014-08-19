@@ -11,7 +11,7 @@ var Utils = require('br/test/Utils');
 
 /**
  * @alias module:br/test/viewhandler/MouseOut
- * @description
+ * @classdesc
  * <code>MouseOut ViewFixtureHandler</code> can be used to trigger <code>mouseout</code> event for a view element.
  * Example usage:
  * <p>

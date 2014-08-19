@@ -8,7 +8,7 @@
 /**
  * @alias module:br/util/StringUtility
  *
- * @description
+ * @classdesc
  * Utility class that provides methods for string manipulation.
  */
 function StringUtility() {

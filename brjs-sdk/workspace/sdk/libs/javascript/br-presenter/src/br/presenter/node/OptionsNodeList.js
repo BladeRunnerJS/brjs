@@ -5,7 +5,7 @@
 /**
  * Constructs a new <code>OptionsNodeList</code> instance.
  *
- * @description
+ * @classdesc
  * The <code>OptionsNodeList</code> class is used to store the options available within
  * {@link module:br/presenter/node/SelectionField} and {@link br/presenter/node/MultiSelectionField}
  * instances.

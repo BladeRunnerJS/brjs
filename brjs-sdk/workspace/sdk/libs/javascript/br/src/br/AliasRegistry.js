@@ -11,7 +11,7 @@ var Errors = require('./Errors');
 * @class
 * @alias module:br/AliasRegistry
 * 
-* @description
+* @classdesc
 * The <code>AliasRegistry</code> provides access to the aliases used within
 * the application.
 *

@@ -12,7 +12,7 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
  * @alias module:br/test/viewhandler/BorderColor
- * @description
+ * @classdesc
  * <code>BorderColor ViewFixtureHandler</code> can be used to test the border color of an element.
  * Example usage:
  * <p>

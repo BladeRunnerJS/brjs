@@ -11,7 +11,7 @@ var Utils = require('br/test/Utils');
 
 /**
  * @alias module:br/test/viewhandler/MouseUp
- * @description
+ * @classdesc
  * <code>MouseUp ViewFixtureHandler</code> can be used to trigger <code>mouseup</code> event for a view element.
  * Example usage:
  * <p>

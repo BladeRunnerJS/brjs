@@ -4,7 +4,7 @@
 
 /**
  * @interface
- * @description
+ * @classdesc
  * Interface implemented by classes that wish to listen to property change events.
  *
  * @class

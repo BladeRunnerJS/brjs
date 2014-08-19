@@ -10,7 +10,7 @@ br.Core.thirdparty("momentjs");
  * @alias module:br/presenter/formatter/DateFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Formats a date value by converting it from a specified input format to a new output format.
  * <p/>
  * <code>DateFormatter</code> is typically used with Presenter, but can be invoked programmatically

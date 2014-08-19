@@ -4,7 +4,7 @@
 
 /**
  * @interface
- * @description
+ * @classdesc
  *
  * Interface implemented by presentation nodes that need to dynamically specify the template that should
  * be used to render them.

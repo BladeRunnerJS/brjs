@@ -8,7 +8,7 @@
  * @alias module:br/presenter/formatter/TruncateDecimalFormatter
  * @implements module:br/presenter/formatter/Formatter
  * 
- * @description
+ * @classdesc
  * Truncates the value to the specified number of decimal places.
  * 
  * <p><code>TruncateDecimalFormatter</code> is typically used with Presenter, but can be invoked programmatically
