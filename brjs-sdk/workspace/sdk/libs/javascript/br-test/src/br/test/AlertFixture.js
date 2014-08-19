@@ -1,12 +1,16 @@
 'use strict';
 
+/**
+ * @module br/test/AlertFixture
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var Fixture = require('br/test/Fixture');
 
 /**
- * @name br.test.AlertFixture
- * @class
+ * @alias module:br/test/AlertFixture
+ * @description
  * The <code>AlertFixture</code> allows for testing of browser alerts.
  * @interface
  */

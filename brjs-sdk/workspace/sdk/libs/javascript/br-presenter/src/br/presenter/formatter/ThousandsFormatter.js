@@ -1,18 +1,24 @@
 /**
+ * @module br/presenter/formatter/ThousandsFormatter
+ */
+
+/**
+ * @class
+ * @alias module:br/presenter/formatter/ThousandsFormatter
+ * @implements module:br/presenter/formatter/Formatter
+ * 
+ * @description
  * Adds a separator character for each 'thousand' position (e.g. 1,000,000).
- *
+ * 
  * <p><code>ThousandsFormatter</code> is typically used with Presenter, but can be invoked programmatically
- * too. This formatter must be run after the {@link br.presenter.formatter.DecimalFormatter}, otherwise different locale formats for
+ * too. This formatter must be run after the {@link module:br/presenter/formatter/DecimalFormatter}, otherwise different locale formats for
  * decimal places may confuse the <code>DecimalFormatter</code>.</p>
- *
+ * 
  * <p>The following attributes are required:<p/>
- *
+ * 
  * <ul>
  *   <li><code>separator</code> - the character to use as a thousands separator</li>
  * </ul>
- *
- * @implements br.presenter.formatter.Formatter
- * @constructor
  */
 br.presenter.formatter.ThousandsFormatter = function() {
 	this.nullValueFormatter = new br.presenter.formatter.NullValueFormatter();

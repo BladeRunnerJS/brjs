@@ -1,7 +1,15 @@
+/**
+ * @module br/knockout/workbench/PresentationModelViewer
+ */
+
 var WorkbenchComponent = require('br/workbench/ui/WorkbenchComponent');
 var jQuery = require('jstree');
 var br = require('br/Core');
 
+/**
+ * @class
+ * @alias module:br/knockout/workbench/PresentationModelViewer
+ */
 function PresentationModelViewer(treeModel) {
 	this._componentElement = this._renderView();
 	this._treeModel = treeModel;

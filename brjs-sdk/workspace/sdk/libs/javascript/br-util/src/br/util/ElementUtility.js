@@ -8,7 +8,7 @@ var Errors = require('br/Errors');
 
 /**
  * @alias module:br/util/ElementUtility
- * @class
+ * @description
  * This class provides static, browser agnostic, utility methods for DOM interactions such as adding / removing event
  *  listeners, adjusting CSS classes, finding element positions etc.
  */

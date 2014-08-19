@@ -12,7 +12,7 @@ var BRXmlResourceService = require('./BRXmlResourceService');
 *
 * @alias module:br/services/xml/JSTDXmlResourceService
 * @param {String} sUrl A URL to load XML from.
-* @class
+* @description
 * @implements module:br/services/xml/BRXmlResourceService
 */
 function JSTDXmlResourceService(sUrl) {

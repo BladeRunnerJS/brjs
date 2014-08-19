@@ -1,8 +1,12 @@
 /**
+ * @module br/presenter/property/EditableProperty
+ */
+
+/**
  * Constructs a new <code>EditableProperty</code> instance.
  * 
- * @class
- * <code>EditableProperty</code> is identical to {@link br.presenter.property.WritableProperty},
+ * @description
+ * <code>EditableProperty</code> is identical to {@link module:br/presenter/property/WritableProperty},
  * except that it also has the ability to be edited by users.
  * 
  * <p>Because editable properties can be displayed using controls that allow unconstrained input (e.g
@@ -10,10 +14,10 @@
  * when invalid values are entered, and {@link #addParser} can be used to help convert user input into
  * valid forms.</p>
  * 
- * @constructor
+ * @class
  * @param {Object} vValue (optional) The default value for this property.
- * @extends br.presenter.property.WritableProperty
- * @implements br.presenter.validator.ValidationResultListener
+ * @extends module:br/presenter/property/WritableProperty
+ * @implements module:br/presenter/validator/ValidationResultListener
  */
 br.presenter.property.EditableProperty = function(vValue)
 {
@@ -42,7 +46,7 @@ br.Core.extend(br.presenter.property.EditableProperty, br.presenter.property.Wri
 br.Core.implement(br.presenter.property.EditableProperty, br.presenter.validator.ValidationResultListener);
 
 /**
- * Adds a {@link br.presenter.parser.Parser} that will be run each time the user enters a
+ * Adds a {@link module:br/presenter/parser/Parser} that will be run each time the user enters a
  * new value.
  * 
  * <p>Parsers allow user input to be normalized prior to validation. For example, the
@@ -64,7 +68,7 @@ br.Core.implement(br.presenter.property.EditableProperty, br.presenter.validator
  * <p>By configuring a number of simple parsers in the same way as production
  * rules are used, complex input handling can be supported.</p>
  * 
- * @param {br.presenter.parser.Parser} oParser the {@link br.presenter.parser.Parser} being added.
+ * @param {module:br/presenter/parser/Parser} oParser the {@link module:br/presenter/parser/Parser} being added.
  * @param {Object} mConfig (optional) Any additional configuration for the parser.
  * @type br.presenter.property.EditableProperty
  */
@@ -81,18 +85,18 @@ br.presenter.property.EditableProperty.prototype.addParser = function(oParser, m
 };
 
 /**
- * Adds a {@link br.presenter.validator.Validator} that will be run each time the user enters a
+ * Adds a {@link module:br/presenter/validator/Validator} that will be run each time the user enters a
  * new value.
  * 
  * <p>Validators allow users to be immediately informed when any of their input is
- * invalid. The {@link br.presenter.node.Field},
- * {@link br.presenter.node.SelectionField} and
- * {@link br.presenter.node.MultiSelectionField} classes all listen to the
- * validation call-backs on {@link br.presenter.property.PropertyListener} and
+ * invalid. The {@link module:br/presenter/node/Field},
+ * {@link module:br/presenter/node/SelectionField} and
+ * {@link module:br/presenter/node/MultiSelectionField} classes all listen to the
+ * validation call-backs on {@link module:br/presenter/property/PropertyListener} and
  * maintain <code>hasError</code> and <code>failureMessage</code> properties that can
  * be displayed within the view.</p>
  * 
- * @param {br.presenter.validator.Validator} oValidator the {@link br.presenter.validator.Validator} being added.
+ * @param {module:br/presenter/validator/Validator} oValidator the {@link module:br/presenter/validator/Validator} being added.
  * @param {Object} mConfig (optional) Any additional configuration for the validator.
  * @type br.presenter.property.EditableProperty
  */
@@ -126,12 +130,12 @@ br.presenter.property.EditableProperty.prototype.addListener = function(oListene
 
 /**
  * A convenience method that allows <em>validation error</em> listeners to be added for objects that do
- * not themselves implement {@link br.presenter.property.PropertyListener}.
+ * not themselves implement {@link module:br/presenter/property/PropertyListener}.
  * 
  * <p>Listeners added using <code>addValidationErrorListener()</code> will only be
- * notified when {@link br.presenter.property.PropertyListener#onValidationError}
+ * notified when {@link module:br/presenter/property/PropertyListener#onValidationError}
  * fires, and will not be notified if any of the other
- * {@link br.presenter.property.PropertyListener} call-backs fire. The advantage to
+ * {@link module:br/presenter/property/PropertyListener} call-backs fire. The advantage to
  * using this method is that objects can choose to listen to call-back events on
  * multiple properties.</p>
  * 
@@ -157,12 +161,12 @@ br.presenter.property.EditableProperty.prototype.addValidationErrorListener = fu
 
 /**
  * A convenience method that allows <em>validation success</em> listeners to be added for objects that do
- * not themselves implement {@link br.presenter.property.PropertyListener}.
+ * not themselves implement {@link module:br/presenter/property/PropertyListener}.
  * 
  * <p>Listeners added using <code>addValidationSuccessListener()</code> will only be
- * notified when {@link br.presenter.property.PropertyListener#onValidationSuccess}
+ * notified when {@link module:br/presenter/property/PropertyListener#onValidationSuccess}
  * fires, and will not be notified if any of the other
- * {@link br.presenter.property.PropertyListener} call-backs fire. The advantage to
+ * {@link module:br/presenter/property/PropertyListener} call-backs fire. The advantage to
  * using this method is that objects can choose to listen to call-back events on
  * multiple properties.</p>
  *
@@ -181,12 +185,12 @@ br.presenter.property.EditableProperty.prototype.addValidationSuccessListener = 
 
 /**
  * A convenience method that allows <em>validation complete</em> listeners to be added for objects that do
- * not themselves implement {@link br.presenter.property.PropertyListener}.
+ * not themselves implement {@link module:br/presenter/property/PropertyListener}.
  * 
  * <p>Listeners added using <code>addValidationCompleteListener()</code> will only be
- * notified when {@link br.presenter.property.PropertyListener#onValidationComplete}
+ * notified when {@link module:br/presenter/property/PropertyListener#onValidationComplete}
  * fires, and will not be notified if any of the other
- * {@link br.presenter.property.PropertyListener} call-backs fire. The advantage to
+ * {@link module:br/presenter/property/PropertyListener} call-backs fire. The advantage to
  * using this method is that objects can choose to listen to call-back events on
  * multiple properties.</p>
  *
@@ -207,7 +211,7 @@ br.presenter.property.EditableProperty.prototype.addValidationCompleteListener =
  * Sets the unformatted value for this property and notifies listeners of the
  * change.
  * 
- * <p>This method is the same as {@link br.presenter.property.WritableProperty#setValue},
+ * <p>This method is the same as {@link module:br/presenter/property/WritableProperty#setValue},
  * except that validation will also be performed.</p>
  * @param {Variant} vValue The value to set. 
  * @see br.presenter.property.WritableProperty#setValue
@@ -238,7 +242,7 @@ br.presenter.property.EditableProperty.prototype.setUserEnteredValue = function(
  * Force the property to be re-validated.
  * 
  * <p>This method is useful for code that wishes to perform cross-property validation &mdash; it is
- * used by the {@link br.presenter.validator.CrossValidationPropertyBinder} class for
+ * used by the {@link module:br/presenter/validator/CrossValidationPropertyBinder} class for
  * example.</p>
  */
 br.presenter.property.EditableProperty.prototype.forceValidation = function()
@@ -306,7 +310,7 @@ br.presenter.property.EditableProperty.prototype._hasValidationError = function(
 
 /**
  * @private
- * @param {br.presenter.validator.ValidationResult} oValidationResult
+ * @param {module:br/presenter/validator/ValidationResult} oValidationResult
  * @see br.presenter.validator.ValidationResultListener#onValidationResultReceived
  */
 br.presenter.property.EditableProperty.prototype.onValidationResultReceived = function(oValidationResult)

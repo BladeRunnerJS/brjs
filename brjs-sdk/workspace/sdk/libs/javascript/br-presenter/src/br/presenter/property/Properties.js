@@ -1,12 +1,16 @@
 /**
+ * @module br/presenter/property/Properties
+ */
+
+/**
  * Constructs a new <code>Properties</code> instance containing the given list
- * of {@link br.presenter.property.Property} objects.
+ * of {@link module:br/presenter/property/Property} objects.
  * 
- * @class
+ * @description
  * A class used to hold collections of properties, and providing utility methods for
  * performing operations over those collections.
  * 
- * @constructor
+ * @class
  * @param {Array} pProperties (optional) The initial set of properties.
  */
 br.presenter.property.Properties = function(pProperties)
@@ -27,8 +31,8 @@ br.presenter.property.Properties = function(pProperties)
  * The single argument passed to <code>add()</code> can be any of the following types:
  * 
  * <ul>
- *   <li>A single {@link br.presenter.property.Property} instance.</li>
- *   <li>An array of {@link br.presenter.property.Property} instances.</li>
+ *   <li>A single {@link module:br/presenter/property/Property} instance.</li>
+ *   <li>An array of {@link module:br/presenter/property/Property} instances.</li>
  *   <li>Another <code>Properties</code> object.</li>
  * </ul>
  * 
@@ -110,12 +114,12 @@ br.presenter.property.Properties.prototype.removeAllListeners = function()
 
 /**
  * Convenience method that allows a change listener to be added to added for objects
- * that do not themselves implement {@link br.presenter.property.PropertyListener}.
+ * that do not themselves implement {@link module:br/presenter/property/PropertyListener}.
  * 
  * <p>Listeners added using <code>addChangeListener()</code> will only be notified
- * when {@link br.presenter.property.PropertyListener#onPropertyChanged} fires, and
+ * when {@link module:br/presenter/property/PropertyListener#onPropertyChanged} fires, and
  * will not be notified if any of the other
- * {@link br.presenter.property.PropertyListener} call-backs fire. The advantage to
+ * {@link module:br/presenter/property/PropertyListener} call-backs fire. The advantage to
  * using this method is that objects can choose to listen to call-back events on multiple
  * properties.</p>
  * 
@@ -134,12 +138,12 @@ br.presenter.property.Properties.prototype.addChangeListener = function(oListene
 
 /**
  * Convenience method that allows an update listener to be added to added for objects
- * that do not themselves implement {@link br.presenter.property.PropertyListener}.
+ * that do not themselves implement {@link module:br/presenter/property/PropertyListener}.
  *
  * <p>Listeners added using <code>addUpdateListener()</code> will only be notified
- * when {@link br.presenter.property.PropertyListener#onPropertyUpdated} fires, and
+ * when {@link module:br/presenter/property/PropertyListener#onPropertyUpdated} fires, and
  * will not be notified if any of the other
- * {@link br.presenter.property.PropertyListener} call-backs fire. The advantage to
+ * {@link module:br/presenter/property/PropertyListener} call-backs fire. The advantage to
  * using this method is that objects can choose to listen to call-back events on multiple
  * properties.</p>
  *

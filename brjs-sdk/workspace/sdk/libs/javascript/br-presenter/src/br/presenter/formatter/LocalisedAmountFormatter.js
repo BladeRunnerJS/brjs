@@ -1,6 +1,14 @@
 /**
+ * @module br/presenter/formatter/LocalisedAmountFormatter
+ */
+
+/**
+ * @singleton
  * @class
+ * @alias module:br/presenter/formatter/LocalisedAmountFormatter
+ * @implements module:br/presenter/formatter/Formatter
  * 
+ * @description
  * Formats a number into a localised string representation.
  * <p/>
  * <code>LocalisedAmountFormatter</code> Formats a number to a configuarble number of decimal placess
@@ -13,9 +21,7 @@
  * <code>br.presenter.formatter.LocalisedAmountFormatter.format(1234567890, {})</code>
  * <code>br.presenter.formatter.LocalisedAmountFormatter.format(1234567890, {dp: 4})</code>
  * 
- * @singleton
- *
- * @implements br.presenter.formatter.Formatter
+ * 
  */
 br.presenter.formatter.LocalisedAmountFormatter = function()
 {

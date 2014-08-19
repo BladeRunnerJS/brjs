@@ -1,20 +1,24 @@
+/**
+ * @module br/presenter/node/DateField
+ */
+
 br.Core.thirdparty("momentjs");
 
 /**
  * Constructs a new instance of <code>DateField</code>.
  *
- * @class
+ * @description
  * A <code>PresentationNode</code> containing all of the attributes necessary to model a
  * date input field on screen.
  * 
- * @constructor
+ * @class
  * @param [vDate] The initial value of the date field, either using a
- * String or as a {@link br.presenter.property.EditableProperty}.
+ * String or as a {@link module:br/presenter/property/EditableProperty}.
  * @param [vStartDate] Start of the date range for this field, either as
- * an ISO Date String, a native Date object, or a {@link br.presenter.property.ISODateProperty}
+ * an ISO Date String, a native Date object, or a {@link module:br/presenter/property/ISODateProperty}
  * @param [vEndDate] End of the date range for this field, either as
- * an ISO Date String, a native Date object, or a {@link br.presenter.property.ISODateProperty}
- * @extends br.presenter.node.Field
+ * an ISO Date String, a native Date object, or a {@link module:br/presenter/property/ISODateProperty}
+ * @extends module:br/presenter/node/Field
  */
 br.presenter.node.DateField = function(vDate, vStartDate, vEndDate)
 {

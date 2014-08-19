@@ -1,8 +1,12 @@
 /**
+ * @module br/presenter/property/Property
+ */
+
+/**
  * Constructs a new <code>Property</code> instance &mdash; you will probably never want to
  * construct a <code>Property</code> yourself since they are not writable.
  *
- * @class
+ * @description
  * Instances of <code>Property</code> are used to store all the values held within a
  * presentation model.
  *
@@ -14,18 +18,18 @@
  * <p>A few varieties of property are available:</p>
  *
  * <dl>
- *   <dt>{@link br.presenter.property.Property}:</dt>
+ *   <dt>{@link module:br/presenter/property/Property}:</dt>
  *   <dd>Used for properties that are not writable by the end-developer, and whose value is
  *	 updated automatically on behalf of the end-developer.</dd>
- *   <dt>{@link br.presenter.property.WritableProperty}:</dt>
+ *   <dt>{@link module:br/presenter/property/WritableProperty}:</dt>
  *   <dd>Used for properties that are completely accessible to the end-developer, but which
  *	 are not editable by the end-user.</dd>
- *   <dt>{@link br.presenter.property.EditableProperty}:</dt>
+ *   <dt>{@link module:br/presenter/property/EditableProperty}:</dt>
  *   <dd>Used for properties that need to be editable by the end-user, and writable by the
  *	 end-developer.</dd>
  * </dl>
  *
- * @constructor
+ * @class
  * @param {Object} vValue (optional) The default value for this property.
  */
 br.presenter.property.Property = function(vValue)
@@ -132,13 +136,13 @@ br.presenter.property.Property.prototype.getPath = function()
 };
 
 /**
- * Add a {@link br.presenter.formatter.Formatter} that will be applied to the property before it's
+ * Add a {@link module:br/presenter/formatter/Formatter} that will be applied to the property before it's
  * rendered to screen.
  *
  * <p>Any number of formatters can be added to a property, and will be applied in the same
  * order in which the formatters were added.</p>
  *
- * @param {br.presenter.formatter.Formatter} oFormatter The formatter being added.
+ * @param {module:br/presenter/formatter/Formatter} oFormatter The formatter being added.
  * @param {Object} mConfig (optional) Any additional configuration for the formatter.
  * @type br.presenter.property.Property
  */
@@ -155,10 +159,10 @@ br.presenter.property.Property.prototype.addFormatter = function(oFormatter, mCo
 };
 
 /**
- * Add a {@link br.presenter.property.PropertyListener} that will be notified
+ * Add a {@link module:br/presenter/property/PropertyListener} that will be notified
  * each time the property is updated.
  *
- * @param {br.presenter.property.PropertyListener} oListener The listener to be added.
+ * @param {module:br/presenter/property/PropertyListener} oListener The listener to be added.
  * @param {boolean} bNotifyImmediately Whether to invoke the listener immediately using the current value.
  * @type br.presenter.property.Property
  */
@@ -180,9 +184,9 @@ br.presenter.property.Property.prototype.addListener = function(oListener, bNoti
 };
 
 /**
- * Remove a previously added {@link br.presenter.property.PropertyListener}.
+ * Remove a previously added {@link module:br/presenter/property/PropertyListener}.
  *
- * @param {br.presenter.property.PropertyListener} oListener The listener being removed.
+ * @param {module:br/presenter/property/PropertyListener} oListener The listener being removed.
  * @type br.presenter.property.Property
  */
 br.presenter.property.Property.prototype.removeListener = function(oListener)
@@ -192,7 +196,7 @@ br.presenter.property.Property.prototype.removeListener = function(oListener)
 };
 
 /**
- * Remove all previously added {@link br.presenter.property.PropertyListener} instances.
+ * Remove all previously added {@link module:br/presenter/property/PropertyListener} instances.
  *
  * @type br.presenter.property.Property
  */
@@ -204,12 +208,12 @@ br.presenter.property.Property.prototype.removeAllListeners = function()
 
 /**
  * Convenience method that allows a change listener to be added to added for objects
- * that do not themselves implement {@link br.presenter.property.PropertyListener}.
+ * that do not themselves implement {@link module:br/presenter/property/PropertyListener}.
  *
  * <p>Listeners added using <code>addChangeListener()</code> will only be notified
- * when {@link br.presenter.property.PropertyListener#onPropertyChanged} fires, and
+ * when {@link module:br/presenter/property/PropertyListener#onPropertyChanged} fires, and
  * will not be notified if any of the other
- * {@link br.presenter.property.PropertyListener} call-backs fire. The advantage to
+ * {@link module:br/presenter/property/PropertyListener} call-backs fire. The advantage to
  * using this method is that objects can choose to listen to call-back events on multiple
  * properties.</p>
  *
@@ -228,12 +232,12 @@ br.presenter.property.Property.prototype.addChangeListener = function(oListener,
 
 /**
  * Convenience method that allows an update listener to be added to added for objects
- * that do not themselves implement {@link br.presenter.property.PropertyListener}.
+ * that do not themselves implement {@link module:br/presenter/property/PropertyListener}.
  *
  * <p>Listeners added using <code>addUpdateListener()</code> will only be notified
- * when {@link br.presenter.property.PropertyListener#onPropertyUpdated} fires, and
+ * when {@link module:br/presenter/property/PropertyListener#onPropertyUpdated} fires, and
  * will not be notified if any of the other
- * {@link br.presenter.property.PropertyListener} call-backs fire. The advantage to
+ * {@link module:br/presenter/property/PropertyListener} call-backs fire. The advantage to
  * using this method is that objects can choose to listen to call-back events on multiple
  * properties.</p>
  *

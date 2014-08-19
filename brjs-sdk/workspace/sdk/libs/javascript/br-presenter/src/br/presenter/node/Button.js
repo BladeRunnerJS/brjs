@@ -1,13 +1,17 @@
 /**
- * Constructs a new instance of <code>Button</code>.
- * 
+ * @module br/presenter/node/Button
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/node/Button
+ * @extends module:br/presenter/node/PresentationNode
+ * 
+ * @description
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model a button on screen.
  * 
- * @constructor
- * @param vLabel (optional) The text that will be displayed within the button &mdash; can be a <code>String</code> or a {@link br.presenter.property.Property}.
- * @extends br.presenter.node.PresentationNode
+ * @param vLabel (optional) The text that will be displayed within the button &mdash; can be a <code>String</code> or a {@link module:br/presenter/property/Property}.
  */
 br.presenter.node.Button = function(vLabel)
 {

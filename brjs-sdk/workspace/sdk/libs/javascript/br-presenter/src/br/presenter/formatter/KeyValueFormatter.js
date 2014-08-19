@@ -1,14 +1,19 @@
 /**
+ * @module br/presenter/formatter/KeyValueFormatter
+ */
+
+/**
+ * @singleton
  * @class
+ * @alias module:br/presenter/formatter/KeyValueFormatter
+ * @implements module:br/presenter/formatter/Formatter
  *
+ * @description
  * Substitues a value with a mapped value if the a mapped value exists othewise it returns the
  * value itself.
  *
  * The <code>mAttributes</code> argument should have the map holding the mappings in it's
  * <code>map</code> key.
- * 
- * @implements br.presenter.formatter.Formatter
- * @singleton
  */
 br.presenter.formatter.KeyValueFormatter = function() {
 };

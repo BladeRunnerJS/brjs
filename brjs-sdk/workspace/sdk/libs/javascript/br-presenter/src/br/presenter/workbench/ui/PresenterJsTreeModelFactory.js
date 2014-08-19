@@ -1,5 +1,9 @@
 "use strict";
 
+/**
+ * @module br/presenter/workbench/ui/PresenterJsTreeModelFactory
+ */
+
 var Property = require('br/presenter/property/Property');
 var PresentationNode = require('br/presenter/node/PresentationNode');
 var NodeList = require('br/presenter/node/NodeList');

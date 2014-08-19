@@ -1,7 +1,11 @@
 /**
+ * @module br/presenter/node/SelectionField
+ */
+
+/**
  * Constructs a new instance of <code>SelectionField</code>.
  * 
- * @class
+ * @description
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model a selection field on screen.
  * 
@@ -20,10 +24,10 @@
  * change so the currently selected value is no longer an available option. You can disable these
  * validation errors by invoking {@link #allowInvalidSelections} with <code>true</code>.</p>
  * 
- * @constructor
- * @param {Object} vOptions The list of available options, either using an array, a map or an {@link br.presenter.node.OptionsNodeList}.
- * @param {Object} vValue (optional) The initial value of the field, either using a primitive type or an {@link br.presenter.property.EditableProperty}.
- * @extends br.presenter.node.PresentationNode
+ * @class
+ * @param {Object} vOptions The list of available options, either using an array, a map or an {@link module:br/presenter/node/OptionsNodeList}.
+ * @param {Object} vValue (optional) The initial value of the field, either using a primitive type or an {@link module:br/presenter/property/EditableProperty}.
+ * @extends module:br/presenter/node/PresentationNode
  */
 br.presenter.node.SelectionField = function(vOptions, vValue)
 {

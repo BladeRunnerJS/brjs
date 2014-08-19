@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/Width
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.Width
- * @class
+ * @alias module:br/test/viewhandler/Width
+ * @description
  * <code>Width ViewFixtureHandler</code> can be used to get width of a view element.
  * Example usage:
  * <p>
  * <code>then("dynamicComponent.view.(.component).width = 100");</code>
  * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * @class
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
  */
 function Width() {
 }

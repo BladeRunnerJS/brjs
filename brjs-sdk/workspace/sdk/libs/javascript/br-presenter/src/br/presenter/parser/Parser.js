@@ -1,8 +1,12 @@
+/**
+ * @module br/presenter/parser/Parser
+ */
+
 var Errors = require('br/Errors');
 
 /**
  * This is an interface and should not be constructed.
- * @class
+ * @description
  * @interface
  * Parses a value according to some attributes.
  */

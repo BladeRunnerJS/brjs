@@ -1,5 +1,9 @@
 /**
- * @implements br.presenter.validator.Validator
+ * @module br/presenter/validator/EmailValidator
+ */
+
+/**
+ * @implements module:br/presenter/validator/Validator
  */
 br.presenter.validator.EmailValidator = function()
 {

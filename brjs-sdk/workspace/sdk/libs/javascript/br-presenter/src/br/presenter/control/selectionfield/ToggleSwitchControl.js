@@ -1,9 +1,17 @@
 /**
- * This class is constructed by presenter automatically on your behalf.
- * 
+ * @module br/presenter/control/selectionfield/ToggleSwitchControl
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/control/selectionfield/ToggleSwitchControl
+ * @implements module:br/presenter/control/ControlAdaptor
+ * @implements module:br/presenter/property/PropertyListener
+ * 
+ * @description
  * A provided toggle-switch control that can be used to render instances
- * of {@link br.presenter.node.SelectionField} within presenter.
+ * of {@link module:br/presenter/node/SelectionField} within presenter.
+ * This class is constructed by presenter automatically on your behalf.
  * 
  * <p>The toggle-switch control is aliased by <em>br.toggle-switch</em>,
  * and can be used within templates as follows:</p>
@@ -14,10 +22,6 @@
  * 
  * <p>The toggle-switch control can only be used to display <code>SelectionField</code> instances
  * having exactly two options.</p>
- * 
- * @constructor
- * @implements br.presenter.control.ControlAdaptor
- * @implements br.presenter.property.PropertyListener
  */
 br.presenter.control.selectionfield.ToggleSwitchControl = function()
 {

@@ -1,6 +1,10 @@
 'use strict';
 
 /**
+ * @module br/test/ViewFixture
+ */
+
+/**
 * <p>The <code>ViewFixture</code> enables interacting with the rendered view via <code>ViewFixtureHandlers</code>. An
 *  element in the view can be selected with jQuery selectors. In Given and When phases the selected element in the
 *  view as well as its desired value will be passed as arguments to the <code>set()</code> method of a
@@ -40,9 +44,9 @@ var Fixture = require('br/test/Fixture');
 
 /**
  * Constructs a <code>br.test.ViewFixture</code>.
- * @implements br.test.Fixture
+ * @implements module:br/test/Fixture
  * @alias module:br/test/ViewFixture
- * @constructor
+ * @class
  * @param {String} viewSelector (optional) CSS selector to identify the parent view element for this fixture
  */
 function ViewFixture(viewSelector) {

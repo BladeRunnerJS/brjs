@@ -1,14 +1,18 @@
 /**
+ * @module br/presenter/node/OptionsNodeList
+ */
+
+/**
  * Constructs a new <code>OptionsNodeList</code> instance.
  *
- * @class
+ * @description
  * The <code>OptionsNodeList</code> class is used to store the options available within
- * {@link br.presenter.node.SelectionField} and {@link br.presenter.node.MultiSelectionField}
+ * {@link module:br/presenter/node/SelectionField} and {@link br/presenter/node/MultiSelectionField}
  * instances.
  *
- * @constructor
+ * @class
  * @param {Object} vOptions The set of available options, either as an array (keys only) or a map (keys to label).
- * @extends br.presenter.node.NodeList
+ * @extends module:br/presenter/node/NodeList
  */
 br.presenter.node.OptionsNodeList = function(vOptions)
 {
@@ -18,7 +22,7 @@ br.presenter.node.OptionsNodeList = function(vOptions)
 br.Core.extend(br.presenter.node.OptionsNodeList, br.presenter.node.NodeList);
 
 /**
- * Retrieve the array of {@link br.presenter.node.Option} instances contained by this object.
+ * Retrieve the array of {@link module:br/presenter/node/Option} instances contained by this object.
  *
  * @returns {Array}
  */
@@ -28,7 +32,7 @@ br.presenter.node.OptionsNodeList.prototype.getOptions = function()
 };
 
 /**
- * Retrieve an array of values for each {@link br.presenter.node.Option} contained within this object.
+ * Retrieve an array of values for each {@link module:br/presenter/node/Option} contained within this object.
  *
  * @returns {Array}
  */
@@ -44,7 +48,7 @@ br.presenter.node.OptionsNodeList.prototype.getOptionValues = function()
 };
 
 /**
- * Retrieve an array of labels for each {@link br.presenter.node.Option} contained within this object.
+ * Retrieve an array of labels for each {@link module:br/presenter/node/Option} contained within this object.
  *
  * @returns {Array}
  */
@@ -89,7 +93,7 @@ br.presenter.node.OptionsNodeList.prototype.getFirstOption = function()
  * the first instance is returned.)
  *
  * @param {String} sLabel Label to search.
- * @returns {@link br.presenter.node.Option}
+ * @returns {@link module:br/presenter/node/Option}
  */
 br.presenter.node.OptionsNodeList.prototype.getOptionByLabel = function(sLabel)
 {
@@ -108,7 +112,7 @@ br.presenter.node.OptionsNodeList.prototype.getOptionByLabel = function(sLabel)
  * Retrieve the option with the given unique value.
  *
  * @param {String} sValue Value to search.
- * @param {@link br.presenter.node.Option}
+ * @param {@link module:br/presenter/node/Option}
  */
 br.presenter.node.OptionsNodeList.prototype.getOptionByValue = function(sValue)
 {

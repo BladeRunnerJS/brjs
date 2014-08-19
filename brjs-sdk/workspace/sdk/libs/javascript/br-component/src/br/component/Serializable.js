@@ -10,7 +10,7 @@ var Errors = require('br/Errors');
  * @interface
  * @alias module:br/component/Serializable
  * 
- * @classdesc
+ * @description
  * The <code>Serializable</code> interface is implemented by classes that provide a mechanism
  * to serialize their state and recreate instances from a serialized form.
  *

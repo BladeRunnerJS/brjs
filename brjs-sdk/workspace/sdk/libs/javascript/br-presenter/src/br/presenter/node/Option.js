@@ -1,12 +1,16 @@
 /**
- * A single option held within an {@link br.presenter.node.OptionsNodeList} instance.
+ * @module br/presenter/node/Option
+ */
+
+/**
+ * A single option held within an {@link module:br/presenter/node/OptionsNodeList} instance.
  * 
  * @param {String} sValue The (logical) value of the option.
  * @param {String} sLabel The label that is displayed on the screen.
  * @param {Boolean} bEnabled Is the option enabled or disabled (enabled by default).
- * @constructor
+ * @class
  *
- * @extends br.presenter.node.PresentationNode
+ * @extends module:br/presenter/node/PresentationNode
  */
 br.presenter.node.Option = function(sValue, sLabel, bEnabled)
 {

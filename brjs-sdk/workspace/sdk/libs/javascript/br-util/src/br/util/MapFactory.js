@@ -17,7 +17,7 @@ var REMOVAL_LIMIT = 1000;
 /**
  * @alias module:br/util/MapFactory
  *
- * @class
+ * @description
  * Utility class that prevents memory leaks in IE when using long running maps that are added to and removed from over
  * time.
  *

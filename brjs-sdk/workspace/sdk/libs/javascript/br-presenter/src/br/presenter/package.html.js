@@ -3,7 +3,7 @@
 if (false)
 {
 	/**
-	 * @class
+	 * @description
 	 *  The Presenter library enables developers to create screen views using standard HTML
 	 *  templates, and then bind these to business logic that is defined within object-oriented
 	 *  JavaScript classes. This allows a <em>separation of concerns</em>, where UX/UI designers
@@ -37,7 +37,7 @@ if (false)
 	 *  Presenter enhances <em>Knockout</em>, allowing it to be embedded within web
 	 *  applications. It makes it easy to create standard components built using
 	 *  a presentation model and an HTML view (via
-	 *  {@link br.presenter.component.PresenterComponent}), and it makes it easy for
+	 *  {@link module:br/presenter/component/PresenterComponent}), and it makes it easy for
 	 *  these components to further embed any other components within themselves.
 	 * </p>
 	 * 
@@ -51,7 +51,7 @@ if (false)
 	 *  The presentation model is a logical representation of a component's view on screen
 	 *  (the view). Everything on the screen is represented within the presentation model
 	 *  using <em>properties</em>. The presenter library binds these <em>properties</em>
-	 *  (instances of {@link br.presenter.property.Property}) to the view. Assuming
+	 *  (instances of {@link module:br/presenter/property/Property}) to the view. Assuming
 	 *  the binding is correct then the GUI is tested by unit testing the presentation
 	 *  model. 
 	 * </p>

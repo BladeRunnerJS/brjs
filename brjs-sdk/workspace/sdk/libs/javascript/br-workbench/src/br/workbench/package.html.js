@@ -3,7 +3,7 @@
 if (false)
 {
 	 /**
-	  * @class
+	  * @description
 	  * 
 	  * The <code>workbench</code> library provides a set of components for building 
 	  * workbench within a bladerunner application.

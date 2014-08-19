@@ -12,7 +12,7 @@
 /**
  * @alias module:br/util/XmlParser
  *
- * @class
+ * @description
  * Utility class that provides methods for parsing XML strings into Document Objects. The object is a singleton so
  *  br.util.XmlParser should be used to obtain an instance of an <code>XmlParser</code>.
  *
@@ -23,7 +23,7 @@
  * alert(oDocument.tagName);
  * </pre>
  *
- * <p>The {@link br.util.XmlUtility} singleton provides further helper methods to manipulate XML.</p>
+ * <p>The {@link module:br/util/XmlUtility} singleton provides further helper methods to manipulate XML.</p>
  */
 function XmlParser() {
 }
@@ -38,7 +38,7 @@ var COMMENT_END = /-->/;
  *  browsers. All comments and unnecessary whitespace characters will be stripped out of the XML DOM.</p>
  *
  * <p>Any encoded characters within the specified string (such as <code>&amp;</code>) will be decoded in the returned
- *  <code>DOMDocument</code>. Please see {@link br.util.XmlUtility} for more information on character encoding in XML.
+ *  <code>DOMDocument</code>. Please see {@link module:br/util/XmlUtility} for more information on character encoding in XML.
  *  </p>
  *
  * @param {String} xml The XML string to be parsed.

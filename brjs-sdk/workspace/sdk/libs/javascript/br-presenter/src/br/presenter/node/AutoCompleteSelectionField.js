@@ -1,13 +1,17 @@
+/**
+ * @module br/presenter/node/AutoCompleteSelectionField
+ */
 
 /**
  * @class
+ * @alias module:br/presenter/node/AutoCompleteSelectionField
+ * @extends module:br/presenter/node/SelectionField
+ * 
+ * @description
  * Provides a model for auto complete data, typically used with an Auto Complete Box.
  * 
- * @constructor
- * @param {br.presenter.property.Property} oProperty The initial value of the auto complete field.
- * @param {br.presenter.node.AutoCompleteProvider} oAutoCompleteProvider The provider of the auto complete information.
- *
- * @extends br.presenter.node.SelectionField
+ * @param {module:br/presenter/property/Property} oProperty The initial value of the auto complete field.
+ * @param {module:br/presenter/node/AutoCompleteProvider} oAutoCompleteProvider The provider of the auto complete information.
  */
 br.presenter.node.AutoCompleteSelectionField = function(oProperty, oAutoCompleteProvider)
 {

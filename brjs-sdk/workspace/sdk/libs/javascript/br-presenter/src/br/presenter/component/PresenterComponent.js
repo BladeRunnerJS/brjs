@@ -15,7 +15,7 @@ var ServiceRegistry = require('br/ServiceRegistry');
  * @alias module:br/presenter/component/PresenterComponent
  * @implements module:br/component/Component
  * 
- * @classdesc
+ * @description
  * Constructs a new instance of <code>PresenterComponent</code>.
  * 
  * <p>Instances of <code>PresenterComponent</code> can also be created from an XML snippet using the following
@@ -163,7 +163,7 @@ PresenterComponent.prototype.serialize = function() {
 
 /**
  * Extracts the data inside the presenter tag and gives it to the PresentationModel for deserialization.
- * Only has affect if the Presentation Model implements {@link br.presenter.SerializablePresentationModel}.
+ * Only has affect if the Presentation Model implements {@link module:br/presenter/SerializablePresentationModel}.
  * 
  * @param {String} sPresenterData The presenter xml node in string format
  */

@@ -1,10 +1,14 @@
 /**
+ * @module br/presenter/property/PropertyHelper
+ */
+
+/**
  * The PropertyHelper is a utility to simplify the attaching and monitoring of property listeners. 
  * <p>This is a useful class if you want to keep track of all the properties of certain node in a single place. It
  * will also provide some methods that give you extra functionality for handling call-backs from your properties.</p>
  *
- * @constructor
- * @name br.presenter.property.PropertyHelper
+ * @class
+ * @alias module:br/presenter/property/PropertyHelper
  */
 br.presenter.property.PropertyHelper = function ()
 {
@@ -16,7 +20,7 @@ br.presenter.property.PropertyHelper = function ()
  * of the property, the previous value of the property and the property itself.
  * <p>You can use this method in case you want to receive in your change handler the property's old value as well as the new one.</p>
  *
- * @param {br.presenter.property.Property} oProperty
+ * @param {module:br/presenter/property/Property} oProperty
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
@@ -44,7 +48,7 @@ br.presenter.property.PropertyHelper.prototype.addChangeNotification = function(
  * Adds a change listener to the supplied property.
  * Can accept either a String method name or a function reference as the handler callback
  *
- * @param {br.presenter.property.Property} oProperty
+ * @param {module:br/presenter/property/Property} oProperty
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
@@ -59,7 +63,7 @@ br.presenter.property.PropertyHelper.prototype.addChangeListener = function(oPro
  * Adds an update listener to the supplied property.
  * Can accept either a String method name or a function reference as the handler callback
  *
- * @param {br.presenter.property.Property} oProperty
+ * @param {module:br/presenter/property/Property} oProperty
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
@@ -74,7 +78,7 @@ br.presenter.property.PropertyHelper.prototype.addUpdateListener = function(oPro
  * Adds a listener for the validation success event to the supplied property.
  * Can accept either a String method name or a function reference as the handler callback
  *
- * @param {br.presenter.property.Property} oProperty
+ * @param {module:br/presenter/property/Property} oProperty
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
@@ -89,7 +93,7 @@ br.presenter.property.PropertyHelper.prototype.addValidationSuccessListener = fu
  * Adds a listener for the validation error event to the supplied property.
  * Can accept either a String method name or a function reference as the handler callback
  *
- * @param {br.presenter.property.Property} oProperty
+ * @param {module:br/presenter/property/Property} oProperty
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
@@ -110,7 +114,7 @@ br.presenter.property.PropertyHelper.prototype.addValidationErrorListener = func
  * The function used as the handler will be called with two arguments, a boolean value that shows the validation status
  * (true for valid and false for error) and the property.
  *
- * @param {br.presenter.property.EditableProperty} oProperty
+ * @param {module:br/presenter/property/EditableProperty} oProperty
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
@@ -143,7 +147,7 @@ br.presenter.property.PropertyHelper.prototype.addValidationChangeListener = fun
  * Utility function that will bind any type of listener and cache the property and listener for future removal
  *
  * @param {String} listenerType
- * @param {br.presenter.property.Property} oProperty
+ * @param {module:br/presenter/property/Property} oProperty
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} bCallNow
@@ -170,7 +174,7 @@ br.presenter.property.PropertyHelper.prototype._addListener = function(listenerT
 /**
  * Removes any listener bound to the supplied property that was attached by this PropertyHelper
  *
- * @param {br.presenter.property.Property} oProperty
+ * @param {module:br/presenter/property/Property} oProperty
  * @param {String} [sType]
  * @return {br.presenter.property.PropertyHelper}
  */
@@ -192,7 +196,7 @@ br.presenter.property.PropertyHelper.prototype.clearProperty = function(oPropert
 /**
  * Remove change handlers from the selected property that have been attached through this PropertyHelper
  *
- * @param {br.presenter.property.Property} oProperty
+ * @param {module:br/presenter/property/Property} oProperty
  * @return {br.presenter.property.PropertyHelper}
  */
 br.presenter.property.PropertyHelper.prototype.removeChangeListeners = function(oProperty)
@@ -203,7 +207,7 @@ br.presenter.property.PropertyHelper.prototype.removeChangeListeners = function(
 /**
  * Remove validation success handlers from the selected property that have been attached through this PropertyHelper
  *
- * @param {br.presenter.property.Property} oProperty
+ * @param {module:br/presenter/property/Property} oProperty
  * @return {br.presenter.property.PropertyHelper}
  */
 br.presenter.property.PropertyHelper.prototype.removeValidationSuccessListeners = function(oProperty)

@@ -1,15 +1,20 @@
 /**
- * @class
- * 
- * Converts a string to upper case.
- * <p/>
- * <code>UpperCaseFormatter</code> is typically used with Presenter, but can be invoked programmatically
- * as in the following example which evaluate to "hello, world!":
- * <p/>
- * <code>br.presenter.formatter.UpperCaseFormatter.format("Hello, World!", {})</code>
- * 
- * @implements br.presenter.formatter.Formatter
+ * @module br/presenter/formatter/UpperCaseFormatter
+ */
+
+/**
  * @singleton
+ * @class
+ * @alias module:br/presenter/formatter/UpperCaseFormatter
+ * @implements module:br/presenter/formatter/Formatter
+ * 
+ * @description
+ * Converts a string to upper case.
+ * 
+ * <p><code>UpperCaseFormatter</code> is typically used with Presenter, but can be invoked programmatically
+ * as in the following example which evaluate to "hello, world!":</p>
+ * 
+ * <pre>br.presenter.formatter.UpperCaseFormatter.format("Hello, World!", {})</pre>
  */
 br.presenter.formatter.UpperCaseFormatter = function() {
 };

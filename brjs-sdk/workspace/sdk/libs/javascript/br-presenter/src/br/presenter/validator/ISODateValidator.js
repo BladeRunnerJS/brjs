@@ -1,8 +1,12 @@
 /**
+ * @module br/presenter/validator/ISODateValidator
+ */
+
+/**
  * @private
+ * @description
  * @class
- * @constructor
- * @implements br.core.Validator
+ * @implements module:br/core/Validator
  */
 br.presenter.validator.ISODateValidator = function() {
 	/** @private */

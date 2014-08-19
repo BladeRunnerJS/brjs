@@ -1,4 +1,8 @@
 /**
+ * @module br/presenter/view/knockout/KnockoutSubscription
+ */
+
+/**
  * @private
  */
 br.presenter.view.knockout.KnockoutSubscription = function(fBoundCallback, oKnockoutObservable, event)

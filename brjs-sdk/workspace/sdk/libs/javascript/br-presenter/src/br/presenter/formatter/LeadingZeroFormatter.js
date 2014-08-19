@@ -1,15 +1,20 @@
 /**
+ * @module br/presenter/formatter/LeadingZeroFormatter
+ */
+
+/**
+ * @singleton
  * @class
+ * @alias module:br/presenter/formatter/LeadingZeroFormatter
+ * @implements module:br/presenter/formatter/Formatter
  * 
+ * @description
  * Pads the integer part of a number with as many leading zeros needed to reach the specified length.
  * <p/>
  * <code>LeadingZeroFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "0089":
  * <p/>
  * <code>br.presenter.formatter.LeadingZeroFormatter.format(89, {length:4})</code>
- * 
- * @implements br.presenter.formatter.Formatter
- * @singleton
  */
 br.presenter.formatter.LeadingZeroFormatter = function() {
 };

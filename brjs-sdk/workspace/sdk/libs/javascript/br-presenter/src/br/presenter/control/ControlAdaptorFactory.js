@@ -1,50 +1,51 @@
-(function() {
+/**
+ * @module br/presenter/control/ControlAdaptorFactory
+ */
 
-	var AliasRegistry = require('br/AliasRegistry');
+var AliasRegistry = require('br/AliasRegistry');
 
-	/**
-	 * @name br.presenter.control.ControlAdaptorFactory
-	 * @class
-	 * Repository for presenter controls referenced in HTML templates.
-	 * All custom controls are registered here.
-	 *
-	 * @singleton
-	 * @constructor
-	 */
-	ControlAdaptorFactory = function() {
-		this.m_mConfiguredControlAdaptors = {};
-	};
+/**
+ * @singleton
+ * @class
+ * @alias module:br/presenter/control/ControlAdaptorFactory
+ * 
+ * @description
+ * Repository for presenter controls referenced in HTML templates.
+ * All custom controls are registered here.
+ */
+ControlAdaptorFactory = function() {
+	this.m_mConfiguredControlAdaptors = {};
+};
 
-	/**
-	 * Registers a presenter control {@link br.presenter.control.ControlAdaptor}.
-	 *
-	 * @param {String} sName The name the control is referred to in the HTML binding attribute.
-	 * @param {Function} fControlAdaptorConstructor The constructor function of the class that implements the control.
-	 * @param {Object} mConfigOptions A Map of options used to configure the control.
-	 */
-	ControlAdaptorFactory.prototype.registerConfiguredControlAdaptor = function(sName, fControlAdaptorConstructor) {
-		this.m_mConfiguredControlAdaptors[sName] = fControlAdaptorConstructor;
-	};
+/**
+ * Registers a presenter control {@link module:br/presenter/control/ControlAdaptor}.
+ *
+ * @param {String} sName The name the control is referred to in the HTML binding attribute.
+ * @param {Function} fControlAdaptorConstructor The constructor function of the class that implements the control.
+ * @param {Object} mConfigOptions A Map of options used to configure the control.
+ */
+ControlAdaptorFactory.prototype.registerConfiguredControlAdaptor = function(sName, fControlAdaptorConstructor) {
+	this.m_mConfiguredControlAdaptors[sName] = fControlAdaptorConstructor;
+};
 
-	/**
-	 *  @private
-	 *  @param {String} sName
-	 *  @type br.presenter.control.ControlAdaptor
-	 */
-	ControlAdaptorFactory.prototype.createControlAdaptor = function(sName) {
-		var fControlAdaptorClass;
+/**
+ *  @private
+ *  @param {String} sName
+ *  @type br.presenter.control.ControlAdaptor
+ */
+ControlAdaptorFactory.prototype.createControlAdaptor = function(sName) {
+	var fControlAdaptorClass;
 
-		if (AliasRegistry.isAliasAssigned(sName)) {
-			fControlAdaptorClass = AliasRegistry.getClass(sName);
-		} else {
-			if (!this.m_mConfiguredControlAdaptors[sName]) {
-				throw "Unknown Control Adaptor: " + sName;
-			}
-			fControlAdaptorClass = this.m_mConfiguredControlAdaptors[sName];
+	if (AliasRegistry.isAliasAssigned(sName)) {
+		fControlAdaptorClass = AliasRegistry.getClass(sName);
+	} else {
+		if (!this.m_mConfiguredControlAdaptors[sName]) {
+			throw "Unknown Control Adaptor: " + sName;
 		}
+		fControlAdaptorClass = this.m_mConfiguredControlAdaptors[sName];
+	}
 
-		return new fControlAdaptorClass();
-	};
+	return new fControlAdaptorClass();
+};
 
-	br.presenter.control.ControlAdaptorFactory = new ControlAdaptorFactory();
-})();
+br.presenter.control.ControlAdaptorFactory = new ControlAdaptorFactory();

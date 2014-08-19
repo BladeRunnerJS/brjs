@@ -1,15 +1,20 @@
 /**
- * @class
- * 
- * Truncates the value to the specified number of decimal places.
- * <p/>
- * <code>TruncateDecimalFormatter</code> is typically used with Presenter, but can be invoked programmatically
- * as in the following example which evaluates to "3.142":
- * <p/>
- * <code>br.presenter.formatter.TruncateDecimalFormatter.format(3.14159, {dp:3})</code>
- * 
- * @implements br.presenter.formatter.Formatter
+ * @module br/presenter/formatter/TruncateDecimalFormatter
+ */
+
+/**
  * @singleton
+ * @class
+ * @alias module:br/presenter/formatter/TruncateDecimalFormatter
+ * @implements module:br/presenter/formatter/Formatter
+ * 
+ * @description
+ * Truncates the value to the specified number of decimal places.
+ * 
+ * <p><code>TruncateDecimalFormatter</code> is typically used with Presenter, but can be invoked programmatically
+ * as in the following example which evaluates to "3.142":</p>
+ * 
+ * <pre>br.presenter.formatter.TruncateDecimalFormatter.format(3.14159, {dp:3})</pre>
  */
 br.presenter.formatter.TruncateDecimalFormatter = function() {
 };

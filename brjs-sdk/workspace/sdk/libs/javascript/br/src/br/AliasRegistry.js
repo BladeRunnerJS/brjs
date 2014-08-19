@@ -11,7 +11,7 @@ var Errors = require('./Errors');
 * @class
 * @alias module:br/AliasRegistry
 * 
-* @classdesc
+* @description
 * The <code>AliasRegistry</code> provides access to the aliases used within
 * the application.
 *
@@ -53,7 +53,7 @@ AliasRegistry.prototype.getAllAliases = function getAllAliases() {
 
 /**
 * Returns a filtered subset of the aliases provided by
-* {@link module:br/AliasRegistry.getAllAliases}.
+* {@link module:br/AliasRegistry/getAllAliases}.
 *
 * <p>An alias is considered to be associated with an interface if the XML configuration for that
 * alias specifically mentions the given interface, or if the class the alias points to happens to

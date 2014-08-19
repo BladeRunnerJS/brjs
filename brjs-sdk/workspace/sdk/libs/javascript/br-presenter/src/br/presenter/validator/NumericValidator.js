@@ -1,5 +1,9 @@
 /**
- * @implements br.presenter.validator.Validator
+ * @module br/presenter/validator/NumericValidator
+ */
+
+/**
+ * @implements module:br/presenter/validator/Validator
  */
 br.presenter.validator.NumericValidator = function(sFailureMessage)
 {

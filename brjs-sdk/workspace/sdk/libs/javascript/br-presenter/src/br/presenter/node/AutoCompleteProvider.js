@@ -1,9 +1,14 @@
+/**
+ * @module br/presenter/node/AutoCompleteProvider
+ */
 
 /**
- * @class Provides an interface for a provider that can provide auto complete suggestions, typically used 
- * with an {@link br.presenter.node.AutoCopleteSelectionField}
- * 
+ * @class
  * @interface
+ * @alias module:br/presenter/node/AutoCompleteProvider
+ * 
+ * @description Provides an interface for a provider that can provide auto complete suggestions, typically used 
+ * with an {@link module:br/presenter/node/AutoCopleteSelectionField}.
  */
 br.presenter.node.AutoCompleteProvider = function()
 {

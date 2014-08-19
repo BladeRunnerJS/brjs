@@ -1,10 +1,17 @@
 /**
- * Constructs a new instance of <code>MappedNodeList</code>.
+ * @module br/presenter/node/MappedNodeList
+ */
+
+/**
  * @class
- * <code>MappedNodeList</code> is a {@link br.presenter.node.NodeList}.
- *
+ * @alias module:br/presenter/node/MappedNodeList
+ * @extends module:br/presenter/node/NodeList
+ * 
+ * @description
+ * <code>MappedNodeList</code> is a {@link module:br/presenter/node/NodeList}.
+ * 
  * <p>The <code>MappedNodeList</code> class is useful when you want to refer to items in
- * a {@link br.presenter.node.NodeList} (which stores items in an array) using a name, rather
+ * a {@link module:br/presenter/node/NodeList} (which stores items in an array) using a name, rather
  * than then ordinal position within the array. The mappings are only accessible via the <code>PresentationNode</code>
  * representation of the list and not from the view i.e. can't refer to the mappings in templates.
  *
@@ -15,13 +22,11 @@
  * <p>If the optional second parameter to the constructor, <code>fNodeClass</code>, is
  * provided, then the <code>MappedNodeList</code> will need all the nodes it is expected to contain to be
  * instances of <code>fNodeClass</code> (i.e. subclasses are allowed), otherwise it throws
- * a {@link br.Errors.CustomError}.
+ * a {@link module:br/Errors/CustomError}.
  * </p>
- *
- * @constructor
- * @param {Map} mPresentationNodes The initial map of {@link br.presenter.node.PresentationNode} instances.
+ * 
+ * @param {Map} mPresentationNodes The initial map of {@link module:br/presenter/node/PresentationNode} instances.
  * @param {Function} fNodeClass (optional) The class/interface that all nodes in this list should be an instance of.
- * @extends br.presenter.node.NodeList
  */
 br.presenter.node.MappedNodeList = function(mPresentationNodes, fNodeClass)
 {
@@ -44,12 +49,12 @@ br.presenter.node.MappedNodeList.prototype.getPresentationNodesMap = function ()
 };
 
 /**
- * Updates the node list with a new Map of {@link br.presenter.node.PresentationNode} instances.
+ * Updates the node list with a new Map of {@link module:br/presenter/node/PresentationNode} instances.
  *
  * <p>Care must be taken to always invoke this method when the contents of the node list change. The
  * array returned by {@link #getPresentationNodesArray} should be treated as being immutable.</p>
  *
- * @param {Array} mPresentationNodes The new map of {@link br.presenter.node.PresentationNode} instances.
+ * @param {Array} mPresentationNodes The new map of {@link module:br/presenter/node/PresentationNode} instances.
  */
 br.presenter.node.MappedNodeList.prototype.updateList = function (mPresentationNodes)
 {

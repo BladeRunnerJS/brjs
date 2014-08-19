@@ -1,4 +1,8 @@
 /**
+ * @module br/presenter/PresentationModel
+ */
+
+/**
  * <code>PresentationModel</code> is an abstract base class that all presentation models
  * must extend, and so is not constructed directly.
  * 
@@ -9,12 +13,12 @@
  * be tested through the presentation model rather than using brittle, click-based testing
  * via the view.</p>
  * 
- * <p>Presentation models are built as a tree of {@link br.presenter.node.PresentationNode}
+ * <p>Presentation models are built as a tree of {@link module:br/presenter/node/PresentationNode}
  * instances, where the root node must extend <code>PresentationModel</code>, which in turn
- * extends {@link br.presenter.node.PresentationNode}.</p>
+ * extends {@link module:br/presenter/node/PresentationNode}.</p>
  * 
  * @constructor
- * @extends br.presenter.node.PresentationNode
+ * @extends module:br/presenter/node/PresentationNode
  */
 br.presenter.PresentationModel = function()
 {
@@ -22,11 +26,11 @@ br.presenter.PresentationModel = function()
 br.Core.extend(br.presenter.PresentationModel, br.presenter.node.PresentationNode);
 
 /**
- * Presentation models can use the {@link br.presenter.PresentationModel#getComponentFrame}
- * to receive a reference to the frame containing the {@link br.presenter.component.PresenterComponent}
+ * Presentation models can use the {@link module:br/presenter/PresentationModel#getComponentFrame}
+ * to receive a reference to the frame containing the {@link module:br/presenter/component/PresenterComponent}
  * that this model resides within.
  * 
- * @param {br.component.Frame} oComponentFrame The frame within which the
+ * @param {module:br/component/Frame} oComponentFrame The frame within which the
  * presenter component resides.
  */
 br.presenter.PresentationModel.prototype.setComponentFrame = function(oComponentFrame)
@@ -36,7 +40,7 @@ br.presenter.PresentationModel.prototype.setComponentFrame = function(oComponent
 
 /**
  * Presentation models can use this method to receive a reference to the frame
- * containing the {@link br.presenter.component.PresenterComponent} that this model
+ * containing the {@link module:br/presenter/component/PresenterComponent} that this model
  * resides within.
  * 
  * @type br.component.Frame

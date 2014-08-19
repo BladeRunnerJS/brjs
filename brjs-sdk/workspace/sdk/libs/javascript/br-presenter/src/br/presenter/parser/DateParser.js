@@ -1,5 +1,9 @@
 /**
- * @class
+ * @module br/presenter/parser/DateParser
+ */
+
+/**
+ * @description
  *
  * Matches a date string and converts it to a specified output format.
  * <p/>
@@ -8,11 +12,11 @@
  * <p/>
  * <code>br.presenter.parser.DateParser.parse("09/08/2000", {american:"true", outputFormat:"d-M-Y"})</code>
  * <p/>
- * See {@link br.presenter.formatter.DateFormatter} for the complementary formatter.
+ * See {@link module:br/presenter/formatter/DateFormatter} for the complementary formatter.
  *
  * @singleton
  *
- * @implements br.presenter.parser.Parser
+ * @implements module:br/presenter/parser/Parser
  */
 br.presenter.parser.DateParser = function()
 {

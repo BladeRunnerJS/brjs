@@ -1,15 +1,19 @@
 /**
+ * @module br/presenter/property/Snapshot
+ */
+
+/**
  * Create a new <code>Snapshot</code> instance containing the current state
  * of the given properties.
  * 
- * @class
+ * @description
  * <p>The snapshot class allows the state of a collection of properties to be preserved,
  * so that it becomes possible to roll the properties back to a known state at a future
- * point in time. The {@link br.presenter.property.Properties} class may be helpful
+ * point in time. The {@link module:br/presenter/property/Properties} class may be helpful
  * in composing the list of properties to be snapshot, when those properties are
  * distributed throughout the presentation model.</p>
  * 
- * @constructor
+ * @class
  * @param {Array} pProperties The list of properties to be snapshot.
  */
 br.presenter.property.Snapshot = function(pProperties)

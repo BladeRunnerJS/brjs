@@ -1,4 +1,8 @@
 /**
+ * @module br/presenter/SerializablePresentationModel
+ */
+
+/**
  * @class
  * Interface implemented by presentation models in order to provide a serialized form of the data they contain.
  * 

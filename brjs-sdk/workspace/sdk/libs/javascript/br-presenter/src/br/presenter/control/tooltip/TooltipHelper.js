@@ -1,5 +1,11 @@
 /**
+ * @module br/presenter/control/tooltip/TooltipHelper
+ */
+
+/**
  * @private
+ * @class
+ * @alias module:br/presenter/control/tooltip/TooltipHelper
  */
 br.presenter.control.tooltip.TooltipHelper = function()
 {

@@ -1,16 +1,20 @@
 /**
+ * @module br/presenter/property/PropertyListener
+ */
+
+/**
  * @interface
- * @class
+ * @description
  * Interface implemented by classes that wish to listen to property change events.
  *
- * @constructor
+ * @class
  */
 br.presenter.property.PropertyListener = function()
 {
 };
 
 /**
- * Callback method invoked when the value of a {@link br.presenter.property.Property} is updated, even when it hasn't changed.
+ * Callback method invoked when the value of a {@link module:br/presenter/property/Property} is updated, even when it hasn't changed.
  *
  * <p>This event is there to accommodate cases where we want to know about calls to set the value of a property even if the
  * new value being set is the same as the old one.</p>
@@ -24,7 +28,7 @@ br.presenter.property.PropertyListener.prototype.onPropertyUpdated = function()
 };
 
 /**
- * Callback method invoked when the value of a {@link br.presenter.property.Property} changes.
+ * Callback method invoked when the value of a {@link module:br/presenter/property/Property} changes.
  * 
  * <p>Implementation of this method is optional, and no action will be taken if the method is invoked but has not
  * been overridden.</p>
@@ -35,7 +39,7 @@ br.presenter.property.PropertyListener.prototype.onPropertyChanged = function()
 };
 
 /**
- * Callback method invoked when an attempt to update an {@link br.presenter.property.EditableProperty}
+ * Callback method invoked when an attempt to update an {@link module:br/presenter/property/EditableProperty}
  * does not result in a validation error.
  * 
  * <p>Implementation of this method is optional, and no action will be taken if the method is invoked but has not
@@ -47,7 +51,7 @@ br.presenter.property.PropertyListener.prototype.onValidationSuccess = function(
 };
 
 /**
- * Callback method invoked when an attempt to update an {@link br.presenter.property.EditableProperty}
+ * Callback method invoked when an attempt to update an {@link module:br/presenter/property/EditableProperty}
  * results in a validation error. 
  * 
  * <p>Implementation of this method is optional, and no action will be taken if the method is invoked but has not

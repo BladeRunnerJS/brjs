@@ -14,7 +14,7 @@ var ServiceRegistry = require('br/ServiceRegistry');
 * directly, but instead used via the service registry.
 * @alias module:br/services/locale/BRLocaleService
 * @param {LocaleUtility} localeUtility The locale utility to use
-* @class
+* @description
 * @implements module:br/services/locale/BRLocaleServices
 */
 function BRLocaleService( localeUtility ) {

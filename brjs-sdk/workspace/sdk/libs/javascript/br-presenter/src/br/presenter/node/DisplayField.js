@@ -1,14 +1,18 @@
 /**
- * Constructs a new instance of <code>DisplayField</code>.
- * 
+ * @module br/presenter/node/DisplayField
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/node/DisplayField
+ * @extends module:br/presenter/node/PresentationNode
+ * 
+ * @description
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model a non-input field on screen.
  * 
- * @constructor
  * @param {Object} vValue (optional) The initial value of the field, either using a
- * primitive type or as a {@link br.presenter.property.Property}.
- * @extends br.presenter.node.PresentationNode
+ * primitive type or as a {@link module:br/presenter/property/Property}.
  */
 br.presenter.node.DisplayField = function(vValue)
 {

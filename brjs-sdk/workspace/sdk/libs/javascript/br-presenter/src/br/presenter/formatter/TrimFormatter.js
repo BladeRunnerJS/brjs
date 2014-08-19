@@ -1,10 +1,15 @@
 /**
- * @class
- * 
- * Trims whitespace from boths ends of the string.
- * 
- * @implements br.presenter.formatter.Formatter
+ * @module br/presenter/formatter/TrimFormatter
+ */
+
+/**
  * @singleton
+ * @class
+ * @alias module:br/presenter/formatter/TrimFormatter
+ * @implements module:br/presenter/formatter/Formatter
+ * 
+ * @description
+ * Trims whitespace from boths ends of the string.
  */
 br.presenter.formatter.TrimFormatter = function() {
 	this.regExpFormatter = new br.presenter.formatter.RegExpFormatter();

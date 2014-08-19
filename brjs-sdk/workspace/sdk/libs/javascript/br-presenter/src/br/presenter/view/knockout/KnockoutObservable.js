@@ -1,3 +1,7 @@
+/**
+ * @module br/presenter/view/knockout/KnockoutObservable
+ */
+
 br.Core.thirdparty("presenter-knockout");
 
 /**

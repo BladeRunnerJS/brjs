@@ -1,3 +1,7 @@
+/**
+ * @module br/presenter/view/knockout/KnockoutProperty
+ */
+
 br.Core.thirdparty("presenter-knockout");
 
 /**

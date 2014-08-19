@@ -11,7 +11,7 @@ var Errors = require('br/Errors');
 * @interface
 * @alias module:br/component/Component
 * 
-* @classdesc
+* @description
 * This interface must be implemented by a presentation-level class. A
 * presentation-level class represents something that occupies physical
 * space on the page, such as the content of a panel or a
@@ -28,7 +28,7 @@ var Errors = require('br/Errors');
 function Component() {}
 
 /**
- * @param {br.component.Frame} frame A frame provided by the layout manager that this component can
+ * @param {module:br/component/Frame} frame A frame provided by the layout manager that this component can
  * attach its visual DOM elements into.  Will be called only once.
  */
 Component.prototype.setDisplayFrame = function(frame) {

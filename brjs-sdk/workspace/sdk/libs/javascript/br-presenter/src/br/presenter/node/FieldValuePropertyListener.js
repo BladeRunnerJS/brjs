@@ -1,8 +1,14 @@
 /**
+ * @module br/presenter/node/FieldValuePropertyListener
+ */
+
+/**
  * @private
- * @constructor
- * @param {br.presenter.node.Field} oField
- * @implements br.presenter.property.PropertyListener
+ * @class
+ * @alias module:br/presenter/node/FieldValuePropertyListener
+ * @implements module:br/presenter/property/PropertyListener
+ * 
+ * @param {module:br/presenter/node/Field} oField
  *
  */
 br.presenter.node.FieldValuePropertyListener = function(oField)

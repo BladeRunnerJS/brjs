@@ -1,9 +1,13 @@
+/**
+ * @module br/presenter/testing/PresenterComponentFixture
+ */
+
 br.Core.thirdparty("presenter-knockout");
 
 /**
  * Constructs a <code>br.presenter.testing.PresenterComponentFixture</code>.
  * 
- * @class
+ * @description
  * 
  * The <code>PresenterComponentFixture</code> serves to create presenter components in order to test the 
  * component behavior.
@@ -32,11 +36,11 @@ br.Core.thirdparty("presenter-knockout");
  * </ul>
  * </p>
  * 
- * @constructor
+ * @class
  * @param {String} sTemplateId the HTML template id representing the view of the presenter component. Required, not-null.
  * @param {String} sPresentationModel the presentation model class name for the presenter component. Required, not-null.
  * 
- * @extends br.component.testing.ComponentFixture
+ * @extends module:br/component/testing/ComponentFixture
  */
 br.presenter.testing.PresenterComponentFixture = function(sTemplateId, sPresentationModel)
 {

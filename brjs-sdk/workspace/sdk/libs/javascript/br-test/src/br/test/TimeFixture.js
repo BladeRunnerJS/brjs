@@ -1,12 +1,16 @@
 'use strict';
 
+/**
+ * @module br/test/TimeFixture
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var Fixture = require('br/test/Fixture');
 
 /**
- * @name br.test.TimeFixture
- * @class
+ * @alias module:br/test/TimeFixture
+ * @description
  *
  * <code>TimeFixture</code> allows you to control when callbacks passed to window.setTimeout() and window.setInterval() 
  *  are executed.<br/>
@@ -44,7 +48,7 @@ var Fixture = require('br/test/Fixture');
  *      then(...)<br/>
  *  </code>
  *
- * @implements br.test.Fixture
+ * @implements module:br/test/Fixture
  */
 function TimeFixture(timeUtility) {
 	this.m_oTimeUtility = timeUtility;

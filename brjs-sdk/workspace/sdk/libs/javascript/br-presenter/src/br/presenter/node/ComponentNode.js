@@ -1,20 +1,24 @@
 /**
- * Construct a new instance of of <code>ComponentNode</code>.
- * 
+ * @module br/presenter/node/ComponentNode
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/node/ComponentNode
+ * @extends module:br/presenter/node/PresentationNode
+ * 
+ * @description
  * Allows components to be embedded within a presentation model so that they can be displayed as part of the template.
  * 
  * <p><code>Component</code> instances can be embedded within a template as follows:</p>
  * 
  * <pre>
- *   &lt;div data-bind="component_componentNode, width:widthProperty, height:heightProperty"&gt;&lt;/div&gt;
+ *   &lt;div data-bind="component:componentNode, width:widthProperty, height:heightProperty"&gt;&lt;/div&gt;
  * </pre>
  * 
  * <p>where <code>componentNode</code> is an instance of <code>ComponentNode</code>.
  * 
- * @constructor
- * @param {br.component.Component} oComponent The component to be displayed on the page.
- * @extends br.presenter.node.PresentationNode
+ * @param {module:br/component/Component} oComponent The component to be displayed on the page.
  */
 br.presenter.node.ComponentNode = function(oComponent)
 {

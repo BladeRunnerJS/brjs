@@ -1,3 +1,7 @@
+/**
+ * @module br/presenter/view/knockout/KnockoutNodeList
+ */
+
 br.Core.thirdparty("presenter-knockout");
 
 /**

@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+* @module br/util/Utility
+*/
+
 var Errors = require('br/Errors');
 var fell = require('fell');
 

@@ -1,8 +1,16 @@
+/**
+ * @module br/presenter/formatter/DateFormatter
+ */
+
 br.Core.thirdparty("momentjs");
 
 /**
+ * @singleton
  * @class
- *
+ * @alias module:br/presenter/formatter/DateFormatter
+ * @implements module:br/presenter/formatter/Formatter
+ * 
+ * @description
  * Formats a date value by converting it from a specified input format to a new output format.
  * <p/>
  * <code>DateFormatter</code> is typically used with Presenter, but can be invoked programmatically
@@ -11,11 +19,8 @@ br.Core.thirdparty("momentjs");
  * <code>br.presenter.formatter.DateFormatter.format(1e12, {inputFormat:"U"})</code><br/>
  * <code>br.presenter.formatter.DateFormatter.format(1e12, {inputFormat:"U", outputFormat:"YMd"})</code>
  * <p/>
- * See {@link br.presenter.parser.DateParser} for the complementary parser.
- *
- * @singleton
- *
- * @implements br.presenter.formatter.Formatter
+ * 
+ * See {@link module:br/presenter/parser/DateParser} for the complementary parser.
  */
 br.presenter.formatter.DateFormatter = function()
 {

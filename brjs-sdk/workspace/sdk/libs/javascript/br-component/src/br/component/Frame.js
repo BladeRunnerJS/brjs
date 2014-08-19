@@ -10,7 +10,7 @@ var Errors = require('br/Errors');
  * @class
  * @alias module:br/component/Frame
  * 
- * @classdesc
+ * @description
  * Instances of <code>Frame</code> are used to wrap components before they are displayed on the
  * screen. They are created automatically by whatever code is controlling the view and passed
  * in to the component that they are displaying.

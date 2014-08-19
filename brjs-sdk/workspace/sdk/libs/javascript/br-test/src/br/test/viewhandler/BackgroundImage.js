@@ -17,8 +17,8 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
  * </p>
  *
  * @alias module:br/test/viewhandler/BackgroundImage
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * @class
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
  */
 function BackgroundImage() {
 }

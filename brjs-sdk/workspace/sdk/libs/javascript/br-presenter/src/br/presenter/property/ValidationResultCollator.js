@@ -1,4 +1,8 @@
 /**
+ * @module br/presenter/property/ValidationResultCollator
+ */
+
+/**
  * @private
  */
 br.presenter.property.ValidationResultCollator = function(oValidationResultListener, nValidators)

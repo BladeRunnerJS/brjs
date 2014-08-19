@@ -1,9 +1,13 @@
 /**
+ * @module br/presenter/view/knockout/ControlPluginNodeListListener
+ */
+
+/**
  * @private
- * @constructor
+ * @class
  * @param {Function} fControlHandler
  *
- * @implements br.presenter.node.NodeListListener
+ * @implements module:br/presenter/node/NodeListListener
  */
 br.presenter.view.knockout.ControlPluginNodeListListener = function(fControlHandler)
 {

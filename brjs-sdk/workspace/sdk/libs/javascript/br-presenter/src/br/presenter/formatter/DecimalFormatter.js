@@ -1,6 +1,14 @@
 /**
+ * @module br/presenter/formatter/DecimalFormatter
+ */
+
+/**
+ * @singleton
  * @class
+ * @alias module:br/presenter/formatter/DecimalFormatter
+ * @implements module:br/presenter/formatter/Formatter
  * 
+ * @description
  * Formats the value to the specified number of decimal places.
  * <p/>
  * <code>DecimalFormatter</code> is typically used with Presenter, but can be invoked programmatically
@@ -11,11 +19,7 @@
  * decimal point characters will stop the DecimalFormatter from recognising the number.  
  * <p/>
  * <code>br.presenter.formatter.DecimalFormatter.format(3.14159, {dp:3})</code>
- * 
- * @implements br.presenter.formatter.Formatter
- * @singleton
  */
-debugger;
 br.presenter.formatter.DecimalFormatter = function() {
 };
 

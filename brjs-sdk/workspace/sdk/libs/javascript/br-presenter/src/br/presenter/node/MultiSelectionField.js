@@ -1,7 +1,13 @@
 /**
- * Constructs a new instance of <code>SelectionField</code>.
- * 
+ * @module br/presenter/node/MultiSelectionField
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/node/MultiSelectionField
+ * @extends module:br/presenter/node/PresentationNode
+ * 
+ * @description
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model a multi-selection field on screen.
  * 
@@ -18,10 +24,8 @@
  * will be automatically removed from the list. You can change this behaviour by invoking
  * {@link #automaticallyUpdateValueWhenOptionsChange} with <code>false</code>.</p>
  * 
- * @constructor
- * @param {Object} vOptions The list of available options, either using an array, a map of strings or as a {@link br.presenter.node.OptionsNodeList}.
- * @param {Object} vValues (optional) The list of currently selected options, either using an array or as a {@link br.presenter.property.EditableProperty} containing an array.
- * @extends br.presenter.node.PresentationNode
+ * @param {Object} vOptions The list of available options, either using an array, a map of strings or as a {@link module:br/presenter/node/OptionsNodeList}.
+ * @param {Object} vValues (optional) The list of currently selected options, either using an array or as a {@link module:br/presenter/property/EditableProperty} containing an array.
  */
 br.presenter.node.MultiSelectionField = function(vOptions, vValues)
 {

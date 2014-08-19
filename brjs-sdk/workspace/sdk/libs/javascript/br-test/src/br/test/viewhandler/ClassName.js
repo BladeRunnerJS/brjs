@@ -1,18 +1,22 @@
 'use strict'
 
+/**
+ * @module br/test/viewhandler/ClassName
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.ClassName
- * @class
+ * @alias module:br/test/viewhandler/ClassName
+ * @description
  * <code>ClassName ViewFixtureHandler</code> can be used to get a class of a view element.
  * Example usage:
  * <p>
  * <code>then("form.view.('#formContentAreaContainer').className = 'OpenSent'");</code> * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * @class
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
  */
 function ClassName() {
 }

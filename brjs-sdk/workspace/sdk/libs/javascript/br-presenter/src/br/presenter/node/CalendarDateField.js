@@ -1,11 +1,18 @@
 /**
+ * @module br/presenter/node/CalendarDateField
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/node/CalendarDateField
+ * @extends module:br/presenter/node/DateField
+ * 
+ * @description
  * Represents a DateField that can be updated with a calendar.
- * @constructor
+ * 
  * @param vDate The initial date
  * @param vStartDate The first selectable date
  * @param vEndDate The last selectable date.
- * @extends br.presenter.node.DateField
  */
 br.presenter.node.CalendarDateField = function(vDate, vStartDate, vEndDate)
 {

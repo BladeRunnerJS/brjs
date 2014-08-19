@@ -3,7 +3,7 @@
 if (false)
 {
 	/**
-	 * @class The Testing library provides the JavaScript infrastructure for executing acceptance tests
+	 * @description The Testing library provides the JavaScript infrastructure for executing acceptance tests
 	 *  using the verifier test framework.
 	 *  @package
 	 *  @BladeRunner

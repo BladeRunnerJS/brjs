@@ -1,10 +1,14 @@
 /**
+ * @module br/presenter/util/ErrorMonitor
+ */
+
+/**
  * ErrorMonitor is responsible for monitoring the status of fields that contain
  * an error and failure message property. It is used to set the tool tip class that
  * the tooltip control will scan in order to create the tool tip box.
  *
- * @constructor
- * @param {br.presenter.node.ToolTipNode} Node representing the tool tip model.
+ * @class
+ * @param {module:br/presenter/node/ToolTipNode} Node representing the tool tip model.
  */
 br.presenter.util.ErrorMonitor = function(oTooltipNode)
 {
@@ -65,7 +69,7 @@ br.presenter.util.ErrorMonitor.prototype.replaceErrorListeners = function(pGroup
  * Monitors a Field to automatically add it as an error when it enters an error state and remove it once
  * that error is resolved.
  *
- * @param {br.presenter.node.ToolTipField} oField
+ * @param {module:br/presenter/node/ToolTipField} oField
  */
 br.presenter.util.ErrorMonitor.prototype.monitorField = function(oField)
 {
@@ -98,7 +102,7 @@ br.presenter.util.ErrorMonitor.prototype.monitorField = function(oField)
  * Removes the automatic monitoring of the supplied Field, and removes it from the list of current errors
  * if the field is currently in an error state.
  *
- * @param {br.presenter.node.Field} oField
+ * @param {module:br/presenter/node/Field} oField
  */
 br.presenter.util.ErrorMonitor.prototype.forgetField = function(oField)
 {

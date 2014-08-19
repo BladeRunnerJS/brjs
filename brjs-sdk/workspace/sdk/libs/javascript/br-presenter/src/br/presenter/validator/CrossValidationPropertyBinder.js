@@ -1,17 +1,21 @@
 /**
+ * @module br/presenter/validator/CrossValidationPropertyBinder
+ */
+
+/**
  * @singleton
  * 
- * @class
+ * @description
  * The <code>CrossValidationPropertyBinder</code> is used to associate a single
- * {@link br.presenter.validator.CrossPropertyValidator} instance with multiple
- * {@link br.presenter.property.Property} instances.
+ * {@link module:br/presenter/validator/CrossPropertyValidator} instance with multiple
+ * {@link module:br/presenter/property/Property} instances.
  * 
- * <p>The {@link br.presenter.property.Property} class does not directly support the registration
+ * <p>The {@link module:br/presenter/property/Property} class does not directly support the registration
  * of cross property validators, so the <code>CrossValidationPropertyBinder</code> bridges this gap
- * by creating a standard {@link br.presenter.validator.Validator} that proxies all validation calls to the
- * underlying {@link br.presenter.validator.CrossPropertyValidator}.</p>
+ * by creating a standard {@link module:br/presenter/validator/Validator} that proxies all validation calls to the
+ * underlying {@link module:br/presenter/validator/CrossPropertyValidator}.</p>
  * 
- * @constructor
+ * @class
  */
 br.presenter.validator.CrossValidationPropertyBinder = function()
 {
@@ -26,7 +30,7 @@ br.presenter.validator.CrossValidationPropertyBinder = function()
  * Binds the given validator to the set of named properties provided.
  * 
  * @param {Object} mProperties The set of named properties that <code>oCrossPropertyValidator</code> expects.
- * @param {br.presenter.validator.CrossPropertyValidator} oCrossPropertyValidator The validator that will validate <code>mProperties</code>.
+ * @param {module:br/presenter/validator/CrossPropertyValidator} oCrossPropertyValidator The validator that will validate <code>mProperties</code>.
  * @type int
  * @returns A numeric bind ID that can be used to later unbind this validator using {@link #unbindValidator}.
  * @see #unbindValidator

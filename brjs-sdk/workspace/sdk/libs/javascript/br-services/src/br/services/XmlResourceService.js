@@ -6,7 +6,7 @@ var Errors = require('br/Errors');
 
 /**
 * This class provides access to XML documents loaded via the XML bundler.
-* @class
+* @description
 * @interface
 * @alias module:br/services/XmlResourceService
 */

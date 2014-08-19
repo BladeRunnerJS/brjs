@@ -1,15 +1,19 @@
 /**
+ * @module br/presenter/node/PresentationNode
+ */
+
+/**
  * Constructs a new instance of <code>PresentationNode</code>.
  *
- * @class
+ * @description
  * Base class of all complex objects (nodes) within a presentation model.
  *
- * <p>A {@link br.presenter.PresentationModel} is a tree of <code>PresentationNode</code>
- * instances, with instances of {@link br.presenter.property.Property} and <code>Function</code>
+ * <p>A {@link module:br/presenter/PresentationModel} is a tree of <code>PresentationNode</code>
+ * instances, with instances of {@link module:br/presenter/property/Property} and <code>Function</code>
  * forming the leafs of the tree. Objects that do not extend <code>PresentationNode</code>
  * are not considered to be part of the presentation model, and are not accessible within the
  * view.</p>
- * <p> When a {@link br.presenter.PresentationModel} is created the <code>_$setPath</code> method is called
+ * <p> When a {@link module:br/presenter/PresentationModel} is created the <code>_$setPath</code> method is called
  * which throws an exception if the model does not adhere to a tree structure. It also creates a "path" label
  * on each node which identifies the node in standard object notation from the root node.
  * </p>
@@ -19,7 +23,7 @@
  * </p>
  *
  *
- * @constructor
+ * @class
  */
 br.presenter.node.PresentationNode = function()
 {

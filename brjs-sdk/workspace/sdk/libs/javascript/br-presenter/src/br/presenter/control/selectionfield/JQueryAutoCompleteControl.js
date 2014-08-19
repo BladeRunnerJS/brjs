@@ -1,12 +1,18 @@
+/**
+ * @module br/presenter/control/selectionfield/JQueryAutoCompleteControl
+ */
 
 br.Core.thirdparty("jquery");
 
 /**
- * @constructor
- *
  * @class
+ * @alias module:br/presenter/control/selectionfield/JQueryAutoCompleteControl
+ * @extends module:br/presenter/control/ControlAdaptor
+ * @extends module:br/presenter/property/PropertyListener
+ * 
+ * @description
  * Provides an input box that supports auto complete when used in conjunction with a 
- * {@link br.presenter.node.AutoCompleteSelectionField}.
+ * {@link module:br/presenter/node/AutoCompleteSelectionField}.
  *
  * <p>The jQuery auto complete control is aliased by <em>br.autocomplete-box</em>, and can
  * be used within templates as follows:</p>
@@ -28,9 +34,6 @@ br.Core.thirdparty("jquery");
  * </p>
  * 
  * @see br.presenter.node.AutoCompleteSelectionField
- *
- * @extends br.presenter.control.ControlAdaptor
- * @extends br.presenter.property.PropertyListener
  */
 br.presenter.control.selectionfield.JQueryAutoCompleteControl = function()
 {

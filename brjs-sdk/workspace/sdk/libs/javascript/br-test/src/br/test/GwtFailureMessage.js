@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/GwtFailureMessage
+ */
+
 /** @private */
 function GwtFailureMessage() {
 	this._errorMsg = '';

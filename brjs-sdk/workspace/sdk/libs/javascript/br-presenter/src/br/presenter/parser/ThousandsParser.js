@@ -1,5 +1,9 @@
 /**
- * @class
+ * @module br/presenter/parser/ThousandsParser
+ */
+
+/**
+ * @description
  * 
  * Parses an amount and strips any thousands separators.  
  * <p/>
@@ -12,9 +16,9 @@
  * example above, see the i18n property br.i18n.number.grouping.separator in other locales for their separators.
  * 
  * <p/>
- * See {@link br.presenter.formatter.ThousandsFormatter} for the complementary formatter.
+ * See {@link module:br/presenter/formatter/ThousandsFormatter} for the complementary formatter.
  * 
- * @implements br.presenter.parser.Parser
+ * @implements module:br/presenter/parser/Parser
  * @singleton
  */
 br.presenter.parser.ThousandsParser = function() {

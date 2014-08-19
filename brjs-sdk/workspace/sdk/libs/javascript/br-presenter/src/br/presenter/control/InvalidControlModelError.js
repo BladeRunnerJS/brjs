@@ -1,12 +1,18 @@
 /**
+ * @module br/presenter/control/InvalidControlModelError
+ */
+
+/**
  * @class
- * The exception thrown when {@link br.presenter.control.ControlAdaptor#setPresentationNode} is invoked with an
+ * @alias module:br/presenter/control/InvalidControlModelError
+ * @extends module:br/Errors/CustomError
+ * 
+ * @description
+ * The exception thrown when {@link module:br/presenter/control/ControlAdaptor#setPresentationNode} is invoked with an
  * incompatible presentation node for the control being used.
  * 
- * @constructor
  * @param {String} sControlAdaptor The class name of the control adaptor that's been invoked.
  * @param {String} sAcceptedControlModel The particular class of the presentation node this control adaptor accepts.
- * @extends br.Errors.CustomError
  */
 br.presenter.control.InvalidControlModelError = function(sControlAdaptor, sAcceptedControlModel)
 {

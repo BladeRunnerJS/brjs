@@ -1,3 +1,7 @@
+/**
+ * @module br/presenter/workbench/ui/PresentationModelViewer
+ */
+
 var KnockoutPresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
 var PresenterModelTree = require('br/presenter/workbench/ui/PresenterModelTree');
 var PresenterJsTreeModelFactory = require('br/presenter/workbench/ui/PresenterJsTreeModelFactory');

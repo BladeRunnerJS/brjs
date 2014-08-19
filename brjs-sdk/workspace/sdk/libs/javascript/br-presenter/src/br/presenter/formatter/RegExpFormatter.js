@@ -1,17 +1,23 @@
 /**
- * @class
- * 
- * Transforms a string using a standard JavaScript regular expression.
- * <p/>
- * <code>RegExpFormatter</code> is typically used with Presenter, but can be invoked programmatically
- * as in the following examples which evaluate to "8987551787.0" and "Buy USD" respectively:
- * <p/>
- * <code>br.presenter.formatter.RegExpFormatter.format("8987551787.0", { match:"[A-Z]" })</code><br/>
- * <code>br.presenter.formatter.RegExpFormatter.format("Buy.USD", { match:"(\\.", replace:" " })</code>
- * 
+ * @module br/presenter/formatter/RegExpFormatter
+ */
+
+/**
  * @singleton
- *
- * @implements br.presenter.formatter.Formatter
+ * @class
+ * @alias module:br/presenter/formatter/RegExpFormatter
+ * @implements module:br/presenter/formatter/Formatter
+ * 
+ * @description
+ * Transforms a string using a standard JavaScript regular expression.
+ * 
+ * <p><code>RegExpFormatter</code> is typically used with Presenter, but can be invoked programmatically
+ * as in the following examples which evaluate to "8987551787.0" and "Buy USD" respectively:</p>
+ * 
+ * <pre>
+ * br.presenter.formatter.RegExpFormatter.format("8987551787.0", { match:"[A-Z]" })
+ * br.presenter.formatter.RegExpFormatter.format("Buy.USD", { match:"(\\.", replace:" " })
+ * </pre>
  */
 br.presenter.formatter.RegExpFormatter = function()
 {

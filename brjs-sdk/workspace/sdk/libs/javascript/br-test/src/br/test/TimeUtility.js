@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/TimeUtility
+ */
+
 var Errors = require('br/Errors');
 
 /**

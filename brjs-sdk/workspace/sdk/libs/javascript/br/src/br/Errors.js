@@ -8,9 +8,9 @@ var br = require('br/Core');
 
 /**
 * @class
-* @alias module:br/Errors.CustomError
+* @alias module:br/Errors
 * 
-* @classdesc
+* @description
 * Constructs a new <code>Error</code> of the provided type.
 * 
 * <code>br/Errors</code> extends the built in <code>Error</code> and allows the

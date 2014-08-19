@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/BlurHandler
+ */
+
 require('jquery');
 
 /**

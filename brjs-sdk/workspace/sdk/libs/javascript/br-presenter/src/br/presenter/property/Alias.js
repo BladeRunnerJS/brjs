@@ -1,15 +1,19 @@
 /**
+ * @module br/presenter/property/Alias
+ */
+
+/**
  * Constructs a new <code>Alias</code> instance.
  * 
- * @class
- * <code>Alias</code> instances wrap instances of {@link br.presenter.property.Property} and keep the
+ * @description
+ * <code>Alias</code> instances wrap instances of {@link module:br/presenter/property/Property} and keep the
  * values synchronised, to allow access to the same property from multiple paths (e.g. double binding).
  * 
  * <p></p>
  * 
- * @constructor
- * @param {br.presenter.property.Property} oProperty The property to wrap.
- * @extends br.presenter.property.Property
+ * @class
+ * @param {module:br/presenter/property/Property} oProperty The property to wrap.
+ * @extends module:br/presenter/property/Property
  */
 br.presenter.property.Alias = function(oProperty)
 {

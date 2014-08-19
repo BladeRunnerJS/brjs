@@ -1,3 +1,7 @@
+/**
+ * @module br/presenter/view/knockout/TooltipPlugin
+ */
+
 // TODO: TAT - this class needs testing
 
 br.Core.thirdparty("jquery");
@@ -5,7 +9,7 @@ br.Core.thirdparty("presenter-knockout");
 
 /**
  * @private
- * @constructor
+ * @class
  */
 br.presenter.view.knockout.TooltipPlugin = function()
 {

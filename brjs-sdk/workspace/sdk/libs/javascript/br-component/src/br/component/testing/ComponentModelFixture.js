@@ -14,7 +14,7 @@ var Fixture = require('br/test/Fixture');
  * @alias module:br/component/testing/ComponentModelFixture
  * @extends module:br/test/Fixture
  * 
- * @classdesc
+ * @description
  * The <code>ComponentModelFixture</code> interface.
  */
 function ComponentModelFixture() {};
@@ -22,10 +22,10 @@ function ComponentModelFixture() {};
 br.extend(ComponentModelFixture, Fixture);
 
 /**
- * This method is called be the {@link br.component.testing.ComponentFixture} after
+ * This method is called be the {@link module:br/component/testing/ComponentFixture} after
  * the component is created.
  *
- * @param {br.component.Component} oComponent the component instance managed by this ComponentModelFixture.
+ * @param {module:br/component/Component} oComponent the component instance managed by this ComponentModelFixture.
  */
 ComponentModelFixture.prototype.setComponent = function(oComponent) {
 	throw new Errors.UnimplementedInterfaceError("ComponentModelFixture.setComponent() has not been implemented.");

@@ -1,11 +1,15 @@
 // this class is here since it seems to be break KO binding tests in some browsers if it's a commonJS module
 
+/**
+ * @module br/test/ns/Utils
+ */
+
 /* global br, require, presenter_ko, jQuery */
 br.Core.thirdparty('jquery');
 br.Core.thirdparty('presenter-knockout');
 
 /**
-* @class
+* @description
 * Utility class containing static methods that can be useful for tests.
 */
 var nsUtils = function() {};

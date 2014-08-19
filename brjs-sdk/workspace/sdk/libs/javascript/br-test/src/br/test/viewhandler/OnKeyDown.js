@@ -1,14 +1,18 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/OnKeyDown
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @name br.test.viewhandler.OnKeyDown
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * @alias module:br/test/viewhandler/OnKeyDown
+ * @class
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
  */
 function OnKeyDown() {
 }

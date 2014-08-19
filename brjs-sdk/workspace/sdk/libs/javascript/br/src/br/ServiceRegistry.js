@@ -1,13 +1,17 @@
 "use strict";
 
-
+/**
+ * @module br/ServiceRegistry
+ */
 
 /**
-* The <code>ServiceRegistry</code> is a static class and does not need to be constructed.
-*
+* @class
+* @alias module:br/ServiceRegistry
+* 
+* @description
 * The <code>ServiceRegistry</code> is used to allow a given application access to application
-* services.
-*
+* services. The <code>ServiceRegistry</code> is a static class and does not need to be constructed.
+* 
 * <p>Services are typically registered or requested using an alias name, but older applications
 * may still register and request using interfaces, which is also still supported. Applications
 * that use aliases don't normally need to manually register services as these are created lazily
@@ -17,9 +21,9 @@
 * <p>The <code>ServiceRegistry</code> is initialized as follows:</p>
 *
 * <ol>
-*	<li>The application invokes {@link br.ServiceRegistry.initializeServices} which
+*	<li>The application invokes {@link module:br/ServiceRegistry/initializeServices} which
 *		causes all delayed readiness services to be created.</li>
-*	<li>Once {@link br.ServiceRegistry.initializeServices} has finished (once one of the
+*	<li>Once {@link module:br/ServiceRegistry/initializeServices} has finished (once one of the
 *		call-backs fire), the application should then register any services that can't be created
 *		lazily using zero-arg constructors.</li>
 *	<li>The application can now start doing it's proper work.</li>
@@ -28,19 +32,16 @@
 * <p>Because blades aren't allowed to depend directly on classes in other blades, interface
 * definitions are instead created for particular pieces of functionality, and blades can choose
 * to register themselves as being providers of that functionality. The
-* <code>ServiceRegistry</code> and the {@link br.EventHub} are both useful in this
+* <code>ServiceRegistry</code> and the {@link module:br/EventHub} are both useful in this
 * regard:
 *
 * <ul>
 *	<li>Many-To-One dependencies are resolved by having a single service instance available via
 *		the <code>ServiceRegistry</code>.</li>
 *	<li>Many-To-Many dependencies are resolved by having zero or more classes register with the
-*		{@link br.EventHub}.</li>
+*		{@link module:br/EventHub}.</li>
 * </ul>
-*
-* @name br.ServiceRegistry
-* @class
-* @module br/ServiceRegistry
+* 
 * @see {@link http://bladerunnerjs.org/docs/concepts/service_registry/}
 * @see {@link http://bladerunnerjs.org/docs/use/service_registry/}
 */

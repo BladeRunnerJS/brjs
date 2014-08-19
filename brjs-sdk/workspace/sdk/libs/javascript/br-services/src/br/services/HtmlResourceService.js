@@ -6,7 +6,7 @@ var Errors = require('br/Errors');
 
 /**
 * A service that provides access to HTML templates.
-* @class
+* @description
 * @interface
 * @alias module:br/services/HtmlResourceService
 */

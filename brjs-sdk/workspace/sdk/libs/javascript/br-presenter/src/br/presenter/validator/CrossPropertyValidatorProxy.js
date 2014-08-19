@@ -1,20 +1,24 @@
 /**
+ * @module br/presenter/validator/CrossPropertyValidatorProxy
+ */
+
+/**
  * @private
- * @class
- * This class is to be used via the {@link br.presenter.validator.CrossValidationPropertyBinder}.
+ * @description
+ * This class is to be used via the {@link module:br/presenter/validator/CrossValidationPropertyBinder}.
  *
- * <p>This proxy class implements the {@link br.presenter.validator.Validator} interface so that it can be added as a validator
- * of {@link br.presenter.property.EditableProperty} instances. It then handles the routing pf validation calls
- * to the instance of {@link br.presenter.validator.CrossPropertyValidator} that it is constructed with. If there
+ * <p>This proxy class implements the {@link module:br/presenter/validator/Validator} interface so that it can be added as a validator
+ * of {@link module:br/presenter/property/EditableProperty} instances. It then handles the routing pf validation calls
+ * to the instance of {@link module:br/presenter/validator/CrossPropertyValidator} that it is constructed with. If there
  * are instances of non-editable properties, this proxy listens to changes on them and triggers re-validation when they happen.</p>
  *
  * <p>The <code>mProperties</code> parameter that this class is constructed with must match what the <code>oCrossPropertyValidator</code>'s
- * {@link br.presenter.validator.CrossPropertyValidator#validate} expects.</p>
+ * {@link module:br/presenter/validator/CrossPropertyValidator#validate} expects.</p>
  *
- * @constructor
+ * @class
  * @param {Object} mProperties A name-to-property mapping of all the properties that <code>oCrossPropertyValidator</code> expects.
- * @param {br.presenter.validator.CrossPropertyValidator} oCrossPropertyValidator The validator to proxy validations to.
- * @implements br.presenter.validator.Validator
+ * @param {module:br/presenter/validator/CrossPropertyValidator} oCrossPropertyValidator The validator to proxy validations to.
+ * @implements module:br/presenter/validator/Validator
  */
 br.presenter.validator.CrossPropertyValidatorProxy = function(mProperties, oCrossPropertyValidator)
 {

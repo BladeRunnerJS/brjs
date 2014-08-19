@@ -1,6 +1,10 @@
 /**
+ * @module br/presenter/view/knockout/ControlPluginComponentLifecycleListener
+ */
+
+/**
  * @private
- * @constructor
+ * @class
  * @param {Object} oControlAdaptor
  */
 br.presenter.view.knockout.ControlPluginComponentLifecycleListener = function(oControlAdaptor)

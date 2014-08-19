@@ -1,17 +1,21 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/ScrolledHorizontal
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @name br.test.viewhandler.ScrolledHorizontal
- * @class
+ * @alias module:br/test/viewhandler/ScrolledHorizontal
+ * @description
  * <code>ScrolledHorizontal ViewFixtureHandler</code> can be used to trigger a horizontal scroll on a view element.
  * </code>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * @class
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
  */
 function ScrolledHorizontal() {
 }

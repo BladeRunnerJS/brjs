@@ -16,7 +16,7 @@ var Utility = require('br/core/Utility');
  * @alias module:br/component/testing/ComponentFixture
  * @implements module:br/test/Fixture
  * 
- * @classdesc
+ * @description
  * Constructs a <code>ComponentFixture</code>.
  * 
  * The <code>ComponentFixture</code> serves to create components using the ComponentFactory when these are
@@ -27,8 +27,8 @@ var Utility = require('br/core/Utility');
  * of the component.</p>
  * 
  * @param {String} sXml the component XML required to create the component. Required.
- * @param {br.component.testing.ComponentModelFixture} oModelFixture the presentation model fixture. Required.
- * @param {br.test.ViewFixture} oViewFixture the view fixture. Optional.
+ * @param {module:br/component/testing/ComponentModelFixture} oModelFixture the presentation model fixture. Required.
+ * @param {module:br/test/ViewFixture} oViewFixture the view fixture. Optional.
  */
 function ComponentFixture(sXml, oModelFixture, oViewFixture) {
 	//TODO: This check should be an isA instead of a fulfills.
@@ -162,7 +162,7 @@ ComponentFixture.prototype.doThen = function(sProperty, vValue) {
  * <ul>
  * <li><code>model</code>: the presentation model fixture, for manipulating and verifying properties in the presentation model</li>
  * <li><code>view</code>: the view fixture, the view fixture, for manipulating and verifying the state of elements on the component's view</li>
- * <li><code>componentFrame</code>: the component frame fixture, for verifying the state of the {@link br.component.Frame} housing the component</li>
+ * <li><code>componentFrame</code>: the component frame fixture, for verifying the state of the {@link module:br/component/Frame} housing the component</li>
  * </ul>
  * @see br.test.Fixture#addSubFixtures
  */

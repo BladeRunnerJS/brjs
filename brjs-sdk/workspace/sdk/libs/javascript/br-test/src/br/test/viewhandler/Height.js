@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/Height
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.Height
- * @class
+ * @alias module:br/test/viewhandler/Height
+ * @description
  * <code>Height ViewFixtureHandler</code> can be used to get height of a view element.
  * Example usage:
  * <p>
  * <code>then("dynamicComponent.view.(.component).height = 200");</code>
  * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * @class
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
  */
 function Height() {
 }

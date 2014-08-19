@@ -1,9 +1,13 @@
 /**
+ * @module br/presenter/validator/CrossValidationPropertyListener
+ */
+
+/**
  * @private
- * @constructor
+ * @class
  * @param oCrossPropertyValidationProxy
  * @param sPropertyId
- * @implements br.presenter.property.PropertyListener
+ * @implements module:br/presenter/property/PropertyListener
  *
  */
 br.presenter.validator.CrossValidationPropertyListener = function(oCrossPropertyValidationProxy, sPropertyId)

@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/LeftMarginWidth
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,16 +11,16 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.LeftMarginWidth
- * @class
+ * @alias module:br/test/viewhandler/LeftMarginWidth
+ * @description
  * <code>LeftMarginWidth ViewFixtureHandler</code> can be used to test the left margin width of an element.
  * Example usage:
  * <p>
  * <code>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).leftMarginWidth = '10'");</code>
  * </p>
  * 
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * @class
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
  */
 function LeftMarginWidth() {
 }
