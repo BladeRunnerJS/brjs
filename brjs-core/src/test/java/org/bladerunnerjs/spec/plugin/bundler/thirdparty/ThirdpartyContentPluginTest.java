@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -18,6 +19,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	private JsLib thirdpartyLib2;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer pageResponse = new StringBuffer();
+	private SdkJsLib sdkLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -30,6 +32,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			thirdpartyLib = app.jsLib("thirdparty-lib");
 			thirdpartyLib2 = app.jsLib("thirdparty-lib2");
 			bladerunnerConf = brjs.bladerunnerConf();
+			sdkLib = brjs.sdkLib("lib");
 	}	
 	
 	@Test
@@ -193,5 +196,64 @@ public class ThirdpartyContentPluginTest extends SpecTest {
     	then(pageResponse).containsText("file1.js")
     		.and(exceptions).verifyNoOutstandingExceptions();
 	}
+	
+	@Test
+	public void librariesWithPackageJsonAreWrappedInADefineBlock() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFile("package.json")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
+			.and(aspect).indexPageRequires("lib");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsOrderedTextFragments("define('lib', function(require, exports, module) {",
+				"module.exports = function() { };\n",
+				"});\n");
+	}
+	
+	@Test
+	public void librariesWithPackageJsonAndDotNoDefineFileAreNOTWrappedInADefineBlock() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFile("package.json")
+			.and(sdkLib).containsFile(".no-define")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
+			.and(aspect).indexPageRequires("lib");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).doesNotContainText("define('lib', function(require, exports, module) {");
+	}
+	
+	@Test
+	public void librariesWithPackageJsonAreGlobalisedUsingExportsConfig() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFile("package.json")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
+			.and(aspect).indexPageRequires("lib");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsText("thisLib = require('lib');");
+	}
+	
+	// ---------------------------------------- //
+	//TODO: these tests wont be valid when we have proper commmon.js support
+	@Test 
+	public void librariesWithEmptyObjectExportsDontCreateInvalidJS() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFile("package.json")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: \"{}\"")
+			.and(aspect).indexPageRequires("lib");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsLines(
+				"// lib",
+				"define('lib', function(require, exports, module) {",				
+				"module.exports = function() { };")
+			.and(pageResponse).doesNotContainText("{} = require('lib');");
+	}
+	@Test 
+	public void librariesWithEmptyObjectAndWhiteSpaceExportsDontCreateInvalidJS() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+		.and(sdkLib).containsFile("package.json")
+		.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: \"  {  }  \"")
+		.and(aspect).indexPageRequires("lib");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).doesNotContainText("= require('lib');");
+	}
+	// ---------------------------------------- //
 	
 }
