@@ -198,36 +198,14 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void librariesWithPackageJsonAreWrappedInADefineBlock() throws Exception {
+	public void librariesWithUmdConfigAreWrappedInADefineBlock() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
-			.and(sdkLib).containsFile("package.json")
-			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"hasUMD: true")
 			.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("define('lib', function(require, exports, module) {",
 				"module.exports = function() { };\n",
 				"});\n");
-	}
-	
-	@Test
-	public void librariesWithPackageJsonAndDotNoDefineFileAreNOTWrappedInADefineBlock() throws Exception {
-		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
-			.and(sdkLib).containsFile("package.json")
-			.and(sdkLib).containsFile(".no-define")
-			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
-			.and(aspect).indexPageRequires("lib");
-		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
-		then(pageResponse).doesNotContainText("define('lib', function(require, exports, module) {");
-	}
-	
-	@Test
-	public void librariesWithPackageJsonAreGlobalisedUsingExportsConfig() throws Exception {
-		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
-			.and(sdkLib).containsFile("package.json")
-			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
-			.and(aspect).indexPageRequires("lib");
-		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
-		then(pageResponse).containsText("thisLib = require('lib');");
 	}
 	
 	// ---------------------------------------- //

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -41,7 +42,12 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 
 	public String getExports() throws ConfigException
 	{
-		return getConf().exports;
+		return StringUtils.replaceChars(getConf().exports, " ", "");
+	}
+	
+	public boolean getHasUmd() throws ConfigException
+	{
+		return getConf().hasUMD;
 	}
 	
 	

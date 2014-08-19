@@ -10,7 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -55,48 +54,34 @@ public class ThirdpartySourceModule implements SourceModule
 	public Reader getReader() throws IOException
 	{
 		List<Reader> fileReaders = new ArrayList<>();
+		List<Reader> jsFileReaders = new ArrayList<>();
+
 		
-		try {
-			
-			boolean hasPackageJson = assetLocation.assetContainer().file("package.json").isFile();
-			boolean shouldDefineLibrary = hasPackageJson && !assetLocation.assetContainer().file(".no-define").isFile();
-			
+		try {			
+			for(File file : manifest.getJsFiles()) {
+				jsFileReaders.add(new UnicodeReader(file, defaultFileCharacterEncoding));
+				jsFileReaders.add(new StringReader("\n\n"));
+			}
 			
 			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath());
-			String defineBlockBody = "module.exports = " + manifest.getExports();
 			String defineBlockFooter = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER;
-			String globaliseModuleContent = manifest.getExports() + " = require('" + getPrimaryRequirePath() + "');\n";
 			
-			//TODO: once we have proper node lib support remove this block and the 'else' block below
-			if (shouldDefineLibrary)
+			if (manifest.getHasUmd())
 			{
 				fileReaders.add( new StringReader( defineBlockHeader ) );
-			}
-			
-			for(File file : manifest.getJsFiles()) {
-				fileReaders.add(new UnicodeReader(file, defaultFileCharacterEncoding));
-				fileReaders.add(new StringReader("\n\n"));
-			}
-			
-			if (!hasPackageJson)
-			{
-    			fileReaders.add( new StringReader( defineBlockHeader ) );
-    			fileReaders.add( new StringReader( defineBlockBody ) );
-    			fileReaders.add( new StringReader( defineBlockFooter ) );
-			}
-			else if (shouldDefineLibrary)
-			{
-				fileReaders.add( new StringReader( defineBlockFooter ) );
-				
-				String sanitizedExports = StringUtils.replaceChars(manifest.getExports(), " ", "");
-				if (!sanitizedExports.contains("{}"))
-				{
-					fileReaders.add( new StringReader( globaliseModuleContent ) );
+				fileReaders.addAll(jsFileReaders);
+				if (patch.patchAvailable()){
+					fileReaders.add(patch.getReader());
 				}
-			}
-			
-			if (patch.patchAvailable()){
-				fileReaders.add(patch.getReader());
+				fileReaders.add( new StringReader( defineBlockFooter ) );
+			} else {				
+				fileReaders.add( new StringReader( defineBlockHeader ) );
+				fileReaders.addAll(jsFileReaders);
+				if (patch.patchAvailable()){
+					fileReaders.add(patch.getReader());
+				}
+    			fileReaders.add( new StringReader( "module.exports = " + manifest.getExports() ) );
+    			fileReaders.add( new StringReader( defineBlockFooter ) );
 			}
 		}
 		catch (ConfigException e)
