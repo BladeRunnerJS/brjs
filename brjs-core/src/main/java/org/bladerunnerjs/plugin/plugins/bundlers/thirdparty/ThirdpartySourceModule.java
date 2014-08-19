@@ -75,12 +75,12 @@ public class ThirdpartySourceModule implements SourceModule
 				}
 				fileReaders.add( new StringReader( defineBlockFooter ) );
 			} else {				
-				fileReaders.add( new StringReader( defineBlockHeader ) );
 				fileReaders.addAll(jsFileReaders);
 				if (patch.patchAvailable()){
 					fileReaders.add(patch.getReader());
 				}
-    			fileReaders.add( new StringReader( "module.exports = " + manifest.getExports() ) );
+				fileReaders.add( new StringReader( defineBlockHeader ) );
+    			fileReaders.add( new StringReader( "module.exports = " + manifest.getExports() + ";" ) );
     			fileReaders.add( new StringReader( defineBlockFooter ) );
 			}
 		}
@@ -157,9 +157,20 @@ public class ThirdpartySourceModule implements SourceModule
 		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 	
+	public String getGlobalisedName() {
+		return dir().getName().replace("-", "_");
+	}
+	
 	@Override
 	public boolean isEncapsulatedModule() {
-		return false;
+		try
+		{
+			return manifest.getHasUmd();
+		}
+		catch (ConfigException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	@Override

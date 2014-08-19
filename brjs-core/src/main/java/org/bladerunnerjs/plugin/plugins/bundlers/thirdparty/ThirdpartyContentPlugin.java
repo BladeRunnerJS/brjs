@@ -18,6 +18,7 @@ import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -31,6 +32,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
 			.accepts("thirdparty/bundle.js").as("bundle-request")
+				.and("thirdparty/globalise-modules.js").as("globalise-modules-request")
 				.and("thirdparty/<module>/bundle.js").as("single-module-request")
 			.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN)
 				.and("file-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
@@ -65,10 +67,11 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
 		try {
+			List<SourceModule> sourceModules = bundleSet.getSourceModules();
 			if (contentPath.formName.equals("bundle-request"))
 			{
 				List<Reader> readerList = new ArrayList<Reader>();
-				for(SourceModule sourceFile : bundleSet.getSourceModules()) 
+				for(SourceModule sourceFile : sourceModules) 
 				{
 					if(sourceFile instanceof ThirdpartySourceModule)
 					{
@@ -77,7 +80,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 						readerList.add(new StringReader("\n\n"));
 					}
 				}
-				
 				return new CharResponseContent( brjs, readerList );
 			}
 			else if(contentPath.formName.equals("single-module-request")) {
@@ -87,7 +89,22 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					jsModule.getReader(),
 					new StringReader("\n\n")
 				);
-					
+			}
+			else if(contentPath.formName.equals("globalise-modules-request")) {
+				StringBuilder response = new StringBuilder();
+				if (hasNamespacedJsSourceModule(sourceModules) ) {
+					response.append("// thirdparty globalisation\n");
+    				for(SourceModule sourceFile : sourceModules) 
+    				{
+    					if (sourceFile instanceof ThirdpartySourceModule && sourceFile.isEncapsulatedModule())
+    					{
+    						ThirdpartySourceModule thirdpartyModule = (ThirdpartySourceModule) sourceFile;
+    						response.append(thirdpartyModule.getGlobalisedName() + " = require('"+thirdpartyModule.getPrimaryRequirePath()+"');\n");
+    					}
+    				}
+    				response.append("\n\n");
+				}
+				return new CharResponseContent( brjs, response.toString() );
 			}
 			else {
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
@@ -109,6 +126,9 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
 				}
 			}
+			if (hasNamespacedJsSourceModule(bundleSet.getSourceModules())) {
+				requestPaths.add(contentPathParser.createRequest("globalise-modules-request"));
+			}
 		}
 		catch(MalformedTokenException e) {
 			throw new ContentProcessingException(e);
@@ -124,11 +144,25 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		
 		try {
 			requestPaths.add(contentPathParser.createRequest("bundle-request"));
+			if (hasNamespacedJsSourceModule(bundleSet.getSourceModules())) {
+				requestPaths.add(contentPathParser.createRequest("globalise-modules-request"));
+			}
 		}
 		catch (MalformedTokenException e) {
 			throw new ContentProcessingException(e);
 		}
 		
 		return requestPaths;
+	}
+
+	private boolean hasNamespacedJsSourceModule(List<SourceModule> sourceModules)
+	{
+		for(SourceModule sourceFile : sourceModules) 
+		{
+			if (sourceFile instanceof NamespacedJsSourceModule) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
