@@ -157,7 +157,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 					"require('./bladeset/BladesetClass');"+
 					"require('./bladeset/blade/BladeClass');");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("NamespacedLibClass", "OtherUserLibNamespacedClass")
+		then(response).containsNamespacedJsClasses("NamespacedLibClass", "OtherUserLibNamespacedClass")
 			.and(response).containsCommonJsClasses("CommonJSLibClass", "UserLibCommonJSClass", "AspectClass", "BladesetClass", "BladeClass");
 	}
 	

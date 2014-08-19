@@ -74,7 +74,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
+		then(response).containsNamespacedJsClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 	}
 	
 	@Test
@@ -96,7 +96,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.Class1", "appns.bs.b1.Class1");
+		then(response).containsNamespacedJsClasses("appns.bs.Class1", "appns.bs.b1.Class1");
 	}
 	
 	@Test
@@ -109,7 +109,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.bs.Class1")
-			.and(response).containsClasses("appns.bs.b1.Class1");
+			.and(response).containsNamespacedJsClasses("appns.bs.b1.Class1");
 	}
 	
 	@Test
@@ -155,7 +155,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class2");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.b1.Class2")
+		then(response).containsNamespacedJsClasses("appns.bs.b1.Class2")
 			.and(response).doesNotContainClasses("appns.bs.b1.Class1");
 	}
 	
@@ -189,7 +189,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(bladeWithSubstringOfAnotherBlade).classDependsOn("appns.bs.b1b.Class1", "appns.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1b.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.b1b.Class1")
+		then(response).containsNamespacedJsClasses("appns.bs.b1b.Class1")
 			.and(response).doesNotContainText("should not get bundled");
 	}
 	

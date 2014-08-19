@@ -53,7 +53,7 @@ public class StringVerifier {
 		return containsText(Joiner.on("\n").join(lines));
 	}
 	
-	public VerifierChainer containsClasses(String... classes) {
+	public VerifierChainer containsNamespacedJsClasses(String... classes) {
 		for(String className : classes) {
 			containsText(className + " = function() {");
 		}

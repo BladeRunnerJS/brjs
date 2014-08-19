@@ -125,7 +125,7 @@ public class TestPackBundlingTest extends SpecTest
 			.and( sdkLib.testType("unit").defaultTestTech() ).testRequires("test.js", "lib/Class1");
 		when( sdkLib.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then( sdkLib.testType("unit").defaultTestTech() ).bundledFilesEquals(sdkLib.assetLocation("src").file("lib/Class1.js"))
-			.and(response).containsClasses("Class1")
+			.and(response).containsNamespacedJsClasses("Class1")
 			.and( sdkLib ).hasFile("test-unit/tests/test.js");
 	}
 	
@@ -135,7 +135,7 @@ public class TestPackBundlingTest extends SpecTest
 			.and( appLib.testType("unit").defaultTestTech() ).testRequires("test.js", "lib/Class1");
 		when( appLib.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then( appLib.testType("unit").defaultTestTech() ).bundledFilesEquals(appLib.assetLocation("src").file("lib/Class1.js"))
-			.and(response).containsClasses("Class1")
+			.and(response).containsNamespacedJsClasses("Class1")
 			.and( appLib ).hasFile("test-unit/tests/test.js");
 	}
 	

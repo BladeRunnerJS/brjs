@@ -34,7 +34,7 @@ public class AspectUserLibBundling extends SpecTest {
 			.and(userLib).hasClass("userLib.Class1")
 			.and(aspect).indexPageRefersTo("userLib.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("userLib.Class1");
+		then(response).containsNamespacedJsClasses("userLib.Class1");
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class AspectUserLibBundling extends SpecTest {
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).classDependsOn("appns.Class1", "userLib.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("userLib.Class1");
+		then(response).containsNamespacedJsClasses("userLib.Class1");
 	}
 	
 	@Test

@@ -45,7 +45,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.Class1", "appns.bs.Class2");
+		then(response).containsNamespacedJsClasses("appns.bs.Class1", "appns.bs.Class2");
 	}
 	
 	@Test
@@ -64,7 +64,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class2");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.Class2")
+		then(response).containsNamespacedJsClasses("appns.bs.Class2")
 			.and(response).doesNotContainClasses("appns.bs.Class1");
 	}
 	
