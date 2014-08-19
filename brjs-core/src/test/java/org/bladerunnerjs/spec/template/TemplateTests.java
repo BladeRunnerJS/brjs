@@ -76,7 +76,7 @@ public class TemplateTests extends SpecTest
 	public void aspectTestsHasCorrectTemplate() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appns");
 		then(aspect.testType("unit")).hasFilesAndDirs(
-				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js"),
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
 		);
 	}
@@ -96,7 +96,7 @@ public class TemplateTests extends SpecTest
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset.testType("unit")).hasFilesAndDirs(
-				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js"),
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
 		);
 	}
@@ -131,7 +131,7 @@ public class TemplateTests extends SpecTest
 			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
 		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade.testType("unit")).hasFilesAndDirs(
-				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/B1ViewModelTest.js"),
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/B1ViewModelTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
 		);
 	}
@@ -156,7 +156,8 @@ public class TemplateTests extends SpecTest
 						"src/userlib/Userlib.js", 
 						"test-unit/jsTestDriver.conf", 
 						"test-unit/resources/aliases.xml",
-						"test-unit/tests/UserlibTest.js"),
+						"test-unit/tests/UserlibTest.js", 
+						"test-unit/.gitignore"),
 				Arrays.asList("src", "test-unit"))
 			.and(userLib).fileContentsContains("src/userlib/Userlib.js", "var Userlib = {}");
 	}
