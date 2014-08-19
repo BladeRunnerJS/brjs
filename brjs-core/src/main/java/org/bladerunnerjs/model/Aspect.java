@@ -80,6 +80,7 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		super.populate();
+		testType("unit").defaultTestTech().populate();
 	}
 	
 	@Override

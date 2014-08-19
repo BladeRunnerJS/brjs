@@ -21,7 +21,7 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 public class TypedTestPack extends SourceResources implements NamedNode
 {
 	private final NodeList<TestPack> technologyTestPacks = new NodeList<>(this, TestPack.class, null, "");
-	private final NodeItem<TestPack> defaultTestPack = new NodeItem<>(this, TestPack.class, ".");
+	private final NodeItem<DefaultTestPack> defaultTestPack = new NodeItem<>(this, DefaultTestPack.class, ".");
 	private String name;
 	
 	public TypedTestPack(RootNode rootNode, Node parent, File dir, String name)

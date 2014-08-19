@@ -74,7 +74,7 @@ public final class Blade extends AbstractComponent implements NamedNode
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		super.populate();
-		testType("unit").testTech("js-test-driver").populate();
+		testType("unit").defaultTestTech().populate();
 		workbench().populate();
 	}
 	
