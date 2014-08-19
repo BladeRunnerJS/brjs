@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
@@ -67,7 +68,9 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	@Override
 	public boolean isValidName()
 	{
-		return NameValidator.isValidDirectoryName(name);
+		boolean isValidName = NameValidator.isValidDirectoryName(name);
+		boolean matchesLocaleFormat = name.matches(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT);
+		return isValidName && !matchesLocaleFormat;
 	}
 	
 	@Override

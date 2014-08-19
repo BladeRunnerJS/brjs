@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.AbstractNode;
+import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.DuplicateAssetContainerException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -85,4 +86,15 @@ public class AspectTest extends SpecTest {
 		when(app).aspectsListed();
 		then(exceptions).verifyException(DuplicateAssetContainerException.class, "default Aspect", "apps/app1", "apps/app1/default-aspect");
 	}
+	
+	@Test
+	public void aspectsCannotHaveTheSameFormatAsLanguageLocale() throws Exception {
+		then( (NamedNode) app.aspect("my") ).nameIsInvalid();
+	}
+	
+	@Test
+	public void aspectsCannotHaveTheSameFormatAsLanguageAndCountryLocale() throws Exception {
+		then( (NamedNode) app.aspect("my_AS") ).nameIsInvalid();
+	}
+	
 }
