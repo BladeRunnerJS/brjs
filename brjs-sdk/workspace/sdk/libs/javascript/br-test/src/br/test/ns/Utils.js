@@ -1,6 +1,6 @@
 // this class is here since it seems to be break KO binding tests in some browsers if it's a commonJS module
 
-/* global br, require, presenter_ko, jQuery */
+/* global br, require, presenter_knockout, jQuery */
 br.Core.thirdparty('jquery');
 br.Core.thirdparty('presenter-knockout');
 
@@ -132,7 +132,7 @@ nsUtils.fireMouseEvent = function(element, eventString, options) {
 			*
 			* There is a comment in the KO code which explains why this is required.
 			*/
-			presenter_ko.utils.triggerEvent(element, eventString);
+			presenter_knockout.utils.triggerEvent(element, eventString);
 		} else if (nsUtils._isClickEventWithNoEventOptions(eventString, element, options)) {
 			jQuery(element).click();
 		} else {
@@ -303,7 +303,7 @@ nsUtils._isClickEventWithNoEventOptions = function(eventString, element, options
 
 /** @private */
 nsUtils._isClickEventWithNoEventOptionsAndKOIsAvailable = function(eventString, element, options) {
-	return nsUtils._isClickEventWithNoEventOptions(eventString, element, options) && presenter_ko && presenter_ko.utils;
+	return nsUtils._isClickEventWithNoEventOptions(eventString, element, options) && presenter_knockout && presenter_knockout.utils;
 };
 
 br.test.ns.Utils = nsUtils;

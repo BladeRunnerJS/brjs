@@ -7,8 +7,8 @@ PresenterComponentTest.prototype.setUp = function()
 	Mock4JS.addMockSupport(window);
 	Mock4JS.clearMocksToVerify();
 	
-	this.m_oOrigKo = presenter_ko;
-	presenter_ko = {
+	this.m_oOrigKo = presenter_knockout;
+	presenter_knockout = {
 		applyBindings: function() {},
 		bindingHandlers: {}
 	};
@@ -17,7 +17,7 @@ PresenterComponentTest.prototype.setUp = function()
 
 PresenterComponentTest.prototype.tearDown = function()
 {
-	presenter_ko = this.m_oOrigKo;
+	presenter_knockout = this.m_oOrigKo;
 	Mock4JS.verifyAllMocks();
 };
 

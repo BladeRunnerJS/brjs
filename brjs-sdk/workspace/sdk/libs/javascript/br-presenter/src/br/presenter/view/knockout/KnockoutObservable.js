@@ -9,7 +9,7 @@ br.presenter.view.knockout.KnockoutObservable = function()
 	this._subscriptions = {};
 	
 	/** @private */
-	this.__ko_proto__ = presenter_ko.observable;
+	this.__ko_proto__ = presenter_knockout.observable;
 };
 
 /**
@@ -47,8 +47,8 @@ br.presenter.view.knockout.KnockoutObservable.prototype.notifySubscribers = func
 	
 	if (this._subscriptions[event])
 	{
-		presenter_ko.dependencyDetection.ignore(function() {
-			presenter_ko.utils.arrayForEach(this._subscriptions[event].slice(0), function (subscription) {
+		presenter_knockout.dependencyDetection.ignore(function() {
+			presenter_knockout.utils.arrayForEach(this._subscriptions[event].slice(0), function (subscription) {
 				// In case a subscription was disposed during the arrayForEach cycle, check
 				// for isDisposed on each subscription before invoking its callback
 				if (subscription && (subscription.isDisposed !== true))
