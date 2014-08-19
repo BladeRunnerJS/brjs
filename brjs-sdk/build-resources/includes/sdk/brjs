@@ -1,14 +1,14 @@
 #!/bin/sh
 
 displayJavaInstallMessage() {
-	echo "$1 Please install Java 7 or Java 8 and ensure it's available on the path."
-	echo "You can find more information about how to do this at <http://bladerunnerjs.org/docs/use/install/>."
-	echo ""
-	exit
+	echo "$1"
+	echo "Please install Java 7 or Java 8 and ensure it's available on the path."
+	echo "You can find more information about how to do this at http://bladerunnerjs.org/docs/use/install/."
+	exit 1
 }
 
 if [ -z `which java` ]; then
-	displayJavaInstallMessage "Java is either not installed on your computer or not available on the path."
+	displayJavaInstallMessage "Java is either not installed or not available on the path."
 fi
 
 JAVA_VERSION=`java -version 2>&1 | head -n 1 | sed -E "s/^.*\"([^\"]+).*$/\1/"`
