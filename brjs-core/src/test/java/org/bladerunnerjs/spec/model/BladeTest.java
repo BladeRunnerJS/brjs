@@ -47,7 +47,7 @@ public class BladeTest extends SpecTest {
 		given(observer).observing(brjs);
 		when(blade1).populate();
 		then(observer).notified(NodeReadyEvent.class, blade1)
-			.and(observer).notified(NodeReadyEvent.class, blade1.testType("unit").testTech("js-test-driver"))
+			.and(observer).notified(NodeReadyEvent.class, blade1.testType("unit").defaultTestTech())
 			.and(observer).notified(NodeReadyEvent.class, blade1.workbench());
 	}
 	
