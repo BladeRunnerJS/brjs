@@ -45,9 +45,9 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 		return StringUtils.replaceChars(getConf().exports, " ", "");
 	}
 	
-	public boolean getHasUmd() throws ConfigException
+	public boolean getCommonjsDefinition() throws ConfigException
 	{
-		return getConf().hasUMD;
+		return getConf().commonjsDefinition;
 	}
 	
 	

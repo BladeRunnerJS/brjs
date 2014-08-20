@@ -200,7 +200,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	@Test
 	public void librariesWithUmdConfigAreWrappedInADefineBlock() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
-			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"hasUMD: true")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
 			.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("define('lib', function(require, exports, module) {",
@@ -248,7 +248,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	@Test
 	public void librariesWithUmdConfigAreNotGlobalisedIfANamespacedJsClassIsNotUsed() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
-			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"hasUMD: true")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
 			.and(aspect).hasClass("App")
 			.and(aspect).classRequiresThirdpartyLib("App", sdkLib)
 			.and(aspect).indexPageRequires("appns/App");
@@ -259,7 +259,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	@Test
 	public void librariesWithUmdConfigAreGlobalisedIfANamespacedJsClassIsUsed() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
-			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"hasUMD: true")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("App")
 			.and(aspect).classDependsOnThirdpartyLib("App", sdkLib)
@@ -272,7 +272,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	public void aJsSafeVersionOfTheLibraryNameIsUsedToGlobalisedUmdWrappedLibraries() throws Exception {
 		sdkLib = brjs.sdkLib("my-lib");
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
-			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"hasUMD: true")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("App")
 			.and(aspect).classDependsOnThirdpartyLib("App", sdkLib)

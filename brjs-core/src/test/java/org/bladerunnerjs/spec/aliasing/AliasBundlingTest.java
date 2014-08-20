@@ -398,4 +398,14 @@ public class AliasBundlingTest extends SpecTest {
     	then(response).containsText("setAliasData({'the-alias':{'class':require('appns/b1/Class1'),'className':'appns.b1.Class1'}})");
 	}
 	
+	@Test
+	public void weBundleABladeClassWhoseAliasIsReferredToFromAnotherCommonJsBladeClass() throws Exception {
+		given(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.bs.b1.Class2")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+			.and(blade).classFileHasContent("appns/bs/b1/Class1", "aliasRegistry.getAlias('appns.bs.b1.the-alias')");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsDefinedClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2");
+	}
+	
 }

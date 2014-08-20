@@ -66,7 +66,7 @@ public class ThirdpartySourceModule implements SourceModule
 			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath());
 			String defineBlockFooter = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER;
 			
-			if (manifest.getHasUmd())
+			if (manifest.getCommonjsDefinition())
 			{
 				fileReaders.add( new StringReader( defineBlockHeader ) );
 				fileReaders.addAll(jsFileReaders);
@@ -165,7 +165,7 @@ public class ThirdpartySourceModule implements SourceModule
 	public boolean isEncapsulatedModule() {
 		try
 		{
-			return manifest.getHasUmd();
+			return manifest.getCommonjsDefinition();
 		}
 		catch (ConfigException ex)
 		{
