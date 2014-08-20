@@ -11,6 +11,7 @@ import org.junit.Test;
 public class AspectBundlingOfCSS extends SpecTest {
 	private App app;
 	private Aspect aspect;
+	private Aspect rootAspect;
 	private Bladeset bladeset;
 	private Blade blade;
 	private StringBuffer response = new StringBuffer();
@@ -24,6 +25,7 @@ public class AspectBundlingOfCSS extends SpecTest {
 		
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			rootAspect = app.defaultAspect();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 	}
@@ -35,6 +37,16 @@ public class AspectBundlingOfCSS extends SpecTest {
 			.and(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
 			.and(aspect).indexPageRefersTo("appns.Class1");
  		when(aspect).requestReceivedInDev("css/standard/bundle.css", response);
+ 		then(response).containsText("ASPECT theme content");
+ 	}
+ 	
+ 	// Root-level Aspect
+ 	@Test
+ 	public void rootAspectCssFilesAreBundled() throws Exception {
+		given(rootAspect).hasClass("appns/Class1")
+			.and(rootAspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
+			.and(rootAspect).indexPageRefersTo("appns.Class1");
+ 		when(rootAspect).requestReceivedInDev("css/standard/bundle.css", response);
  		then(response).containsText("ASPECT theme content");
  	}
 	
