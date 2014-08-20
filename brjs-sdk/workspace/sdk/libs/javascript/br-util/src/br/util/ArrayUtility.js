@@ -8,15 +8,15 @@ var Errors = require('br/Errors');
 
 /**
  * This is a static class that never needs to be instantiated.
- *
- * @static
+ * 
  * @class
  * @alias module:br/util/ArrayUtility
  * 
  * @classdesc
  * Utility class that provides methods for array manipulation.
  */
-var ArrayUtility = {};
+var ArrayUtility = function() {
+};
 
 /**
  * Return <code>true</code> if the input array contains the input value, <code>false</code> otherwise.
