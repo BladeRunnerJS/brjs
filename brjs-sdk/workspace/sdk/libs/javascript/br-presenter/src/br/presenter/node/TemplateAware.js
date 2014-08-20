@@ -3,8 +3,8 @@
  */
 
 /**
- * @interface
  * @class
+ * @interface
  * @alias module:br/presenter/node/TemplateAware
  * 
  * @classdesc

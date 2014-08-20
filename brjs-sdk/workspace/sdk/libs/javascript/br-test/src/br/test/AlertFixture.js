@@ -9,8 +9,8 @@ var Errors = require('br/Errors');
 var Fixture = require('br/test/Fixture');
 
 /**
- * @interface
  * @class
+ * @interface
  * @alias module:br/test/AlertFixture
  * 
  * @classdesc

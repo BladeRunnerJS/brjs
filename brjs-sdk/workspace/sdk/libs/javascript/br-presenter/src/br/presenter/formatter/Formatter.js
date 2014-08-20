@@ -6,8 +6,8 @@ var Errors = require("br/Errors");
 
 /**
  * @class
- * @alias module:br/presenter/formatter/Formatter
  * @interface
+ * @alias module:br/presenter/formatter/Formatter
  * 
  * @classdesc
  * Represents an object with the capability to format values.

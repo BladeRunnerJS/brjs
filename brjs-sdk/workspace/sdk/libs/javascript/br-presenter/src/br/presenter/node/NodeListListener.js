@@ -4,8 +4,8 @@
 
 /**
  * @class
- * @alias module:br/presenter/node/NodeListListener
  * @interface
+ * @alias module:br/presenter/node/NodeListListener
  * 
  * @classdesc
  * Interface implemented by classes that wish to listen to {@link module:br/presenter/node/NodeList} change events.

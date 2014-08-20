@@ -7,8 +7,8 @@
 var Errors = require('br/Errors');
 
 /**
- * @interface
  * @class
+ * @interface
  * @alias module:br/services/AppMetaService
  * 
  * @classdesc

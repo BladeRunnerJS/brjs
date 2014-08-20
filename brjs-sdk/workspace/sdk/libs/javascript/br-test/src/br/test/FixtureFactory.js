@@ -9,8 +9,8 @@ var Errors = require('br/Errors');
 /**
  * Constructs a new instance of <code>FixtureFactory</code>.
  * 
- * @interface
  * @class
+ * @interface
  * @alias module:br/test/FixtureFactory
  * 
  * @classdesc

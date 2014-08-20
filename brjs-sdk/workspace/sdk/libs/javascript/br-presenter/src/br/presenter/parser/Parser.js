@@ -7,8 +7,8 @@ var Errors = require('br/Errors');
 /**
  * This is an interface and should not be constructed.
  * 
- * @interface
  * @class
+ * @interface
  * @alias module:br/presenter/parser/Parser
  * 
  * @classdesc

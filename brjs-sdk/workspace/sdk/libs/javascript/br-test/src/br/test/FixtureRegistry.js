@@ -5,8 +5,8 @@
  */
 
 /**
- * @interface
  * @class
+ * @interface
  * @alias module:br/test/FixtureRegistry
  * 
  * @classdesc
