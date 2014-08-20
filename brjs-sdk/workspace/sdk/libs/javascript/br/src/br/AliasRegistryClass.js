@@ -47,7 +47,7 @@ var AliasRegistryClass = function()
 * @type Array
 */
 AliasRegistryClass.prototype.getAllAliases = function getAllAliases() {
-	ensureAliasDataHasBeenSet.call(this);
+	this._ensureAliasDataHasBeenSet();
 	return Object.keys(this._aliasData);
 };
 
@@ -63,7 +63,7 @@ AliasRegistryClass.prototype.getAllAliases = function getAllAliases() {
 * @type Array
 */
 AliasRegistryClass.prototype.getAliasesByInterface = function getAliasesByInterface(protocol) {
-	ensureAliasDataHasBeenSet.call(this);
+	this._ensureAliasDataHasBeenSet();
 	var allAliases = this.getAllAliases();
 	var filteredAliases = [];
 
@@ -93,7 +93,7 @@ AliasRegistryClass.prototype.getAliasesByInterface = function getAliasesByInterf
 * @type function
 */
 AliasRegistryClass.prototype.getClass = function getClass(aliasName) {
-	ensureAliasDataHasBeenSet.call(this);
+	this._ensureAliasDataHasBeenSet();
 	if (!this.isAliasAssigned(aliasName)) {
 		throw new Errors.IllegalStateError("No class has been found for alias '" + aliasName +"'");
 	}
@@ -108,7 +108,7 @@ AliasRegistryClass.prototype.getClass = function getClass(aliasName) {
 * @type boolean
 */
 AliasRegistryClass.prototype.isAlias = function isAlias(aliasName) {
-	ensureAliasDataHasBeenSet.call(this);
+	this._ensureAliasDataHasBeenSet();
 	return aliasName in this._aliasData;
 };
 
@@ -120,7 +120,7 @@ AliasRegistryClass.prototype.isAlias = function isAlias(aliasName) {
 * @type boolean
 */
 AliasRegistryClass.prototype.isAliasAssigned = function isAliasAssigned(aliasName) {
-	ensureAliasDataHasBeenSet.call(this);
+	this._ensureAliasDataHasBeenSet();
 	return this.isAlias(aliasName) && this._aliasData[aliasName]["class"] !== undefined;
 };
 
@@ -170,7 +170,7 @@ AliasRegistryClass.prototype.setAliasData = function setAliasData(unverifiedAlia
 /**
 * @private
 */
-function ensureAliasDataHasBeenSet() {
+AliasRegistryClass.prototype._ensureAliasDataHasBeenSet = function() {
 	if (this._isAliasDataSet !== true) {
 		throw new Errors.IllegalStateError("Alias data has not been set.");
 	}
