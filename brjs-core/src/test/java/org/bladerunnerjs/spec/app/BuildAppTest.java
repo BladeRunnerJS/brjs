@@ -12,7 +12,7 @@ import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AppBuildTest extends SpecTest {
+public class BuildAppTest extends SpecTest {
 	private App app;
 	private Aspect defaultAspect;
 	private Aspect nonDefaultAspect;
@@ -29,7 +29,7 @@ public class AppBuildTest extends SpecTest {
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");
 			nonDefaultAspect = app.aspect("aspect2");
-			targetDir = FileUtility.createTemporaryDirectory(AppBuildTest.class.getSimpleName());
+			targetDir = FileUtility.createTemporaryDirectory(BuildAppTest.class.getSimpleName());
 			bladerunnerConf = brjs.bladerunnerConf();
 	}
 	

@@ -11,7 +11,7 @@ import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AppServeTest extends SpecTest {
+public class ServeAppTest extends SpecTest {
 	private App app;
 	private Aspect defaultAspect;
 	private Aspect alternateAspect;
