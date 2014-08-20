@@ -10,7 +10,7 @@ var Errors = require('br/Errors');
  * This is a static class that never needs to be instantiated.
  * 
  * @class
- * @alias module: br/util/MapUtility
+ * @alias module:br/util/MapUtility
  * 
  * @classdesc
  * Utility class providing common operations on maps.
