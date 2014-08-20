@@ -11,7 +11,6 @@
  * method is used to get an instance instead of
  * generating a new <code>XmlParser</code> every time.</p>
  * 
- * @singleton
  * @class
  * @alias module:br/util/XmlParser
  * 
