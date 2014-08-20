@@ -3,7 +3,6 @@
  */
 
 /**
- * @singleton
  * @class
  * @alias module:br/presenter/formatter/SignificantFiguresFormatter
  * @implements module:br/presenter/formatter/Formatter

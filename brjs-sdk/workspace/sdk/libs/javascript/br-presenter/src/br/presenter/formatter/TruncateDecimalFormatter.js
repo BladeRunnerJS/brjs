@@ -3,7 +3,6 @@
  */
 
 /**
- * @singleton
  * @class
  * @alias module:br/presenter/formatter/TruncateDecimalFormatter
  * @implements module:br/presenter/formatter/Formatter

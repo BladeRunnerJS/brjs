@@ -5,7 +5,6 @@
 br.Core.thirdparty("momentjs");
 
 /**
- * @singleton
  * @class
  * @alias module:br/presenter/formatter/DateFormatter
  * @implements module:br/presenter/formatter/Formatter

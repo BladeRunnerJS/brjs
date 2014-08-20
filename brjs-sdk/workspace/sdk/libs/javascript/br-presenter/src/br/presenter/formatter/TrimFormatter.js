@@ -3,7 +3,6 @@
  */
 
 /**
- * @singleton
  * @class
  * @alias module:br/presenter/formatter/TrimFormatter
  * @implements module:br/presenter/formatter/Formatter

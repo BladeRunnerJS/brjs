@@ -3,7 +3,6 @@
  */
 
 /**
- * @singleton
  * @class
  * @alias module:br/presenter/validator/CrossValidationPropertyBinder
  * 

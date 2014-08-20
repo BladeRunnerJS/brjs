@@ -3,7 +3,6 @@
  */
 
 /**
- * @singleton
  * @class
  * @alias module:br/presenter/parser/ThousandsParser
  * @implements module:br/presenter/parser/Parser

@@ -6,7 +6,6 @@
  * @class
  * @alias module:br/presenter/formatter/LowerCaseFormatter
  * @implements module:br/presenter/formatter/Formatter
- * @singleton
  * 
  * @classdesc
  * Converts a string to lower case.

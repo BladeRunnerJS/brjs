@@ -3,7 +3,6 @@
  */
 
 /**
- * @singleton
  * @class
  * @alias module:br/presenter/parser/LocalisedAmountParser
  * @implements module:br/presenter/parser/Parser

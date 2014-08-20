@@ -3,13 +3,12 @@
  */
 
 /**
- * @singleton
  * @class
  * @alias module:br/presenter/formatter/KeyValueFormatter
  * @implements module:br/presenter/formatter/Formatter
  *
  * @classdesc
- * Substitues a value with a mapped value if the a mapped value exists othewise it returns the
+ * Substitutes a value with a mapped value if the a mapped value exists othewise it returns the
  * value itself.
  *
  * The <code>mAttributes</code> argument should have the map holding the mappings in it's
@@ -21,7 +20,7 @@ br.presenter.formatter.KeyValueFormatter = function() {
 br.Core.implement(br.presenter.formatter.KeyValueFormatter, br.presenter.formatter.Formatter);
 
 /**
- * Substitues a value with a mapped value if the a mapped value exists othewise it returns the
+ * Substitutes a value with a mapped value if the a mapped value exists otherwise it returns the
  * value itself.
  *
  * @param {Variant} vValue  the key which is expected to have mapping to a value in mAttributes.map.

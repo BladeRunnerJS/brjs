@@ -3,7 +3,6 @@
  */
 
 /**
- * @singleton
  * @class
  * @alias module:br/presenter/formatter/LocalisedAmountFormatter
  * @implements module:br/presenter/formatter/Formatter
@@ -20,8 +19,6 @@
  * <p/>
  * <code>br.presenter.formatter.LocalisedAmountFormatter.format(1234567890, {})</code>
  * <code>br.presenter.formatter.LocalisedAmountFormatter.format(1234567890, {dp: 4})</code>
- * 
- * 
  */
 br.presenter.formatter.LocalisedAmountFormatter = function()
 {

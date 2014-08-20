@@ -6,7 +6,6 @@
  * @class
  * @alias module:br/presenter/formatter/PercentFormatter
  * @implements module:br/presenter/formatter/Formatter
- * @singleton
  * 
  * @classdesc
  * Converts the number to a percentage.
