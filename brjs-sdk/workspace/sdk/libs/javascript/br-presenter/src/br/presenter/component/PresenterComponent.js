@@ -329,3 +329,8 @@ PresenterComponent.prototype._getTemplate = function(sTemplateId) {
 
 	return eTemplateHolder;
 };
+
+module.exports = PresenterComponent;
+
+// TODO: delete this line once the package is CommonJs
+br.presenter.component.PresenterComponent = module.exports;
