@@ -7,7 +7,7 @@ displayJavaInstallMessage() {
 	exit 1
 }
 
-if [ -z `which java` ]; then
+if [ -z "`which java`" ]; then
 	displayJavaInstallMessage "Java is either not installed or not available on the path."
 fi
 
