@@ -10,12 +10,12 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @alias module:br/test/viewhandler/ScrolledVertical
- * @classdesc
- * <code>ScrolledVertical ViewFixtureHandler</code> can be used to trigger a vertical scroll on a view element.
- * </code>
  * @class
+ * @alias module:br/test/viewhandler/ScrolledVertical
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>ScrolledVertical</code> instances of <code>ViewFixtureHandler</code> can be used to trigger a vertical scroll on a view element.
  */
 function ScrolledVertical() {
 }

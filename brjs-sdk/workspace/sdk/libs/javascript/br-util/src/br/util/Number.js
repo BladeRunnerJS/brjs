@@ -1,14 +1,16 @@
 'use strict';
 
 /**
- * Utility methods for numbers
  * @module br/util/Number
  */
 var StringUtility = require('br/util/StringUtility');
 
 /**
+ * @class
  * @alias module:br/util/Number
+ * 
  * @classdesc
+ * Utility methods for numbers
  */
 function NumberUtil() {
 }

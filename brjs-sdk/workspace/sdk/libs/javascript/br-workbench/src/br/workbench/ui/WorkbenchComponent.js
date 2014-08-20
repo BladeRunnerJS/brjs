@@ -5,10 +5,12 @@
 var Errors = require( 'br/Errors' );
 
 /**
- * @alias module:br/workbench/ui/WorkbenchComponent
- * @classdesc
  * @interface
- * <p>Represents a generic component that can be added to a {@link module:br/workbench/ui/WorkbenchPanel}</p>
+ * @class
+ * @alias module:br/workbench/ui/WorkbenchComponent
+ * 
+ * @classdesc
+ * Represents a generic component that can be added to a {@link module:br/workbench/ui/WorkbenchPanel}.
  */
 function WorkbenchComponent() {
 }

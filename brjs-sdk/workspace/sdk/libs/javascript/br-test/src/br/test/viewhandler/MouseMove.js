@@ -10,15 +10,15 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @alias module:br/test/viewhandler/MouseMove
- * @classdesc
- * <code>MouseMove ViewFixtureHandler</code> can be used to trigger <code>mousemove</code> event for a view element.
- * Example usage:
- * <p>
- * <code>when("test.page.(#aRealButton).mouseMove => true");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/MouseMove
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>MouseMove</code> instances of <code>ViewFixtureHandler</code> can be used to trigger <code>mousemove</code> event for a view element.
+ * Example usage:
+ * 
+ * <pre>when("test.page.(#aRealButton).mouseMove => true");</pre>
  */
 function MouseMove() {
 }

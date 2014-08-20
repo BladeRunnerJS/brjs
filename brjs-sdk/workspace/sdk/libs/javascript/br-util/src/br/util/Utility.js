@@ -9,7 +9,10 @@ var fell = require('fell');
 
 /**
  * This is a static utility class and does not need to be instantiated.
+ * 
  * @private
+ * @class
+ * @alias module:br/util/Utility
  */
 function Utility() {
 }

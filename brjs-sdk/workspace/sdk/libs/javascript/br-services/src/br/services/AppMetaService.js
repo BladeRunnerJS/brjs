@@ -7,11 +7,13 @@
 var Errors = require('br/Errors');
 
 /**
-* A service which provides access to meta data for a BRJS app
-* @classdesc
-* @interface
-* @alias module:br/services/AppMetaService
-*/
+ * @interface
+ * @class
+ * @alias module:br/services/AppMetaService
+ * 
+ * @classdesc
+ * A service which provides access to meta data for a BRJS app.
+ */
 function AppMetaService() {};
 
 /**

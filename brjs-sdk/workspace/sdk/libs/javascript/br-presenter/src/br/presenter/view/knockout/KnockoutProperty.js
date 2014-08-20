@@ -6,6 +6,8 @@ br.Core.thirdparty("presenter-knockout");
 
 /**
  * @private
+ * @class
+ * @alias module:br/presenter/view/knockout/KnockoutProperty
  */
 br.presenter.view.knockout.KnockoutProperty = function()
 {

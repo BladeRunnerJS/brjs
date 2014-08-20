@@ -11,20 +11,14 @@ var Errors = require('br/Errors');
 var ServiceRegistry = require('br/ServiceRegistry');
 
 /**
+ * Constructs a new instance of <code>PresenterComponent</code>. Instances of <code>PresenterComponent</code> can also
+ * be created from an XML snippet using the {@link module:br/presenter/component/PresenterComponent#deserialize} method.
+ * 
  * @class
  * @alias module:br/presenter/component/PresenterComponent
  * @implements module:br/component/Component
  * 
  * @classdesc
- * Constructs a new instance of <code>PresenterComponent</code>.
- * 
- * <p>Instances of <code>PresenterComponent</code> can also be created from an XML snippet using the following
- * methods:</p>
- * 
- * <ul>
- *   <li>{@link PresenterComponentFactory#getViewerComponentFromXml}</li>
- * </ul>
- * 
  * <p>When component life cycle events are triggered on the <code>PresenterComponent</code> these 
  * are proxied through to the <code>PresentationModel</code> if they are defined in the <code>PresentationModel</code>.</p>
  * 

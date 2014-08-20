@@ -1,13 +1,14 @@
 'use strict';
 
 /**
-* @module br/util/EventUtility
-*/
+ * @module br/util/EventUtility
+ */
 
 var Errors = require("br/Errors");
 var MapFactory = require('br/util/MapFactory');
 
 /**
+ * @class
  * @alias module:br/util/EventUtility
  */
 function EventUtility() {

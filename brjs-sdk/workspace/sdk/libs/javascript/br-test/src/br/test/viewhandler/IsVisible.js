@@ -11,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/IsVisible
- * @classdesc
- * <code>IsVisible ViewFixtureHandler</code> can be used to check if a view element is visible.
- * Example usage:
- * <p>
- * <code>then("form.view.(.orderSummary).isVisible = true");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/IsVisible
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>IsVisible</code> instances of <code>ViewFixtureHandler</code> can be used to check if a view element is visible.
+ * Example usage:
+ * 
+ * <pre>then("form.view.(.orderSummary).isVisible = true");</pre>
  */
 function IsVisible() {
 }

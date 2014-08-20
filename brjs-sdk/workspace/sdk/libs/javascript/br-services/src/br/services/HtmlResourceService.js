@@ -5,11 +5,13 @@ var Errors = require('br/Errors');
 */
 
 /**
-* A service that provides access to HTML templates.
-* @classdesc
-* @interface
-* @alias module:br/services/HtmlResourceService
-*/
+ * @interface
+ * @class
+ * @alias module:br/services/HtmlResourceService
+ * 
+ * @classdesc
+ * A service that provides access to HTML templates.
+ */
 function HtmlResourceService() {};
 
 /**

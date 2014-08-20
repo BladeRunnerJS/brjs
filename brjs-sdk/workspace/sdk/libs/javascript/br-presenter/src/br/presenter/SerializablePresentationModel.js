@@ -3,11 +3,12 @@
  */
 
 /**
- * @class
- * Interface implemented by presentation models in order to provide a serialized form of the data they contain.
- * 
- * @constructor
  * @interface
+ * @class
+ * @alias module:br/presenter/SerializablePresentationModel
+ * 
+ * @classdesc
+ * Interface implemented by presentation models in order to provide a serialized form of the data they contain.
  */
 br.presenter.SerializablePresentationModel = function()
 {

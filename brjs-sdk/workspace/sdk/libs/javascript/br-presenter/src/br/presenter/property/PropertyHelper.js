@@ -3,12 +3,13 @@
  */
 
 /**
+ * @class
+ * @alias module:br/presenter/property/PropertyHelper
+ * 
+ * @classdesc
  * The PropertyHelper is a utility to simplify the attaching and monitoring of property listeners. 
  * <p>This is a useful class if you want to keep track of all the properties of certain node in a single place. It
  * will also provide some methods that give you extra functionality for handling call-backs from your properties.</p>
- *
- * @class
- * @alias module:br/presenter/property/PropertyHelper
  */
 br.presenter.property.PropertyHelper = function ()
 {

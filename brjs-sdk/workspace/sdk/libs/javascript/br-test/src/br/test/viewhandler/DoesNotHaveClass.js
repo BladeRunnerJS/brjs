@@ -9,15 +9,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/DoesNotHaveClass
- * @classdesc
- * <code>DoesNotHaveClass ViewFixtureHandler</code> can be used to verify that a view element
- * does not have a particular class. Example usage:
- * <p>
- * <code>then("test.page.(#aRealButton).doesNotHaveClass = 'hover'");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/DoesNotHaveClass
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>DoesNotHaveClass</code> instances of <code>ViewFixtureHandler</code> can be used to verify that a view element
+ * does not have a particular class. Example usage:
+ * 
+ * <pre>then("test.page.(#aRealButton).doesNotHaveClass = 'hover'");</pre>
  */
 function DoesNotHaveClass() {
 }

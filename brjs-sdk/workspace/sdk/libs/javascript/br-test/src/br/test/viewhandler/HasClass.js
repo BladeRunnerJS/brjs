@@ -9,15 +9,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/HasClass
- * @classdesc
- * <code>HasClass ViewFixtureHandler</code> can be used to verify that a view element
- * has a particular class. Example usage:
- * <p>
- * <code>then("form.view.(.orderAmount .amountValue input).hasClass = 'has-error'");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/HasClass
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>HasClass</code> instances of <code>ViewFixtureHandler</code> can be used to verify that a view element
+ * has a particular class. Example usage:
+ * 
+ * <pre>then("form.view.(.orderAmount .amountValue input).hasClass = 'has-error'");</pre>
  */
 function HasClass() {
 }

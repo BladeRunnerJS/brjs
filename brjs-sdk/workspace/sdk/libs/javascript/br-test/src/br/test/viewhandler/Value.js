@@ -11,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/Value
- * @classdesc
- * <code>Value ViewFixtureHandler</code> can be used to set or get <code>value</code> property of a view element.
- * Example usage:
- * <p>
- * <code>then("form.view.(.orderSummary .orderAmount .native input).value = '50'");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/Value
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Value</code> instances of <code>ViewFixtureHandler</code> can be used to set or get <code>value</code> property of a view element.
+ * Example usage:
+ * 
+ * <pre>then("form.view.(.orderSummary .orderAmount .native input).value = '50'");</pre>
  */
 function Value() {
 }

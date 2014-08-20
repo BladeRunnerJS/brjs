@@ -10,8 +10,8 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @alias module:br/test/viewhandler/OnKeyDown
  * @class
+ * @alias module:br/test/viewhandler/OnKeyDown
  * @implements module:br/test/viewhandler/ViewFixtureHandler
  */
 function OnKeyDown() {

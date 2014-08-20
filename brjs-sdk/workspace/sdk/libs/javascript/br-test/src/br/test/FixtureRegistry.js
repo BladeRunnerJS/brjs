@@ -5,10 +5,12 @@
  */
 
 /**
+ * @interface
+ * @class
  * @alias module:br/test/FixtureRegistry
+ * 
  * @classdesc
  * The <code>FixtureRegistry</code> allows for registration of fixtures for a specified scope.
- * @interface
  */
 function FixtureRegistry() {
 };

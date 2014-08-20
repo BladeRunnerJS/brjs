@@ -4,6 +4,10 @@
 
 /**
  * Constructs a new instance of <code>ToolTipField</code>.
+ * 
+ * @class
+ * @alias module:br/presenter/node/ToolTipField
+ * @extends module:br/presenter/node/PresentationNode
  *
  * @classdesc
  * A <code>PresentationNode</code> containing all of the attributes necessary to
@@ -14,10 +18,8 @@
  * in order to control wich is the filed on error. This css class will be set by the {@link module:br/presenter/util/ErrorMonitor}.
  * Also, see {@link module:br/presenter/control/tooltip/TooltipControl} on how to model the tool tip box.</p>
  *
- * @class
  * @param {Object} vValue (optional) The initial value of the field, either using a
  * primitive type or as a {@link module:br/presenter/property/EditableProperty}.
- * @extends module:br/presenter/node/PresentationNode
  */
 br.presenter.node.ToolTipField = function(vValue)
 {

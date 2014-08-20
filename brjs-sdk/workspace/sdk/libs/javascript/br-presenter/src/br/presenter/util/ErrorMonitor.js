@@ -3,11 +3,14 @@
  */
 
 /**
+ * @class
+ * @alias module:br/presenter/util/ErrorMonitor
+ * 
+ * @classdesc
  * ErrorMonitor is responsible for monitoring the status of fields that contain
  * an error and failure message property. It is used to set the tool tip class that
  * the tooltip control will scan in order to create the tool tip box.
  *
- * @class
  * @param {module:br/presenter/node/ToolTipNode} Node representing the tool tip model.
  */
 br.presenter.util.ErrorMonitor = function(oTooltipNode)

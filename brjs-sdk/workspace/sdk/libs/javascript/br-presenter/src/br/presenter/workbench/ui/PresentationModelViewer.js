@@ -7,6 +7,10 @@ var PresenterModelTree = require('br/presenter/workbench/ui/PresenterModelTree')
 var PresenterJsTreeModelFactory = require('br/presenter/workbench/ui/PresenterJsTreeModelFactory');
 var KnockoutTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
 
+/**
+ * @class
+ * @alias module:br/presenter/workbench/ui/PresentationModelViewer
+ */
 br.presenter.workbench.ui.PresentationModelViewer = function(viewOrPresentationModel, TreeModelClass) 
 {
 	var treeModel;

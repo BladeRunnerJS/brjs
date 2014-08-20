@@ -3,7 +3,9 @@
  */
 
 /**
- * @implements module:br/presenter/validator/Validator
+ * @implements module:br/presenter/validator/EmailValidator
+ * @class
+ * @alias module:br/presenter/validator/EmailValidator
  */
 br.presenter.validator.EmailValidator = function()
 {

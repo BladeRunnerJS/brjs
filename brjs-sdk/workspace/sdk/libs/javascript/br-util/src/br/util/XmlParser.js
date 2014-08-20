@@ -1,28 +1,32 @@
 'use strict';
 
 /**
+ * @module br/util/XmlParser
+ */
+
+/**
  * Constructs a <code>XmlParser</code>. This has been included for backwards compatibility.
  *
  * <p>It is recommended that the {@link module:br/util/XmlParser#getInstance}
  * method is used to get an instance instead of
  * generating a new <code>XmlParser</code> every time.</p>
- * @module br/util/XmlParser
- */
-
-/**
+ * 
+ * @singleton
+ * @class
  * @alias module:br/util/XmlParser
- *
+ * 
  * @classdesc
  * Utility class that provides methods for parsing XML strings into Document Objects. The object is a singleton so
- *  br.util.XmlParser should be used to obtain an instance of an <code>XmlParser</code>.
- *
+ * require('br/util/XmlParser') should be used to obtain an instance of an <code>XmlParser</code>.
+ * 
  * <p>Example:</p>
+ * 
  * <pre>
  * var oXmlParser = br.util.XmlParser;
  * var oDocument = oXmlParser.parse("&lt;test /&gt;");
  * alert(oDocument.tagName);
  * </pre>
- *
+ * 
  * <p>The {@link module:br/util/XmlUtility} singleton provides further helper methods to manipulate XML.</p>
  */
 function XmlParser() {

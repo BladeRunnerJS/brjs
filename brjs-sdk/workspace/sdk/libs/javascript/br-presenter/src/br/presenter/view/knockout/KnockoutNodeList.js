@@ -6,7 +6,8 @@ br.Core.thirdparty("presenter-knockout");
 
 /**
  * @private
- *
+ * @class
+ * @alias module:br/presenter/view/knockout/KnockoutNodeList
  */
 br.presenter.view.knockout.KnockoutNodeList = function()
 {

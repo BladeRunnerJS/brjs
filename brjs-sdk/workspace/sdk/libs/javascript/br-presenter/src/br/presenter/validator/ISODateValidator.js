@@ -4,8 +4,8 @@
 
 /**
  * @private
- * @classdesc
  * @class
+ * @alias module:br/presenter/validator/ISODateValidator
  * @implements module:br/core/Validator
  */
 br.presenter.validator.ISODateValidator = function() {

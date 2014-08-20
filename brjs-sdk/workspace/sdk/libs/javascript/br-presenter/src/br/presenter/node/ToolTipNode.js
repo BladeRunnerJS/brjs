@@ -3,12 +3,15 @@
  */
 
 /**
- * ToolTipNode is used as the underlying model for
- * {@link module:br/presenter/control/tooltip/TooltipControl}
- *
  * @class
- * @param {String} tooltipClassname Css class name that the {@link module:br/presenter/control/tooltip/TooltipControl} will scan for rendering the tool tip box on.
+ * @alias module:br/presenter/node/ToolTipNode
  * @extends module:br/presenter/node/PresentationNode
+ * 
+ * @classdesc
+ * <code>ToolTipNode</code> is used as the underlying model for
+ * {@link module:br/presenter/control/tooltip/TooltipControl}
+ * 
+ * @param {String} tooltipClassname Css class name that the {@link module:br/presenter/control/tooltip/TooltipControl} will scan for rendering the tool tip box on.
  */
 br.presenter.node.ToolTipNode = function(tooltipClassname)
 {

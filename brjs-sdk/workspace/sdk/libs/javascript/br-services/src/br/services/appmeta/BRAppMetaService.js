@@ -8,8 +8,10 @@ var br = require('br/Core');
 var AppMetaService = require('br/services/AppMetaService');
 
 /**
-* @implements module:br/services/AppMetaService
-*/
+ * @class
+ * @alias module:br/services/bundlepath/BRAppMetaService
+ * @implements module:br/services/AppMetaService
+ */
 function BRAppMetaService() {
 };
 

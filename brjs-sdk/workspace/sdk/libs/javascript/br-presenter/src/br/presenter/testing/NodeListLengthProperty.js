@@ -3,6 +3,8 @@
  */
 
 /**
+ * @class
+ * @alias module:br/presenter/testing/NodeListLengthProperty
  * @extends module:br/presenter/property/WritableProperty
  */
 br.presenter.testing.NodeListLengthProperty = function(oNodeList)

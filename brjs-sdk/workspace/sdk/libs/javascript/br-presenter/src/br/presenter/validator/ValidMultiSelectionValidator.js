@@ -5,8 +5,10 @@
 /**
  * @private
  * @class
- * @param {module:br/presenter/node/OptionsNodeList} oOptions The list of valid options.
+ * @alias module:br/presenter/validator/ValidMultiSelectionValidator
  * @implements module:br/presenter/validator/Validator
+ * 
+ * @param {module:br/presenter/node/OptionsNodeList} oOptions The list of valid options.
  */
 br.presenter.validator.ValidMultiSelectionValidator = function(oOptions)
 {

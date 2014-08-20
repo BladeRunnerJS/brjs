@@ -5,13 +5,13 @@
 /**
  * Constructs a <code>br.presenter.testing.PresentationModelFixture</code>.
  * 
- * @classdesc
+ * @class
+ * @alias module:br/presenter/testing/PresentationModelFixture
+ * @implements module:br/component/testing/ComponentModelFixture
  * 
+ * @classdesc
  * The <code>PresentationModelFixture</code> serves to manipulate and verify the state of the presentation
  * model of a presenter component. 
- * 
- * @class
- * @implements module:br/component/testing/ComponentModelFixture
  */
 br.presenter.testing.PresentationModelFixture = function()
 {

@@ -4,7 +4,11 @@
  * @module br/test/GwtFailureMessage
  */
 
-/** @private */
+/**
+ * @private
+ * @class
+ * @alias module:br/test/GwtFailureMessage
+ */
 function GwtFailureMessage() {
 	this._errorMsg = '';
 	this._statck = '';

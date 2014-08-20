@@ -4,6 +4,8 @@
 
 /**
  * @private
+ * @class
+ * @alias module:br/presenter/workbench/ui/TreeSearcher
  */
 br.presenter.workbench.ui.TreeSearcher = function(oRootNode)
 {

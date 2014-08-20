@@ -10,15 +10,15 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @alias module:br/test/viewhandler/Checked
- * @classdesc
- * <code>Checked ViewFixtureHandler</code> can be used to trigger <code>checked</code> property of a checkbox or a radiobutton.
- * Example usage:
- * <p>
- * <code>and("example.view.(input:eq(0)).checked = false");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/Checked
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Checked</code> instances of <code>ViewFixtureHandler</code> can be used to trigger <code>checked</code> property of a checkbox or a radiobutton.
+ * Example usage:
+ * 
+ * <pre>and("example.view.(input:eq(0)).checked = false");</pre>
  */
 function Checked() {
 }

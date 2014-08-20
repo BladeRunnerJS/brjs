@@ -12,15 +12,15 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @alias module:br/test/viewhandler/Clicked
- * @classdesc
- * <code>Clicked ViewFixtureHandler</code> can be used to trigger a click on a view element.
- * Example usage:
- * <p>
-* <code>when("form.view.(.executeOrder [identifier=\'buttonOrder\'] .order_button).clicked => true");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/Clicked
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Clicked</code> instances of <code>ViewFixtureHandler</code> can be used to trigger a click on a view element.
+ * Example usage:
+ * 
+ * <pre>when("form.view.(.executeOrder [identifier=\'buttonOrder\'] .order_button).clicked => true");</pre>
  */
 function Clicked() {
 }

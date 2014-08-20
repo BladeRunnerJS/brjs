@@ -4,15 +4,17 @@
 
 /**
  * Constructs a new <code>OptionsNodeList</code> instance.
- *
+ * 
+ * @class
+ * @alias module:br/presenter/node/OptionsNodeList
+ * @extends module:br/presenter/node/NodeList
+ * 
  * @classdesc
  * The <code>OptionsNodeList</code> class is used to store the options available within
  * {@link module:br/presenter/node/SelectionField} and {@link br/presenter/node/MultiSelectionField}
  * instances.
- *
- * @class
+ * 
  * @param {Object} vOptions The set of available options, either as an array (keys only) or a map (keys to label).
- * @extends module:br/presenter/node/NodeList
  */
 br.presenter.node.OptionsNodeList = function(vOptions)
 {

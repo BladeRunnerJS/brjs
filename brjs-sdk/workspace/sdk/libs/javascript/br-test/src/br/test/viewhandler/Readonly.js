@@ -9,15 +9,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/Readonly
- * @classdesc
- * <code>ReadOnly ViewFixtureHandler</code> can be used to set or get the <code>readonly</code> attribute of an input view element
- * Example usage:
- * <p>
- * <code>then("form.view.(.totalValue input).readonly = true");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/Readonly
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>ReadOnly</code> instances of <code>ViewFixtureHandler</code> can be used to set or get the <code>readonly</code> attribute of an input view element
+ * Example usage:
+ * 
+ * <pre>then("form.view.(.totalValue input).readonly = true");</pre>
  */
 function Readonly() {
 }

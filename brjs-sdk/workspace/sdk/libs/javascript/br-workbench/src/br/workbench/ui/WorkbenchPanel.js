@@ -5,17 +5,18 @@
 var jQuery = require( 'jquery' );
 
 /**
+ * @class
  * @alias module:br/workbench/ui/WorkbenchPanel
+ * 
  * @classdesc
  * A <code>WorkbenchPanel</code> is the main container for displaying components
- * within a workbench. Workbench panels can be added to a {@link WorkbenchPanel},
+ * within a workbench. Workbench panels can be added to a <code>WorkbenchPanel</code>,
  * either to the left or right side of the screen.
- *
+ * 
  * @param String sOrientation Either "left" or "right"
  * @param int nWidth The width of the WorkbenchPanel in Pixels
  * @param boolean bXResizable If True, the panel will be resizable.
  *
- * @class
  */
 function WorkbenchPanel(sOrientation, nWidth, bXResizable) {
 	bXResizable = (bXResizable || true);

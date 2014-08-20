@@ -7,8 +7,12 @@
 var Errors = require('br/Errors');
 
 /**
- * Utility class containing static methods that can be useful for controlling time in tests.
  * @private
+ * @class
+ * @alias module:br/test/TimeUtility
+ * 
+ * @classdesc
+ * Utility class containing static methods that can be useful for controlling time in tests.
  */
 var TimeUtility = {};
 

@@ -10,6 +10,10 @@ var NodeList = require('br/presenter/node/NodeList');
 var Field  = require('br/presenter/node/Field');
 var SelectionField = require('br/presenter/node/SelectionField');
 
+/**
+ * @class
+ * @alias module:br/presenter/workbench/ui/PresenterJsTreeModelFactory
+ */
 function PresenterJsTreeModelFactory() {
 };
 

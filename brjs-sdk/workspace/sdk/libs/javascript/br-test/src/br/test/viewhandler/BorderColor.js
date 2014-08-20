@@ -11,16 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/BorderColor
- * @classdesc
- * <code>BorderColor ViewFixtureHandler</code> can be used to test the border color of an element.
- * Example usage:
- * <p>
- * <code>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).bordercolor = '#1111FF'");</code>
- * </p>
- * 
  * @class
+ * @alias module:br/test/viewhandler/BorderColor
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>BorderColor</code> instances of <code>ViewFixtureHandler</code> can be used to test the border color of an element.
+ * Example usage:
+ * 
+ * <pre>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).bordercolor = '#1111FF'");</pre>
  */
 function BorderColor() {
 }

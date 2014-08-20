@@ -10,15 +10,15 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @alias module:br/test/viewhandler/MouseUp
- * @classdesc
- * <code>MouseUp ViewFixtureHandler</code> can be used to trigger <code>mouseup</code> event for a view element.
- * Example usage:
- * <p>
- * <code>when("test.page.(#aRealButton).mouseUp => true");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/MouseUp
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>MouseUp</code> instances of <code>ViewFixtureHandler</code> can be used to trigger <code>mouseup</code> event for a view element.
+ * Example usage:
+ * 
+ * <pre>when("test.page.(#aRealButton).mouseUp => true");</pre>
  */
 function MouseUp() {
 }

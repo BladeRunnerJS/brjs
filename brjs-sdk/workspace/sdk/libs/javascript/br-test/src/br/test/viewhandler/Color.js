@@ -11,16 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/Color
- * @classdesc
- * <code>Color ViewFixtureHandler</code> can be used to test the bottom margin width of an element.
- * Example usage:
- * <p>
- * <code>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).color = '#1212DD'");</code>
- * </p>
- * 
  * @class
+ * @alias module:br/test/viewhandler/Color
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Color</code> instances of <code>ViewFixtureHandler</code> can be used to test the bottom margin width of an element.
+ * Example usage:
+ * 
+ * <pre>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).color = '#1212DD'");</pre>
  */
 function Color() {
 }

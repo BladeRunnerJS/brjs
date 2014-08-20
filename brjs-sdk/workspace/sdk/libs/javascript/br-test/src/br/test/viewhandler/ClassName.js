@@ -9,14 +9,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/ClassName
- * @classdesc
- * <code>ClassName ViewFixtureHandler</code> can be used to get a class of a view element.
- * Example usage:
- * <p>
- * <code>then("form.view.('#formContentAreaContainer').className = 'OpenSent'");</code> * </p>
  * @class
+ * @alias module:br/test/viewhandler/ClassName
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>ClassName</code> instances of <code>ViewFixtureHandler</code> can be used to get a class of a view element.
+ * Example usage:
+ * 
+ * <pre>then("form.view.('#formContentAreaContainer').className = 'OpenSent'");</pre>
  */
 function ClassName() {
 }

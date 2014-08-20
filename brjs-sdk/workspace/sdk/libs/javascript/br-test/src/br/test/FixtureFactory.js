@@ -7,13 +7,15 @@
 var Errors = require('br/Errors');
 
 /**
- * Constructs a <code>FixtureFactory</code>.
- * An implementing FixtureFactory can have an optional <code>setUp</code> method which will be called before each test
- *  is executed and can be used to reset the state of a test and its stubs.
- * @alias module:br/test/FixtureFactory
- * @class
+ * Constructs a new instance of <code>FixtureFactory</code>.
+ * 
  * @interface
+ * @class
+ * @alias module:br/test/FixtureFactory
+ * 
  * @classdesc
+ * An implementing FixtureFactory can have an optional <code>setUp</code> method which will be called before each test
+ * is executed and can be used to reset the state of a test and its stubs.
  */
 function FixtureFactory() {
 };

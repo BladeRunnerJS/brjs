@@ -11,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/Top
- * @classdesc
- * <code>Top ViewFixtureHandler</code> can be used to get style.top value of a view element.
- * Example usage:
- * <p>
- * <code>then("dynamicComponent.view.(.component).top = 20");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/Top
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Top</code> instances of <code>ViewFixtureHandler</code> can be used to get style.top value of a view element.
+ * Example usage:
+ * 
+ * <pre>then("dynamicComponent.view.(.component).top = 20");</pre>
  */
 function Top() {
 }

@@ -10,15 +10,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * <code>BackgroundImage ViewFixtureHandler</code> can be used to test the background image value.
- * Example usage:
- * <p>
- * <code>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).backgroundImage = 'images/image.png'");</code>
- * </p>
- *
- * @alias module:br/test/viewhandler/BackgroundImage
  * @class
+ * @alias module:br/test/viewhandler/BackgroundImage
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>BackgroundImage</code> instances of <code>ViewFixtureHandler</code> can be used to test the background image value.
+ * Example usage:
+ * 
+ * <pre>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).backgroundImage = 'images/image.png'");</pre>
  */
 function BackgroundImage() {
 }

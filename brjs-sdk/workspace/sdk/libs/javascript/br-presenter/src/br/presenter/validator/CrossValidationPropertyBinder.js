@@ -4,6 +4,8 @@
 
 /**
  * @singleton
+ * @class
+ * @alias module:br/presenter/validator/CrossValidationPropertyBinder
  * 
  * @classdesc
  * The <code>CrossValidationPropertyBinder</code> is used to associate a single
@@ -14,8 +16,6 @@
  * of cross property validators, so the <code>CrossValidationPropertyBinder</code> bridges this gap
  * by creating a standard {@link module:br/presenter/validator/Validator} that proxies all validation calls to the
  * underlying {@link module:br/presenter/validator/CrossPropertyValidator}.</p>
- * 
- * @class
  */
 br.presenter.validator.CrossValidationPropertyBinder = function()
 {

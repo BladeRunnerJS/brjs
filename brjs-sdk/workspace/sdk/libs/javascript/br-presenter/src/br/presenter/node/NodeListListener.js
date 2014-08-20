@@ -3,11 +3,12 @@
  */
 
 /**
+ * @class
+ * @alias module:br/presenter/node/NodeListListener
+ * @interface
+ * 
  * @classdesc
  * Interface implemented by classes that wish to listen to {@link module:br/presenter/node/NodeList} change events.
- * 
- * @class
- * @interface
  */
 br.presenter.node.NodeListListener = function()
 {

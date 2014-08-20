@@ -12,12 +12,15 @@ var File = require('br/core/File');
 var i18n = require('br/I18n');
 
 /**
-* This class provides access to XML documents loaded via the XML bundler.
-* @alias module:br/services/xml/BRXmlResourceService
-* @classdesc
-* @param {String} sUrl The url to load to retrieve the XML resource.
-* @implements module:br/services/XmlResourceService
-*/
+ * @class
+ * @alias module:br/services/xml/BRXmlResourceService
+ * @implements module:br/services/XmlResourceService
+ * 
+ * @classdesc
+ * This class provides access to XML documents loaded via the XML bundler.
+ * 
+ * @param {String} sUrl The url to load to retrieve the XML resource.
+ */
 function BRXmlResourceService(url) {
 	var ServiceRegistry = require("br/ServiceRegistry");
 	/** @private */

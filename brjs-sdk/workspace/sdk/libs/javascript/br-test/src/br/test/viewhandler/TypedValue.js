@@ -12,15 +12,15 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @alias module:br/test/viewhandler/TypedValue
- * @classdesc
- * <code>TypedValue ViewFixtureHandler</code> can be used to simulate typing a value into an input view element.
- * Example usage:
- * <p>
- * <code>when("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).typedValue => 'abc'");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/TypedValue
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>TypedValue</code> instances of <code>ViewFixtureHandler</code> can be used to simulate typing a value into an input view element.
+ * Example usage:
+ * 
+ * <pre>when("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).typedValue => 'abc'");</pre>
  */
 function TypedValue() {
 }

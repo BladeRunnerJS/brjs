@@ -10,10 +10,11 @@ var Errors = require('br/Errors');
  * This is a static class that never needs to be instantiated.
  *
  * @static
+ * @class
+ * @alias module:br/util/ArrayUtility
+ * 
  * @classdesc
  * Utility class that provides methods for array manipulation.
- *
- * @alias module:br/util/ArrayUtility
  */
 var ArrayUtility = {};
 

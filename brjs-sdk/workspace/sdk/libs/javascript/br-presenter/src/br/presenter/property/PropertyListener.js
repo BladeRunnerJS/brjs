@@ -4,10 +4,11 @@
 
 /**
  * @interface
+ * @class
+ * @alias module:br/presenter/property/PropertyListener
+ * 
  * @classdesc
  * Interface implemented by classes that wish to listen to property change events.
- *
- * @class
  */
 br.presenter.property.PropertyListener = function()
 {

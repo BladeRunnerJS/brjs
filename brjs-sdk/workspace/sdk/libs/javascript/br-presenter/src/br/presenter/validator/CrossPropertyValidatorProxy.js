@@ -4,6 +4,10 @@
 
 /**
  * @private
+ * @class
+ * @alias module:br/presenter/validator/CrossPropertyValidatorProxy
+ * @implements module:br/presenter/validator/Validator
+ * 
  * @classdesc
  * This class is to be used via the {@link module:br/presenter/validator/CrossValidationPropertyBinder}.
  *
@@ -15,10 +19,8 @@
  * <p>The <code>mProperties</code> parameter that this class is constructed with must match what the <code>oCrossPropertyValidator</code>'s
  * {@link module:br/presenter/validator/CrossPropertyValidator#validate} expects.</p>
  *
- * @class
  * @param {Object} mProperties A name-to-property mapping of all the properties that <code>oCrossPropertyValidator</code> expects.
  * @param {module:br/presenter/validator/CrossPropertyValidator} oCrossPropertyValidator The validator to proxy validations to.
- * @implements module:br/presenter/validator/Validator
  */
 br.presenter.validator.CrossPropertyValidatorProxy = function(mProperties, oCrossPropertyValidator)
 {

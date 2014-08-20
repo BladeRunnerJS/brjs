@@ -5,12 +5,13 @@
 var Errors = require("br/Errors");
 
 /**
+ * @interface
+ * @class
+ * @alias module:br/presenter/validator/CrossPropertyValidator
+ * 
  * @classdesc
  * An interface for validators that need to consider the validity of multiple
  * {@link module:br/presenter/property/Property} instances in relation to each other.
- * 
- * @class
- * @interface
  */
 br.presenter.validator.CrossPropertyValidator = function()
 {

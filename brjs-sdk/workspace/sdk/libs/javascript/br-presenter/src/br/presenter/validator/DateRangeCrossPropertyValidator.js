@@ -4,6 +4,8 @@
 
 /**
  * @private
+ * @class
+ * @alias module:br/presenter/validator/DateRangeCrossPropertyValidator
  */
 br.presenter.validator.DateRangeCrossPropertyValidator = function()
 {

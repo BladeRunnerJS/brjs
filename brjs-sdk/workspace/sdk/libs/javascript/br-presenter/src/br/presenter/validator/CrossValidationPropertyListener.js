@@ -5,10 +5,11 @@
 /**
  * @private
  * @class
+ * @alias module:br/presenter/validator/CrossValidationPropertyListener
+ * @implements module:br/presenter/property/PropertyListener
+ * 
  * @param oCrossPropertyValidationProxy
  * @param sPropertyId
- * @implements module:br/presenter/property/PropertyListener
- *
  */
 br.presenter.validator.CrossValidationPropertyListener = function(oCrossPropertyValidationProxy, sPropertyId)
 {

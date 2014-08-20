@@ -5,6 +5,7 @@
  */
 
 /**
+ * @class
  * @alias module:br/util/RegExp
  */
 function RegExpUtil() {

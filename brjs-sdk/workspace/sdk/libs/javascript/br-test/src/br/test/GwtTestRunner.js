@@ -17,6 +17,7 @@ var FixtureRegistry = require('br/test/FixtureRegistry');
 /**
  * @private
  * @class
+ * @alias module:br/test/GwtTestRunner
  * @implements module:br/test/FixtureRegistry
  */
 function GwtTestRunner(sFixtureFactoryClass) {

@@ -10,6 +10,7 @@ br.Core.thirdparty("presenter-knockout");
 /**
  * @private
  * @class
+ * @alias module:br/presenter/view/knockout/TooltipPlugin
  */
 br.presenter.view.knockout.TooltipPlugin = function()
 {

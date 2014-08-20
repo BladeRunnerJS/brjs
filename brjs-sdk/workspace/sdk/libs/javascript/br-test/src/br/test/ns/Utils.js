@@ -9,9 +9,12 @@ br.Core.thirdparty('jquery');
 br.Core.thirdparty('presenter-knockout');
 
 /**
-* @classdesc
-* Utility class containing static methods that can be useful for tests.
-*/
+ * @class
+ * @alias module:br/test/ns/Utils
+ * 
+ * @classdesc
+ * Utility class containing static methods that can be useful for tests.
+ */
 var nsUtils = function() {};
 
 nsUtils.pLoadedAndAttachedCSSElements = [];

@@ -5,6 +5,11 @@
 /**
  * Constructs a new <code>EditableProperty</code> instance.
  * 
+ * @class
+ * @alias module:br/presenter/property/EditableProperty
+ * @extends module:br/presenter/property/WritableProperty
+ * @implements module:br/presenter/validator/ValidationResultListener
+ * 
  * @classdesc
  * <code>EditableProperty</code> is identical to {@link module:br/presenter/property/WritableProperty},
  * except that it also has the ability to be edited by users.
@@ -14,10 +19,7 @@
  * when invalid values are entered, and {@link #addParser} can be used to help convert user input into
  * valid forms.</p>
  * 
- * @class
  * @param {Object} vValue (optional) The default value for this property.
- * @extends module:br/presenter/property/WritableProperty
- * @implements module:br/presenter/validator/ValidationResultListener
  */
 br.presenter.property.EditableProperty = function(vValue)
 {

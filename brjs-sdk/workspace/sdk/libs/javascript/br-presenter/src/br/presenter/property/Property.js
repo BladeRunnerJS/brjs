@@ -5,7 +5,10 @@
 /**
  * Constructs a new <code>Property</code> instance &mdash; you will probably never want to
  * construct a <code>Property</code> yourself since they are not writable.
- *
+ * 
+ * @class
+ * @alias module:br/presenter/property/Property
+ * 
  * @classdesc
  * Instances of <code>Property</code> are used to store all the values held within a
  * presentation model.
@@ -29,7 +32,6 @@
  *	 end-developer.</dd>
  * </dl>
  *
- * @class
  * @param {Object} vValue (optional) The default value for this property.
  */
 br.presenter.property.Property = function(vValue)

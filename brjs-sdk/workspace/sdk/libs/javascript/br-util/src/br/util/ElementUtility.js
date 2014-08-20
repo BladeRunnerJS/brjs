@@ -1,16 +1,18 @@
 'use strict';
 
 /**
-* @module br/util/ElementUtility
-*/
+ * @module br/util/ElementUtility
+ */
 
 var Errors = require('br/Errors');
 
 /**
+ * @class
  * @alias module:br/util/ElementUtility
+ * 
  * @classdesc
  * This class provides static, browser agnostic, utility methods for DOM interactions such as adding / removing event
- *  listeners, adjusting CSS classes, finding element positions etc.
+ * listeners, adjusting CSS classes, finding element positions etc.
  */
 function ElementUtility() {
 }

@@ -8,10 +8,9 @@ var br = require('br/Core');
 var FixtureRegistry = require('br/test/FixtureRegistry');
 
 /**
- * @alias module:br/test/SubFixtureRegistry
- * @class
  * @private
- *
+ * @class
+ * @alias module:br/test/SubFixtureRegistry
  * @implements module:br/test/FixtureRegistry
  */
 function SubFixtureRegistry(parentFixtureRegistry, scope) {

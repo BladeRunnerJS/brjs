@@ -5,6 +5,8 @@
 
 /**
  * @private
+ * @class
+ * @alias module:br/presenter/workbench/model/TreeViewerPM
  */
 br.presenter.workbench.model.TreeViewerPM = function(oSearchTarget)
 {

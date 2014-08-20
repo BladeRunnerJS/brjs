@@ -1,7 +1,6 @@
 'use strict';
 
 /**
-* This is a utility and does not need to be constructed.
 * @module br/util/MapFactory
 */
 
@@ -15,15 +14,18 @@
 var REMOVAL_LIMIT = 1000;
 
 /**
+ * This is a utility and does not need to be constructed.
+ * 
+ * @class
  * @alias module:br/util/MapFactory
- *
+ * 
  * @classdesc
  * Utility class that prevents memory leaks in IE when using long running maps that are added to and removed from over
  * time.
- *
+ * 
  * <p><b>Using this class has a penalty in performance and code beauty. Only use this when you are keeping a map for a
- *  long time and will be removing items and adding items with new names (not previously used) repeatedly.</b></p>
- *
+ * long time and will be removing items and adding items with new names (not previously used) repeatedly.</b></p>
+ * 
  * <p>Users of this class should not perform any browser detection themselves, as this is handled internally, and normal
  * maps are returned for browsers that do not leak memory.</p>
  */

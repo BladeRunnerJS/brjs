@@ -6,12 +6,16 @@ var Errors = require('br/Errors');
 
 /**
  * This is an interface and should not be constructed.
- * @classdesc
+ * 
  * @interface
+ * @class
+ * @alias module:br/presenter/validator/Validator
+ * 
+ * @classdesc
  * A validator is a piece of code that can determine whether particular input should be considered valid.
  * 
- * Since you may want to run many validators on a piece of data, the result of the validation is stored on an
- * object passed into the validate method.
+ * <p>Since you may want to run many validators on a piece of data, the result of the validation is stored on an
+ * object passed into the validate method.</p>
  */
 br.presenter.validator.Validator = function()
 {

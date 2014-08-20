@@ -3,7 +3,11 @@
  */
 
 /**
- * Creates a new ValidationResult.
+ * Creates a new instance of <code>ValidationResult</code>.
+ * 
+ * @class
+ * @alias module:br/presenter/validator/ValidationResult
+ * 
  * @classdesc
  * ValidationResults are used to store the output from a {@link module:br/presenter/validator/Validator}.
  * 

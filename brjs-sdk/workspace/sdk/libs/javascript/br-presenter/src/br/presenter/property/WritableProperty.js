@@ -5,13 +5,15 @@
 /**
  * Constructs a new <code>WritableProperty</code> instance.
  * 
+ * @class
+ * @alias module:br/presenter/property/WritableProperty
+ * @extends module:br/presenter/property/Property
+ * 
  * @classdesc
  * <code>WritableProperty</code> is identical to {@link module:br/presenter/property/Property},
  * except that it adds the ability to update the value stored within the property.
  * 
- * @class
  * @param {Object} vValue (optional) The default value for this property.
- * @extends module:br/presenter/property/Property
  */
 br.presenter.property.WritableProperty = function(vValue)
 {

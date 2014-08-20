@@ -10,15 +10,15 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @alias module:br/test/viewhandler/MouseDown
- * @classdesc
- * <code>MouseDown ViewFixtureHandler</code> can be used to trigger <code>mousedown</code> event for a view element.
- * Example usage:
- * <p>
- * <code>when("test.page.(#aRealButton).mouseDown => true");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/MouseDown
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>MouseDown</code> instances of <code>ViewFixtureHandler</code> can be used to trigger <code>mousedown</code> event for a view element.
+ * Example usage:
+ * 
+ * <pre>when("test.page.(#aRealButton).mouseDown => true");</pre>
  */
 function MouseDown() {
 }

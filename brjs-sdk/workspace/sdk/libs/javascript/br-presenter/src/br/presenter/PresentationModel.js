@@ -7,6 +7,10 @@
  * must extend, and so is not constructed directly.
  * 
  * @class
+ * @alias module:br/presenter/PresentationModel
+ * @extends module:br/presenter/node/PresentationNode
+ * 
+ * @classdesc
  * <p>The <code>PresentationModel</code> is used to transform a set of domain models into
  * a form that is tightly aligned with the view that will be used to display and edit those
  * domain models. As a consequence, the view becomes free of all logic, and components can
@@ -16,9 +20,6 @@
  * <p>Presentation models are built as a tree of {@link module:br/presenter/node/PresentationNode}
  * instances, where the root node must extend <code>PresentationModel</code>, which in turn
  * extends {@link module:br/presenter/node/PresentationNode}.</p>
- * 
- * @constructor
- * @extends module:br/presenter/node/PresentationNode
  */
 br.presenter.PresentationModel = function()
 {

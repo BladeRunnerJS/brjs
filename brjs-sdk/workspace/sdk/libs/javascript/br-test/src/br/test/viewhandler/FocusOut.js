@@ -11,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @alias module:br/test/viewhandler/FocusOut
- * @classdesc
- * <code>FocusOut ViewFixtureHandler</code> can be used to trigger <code>focusout</code> on a view element.
- * Example usage:
- * <p>
- * <code>and("form.view.(#theField).focusOut => true");</code>
- * </p>
  * @class
+ * @alias module:br/test/viewhandler/FocusOut
  * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>FocusOut</code> instances of <code>ViewFixtureHandler</code> can be used to trigger <code>focusout</code> on a view element.
+ * Example usage:
+ * 
+ * <pre>and("form.view.(#theField).focusOut => true");</pre>
  */
 function FocusOut() {
 }

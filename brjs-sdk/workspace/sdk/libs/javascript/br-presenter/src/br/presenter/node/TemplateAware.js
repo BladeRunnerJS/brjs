@@ -4,8 +4,10 @@
 
 /**
  * @interface
+ * @class
+ * @alias module:br/presenter/node/TemplateAware
+ * 
  * @classdesc
- *
  * Interface implemented by presentation nodes that need to dynamically specify the template that should
  * be used to render them.
  *
@@ -15,8 +17,6 @@
  * signal the need to specify the template dynamically by implementing the <code>TemplateAware</code>
  * interface, and by returning the name of the template that should be used to render the node when
  * {@link #getTemplateName} is invoked.</p>
- *
- * @class
  */
 br.presenter.node.TemplateAware = function()
 {

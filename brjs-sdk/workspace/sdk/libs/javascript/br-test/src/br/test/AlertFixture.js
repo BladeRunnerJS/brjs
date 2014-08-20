@@ -9,10 +9,12 @@ var Errors = require('br/Errors');
 var Fixture = require('br/test/Fixture');
 
 /**
+ * @interface
+ * @class
  * @alias module:br/test/AlertFixture
+ * 
  * @classdesc
  * The <code>AlertFixture</code> allows for testing of browser alerts.
- * @interface
  */
 function AlertFixture() {
 };
