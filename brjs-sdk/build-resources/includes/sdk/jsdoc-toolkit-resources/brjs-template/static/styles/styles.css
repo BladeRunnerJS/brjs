@@ -369,9 +369,9 @@ nav ul {
     margin: 0 0 0 2px;
     padding: 0;
     list-style-type: none;
+    display: block;
 }
 nav ul a {
-    display: block;
     word-wrap: break-word;
 }
 
