@@ -1,27 +1,22 @@
-/**
- * @module br/workbench/ui/WorkbenchPanel
- */
-
-var jQuery = require( 'jquery' );
+var jQuery = require('jquery');
 
 /**
  * @class
  * @alias module:br/workbench/ui/WorkbenchPanel
- * 
+ *
  * @classdesc
  * A <code>WorkbenchPanel</code> is the main container for displaying components
  * within a workbench. Workbench panels can be added to a <code>WorkbenchPanel</code>,
  * either to the left or right side of the screen.
- * 
+ *
  * @param String sOrientation Either "left" or "right"
  * @param int nWidth The width of the WorkbenchPanel in Pixels
  * @param boolean bXResizable If True, the panel will be resizable.
- *
  */
-function WorkbenchPanel(sOrientation, nWidth, bXResizable) {
-	bXResizable = (bXResizable || true);
-	this.m_sOrientation = sOrientation;
-	this.m_nWidth = nWidth;
+function WorkbenchPanel(orientation, width, xResizable) {
+	xResizable = (xResizable || true);
+	this.m_sOrientation = orientation;
+	this.m_nWidth = width;
 	this.m_eElement = jQuery('<div class="workbench-panel"></div>');
 
 	this.m_eComponentContainer = document.createElement('ul');
@@ -36,23 +31,20 @@ function WorkbenchPanel(sOrientation, nWidth, bXResizable) {
 
 	jQuery('body').append(this.m_eElement);
 
-	this.setWidth(nWidth);
+	this.setWidth(width);
 	this._bindYResize();
 
-	if (bXResizable !== false)
-	{
+	if (xResizable !== false) {
 		this._bindXResize();
 	}
 }
 
-/**
- * @private
- */
+/** @private */
 WorkbenchPanel.ID = 0;
 
 /**
- * Returns the id of the element that represents the container which components
- * will be added to within this <code>WorkbenchPanel</code>
+ * Returns the id of the element that represents the container which components will be added to within this 
+ *  <code>WorkbenchPanel</code>.
  *
  * @type String
  * @returns the container id
@@ -64,69 +56,63 @@ WorkbenchPanel.prototype.getComponentContainerId = function() {
 /**
  * Adds a {@link module:br/workbench/ui/WorkbenchComponent} to this panel.
  *
- * @param {WorkbenchPanelComponent} oWorkbenchComponent The component to add.
- * @param {String} sTitle The title to display for the component.
- * @param {boolean} bCollapsed if True, the initial state of the component will be collapsed.
+ * @param {WorkbenchPanelComponent} workbenchComponent The component to add.
+ * @param {String} title The title to display for the component.
+ * @param {boolean} collapsed if True, the initial state of the component will be collapsed.
  */
-WorkbenchPanel.prototype.add = function(oWorkbenchComponent, sTitle, bCollapsed) {
-	var ePanelElement = this.getElement()[0];
-	var eWrapper = document.createElement("li");
-	eWrapper.className = 'workbench-component';
-	var eHeader = document.createElement('div');
-	eHeader.innerHTML = '<div class="arrow"></div><div class="title">' + sTitle + '</div>';
-	eHeader.className = 'header';
+WorkbenchPanel.prototype.add = function(workbenchComponent, title, collapsed) {
+	var wrapperEl = document.createElement('LI');
+	wrapperEl.className = 'workbench-component';
 
-	eWrapper.appendChild(eHeader);
-	var eContainer = document.createElement('div');
-	eContainer.className = 'container';
-	eContainer.appendChild(oWorkbenchComponent.getElement());
-	eWrapper.appendChild(eContainer);
+	var headerEl = document.createElement('DIV');
+	headerEl.innerHTML = '<div class="arrow"></div><div class="title">' + title + '</div>';
+	headerEl.className = 'header';
 
-	var ojQueryHeader = jQuery(eHeader);
+	wrapperEl.appendChild(headerEl);
 
-	if (bCollapsed)
-	{
-		ojQueryHeader.next().hide();
-		jQuery(eWrapper).addClass('collapsed');
+	var containerEl = document.createElement('DIV');
+	containerEl.className = 'container';
+	containerEl.appendChild(workbenchComponent.getElement());
+	wrapperEl.appendChild(containerEl);
+
+	var jQueryHeader = jQuery(headerEl);
+
+	if (collapsed) {
+		jQueryHeader.next().hide();
+		jQuery(wrapperEl).addClass('collapsed');
 	}
 
-	ojQueryHeader.click(function() {
-		ojQueryHeader.next().slideToggle();
-		jQuery(eWrapper).toggleClass('collapsed');
+	jQueryHeader.click(function() {
+		jQueryHeader.next().slideToggle();
+		jQuery(wrapperEl).toggleClass('collapsed');
 		return false;
 	});
 
-	this.m_eComponentContainer.appendChild(eWrapper);
+	this.m_eComponentContainer.appendChild(wrapperEl);
 
-	if (oWorkbenchComponent.render)
-	{
-		oWorkbenchComponent.render(this.m_eComponentContainer);
+	if (workbenchComponent.render) {
+		workbenchComponent.render(this.m_eComponentContainer);
 	}
+
 	return this;
 };
 
 /**
  * Sets the width of this panel.
  *
- * @param {int} nWidth The width of the WorkbenchPanel in Pixels
- *
+ * @param {int} width The width of the WorkbenchPanel in Pixels.
  */
-WorkbenchPanel.prototype.setWidth = function(nWidth)
-{
-	this.m_nWidth = nWidth;
+WorkbenchPanel.prototype.setWidth = function(width) {
+	this.m_nWidth = width;
 
-	this.m_eElement.css("width", nWidth);
+	this.m_eElement.css('width', width);
 
-	if (this.m_sOrientation === 'left')
-	{
+	if (this.m_sOrientation === 'left') {
 		this.m_eElement.css("left", 0);
-	}
-	else
-	{
-		var self = this;
+	} else {
 		this.m_eElement.css({
-			"left":"100%",
-			"margin-left": self.getOuterWidth() * -1
+			'left': '100%',
+			'margin-left': this.getOuterWidth() * -1
 		});
 	}
 };
@@ -134,135 +120,110 @@ WorkbenchPanel.prototype.setWidth = function(nWidth)
 /**
  * Returns the outer width of this workbench panel.
  *
- * @type int
- * @returns The total width of the WorkbenchPanel including padding and borders in pixels
+ * @returns {int} The total width of the WorkbenchPanel including padding and borders in pixels
  */
-WorkbenchPanel.prototype.getOuterWidth = function()
-{
-	var pWidthAspects = [
+WorkbenchPanel.prototype.getOuterWidth = function() {
+	var widthAspects = [
 		'padding-left',
 		'padding-right',
 		'border-left-width',
 		'border-right-width'
 	];
-	var nTotalWidth = 0;
+	var totalWidth = 0;
+	var value;
 
-	for (var i = 0; i < pWidthAspects.length; i++)
-	{
-		var nValue = parseInt( this.m_eElement.css( pWidthAspects[i] ), 10);
+	for (var i = 0, len = widthAspects.length; i < len; i++) {
+		value = parseInt(this.m_eElement.css(widthAspects[i]), 10);
 
-		if (!isNaN(nValue))
-		{
-			nTotalWidth += nValue;
+		if (!isNaN(value)) {
+			totalWidth += value;
 		}
 	};
 
-	return nTotalWidth + this.m_nWidth;
+	return totalWidth + this.m_nWidth;
 };
 
 /**
  * Returns the width of this panel.
  *
- * @type int
- * @returns nWidth The inner width of the WorkbenchPanel in pixels
+ * @returns {int} The inner width of the WorkbenchPanel in pixels
  */
-WorkbenchPanel.prototype.getWidth = function()
-{
+WorkbenchPanel.prototype.getWidth = function() {
 	return this.m_nWidth;
 };
 
 /**
  * Returns the offset height of this panel
  *
- * @returns The total height of the WorkbenchPanel including padding and borders in pixels.
- * @type int
+ * @returns {int} The total height of the WorkbenchPanel including padding and borders in pixels.
  */
-WorkbenchPanel.prototype.getHeightOffset = function()
-{
-	var pHeightAspects = [
+WorkbenchPanel.prototype.getHeightOffset = function() {
+	var heightAspects = [
 		'padding-top',
 		'padding-bottom',
 		'border-left-top',
 		'border-right-top'
 	];
-	var nTotalHeight = 0;
+	var totalHeight = 0;
+	var value;
 
-	for (var i = 0; i < pHeightAspects.length; i++)
-	{
-		var nValue = parseInt( this.m_eElement.css( pHeightAspects[i] ), 10);
+	for (var i = 0, len = heightAspects.length; i < len; i++) {
+		value = parseInt(this.m_eElement.css(heightAspects[i]), 10);
 
-		if( !isNaN(nValue) ){
-			nTotalHeight += nValue;
+		if (!isNaN(value)){
+			totalHeight += value;
 		}
 	};
 
-	return nTotalHeight;
+	return totalHeight;
 };
 
-WorkbenchPanel.prototype.getElement = function()
-{
+WorkbenchPanel.prototype.getElement = function() {
 	return this.m_eElement;
 };
 
-/**
- * @private
- */
-WorkbenchPanel.prototype._bindYResize = function()
-{
+/** @private */
+WorkbenchPanel.prototype._bindYResize = function() {
 	var self = this;
 	var fResize = function() {
 		self.m_eElement.css('height', jQuery(window).height() - self.getHeightOffset());
 	};
+
 	jQuery(window).resize(fResize);
 	fResize();
 };
 
-/**
- * @private
- */
-WorkbenchPanel.prototype._bindXResize = function()
-{
+/** @private */
+WorkbenchPanel.prototype._bindXResize = function() {
 	var self = this;
 	this.m_eDragHandle = jQuery('<div class="drag-handle"></div>');
 	this.m_eElement.append( this.m_eDragHandle );
-	/**
-	 * Add the handle to the left or the right side of the WorkbenchPanel
-	 */
-	if (this.m_sOrientation === 'left')
-	{
+
+	// Add the handle to the left or the right side of the WorkbenchPanel.
+	if (this.m_sOrientation === 'left') {
 		this.m_eDragHandle.css({
-			"right": 0,
-			"left": "auto"
+			'right': 0,
+			'left': 'auto'
 		});
 	}
-	/**
-	 * Bind Drag and Drop Behaviour
-	 */
+
+	// Bind Drag and Drop Behaviour
 	this.m_eDragHandle.mousedown(function(e) {
-		/**
-		 * Keep the Start Values
-		 */
+		// Keep the Start Values
 		e.preventDefault();
-		var nStartX = e.clientX;
-		var nStartWidth = self.m_nWidth;
-		/**
-		 * Drag
-		 */
-		jQuery(document).mousemove(function(e) {
-			if( self.m_sOrientation === 'left')
-			{
-				var nNewWidth = nStartWidth - (nStartX - e.clientX);
+		var startX = e.clientX;
+		var startWidth = self.m_nWidth;
+		var newWidth;
+
+		jQuery(document).mousemove(function(e) { // drag
+			if (self.m_sOrientation === 'left') {
+				newWidth = startWidth - (startX - e.clientX);
+			} else {
+				newWidth = startWidth + (startX - e.clientX);
 			}
-			else
-			{
-				var nNewWidth = nStartWidth + (nStartX - e.clientX);
-			}
-			self.setWidth(nNewWidth);
+			self.setWidth(newWidth);
 		})
-		/**
-		 * Drop
-		 */
-		.mouseup(function() {
+		.mouseup(function() { // drop
 			jQuery(document).unbind('mousemove mouseup');
 		});
 	});
