@@ -19,12 +19,13 @@ public class TemplateTests extends SpecTest
 {
 	
 	App app;
-	Aspect aspect;
+	Aspect defaultAspect;
 	Bladeset bladeset;
 	Blade blade;
 	Workbench workbench;
 	JsLib userLib, thirdpartyLib;
 	Blade bladeInDefaultBladeset;
+	Aspect anotherAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception {		
@@ -36,7 +37,8 @@ public class TemplateTests extends SpecTest
 		given(appJars).containsFile("some-lib.jar");
 		
 		app = brjs.app("app");
-		aspect = app.aspect("default");
+		defaultAspect = app.defaultAspect();
+		anotherAspect = app.aspect("another");
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
@@ -55,18 +57,19 @@ public class TemplateTests extends SpecTest
 	}
 
 	@Test
-	public void appHasCorrectTemplate() throws Exception {
-		when(brjs).runCommand("create-app", "app");
+	public void appAndDefaultAspectHasCorrectTemplate() throws Exception {
+		when(brjs).runCommand("create-app", "app", "appns");
 		then(app).hasFilesAndDirs(
-				Arrays.asList("app.conf"),
-				Arrays.asList("WEB-INF", "default-aspect", "libs")
+				Arrays.asList("app.conf", "index.html", "resources/aliases.xml", "src/appns/App.js", "themes/common/style.css"),
+				Arrays.asList("WEB-INF", "libs", "resources", "src", "unbundled-resources", "themes", "test-unit")
 		);
 	}
 	
 	@Test
-	public void aspectHasCorrectTemplate() throws Exception {
-		when(brjs).runCommand("create-app", "app", "appns");
-		then(aspect).hasFilesAndDirs(
+	public void createdAspectHasCorrectTemplate() throws Exception {
+		given(brjs).commandHasBeenRun("create-app", "app", "appns");
+		when(brjs).runCommand("create-aspect", "app", "another");
+		then(anotherAspect).hasFilesAndDirs(
 				Arrays.asList("index.html", "resources/aliases.xml", "src/appns/App.js", "themes/common/style.css"),
 				Arrays.asList("resources", "src", "unbundled-resources", "themes", "test-unit")
 		);
@@ -75,7 +78,7 @@ public class TemplateTests extends SpecTest
 	@Test
 	public void aspectTestsHasCorrectTemplate() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appns");
-		then(aspect.testType("unit")).hasFilesAndDirs(
+		then(defaultAspect.testType("unit")).hasFilesAndDirs(
 				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
 		);

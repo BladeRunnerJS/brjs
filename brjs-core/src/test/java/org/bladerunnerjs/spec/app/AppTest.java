@@ -27,7 +27,7 @@ public class AppTest extends SpecTest {
 	private JsLib appLib;
 	private NamedDirNode appTemplate;
 	private DirNode appJars;
-	private Aspect aspect;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -38,7 +38,7 @@ public class AppTest extends SpecTest {
 			appLib = app.jsLib("lib1");
 			appTemplate = brjs.template("app");
 			appJars = brjs.appJars();
-			aspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			globalNonBladeRunnerLib = brjs.sdkLib("legacy-thirdparty");
 			appNonBladeRunnerLib = app.appJsLib("app-legacy-thirdparty");
 			globalOverriddenNonBRLib = brjs.sdkLib("overridden-lib");
@@ -60,7 +60,7 @@ public class AppTest extends SpecTest {
 	public void weCanCreateAnAppUsingTheRealTemplate() throws Exception {
 		given(brjs).usesProductionTemplates();
 		when(app).populate("appxyz");
-		then(aspect).hasDir("src/appxyz");
+		then(defaultAspect).hasDir("src/appxyz");
 	}
 	
 	@Test
@@ -68,7 +68,7 @@ public class AppTest extends SpecTest {
 		given(observer).observing(brjs);
 		when(app).populate();
 		then(observer).notified(NodeReadyEvent.class, app)
-			.and(observer).notified(NodeReadyEvent.class, aspect);
+			.and(observer).notified(NodeReadyEvent.class, defaultAspect);
 	}
 	
 	@Test

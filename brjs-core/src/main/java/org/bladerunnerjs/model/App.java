@@ -236,7 +236,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	/**
 	 * Get the default aspect for the app. This is different from using aspect("default").
 	 * @return the default aspect
-	 * @see #aspect
+	 * @see #defaultAspect
 	 */
 	public Aspect defaultAspect()
 	{
@@ -287,7 +287,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		super.populate();
-		aspect("default").populate();
+		defaultAspect().populate();
 	};
 	
 	public void populate(String requirePrefix) throws InvalidNameException, ModelUpdateException

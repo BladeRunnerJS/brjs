@@ -25,7 +25,7 @@ public class DefaultTestPack extends TestPack
 	
 	@Override
 	public String getTypeName() {
-		return super.getTypeName();
+		return getClass().getSuperclass().getSimpleName();
 	}
 	
 }

@@ -26,6 +26,7 @@ public class DefaultBladeset extends Bladeset
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		BRJSNodeHelper.populate(this, true);
+		testType("unit").defaultTestTech().populate();
 	}
 	
 	@Override
@@ -63,6 +64,6 @@ public class DefaultBladeset extends Bladeset
 
 	@Override
 	public String getTypeName() {
-		return super.getTypeName();
+		return getClass().getSuperclass().getSimpleName();
 	}
 }
