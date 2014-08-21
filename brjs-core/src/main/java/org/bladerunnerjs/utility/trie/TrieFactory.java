@@ -84,9 +84,6 @@ public class TrieFactory {
 					}
 				}
 				
-				if (trie.needsOptimizing()) {
-					trie.optimize();
-				}
 				return trie;
 			}
 		});
@@ -98,7 +95,7 @@ public class TrieFactory {
 			{
 				trie.add(key, value, matchPattern);
 			}
-			catch (TrieKeyAlreadyExistsException | TrieLockedException e)
+			catch (TrieKeyAlreadyExistsException e)
 			{
 				// wrap this in a RuntimeException since its unexpected, let the other exceptions bubble up
 				throw new RuntimeException(e);
