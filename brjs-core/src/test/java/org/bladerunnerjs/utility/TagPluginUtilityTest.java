@@ -3,6 +3,8 @@ package org.bladerunnerjs.utility;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -183,11 +185,42 @@ public class TagPluginUtilityTest extends TestModelAccessor
 	}
 	
 	
+	@Test
+	public void correctFilterMapIsReturnedIsNoTagIsFound() throws Exception
+	{		
+		Map<String,Map<String,String>> expecetedResult = new HashMap<>();
+		filterAndAssertMapReturned( "I don't contain any tags...", expecetedResult, aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	
+	@Test
+	public void correctFilterMapIsReturnedWhenATagIsFound() throws Exception
+	{
+		Map<String,Map<String,String>> expecetedResult = new HashMap<>();
+		expecetedResult.put("tag",new HashMap<>());
+		filterAndAssertMapReturned( "this is a <@tag@/>", expecetedResult, aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	@Test
+	public void correctFilterMapIsReturnedWhenATagIsFoundWithAttributes() throws Exception
+	{
+		Map<String,Map<String,String>> expecetedResult = new HashMap<>();
+		expecetedResult.put("tag",new HashMap<>());
+		expecetedResult.get("tag").put("key", "value");
+		filterAndAssertMapReturned( "this is a <@tag key=\"value\"@/>", expecetedResult, aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
 	private void filterAndAssert(String input, String expectedOutput, BundleSet bundleSet, RequestMode opMode, String locale) throws Exception
 	{
 		StringWriter writer = new StringWriter();
 		TagPluginUtility.filterContent(input, bundleSet, writer, opMode, new Locale(locale), brjs.getAppVersionGenerator().getDevVersion());
 		assertEquals(expectedOutput, writer.toString());
+	}
+	
+	private void filterAndAssertMapReturned(String input, Map<String,Map<String,String>> expectedResult, BundleSet bundleSet, RequestMode opMode, String locale) throws Exception
+	{
+		 Map<String,Map<String,String>> actualResult = TagPluginUtility.getUsedTagsAndAttributes(input, bundleSet, opMode, new Locale(locale), brjs.getAppVersionGenerator().getDevVersion());
+		assertEquals(expectedResult, actualResult);
 	}
 	
 	private File createTestSdkDirectory() {
