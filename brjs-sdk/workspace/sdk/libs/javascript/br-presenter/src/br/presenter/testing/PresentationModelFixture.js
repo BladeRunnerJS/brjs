@@ -36,6 +36,11 @@ br.presenter.testing.PresentationModelFixture.prototype.setComponent = function(
 // *							  Fixture interface
 // ************************************************************************************
 
+br.presenter.testing.PresentationModelFixture.prototype.tearDown = function()
+{
+	delete this.m_oPresentationModel;
+};
+
 br.presenter.testing.PresentationModelFixture.prototype.canHandleExactMatch = function()
 {
 	return false;
