@@ -184,7 +184,7 @@ public class RestApiServletEndToEndTests
 		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "POST", URL_BASE+"/apps/"+app, jsonBody);
 		assertEquals(200, response.getStatusLine().getStatusCode());
 		assertTrue( brjs.userApp(app).dirExists() );
-		FileUtils.write(brjs.userApp(app).aspect("default").file("index.html"), "");
+		FileUtils.write(brjs.userApp(app).defaultAspect().file("index.html"), "");
 		if (releaseConnection)
 		{
 			RestApiServletTestUtils.getResponseTextFromResponse(response);
