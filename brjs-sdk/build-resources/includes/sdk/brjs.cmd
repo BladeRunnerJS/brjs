@@ -9,12 +9,7 @@ if "%FOUND_JAVA_EXEC%"=="" (
     goto displayJavaInstallMessage
 )
 
-set REQUIRED_JAVA_VERSION=1.7
-java -version:%REQUIRED_JAVA_VERSION%+ -version > nul 2>&1
-if %ERRORLEVEL% == 0 goto runBrjs
-set JAVA_INSTALL_EXCEPTION_MESSAGE=Could not find Java %REQUIRED_JAVA_VERSION% or greater.
-goto displayJavaInstallMessage
-
+goto runBrjs
 
 :displayJavaInstallMessage
 echo %JAVA_INSTALL_EXCEPTION_MESSAGE%
@@ -33,4 +28,4 @@ FOR /F "delims=" %%I in ('echo %filename%') do set SHORT_SCRIPT_DIR=%%~sI
 cd %THIS_DIR%
 set BRJS_CLASSPATH="%SCRIPT_DIR%/libs/java/system/*;%SCRIPT_DIR%/../conf/java/*;"
 
-java %JAVA_OPTS% -version:%REQUIRED_JAVA_VERSION%+ -cp %BRJS_CLASSPATH% org.bladerunnerjs.runner.CommandRunner "%SHORT_SCRIPT_DIR% " %*
+java %JAVA_OPTS% -cp %BRJS_CLASSPATH% org.bladerunnerjs.runner.CommandRunner "%SHORT_SCRIPT_DIR% " %*
