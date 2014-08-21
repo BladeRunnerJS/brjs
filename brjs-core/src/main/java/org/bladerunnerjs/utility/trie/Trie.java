@@ -26,14 +26,12 @@ public class Trie<T>
 	private int readAheadLimit = 1;
 	private Map<String, TrieNode<T>> trieLookup = new HashMap<String, TrieNode<T>>();
 	private List<Character> seperators;
-	private char primarySeperator;
 	
 	public Trie() {
 		this('\u0000');
 	}
 	
 	public Trie(char primarySeperator, Character... seperators) {
-		this.primarySeperator = primarySeperator;
 		this.seperators = Arrays.asList(seperators);
 		root = new BasicRootTrieNode<>(primarySeperator, this.seperators);
 	}
@@ -42,7 +40,7 @@ public class Trie<T>
 		add(key, value, MATCH_ALL_PATTERN);
 	}
 	
-	public void add(String key, T value, Pattern matchPattern) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException {
+	public void add(String key, T value, Pattern matchPattern) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException { 
 		
 		if (key.length() < 1)
 		{

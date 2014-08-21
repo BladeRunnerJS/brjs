@@ -227,6 +227,31 @@ public class TrieTest
 		assertEquals(test_object_2, foundObjects.get(0));
 	}
 	
+	@Test
+	public void seperatorsCanBeUsedToAddAnEntryAndMatchAnotherWithDifferentSeperators() throws Exception
+	{
+		trie = new Trie<TestObject>( '/', new Character[]{'.', '/'} );
+		trie.add("test/object/1", test_object_1);
+		
+		StringReader reader = new StringReader("the test.object.1 should match");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(1, foundObjects.size());
+		assertEquals(test_object_1, foundObjects.get(0));
+	}
+	
+	@Test
+	public void seperatorsCanBeUsedToAddAnEntryAndMatchAnotherWithDifferentSeperatorsWhereTheSeperatorAlsoAppearsAfterTheMatch() throws Exception
+	{
+		trie = new Trie<TestObject>( '/', new Character[]{'.', '/'} );
+		trie.add("test/object/1", test_object_1);
+		
+		StringReader reader = new StringReader("the test.object.1.something should match");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(1, foundObjects.size());
+		assertEquals(test_object_1, foundObjects.get(0));
+	}
 	
 	/* TestObject so the Trie is using Objects to ensure the same object instance is returned, but with a toString() that returns a name to help debugging */
 	class TestObject {
