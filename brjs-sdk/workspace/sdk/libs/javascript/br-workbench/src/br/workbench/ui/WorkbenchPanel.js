@@ -1,5 +1,40 @@
 var jQuery = require('jquery');
 
+var sessionItemName = 'brjs-workbench-tools-collapsed';
+
+/**
+ * Returns a wether the workbench tool with the title `title` is collapsed or not. Returns `null` if state is unknown.
+ */
+function getCollapsedStateFromStorage(title) {
+	var store = sessionStorage.getItem(sessionItemName);
+
+	if (store == null) {
+		return null;
+	}
+
+	store = JSON.parse(store);
+
+	if (typeof store[title] === 'undefined') {
+		return null;
+	}
+
+	return store[title];
+}
+
+function storeCollapsedStateToStorage(title, collapsed) {
+	var store = sessionStorage.getItem(sessionItemName);
+
+	if (store == null) {
+		store = {};
+	} else {
+		store = JSON.parse(store);
+	}
+
+	store[title] = collapsed;
+
+	sessionStorage.setItem(sessionItemName, JSON.stringify(store));
+}
+
 /**
  * @name br.workbench.ui.WorkbenchPanel
  * @class
@@ -60,7 +95,17 @@ WorkbenchPanel.prototype.getComponentContainerId = function() {
  * @param {boolean} collapsed if True, the initial state of the component will be collapsed.
  */
 WorkbenchPanel.prototype.add = function(workbenchComponent, title, collapsed) {
+	if (typeof collapsed === 'undefined') {
+		collapsed = false;
+	}
+
+	var storedCollapsedState = getCollapsedStateFromStorage(title);
+	if (storedCollapsedState !== null) {
+		collapsed = storedCollapsedState;
+	}
+
 	var wrapperEl = document.createElement('LI');
+	var jQueryWrapperEl = jQuery(wrapperEl);
 	wrapperEl.className = 'workbench-component';
 
 	var headerEl = document.createElement('DIV');
@@ -78,12 +123,15 @@ WorkbenchPanel.prototype.add = function(workbenchComponent, title, collapsed) {
 
 	if (collapsed) {
 		jQueryHeader.next().hide();
-		jQuery(wrapperEl).addClass('collapsed');
+		jQueryWrapperEl.addClass('collapsed');
 	}
 
 	jQueryHeader.click(function() {
 		jQueryHeader.next().slideToggle();
-		jQuery(wrapperEl).toggleClass('collapsed');
+		jQueryWrapperEl.toggleClass('collapsed');
+
+		storeCollapsedStateToStorage(title, jQueryWrapperEl.hasClass('collapsed'));
+
 		return false;
 	});
 
