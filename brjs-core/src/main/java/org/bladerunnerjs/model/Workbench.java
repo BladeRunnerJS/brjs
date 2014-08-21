@@ -18,7 +18,7 @@ import org.bladerunnerjs.utility.TestRunner;
 public final class Workbench extends AbstractBrowsableNode implements TestableNode
 {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
-	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private final IndexPageSeedLocator seedLocator;
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)

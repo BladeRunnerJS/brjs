@@ -68,7 +68,16 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-app", "app", "appns");
 		then(aspect).hasFilesAndDirs(
 				Arrays.asList("index.html", "resources/aliases.xml", "src/appns/App.js", "themes/common/style.css"),
-				Arrays.asList("resources", "src", "unbundled-resources", "themes")
+				Arrays.asList("resources", "src", "unbundled-resources", "themes", "test-unit")
+		);
+	}
+	
+	@Test
+	public void aspectTestsHasCorrectTemplate() throws Exception {
+		when(brjs).runCommand("create-app", "app", "appns");
+		then(aspect.testType("unit")).hasFilesAndDirs(
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js", ".gitignore"),
+				Arrays.asList("tests", "resources")
 		);
 	}
 	
@@ -78,7 +87,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset).hasFilesAndDirs(
 				Arrays.asList("src/appns/bs/BsClass.js", "themes/common/style.css"),
-				Arrays.asList("resources", "resources/html", "src", "tests", "themes")
+				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes")
 		);
 	}
 	
@@ -87,8 +96,8 @@ public class TemplateTests extends SpecTest
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset.testType("unit")).hasFilesAndDirs(
-				Arrays.asList("js-test-driver/jsTestDriver.conf", "js-test-driver/resources/aliases.xml", "js-test-driver/tests/ExampleClassTest.js"),
-				Arrays.asList("js-test-driver", "js-test-driver/tests", "js-test-driver/resources")
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js", ".gitignore"),
+				Arrays.asList("tests", "resources")
 		);
 	}
 	
@@ -99,7 +108,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade).hasFilesAndDirs(
 				Arrays.asList("src/appns/bs/b1/B1ViewModel.js", "themes/common/style.css"),
-				Arrays.asList("resources", "resources/html", "src", "tests", "workbench", "themes")
+				Arrays.asList("resources", "resources/html", "src", "test-unit", "workbench", "themes")
 		);
 	}
 	
@@ -122,8 +131,8 @@ public class TemplateTests extends SpecTest
 			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
 		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade.testType("unit")).hasFilesAndDirs(
-				Arrays.asList("js-test-driver/jsTestDriver.conf", "js-test-driver/resources/aliases.xml", "js-test-driver/tests/B1ViewModelTest.js"),
-				Arrays.asList("js-test-driver", "js-test-driver/tests", "js-test-driver/resources")
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/B1ViewModelTest.js", ".gitignore"),
+				Arrays.asList("tests", "resources")
 		);
 	}
 	
@@ -145,14 +154,15 @@ public class TemplateTests extends SpecTest
 		then(userLib).hasFilesAndDirs(
 				Arrays.asList("br-lib.conf", 
 						"src/userlib/Userlib.js", 
-						"tests/test-unit/js-test-driver/jsTestDriver.conf", 
-						"tests/test-unit/js-test-driver/resources/aliases.xml",
-						"tests/test-unit/js-test-driver/tests/UserlibTest.js"),
-				Arrays.asList("src", "tests", "tests/test-unit/js-test-driver/"))
+						"test-unit/jsTestDriver.conf", 
+						"test-unit/resources/aliases.xml",
+						"test-unit/tests/UserlibTest.js", 
+						"test-unit/.gitignore"),
+				Arrays.asList("src", "test-unit"))
 			.and(userLib).fileContentsContains("src/userlib/Userlib.js", "var Userlib = {}");
 	}
 	
-	@Test //TODO: thrirdparty libraries should have an improved template - the template exists, but the command doesnt use it when creating thirdparty libraries
+	@Test //TODO: thirdparty libraries should have an improved template - the template exists, but the command doesnt use it when creating thirdparty libraries
 	public void thirdpartyLibHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-library", "app", "thirdpartyLib", "-t", "thirdparty");

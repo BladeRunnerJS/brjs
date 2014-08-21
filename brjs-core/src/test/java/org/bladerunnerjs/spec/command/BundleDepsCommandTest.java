@@ -102,10 +102,10 @@ public class BundleDepsCommandTest extends SpecTest {
 		given(bladeTests).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
 			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(blade).classRequires("appns/bs/b1/Class1", "./Class2");
-		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver");
+		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver");
 		then(logging).containsConsoleText(
-			"Bundle 'apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver' dependencies found:",
-			"    +--- 'bs-bladeset/blades/b1/tests/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
+			"Bundle 'apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
+			"    +--- 'bs-bladeset/blades/b1/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
 			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'",
 			"    |    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js'");
 	}
