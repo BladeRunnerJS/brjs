@@ -27,7 +27,7 @@ public class ServedAppBundleTest extends SpecTest
 		
 		// generate the app structure
 		App app = brjs.app("app");
-		Aspect aspect = app.aspect("default");
+		Aspect aspect = app.defaultAspect();
 		Bladeset bs = app.bladeset("bs");
 		Blade b1 = bs.blade("b1");
 		Workbench workbench = b1.workbench();
