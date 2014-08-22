@@ -46,6 +46,7 @@ public class TrieTest
 	public void addingToTrie() throws Exception
 	{
 		trie.add("1234-abc#;;a", test_object_1);
+		assertTrue(trie.containsKey("1234-abc#;;a"));
 		assertEquals(test_object_1, trie.get("1234-abc#;;a"));
 	}
 	
@@ -252,6 +253,17 @@ public class TrieTest
 		assertEquals(1, foundObjects.size());
 		assertEquals(test_object_1, foundObjects.get(0));
 	}
+	
+	@Test
+	public void entriesCanBeRetrievedFromTheTrieUsingANonPrimarySeperator() throws Exception
+	{
+		trie = new Trie<TestObject>( '/', new Character[]{'.', '/'} );
+		trie.add("test/object/1", test_object_1);
+		
+		assertTrue(trie.containsKey("test.object/1"));
+		assertEquals(test_object_1, trie.get("test.object.1"));
+	}
+	
 	
 	/* TestObject so the Trie is using Objects to ensure the same object instance is returned, but with a toString() that returns a name to help debugging */
 	class TestObject {

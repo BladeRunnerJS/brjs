@@ -45,8 +45,7 @@ public class TrieFactory {
 		return trie.value(new Getter<ModelOperationException>() {
 			@Override
 			public Object get() throws RuntimeException, ModelOperationException {
-//				Trie<AssetReference> trie = new Trie<AssetReference>( '/', new Character[]{'.', '/'} );
-				Trie<AssetReference> trie = new Trie<AssetReference>();
+				Trie<AssetReference> trie = new Trie<AssetReference>( '/', new Character[]{'.', '/'} );
 				
 				for (AssetContainer assetContainer : assetContainer.scopeAssetContainers()) {
 					try {
@@ -64,11 +63,9 @@ public class TrieFactory {
 							for(String requirePath : requirePaths) {
 								if (requirePath.contains("/")) {
 									addToTrie(trie, requirePath, new LinkedAssetReference(asset), SOURCE_MODULE_MATCHER_PATTERN);
-									addToTrie(trie, requirePath.replace("/", "."), new LinkedAssetReference(asset), SOURCE_MODULE_MATCHER_PATTERN);
 								} else {
 									// the asset is one that can only be referred to via a string
-									addToTrie(trie, requirePath, new LinkedAssetReference(asset), QUOTED_SOURCE_MODULE_MATCHER_PATTERN);									
-									addToTrie(trie, requirePath.replace("/", "."), new LinkedAssetReference(asset), QUOTED_SOURCE_MODULE_MATCHER_PATTERN);
+									addToTrie(trie, requirePath, new LinkedAssetReference(asset), QUOTED_SOURCE_MODULE_MATCHER_PATTERN);
 								}
 							}
 						}

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
 import org.bladerunnerjs.utility.trie.node.BasicRootTrieNode;
@@ -18,6 +19,8 @@ import org.bladerunnerjs.utility.trie.node.TrieNode;
 
 public class Trie<T>
 {
+	private static final char DEFAULT_PRIMARY_SEPERATOR = '\u0000';
+
 	private static final Pattern MATCH_ALL_PATTERN = Pattern.compile(".*", Pattern.DOTALL);
 	
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"\\\"\'\\'".toCharArray();
@@ -26,12 +29,15 @@ public class Trie<T>
 	private int readAheadLimit = 1;
 	private Map<String, TrieNode<T>> trieLookup = new HashMap<String, TrieNode<T>>();
 	private List<Character> seperators;
+
+	private char primarySeperator;
 	
 	public Trie() {
-		this('\u0000');
+		this(DEFAULT_PRIMARY_SEPERATOR);
 	}
 	
 	public Trie(char primarySeperator, Character... seperators) {
+		this.primarySeperator = primarySeperator;
 		this.seperators = Arrays.asList(seperators);
 		root = new BasicRootTrieNode<>(primarySeperator, this.seperators);
 	}
@@ -41,6 +47,11 @@ public class Trie<T>
 	}
 	
 	public void add(String key, T value, Pattern matchPattern) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException { 
+		
+		if (primarySeperator != DEFAULT_PRIMARY_SEPERATOR && !seperators.isEmpty()) {
+			String findSeperatorsRegex = "[" + Pattern.quote(StringUtils.join(seperators, "")) + "]";
+			key = key.replaceAll(findSeperatorsRegex , primarySeperator+"" );
+		}
 		
 		if (key.length() < 1)
 		{
@@ -64,7 +75,15 @@ public class Trie<T>
 	}
 	
 	public boolean containsKey(String key) {
-		return (trieLookup.get(key) != null);
+		if (trieLookup.containsKey(key)) {
+			return true;
+		}
+		for (Character seperator : seperators) {
+			if (trieLookup.containsKey(key.replace(seperator, primarySeperator))) {
+				return true;
+			}			
+		}
+		return false;
 	}
 	
 	public T get(String key)
