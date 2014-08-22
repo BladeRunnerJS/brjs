@@ -62,7 +62,7 @@ public class TemplateTests extends SpecTest
 	public void appAndDefaultAspectHasCorrectTemplate() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appns");
 		then(app).hasFilesAndDirs(
-				Arrays.asList("app.conf", "index.html", "resources/aliases.xml", "src/appns/App.js", "themes/common/style.css"),
+				Arrays.asList("app.conf", "index.html", "resources/aliases.xml", "src/App.js", "themes/common/style.css"),
 				Arrays.asList("WEB-INF", "libs", "resources", "src", "unbundled-resources", "themes", "test-unit")
 		);
 	}
@@ -72,7 +72,7 @@ public class TemplateTests extends SpecTest
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-aspect", "app", "another");
 		then(anotherAspect).hasFilesAndDirs(
-				Arrays.asList("index.html", "resources/aliases.xml", "src/appns/App.js", "themes/common/style.css"),
+				Arrays.asList("index.html", "resources/aliases.xml", "src/App.js", "themes/common/style.css"),
 				Arrays.asList("resources", "src", "unbundled-resources", "themes", "test-unit")
 		);
 	}
@@ -91,17 +91,17 @@ public class TemplateTests extends SpecTest
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset).hasFilesAndDirs(
-				Arrays.asList("src/appns/bs/BsClass.js", "themes/common/style.css"),
+				Arrays.asList("src/BsClass.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes")
 		);
 	}
 	
-	@Test @Ignore //add this test in when default bladesets can be created via the CLI
+	@Test @Ignore
 	public void defaultBladesetHasEmptyTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-bladeset", "app", "default");
 		then(defaultBladeset).hasFilesAndDirs(
-				Arrays.asList("app.conf", "index.html", "resources/aliases.xml", "src/appns/App.js", "themes/common/style.css"),
+				Arrays.asList("app.conf", "index.html", "resources/aliases.xml", "src/App.js", "themes/common/style.css"),
 				Arrays.asList("WEB-INF", "libs", "resources", "src", "unbundled-resources", "themes", "test-unit")
 		);
 	}
@@ -122,21 +122,21 @@ public class TemplateTests extends SpecTest
 			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
 		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade).hasFilesAndDirs(
-				Arrays.asList("src/appns/bs/b1/B1ViewModel.js", "themes/common/style.css"),
+				Arrays.asList("src/B1ViewModel.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "test-unit", "workbench", "themes")
 		);
 	}
 	
-	@Test @Ignore // add this test back in when package directories become optional
+	@Test
 	public void bladeInDefaultBladesetHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
-		when(brjs).runCommand("create-blade", "app", "b1");
+		when(brjs).runCommand("create-blade", "app", "default", "b1");
 		then(app).hasFilesAndDirs(
-			Arrays.asList("app.conf"),
-			Arrays.asList("WEB-INF", "default-aspect", "libs", "blades")
+			Arrays.asList("app.conf", "index.html"),
+			Arrays.asList("WEB-INF", "src", "test-unit", "themes", "unbundled-resources", "libs", "resources", "blades")
 		).and(bladeInDefaultBladeset).hasFilesAndDirs(
-				Arrays.asList("src/appns/b1/B1ViewModel.js", "themes/common/style.css"),
-				Arrays.asList("resources", "resources/html", "src", "tests", "workbench", "themes")
+				Arrays.asList("src/B1ViewModel.js", "themes/common/style.css"),
+				Arrays.asList("resources", "resources/html", "src", "test-unit", "workbench", "themes")
 		);
 	}
 	

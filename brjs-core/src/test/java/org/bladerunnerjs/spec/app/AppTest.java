@@ -60,7 +60,7 @@ public class AppTest extends SpecTest {
 	public void weCanCreateAnAppUsingTheRealTemplate() throws Exception {
 		given(brjs).usesProductionTemplates();
 		when(app).populate("appxyz");
-		then(defaultAspect).hasDir("src/appxyz");
+		then(defaultAspect).hasFile("src/App.js");
 	}
 	
 	@Test
