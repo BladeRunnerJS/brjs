@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -26,7 +25,6 @@ public class TemplateTests extends SpecTest
 	JsLib userLib, thirdpartyLib;
 	Blade bladeInDefaultBladeset;
 	Aspect anotherAspect;
-	private Bladeset defaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception {		
@@ -40,7 +38,6 @@ public class TemplateTests extends SpecTest
 		app = brjs.app("app");
 		defaultAspect = app.defaultAspect();
 		anotherAspect = app.aspect("another");
-		defaultBladeset = app.defaultBladeset();
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
@@ -93,16 +90,6 @@ public class TemplateTests extends SpecTest
 		then(bladeset).hasFilesAndDirs(
 				Arrays.asList("src/BsClass.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes")
-		);
-	}
-	
-	@Test @Ignore
-	public void defaultBladesetHasEmptyTemplate() throws Exception {
-		given(brjs).commandHasBeenRun("create-app", "app", "appns");
-		when(brjs).runCommand("create-bladeset", "app", "default");
-		then(defaultBladeset).hasFilesAndDirs(
-				Arrays.asList("app.conf", "index.html", "resources/aliases.xml", "src/App.js", "themes/common/style.css"),
-				Arrays.asList("WEB-INF", "libs", "resources", "src", "unbundled-resources", "themes", "test-unit")
 		);
 	}
 	

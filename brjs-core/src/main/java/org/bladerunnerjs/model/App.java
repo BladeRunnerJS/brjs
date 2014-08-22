@@ -288,6 +288,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		super.populate();
 		defaultAspect().populate();
+		defaultBladeset().populate();
 	};
 	
 	public void populate(String requirePrefix) throws InvalidNameException, ModelUpdateException
