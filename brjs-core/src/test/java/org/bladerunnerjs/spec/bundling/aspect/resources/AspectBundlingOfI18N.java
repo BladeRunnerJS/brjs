@@ -12,7 +12,7 @@ import org.junit.Test;
 public class AspectBundlingOfI18N extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private Aspect rootAspect;
+	private Aspect rootDefaultAspect;
 	private Bladeset bladeset;
 	private Blade blade;
 	private JsLib sdkLib, userLib;
@@ -27,7 +27,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 		
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			rootAspect = app.defaultAspect();
+			rootDefaultAspect = app.defaultAspect();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			sdkLib = brjs.sdkLib("br");
@@ -46,10 +46,10 @@ public class AspectBundlingOfI18N extends SpecTest {
 
 	@Test
 	public void rootAspectI18NFilesAreBundledWhenAspectSrcAreReferenced() throws Exception {
-		given(rootAspect).hasClass("appns/Class1")
-			.and(rootAspect).containsResourceFileWithContents("i18n/en/en.properties", "appns.token=aspect token")
-			.and(rootAspect).indexPageRefersTo("appns.Class1");
-		when(rootAspect).requestReceivedInDev("i18n/en.js", response);
+		given(rootDefaultAspect).hasClass("appns/Class1")
+			.and(rootDefaultAspect).containsResourceFileWithContents("i18n/en/en.properties", "appns.token=aspect token")
+			.and(rootDefaultAspect).indexPageRefersTo("appns.Class1");
+		when(rootDefaultAspect).requestReceivedInDev("i18n/en.js", response);
 		then(response).containsText("\"appns.token\": \"aspect token\"");
 	}
 
