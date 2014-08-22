@@ -1,5 +1,9 @@
 package org.bladerunnerjs.spec.model;
 
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.NamedDirNode;
@@ -95,6 +99,18 @@ public class AspectTest extends SpecTest {
 	@Test
 	public void aspectsCannotHaveTheSameFormatAsLanguageAndCountryLocale() throws Exception {
 		then( (NamedNode) app.aspect("my_AS") ).nameIsInvalid();
+	}
+	
+	@Test
+	public void multipleAspectsAreDiscoveredWhenThereAreOtherDirectories() throws Exception {
+		given(app).hasBeenPopulated()		
+			.and(app).hasDir("a-folder")
+			.and(app).hasDir("another-aspect")
+			.and(app).hasDir("default-aspect")
+			.and(app).hasDir("aspect1-aspect")
+			.and(app).hasDir("aspect2-aspect")
+			.and(app).hasDir("some-other-folder");
+		/* then */ assertEquals( Arrays.asList(app.aspect("default"), app.aspect("another"), app.aspect("aspect1"), app.aspect("aspect2")), app.aspects() );
 	}
 	
 }

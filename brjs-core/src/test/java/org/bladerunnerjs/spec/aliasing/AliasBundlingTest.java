@@ -186,7 +186,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classDependsOnAlias("appns.Class1", "the-alias");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1", "appns.Class2");
+		then(response).containsNamespacedJsClasses("appns.Class1", "appns.Class2");
 	}
 	
 	@Test
@@ -334,7 +334,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.App")	
 			.and(aspect).classFileHasContent("appns.App", "'appns.alias1' 'appns.alias2' 'appns.alias3'");	
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1", "appns.Class2", "appns.Class3");
+		then(response).containsNamespacedJsClasses("appns.Class1", "appns.Class2", "appns.Class3");
 	}
 	
 	@Test

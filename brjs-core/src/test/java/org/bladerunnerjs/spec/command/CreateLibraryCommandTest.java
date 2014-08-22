@@ -94,7 +94,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(lib).dirExists()
 			.and(lib).hasDir("src/lib")
-			.and(lib).hasDir("tests/test-unit/js-test-driver/")
+			.and(lib).hasDir("test-unit")
 			.and(lib.dir()).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
 			.and(lib).doesNotHaveFile("thirdparty-lib.manifest");
 	}
