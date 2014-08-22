@@ -17,7 +17,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private Aspect otherAspect;
-	private Aspect rootAspect;
+	private Aspect rootDefaultAspect;
 
 	private StringBuffer response = new StringBuffer();
 	
@@ -31,7 +31,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			aspect = app.aspect("default");
 			otherAspect = app.aspect("other");
 			
-			rootAspect = app.defaultAspect();
+			rootDefaultAspect = app.defaultAspect();
 	}
 	
 	@Test
@@ -242,9 +242,9 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	
 	@Test
 	public void weBundleARootLevelAspectClassIfItIsReferredToInTheIndexPage() throws Exception {
-		given(rootAspect).hasClass("appns/Class1")
-			.and(rootAspect).indexPageRefersTo("appns.Class1");
-		when(rootAspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		given(rootDefaultAspect).hasClass("appns/Class1")
+			.and(rootDefaultAspect).indexPageRefersTo("appns.Class1");
+		when(rootDefaultAspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.Class1");
 	}
 }

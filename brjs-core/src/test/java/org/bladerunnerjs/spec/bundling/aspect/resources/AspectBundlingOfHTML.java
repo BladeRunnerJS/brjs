@@ -12,7 +12,7 @@ import org.junit.Test;
 public class AspectBundlingOfHTML extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private Aspect rootAspect;
+	private Aspect rootDefaultAspect;
 	private Bladeset bladeset;
 	private Blade blade;
 	private JsLib sdkLib, userLib;
@@ -27,7 +27,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 		
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			rootAspect = app.defaultAspect();
+			rootDefaultAspect = app.defaultAspect();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			sdkLib = brjs.sdkLib("br");
@@ -45,9 +45,9 @@ public class AspectBundlingOfHTML extends SpecTest {
 	
 	@Test
 	public void rootAspectClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
-		given(rootAspect).hasClasses("appns/Class1")
-			.and(rootAspect).resourceFileRefersTo("html/view.html", "appns.Class1");
-		when(rootAspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		given(rootDefaultAspect).hasClasses("appns/Class1")
+			.and(rootDefaultAspect).resourceFileRefersTo("html/view.html", "appns.Class1");
+		when(rootDefaultAspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.Class1");
 	}
 
