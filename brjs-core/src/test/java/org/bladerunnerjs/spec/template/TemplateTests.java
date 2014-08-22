@@ -46,6 +46,10 @@ public class TemplateTests extends SpecTest
 		bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
 	}
 	
+	
+	//TODO: make these tests more restrictive so any new files in subfolders cause the tests to fail
+	
+	
 	@Test
 	public void brjsHasCorrectTemplate() throws Exception {
 		when(brjs).populate();
@@ -64,6 +68,15 @@ public class TemplateTests extends SpecTest
 		);
 	}
 	
+	@Test
+	public void defaultAspectSrcHasCorrectClasses() throws Exception {
+		when(brjs).runCommand("create-app", "app", "appns");
+		then(app).hasFilesAndDirs(
+				Arrays.asList("app.conf", "index.html", "src/App.js"),
+				Arrays.asList("WEB-INF", "libs", "resources", "src", "unbundled-resources", "themes", "test-unit")
+		).and(app).doesNotHaveFile("src/DefaultClass.js");
+	}
+
 	@Test
 	public void createdAspectHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
