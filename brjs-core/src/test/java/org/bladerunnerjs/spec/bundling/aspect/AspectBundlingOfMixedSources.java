@@ -171,4 +171,13 @@ public class AspectBundlingOfMixedSources extends SpecTest {
     	then(exceptions).verifyException(InvalidRequirePathException.class, "bladeset-bladeset/blades/blade/src/appns/mypkg/Class.js", "appns/bladeset/blade/*", "appns/mypkg");
 	}
 	
+	@Test
+	public void impliedRequirePrefixIsNotUsedIfNoNamespaceEnforcement_HACK_FlagIsUsedInALibrary() throws Exception {
+		given( brjs.sdkLib("myLib") ).containsFile("no-namespace-enforcement")
+			.and( brjs.sdkLib("myLib") ).hasClass("pkg1/pkg2/pkg3/SomeClass")
+			.and(aspect).indexPageRefersTo("pkg1.pkg2.pkg3.SomeClass");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("pkg1/pkg2/pkg3/SomeClass");
+	}
+	
 }

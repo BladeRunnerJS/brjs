@@ -19,6 +19,7 @@ public class TestPackBundlingTest extends SpecTest
 	private TestPack implicitDefaultAspectUTs;
 	private SdkJsLib sdkLib;
 	private JsLib appLib;
+	private TestPack sdkLibUTs;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -32,6 +33,7 @@ public class TestPackBundlingTest extends SpecTest
 			aspectATs = aspect.testType("acceptance").testTech("TEST_TECH");
 			implicitDefaultAspectUTs = aspect.testType("unit").defaultTestTech();
 			sdkLib = brjs.sdkLib("lib");
+			sdkLibUTs = sdkLib.testType("unit").testTech("tech");
 			appLib = app.jsLib("lib");
 	}
 	
@@ -137,6 +139,15 @@ public class TestPackBundlingTest extends SpecTest
 		then( appLib.testType("unit").defaultTestTech() ).bundledFilesEquals(appLib.assetLocation("src").file("lib/Class1.js"))
 			.and(response).containsNamespacedJsClasses("Class1")
 			.and( appLib ).hasFile("test-unit/tests/test.js");
+	}
+	
+	@Test
+	public void impliedRequirePrefixIsNotUsedInLibrarySrcTestDirectoryIfNoNamespaceEnforcement_HACK_FlagIsUsed() throws Exception {
+		given(sdkLib).containsFile("no-namespace-enforcement")
+			.and(sdkLibUTs).hasTestClass("pkg1/pkg2/pkg3/SomeClass")
+			.and(sdkLibUTs).testRequires("SomeTest.js", "pkg1/pkg2/pkg3/SomeClass");
+    	when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("pkg1/pkg2/pkg3/SomeClass");
 	}
 	
 }

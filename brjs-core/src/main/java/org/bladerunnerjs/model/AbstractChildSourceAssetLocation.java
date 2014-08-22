@@ -13,7 +13,9 @@ public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAs
 	public String requirePrefix() {
 		String containerRequirePrefix = getAssumedRequirePath().substring(0, Math.min(getAssumedRequirePath().length(), assetContainer().requirePrefix().length()));
 		boolean usesRepeatedDirectoryStructure = assetContainer().requirePrefix().startsWith(containerRequirePrefix);
-		boolean isNamespaceDisabledLibrary = (assetContainer() instanceof JsLib) && !assetContainer().isNamespaceEnforced();
+		
+		boolean isInsideJsLibrary = root().locateAncestorNodeOfClass(this, JsLib.class) != null;
+		boolean isNamespaceDisabledLibrary = isInsideJsLibrary && !assetContainer().isNamespaceEnforced();
 		
 		return (!usesRepeatedDirectoryStructure && !isNamespaceDisabledLibrary) ? assetContainer().requirePrefix() + "/" + getAssumedRequirePath() : getAssumedRequirePath();
 	}
