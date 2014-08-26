@@ -35,8 +35,7 @@
         "excludePattern": "(^|\\/|\\\\)_|[\\\\|//]test(s|-[a-z]+)[\\\\|//]|[\\\\|//]spec[\\\\|//]|[\\\\|//]bundles[\\\\|//]"
     },
     "opts": {
-        "encoding": "utf8",
-        "template": "sdk/jsdoc-toolkit-resources/brjs-template"
+        "encoding": "utf8"
     },
     "plugins": [],
     "templates": {
