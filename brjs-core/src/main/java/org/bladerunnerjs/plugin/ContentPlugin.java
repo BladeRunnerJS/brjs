@@ -95,4 +95,11 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
 	List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException;
+	
+	/**
+	 * Determines whether to output all bundles regardless of whether they are only used by a corresponding tag handler plugin.
+	 * If TRUE, all bundles will be part of the built artifact, if FALSE only bundles identified by a tag handler will be part of the built artifact.
+	 */
+	boolean outputAllBundles();
+	
 }

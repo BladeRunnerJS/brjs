@@ -20,4 +20,9 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
 		return Collections.emptyList();
 	}
+	
+	@Override
+	public boolean outputAllBundles() {
+		return true;
+	}
 }

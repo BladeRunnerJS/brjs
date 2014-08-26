@@ -20,8 +20,10 @@ public class ScriptedContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private List<String> requestPaths = new ArrayList<>();
+	private boolean outputAllBundles;
 	
-	public ScriptedContentPlugin(String... urls) {
+	public ScriptedContentPlugin(boolean outputAllBundles, String... urls) {
+		this.outputAllBundles = outputAllBundles;
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		for (String url : urls) {
     		contentPathParserBuilder.accepts(url).as(url);
@@ -77,6 +79,12 @@ public class ScriptedContentPlugin extends AbstractContentPlugin
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
 		return requestPaths;
+	}
+	
+	@Override
+	public boolean outputAllBundles()
+	{
+		return outputAllBundles;
 	}
 
 }

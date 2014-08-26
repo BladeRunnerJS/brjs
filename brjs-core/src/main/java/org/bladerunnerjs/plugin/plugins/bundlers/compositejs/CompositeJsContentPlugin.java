@@ -86,6 +86,12 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
+	@Override
+	public boolean outputAllBundles()
+	{
+		return false;
+	}
+	
 	private void closeInputSources(List<InputSource> inputSources)
 	{
 		for (InputSource input : inputSources) {

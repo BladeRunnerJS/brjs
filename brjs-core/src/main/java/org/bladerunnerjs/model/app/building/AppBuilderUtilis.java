@@ -114,11 +114,13 @@ public class AppBuilderUtilis
 					}
 				}
 				
-				for(ContentPlugin contentPlugin : app.root().plugins().contentPlugins()) {
-					if(contentPlugin.getCompositeGroupName() == null) {
+				for (ContentPlugin contentPlugin : app.root().plugins().contentPlugins()) {
+					if (contentPlugin.getCompositeGroupName() == null) {
 						String requestPrefix = contentPlugin.getRequestPrefix();
-						for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-							if (!contentPluginProdRequestsMap.containsKey(requestPrefix) || contentPluginProdRequestsMap.get(requestPrefix).contains(contentPath)) {
+						for (String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
+							if ( contentPlugin.outputAllBundles()
+									|| !contentPluginProdRequestsMap.containsKey(requestPrefix)
+									|| contentPluginProdRequestsMap.get(requestPrefix).contains(contentPath) ) {
     							writeContentFile(bundleSet, contentPluginUtility, target, appRequestHandler, version, aspectPrefix, contentPlugin, contentPath);
     						}
 						}

@@ -206,7 +206,7 @@ public class BuildAppTest extends SpecTest {
 		
 		given(brjs).hasNotYetBeenCreated()
 			.and(brjs).automaticallyFindsBundlerPlugins()
-			.and(brjs).hasContentPlugins( new ScriptedContentPlugin("/used/url", "/unused/url") )
+			.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
 			.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList("ScriptedContentPlugin"), Arrays.asList("/used/url")) )
 			.and(brjs).hasBeenCreated()
 			.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("<@tag @/>")
@@ -220,7 +220,7 @@ public class BuildAppTest extends SpecTest {
 	public void allUrlsAreIncludedInTheBuiltAppIfACorrespondingTagHandlerPluginIsNotFound() throws Exception {
 		given(brjs).hasNotYetBeenCreated()
     		.and(brjs).automaticallyFindsBundlerPlugins()
-    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin("/used/url", "/unused/url") )
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
     		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList(), Arrays.asList("/used/url")) )
     		.and(brjs).hasBeenCreated()
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("<@tag @/>")
@@ -234,7 +234,7 @@ public class BuildAppTest extends SpecTest {
 	public void urlsOnlyHaveToBeIdentifiedByASingleTagHandlerIfMultipleCanSupportTheSameContentPlugin() throws Exception {
 		given(brjs).hasNotYetBeenCreated()
     		.and(brjs).automaticallyFindsBundlerPlugins()
-    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin("/used/url", "/unused/url") )
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
     		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag1", Arrays.asList("ScriptedContentPlugin"), Arrays.asList()), 
     										new ScriptedRequestGeneratingTagHandlerPlugin("tag2", Arrays.asList("ScriptedContentPlugin"), Arrays.asList("/used/url")) )
     		.and(brjs).hasBeenCreated()
@@ -249,7 +249,7 @@ public class BuildAppTest extends SpecTest {
 	public void contentPluginsIdentifiedByATagHandlerAreNotIncludedInTheBuiltAppIfTheTagIsntUsed() throws Exception {
 		given(brjs).hasNotYetBeenCreated()
     		.and(brjs).automaticallyFindsBundlerPlugins()
-    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin("/used/url", "/unused/url") )
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
     		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList("ScriptedContentPlugin"), Arrays.asList("/used/url")) )
     		.and(brjs).hasBeenCreated()
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("")
@@ -263,7 +263,7 @@ public class BuildAppTest extends SpecTest {
 	public void contentUrlsUsedInOtherAspectsAreStillContainedInTheBuiltApp() throws Exception {
 		given(brjs).hasNotYetBeenCreated()
     		.and(brjs).automaticallyFindsBundlerPlugins()
-    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin("/used/url", "/unused/url") )
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
     		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList("ScriptedContentPlugin"), Arrays.asList("/used/url")) )
     		.and(brjs).hasBeenCreated()
     		.and( brjs.app("app1").aspect("empty") ).indexPageHasContent("")
@@ -274,6 +274,19 @@ public class BuildAppTest extends SpecTest {
     		.and(targetDir).doesNotContainFile("app1/empty/unused/url")
     		.and(targetDir).containsFile("app1/nonempty/used/url")
     		.and(targetDir).doesNotContainFile("app1/nonempty/unused/url");
+	}
+	
+	@Test
+	public void bundlesFromContentPluginsThatOutputAllBundlesAreOutputRegardlessOfWhetherTheTagIsUsed() throws Exception {
+		given(brjs).hasNotYetBeenCreated()
+    		.and(brjs).automaticallyFindsBundlerPlugins()
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(true, "/used/url", "/unused/url") )
+    		.and(brjs).hasBeenCreated()
+    		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("")
+    		.and(brjs).localeForwarderHasContents("")
+    		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
+    	then(targetDir).containsFile("app1/used/url")
+    		.and(targetDir).containsFile("app1/unused/url");
 	}
 	
 }
