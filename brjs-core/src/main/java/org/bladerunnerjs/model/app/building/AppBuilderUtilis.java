@@ -95,9 +95,6 @@ public class AppBuilderUtilis
 			Map<String,String> tagAttributes = usedTagsAndAttributes.get(tag);
 			List<String> generatedRequests = tagPlugin.getGeneratedProdRequests(tagAttributes, bundleSet, locale, version);
 			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
-				if (!contentPluginProdRequestsMap.containsKey(contentPluginPrefix)) {
-					contentPluginProdRequestsMap.put(contentPluginPrefix, new ArrayList<String>());
-				}
 				contentPluginProdRequestsMap.get(contentPluginPrefix).addAll(generatedRequests);
 			}
 		}
@@ -121,9 +118,11 @@ public class AppBuilderUtilis
 		if (contentPlugin.getCompositeGroupName() == null) {
 			String requestPrefix = contentPlugin.getRequestPrefix();
 			for (String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
+				String versionedContentPath = bundleSet.getBundlableNode().app().createProdBundleRequest(contentPath, version);
 				if ( contentPlugin.outputAllBundles()
 						|| !contentPluginProdRequestsMap.containsKey(requestPrefix)
-						|| contentPluginProdRequestsMap.get(requestPrefix).contains(contentPath) ) {
+						|| contentPluginProdRequestsMap.get(requestPrefix).contains(contentPath)
+						|| contentPluginProdRequestsMap.get(requestPrefix).contains(versionedContentPath) ) {
 					writeContentFile(bundleSet, urlContentAccessor, target, appRequestHandler, version, aspectRequestPrefix, contentPlugin, contentPath);
 				}
 			}

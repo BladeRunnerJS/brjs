@@ -68,16 +68,22 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		List<String> possibleRequests = new ArrayList<String>();
 		MinifierSetting minifierSettings = new MinifierSetting(tagAttributes);
 		String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
+		App app = bundleSet.getBundlableNode().app();
 		
 		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
 			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
 				List<String> contentPaths = (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet) : contentPlugin.getValidProdContentPaths(bundleSet);
-				possibleRequests.addAll(contentPaths);
+				for (String contentPath : contentPaths) {
+					String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
+					possibleRequests.add(requestPath);
+				}
 			}
 		}
 		else {
 			String bundleRequestForm = (isDev) ? "dev-bundle-request" : "prod-bundle-request";
-			possibleRequests.add( compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting) );
+			String contentPath = compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting);
+			String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
+			possibleRequests.add( requestPath );
 		}
 		return possibleRequests;
 	}
@@ -87,18 +93,13 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		{
 			List<String> possibleRequests = getGeneratedRequests(isDev, tagAttributes, bundleSet, locale, version);
 			for (String request : possibleRequests) {
-				writeScriptTag(isDev, bundleSet.getBundlableNode().app(), writer, request, version);
+				writer.write("<script type='text/javascript' src='" + request + "'></script>\n");
 			}
 		}
 		catch (MalformedTokenException | ContentProcessingException e)
 		{
 			throw new IOException(e);
 		}
-	}
-	
-	private void writeScriptTag(boolean isDev, App app, Writer writer, String contentPath, String version) throws IOException, MalformedTokenException {
-		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
-		writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 	}
 	
 }

@@ -127,7 +127,7 @@ public class BuildAppTest extends SpecTest {
     		.and(app).hasBeenCreated()
     		.and(defaultAspect).hasClass("appns/Class")
     		.and(defaultAspect).containsFileWithContents("themes/common/style.css", "some app styling")
-    		.and(defaultAspect).indexPageHasContent("<@js.bundle @/>\n"+"require('appns/Class');")
+    		.and(defaultAspect).indexPageHasContent("<@css.bundle @/>\n"+"<@js.bundle @/>\n"+"require('appns/Class');")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("app1/v/1234/js/prod/combined/bundle.js", "define('appns/Class'")
@@ -187,18 +187,6 @@ public class BuildAppTest extends SpecTest {
 		then(targetDir).containsFileWithContents("app1/v/1234/i18n/en.js", "window._brjsI18nProperties = [{\n"+
         				"  \"appns.p1\": \"\\\"$£\\\"\"\n"+
         		"}];");
-	}
-	
-	@Test
-	public void onlyMinifiersUsedFromATagHandlerArePresentInTheBuiltArtifact() throws Exception {
-		given(defaultAspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>\n"+"require('appns/Class');")
-			.and(brjs).localeForwarderHasContents("")
-			.and(defaultAspect).hasClass("appns/Class")
-			.and(brjs).hasProdVersion("1234")
-			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/en/index.html", "v/1234/js/prod/combined/bundle.js")
-			.and(targetDir).containsFile("app1/v/1234/js/prod/combined/bundle.js")
-			.and(targetDir).doesNotContainFile("app1/v/1234/js/prod/closure-whitespace/bundle.js");
 	}
 	
 	@Test
