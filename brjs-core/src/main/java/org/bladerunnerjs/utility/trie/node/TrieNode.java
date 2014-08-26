@@ -11,6 +11,5 @@ public interface TrieNode<T> extends Comparable<TrieNode<T>>
 	void setValue(T value);
 	void setValue(T value, Pattern matchPattern);
 	TrieNode<T>[] getChildren();
-	int size();
 	Pattern getMatchPattern();
 }

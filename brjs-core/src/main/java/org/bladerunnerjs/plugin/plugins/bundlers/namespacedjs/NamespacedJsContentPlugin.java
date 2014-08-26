@@ -280,8 +280,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		List<SourceModule> allSourceModules = bundleSet.getSourceModules();
 
 		List<Predicate<SourceModule>> sourceModuleOrderingFilters = new LinkedList<>();
-		sourceModuleOrderingFilters.add( new IsNamespacedJsSourceModulePredicate() );
-		sourceModuleOrderingFilters.add( new IsCommonJsSourceModulePredicate() );
+		sourceModuleOrderingFilters.add( new IsSourceModuleTypePredicate(NamespacedJsSourceModule.class) );
+		sourceModuleOrderingFilters.add( new IsSourceModuleTypePredicate(CommonJsSourceModule.class) );
 		
 		for (Predicate<SourceModule> sourceModuleFilter : sourceModuleOrderingFilters) {
 			for ( SourceModule sourceModule : Collections2.filter(allSourceModules,sourceModuleFilter) )
@@ -295,19 +295,15 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	
 	
 	
-	private class IsNamespacedJsSourceModulePredicate implements Predicate<SourceModule> {
-		@Override
-		public boolean apply(SourceModule input)
-		{
-			return (input instanceof NamespacedJsSourceModule) && !(input.assetLocation() instanceof TestAssetLocation);
+	private class IsSourceModuleTypePredicate implements Predicate<SourceModule> {
+		private Class<? extends SourceModule> type;
+		public IsSourceModuleTypePredicate(Class<? extends SourceModule> type) {
+			this.type = type;
 		}
-	}
-	
-	private class IsCommonJsSourceModulePredicate implements Predicate<SourceModule> {
 		@Override
 		public boolean apply(SourceModule input)
 		{
-			return input instanceof CommonJsSourceModule && !(input.assetLocation() instanceof TestAssetLocation);
+			return ( type.isAssignableFrom(input.getClass()) && !(input.assetLocation() instanceof TestAssetLocation) );
 		}
 	}
 }

@@ -50,11 +50,11 @@ public class ServedAppTest extends SpecTest
 			appServer = brjs.applicationServer(appServerPort);
 			app = brjs.userApp("app");
 			systemApp = brjs.systemApp("app");
-			aspect = app.aspect("default");
+			aspect = app.defaultAspect();
 			appWithDefaultAspect = brjs.app("anotherApp");
 			defaultAspect = appWithDefaultAspect.defaultAspect();
 			anotherAspect = app.aspect("another");
-			systemAspect = systemApp.aspect("default");
+			systemAspect = systemApp.defaultAspect();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();

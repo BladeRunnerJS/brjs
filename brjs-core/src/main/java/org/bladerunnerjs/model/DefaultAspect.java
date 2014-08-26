@@ -27,6 +27,7 @@ public class DefaultAspect extends Aspect
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		BRJSNodeHelper.populate(this, true);
+		testType("unit").defaultTestTech().populate();
 	}
 
 	public boolean exists()
@@ -36,7 +37,7 @@ public class DefaultAspect extends Aspect
 
 	@Override
 	public String getTypeName() {
-		return super.getClass().getSimpleName();
+		return getClass().getSuperclass().getSimpleName();
 	}
 	
 }

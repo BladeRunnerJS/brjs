@@ -107,6 +107,18 @@ public class CopyThemeCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void showsWarningExplanationIfSourceThemeDoesNotExist() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(logging).enabled()
+			.and(app).hasBeenCreated()
+			.and(bladeset1).hasBeenCreated()
+			.and(blade11).hasBeenCreated()
+			.and(blade11).containsFile("themes/existing-theme/style.css");
+		when(brjs).runCommand("copy-theme", "app", "non-existant-theme", "copied-theme");
+		then(logging).warnMessageReceived(THEME_FOLDER_DOES_NOT_EXIST, "non-existant-theme");
+	}
+	
+	@Test
 	public void onlySpecifiedThemeFolderIsCopied() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated()

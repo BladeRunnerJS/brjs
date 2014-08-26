@@ -23,9 +23,9 @@ public class StandardFileIterator implements FileIterator {
 	private final FileModifiedChecker fileModificationChecker;
 	private final File dir;
 	private final RootNode brjs;
-	private List<File> filesAndDirs;
-	private List<File> files;
-	private List<File> dirs;
+	private List<File> filesAndDirs = Collections.emptyList();
+	private List<File> files = Collections.emptyList();
+	private List<File> dirs = Collections.emptyList();
 	
 	public StandardFileIterator(RootNode rootNode, FileModificationInfo fileModificationInfo, File dir) {
 		this.brjs = rootNode;

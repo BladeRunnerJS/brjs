@@ -21,9 +21,7 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
-
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
@@ -35,9 +33,9 @@ import com.caplin.cutlass.conf.TestRunnerConfiguration;
 import com.caplin.cutlass.util.FileUtility;
 
 import org.bladerunnerjs.utility.ProcessLogger;
+import org.bladerunnerjs.utility.RelativePathUtility;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import com.caplin.cutlass.file.RelativePath;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.google.common.base.Joiner;
 
@@ -211,8 +209,7 @@ public class TestRunner {
 			{
 				for (TestRunResult failedTest : failedTests)
 				{
-					logger.warn("  " + getFriendlyTestPath(failedTest.getBaseDirectory(),
-						new File(failedTest.getTestDirectory(), "js-test-driver/jsTestDriver.conf")));
+					logger.warn("  " + getFriendlyTestPath(failedTest.getBaseDirectory(), getJsTestDriverConf(failedTest.getTestDirectory())));
 				}
 			} else
 			{
@@ -353,7 +350,7 @@ public class TestRunner {
 
 	private void runTestAndRecordDuration(File baseDirectory, TestRunResult testRun, File testDir, boolean resetServer) throws Exception {
 		testRun.setStartTime(System.currentTimeMillis());
-		testRun.setSuccess(runTest(baseDirectory, new File(testDir + File.separator + "js-test-driver" + File.separator + "jsTestDriver.conf"), resetServer));
+		testRun.setSuccess(runTest(baseDirectory, getJsTestDriverConf(testDir), resetServer));
 		testRun.setEndTime(System.currentTimeMillis());
 	}
 	
@@ -571,9 +568,14 @@ public class TestRunner {
 	
 	private String getFriendlyTestPath(File baseDir, File testDir)
 	{
-		File testTypeDir = testDir.getParentFile().getParentFile();
-		File projectDir = testTypeDir.getParentFile();
-		String testPath = (projectDir.equals(baseDir)) ? projectDir.getName() : RelativePath.getRelativePath(baseDir, projectDir);
+		File testTypeDir = testDir.getParentFile();
+		if (testTypeDir.getPath().contains("js-test-driver")) {
+			testTypeDir = testTypeDir.getParentFile();
+		}
+//		File projectDir = testTypeDir.getParentFile();
+//		String testPath = (projectDir.equals(baseDir)) ? projectDir.getName() : RelativePath.getRelativePath(baseDir, projectDir);
+		
+		String testPath = RelativePathUtility.get(brjs, baseDir, testTypeDir);
 		
 		return testPath + " " + (getTestTypeFromDirectoryName(testTypeDir.getName()));
 	}
@@ -614,8 +616,7 @@ public class TestRunner {
 		boolean isJsTestDriverTestDir = false;
 		
 		if(isValidTestDir(validTestTypes, dirType)) {
-			isJsTestDriverTestDir = new File(dir.getCanonicalPath() + File.separator + "js-test-driver" +
-				File.separator + "jsTestDriver.conf").exists();
+			isJsTestDriverTestDir = getJsTestDriverConf(dir).exists();
 		}
 		
 		return isJsTestDriverTestDir;
@@ -680,5 +681,14 @@ public class TestRunner {
 
 	public void showExceptionInConsole(Exception ex) {
 		logger.error("ERROR: " + ex.toString());
+	}
+	
+	private File getJsTestDriverConf(File baseDir) {
+		File testTechDir = new File(baseDir,"js-test-driver");
+		File defaultTestTechDir = baseDir;
+		if ( new File(testTechDir, "jsTestDriver.conf").exists() ) {
+			return new File(testTechDir, "jsTestDriver.conf");
+		}
+		return new File(defaultTestTechDir, "jsTestDriver.conf");
 	}
 }
