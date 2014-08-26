@@ -103,7 +103,6 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		List<String> requestPaths = new ArrayList<>();
 		
 		if(bundleSet.getSourceModules().size() > 0) {
-			// TODO: we need to be able to determine which minifier is actually in use so we don't need to create lots of redundant bundles
 			try {
 				for(MinifierPlugin minifier : brjs.plugins().minifierPlugins()) {
 					for(String minifierSettingName : minifier.getSettingNames()) {

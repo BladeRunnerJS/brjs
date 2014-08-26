@@ -132,9 +132,31 @@ public class AppRequestHandler
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public ResponseContent getIndexPageContent(BrowsableNode browsableNode, Locale locale, String version, UrlContentAccessor contentAccessor, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
+	public File getIndexPage(BrowsableNode browsableNode) {
+		return (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
+	}
+	
+	public Map<String,Map<String,String>> getTagsAndAttributesFromIndexPage(BrowsableNode browsableNode, Locale locale, String version, UrlContentAccessor contentAccessor, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
+		File indexPage = getIndexPage(browsableNode);
+		try {
+			if ( !Arrays.asList(app.appConf().getLocales()).contains(locale) ) {
+				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
+			}
+			
+			String pathRelativeToApp = RelativePathUtility.get(app.root(), app.dir(), indexPage);
+			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
+			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
+			
+			return TagPluginUtility.getUsedTagsAndAttributes(indexPageContent.toString(), browsableNode.getBundleSet(), requestMode, locale, version);
+		}
+		catch (IOException | ConfigException | ModelOperationException | NoTagHandlerFoundException e) {
+			throw new ContentProcessingException(e, "Error when trying to calculate used tags in the index page for " + RelativePathUtility.get(browsableNode.root(), browsableNode.root().dir(),indexPage));
+		}
 		
-		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
+	}
+	
+	public ResponseContent getIndexPageContent(BrowsableNode browsableNode, Locale locale, String version, UrlContentAccessor contentAccessor, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
+		File indexPage = getIndexPage(browsableNode);
 		try {
 			if ( !Arrays.asList(app.appConf().getLocales()).contains(locale) ) {
 				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");

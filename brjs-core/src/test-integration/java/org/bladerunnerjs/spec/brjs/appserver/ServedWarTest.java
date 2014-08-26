@@ -64,7 +64,7 @@ public class ServedWarTest extends SpecTest {
 	@Test
 	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(aspect).indexPageRequires("appns/Class")
+			.and(aspect).indexPageHasContent("<@js.bundle @/>\n"+"require('appns/Class');")
 			.and(aspect).hasClass("appns/Class")
 			.and(brjs).hasProdVersion("APP.VERSION")
 			.and(brjs).hasDevVersion("APP.VERSION")

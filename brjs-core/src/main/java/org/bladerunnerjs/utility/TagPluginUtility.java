@@ -80,12 +80,15 @@ public class TagPluginUtility {
 
 	public static Map<String, Map<String, String>> getUsedTagsAndAttributes(String content, BundleSet bundleSet, RequestMode requestMode, Locale locale, String version) throws IOException, NoTagHandlerFoundException
 	{
+		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.getBundlableNode().root().plugins().tagHandlerPlugins();
+		
 		Map<String,Map<String,String>> tagsAndAttributes = new HashMap<>();
 		
 		TagMatchHandler tagMatchHandler = new TagMatchHandler() {
 			@Override
 			public void handleTagMatch(Matcher matcher, TagMatch tagMatch) throws IOException, NoTagHandlerFoundException
 			{
+				getTagHandlerForTag(tagHandlerPlugins, tagMatch.tag); // check the tag is valid
 				if (!tagsAndAttributes.containsKey(tagMatch.tag)) {
 					tagsAndAttributes.put(tagMatch.tag, new HashMap<>());
 				}

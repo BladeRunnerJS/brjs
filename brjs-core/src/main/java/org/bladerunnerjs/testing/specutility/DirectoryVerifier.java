@@ -34,7 +34,8 @@ public class DirectoryVerifier {
 	}
 	
 	public VerifierChainer doesNotContainFile(String filePath) {
-		assertFalse(new File(dir, filePath).isFile());
+		File theFile = new File(dir, filePath);
+		assertFalse("expected '"+theFile.getAbsolutePath()+"' not to exist", theFile.isFile());
 		
 		return verifierChainer;
 	}
