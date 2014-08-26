@@ -174,6 +174,11 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
+	public boolean isGlobalisedModule() {
+		return !isEncapsulatedModule();
+	}
+	
+	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		List<SourceModule> result = new ArrayList<SourceModule>();

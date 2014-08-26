@@ -18,7 +18,6 @@ import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -92,7 +91,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 			}
 			else if(contentPath.formName.equals("globalise-modules-request")) {
 				StringBuilder response = new StringBuilder();
-				if (hasNamespacedJsSourceModule(sourceModules) ) {
+				if (hasUnencapsulatedSourceModule(sourceModules) ) {
 					response.append("// thirdparty globalisation\n");
     				for(SourceModule sourceFile : sourceModules) 
     				{
@@ -126,7 +125,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
 				}
 			}
-			if (hasNamespacedJsSourceModule(bundleSet.getSourceModules())) {
+			if (hasUnencapsulatedSourceModule(bundleSet.getSourceModules())) {
 				requestPaths.add(contentPathParser.createRequest("globalise-modules-request"));
 			}
 		}
@@ -144,7 +143,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		
 		try {
 			requestPaths.add(contentPathParser.createRequest("bundle-request"));
-			if (hasNamespacedJsSourceModule(bundleSet.getSourceModules())) {
+			if (hasUnencapsulatedSourceModule(bundleSet.getSourceModules())) {
 				requestPaths.add(contentPathParser.createRequest("globalise-modules-request"));
 			}
 		}
@@ -155,11 +154,11 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		return requestPaths;
 	}
 
-	private boolean hasNamespacedJsSourceModule(List<SourceModule> sourceModules)
+	private boolean hasUnencapsulatedSourceModule(List<SourceModule> sourceModules)
 	{
 		for(SourceModule sourceFile : sourceModules) 
 		{
-			if (sourceFile instanceof NamespacedJsSourceModule) {
+			if (sourceFile.isGlobalisedModule()) {
 				return true;
 			}
 		}

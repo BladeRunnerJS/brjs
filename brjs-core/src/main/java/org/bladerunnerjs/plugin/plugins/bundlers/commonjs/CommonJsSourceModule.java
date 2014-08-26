@@ -127,6 +127,11 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
+	public boolean isGlobalisedModule() {
+		return false;
+	}
+	
+	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		return Collections.emptyList();
 	}
