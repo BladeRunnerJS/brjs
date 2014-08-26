@@ -17,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundleSet;
@@ -106,7 +105,7 @@ public class AppRequestHandler
 		{
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.root(), app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
+				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
 
 			case INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
@@ -199,7 +198,7 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public ResponseContent getLocaleForwardingPageContent(BRJS brjs, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent getLocaleForwardingPageContent(BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		StringWriter localeForwardingPage = new StringWriter();
 		
 		SdkJsLib localeForwarderLib = app.root().sdkLib(BR_LOCALE_UTILITY_LIBNAME);
@@ -209,7 +208,7 @@ public class AppRequestHandler
 			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			localeForwardingPage.write("<script type='text/javascript'>\n");
 			
-			ContentPlugin appVersionContentPlugin = brjs.plugins().contentPlugin("app-meta");
+			ContentPlugin appVersionContentPlugin = app.root().plugins().contentPlugin("app-meta");
 			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.getContentPathParser();
 			String appVersionContentPath = appVersionContentPathParser.createRequest("app-meta-request");
 			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPathParser.parse(appVersionContentPath), bundleSet, contentAccessor, appVersionContentPath);
@@ -232,7 +231,7 @@ public class AppRequestHandler
 			localeForwardingPage.write("</head>\n");
 			localeForwardingPage.write("<body onload='forwardToLocalePage()'></body>\n");
 			
-			return new CharResponseContent( brjs, localeForwardingPage.toString() );
+			return new CharResponseContent( app.root(), localeForwardingPage.toString() );
 		}
 		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException e) {
 			throw new ContentProcessingException(e);

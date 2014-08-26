@@ -19,12 +19,12 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -44,118 +44,64 @@ import org.bladerunnerjs.utility.WebXmlCompiler;
 public class AppBuilderUtilis
 {
 
-	public static void build(App app, File target) throws ModelOperationException {
-		File targetContainer = target.getParentFile();
+	public static void build(App app, File targetDir) throws ModelOperationException {
 		
-		AppRequestHandler appRequestHandler = new AppRequestHandler(app);
-		
+		File targetContainer = targetDir.getParentFile();
 		if(!targetContainer.isDirectory()) throw new ModelOperationException("'" + targetContainer.getPath() + "' is not a directory.");
 		
 		try {
-			Locale[] locales = app.appConf().getLocales();
 			String version = app.root().getAppVersionGenerator().getProdVersion();
-			UrlContentAccessor contentPluginUtility = new StaticContentAccessor(app);
-			
-			File appWebInf = app.file("WEB-INF");
-			if(appWebInf.exists()) {
-				File exportedWebInf = new File(target, "WEB-INF");
-				FileUtils.copyDirectory(appWebInf, exportedWebInf);
-				File exportedWebXml = new File(exportedWebInf, "web.xml");
-				if (exportedWebXml.isFile()) {
-					WebXmlCompiler.compile(exportedWebXml);					
-					String webXmlContents = FileUtils.readFileToString(exportedWebXml);
-					webXmlContents = webXmlContents.replace(AppMetadataUtility.APP_VERSION_TOKEN, version);
-					FileUtils.writeStringToFile(exportedWebXml, webXmlContents, false);
-				}
-			}
-			
 			Map<String,List<String>> contentPluginProdRequestsMap = new HashMap<>();
+			BRJS brjs = app.root();
+			AppRequestHandler appRequestHandler = new AppRequestHandler(app);
+			UrlContentAccessor urlContentAccessor = new StaticContentAccessor(app);
+			Locale[] locales = app.appConf().getLocales();
 			
-			for(Aspect aspect : app.aspects()) {
+			filterAppWebXml(app, targetDir, version);
+			
+			for (Aspect aspect : app.aspects()) {
 				BundleSet bundleSet = aspect.getBundleSet();
-				String aspectPrefix = (aspect.getName().equals("default")) ? "" : aspect.getName() + "/";
-				File localeForwardingFile = new File(target, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
+				String aspectRequestPrefix = (aspect.getName().equals("default")) ? "" : aspect.getName() + "/";				
+								
+				writeLocaleForwardingFileForAspect(bundleSet, targetDir, appRequestHandler, aspectRequestPrefix, urlContentAccessor, version);
 				
-				localeForwardingFile.getParentFile().mkdirs();
-				
-				try (OutputStream os = new FileOutputStream(localeForwardingFile);
-					ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(app.root(), bundleSet, contentPluginUtility, version); )
-				{
-					content.write(os);
+				for (Locale locale : locales) {
+					outputAspectIndexPage(aspect, locale, bundleSet, targetDir, appRequestHandler, aspectRequestPrefix, urlContentAccessor, version);
+					calculateUsedContentPlugins(aspect, locale, bundleSet, appRequestHandler, urlContentAccessor, version, contentPluginProdRequestsMap);
 				}
 				
-				for(Locale locale : locales) {
-					String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
-					File localeIndexPageFile = new File(target, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale.toString()) + indexPageName);
-					
-					localeIndexPageFile.getParentFile().mkdirs();
-					try (OutputStream os = new FileOutputStream(localeIndexPageFile);
-						ResponseContent content = appRequestHandler.getIndexPageContent(aspect, locale, version, contentPluginUtility, RequestMode.Prod); )
-					{
-						content.write(os);
-					}
-					
-					
-					for (TagHandlerPlugin tagPlugin : app.root().plugins().tagHandlerPlugins()) {
-						for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
-							contentPluginProdRequestsMap.put(contentPluginPrefix, new ArrayList<String>());							
-						}
-					}
-					
-					
-					Map<String,Map<String,String>> tagsAndAttributes = appRequestHandler.getTagsAndAttributesFromIndexPage(aspect, locale, version, contentPluginUtility, RequestMode.Prod);
-					for(String tag : tagsAndAttributes.keySet()) {
-						TagHandlerPlugin tagPlugin = app.root().plugins().tagHandlerPlugin(tag);
-						Map<String,String> tagAttributes = tagsAndAttributes.get(tag);
-						List<String> generatedRequests = tagPlugin.getGeneratedRequests(RequestMode.Prod, tagAttributes, bundleSet, locale, version);
-						for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
-							contentPluginProdRequestsMap.get(contentPluginPrefix).addAll(generatedRequests);
-						}
-					}
-				}
-				
-				for (ContentPlugin contentPlugin : app.root().plugins().contentPlugins()) {
-					if (contentPlugin.getCompositeGroupName() == null) {
-						String requestPrefix = contentPlugin.getRequestPrefix();
-						for (String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-							if ( contentPlugin.outputAllBundles()
-									|| !contentPluginProdRequestsMap.containsKey(requestPrefix)
-									|| contentPluginProdRequestsMap.get(requestPrefix).contains(contentPath) ) {
-    							writeContentFile(bundleSet, contentPluginUtility, target, appRequestHandler, version, aspectPrefix, contentPlugin, contentPath);
-    						}
-						}
-					} else {
-						ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
-						app.root().logger(AppBuilderUtilis.class).info("The content plugin '%s' is part of a composite content plugin so no files will be generated. " + 
-								"If content bundles should be generated for this content plugin, you should set it's composite group name to null.", plugin.getClass().getSimpleName());
-					}
+				for (ContentPlugin contentPlugin : brjs.plugins().contentPlugins()) {
+					outputContentPluginBundles(contentPlugin, bundleSet, locales, targetDir, version, appRequestHandler, aspectRequestPrefix, urlContentAccessor, contentPluginProdRequestsMap);
 				}
 			}
 		}
-		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException | ParseException | ResourceNotFoundException e) {
+		catch(Exception e) {
 			throw new ModelOperationException(e);
 		}
 	}
 
-
-	private static void writeContentFile(BundleSet bundleSet, UrlContentAccessor contentPluginUtility, File target, AppRequestHandler appRequestHandler, String version, String aspectPrefix, ContentPlugin contentPlugin, String contentPath) throws MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException, ContentProcessingException
+	private static void calculateUsedContentPlugins(Aspect aspect, Locale locale, BundleSet bundleSet, AppRequestHandler appRequestHandler, UrlContentAccessor urlContentAccessor, String version, Map<String, List<String>> contentPluginProdRequestsMap) throws ContentProcessingException, ResourceNotFoundException, MalformedTokenException
 	{
-		File bundleFile;
-		if (contentPath.startsWith("/")) {
-			bundleFile = new File(target, appRequestHandler.createRequest(UNVERSIONED_BUNDLE_REQUEST, aspectPrefix, contentPath));								
-		} else {
-			bundleFile = new File(target, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));																
+		Map<String,Map<String,String>> usedTagsAndAttributes = appRequestHandler.getTagsAndAttributesFromIndexPage(aspect, locale, version, urlContentAccessor, RequestMode.Prod);		
+		
+		for (TagHandlerPlugin tagPlugin : aspect.app().root().plugins().tagHandlerPlugins()) {
+			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
+				contentPluginProdRequestsMap.put(contentPluginPrefix, new ArrayList<String>());							
+			}
 		}
 		
-		ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
-		bundleFile.getParentFile().mkdirs();
-		bundleFile.createNewFile();
-		try (FileOutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
-			ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version); )
-		{
-			pluginContent.write( bundleFileOutputStream );
+		for (String tag : usedTagsAndAttributes.keySet()) {
+			TagHandlerPlugin tagPlugin = aspect.root().plugins().tagHandlerPlugin(tag);
+			Map<String,String> tagAttributes = usedTagsAndAttributes.get(tag);
+			List<String> generatedRequests = tagPlugin.getGeneratedRequests(RequestMode.Prod, tagAttributes, bundleSet, locale, version);
+			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
+				if (!contentPluginProdRequestsMap.containsKey(contentPluginPrefix)) {
+					contentPluginProdRequestsMap.put(contentPluginPrefix, new ArrayList<String>());
+				}
+				contentPluginProdRequestsMap.get(contentPluginPrefix).addAll(generatedRequests);
+			}
 		}
-	}	
+	}
 
 	public static File getTemporaryExportDir(App app) throws ModelOperationException
 	{
@@ -166,6 +112,86 @@ public class AppBuilderUtilis
 		catch (IOException ex)
 		{
 			throw new ModelOperationException(ex);
+		}
+	}
+	
+	
+	private static void outputContentPluginBundles(ContentPlugin contentPlugin, BundleSet bundleSet, Locale[] locales, File target, String version, AppRequestHandler appRequestHandler, String aspectRequestPrefix, UrlContentAccessor urlContentAccessor, Map<String, List<String>> contentPluginProdRequestsMap) throws ContentProcessingException, MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException
+	{
+		if (contentPlugin.getCompositeGroupName() == null) {
+			String requestPrefix = contentPlugin.getRequestPrefix();
+			for (String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
+				if ( contentPlugin.outputAllBundles()
+						|| !contentPluginProdRequestsMap.containsKey(requestPrefix)
+						|| contentPluginProdRequestsMap.get(requestPrefix).contains(contentPath) ) {
+					writeContentFile(bundleSet, urlContentAccessor, target, appRequestHandler, version, aspectRequestPrefix, contentPlugin, contentPath);
+				}
+			}
+		} else {
+			ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
+			bundleSet.getBundlableNode().root().logger(AppBuilderUtilis.class).info("The content plugin '%s' is part of a composite content plugin so no files will be generated. " + 
+					"If content bundles should be generated for this content plugin, you should set it's composite group name to null.", plugin.getClass().getSimpleName());
+		}
+	}
+
+
+	private static void outputAspectIndexPage(Aspect aspect, Locale locale, BundleSet bundleSet, File targetDir, AppRequestHandler appRequestHandler, String aspectRequestPrefix, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException, ResourceNotFoundException
+	{
+		String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
+		File localeIndexPageFile = new File(targetDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectRequestPrefix, locale.toString()) + indexPageName);
+		localeIndexPageFile.getParentFile().mkdirs();
+		
+		try (OutputStream os = new FileOutputStream(localeIndexPageFile);
+			ResponseContent content = appRequestHandler.getIndexPageContent(aspect, locale, version, urlContentAccessor, RequestMode.Prod); )
+		{
+			content.write(os);
+		}
+	}
+
+	private static void writeLocaleForwardingFileForAspect(BundleSet bundleSet, File target, AppRequestHandler appRequestHandler, String aspectRequestPrefix, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException
+	{
+		File localeForwardingFile = new File(target, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectRequestPrefix) + "index.html");
+		localeForwardingFile.getParentFile().mkdirs();
+		
+		try (OutputStream os = new FileOutputStream(localeForwardingFile);
+			ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(bundleSet, urlContentAccessor, version); )
+		{
+			content.write(os);
+		}
+	}
+
+	private static void filterAppWebXml(App app, File targetDir, String version) throws IOException, ParseException
+	{
+		File appWebInf = app.file("WEB-INF");
+		if (appWebInf.exists()) {
+			File exportedWebInf = new File(targetDir, "WEB-INF");
+			FileUtils.copyDirectory(appWebInf, exportedWebInf);
+			File exportedWebXml = new File(exportedWebInf, "web.xml");
+			if (exportedWebXml.isFile()) {
+				WebXmlCompiler.compile(exportedWebXml);					
+				String webXmlContents = FileUtils.readFileToString(exportedWebXml);
+				webXmlContents = webXmlContents.replace(AppMetadataUtility.APP_VERSION_TOKEN, version);
+				FileUtils.writeStringToFile(exportedWebXml, webXmlContents, false);
+			}
+		}
+	}
+
+	private static void writeContentFile(BundleSet bundleSet, UrlContentAccessor contentPluginUtility, File target, AppRequestHandler appRequestHandler, String version, String aspectRequestPrefix, ContentPlugin contentPlugin, String contentPath) throws MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException, ContentProcessingException
+	{
+		File bundleFile;
+		if (contentPath.startsWith("/")) {
+			bundleFile = new File(target, appRequestHandler.createRequest(UNVERSIONED_BUNDLE_REQUEST, aspectRequestPrefix, contentPath));								
+		} else {
+			bundleFile = new File(target, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectRequestPrefix, version, contentPath));																
+		}
+		
+		ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
+		bundleFile.getParentFile().mkdirs();
+		bundleFile.createNewFile();
+		try (FileOutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
+			ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version); )
+		{
+			pluginContent.write( bundleFileOutputStream );
 		}
 	}
 	
