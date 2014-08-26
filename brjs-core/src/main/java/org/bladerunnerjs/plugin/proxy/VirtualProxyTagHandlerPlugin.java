@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.Locale;
@@ -45,10 +44,17 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 	}
 
 	@Override
-	public List<String> getGeneratedRequests(RequestMode requestMode, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedDevRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
 	{
 		initializePlugin();
-		return tagHandlerPlugin.getGeneratedRequests(requestMode, tagAttributes, bundleSet, locale, version);
+		return tagHandlerPlugin.getGeneratedDevRequests(tagAttributes, bundleSet, locale, version);
+	}
+	
+	@Override
+	public List<String> getGeneratedProdRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	{
+		initializePlugin();
+		return tagHandlerPlugin.getGeneratedProdRequests(tagAttributes, bundleSet, locale, version);
 	}
 	
 }

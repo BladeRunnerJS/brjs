@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.Locale;
@@ -51,7 +50,13 @@ public class ScriptedRequestGeneratingTagHandlerPlugin extends AbstractTagHandle
 	}
 
 	@Override
-	public List<String> getGeneratedRequests(RequestMode requestMode, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedDevRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	{
+		return usedUrls;
+	}
+	
+	@Override
+	public List<String> getGeneratedProdRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
 	{
 		return usedUrls;
 	}

@@ -93,7 +93,7 @@ public class AppBuilderUtilis
 		for (String tag : usedTagsAndAttributes.keySet()) {
 			TagHandlerPlugin tagPlugin = aspect.root().plugins().tagHandlerPlugin(tag);
 			Map<String,String> tagAttributes = usedTagsAndAttributes.get(tag);
-			List<String> generatedRequests = tagPlugin.getGeneratedRequests(RequestMode.Prod, tagAttributes, bundleSet, locale, version);
+			List<String> generatedRequests = tagPlugin.getGeneratedProdRequests(tagAttributes, bundleSet, locale, version);
 			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
 				if (!contentPluginProdRequestsMap.containsKey(contentPluginPrefix)) {
 					contentPluginProdRequestsMap.put(contentPluginPrefix, new ArrayList<String>());
