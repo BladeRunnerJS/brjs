@@ -128,7 +128,7 @@ Frame.prototype.close = function() {};
  *
  * <p>It allows the component to do any calculations that need to take sizes into account.
  *
- * @event br.component.Frame#attach
+ * @event module:br/component/Frame#attach
  */
 
 /**
@@ -143,7 +143,7 @@ Frame.prototype.close = function() {};
  *
  * <p>It allows the component to do cleanup.
  *
- * @event br.component.Frame#close
+ * @event module:br/component/Frame#close
  */
 
 /**
@@ -155,7 +155,7 @@ Frame.prototype.close = function() {};
  *
  * <p>Frame.width and Frame.height should be set to the new values before the event is raised.
  *
- * @event br.component.Frame#resize
+ * @event module:br/component/Frame#resize
  */
 
 /**
@@ -184,7 +184,7 @@ Frame.prototype.close = function() {};
  *
  * <p>It allows the component to resume or start long running resources.
  *
- * @event br.component.Frame#show
+ * @event module:br/component/Frame#show
  */
 
 /**
@@ -200,7 +200,7 @@ Frame.prototype.close = function() {};
  *
  * <p>It allows the component to pause long running resources.
  *
- * @event br.component.Frame#hide
+ * @event module:br/component/Frame#hide
  */
 
 /**
@@ -214,7 +214,7 @@ Frame.prototype.close = function() {};
  * <p> The state must be updated to MINIMIZED before this event is fired.  If the content is no
  * longer visible, isContentVisible should be set before this event is fired.
  *
- * @event br.component.Frame#minimize
+ * @event module:br/component/Frame#minimize
  */
 
 /**
@@ -227,7 +227,7 @@ Frame.prototype.close = function() {};
  *
  * <p>The state must be updated to MAXIMIZED before this event is fired.
  *
- * @event br.component.Frame#maximize
+ * @event module:br/component/Frame#maximize
  */
 
 /**
@@ -241,7 +241,7 @@ Frame.prototype.close = function() {};
  * <p>The state must be updated to NORMAL before this event is fired.  If the content is newly
  * visible, isContentVisible should be set before this event is fired.
  *
- * @event br.component.Frame#restore
+ * @event module:br/component/Frame#restore
  */
 
 /**
@@ -250,7 +250,7 @@ Frame.prototype.close = function() {};
  *
  * <p>isFocused should be updated before this event is fired.
  *
- * @event br.component.Frame#focus
+ * @event module:br/component/Frame#focus
  */
 
 /**
@@ -259,7 +259,7 @@ Frame.prototype.close = function() {};
  *
  * <p>isFocused should be updated before this event is fired.
  *
- * @event br.component.Frame#blur
+ * @event module:br/component/Frame#blur
  */
 
 module.exports = Frame;
