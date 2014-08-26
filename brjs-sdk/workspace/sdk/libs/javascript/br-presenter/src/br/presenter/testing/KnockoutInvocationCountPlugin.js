@@ -14,14 +14,14 @@ br.presenter.testing.KnockoutInvocationCountPlugin.prototype.init = function (el
 	
 	for(var eventNameOutsideClosure in eventsToHandle) {
 		var methodToBeReplacedByProxy = eventsToHandle[eventNameOutsideClosure];
-		eventsToHandle[eventNameOutsideClosure] = presenter_ko.bindingHandlers.event._getInvocationCountingProxyMethod(methodToBeReplacedByProxy);
+		eventsToHandle[eventNameOutsideClosure] = presenter_knockout.bindingHandlers.event._getInvocationCountingProxyMethod(methodToBeReplacedByProxy);
 		valueAccessor = function() {
 			return eventsToHandle;
 		};
 		(function() {
 			var eventName = eventNameOutsideClosure; // Separate variable to be captured by event handler closure
 			if (typeof eventName == "string") {
-				presenter_ko.utils.registerEventHandler(element, eventName, function (event) {
+				presenter_knockout.utils.registerEventHandler(element, eventName, function (event) {
 					var handlerReturnValue;
 					var handlerFunction = valueAccessor()[eventName];
 					if (!handlerFunction)
@@ -29,7 +29,7 @@ br.presenter.testing.KnockoutInvocationCountPlugin.prototype.init = function (el
 					var allBindings = allBindingsAccessor();
 					
 					try { 
-						var argsForHandler = presenter_ko.utils.makeArray(arguments);
+						var argsForHandler = presenter_knockout.utils.makeArray(arguments);
 						argsForHandler.unshift(viewModel);
 						handlerReturnValue = handlerFunction.apply(viewModel, argsForHandler );
 					} finally {
