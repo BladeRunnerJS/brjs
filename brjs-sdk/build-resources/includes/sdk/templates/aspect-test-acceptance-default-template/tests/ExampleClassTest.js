@@ -1,6 +1,15 @@
-var ExampleClassTest = TestCase("ExampleClassTest");
+'use strict';
 
-ExampleClassTest.prototype.testSomething = function()
-{
-	assertEquals(1, 1);
-};
+require( 'jasmine' );
+
+describe('App Tests', function() {
+
+  afterEach(function() {
+	// setup the test...
+  } );
+
+  it( 'Should do something cool', function() {
+
+  });
+
+});
