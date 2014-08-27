@@ -11,6 +11,7 @@ import org.junit.Test;
 public class AspectBundlingOfXML extends SpecTest {
 	private App app;
 	private Aspect aspect;
+	private Aspect rootDefaultAspect;
 	private Bladeset bladeset;
 	private StringBuffer response = new StringBuffer();
 	
@@ -23,6 +24,7 @@ public class AspectBundlingOfXML extends SpecTest {
 		
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			rootDefaultAspect = app.defaultAspect();
 			bladeset = app.bladeset("bs");
 	}
 	
@@ -32,6 +34,14 @@ public class AspectBundlingOfXML extends SpecTest {
 		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.Class1");
+	}
+	
+	@Test
+	public void rootAspectClassesReferredToInAspectXMlFilesAreBundled() throws Exception {
+		given(rootDefaultAspect).hasClasses("appns/Class1")
+			.and(rootDefaultAspect).resourceFileRefersTo("xml/config.xml", "appns.Class1");
+		when(rootDefaultAspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.Class1");
 	}
 

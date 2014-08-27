@@ -157,7 +157,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 					"require('./bladeset/BladesetClass');"+
 					"require('./bladeset/blade/BladeClass');");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsClasses("NamespacedLibClass", "OtherUserLibNamespacedClass")
+		then(response).containsNamespacedJsClasses("NamespacedLibClass", "OtherUserLibNamespacedClass")
 			.and(response).containsCommonJsClasses("CommonJSLibClass", "UserLibCommonJSClass", "AspectClass", "BladesetClass", "BladeClass");
 	}
 	
@@ -169,6 +169,15 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(blade).hasClass("appns/mypkg/Class");
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(exceptions).verifyException(InvalidRequirePathException.class, "bladeset-bladeset/blades/blade/src/appns/mypkg/Class.js", "appns/bladeset/blade/*", "appns/mypkg");
+	}
+	
+	@Test
+	public void impliedRequirePrefixIsNotUsedIfNoNamespaceEnforcement_HACK_FlagIsUsedInALibrary() throws Exception {
+		given( brjs.sdkLib("myLib") ).containsFile("no-namespace-enforcement")
+			.and( brjs.sdkLib("myLib") ).hasClass("pkg1/pkg2/pkg3/SomeClass")
+			.and(aspect).indexPageRefersTo("pkg1.pkg2.pkg3.SomeClass");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("pkg1/pkg2/pkg3/SomeClass");
 	}
 	
 }

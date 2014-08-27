@@ -31,6 +31,10 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 		return sourceModule.isEncapsulatedModule();
 	}
 	
+	public boolean isGlobalisedModule() {
+		return sourceModule.isEncapsulatedModule();
+	}
+	
 	public File dir() {
 		return sourceModule.dir();
 	}

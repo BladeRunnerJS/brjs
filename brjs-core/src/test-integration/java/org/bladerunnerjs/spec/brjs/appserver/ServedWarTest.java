@@ -19,6 +19,7 @@ public class ServedWarTest extends SpecTest {
 	private StringBuffer brjsResponse = new StringBuffer();
 	private Aspect aspect;
 	private Aspect loginAspect;
+	private Aspect rootAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -30,6 +31,7 @@ public class ServedWarTest extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			loginAspect = app.aspect("login");
+			rootAspect = app.defaultAspect();
 	}
 	
 	@Test
@@ -37,6 +39,23 @@ public class ServedWarTest extends SpecTest {
 		given(brjs).localeForwarderHasContents("Locale Forwarder")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(aspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
+			.and(brjs).hasProdVersion("1234")
+			.and(app).hasBeenBuiltAsWar(brjs.dir())
+			.and(warServer).hasWar("app1.war", "app")
+			.and(warServer).hasStarted();
+		when(warServer).receivesRequestFor("/app", forwarderPageResponse)
+			.and(warServer).receivesRequestFor("/app/en", pageResponse)
+			.and(warServer).receivesRequestFor("/app/v/1234/html/bundle.html", bundleResponse);
+		then(forwarderPageResponse).containsText("Locale Forwarder")
+			.and(pageResponse).containsText("Hello World!")
+			.and(bundleResponse).isNotEmpty();
+	}
+	
+	@Test
+	public void exportedWarCanBeDeployedOnAnAppServerWithRootAspect() throws Exception {
+		given(brjs).localeForwarderHasContents("Locale Forwarder")
+			.and(rootAspect).containsFileWithContents("index.html", "Hello World!")
+			.and(rootAspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")

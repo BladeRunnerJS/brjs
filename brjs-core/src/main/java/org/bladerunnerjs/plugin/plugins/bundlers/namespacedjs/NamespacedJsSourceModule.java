@@ -112,6 +112,11 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
+	public boolean isGlobalisedModule() {
+		return true;
+	}
+	
+	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		
 		List<SourceModule> result = new ArrayList<SourceModule>();

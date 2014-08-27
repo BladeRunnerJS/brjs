@@ -10,7 +10,6 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	private T value;
 	private final char nodeChar;
 	private List<TrieNode<T>> children = new LinkedList<>();
-	private int size = 0;
 	private List<Character> separators;
 	private char primarySeparator;
 	private Pattern matchPattern;
@@ -37,7 +36,6 @@ public class BasicTrieNode<T> implements TrieNode<T>
 		}
 		node = new BasicTrieNode<T>(character, primarySeparator, separators);
 		children.add( node );
-		size++;
 		return node;
 	}
 
@@ -45,12 +43,12 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	public TrieNode<T> getNextNode(char character)
 	{
 		for (TrieNode<T> trieNode : children) {
-			char trieChar = trieNode.getChar();
-			if (trieChar == character) {
+			char trieNodeChar = trieNode.getChar();
+			if (trieNodeChar == character) {
 				return trieNode;
 			}
 
-			if (trieChar == primarySeparator && separators.contains(character)) {
+			if (trieNodeChar == primarySeparator && separators.contains(character)) {
 				return trieNode;
 			}
 		}
@@ -92,12 +90,6 @@ public class BasicTrieNode<T> implements TrieNode<T>
 			return 0;
 		}
 		return (compareNodeChildren.length < children.size()) ? -1 : 0;
-	}
-
-	@Override
-	public int size()
-	{
-		return size;
 	}
 
 	@Override

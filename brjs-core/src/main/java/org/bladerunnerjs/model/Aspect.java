@@ -22,7 +22,7 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
 {
-	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private String name;
 	private File[] scopeFiles;
 	private IndexPageSeedLocator indexPageSeedLocator;
@@ -56,6 +56,8 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
+		transformations.put("requirePrefix", requirePrefix());
+		transformations.put("namespace", requirePrefix().replace("/", "."));
 		transformations.put("aspectTitle", WordUtils.capitalize(getName()) );
 	}
 	
@@ -83,6 +85,7 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		super.populate();
+		testType("unit").defaultTestTech().populate();
 	}
 	
 	@Override
