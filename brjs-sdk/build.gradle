@@ -329,8 +329,8 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	into "BladeRunnerJS/"
 	include "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
 	exclude "**/.gitignore", "**/.p4ignore"
-	exclude "**/libs/**/tests/*", "**/libs/**/test-(acceptance|unit|integration)/*", "**/libs/**/src-test/*"
-	exclude "**/system-applications/**/tests/*", "**/system-applications/**/test-(acceptance|unit|integration)/*", "**/system-applications/**/src-test/*" 
+	exclude "**/libs/**/tests/*", "**/libs/javascript/*/test-*/*", "**/libs/**/src-test/*"
+	exclude "**/system-applications/**/tests/*", "**/system-applications/*/test-*/*", "**/system-applications/**/src-test/*" 
 	exclude "**/bundles/*"
 	exclude "**/libs/javascript/**node_modules/**", "**/*_NODIST/*"
 }
@@ -400,10 +400,10 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	   "**/js-test-driver/bundles/**/*",
 	   "**/libs/**/tests/**/*",
 	   "**/system-applications/**/tests/**/*",
-	   "**/system-applications/**/test-(acceptance|unit|integration)/**/*",
+	   "**/system-applications/*/test-*/**/*",
 	   "**/system-applications/**/src-test/**/*",
 	   "*/sdk/libs/javascript/**/tests/**",
-	   "*/sdk/libs/javascript/**/test-(acceptance|unit|integration)/**",
+	   "*/sdk/libs/javascript/*/test-*/**/*",
 	   "*/sdk/libs/javascript/**/src-test/**",
 	   "*/sdk/libs/javascript/thirdparty/**",
 	   "*/sdk/libs/javascript/br-libs/**",
