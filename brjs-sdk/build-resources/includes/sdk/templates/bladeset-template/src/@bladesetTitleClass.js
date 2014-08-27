@@ -4,4 +4,8 @@
 {
 };
 
-module.exports = @bladesetTitle;
+@bladesetTitleClass.prototype.sayHello = function() {
+	return "hello";
+}
+
+module.exports = @bladesetTitleClass;
