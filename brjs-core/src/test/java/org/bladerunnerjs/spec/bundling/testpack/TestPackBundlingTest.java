@@ -2,6 +2,8 @@ package org.bladerunnerjs.spec.bundling.testpack;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.TestPack;
@@ -20,6 +22,8 @@ public class TestPackBundlingTest extends SpecTest
 	private SdkJsLib sdkLib;
 	private JsLib appLib;
 	private TestPack sdkLibUTs;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -31,6 +35,8 @@ public class TestPackBundlingTest extends SpecTest
 			aspect = app.aspect("default");
 			aspectUTs = aspect.testType("unit").testTech("TEST_TECH");
 			aspectATs = aspect.testType("acceptance").testTech("TEST_TECH");
+			defaultBladeset = app.defaultBladeset();
+			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 			implicitDefaultAspectUTs = aspect.testType("unit").defaultTestTech();
 			sdkLib = brjs.sdkLib("lib");
 			sdkLibUTs = sdkLib.testType("unit").testTech("tech");
@@ -148,6 +154,15 @@ public class TestPackBundlingTest extends SpecTest
 			.and(sdkLibUTs).testRequires("SomeTest.js", "pkg1/pkg2/pkg3/SomeClass");
     	when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(response).containsCommonJsClasses("pkg1/pkg2/pkg3/SomeClass");
+	}
+	
+	@Test
+	public void bundleCanBeGeneratedForABladeInADefaultBladeset() throws Exception {
+		given(bladeInDefaultBladeset).hasClasses("Class1")
+    		.and( bladeInDefaultBladeset.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/b1/Class1");
+		when( bladeInDefaultBladeset.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then( bladeInDefaultBladeset.testType("unit").defaultTestTech() ).bundledFilesEquals(bladeInDefaultBladeset.assetLocation("src").file("Class1.js"))
+    		.and(response).containsCommonJsClasses("appns/b1/Class1");
 	}
 	
 }

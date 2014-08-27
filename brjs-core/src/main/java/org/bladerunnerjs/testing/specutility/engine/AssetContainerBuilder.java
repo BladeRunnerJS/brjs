@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
@@ -174,7 +175,11 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	
 	protected File getSourceFile(String sourceClass) {
-		return node.assetLocation("src").file(sourceClass.replaceAll("\\.", "/") + ".js");
+		AssetLocation assetLocation = node.assetLocation("src");
+		if (assetLocation == null) {
+			throw new RuntimeException("Cannot find asset location for the 'src' dir. Either it doesn't exist or there are no asset plugins to discover it.");
+		}
+		return assetLocation.file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 	
 	protected File getTestSourceFile(String sourceClass)
