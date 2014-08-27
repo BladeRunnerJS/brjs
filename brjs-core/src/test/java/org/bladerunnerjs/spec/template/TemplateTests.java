@@ -168,13 +168,13 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-library", "app", "userlib");
 		then(userLib).hasFilesAndDirs(
 				Arrays.asList("br-lib.conf", 
-						"src/userlib/Userlib.js", 
+						"src/Userlib.js", 
 						"test-unit/jsTestDriver.conf", 
 						"test-unit/resources/aliases.xml",
 						"test-unit/tests/UserlibTest.js", 
 						"test-unit/.gitignore"),
 				Arrays.asList("src", "test-unit"))
-			.and(userLib).fileContentsContains("src/userlib/Userlib.js", "var Userlib = {}");
+			.and(userLib).fileContentsContains("src/Userlib.js", "var Userlib = {}");
 	}
 	
 	@Test //TODO: thirdparty libraries should have an improved template - the template exists, but the command doesnt use it when creating thirdparty libraries
