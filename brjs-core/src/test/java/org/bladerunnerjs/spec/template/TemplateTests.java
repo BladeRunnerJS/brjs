@@ -103,7 +103,7 @@ public class TemplateTests extends SpecTest
 		then(bladeset).hasFilesAndDirs(
 				Arrays.asList("src/BsClass.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes")
-		);
+		).and(bladeset).fileContentsContains("resources/i18n/en.properties", "appns.bs.hello.world");
 	}
 	
 	@Test
@@ -137,7 +137,7 @@ public class TemplateTests extends SpecTest
 		).and(bladeInDefaultBladeset).hasFilesAndDirs(
 				Arrays.asList("src/B1ViewModel.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "test-unit", "workbench", "themes")
-		);
+		).and(bladeInDefaultBladeset).fileContentsContains("resources/html/view.html", "appns.b1.view-template");
 	}
 	
 	@Test

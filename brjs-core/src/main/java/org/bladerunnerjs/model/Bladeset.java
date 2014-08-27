@@ -53,6 +53,8 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
+		transformations.put("bladesetRequirePrefix", requirePrefix());
+		transformations.put("bladesetNamespace", requirePrefix().replace("/", "."));
 		transformations.put("bladeset", getName());
 		transformations.put("bladesetTitle", WordUtils.capitalize(getName()) );
 	}

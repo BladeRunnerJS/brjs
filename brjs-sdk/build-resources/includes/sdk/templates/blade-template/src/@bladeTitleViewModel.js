@@ -7,7 +7,7 @@ var ServiceRegistry = require( 'br/ServiceRegistry' );
 function @bladeTitleViewModel() {
 	this.eventHub = ServiceRegistry.getService( 'br.event-hub' );
 	this.welcomeMessage = ko.observable( 'Welcome to your new Blade.' );
-	this.buttonClickMessage = ko.observable( i18n( '@appns.@bladeset.@blade.button.click.message' ) );
+	this.buttonClickMessage = ko.observable( i18n( '@bladeNamespace.button.click.message' ) );
 }
 
 @bladeTitleViewModel.prototype.buttonClicked = function() {

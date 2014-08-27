@@ -47,6 +47,8 @@ public final class Blade extends AbstractComponent implements NamedNode
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
+		transformations.put("bladeRequirePrefix", requirePrefix());
+		transformations.put("bladeNamespace", requirePrefix().replace("/", "."));
 		transformations.put("blade", getName());
 		transformations.put("bladeTitle", WordUtils.capitalize(getName()) );
 	}

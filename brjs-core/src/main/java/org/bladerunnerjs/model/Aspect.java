@@ -56,6 +56,8 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
+		transformations.put("requirePrefix", requirePrefix());
+		transformations.put("namespace", requirePrefix().replace("/", "."));
 		transformations.put("aspectTitle", WordUtils.capitalize(getName()) );
 	}
 	
