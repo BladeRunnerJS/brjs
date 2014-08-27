@@ -1,11 +1,18 @@
+/**
+ * @module br/presenter/control/datefield/JQueryDatePickerControl
+ */
+
 br.Core.thirdparty("jquery");
 
 /**
- * This class is constructed by presenter automatically on your behalf.
- * 
  * @class
+ * @alias module:br/presenter/control/datefield/JQueryDatePickerControl
+ * @implements module:br/presenter/control/ControlAdaptor
+ * 
+ * @classdesc
  * A control adaptor that allows the JQuery Calendar control to be used to render instances
- * of {@link br.presenter.node.DateField} within presenter.
+ * of {@link module:br/presenter/node/DateField} within presenter.
+ * This class is constructed by presenter automatically on your behalf.
  * 
  * <p>The jQuery date picker control is aliased by <em>br.date-picker</em>, and can
  * be used within templates as follows:</p>
@@ -19,9 +26,6 @@ br.Core.thirdparty("jquery");
  * <pre>
  *   &lt;input type="hidden" data-bind="controlNode:dateFieldProperty, control:'br.date-picker'"/&gt;
  * </pre>
- * 
- * @constructor
- * @implements br.presenter.control.ControlAdaptor
  */
 br.presenter.control.datefield.JQueryDatePickerControl = function()
 {

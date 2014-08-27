@@ -1,7 +1,15 @@
 "use strict";
 
+/**
+ * @module br/knockout/workbench/KnockoutJsTreeModelFactory
+ */
+
 var ko = require('ko');
 
+/**
+ * @class
+ * @alias module:br/knockout/workbench/KnockoutJsTreeModelFactory
+ */
 function KnockoutJsTreeModelFactory() {
 };
 

@@ -1,12 +1,17 @@
+/**
+ * @module br/presenter/validator/CrossPropertyValidator
+ */
+
 var Errors = require("br/Errors");
 
 /**
  * @class
- * An interface for validators that need to consider the validity of multiple
- * {@link br.presenter.property.Property} instances in relation to each other.
- * 
- * @constructor
  * @interface
+ * @alias module:br/presenter/validator/CrossPropertyValidator
+ * 
+ * @classdesc
+ * An interface for validators that need to consider the validity of multiple
+ * {@link module:br/presenter/property/Property} instances in relation to each other.
  */
 br.presenter.validator.CrossPropertyValidator = function()
 {
@@ -20,7 +25,7 @@ br.presenter.validator.CrossPropertyValidator = function()
  * an exception if the set of properties they receive is not the same as what they expected.</p>
  * 
  * @param {Object} mProperties A named set of properties to validate.
- * @param {br.presenter.validator.ValidationResult} oValidationResult The result object that the outcome of the validation will be set on.
+ * @param {module:br/presenter/validator/ValidationResult} oValidationResult The result object that the outcome of the validation will be set on.
  */
 br.presenter.validator.CrossPropertyValidator.prototype.validate = function(mProperties, oValidationResult)
 {

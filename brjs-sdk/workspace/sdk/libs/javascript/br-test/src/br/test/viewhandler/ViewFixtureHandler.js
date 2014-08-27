@@ -1,15 +1,19 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/ViewFixtureHandler
+ */
+
 var Errors = require('br/Errors');
 
 /**
- * @name br.test.viewhandler.ViewFixtureHandler
  * @class
+ * @interface
+ * @alias module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
  * <p>Classes implementing <code>ViewFixtureHandler</code> interface are used by <code>ViewFixture</code> to interact
  * with the elements in the rendered view.</p>
- * 
- * @constructor
- * @interface
  */
 function ViewFixtureHandler() {
 }

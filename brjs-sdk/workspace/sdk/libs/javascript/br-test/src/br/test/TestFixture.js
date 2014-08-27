@@ -1,11 +1,19 @@
 'use strict';
 
+/**
+ * @module br/test/TestFixture
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var Fixture = require('br/test/Fixture');
 var ViewFixture = require('br/test/ViewFixture');
 
-/** @private */
+/**
+ * @private
+ * @class
+ * @alias module:br/test/TestFixture
+ */
 function TestFixture(gwtTestRunner) {
 	this.m_oGwtTestRunner = gwtTestRunner;
 }

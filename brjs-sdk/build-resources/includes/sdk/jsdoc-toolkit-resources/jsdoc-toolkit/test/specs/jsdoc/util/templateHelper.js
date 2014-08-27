@@ -1,4 +1,4 @@
-/*global afterEach, beforeEach, describe, expect, env, it, jasmine, spyOn */
+/*global afterEach, beforeEach, describe, expect, env, it, jasmine, spyOn, xdescribe */
 /*eslint quotes:0 */
 'use strict';
 
@@ -41,6 +41,11 @@ describe("jsdoc/util/templateHelper", function() {
     it("should export a 'getUniqueFilename' function", function() {
         expect(helper.getUniqueFilename).toBeDefined();
         expect(typeof helper.getUniqueFilename).toBe("function");
+    });
+
+    it("should export a 'getUniqueId' function", function() {
+        expect(helper.getUniqueId).toBeDefined();
+        expect(typeof helper.getUniqueId).toBe('function');
     });
 
     it("should export a 'longnameToUrl' property", function() {
@@ -88,6 +93,11 @@ describe("jsdoc/util/templateHelper", function() {
         expect(typeof helper.getSignatureReturns).toBe("function");
     });
 
+    it("should export a 'getAncestors' function", function() {
+        expect(helper.getAncestors).toBeDefined();
+        expect(typeof helper.getAncestors).toBe('function');
+    });
+
     it("should export a 'getAncestorLinks' function", function() {
         expect(helper.getAncestorLinks).toBeDefined();
         expect(typeof helper.getAncestorLinks).toBe("function");
@@ -131,6 +141,11 @@ describe("jsdoc/util/templateHelper", function() {
     it("should export a 'createLink' function", function() {
         expect(helper.createLink).toBeDefined();
         expect(typeof helper.createLink).toBe("function");
+    });
+
+    it('should export a "longnamesToTree" function', function() {
+        expect(helper.longnamesToTree).toBeDefined();
+        expect(typeof helper.longnamesToTree).toBe('function');
     });
 
     describe("setTutorials", function() {
@@ -177,9 +192,14 @@ describe("jsdoc/util/templateHelper", function() {
             expect(filename).toBe('BackusNaur.html');
         });
 
-        it('should convert a string with slashes into the text following the last slash plus the default extension', function() {
+        it('should replace slashes with underscores', function() {
             var filename = helper.getUniqueFilename('tick/tock');
-            expect(filename).toMatch(/^tock\.html$/);
+            expect(filename).toBe('tick_tock.html');
+        });
+
+        it('should replace other problematic characters with underscores', function() {
+            var filename = helper.getUniqueFilename('a very strange \\/?*:|\'"<> filename');
+            expect(filename).toBe('a very strange __________ filename.html');
         });
 
         it('should not return the same filename twice', function() {
@@ -203,6 +223,10 @@ describe("jsdoc/util/templateHelper", function() {
             var filename = helper.getUniqueFilename('MyClass(foo, bar)');
             expect(filename).toBe('MyClass.html');
         });
+    });
+
+    xdescribe('getUniqueId', function() {
+        // TODO
     });
 
     describe("longnameToUrl", function() {
@@ -407,7 +431,7 @@ describe("jsdoc/util/templateHelper", function() {
             {kind: 'class', memberof: 'SomeNamespace'} // not global
         ];
         var externals = [
-            {kind: 'external'}
+            {kind: 'external', name: 'foo'}
         ];
         var events = [
             {kind: 'event'}
@@ -760,6 +784,10 @@ describe("jsdoc/util/templateHelper", function() {
 
             delete helper.longnameToUrl.MyClass;
         });
+    });
+
+    xdescribe('getAncestors', function() {
+        // TODO
     });
 
     describe("getAncestorLinks", function() {
@@ -1332,7 +1360,7 @@ describe("jsdoc/util/templateHelper", function() {
                 },
                 url = helper.createLink(mockDoclet);
 
-            expect(url).toEqual('_.html#"*foo"');
+            expect(url).toEqual('ns1._!_.html#%22*foo%22');
         });
 
         it('should create a url for a function that is the only symbol exported by a module.',
@@ -1419,5 +1447,9 @@ describe("jsdoc/util/templateHelper", function() {
                 out = helper.resolveAuthorLinks(str);
             expect(out).toBe(helper.htmlsafe(str));
         });
+    });
+
+    xdescribe('longnamesToTree', function() {
+        // TODO
     });
 });

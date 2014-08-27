@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/IsVisible
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.IsVisible
  * @class
- * <code>IsVisible ViewFixtureHandler</code> can be used to check if a view element is visible.
+ * @alias module:br/test/viewhandler/IsVisible
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>IsVisible</code> instances of <code>ViewFixtureHandler</code> can be used to check if a view element is visible.
  * Example usage:
- * <p>
- * <code>then("form.view.(.orderSummary).isVisible = true");</code>
- * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * 
+ * <pre>then("form.view.(.orderSummary).isVisible = true");</pre>
  */
 function IsVisible() {
 }

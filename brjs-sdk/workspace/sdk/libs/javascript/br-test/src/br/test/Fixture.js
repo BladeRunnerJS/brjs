@@ -1,14 +1,20 @@
 'use strict';
 
+/**
+ * @module br/test/Fixture
+ */
+
 var Errors = require('br/Errors');
 
 /**
- * @name br.test.Fixture
- * @interface
  * @class
+ * @interface
+ * @alias module:br/test/Fixture
+ * 
+ * @classdesc
  * <code>Fixture</code> is the interface for individual fixtures added to the GWTTestRunner. The purpose of a Fixture 
- *  is to enable tests to manipulate and access a specific area of the system under tests using the GWT 
- *  (given-when-then) BDD format.
+ * is to enable tests to manipulate and access a specific area of the system under tests using the GWT 
+ * (given-when-then) BDD format.
  */
 function Fixture() {
 }
@@ -35,7 +41,7 @@ Fixture.prototype.tearDown = function() {
  * decomposed into separate sub-systems, enabling the fixture to delegate the handling of some fixture properties to 
  *  the sub-fixtures. This method is called by the GWTTestRunner.
  *
- * @param {br.test.FixtureRegistry} fixtureRegistry The registry to which the fixtures should be registered.
+ * @param {module:br/test/FixtureRegistry} fixtureRegistry The registry to which the fixtures should be registered.
  */
 Fixture.prototype.addSubFixtures = function(fixtureRegistry) {
 	// optional interface method

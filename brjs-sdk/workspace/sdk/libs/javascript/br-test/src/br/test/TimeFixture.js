@@ -1,13 +1,19 @@
 'use strict';
 
+/**
+ * @module br/test/TimeFixture
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var Fixture = require('br/test/Fixture');
 
 /**
- * @name br.test.TimeFixture
  * @class
- *
+ * @alias module:br/test/TimeFixture
+ * @implements module:br/test/Fixture
+ * 
+ * @classdesc
  * <code>TimeFixture</code> allows you to control when callbacks passed to window.setTimeout() and window.setInterval() 
  *  are executed.<br/>
  *  Currently setInterval() is not fully supported. It only fires once instead of repeating.<br/><br/>
@@ -43,8 +49,6 @@ var Fixture = require('br/test/Fixture');
  *      // timed events from the 'given' and 'when' steps set to execute 2 seconds in the future are fired<br/>
  *      then(...)<br/>
  *  </code>
- *
- * @implements br.test.Fixture
  */
 function TimeFixture(timeUtility) {
 	this.m_oTimeUtility = timeUtility;

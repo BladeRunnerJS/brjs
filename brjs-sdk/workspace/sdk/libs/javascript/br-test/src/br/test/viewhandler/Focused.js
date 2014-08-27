@@ -1,19 +1,23 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/Focused
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.Focused
  * @class
- * <code>Focused ViewFixtureHandler</code> can be used to trigger <code>focus</code> and <code>blur</code> on a view element.
+ * @alias module:br/test/viewhandler/Focused
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Focused</code> instances of <code>ViewFixtureHandler</code> can be used to trigger <code>focus</code> and <code>blur</code> on a view element.
  * Example usage:
- * <p>
- * <code>and("form.view.(#theButton).focused => true");</code>
- * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * 
+ * <pre>and("form.view.(#theButton).focused => true");</pre>
  */
 function Focused() {
 }

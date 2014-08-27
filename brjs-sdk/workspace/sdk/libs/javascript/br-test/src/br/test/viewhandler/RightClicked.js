@@ -1,20 +1,24 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/RightClicked
+ */
+
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Utils = require('br/test/Utils');
 
 /**
- * @name br.test.viewhandler.RightClicked
  * @class
- * <code>RightClicked ViewFixtureHandler</code> can be used to trigger <code>contextmenu</code> event for a view element.
+ * @alias module:br/test/viewhandler/RightClicked
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>RightClicked</code> instances of <code>ViewFixtureHandler</code> can be used to trigger <code>contextmenu</code> event for a view element.
  * Example usage:
- * <p>
- * <code>when("test.page.(#aRealButton).rightclicked => true");</code>
- * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * 
+ * <pre>when("test.page.(#aRealButton).rightclicked => true");</pre>
  */
 function RightClicked() {
 }

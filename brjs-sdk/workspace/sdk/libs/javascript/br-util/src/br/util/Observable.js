@@ -8,14 +8,19 @@ var Errors = require('br/Errors');
 
 /**
  * Constructs a new <code>Observable</code>.
- *
+ * 
+ * @class
+ * @alias module:br/util/Observable
+ * 
+ * @classdesc
  * An <code>Observable</code> is a generic implementation of the Observer design pattern that allows an object that
- *  wants to notify other objects (the observers) of events that it raises to do so by using the
- *  <code>Observable</code> to handle the boiler plate code, such as the registration and management of the list of
- *  observers.
- *  <br/><br/>
- *  Example:
- *  <pre>
+ * wants to notify other objects (the observers) of events that it raises to do so by using the
+ * <code>Observable</code> to handle the boiler plate code, such as the registration and management of the list of
+ * observers.
+ * 
+ * <p>Example:</p>
+ * 
+ * <pre>
  *  function RecordDataProvider() {
  *   this.m_oObservable = new br.util.Observable();
  *  }
@@ -32,8 +37,6 @@ var Errors = require('br/Errors');
  *  this.m_oObservable.notifyObservers("recordUpdated", [ sRecordName, mRecordDataMap ]);
  * };
  * </pre>
- * @class
- * @alias module:br/util/Observable
  */
 function Observable() {
 	/**
@@ -53,9 +56,9 @@ Observable.prototype.getCount = function() {
 };
 
 /**
- * Adds the specified observer to the list of those to be called when {@link br.util.Observable#notifyObservers} is
+ * Adds the specified observer to the list of those to be called when {@link module:br/util/Observable#notifyObservers} is
  *  invoked. This method will not prevent a particular observer from being added multiple times. The
- * {@link br.util.Observable#addUniqueObserver} method should be used for this behaviour. If an observer is added
+ * {@link module:br/util/Observable#addUniqueObserver} method should be used for this behaviour. If an observer is added
  * multiple times it will receive every notification once for each time it has been registered.
  *
  * @param {Object} observer The object to be added as an observer.
@@ -76,9 +79,9 @@ Observable.prototype.addObserver = function(observer) {
 };
 
 /**
- * Adds the specified observer to the list of those to be called when {@link br.util.Observable#notifyObservers} is
+ * Adds the specified observer to the list of those to be called when {@link module:br/util/Observable#notifyObservers} is
  *  invoked. This method prevents a observer that has already been added to an <code>Observable</code> from being added
- *  again. The {@link br.util.Observable#addObserver} method should be used if duplicates are allowed.
+ *  again. The {@link module:br/util/Observable#addObserver} method should be used if duplicates are allowed.
  *
  * @param {Object} observer The object to be added as an observer.
  * @return {Boolean} <code>true</code> if the observer was successfully added or <code>false</code> if it failed
@@ -157,7 +160,7 @@ Observable.prototype._$getAllObservers = function() {
 /**
  * Invokes the specified method with specified array of parameters on each of the observers that have been added to
  *  this <code>Observable</code>. Please note that this method does not attempt to catch any exceptions that may be
- *  thrown by the caller.  If this is an issue then the {@link br.util.Observable#notifyObserversWithTryCatch} method
+ *  thrown by the caller.  If this is an issue then the {@link module:br/util/Observable#notifyObserversWithTryCatch} method
  *  should be used instead. It is recommended that before adding an observer to the <code>Observable</code>, it should
  *  be tested to ensure it conforms to the expected interface, and if not it should be rejected.
  *
@@ -200,7 +203,7 @@ Observable.prototype.notify = function(methodName) {
  * Invokes the specified method with a specified array of parameters on each of the observers that have been added to
  *  this <code>Observable</code>. This method wraps each call to the observer in a <code>try..catch</code> block so
  *  that if any observer throws an exception it will get caught and the execution will continue to the remaining
- *  observers. When exceptions occur, they are wrapped in {@link br.util.Observable.FailedNotification} and an array of
+ *  observers. When exceptions occur, they are wrapped in {@link module:br/util/Observable/FailedNotification} and an array of
  *  these are returned to the caller.
  *
  * @param {String} methodName The method to be invoked on each of the registered observers.
@@ -243,9 +246,9 @@ Observable.prototype.notifyObserversWithTryCatch = function(methodName, paramete
  * @param {String} methodName The name of the method that was invoked.
  * @param {Object} exception The exception that was thrown.
  *
- * @class
+ * @classdesc
  * Represents all the information about why a particular observer failed to process a particular event successfully.
- *  These are returned by the {@link br.util.Observable#notifyObserversWithTryCatch} method when an exception occurs
+ *  These are returned by the {@link module:br/util/Observable#notifyObserversWithTryCatch} method when an exception occurs
  *  whilst processing a particular event for an observer.
  */
 Observable.FailedNotification = function(observer, methodName, exception) {

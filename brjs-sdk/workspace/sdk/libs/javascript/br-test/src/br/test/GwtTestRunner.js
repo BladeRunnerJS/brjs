@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/GwtTestRunner
+ */
+
 require('jasmine');
 
 var br = require('br/Core');
@@ -12,8 +16,9 @@ var FixtureRegistry = require('br/test/FixtureRegistry');
 
 /**
  * @private
- * @constructor
- * @implements br.test.FixtureRegistry
+ * @class
+ * @alias module:br/test/GwtTestRunner
+ * @implements module:br/test/FixtureRegistry
  */
 function GwtTestRunner(sFixtureFactoryClass) {
 	var Utility = require('br/core/Utility');

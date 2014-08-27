@@ -1,8 +1,13 @@
+/**
+ * @module br/presenter/testing/KnockoutInvocationCountPlugin
+ */
+
 br.Core.thirdparty("presenter-knockout");
 
 /**
  * @private
- * @constructor
+ * @class
+ * @alias module:br/presenter/testing/KnockoutInvocationCountPlugin
  */
 br.presenter.testing.KnockoutInvocationCountPlugin = function()
 {

@@ -1,9 +1,16 @@
+/**
+ * @module br/presenter/formatter/Formatter
+ */
+
 var Errors = require("br/Errors");
 
 /**
  * @class
+ * @interface
+ * @alias module:br/presenter/formatter/Formatter
+ * 
+ * @classdesc
  * Represents an object with the capability to format values.
- * @interface 
  */
 br.presenter.formatter.Formatter = function() {};
 

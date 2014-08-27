@@ -1,5 +1,11 @@
 /**
- * @implements br.presenter.validator.Validator
+ * @module br/presenter/validator/NotEmptyValidator
+ */
+
+/**
+ * @class
+ * @alias module:br/presenter/validator/NotEmptyValidator
+ * @implements module:br/presenter/validator/Validator
  */
 br.presenter.validator.NotEmptyValidator = function(sFailureMessage)
 {

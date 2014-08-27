@@ -1,14 +1,16 @@
 'use strict';
 
 /**
- * This is a static class that never needs to be instantiated.
  * @module br/util/StringUtility
  */
 
 /**
+ * This is a static class that never needs to be instantiated.
+ * 
+ * @class
  * @alias module:br/util/StringUtility
  *
- * @class
+ * @classdesc
  * Utility class that provides methods for string manipulation.
  */
 function StringUtility() {

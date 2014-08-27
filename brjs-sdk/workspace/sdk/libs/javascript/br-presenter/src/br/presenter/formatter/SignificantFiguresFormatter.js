@@ -1,15 +1,19 @@
 /**
+ * @module br/presenter/formatter/SignificantFiguresFormatter
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/formatter/SignificantFiguresFormatter
+ * @implements module:br/presenter/formatter/Formatter
  * 
+ * @classdesc
  * Formats a number to the specified number of significant figures.
- * <p/>
- * <code>SignificantFiguresFormatter</code> is typically used with Presenter, but can be invoked programmatically
- * as in the following example which evaluates to "3.142":
- * <p/>
- * <code>br.presenter.formatter.SignificantFiguresFormatter.format(3.14159, {sf:4})</code>
  * 
- * @implements br.presenter.formatter.Formatter
- * @singleton
+ * <p><code>SignificantFiguresFormatter</code> is typically used with Presenter, but can be invoked programmatically
+ * as in the following example which evaluates to "3.142":</p>
+ * 
+ * <pre>br.presenter.formatter.SignificantFiguresFormatter.format(3.14159, {sf:4})</pre>
  */
 br.presenter.formatter.SignificantFiguresFormatter = function() {
 };

@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/FocusIn
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.FocusIn
  * @class
- * <code>FocusIn ViewFixtureHandler</code> can be used to trigger <code>focusin</code> on a view element.
+ * @alias module:br/test/viewhandler/FocusIn
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>FocusIn</code> instances of <code>ViewFixtureHandler</code> can be used to trigger <code>focusin</code> on a view element.
  * Example usage:
- * <p>
- * <code>and("form.view.(#theField).focusIn => true");</code>
- * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * 
+ * <pre>and("form.view.(#theField).focusIn => true");</pre>
  */
 function FocusIn() {
 }

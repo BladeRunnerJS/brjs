@@ -1,9 +1,15 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/BlurHandler
+ */
+
 require('jquery');
 
 /**
  * @private
+ * @class
+ * @alias module:br/test/viewhandler/BlurHandler
  */
 function BlurHandler(eViewElement) {
 	this.m_fOnBlur = this._onBlur.bind(this);
