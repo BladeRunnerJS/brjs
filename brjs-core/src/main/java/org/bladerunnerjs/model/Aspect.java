@@ -86,6 +86,7 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	{
 		super.populate();
 		testType("unit").defaultTestTech().populate();
+		testType("acceptance").defaultTestTech().populate();
 	}
 	
 	@Override
