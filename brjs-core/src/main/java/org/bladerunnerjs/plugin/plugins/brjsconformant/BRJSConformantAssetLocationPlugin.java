@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladeResourcesAssetLocation;
 import org.bladerunnerjs.model.ChildSourceAssetLocation;
 import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
+import org.bladerunnerjs.model.DefaultBladeset;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
@@ -35,6 +36,10 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	@Override
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
+		
+		if (assetContainer instanceof DefaultBladeset) {
+			return assetLocationDirectories;
+		}
 		
 		assetLocationDirectories.add(".");
 		assetLocationDirectories.add("resources");

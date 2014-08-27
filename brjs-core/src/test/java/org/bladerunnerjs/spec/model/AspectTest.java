@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -20,15 +22,22 @@ public class AspectTest extends SpecTest {
 	private Aspect aspect;
 	private Aspect badAspect;
 	private NamedDirNode aspectTemplate;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
+	private StringBuffer response = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsBundlerPlugins()
+    		.and(brjs).automaticallyFindsMinifierPlugins()
+    		.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspectTemplate = brjs.template("aspect");
 			aspect = app.aspect("default");
 			badAspect = app.aspect("!#*");
+			defaultBladeset = app.defaultBladeset();
+			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	
 	@Test
@@ -111,6 +120,15 @@ public class AspectTest extends SpecTest {
 			.and(app).hasDir("aspect2-aspect")
 			.and(app).hasDir("some-other-folder");
 		/* then */ assertEquals( Arrays.asList(app.aspect("default"), app.aspect("another"), app.aspect("aspect1"), app.aspect("aspect2")), app.aspects() );
+	}
+	
+	@Test
+	public void bundleCanBeGeneratedForABladeInADefaultBladesetThatAlsoHasADefaultAspect() throws Exception {
+		given(bladeInDefaultBladeset).hasClasses("Class1")
+			.and( app.defaultAspect() ).indexPageHasContent("")
+    		.and( bladeInDefaultBladeset.workbench() ).indexPageRequires("appns/b1/Class1");
+		when( bladeInDefaultBladeset.workbench() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("appns/b1/Class1");
 	}
 	
 }

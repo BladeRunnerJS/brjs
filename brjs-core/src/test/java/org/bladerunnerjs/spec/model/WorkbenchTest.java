@@ -58,4 +58,14 @@ public class WorkbenchTest extends SpecTest {
 		when( bladeInDefaultBladeset.workbench() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(response).containsCommonJsClasses("appns/b1/Class1");
 	}
+	
+	@Test
+	public void bundleCanBeGeneratedForABladeInADefaultBladesetThatAlsoHasADefaultAspect() throws Exception {
+		given(bladeInDefaultBladeset).hasClasses("Class1")
+			.and( app.defaultAspect() ).indexPageHasContent("")
+    		.and( bladeInDefaultBladeset.workbench() ).indexPageRequires("appns/b1/Class1");
+		when( bladeInDefaultBladeset.workbench() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("appns/b1/Class1");
+	}
+	
 }
