@@ -31,7 +31,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
 			.accepts("thirdparty/bundle.js").as("bundle-request")
-				.and("thirdparty/globalise-modules.js").as("globalise-modules-request")
 				.and("thirdparty/<module>/bundle.js").as("single-module-request")
 			.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN)
 				.and("file-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
@@ -69,6 +68,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 			List<SourceModule> sourceModules = bundleSet.getSourceModules();
 			if (contentPath.formName.equals("bundle-request"))
 			{
+				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(sourceModules);
 				List<Reader> readerList = new ArrayList<Reader>();
 				for(SourceModule sourceFile : sourceModules) 
 				{
@@ -77,33 +77,20 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 						readerList.add(new StringReader("// " + sourceFile.getPrimaryRequirePath() + "\n"));
 						readerList.add(sourceFile.getReader());
 						readerList.add(new StringReader("\n\n"));
+						readerList.add( new StringReader(getGlobalisedThirdpartyModuleContent(sourceFile, hasUnencapsulatedSourceModule)) );
 					}
 				}
 				return new CharResponseContent( brjs, readerList );
 			}
 			else if(contentPath.formName.equals("single-module-request")) {
+				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(sourceModules);
 				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 				return new CharResponseContent(brjs, 
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
 					jsModule.getReader(),
-					new StringReader("\n\n")
+					new StringReader("\n\n"),
+					new StringReader(getGlobalisedThirdpartyModuleContent(jsModule, hasUnencapsulatedSourceModule))
 				);
-			}
-			else if(contentPath.formName.equals("globalise-modules-request")) {
-				StringBuilder response = new StringBuilder();
-				if (hasUnencapsulatedSourceModule(sourceModules) ) {
-					response.append("// thirdparty globalisation\n");
-    				for(SourceModule sourceFile : sourceModules) 
-    				{
-    					if (sourceFile instanceof ThirdpartySourceModule && sourceFile.isEncapsulatedModule())
-    					{
-    						ThirdpartySourceModule thirdpartyModule = (ThirdpartySourceModule) sourceFile;
-    						response.append(thirdpartyModule.getGlobalisedName() + " = require('"+thirdpartyModule.getPrimaryRequirePath()+"');\n");
-    					}
-    				}
-    				response.append("\n\n");
-				}
-				return new CharResponseContent( brjs, response.toString() );
 			}
 			else {
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
@@ -112,6 +99,15 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		catch(RequirePathException  | IOException ex) {
 			throw new ContentProcessingException(ex);
 		}
+	}
+
+	private String getGlobalisedThirdpartyModuleContent(SourceModule sourceFile, boolean hasUnencapsulatedSourceModule)
+	{
+		if (sourceFile instanceof ThirdpartySourceModule && hasUnencapsulatedSourceModule) {
+			ThirdpartySourceModule thirdpartyModule = (ThirdpartySourceModule) sourceFile;
+			return thirdpartyModule.getGlobalisedName() + " = require('"+thirdpartyModule.getPrimaryRequirePath()+"');\n\n";
+		}
+		return "";
 	}
 
 	@Override
@@ -124,9 +120,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 				if(sourceModule instanceof ThirdpartySourceModule) {
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
 				}
-			}
-			if (hasUnencapsulatedSourceModule(bundleSet.getSourceModules())) {
-				requestPaths.add(contentPathParser.createRequest("globalise-modules-request"));
 			}
 		}
 		catch(MalformedTokenException e) {
@@ -143,9 +136,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		
 		try {
 			requestPaths.add(contentPathParser.createRequest("bundle-request"));
-			if (hasUnencapsulatedSourceModule(bundleSet.getSourceModules())) {
-				requestPaths.add(contentPathParser.createRequest("globalise-modules-request"));
-			}
 		}
 		catch (MalformedTokenException e) {
 			throw new ContentProcessingException(e);

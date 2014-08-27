@@ -208,8 +208,6 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 				"});\n");
 	}
 	
-	// ---------------------------------------- //
-	//TODO: these tests wont be valid when we have proper commmon.js support
 	@Test 
 	public void librariesWithEmptyObjectExportsDontCreateInvalidJS() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "some lib content")
@@ -225,16 +223,6 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 				"module.exports = {};")
 			.and(pageResponse).doesNotContainText("{} = require('lib');");
 	}
-	@Test 
-	public void librariesWithEmptyObjectAndWhiteSpaceExportsDontCreateInvalidJS() throws Exception {
-		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
-		.and(sdkLib).containsFile("package.json")
-		.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: \"  {  }  \"")
-		.and(aspect).indexPageRequires("lib");
-		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
-		then(pageResponse).doesNotContainText("= require('lib');");
-	}
-	// ---------------------------------------- //
 	
 	@Test
 	public void librariesWithUmdConfigAreNotGlobalisedByDefault() throws Exception {
