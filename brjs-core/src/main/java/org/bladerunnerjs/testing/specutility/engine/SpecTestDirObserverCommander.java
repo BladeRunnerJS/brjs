@@ -7,7 +7,6 @@ import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
 
 public class SpecTestDirObserverCommander
 {
-	
 	public static final int POLL_INTERVAL = 1000;
 	public static final int DEFAULT_WAITFOR_TIMEOUT = 10 * 1000;
 
@@ -21,6 +20,7 @@ public class SpecTestDirObserverCommander
 	public void detectsChanges()
 	{
 		assertTrue("no changes detected since last check", observer.getDirObserver().hasChangedSinceLastCheck());
+		observer.getFileModificationService().close();
 	}
 
 	public void willEventuallyDetectChanges()
@@ -42,46 +42,48 @@ public class SpecTestDirObserverCommander
 	{
 		waitForEventOrNoEvent(timeout, false);
 	}
-
-	
 	
 	private void waitForEventOrNoEvent(int timeout, boolean eventExpected)
 	{
-		int curTime = 0;
-		while (curTime <= timeout)
-		{
-			boolean changesDetected = observer.getDirObserver().hasChangedSinceLastCheck();
-			if (changesDetected)
+		try {
+			int curTime = 0;
+			while (curTime <= timeout)
 			{
-				if (eventExpected)
+				boolean changesDetected = observer.getDirObserver().hasChangedSinceLastCheck();
+				if (changesDetected)
 				{
-					return;
+					if (eventExpected)
+					{
+						return;
+					}
+					else 
+					{
+						fail("Observer detected changes that weren't expected");
+					}
 				}
-				else 
+				
+				curTime += POLL_INTERVAL;
+				try 
 				{
-					fail("Observer detected changes that weren't expected");
+					Thread.sleep(POLL_INTERVAL);
+				}
+				catch (InterruptedException ex)
+				{
+					throw new RuntimeException(ex);
 				}
 			}
 			
-			curTime += POLL_INTERVAL;
-			try 
+			if (eventExpected)
 			{
-				Thread.sleep(POLL_INTERVAL);
+				fail("Observer didn't detected changes");
 			}
-			catch (InterruptedException ex)
+			else 
 			{
-				throw new RuntimeException(ex);
+				return;
 			}
 		}
-		
-		if (eventExpected)
-		{
-			fail("Observer didn't detected changes");
-		}
-		else 
-		{
-			return;
+		finally {
+			observer.getFileModificationService().close();
 		}
 	}
-	
 }
