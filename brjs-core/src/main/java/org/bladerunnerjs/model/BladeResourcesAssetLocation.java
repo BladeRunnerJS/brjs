@@ -17,7 +17,10 @@ public final class BladeResourcesAssetLocation extends ResourcesAssetLocation {
 	public List<AssetLocation> dependentAssetLocations()
 	{
 		List<AssetLocation> assetLocations = super.dependentAssetLocations();
-		assetLocations.add( parentBladeset.assetLocation("resources") );
+		AssetLocation parentResourcesAssetLocation = parentBladeset.assetLocation("resources");
+		if (parentResourcesAssetLocation != null) {
+			assetLocations.add( parentResourcesAssetLocation );
+		}
 		return assetLocations;
 	}
 	

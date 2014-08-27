@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.utility.trie.Trie;
-import org.bladerunnerjs.utility.trie.TrieLockedException;
 import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
 import org.junit.Before;
@@ -47,6 +46,7 @@ public class TrieTest
 	public void addingToTrie() throws Exception
 	{
 		trie.add("1234-abc#;;a", test_object_1);
+		assertTrue(trie.containsKey("1234-abc#;;a"));
 		assertEquals(test_object_1, trie.get("1234-abc#;;a"));
 	}
 	
@@ -216,35 +216,6 @@ public class TrieTest
 	}
 	
 	@Test
-	public void optimistingTheTrieDoesntBreakTheBehaviour() throws Exception {
-		trie.add("o.1", test_object_1);
-		trie.add("o/2", test_object_2);
-		trie.add("o*3", test_object_3);
-		trie.add("o 4", test_object_4);
-		
-		 trie.optimize();
-		
-		assertEquals(test_object_1, trie.get("o.1"));
-		
-		StringReader reader = new StringReader("o.1 o/2 o*3 o 4");
-		
-		List<TestObject> foundObjects = trie.getMatches(reader);
-		assertEquals(4, foundObjects.size());
-		assertEquals(test_object_1, foundObjects.get(0));
-		assertEquals(test_object_2, foundObjects.get(1));
-		assertEquals(test_object_3, foundObjects.get(2));
-		assertEquals(test_object_4, foundObjects.get(3));
-	}
-	
-	@Test
-	public void optimisedTrieCantAcceptMoreKeys() throws Exception {	
-		 exception.expect(TrieLockedException.class);
-		 exception.expectMessage("The Trie has been optimised and can't accept any more values.");
-		 trie.optimize();
-		 trie.add("o.1", test_object_1);
-	}
-	
-	@Test
 	public void entriesCanBeSetToBeginAndEndWithASpecifiedCharacter() throws Exception
 	{
 		trie.add("test.object.1", test_object_1, Pattern.compile("[\"']\\S+[\"']"));
@@ -255,6 +226,42 @@ public class TrieTest
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(1, foundObjects.size());
 		assertEquals(test_object_2, foundObjects.get(0));
+	}
+	
+	@Test
+	public void seperatorsCanBeUsedToAddAnEntryAndMatchAnotherWithDifferentSeperators() throws Exception
+	{
+		trie = new Trie<TestObject>( '/', new Character[]{'.', '/'} );
+		trie.add("test/object/1", test_object_1);
+		
+		StringReader reader = new StringReader("the test.object.1 should match");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(1, foundObjects.size());
+		assertEquals(test_object_1, foundObjects.get(0));
+	}
+	
+	@Test
+	public void seperatorsCanBeUsedToAddAnEntryAndMatchAnotherWithDifferentSeperatorsWhereTheSeperatorAlsoAppearsAfterTheMatch() throws Exception
+	{
+		trie = new Trie<TestObject>( '/', new Character[]{'.', '/'} );
+		trie.add("test/object/1", test_object_1);
+		
+		StringReader reader = new StringReader("the test.object.1.something should match");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(1, foundObjects.size());
+		assertEquals(test_object_1, foundObjects.get(0));
+	}
+	
+	@Test
+	public void entriesCanBeRetrievedFromTheTrieUsingANonPrimarySeperator() throws Exception
+	{
+		trie = new Trie<TestObject>( '/', new Character[]{'.', '/'} );
+		trie.add("test/object/1", test_object_1);
+		
+		assertTrue(trie.containsKey("test.object/1"));
+		assertEquals(test_object_1, trie.get("test.object.1"));
 	}
 	
 	

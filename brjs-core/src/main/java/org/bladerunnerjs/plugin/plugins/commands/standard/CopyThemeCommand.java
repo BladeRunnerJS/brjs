@@ -33,6 +33,7 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 	public class Messages {
 		public static final String COPY_THEME_SUCCESS_CONSOLE_MSG = "Successfully copied theme '%s' into '%s'";
 		public static final String THEME_FOLDER_EXISTS = "Theme folder already exist, see '%s'. Not copying contents.";
+		public static final String THEME_FOLDER_DOES_NOT_EXIST = "Theme '%s' does not exist in the selected app.";
 	}
 	
 	private BRJS brjs;
@@ -79,8 +80,11 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		int pathCount = appPath.getNameCount();
+		
 		if(pathCount > 1)
+		{
 			matchLocation = appPath.subpath(1, pathCount).toString();
+		}
 		
 		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
 		
@@ -117,38 +121,59 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 			}
 		}
 		
-		for(AssetLocation al : assetLocations)
+		if(themeExists(assetLocations, origTheme, matchLocation))
 		{
-			copyTheme(al, origTheme, newTheme, matchLocation);
+			for(AssetLocation al : assetLocations)
+			{
+				if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
+					copyTheme(al, origTheme, newTheme);
+				}
+			}
+		}
+		else
+		{
+			logger.warn(Messages.THEME_FOLDER_DOES_NOT_EXIST, origTheme);
 		}
 		
 		return 0;
 	}
 	
-	void copyTheme(AssetLocation location, String origTheme, String newTheme, String matchLocation) throws CommandOperationException{
-		//check if newTheme already exists
+	void copyTheme(AssetLocation location, String origTheme, String newTheme) throws CommandOperationException{
+		 File srcDir = new File(location.dir().getPath());
+		 File dstDir = new File(location.dir().getParentFile().getPath(), newTheme);	 			 
+		 
+		 if(dstDir.exists())
+		 {
+			 logger.warn(Messages.THEME_FOLDER_EXISTS, RelativePathUtility.get(brjs, brjs.dir(), dstDir));
+			 return;
+		 }
+		 
+		 try {
+				FileUtils.copyDirectory(srcDir, dstDir);
+		 } 
+		 catch (IOException e) {
+				e.printStackTrace();
+		 }
+		
+		logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, RelativePathUtility.get(brjs, app.dir(), srcDir), RelativePathUtility.get(brjs, app.dir(), dstDir));			
+	}
+	
+	private boolean themeExists(List<AssetLocation> assetLocations, String origTheme, String matchLocation) {
+		for(AssetLocation al : assetLocations) {
+			if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean themeExistsWithinAssetLocation(AssetLocation location, String origTheme, String matchLocation) {
 		matchLocation = Paths.get(matchLocation).toString();
 		String pathToCompare = Paths.get(RelativePathUtility.get(brjs, app.dir(), location.dir())).toString();
 		
-		if (location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
-				&& pathToCompare.contains(matchLocation) ) {
-			 File srcDir = new File(location.dir().getPath());
-			 File dstDir = new File(location.dir().getParentFile().getPath(), newTheme);	 			 
-			 
-			 if(dstDir.exists())
-			 {
-				 logger.warn(Messages.THEME_FOLDER_EXISTS, RelativePathUtility.get(brjs, brjs.dir(), dstDir));
-				 return;
-			 }
-			 
-			try {
-				FileUtils.copyDirectory(srcDir, dstDir);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, RelativePathUtility.get(brjs, app.dir(), srcDir), RelativePathUtility.get(brjs, app.dir(), dstDir));
-		 }		
+		return location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
+				&& pathToCompare.contains(matchLocation);
 	}
 	
 }

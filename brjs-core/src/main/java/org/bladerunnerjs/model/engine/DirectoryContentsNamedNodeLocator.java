@@ -32,7 +32,8 @@ public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 			String dirNameMatcher = getDirNameMatcher(dirNameFilter);
 			String dirNameExcludeMatcher = getDirNameMatcher(dirNameExcludeFilter);
 			
-			for(File file : rootNode.getFileInfo(childDir).dirs())
+			List<File> childDirs = rootNode.getFileInfo(childDir).dirs();
+			for(File file : childDirs)
 			{
 				FileInfo fileInfo = rootNode.getFileInfo(file);
 				
@@ -40,16 +41,14 @@ public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 				{
 					String childName = file.getName();
 					
-					if (dirNameExcludeMatcher != null && childName.matches(dirNameExcludeMatcher)) {
-						break;
+					if ( !(dirNameExcludeMatcher != null && childName.matches(dirNameExcludeMatcher)) ) {
+						if(dirNameFilter != null)
+						{
+							childName = childName.replaceAll(dirNameFilter, "");
+						}
+						
+						dirSet.add(childName);
 					}
-					
-					if(dirNameFilter != null)
-					{
-						childName = childName.replaceAll(dirNameFilter, "");
-					}
-					
-					dirSet.add(childName);
 				}
 			}
 		}

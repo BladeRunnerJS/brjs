@@ -24,7 +24,7 @@ br.Core.inherit(br.presenter.testing.PresentationModelFixture, br.component.test
  */
 br.presenter.testing.PresentationModelFixture.prototype._initializePlugins = function()
 {
-	presenter_ko.bindingHandlers.event = new br.presenter.testing.KnockoutInvocationCountPlugin();
+	presenter_knockout.bindingHandlers.event = new br.presenter.testing.KnockoutInvocationCountPlugin();
 };
 
 // * **********************************************************************************
@@ -39,6 +39,11 @@ br.presenter.testing.PresentationModelFixture.prototype.setComponent = function(
 // ***********************************************************************************
 // *							  Fixture interface
 // ************************************************************************************
+
+br.presenter.testing.PresentationModelFixture.prototype.tearDown = function()
+{
+	delete this.m_oPresentationModel;
+};
 
 br.presenter.testing.PresentationModelFixture.prototype.canHandleExactMatch = function()
 {

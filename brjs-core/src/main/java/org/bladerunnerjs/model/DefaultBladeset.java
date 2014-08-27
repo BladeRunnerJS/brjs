@@ -25,7 +25,7 @@ public class DefaultBladeset extends Bladeset
 	@Override
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
-		BRJSNodeHelper.populate(this, true);
+		// do nothing - default bladeset doesn't have any valid child nodes other than blades which are created seperately
 	}
 	
 	@Override
@@ -63,6 +63,6 @@ public class DefaultBladeset extends Bladeset
 
 	@Override
 	public String getTypeName() {
-		return super.getTypeName();
+		return getClass().getSuperclass().getSimpleName();
 	}
 }

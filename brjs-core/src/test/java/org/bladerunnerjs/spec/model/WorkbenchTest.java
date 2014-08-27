@@ -15,16 +15,23 @@ public class WorkbenchTest extends SpecTest {
 	private Blade blade;
 	private Workbench workbench;
 	private NamedDirNode workbenchTemplate;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
+	private StringBuffer response = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
+			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			workbenchTemplate = brjs.template("workbench");
 			bladeset = app.bladeset("bladeset");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
+			defaultBladeset = app.defaultBladeset();
+			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	
 	@Test
@@ -43,4 +50,22 @@ public class WorkbenchTest extends SpecTest {
 			.and(workbench).hasDir("src")
 			.and(workbench).fileHasContents("index.html", "'<html>hello world</html>'");
 	}
+	
+	@Test
+	public void bundleCanBeGeneratedForABladeInADefaultBladeset() throws Exception {
+		given(bladeInDefaultBladeset).hasClasses("Class1")
+    		.and( bladeInDefaultBladeset.workbench() ).indexPageRequires("appns/b1/Class1");
+		when( bladeInDefaultBladeset.workbench() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("appns/b1/Class1");
+	}
+	
+	@Test
+	public void bundleCanBeGeneratedForABladeInADefaultBladesetThatAlsoHasADefaultAspect() throws Exception {
+		given(bladeInDefaultBladeset).hasClasses("Class1")
+			.and( app.defaultAspect() ).indexPageHasContent("")
+    		.and( bladeInDefaultBladeset.workbench() ).indexPageRequires("appns/b1/Class1");
+		when( bladeInDefaultBladeset.workbench() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("appns/b1/Class1");
+	}
+	
 }

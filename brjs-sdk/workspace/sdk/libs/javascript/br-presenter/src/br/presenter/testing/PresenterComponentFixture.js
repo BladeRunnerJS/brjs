@@ -62,7 +62,7 @@ br.presenter.testing.PresenterComponentFixture = function(sTemplateId, sPresenta
 	/**
 	 * @private
 	 */
-	this.m_fBindPresentationModel = presenter_ko.applyBindings;
+	this.m_fBindPresentationModel = presenter_knockout.applyBindings;
 };
 
 
@@ -101,7 +101,7 @@ br.presenter.testing.PresenterComponentFixture.prototype.doGiven = function(sPro
 	
 	if(sProperty == "opened")
 	{
-		presenter_ko.applyBindings = function(){};
+		presenter_knockout.applyBindings = function(){};
 	}
 	
 	try
@@ -111,7 +111,7 @@ br.presenter.testing.PresenterComponentFixture.prototype.doGiven = function(sPro
 	}
 	finally
 	{
-		presenter_ko.applyBindings = this.m_fBindPresentationModel;
+		presenter_knockout.applyBindings = this.m_fBindPresentationModel;
 	}
 };
 

@@ -12,6 +12,7 @@ public class ThirdpartyLibYamlManifest extends AbstractYamlConfFile
 	public String js;
 	public String css;
 	public String exports;
+	public boolean commonjsDefinition;
 	
 	@Override
 	public void initialize(BRJSNode node) {
@@ -20,6 +21,7 @@ public class ThirdpartyLibYamlManifest extends AbstractYamlConfFile
 		css = getDefault(css, "");
 		String defaultExports = "window."+node.dir().getName().replaceAll("\\.-_+%","");
 		exports = getDefault(exports, defaultExports);
+		commonjsDefinition = getDefault(commonjsDefinition, false);
 	}
 	
 	@Override

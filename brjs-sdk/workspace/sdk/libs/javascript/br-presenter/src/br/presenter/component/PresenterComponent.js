@@ -70,9 +70,9 @@ br.Core.extend(PresenterComponent.TemplateNotFoundError, Errors.CustomError);
  * @private
  */
 PresenterComponent._initializePlugins = function() {
-	if (!presenter_ko.bindingHandlers.control) {
-		presenter_ko.bindingHandlers.control = new br.presenter.view.knockout.ControlPlugin();
-		presenter_ko.bindingHandlers.tooltip = new br.presenter.view.knockout.TooltipPlugin();
+	if (!presenter_knockout.bindingHandlers.control) {
+		presenter_knockout.bindingHandlers.control = new br.presenter.view.knockout.ControlPlugin();
+		presenter_knockout.bindingHandlers.tooltip = new br.presenter.view.knockout.TooltipPlugin();
 	}
 };
 
@@ -125,7 +125,7 @@ PresenterComponent.prototype.setDisplayFrame = function(frame) {
 PresenterComponent.prototype.getElement = function() {
 	if (!this.m_bViewBound) {
 		this.m_bViewBound = true;
-		presenter_ko.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
+		presenter_knockout.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
 	}
 	
 	return this.m_eTemplate;
@@ -215,7 +215,7 @@ PresenterComponent.prototype.onAttach = function() {
  */
 PresenterComponent.prototype.onClose = function() {
 	this._propagateComponentEvent("onClose", arguments);
-	presenter_ko.cleanNode(this.m_eTemplate);
+	presenter_knockout.cleanNode(this.m_eTemplate);
 	this.m_oPresentationModel.removeChildListeners();
 	this._nullObject(this.m_oPresentationModel);
 	this.m_oPresentationModel = null;

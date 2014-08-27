@@ -20,7 +20,7 @@ public class BuildAppCommandTest extends SpecTest
 {
 
 	App app;
-	Aspect aspect;
+	Aspect defaultAspect;
 	Bladeset bladeset;
 	Blade blade;
 	Blade badBlade;
@@ -33,7 +33,7 @@ public class BuildAppCommandTest extends SpecTest
 			.and(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
-		aspect = app.aspect("default");
+		defaultAspect = app.defaultAspect();
 		otherApp = brjs.app("other-app");
 		bladeset = app.bladeset("bladeset");
 		blade = bladeset.blade("blade");
@@ -162,7 +162,11 @@ public class BuildAppCommandTest extends SpecTest
 	@Test
 	public void appWithThemedDefaultAspectCanBeExportedAsAWar() throws Exception
 	{
-		given(brjs).usesProductionTemplates().and(brjs.appJars()).containsFile("some-jar.jar").and(brjs).commandHasBeenRun("create-app", "app").and(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content").and(brjs).localeForwarderHasContents("locale-forwarder.js");
+		given(brjs).usesProductionTemplates()
+			.and(brjs.appJars()).containsFile("some-jar.jar")
+			.and(brjs).commandHasBeenRun("create-app", "app")
+			.and(defaultAspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js");
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")
