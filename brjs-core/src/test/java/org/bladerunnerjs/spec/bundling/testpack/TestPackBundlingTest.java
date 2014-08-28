@@ -1,5 +1,7 @@
 package org.bladerunnerjs.spec.bundling.testpack;
 
+import static org.junit.Assert.assertEquals;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -173,6 +175,28 @@ public class TestPackBundlingTest extends SpecTest
     		.and( defaultAspect.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/App");
 		when( defaultAspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then( defaultAspect.testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.assetLocation("src").file("App.js"))
+    		.and(response).containsCommonJsClasses("appns/App");
+	}
+	
+	@Test
+	public void bundleCanBeGeneratedForTestsInsideADefaultAspectWhereABladeInTheDefaultBladesetIsAlsoUsed() throws Exception {
+		given(defaultAspect).hasClasses("App")
+    		.and( defaultAspect.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/App")
+    		.and(bladeInDefaultBladeset).hasBeenPopulated();
+		when( defaultAspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then( defaultAspect.testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.assetLocation("src").file("App.js"))
+    		.and(response).containsCommonJsClasses("appns/App");
+	}
+	
+	@Test // test when an existing app is used and the model re-created the 'discoverAllNodes()' method doesnt discover test packs as children of the default bladeset instead of the default aspect
+	public void bundleCanBeGeneratedForTestsInsideADefaultAspectWhereABladeInTheDefaultBladesetIsAlsoUsedAndANewModelIsUsed() throws Exception {
+		given(defaultAspect).hasClasses("App")
+    		.and( defaultAspect.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/App")
+    		.and(bladeInDefaultBladeset).hasBeenPopulated()
+    		.and(brjs).hasBeenAuthenticallyReCreated();
+			assertEquals( defaultAspect.dir(), brjs.app("app1").defaultAspect().dir()  ); // make sure we're using the same directory for each model
+		when( brjs.app("app1").defaultAspect().testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then( brjs.app("app1").defaultAspect().testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.assetLocation("src").file("App.js"))
     		.and(response).containsCommonJsClasses("appns/App");
 	}
 	

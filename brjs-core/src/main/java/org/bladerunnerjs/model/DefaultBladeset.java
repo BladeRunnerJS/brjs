@@ -16,6 +16,7 @@ public class DefaultBladeset extends Bladeset
 {
 	
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
+	private final List<TypedTestPack> testTypes = Collections.emptyList(); // needed to prevent 'discoverAllChildren' from using the superclass NodeList
 	
 	public DefaultBladeset(RootNode rootNode, Node parent, File dir)
 	{
@@ -43,7 +44,7 @@ public class DefaultBladeset extends Bladeset
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return Collections.emptyList();
+		return testTypes;
 	}
 	
 	public List<Blade> blades()
