@@ -64,7 +64,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-app", "app", "appns");
 		then(app).hasFilesAndDirs(
 				Arrays.asList("app.conf", "index.html", "resources/aliases.xml", "src/App.js", "themes/common/style.css"),
-				Arrays.asList("WEB-INF", "libs", "resources", "src", "unbundled-resources", "themes", "test-unit", "test-acceptance")
+				Arrays.asList("WEB-INF", "libs", "resources", "src", "unbundled-resources", "themes", "test-unit", "test-acceptance", "blades")
 		);
 	}
 	
@@ -73,7 +73,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-app", "app", "appns");
 		then(app).hasFilesAndDirs(
 				Arrays.asList("app.conf", "index.html", "src/App.js"),
-				Arrays.asList("WEB-INF", "libs", "resources", "src", "unbundled-resources", "themes", "test-unit", "test-acceptance")
+				Arrays.asList("WEB-INF", "libs", "resources", "src", "unbundled-resources", "themes", "test-unit", "test-acceptance", "blades")
 		).and(app).doesNotHaveFile("src/DefaultClass.js");
 	}
 

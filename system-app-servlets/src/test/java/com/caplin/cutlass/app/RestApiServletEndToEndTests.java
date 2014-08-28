@@ -137,6 +137,7 @@ public class RestApiServletEndToEndTests
 		
 		/* order of blades doesnt matter here - they will be returned in alphabetical order */
 		String expectedResponse = "{"+
+				"\"default\":[], "+
 				"\"another\":[\"m\", \"n\", \"o\"], "+
 				"\"newbladeset\":[\"a\", \"b\", \"c\"], "+
 				"\"yetanother\":[\"x\", \"y\", \"z\"]"+

@@ -14,8 +14,9 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 public class DefaultBladeset extends Bladeset
 {
+	private static final String BLADES_DIRNAME = "blades";
 	
-	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
+	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, BLADES_DIRNAME, null);
 	private final List<TypedTestPack> testTypes = Collections.emptyList(); // needed to prevent 'discoverAllChildren' from using the superclass NodeList
 	
 	public DefaultBladeset(RootNode rootNode, Node parent, File dir)
@@ -26,7 +27,7 @@ public class DefaultBladeset extends Bladeset
 	@Override
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
-		// do nothing - default bladeset doesn't have any valid child nodes other than blades which are created seperately
+		file(BLADES_DIRNAME).mkdir();
 	}
 	
 	@Override
@@ -59,7 +60,7 @@ public class DefaultBladeset extends Bladeset
 
 	public boolean exists()
 	{
-		return file("blades").isDirectory();
+		return file(BLADES_DIRNAME).isDirectory();
 	}
 
 	@Override
