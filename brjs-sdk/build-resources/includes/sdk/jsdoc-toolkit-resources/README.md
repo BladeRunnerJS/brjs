@@ -1,4 +1,4 @@
-# JsDoc API Documentation
+## BladeRunnerJS API Documentation
 
 Click the tree on the right to start navigating through all the JsDoc documentation.
 More information on BRJS classes can be found on the [BladeRunnerJS docs site](http://bladerunnerjs.org/docs/).
