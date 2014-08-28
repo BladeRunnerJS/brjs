@@ -14,7 +14,7 @@ describe('@bladeTitle Tests', function() {
 
   afterEach(function() {
 	console.log = oldConsoleLog;
-  } );
+  });
 
   it( 'Should log hello on load', function() {
 	new @bladeTitleViewModel();

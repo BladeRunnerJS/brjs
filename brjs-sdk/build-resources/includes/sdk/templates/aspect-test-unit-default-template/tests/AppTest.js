@@ -1,6 +1,8 @@
 var ExampleClassTest = TestCase("ExampleClassTest");
 
+var App = require("@aspectRequirePrefix/App");
+
 ExampleClassTest.prototype.testSomething = function()
 {
-	assertEquals(1, 1);
+	assertEquals( "hello world!", App.getHello() );
 };

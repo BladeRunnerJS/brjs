@@ -91,7 +91,7 @@ public class TemplateTests extends SpecTest
 	public void aspectUnitTestsHasCorrectTemplate() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appns");
 		then(defaultAspect.testType("unit")).hasFilesAndDirs(
-				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js", ".gitignore"),
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/AppTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
 		);
 	}
@@ -100,7 +100,7 @@ public class TemplateTests extends SpecTest
 	public void aspectAcceptanceTestsHasCorrectTemplate() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appns");
 		then(defaultAspect.testType("acceptance")).hasFilesAndDirs(
-				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js", ".gitignore"),
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/AppTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
 		);
 	}
@@ -120,7 +120,7 @@ public class TemplateTests extends SpecTest
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset.testType("unit")).hasFilesAndDirs(
-				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/ExampleClassTest.js", ".gitignore"),
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/BsClassTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
 		);
 	}
