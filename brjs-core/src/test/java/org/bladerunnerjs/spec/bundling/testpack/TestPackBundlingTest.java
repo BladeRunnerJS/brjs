@@ -24,6 +24,7 @@ public class TestPackBundlingTest extends SpecTest
 	private TestPack sdkLibUTs;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -41,6 +42,7 @@ public class TestPackBundlingTest extends SpecTest
 			sdkLib = brjs.sdkLib("lib");
 			sdkLibUTs = sdkLib.testType("unit").testTech("tech");
 			appLib = app.jsLib("lib");
+			defaultAspect = app.defaultAspect();
 	}
 	
 	@Test
@@ -163,6 +165,15 @@ public class TestPackBundlingTest extends SpecTest
 		when( bladeInDefaultBladeset.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then( bladeInDefaultBladeset.testType("unit").defaultTestTech() ).bundledFilesEquals(bladeInDefaultBladeset.assetLocation("src").file("Class1.js"))
     		.and(response).containsCommonJsClasses("appns/b1/Class1");
+	}
+	
+	@Test
+	public void bundleCanBeGeneratedForTestsInsideADefaultAspect() throws Exception {
+		given(defaultAspect).hasClasses("App")
+    		.and( defaultAspect.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/App");
+		when( defaultAspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then( defaultAspect.testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.assetLocation("src").file("App.js"))
+    		.and(response).containsCommonJsClasses("appns/App");
 	}
 	
 }
