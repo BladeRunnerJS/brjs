@@ -70,14 +70,14 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("v/dev/js/dev/combined/bundle.js");
 	}
-	
+		
 	@Test
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {		
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
-		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/common-js/module/appns/Class1.js", "v/dev/aliasing/bundle.js");
+		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
+		then(pageResponse).containsRequests("v/prod/thirdparty/bundle.js", "v/prod/app-meta/version.js", "v/prod/common-js/bundle.js", "v/prod/aliasing/bundle.js");
 	}
 	
 	@Test

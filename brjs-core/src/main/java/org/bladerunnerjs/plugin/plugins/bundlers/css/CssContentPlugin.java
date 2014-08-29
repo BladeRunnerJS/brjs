@@ -107,6 +107,12 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		return new CharResponseContent( brjs, readerList );
 	}
 	
+	@Override
+	public boolean outputAllBundles()
+	{
+		return false;
+	}
+	
 	// protected so the CT CSS plugin that uses a different CSS ordering can override it
 	protected List<Asset> getCssAssets(BundleSet bundleSet, AssetPlugin cssAssetPlugin){
 		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);

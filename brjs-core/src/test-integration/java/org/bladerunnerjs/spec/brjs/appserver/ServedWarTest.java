@@ -83,7 +83,7 @@ public class ServedWarTest extends SpecTest {
 	@Test
 	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(aspect).indexPageRequires("appns/Class")
+			.and(aspect).indexPageHasContent("<@js.bundle @/>\n"+"require('appns/Class');")
 			.and(aspect).hasClass("appns/Class")
 			.and(brjs).hasProdVersion("APP.VERSION")
 			.and(brjs).hasDevVersion("APP.VERSION")
@@ -99,7 +99,7 @@ public class ServedWarTest extends SpecTest {
 	public void exportedWarCssBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(aspect).containsResourceFileWithContents("style.css", "body { color: red; }")
 			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(aspect).containsFileWithContents("index.html", "Hello World!")
+			.and(aspect).indexPageHasContent("<@css.bundle @/>\n")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")

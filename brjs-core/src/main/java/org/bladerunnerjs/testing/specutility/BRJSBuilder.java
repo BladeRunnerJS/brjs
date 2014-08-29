@@ -54,7 +54,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasCommandPlugins(CommandPlugin... commands)
 	{
 		verifyBrjsIsNotSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.pluginCommands);
 		
 		for(CommandPlugin command : commands)
 		{
@@ -67,7 +66,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasModelObserverPlugins(ModelObserverPlugin... modelObservers)
 	{
 		verifyBrjsIsNotSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.modelObservers);
 		
 		for(ModelObserverPlugin modelObserver : modelObservers)
 		{
@@ -110,7 +108,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasMinifierPlugins(MinifierPlugin... minifyPlugins)
 	{
 		verifyBrjsIsNotSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.minifiers);
 		
 		for(MinifierPlugin minifierPlugin : minifyPlugins)
 		{
@@ -123,7 +120,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasTagHandlerPlugins(TagHandlerPlugin... tagHandlers)
 	{
 		verifyBrjsIsNotSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.tagHandlers);
 		
 		for(TagHandlerPlugin tagHandler : tagHandlers)
 		{
@@ -222,6 +218,16 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer hasNotYetBeenCreated() throws Exception
+	{
+		if (brjs != null) {
+			brjs.close();
+		}
+		brjs = null;
+		specTest.brjs = null;
+		specTest.resetTestObjects();
+		return builderChainer;
+	}
 	
 	@Override
 	public BuilderChainer hasBeenCreated() throws Exception
