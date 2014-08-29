@@ -1,16 +1,19 @@
 /**
+ * @module br/presenter/formatter/NullValueFormatter
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/formatter/NullValueFormatter
+ * @implements module:br/presenter/formatter/Formatter
  * 
- * Substitutes text when the value is null, undefined, or the empty string.
- * <p/>
- * <code>NullValueFormatter</code> is typically used with Presenter, but can be invoked programmatically
- * as in the following example which evaluates to "N/A":
- * <p/>
- * <code>br.presenter.formatter.NullValueFormatter.format("", {nullValue:"N/A"})</code>
+ * @classdesc
+ * Substitutes text when the value is <code>null</code>, <code>undefined</code>, or the empty string.
  * 
- * @singleton
- *
- * @implements br.presenter.formatter.Formatter
+ * <p><code>NullValueFormatter</code> is typically used with Presenter, but can be invoked programmatically
+ * as in the following example which evaluates to "N/A":</p>
+ * 
+ * <pre>br.presenter.formatter.NullValueFormatter.format("", {nullValue:"N/A"})</pre>
  */
 br.presenter.formatter.NullValueFormatter = function()
 {

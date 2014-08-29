@@ -1,12 +1,18 @@
 /**
+ * @module br/presenter/node/Nodes
+ */
+
+/**
  * Constructs a new <code>Nodes</code> instance containing the given list
- * of {@link br.presenter.node.PresentationNode} objects.
+ * of {@link module:br/presenter/node/PresentationNode} objects.
  * 
  * @class
+ * @alias module:br/presenter/node/Nodes
+ * 
+ * @classdesc
  * A class used to hold collections of nodes, and providing utility methods for
  * performing operations over those collections.
  * 
- * @constructor
  * @param {Array} pNodes (optional) The set of nodes.
  */
 br.presenter.node.Nodes = function(pNodes)

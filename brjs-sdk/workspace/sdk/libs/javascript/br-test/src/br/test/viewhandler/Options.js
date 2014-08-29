@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/Options
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,16 +11,16 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.Options
  * @class
- * <code>Options ViewFixtureHandler</code> can be used to set or get the value of <code>options</code> property
+ * @alias module:br/test/viewhandler/Options
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Options</code> instances of <code>ViewFixtureHandler</code> can be used to set or get the value of <code>options</code> property
  * for a SELECT view element.
  * Example usage:
- * <p>
- * <code>then("form.model.payment.options = ['credit','debit']");</code>
- * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * 
+ * <pre>then("form.model.payment.options = ['credit','debit']");</pre>
  */
 function Options() {
 }

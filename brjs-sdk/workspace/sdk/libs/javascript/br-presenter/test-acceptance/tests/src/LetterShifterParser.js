@@ -1,6 +1,6 @@
 /**
- * @extends br.presenter.parser.Parser
- * @singleton
+ * @class
+ * @extends module:br/presenter/parser/Parser
  */
 br.presenter.testing.LetterShifterParser = function()
 {

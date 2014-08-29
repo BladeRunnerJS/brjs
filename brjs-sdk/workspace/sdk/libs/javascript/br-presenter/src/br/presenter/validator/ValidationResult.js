@@ -1,9 +1,17 @@
 /**
- * Creates a new ValidationResult.
- * @class
- * ValidationResults are used to store the output from a {@link br.presenter.validator.Validator}.
+ * @module br/presenter/validator/ValidationResult
+ */
+
+/**
+ * Creates a new instance of <code>ValidationResult</code>.
  * 
- * @param {br.presenter.validator.ValidationResultListener} oValidationResultListener (optional) Listener informed when the validation result is available.
+ * @class
+ * @alias module:br/presenter/validator/ValidationResult
+ * 
+ * @classdesc
+ * ValidationResults are used to store the output from a {@link module:br/presenter/validator/Validator}.
+ * 
+ * @param {module:br/presenter/validator/ValidationResultListener} oValidationResultListener (optional) Listener informed when the validation result is available.
  */
 br.presenter.validator.ValidationResult = function(oValidationResultListener)
 {

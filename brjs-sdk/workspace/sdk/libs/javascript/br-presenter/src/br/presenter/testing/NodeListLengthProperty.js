@@ -1,5 +1,11 @@
 /**
- * @extends br.presenter.property.WritableProperty
+ * @module br/presenter/testing/NodeListLengthProperty
+ */
+
+/**
+ * @class
+ * @alias module:br/presenter/testing/NodeListLengthProperty
+ * @extends module:br/presenter/property/WritableProperty
  */
 br.presenter.testing.NodeListLengthProperty = function(oNodeList)
 {

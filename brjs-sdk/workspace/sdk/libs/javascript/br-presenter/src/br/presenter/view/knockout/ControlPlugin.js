@@ -1,8 +1,13 @@
+/**
+ * @module br/presenter/view/knockout/ControlPlugin
+ */
+
 br.Core.thirdparty("presenter-knockout");
 
 /**
  * @private
- * @constructor
+ * @class
+ * @alias module:br/presenter/view/knockout/ControlPlugin
  */
 br.presenter.view.knockout.ControlPlugin = function()
 {

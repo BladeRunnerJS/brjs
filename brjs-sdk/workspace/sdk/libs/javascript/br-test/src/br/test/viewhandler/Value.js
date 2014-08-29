@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/Value
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.Value
  * @class
- * <code>Value ViewFixtureHandler</code> can be used to set or get <code>value</code> property of a view element.
+ * @alias module:br/test/viewhandler/Value
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Value</code> instances of <code>ViewFixtureHandler</code> can be used to set or get <code>value</code> property of a view element.
  * Example usage:
- * <p>
- * <code>then("form.view.(.orderSummary .orderAmount .native input).value = '50'");</code>
- * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * 
+ * <pre>then("form.view.(.orderSummary .orderAmount .native input).value = '50'");</pre>
  */
 function Value() {
 }

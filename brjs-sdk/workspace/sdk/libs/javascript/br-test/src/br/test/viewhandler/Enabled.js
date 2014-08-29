@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/Enabled
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,16 +11,16 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.Enabled
  * @class
- * <code>Enabled ViewFixtureHandler</code> can be used to enable and disable a view element
+ * @alias module:br/test/viewhandler/Enabled
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Enabled</code> instances of <code>ViewFixtureHandler</code> can be used to enable and disable a view element
  * by setting the <code>disabled<code> attribute.
  * Example usage:
- * <p>
- * <code>and("form.view.(.close).enabled = true");</code>
- * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * 
+ * <pre>and("form.view.(.close).enabled = true");</pre>
  */
 function Enabled(){
 }

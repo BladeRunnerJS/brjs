@@ -1,14 +1,17 @@
 'use strict';
 
+/**
+ * @module br/test/SubFixtureRegistry
+ */
+
 var br = require('br/Core');
 var FixtureRegistry = require('br/test/FixtureRegistry');
 
 /**
- * @name br.test.SubFixtureRegistry
- * @constructor
  * @private
- *
- * @implements br.test.FixtureRegistry
+ * @class
+ * @alias module:br/test/SubFixtureRegistry
+ * @implements module:br/test/FixtureRegistry
  */
 function SubFixtureRegistry(parentFixtureRegistry, scope) {
 	this.m_oParentFixtureRegistry = parentFixtureRegistry;

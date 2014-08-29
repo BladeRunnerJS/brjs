@@ -1,15 +1,19 @@
 /**
+ * @module br/presenter/formatter/LowerCaseFormatter
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/formatter/LowerCaseFormatter
+ * @implements module:br/presenter/formatter/Formatter
  * 
+ * @classdesc
  * Converts a string to lower case.
- * <p/>
- * <code>LowerCaseFormatter</code> is typically used with Presenter, but can be invoked programmatically
- * as in the following example which evaluate to "hello, world!"
- * <p/>
- * <code>br.presenter.formatter.LowerCaseFormatter.format("Hello, World!", {})</code>
  * 
- * @implements br.presenter.formatter.Formatter
- * @singleton
+ * <p><code>LowerCaseFormatter</code> is typically used with Presenter, but can be invoked programmatically
+ * as in the following example which evaluate to "hello, world!":</p>
+ * 
+ * <pre>br.presenter.formatter.LowerCaseFormatter.format("Hello, World!", {})</pre>
  */
 br.presenter.formatter.LowerCaseFormatter = function() {
 };
