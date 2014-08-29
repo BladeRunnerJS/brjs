@@ -1,6 +1,7 @@
 package org.bladerunnerjs.spec.plugin.bundler.cssresource;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -424,6 +425,30 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(defaultAspect).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
 		when(defaultAspect).requestReceivedInProd("cssresource/aspect_default_resource/resources/dir1/dir2/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
+	public void pathsIgnoredViaConfigAreNotServed() throws Exception {
+		given(app).hasBeenCreated()
+    		.and(defaultAspect).indexPageHasContent("")
+    		.and(defaultAspect).containsResourceFileWithContents(".git", ".git contents")
+    		.and(brjs.bladerunnerConf()).hasIgnoredPaths(".git");
+    	when(defaultAspect).requestReceivedInProd("cssresource/aspect_default_resource/resources/.git", response);
+    	then(aspect).prodRequestsForContentPluginsAre("cssresource", "")
+    		.and(aspect).devRequestsForContentPluginsAre("cssresource", "")
+    		.and(exceptions).verifyException(FileNotFoundException.class, "apps/app1/resources/.git");
+	}
+	
+	@Test
+	public void pathsInJsLibsIgnoredViaConfigAreNotServed() throws Exception {
+		given(app).hasBeenCreated()
+			.and(aspect).indexPageHasContent("")
+    		.and(sdkJsLib).containsResourceFileWithContents(".git", ".git contents")
+    		.and(brjs.bladerunnerConf()).hasIgnoredPaths(".git");
+    	when(defaultAspect).requestReceivedInProd("cssresource/lib_sdkLib/.git", response);
+    	then(aspect).prodRequestsForContentPluginsAre("cssresource", "")
+    		.and(aspect).devRequestsForContentPluginsAre("cssresource", "")
+    		.and(exceptions).verifyException(FileNotFoundException.class, "sdk/libs/javascript/sdkLib/.git");
 	}
 	
 }

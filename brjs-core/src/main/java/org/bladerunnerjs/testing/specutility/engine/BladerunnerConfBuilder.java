@@ -17,4 +17,11 @@ public class BladerunnerConfBuilder {
 		
 		return builderChainer;
 	}
+
+	public BuilderChainer hasIgnoredPaths(String... ignoredPaths) throws Exception {
+		bladerunnerConf.setIgnoredPaths(ignoredPaths);
+		bladerunnerConf.write();
+		
+		return builderChainer;
+	}
 }
