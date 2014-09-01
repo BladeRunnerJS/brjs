@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin.Messages;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
@@ -231,21 +231,21 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).containsFile("themes/theme3/style.css")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme2,theme3\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
-		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.INVALID_THEME_EXCEPTION, "theme2,theme3");	
+		then(exceptions).verifyFormattedException(IOException.class, Messages.INVALID_THEME_EXCEPTION, "theme2,theme3");	
 	}
 	
 	@Test
 	public void exceptionIsThrownIfTheThemeIsNotAnAvailableTheme() throws Exception {
 		given(aspect).indexPageHasContent("<@css.bundle theme=\"theme\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
-		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme");	
+		then(exceptions).verifyFormattedException(IOException.class, Messages.UNKNOWN_THEME_EXCEPTION, "theme");	
 	}
 	
 	@Test
 	public void exceptionIsThrownIfTheAlternateThemeIsNotAnAvailableTheme() throws Exception {
 		given(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
-		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme");	
+		then(exceptions).verifyFormattedException(IOException.class, Messages.UNKNOWN_THEME_EXCEPTION, "theme");	
 	}
 	
 	@Test
@@ -253,7 +253,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		given(aspect).containsFile("themes/theme1/style.css")
 			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme1,theme2\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
-		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme2");	
+		then(exceptions).verifyFormattedException(IOException.class, Messages.UNKNOWN_THEME_EXCEPTION, "theme2");	
 	}
 	
 	@Test
@@ -327,7 +327,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(app.appConf()).supportsLocales("en", "en_GB","de")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme-variant\" @/>");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
-		then(logging).warnMessageReceived(CssTagHandlerPlugin.NO_PARENT_THEME_WARNING, "theme-variant", "theme");
+		then(logging).warnMessageReceived(Messages.NO_PARENT_THEME_FOUND_MESSAGE, "theme-variant", "theme");
 	}
 	
 	@Test
@@ -397,4 +397,5 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(targetDir).containsFile("app1/v/1234/css/usedtheme/bundle.css")
 			.and(targetDir).doesNotContainFile("app1/v/1234/css/unusedtheme/bundle.css");
 	}
+	
 }

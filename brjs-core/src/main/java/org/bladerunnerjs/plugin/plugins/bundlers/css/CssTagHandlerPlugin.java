@@ -21,18 +21,21 @@ import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
+	
+	public static class Messages {
+		public static final String NO_PARENT_THEME_FOUND_MESSAGE = "Theme '%s' was requested but the parent theme '%s' was not found. If you wish to use variant themes create a parent theme, otherwise do not use the theme name format '<parent>-<variant>'";
+		public static final String UNKNOWN_THEME_EXCEPTION = "The theme '%s' is not a valid theme that is available in the aspect, bladeset or blades.";
+		public static final String INVALID_THEME_EXCEPTION = String.format("The attribute '%s' should only contain a single theme and cannot contain spaces.", CssTagHandlerPlugin.THEME_ATTRIBUTE);
+		
+	}
+	
 	private ContentPlugin cssContentPlugin;
 	private Logger logger;
-	private Pattern variantThemeNamePattern = null;
+	private Pattern VARIANT_THEME_PATTERN = Pattern.compile("([a-zA-Z0-9\\-]+)-variant");
 	
 	private static String COMMON_THEME_NAME = "common";
 	private static String THEME_ATTRIBUTE = "theme";
-	private static String SUBTHEME_SUFFIX = "-variant";
 	private static String ALT_THEME_ATTRIBUTE = "alternateTheme";
-	public static String UNKNOWN_THEME_EXCEPTION = "The theme '%s' is not a valid theme that is available in the aspect, bladeset or blades.";
-	public static String INVALID_THEME_EXCEPTION = String.format("The attribute '%s' should only contain a single theme and cannot contain spaces.", THEME_ATTRIBUTE);
-	public static String NO_PARENT_THEME_WARNING = "The subtheme '%s' has no valid base theme present. Could not find '%s' theme.";
-	
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
@@ -125,18 +128,18 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			if (theme == null && alternateThemes.size() == 0) {
 				appendStylesheetRequestsForCommonTheme(stylesheetRequests, isDev, app, contentPaths, version, locale);
 			} else if (theme != null) {
-				if(isVariantTheme(theme)){
-					String parentTheme = theme.substring(0, theme.length()-SUBTHEME_SUFFIX.length());
-					appendStylesheetRequestsForCommonTheme(stylesheetRequests, isDev, app, contentPaths, version, locale);
-					try{
+				appendStylesheetRequestsForCommonTheme(stylesheetRequests, isDev, app, contentPaths, version, locale);
+				Matcher themeMatcher = VARIANT_THEME_PATTERN.matcher(theme);
+				if (themeMatcher.matches()){
+					String parentTheme = themeMatcher.group(1);
+					try {
 						appendStylesheetRequestsForMainTheme(stylesheetRequests, isDev, app, contentPaths, parentTheme, version, locale);
 					}
-					catch(IOException e){
-						logger.warn(NO_PARENT_THEME_WARNING, theme, parentTheme);
+					catch (IOException e){
+						logger.warn(Messages.NO_PARENT_THEME_FOUND_MESSAGE, theme, parentTheme);
 					}
 					appendStylesheetRequestsForVariantTheme(stylesheetRequests, isDev, app, contentPaths, theme, version, locale);
-				}else{
-					appendStylesheetRequestsForCommonTheme(stylesheetRequests, isDev, app, contentPaths, version, locale);
+				} else {
 					appendStylesheetRequestsForMainTheme(stylesheetRequests, isDev, app, contentPaths, theme, version, locale);
 				}
 			}
@@ -155,7 +158,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private String getTheme(Map<String, String> tagAttributes) throws IOException {
 		String themeName = tagAttributes.get(THEME_ATTRIBUTE);
 		if (themeName != null && themeName.contains(",")) {
-			throw new IOException( INVALID_THEME_EXCEPTION );
+			throw new IOException( Messages.INVALID_THEME_EXCEPTION );
 		}
 		return themeName;
 	}
@@ -167,16 +170,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 		return Arrays.asList( tagAttributes.get(ALT_THEME_ATTRIBUTE).split(",") );
 	}
-
-	private boolean isVariantTheme(String theme) {
-		if(variantThemeNamePattern == null){
-			String pattern = "[a-zA-Z0-9\\-]+"+SUBTHEME_SUFFIX;
-			variantThemeNamePattern = Pattern.compile(pattern);
-		}
-		Matcher filenameMatcher = variantThemeNamePattern.matcher(theme);
-		return filenameMatcher.matches();		
-	}
-
+	
 	private void appendStylesheetRequestsForCommonTheme(List<StylesheetRequest> stylesheetRequests, boolean isDev, App app, List<String> contentPaths, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, COMMON_THEME_NAME)) {
@@ -196,7 +190,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			}
 		}
 		if (!foundTheme) {
-			throw new IOException( String.format(UNKNOWN_THEME_EXCEPTION, themeName) );
+			throw new IOException( String.format(Messages.UNKNOWN_THEME_EXCEPTION, themeName) );
 		}
 	}
 
@@ -219,7 +213,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			}
 		}
 		if (!foundTheme) {
-			throw new IOException( String.format(UNKNOWN_THEME_EXCEPTION, themeName) );
+			throw new IOException( String.format(Messages.UNKNOWN_THEME_EXCEPTION, themeName) );
 		}
 	}
 	
