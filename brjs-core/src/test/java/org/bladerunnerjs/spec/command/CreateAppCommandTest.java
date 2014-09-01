@@ -109,7 +109,15 @@ public class CreateAppCommandTest extends SpecTest {
 		then(myApp).dirExists()
 			.and(myApp.appConf()).namespaceIs("myapp");
 	}
-	
+	@Test
+	public void requirePrefixIsOptionalAndCorrectPrefixIsWrittenToAppConf() throws Exception {
+		App myApp = brjs.app("myApp");
+		
+		given(appJars).hasBeenCreated();
+		when(brjs).runCommand("create-app", "myApp");
+		then(myApp).dirExists()
+			.and(myApp).fileContentsContains("app.conf","myapp");
+	}
 	@Test
 	public void appCreationConsoleOutputOccursEvenIfAppDeploymentFails() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appx");
