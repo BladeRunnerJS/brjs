@@ -8,17 +8,17 @@ var @bladeTitleViewModel = require( '@bladeRequirePrefix/@bladeTitleViewModel' )
 
 describe('@bladeTitle Tests', function() {
 
-  beforeEach(function() {
-	console.log = jasmine.createSpy();
-  });
+	beforeEach(function() {
+		console.log = jasmine.createSpy();
+	});
 
-  afterEach(function() {
-	console.log = oldConsoleLog;
-  });
+	afterEach(function() {
+		console.log = oldConsoleLog;
+	});
 
-  it( 'Should log hello on load', function() {
-	new @bladeTitleViewModel();
-	expect(console.log).toHaveBeenCalledWith('Welcome to your new Blade.');
-  });
+	it( 'Should log hello on load', function() {
+		new @bladeTitleViewModel();
+		expect(console.log).toHaveBeenCalledWith('Welcome to your new Blade.');
+	});
 
 });

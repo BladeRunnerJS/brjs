@@ -8,17 +8,17 @@ var App = require("@aspectRequirePrefix/App");
 
 describe('App Tests', function() {
 
-  beforeEach(function() {
-	console.log = jasmine.createSpy();
-  });
+	beforeEach(function() {
+		console.log = jasmine.createSpy();
+	});
 
-  afterEach(function() {
-	console.log = oldConsoleLog;
-  });
+	afterEach(function() {
+		console.log = oldConsoleLog;
+	});
 
-  it( 'Should say hello', function() {
-	App.logHello();
-	expect(console.log).toHaveBeenCalledWith('hello world!');
-  });
+	it( 'Should say hello', function() {
+		App.logHello();
+		expect(console.log).toHaveBeenCalledWith('hello world!');
+	});
 
 });
