@@ -28,6 +28,7 @@ public class DefaultAspect extends Aspect
 	{
 		BRJSNodeHelper.populate(this, true);
 		testType("unit").defaultTestTech().populate();
+		testType("acceptance").defaultTestTech().populate();
 	}
 
 	public boolean exists()
