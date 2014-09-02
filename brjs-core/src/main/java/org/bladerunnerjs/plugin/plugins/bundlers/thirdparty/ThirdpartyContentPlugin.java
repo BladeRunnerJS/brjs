@@ -105,7 +105,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	{
 		if (sourceFile instanceof ThirdpartySourceModule && hasUnencapsulatedSourceModule) {
 			ThirdpartySourceModule thirdpartyModule = (ThirdpartySourceModule) sourceFile;
-			return thirdpartyModule.getGlobalisedName() + " = require('"+thirdpartyModule.getPrimaryRequirePath()+"');\n\n";
+			return "window." + thirdpartyModule.getGlobalisedName() + " = require('"+thirdpartyModule.getPrimaryRequirePath()+"');\n\n";
 		}
 		return "";
 	}
