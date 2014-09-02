@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.App;
@@ -219,5 +220,12 @@ public class AppServerTest extends SpecTest
 			.and(brjs).hasBeenAuthenticallyReCreated()
 			.and(brjs.applicationServer(appServerPort)).started();
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfThereAreNoAppLibs() throws Exception {
+		FileUtils.deleteDirectory(appJars.dir());
+		when(brjs.applicationServer()).started();
+		then(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}
 }

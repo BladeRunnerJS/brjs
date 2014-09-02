@@ -187,9 +187,9 @@ public class ServedAppTest extends SpecTest
 	public void webInfFolderDoesntHaveToBePresentToEnableBrjsFeatures() throws Exception
 	{
 		given(app).hasBeenPopulated()
-			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>");
-		when(app).fileDeleted("WEB-INF")
-			.and(appServer).started();
+			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
+			.and(aspect).doesNotContainFile("WEB-INF");
+		when(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName())
 			.and(appServer).requestForUrlReturns("/app/en/", "dev replacement")
 			.and(app).doesNotHaveDir("WEB-INF");

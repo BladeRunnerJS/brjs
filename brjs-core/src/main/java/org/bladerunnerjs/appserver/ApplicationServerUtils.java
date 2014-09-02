@@ -76,7 +76,7 @@ public class ApplicationServerUtils
 		webappContext.setConfigurationClasses(new String[] { "org.eclipse.jetty.webapp.WebInfConfiguration", "org.eclipse.jetty.webapp.WebXmlConfiguration", "org.eclipse.jetty.webapp.MetaInfConfiguration", "org.eclipse.jetty.webapp.FragmentConfiguration", "org.eclipse.jetty.plus.webapp.EnvConfiguration", "org.eclipse.jetty.plus.webapp.PlusConfiguration", "org.eclipse.jetty.webapp.JettyWebXmlConfiguration" });
 
 		webappContext.setDefaultsDescriptor("org/bladerunnerjs/model/appserver/webdefault.xml");
-
+		
 		File webXml = app.file("WEB-INF/web.xml");
 		if (webXml.exists())
 		{

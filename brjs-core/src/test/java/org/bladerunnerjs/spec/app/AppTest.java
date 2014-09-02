@@ -1,8 +1,5 @@
 package org.bladerunnerjs.spec.app;
 
-import static org.bladerunnerjs.model.App.Messages.APP_DEPLOYED_LOG_MSG;
-import static org.bladerunnerjs.model.App.Messages.APP_DEPLOYMENT_FAILED_LOG_MSG;
-
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
@@ -124,33 +121,12 @@ public class AppTest extends SpecTest {
 	}
 	
 	@Test
-	public void appLibsAreInstalledWhenAppIsDeployed() throws Exception {
-		given(app).hasBeenCreated()
-			.and(appJars).containsFile("some-lib.jar")
-			.and(logging).enabled();
-		when(app).deployApp();
-		then(app).hasFile("WEB-INF/lib/some-lib.jar")
-			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, "app1", app.dir().getPath());
-	}
-	
-	@Test
 	public void deployedEventIsFiredWhenAppDeployed() throws Exception {
 		given(app).hasBeenCreated()
 			.and(appJars).containsFile("some-lib.jar")
 			.and(observer).observing(brjs);
 		when(app).deployApp();
 		then(observer).notified(AppDeployedEvent.class, app);
-	}
-	
-	// TODO: use this test (or a test like it) to verify that we log about population before logging about app deployment, so if it fails you
-	// have a better idea what's going on
-	@Test
-	public void exceptionIsThrownIfThereAreNoAppLibs() throws Exception {
-		given(app).hasBeenCreated()
-			.and(logging).enabled();
-		when(app).deployApp();
-		then(logging).errorMessageReceived(APP_DEPLOYMENT_FAILED_LOG_MSG, app.getName(), app.dir().getPath())
-			.and(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}
 	
 	@Test

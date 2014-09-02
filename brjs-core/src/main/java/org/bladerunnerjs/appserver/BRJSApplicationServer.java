@@ -71,6 +71,8 @@ public class BRJSApplicationServer implements ApplicationServer
 			throw new IOException( String.format(PORT_ALREADY_BOUND_EXCEPTION_MSG, port, BRJS.PRODUCT_NAME) );
 		}
 		
+		if(!brjs.appJars().dirExists()) throw new IllegalStateException( "The directory containing the app jars, located at '" + brjs.appJars().dir().getPath() + "', is not present");
+		
 		ApplicationServerUtils.addAuthRealmToWebServer(brjs, server);
 		ApplicationServerUtils.addRootContext(brjs, contexts);
 		contextMap = ApplicationServerUtils.addAppContexts(brjs, contexts);
