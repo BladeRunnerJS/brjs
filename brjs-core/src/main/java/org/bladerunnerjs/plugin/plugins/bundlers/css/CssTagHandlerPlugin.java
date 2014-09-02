@@ -31,7 +31,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	private ContentPlugin cssContentPlugin;
 	private Logger logger;
-	private Pattern VARIANT_THEME_PATTERN = Pattern.compile("([a-zA-Z0-9\\-]+)-variant");
+	private Pattern VARIANT_THEME_PATTERN = Pattern.compile("([a-zA-Z0-9\\-]+)-(.*)");
 	
 	private static String COMMON_THEME_NAME = "common";
 	private static String THEME_ATTRIBUTE = "theme";

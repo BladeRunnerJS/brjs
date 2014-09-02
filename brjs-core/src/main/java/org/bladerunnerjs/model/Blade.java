@@ -77,6 +77,7 @@ public final class Blade extends AbstractComponent implements NamedNode
 	{
 		super.populate();
 		testType("unit").defaultTestTech().populate();
+		testType("acceptance").defaultTestTech().populate();
 		workbench().populate();
 	}
 	

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -301,24 +302,28 @@ public abstract class AbstractNode implements Node
 	
 	private List<Field> getAllFields(Class<?> type)
 	{
-		return getAllFields(new ArrayList<Field>(), type);
+		return getAllFields(new ArrayList<Field>(), type, Collections.emptyList());
 	}
 	
-	private List<Field> getAllFields(List<Field> fields, Class<?> type)
+	private List<Field> getAllFields(List<Field> fields, Class<?> type, List<String> subclassFieldNames)
 	{
+		List<String> thisClassFieldNames = new ArrayList<>(subclassFieldNames);
 		for (Field field: type.getDeclaredFields())
 		{
-			if(!field.isAccessible())
-			{
-				field.setAccessible(true);
+			if (!subclassFieldNames.contains(field.getName())) {
+    			if(!field.isAccessible())
+    			{
+    				field.setAccessible(true);
+    			}
+    			
+    			fields.add(field);
+    			thisClassFieldNames.add(field.getName());
 			}
-			
-			fields.add(field);
 		}
 		
 		if (type.getSuperclass() != null)
 		{
-			fields = getAllFields(fields, type.getSuperclass());
+			return getAllFields(fields, type.getSuperclass(), thisClassFieldNames);
 		}
 		
 		return fields;

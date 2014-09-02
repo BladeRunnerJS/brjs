@@ -14,7 +14,7 @@ public class DefaultTestPack extends TestPack
 
 	public DefaultTestPack(RootNode rootNode, Node parent, File dir)
 	{
-		super(rootNode, parent, dir, "test-default");
+		super(rootNode, parent, dir, "default");
 	}
 
 	@Override

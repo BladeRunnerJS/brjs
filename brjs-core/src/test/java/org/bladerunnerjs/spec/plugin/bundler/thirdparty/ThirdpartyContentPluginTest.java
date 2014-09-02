@@ -269,4 +269,17 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		then(pageResponse).containsText("my_lib = require('my-lib');");
 	}
 	
+	@Test
+	public void windowIsUsedToGlobaliseLibraries() throws Exception {
+		sdkLib = brjs.sdkLib("my-lib");
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("App")
+			.and(aspect).classDependsOnThirdpartyLib("App", sdkLib)
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsText("window.my_lib");
+	}
+	
 }
