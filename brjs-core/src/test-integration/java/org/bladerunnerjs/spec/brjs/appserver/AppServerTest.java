@@ -43,6 +43,8 @@ public class AppServerTest extends SpecTest
 			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
+			brjs.bladerunnerConf().setJettyPort(appServerPort);
+			brjs.bladerunnerConf().write();
 			appServer = brjs.applicationServer(appServerPort);
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
@@ -104,12 +106,12 @@ public class AppServerTest extends SpecTest
 	}	
 	
 	@Test
-	public void appDeploymentObserverIsAutomaticallyLoaded() throws Exception
+	public void deployFileIsOnlyCreatedIfAppServerIsStarted() throws Exception
 	{
 		when(app1).populate()
 			.and(app1).deployApp();
-		then(app1).hasFile(".deploy");
-	}	
+		then(app1).doesNotHaveFile(".deploy");
+	}
 	
 	@Test
 	public void newAppsAreOnlyHostedOnAppDeployedEvent() throws Exception
@@ -193,7 +195,7 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstance() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreated()
+		given(brjs).hasBeenAuthenticallyCreatedWithPessamisticFileObserver()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
@@ -202,7 +204,7 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreHostedOnAppserverAfterServerRestart() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreated()
+		given(brjs).hasBeenAuthenticallyCreatedWithPessamisticFileObserver()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()

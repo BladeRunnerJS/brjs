@@ -52,10 +52,15 @@ public class TestModelAccessor
 	
 	public BRJS createNonTestModel(File brjsDir, LogMessageStore logStore) throws InvalidSdkDirectoryException
 	{
-		PluginLocator pluginLocator = new BRJSPluginLocator();
 		LoggerFactory loggerFactory = new TestLoggerFactory(logStore);
-		AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
 		FileModificationService fileModificationService = new Java7FileModificationService(loggerFactory);
+		return createNonTestModel(brjsDir, logStore, loggerFactory, fileModificationService);
+	}
+	
+	public BRJS createNonTestModel(File brjsDir, LogMessageStore logStore, LoggerFactory loggerFactory, FileModificationService fileModificationService) throws InvalidSdkDirectoryException
+	{
+		PluginLocator pluginLocator = new BRJSPluginLocator();
+		AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
 		
 		return new BRJS(brjsDir, pluginLocator, fileModificationService, loggerFactory, appVersionGenerator);
 	}
