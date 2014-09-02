@@ -321,6 +321,33 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void onlyTheRequestedVariantFilesAreLoaded() throws Exception {
+		given(aspect).containsFiles("themes/theme-variant1/style.css",
+									"themes/theme-variant2/style.css",
+									"themes/theme/style.css")
+			.and(app.appConf()).supportsLocales("en", "en_GB","de")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme-variant1\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsText("css/theme/bundle.css")
+			.and(response).containsText("css/theme-variant1/bundle.css")
+			.and(response).doesNotContainText("theme-variant2");
+	}
+	
+	@Test
+	public void variantsCanBeLoadedAsMainAndAlternateThemes() throws Exception {
+		given(aspect).containsFiles("themes/red-dark/style.css",
+									"themes/red-light/style.css",
+									"themes/red/style.css")
+			.and(app.appConf()).supportsLocales("en", "en_GB","de")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsOrderedTextFragments(
+				"<link rel=\"stylesheet\" title=\"red\" href=\"v/dev/css/red/bundle.css\"/>",
+				"<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
+				"<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
+	}
+	
+	@Test
 	public void aspectHasASubthemeWithNoBaseThemeThrowsWarning() throws Exception {
 		given(aspect).containsFiles("themes/theme-variant/style.css")
 			.and(logging).enabled()
