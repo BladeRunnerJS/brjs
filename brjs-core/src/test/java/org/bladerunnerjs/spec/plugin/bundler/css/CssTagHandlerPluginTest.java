@@ -342,9 +342,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-				"<link rel=\"stylesheet\" title=\"red\" href=\"v/dev/css/red/bundle.css\"/>",
-				"<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
-				"<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
+				"title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
+				"title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
+				"title=\"red-light\" href=\"v/dev/css/red/bundle.css\"/>",
+				"title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
 	}
 	
 	@Test
@@ -378,7 +379,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void aspectHasASubthemeAndCorrectBasThemeIsChosen() throws Exception {
+	public void aspectHasASubthemeAndCorrectBaseThemeIsChosen() throws Exception {
 		given(aspect).containsFiles("themes/2theme/style.css",
 									"themes/theme-variant/style.css", 
 									"themes/theme/style.css")
@@ -388,6 +389,52 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		then(response).containsText("css/theme/bundle.css")
 			.and(response).containsText("css/theme-variant/bundle.css")
 			.and(response).doesNotContainText("css/2theme/bundle.css");
+	}
+	
+	@Test
+	public void parentThemeLinksUseTheChildThemeAsTheTitleAttribute() throws Exception {
+		given(aspect).containsFiles("themes/red-dark/style.css",
+			"themes/red-light/style.css",
+			"themes/red/style.css")
+            .and(app.appConf()).supportsLocales("en", "en_GB","de")
+            .and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
+        when(aspect).indexPageLoadedInDev(response, "en_GB");
+        then(response).containsOrderedTextFragments(
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
+                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
+	}
+	
+	@Test
+	public void correctTitlesAreUsedWhenChildThemesAreUsedInBothMainAndAlternateThemes() throws Exception {
+		given(aspect).containsFiles("themes/red-dark/style.css",
+			"themes/red-light/style.css",
+			"themes/red/style.css")
+            .and(app.appConf()).supportsLocales("en", "en_GB","de")
+            .and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
+        when(aspect).indexPageLoadedInDev(response, "en_GB");
+        then(response).containsOrderedTextFragments(
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
+                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red/bundle.css\"/>",
+        		"<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
+	}
+	
+	@Test
+	public void mainThemeIsNotDuplicatedIfAlternateThemeIsNotAChildTheme() throws Exception {
+		given(aspect).containsFiles("themes/red-dark/style.css",
+			"themes/red-light/style.css",
+			"themes/red/style.css",
+			"themes/blue/style.css")
+            .and(app.appConf()).supportsLocales("en", "en_GB","de")
+            .and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"blue\" @/>");
+        when(aspect).indexPageLoadedInDev(response, "en_GB");
+        then(response).containsOrderedTextFragments(
+        		"<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
+            	"<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
+        		"<link rel=\"alternate stylesheet\" title=\"blue\" href=\"v/dev/css/blue/bundle.css\"/>")
+            .and(response).containsTextOnce("v/dev/css/red/bundle.css")
+            .and(response).containsTextOnce("v/dev/css/blue/bundle.css");
 	}
 	
 	@Test
@@ -408,9 +455,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant/bundle.css\"/>",
-			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en/bundle.css\"/>",
-			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en_GB/bundle.css\"/>");
+    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant/bundle.css\"/>",
+    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en/bundle.css\"/>",
+    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en_GB/bundle.css\"/>");
 	}
 	
 	@Test
