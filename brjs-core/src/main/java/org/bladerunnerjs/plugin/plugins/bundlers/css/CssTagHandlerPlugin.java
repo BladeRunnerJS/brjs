@@ -133,14 +133,14 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 				if (themeMatcher.matches()){
 					String parentTheme = themeMatcher.group(1);
 					try {
-						appendStylesheetRequestsForMainTheme(stylesheetRequests, isDev, app, contentPaths, parentTheme, version, locale);
+						appendStylesheetRequestsForMainTheme(stylesheetRequests, isDev, app, contentPaths, parentTheme, theme, version, locale);
 					}
 					catch (IOException e){
 						logger.warn(Messages.NO_PARENT_THEME_FOUND_MESSAGE, theme, parentTheme);
 					}
 					appendStylesheetRequestsForVariantTheme(stylesheetRequests, isDev, app, contentPaths, theme, version, locale);
 				} else {
-					appendStylesheetRequestsForMainTheme(stylesheetRequests, isDev, app, contentPaths, theme, version, locale);
+					appendStylesheetRequestsForMainTheme(stylesheetRequests, isDev, app, contentPaths, theme, theme, version, locale);
 				}
 			}
 			
@@ -180,12 +180,12 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 	
-	private void appendStylesheetRequestsForMainTheme(List<StylesheetRequest> stylesheetRequests, boolean isDev, App app, List<String> contentPaths, String themeName, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void appendStylesheetRequestsForMainTheme(List<StylesheetRequest> stylesheetRequests, boolean isDev, App app, List<String> contentPaths, String themeName, String themeTitle, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
-				stylesheetRequests.add( new StylesheetRequest(requestPath, themeName) );
+				stylesheetRequests.add( new StylesheetRequest(requestPath, themeTitle) );
 				foundTheme = true;
 			}
 		}
