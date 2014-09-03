@@ -39,7 +39,7 @@ public class BuildAppTest extends SpecTest {
 		given(defaultAspect).containsFile("index.html")
 			.and(brjs).localeForwarderHasContents("Locale Forwarder")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/index.html", "Locale Forwarder");
+		then(targetDir).containsFileWithContents("/index.html", "Locale Forwarder");
 	}
 	
 	@Test
@@ -47,7 +47,7 @@ public class BuildAppTest extends SpecTest {
 		given(defaultAspect).containsFile("index.html")
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFile("app1/en/index.html");
+		then(targetDir).containsFile("en/index.html");
 	}
 	
 	@Test
@@ -55,7 +55,7 @@ public class BuildAppTest extends SpecTest {
 		given(defaultAspect).containsFileWithContents("index.html", "<@js.bundle@/>")
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/en/index.html", "/js/prod/combined/bundle.js");
+		then(targetDir).containsFileWithContents("/en/index.html", "/js/prod/combined/bundle.js");
 	}
 	
 	@Test
@@ -64,8 +64,8 @@ public class BuildAppTest extends SpecTest {
 			.and(defaultAspect).containsFileWithContents("index.html", "<@i18n.bundle@/>")
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/en/index.html", "/i18n/en.js")
-			.and(targetDir).containsFileWithContents("app1/de/index.html", "/i18n/de.js");
+		then(targetDir).containsFileWithContents("/en/index.html", "/i18n/en.js")
+			.and(targetDir).containsFileWithContents("/de/index.html", "/i18n/de.js");
 	}
 	
 	@Test
@@ -73,8 +73,8 @@ public class BuildAppTest extends SpecTest {
 		given(defaultAspect).containsFileWithContents("index.jsp", "<%= 1 + 2 %>\n<@js.bundle@/>")
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/en/index.jsp", "<%= 1 + 2 %>")
-			.and(targetDir).containsFileWithContents("app1/en/index.jsp", "/js/prod/combined/bundle.js");
+		then(targetDir).containsFileWithContents("/en/index.jsp", "<%= 1 + 2 %>")
+			.and(targetDir).containsFileWithContents("/en/index.jsp", "/js/prod/combined/bundle.js");
 	}
 	
 	@Test
@@ -83,10 +83,10 @@ public class BuildAppTest extends SpecTest {
 			.and(nonDefaultAspect).containsFileWithContents("index.html", "<@i18n.bundle@/>")
 			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/index.html", "locale-forwarder.js")
-			.and(targetDir).containsFileWithContents("app1/en/index.html", "/js/prod/combined/bundle.js")
-			.and(targetDir).containsFileWithContents("app1/aspect2/index.html", "locale-forwarder.js")
-			.and(targetDir).containsFileWithContents("app1/aspect2/en/index.html", "/i18n/en.js");
+		then(targetDir).containsFileWithContents("/index.html", "locale-forwarder.js")
+			.and(targetDir).containsFileWithContents("/en/index.html", "/js/prod/combined/bundle.js")
+			.and(targetDir).containsFileWithContents("/aspect2/index.html", "locale-forwarder.js")
+			.and(targetDir).containsFileWithContents("/aspect2/en/index.html", "/i18n/en.js");
 	}
 	
 	@Test
@@ -96,8 +96,8 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeForwarderHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFile("app1/v/1234/html/bundle.html")
-			.and(targetDir).containsFile("app1/v/1234/i18n/en.js");
+		then(targetDir).containsFile("v/1234/html/bundle.html")
+			.and(targetDir).containsFile("v/1234/i18n/en.js");
 	}
 	
 	@Test
@@ -106,7 +106,7 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasDir("WEB-INF/lib")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsDir("app1/WEB-INF/lib");
+		then(targetDir).containsDir("WEB-INF/lib");
 	}
 	
 	@Test
@@ -116,8 +116,8 @@ public class BuildAppTest extends SpecTest {
 			.and(defaultAspect).hasClass("appns/Class")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFile("app1/v/1234/js/prod/combined/bundle.js")
-			.and(targetDir).doesNotContainFile("app1/v/1234/common-js/bundle.js");
+		then(targetDir).containsFile("v/1234/js/prod/combined/bundle.js")
+			.and(targetDir).doesNotContainFile("v/1234/common-js/bundle.js");
 	}
 	
 	@Test
@@ -130,8 +130,8 @@ public class BuildAppTest extends SpecTest {
     		.and(defaultAspect).indexPageHasContent("<@css.bundle @/>\n"+"<@js.bundle @/>\n"+"require('appns/Class');")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/v/1234/js/prod/combined/bundle.js", "define('appns/Class'")
-			.and(targetDir).containsFileWithContents("app1/v/1234/css/common/bundle.css", "some app styling");
+		then(targetDir).containsFileWithContents("/v/1234/js/prod/combined/bundle.js", "define('appns/Class'")
+			.and(targetDir).containsFileWithContents("/v/1234/css/common/bundle.css", "some app styling");
 	}
 	
 	@Test
@@ -143,7 +143,7 @@ public class BuildAppTest extends SpecTest {
     		.and(defaultAspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/v/1234/unbundled-resources/file.jsp", "<%= 1 + 2 %>");
+		then(targetDir).containsFileWithContents("/v/1234/unbundled-resources/file.jsp", "<%= 1 + 2 %>");
 	}
 	
 	@Test
@@ -155,8 +155,8 @@ public class BuildAppTest extends SpecTest {
 			.and(defaultAspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName())
-			.and(targetDir).doesNotContainFile("app1/v/1234/mock-content-plugin/unversioned/url");
+		then(targetDir).containsFileWithContents("/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName())
+			.and(targetDir).doesNotContainFile("v/1234/mock-content-plugin/unversioned/url");
 	}
 	
 	@Test
@@ -169,7 +169,7 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeForwarderHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/v/1234/i18n/en.js", "window._brjsI18nProperties = [{\n"+
+		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "window._brjsI18nProperties = [{\n"+
         				"  \"appns.p1\": \"\\\"$£€\\\"\"\n"+
         		"}];");
 	}
@@ -184,7 +184,7 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeForwarderHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("app1/v/1234/i18n/en.js", "window._brjsI18nProperties = [{\n"+
+		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "window._brjsI18nProperties = [{\n"+
         				"  \"appns.p1\": \"\\\"$£\\\"\"\n"+
         		"}];");
 	}
@@ -200,8 +200,8 @@ public class BuildAppTest extends SpecTest {
 			.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("<@tag @/>")
 			.and(brjs).localeForwarderHasContents("")
 			.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-		then(targetDir).containsFile("app1/used/url")
-			.and(targetDir).doesNotContainFile("app1/unused/url");
+		then(targetDir).containsFile("used/url")
+			.and(targetDir).doesNotContainFile("unused/url");
 	}
 	
 	@Test
@@ -214,8 +214,8 @@ public class BuildAppTest extends SpecTest {
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("<@tag @/>")
     		.and(brjs).localeForwarderHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).containsFile("app1/used/url")
-    		.and(targetDir).containsFile("app1/unused/url");
+    	then(targetDir).containsFile("used/url")
+    		.and(targetDir).containsFile("unused/url");
 	}
 	
 	@Test
@@ -229,8 +229,8 @@ public class BuildAppTest extends SpecTest {
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("<@tag1 @/> <@tag2 @/>")
     		.and(brjs).localeForwarderHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).containsFile("app1/used/url")
-    		.and(targetDir).doesNotContainFile("app1/unused/url");
+    	then(targetDir).containsFile("used/url")
+    		.and(targetDir).doesNotContainFile("unused/url");
 	}
 	
 	@Test
@@ -243,8 +243,8 @@ public class BuildAppTest extends SpecTest {
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("")
     		.and(brjs).localeForwarderHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).doesNotContainFile("app1/used/url")
-    		.and(targetDir).doesNotContainFile("app1/unused/url");
+    	then(targetDir).doesNotContainFile("used/url")
+    		.and(targetDir).doesNotContainFile("unused/url");
 	}
 	
 	@Test
@@ -258,10 +258,10 @@ public class BuildAppTest extends SpecTest {
     		.and( brjs.app("app1").aspect("nonempty") ).indexPageHasContent("<@tag @/>")
     		.and(brjs).localeForwarderHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).doesNotContainFile("app1/empty/used/url")
-    		.and(targetDir).doesNotContainFile("app1/empty/unused/url")
-    		.and(targetDir).containsFile("app1/nonempty/used/url")
-    		.and(targetDir).doesNotContainFile("app1/nonempty/unused/url");
+    	then(targetDir).doesNotContainFile("empty/used/url")
+    		.and(targetDir).doesNotContainFile("empty/unused/url")
+    		.and(targetDir).containsFile("nonempty/used/url")
+    		.and(targetDir).doesNotContainFile("nonempty/unused/url");
 	}
 	
 	@Test
@@ -273,8 +273,8 @@ public class BuildAppTest extends SpecTest {
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("")
     		.and(brjs).localeForwarderHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).containsFile("app1/used/url")
-    		.and(targetDir).containsFile("app1/unused/url");
+    	then(targetDir).containsFile("used/url")
+    		.and(targetDir).containsFile("unused/url");
 	}
 	
 }
