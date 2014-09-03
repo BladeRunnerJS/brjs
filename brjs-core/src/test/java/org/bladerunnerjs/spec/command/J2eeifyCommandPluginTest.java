@@ -77,7 +77,10 @@ public class J2eeifyCommandPluginTest extends SpecTest {
 	
 	@Test
 	public void applicationServerStillStartsAfterWebInfIsCopiedIn() throws Exception {
-		given(app.defaultAspect()).indexPageHasContent("APP INDEX PAGE");
+		given(app.defaultAspect()).indexPageHasContent("APP INDEX PAGE")
+			.and(brjs.applicationServer(appServerPort)).started()
+			.and(brjs.applicationServer(appServerPort)).requestForUrlContains("/app/en/", "APP INDEX PAGE")
+			.and(brjs.applicationServer(appServerPort)).stopped();
 		when(brjs).runCommand("j2eeify", "app")
 			.and(brjs.applicationServer(appServerPort)).started();
 		then(brjs.applicationServer(appServerPort)).requestForUrlContains("/app/en/", "APP INDEX PAGE");

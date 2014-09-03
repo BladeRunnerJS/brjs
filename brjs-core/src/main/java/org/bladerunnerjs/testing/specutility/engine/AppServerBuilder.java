@@ -57,4 +57,11 @@ public class AppServerBuilder
 		
 		return builderChainer;
 	}
+
+	public BuilderChainer requestForUrlContains(String urlPath, String contains) throws ClientProtocolException, IOException
+	{
+		new AppServerVerifier(specTest, appServer).requestForUrlContains(urlPath, contains);
+		
+		return builderChainer;
+	}
 }
