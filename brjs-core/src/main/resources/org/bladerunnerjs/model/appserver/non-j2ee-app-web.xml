@@ -2,6 +2,11 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	
+	<!--
+		The following are filters needed by BRJS to operate properly.
+		BRJSDevServlet and BRJSDevServletFilter will be removed when apps are built for production.
+		BRJSServletFilter sets character encoding and infinite caching headers for static resources.
+	-->
 	<filter>
 		<filter-name>BRJSServletFilter</filter-name> 
 		<filter-class>org.bladerunnerjs.appserver.BRJSServletFilter</filter-class>
@@ -12,7 +17,7 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
-	
+	<!-- start-env: dev -->
 	<servlet>
 		<servlet-name>BRJSDevServlet</servlet-name>
 		<servlet-class>org.bladerunnerjs.appserver.BRJSDevServlet</servlet-class>
@@ -22,7 +27,6 @@
 		<servlet-name>BRJSDevServlet</servlet-name>
 		<url-pattern>/brjs/*</url-pattern>
 	</servlet-mapping>
-
 	<filter>
 		<filter-name>BRJSDevServletFilter</filter-name> 
 		<filter-class>org.bladerunnerjs.appserver.BRJSDevServletFilter</filter-class>
@@ -33,4 +37,9 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
+	<!-- end-env -->
+	<!--
+		End of brjs config.
+	-->
+
 </web-app>
