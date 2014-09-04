@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRe
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -109,8 +110,17 @@ public class CreateAppCommandTest extends SpecTest {
 		then(myApp).dirExists()
 			.and(myApp.appConf()).namespaceIs("myapp");
 	}
-	
 	@Test
+	public void requirePrefixIsOptionalAndCorrectPrefixIsWrittenToAppConf() throws Exception {
+		App myApp = brjs.app("myApp");
+		
+		given(appJars).hasBeenCreated();
+		when(brjs).runCommand("create-app", "myApp");
+		then(myApp).dirExists()
+			.and(myApp).fileContentsContains("app.conf","myapp");
+	}
+	
+	@Test @Ignore // is this test valid now that deploy() doesnt throw an exception?
 	public void appCreationConsoleOutputOccursEvenIfAppDeploymentFails() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(app).dirExists()

@@ -11,18 +11,18 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
@@ -31,6 +31,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.UnicodeReader;
 
+@SuppressWarnings("deprecation")
 public class WebappTester 
 {
 	
@@ -84,7 +85,7 @@ public class WebappTester
 	
 	public WebappTester whenRequestMadeTo(String url, int socketTimeout, int connectionTimeout, boolean followRedirects) throws ClientProtocolException, IOException {
 		this.url = url;
-		HttpClient httpClient = new DefaultHttpClient();
+		CloseableHttpClient httpClient = new DefaultHttpClient();
 		httpClient.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, socketTimeout);
 		httpClient.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, connectionTimeout);	
 		
@@ -103,6 +104,7 @@ public class WebappTester
 		characterEncoding = (charset == null) ? "" : charset.displayName();
 		EntityUtils.consume(httpResponse.getEntity());
 		httpClient.getConnectionManager().shutdown();
+		httpClient.close();
 		return this;
 	}
 	
@@ -112,7 +114,7 @@ public class WebappTester
 			whenRequestMadeTo(url, 150, 150, false);
 			fail("Expected request to " + url + " to timeout, but came back with status code " + statusCode);
 		}
-		catch (SocketTimeoutException | HttpHostConnectException | ConnectTimeoutException ex)
+		catch (SocketTimeoutException | ConnectTimeoutException | ConnectException ex)
 		{
 		}
 		

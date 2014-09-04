@@ -1,17 +1,21 @@
 /**
+ * @module br/presenter/parser/LocalisedAmountParser
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/parser/LocalisedAmountParser
+ * @implements module:br/presenter/parser/Parser
  * 
+ * @classdesc
  * Parses an amount containing a thousands, millions or billions token into a number.
- * <p/>
- * <code>LocalisedAmountParser</code> is typically used with Presenter, but can be invoked programmatically
- * as in the following example which evaluates to "4900000"
- * <p/>
- * <code>br.presenter.parser.LocalisedAmountParser.parse("4.9MM", {})</code>
- * <p/>
- * See {@link br.presenter.formatter.AmountFormatter} for the complementary formatter.
  * 
- * @implements br.presenter.parser.Parser
- * @singleton
+ * <p><code>LocalisedAmountParser</code> is typically used with Presenter, but can be invoked programmatically
+ * as in the following example which evaluates to "4900000":</p>
+ * 
+ * <pre>br.presenter.parser.LocalisedAmountParser.parse("4.9MM", {})</pre>
+ * 
+ * See {@link module:br/presenter/formatter/AmountFormatter} for the complementary formatter.
  */
 br.presenter.parser.LocalisedAmountParser = function() {
 };

@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.AssetContainerBuilder;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -27,8 +27,8 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 		File testFile = testPack.tests().file(testFilePath);
 		String jsStyle = JsStyleUtility.getJsStyle(testFile.getParentFile());
 		
-		if(!jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("testRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
+		if(!jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
+			throw new RuntimeException("testRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "'");
 		}
 		
 		String content = "";
@@ -54,8 +54,8 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 		File testFile = testPack.tests().file(testFilePath);
 		String jsStyle = JsStyleUtility.getJsStyle(testFile.getParentFile());
 		
-		if(!jsStyle.equals(CommonJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + CommonJsContentPlugin.JS_STYLE + "'");
+		if(!jsStyle.equals(CommonJsSourceModule.JS_STYLE)) {
+			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + CommonJsSourceModule.JS_STYLE + "'");
 		}
 		
 		fileUtil.write(testFile, "require('"+className+"');");

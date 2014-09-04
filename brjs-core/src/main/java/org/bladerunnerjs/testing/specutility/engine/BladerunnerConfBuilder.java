@@ -13,6 +13,14 @@ public class BladerunnerConfBuilder {
 	
 	public BuilderChainer defaultFileCharacterEncodingIs(String defaultFileCharacterEncoding) throws Exception {
 		bladerunnerConf.setDefaultFileCharacterEncoding(defaultFileCharacterEncoding);
+		bladerunnerConf.write();
+		
+		return builderChainer;
+	}
+
+	public BuilderChainer hasIgnoredPaths(String... ignoredPaths) throws Exception {
+		bladerunnerConf.setIgnoredPaths(ignoredPaths);
+		bladerunnerConf.write();
 		
 		return builderChainer;
 	}

@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
+import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetContainer;
@@ -64,15 +65,17 @@ public class TrieFactory {
 									addToTrie(trie, requirePath, new LinkedAssetReference(asset), SOURCE_MODULE_MATCHER_PATTERN);
 								} else {
 									// the asset is one that can only be referred to via a string
-									addToTrie(trie, requirePath, new LinkedAssetReference(asset), QUOTED_SOURCE_MODULE_MATCHER_PATTERN);									
+									addToTrie(trie, requirePath, new LinkedAssetReference(asset), QUOTED_SOURCE_MODULE_MATCHER_PATTERN);
 								}
 							}
 						}
 						
 						for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-							for(AliasDefinition aliasDefintion : assetLocation.aliasDefinitionsFile().aliases()) {
-								String aliasName = aliasDefintion.getName();
-								addToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion), ALIAS_MATCHER_PATTERN);
+							for (AliasDefinitionsFile aliasDefinitionsFile : assetLocation.aliasDefinitionsFiles()) {
+    							for(AliasDefinition aliasDefintion :aliasDefinitionsFile.aliases()) {
+    								String aliasName = aliasDefintion.getName();
+    								addToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion), ALIAS_MATCHER_PATTERN);
+    							}
 							}
 						}
 					}
@@ -81,9 +84,6 @@ public class TrieFactory {
 					}
 				}
 				
-				if (trie.needsOptimizing()) {
-					trie.optimize();
-				}
 				return trie;
 			}
 		});
@@ -95,7 +95,7 @@ public class TrieFactory {
 			{
 				trie.add(key, value, matchPattern);
 			}
-			catch (TrieKeyAlreadyExistsException | TrieLockedException e)
+			catch (TrieKeyAlreadyExistsException e)
 			{
 				// wrap this in a RuntimeException since its unexpected, let the other exceptions bubble up
 				throw new RuntimeException(e);

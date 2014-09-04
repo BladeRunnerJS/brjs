@@ -305,8 +305,8 @@ public class CssRewriterTest extends SpecTest
 	public void imagesInBladesetResourcesAreRewritten() throws Exception
 	{
 		given(bladeset).containsFileWithContents("themes/common/style.css", "background-image: url(../../resources/images/flower.png);")
-			.and(bladeset).hasClass("bs/Class1")
-			.and(aspect).indexPageHasContent("require('bs/Class1');");
+			.and(bladeset).hasClass("appns/bs/Class1")
+			.and(aspect).indexPageHasContent("require('appns/bs/Class1');");
 		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: url(../../cssresource/bladeset_bs_resource/resources/images/flower.png);");
 	}
@@ -315,8 +315,8 @@ public class CssRewriterTest extends SpecTest
 	public void imagesInBladeResourcesAreRewritten() throws Exception
 	{
 		given(blade).containsFileWithContents("themes/common/style.css", "background-image: url(../../resources/images/flower.png);")
-			.and(blade).hasClass("bs/b1/Class1")
-			.and(aspect).indexPageHasContent("require('bs/b1/Class1');");
+			.and(blade).hasClass("appns/bs/b1/Class1")
+			.and(aspect).indexPageHasContent("require('appns/bs/b1/Class1');");
 		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1_resource/resources/images/flower.png);");
 	}

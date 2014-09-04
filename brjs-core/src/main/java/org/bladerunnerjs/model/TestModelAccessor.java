@@ -13,7 +13,7 @@ import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
 import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.ReadWriteCompatiblePessimisticFileModificationService;
 
 
 public class TestModelAccessor
@@ -22,7 +22,7 @@ public class TestModelAccessor
 	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		pluginLocator = (pluginLocator != null) ? pluginLocator : new MockPluginLocator();
-		fileModificationService = (fileModificationService != null) ? fileModificationService : new PessimisticFileModificationService();
+		fileModificationService = (fileModificationService != null) ? fileModificationService : new ReadWriteCompatiblePessimisticFileModificationService();
 		loggerFactory = (loggerFactory != null) ? loggerFactory : new StubLoggerFactory();
 		appVersionGenerator = (appVersionGenerator != null) ? appVersionGenerator : new MockAppVersionGenerator();		
 		
@@ -52,10 +52,15 @@ public class TestModelAccessor
 	
 	public BRJS createNonTestModel(File brjsDir, LogMessageStore logStore) throws InvalidSdkDirectoryException
 	{
-		PluginLocator pluginLocator = new BRJSPluginLocator();
 		LoggerFactory loggerFactory = new TestLoggerFactory(logStore);
-		AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
 		FileModificationService fileModificationService = new Java7FileModificationService(loggerFactory);
+		return createNonTestModel(brjsDir, logStore, loggerFactory, fileModificationService);
+	}
+	
+	public BRJS createNonTestModel(File brjsDir, LogMessageStore logStore, LoggerFactory loggerFactory, FileModificationService fileModificationService) throws InvalidSdkDirectoryException
+	{
+		PluginLocator pluginLocator = new BRJSPluginLocator();
+		AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
 		
 		return new BRJS(brjsDir, pluginLocator, fileModificationService, loggerFactory, appVersionGenerator);
 	}

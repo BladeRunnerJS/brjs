@@ -1,8 +1,5 @@
 package org.bladerunnerjs.spec.app;
 
-import static org.bladerunnerjs.model.App.Messages.APP_DEPLOYED_LOG_MSG;
-import static org.bladerunnerjs.model.App.Messages.APP_DEPLOYMENT_FAILED_LOG_MSG;
-
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
@@ -27,7 +24,7 @@ public class AppTest extends SpecTest {
 	private JsLib appLib;
 	private NamedDirNode appTemplate;
 	private DirNode appJars;
-	private Aspect aspect;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -38,7 +35,7 @@ public class AppTest extends SpecTest {
 			appLib = app.jsLib("lib1");
 			appTemplate = brjs.template("app");
 			appJars = brjs.appJars();
-			aspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			globalNonBladeRunnerLib = brjs.sdkLib("legacy-thirdparty");
 			appNonBladeRunnerLib = app.appJsLib("app-legacy-thirdparty");
 			globalOverriddenNonBRLib = brjs.sdkLib("overridden-lib");
@@ -57,11 +54,18 @@ public class AppTest extends SpecTest {
 	}
 	
 	@Test
+	public void weCanCreateAnAppUsingTheRealTemplate() throws Exception {
+		given(brjs).usesProductionTemplates();
+		when(app).populate("appxyz");
+		then(defaultAspect).hasFile("src/App.js");
+	}
+	
+	@Test
 	public void populatingAnAppCausesRootObserversToBeNotified() throws Exception {
 		given(observer).observing(brjs);
 		when(app).populate();
 		then(observer).notified(NodeReadyEvent.class, app)
-			.and(observer).notified(NodeReadyEvent.class, aspect);
+			.and(observer).notified(NodeReadyEvent.class, defaultAspect);
 	}
 	
 	@Test
@@ -117,33 +121,12 @@ public class AppTest extends SpecTest {
 	}
 	
 	@Test
-	public void appLibsAreInstalledWhenAppIsDeployed() throws Exception {
-		given(app).hasBeenCreated()
-			.and(appJars).containsFile("some-lib.jar")
-			.and(logging).enabled();
-		when(app).deployApp();
-		then(app).hasFile("WEB-INF/lib/some-lib.jar")
-			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, "app1", app.dir().getPath());
-	}
-	
-	@Test
 	public void deployedEventIsFiredWhenAppDeployed() throws Exception {
 		given(app).hasBeenCreated()
 			.and(appJars).containsFile("some-lib.jar")
 			.and(observer).observing(brjs);
 		when(app).deployApp();
 		then(observer).notified(AppDeployedEvent.class, app);
-	}
-	
-	// TODO: use this test (or a test like it) to verify that we log about population before logging about app deployment, so if it fails you
-	// have a better idea what's going on
-	@Test
-	public void exceptionIsThrownIfThereAreNoAppLibs() throws Exception {
-		given(app).hasBeenCreated()
-			.and(logging).enabled();
-		when(app).deployApp();
-		then(logging).errorMessageReceived(APP_DEPLOYMENT_FAILED_LOG_MSG, app.getName(), app.dir().getPath())
-			.and(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}
 	
 	@Test

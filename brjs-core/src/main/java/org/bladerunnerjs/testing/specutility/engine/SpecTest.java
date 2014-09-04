@@ -72,9 +72,11 @@ import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
+import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ServerUtility;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
@@ -130,6 +132,10 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
 		return super.createNonTestModel(testSdkDirectory, logging);
+	}
+	
+	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
+		return super.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging), new PessimisticFileModificationService());
 	}
 	
 	public String getActiveCharacterEncoding() {

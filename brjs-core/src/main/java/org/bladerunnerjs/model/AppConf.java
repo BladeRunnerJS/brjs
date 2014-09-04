@@ -18,18 +18,16 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	}
 	
 	public String getRequirePrefix() throws ConfigException {
-		reloadConfIfChanged();
-		return conf.requirePrefix;
+		return getConf().requirePrefix;
 	}
 	
 	public void setRequirePrefix(String requirePrefix) throws ConfigException {
-		conf.requirePrefix = requirePrefix;
-		verifyAndAutoWrite();
+		getConf().requirePrefix = requirePrefix;
+		verify();
 	}
 	
 	public Locale[] getLocales() throws ConfigException {
-		reloadConfIfChanged();
-		String[] localeStrings = conf.locales.split("\\s*,\\s*");
+		String[] localeStrings = getConf().locales.split("\\s*,\\s*");
 		Locale[] locales = new Locale[localeStrings.length];
 		for (int i = 0; i < localeStrings.length; i++) {
 			locales[i] = new Locale(localeStrings[i]);
@@ -38,8 +36,8 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	}
 	
 	public void setLocales(Locale[] locales) throws ConfigException {
-		conf.locales = StringUtils.join(locales,",");
-		verifyAndAutoWrite();
+		getConf().locales = StringUtils.join(locales,",");
+		verify();
 	}
 	
 	public Locale getDefaultLocale() throws ConfigException {
@@ -47,11 +45,11 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	}
 	
 	public String getLocaleCookieName() throws ConfigException {
-		return conf.localeCookieName;
+		return getConf().localeCookieName;
 	}
 	
 	public void setLocaleCookieName(String cookieName) throws ConfigException {
-		conf.localeCookieName = cookieName;
-		verifyAndAutoWrite();
+		getConf().localeCookieName = cookieName;
+		verify();
 	}
 }

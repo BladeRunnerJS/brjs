@@ -172,7 +172,7 @@ public abstract class NodeVerifier<N extends Node> {
 				return;
 			}
 		}
-		fail("found path '" + relativePath + "' that wasn't expected. Expected paths were '" + StringUtils.join(expectedPaths, "") + "'.");
+		fail("found path '" + relativePath + "' that wasn't expected. Expected paths were '" + StringUtils.join(expectedPaths, " ") + "'.");
 	}
 	
 	

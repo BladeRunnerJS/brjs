@@ -3,22 +3,18 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 import org.bladerunnerjs.yaml.ConfFactory;
 
 
 public class ConfFile<CF extends AbstractYamlConfFile> {
-	protected CF conf;
-	
+	private final MemoizedValue<CF> conf;
 	private final BRJSNode node;
 	private final Class<CF> confClass;
 	private final File confFile;
-	private InfoFileModifiedChecker fileModifiedChecker;
-	private boolean shouldAutoWriteOnSet = true;
-	private boolean hasUnwrittenChanges = false;
-
+	
 	private String defaultFileCharacterEncoding;
 	
 	public ConfFile(BRJSNode node, Class<CF> confClass, File confFile) throws ConfigException {
@@ -30,23 +26,25 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		this.confClass = confClass;
 		this.confFile = confFile;
 		this.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
-		fileModifiedChecker = new InfoFileModifiedChecker(node.root().getFileInfo(confFile));
-		this.conf = ConfFactory.createConfFile(node, confClass, confFile, defaultFileCharacterEncoding);
+		conf = new MemoizedValue<>("ConfFile.conf", node.root(), confFile, node.root().file("conf/brjs.conf"));
+		
+		// needed to keep the pre-existing tests working
+		getConf();
 	}
 	
 	public void write() throws ConfigException {
 		try {
-			conf.write();
+			getConf().write();
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	protected void reloadConfIfChanged() throws ConfigException {
-		if (fileModifiedChecker.hasChangedSinceLastCheck() && !hasUnwrittenChanges) {
-			conf = ConfFactory.createConfFile(node, confClass, confFile, defaultFileCharacterEncoding);
-		}
+	protected CF getConf() throws ConfigException {
+		return conf.value(() -> {
+			return ConfFactory.createConfFile(node, confClass, confFile, defaultFileCharacterEncoding);
+		});
 	}
 	
 	public File getConfFile()
@@ -59,22 +57,8 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		return getConfFile().isFile();
 	}
 	
-	public void autoWriteOnSet(boolean shouldAutoWriteOnSet)
+	protected void verify() throws ConfigException
 	{
-		this.shouldAutoWriteOnSet = shouldAutoWriteOnSet;
-	}
-	
-	protected void verifyAndAutoWrite() throws ConfigException
-	{
-		conf.verify();
-		if (shouldAutoWriteOnSet)
-		{
-			write();
-			hasUnwrittenChanges = false;
-		}
-		else
-		{
-			hasUnwrittenChanges = true;
-		}
+		getConf().verify();
 	}
 }

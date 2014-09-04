@@ -59,8 +59,8 @@ public class AspectBundlingLoggingTest extends SpecTest {
 	@Test
 	public void helpfulLoggingMessagesAreEmittedWhenThereAreNoSeedFiles() throws Exception {
 		given(logging).enabled()
-			.and(blade).hasClasses("appns/Class1", "appns/Class2")
-			.and(blade).classRequires("appns/Class1", "appns.Class2")
+			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
+			.and(blade).classRequires("appns/bs/b1/Class1", "appns.bs.b1.Class2")
 			.and(aspect).hasBeenCreated()
 			.and(sdkLib).hasBeenCreated();
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);

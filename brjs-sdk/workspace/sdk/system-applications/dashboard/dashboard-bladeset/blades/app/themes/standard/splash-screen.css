@@ -146,3 +146,8 @@ color: #54B0CB;
 	position: relative;
 	height: initial !important;
 }
+
+.tour-dontshow input[type="checkbox"] {
+	left: -36px;
+	top: 4px;
+}

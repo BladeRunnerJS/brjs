@@ -34,10 +34,18 @@ public class AppServerVerifier
 		return verifierChainer;
 	}
 
-	public VerifierChainer requestIsRedirected(String urlPath, String redirectPath) throws ClientProtocolException, IOException
+	public VerifierChainer requestIs302Redirected(String urlPath, String redirectPath) throws ClientProtocolException, IOException
 	{
 		String url = getUrl(urlPath);
 		specTest.webappTester.whenRequestMadeTo(url, false).statusCodeIs(302).redirectUrlIs(redirectPath);
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer requestIs301Redirected(String urlPath, String redirectPath) throws ClientProtocolException, IOException
+	{
+		String url = getUrl(urlPath);
+		specTest.webappTester.whenRequestMadeTo(url, false).statusCodeIs(301).redirectUrlIs(redirectPath);
 		
 		return verifierChainer;
 	}

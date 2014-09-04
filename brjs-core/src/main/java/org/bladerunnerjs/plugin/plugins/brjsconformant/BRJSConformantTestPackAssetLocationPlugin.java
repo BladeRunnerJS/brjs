@@ -82,15 +82,15 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 		
 		switch(dirPath) {
 			case "resources":
-				assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
+				assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("."));
 				break;
 			
 			case "tests":
-				assetLocation = new TestSourceAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("resources"), assetLocationsMap.get("src-test"));
+				assetLocation = new TestSourceAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("."), assetLocationsMap.get("resources"), assetLocationsMap.get("src-test"));
 				break;
 			
 			case "src-test":
-				assetLocation = new SourceAssetLocation(assetContainer.root(), assetContainer, dir);
+				assetLocation = new SourceAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("."));
 				break;
 			
 			default:
@@ -98,7 +98,7 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 				AssetLocation parentAssetLocation = assetLocationsMap.get(parentLocationPath);
 				
 				if((parentAssetLocation instanceof ChildSourceAssetLocation) || (parentAssetLocation instanceof SourceAssetLocation)) {
-					assetLocation = new ChildSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
+					assetLocation = new ChildSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation, parentAssetLocation);
 				}
 				else {
 					assetLocation = new ChildTestSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);

@@ -27,6 +27,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	List<AliasDefinitionsFile> aliasDefinitionFiles();
 	
 	ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
-	ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 	List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
 }

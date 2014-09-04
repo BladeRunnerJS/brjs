@@ -16,4 +16,8 @@ public class AliasOverride {
 	public String getClassName() {
 		return className;
 	}
+	
+	public boolean equals(AliasOverride aliasOverride) {
+		return  name.equals(aliasOverride.getName()) && className.equals(aliasOverride.getClassName());
+	}
 }

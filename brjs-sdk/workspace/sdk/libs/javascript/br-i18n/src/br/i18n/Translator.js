@@ -15,16 +15,18 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 
 
 /**
+* @class
+* @alias module:br/i18n/Translator
+* 
+* @classdesc
 * <p>The class within the <code>br.I18N</code> package that is responsible
 * for translating localization tokens in the form of
 * <code>&#64;{key.name}</code> into translated text.</p>
+* 
 * <p>This class should not be instantiated directly. To access i18n functions
 * use the [br/i18n]{@link module:br/i18n} class which returns the
 * [br/i18n/I18N]{@link module:br/i18n/I18N} accessor class.
 * For example <code>require("br/i18n").i18n("some.i18n.key")</code>.</p>
-*
-* @class
-* @alias module:br/i18n/Translator
 */
 function Translator(messages) {
 	var unproccessedMessages = messages;

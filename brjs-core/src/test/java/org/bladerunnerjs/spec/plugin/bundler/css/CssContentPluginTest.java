@@ -30,6 +30,9 @@ public class CssContentPluginTest extends SpecTest {
 	private Workbench workbench;
 	private Blade blade;
 	private Bladeset bladeset;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -38,6 +41,7 @@ public class CssContentPluginTest extends SpecTest {
 			app = brjs.app("app1");
 			appConf = app.appConf();
 			aspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			commonTheme = aspect.file("themes/common");
 			mainTheme = aspect.file("themes/main");
 			brBoostrapLib = brjs.sdkLib("br-bootstrap");
@@ -48,6 +52,8 @@ public class CssContentPluginTest extends SpecTest {
 			blade = bladeset.blade("b1");
 			bladeMainTheme = blade.file("themes/main");
 			workbench = blade.workbench();
+			defaultBladeset = app.defaultBladeset();
+			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 	}
 	
 	@Test
@@ -487,6 +493,24 @@ public class CssContentPluginTest extends SpecTest {
 				"div {background:url('../../cssresource/aspect_default/theme_common/image2.png');}",
 				"div {background:url('../../cssresource/aspect_default/theme_common/image3.png'); jhasdjadsja }"
 		);
+	}
+	
+	@Test
+	public void bladeCSSInDefaultBladesetCanBeBundled() throws Exception {
+		given(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
+			.and(bladeInDefaultBladeset).containsFileWithContents("themes/common/style.css", "blade css")
+			.and(aspect).indexPageRequires("appns/b1/BladeClass");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("blade css");
+	}
+	
+	@Test
+	public void CSSInDefaultAspectCanBeBundled() throws Exception {
+		given(defaultAspect).hasClass("appns/AspectClass")
+			.and(defaultAspect).containsFileWithContents("themes/common/style.css", "aspect css")
+			.and(defaultAspect).indexPageRequires("appns/AspectClass");
+		when(defaultAspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("aspect css");
 	}
 	
 }

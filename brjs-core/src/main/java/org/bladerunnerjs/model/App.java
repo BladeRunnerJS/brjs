@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,12 +9,12 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.app.building.StaticAppBuilder;
 import org.bladerunnerjs.model.app.building.WarAppBuilder;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
@@ -39,8 +38,15 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$");
-	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
+	public final static String DEFAULT_CONTAINER_NAME = "default";
+	
+	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$", "^default");
+	private final NodeItem<DefaultBladeset> implicitDefaultBladeset = new NodeItem<>(this, DefaultBladeset.class, ".");
+	private final NodeItem<Bladeset> explicitDefaultBladeset = new NodeItem<>(this, Bladeset.class, "default-bladeset");
+		// default blade represents 'blades' dir since otherwise 2 nodes are registered for the same path
+	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$", "^default");
+	private final NodeItem<DefaultAspect> implicitDefaultAspect = new NodeItem<>(this, DefaultAspect.class, ".");
+	private final NodeItem<Aspect> explicitDefaultAspect = new NodeItem<>(this, Aspect.class, "default-aspect");
 	private final NodeList<AppJsLib> bladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
 	
 	private String name;
@@ -156,30 +162,83 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public AppConf appConf() throws ConfigException {
 		if(appConf == null) {
 			appConf = new AppConf(this);
-			appConf.autoWriteOnSet(false);
 		}
 		
 		return appConf ;
 	}
 	
+	/**
+	 * Get the list of bladesets for the App
+	 * @return list of bladesets
+	 */
 	public List<Bladeset> bladesets()
 	{
-		return bladesets.list();
+		List<Bladeset> childBladesets = new ArrayList<>( bladesets.list() );
+		Bladeset defaultBladeset = defaultBladeset();
+		if (defaultBladeset.exists()) {
+			childBladesets.add(0, defaultBladeset);
+		}
+		return childBladesets;
 	}
 	
+	/**
+	 * Get a named bladeset. 
+	 * bladeset("default") returns a bladeset with the name 'default' rather than the bladeset that represents the optional bladeset. 
+	 * @return the named bladeset
+	 */
 	public Bladeset bladeset(String bladesetName)
 	{
+		if (bladesetName.equals(DEFAULT_CONTAINER_NAME)) {
+			return defaultBladeset(true);
+		}
 		return bladesets.item(bladesetName);
 	}
+	
+	/**
+	 * Get the default bladeset for the app. This is different from using bladeset("default").
+	 * @return the default bladeset
+	 * @see #bladeset
+	 */
+	public Bladeset defaultBladeset()
+	{
+		return defaultBladeset(false);
+	}
 
+	/**
+	 * Get the list of aspects for the App
+	 * @return list of aspects
+	 */
 	public List<Aspect> aspects()
 	{
-		return aspects.list();
+		List<Aspect> childAspects = new ArrayList<>( aspects.list() );
+		Aspect defaultAspect = defaultAspect();
+		if (defaultAspect.exists()) {
+			childAspects.add(0, defaultAspect);
+		}
+		return childAspects;
 	}
 	
+	/**
+	 * Get a named aspects. 
+	 * aspect("default") returns an aspect with the name 'default' rather than the aspect that represents the optional aspect. 
+	 * @return the named bladeset
+	 */
 	public Aspect aspect(String aspectName)
 	{
+		if (aspectName.equals(DEFAULT_CONTAINER_NAME)) {
+			return defaultAspect(true);
+		}
 		return aspects.item(aspectName);
+	}
+	
+	/**
+	 * Get the default aspect for the app. This is different from using aspect("default").
+	 * @return the default aspect
+	 * @see #defaultAspect
+	 */
+	public Aspect defaultAspect()
+	{
+		return defaultAspect(false);
 	}
 	
 	public List<JsLib> jsLibs()
@@ -226,7 +285,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		super.populate();
-		aspect("default").populate();
+		defaultAspect().populate();
+		defaultBladeset().populate();
 	};
 	
 	public void populate(String requirePrefix) throws InvalidNameException, ModelUpdateException
@@ -236,7 +296,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		try {
 			appConf().setRequirePrefix(requirePrefix);
 			populate();
-			appConf.autoWriteOnSet(true);
 			appConf().write();
 		}
 		catch (ConfigException e) {
@@ -252,13 +311,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void deploy() throws TemplateInstallationException
 	{
 		try {
-			if(!root().appJars().dirExists()) throw new IllegalStateException(
-				"The directory containing the app jars, located at '" + root().appJars().dir().getPath() + "', is not present");
-			FileUtils.copyDirectory(root().appJars().dir(), file("WEB-INF/lib"));
 			notifyObservers(new AppDeployedEvent(), this);
 			logger.info(Messages.APP_DEPLOYED_LOG_MSG, getName(), dir().getPath());
 		}
-		catch (IOException | IllegalStateException e) {
+		catch (IllegalStateException e) {
 			logger.error(Messages.APP_DEPLOYMENT_FAILED_LOG_MSG, getName(), dir().getPath());
 			throw new TemplateInstallationException(e);
 		}
@@ -299,4 +355,17 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void buildWar(File targetFile) throws ModelOperationException {
 		new WarAppBuilder().build(this, targetFile);
 	}
+	
+	
+	
+	private Bladeset defaultBladeset(boolean preferExplicitDefault)
+	{
+		return AppUtility.getImplicitOrExplicitAssetContainer(root(), Bladeset.class, implicitDefaultBladeset.item(false), explicitDefaultBladeset.item(false), preferExplicitDefault); 
+	}
+	
+	private Aspect defaultAspect(boolean preferExplicitDefault)
+	{
+		return AppUtility.getImplicitOrExplicitAssetContainer(root(), Aspect.class, implicitDefaultAspect.item(false), explicitDefaultAspect.item(false), preferExplicitDefault); 
+	}
+	
 }

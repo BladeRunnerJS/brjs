@@ -1,15 +1,22 @@
+/**
+ * @module br/presenter/testing/PresenterComponentFixture
+ */
+
 br.Core.thirdparty("presenter-knockout");
 
 /**
  * Constructs a <code>br.presenter.testing.PresenterComponentFixture</code>.
  * 
  * @class
+ * @alias module:br/presenter/testing/PresenterComponentFixture
+ * @extends module:br/component/testing/ComponentFixture
  * 
+ * @classdesc
  * The <code>PresenterComponentFixture</code> serves to create presenter components in order to test the 
  * component behavior.
- *
  * 
- * <p>Tests may use the <code>PresenterComponentFixture</code> to:
+ * <p>Tests may use the <code>PresenterComponentFixture</code> to:</p>
+ * 
  * <ul> 
  * 	<li>create a presenter component to test the model behavior:</br>
  * 		<code>
@@ -30,13 +37,9 @@ br.Core.thirdparty("presenter-knockout");
  * 		</code>
  * 	</li>
  * </ul>
- * </p>
  * 
- * @constructor
  * @param {String} sTemplateId the HTML template id representing the view of the presenter component. Required, not-null.
  * @param {String} sPresentationModel the presentation model class name for the presenter component. Required, not-null.
- * 
- * @extends br.component.testing.ComponentFixture
  */
 br.presenter.testing.PresenterComponentFixture = function(sTemplateId, sPresentationModel)
 {
@@ -59,7 +62,7 @@ br.presenter.testing.PresenterComponentFixture = function(sTemplateId, sPresenta
 	/**
 	 * @private
 	 */
-	this.m_fBindPresentationModel = presenter_ko.applyBindings;
+	this.m_fBindPresentationModel = presenter_knockout.applyBindings;
 };
 
 
@@ -98,7 +101,7 @@ br.presenter.testing.PresenterComponentFixture.prototype.doGiven = function(sPro
 	
 	if(sProperty == "opened")
 	{
-		presenter_ko.applyBindings = function(){};
+		presenter_knockout.applyBindings = function(){};
 	}
 	
 	try
@@ -108,7 +111,7 @@ br.presenter.testing.PresenterComponentFixture.prototype.doGiven = function(sPro
 	}
 	finally
 	{
-		presenter_ko.applyBindings = this.m_fBindPresentationModel;
+		presenter_knockout.applyBindings = this.m_fBindPresentationModel;
 	}
 };
 

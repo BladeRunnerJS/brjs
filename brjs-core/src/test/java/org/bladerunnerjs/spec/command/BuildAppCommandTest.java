@@ -8,8 +8,8 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandException;
 import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
+import org.bladerunnerjs.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -20,7 +20,7 @@ public class BuildAppCommandTest extends SpecTest
 {
 
 	App app;
-	Aspect aspect;
+	Aspect defaultAspect;
 	Bladeset bladeset;
 	Blade blade;
 	Blade badBlade;
@@ -33,7 +33,7 @@ public class BuildAppCommandTest extends SpecTest
 			.and(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
-		aspect = app.aspect("default");
+		defaultAspect = app.defaultAspect();
 		otherApp = brjs.app("other-app");
 		bladeset = app.bladeset("bladeset");
 		blade = bladeset.blade("blade");
@@ -128,16 +128,20 @@ public class BuildAppCommandTest extends SpecTest
 	{
 		given(app).hasBeenCreated().and(brjs).hasDir("sdk/target");
 		when(brjs).runCommand("build-app", "app", "target");
-		then(brjs).hasDir("sdk/target/app")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
+		then(brjs).hasDir("sdk/target")
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target").getCanonicalPath());
 	}
 
 	@Test
 	public void appDoesntOverwriteExistingBuiltAppIfBuildingToACustomLocation() throws Exception
 	{
-		given(app).hasBeenCreated().and(brjs).hasDir("sdk/target").and(brjs).commandHasBeenRun("build-app", "app", "target");
+		given(app).hasBeenCreated()
+			.and(app.defaultAspect()).indexPageHasContent("index page")
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(brjs).hasDir("sdk/target")
+			.and(brjs).commandHasBeenRun("build-app", "app", "target");
 		when(brjs).runCommand("build-app", "app", "target");
-		then(exceptions).verifyException(DirectoryAlreadyExistsCommandException.class, brjs.file("sdk/target/app").getCanonicalPath())
+		then(exceptions).verifyException(DirectoryNotEmptyCommandException.class, brjs.file("sdk/target").getCanonicalPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 
@@ -146,8 +150,8 @@ public class BuildAppCommandTest extends SpecTest
 	{
 		given(app).hasBeenCreated().and(brjs).hasDir("sdk/target");
 		when(brjs).runCommand("build-app", "app", brjs.file("sdk/target").getAbsolutePath());
-		then(brjs).hasDir("sdk/target/app")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
+		then(brjs).hasDir("sdk/target")
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target").getCanonicalPath());
 	}
 
 	@Test
@@ -162,7 +166,11 @@ public class BuildAppCommandTest extends SpecTest
 	@Test
 	public void appWithThemedDefaultAspectCanBeExportedAsAWar() throws Exception
 	{
-		given(brjs).usesProductionTemplates().and(brjs.appJars()).containsFile("some-jar.jar").and(brjs).commandHasBeenRun("create-app", "app").and(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content").and(brjs).localeForwarderHasContents("locale-forwarder.js");
+		given(brjs).usesProductionTemplates()
+			.and(brjs.appJars()).containsFile("some-jar.jar")
+			.and(brjs).commandHasBeenRun("create-app", "app")
+			.and(defaultAspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js");
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")
@@ -225,4 +233,17 @@ public class BuildAppCommandTest extends SpecTest
 		when(brjs).runCommand("build-app", "app");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
+	
+	@Test
+	public void defaultAspectsAreBuiltCorrectly() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(brjs).localeForwarderHasContents("")
+			.and(app.defaultAspect()).hasBeenCreated()
+			.and(app.appConf()).supportsLocales("en_GB")
+			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).fileContentsContains("generated/built-apps/app/en_GB/index.html", "DEFAULT ASPECT INDEX PAGE");
+	}
+	
 }

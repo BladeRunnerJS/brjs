@@ -1,13 +1,17 @@
 /**
+ * @module br/presenter/testing/PresentationModelFixture
+ */
+
+/**
  * Constructs a <code>br.presenter.testing.PresentationModelFixture</code>.
  * 
  * @class
+ * @alias module:br/presenter/testing/PresentationModelFixture
+ * @implements module:br/component/testing/ComponentModelFixture
  * 
+ * @classdesc
  * The <code>PresentationModelFixture</code> serves to manipulate and verify the state of the presentation
  * model of a presenter component. 
- * 
- * @constructor
- * @implements br.component.testing.ComponentModelFixture
  */
 br.presenter.testing.PresentationModelFixture = function()
 {
@@ -20,7 +24,7 @@ br.Core.inherit(br.presenter.testing.PresentationModelFixture, br.component.test
  */
 br.presenter.testing.PresentationModelFixture.prototype._initializePlugins = function()
 {
-	presenter_ko.bindingHandlers.event = new br.presenter.testing.KnockoutInvocationCountPlugin();
+	presenter_knockout.bindingHandlers.event = new br.presenter.testing.KnockoutInvocationCountPlugin();
 };
 
 // * **********************************************************************************
@@ -35,6 +39,11 @@ br.presenter.testing.PresentationModelFixture.prototype.setComponent = function(
 // ***********************************************************************************
 // *							  Fixture interface
 // ************************************************************************************
+
+br.presenter.testing.PresentationModelFixture.prototype.tearDown = function()
+{
+	delete this.m_oPresentationModel;
+};
 
 br.presenter.testing.PresentationModelFixture.prototype.canHandleExactMatch = function()
 {

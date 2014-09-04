@@ -9,7 +9,9 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
  *
  */
 public interface SourceModule extends LinkedAsset {	
+	
 	boolean isEncapsulatedModule();
+	boolean isGlobalisedModule();
 	
 	/**
 	 * Returns a list of source files that *must* precede this source file in the output 

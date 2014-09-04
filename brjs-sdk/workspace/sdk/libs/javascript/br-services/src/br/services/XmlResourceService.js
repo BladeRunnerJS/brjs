@@ -5,11 +5,13 @@ var Errors = require('br/Errors');
 */
 
 /**
-* This class provides access to XML documents loaded via the XML bundler.
-* @class
-* @interface
-* @alias module:br/services/XmlResourceService
-*/
+ * @class
+ * @interface
+ * @alias module:br/services/XmlResourceService
+ * 
+ * @classdesc
+ * This class provides access to XML documents loaded via the XML bundler.
+ */
 function XmlResourceService() {};
 
 /**

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
@@ -18,6 +20,7 @@ public class ProcessLogger {
 	private boolean running = true;
 	private final LogLevel standardOutLogLevel;
 	private final LogLevel standardErrorLogLevel;
+	Pattern pattern;
 	
 	public ProcessLogger(BRJS brjs, Process process, LogLevel standardOutLogLevel, LogLevel standardErrorLogLevel, String processName) throws IOException {
 		logger = brjs.logger(ProcessLogger.class);
@@ -27,6 +30,10 @@ public class ProcessLogger {
 		
 		logProcessStream(processName, new InfoLogger(), process.getInputStream());
 		logProcessStream(processName, new ErrorLogger(), process.getErrorStream());
+		
+		final String regexp = "(.*: Reset)|(Tests failed: Tests failed.*)";
+		final int flags = Pattern.CASE_INSENSITIVE;
+		pattern = Pattern.compile(regexp,flags);
 	}
 	
 	public void stop() {
@@ -101,6 +108,10 @@ public class ProcessLogger {
 	}
 	
 	private void logMessage(LogLevel logLevel, String message, Object[] params) {
+		if(catchUnwantedMessages(message)){
+			return; //hack for filtering unnecessarily verbose output
+		}
+		
 		switch(logLevel) {			
 			case ERROR:
 				logger.error(message, params);
@@ -118,5 +129,10 @@ public class ProcessLogger {
 				logger.debug(message, params);
 				break;
 		}
+	}
+
+	private boolean catchUnwantedMessages(String message) {
+		Matcher matcher = pattern.matcher(message);
+		return matcher.find();
 	}
 }

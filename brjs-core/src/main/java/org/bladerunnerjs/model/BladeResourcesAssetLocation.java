@@ -8,8 +8,8 @@ public final class BladeResourcesAssetLocation extends ResourcesAssetLocation {
 	
 	private Bladeset parentBladeset;
 
-	public BladeResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file) {
-		super(root, assetContainer, file);
+	public BladeResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file, AssetLocation parentAssetLocation) {
+		super(root, assetContainer, file, parentAssetLocation);
 		parentBladeset = root.locateAncestorNodeOfClass(this, Bladeset.class);
 	}
 	
@@ -17,7 +17,10 @@ public final class BladeResourcesAssetLocation extends ResourcesAssetLocation {
 	public List<AssetLocation> dependentAssetLocations()
 	{
 		List<AssetLocation> assetLocations = super.dependentAssetLocations();
-		assetLocations.add( parentBladeset.assetLocation("resources") );
+		AssetLocation parentResourcesAssetLocation = parentBladeset.assetLocation("resources");
+		if (parentResourcesAssetLocation != null) {
+			assetLocations.add( parentResourcesAssetLocation );
+		}
 		return assetLocations;
 	}
 	

@@ -38,8 +38,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	}
 	
 	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
-		File appExportDir = new File(targetDir, app.getName());
-		app.build( appExportDir );
+		app.build( targetDir );
 		
 		return builderChainer;
 	}
@@ -66,6 +65,7 @@ public class AppBuilder extends NodeBuilder<App> {
 			createdLocales.add( new Locale(locale) );
 		}
 		app.appConf().setLocales( createdLocales.toArray(new Locale[0]) );
+		app.appConf().write();
 		
 		return builderChainer;
 	}
@@ -87,6 +87,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	public BuilderChainer hasLocaleCookieName(String cookieName) throws ConfigException
 	{
 		app.appConf().setLocaleCookieName(cookieName);
+		app.appConf().write();
 		
 		return builderChainer;
 	}

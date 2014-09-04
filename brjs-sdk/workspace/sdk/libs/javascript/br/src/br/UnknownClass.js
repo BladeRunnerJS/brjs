@@ -1,7 +1,17 @@
 "use strict";
 
-/* The class that's used to represent an 'abstract' alias. DO NOT DELETE THIS CLASS */
-/** @private */
+/**
+ * @module br/UnknownClass
+ */
+
+/**
+ * @private
+ * @class
+ * @alias module:br/UnknownClass
+ * 
+ * @classdesc
+ * The class that's used to represent an 'abstract' alias.
+ */
 function UnknownClass() {
 }
 

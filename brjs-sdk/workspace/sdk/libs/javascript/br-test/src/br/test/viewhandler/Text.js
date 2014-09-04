@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/Text
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.Text
  * @class
- * <code>Text ViewFixtureHandler</code> can be used to set or get <code>text</code> property of a view element.
+ * @alias module:br/test/viewhandler/Text
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>Text</code> instances of <code>ViewFixtureHandler</code> can be used to set or get <code>text</code> property of a view element.
  * Example usage:
- * <p>
- * <code>and("form.view.(.orderSummary .deliveryDate label).text = 'Delivery Date'");</code>
- * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * 
+ * <pre>and("form.view.(.orderSummary .deliveryDate label).text = 'Delivery Date'");</pre>
  */
 function Text() {
 }

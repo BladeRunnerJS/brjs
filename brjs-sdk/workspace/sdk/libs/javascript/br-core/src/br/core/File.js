@@ -1,8 +1,7 @@
 "use strict";
 
 /**
-* @class
-* @module br/Core/File
+* @module br/core/File
 */
 
 var Errors = require('br/Errors');

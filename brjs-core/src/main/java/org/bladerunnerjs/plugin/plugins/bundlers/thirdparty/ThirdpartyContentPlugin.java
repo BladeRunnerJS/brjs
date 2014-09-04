@@ -65,29 +65,32 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
 		try {
+			List<SourceModule> sourceModules = bundleSet.getSourceModules();
 			if (contentPath.formName.equals("bundle-request"))
 			{
+				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(sourceModules);
 				List<Reader> readerList = new ArrayList<Reader>();
-				for(SourceModule sourceFile : bundleSet.getSourceModules()) 
+				for(SourceModule sourceFile : sourceModules) 
 				{
 					if(sourceFile instanceof ThirdpartySourceModule)
 					{
 						readerList.add(new StringReader("// " + sourceFile.getPrimaryRequirePath() + "\n"));
 						readerList.add(sourceFile.getReader());
 						readerList.add(new StringReader("\n\n"));
+						readerList.add( new StringReader(getGlobalisedThirdpartyModuleContent(sourceFile, hasUnencapsulatedSourceModule)) );
 					}
 				}
-				
 				return new CharResponseContent( brjs, readerList );
 			}
 			else if(contentPath.formName.equals("single-module-request")) {
+				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(sourceModules);
 				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 				return new CharResponseContent(brjs, 
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
 					jsModule.getReader(),
-					new StringReader("\n\n")
+					new StringReader("\n\n"),
+					new StringReader(getGlobalisedThirdpartyModuleContent(jsModule, hasUnencapsulatedSourceModule))
 				);
-					
 			}
 			else {
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
@@ -96,6 +99,15 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		catch(RequirePathException  | IOException ex) {
 			throw new ContentProcessingException(ex);
 		}
+	}
+
+	private String getGlobalisedThirdpartyModuleContent(SourceModule sourceFile, boolean hasUnencapsulatedSourceModule)
+	{
+		if (sourceFile instanceof ThirdpartySourceModule && hasUnencapsulatedSourceModule) {
+			ThirdpartySourceModule thirdpartyModule = (ThirdpartySourceModule) sourceFile;
+			return "window." + thirdpartyModule.getGlobalisedName() + " = require('"+thirdpartyModule.getPrimaryRequirePath()+"');\n\n";
+		}
+		return "";
 	}
 
 	@Override
@@ -130,5 +142,16 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		}
 		
 		return requestPaths;
+	}
+
+	private boolean hasUnencapsulatedSourceModule(List<SourceModule> sourceModules)
+	{
+		for(SourceModule sourceFile : sourceModules) 
+		{
+			if (sourceFile.isGlobalisedModule()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

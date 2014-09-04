@@ -7,23 +7,29 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
+public class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
 {
-	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private String name;
 	private File[] scopeFiles;
 	private IndexPageSeedLocator indexPageSeedLocator;
+	
+	public Aspect(RootNode rootNode, Node parent, File dir) {
+		this(rootNode, parent, dir, StringUtils.substringBeforeLast(dir.getName(), "-aspect"));
+	}
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -50,6 +56,8 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
+		transformations.put("aspectRequirePrefix", requirePrefix());
+		transformations.put("aspectNamespace", requirePrefix().replace("/", "."));
 		transformations.put("aspectTitle", WordUtils.capitalize(getName()) );
 	}
 	
@@ -62,7 +70,9 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	@Override
 	public boolean isValidName()
 	{
-		return NameValidator.isValidDirectoryName(name);
+		boolean isValidName = NameValidator.isValidDirectoryName(name);
+		boolean matchesLocaleFormat = name.matches(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT);
+		return isValidName && !matchesLocaleFormat;
 	}
 	
 	@Override
@@ -75,6 +85,8 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		super.populate();
+		testType("unit").defaultTestTech().populate();
+		testType("acceptance").defaultTestTech().populate();
 	}
 	
 	@Override

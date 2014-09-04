@@ -17,6 +17,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private Aspect otherAspect;
+	private Aspect rootDefaultAspect;
 
 	private StringBuffer response = new StringBuffer();
 	
@@ -29,6 +30,8 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			otherAspect = app.aspect("other");
+			
+			rootDefaultAspect = app.defaultAspect();
 	}
 	
 	@Test
@@ -235,5 +238,13 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).classExtends("appns.Class3", "appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(CircularDependencyException.class, "appns/Class1", "appns/Class2", "appns/Class3");
+	}
+	
+	@Test
+	public void weBundleARootLevelAspectClassIfItIsReferredToInTheIndexPage() throws Exception {
+		given(rootDefaultAspect).hasClass("appns/Class1")
+			.and(rootDefaultAspect).indexPageRefersTo("appns.Class1");
+		when(rootDefaultAspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.Class1");
 	}
 }

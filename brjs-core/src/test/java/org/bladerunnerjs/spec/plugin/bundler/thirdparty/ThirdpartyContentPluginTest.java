@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -18,6 +19,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	private JsLib thirdpartyLib2;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer pageResponse = new StringBuffer();
+	private SdkJsLib sdkLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -30,6 +32,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			thirdpartyLib = app.jsLib("thirdparty-lib");
 			thirdpartyLib2 = app.jsLib("thirdparty-lib2");
 			bladerunnerConf = brjs.bladerunnerConf();
+			sdkLib = brjs.sdkLib("lib");
 	}	
 	
 	@Test
@@ -192,6 +195,91 @@ public class ThirdpartyContentPluginTest extends SpecTest {
     	when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
     	then(pageResponse).containsText("file1.js")
     		.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void librariesWithUmdConfigAreWrappedInADefineBlock() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
+			.and(aspect).indexPageRequires("lib");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsOrderedTextFragments("define('lib', function(require, exports, module) {",
+				"module.exports = function() { };\n",
+				"});\n");
+	}
+	
+	@Test 
+	public void librariesWithEmptyObjectExportsDontCreateInvalidJS() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "some lib content")
+			.and(sdkLib).containsFile("package.json")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: \"{}\"")
+			.and(aspect).indexPageRequires("lib");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsLines(
+				"// lib",
+				"some lib content",
+				"",
+				"define('lib', function(require, exports, module) {",		
+				"module.exports = {};")
+			.and(pageResponse).doesNotContainText("{} = require('lib');");
+	}
+	
+	@Test
+	public void librariesWithUmdConfigAreNotGlobalisedByDefault() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
+			.and(aspect).indexPageRequires("lib");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).doesNotContainText("thisLib = require('lib');");
+	}
+	
+	@Test
+	public void librariesWithUmdConfigAreNotGlobalisedIfANamespacedJsClassIsNotUsed() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
+			.and(aspect).hasClass("App")
+			.and(aspect).classRequiresThirdpartyLib("App", sdkLib)
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).doesNotContainText("thisLib = require('lib');");
+	}
+	
+	@Test
+	public void librariesWithUmdConfigAreGlobalisedIfANamespacedJsClassIsUsed() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("App")
+			.and(aspect).classDependsOnThirdpartyLib("App", sdkLib)
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsText("lib = require('lib');");
+	}
+	
+	@Test
+	public void aJsSafeVersionOfTheLibraryNameIsUsedToGlobalisedUmdWrappedLibraries() throws Exception {
+		sdkLib = brjs.sdkLib("my-lib");
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("App")
+			.and(aspect).classDependsOnThirdpartyLib("App", sdkLib)
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsText("my_lib = require('my-lib');");
+	}
+	
+	@Test
+	public void windowIsUsedToGlobaliseLibraries() throws Exception {
+		sdkLib = brjs.sdkLib("my-lib");
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("App")
+			.and(aspect).classDependsOnThirdpartyLib("App", sdkLib)
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsText("window.my_lib");
 	}
 	
 }

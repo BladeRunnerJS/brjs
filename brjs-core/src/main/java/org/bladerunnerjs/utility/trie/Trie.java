@@ -11,34 +11,29 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
 import org.bladerunnerjs.utility.trie.node.BasicRootTrieNode;
-import org.bladerunnerjs.utility.trie.node.OptimisedTrieLeafNode;
-import org.bladerunnerjs.utility.trie.node.OptimisedTrieRootNode;
-import org.bladerunnerjs.utility.trie.node.OptimisedTrieTrunkLeafNode;
-import org.bladerunnerjs.utility.trie.node.OptimisedTrieTrunkNode;
 import org.bladerunnerjs.utility.trie.node.TrieNode;
 
 public class Trie<T>
 {
+	private static final char DEFAULT_PRIMARY_SEPERATOR = '\u0000';
+
 	private static final Pattern MATCH_ALL_PATTERN = Pattern.compile(".*", Pattern.DOTALL);
-	private static final int CHILD_SIZE_OPTIMIZATION_THRESHOLD = 5;
 	
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"\\\"\'\\'".toCharArray();
 	
 	private TrieNode<T> root;
 	private int readAheadLimit = 1;
-	private boolean trieOptimized = false;
 	private Map<String, TrieNode<T>> trieLookup = new HashMap<String, TrieNode<T>>();
 	private List<Character> seperators;
+
 	private char primarySeperator;
 	
-	private int largestChildList = 0;
-
-	
 	public Trie() {
-		this('\u0000');
+		this(DEFAULT_PRIMARY_SEPERATOR);
 	}
 	
 	public Trie(char primarySeperator, Character... seperators) {
@@ -47,13 +42,15 @@ public class Trie<T>
 		root = new BasicRootTrieNode<>(primarySeperator, this.seperators);
 	}
 	
-	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException, TrieLockedException {
+	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException {
 		add(key, value, MATCH_ALL_PATTERN);
 	}
 	
-	public void add(String key, T value, Pattern matchPattern) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException, TrieLockedException {
-		if (trieOptimized) {
-			throw new TrieLockedException();
+	public void add(String key, T value, Pattern matchPattern) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException { 
+		
+		if (primarySeperator != DEFAULT_PRIMARY_SEPERATOR && !seperators.isEmpty()) {
+			String findSeperatorsRegex = "[" + Pattern.quote(StringUtils.join(seperators, "")) + "]";
+			key = key.replaceAll(findSeperatorsRegex , primarySeperator+"" );
 		}
 		
 		if (key.length() < 1)
@@ -65,8 +62,6 @@ public class Trie<T>
 		for( char character : key.toCharArray() )
 		{
 			node = node.getOrCreateNextNode( character );
-			int nodeSize = node.size();
-			largestChildList = (nodeSize > largestChildList) ? largestChildList : nodeSize;
 		}
 		
 		if (node.getValue() != null)
@@ -80,7 +75,15 @@ public class Trie<T>
 	}
 	
 	public boolean containsKey(String key) {
-		return (trieLookup.get(key) != null);
+		if (trieLookup.containsKey(key)) {
+			return true;
+		}
+		for (Character seperator : seperators) {
+			if (trieLookup.containsKey(key.replace(seperator, primarySeperator))) {
+				return true;
+			}			
+		}
+		return false;
 	}
 	
 	public T get(String key)
@@ -115,61 +118,6 @@ public class Trie<T>
 		
 		return matches;	
 	}
-	
-	
-	public void optimize() {
-		if (isOptimized()) {
-			return;
-		}
-		trieOptimized = true;
-		root = createOptimisedTrieNode(root);
-		System.gc();
-	}
-
-	public boolean isOptimized() {
-		return trieOptimized;
-	}
-	
-	public boolean needsOptimizing()
-	{
-		return largestChildList > CHILD_SIZE_OPTIMIZATION_THRESHOLD;
-	}
-	
-	private TrieNode<T> createOptimisedTrieNode(TrieNode<T> trieNode) {
-		char trieNodeChar = trieNode.getChar();
-		T trieNodeValue = trieNode.getValue();
-		Pattern trieNodeMatchPattern = trieNode.getMatchPattern();
-		
-		TrieNode<T>[] trieNodeChildren = getOrderedTrieNodeChildren(trieNode);
-		
-		if (trieNodeChildren.length > 0) {
-			
-			@SuppressWarnings("unchecked")
-			TrieNode<T>[] optimisedTrieNodeChildren = new TrieNode[trieNodeChildren.length];
-			
-			for (int childNum = 0; childNum < trieNodeChildren.length; childNum++) {
-				optimisedTrieNodeChildren[childNum] = createOptimisedTrieNode( trieNodeChildren[childNum] );
-			}
-			
-			if (trieNode == root) {
-				return new OptimisedTrieRootNode<>(optimisedTrieNodeChildren, primarySeperator, seperators);
-			} else if (trieNodeValue != null) {
-				return new OptimisedTrieTrunkLeafNode<T>(trieNodeChar, trieNodeValue, optimisedTrieNodeChildren, primarySeperator, seperators);
-			} else {
-				return new OptimisedTrieTrunkNode<>(trieNodeChar, optimisedTrieNodeChildren, primarySeperator, seperators);
-			}
-		} else {
-			return new OptimisedTrieLeafNode<T>(trieNodeChar, trieNodeValue, primarySeperator, seperators, trieNodeMatchPattern);
-		}
-	}
-	
-	private TrieNode<T>[] getOrderedTrieNodeChildren(TrieNode<T> node) {
-		TrieNode<T>[] nodeChildren = node.getChildren();
-		Arrays.sort(nodeChildren);
-		return nodeChildren;
-	}
-	
-	
 	
 	
 	private TrieNode<T> getNode(String key) {

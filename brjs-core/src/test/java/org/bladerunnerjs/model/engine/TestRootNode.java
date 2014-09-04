@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.logging.LoggerFactory;
@@ -42,14 +43,9 @@ public final class TestRootNode extends AbstractRootNode
 		try {
 			super.registerNode(node);
 		}
-		catch(NodeAlreadyRegisteredException e) {
-			if (node.dir().exists()) {
-				node.ready();
-			}
-			// do nothing -- the node engine test code was designed at a time when we didn't fail fast if you registered multiple nodes for the same directory path
-			// additionally, these tests are now of less importance now that the domain model is more thoroughly tested
+		catch(NodeAlreadyRegisteredException ex) {
+			throw new RuntimeException(ex);
 		}
-		
 	};
 	
 	@Override
@@ -90,7 +86,18 @@ public final class TestRootNode extends AbstractRootNode
 	
 	@Override
 	public FileInfo getFileInfo(File dir) {
-		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo());
+		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo(dir));
+	}
+	
+	@Override
+	public List<FileInfo> getFileInfoSet(File[] files) {
+		List<FileInfo> fileInfoSet = new ArrayList<>();
+		
+		for(File file : files) {
+			fileInfoSet.add(getFileInfo(file));
+		}
+		
+		return fileInfoSet;
 	}
 	
 	@Override

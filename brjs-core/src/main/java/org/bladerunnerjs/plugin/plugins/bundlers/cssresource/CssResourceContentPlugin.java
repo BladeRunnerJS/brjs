@@ -24,6 +24,7 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.BinaryResponseContent;
@@ -96,7 +97,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		{
 			return getValidContentPaths(bundleSet, locales);
 		}
-		catch (MalformedTokenException ex)
+		catch (MalformedTokenException | ConfigException ex)
 		{
 			throw new ContentProcessingException(ex);
 		}
@@ -108,7 +109,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		{
 			return getValidContentPaths(bundleSet, locales);
 		}
-		catch (MalformedTokenException ex)
+		catch (MalformedTokenException | ConfigException ex)
 		{
 			throw new ContentProcessingException(ex);
 		}
@@ -201,15 +202,30 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		try
 		{
-			return new BinaryResponseContent( new FileInputStream(resourceFile) );
+			if (fileIgnoredByBrjsConfig(resourceFile)) {
+				String relativePath = RelativePathUtility.get(brjs, brjs.dir(), resourceFile);
+				throw new FileNotFoundException("The file at '"+relativePath+"' is ignored by the BRJS configuration so cannot be served");
+			}
+			return new BinaryResponseContent( new FileInputStream(resourceFile) );	
 		}
-		catch (FileNotFoundException ex)
+		catch (FileNotFoundException | ConfigException ex)
 		{
 			throw new ContentProcessingException(ex);
 		}
 	}
 	
-	private List<String> getValidContentPaths(BundleSet bundleSet, Locale... locales) throws MalformedTokenException {
+	private boolean fileIgnoredByBrjsConfig(File resourceFile) throws ConfigException
+	{
+		String relativePath = RelativePathUtility.get(brjs, brjs.dir(), resourceFile);
+		for (String ignoredPath : brjs.bladerunnerConf().getIgnoredPaths()) {
+			if (relativePath.contains(ignoredPath+"/") || relativePath.endsWith(ignoredPath)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private List<String> getValidContentPaths(BundleSet bundleSet, Locale... locales) throws MalformedTokenException, ConfigException {
 		List<String> contentPaths = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers())
@@ -221,7 +237,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 
 	
-	private List< String> getValidContentPaths(AssetContainer assetContainer) throws MalformedTokenException
+	private List< String> getValidContentPaths(AssetContainer assetContainer) throws MalformedTokenException, ConfigException
 	{		
 		List<String> contentPaths = new ArrayList<>();
 		
@@ -288,7 +304,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		return result;
 	}
 	
-	private Set<String> calculateContentPathsForThemesAndResources(AssetContainer container, String themeRequestName, String resourcesRequestName, String... requestArgs) throws MalformedTokenException
+	private Set<String> calculateContentPathsForThemesAndResources(AssetContainer container, String themeRequestName, String resourcesRequestName, String... requestArgs) throws MalformedTokenException, ConfigException
 	{
 		Set<String> contentPaths = new LinkedHashSet<>();
 		for (ResourcesAssetLocation assetLocation : getResourceAssetLocations(container)){
@@ -296,7 +312,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			FileInfo assetLocationDirInfo = brjs.getFileInfo(assetLocationDir);
 			if (assetLocationDirInfo.isDirectory()){
 				for (File file : assetLocationDirInfo.nestedFiles()) {
-					createRequestForNestedDir(container, themeRequestName, resourcesRequestName, contentPaths, assetLocation, file, requestArgs);
+					if (!fileIgnoredByBrjsConfig(file)) {
+						createRequestForNestedDir(container, themeRequestName, resourcesRequestName, contentPaths, assetLocation, file, requestArgs);
+					}
 				}
 			}
 		}
@@ -307,7 +325,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	private void createRequestForNestedDir(AssetContainer container, String themeRequestName, String resourcesRequestName, Set<String> contentPaths, AssetLocation assetLocation, File file, String... requestArgs) throws MalformedTokenException
 	{
 		File assetLocationParentDir = assetLocation.dir().getParentFile();
-		//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'
+		//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'?
 		if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
 			if (themeRequestName != null) {
 				ThemedAssetLocation themeAssetLocation = (ThemedAssetLocation) assetLocation;

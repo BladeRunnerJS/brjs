@@ -1,16 +1,21 @@
+/**
+ * @module br/workbench/ui/Workbench
+ */
+
 var JQuery = require( 'jquery' );
 var WorkbenchPanel = require( './WorkbenchPanel' );
 var SimpleFrame = require( 'br/component/SimpleFrame' );
 var ElementUtility = require( 'br/util/ElementUtility' );
 
 /**
- * @name br.workbench.ui.Workbench
  * @class
+ * @alias module:br/workbench/ui/Workbench
+ * 
+ * @classdesc
  * Represents a UI component for displaying workbenches. A workbench contains
- * left and right {@link WorkbenchPanel}s to which
- * {@link WorkbenchComponent} components can be added.
- * @constructor
- *
+ * left and right {@link module:br/workbench/ui/WorkbenchPanel}s to which
+ * {@link module:br/workbench/ui/WorkbenchComponent} components can be added.
+ * 
  * @param {int} nLeftWidth The width of the left panel in pixels.
  * @param {int} nRightWidth The width of the right panel in pixels.
  */

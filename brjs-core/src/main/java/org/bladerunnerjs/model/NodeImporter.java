@@ -50,6 +50,7 @@ public class NodeImporter {
 		
 		FileUtils.copyDirectory(sourceBladesetDir, tempBrjsBladeset.dir());
 		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
+		tempBrjsApp.appConf().write();
 		
 		if(!JsStyleUtility.getJsStyle(sourceBladesetDir).equals(JsStyleUtility.getJsStyle(targetBladeset.dir()))) {
 			JsStyleUtility.setJsStyle(tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(sourceBladesetDir));
@@ -74,6 +75,9 @@ public class NodeImporter {
 		
 		for(Blade blade : bladeset.blades()) {
 			updateRequirePrefix(blade.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+			
+			Workbench workbench = blade.workbench();			
+			updateRequirePrefix(workbench.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
 		}
 	}
 	

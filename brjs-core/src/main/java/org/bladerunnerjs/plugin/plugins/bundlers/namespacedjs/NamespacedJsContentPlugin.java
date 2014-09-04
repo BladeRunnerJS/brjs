@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
@@ -44,8 +45,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	public static final String PACKAGE_DEFINITIONS_REQUEST = "package-definitions-request";
 	public static final String SINGLE_MODULE_REQUEST = "single-module-request";
 	public static final String BUNDLE_REQUEST = "bundle-request";
-
-	public static final String JS_STYLE = "namespaced-js";
 
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
@@ -162,7 +161,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
 				String globalizedClasses = getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
-				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules);
+				Map<String, Map<String, ?>> packageStructure = createPackageStructureForNamespacedJsClasses(bundleSet, processedGlobalizedSourceModules);
 				Reader structureRreader = getPackageStructureReader(packageStructure);
 				if(structureRreader != null){
 					readerList.add(structureRreader);
@@ -181,7 +180,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
 				getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
-				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules);
+				Map<String, Map<String, ?>> packageStructure = createPackageStructureForNamespacedJsClasses(bundleSet, processedGlobalizedSourceModules);
 				return new CharResponseContent(brjs, getPackageStructureReader(packageStructure) );
 			}
 			else if (contentPath.formName.equals(GLOBALIZE_EXTRA_CLASSES_REQUEST))
@@ -201,13 +200,13 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		}
 	}
 
-	private Map<String, Map<String, ?>> createPackageStructureForCaplinJsClasses(BundleSet bundleSet, List<SourceModule> globalizedModules)
+	private Map<String, Map<String, ?>> createPackageStructureForNamespacedJsClasses(BundleSet bundleSet, List<SourceModule> globalizedModules)
 	{
 		Map<String, Map<String, ?>> packageStructure = new LinkedHashMap<>();
 
 		for (SourceModule sourceModule : bundleSet.getSourceModules())
 		{
-			if (sourceModule instanceof NamespacedJsSourceModule)
+			if ((sourceModule instanceof NamespacedJsSourceModule) && !(sourceModule.assetLocation() instanceof TestAssetLocation))
 			{
 				List<String> packageList = Arrays.asList(sourceModule.getPrimaryRequirePath().split("/"));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
@@ -281,9 +280,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		List<SourceModule> allSourceModules = bundleSet.getSourceModules();
 
 		List<Predicate<SourceModule>> sourceModuleOrderingFilters = new LinkedList<>();
-		sourceModuleOrderingFilters.add( new IsNamespacedJsSourceModulePredicate() );
-		sourceModuleOrderingFilters.add( new IsCommonJsSourceModulePredicate() );
-		sourceModuleOrderingFilters.add( new IsNonCommonJSAndNonNamespacedJsSourceModulePredicate() );
+		sourceModuleOrderingFilters.add( new IsSourceModuleTypePredicate(NamespacedJsSourceModule.class) );
+		sourceModuleOrderingFilters.add( new IsSourceModuleTypePredicate(CommonJsSourceModule.class) );
 		
 		for (Predicate<SourceModule> sourceModuleFilter : sourceModuleOrderingFilters) {
 			for ( SourceModule sourceModule : Collections2.filter(allSourceModules,sourceModuleFilter) )
@@ -297,32 +295,15 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	
 	
 	
-	private class IsNamespacedJsSourceModulePredicate implements Predicate<SourceModule> {
+	private class IsSourceModuleTypePredicate implements Predicate<SourceModule> {
+		private Class<? extends SourceModule> type;
+		public IsSourceModuleTypePredicate(Class<? extends SourceModule> type) {
+			this.type = type;
+		}
 		@Override
 		public boolean apply(SourceModule input)
 		{
-			return input.getClass() == NamespacedJsSourceModule.class;
+			return ( type.isAssignableFrom(input.getClass()) && !(input.assetLocation() instanceof TestAssetLocation) );
 		}
 	}
-	
-	private class IsCommonJsSourceModulePredicate implements Predicate<SourceModule> {
-		@Override
-		public boolean apply(SourceModule input)
-		{
-			return input.getClass() == CommonJsSourceModule.class;
-		}
-	}
-
-	private class IsNonCommonJSAndNonNamespacedJsSourceModulePredicate implements Predicate<SourceModule> {
-		
-		IsNamespacedJsSourceModulePredicate isNamespacedJsSourceModulePredicate = new IsNamespacedJsSourceModulePredicate();
-		IsCommonJsSourceModulePredicate isCommonJsSourceModulePredicate = new IsCommonJsSourceModulePredicate();
-		
-		@Override
-		public boolean apply(SourceModule input)
-		{
-			return isNamespacedJsSourceModulePredicate.apply(input) && isCommonJsSourceModulePredicate.apply(input);
-		}
-	}
-
 }

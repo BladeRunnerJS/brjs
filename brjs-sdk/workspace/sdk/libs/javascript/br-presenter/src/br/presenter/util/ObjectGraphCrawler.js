@@ -1,3 +1,11 @@
+/**
+ * @module br/presenter/util/ObjectGraphCrawler
+ */
+
+/**
+ * @class
+ * @alias module:br/presenter/util/ObjectGraphCrawler
+ */
 br.presenter.util.ObjectGraphCrawler = function() {
 };
 

@@ -1,9 +1,16 @@
+/**
+* @module br/component/Serializable
+*/
+
 var Errors = require('br/Errors');
 
 /**
- * @name br.component.Serializable
  * @beta
  * @class
+ * @interface
+ * @alias module:br/component/Serializable
+ * 
+ * @classdesc
  * The <code>Serializable</code> interface is implemented by classes that provide a mechanism
  * to serialize their state and recreate instances from a serialized form.
  *
@@ -15,9 +22,6 @@ var Errors = require('br/Errors');
  *
  * <p>It is not the responsibility of a Serializable class to include its classname in its
  * serialized form.
- *
- * @constructor
- * @interface
  */
 function Serializable() {}
 

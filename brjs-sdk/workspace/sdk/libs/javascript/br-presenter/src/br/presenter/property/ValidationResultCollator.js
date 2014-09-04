@@ -1,5 +1,11 @@
 /**
+ * @module br/presenter/property/ValidationResultCollator
+ */
+
+/**
  * @private
+ * @class
+ * @alias module:br/presenter/property/ValidationResultCollator
  */
 br.presenter.property.ValidationResultCollator = function(oValidationResultListener, nValidators)
 {

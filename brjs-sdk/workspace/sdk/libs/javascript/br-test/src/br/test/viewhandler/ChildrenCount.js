@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/ChildrenCount
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -7,15 +11,15 @@ var Errors = require('br/Errors');
 var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
- * @name br.test.viewhandler.ChildrenCount
  * @class
- * <code>ChildrenCount ViewFixtureHandler</code> can be used to get number of child elements for a view element.
+ * @alias module:br/test/viewhandler/ChildrenCount
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
+ * 
+ * @classdesc
+ * <code>ChildrenCount</code> instances of <code>ViewFixtureHandler</code> can be used to get number of child elements for a view element.
  * Example usage:
- * <p>
- * <code>and("example.view.(select).childrenCount = 5");</code>
- * </p>
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * 
+ * <pre>and("example.view.(select).childrenCount = 5");</pre>
  */
 function ChildrenCount() {
 }

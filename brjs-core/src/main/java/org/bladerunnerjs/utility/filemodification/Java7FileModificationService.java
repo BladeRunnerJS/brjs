@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.WatchService;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,12 +21,17 @@ import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
+	private enum Status {
+		RUNNING, STOPPING, STOPPED
+	}
+	
 	public static final String THREAD_IDENTIFIER = "file-modification-service";
 	
 	private final WatchService watchService;
 	private final Map<String, ProxyFileModificationInfo> fileModificationInfos = new ConcurrentHashMap<>();
 	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
-	private boolean running = true;
+	
+	private Status status = Status.RUNNING;
 	private File rootDir;
 	private final Logger logger;
 
@@ -70,8 +77,30 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	@Override
+	public List<FileModificationInfo> getModificationInfoSet(File[] files) {
+		List<FileModificationInfo> modificationInfoSet = new ArrayList<>();
+		
+		for(File file : files) {
+			modificationInfoSet.add(getModificationInfo(file));
+		}
+		
+		return modificationInfoSet;
+	}
+	
+	@Override
 	public void close() {
-		running = false;
+		if(status == Status.RUNNING) {
+			status = Status.STOPPING;
+			
+			do {
+				try {
+					Thread.sleep(50);
+				}
+				catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+			} while(status == Status.STOPPING);
+		}
 	}
 	
 	@Override
@@ -79,7 +108,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		try {
 			Thread.currentThread().setName(THREAD_IDENTIFIER);
 			
-			while(running) {
+			while(status == Status.RUNNING) {
 				for(ProxyFileModificationInfo fileModificationInfo : fileModificationInfos.values()) {
 					fileModificationInfo.pollWatchEvents();
 				}
@@ -99,6 +128,9 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		catch(InterruptedException | IOException e) {
 			throw new RuntimeException(e);
 		}
+		finally {
+			status = Status.STOPPED;
+		}
 	}
 	
 	void watchDirectory(File file, WatchingFileModificationInfo parentModificationInfo, long lastModified) {
@@ -117,8 +149,6 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	public Logger getLogger() {
 		return logger;
 	}
-	
-	
 	
 	private class FileModificationServiceNodeReadyObserver implements EventObserver {
 

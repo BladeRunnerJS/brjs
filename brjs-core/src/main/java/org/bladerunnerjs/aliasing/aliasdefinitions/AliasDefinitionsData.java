@@ -13,6 +13,20 @@ public class AliasDefinitionsData {
 	public Map<String, Map<String, AliasOverride>> scenarioAliases = new HashMap<>();
 	public Map<String, List<AliasOverride>> groupAliases = new HashMap<>();
 	
+	public AliasDefinitionsData() {
+		// do nothing
+	}
+	
+	public AliasDefinitionsData(AliasDefinitionsData aliasDefinitionsData) {
+		aliasDefinitions.addAll(aliasDefinitionsData.aliasDefinitions);
+		scenarioAliases.putAll(aliasDefinitionsData.scenarioAliases);
+		groupAliases.putAll(aliasDefinitionsData.groupAliases);
+	}
+	
+	public boolean equals(AliasDefinitionsData aliasDefinitionsData) {
+		return aliasDefinitions.equals(aliasDefinitionsData) && scenarioAliases.equals(aliasDefinitionsData.scenarioAliases) && groupAliases.equals(aliasDefinitionsData.groupAliases);
+	}
+	
 	public Map<String, AliasOverride> getScenarioAliases(String aliasName) {
 		if(!scenarioAliases.containsKey(aliasName)) {
 			scenarioAliases.put(aliasName, new HashMap<String, AliasOverride>());

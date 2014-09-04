@@ -1,9 +1,7 @@
 
 /**
-* A workbench tool to display events triggered on the Event Hub
-*
-* @module br/workbench/tools/EventHubViewer
-*/
+ * @module br/workbench/tools/EventHubViewer
+ */
 
 var br = require( 'br/Core' );
 var emitr = require( 'emitr' );
@@ -14,7 +12,12 @@ var WorkbenchComponent = require( 'br/workbench/ui/WorkbenchComponent' );
 var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
 
 /**
+ * @class
  * @alias module:br/workbench/tools/EventHubViewer
+ * 
+ * @classdesc
+ * A workbench tool to display events triggered on the Event Hub.
+ * 
  * @param module:br/EventHub eventHub The event hub to use
  */
 function EventHubViewer( eventHub ) {

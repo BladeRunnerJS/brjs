@@ -45,7 +45,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/node-js/module/appns/Class1.js", "v/dev/aliasing/bundle.js");
+		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/common-js/module/appns/Class1.js", "v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -70,14 +70,14 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("v/dev/js/dev/combined/bundle.js");
 	}
-	
+		
 	@Test
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {		
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
-		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/node-js/module/appns/Class1.js", "v/dev/aliasing/bundle.js");
+		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
+		then(pageResponse).containsRequests("v/prod/thirdparty/bundle.js", "v/prod/app-meta/version.js", "v/prod/common-js/bundle.js", "v/prod/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	then(pageResponse).containsOrderedTextFragments(
 			"thirdparty/br-bootstrap/bundle.js", 
 			"thirdparty/appLib/bundle.js", 
-			"node-js/module/appns/node/Class.js",
+			"common-js/module/appns/node/Class.js",
 			"namespaced-js/package-definitions.js", 
 			"namespaced-js/module/appns/namespaced/Class.js",
 			"aliasing/bundle.js"); 
@@ -122,7 +122,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		then(pageResponse).containsOrderedTextFragments(
 				"thirdparty/br-bootstrap/bundle.js", 
 				"thirdparty/appLib/bundle.js", 
-				"node-js/module/appns/node/Class.js",
+				"common-js/module/appns/node/Class.js",
 				"namespaced-js/package-definitions.js", 
 				"namespaced-js/module/appns/namespaced/Class.js" ); 
 	}

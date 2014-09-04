@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -28,8 +29,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	
 	public List<String> getDepends() throws ConfigException
 	{
-		reloadConfIfChanged();
-		return listify(conf.depends);
+		return listify(getConf().depends);
 	}
 	
 	public List<File> getJsFiles() throws ConfigException {
@@ -42,21 +42,23 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 
 	public String getExports() throws ConfigException
 	{
-		reloadConfIfChanged();
-		return conf.exports;
+		return StringUtils.replaceChars(getConf().exports, " ", "");
+	}
+	
+	public boolean getCommonjsDefinition() throws ConfigException
+	{
+		return getConf().commonjsDefinition;
 	}
 	
 	
 	private List<String> getJs() throws ConfigException
 	{
-		reloadConfIfChanged();
-		return listify(conf.js); // TODO: see if we should also limit to only loading js in the root directory by default too
+		return listify(getConf().js); // TODO: see if we should also limit to only loading js in the root directory by default too
 	}
 	
 	private List<String> getCss() throws ConfigException
 	{
-		reloadConfIfChanged();
-		return listify(conf.css);
+		return listify(getConf().css);
 	}	
 	
 	private List<String> listify(String value)

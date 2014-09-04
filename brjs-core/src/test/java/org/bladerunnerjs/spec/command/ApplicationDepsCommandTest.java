@@ -4,6 +4,7 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -20,6 +21,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	AliasesFile aliasesFile;
 	AliasDefinitionsFile bladeAliasDefinitionsFile;
 	SdkJsLib brLib;
+	private Blade bladeInDefaultBladeset;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -30,9 +33,11 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			aliasesFile = aspect.aliasesFile();
 			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").aliasDefinitionsFile();
 			brLib = brjs.sdkLib("br");
+			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
 	}
 	
 	@Test
@@ -60,7 +65,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheDefaultAspectDoesntExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("app-deps", "app");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(aspect.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(Aspect.class.getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -68,7 +73,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheNamedAspectDoesntExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("app-deps", "app", "aspect");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(aspect.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(Aspect.class.getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -270,4 +275,38 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    |    |    |    |    \\--- 'alias!alias-ref' (alias dep.)",
 			"    |    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
+	
+	@Test
+	public void optionalPackageStructuresAreShownCorrectly() throws Exception {
+		given(aspect).indexPageRequires("appns/bs/b1/Class1")
+    		.and(app.bladeset("bs").blade("b1")).hasClasses("Class1");
+    	when(brjs).runCommand("app-deps", "app");
+    	then(logging).containsConsoleText(
+    		"Aspect 'default' dependencies found:",
+    		"    +--- 'default-aspect/index.html' (seed file)",
+    		"    |    \\--- 'bs-bladeset/blades/b1/src/Class1.js'");
+	}
+	
+	@Test
+	public void defaultBladesetsAreShownCorrectly() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Class1")
+			.and(bladeInDefaultBladeset).hasClasses("appns/b1/Class1");
+		when(brjs).runCommand("app-deps", "app");
+		then(logging).containsConsoleText(
+			"Aspect 'default' dependencies found:",
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    |    \\--- 'blades/b1/src/appns/b1/Class1.js'");
+	}
+	
+	@Test
+	public void defaultAspectsAreShownCorrectly() throws Exception {
+		given(defaultAspect).indexPageRequires("appns/Class1")
+			.and(defaultAspect).hasClasses("appns/Class1");
+		when(brjs).runCommand("app-deps", "app");
+		then(logging).containsConsoleText(
+			"Aspect 'default' dependencies found:",
+			"    +--- 'index.html' (seed file)",
+			"    |    \\--- 'src/appns/Class1.js'");
+	}
+	
 }

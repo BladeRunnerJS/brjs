@@ -1,21 +1,25 @@
 /**
+ * @module br/presenter/parser/ThousandsParser
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/parser/ThousandsParser
+ * @implements module:br/presenter/parser/Parser
  * 
- * Parses an amount and strips any thousands separators.  
- * <p/>
- * <code>ThousandsParser</code> is typically used with Presenter, but can be invoked programmatically
- * as in the following example which evaluates to "8987551787.0":
- * <p/>
- * <code>br.presenter.parser.ThousandsParser.parse("8,987,551,787.0", {})</code>
+ * @classdesc
  * 
- * The number grouping separator will change per locale. The english separator defaults to "," as in the 
- * example above, see the i18n property br.i18n.number.grouping.separator in other locales for their separators.
+ * Parses an amount and strips any thousands separators.
  * 
- * <p/>
- * See {@link br.presenter.formatter.ThousandsFormatter} for the complementary formatter.
+ * <p><code>ThousandsParser</code> is typically used with Presenter, but can be invoked programmatically
+ * as in the following example which evaluates to "8987551787.0":</p>
  * 
- * @implements br.presenter.parser.Parser
- * @singleton
+ * <pre>br.presenter.parser.ThousandsParser.parse("8,987,551,787.0", {})</pre>
+ * 
+ * <p>The number grouping separator will change per locale. The english separator defaults to "," as in the 
+ * example above, see the i18n property br.i18n.number.grouping.separator in other locales for their separators.</p>
+ * 
+ * See {@link module:br/presenter/formatter/ThousandsFormatter} for the complementary formatter.
  */
 br.presenter.parser.ThousandsParser = function() {
 };

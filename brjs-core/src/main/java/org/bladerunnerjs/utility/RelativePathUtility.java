@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.tools.ant.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FileInfo;
 
@@ -107,7 +107,7 @@ public class RelativePathUtility {
 	private static String[] getPathStack(String path) {
     	
     	//this is slightly faster that String.split()
-        Object[] tokens = StringUtils.split(path, File.separatorChar).toArray();
+        Object[] tokens = StringUtils.split(path, File.separatorChar);
         String[] rv = new String[tokens.length];
         System.arraycopy(tokens, 0, rv, 0, tokens.length);
         return rv;

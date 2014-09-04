@@ -7,12 +7,22 @@ import javax.naming.InvalidNameException;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 
 public abstract class AbstractBRJSRootNode extends AbstractRootNode implements BRJSNode {
 	public AbstractBRJSRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException {
 		super(dir, loggerFactory);
+		
+		try
+		{
+			registerNode(this);
+		}
+		catch (NodeAlreadyRegisteredException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override

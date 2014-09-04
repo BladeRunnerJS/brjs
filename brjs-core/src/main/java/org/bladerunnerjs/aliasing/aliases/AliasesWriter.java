@@ -16,18 +16,9 @@ import com.google.common.base.Joiner;
 import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasesWriter {
-	private final AliasesData data;
-	private final File file;
-	private final EncodedFileUtil fileUtil;
-	
-	public AliasesWriter(AliasesData data, File file, String defaultFileCharacterEncoding) {
-		this.data = data;
-		this.file = file;
-		fileUtil = new EncodedFileUtil(defaultFileCharacterEncoding);
-	}
-	
-	public void write() throws IOException {
+	public static void write(AliasesData data, File file, String defaultFileCharacterEncoding) throws IOException {
 		try {
+			EncodedFileUtil fileUtil = new EncodedFileUtil(defaultFileCharacterEncoding);
 			XMLBuilder builder = XMLBuilder.create("aliases").ns("http://schema.caplin.com/CaplinTrader/aliases");
 			
 			if (data.scenario != null) {
@@ -51,5 +42,4 @@ public class AliasesWriter {
 			throw new IOException(e);
 		}
 	}
-	
 }

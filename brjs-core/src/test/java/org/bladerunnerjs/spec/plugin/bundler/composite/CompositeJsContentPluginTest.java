@@ -1,10 +1,13 @@
 package org.bladerunnerjs.spec.plugin.bundler.composite;
 
+import java.io.File;
+
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +20,8 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	private JsLib appLib;
 	private AliasesFile aspectAliasesFile;
 	private JsLib brbootstrap;
+	private Aspect defaultAspect;
+	private File targetDir;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -26,11 +31,13 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			thirdpartyLib = app.jsLib("thirdparty-lib");
 			aspectAliasesFile = aspect.aliasesFile();
 			brLib = app.jsLib("br");
 			brbootstrap = brjs.sdkLib("br-bootstrap");
 			appLib = app.jsLib("appLib");
+			targetDir = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
 	}
 	
 	@Test
@@ -121,6 +128,18 @@ public class CompositeJsContentPluginTest extends SpecTest {
 					"require('appns.node.Class');\n" );
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).doesNotContainText("window._brjsI18nProperties = [{");
+	}
+	
+	@Test
+	public void onlyMinifiersUsedFromATagHandlerArePresentInTheBuiltArtifact() throws Exception {
+		given(defaultAspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>\n"+"require('appns/Class');")
+			.and(brjs).localeForwarderHasContents("")
+			.and(defaultAspect).hasClass("appns/Class")
+			.and(brjs).hasProdVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("en/index.html", "v/1234/js/prod/combined/bundle.js")
+			.and(targetDir).containsFile("v/1234/js/prod/combined/bundle.js")
+			.and(targetDir).doesNotContainFile("v/1234/js/prod/closure-whitespace/bundle.js");
 	}
 	
 }

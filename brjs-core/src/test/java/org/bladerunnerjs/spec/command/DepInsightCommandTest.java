@@ -4,6 +4,7 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
@@ -19,6 +20,8 @@ public class DepInsightCommandTest extends SpecTest {
 	Aspect aspect;
 	AliasesFile aliasesFile;
 	AliasDefinitionsFile bladeAliasDefinitionsFile;
+	private Blade bladeInDefaultBladeset;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -29,8 +32,10 @@ public class DepInsightCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
+			defaultAspect = app.defaultAspect();
 			aliasesFile = aspect.aliasesFile();
 			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").aliasDefinitionsFile();
+			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
 	}
 	
 	@Test
@@ -319,4 +324,38 @@ public class DepInsightCommandTest extends SpecTest {
 		then(logging).containsConsoleText(
 			"Source file 'NonExistentClass' could not be found.");
 	}
+	
+	@Test
+	public void optionalPackageStructuresAreShownCorrectly() throws Exception {
+		given(aspect).indexPageRequires("appns/bs/b1/Class1")
+			.and(app.bladeset("bs").blade("b1")).hasClasses("Class1");
+		when(brjs).runCommand("dep-insight", "app", "appns/bs/b1/Class1");
+		then(logging).containsConsoleText(
+			"Source module 'appns/bs/b1/Class1' dependencies found:",
+			"    +--- 'bs-bladeset/blades/b1/src/Class1.js'",
+			"    |    \\--- 'default-aspect/index.html'");
+	}
+	
+	@Test
+	public void optionalBladesetsAreShownCorrectly() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Class1")
+			.and(bladeInDefaultBladeset).hasClasses("appns/b1/Class1");
+		when(brjs).runCommand("dep-insight", "app", "appns/b1/Class1");
+		then(logging).containsConsoleText(
+			"Source module 'appns/b1/Class1' dependencies found:",
+			"    +--- 'blades/b1/src/appns/b1/Class1.js'",
+			"    |    \\--- 'default-aspect/index.html'");
+	}
+
+	@Test
+	public void optionalAspectAreShownCorrectly() throws Exception {
+		given(defaultAspect).indexPageRequires("appns/Class1")
+			.and(defaultAspect).hasClasses("appns/Class1");
+		when(brjs).runCommand("dep-insight", "app", "appns/Class1");
+		then(logging).containsConsoleText(
+			"Source module 'appns/Class1' dependencies found:",
+			"    +--- 'src/appns/Class1.js'",
+			"    |    \\--- 'index.html'");
+	}
+	
 }

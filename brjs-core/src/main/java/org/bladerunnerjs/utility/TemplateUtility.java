@@ -8,13 +8,14 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 
 public class TemplateUtility
@@ -39,7 +40,9 @@ public class TemplateUtility
 			File templateDir = node.root().template(templateName).dir();
 			
 			if(templateDir.exists()) {
-				IOFileFilter fileFilter = FileFilterUtils.and(new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
+				IOFileFilter hiddenFilesFilter = FileFilterUtils.or( 
+						FileFilterUtils.notFileFilter(new PrefixFileFilter(".")), new NameFileFilter(".gitignore") );
+				IOFileFilter fileFilter = FileFilterUtils.and( new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), hiddenFilesFilter );
 				FileUtils.copyDirectory(templateDir, tempDir, fileFilter);
 			}
 			
@@ -49,8 +52,8 @@ public class TemplateUtility
 			
 			FileUtility.moveDirectoryContents(tempDir, node.dir());
 			
-			if(!JsStyleUtility.getJsStyle(node.dir()).equals(CommonJsContentPlugin.JS_STYLE)) {
-				JsStyleUtility.setJsStyle(node.dir(), CommonJsContentPlugin.JS_STYLE);
+			if(!JsStyleUtility.getJsStyle(node.dir()).equals(CommonJsSourceModule.JS_STYLE)) {
+				JsStyleUtility.setJsStyle(node.dir(), CommonJsSourceModule.JS_STYLE);
 			}
 		}
 		catch(IOException e) {

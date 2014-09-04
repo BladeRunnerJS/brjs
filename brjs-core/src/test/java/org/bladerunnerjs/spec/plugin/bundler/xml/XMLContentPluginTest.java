@@ -25,6 +25,9 @@ public class XMLContentPluginTest extends SpecTest{
 	private Blade blade = null;
 	private Workbench workbench = null;
 	private NamedDirNode workbenchTemplate;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
+	private Aspect defaultAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -36,10 +39,13 @@ public class XMLContentPluginTest extends SpecTest{
 		brjsConf = brjs.conf();
 		app = brjs.app("app1");
 		aspect = app.aspect("default");
+		defaultAspect = app.defaultAspect();
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
 		workbenchTemplate = brjs.template("workbench");
+		defaultBladeset = app.defaultBladeset();
+		bladeInDefaultBladeset = defaultBladeset.blade("b1");
 		
 		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
 			.and(workbenchTemplate).containsFolder("resources")
@@ -378,6 +384,31 @@ public class XMLContentPluginTest extends SpecTest{
 		when(workbench).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText("v/dev/some/path"); 
 	}
+	
+	@Test
+	public void bladeXmlInDefaultBladesetCanBeBundled() throws Exception {
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
+    		.and(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
+			.and(bladeInDefaultBladeset).containsResourceFileWithContents("config.xml", rootElem(mergeElem("appns.b1.ID")))
+			.and(aspect).indexPageRequires("appns/b1/BladeClass");
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText(bundleElem(bundleResourceElem("rootElem", rootElem(mergeElem("appns.b1.ID")))));
+	}
+	
+	@Test
+	public void bladeXmlInDefaultAspectCanBeBundled() throws Exception {
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
+    		.and(defaultAspect).hasClass("appns/AspectClass")
+    		.and(defaultAspect).containsResourceFileWithContents("config.xml", rootElem(mergeElem("appns.ID")))
+    		.and(defaultAspect).indexPageRequires("appns/AspectClass");
+		when(defaultAspect).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText(bundleElem(bundleResourceElem("rootElem", rootElem(mergeElem("appns.ID")))));
+	}
+	
+	
+	/*
+	 * PRIVATE METHODS
+	 */
 	
 	private String bundleConfig(){
 		String content = "<?xml version=\"1.0\"?> "

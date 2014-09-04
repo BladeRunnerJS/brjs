@@ -1,15 +1,19 @@
 /**
+ * @module br/presenter/formatter/RoundingFormatter
+ */
+
+/**
  * @class
+ * @alias module:br/presenter/formatter/RoundingFormatter
+ * @implements module:br/presenter/formatter/Formatter
  * 
+ * @classdesc
  * Formats the value to the specified rounding.
- * <p/>
- * <code>RoundingFormatter</code> is typically used with Presenter, but can be invoked programmatically
- * as in the following example which evaluates to "3.142":
- * <p/>
- * <code>br.presenter.formatter.RoundingFormatter.format(3.14159, {dp:3})</code>
  * 
- * @implements br.presenter.formatter.Formatter
- * @singleton
+ * <p><code>RoundingFormatter</code> is typically used with Presenter, but can be invoked programmatically
+ * as in the following example which evaluates to "3.142":</p>
+ * 
+ * <pre>br.presenter.formatter.RoundingFormatter.format(3.14159, {dp:3})</pre>
  */
 br.presenter.formatter.RoundingFormatter = function() {
 };

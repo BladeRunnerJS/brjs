@@ -24,6 +24,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	Workbench workbench;
 	JsLib brLib;
 	AliasDefinitionsFile brLibAliasDefinitionsFile;
+	private Blade bladeInDefaultBladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -39,6 +40,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			workbench = blade.workbench();
 			brLib = brjs.sdkLib("br");
 			brLibAliasDefinitionsFile = brLib.assetLocation("resources").aliasDefinitionsFile();
+			bladeInDefaultBladeset = app.defaultBladeset().blade("blade");
 	}
 	
 	@Test
@@ -172,5 +174,26 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 				"    |    |    |    \\--- '../../libs/javascript/br/src/br/Class2.js'" );
 	}
 	
+	@Test
+	public void optionalPackageStructuresAreShownCorrectly() throws Exception {
+		given(workbench).indexPageRequires("appns/bladeset/blade/Class1")
+    		.and(blade).hasClasses("Class1");
+		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
+    	then(logging).containsConsoleText(
+    		"Workbench dependencies found:",
+    		"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
+			"    |    \\--- 'bladeset-bladeset/blades/blade/src/Class1.js'");
+	}
+	
+	@Test
+	public void defaultBladesetsAreShownCorrectly() throws Exception {
+		given( bladeInDefaultBladeset.workbench() ).indexPageRequires("appns/blade/Class1")
+    		.and( bladeInDefaultBladeset ).hasClasses("Class1");
+    	when(brjs).runCommand("workbench-deps", "app", "default", "blade");
+    	then(logging).containsConsoleText(
+    		"Workbench dependencies found:",
+    		"    +--- 'blades/blade/workbench/index.html' (seed file)",
+    		"    |    \\--- 'blades/blade/src/Class1.js'");
+	}
 	
 }

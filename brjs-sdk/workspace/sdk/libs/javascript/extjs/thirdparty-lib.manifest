@@ -1,3 +1,0 @@
-js: adapter/ext/ext-base.js, ext-all-debug.js
-css: resources/css/ext-all.css
-exports: Ext

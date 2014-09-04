@@ -1,10 +1,16 @@
+/**
+ * @module br/workbench/ui/WorkbenchComponent
+ */
+
 var Errors = require( 'br/Errors' );
 
 /**
- * @name br.workbench.ui.WorkbenchComponent
  * @class
  * @interface
- * <p>Represents a generic component that can be added to a {@link br.workbench.ui.WorkbenchPanel}</p>
+ * @alias module:br/workbench/ui/WorkbenchComponent
+ * 
+ * @classdesc
+ * Represents a generic component that can be added to a {@link module:br/workbench/ui/WorkbenchPanel}.
  */
 function WorkbenchComponent() {
 }

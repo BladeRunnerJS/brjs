@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module br/test/viewhandler/Blurred
+ */
+
 require('jquery');
 
 var br = require('br/Core');
@@ -8,16 +12,15 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 var Focused = require('br/test/viewhandler/Focused');
 
 /**
- * @name br/test.viewhandler.Blurred
  * @class
- * <code>Blurred ViewFixtureHandler</code> can be used to trigger <code>blur</code> or <code>focus</code> events on the view element.
- * Example usage:
- * <p>
- * <code>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).blurred => true");</code>
- * </p>
+ * @alias module:br/test/viewhandler/Blurred
+ * @implements module:br/test/viewhandler/ViewFixtureHandler
  * 
- * @constructor
- * @implements br.test.viewhandler.ViewFixtureHandler
+ * @classdesc
+ * <code>Blurred</code> instances of <code>ViewFixtureHandler</code> can be used to trigger <code>blur</code> or <code>focus</code> events on the view element.
+ * Example usage:
+ * 
+ * <pre>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).blurred => true");</pre>
  */
 function Blurred() {
 }

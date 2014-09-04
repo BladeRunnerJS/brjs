@@ -210,4 +210,15 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 					"// some SDK src code" );
 	}
 	
+	@Test
+	public void bundlesCanBeGeneratedForTheDefaultAspect() throws Exception
+	{
+		given( app.defaultAspect() ).containsFileWithContents("src/appns/srcFile.js", "// some aspect src code")
+			.and( app.defaultAspect().testType("UT").testTech("tech") ).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
+		whenJstdTests( app.defaultAspect().testType("UT").testTech("tech") ).runWithPaths( "bundles/bundle.js" );
+		thenJstdTests( app.defaultAspect().testType("UT").testTech("tech") ).testBundleContainsText(
+					"bundles/bundle.js",
+					"// some aspect src code" );
+	}
+	
 }

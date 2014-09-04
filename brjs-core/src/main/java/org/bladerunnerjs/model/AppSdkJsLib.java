@@ -37,7 +37,11 @@ public final class AppSdkJsLib implements JsLib {
 	public String getName() {
 		return sdkJsLib.getName();
 	}
-	
+
+	@Override
+	public String getTypeName() {
+		return sdkJsLib.getTypeName();
+	}
 	
 	@Override
 	public boolean isValidName() {
@@ -131,6 +135,12 @@ public final class AppSdkJsLib implements JsLib {
 	@Override
 	public boolean dirExists() {
 		return sdkJsLib.dirExists();
+	}
+	
+	@Override
+	public boolean exists()
+	{
+		return sdkJsLib.exists();
 	}
 	
 	@Override

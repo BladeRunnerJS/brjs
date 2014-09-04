@@ -1,15 +1,16 @@
 'use strict';
 
 /**
- * Utility methods for numbers
  * @module br/util/Number
  */
-
 var StringUtility = require('br/util/StringUtility');
 
 /**
- * @alias module:br/util/Number
  * @class
+ * @alias module:br/util/Number
+ * 
+ * @classdesc
+ * Utility methods for numbers
  */
 function NumberUtil() {
 }
@@ -129,5 +130,25 @@ NumberUtil.pad = function(value, numLength) {
 
 	return value;
 };
+
+/**
+ * Counts the amount of decimal places within a number.
+ * Also supports scientific notations
+ *
+ * @param {Number} n The number (or a number as a string).
+ * @return {Number} The number of decimal places
+ */
+NumberUtil.decimalPlaces = function(n) {
+	var match = (''+n).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+	if (!match) {
+		return 0;
+	}
+	return Math.max(
+		0,
+		// Number of digits right of decimal point.
+		(match[1] ? match[1].length : 0)
+		// Adjust for scientific notation.
+		- (match[2] ? +match[2] : 0));
+}
 
 module.exports = NumberUtil;

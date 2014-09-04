@@ -34,13 +34,20 @@ public class NodeItem<N extends Node>
 	
 	public N item()
 	{
+		return item(true);
+	}
+	
+	public N item(boolean registerNode)
+	{
 		if(item == null)
 		{
 			try
 			{
 				Constructor<N> classConstructor = nodeClass.getConstructor(RootNode.class, Node.class, File.class);
 				item = classConstructor.newInstance(node.root(), node, getNodeDir(node.dir()));
-				item.root().registerNode(item);
+				if (registerNode) {
+					item.root().registerNode(item);
+				}
 			}
 			catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
 				NoSuchMethodException | SecurityException | NodeAlreadyRegisteredException e)

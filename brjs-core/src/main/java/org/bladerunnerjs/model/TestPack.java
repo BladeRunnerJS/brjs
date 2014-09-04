@@ -21,6 +21,11 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	private AliasesFile aliasesFile;
 	private String name;
 	
+	public TestPack(RootNode rootNode, Node parent, File dir)
+	{
+		this(rootNode, parent, dir, dir.getName());
+	}
+	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
@@ -55,7 +60,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public String requirePrefix()
 	{
-		return "";
+		return testScope().requirePrefix();
 	}
 	
 	@Override
@@ -98,7 +103,12 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public String getTemplateName()
 	{
-		return testScope().getClass().getSimpleName().toLowerCase() + "-" + name;
+		if (parentNode() instanceof TypedTestPack) {
+			String testTechName = ((TypedTestPack) (parentNode())).getName();
+			return testScope().getTypeName().toLowerCase() + "-test-" + testTechName + "-" + name;
+			
+		}
+		return testScope().getTypeName().toLowerCase() + "-" + name;
 	}
 	
 	public AssetContainer testScope() {

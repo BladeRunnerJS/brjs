@@ -28,11 +28,6 @@ import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 public class AliasesReader {
 	private static final XMLValidationSchema aliasesSchema;
 	
-	private AliasesData aliasesData;
-	private File aliasesFile;
-
-	private String defaultFileCharacterEncoding;
-	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
 		
@@ -46,13 +41,8 @@ public class AliasesReader {
 		}
 	}
 	
-	public AliasesReader(AliasesData aliasesData, File aliasesFile, String defaultFileCharacterEncoding) {
-		this.aliasesData = aliasesData;
-		this.aliasesFile = aliasesFile;
-		this.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
-	}
-	
-	public void read() throws ContentFileProcessingException {
+	public static AliasesData read(File aliasesFile, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
+		AliasesData aliasesData = new AliasesData();
 		aliasesData.aliasOverrides = new ArrayList<>();
 		aliasesData.groupNames = new ArrayList<>();
 		
@@ -64,11 +54,11 @@ public class AliasesReader {
 					if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 						switch(streamReader.getLocalName()) {
 							case "aliases":
-								processAliases(streamReader);
+								processAliases(streamReader, aliasesData);
 								break;
 							
 							case "alias":
-								processAlias(streamReader);
+								processAlias(streamReader, aliasesData, aliasesFile);
 								break;
 						}
 					}
@@ -79,15 +69,17 @@ public class AliasesReader {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new ContentFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+				throw new ContentFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e);
 			}
 			catch (IOException | AliasException e) {
 				throw new ContentFileProcessingException(aliasesFile, e);
 			}
 		}
+		
+		return aliasesData;
 	}
 	
-	private void processAliases(XMLStreamReader2 streamReader) {
+	private static void processAliases(XMLStreamReader2 streamReader, AliasesData aliasesData) {
 		aliasesData.scenario = streamReader.getAttributeValue(null, "useScenario");
 		
 		String useGroups = streamReader.getAttributeValue(null, "useGroups");
@@ -96,7 +88,7 @@ public class AliasesReader {
 		}
 	}
 	
-	private void processAlias(XMLStreamReader2 streamReader) throws AliasException {
+	private static void processAlias(XMLStreamReader2 streamReader, AliasesData aliasesData, File aliasesFile) throws AliasException {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "class");
 		

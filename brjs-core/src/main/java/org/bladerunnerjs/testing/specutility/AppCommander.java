@@ -104,4 +104,26 @@ public class AppCommander extends NodeCommander<App> {
 		
 		return commanderChainer;
 	}
+
+	public CommanderChainer aspectsListed()
+	{
+		call(new Command() {
+			public void call() throws Exception {
+				app.aspects();
+			}
+		});
+		
+		return commanderChainer;
+	}
+	
+	public CommanderChainer bladesetsListed()
+	{
+		call(new Command() {
+			public void call() throws Exception {
+				app.bladesets();
+			}
+		});
+		
+		return commanderChainer;
+	}
 }
