@@ -44,6 +44,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		binaryResponse = new FileOutputStream(binaryResponseFile);
 		unbundledResourcesPlugin = brjs.plugins().contentPlugin("unbundled-resources");
 		requestsList = new ArrayList<String>();
+		
+		brjs.appJars().create();
 	}
 	
 	@Test

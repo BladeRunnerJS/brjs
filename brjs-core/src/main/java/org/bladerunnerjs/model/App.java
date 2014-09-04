@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.app.building.StaticAppBuilder;
 import org.bladerunnerjs.model.app.building.WarAppBuilder;
@@ -313,13 +311,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void deploy() throws TemplateInstallationException
 	{
 		try {
-			if(!root().appJars().dirExists()) throw new IllegalStateException(
-				"The directory containing the app jars, located at '" + root().appJars().dir().getPath() + "', is not present");
-			FileUtils.copyDirectory(root().appJars().dir(), file("WEB-INF/lib"));
 			notifyObservers(new AppDeployedEvent(), this);
 			logger.info(Messages.APP_DEPLOYED_LOG_MSG, getName(), dir().getPath());
 		}
-		catch (IOException | IllegalStateException e) {
+		catch (IllegalStateException e) {
 			logger.error(Messages.APP_DEPLOYMENT_FAILED_LOG_MSG, getName(), dir().getPath());
 			throw new TemplateInstallationException(e);
 		}

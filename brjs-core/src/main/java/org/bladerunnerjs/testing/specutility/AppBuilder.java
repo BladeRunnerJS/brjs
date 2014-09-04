@@ -38,8 +38,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	}
 	
 	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
-		File appExportDir = new File(targetDir, app.getName());
-		app.build( appExportDir );
+		app.build( targetDir );
 		
 		return builderChainer;
 	}

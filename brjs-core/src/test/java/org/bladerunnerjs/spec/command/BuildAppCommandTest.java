@@ -8,8 +8,8 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandException;
 import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
+import org.bladerunnerjs.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -128,16 +128,20 @@ public class BuildAppCommandTest extends SpecTest
 	{
 		given(app).hasBeenCreated().and(brjs).hasDir("sdk/target");
 		when(brjs).runCommand("build-app", "app", "target");
-		then(brjs).hasDir("sdk/target/app")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
+		then(brjs).hasDir("sdk/target")
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target").getCanonicalPath());
 	}
 
 	@Test
 	public void appDoesntOverwriteExistingBuiltAppIfBuildingToACustomLocation() throws Exception
 	{
-		given(app).hasBeenCreated().and(brjs).hasDir("sdk/target").and(brjs).commandHasBeenRun("build-app", "app", "target");
+		given(app).hasBeenCreated()
+			.and(app.defaultAspect()).indexPageHasContent("index page")
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(brjs).hasDir("sdk/target")
+			.and(brjs).commandHasBeenRun("build-app", "app", "target");
 		when(brjs).runCommand("build-app", "app", "target");
-		then(exceptions).verifyException(DirectoryAlreadyExistsCommandException.class, brjs.file("sdk/target/app").getCanonicalPath())
+		then(exceptions).verifyException(DirectoryNotEmptyCommandException.class, brjs.file("sdk/target").getCanonicalPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 
@@ -146,8 +150,8 @@ public class BuildAppCommandTest extends SpecTest
 	{
 		given(app).hasBeenCreated().and(brjs).hasDir("sdk/target");
 		when(brjs).runCommand("build-app", "app", brjs.file("sdk/target").getAbsolutePath());
-		then(brjs).hasDir("sdk/target/app")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
+		then(brjs).hasDir("sdk/target")
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target").getCanonicalPath());
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package org.bladerunnerjs.appserver;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,7 +77,7 @@ public class ApplicationServerUtils
 		webappContext.setConfigurationClasses(new String[] { "org.eclipse.jetty.webapp.WebInfConfiguration", "org.eclipse.jetty.webapp.WebXmlConfiguration", "org.eclipse.jetty.webapp.MetaInfConfiguration", "org.eclipse.jetty.webapp.FragmentConfiguration", "org.eclipse.jetty.plus.webapp.EnvConfiguration", "org.eclipse.jetty.plus.webapp.PlusConfiguration", "org.eclipse.jetty.webapp.JettyWebXmlConfiguration" });
 
 		webappContext.setDefaultsDescriptor("org/bladerunnerjs/model/appserver/webdefault.xml");
-
+		
 		File webXml = app.file("WEB-INF/web.xml");
 		if (webXml.exists())
 		{
@@ -84,7 +85,7 @@ public class ApplicationServerUtils
 		}
 		else
 		{
-			webappContext.setDescriptor(ApplicationServerUtils.class.getClassLoader().getResource("org/bladerunnerjs/model/appserver/non-j2ee-app-web.xml").toString());
+			webappContext.setDescriptor(getDefaultWebXmlResourceLocation().toString());
 		}
 
 		webappContext.setResourceBase(app.dir().getPath());
@@ -107,6 +108,11 @@ public class ApplicationServerUtils
 			formAuthenticator.setAlwaysSaveUri(true);
 		}
 		return webappContext;
+	}
+
+	public static URL getDefaultWebXmlResourceLocation()
+	{
+		return Thread.currentThread().getContextClassLoader().getResource("org/bladerunnerjs/model/appserver/non-j2ee-app-web.xml");
 	}
 
 	static File getDeployFileForApp(App app)
