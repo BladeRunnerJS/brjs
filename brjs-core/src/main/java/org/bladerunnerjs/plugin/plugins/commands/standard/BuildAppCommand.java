@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandException;
 import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
+import org.bladerunnerjs.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
@@ -69,6 +70,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		String appName = parsedArgs.getString(Parameters.APP_NAME);
 		String targetDirPath = parsedArgs.getString(Parameters.TARGET_DIR);
 		boolean warExport = parsedArgs.getBoolean("war");
+		boolean hasExplicitExportDirArg = (targetDirPath != null);
 		
 		App app = brjs.app(appName);
 		
@@ -76,8 +78,17 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		File appExportDir;
 		File warExportFile;
 		
-		if (targetDirPath == null) 
+		if (hasExplicitExportDirArg) 
 		{
+			targetDir = new File(targetDirPath);
+			if (!targetDir.isDirectory()) 
+			{
+				targetDir = brjs.file("sdk/" + targetDirPath);
+			}
+			appExportDir = targetDir;
+			warExportFile = new File(targetDir, appName+".war");			
+		} 
+		else {
 			appExportDir = new File(targetDir, appName);
 			warExportFile = new File(targetDir, appName+".war");
 			
@@ -97,15 +108,6 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 				}
 			}
 			targetDir.mkdirs();
-		} 
-		else {
-			targetDir = new File(targetDirPath);
-			if (!targetDir.isDirectory()) 
-			{
-				targetDir = brjs.file("sdk/" + targetDirPath);
-			}
-			appExportDir = new File(targetDir, appName);
-			warExportFile = new File(targetDir, appName+".war");
 		}
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
@@ -117,7 +119,11 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 				app.buildWar(warExportFile);
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getCanonicalPath());
 			} else {
-				if(appExportDir.exists()) throw new DirectoryAlreadyExistsCommandException(appExportDir.getPath(), this);			
+				if (hasExplicitExportDirArg) {
+					if (appExportDir.listFiles().length > 0) throw new DirectoryNotEmptyCommandException(appExportDir.getPath(), this);								
+				} else {
+					appExportDir.mkdir();			
+				}
 				app.build(appExportDir);
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());
 			}

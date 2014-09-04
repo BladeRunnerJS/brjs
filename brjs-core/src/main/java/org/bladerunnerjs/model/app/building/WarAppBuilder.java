@@ -14,7 +14,8 @@ public class WarAppBuilder implements AppBuilder
 {
 
 	public void build(App app, File appWarFile) throws ModelOperationException {
-		if(appWarFile.exists()) throw new ModelOperationException("'" + appWarFile.getPath() + "' already exists.");
+		if (!appWarFile.getParentFile().exists()) throw new ModelOperationException("'" + appWarFile.getParentFile().getPath() + "' does not exist");
+		if (appWarFile.exists()) throw new ModelOperationException("'" + appWarFile.getParentFile().getPath() + "' already exists");
 		
 		File exportDir = AppBuilderUtilis.getTemporaryExportDir(app);
 		AppBuilderUtilis.build(app, exportDir);

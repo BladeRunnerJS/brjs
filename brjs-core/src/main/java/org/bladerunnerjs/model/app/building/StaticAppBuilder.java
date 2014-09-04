@@ -11,7 +11,7 @@ import org.bladerunnerjs.utility.FileUtility;
 public class StaticAppBuilder implements AppBuilder {
 	
 	public void build(App app, File appBuildDir) throws ModelOperationException {
-		if(appBuildDir.exists()) throw new ModelOperationException("'" + appBuildDir.getPath() + "' already exists.");
+		if (!appBuildDir.exists()) throw new ModelOperationException("'" + appBuildDir.getPath() + "' does not exist");
 		
 		File exportDir = AppBuilderUtilis.getTemporaryExportDir(app);
 		AppBuilderUtilis.build(app, exportDir);
