@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.command;
 
+import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -13,6 +14,7 @@ import org.junit.Test;
 public class J2eeifyCommandPluginTest extends SpecTest {
 	App app;
 	App badApp;
+	ApplicationServer appServer;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -22,7 +24,9 @@ public class J2eeifyCommandPluginTest extends SpecTest {
 			.and(brjs).usesProductionTemplates();
 			app = brjs.app("app");
 			badApp = brjs.app("app#$@/");
-			brjs.appJars().create();;
+			brjs.appJars().create();
+			appServer = brjs.applicationServer(appServerPort);
+			brjs.bladerunnerConf().setJettyPort(appServerPort);
 			
 		given(app).hasBeenCreated();
 	}
@@ -86,13 +90,14 @@ public class J2eeifyCommandPluginTest extends SpecTest {
 	@Test
 	public void applicationServerStillStartsAfterWebInfIsCopiedIn() throws Exception {
 		given(app.defaultAspect()).indexPageHasContent("APP INDEX PAGE")
-			.and(brjs.applicationServer(appServerPort)).started()
-			.and(brjs.applicationServer(appServerPort)).requestForUrlContains("/app/en/", "APP INDEX PAGE")
-			.and(brjs.applicationServer(appServerPort)).stopped()
-			.and(brjs.applicationServer(appServerPort)).requestTimesOutFor("/");
+			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(appServer).started()
+			.and(appServer).requestForUrlContains("/app/en/", "APP INDEX PAGE")
+			.and(appServer).stopped()
+			.and(appServer).requestTimesOutFor("/");
 		when(brjs).runCommand("j2eeify", "app")
-			.and(brjs.applicationServer(appServerPort)).started();
-		then(brjs.applicationServer(appServerPort)).requestForUrlContains("/app/en/", "APP INDEX PAGE");
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app/en/", "APP INDEX PAGE");
 	}
 	
 	
