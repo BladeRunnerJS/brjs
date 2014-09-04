@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.App;
@@ -42,6 +43,8 @@ public class AppServerTest extends SpecTest
 			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
+			brjs.bladerunnerConf().setJettyPort(appServerPort);
+			brjs.bladerunnerConf().write();
 			appServer = brjs.applicationServer(appServerPort);
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
@@ -103,12 +106,12 @@ public class AppServerTest extends SpecTest
 	}	
 	
 	@Test
-	public void appDeploymentObserverIsAutomaticallyLoaded() throws Exception
+	public void deployFileIsOnlyCreatedIfAppServerIsStarted() throws Exception
 	{
 		when(app1).populate()
 			.and(app1).deployApp();
-		then(app1).hasFile(".deploy");
-	}	
+		then(app1).doesNotHaveFile(".deploy");
+	}
 	
 	@Test
 	public void newAppsAreOnlyHostedOnAppDeployedEvent() throws Exception
@@ -192,7 +195,7 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstance() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreated()
+		given(brjs).hasBeenAuthenticallyCreatedWithPessamisticFileObserver()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
@@ -201,7 +204,7 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreHostedOnAppserverAfterServerRestart() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreated()
+		given(brjs).hasBeenAuthenticallyCreatedWithPessamisticFileObserver()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
@@ -219,5 +222,12 @@ public class AppServerTest extends SpecTest
 			.and(brjs).hasBeenAuthenticallyReCreated()
 			.and(brjs.applicationServer(appServerPort)).started();
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfThereAreNoAppLibs() throws Exception {
+		FileUtils.deleteDirectory(appJars.dir());
+		when(brjs.applicationServer()).started();
+		then(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}
 }

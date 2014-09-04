@@ -38,6 +38,8 @@ public class ServedAppBundleTest extends SpecTest
 			.and(b1).hasClass("appns/bs/b1/Class")
 			.and(workbench).containsFileWithContents("index.html", "require('appns/bs/b1/Class');");
 		
+		brjs.appJars().create();
+		
 		appServer = brjs.applicationServer(appServerPort);
 		appServer.start();
 	}

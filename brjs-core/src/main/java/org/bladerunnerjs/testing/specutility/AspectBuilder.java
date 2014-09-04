@@ -1,10 +1,13 @@
 package org.bladerunnerjs.testing.specutility;
 
+import java.io.File;
+
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.BundlableNodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.junit.Assert;
 
 
 public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
@@ -67,6 +70,15 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer doesNotContainFile(String filePath)
+	{
+		File file = aspect.file(filePath);
+		
+		Assert.assertFalse( "The file at "+file.getAbsolutePath()+" was not meant to exist", file.exists() );
+		
+		return builderChainer;
+	}
+	
 	
 	// Private
 	private String generateStringClassReferencesContent(String... classNames) 
@@ -105,4 +117,5 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 		}
 		return content;
 	}
+	
 }
