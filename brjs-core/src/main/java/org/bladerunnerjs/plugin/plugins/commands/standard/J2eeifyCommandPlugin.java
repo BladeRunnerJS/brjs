@@ -71,6 +71,7 @@ public class J2eeifyCommandPlugin extends ArgsParsingCommandPlugin
 			TemplateUtility.installTemplate(app, "j2eeify-app", transformations, true );
 			String webXmlContents =  IOUtils.toString( ApplicationServerUtils.getDefaultWebXmlResourceLocation() );
 			FileUtils.write( app.file("WEB-INF/web.xml") , webXmlContents );
+			FileUtils.copyDirectory(brjs.appJars().dir(), app.file("WEB-INF/lib"));
 		}
 		catch (TemplateInstallationException | IOException ex)
 		{

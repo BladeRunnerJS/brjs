@@ -63,6 +63,14 @@ public class J2eeifyCommandPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void appJarsAreCopied() throws Exception {
+		given(brjs.appJars()).containsFile("app-jar.jar");
+		when(brjs).runCommand("j2eeify", "app");
+		then(app).hasDir("WEB-INF")
+			.and(app).hasFile("WEB-INF/lib/app-jar.jar");
+	}
+	
+	@Test
 	public void webInfIsPopulatedFromApplicationServerUtils() throws Exception {
 		when(brjs).runCommand("j2eeify", "app");
 		then(app).fileContentsContains("WEB-INF/web.xml", "<servlet-class>org.bladerunnerjs.appserver.BRJSDevServlet</servlet-class>")
