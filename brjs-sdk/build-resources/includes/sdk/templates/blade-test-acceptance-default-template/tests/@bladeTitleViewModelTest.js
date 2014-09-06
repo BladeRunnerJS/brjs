@@ -3,18 +3,18 @@
 	
 	require( 'jasmine' );
 	
-	var oldConsoleLog = console.log;
+	var originalConsoleLog = console.log;
 	
 	var @bladeTitleViewModel = require( '@bladeRequirePrefix/@bladeTitleViewModel' );
 	
 	describe('@bladeTitle Tests', function() {
 	
 		beforeEach(function() {
-			console.log = jasmine.createSpy();
+			console.log = jasmine.createSpy("console.log");
 		});
 	
 		afterEach(function() {
-			console.log = oldConsoleLog;
+			console.log = originalConsoleLog;
 		});
 	
 		it( 'Should log hello on load', function() {
