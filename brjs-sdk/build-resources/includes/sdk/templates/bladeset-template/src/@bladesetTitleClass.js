@@ -1,6 +1,6 @@
 "use strict";
 
-@bladesetTitleClass = function()
+var @bladesetTitleClass = function()
 {
 };
 
