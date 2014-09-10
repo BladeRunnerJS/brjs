@@ -45,7 +45,8 @@ KnockoutJsTreeModelFactory._processViewModel = function(viewModel, treeModel, tr
 
 KnockoutJsTreeModelFactory._createNewTreeItemSubscriber = function(treeModel, treeItem) {
 	return function(newValue) {
-		treeItem.text = newValue;
+		var name = treeItem.text.split(":")[0];
+		treeItem.text = name + ": " + newValue;
 		treeModel.onChange();
 	}
 };
