@@ -13,7 +13,10 @@ var br = require('br/Core');
 function PresentationModelViewer(treeModel) {
 	this._componentElement = this._renderView();
 	this._treeModel = treeModel;
-	jQuery(this._componentElement.querySelector('#tree-view')).jstree(treeModel);
+	this._jsTreeNode = (jQuery(this._componentElement.querySelector('#tree-view')));
+	
+	treeModel.onChange = this._onChange.bind(this);
+	this._jsTreeNode.jstree(treeModel);
 };
 br.implement(PresentationModelViewer, WorkbenchComponent);
 
@@ -29,6 +32,11 @@ PresentationModelViewer.prototype.applySearch = function(searchTerm) {
 		jQuery(this._componentElement.querySelector('#tree-view')).jstree(true).destroy();
 	}
 	jQuery(this._componentElement.querySelector('#tree-view')).jstree(this._treeModel);
+};
+
+PresentationModelViewer.prototype._onChange = function() {
+	this._jsTreeNode.jstree().destroy();
+	this._jsTreeNode.jstree(this._treeModel);
 };
 
 PresentationModelViewer.prototype._renderView = function() {
