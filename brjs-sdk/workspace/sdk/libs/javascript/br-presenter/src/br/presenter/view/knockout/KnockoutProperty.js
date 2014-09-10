@@ -44,8 +44,7 @@ br.presenter.view.knockout.KnockoutProperty.createArrayMethod = function(sMethod
 	return function()
 	{
 		var pUnderlyingArray = this.getValue();
-		var nUnderlyingArrayLength = pUnderlyingArray.length;
-		var pNewArray = pUnderlyingArray.splice(0, nUnderlyingArrayLength);
+		var pNewArray = pUnderlyingArray.splice(0, pUnderlyingArray.length);
 		Array.prototype[sMethod].apply(pNewArray, arguments);
 		this.setValue(pNewArray);
 	};
