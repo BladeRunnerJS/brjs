@@ -27,7 +27,7 @@ KnockoutJsTreeModelFactory._processViewModel = function(viewModel, treeModel, tr
 			
 			if(ko.isObservable(item)) {
 				var treeItem = {text:itemName + ": " + item()};
-				item.subscribe(this._createNewTreeItemSubscriber(treeModel, treeItem));
+				item.subscribe(this._createNewTreeItemSubscriber(treeModel, itemName, treeItem));
 				treeModelItems.push(treeItem);
 			}
 			else if((typeof item === 'object') && this._hasObservables(item)) {
@@ -43,10 +43,9 @@ KnockoutJsTreeModelFactory._processViewModel = function(viewModel, treeModel, tr
 	}
 };
 
-KnockoutJsTreeModelFactory._createNewTreeItemSubscriber = function(treeModel, treeItem) {
+KnockoutJsTreeModelFactory._createNewTreeItemSubscriber = function(treeModel, itemName, treeItem) {
 	return function(newValue) {
-		var name = treeItem.text.split(":")[0];
-		treeItem.text = name + ": " + newValue;
+		treeItem.text = itemName + ": " + newValue;
 		treeModel.onChange();
 	}
 };
