@@ -36,7 +36,7 @@ PresenterJsTreeModelFactory._processViewModel = function(presentationNode, treeM
 				}
 				var treeItem = {text:nodeLabel};
 				
-				item.addListener(new TreeItemPropertyListener(treeModel, treeItem, item));
+				item.addListener(new TreeItemPropertyListener(treeModel, itemName, treeItem, item));
 				
 				treeModelItems.push(treeItem);
 			}
@@ -67,16 +67,17 @@ PresenterJsTreeModelFactory._isPrivate = function(itemName) {
 var brCore = require('br/Core');
 var PropertyListener = require('br/presenter/property/PropertyListener');
 
-function TreeItemPropertyListener(treeModel, treeItem, treeItemProperty) {
+function TreeItemPropertyListener(treeModel, treeItemName, treeItem, treeItemProperty) {
 	this._treeModel = treeModel;
 	this._treeItem = treeItem;
+	this._treeItemName = treeItemName;
 	this._treeItemProperty = treeItemProperty;
 }
 // Note: this has to be br.extend() because it's a call-back interface with only optional methods
 brCore.extend(TreeItemPropertyListener, PropertyListener);
 
 TreeItemPropertyListener.prototype.onPropertyChanged = function() {
-	this._treeItem.text = this._treeItemProperty.getValue();
+	this._treeItem.text = this._treeItemName + ": " + this._treeItemProperty.getValue();
 	this._treeModel.onChange();
 };
 
