@@ -10,9 +10,8 @@
  * @classdesc
  * Interface implemented by presentation models in order to provide a serialized form of the data they contain.
  */
-br.presenter.SerializablePresentationModel = function()
-{
-};
+function SerializablePresentationModel() {
+}
 
 /**
  * This method provides the serialized form of the presentation model.
@@ -21,8 +20,7 @@ br.presenter.SerializablePresentationModel = function()
  * @return Serialized presentation model.
  * @type String
  */
-br.presenter.SerializablePresentationModel.prototype.serialize = function()
-{
+SerializablePresentationModel.prototype.serialize = function() {
 	throw new br.Errors.CustomError(br.Errors.UNIMPLEMENTED_INTERFACE,
 			"br.presenter.SerializablePresentationModel.serialize() has not been implemented.");
 };
@@ -32,8 +30,9 @@ br.presenter.SerializablePresentationModel.prototype.serialize = function()
  * 
  * @param {String} sData Serialized presentation model.
  */
-br.presenter.SerializablePresentationModel.prototype.deserialize = function(sData)
-{
+SerializablePresentationModel.prototype.deserialize = function(sData) {
 	throw new br.Errors.CustomError(br.Errors.UNIMPLEMENTED_INTERFACE,
 			"br.presenter.SerializablePresentationModel.deserialize() has not been implemented.");
 };
+
+br.presenter.SerializablePresentationModel = SerializablePresentationModel;

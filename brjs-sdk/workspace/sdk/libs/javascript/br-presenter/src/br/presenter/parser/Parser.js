@@ -14,7 +14,8 @@ var Errors = require('br/Errors');
  * @classdesc
  * Parses a value according to some attributes.
  */
-br.presenter.parser.Parser = function() {};
+function Parser() {
+}
 
 /**
  * Parses a value and either returns the parsed value upon success, otherwise returns <code>null</code>.
@@ -23,8 +24,7 @@ br.presenter.parser.Parser = function() {};
  * @param {Object} mAttributes the attributes appropriate to the <code>Parser</code> implementation.
  * @return the parsed value, or <code>null</code> if the value was not recognised.
  */
-br.presenter.parser.Parser.prototype.parse = function(sValue, mAttributes)
-{
+Parser.prototype.parse = function(sValue, mAttributes) {
 	throw new Errors.UnimplementedInterfaceError("Parser.parse() has not been implemented.");
 };
 
@@ -36,7 +36,8 @@ br.presenter.parser.Parser.prototype.parse = function(sValue, mAttributes)
  * 
  * @type boolean
  */
-br.presenter.parser.Parser.prototype.isSingleUseParser = function()
-{
+Parser.prototype.isSingleUseParser = function() {
 	return false;
 };
+
+br.presenter.parser.Parser = Parser;

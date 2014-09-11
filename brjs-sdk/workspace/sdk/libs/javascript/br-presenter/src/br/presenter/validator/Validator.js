@@ -17,9 +17,8 @@ var Errors = require('br/Errors');
  * <p>Since you may want to run many validators on a piece of data, the result of the validation is stored on an
  * object passed into the validate method.</p>
  */
-br.presenter.validator.Validator = function()
-{
-};
+function Validator() {
+}
 
 /**
  * Determine whether the provided value is valid or not and set the result on the provided {@link module:br/presenter/validator/ValidationResult}.
@@ -28,7 +27,8 @@ br.presenter.validator.Validator = function()
  * @param {Object} mAttributes attributes to control the validation process. Will not be null.
  * @param {module:br/presenter/validator/ValidationResult} oValidationResult the ValidationResult to store the result of this validation in.
  */
-br.presenter.validator.Validator.prototype.validate = function(vValue, mAttributes, oValidationResult)
-{
+Validator.prototype.validate = function(vValue, mAttributes, oValidationResult) {
 	throw new Errors.UnimplementedInterfaceError("Validator.validate() has not been implemented.");
 };
+
+br.presenter.validator.Validator = Validator;
