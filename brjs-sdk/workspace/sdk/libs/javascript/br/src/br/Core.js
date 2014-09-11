@@ -27,41 +27,30 @@ topiarist.exportTo(exports);
 // topiarist.extend(subclass, superclass) - included by 'topiarist.exportTo(exports);' above
 
 /**
-* Delcares that a class has implemented an interface and throws an exception
+* Declares that a class has implemented an interface and throws an exception
 * if it does not.
 *
 * Should be called after the class and all of its methods have been defined.
 *
 * @see {@link http://bladerunnerjs.github.io/topiarist/}
-*   This method is the same as topiarist.implement(class, interface)
+*   This method is the same as topiarist.hasImplemented(class, interface)
 * @method
 * @param {Class} class The class implementing the interface.
 * @param {Class} interface The interface
 */
-exports.hasImplemented = exports.implement;
+// topiarist.hasImplemented(class, interface) - included by 'topiarist.exportTo(exports);' above
 
 /**
-* Delcares that a class will implement an interface.
+* Declares that a class will implement an interface.
 * This is similar to {@link exports.hasImplemented} but can be called before
 * a class' methods have been defined.
-*
-* @param {Class} implementor The class implementing the interface.
-* @param {Class} theInterface The interface
+* 
+* @see {@link http://bladerunnerjs.github.io/topiarist/}
+*   This method is the same as topiarist.implement(class, interface)
+* @param {Class} class The class implementing the interface.
+* @param {Class} interface The interface
 */
-exports.implement = function(implementor, theInterface) {
-	// We do this on a timeout so you can implement the methods later.
-	var br = topiarist;
-	var error = new Error();
-	setTimeout(function() {
-		try {
-			br.implement(implementor, theInterface);
-		} catch (e) {
-			error.message = e.message;
-			error.name = e.name;
-			throw error;
-		}
-	}, 0);
-};
+// topiarist.implement(class, interface) - included by 'topiarist.exportTo(exports);' above
 
 /**
 * Provides multiple inheritance by copying functionality from the parent to the class.
