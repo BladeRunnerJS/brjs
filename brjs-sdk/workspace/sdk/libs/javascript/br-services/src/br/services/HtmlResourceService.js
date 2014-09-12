@@ -12,7 +12,8 @@ var Errors = require('br/Errors');
  * @classdesc
  * A service that provides access to HTML templates.
  */
-function HtmlResourceService() {};
+function HtmlResourceService() {
+}
 
 /**
  * Access an HTML template by name.

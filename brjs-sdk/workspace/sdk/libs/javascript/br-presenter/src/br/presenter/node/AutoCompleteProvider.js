@@ -10,9 +10,8 @@
  * @classdesc Provides an interface for a provider that can provide auto complete suggestions, typically used 
  * with an {@link module:br/presenter/node/AutoCopleteSelectionField}.
  */
-br.presenter.node.AutoCompleteProvider = function()
-{
-};
+function AutoCompleteProvider() {
+}
 
 /**
  * Provides the callback with a list of options that match the sTerm. 
@@ -21,8 +20,7 @@ br.presenter.node.AutoCompleteProvider = function()
  * @param {String} sTerm The term to search. 
  * @param {Function} The callback to provide the array of found options as the first argument.
  */
-br.presenter.node.AutoCompleteProvider.prototype.getList = function(sTerm, fCallback)
-{
+AutoCompleteProvider.prototype.getList = function(sTerm, fCallback) {
 	throw new br.Errors.CustomError(br.Errors.UNIMPLEMENTED_INTERFACE, "br.presenter.node.AutoCompleteProvider.getList() has not been implemented.");
 };
 
@@ -33,8 +31,8 @@ br.presenter.node.AutoCompleteProvider.prototype.getList = function(sTerm, fCall
  * @type boolean 
  * @return True if the option is selectable, false otherwise.
  */
-br.presenter.node.AutoCompleteProvider.prototype.isValidOption = function(sValue)
-{
+AutoCompleteProvider.prototype.isValidOption = function(sValue) {
 	throw new br.Errors.CustomError(br.Errors.UNIMPLEMENTED_INTERFACE, "br.presenter.node.AutoCompleteProvider.getList() has not been implemented.");
 };
 
+br.presenter.node.AutoCompleteProvider = AutoCompleteProvider;

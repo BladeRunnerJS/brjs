@@ -10,9 +10,8 @@
  * @classdesc
  * Interface implemented by classes that wish to listen to {@link module:br/presenter/node/NodeList} change events.
  */
-br.presenter.node.NodeListListener = function()
-{
-};
+function NodeListListener() {
+}
 
 /**
  * Callback method invoked when the list of nodes in a {@link module:br/presenter/node/NodeList} change.
@@ -20,7 +19,8 @@ br.presenter.node.NodeListListener = function()
  * <p>Implementation of this method is optional, and no action will be taken if the method is invoked but has not
  * been overridden.</p>
  */
-br.presenter.node.NodeListListener.prototype.onNodeListChanged = function()
-{
+NodeListListener.prototype.onNodeListChanged = function() {
 	// optional callback
 };
+
+br.presenter.node.NodeListListener = NodeListListener;
