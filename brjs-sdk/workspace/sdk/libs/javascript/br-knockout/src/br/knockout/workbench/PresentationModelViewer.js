@@ -11,12 +11,15 @@ var br = require('br/Core');
  * @alias module:br/knockout/workbench/PresentationModelViewer
  */
 function PresentationModelViewer(treeModel) {
+	this._timedRedraw = -1;
 	this._componentElement = this._renderView();
 	this._treeModel = treeModel;
 	this._jsTreeNode = (jQuery(this._componentElement.querySelector('#tree-view')));
-	
-	treeModel.onChange = this._onChange.bind(this);
 	this._jsTreeNode.jstree(treeModel);
+
+	setTimeout(function() {
+		treeModel.onChange = this._onChange.bind(this);
+	}.bind(this), 0)
 };
 br.implement(PresentationModelViewer, WorkbenchComponent);
 
@@ -35,8 +38,17 @@ PresentationModelViewer.prototype.applySearch = function(searchTerm) {
 };
 
 PresentationModelViewer.prototype._onChange = function() {
-	this._jsTreeNode.jstree().destroy();
-	this._jsTreeNode.jstree(this._treeModel);
+	var self = this;
+	if(this._timedRedraw != -1) {
+		window.clearTimeout(this._timedRedraw);
+	}
+	
+	this._timedRedraw = window.setTimeout(
+			function() {
+				self._timedRedraw = -1;
+				self._jsTreeNode.jstree().destroy();
+				self._jsTreeNode.jstree(self._treeModel);
+			}, 0);
 };
 
 PresentationModelViewer.prototype._renderView = function() {
