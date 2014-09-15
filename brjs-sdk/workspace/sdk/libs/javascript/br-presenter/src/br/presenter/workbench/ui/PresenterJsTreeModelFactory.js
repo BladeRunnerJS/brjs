@@ -19,6 +19,7 @@ function PresenterJsTreeModelFactory() {
 
 PresenterJsTreeModelFactory.createTreeModelFromPresentationModel = function(presentationModel) {
 	var treeModel = {core: {data: [{text: 'Presentation Model', state: {opened: true}, children: []}]}, onChange:function(){}};
+	this._uniqueId = 0;
 	this._processViewModel(presentationModel, treeModel, treeModel.core.data[0].children);
 	
 	return treeModel;
@@ -34,7 +35,8 @@ PresenterJsTreeModelFactory._processViewModel = function(presentationNode, treeM
 				if (item.getValue() !== undefined) {
 					nodeLabel += ": " + item.getValue();
 				}
-				var treeItem = {text:nodeLabel};
+				var newId = this._uniqueI++;
+				var treeItem = {id: newId, text:nodeLabel};
 				
 				item.addListener(new TreeItemPropertyListener(treeModel, itemName, treeItem, item));
 				
@@ -78,7 +80,7 @@ brCore.extend(TreeItemPropertyListener, PropertyListener);
 
 TreeItemPropertyListener.prototype.onPropertyChanged = function() {
 	this._treeItem.text = this._treeItemName + ": " + this._treeItemProperty.getValue();
-	this._treeModel.onChange();
+	this._treeModel.onChange(this._treeItem.id, this._treeItem.text);
 };
 
 
