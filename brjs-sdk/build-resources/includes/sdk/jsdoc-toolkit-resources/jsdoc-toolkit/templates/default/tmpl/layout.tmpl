@@ -11,7 +11,6 @@
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <script src="scripts/functions.js"> </script>
-    
         <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
@@ -50,9 +49,11 @@
 <nav>
 	<div id="filter-input-wrapper">
         <div id="filter-input">
-		    <input type="text" list="package-prefixes" placeholder="package filter" oninput="packageFilter.updateDisplayedItems(this.value)"
-		     onkeyup="packageFilter.onKeyPress(this, event)" onkeypress="if(event.keyCode == 13) return false">
-		    <button onclick="packageFilter.setFilter('')"></button>
+        	<form onsubmit="return false;">
+		    	<input type="text" list="package-prefixes" placeholder="package filter" oninput="packageFilter.updateDisplayedItems(this.value)"
+		    	 onkeyup="packageFilter.onKeyUp(this, event)">
+		    	<button type="button" onclick="packageFilter.setFilter('')"></button>
+		    </form>
 	    </div>
 	</div>
 	<datalist id="package-prefixes"></datalist>
