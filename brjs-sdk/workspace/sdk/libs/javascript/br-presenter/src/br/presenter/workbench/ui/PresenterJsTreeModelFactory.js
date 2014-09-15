@@ -35,7 +35,7 @@ PresenterJsTreeModelFactory._processViewModel = function(presentationNode, treeM
 				if (item.getValue() !== undefined) {
 					nodeLabel += ": " + item.getValue();
 				}
-				var newId = this._uniqueI++;
+				var newId = this._uniqueId++;
 				var treeItem = {id: newId, text:nodeLabel};
 				
 				item.addListener(new TreeItemPropertyListener(treeModel, itemName, treeItem, item));
