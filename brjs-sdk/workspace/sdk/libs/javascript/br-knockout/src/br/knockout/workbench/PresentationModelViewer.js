@@ -17,9 +17,7 @@ function PresentationModelViewer(treeModel) {
 	this._jsTreeNode = (jQuery(this._componentElement.querySelector('#tree-view')));
 	this._jsTreeNode.jstree(treeModel);
 
-	setTimeout(function() {
-		treeModel.onChange = this._onChange.bind(this);
-	}.bind(this), 0)
+	treeModel.onChange = this._onChange.bind(this);
 };
 br.implement(PresentationModelViewer, WorkbenchComponent);
 
@@ -37,18 +35,8 @@ PresentationModelViewer.prototype.applySearch = function(searchTerm) {
 	jQuery(this._componentElement.querySelector('#tree-view')).jstree(this._treeModel);
 };
 
-PresentationModelViewer.prototype._onChange = function() {
-	var self = this;
-	if(this._timedRedraw != -1) {
-		window.clearTimeout(this._timedRedraw);
-	}
-	
-	this._timedRedraw = window.setTimeout(
-			function() {
-				self._timedRedraw = -1;
-				self._jsTreeNode.jstree().destroy();
-				self._jsTreeNode.jstree(self._treeModel);
-			}, 0);
+PresentationModelViewer.prototype._onChange = function(id, newText) {	
+	this._jsTreeNode.jstree('set_text', id, newText );
 };
 
 PresentationModelViewer.prototype._renderView = function() {

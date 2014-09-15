@@ -15,6 +15,7 @@ function KnockoutJsTreeModelFactory() {
 
 KnockoutJsTreeModelFactory.createTreeModelFromKnockoutViewModel = function(viewModel) {
 	var treeModel = {core: {data: [{text: 'Knockout View Model', state: {opened: true}, children: []}]}, onChange:function(){}};
+	this._uniqueID = 0;
 	this._processViewModel(viewModel, treeModel, treeModel.core.data[0].children);
 	
 	return treeModel;
@@ -26,7 +27,7 @@ KnockoutJsTreeModelFactory._processViewModel = function(viewModel, treeModel, tr
 			var item = viewModel[itemName];
 			
 			if(ko.isObservable(item)) {
-				var treeItem = {text:itemName + ": " + item()};
+				var treeItem = {id: "node_id_" + this._uniqueID++ , text:itemName + ": " + item()};
 				item.subscribe(this._createNewTreeItemSubscriber(treeModel, itemName, treeItem));
 				treeModelItems.push(treeItem);
 			}
@@ -46,7 +47,7 @@ KnockoutJsTreeModelFactory._processViewModel = function(viewModel, treeModel, tr
 KnockoutJsTreeModelFactory._createNewTreeItemSubscriber = function(treeModel, itemName, treeItem) {
 	return function(newValue) {
 		treeItem.text = itemName + ": " + newValue;
-		treeModel.onChange();
+		treeModel.onChange(treeItem.id, treeItem.text);
 	}
 };
 
