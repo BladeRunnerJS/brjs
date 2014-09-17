@@ -1,0 +1,16 @@
+{
+  "name": "fell",
+  "version": "0.0.2",
+  "description": "A simple javascript logging framework.",
+  "main": "target/single/fell-no-emitr.js",
+  "homepage": "http://BladeRunnerJS.github.io/fell",
+  "ignore": ["_layouts", "build", "doc", "node_modules", "spec", "styles", ".gitignore", ".travis.yml", "_config.yml", "Gruntfile.js", "library.manifest", "package.json"],
+  "license": "MIT",
+  "dependencies": {
+    "emitr": "0.0.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BladeRunnerJS/fell.git"
+  }
+}
