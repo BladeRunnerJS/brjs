@@ -94,6 +94,14 @@ public class XMLContentPluginTest extends SpecTest{
 	}
 	
 	@Test
+	public void xmlFilesAreConcatenatedIfNoXmlConfigExists() throws Exception {
+		given(aspect).containsResourceFileWithContents("file1.xml", rootElem(mergeElem("id1")))
+			.and(aspect).containsResourceFileWithContents("file2.xml", rootElem(mergeElem("id2")));
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText( rootElem(mergeElem("id1")) + rootElem(mergeElem("id2")) );
+	}
+	
+	@Test
 	public void aspectXmlFilesAreBundled() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig()).
 		and(aspect).containsResourceFileWithContents("config.xml", rootElem(mergeElem("id1")));
