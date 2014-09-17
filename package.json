@@ -1,0 +1,27 @@
+{
+  "name": "browser-modules",
+  "version": "0.0.1",
+  "description": "A simple define/require for the browser.",
+  "homepage": "http://bladerunnerjs.github.io/browser-modules",
+  "main": "browser-modules.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BladeRunnerJS/browser-modules"
+  },
+  "keywords": [
+    "define",
+    "require",
+    "commonjs"
+  ],
+  "author": "kybernetikos & the BladeRunnerJS team <bladerunnerjs@caplin.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BladeRunnerJS/browser-modules/issues"
+  },
+  "devDependencies": {
+    "jasmine-node": "~1.13.1"
+  }
+}
