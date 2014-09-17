@@ -1,0 +1,33 @@
+{
+	"name": "topiarist",
+	"version": "0.0.3",
+	"author": "kybernetikos <kybernetikos@gmail.com>",
+	"description": "a micro library for extension, mixin and interfaces.",
+	"main": "./lib/topiarist.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/BladeRunnerJS/topiarist.git"
+	},
+	"keywords": [
+		"extend",
+		"inheritance",
+		"OO"
+	],
+	"dependencies" : {},
+	"devDependencies": {
+		"jasmine-node": "1.14.x",
+		"grunt": "0.4.x",
+	    "grunt-cli": "0.1.x",
+	    "grunt-saucelabs": "8.3.x",
+	    "grunt-contrib-connect": "~0.1.2",
+	    "grunt-contrib-watch": "~0.2.0"
+	},
+	"scripts": {
+		"test": "jasmine-node --verbose spec",
+		"saucelabs-test": "grunt saucelabs-test"
+	},
+	"bundledDependencies": [
+		"jasmine-standalone"
+	],
+	"license": "MIT"
+}

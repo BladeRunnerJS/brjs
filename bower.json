@@ -1,0 +1,18 @@
+{
+	"name": "topiarist",
+	"version": "0.0.3",
+	"description": "A micro library for extension, mixin and interfaces.",
+	"main": "./lib/topiarist.js",
+	"homepage": "http://BladeRunnerJS.github.io/topiarist",
+	"ignore": ["_layouts", "build", "doc", "node_modules", "spec", "styles", ".gitignore", ".travis.yml", "_config.yml", "Gruntfile.js", "library.manifest", "package.json"],
+	"license": "MIT",
+	"keywords": [
+		"extend",
+		"inheritance",
+		"OO"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/BladeRunnerJS/topiarist.git"
+	}
+}
