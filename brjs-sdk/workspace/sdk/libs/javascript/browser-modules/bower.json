@@ -1,0 +1,22 @@
+{
+  "name": "browser-modules",
+  "main": "browser-modules.js",
+  "version": "0.0.1",
+  "homepage": "http://bladerunnerjs.github.io/browser-modules",
+  "authors": [
+    "kybernetikos & the BladeRunnerJS team <bladerunnerjs@caplin.com>"  ],
+  "description": "A simple define/require for the browser",
+  "keywords": [
+    "define",
+    "require",
+    "commonjs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
