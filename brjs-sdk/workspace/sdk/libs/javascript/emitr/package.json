@@ -1,0 +1,30 @@
+{
+  "name": "emitr",
+  "version": "0.0.4",
+  "description": "An node/browser event emitter that supports dispatching based on types.",
+  "homepage": "http://BladeRunnerJS.github.io/emitr",
+  "license": "MIT",
+  "devDependencies": {
+    "webbuilder": "git://github.com/BladeRunnerJS/webbuilder.git",
+    "jsdoc3": "git://github.com/jsdoc3/jsdoc.git",
+    "jshamcrest": "0.7.x",
+    "jasmine-node": "1.14.x",
+    "fs-extra": "~0.6.3",
+    "grunt": "0.4.x",
+    "grunt-cli": "0.1.x",
+    "grunt-saucelabs": "8.3.x",
+    "grunt-contrib-connect": "~0.1.2",
+    "grunt-contrib-watch": "~0.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BladeRunnerJS/emitr.git"
+  },
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "jasmine-node --verbose spec",
+    "saucelabs-test": "grunt saucelabs-test",
+    "doc": "jsdoc lib -d doc README.md",
+    "prepublish": "node build/package.js"
+  }
+}
