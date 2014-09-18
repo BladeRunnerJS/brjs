@@ -31,12 +31,16 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	@NotNull
 	public String ignoredPaths;
 	
+	@NotNull
+	public String nodePath;
+	
 	@Override
 	public void initialize(BRJSNode node) {
 		jettyPort = getDefault(jettyPort, 7070);
 		defaultFileCharacterEncoding = getDefault(defaultFileCharacterEncoding, "UTF-8");
 		loginRealm = getDefault(loginRealm, "BladeRunnerLoginRealm");
 		ignoredPaths = getDefault(ignoredPaths, ".svn, .git");
+		nodePath = getDefault(nodePath, "");
 	}
 	
 	@Override
