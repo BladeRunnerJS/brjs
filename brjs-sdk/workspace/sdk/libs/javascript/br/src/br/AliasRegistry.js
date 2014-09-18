@@ -7,4 +7,5 @@ var AliasRegistryClass = require('br/AliasRegistryClass');
 /**
  * @type module:br/AliasRegistryClass
  */
-module.exports = new AliasRegistryClass();
+var req = require;
+module.exports = new AliasRegistryClass(req('$alias-data'));
