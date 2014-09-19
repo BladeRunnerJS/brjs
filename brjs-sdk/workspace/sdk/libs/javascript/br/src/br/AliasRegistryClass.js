@@ -35,10 +35,9 @@ var Errors = require('./Errors');
 * discover all of the classes which implement a particular interface, which
 * makes it a good candidate for creating SPI type, auto-discovery mechanisms.</p>
 */
-var AliasRegistryClass = function()
+var AliasRegistryClass = function(aliasData)
 {
-	this._aliasData = null;
-	this._isAliasDataSet = false;
+	this._setAliasData(aliasData);
 };
 
 /**
@@ -47,7 +46,6 @@ var AliasRegistryClass = function()
 * @type Array
 */
 AliasRegistryClass.prototype.getAllAliases = function getAllAliases() {
-	this._ensureAliasDataHasBeenSet();
 	return Object.keys(this._aliasData);
 };
 
@@ -63,7 +61,6 @@ AliasRegistryClass.prototype.getAllAliases = function getAllAliases() {
 * @type Array
 */
 AliasRegistryClass.prototype.getAliasesByInterface = function getAliasesByInterface(protocol) {
-	this._ensureAliasDataHasBeenSet();
 	var allAliases = this.getAllAliases();
 	var filteredAliases = [];
 
@@ -93,9 +90,12 @@ AliasRegistryClass.prototype.getAliasesByInterface = function getAliasesByInterf
 * @type function
 */
 AliasRegistryClass.prototype.getClass = function getClass(aliasName) {
-	this._ensureAliasDataHasBeenSet();
 	if (!this.isAliasAssigned(aliasName)) {
 		throw new Errors.IllegalStateError("No class has been found for alias '" + aliasName +"'");
+	}
+	
+	if(typeof(this._aliasData[aliasName]["class"]) == 'string') {
+		this._aliasData[aliasName]["class"] = require(this._aliasData[aliasName]["class"]);
 	}
 
 	return this._aliasData[aliasName]["class"];
@@ -108,7 +108,6 @@ AliasRegistryClass.prototype.getClass = function getClass(aliasName) {
 * @type boolean
 */
 AliasRegistryClass.prototype.isAlias = function isAlias(aliasName) {
-	this._ensureAliasDataHasBeenSet();
 	return aliasName in this._aliasData;
 };
 
@@ -120,7 +119,6 @@ AliasRegistryClass.prototype.isAlias = function isAlias(aliasName) {
 * @type boolean
 */
 AliasRegistryClass.prototype.isAliasAssigned = function isAliasAssigned(aliasName) {
-	this._ensureAliasDataHasBeenSet();
 	return this.isAlias(aliasName) && this._aliasData[aliasName]["class"] !== undefined;
 };
 
@@ -129,13 +127,8 @@ AliasRegistryClass.prototype.isAliasAssigned = function isAliasAssigned(aliasNam
 *
 * If the alias data is inconsistent, this will throw Errors.
 */
-AliasRegistryClass.prototype.setAliasData = function setAliasData(unverifiedAliasData) {
-	if (this._isAliasDataSet === true) {
-		throw new Errors.IllegalStateError("Alias data has already been set; unable to set again.");
-	}
-
-	this._isAliasDataSet = true;
-	this._aliasData = unverifiedAliasData;
+AliasRegistryClass.prototype._setAliasData = function setAliasData(aliasData) {
+	this._aliasData = aliasData;
 
 	var aliases = this.getAllAliases();
 	var incorrectAliases = [];
@@ -146,7 +139,7 @@ AliasRegistryClass.prototype.setAliasData = function setAliasData(unverifiedAlia
 		var alias = this._aliasData[aliasId];
 
 		if (this.isAliasAssigned(aliasId) && alias["interface"]) {
-			var aliasClass = alias["class"];
+			var aliasClass = this.getClass(aliasId);
 			var protocol = alias["interface"];
 			if (br.classIsA(aliasClass, protocol) == false) {
 				incorrectAliases.push(aliasId);
@@ -161,19 +154,9 @@ AliasRegistryClass.prototype.setAliasData = function setAliasData(unverifiedAlia
 			var incorrectAlias = incorrectAliases[i];
 			errorMessage += '[' + incorrectAlias + ']: "' + this._aliasData[incorrectAlias]["className"] + '" should implement "' + this._aliasData[incorrectAlias].interfaceName + '";\n';
 		}
-		this._isAliasDataSet = false;
 		this._aliasData = null;
 		throw new Errors.IllegalStateError(errorMessage);
 	}
 };
-
-/**
-* @private
-*/
-AliasRegistryClass.prototype._ensureAliasDataHasBeenSet = function() {
-	if (this._isAliasDataSet !== true) {
-		throw new Errors.IllegalStateError("Alias data has not been set.");
-	}
-}
 
 module.exports = AliasRegistryClass;
