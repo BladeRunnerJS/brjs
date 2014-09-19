@@ -93,6 +93,10 @@ AliasRegistryClass.prototype.getClass = function getClass(aliasName) {
 	if (!this.isAliasAssigned(aliasName)) {
 		throw new Errors.IllegalStateError("No class has been found for alias '" + aliasName +"'");
 	}
+	
+	if(typeof(this._aliasData[aliasName]["class"]) == 'string') {
+		this._aliasData[aliasName]["class"] = require(this._aliasData[aliasName]["class"]);
+	}
 
 	return this._aliasData[aliasName]["class"];
 };
@@ -135,7 +139,7 @@ AliasRegistryClass.prototype._setAliasData = function setAliasData(aliasData) {
 		var alias = this._aliasData[aliasId];
 
 		if (this.isAliasAssigned(aliasId) && alias["interface"]) {
-			var aliasClass = alias["class"];
+			var aliasClass = this.getClass(aliasId);
 			var protocol = alias["interface"];
 			if (br.classIsA(aliasClass, protocol) == false) {
 				incorrectAliases.push(aliasId);
