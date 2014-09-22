@@ -5,14 +5,17 @@
     <title>JSDoc: <?js= title ?></title>
 
     <!--[if lt IE 9]>
-        <script src="scripts/polyfills.js"> </script>
+        <script src="scripts/polyfills.js"></script>
+        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 10]>
+        <script src="scripts/placeholder.min.js"></script>
     <![endif]-->
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/index-filter.js"> </script>
     <script src="scripts/functions.js"> </script>
-    
-        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
@@ -50,9 +53,11 @@
 <nav>
 	<div id="filter-input-wrapper">
         <div id="filter-input">
-		    <input type="text" list="package-prefixes" placeholder="package filter" oninput="packageFilter.updateDisplayedItems(this.value)"
-		     onkeyup="packageFilter.onKeyPress(this, event)" onkeypress="if(event.keyCode == 13) return false">
-		    <button onclick="packageFilter.setFilter('')"></button>
+        	<form onsubmit="return false;">
+		    	<input type="text" list="package-prefixes" placeholder="package filter" oninput="packageFilter.updateDisplayedItems(this.value)"
+		    	 onkeyup="packageFilter.onKeyUp(this, event)">
+		    	<button type="button" onclick="packageFilter.setFilter('')"></button>
+		    </form>
 	    </div>
 	</div>
 	<datalist id="package-prefixes"></datalist>

@@ -23,7 +23,8 @@ var Errors = require('br/Errors');
  * <p>It is not the responsibility of a Serializable class to include its classname in its
  * serialized form.
  */
-function Serializable() {}
+function Serializable() {
+}
 
 /**
  * @returns a string representation of the current state of this component. May not be null.

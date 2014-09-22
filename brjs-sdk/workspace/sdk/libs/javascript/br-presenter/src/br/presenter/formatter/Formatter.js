@@ -12,7 +12,8 @@ var Errors = require("br/Errors");
  * @classdesc
  * Represents an object with the capability to format values.
  */
-br.presenter.formatter.Formatter = function() {};
+function Formatter() {
+}
 
 /**
  * Formats a value according to some provided attributes.
@@ -23,7 +24,8 @@ br.presenter.formatter.Formatter = function() {};
  * @type String
  * @return the formatted value. May not be null or undefined.
  */
-br.presenter.formatter.Formatter.prototype.format = function(vValue, mAttributes)
-{
+Formatter.prototype.format = function(vValue, mAttributes) {
 	throw new Errors.UnimplementedInterfaceError("Formatter.format() has not been implemented.");
 };
+
+br.presenter.formatter.Formatter = Formatter;

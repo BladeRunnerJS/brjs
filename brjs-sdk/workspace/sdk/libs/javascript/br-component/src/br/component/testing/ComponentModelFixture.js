@@ -17,7 +17,8 @@ var Fixture = require('br/test/Fixture');
  * @classdesc
  * The <code>ComponentModelFixture</code> interface.
  */
-function ComponentModelFixture() {};
+function ComponentModelFixture() {
+}
 
 br.extend(ComponentModelFixture, Fixture);
 

@@ -14,7 +14,8 @@ var Errors = require('br/Errors');
  * @classdesc
  * A service which provides access to meta data for a BRJS app.
  */
-function AppMetaService() {};
+function AppMetaService() {
+}
 
 /**
 * Returns the app version
