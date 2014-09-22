@@ -52,14 +52,9 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 		verify();
 	}
 	
-	public String getNodePath() throws ConfigException
+	public boolean useNodeCommands() throws ConfigException
 	{
-		return getConf().nodePath;
-	}
-	
-	public boolean nodePathIsSet() throws ConfigException
-	{
-		return getConf().nodePath.length() > 0;
+		return getConf().useNodeCommands;
 	}
 	
 	public static File getConfigFilePath(BRJS brjs) {

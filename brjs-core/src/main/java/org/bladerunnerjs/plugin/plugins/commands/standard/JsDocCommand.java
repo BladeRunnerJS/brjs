@@ -98,7 +98,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
 		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
 		
-		if (brjs.bladerunnerConf().nodePathIsSet()) {
+		if (brjs.bladerunnerConf().useNodeCommands()) {
 			addNodeCommandArgs(commandArgs, workingDir, jsDocToolkitDir);
 		} else {
 			addRhinoCommandArgs(commandArgs, workingDir, jsDocToolkitDir);			
