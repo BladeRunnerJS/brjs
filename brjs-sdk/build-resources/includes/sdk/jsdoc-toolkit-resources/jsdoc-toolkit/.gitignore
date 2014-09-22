@@ -1,3 +1,8 @@
+#### BRJS changes ####
+# commented out the node_modules/... lines and added the .bin ignore below
+.bin
+
+
 # Development-related files
 .tern-port
 coverage/
