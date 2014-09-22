@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+
+/test/tmp
+/tmp
+
+/.idea
+.DS_Store
+
+/*.tgz
+
+/*.js.map
+
+build
+components
+
