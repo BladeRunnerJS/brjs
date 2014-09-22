@@ -38,7 +38,7 @@ public class AliasingSerializer {
 					jsonData.append(",");
 				}
 				
-				jsonData.append("'interface':" + aliasDefinition.getInterfaceName() + ",'interfaceName':'" + aliasDefinition.getInterfaceName() + "'");
+				jsonData.append("'interface':'" + aliasDefinition.getInterfaceRequirePath() + "','interfaceName':'" + aliasDefinition.getInterfaceName() + "'");
 			}
 			
 			jsonData.append("}");
