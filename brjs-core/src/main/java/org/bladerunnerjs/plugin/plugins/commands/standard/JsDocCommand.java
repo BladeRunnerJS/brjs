@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
@@ -79,7 +80,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			copyJsDocPlaceholder(app);
 			runCommand(app, outputDir);
 		}
-		catch(IOException e) {
+		catch(IOException | ConfigException e) {
 			throw new CommandOperationException(e);
 		}
 		
@@ -88,7 +89,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		return 0;
 	}
 	
-	private void runCommand(App app, File outputDir) throws CommandOperationException {
+	private void runCommand(App app, File outputDir) throws CommandOperationException, ConfigException {
 		List<String> commandArgs = new ArrayList<>();
 		
 		File workingDir = brjs.dir();
@@ -97,14 +98,11 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
 		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
 		
-		String command = RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc";
-		if(System.getProperty("os.name").split(" ")[0].toLowerCase().equals("windows"))
-		{
-			command = command.replace("/", "\\") + ".cmd";
-			commandArgs.add("cmd");
-			commandArgs.add("/c");
+		if (brjs.bladerunnerConf().useNodeCommands()) {
+			addNodeCommandArgs(commandArgs, workingDir, jsDocToolkitDir);
+		} else {
+			addRhinoCommandArgs(commandArgs, workingDir, jsDocToolkitDir);			
 		}
-		commandArgs.add(command);
 		
 		commandArgs.add( RelativePathUtility.get(brjs, workingDir, app.dir())+"/" ); // add the app dir
 		// sdk/libs/javascript is added via config file so dirs can be optionally ignored
@@ -122,11 +120,29 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		processBuilder.directory( workingDir );
-		processBuilder.command(commandArgs);
+		processBuilder.command( commandArgs );
 		
 		CommandRunnerUtility.runCommand(brjs, processBuilder);
 	}
+
+	private void addNodeCommandArgs(List<String> commandArgs, File workingDir, File jsDocToolkitDir)
+	{
+		commandArgs.add("node");
+		commandArgs.add(RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc.js");
+	}
 	
+	private void addRhinoCommandArgs(List<String> commandArgs, File workingDir, File jsDocToolkitDir)
+	{
+		String command = RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc";
+		if(System.getProperty("os.name").split(" ")[0].toLowerCase().equals("windows"))
+		{
+			command = command.replace("/", "\\") + ".cmd";
+			commandArgs.add("cmd");
+			commandArgs.add("/c");
+		}
+		commandArgs.add(command);
+	}
+
 	private File getSystemOrUserConfPath(BRJS brjs, File systemDirBase, String dirName) {
 		File userConfDir = brjs.conf().file(dirName);
 		if (userConfDir.exists()) {
