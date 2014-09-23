@@ -108,9 +108,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		}
 	}
 	
-	private List<String> getValidContentPaths(BundleSet bundleSet) throws ContentProcessingException {
-		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
-		
-		return (!config.isbundleConfigAvailable() || bundleSet.getResourceFiles(xmlAssetPlugin).isEmpty()) ? Collections.emptyList() : requestPaths;
+	private List<String> getValidContentPaths(BundleSet bundleSet) throws ContentProcessingException {		
+		return bundleSet.getResourceFiles(xmlAssetPlugin).isEmpty() ? Collections.emptyList() : requestPaths;
 	}
 }
