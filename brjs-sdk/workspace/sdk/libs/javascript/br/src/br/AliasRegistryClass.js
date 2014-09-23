@@ -66,7 +66,8 @@ AliasRegistryClass.prototype.getAliasesByInterface = function getAliasesByInterf
 
 	for(var i = 0, length = allAliases.length; i < length; ++i) {
 		var alias = allAliases[i];
-		var aliasInterface = require(this._aliasData[alias]["interface"]);
+		var interfaceRequirePath = this._aliasData[alias]["interface"];
+		var aliasInterface = (aliasInterface) ? require(interfaceRequirePath) : null;
 
 		if(aliasInterface === protocol) {
 			filteredAliases.push(alias);
