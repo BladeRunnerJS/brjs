@@ -66,7 +66,8 @@ AliasRegistryClass.prototype.getAliasesByInterface = function getAliasesByInterf
 
 	for(var i = 0, length = allAliases.length; i < length; ++i) {
 		var alias = allAliases[i];
-		var aliasInterface = this._aliasData[alias]["interface"];
+		var interfaceRequirePath = this._aliasData[alias]["interface"];
+		var aliasInterface = (aliasInterface) ? require(interfaceRequirePath) : null;
 
 		if(aliasInterface === protocol) {
 			filteredAliases.push(alias);
@@ -140,7 +141,7 @@ AliasRegistryClass.prototype._setAliasData = function setAliasData(aliasData) {
 
 		if (this.isAliasAssigned(aliasId) && alias["interface"]) {
 			var aliasClass = this.getClass(aliasId);
-			var protocol = alias["interface"];
+			var protocol = require(alias["interface"]);
 			if (br.classIsA(aliasClass, protocol) == false) {
 				incorrectAliases.push(aliasId);
 			}

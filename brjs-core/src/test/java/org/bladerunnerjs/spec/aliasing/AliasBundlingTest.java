@@ -315,7 +315,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspect).indexPageHasContent("br.AliasRegistry('appns.bs.b1.the-alias');")
 			.and(brLib).hasClasses("br/UnknownClass", "br/AliasRegistry");
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);			
-		then(response).containsText("module.exports = {'appns.bs.b1.the-alias':{'interface':appns/TheInterface,'interfaceName':'appns/TheInterface'}};");
+		then(response).containsText("module.exports = {'appns.bs.b1.the-alias':{'interface':'appns/TheInterface','interfaceName':'appns/TheInterface'}};");
 	}
 	
 	@Test
