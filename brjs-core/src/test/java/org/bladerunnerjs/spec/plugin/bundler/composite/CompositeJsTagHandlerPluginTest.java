@@ -45,7 +45,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/dev/aliasing/bundle.js", "v/dev/app-meta/version.js", "v/dev/common-js/module/appns/Class1.js");
+		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/common-js/module/appns/Class1.js", "v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/dev/aliasing/bundle.js", "v/dev/app-meta/version.js");
+		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -77,11 +77,11 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/prod/thirdparty/bundle.js", "v/prod/aliasing/bundle.js", "v/prod/app-meta/version.js", "v/prod/common-js/bundle.js");
+		then(pageResponse).containsRequests("v/prod/thirdparty/bundle.js", "v/prod/app-meta/version.js", "v/prod/common-js/bundle.js", "v/prod/aliasing/bundle.js");
 	}
 	
 	@Test
-	public void theAliasBlobRequestIsOutputAfterThirdpartyLibrariesButBeforeTheClasses() throws Exception {
+	public void theAliasBlobRequestIsOutputLast() throws Exception {
 		given(aspect).hasCommonJsPackageStyle("src/appns/node")
 		.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 		.and(aspect).hasClass("appns/node/Class")
@@ -97,11 +97,11 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 	then(pageResponse).containsOrderedTextFragments(
 			"thirdparty/br-bootstrap/bundle.js", 
-			"thirdparty/appLib/bundle.js",
-			"aliasing/bundle.js",
+			"thirdparty/appLib/bundle.js", 
 			"common-js/module/appns/node/Class.js",
 			"namespaced-js/package-definitions.js", 
-			"namespaced-js/module/appns/namespaced/Class.js"); 
+			"namespaced-js/module/appns/namespaced/Class.js",
+			"aliasing/bundle.js"); 
 	}
 	
 	@Test
@@ -145,9 +145,9 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		when(workbench).pageLoaded(pageResponse, "en_GB");
 		then(pageResponse).containsOrderedTextFragments(
 				"<script type='text/javascript' src='v/dev/thirdparty/thirdpartyLib/bundle.js'></script>", 
-				"<script type='text/javascript' src='v/dev/aliasing/bundle.js'></script>",
 				"<script type='text/javascript' src='v/dev/namespaced-js/package-definitions.js'></script>",
 				"<script type='text/javascript' src='v/dev/namespaced-js/module/appns/bs/b1/Class1.js'></script>",
+				"<script type='text/javascript' src='v/dev/aliasing/bundle.js'></script>",
 				"appns.bs.b1.Class1",
 				"appns.Class1");
 	}

@@ -299,15 +299,7 @@ Parser.prototype._getDoclet = function(id) {
  */
 Parser.prototype.getBasename = function(name) {
     if (name !== undefined) {
-        if(name.match(/\.prototype\./)) {
-        	return name.replace(/\.prototype\..*$/, '');
-        }
-        else if(name.match(/\.[A-Z][A-Z_]*$/)) {
-        	return name.replace(/\.[A-Z][A-Z_]*$/, '');
-        }
-        else {
-            return name.replace(/^([$a-z_][$a-z_0-9]*).*?$/i, '$1');
-        }
+        return name.replace(/^([$a-z_][$a-z_0-9]*).*?$/i, '$1');
     }
 };
 

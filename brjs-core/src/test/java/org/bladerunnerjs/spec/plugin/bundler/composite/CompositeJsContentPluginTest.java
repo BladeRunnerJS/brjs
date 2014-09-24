@@ -75,7 +75,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void theAliasBlobIsOutputAfterTheThirdpartyLibrariesButBeforeTheClasses() throws Exception {
+	public void theAliasBlobIsOutputLast() throws Exception {
 		given(aspect).classRequires("appns/Class1", "br/AliasRegistry")
 			.and(brLib).hasClass("br/AliasRegistry")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
@@ -85,9 +85,9 @@ public class CompositeJsContentPluginTest extends SpecTest {
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 			"// br-bootstrap",
-			"define('$alias-data'",
 			"define('appns/Class1'",
-			"define('br/AliasRegistry'");
+			"define('br/AliasRegistry'",
+			"require('br/AliasRegistry').setAliasData(" );
 	}
 	
 	@Test

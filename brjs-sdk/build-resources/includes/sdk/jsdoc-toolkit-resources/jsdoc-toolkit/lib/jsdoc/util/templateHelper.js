@@ -78,7 +78,7 @@ function makeUniqueId(filename, id) {
 }
 
 var htmlsafe = exports.htmlsafe = function(str) {
-    return (!str) ? '' : str.replace(/&/g, '&amp;')
+    return str.replace(/&/g, '&amp;')
         .replace(/</g, '&lt;');
 };
 

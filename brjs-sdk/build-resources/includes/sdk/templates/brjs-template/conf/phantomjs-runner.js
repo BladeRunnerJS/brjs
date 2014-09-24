@@ -1,8 +1,3 @@
-/*
- * This PhantomJS runner is provided to make it easy to run tests on PhantomJS using BladeRunnerJS.
- * To use PhantomJS download the relevant binary from http://phantomjs.org and update the path in test-runner.conf
-*/
-
 var page = require('webpage').create();
 page.settings.userAgent = 'PhantomJS';
 var args =  require('system').args;

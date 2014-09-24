@@ -13,35 +13,29 @@
 	KnockoutJsTreeModelFactoryTest.prototype.testViewModelWithOneObservable = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({foo:ko.observable('42')});
 
-		assertEquals('Knockout View Model', treeModel.core.data[0].text);
-		assertEquals('foo: 42', treeModel.core.data[0].children[0].text);
-		assertEquals({opened: true}, treeModel.core.data[0].state);
+		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: [{text: 'foo: 42'}]}], treeModel.core.data);
 	};
 
 	KnockoutJsTreeModelFactoryTest.prototype.testViewModelWithOneNonObservable = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({foo: 42});
 
-		assertEquals('Knockout View Model', treeModel.core.data[0].text);
-		assertEquals('foo: 42', treeModel.core.data[0].children[0].text);
-		assertEquals({opened: true}, treeModel.core.data[0].state);
+		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: [{text: 'foo: 42'}]}], treeModel.core.data);
 	};
 
 	KnockoutJsTreeModelFactoryTest.prototype.testViewModelWithTwoObservables = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({foo:ko.observable('value #1'), bar:ko.observable('value #2')});
 
-		assertEquals('Knockout View Model', treeModel.core.data[0].text);
-		assertEquals('foo: value #1', treeModel.core.data[0].children[0].text);
-		assertEquals('bar: value #2', treeModel.core.data[0].children[1].text);
-		assertEquals({opened: true}, treeModel.core.data[0].state);
+		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: [{text: 'foo: value #1'}, {text: 'bar: value #2'}]}], treeModel.core.data);
 	};
 
 	KnockoutJsTreeModelFactoryTest.prototype.testViewModelWithAnObjectContainingObservables = function() {
 		var treeModel = jsTreeModelFactory.createTreeModelFromKnockoutViewModel({obj: {foo:ko.observable('value #1'), bar:ko.observable('value #2')}});
 
-		assertEquals('Knockout View Model', treeModel.core.data[0].text);
-		assertEquals('obj', treeModel.core.data[0].children[0].text);
-		assertEquals({opened: true}, treeModel.core.data[0].children[0].state);
-		assertEquals('foo: value #1', treeModel.core.data[0].children[0].children[0].text);
-		assertEquals('bar: value #2', treeModel.core.data[0].children[0].children[1].text);
+		assertEquals([{text: 'Knockout View Model', state:{opened: true}, children: [
+			{text: 'obj', state:{opened: true}, children: [
+				{text: 'foo: value #1'},
+				{text: 'bar: value #2'}
+			]}
+		]}], treeModel.core.data);
 	};
 })();

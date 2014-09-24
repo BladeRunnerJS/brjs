@@ -10,8 +10,9 @@
  * @classdesc
  * Interface implemented by classes that wish to listen to property change events.
  */
-function PropertyListener() {
-}
+br.presenter.property.PropertyListener = function()
+{
+};
 
 /**
  * Callback method invoked when the value of a {@link module:br/presenter/property/Property} is updated, even when it hasn't changed.
@@ -22,7 +23,8 @@ function PropertyListener() {
  * <p>Implementation of this method is optional, and no action will be taken if the method is invoked but has not
  * been overridden.</p>
  */
-PropertyListener.prototype.onPropertyUpdated = function() {
+br.presenter.property.PropertyListener.prototype.onPropertyUpdated = function()
+{
 	// optional callback
 };
 
@@ -32,7 +34,8 @@ PropertyListener.prototype.onPropertyUpdated = function() {
  * <p>Implementation of this method is optional, and no action will be taken if the method is invoked but has not
  * been overridden.</p>
  */
-PropertyListener.prototype.onPropertyChanged = function() {
+br.presenter.property.PropertyListener.prototype.onPropertyChanged = function()
+{
 	// optional callback
 };
 
@@ -43,7 +46,8 @@ PropertyListener.prototype.onPropertyChanged = function() {
  * <p>Implementation of this method is optional, and no action will be taken if the method is invoked but has not
  * been overridden.</p>
  */
-PropertyListener.prototype.onValidationSuccess = function() {
+br.presenter.property.PropertyListener.prototype.onValidationSuccess = function()
+{
 	// optional callback
 };
 
@@ -57,7 +61,8 @@ PropertyListener.prototype.onValidationSuccess = function() {
  * @param {Object} vPropertyValue The value that led to the validation error.
  * @param {String} sErrorMessage The description of the validation error.
  */
-PropertyListener.prototype.onValidationError = function(vPropertyValue, sErrorMessage) {
+br.presenter.property.PropertyListener.prototype.onValidationError = function(vPropertyValue, sErrorMessage)
+{
 	// optional callback
 };
 
@@ -67,8 +72,7 @@ PropertyListener.prototype.onValidationError = function(vPropertyValue, sErrorMe
  * <p>Implementation of this method is optional, and no action will be taken if the method is invoked but has not
  * been overridden.</p>
  */
-PropertyListener.prototype.onValidationComplete = function() {
+br.presenter.property.PropertyListener.prototype.onValidationComplete = function()
+{
 	// optional callback
 };
-
-br.presenter.property.PropertyListener = PropertyListener;

@@ -252,7 +252,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
-		then(response).containsText("module.exports = {};");
+		then(response).containsText("setAliasData({});\n");
 	}
 	
 	@Test
@@ -262,7 +262,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageHasAliasReferences("the-alias");
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
-		then(response).containsText("module.exports = {'the-alias':{'class':'appns/Class1','className':'appns.Class1'}};");
+		then(response).containsText("setAliasData({'the-alias':{'class':require('appns/Class1'),'className':'appns.Class1'}})");
 	}
 	
 	@Test
@@ -315,7 +315,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspect).indexPageHasContent("br.AliasRegistry('appns.bs.b1.the-alias');")
 			.and(brLib).hasClasses("br/UnknownClass", "br/AliasRegistry");
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);			
-		then(response).containsText("module.exports = {'appns.bs.b1.the-alias':{'interface':appns/TheInterface,'interfaceName':'appns/TheInterface'}};");
+		then(response).containsText("require('br/AliasRegistry').setAliasData({'appns.bs.b1.the-alias':{'interface':appns/TheInterface,'interfaceName':'appns/TheInterface'}});");
 	}
 	
 	@Test
@@ -384,7 +384,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageRequires("appns/Class1");
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
-		then(response).containsText("module.exports = {'the-alias':{'class':'appns/Class1','className':'appns.Class1'}};");
+		then(response).containsText("setAliasData({'the-alias':{'class':require('appns/Class1'),'className':'appns.Class1'}})");
 	}
 	
 	@Test
@@ -395,7 +395,7 @@ public class AliasBundlingTest extends SpecTest {
     		.and(aspect).indexPageRequires("appns/b1/BladeClass")
     		.and(brLib).hasClass("br/AliasRegistry");
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
-    	then(response).containsText("module.exports = {'the-alias':{'class':'appns/b1/Class1','className':'appns.b1.Class1'}};");
+    	then(response).containsText("setAliasData({'the-alias':{'class':require('appns/b1/Class1'),'className':'appns.b1.Class1'}})");
 	}
 	
 	@Test
