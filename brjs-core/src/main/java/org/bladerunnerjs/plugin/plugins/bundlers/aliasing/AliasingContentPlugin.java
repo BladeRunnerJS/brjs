@@ -15,7 +15,7 @@ import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -48,7 +48,7 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList(ThirdpartyContentPlugin.class.getCanonicalName());
+		return Arrays.asList(NamespacedJsContentPlugin.class.getCanonicalName());
 	}
 	
 	@Override
@@ -74,7 +74,7 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 				
 				if(aliasRegistryLoaded) {
 					String aliasData = AliasingSerializer.createJson(bundleSet);
-					return new CharResponseContent( brjs, "define('$alias-data', function(require, exports, module) {\n\tmodule.exports = " + aliasData + ";\n});\n" );
+					return new CharResponseContent( brjs, "require('br/AliasRegistry').setAliasData(" + aliasData + ");\n" );
 				}
 			}
 			else {

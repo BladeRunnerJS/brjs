@@ -13,7 +13,7 @@
  * The <code>FixtureRegistry</code> allows for registration of fixtures for a specified scope.
  */
 function FixtureRegistry() {
-}
+};
 
 /**
  * Adds a fixture to the registry.

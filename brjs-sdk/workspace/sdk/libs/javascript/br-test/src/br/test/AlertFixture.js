@@ -10,13 +10,14 @@ var Fixture = require('br/test/Fixture');
 
 /**
  * @class
+ * @interface
  * @alias module:br/test/AlertFixture
  * 
  * @classdesc
  * The <code>AlertFixture</code> allows for testing of browser alerts.
  */
 function AlertFixture() {
-}
+};
 br.inherit(AlertFixture, Fixture);
 
 AlertFixture.prototype.setUp = function() {

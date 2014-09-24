@@ -12,8 +12,7 @@ var Errors = require('br/Errors');
  * @classdesc
  * This class provides access to XML documents loaded via the XML bundler.
  */
-function XmlResourceService() {
-}
+function XmlResourceService() {};
 
 /**
 * Access an XML document by name.

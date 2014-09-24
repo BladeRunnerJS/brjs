@@ -62,7 +62,8 @@
 			}
 		};
 
-		aliasRegistry = new AliasRegistry(testAliasData);
+		aliasRegistry= new AliasRegistry();
+		aliasRegistry.setAliasData(testAliasData);
 
 		this.subrealm = realm.subrealm();
 		this.subrealm.install();
@@ -84,7 +85,8 @@
 
 	AliasRegistryTest["test Return an empty list of aliases if there is no Alias"] = function()
 	{
-		aliasRegistry = new AliasRegistry({});
+		aliasRegistry = new AliasRegistry();
+		aliasRegistry.setAliasData({});
 		assertEquals("The aliases list should be empty", [], aliasRegistry.getAllAliases());
 	};
 
@@ -153,9 +155,10 @@
 	AliasRegistryTest["test Fails fast if alias is not an implementer of the alias interface"] = function()
 	{
 		testAliasData["some.alias1"]["class"] = function(){};
+		aliasRegistry = new AliasRegistry();
 		assertException("Should throw an error if the alias is not implementor of the alias interface",
 			function() {
-				new AliasRegistry(testAliasData);
+				aliasRegistry.setAliasData(testAliasData);
 			},
 			Errors.ILLEGAL_STATE
 		);
@@ -163,11 +166,12 @@
 
 	AliasRegistryTest["test Null class can be set for abstract aliases"] = function()
 	{
-		aliasRegistry= new AliasRegistry({
+		aliasRegistry= new AliasRegistry();
+		aliasRegistry.setAliasData({
 			"some.alias1": {
 				"interface":Alias1Interface,
 				"interfaceName":"Alias1Interface"
-			}});
+			}  });
 		assertTrue(aliasRegistry.isAlias("some.alias1"));
 	};
 

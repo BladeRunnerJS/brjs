@@ -18,8 +18,9 @@
  * interface, and by returning the name of the template that should be used to render the node when
  * {@link #getTemplateName} is invoked.</p>
  */
-function TemplateAware() {
-}
+br.presenter.node.TemplateAware = function()
+{
+};
 
 /**
  * Returns the name of the HTML template that will be used to render this presentation node
@@ -27,8 +28,6 @@ function TemplateAware() {
  *
  * @type String
  */
-TemplateAware.prototype.getTemplateName = function() {
+br.presenter.node.TemplateAware.prototype.getTemplateName = function() {
 	throw new br.Errors.UnimplementedInterfaceError("This method should be overridden.");
 };
-
-br.presenter.node.TemplateAware = TemplateAware;
