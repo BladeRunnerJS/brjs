@@ -18,7 +18,7 @@ var Errors = require('br/Errors');
  * is executed and can be used to reset the state of a test and its stubs.
  */
 function FixtureFactory() {
-};
+}
 
 /**
  * This method is called once by the test-runner after the FixtureFactory is constructed. The implementation should add

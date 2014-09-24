@@ -25,7 +25,8 @@ var Errors = require('br/Errors');
 *
 * <p>Components that can have their state saved should also implement br.component.Serializable.
 */
-function Component() {}
+function Component() {
+}
 
 /**
  * @param {module:br/component/Frame} frame A frame provided by the layout manager that this component can

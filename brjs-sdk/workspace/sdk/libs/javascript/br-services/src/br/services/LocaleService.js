@@ -14,7 +14,8 @@ var Errors = require('br/Errors');
  * @classdesc
  * A service that allows getting and setting the current app locale cookie.
  */
-function LocaleService() {};
+function LocaleService() {
+}
 
 /**
 * Sets the locale cookie

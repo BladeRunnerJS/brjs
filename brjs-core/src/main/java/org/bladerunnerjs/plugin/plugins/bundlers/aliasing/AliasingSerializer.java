@@ -27,7 +27,7 @@ public class AliasingSerializer {
 			boolean classesInfoWritten = false;
 			if(aliasDefinition.getClassName() != null && !aliasDefinition.getClassName().equals(AliasesFile.BR_UNKNOWN_CLASS_NAME))
 			{
-				jsonData.append("'class':require('" + aliasDefinition.getRequirePath() + "'),'className':'" + aliasDefinition.getClassName() + "'");
+				jsonData.append("'class':'" + aliasDefinition.getRequirePath() + "','className':'" + aliasDefinition.getClassName() + "'");
 				classesInfoWritten = true;
 			}
 			
@@ -38,7 +38,7 @@ public class AliasingSerializer {
 					jsonData.append(",");
 				}
 				
-				jsonData.append("'interface':" + aliasDefinition.getInterfaceName() + ",'interfaceName':'" + aliasDefinition.getInterfaceName() + "'");
+				jsonData.append("'interface':'" + aliasDefinition.getInterfaceRequirePath() + "','interfaceName':'" + aliasDefinition.getInterfaceName() + "'");
 			}
 			
 			jsonData.append("}");

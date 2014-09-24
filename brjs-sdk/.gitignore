@@ -29,3 +29,4 @@ workspace/sdk/phantomjs
 #   2. Egit currently won't consider recursive matches defined before a blanket block pattern, followed by negated block patterns (!), so is ignoring matches in the main brjs .gitignore
 brjs-*.jar
 *.bundle
+bundle.js

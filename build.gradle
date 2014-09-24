@@ -199,8 +199,8 @@ task generateReleaseNotes, {
 		def milestoneJson = getReleaseNoteJson(project,tagVersion).milestone
 		def milestones = milestoneJson.split(",").collect { it.trim() }
 		def milestoneIds = githubApi.getMilestoneIds(milestones)
-				
-		def includeIssueLabels = ["bug", "feature", "enhancement", "experience", "breaking-change", "java-api", "js-api"]
+
+		def includeIssueLabels = ["bug", "feature", "enhancement", "experience", "breaking-change", "java-api", "js-api", " CaplinSupport"]
 		def issueIncludeLabelsString = includeIssueLabels.join(", ").replaceAll(/^(.*),(.*)$/,'$1 or$2'); /* regex replaces the last ',' with 'or' */
 
 		def excludeIssueLabels = ["invalid", "duplicate", "wont-fix", "wontfix", "ignore-release-note"]
@@ -223,7 +223,7 @@ task generateReleaseNotes, {
 		appendToReleaseNotes << ""
 		appendToReleaseNotes << "<br/>"
 		appendToReleaseNotes << "-------------"
-		appendToReleaseNotes << "### API Documentation"		
+		appendToReleaseNotes << "### API Documentation"
 		appendToReleaseNotes << ""
 		appendToReleaseNotes << "- [@tagVersion@ JavaScript API](http://apidocs.bladerunnerjs.org/@tagVersion@/js/)"
 		appendToReleaseNotes << "- [@tagVersion@ Java Model API](http://apidocs.bladerunnerjs.org/@tagVersion@/java/)"
