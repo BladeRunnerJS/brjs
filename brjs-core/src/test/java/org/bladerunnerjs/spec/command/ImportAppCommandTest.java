@@ -162,19 +162,24 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).hasDir("bs-bladeset/blades/b1/workbench/src/importedns/bs/b1/");
 	}
 	
-	@Ignore //failing - see issue982
 	@Test
 	public void allTestDirectoriesAreCorrectlyReNamespacedWhenImported() throws Exception {
-		given(aspect).containsFile("src/appns/AspectClass.js")
-		.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
-		.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
-		.and(workbench).containsFile("src/appns/bs/b1/WorkbenchClass.js")
-		.and(blade).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/b1/BladeTestClass.js")
-		.and(blade).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/b1/BladeTest.js")
-		.and(brjs).commandHasBeenRun("export-app", "app")
-		.and(appJars).containsFile("brjs-lib1.jar");
-	when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
-	then(importedApp).hasDir("bs-bladeset/blades/b1/tests/test-unit/js-test-driver/src-test/importedns/")
-		.and(importedApp).hasDir("bs-bladeset/blades/b1/tests/test-unit/js-test-driver/tests/importedns/");
+		given(aspect).containsFile("tests/appns/AspectTestClass.js")
+			.and(aspect).containsFile("tests/test-unit/js-test-driver/src-test/appns/AspectTestClass.js")
+			.and(aspect).containsFile("tests/test-unit/js-test-driver/tests/appns/AspectTest.js")
+			.and(bladeset).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/BladeTestClass.js")
+			.and(bladeset).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/BladeTest.js")
+			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(blade).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/b1/BladeTestClass.js")
+			.and(blade).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/b1/BladeTest.js")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).hasDir("bs-bladeset/blades/b1/tests/test-unit/js-test-driver/src-test/importedns/")
+			.and(importedApp).hasDir("bs-bladeset/blades/b1/tests/test-unit/js-test-driver/tests/importedns/")
+			.and(importedApp).hasDir("bs-bladeset/tests/test-unit/js-test-driver/src-test/importedns/")
+			.and(importedApp).hasDir("bs-bladeset/tests/test-unit/js-test-driver/tests/importedns/")
+			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/src-test/importedns/")
+			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/tests/importedns/");
 	}
 }
