@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.FileAccessLimitScope;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
@@ -38,8 +37,9 @@ public class MemoizedValue<T extends Object> {
 			throw new IllegalStateException("At least one directory or file must be provided within the watch list.");
 		}
 		
-		for(FileInfo fileInfo : rootNode.getFileInfoSet(watchItems)) {
-			watchList.add(new InfoFileModifiedChecker(fileInfo));
+		File primaryFile = watchItems[0];
+		for(File file : watchItems) {
+			watchList.add(new InfoFileModifiedChecker(rootNode.getFileSetInfo(file, primaryFile)));
 		}
 	}
 	

@@ -26,7 +26,10 @@ public class TestModelAccessor
 		loggerFactory = (loggerFactory != null) ? loggerFactory : new StubLoggerFactory();
 		appVersionGenerator = (appVersionGenerator != null) ? appVersionGenerator : new MockAppVersionGenerator();		
 		
-		return new BRJS(brjsDir, pluginLocator, fileModificationService, loggerFactory, appVersionGenerator);
+		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, appVersionGenerator);
+		brjs.setFileModificationService(fileModificationService);
+		
+		return brjs;
 	}
 
 	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, LogMessageStore logStore, AppVersionGenerator versionGenerator) throws InvalidSdkDirectoryException 
@@ -61,8 +64,10 @@ public class TestModelAccessor
 	{
 		PluginLocator pluginLocator = new BRJSPluginLocator();
 		AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
+		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, appVersionGenerator);
+		brjs.setFileModificationService(fileModificationService);
 		
-		return new BRJS(brjsDir, pluginLocator, fileModificationService, loggerFactory, appVersionGenerator);
+		return brjs;
 	}
 	
 }

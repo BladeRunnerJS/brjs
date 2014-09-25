@@ -120,7 +120,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
     			if(!contextFile.isHidden()) {
     				filesUpdated = true;
     				
-    				ProxyFileModificationInfo proxyFileModificationInfo = fileModificationService.getModificationInfo(contextFile);
+    				ProxyFileModificationInfo proxyFileModificationInfo = fileModificationService.getFileModificationInfo(contextFile);
     				
     				if(watchEvent.kind().equals(ENTRY_CREATE)) {
     					fileModificationService.watchDirectory(contextFile, this, lastModified);

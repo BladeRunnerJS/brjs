@@ -137,7 +137,7 @@ public class Java7FileModificationServiceTest extends TestModelAccessor {
 	}
 	
 	private void watch(String filePath) {
-		FileModificationInfo fileModificationInfo = fileModificationService.getModificationInfo(new File(tempDir,  filePath));
+		FileModificationInfo fileModificationInfo = fileModificationService.getFileModificationInfo(new File(tempDir,  filePath));
 		watches.put(filePath, new InfoFileModifiedChecker(fileModificationInfo));
 	}
 	

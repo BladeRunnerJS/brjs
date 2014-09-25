@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.logging.LoggerFactory;
@@ -90,14 +89,8 @@ public final class TestRootNode extends AbstractRootNode
 	}
 	
 	@Override
-	public List<FileInfo> getFileInfoSet(File[] files) {
-		List<FileInfo> fileInfoSet = new ArrayList<>();
-		
-		for(File file : files) {
-			fileInfoSet.add(getFileInfo(file));
-		}
-		
-		return fileInfoSet;
+	public FileInfo getFileSetInfo(File file, File primarySetFile) {
+		return getFileInfo(file);
 	}
 	
 	@Override

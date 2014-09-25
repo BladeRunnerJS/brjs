@@ -1,8 +1,6 @@
 package org.bladerunnerjs.utility.filemodification;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 
@@ -16,22 +14,22 @@ public class ReadWriteCompatiblePessimisticFileModificationService extends Pessi
 	}
 	
 	@Override
-	public List<FileModificationInfo> getModificationInfoSet(File[] files) {
-		List<FileModificationInfo> modificationInfoSet = new ArrayList<>();
-		PrimaryFileModificationInfo primaryFileModificationInfo = null;
-		boolean isFirstFile = true;
+	public FileModificationInfo getFileSetModificationInfo(File file, File primarySetFile) {
+		String fileKey = file.getPath() + ":" + primarySetFile.getPath();
 		
-		for(File file : files) {
-			if(isFirstFile) {
-				isFirstFile = false;
-				primaryFileModificationInfo = new PrimaryFileModificationInfo(brjs.getFileInfo(file), getModificationInfo(file));
-				modificationInfoSet.add(primaryFileModificationInfo);
+		if(!fileModificationInfos.containsKey(fileKey)) {
+			FileModificationInfo fileModificationInfo;
+			
+			if(file.equals(primarySetFile)) {
+				fileModificationInfo = new PrimaryFileModificationInfo(brjs.getFileInfo(primarySetFile), getFileModificationInfo(primarySetFile));
 			}
 			else {
-				modificationInfoSet.add(new SecondaryFileModificationInfo(primaryFileModificationInfo, file, getModificationInfo(file)));
+				fileModificationInfo = new SecondaryFileModificationInfo((PrimaryFileModificationInfo) getFileSetModificationInfo(primarySetFile, primarySetFile), file, getFileModificationInfo(file));
 			}
+			
+			fileModificationInfos.put(fileKey, fileModificationInfo);
 		}
 		
-		return modificationInfoSet;
+		return fileModificationInfos.get(fileKey);
 	}
 }

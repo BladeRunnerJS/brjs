@@ -20,13 +20,13 @@ public class OptimisticFileModificationService implements FileModificationServic
 	}
 	
 	@Override
-	public FileModificationInfo getModificationInfo(File file) {
+	public FileModificationInfo getFileModificationInfo(File file) {
 		return optimisticFileModificationInfo;
 	}
 	
 	@Override
-	public List<FileModificationInfo> getModificationInfoSet(File[] files) {
-		return fileModificationInfoSet;
+	public FileModificationInfo getFileSetModificationInfo(File file, File primarySetFile) {
+		return getFileModificationInfo(file);
 	}
 	
 	@Override

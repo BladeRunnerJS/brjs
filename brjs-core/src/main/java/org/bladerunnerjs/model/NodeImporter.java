@@ -19,7 +19,6 @@ import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.JsStyleUtility;
-import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
 import org.mockito.Mockito;
 
 
@@ -67,7 +66,7 @@ public class NodeImporter {
 		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
 		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
 		
-		return new BRJS(tempSdkDir, pluginLocator, new OptimisticFileModificationService(), new StubLoggerFactory(), new MockAppVersionGenerator());
+		return new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
 	}
 	
 	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException {

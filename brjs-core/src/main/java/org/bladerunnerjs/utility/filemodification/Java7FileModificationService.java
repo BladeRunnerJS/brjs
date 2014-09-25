@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.WatchService;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -66,7 +64,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	@Override
-	public ProxyFileModificationInfo getModificationInfo(File file) {
+	public ProxyFileModificationInfo getFileModificationInfo(File file) {
 		String absoluteFilePath = file.getAbsolutePath();
 		
 		if(!fileModificationInfos.containsKey(absoluteFilePath)) {
@@ -77,14 +75,8 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	@Override
-	public List<FileModificationInfo> getModificationInfoSet(File[] files) {
-		List<FileModificationInfo> modificationInfoSet = new ArrayList<>();
-		
-		for(File file : files) {
-			modificationInfoSet.add(getModificationInfo(file));
-		}
-		
-		return modificationInfoSet;
+	public FileModificationInfo getFileSetModificationInfo(File file, File primarySetFile) {
+		return getFileModificationInfo(file);
 	}
 	
 	@Override
@@ -134,7 +126,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	void watchDirectory(File file, WatchingFileModificationInfo parentModificationInfo, long lastModified) {
-		ProxyFileModificationInfo proxyFMI = getModificationInfo(file);
+		ProxyFileModificationInfo proxyFMI = getFileModificationInfo(file);
 		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(brjs, this, watchService, file, parentModificationInfo) :
 			new Java7FileModificationInfo(parentModificationInfo, file);
 		proxyFMI.setFileModificationInfo(fileModificationInfo);
@@ -157,7 +149,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		{
 			if (node instanceof App || node instanceof AssetContainer) {
     			File resetLastModifiedForFile = node.parentNode().dir();
-				FileModificationInfo fileModificationInfo = getModificationInfo(resetLastModifiedForFile);
+				FileModificationInfo fileModificationInfo = getFileModificationInfo(resetLastModifiedForFile);
     			fileModificationInfo.resetLastModified();
 			}
 		}

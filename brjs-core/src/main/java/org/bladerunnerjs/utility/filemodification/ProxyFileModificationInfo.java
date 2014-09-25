@@ -64,7 +64,7 @@ public class ProxyFileModificationInfo implements WatchingFileModificationInfo {
 	public void delete() {
 		if(existentFileModificationInfo != null) {
 			for(WatchingFileModificationInfo childInfo : getChildren()) {
-				fileModificationService.getModificationInfo(childInfo.getFile()).delete();
+				fileModificationService.getFileModificationInfo(childInfo.getFile()).delete();
 			}
 			
 			nonExistentFileModificationInfo.setLastModified(existentFileModificationInfo.getLastModified() + 1);

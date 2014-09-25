@@ -31,8 +31,8 @@ import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
-import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
+import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
 
 
@@ -68,23 +68,20 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
-	private final Map<String, FileInfo> fileInfos = new TreeMap<>();
+	private final Map<String, BRJSFileInfo> fileInfos = new TreeMap<>();
 	private final PluginAccessor pluginAccessor;
-	private final FileModificationService fileModificationService;
+	private FileModificationService fileModificationService = new OptimisticFileModificationService();
 	private final IO io = new IO();
 	private boolean closed = false;
 	private AppVersionGenerator appVersionGenerator;
 	private CharBufferPool pool = new CharBufferPool();
 	
-	BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
-			LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		
 		fileModificationService.initialise(this, dir);
-		
-		this.fileModificationService = fileModificationService;
 		
 		logger = loggerFactory.getLogger(BRJS.class);
 		
@@ -101,6 +98,19 @@ public class BRJS extends AbstractBRJSRootNode
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
 		this.appVersionGenerator = appVersionGenerator;
+	}
+	
+	public void setFileModificationService(FileModificationService fileModificationService) {
+		this.fileModificationService.close();
+		
+		fileModificationService.initialise(this, dir);
+		
+		// TODO: find out why we we get a ConcurrentModificationException if we don't duplicate fileInfos.values() 
+		for(BRJSFileInfo fileInfo : new ArrayList<>(fileInfos.values())) {
+			fileInfo.reset(fileModificationService);
+		}
+		
+		this.fileModificationService = fileModificationService;
 	}
 	
 	public CharBufferPool getCharBufferPool(){
@@ -360,23 +370,21 @@ public class BRJS extends AbstractBRJSRootNode
 		String filePath = file.getPath();
 		
 		if(!fileInfos.containsKey(filePath)) {
-			FileModificationInfo fileModificationInfo = fileModificationService.getModificationInfo(file);
-			fileInfos.put(filePath, new StandardFileInfo(file, this,  fileModificationInfo));
+			fileInfos.put(filePath, new BRJSFileInfo(file, this, fileModificationService));
 		}
 		
 		return fileInfos.get(filePath);
 	}
 	
 	@Override
-	public List<FileInfo> getFileInfoSet(File[] files) {
-		List<FileInfo> fileInfoSet = new ArrayList<>();
-		int i = 0;
+	public FileInfo getFileSetInfo(File file, File primarySetFile) {
+		String filePathsIdentifier = file.getPath() + ":" + primarySetFile.getPath();
 		
-		for(FileModificationInfo fileModificationInfo : fileModificationService.getModificationInfoSet(files)) {
-			fileInfoSet.add(new StandardFileInfo(files[i++], this,  fileModificationInfo));
+		if(!fileInfos.containsKey(filePathsIdentifier)) {
+			fileInfos.put(filePathsIdentifier, new BRJSFileInfo(file, primarySetFile, this, fileModificationService));
 		}
 		
-		return fileInfoSet;
+		return fileInfos.get(filePathsIdentifier);
 	}
 	
 	public AppVersionGenerator getAppVersionGenerator()
