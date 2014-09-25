@@ -67,10 +67,9 @@
 	};
 
 	ServiceRegistryTest.test_getService_WorksWithServicesRegisteredWithAliases = function() {
-		var AliasRegistry = require('br/AliasRegistry');
-		var MyService = function() {};
-
-		AliasRegistry._aliasData = {'my.service': {'class': MyService, 'className': 'my.Service'}};
+		window.MyService = function() {};
+		var aliasRegistry = require('br/AliasRegistry');
+		aliasRegistry._aliasData = {'my.service': {'class': 'MyService', 'className': 'my.Service'}};
 
 		assertTrue(ServiceRegistry.getService('my.service') instanceof MyService);
 	};
