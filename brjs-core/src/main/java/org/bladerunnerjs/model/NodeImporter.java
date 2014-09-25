@@ -33,7 +33,8 @@ public class NodeImporter {
 		tempBrjsApp.appConf().write();
 		
 		for(Aspect aspect : tempBrjsApp.aspects()) {
-			updateRequirePrefix(aspect.assetLocations(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
+			updateRequirePrefix(aspect.assetLocations(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);			
+			renameTestLocations(aspect.testTypes(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
 		}
 		
 		for(Bladeset bladeset : tempBrjsApp.bladesets()) {
@@ -73,12 +74,25 @@ public class NodeImporter {
 	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException {
 		updateRequirePrefix(bladeset.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
+		renameTestLocations(bladeset.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
+		
 		for(Blade blade : bladeset.blades()) {
 			updateRequirePrefix(blade.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+			
+			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 			
 			Workbench workbench = blade.workbench();			
 			updateRequirePrefix(workbench.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
 		}
+	}
+	
+	private static void renameTestLocations(List<TypedTestPack> testTypes, String sourceAppRequirePrefix, String sourceLocationRequirePrefix, String requirePrefix) throws IOException{
+		for(TypedTestPack typedTestPack : testTypes)
+		{
+			for( TestPack testPack : typedTestPack.testTechs()){
+				updateRequirePrefix(testPack.assetLocations(), sourceAppRequirePrefix, sourceLocationRequirePrefix, requirePrefix);
+			}
+		}		
 	}
 	
 	private static void updateRequirePrefix(List<AssetLocation> assetLocations, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
