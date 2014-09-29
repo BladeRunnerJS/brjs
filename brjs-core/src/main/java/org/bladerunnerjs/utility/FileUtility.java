@@ -16,13 +16,19 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FileUtility {
 	
-	public static File createTemporaryDirectory(Class<?> testClass, String... subFolderName) throws IOException
+	public static File createTemporaryFile(Class<?> testClass) throws IOException
 	{		
 		String folderName = "brjs-"+testClass.getSimpleName();
-		final File tempDir = File.createTempFile(folderName, "");
+		final File tempFile = File.createTempFile(folderName, "");
+		Runtime.getRuntime().addShutdownHook(new DeleteTempFileShutdownHook(tempFile));
+		return tempFile;
+	}
+	
+	public static File createTemporaryDirectory(Class<?> testClass, String... subFolderName) throws IOException
+	{		
+		final File tempDir = createTemporaryFile(testClass);
 		tempDir.delete();
 		tempDir.mkdir();
-		Runtime.getRuntime().addShutdownHook(new DeleteTempFileShutdownHook(tempDir));
 		
 		if (subFolderName.length > 0) {
 			String joinedSubFolderName = StringUtils.join(subFolderName,"-");
