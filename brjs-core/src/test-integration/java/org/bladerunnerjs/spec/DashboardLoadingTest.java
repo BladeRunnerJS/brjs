@@ -34,6 +34,7 @@ public class DashboardLoadingTest extends SpecTest
 		given(brjs).hasBeenAuthenticallyCreated();
 		brjs.io().uninstallFileAccessChecker();
 		dashboard = brjs.systemApp("dashboard");
+		cleanupTestSdkDirectory = false;
 	}
 	
 	@Test

@@ -93,6 +93,7 @@ public abstract class SpecTest extends TestModelAccessor
 	public LogMessageStore logging;
 	public List<Throwable> exceptions;
 	public boolean catchAndVerifyExceptions = true;
+	public boolean cleanupTestSdkDirectory = true;
 	public EventObserver observer;
 	public File testSdkDirectory;
 	public MockPluginLocator pluginLocator;
@@ -125,7 +126,7 @@ public abstract class SpecTest extends TestModelAccessor
 			brjs.close();
 		}
 		
-		if (testSdkDirectory.exists()) {
+		if (testSdkDirectory.exists() && cleanupTestSdkDirectory) {
 			FileUtils.deleteQuietly(testSdkDirectory);
 		}
 	}
