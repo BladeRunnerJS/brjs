@@ -203,7 +203,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		try
 		{
 			if (fileIgnoredByBrjsConfig(resourceFile)) {
-				String relativePath = RelativePathUtility.get(brjs, brjs.dir(), resourceFile);
+				String relativePath = RelativePathUtility.get(brjs.getFileInfoAccessor(), brjs.dir(), resourceFile);
 				throw new FileNotFoundException("The file at '"+relativePath+"' is ignored by the BRJS configuration so cannot be served");
 			}
 			return new BinaryResponseContent( new FileInputStream(resourceFile) );	
@@ -216,7 +216,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	
 	private boolean fileIgnoredByBrjsConfig(File resourceFile) throws ConfigException
 	{
-		String relativePath = RelativePathUtility.get(brjs, brjs.dir(), resourceFile);
+		String relativePath = RelativePathUtility.get(brjs.getFileInfoAccessor(), brjs.dir(), resourceFile);
 		for (String ignoredPath : brjs.bladerunnerConf().getIgnoredPaths()) {
 			if (relativePath.contains(ignoredPath+"/") || relativePath.endsWith(ignoredPath)) {
 				return true;
@@ -329,14 +329,14 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
 			if (themeRequestName != null) {
 				ThemedAssetLocation themeAssetLocation = (ThemedAssetLocation) assetLocation;
-				String assetPath = RelativePathUtility.get(container.root(), assetLocation.dir(), file);
+				String assetPath = RelativePathUtility.get(brjs.getFileInfoAccessor(), assetLocation.dir(), file);
 				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themeAssetLocation.getThemeName(), assetPath } );
 				String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
 				contentPaths.add(request );
 			}
 		} else {
 			if (resourcesRequestName != null) {
-				String assetPath = RelativePathUtility.get(container.root(), container.dir(), file);
+				String assetPath = RelativePathUtility.get(brjs.getFileInfoAccessor(), container.dir(), file);
 				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
 				contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
 			}

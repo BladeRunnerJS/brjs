@@ -46,7 +46,7 @@ public class AssetLocator {
 									String assetPrimaryRequirePath = createdAsset.getPrimaryRequirePath();
 									
 									if (createdAsset instanceof SourceModule && createdAsset.assetLocation().assetContainer().isNamespaceEnforced()) {
-										String relativePathFromAssetContainer = RelativePathUtility.get(assetLocation.root(), createdAsset.assetLocation().assetContainer().dir(), createdAsset.dir());
+										String relativePathFromAssetContainer = RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), createdAsset.assetLocation().assetContainer().dir(), createdAsset.dir());
 										String relativeRequirePathPathFromAssetContainer = StringUtils.substringAfter(relativePathFromAssetContainer, "/"); // strip of 'src/' at the start of the relative path
 										String appRequirePrefix = assetLocation.assetContainer().app().getRequirePrefix();
 										String createdAssetContainerRequirePrefix = createdAsset.assetLocation().assetContainer().requirePrefix();

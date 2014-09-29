@@ -39,7 +39,7 @@ public class BRLibYamlConf extends AbstractYamlConfFile {
 		
 		if (!requirePrefix.matches(REQUIRE_PREFIX_REGEX))
 		{
-			String manifestPath = RelativePathUtility.get(node.root(), this.node.root().dir(), getUnderlyingFile());
+			String manifestPath = RelativePathUtility.get(node.root().getFileInfoAccessor(), this.node.root().dir(), getUnderlyingFile());
 			throw new ConfigException( String.format(Messages.INVALID_REQUIRE_PREFIX_EXCEPTION, requirePrefix, manifestPath, REQUIRE_PREFIX_REGEX) );
 		}
 	}

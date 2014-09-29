@@ -2,15 +2,12 @@ package org.bladerunnerjs.utility.filemodification;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.FileInfoAccessor;
 
 public class ReadWriteCompatiblePessimisticFileModificationService extends PessimisticFileModificationService {
-	private BRJS brjs;
-	
 	@Override
-	public void initialise(BRJS brjs, File rootDir) {
-		super.initialise(brjs, rootDir);
-		this.brjs = brjs;
+	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
+		super.initialise(rootDir, timeAccessor, fileInfoAccessor);
 	}
 	
 	@Override
@@ -21,7 +18,7 @@ public class ReadWriteCompatiblePessimisticFileModificationService extends Pessi
 			FileModificationInfo fileModificationInfo;
 			
 			if(file.equals(primarySetFile)) {
-				fileModificationInfo = new PrimaryFileModificationInfo(brjs.getFileInfo(primarySetFile), getFileModificationInfo(primarySetFile));
+				fileModificationInfo = new PrimaryFileModificationInfo(fileInfoAccessor.getFileInfo(primarySetFile), getFileModificationInfo(primarySetFile));
 			}
 			else {
 				fileModificationInfo = new SecondaryFileModificationInfo((PrimaryFileModificationInfo) getFileSetModificationInfo(primarySetFile, primarySetFile), file, getFileModificationInfo(file));

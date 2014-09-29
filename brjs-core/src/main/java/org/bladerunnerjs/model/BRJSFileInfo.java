@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
 
@@ -11,17 +12,19 @@ public class BRJSFileInfo implements FileInfo {
 
 	private final File file;
 	private final File primarySetFile;
-	private final BRJS brjs;
+	private final FileInfoAccessor fileInfoAccessor;
 	private StandardFileInfo fileInfo;
+	private LoggerFactory loggerFactory;
 	
-	public BRJSFileInfo(File file, BRJS brjs, FileModificationService fileModificationService) {
-		this(file, null, brjs, fileModificationService);
+	public BRJSFileInfo(File file, FileModificationService fileModificationService, FileInfoAccessor fileInfoAccessor, LoggerFactory loggerFactory) {
+		this(file, null, fileModificationService, fileInfoAccessor, loggerFactory);
 	}
 
-	public BRJSFileInfo(File file, File primarySetFile, BRJS brjs, FileModificationService fileModificationService) {
+	public BRJSFileInfo(File file, File primarySetFile, FileModificationService fileModificationService, FileInfoAccessor fileInfoAccessor, LoggerFactory loggerFactory) {
 		this.file = file;
 		this.primarySetFile = primarySetFile;
-		this.brjs = brjs;
+		this.fileInfoAccessor = fileInfoAccessor;
+		this.loggerFactory = loggerFactory;
 		
 		reset(fileModificationService);
 	}
@@ -29,7 +32,7 @@ public class BRJSFileInfo implements FileInfo {
 	public void reset(FileModificationService fileModificationService) {
 		FileModificationInfo fileModificationInfo = (primarySetFile == null) ? fileModificationService.getFileModificationInfo(file) :
 			fileModificationService.getFileSetModificationInfo(file, primarySetFile);
-		fileInfo = new StandardFileInfo(file, brjs, fileModificationInfo);
+		fileInfo = new StandardFileInfo(file, fileModificationInfo, fileInfoAccessor, loggerFactory);
 	}
 
 	@Override

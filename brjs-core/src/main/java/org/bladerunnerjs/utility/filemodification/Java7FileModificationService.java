@@ -9,13 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.plugin.Event;
-import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.model.FileInfoAccessor;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	private enum Status {
@@ -33,8 +27,8 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	private final Logger logger;
 	private TimeAccessor timeAccessor;
 
-	private BRJS brjs;
-	
+	private FileInfoAccessor fileInfoAccessor;
+
 	public Java7FileModificationService(LoggerFactory loggerFactory) {
 		try {
 			logger = loggerFactory.getLogger(getClass());
@@ -50,13 +44,12 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	@Override
-	public void initialise(BRJS brjs, File rootDir) {
+	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
 		try {
-			this.brjs = brjs;
 			this.rootDir = rootDir;
-			timeAccessor = brjs.getTimeAccessor();
+			this.timeAccessor = timeAccessor;
+			this.fileInfoAccessor = fileInfoAccessor;
 			watchDirectory(rootDir.getCanonicalFile(), null, timeAccessor.getTime());
-			brjs.addObserver( NodeReadyEvent.class, new FileModificationServiceNodeReadyObserver() );
 			new Thread(this).start();
 		}
 		catch (IOException e) {
@@ -128,7 +121,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	
 	void watchDirectory(File file, WatchingFileModificationInfo parentModificationInfo, long lastModified) {
 		ProxyFileModificationInfo proxyFMI = getFileModificationInfo(file);
-		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(brjs, this, watchService, file, parentModificationInfo, timeAccessor) :
+		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(this, watchService, file, parentModificationInfo, timeAccessor, fileInfoAccessor) :
 			new Java7FileModificationInfo(parentModificationInfo, file, timeAccessor);
 		proxyFMI.setFileModificationInfo(fileModificationInfo);
 		
@@ -141,19 +134,5 @@ public class Java7FileModificationService implements FileModificationService, Ru
 
 	public Logger getLogger() {
 		return logger;
-	}
-	
-	private class FileModificationServiceNodeReadyObserver implements EventObserver {
-
-		@Override
-		public void onEventEmitted(Event event, Node node)
-		{
-			if (node instanceof App || node instanceof AssetContainer) {
-    			File resetLastModifiedForFile = node.parentNode().dir();
-				FileModificationInfo fileModificationInfo = getFileModificationInfo(resetLastModifiedForFile);
-    			fileModificationInfo.resetLastModified();
-			}
-		}
-		
 	}
 }

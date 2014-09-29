@@ -4,15 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.FileInfoAccessor;
 
 public class OptimisticFileModificationService implements FileModificationService {
 	OptimisticFileModificationInfo optimisticFileModificationInfo;
 	List<FileModificationInfo> fileModificationInfoSet = new ArrayList<>();
 	
 	@Override
-	public void initialise(BRJS brjs, File rootDir) {
-		optimisticFileModificationInfo = new OptimisticFileModificationInfo(brjs.getTimeAccessor());
+	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
+		optimisticFileModificationInfo = new OptimisticFileModificationInfo(timeAccessor);
 		fileModificationInfoSet.add(optimisticFileModificationInfo);
 	}
 	

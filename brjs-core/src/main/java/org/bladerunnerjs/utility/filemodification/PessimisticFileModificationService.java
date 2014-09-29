@@ -4,15 +4,17 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.FileInfoAccessor;
 
 public class PessimisticFileModificationService implements FileModificationService {
 	protected Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
 	private TimeAccessor timeAccessor;
+	protected FileInfoAccessor fileInfoAccessor;
 	
 	@Override
-	public void initialise(BRJS brjs, File rootDir) {
-		timeAccessor = brjs.getTimeAccessor();
+	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
+		this.timeAccessor = timeAccessor;
+		this.fileInfoAccessor = fileInfoAccessor;
 	}
 	
 	@Override

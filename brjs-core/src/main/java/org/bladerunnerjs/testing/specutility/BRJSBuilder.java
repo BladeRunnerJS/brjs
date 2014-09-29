@@ -345,4 +345,10 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		
 		return builderChainer;
 	}
+
+	public BuilderChainer appsHaveBeeniterated() {
+		brjs.apps();
+		
+		return builderChainer;
+	}
 }

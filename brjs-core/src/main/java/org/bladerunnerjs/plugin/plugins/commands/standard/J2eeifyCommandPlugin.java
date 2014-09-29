@@ -78,7 +78,7 @@ public class J2eeifyCommandPlugin extends ArgsParsingCommandPlugin
 			throw new CommandOperationException(ex);
 		}
 		
-		String relativeWebInf = RelativePathUtility.get(app.root(), app.root().dir(), app.file("WEB-INF"));
+		String relativeWebInf = RelativePathUtility.get(brjs.getFileInfoAccessor(), app.root().dir(), app.file("WEB-INF"));
 		logger.println(Messages.SUCCESSFULLY_J2EEIFIED_APP_MESSAGE, appName, relativeWebInf);
 		
 		return 0;

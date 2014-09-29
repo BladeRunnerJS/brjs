@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSFileInfoAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
@@ -18,20 +17,19 @@ import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
+import org.bladerunnerjs.utility.filemodification.RealTimeAccessor;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class Java7FileModificationServiceTest extends TestModelAccessor {
+public class Java7FileModificationServiceTest {
 	private final Java7FileModificationService fileModificationService = new Java7FileModificationService(new StubLoggerFactory());
 	private final Map<String, FileModifiedChecker> watches = new HashMap<>();
 	private File tempDir;
-	private BRJS brjs;
 	
 	@Before
 	public void setUp() throws IOException, InvalidSdkDirectoryException {
 		tempDir = FileUtility.createTemporaryDirectory(Java7FileModificationServiceTest.class.getSimpleName());
-		brjs = createModel(tempDir);
 	}
 	
 	/**
@@ -61,7 +59,7 @@ public class Java7FileModificationServiceTest extends TestModelAccessor {
 		mkfile("root-dir/control-file");
 		
 		// initialize watching service
-		fileModificationService.initialise(brjs, tempDir);
+		fileModificationService.initialise(tempDir, new RealTimeAccessor(), new BRJSFileInfoAccessor(fileModificationService, new StubLoggerFactory()));
 		
 		// watch files and directories
 		watch("root-dir");

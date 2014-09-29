@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
 
@@ -16,6 +15,7 @@ import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
+import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -32,6 +32,7 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
+import org.bladerunnerjs.utility.filemodification.FileModificationServiceNodeReadyObserver;
 import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
 import org.bladerunnerjs.utility.filemodification.TimeAccessor;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
@@ -69,14 +70,15 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
-	private final Map<String, BRJSFileInfo> fileInfos = new TreeMap<>();
 	private final PluginAccessor pluginAccessor;
 	private FileModificationService fileModificationService = new OptimisticFileModificationService();
+	private BRJSFileInfoAccessor fileInfoAccessor = new BRJSFileInfoAccessor(fileModificationService, loggerFactory);
 	private final IO io = new IO();
 	private boolean closed = false;
 	private AppVersionGenerator appVersionGenerator;
 	private CharBufferPool pool = new CharBufferPool();
 	private TimeAccessor timeAccessor;
+	private final FileModificationServiceNodeReadyObserver fileModificationServiceObserver;
 	
 	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, TimeAccessor timeAccessor, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
@@ -84,7 +86,7 @@ public class BRJS extends AbstractBRJSRootNode
 		this.timeAccessor = timeAccessor;
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		
-		fileModificationService.initialise(this, dir);
+		fileModificationService.initialise(dir, timeAccessor, fileInfoAccessor);
 		
 		logger = loggerFactory.getLogger(BRJS.class);
 		
@@ -94,6 +96,9 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 		discoverAllChildren();
+		
+		fileModificationServiceObserver = new FileModificationServiceNodeReadyObserver(fileModificationService);
+		addObserver(NodeReadyEvent.class, fileModificationServiceObserver);
 		
 		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		
@@ -106,12 +111,9 @@ public class BRJS extends AbstractBRJSRootNode
 	public void setFileModificationService(FileModificationService fileModificationService) {
 		this.fileModificationService.close();
 		
-		fileModificationService.initialise(this, dir);
-		
-		// TODO: find out why we we get a ConcurrentModificationException if we don't duplicate fileInfos.values() 
-		for(BRJSFileInfo fileInfo : new ArrayList<>(fileInfos.values())) {
-			fileInfo.reset(fileModificationService);
-		}
+		fileModificationService.initialise(dir, timeAccessor, fileInfoAccessor);
+		fileInfoAccessor.setFileModificationService(fileModificationService);
+		fileModificationServiceObserver.setFileModificationService(fileModificationService);
 		
 		this.fileModificationService = fileModificationService;
 	}
@@ -180,7 +182,7 @@ public class BRJS extends AbstractBRJSRootNode
 			node = node.parentNode();
 		}
 		
-		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(this, dir(), file) );
+		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(getFileInfoAccessor(), dir(), file) );
 		
 		return bundlableNode;
 	}
@@ -370,28 +372,20 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	@Override
 	public FileInfo getFileInfo(File file) {
-		String filePath = file.getPath();
-		
-		if(!fileInfos.containsKey(filePath)) {
-			fileInfos.put(filePath, new BRJSFileInfo(file, this, fileModificationService));
-		}
-		
-		return fileInfos.get(filePath);
+		return fileInfoAccessor.getFileInfo(file);
 	}
 	
 	@Override
 	public FileInfo getFileSetInfo(File file, File primarySetFile) {
-		String filePathsIdentifier = file.getPath() + ":" + primarySetFile.getPath();
-		
-		if(!fileInfos.containsKey(filePathsIdentifier)) {
-			fileInfos.put(filePathsIdentifier, new BRJSFileInfo(file, primarySetFile, this, fileModificationService));
-		}
-		
-		return fileInfos.get(filePathsIdentifier);
+		return fileInfoAccessor.getFileSetInfo(file, primarySetFile);
 	}
 	
 	public LoggerFactory getLoggerFactory() {
 		return loggerFactory;
+	}
+	
+	public FileInfoAccessor getFileInfoAccessor() {
+		return fileInfoAccessor;
 	}
 	
 	public TimeAccessor getTimeAccessor() {
