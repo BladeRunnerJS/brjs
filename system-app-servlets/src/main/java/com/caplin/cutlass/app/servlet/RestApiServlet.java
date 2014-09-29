@@ -154,7 +154,7 @@ public class RestApiServlet extends HttpServlet
 			}
 			else if (EXPORT_APP_PATTERN.matcher(requestPath).matches())
 			{
-				File targetDir = FileUtility.createTemporaryDirectory(RestApiServlet.class.getSimpleName());
+				File targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
 				File warTempFile = new File(targetDir, "x.war");
 				apiService.exportWar(appName, warTempFile);
 				response.setContentType("application/octet-stream");

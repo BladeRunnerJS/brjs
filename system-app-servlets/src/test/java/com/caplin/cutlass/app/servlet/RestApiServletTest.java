@@ -47,7 +47,7 @@ public class RestApiServletTest
 	public void setup() throws Exception
 	{
 		service = mock(RestApiService.class);
-		File testSdk = FileUtility.createTemporaryDirectory("RestApiServletTest");
+		File testSdk = FileUtility.createTemporaryDirectory( this.getClass() );
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(service), testSdk);
 		server.start();
 		client = new DefaultHttpClient();
