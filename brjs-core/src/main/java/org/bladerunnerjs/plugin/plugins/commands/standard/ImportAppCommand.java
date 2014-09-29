@@ -71,7 +71,7 @@ public class ImportAppCommand extends ArgsParsingCommandPlugin
 			NameValidator.assertValidDirectoryName(app);
 			NameValidator.assertValidRootPackageName(app, newAppNamespace);
 			
-			File tempDir = FileUtility.createTemporaryDirectory("import-app-command");
+			File tempDir = FileUtility.createTemporaryDirectory( this.getClass(), newAppName );
 			FileUtility.unzip(new ZipFile(appZip), tempDir);
 			
 			String unzippedAppName = getUnzippedAppName(tempDir);

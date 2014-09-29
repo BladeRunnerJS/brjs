@@ -104,7 +104,7 @@ public class AppBuilderUtilis
 	{
 		try
 		{
-			return FileUtility.createTemporaryDirectory(app.getName()+"_build");
+			return FileUtility.createTemporaryDirectory(AppBuilderUtilis.class, app.getName());
 		}
 		catch (IOException ex)
 		{

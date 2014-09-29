@@ -3,6 +3,8 @@ package org.bladerunnerjs.utility;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
+
 public class DeleteTempFileShutdownHook extends Thread
 {
 	private File tempFile;
@@ -17,7 +19,7 @@ public class DeleteTempFileShutdownHook extends Thread
 		{
 			return;
 		}
-
+		
 		try
 		{				
 			if (tempFile.isDirectory())
@@ -28,6 +30,7 @@ public class DeleteTempFileShutdownHook extends Thread
 			{
 				tempFile.delete();
 			}
+			FileUtils.deleteQuietly(tempFile); // the above methods sometimes dont seem to delete properly - extra 'delete quietly' for good measure
 		}
 		catch (IOException e)
 		{

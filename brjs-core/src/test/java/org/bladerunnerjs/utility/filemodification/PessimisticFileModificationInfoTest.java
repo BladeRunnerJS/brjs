@@ -14,7 +14,7 @@ public class PessimisticFileModificationInfoTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		testDir = FileUtility.createTemporaryDirectory(PessimisticFileModificationInfoTest.class.getSimpleName());
+		testDir = FileUtility.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test

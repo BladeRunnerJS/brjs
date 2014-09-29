@@ -93,7 +93,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 
 		try 
 		{
-			File temporaryExportDir = FileUtility.createTemporaryDirectory(appName);
+			File temporaryExportDir = FileUtility.createTemporaryDirectory( this.getClass(), appName );
 			
 			IOFileFilter excludeUserLibraryTestsFilter = createExcludeUserLibsTestsFilter(appName);
 			NotFileFilter brjsJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar")));

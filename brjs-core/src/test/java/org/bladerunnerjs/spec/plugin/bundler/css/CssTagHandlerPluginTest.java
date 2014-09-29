@@ -43,7 +43,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
-		targetDir = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
+		targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test

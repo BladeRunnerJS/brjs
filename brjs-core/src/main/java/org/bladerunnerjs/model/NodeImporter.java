@@ -62,7 +62,7 @@ public class NodeImporter {
 	}
 	
 	private static BRJS createTemporaryBRJSModel() throws InvalidSdkDirectoryException, IOException {
-		File tempSdkDir = FileUtility.createTemporaryDirectory("node-importer");
+		File tempSdkDir = FileUtility.createTemporaryDirectory(NodeImporter.class);
 		new File(tempSdkDir, "sdk").mkdir();
 		MockPluginLocator pluginLocator = new MockPluginLocator();
 		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));

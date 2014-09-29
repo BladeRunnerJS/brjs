@@ -37,7 +37,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			brLib = app.jsLib("br");
 			brbootstrap = brjs.sdkLib("br-bootstrap");
 			appLib = app.jsLib("appLib");
-			targetDir = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
+			targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test

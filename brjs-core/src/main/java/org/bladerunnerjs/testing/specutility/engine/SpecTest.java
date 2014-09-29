@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.appserver.ApplicationServer;
@@ -122,6 +123,10 @@ public abstract class SpecTest extends TestModelAccessor
 		if(brjs != null) {
 			brjs.io().uninstallFileAccessChecker();
 			brjs.close();
+		}
+		
+		if (testSdkDirectory.exists()) {
+			FileUtils.deleteQuietly(testSdkDirectory);
 		}
 	}
 	
@@ -298,7 +303,7 @@ public abstract class SpecTest extends TestModelAccessor
 		File sdkDir;
 		
 		try {
-			sdkDir = FileUtility.createTemporaryDirectory("test");
+			sdkDir = FileUtility.createTemporaryDirectory( this.getClass() );
 			new File(sdkDir, "sdk").mkdirs();
 		}
 		catch (IOException e) {

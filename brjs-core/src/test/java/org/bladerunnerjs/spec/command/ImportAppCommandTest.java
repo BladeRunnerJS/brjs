@@ -15,7 +15,6 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationComma
 import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 

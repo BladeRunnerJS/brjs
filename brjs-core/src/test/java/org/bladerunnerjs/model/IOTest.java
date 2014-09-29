@@ -20,7 +20,7 @@ public class IOTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		tempDir = FileUtility.createTemporaryDirectory("BRJSIOTest");
+		tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		subDir1 = new File(tempDir, "subdir1");
 		subDir2 = new File(tempDir, "subdir2");
 		FileUtils.forceMkdir(subDir1);

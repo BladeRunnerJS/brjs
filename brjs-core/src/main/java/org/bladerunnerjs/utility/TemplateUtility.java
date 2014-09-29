@@ -27,7 +27,7 @@ public class TemplateUtility
 	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
 		File tempDir = null; 
 		try {
-			tempDir = FileUtility.createTemporaryDirectory(TemplateUtility.class.getCanonicalName()+"_"+templateName);
+			tempDir = FileUtility.createTemporaryDirectory( TemplateUtility.class, templateName );
 			
 			if(node.dirExists() && !(node instanceof BRJS)) {
 				List<File> dirContents = node.root().getFileInfo(node.dir()).filesAndDirs();
