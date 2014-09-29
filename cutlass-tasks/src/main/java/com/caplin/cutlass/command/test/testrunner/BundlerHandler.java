@@ -54,9 +54,11 @@ public class BundlerHandler
 			throw new IllegalArgumentException("Invalid bundlePath - it should not contain '\', only '/' as a seperator");
 		}
 		
-		bundleFile.getParentFile().mkdirs();
 		String modelRequestPath = getModelRequestPath(bundlePath);
-		try (OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
+		
+		bundleFile.getParentFile().mkdirs();
+		bundleFile.createNewFile();
+		try (OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile, false);
 			ResponseContent content = BundleSetRequestHandler.handle(new JsTestDriverBundleSet(bundlableNode.getBundleSet()), modelRequestPath, new StaticContentAccessor(app), version); )
 		{
 			content.write( bundleFileOutputStream );
