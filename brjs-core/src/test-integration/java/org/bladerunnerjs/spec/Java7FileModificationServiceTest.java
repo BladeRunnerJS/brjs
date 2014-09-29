@@ -29,7 +29,7 @@ public class Java7FileModificationServiceTest {
 	
 	@Before
 	public void setUp() throws IOException, InvalidSdkDirectoryException {
-		tempDir = FileUtility.createTemporaryDirectory(Java7FileModificationServiceTest.class.getSimpleName());
+		tempDir = FileUtility.createTemporaryDirectory(this.getClass());
 	}
 	
 	/**

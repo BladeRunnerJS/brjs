@@ -165,7 +165,7 @@ public class TestCompiler
 	
 	public File getClassesRoot(File root) throws IOException
 	{
-		File temporaryClassesDir = FileUtility.createTemporaryDirectory("cutlass-compiled-tests");
+		File temporaryClassesDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		
 		return new File(temporaryClassesDir, CutlassConfig.TEST_INTEGRATION_CLASSES_DIRNAME);
 	}

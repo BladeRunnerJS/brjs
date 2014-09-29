@@ -23,7 +23,7 @@ public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends T
 	
 	@Before
 	public void setUp() throws Exception {
-		testDir = FileUtility.createTemporaryDirectory(PessimisticFileModificationInfoTest.class.getSimpleName());
+		testDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		existentFile = new File(testDir, "existent-file");
 		nonExistentFile = new File(testDir, "non-existent-file");
 		existentDir = new File(testDir, "existent-dir");

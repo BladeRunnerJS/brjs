@@ -14,7 +14,7 @@ public class RelativePathUtilityTest extends TestModelAccessor {
 	
 	@Test
 	public void testRelativePaths() throws InvalidSdkDirectoryException, IOException {
-		BRJS brjs = createModel( FileUtility.createTemporaryDirectory("RelativePathUtilityTest") );
+		BRJS brjs = createModel( FileUtility.createTemporaryDirectory(this.getClass()) );
 		assertEquals("child", RelativePathUtility.get(brjs.getFileInfoAccessor(), new File("."), new File("child")));
 		assertEquals("child/grandchild", RelativePathUtility.get(brjs.getFileInfoAccessor(), new File("."), new File("child/grandchild")));
 		assertEquals("../child/grandchild", RelativePathUtility.get(brjs.getFileInfoAccessor(), new File("."), new File("../child/grandchild")));

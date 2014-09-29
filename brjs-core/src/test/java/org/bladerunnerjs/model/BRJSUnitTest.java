@@ -17,7 +17,7 @@ public class BRJSUnitTest extends TestModelAccessor
 	@Before
 	public void setup() throws Exception
 	{
-		File rootDir = FileUtility.createTemporaryDirectory( this.getClass().getCanonicalName() );
+		File rootDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		new File(rootDir, "sdk").mkdir();
 		
 		brjs = createModel(rootDir);

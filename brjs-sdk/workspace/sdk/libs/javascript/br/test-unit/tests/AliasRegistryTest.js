@@ -13,7 +13,7 @@
 	var Alias2Interface = require('br/Alias2Interface');
 	var Alias1AlternateInterface = require('br/Alias1AlternateInterface');
 
-	var AliasRegistry = require('br/AliasRegistry').constructor;
+	var AliasRegistry = require('br/AliasRegistryClass');
 	var AliasRegistryTest = TestCase("AliasRegistryTest").prototype;
 
 	var aliasRegistry = null;
@@ -101,15 +101,17 @@
 
 	AliasRegistryTest["test Fails fast if alias is not an implementer of the alias interface"] = function()
 	{
+		var aliasRegistry = new AliasRegistry({
+			"some.alias1": {
+				"class":"br/a/AliasClass1",
+				"className":"br.a.AliasClass1",
+				"interface":"br/Alias2Interface",
+				"interfaceName":"br.Alias2Interface"
+			}});
+		
 		assertException("Should throw an error if the alias is not implementor of the alias interface",
 			function() {
-				new AliasRegistry({
-					"some.alias1": {
-						"class":"br/a/AliasClass1",
-						"className":"br.a.AliasClass1",
-						"interface":"br/Alias2Interface",
-						"interfaceName":"br.Alias2Interface"
-					}});
+				aliasRegistry.getClass('some.alias1');
 			},
 			Errors.ILLEGAL_STATE
 		);

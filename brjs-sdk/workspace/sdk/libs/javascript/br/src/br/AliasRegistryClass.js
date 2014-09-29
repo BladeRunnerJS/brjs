@@ -37,7 +37,7 @@ var Errors = require('./Errors');
 */
 var AliasRegistryClass = function(aliasData)
 {
-	this._setAliasData(aliasData);
+	this._aliasData = aliasData;
 };
 
 /**
@@ -57,25 +57,24 @@ AliasRegistryClass.prototype.getAllAliases = function getAllAliases() {
 * alias specifically mentions the given interface, or if the class the alias points to happens to
 * implement the given interface.</p>
 *
-* @param {function} interface the interface being used to filter the aliases by.
+* @param {function} requiredInterface the interface being used to filter the aliases by.
 * @type Array
 */
-AliasRegistryClass.prototype.getAliasesByInterface = function getAliasesByInterface(protocol) {
+AliasRegistryClass.prototype.getAliasesByInterface = function getAliasesByInterface(requiredInterface) {
 	var allAliases = this.getAllAliases();
 	var filteredAliases = [];
 
 	for(var i = 0, length = allAliases.length; i < length; ++i) {
-		var alias = allAliases[i];
-		var interfaceRequirePath = this._aliasData[alias]["interface"];
-		var aliasInterface = (aliasInterface) ? require(interfaceRequirePath) : null;
+		var aliasName = allAliases[i];
+		var aliasInterface = this._getInterfaceRef(aliasName);
+		
+		if(aliasInterface === requiredInterface) {
+			filteredAliases.push(aliasName);
+		} else if (this.isAliasAssigned(aliasName)) {
+			var aliasClass = this.getClass(aliasName);
 
-		if(aliasInterface === protocol) {
-			filteredAliases.push(alias);
-		} else if (this.isAliasAssigned(alias)) {
-			var aliasClass = this.getClass(alias);
-
-			if(br.classIsA(aliasClass, protocol)) {
-				filteredAliases.push(alias);
+			if(br.classIsA(aliasClass, requiredInterface)) {
+				filteredAliases.push(aliasName);
 			}
 		}
 	}
@@ -95,11 +94,19 @@ AliasRegistryClass.prototype.getClass = function getClass(aliasName) {
 		throw new Errors.IllegalStateError("No class has been found for alias '" + aliasName +"'");
 	}
 	
-	if(typeof(this._aliasData[aliasName]["class"]) == 'string') {
-		this._aliasData[aliasName]["class"] = require(this._aliasData[aliasName]["class"]);
+	var classRef = this._getClassRef(aliasName);
+	var interfaceRef = this._getInterfaceRef(aliasName);
+	
+	if(interfaceRef) {
+		if(!br.classIsA(classRef, interfaceRef)) {
+			var alias = this._aliasData[aliasName];
+			
+			throw new Errors.IllegalStateError("Class '" + alias['class'] + "' does not implement interface '" + alias['interface'] +
+				"', as required by alias '" + aliasName + "'.");
+		}
 	}
-
-	return this._aliasData[aliasName]["class"];
+	
+	return classRef;
 };
 
 /**
@@ -124,40 +131,30 @@ AliasRegistryClass.prototype.isAliasAssigned = function isAliasAssigned(aliasNam
 };
 
 /**
-* Sets the alias data.
-*
-* If the alias data is inconsistent, this will throw Errors.
-*/
-AliasRegistryClass.prototype._setAliasData = function setAliasData(aliasData) {
-	this._aliasData = aliasData;
-
-	var aliases = this.getAllAliases();
-	var incorrectAliases = [];
-	var i;
-
-	for (i = 0; i < aliases.length; ++i) {
-		var aliasId = aliases[i];
-		var alias = this._aliasData[aliasId];
-
-		if (this.isAliasAssigned(aliasId) && alias["interface"]) {
-			var aliasClass = this.getClass(aliasId);
-			var protocol = require(alias["interface"]);
-			if (br.classIsA(aliasClass, protocol) == false) {
-				incorrectAliases.push(aliasId);
-			}
-		}
+ * @private
+ */
+AliasRegistryClass.prototype._getClassRef = function(aliasName) {
+	var alias = this._aliasData[aliasName];
+	
+	if(alias.classRef === undefined) {
+		alias.classRef = require(alias["class"]);
 	}
+	
+	return alias.classRef;
+};
 
-	if(incorrectAliases.length > 0) {
-		var errorMessage = 'The classes for the following aliases do not implement their required interfaces: \n';
-		for(i = 0; i < incorrectAliases.length; ++i)
-		{
-			var incorrectAlias = incorrectAliases[i];
-			errorMessage += '[' + incorrectAlias + ']: "' + this._aliasData[incorrectAlias]["className"] + '" should implement "' + this._aliasData[incorrectAlias].interfaceName + '";\n';
-		}
-		this._aliasData = null;
-		throw new Errors.IllegalStateError(errorMessage);
+/**
+ * @private
+ */
+AliasRegistryClass.prototype._getInterfaceRef = function(aliasName) {
+	var alias = this._aliasData[aliasName];
+	
+	if(alias.interfaceRef === undefined) {
+		var interfaceName = alias['interface'];
+		alias.interfaceRef = (interfaceName) ? require(interfaceName) : null;
 	}
+	
+	return alias.interfaceRef;
 };
 
 module.exports = AliasRegistryClass;

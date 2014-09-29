@@ -49,7 +49,7 @@ public class FileUtilityTest
 	@Before
 	public void setUp() throws Exception
 	{
-		tempDir = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
+		tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test

@@ -53,7 +53,7 @@ public final class TestRootNode extends AbstractRootNode
 	@Override
 	public boolean isRootDir(File dir)
 	{
-		return dir.getName().startsWith("root");
+		return dir.getName().contains("brjs-root-node");
 	}
 	
 	public List<TestChildNode> childNodes()

@@ -12,21 +12,36 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class FileUtility {
-	public static File createTemporaryDirectory(String prependedFolderName) throws IOException
-	{
-		if (prependedFolderName.contains("/"))
-		{
-			throw new IOException("prependedFolderName can't contain a /");
+	
+	public static File createTemporaryFile(Class<?> testClass) throws IOException
+	{		
+		String folderName = "brjs-"+testClass.getSimpleName();
+		final File tempFile = File.createTempFile(folderName, "");
+		Runtime.getRuntime().addShutdownHook(new DeleteTempFileShutdownHook(tempFile));
+		return tempFile;
+	}
+	
+	public static File createTemporaryDirectory(Class<?> testClass, String... subFolderName) throws IOException
+	{		
+		final File tempDir = createTemporaryFile(testClass);
+		tempDir.delete();
+		tempDir.mkdir();
+		
+		if (subFolderName.length > 0) {
+			String joinedSubFolderName = StringUtils.join(subFolderName,"-");
+			if (joinedSubFolderName.contains("/"))
+			{
+				throw new IOException("subFolderName can't contain a /");
+			}
+			File subFolder = new File(tempDir, joinedSubFolderName);
+			subFolder.mkdir();
+			return subFolder;
 		}
-		final File tempdir = File.createTempFile(prependedFolderName, "");
-		tempdir.delete();
-		tempdir.mkdir();
-		Runtime.getRuntime().addShutdownHook(new DeleteTempFileShutdownHook(tempdir));
-		File tempSubDir = new File(tempdir, prependedFolderName);
-		tempSubDir.mkdir();
-		return tempSubDir;
+		
+		return tempDir;
 	}
 	
 	public static void zipFolder(File srcFolder, File destZipFile, boolean zipOnlySrcFolderContentsAndNotSrcFolder) throws IOException

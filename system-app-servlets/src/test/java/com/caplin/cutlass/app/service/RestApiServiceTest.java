@@ -157,7 +157,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	{
 		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(ONE_APP_PATH));
 		setupService(temporarySdk);
-		File targetDir = FileUtility.createTemporaryDirectory("app1-war");
+		File targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		File warFile = new File(targetDir.getParentFile(), "app1-war.war");
 		service.exportWar("app1", warFile);
 		assertTrue( warFile.exists() );

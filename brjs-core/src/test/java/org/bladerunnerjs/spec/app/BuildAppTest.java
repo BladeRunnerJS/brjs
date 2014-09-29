@@ -30,7 +30,7 @@ public class BuildAppTest extends SpecTest {
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");
 			nonDefaultAspect = app.aspect("aspect2");
-			targetDir = FileUtility.createTemporaryDirectory(BuildAppTest.class.getSimpleName());
+			targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
 			bladerunnerConf = brjs.bladerunnerConf();
 	}
 	

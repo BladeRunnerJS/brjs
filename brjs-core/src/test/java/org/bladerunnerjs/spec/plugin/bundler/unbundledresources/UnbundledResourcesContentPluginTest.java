@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
 			
-		binaryResponseFile = File.createTempFile("CssResourceContentPluginTest", "tmp");
+		binaryResponseFile = FileUtility.createTemporaryFile( this.getClass() );
 		binaryResponse = new FileOutputStream(binaryResponseFile);
 		unbundledResourcesPlugin = brjs.plugins().contentPlugin("unbundled-resources");
 		requestsList = new ArrayList<String>();

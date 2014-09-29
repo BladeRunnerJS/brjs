@@ -18,7 +18,7 @@ public class BRJSFileInfoTest extends TestModelAccessor {
 	
 	@Before
 	public void setUp() throws Exception {
-		tmpDir = FileUtility.createTemporaryDirectory(BRJSFileInfoTest.class.getSimpleName());
+		tmpDir = FileUtility.createTemporaryDirectory(this.getClass());
 		File sdkDir = new File(tmpDir, "sdk");
 		sdkDir.mkdir();
 		fileModificationService = new PessimisticFileModificationService();
