@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.WatchService;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,6 +31,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	private Status status = Status.RUNNING;
 	private File rootDir;
 	private final Logger logger;
+	private TimeAccessor timeAccessor;
 
 	private BRJS brjs;
 	
@@ -54,7 +54,8 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		try {
 			this.brjs = brjs;
 			this.rootDir = rootDir;
-			watchDirectory(rootDir.getCanonicalFile(), null, new Date().getTime());
+			timeAccessor = brjs.getTimeAccessor();
+			watchDirectory(rootDir.getCanonicalFile(), null, timeAccessor.getTime());
 			brjs.addObserver( NodeReadyEvent.class, new FileModificationServiceNodeReadyObserver() );
 			new Thread(this).start();
 		}
@@ -127,8 +128,8 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	
 	void watchDirectory(File file, WatchingFileModificationInfo parentModificationInfo, long lastModified) {
 		ProxyFileModificationInfo proxyFMI = getFileModificationInfo(file);
-		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(brjs, this, watchService, file, parentModificationInfo) :
-			new Java7FileModificationInfo(parentModificationInfo, file);
+		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(brjs, this, watchService, file, parentModificationInfo, timeAccessor) :
+			new Java7FileModificationInfo(parentModificationInfo, file, timeAccessor);
 		proxyFMI.setFileModificationInfo(fileModificationInfo);
 		
 		if(file.isDirectory()) {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
@@ -30,8 +31,9 @@ public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends T
 		
 		File brjsDir = new File(testDir, "brjs");
 		new File(brjsDir, "sdk").mkdir();
+		BRJS brjs = createModel(brjsDir);
 		fMS = new ReadWriteCompatiblePessimisticFileModificationService();
-		fMS.initialise(createModel(brjsDir), null);
+		brjs.setFileModificationService(fMS);
 		
 		FileUtils.write(existentFile, "initial content");
 		existentDir.mkdir();
@@ -43,16 +45,16 @@ public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends T
 		FileModificationInfo existentFileFMI = modificationInfoSet.get(0);
 		FileModificationInfo nonExistentFileFMI = modificationInfoSet.get(1);
 		
-		assertEquals(1, existentFileFMI.getLastModified());
-		assertEquals(1, existentFileFMI.getLastModified());
+		long existentFileInitialLastModified = existentFileFMI.getLastModified();
+		assertEquals(existentFileInitialLastModified, existentFileFMI.getLastModified());
 		
-		assertEquals(0, nonExistentFileFMI.getLastModified());
-		assertEquals(0, nonExistentFileFMI.getLastModified());
+		long nonExistentFileInitialLastModified = nonExistentFileFMI.getLastModified();
+		assertEquals(nonExistentFileInitialLastModified, nonExistentFileFMI.getLastModified());
 		
 		FileUtils.write(existentFile, "content");
 		
-		assertEquals(2, existentFileFMI.getLastModified());
-		assertEquals(0, nonExistentFileFMI.getLastModified());
+		assertNotEquals(existentFileInitialLastModified, existentFileFMI.getLastModified());
+		assertEquals(nonExistentFileInitialLastModified, nonExistentFileFMI.getLastModified());
 	}
 	
 	@Test
@@ -61,16 +63,17 @@ public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends T
 		FileModificationInfo existentDirFMI = modificationInfoSet.get(0);
 		FileModificationInfo nonExistentDirFMI = modificationInfoSet.get(1);
 		
-		assertEquals(1, existentDirFMI.getLastModified());
-		assertEquals(2, existentDirFMI.getLastModified());
+		long existentDirInitialLastModified = existentDirFMI.getLastModified();
+		long existentDirSubsequentLastModified = existentDirFMI.getLastModified();
+		assertNotEquals(existentDirInitialLastModified, existentDirSubsequentLastModified);
 		
-		assertEquals(0, nonExistentDirFMI.getLastModified());
-		assertEquals(0, nonExistentDirFMI.getLastModified());
+		long nonExistentDirInitialLastModified = nonExistentDirFMI.getLastModified();
+		assertEquals(nonExistentDirInitialLastModified, nonExistentDirFMI.getLastModified());
 		
 		nonExistentDir.mkdir();
 		
-		assertEquals(3, existentDirFMI.getLastModified());
-		assertEquals(1, nonExistentDirFMI.getLastModified());
+		assertNotEquals(existentDirSubsequentLastModified, existentDirFMI.getLastModified());
+		assertNotEquals(nonExistentDirInitialLastModified, nonExistentDirFMI.getLastModified());
 	}
 	
 	@Test
@@ -80,20 +83,20 @@ public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends T
 		FileModificationInfo existentDirFMI = modificationInfoSet.get(1);
 		FileModificationInfo nonExistentFileFMI = modificationInfoSet.get(2);
 		
-		assertEquals(1, existentFileFMI.getLastModified());
-		assertEquals(1, existentFileFMI.getLastModified());
+		long existentFileInitialLastModified = existentFileFMI.getLastModified();
+		assertEquals(existentFileInitialLastModified, existentFileFMI.getLastModified());
 		
-		assertEquals(1, existentDirFMI.getLastModified());
-		assertEquals(1, existentDirFMI.getLastModified());
+		long existentDirInitialLastModified = existentDirFMI.getLastModified();
+		assertEquals(existentDirInitialLastModified, existentDirFMI.getLastModified());
 		
-		assertEquals(0, nonExistentFileFMI.getLastModified());
-		assertEquals(0, nonExistentFileFMI.getLastModified());
+		long nonExistentFileInitialLastModified = nonExistentFileFMI.getLastModified();
+		assertEquals(nonExistentFileInitialLastModified, nonExistentFileFMI.getLastModified());
 		
 		FileUtils.write(existentFile, "content");
 		
-		assertEquals(2, existentFileFMI.getLastModified());
-		assertEquals(1, existentDirFMI.getLastModified());
-		assertEquals(0, nonExistentFileFMI.getLastModified());
+		assertNotEquals(existentFileInitialLastModified, existentFileFMI.getLastModified());
+		assertEquals(existentDirInitialLastModified, existentDirFMI.getLastModified());
+		assertEquals(nonExistentFileInitialLastModified, nonExistentFileFMI.getLastModified());
 	}
 	
 	@Test
@@ -102,16 +105,16 @@ public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends T
 		FileModificationInfo nonExistentFileFMI = modificationInfoSet.get(0);
 		FileModificationInfo existentDirFMI = modificationInfoSet.get(1);
 		
-		assertEquals(0, nonExistentFileFMI.getLastModified());
-		assertEquals(0, nonExistentFileFMI.getLastModified());
+		long nonExistentFileInitialLastModified = nonExistentFileFMI.getLastModified();
+		assertEquals(nonExistentFileInitialLastModified, nonExistentFileFMI.getLastModified());
 		
-		assertEquals(1, existentDirFMI.getLastModified());
-		assertEquals(1, existentDirFMI.getLastModified());
+		long existentDirInitialLastModified = existentDirFMI.getLastModified();
+		assertEquals(existentDirInitialLastModified, existentDirFMI.getLastModified());
 		
 		FileUtils.write(nonExistentFile, "content");
 		
-		assertEquals(1, nonExistentFileFMI.getLastModified());
-		assertEquals(1, existentDirFMI.getLastModified());
+		assertNotEquals(nonExistentFileInitialLastModified, nonExistentFileFMI.getLastModified());
+		assertEquals(existentDirInitialLastModified, existentDirFMI.getLastModified());
 	}
 	
 	// Note: this method was formerly part of the interface, but is now only used by the unit tests for this class

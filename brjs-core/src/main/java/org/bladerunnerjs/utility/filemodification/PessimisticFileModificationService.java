@@ -7,11 +7,12 @@ import java.util.Map;
 import org.bladerunnerjs.model.BRJS;
 
 public class PessimisticFileModificationService implements FileModificationService {
-	Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
+	protected Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
+	private TimeAccessor timeAccessor;
 	
 	@Override
 	public void initialise(BRJS brjs, File rootDir) {
-		// do nothing
+		timeAccessor = brjs.getTimeAccessor();
 	}
 	
 	@Override
@@ -19,7 +20,7 @@ public class PessimisticFileModificationService implements FileModificationServi
 		String filePath = file.getAbsolutePath();
 		
 		if(!fileModificationInfos.containsKey(filePath)) {
-			fileModificationInfos.put(filePath, new PessimisticFileModificationInfo(file));
+			fileModificationInfos.put(filePath, new PessimisticFileModificationInfo(file, timeAccessor));
 		}
 		
 		return fileModificationInfos.get(filePath);

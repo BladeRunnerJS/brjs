@@ -20,7 +20,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	public static boolean allowInvalidRootDirectories = true;
 	
 	private Map<String, List<Node>> nodeCache = new TreeMap<>();
-	private LoggerFactory loggerFactory;
+	protected LoggerFactory loggerFactory;
 	
 	public AbstractRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{

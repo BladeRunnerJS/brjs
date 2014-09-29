@@ -31,17 +31,19 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	private final File dir;
 	private final WatchKey watchKey;
 	private final WatchingFileModificationInfo parentModificationInfo;
+	private TimeAccessor timeAccessor;
 	private long lastModified = (new Date()).getTime();
 	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 	private final String relativeDirPath;
 	private Set<WatchingFileModificationInfo> children = new LinkedHashSet<>();
 	private Logger logger;
 	
-	public Java7DirectoryModificationInfo(BRJS brjs, Java7FileModificationService fileModificationService, WatchService watchService, File dir, WatchingFileModificationInfo parentModificationInfo) {
+	public Java7DirectoryModificationInfo(BRJS brjs, Java7FileModificationService fileModificationService, WatchService watchService, File dir, WatchingFileModificationInfo parentModificationInfo, TimeAccessor timeAccessor) {
 		try {
 			this.fileModificationService = fileModificationService;
 			this.dir = dir;
 			this.parentModificationInfo = parentModificationInfo;
+			this.timeAccessor = timeAccessor;
 			relativeDirPath = RelativePathUtility.get(brjs, fileModificationService.getRootDir(), dir);
 			logger = fileModificationService.getLogger();
 			
@@ -87,7 +89,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	
 	@Override
 	public void resetLastModified() {
-		lastModified = (new Date()).getTime();;
+		lastModified = timeAccessor.getTime();
 	}
 	
 	@Override

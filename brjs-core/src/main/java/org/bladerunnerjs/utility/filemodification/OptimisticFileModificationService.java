@@ -7,16 +7,13 @@ import java.util.List;
 import org.bladerunnerjs.model.BRJS;
 
 public class OptimisticFileModificationService implements FileModificationService {
-	OptimisticFileModificationInfo optimisticFileModificationInfo = new OptimisticFileModificationInfo();
+	OptimisticFileModificationInfo optimisticFileModificationInfo;
 	List<FileModificationInfo> fileModificationInfoSet = new ArrayList<>();
-	
-	{
-		fileModificationInfoSet.add(optimisticFileModificationInfo);
-	}
 	
 	@Override
 	public void initialise(BRJS brjs, File rootDir) {
-		// do nothing
+		optimisticFileModificationInfo = new OptimisticFileModificationInfo(brjs.getTimeAccessor());
+		fileModificationInfoSet.add(optimisticFileModificationInfo);
 	}
 	
 	@Override

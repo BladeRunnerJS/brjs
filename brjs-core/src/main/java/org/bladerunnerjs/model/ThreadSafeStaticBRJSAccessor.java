@@ -10,6 +10,7 @@ import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
 import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
+import org.bladerunnerjs.utility.filemodification.RealTimeAccessor;
 
 /**
  * A utility class so Servlets and Filters can share a single BRJS model instance.
@@ -44,7 +45,7 @@ public class ThreadSafeStaticBRJSAccessor {
 	public static synchronized BRJS initializeModel(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
 				LoggerFactory loggerFactory, AppVersionGenerator versionGenerator) throws InvalidSdkDirectoryException {
 		if (model == null) {
-			model = new BRJS(brjsDir, pluginLocator, loggerFactory, versionGenerator);
+			model = new BRJS(brjsDir, pluginLocator, loggerFactory, new RealTimeAccessor(), versionGenerator);
 			model.setFileModificationService(fileModificationService);
 			root = model;
 		}

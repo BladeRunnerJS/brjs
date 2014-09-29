@@ -33,6 +33,7 @@ import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
 import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.TimeAccessor;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
 
 
@@ -75,10 +76,12 @@ public class BRJS extends AbstractBRJSRootNode
 	private boolean closed = false;
 	private AppVersionGenerator appVersionGenerator;
 	private CharBufferPool pool = new CharBufferPool();
+	private TimeAccessor timeAccessor;
 	
-	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, TimeAccessor timeAccessor, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
+		this.timeAccessor = timeAccessor;
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		
 		fileModificationService.initialise(this, dir);
@@ -385,6 +388,14 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		return fileInfos.get(filePathsIdentifier);
+	}
+	
+	public LoggerFactory getLoggerFactory() {
+		return loggerFactory;
+	}
+	
+	public TimeAccessor getTimeAccessor() {
+		return timeAccessor;
 	}
 	
 	public AppVersionGenerator getAppVersionGenerator()

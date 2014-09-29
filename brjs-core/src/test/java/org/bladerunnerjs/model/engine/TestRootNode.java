@@ -13,6 +13,8 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
+import org.bladerunnerjs.utility.filemodification.TestTimeAccessor;
+import org.bladerunnerjs.utility.filemodification.TimeAccessor;
 
 
 public final class TestRootNode extends AbstractRootNode
@@ -21,6 +23,7 @@ public final class TestRootNode extends AbstractRootNode
 	NodeList<TestChildNode> multiLocationChildNodes = new NodeList<>(this, TestChildNode.class, "set-primary-location", "^child-");
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(this, TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(this, TestMultiLocationItemNode.class, "single-item-primary-location");
+	private TimeAccessor timeAccessor = new TestTimeAccessor();
 	private final IO io = new IO();
 	
 	public TestRootNode(File dir) throws InvalidSdkDirectoryException
@@ -85,7 +88,7 @@ public final class TestRootNode extends AbstractRootNode
 	
 	@Override
 	public FileInfo getFileInfo(File dir) {
-		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo(dir));
+		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo(dir, timeAccessor));
 	}
 	
 	@Override
