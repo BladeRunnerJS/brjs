@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
@@ -350,5 +351,18 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		brjs.apps();
 		
 		return builderChainer;
+	}
+
+	public void hasBeenInactiveForOneMillisecond() {
+		long currentTime = (new Date()).getTime();
+		
+		try {
+			do {
+				Thread.sleep(1);
+			} while(currentTime == (new Date()).getTime());
+		}
+		catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

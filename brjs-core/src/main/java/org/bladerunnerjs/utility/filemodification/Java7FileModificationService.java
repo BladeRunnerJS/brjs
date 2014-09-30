@@ -62,7 +62,8 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		String absoluteFilePath = file.getAbsolutePath();
 		
 		if(!fileModificationInfos.containsKey(absoluteFilePath)) {
-			fileModificationInfos.put(absoluteFilePath, new ProxyFileModificationInfo(this));
+			WatchingFileModificationInfo parent = (file.equals(rootDir)) ? null : getFileModificationInfo(file.getParentFile());
+			fileModificationInfos.put(absoluteFilePath, new ProxyFileModificationInfo(this, parent, timeAccessor));
 		}
 		
 		return fileModificationInfos.get(absoluteFilePath);

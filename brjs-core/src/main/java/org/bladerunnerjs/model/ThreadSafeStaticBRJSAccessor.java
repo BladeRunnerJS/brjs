@@ -3,13 +3,9 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
-import org.bladerunnerjs.utility.filemodification.FileModificationService;
-import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 import org.bladerunnerjs.utility.filemodification.RealTimeAccessor;
 
 /**
@@ -24,42 +20,26 @@ public class ThreadSafeStaticBRJSAccessor {
 	private static BRJS model;
 	private static final ReentrantLock lock = new ReentrantLock();
 	
-	//TODO: remove this once we've remove all legacy code
+	//TODO: remove this once we've removed all legacy code
 	public static BRJS root;
 	
 	public static synchronized BRJS initializeModel(File brjsDir) throws InvalidSdkDirectoryException {
-		PluginLocator pluginLocator = new BRJSPluginLocator();
-		LoggerFactory loggerFactory = new SLF4JLoggerFactory();
-		AppVersionGenerator versionGenerator = new TimestampAppVersionGenerator();
-		FileModificationService fileModificationService = new Java7FileModificationService(loggerFactory);
-		return initializeModel(brjsDir, pluginLocator, fileModificationService, loggerFactory, versionGenerator); 
-	}
-	
-	public static synchronized BRJS initializeModel(File brjsDir, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
-		PluginLocator pluginLocator = new BRJSPluginLocator();
-		LoggerFactory loggerFactory = new SLF4JLoggerFactory();
-		AppVersionGenerator versionGenerator = new TimestampAppVersionGenerator();
-		return initializeModel(brjsDir, pluginLocator, fileModificationService, loggerFactory, versionGenerator); 
-	}
-	
-	public static synchronized BRJS initializeModel(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
-				LoggerFactory loggerFactory, AppVersionGenerator versionGenerator) throws InvalidSdkDirectoryException {
 		if (model == null) {
-			model = new BRJS(brjsDir, pluginLocator, loggerFactory, new RealTimeAccessor(), versionGenerator);
-			model.setFileModificationService(fileModificationService);
+			model = new BRJS(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new RealTimeAccessor(), new TimestampAppVersionGenerator());
 			root = model;
 		}
+		
 		return model;
 	}
 	
 	//TODO: this should be removed once all legacy code is removed
 	public static synchronized BRJS initializeModel(BRJS brjs) throws InvalidSdkDirectoryException {
-	if (model == null) {
-		model = brjs;
-		root = model;
+		if (model == null) {
+			model = brjs;
+			root = model;
+		}
+		return model;
 	}
-	return model;
-}
 	
 	public static synchronized void destroy() {
 		if(model != null) {

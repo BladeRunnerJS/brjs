@@ -89,7 +89,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	
 	@Override
 	public void resetLastModified() {
-		lastModified = timeAccessor.getTime();
+		setLastModified(timeAccessor.getTime());
 	}
 	
 	@Override
@@ -100,7 +100,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	@Override
 	public void pollWatchEvents() {
 		List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
-		long lastModified = new Date().getTime();
+		long lastModified = timeAccessor.getTime();
 		boolean filesUpdated = false;
 		
 		for(WatchEvent<?> watchEvent : watchEvents) {

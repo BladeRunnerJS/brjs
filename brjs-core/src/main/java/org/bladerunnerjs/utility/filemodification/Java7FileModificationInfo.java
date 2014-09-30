@@ -33,8 +33,13 @@ public class Java7FileModificationInfo implements WatchingFileModificationInfo {
 		return parentModificationInfo;
 	}
 	
+	@Override
 	public void setLastModified(long lastModified) {
 		this.lastModified = lastModified;
+		
+		if(getParent() != null) {
+			getParent().setLastModified(lastModified);
+		}
 	}
 	
 	@Override
@@ -44,7 +49,7 @@ public class Java7FileModificationInfo implements WatchingFileModificationInfo {
 	
 	@Override
 	public void resetLastModified() {
-		lastModified = timeAccessor.getTime();
+		setLastModified(timeAccessor.getTime());
 	}
 	
 	@Override

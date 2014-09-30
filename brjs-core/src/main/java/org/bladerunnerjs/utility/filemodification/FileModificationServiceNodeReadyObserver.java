@@ -1,9 +1,5 @@
 package org.bladerunnerjs.utility.filemodification;
 
-import java.io.File;
-
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
@@ -22,11 +18,7 @@ public class FileModificationServiceNodeReadyObserver implements EventObserver {
 	
 	@Override
 	public void onEventEmitted(Event event, Node node) {
-		if(node instanceof App || node instanceof AssetContainer) {
-			File resetLastModifiedForFile = node.parentNode().dir();
-			FileModificationInfo fileModificationInfo = fileModificationService.getFileModificationInfo(resetLastModifiedForFile);
-			fileModificationInfo.resetLastModified();
-		}
+		fileModificationService.getFileModificationInfo(node.dir()).resetLastModified();
 	}
 }
 

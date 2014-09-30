@@ -1,24 +1,32 @@
 package org.bladerunnerjs.utility.filemodification;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bladerunnerjs.model.FileInfoAccessor;
 
 public class OptimisticFileModificationService implements FileModificationService {
-	OptimisticFileModificationInfo optimisticFileModificationInfo;
-	List<FileModificationInfo> fileModificationInfoSet = new ArrayList<>();
+	private Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
+	private File rootDir;
+	private TimeAccessor timeAccessor;
 	
 	@Override
 	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
-		optimisticFileModificationInfo = new OptimisticFileModificationInfo(timeAccessor);
-		fileModificationInfoSet.add(optimisticFileModificationInfo);
+		this.rootDir = rootDir;
+		this.timeAccessor = timeAccessor;
 	}
 	
 	@Override
 	public FileModificationInfo getFileModificationInfo(File file) {
-		return optimisticFileModificationInfo;
+		String filePath = file.getAbsolutePath();
+		
+		if(!fileModificationInfos.containsKey(filePath)) {
+			FileModificationInfo parentInfo = (file.equals(rootDir)) ? null : getFileModificationInfo(file.getParentFile());
+			fileModificationInfos.put(filePath, new OptimisticFileModificationInfo(parentInfo, timeAccessor));
+		}
+		
+		return fileModificationInfos.get(filePath);
 	}
 	
 	@Override
