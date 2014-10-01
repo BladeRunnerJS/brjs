@@ -43,8 +43,6 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	{
 		this.brjs = brjs;
 		logger = brjs.logger(this.getClass());
-		
-		brjs.setFileModificationService(new Java7FileModificationService(brjs.getLoggerFactory()));
 	}
 	
 	@Override
@@ -75,7 +73,9 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException
 	{
 		try
-		{	
+		{
+			brjs.setFileModificationService(new Java7FileModificationService(brjs.getLoggerFactory()));
+			
 			if (appServer == null)
 			{
 				appServer = getApplicationServer(parsedArgs);
