@@ -93,7 +93,7 @@ public class BRJS extends AbstractBRJSRootNode
 		PluginLocatorLogger.logPlugins(logger, pluginLocator);
 		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
-		discoverAllChildren();
+		
 		
 		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		
