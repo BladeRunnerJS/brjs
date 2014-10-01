@@ -47,12 +47,12 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 	{
 		try
 		{
-			NodeModelTester.verifyBottomUpLocation(parentNode, childNodeClass, childPaths.values());
-			verifyTopDownAllItems(parentNode);
 			if(childMethodName != null)
 			{
 				verifyTopDownNamedItems(parentNode);
 			}
+			NodeModelTester.verifyBottomUpLocation(parentNode, childNodeClass, childPaths.values());
+			verifyTopDownAllItems(parentNode);
 		}
 		catch(Exception e)
 		{
