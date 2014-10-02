@@ -3,10 +3,8 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 import java.io.File;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.NodeImporter;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -15,7 +13,6 @@ import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.NameValidator;
 
 import com.martiansoftware.jsap.JSAP;
@@ -71,26 +68,12 @@ public class ImportAppCommand extends ArgsParsingCommandPlugin
 			NameValidator.assertValidDirectoryName(app);
 			NameValidator.assertValidRootPackageName(app, newAppNamespace);
 			
-			File tempDir = FileUtility.createTemporaryDirectory( this.getClass(), newAppName );
-			FileUtility.unzip(new ZipFile(appZip), tempDir);
-			
-			String unzippedAppName = getUnzippedAppName(tempDir);
-			File unzippedAppDir = new File(tempDir, unzippedAppName);
-			File unzippedLibDir = new File(unzippedAppDir, "/WEB-INF/lib");
-			
-			FileUtils.copyDirectory(brjs.appJars().dir(), unzippedLibDir);
-			
-			String unzippedAppRequirePrefix = (new AppConf(brjs, new File(unzippedAppDir, "app.conf"))).getRequirePrefix();
-			NodeImporter.importApp(unzippedAppDir, unzippedAppRequirePrefix, app, newAppNamespace);
+			NodeImporter.importAppFromZip(new ZipFile(appZip), app, newAppNamespace);
 			
 			app.deploy();
 			
 			logger.println("Successfully imported '" + new File(appZipName).getName() + "' as new application '" + newAppName + "'");
 			logger.println(" " + app.dir().getAbsolutePath());
-		}
-		catch (CommandOperationException e)
-		{
-			throw e;
 		}
 		catch(InvalidDirectoryNameException | InvalidRootPackageNameException e) {
 			throw new CommandArgumentsException("Failed to import application from zip '" + appZipName + "'.", e, this);
@@ -103,14 +86,4 @@ public class ImportAppCommand extends ArgsParsingCommandPlugin
 		return 0;
 	}
 	
-	private String getUnzippedAppName(File temporaryDirectoryForNewApplication) throws CommandOperationException {
-		String[] applicationsUnzippedIntoTemporaryDirectory = temporaryDirectoryForNewApplication.list();
-		
-		if(applicationsUnzippedIntoTemporaryDirectory.length > 1)
-		{
-			throw new CommandOperationException("More than one folder at root of application zip.");
-		}
-		
-		return applicationsUnzippedIntoTemporaryDirectory[0];
-	}
 }
