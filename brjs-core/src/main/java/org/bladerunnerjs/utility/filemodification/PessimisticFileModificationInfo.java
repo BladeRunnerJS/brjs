@@ -6,12 +6,17 @@ import java.io.IOException;
 
 public class PessimisticFileModificationInfo implements FileModificationInfo {
 	private final File file;
-	private long lastModified = 0;
+	private final FileModificationInfo parent;
+	private final TimeAccessor timeAccessor;
+	private long lastModified;
 	private String prevMd5Sum;
 	private boolean filePreviouslyExisted = false;
 	
-	public PessimisticFileModificationInfo(File file) {
+	public PessimisticFileModificationInfo(File file, FileModificationInfo parent, TimeAccessor timeAccessor) {
 		this.file = file;
+		this.parent = parent;
+		this.timeAccessor = timeAccessor;
+		resetLastModified();
 	}
 	
 	@Override
@@ -20,13 +25,13 @@ public class PessimisticFileModificationInfo implements FileModificationInfo {
 			filePreviouslyExisted = true;
 			
 			if(file.isDirectory()) {
-				++lastModified;
+				resetLastModified();
 			}
 			else {
 				String md5Sum = getMd5Sum();
 				
 				if(!md5Sum.equals(prevMd5Sum)) {
-					++lastModified;
+					resetLastModified();
 				}
 				
 				prevMd5Sum = md5Sum;
@@ -34,7 +39,7 @@ public class PessimisticFileModificationInfo implements FileModificationInfo {
 		}
 		else if(filePreviouslyExisted) {
 			filePreviouslyExisted = false;
-			++lastModified;
+			resetLastModified();
 		}
 		
 		return lastModified;
@@ -42,7 +47,11 @@ public class PessimisticFileModificationInfo implements FileModificationInfo {
 	
 	@Override
 	public void resetLastModified() {
-		// do nothing
+		lastModified = timeAccessor.getTime();
+		
+		if(parent != null) {
+			parent.resetLastModified();
+		}
 	}
 	
 	private String getMd5Sum() {

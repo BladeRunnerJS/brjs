@@ -139,7 +139,7 @@ public abstract class AbstractNode implements Node
 				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
-				rootNode.getFileInfo(dir().getParentFile()).resetLastModified();
+				rootNode.getFileInfo(dir()).resetLastModified();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -351,7 +351,7 @@ public abstract class AbstractNode implements Node
 	public String toString()
 	{
 		if (root() instanceof BRJS) { // check the type since root() is a TestRootNode in some tests
-			return getTypeName()+", dir: " + RelativePathUtility.get((BRJS)root(), root().dir(), dir());
+			return getTypeName()+", dir: " + RelativePathUtility.get(((BRJS)root()).getFileInfoAccessor(), root().dir(), dir());
 		}
 		return getTypeName()+", dir: " + dir().getPath();
 	}

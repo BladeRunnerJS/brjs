@@ -14,6 +14,8 @@ import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
 import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 import org.bladerunnerjs.utility.filemodification.ReadWriteCompatiblePessimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.RealTimeAccessor;
+import org.bladerunnerjs.utility.filemodification.TestTimeAccessor;
 
 
 public class TestModelAccessor
@@ -26,7 +28,10 @@ public class TestModelAccessor
 		loggerFactory = (loggerFactory != null) ? loggerFactory : new StubLoggerFactory();
 		appVersionGenerator = (appVersionGenerator != null) ? appVersionGenerator : new MockAppVersionGenerator();		
 		
-		return new BRJS(brjsDir, pluginLocator, fileModificationService, loggerFactory, appVersionGenerator);
+		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, new TestTimeAccessor(), appVersionGenerator);
+		brjs.setFileModificationService(fileModificationService);
+		
+		return brjs;
 	}
 
 	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, LogMessageStore logStore, AppVersionGenerator versionGenerator) throws InvalidSdkDirectoryException 
@@ -61,8 +66,10 @@ public class TestModelAccessor
 	{
 		PluginLocator pluginLocator = new BRJSPluginLocator();
 		AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
+		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, new RealTimeAccessor(), appVersionGenerator);
+		brjs.setFileModificationService(fileModificationService);
 		
-		return new BRJS(brjsDir, pluginLocator, fileModificationService, loggerFactory, appVersionGenerator);
+		return brjs;
 	}
 	
 }

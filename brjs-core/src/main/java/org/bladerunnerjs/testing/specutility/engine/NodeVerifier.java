@@ -154,7 +154,7 @@ public abstract class NodeVerifier<N extends Node> {
 		fileAndDirPaths.addAll(files);
 		
 		for (File foundFile : recursivelyFoundFiles) {
-			String relativePath = RelativePathUtility.get((BRJS)node.root(), node.dir(), foundFile);
+			String relativePath = RelativePathUtility.get(((BRJS)node.root()).getFileInfoAccessor(), node.dir(), foundFile);
 			if (foundFile.isFile()) {
 				assertFoundFileIsExpected(relativePath, fileAndDirPaths);
 			} else if (foundFile.isDirectory()) {

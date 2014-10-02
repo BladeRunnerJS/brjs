@@ -18,7 +18,7 @@ public interface RootNode extends Node {
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
 	FileInfo getFileInfo(File dir);
-	List<FileInfo> getFileInfoSet(File[] files);
+	FileInfo getFileSetInfo(File file, File primaryFile);
 	IO io();
 	
 	boolean isNodeRegistered(Node node);

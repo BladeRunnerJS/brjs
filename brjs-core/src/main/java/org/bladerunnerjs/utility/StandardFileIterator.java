@@ -12,7 +12,7 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
-import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.FileInfoAccessor;
 import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
@@ -21,15 +21,15 @@ public class StandardFileIterator implements FileIterator {
 	private final IOFileFilter fileFilter = FileFilterUtils.and(FileFileFilter.FILE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
 	private final IOFileFilter dirFilter = FileFilterUtils.and(DirectoryFileFilter.DIRECTORY, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
 	private final FileModifiedChecker fileModificationChecker;
+	private final FileInfoAccessor fileInfoAccessor;
 	private final File dir;
-	private final RootNode brjs;
 	private List<File> filesAndDirs = Collections.emptyList();
 	private List<File> files = Collections.emptyList();
 	private List<File> dirs = Collections.emptyList();
 	
-	public StandardFileIterator(RootNode rootNode, FileModificationInfo fileModificationInfo, File dir) {
-		this.brjs = rootNode;
+	public StandardFileIterator(FileModificationInfo fileModificationInfo, File dir, FileInfoAccessor fileInfoAccessor) {
 		this.dir = dir;
+		this.fileInfoAccessor = fileInfoAccessor;
 		fileModificationChecker = new InfoFileModifiedChecker(fileModificationInfo);
 	}
 	
@@ -77,7 +77,7 @@ public class StandardFileIterator implements FileIterator {
 	@Override
 	public List<File> nestedFilesAndDirs() {
 		List<File> nestedFilesAndDirs = new ArrayList<>();
-		populateNestedFilesAndDirs(this, nestedFilesAndDirs, brjs);
+		populateNestedFilesAndDirs(this, nestedFilesAndDirs);
 		return nestedFilesAndDirs;
 	}
 	
@@ -117,11 +117,11 @@ public class StandardFileIterator implements FileIterator {
 		}
 	}
 	
-	private static void populateNestedFilesAndDirs(FileIterator fileIterator, List<File> nestedFilesAndDirs, RootNode rootNode) {
+	private void populateNestedFilesAndDirs(FileIterator fileIterator, List<File> nestedFilesAndDirs) {
 		nestedFilesAndDirs.addAll(fileIterator.filesAndDirs());
 		
 		for(File dir : fileIterator.dirs()) {
-			populateNestedFilesAndDirs(rootNode.getFileInfo(dir), nestedFilesAndDirs, rootNode);
+			populateNestedFilesAndDirs(fileInfoAccessor.getFileInfo(dir), nestedFilesAndDirs);
 		}
 	}
 }

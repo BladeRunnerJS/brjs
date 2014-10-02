@@ -125,6 +125,8 @@ public class RestApiService
 		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appZip.getAbsolutePath(), appName, requirePrefix };		
 		doCommand( cmd, args );
+		
+		brjs.getFileInfo(brjs.app(appName).dir()).resetLastModified();
 	}
 	
 	public void exportWar(String appName, File destinationWar) throws Exception
@@ -163,6 +165,8 @@ public class RestApiService
 				{						
 					FileUtils.deleteDirectory(bladeNode.dir());
 				}
+				
+				brjs.getFileInfo(bladeNode.dir()).resetLastModified();
 			}
 		}
 	}
@@ -173,6 +177,8 @@ public class RestApiService
 		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appName, requirePrefix };		
 		doCommand( cmd, args );
+		
+		brjs.getFileInfo(brjs.app(appName).dir()).resetLastModified();
 	}
 	
 	public void createBladeset(String appName, String bladesetName) throws Exception
@@ -181,6 +187,8 @@ public class RestApiService
 		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appName, bladesetName };		
 		doCommand( cmd, args );
+		
+		brjs.getFileInfo(brjs.app(appName).bladeset(bladesetName).dir()).resetLastModified();
 	}
 	
 	public void createBlade(String appName, String bladesetName, String bladeName) throws Exception
@@ -189,6 +197,8 @@ public class RestApiService
 		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appName, bladesetName, bladeName };		
 		doCommand( cmd, args );
+		
+		brjs.getFileInfo(brjs.app(appName).bladeset(bladesetName).blade(bladeName).dir()).resetLastModified();
 	}
 	
 	public String runBladesetTests(String appName, String bladesetName, String testType) throws Exception

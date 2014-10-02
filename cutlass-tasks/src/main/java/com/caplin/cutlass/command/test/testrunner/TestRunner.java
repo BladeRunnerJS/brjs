@@ -575,7 +575,7 @@ public class TestRunner {
 //		File projectDir = testTypeDir.getParentFile();
 //		String testPath = (projectDir.equals(baseDir)) ? projectDir.getName() : RelativePath.getRelativePath(baseDir, projectDir);
 		
-		String testPath = RelativePathUtility.get(brjs, baseDir, testTypeDir);
+		String testPath = RelativePathUtility.get(brjs.getFileInfoAccessor(), baseDir, testTypeDir);
 		
 		return testPath + " " + (getTestTypeFromDirectoryName(testTypeDir.getName()));
 	}

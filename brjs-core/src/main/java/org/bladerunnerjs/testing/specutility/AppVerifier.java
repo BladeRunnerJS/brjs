@@ -11,6 +11,8 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.NodeVerifier;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 
+import com.google.common.base.Joiner;
+
 import static org.junit.Assert.*;
 
 
@@ -25,7 +27,7 @@ public class AppVerifier extends NodeVerifier<App> {
 
 	public void hasLibs(JsLib... libs)
 	{
-		List<JsLib> appLibs = new ArrayList<JsLib>();
+		List<JsLib> appLibs = new ArrayList<>();
 		
 		for (JsLib lib : app.jsLibs())
 		{
@@ -53,11 +55,22 @@ public class AppVerifier extends NodeVerifier<App> {
 	
 	private void assertLibsListsAreSame(List<JsLib> libs, List<JsLib> appLibs)
 	{
-		assertEquals("lists are different sizes, expected entries: "+StringUtils.join(libs, ", ")+",  actual: "+StringUtils.join(appLibs, ", "), libs.size(), appLibs.size());
+		assertEquals(getLibNames(libs), getLibNames(appLibs));
+		
 		for (int i = 0; i < libs.size(); i++)
 		{
 			assertSame("list entries (index "+i+") dont match, expected entries: "+StringUtils.join(libs, ", ")+",  actual: "+StringUtils.join(appLibs, ", "), libs.get(i), appLibs.get(i));
 		}
+	}
+
+	private String getLibNames(List<JsLib> libs) {
+		List<String> libNames = new ArrayList<>();
+		
+		for(JsLib lib : libs) {
+			libNames.add(lib.getName());
+		}
+		
+		return Joiner.on(", ").join(libNames);
 	}
 
 	public void libWithNameIs(String libName, JsLib appOverriddenNonBRLib)

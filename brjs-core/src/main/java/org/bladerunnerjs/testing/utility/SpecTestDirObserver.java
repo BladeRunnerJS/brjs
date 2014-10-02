@@ -9,7 +9,7 @@ import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 
 public class SpecTestDirObserver
 {
-	private final Java7FileModificationService fileModificationService = new Java7FileModificationService(new StubLoggerFactory());;
+	private final Java7FileModificationService fileModificationService = new Java7FileModificationService(new StubLoggerFactory());
 	private FileModifiedChecker fileModificationChecker;
 	
 	public FileModifiedChecker getDirObserver()

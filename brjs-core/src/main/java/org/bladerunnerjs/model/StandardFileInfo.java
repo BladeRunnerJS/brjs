@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.utility.StandardFileIterator;
 import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
@@ -20,9 +21,9 @@ public class StandardFileInfo implements FileInfo {
 	private boolean exists;
 	private String canonicalPath = null;
 	
-	public StandardFileInfo(File file, BRJS brjs, FileModificationInfo fileModificationInfo) {
+	public StandardFileInfo(File file, FileModificationInfo fileModificationInfo, FileInfoAccessor fileInfoAccessor, LoggerFactory loggerFactory) {
 		this.fileModificationInfo = fileModificationInfo;
-		fileIterator = new StandardFileIterator(brjs, fileModificationInfo, file);
+		fileIterator = new StandardFileIterator(fileModificationInfo, file, fileInfoAccessor);
 		this.file = file;
 		isDirectoryChecker = new InfoFileModifiedChecker(fileModificationInfo);
 		existsChecker = new InfoFileModifiedChecker(fileModificationInfo);
@@ -30,7 +31,7 @@ public class StandardFileInfo implements FileInfo {
 		try {
 			canonicalPath = file.getCanonicalPath();
 		} catch (IOException e) {
-			brjs.logger(this.getClass()).warn("Unable to calculate canonical path for path '%s'.", file.getPath());
+			loggerFactory.getLogger(this.getClass()).warn("Unable to calculate canonical path for path '%s'.", file.getPath());
 			canonicalPath = file.getAbsolutePath();
 		}
 		

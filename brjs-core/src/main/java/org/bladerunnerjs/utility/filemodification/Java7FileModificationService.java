@@ -4,21 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.WatchService;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.plugin.Event;
-import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.model.FileInfoAccessor;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	private enum Status {
@@ -34,9 +25,10 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	private Status status = Status.RUNNING;
 	private File rootDir;
 	private final Logger logger;
+	private TimeAccessor timeAccessor;
 
-	private BRJS brjs;
-	
+	private FileInfoAccessor fileInfoAccessor;
+
 	public Java7FileModificationService(LoggerFactory loggerFactory) {
 		try {
 			logger = loggerFactory.getLogger(getClass());
@@ -52,12 +44,12 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	@Override
-	public void initialise(BRJS brjs, File rootDir) {
+	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
 		try {
-			this.brjs = brjs;
 			this.rootDir = rootDir;
-			watchDirectory(rootDir.getCanonicalFile(), null, new Date().getTime());
-			brjs.addObserver( NodeReadyEvent.class, new FileModificationServiceNodeReadyObserver() );
+			this.timeAccessor = timeAccessor;
+			this.fileInfoAccessor = fileInfoAccessor;
+			watchDirectory(rootDir.getCanonicalFile(), null, timeAccessor.getTime());
 			new Thread(this).start();
 		}
 		catch (IOException e) {
@@ -66,25 +58,20 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	@Override
-	public ProxyFileModificationInfo getModificationInfo(File file) {
+	public ProxyFileModificationInfo getFileModificationInfo(File file) {
 		String absoluteFilePath = file.getAbsolutePath();
 		
 		if(!fileModificationInfos.containsKey(absoluteFilePath)) {
-			fileModificationInfos.put(absoluteFilePath, new ProxyFileModificationInfo(this));
+			WatchingFileModificationInfo parent = (file.equals(rootDir)) ? null : getFileModificationInfo(file.getParentFile());
+			fileModificationInfos.put(absoluteFilePath, new ProxyFileModificationInfo(this, parent, timeAccessor));
 		}
 		
 		return fileModificationInfos.get(absoluteFilePath);
 	}
 	
 	@Override
-	public List<FileModificationInfo> getModificationInfoSet(File[] files) {
-		List<FileModificationInfo> modificationInfoSet = new ArrayList<>();
-		
-		for(File file : files) {
-			modificationInfoSet.add(getModificationInfo(file));
-		}
-		
-		return modificationInfoSet;
+	public FileModificationInfo getFileSetModificationInfo(File file, File primarySetFile) {
+		return getFileModificationInfo(file);
 	}
 	
 	@Override
@@ -134,9 +121,9 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	void watchDirectory(File file, WatchingFileModificationInfo parentModificationInfo, long lastModified) {
-		ProxyFileModificationInfo proxyFMI = getModificationInfo(file);
-		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(brjs, this, watchService, file, parentModificationInfo) :
-			new Java7FileModificationInfo(parentModificationInfo, file);
+		ProxyFileModificationInfo proxyFMI = getFileModificationInfo(file);
+		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(this, watchService, file, parentModificationInfo, timeAccessor, fileInfoAccessor) :
+			new Java7FileModificationInfo(parentModificationInfo, file, timeAccessor);
 		proxyFMI.setFileModificationInfo(fileModificationInfo);
 		
 		if(file.isDirectory()) {
@@ -148,19 +135,5 @@ public class Java7FileModificationService implements FileModificationService, Ru
 
 	public Logger getLogger() {
 		return logger;
-	}
-	
-	private class FileModificationServiceNodeReadyObserver implements EventObserver {
-
-		@Override
-		public void onEventEmitted(Event event, Node node)
-		{
-			if (node instanceof App || node instanceof AssetContainer) {
-    			File resetLastModifiedForFile = node.parentNode().dir();
-				FileModificationInfo fileModificationInfo = getModificationInfo(resetLastModifiedForFile);
-    			fileModificationInfo.resetLastModified();
-			}
-		}
-		
 	}
 }

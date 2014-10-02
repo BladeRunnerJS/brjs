@@ -8,17 +8,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.FileInfoAccessor;
 
 public class RelativePathUtility {
-	
-	public static String get(BRJS brjs, File basePath, File childPath) {
+	public static String get(FileInfoAccessor fileInfoAccessor, File basePath, File childPath) {
 		String baseCanonicalPath,  childCanonicalPath;
 		
 		try {
-			FileInfo baseFileInfo = brjs.getFileInfo(basePath);
-			FileInfo childFileInfo = brjs.getFileInfo(childPath);
+			FileInfo baseFileInfo = fileInfoAccessor.getFileInfo(basePath);
+			FileInfo childFileInfo = fileInfoAccessor.getFileInfo(childPath);
 			baseCanonicalPath = baseFileInfo.canonicalPath();
 			childCanonicalPath = childFileInfo.canonicalPath();
 		} catch (NullPointerException ex) {
