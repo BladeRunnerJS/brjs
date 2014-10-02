@@ -147,15 +147,19 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		Node firstCachedNode = locateFirstCachedNode(file, nodeClass);
 		Node node = null;
 		
-		if(firstCachedNode != null)
-		{
+		if (firstCachedNode != null)
+		{			
 			node = locateExistentAncestorNodeOfClass(firstCachedNode, nodeClass);
 			
 			if(node == null)
 			{
-				firstCachedNode.discoverAllChildren();
 				node = locateExistentAncestorNodeOfClass(locateFirstCachedNode(file), nodeClass);
 			}
+		}
+		
+		if (node == null) {
+			root().discoverAllChildren();
+			node = locateFirstCachedNode(file, nodeClass);
 		}
 		
 		return (N) node;
