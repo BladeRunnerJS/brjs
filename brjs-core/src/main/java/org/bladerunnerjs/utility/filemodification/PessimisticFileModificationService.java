@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.model.FileInfoAccessor;
+import org.bladerunnerjs.utility.FileUtility;
 
 public class PessimisticFileModificationService implements FileModificationService {
 	protected Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
@@ -14,21 +15,14 @@ public class PessimisticFileModificationService implements FileModificationServi
 	
 	@Override
 	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
-		this.rootDir = rootDir.getParentFile();
+		this.rootDir = FileUtility.getCanonicalFile(rootDir.getParentFile());
 		this.timeAccessor = timeAccessor;
 		this.fileInfoAccessor = fileInfoAccessor;
 	}
-	
+
 	@Override
 	public FileModificationInfo getFileModificationInfo(File file) {
-		String filePath = file.getAbsolutePath();
-		
-		if(!fileModificationInfos.containsKey(filePath)) {
-			FileModificationInfo parentInfo = (file.equals(rootDir)) ? null : getFileModificationInfo(file.getParentFile());
-			fileModificationInfos.put(filePath, new PessimisticFileModificationInfo(file, parentInfo, timeAccessor));
-		}
-		
-		return fileModificationInfos.get(filePath);
+		return getFileModificationInfoForCanonicalisedFile( FileUtility.getCanonicalFile(file) );
 	}
 	
 	@Override
@@ -40,4 +34,16 @@ public class PessimisticFileModificationService implements FileModificationServi
 	public void close() {
 		// do nothing
 	}
+	
+	private FileModificationInfo getFileModificationInfoForCanonicalisedFile(File file) {
+		String filePath = file.getAbsolutePath();
+		
+		if(!fileModificationInfos.containsKey(filePath)) {
+			FileModificationInfo parentInfo = (file.equals(rootDir)) ? null : getFileModificationInfoForCanonicalisedFile(file.getParentFile());
+			fileModificationInfos.put(filePath, new PessimisticFileModificationInfo(file, parentInfo, timeAccessor));
+		}
+		
+		return fileModificationInfos.get(filePath);
+	}
+	
 }
