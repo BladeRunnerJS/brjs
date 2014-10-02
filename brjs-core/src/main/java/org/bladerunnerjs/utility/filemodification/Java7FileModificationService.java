@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.FileInfoAccessor;
+import org.bladerunnerjs.utility.FileUtility;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	private enum Status {
@@ -46,7 +47,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	@Override
 	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
 		try {
-			this.rootDir = rootDir;
+			this.rootDir = FileUtility.getCanonicalFile( rootDir );
 			this.timeAccessor = timeAccessor;
 			this.fileInfoAccessor = fileInfoAccessor;
 			watchDirectory(rootDir.getCanonicalFile(), null, timeAccessor.getTime());
@@ -59,14 +60,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	
 	@Override
 	public ProxyFileModificationInfo getFileModificationInfo(File file) {
-		String absoluteFilePath = file.getAbsolutePath();
-		
-		if(!fileModificationInfos.containsKey(absoluteFilePath)) {
-			WatchingFileModificationInfo parent = (file.equals(rootDir)) ? null : getFileModificationInfo(file.getParentFile());
-			fileModificationInfos.put(absoluteFilePath, new ProxyFileModificationInfo(this, parent, timeAccessor));
-		}
-		
-		return fileModificationInfos.get(absoluteFilePath);
+		return getFileModificationInfoForCanonicalisedFile( FileUtility.getCanonicalFile(file) );
 	}
 	
 	@Override
@@ -135,5 +129,16 @@ public class Java7FileModificationService implements FileModificationService, Ru
 
 	public Logger getLogger() {
 		return logger;
+	}
+	
+	private ProxyFileModificationInfo getFileModificationInfoForCanonicalisedFile(File file) {
+		String absoluteFilePath = file.getAbsolutePath();
+		
+		if(!fileModificationInfos.containsKey(absoluteFilePath)) {
+			WatchingFileModificationInfo parent = (file.equals(rootDir)) ? null : getFileModificationInfo(file.getParentFile());
+			fileModificationInfos.put(absoluteFilePath, new ProxyFileModificationInfo(this, parent, timeAccessor));
+		}
+		
+		return fileModificationInfos.get(absoluteFilePath);
 	}
 }

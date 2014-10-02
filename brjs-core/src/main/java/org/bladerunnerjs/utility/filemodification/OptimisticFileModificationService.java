@@ -14,7 +14,7 @@ public class OptimisticFileModificationService implements FileModificationServic
 	
 	@Override
 	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
-		this.rootDir = rootDir;
+		this.rootDir = FileUtility.getCanonicalFile(rootDir);
 		this.timeAccessor = timeAccessor;
 	}
 
