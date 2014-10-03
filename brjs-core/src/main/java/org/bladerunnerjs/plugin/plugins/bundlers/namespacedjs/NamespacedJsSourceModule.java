@@ -77,8 +77,10 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		try {
+			List<String> requirePaths = getDependencyCalculator().getRequirePaths(SourceModule.class);
+			String requireAllInvocation = (requirePaths.size() == 0) ? "" : "\n" + calculateDependenciesRequireDefinition(requirePaths) + "\n";
 			List<String> staticRequirePaths = getStaticDependencyCalculator().getRequirePaths(SourceModule.class);
-			String staticRequireAllInvocation = (staticRequirePaths.size() == 0) ? "" : " " + calculateStaticDependenciesRequireDefinition(staticRequirePaths);
+			String staticRequireAllInvocation = (staticRequirePaths.size() == 0) ? "" : " " + calculateDependenciesRequireDefinition(staticRequirePaths);
 			String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticRequireAllInvocation + "\n";
 			
 			Reader[] readers = new Reader[] { 
@@ -86,6 +88,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 				getUnalteredContentReader(),
 				new StringReader( "\n" ),
 				new StringReader( "module.exports = " + getPrimaryRequirePath().replaceAll("/", ".") + ";" ),
+				new StringReader( requireAllInvocation ),
 				new StringReader(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER), 
 			};
 			return new ConcatReader( readers );
@@ -128,8 +131,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return result;
 	}
 	
-	private String calculateStaticDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {
-		return (requirePaths.isEmpty()) ? "" : "requireAll(['" + Joiner.on("','").join(requirePaths) + "']);\n";
+	private String calculateDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {
+		return (requirePaths.isEmpty()) ? "" : "requireAll(window, ['" + Joiner.on("','").join(requirePaths) + "']);\n";
 	}
 	
 	@Override

@@ -160,7 +160,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				}
 				
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
-				String globalizedClasses = getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
 				Map<String, Map<String, ?>> packageStructure = createPackageStructureForNamespacedJsClasses(bundleSet, processedGlobalizedSourceModules);
 				Reader structureRreader = getPackageStructureReader(packageStructure);
 				if(structureRreader != null){
@@ -171,7 +170,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				String content = contentBuffer.toString();
 				readerList.add(new StringReader(content));
 				readerList.add(new StringReader("\n"));
-				readerList.add(new StringReader(globalizedClasses));				
 				
 				return new CharResponseContent( brjs, readerList );
 			}
