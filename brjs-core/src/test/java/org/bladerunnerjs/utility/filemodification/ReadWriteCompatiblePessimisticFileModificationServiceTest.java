@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
@@ -31,9 +30,8 @@ public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends T
 		
 		File brjsDir = new File(testDir, "brjs");
 		new File(brjsDir, "sdk").mkdir();
-		BRJS brjs = createModel(brjsDir);
 		fMS = new ReadWriteCompatiblePessimisticFileModificationService();
-		brjs.setFileModificationService(fMS);
+		createModel(brjsDir, fMS);
 		
 		FileUtils.write(existentFile, "initial content");
 		existentDir.mkdir();

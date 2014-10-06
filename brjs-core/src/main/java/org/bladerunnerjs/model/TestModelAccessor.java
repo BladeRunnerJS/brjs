@@ -34,6 +34,11 @@ public class TestModelAccessor
 		return brjs;
 	}
 
+	protected BRJS createModel(File brjsDir, FileModificationService fileModificationService) throws InvalidSdkDirectoryException
+	{
+		return createModel(brjsDir, null, fileModificationService, null, null);
+	}
+	
 	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, LogMessageStore logStore, AppVersionGenerator versionGenerator) throws InvalidSdkDirectoryException 
 	{	
 		return createModel(brjsDir, pluginLocator, null, new TestLoggerFactory(logStore), versionGenerator);
