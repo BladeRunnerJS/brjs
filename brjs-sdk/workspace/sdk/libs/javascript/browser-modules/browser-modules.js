@@ -143,17 +143,20 @@
 		// we ignore .js on the end of require requests.
 		id = derelativise(context, id).replace(/\.js$/, "");
 
-		// Has already been instantiated
 		if (this.moduleExports[id] != null) {
+			// the module has already been exported
 			return this.moduleExports[id];
 		}
-
-		if (this.incompleteExports[id] != null) {
-			// There is a circular dependency; we do the best we can in the circumstances.
-			// You should avoid doing module.exports= or returning something from the definition
-			// function if your module is likely to be involved in a circular dependency since
-			// the incompleteExports will be wrong in that case.
-			return this.incompleteExports[id].exports;
+		else if (this.incompleteExports[id] != null) {
+			// the module is in the process of being exported
+			if((typeof(this.incompleteExports[id].exports) != 'object') || Object.keys(this.incompleteExports[id].exports).length > 0) {
+				// if `module.exports` has been defined then we assume the module is fully exported
+				return this.incompleteExports[id];
+			}
+			else {
+				// if `module.exports` has not been defined then we clearly have a circular dependency
+				throw new Error("Circular dependency detected: the module '" + id + "' (requested by module '" + context + "') is still in the process of exporting.");
+			}
 		}
 
 		var definition = this._getDefinition(id);
@@ -181,8 +184,9 @@
 					definitionContext = id.substring(0, id.lastIndexOf("/"));
 				}
 				// this is set to the module inside the definition code.
+				var realm = (window.require) ? window : this;
 				var returnValue = definition.call(module, function(requirePath) {
-					return window.require(definitionContext, requirePath);
+					return realm.require(definitionContext, requirePath);
 				}, module.exports, module);
 				this.moduleExports[id] = returnValue || module.exports;
 			} else {
