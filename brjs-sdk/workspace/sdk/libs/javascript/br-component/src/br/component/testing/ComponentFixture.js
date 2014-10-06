@@ -3,13 +3,9 @@
  */
 
 var br = require('br/Core');
-var AliasRegistry = require('br/AliasRegistry');
 var Errors = require('br/Errors');
 var Fixture = require('br/test/Fixture');
-var Frame = require('br/component/Frame');
-var ComponentModelFixture = require('br/component/testing/ComponentModelFixture');
-var ViewFixture = require('br/test/ViewFixture');
-var Utility = require('br/core/Utility');
+var ComponentFrame, ComponentFrameFixture, ComponentModelFixture, Frame, AliasRegistry, ViewFixture, Utility;
 
 /**
  * @class
@@ -275,49 +271,12 @@ ComponentFixture.prototype._setElement = function(eElement) {
 	this.m_oComponentFrame.trigger('focus');
 };
 
-/* -----------------------------------------------------------------------------
- *						  ComponentFrame
- * ----------------------------------------------------------------------------*/
-
-/**
- * @private
- */
-function ComponentFrame(fixture) {
-	this.m_bIsModified = false;
-	this._fixture = fixture;
-	Frame.call(this);
-};
-
-br.extend(ComponentFrame, Frame);
-
-ComponentFrame.prototype.setContent = function(element) {
-	this._fixture._setElement(element);
-};
-
-ComponentFrame.prototype.setComponentModified = function(bIsModified) {
-	this.m_bIsModified = bIsModified;
-};
-
-ComponentFrame.prototype.getComponentModified = function() {
-	return this.m_bIsModified;
-};
-
-/* -----------------------------------------------------------------------------
- *						  ComponentFrameFixture
- * ----------------------------------------------------------------------------*/
-
-function ComponentFrameFixture(oComponentFrame) {
-	this.m_oComponentFrame = oComponentFrame;
-};
-
-br.extend(ComponentFrameFixture, Fixture);
-
-ComponentFrameFixture.prototype.canHandleProperty = function(sProperty) {
-	return sProperty === "isDirty";
-};
-
-ComponentFrameFixture.prototype.doThen = function(sPropertyName, vValue) {
-	assertEquals('Component frame modified state not as expected.', this.m_oComponentFrame.getComponentModified(), vValue);
-};
-
 module.exports = ComponentFixture;
+
+ComponentFrame = require('./ComponentFrame');
+ComponentFrameFixture = require('./ComponentFrameFixture');
+ComponentModelFixture = require('./ComponentModelFixture');
+Frame = require('br/component/Frame');
+AliasRegistry = require('br/AliasRegistry');
+ViewFixture = require('br/test/ViewFixture');
+Utility = require('br/core/Utility');

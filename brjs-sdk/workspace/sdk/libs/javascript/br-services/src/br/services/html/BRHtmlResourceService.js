@@ -33,6 +33,8 @@ function BRHtmlResourceService(url) {
 	this._loadHtml();
 }
 
+br.implement(BRHtmlResourceService, HtmlResourceService);
+
 /**
  * Access an HTML template by name.
  *
@@ -77,8 +79,5 @@ function sanitizeHtml(html) {
 
 	return html;
 };
-
-
-br.implement(BRHtmlResourceService, HtmlResourceService);
 
 module.exports = BRHtmlResourceService;
