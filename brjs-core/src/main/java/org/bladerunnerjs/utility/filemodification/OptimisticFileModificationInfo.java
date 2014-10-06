@@ -8,7 +8,7 @@ public class OptimisticFileModificationInfo implements FileModificationInfo {
 	public OptimisticFileModificationInfo(FileModificationInfo parent, TimeAccessor timeAccessor) {
 		this.parent = parent;
 		this.timeAccessor = timeAccessor;
-		resetLastModified();
+		lastModified = timeAccessor.getTime();
 	}
 	
 	@Override
