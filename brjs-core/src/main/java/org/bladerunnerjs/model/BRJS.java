@@ -15,7 +15,6 @@ import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -32,7 +31,6 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
-import org.bladerunnerjs.utility.filemodification.FileModificationServiceNodeReadyObserver;
 import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
 import org.bladerunnerjs.utility.filemodification.TimeAccessor;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
@@ -78,7 +76,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private AppVersionGenerator appVersionGenerator;
 	private CharBufferPool pool = new CharBufferPool();
 	private TimeAccessor timeAccessor;
-	private final FileModificationServiceNodeReadyObserver fileModificationServiceObserver;
 	
 	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, TimeAccessor timeAccessor, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
@@ -97,9 +94,6 @@ public class BRJS extends AbstractBRJSRootNode
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 		discoverAllChildren();
 		
-		fileModificationServiceObserver = new FileModificationServiceNodeReadyObserver(fileModificationService);
-		addObserver(NodeReadyEvent.class, fileModificationServiceObserver);
-		
 		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
@@ -113,7 +107,6 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		fileModificationService.initialise(dir, timeAccessor, fileInfoAccessor);
 		fileInfoAccessor.setFileModificationService(fileModificationService);
-		fileModificationServiceObserver.setFileModificationService(fileModificationService);
 		
 		this.fileModificationService = fileModificationService;
 	}
