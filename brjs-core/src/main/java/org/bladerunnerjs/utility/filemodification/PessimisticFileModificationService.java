@@ -1,45 +1,49 @@
 package org.bladerunnerjs.utility.filemodification;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.FileInfoAccessor;
+import org.bladerunnerjs.utility.FileUtility;
 
 public class PessimisticFileModificationService implements FileModificationService {
-	Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
+	protected Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
+	private File rootDir;
+	private TimeAccessor timeAccessor;
+	protected FileInfoAccessor fileInfoAccessor;
 	
 	@Override
-	public void initialise(BRJS brjs, File rootDir) {
-		// do nothing
+	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
+		this.rootDir = FileUtility.getCanonicalFile(rootDir.getParentFile());
+		this.timeAccessor = timeAccessor;
+		this.fileInfoAccessor = fileInfoAccessor;
+	}
+
+	@Override
+	public FileModificationInfo getFileModificationInfo(File file) {
+		return getFileModificationInfoForCanonicalisedFile( FileUtility.getCanonicalFile(file) );
 	}
 	
 	@Override
-	public FileModificationInfo getModificationInfo(File file) {
-		String filePath = file.getAbsolutePath();
-		
-		if(!fileModificationInfos.containsKey(filePath)) {
-			fileModificationInfos.put(filePath, new PessimisticFileModificationInfo(file));
-		}
-		
-		return fileModificationInfos.get(filePath);
-	}
-	
-	@Override
-	public List<FileModificationInfo> getModificationInfoSet(File[] files) {
-		List<FileModificationInfo> modificationInfoSet = new ArrayList<>();
-		
-		for(File file : files) {
-			modificationInfoSet.add(getModificationInfo(file));
-		}
-		
-		return modificationInfoSet;
+	public FileModificationInfo getFileSetModificationInfo(File file, File primarySetFile) {
+		return getFileModificationInfo(file);
 	}
 	
 	@Override
 	public void close() {
 		// do nothing
 	}
+	
+	private FileModificationInfo getFileModificationInfoForCanonicalisedFile(File file) {
+		String filePath = file.getAbsolutePath();
+		
+		if(!fileModificationInfos.containsKey(filePath)) {
+			FileModificationInfo parentInfo = (file.equals(rootDir)) ? null : getFileModificationInfoForCanonicalisedFile(file.getParentFile());
+			fileModificationInfos.put(filePath, new PessimisticFileModificationInfo(file, parentInfo, timeAccessor));
+		}
+		
+		return fileModificationInfos.get(filePath);
+	}
+	
 }

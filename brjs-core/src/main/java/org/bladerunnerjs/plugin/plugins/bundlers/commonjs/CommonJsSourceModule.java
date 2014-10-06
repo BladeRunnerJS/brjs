@@ -57,7 +57,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
@@ -148,7 +148,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public String getAssetPath() {
-		return RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetFile);
+		return RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.assetContainer().app().dir(), assetFile);
 	}
 	
 	private List<String> requirePaths() throws ModelOperationException {

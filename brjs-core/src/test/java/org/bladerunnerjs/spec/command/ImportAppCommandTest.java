@@ -101,6 +101,18 @@ public class ImportAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void exportedAppsCanBeReimportedWithADifferentModel() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).classRequires("appns/Class2", "appns/Class1")
+    		.and(brjs).commandHasBeenRun("export-app", "app")
+    		.and(appJars).containsFile("brjs-lib1.jar")
+    		.and(brjs).hasBeenAuthenticallyReCreated();
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedAspect).fileContentsContains("src/importedns/Class2.js", "require('importedns/Class1')")
+			.and(importedApp).hasFile("WEB-INF/lib/brjs-lib1.jar");
+	}
+	
+	@Test
 	public void directoriesAreNotDuplicatedWhenExportedAppsAreImportedWithNewNamespace() throws Exception {
 		given(aspect).containsFile("src/appns/AspectClass.js")
 			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")

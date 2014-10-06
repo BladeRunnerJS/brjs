@@ -22,7 +22,6 @@ import org.bladerunnerjs.model.BRJS;
 import com.caplin.cutlass.util.FileUtility;
 
 import org.bladerunnerjs.utility.ServerUtility;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 import com.caplin.cutlass.app.servlet.RestApiServlet;
 
@@ -44,7 +43,7 @@ public class RestApiServletEndToEndTests
 	{
 		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
 		
-		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot, new PessimisticFileModificationService() );
+		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot );
 		
 		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
 		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), "");
