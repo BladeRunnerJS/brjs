@@ -151,7 +151,7 @@
 			// the module is in the process of being exported
 			if((typeof(this.incompleteExports[id].exports) != 'object') || Object.keys(this.incompleteExports[id].exports).length > 0) {
 				// if `module.exports` has been defined then we assume the module is fully exported
-				return this.incompleteExports[id];
+				return this.incompleteExports[id].exports;
 			}
 			else {
 				// if `module.exports` has not been defined then we clearly have a circular dependency

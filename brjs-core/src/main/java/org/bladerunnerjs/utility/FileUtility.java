@@ -228,4 +228,16 @@ public class FileUtility {
 		}
 	}
 	
+	public static File getCanonicalFileWhenPossible(File file)
+	{
+		try
+		{
+			return file.getCanonicalFile();
+		}
+		catch (IOException e)
+		{
+			return file;
+		}
+	}
+	
 }

@@ -22,7 +22,7 @@ public class PessimisticFileModificationService implements FileModificationServi
 
 	@Override
 	public FileModificationInfo getFileModificationInfo(File file) {
-		return getFileModificationInfoForCanonicalisedFile( FileUtility.getCanonicalFile(file) );
+		return getFileModificationInfoForCanonicalisedFile( FileUtility.getCanonicalFileWhenPossible(file) );
 	}
 	
 	@Override

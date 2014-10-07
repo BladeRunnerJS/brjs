@@ -284,7 +284,6 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 				"appns.commonjs.Class = require('appns/commonjs/Class');");
 	}
 	
-	
 	@Test
 	public void packageDefinitionsInBundleContainAutomaticRequirePackages() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
@@ -386,7 +385,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1");
 		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-				"define('appns/namespacedjs/Class1', function(require, exports, module) { requireAll(['appns/namespacedjs/Class2']);",
+				"define('appns/namespacedjs/Class1', function(require, exports, module) { requireAll(window, ['appns/namespacedjs/Class2']);",
 				"appns.namespacedjs.Class1 = function()",
 				"module.exports = appns.namespacedjs.Class1;");
 	}
@@ -523,7 +522,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments(
 				"appns.Class2 = function()",
 				"appns.Class3 = function()",
-				"requireAll(['appns/Class2','appns/Class3']);",
+				"{ requireAll(window, ['appns/Class2','appns/Class3']);",
 				"appns.Class1 = function()");
 	}
 	

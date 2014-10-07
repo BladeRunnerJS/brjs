@@ -14,11 +14,11 @@
 	}
 
 	/** @private */
-	window.requireAll = function(requirePaths) {
+	window.requireAll = function(globalObj, requirePaths) {
 		for (var i = 0; i < requirePaths.length; i++) {
 			var requirePath = requirePaths[i];
 			var namespacePath = requirePath.replace(/\//gi, ".");
-			mergePackageBlock( window, convertToPackageBlock(namespacePath) );
+			mergePackageBlock( globalObj, convertToPackageBlock(namespacePath) );
 			globaliseRequirePath(requirePath, namespacePath);
 		}
 	}

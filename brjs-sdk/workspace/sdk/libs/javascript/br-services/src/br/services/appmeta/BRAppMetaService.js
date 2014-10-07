@@ -15,6 +15,8 @@ var AppMetaService = require('br/services/AppMetaService');
 function BRAppMetaService() {
 };
 
+br.implement(BRAppMetaService, AppMetaService);
+
 BRAppMetaService.prototype.getVersion = function() {
 	return window.$BRJS_APP_VERSION;
 };
@@ -43,7 +45,5 @@ function getBundlePath(prefix, bundlePath) {
 	return prefix;
 }
 
-
-br.implement(BRAppMetaService, AppMetaService);
 
 module.exports = BRAppMetaService;
