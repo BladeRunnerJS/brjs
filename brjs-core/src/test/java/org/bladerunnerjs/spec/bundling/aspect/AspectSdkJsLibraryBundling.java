@@ -65,7 +65,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		given(aspect).hasClass("appns/AspectClass")
 			.and(sdkLib).hasClass("br/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns/AspectClass", "br.SdkClass");
+			.and(aspect).classRequires("appns/AspectClass", "br/SdkClass");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("br.SdkClass");
 	}

@@ -81,7 +81,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	public void weBundleExplicitTransitiveDependenciesForFromABlade() throws Exception {
 		given(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
-			.and(blade).classRequires("appns/bs/b1/Class1", "appns.bs.b1.Class2");
+			.and(blade).classRequires("appns/bs/b1/Class1", "appns/bs/b1/Class2");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 	}
@@ -102,7 +102,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	@Test
 	public void weBundleExplicitTransitiveDependenciesFromABladeIncludingBladesetDependencies() throws Exception {	
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
-			.and(bladeset).classRequires("appns/bs/Class1", "appns.bs.Class2")
+			.and(bladeset).classRequires("appns/bs/Class1", "appns/bs/Class2")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.Class1")
@@ -115,7 +115,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	@Test
 	public void devRequestsContainThePackageDefinitionsAtTheTop() throws Exception {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
-			.and(bladeset).classRequires("appns/bs/Class1", "appns.bs.Class2")
+			.and(bladeset).classRequires("appns/bs/Class1", "appns/bs/Class2")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.Class1")
@@ -127,7 +127,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	@Test
 	public void prodRequestsContainThePackageDefinitionsAtTheTop() throws Exception {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
-			.and(bladeset).classRequires("appns/bs/Class1", "appns.bs.Class2")
+			.and(bladeset).classRequires("appns/bs/Class1", "appns/bs/Class2")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.Class1")
@@ -139,7 +139,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	@Test
 	public void packageDefinitionsAreDefinedInASingleRequest() throws Exception {	
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
-			.and(bladeset).classRequires("appns/bs/Class1", "appns.bs.Class2")
+			.and(bladeset).classRequires("appns/bs/Class1", "appns/bs/Class2")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.Class1")
@@ -163,7 +163,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	public void bladeClassesCanOnlyDependOnExistentClassesWhenAspectIsRequested() throws Exception {
 		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
-			.and(blade).classRequires("appns/bs/b1/Class1", "appns.NonExistentClass");
+			.and(blade).classRequires("appns/bs/b1/Class1", "appns/NonExistentClass");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/NonExistentClass")
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
