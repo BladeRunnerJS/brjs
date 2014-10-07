@@ -14,18 +14,18 @@
 	}
 
 	/** @private */
-	window.requireAll = function(globalObj, requirePaths) {
+	window.requireAll = function(require, globalObj, requirePaths) {
 		for (var i = 0; i < requirePaths.length; i++) {
 			var requirePath = requirePaths[i];
 			var namespacePath = requirePath.replace(/\//gi, ".");
 			mergePackageBlock( globalObj, convertToPackageBlock(namespacePath) );
-			globaliseRequirePath(requirePath, namespacePath);
+			globaliseRequirePath(require, requirePath, namespacePath);
 		}
 	}
 
 	/* private stuff */
 
-	var globaliseRequirePath = function(requirePath, namespacePath) {
+	var globaliseRequirePath = function(require, requirePath, namespacePath) {
 		var namespacePathContext = getContextForNamespacePath(namespacePath);
 		var namespaceKeyName = namespacePath.split(".").pop();
 		namespacePathContext[namespaceKeyName] = require(requirePath);
