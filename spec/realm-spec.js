@@ -20,7 +20,7 @@ describe("a realm", function() {
 	});
 
 	it("allows one definition to require a definition defined later.", function() {
-		var CLASSA = {};
+		var CLASSA = function() {};
 		testRealm.define("ClassB", function(require, exports, module) {
 			exports.parent = require("ClassA");
 		});
@@ -33,7 +33,7 @@ describe("a realm", function() {
 	});
 
 	it("allows one definition to require another in a relative way.", function() {
-		var CLASSA = {};
+		var CLASSA = function() {};
 		testRealm.define("my/classes/derived/ClassB", function(require, exports, module) {
 			exports.parent = require("../original/ClassA");
 		});
@@ -45,8 +45,62 @@ describe("a realm", function() {
 		expect(classB.parent).toBe(CLASSA);
 	});
 
+	it("throws an error if there is a circular reference", function() {
+		var CLASSA = function() {};
+		testRealm.define("ClassA", function(require, exports, module) {
+			require("ClassB");
+			module.exports = CLASSA;
+		});
+		var CLASSB = function() {};
+		testRealm.define("ClassB", function(require, exports, module) {
+			require("ClassA");
+			module.exports = CLASSB;
+		});
+
+		expect(function() {
+			testRealm.require('ClassA');
+		}).toThrow(Error("Circular dependency detected: the module 'ClassA' (requested by module 'ClassB') is still in the process of exporting."));
+	});
+
+	it("we consider it to be a circular reference even if a module has partially exported", function() {
+		var CLASSA = function() {};
+		testRealm.define("ClassA", function(require, exports, module) {
+			require("ClassB");
+			module.exports = CLASSA;
+		});
+		testRealm.define("ClassB", function(require, exports, module) {
+			exports.X = 'X';
+			require("ClassA");
+			exports.Y = 'Y';
+		});
+
+		expect(function() {
+			testRealm.require('ClassA');
+		}).toThrow(Error("Circular dependency detected: the module 'ClassA' (requested by module 'ClassB') is still in the process of exporting."));
+	});
+
+	it("we don't consider it to be a circular reference if the module has already exported at the point the circle is formed", function() {
+		testRealm.define("ClassA", function(require, exports, module) {
+			function LocalClass() {
+			};
+			module.exports = LocalClass;
+			require("ClassB");
+		});
+		testRealm.define("ClassB", function(require, exports, module) {
+			var SuperClass = require("ClassA");
+			function LocalClass() {
+			};
+			LocalClass.prototype = new SuperClass();
+			module.exports = LocalClass;
+		});
+
+		var ClassA = testRealm.require('ClassA');
+		var ClassB = testRealm.require('ClassB');
+		expect((new ClassB()) instanceof ClassA).toBeTruthy();
+	});
+
 	it("allows the redefinition of a class in a subrealm.", function() {
-		var CLASSA = {};
+		var CLASSA = function() {};
 		testRealm.define("my/classes/derived/ClassB", function(require, exports, module) {
 			exports.parent = require("../original/ClassA");
 		});
@@ -57,7 +111,7 @@ describe("a realm", function() {
 		var classB = testRealm.require('my/classes/derived/ClassB');
 		expect(classB.parent).toBe(CLASSA);
 
-		var REPLACEMENT_CLASSA = {};
+		var REPLACEMENT_CLASSA = function() {};
 		expect(CLASSA).not.toBe(REPLACEMENT_CLASSA);
 		var subrealm = testRealm.subrealm();
 
@@ -68,7 +122,5 @@ describe("a realm", function() {
 		var subrealmClassB = subrealm.require('my/classes/derived/ClassB');
 		expect(subrealmClassB).not.toBe(classB);
 		expect(subrealmClassB.parent).toBe(REPLACEMENT_CLASSA);
-
 	});
-
 });
