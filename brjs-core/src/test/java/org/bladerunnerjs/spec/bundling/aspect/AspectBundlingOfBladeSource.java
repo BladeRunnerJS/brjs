@@ -91,8 +91,8 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
-			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).hasNamespacedJsPackageStyle()
+			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);

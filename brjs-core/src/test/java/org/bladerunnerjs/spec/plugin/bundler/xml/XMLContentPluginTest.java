@@ -294,9 +294,8 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void bladeXMLFilesAreBundledIfTheBladeIsReferredToByAspectIndexPage() throws Exception {
 		String config = bundleConfig();
-		given(blade).hasClass("appns/bs/b1/Class1")
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).containsResourceFileWithContents("xml/config.xml", rootElem( mergeElem("appns.bs.b1.SomeClass1")))
-			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
@@ -308,10 +307,9 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void bladeXMLFilesAreBundledIfTheBladeIsReferredToByAnAspectHTMLResourceFile() throws Exception {
 		String config = bundleConfig();
-		given(blade).hasClass("appns/bs/b1/Class1")
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)	
 			.and(blade).containsResourceFileWithContents("xml/config.xml", rootElem( mergeElem("appns.bs.b1.SomeClass1")))
-			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.AppClass")
