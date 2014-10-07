@@ -133,7 +133,7 @@
 		define(id, eval("(function(require, exports, module){\n" + definitionString + "\n});"));
 	};
 
-	Realm.prototype._require = function require(context, id) {
+	Realm.prototype._require = function require(context, id, contextId) {
 		if (arguments.length === 1) {
 			id = arguments[0];
 			context = '';
@@ -155,7 +155,7 @@
 			}
 			else {
 				// if `module.exports` has not been defined then we clearly have a circular dependency
-				throw new Error("Circular dependency detected: the module '" + id + "' (requested by module '" + context + "') is still in the process of exporting.");
+				throw new Error("Circular dependency detected: the module '" + id + "' (requested by module '" + contextId + "') is still in the process of exporting.");
 			}
 		}
 
@@ -186,7 +186,7 @@
 				// this is set to the module inside the definition code.
 				var realm = (window.require) ? window : this;
 				var returnValue = definition.call(module, function(requirePath) {
-					return realm.require(definitionContext, requirePath);
+					return realm.require(definitionContext, requirePath, id);
 				}, module.exports, module);
 				this.moduleExports[id] = returnValue || module.exports;
 			} else {
