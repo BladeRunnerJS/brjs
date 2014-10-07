@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.FileInfoAccessor;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class Java7DirectoryModificationInfo implements WatchingFileModificationInfo {
@@ -31,18 +31,20 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	private final File dir;
 	private final WatchKey watchKey;
 	private final WatchingFileModificationInfo parentModificationInfo;
+	private TimeAccessor timeAccessor;
 	private long lastModified = (new Date()).getTime();
 	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 	private final String relativeDirPath;
 	private Set<WatchingFileModificationInfo> children = new LinkedHashSet<>();
 	private Logger logger;
 	
-	public Java7DirectoryModificationInfo(BRJS brjs, Java7FileModificationService fileModificationService, WatchService watchService, File dir, WatchingFileModificationInfo parentModificationInfo) {
+	public Java7DirectoryModificationInfo(Java7FileModificationService fileModificationService, WatchService watchService, File dir, WatchingFileModificationInfo parentModificationInfo, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
 		try {
 			this.fileModificationService = fileModificationService;
 			this.dir = dir;
 			this.parentModificationInfo = parentModificationInfo;
-			relativeDirPath = RelativePathUtility.get(brjs, fileModificationService.getRootDir(), dir);
+			this.timeAccessor = timeAccessor;
+			relativeDirPath = RelativePathUtility.get(fileInfoAccessor, fileModificationService.getRootDir(), dir);
 			logger = fileModificationService.getLogger();
 			
 			if(parentModificationInfo != null) {
@@ -87,7 +89,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	
 	@Override
 	public void resetLastModified() {
-		lastModified = (new Date()).getTime();;
+		setLastModified(timeAccessor.getTime());
 	}
 	
 	@Override
@@ -98,7 +100,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	@Override
 	public void pollWatchEvents() {
 		List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
-		long lastModified = new Date().getTime();
+		long lastModified = timeAccessor.getTime();
 		boolean filesUpdated = false;
 		
 		for(WatchEvent<?> watchEvent : watchEvents) {
@@ -120,7 +122,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
     			if(!contextFile.isHidden()) {
     				filesUpdated = true;
     				
-    				ProxyFileModificationInfo proxyFileModificationInfo = fileModificationService.getModificationInfo(contextFile);
+    				ProxyFileModificationInfo proxyFileModificationInfo = fileModificationService.getFileModificationInfo(contextFile);
     				
     				if(watchEvent.kind().equals(ENTRY_CREATE)) {
     					fileModificationService.watchDirectory(contextFile, this, lastModified);

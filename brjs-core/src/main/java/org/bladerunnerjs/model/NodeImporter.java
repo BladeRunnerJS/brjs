@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -19,18 +20,38 @@ import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.JsStyleUtility;
-import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.RealTimeAccessor;
 import org.mockito.Mockito;
 
 
 public class NodeImporter {
-	public static void importApp(File sourceAppDir, String sourceAppRequirePrefix, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
+	
+	public static void importAppFromZip(ZipFile sourceAppZip, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		BRJS tempBrjs = createTemporaryBRJSModel();
-		App tempBrjsApp = tempBrjs.app(targetApp.getName());
 		
-		FileUtils.copyDirectory(sourceAppDir, tempBrjsApp.dir());
+		File temporaryUnzipDir = FileUtility.createTemporaryDirectory( NodeImporter.class, targetApp.getName() );
+		FileUtility.unzip(sourceAppZip, temporaryUnzipDir );
+		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
+		if (temporaryUnzipDirFiles.length != 1) {
+			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
+		}
+		
+		App sourceApp = tempBrjs.app( targetApp.getName() );
+		FileUtils.moveDirectory(temporaryUnzipDirFiles[0], sourceApp.dir());
+		
+		File unzippedLibDir = sourceApp.file("WEB-INF/lib");
+		FileUtils.copyDirectory(targetApp.root().appJars().dir(), unzippedLibDir);
+		
+		importApp(tempBrjs, sourceApp, targetApp, targetAppRequirePrefix);
+	}
+	
+	public static void importApp(BRJS tempBrjs, App sourceApp, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
+		App tempBrjsApp = tempBrjs.app(targetApp.getName());
+		String sourceAppRequirePrefix = sourceApp.getRequirePrefix();
+		
 		tempBrjsApp.appConf().setRequirePrefix(targetAppRequirePrefix);
 		tempBrjsApp.appConf().write();
+		
 		
 		for(Aspect aspect : tempBrjsApp.aspects()) {
 			updateRequirePrefix(aspect.assetLocations(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);			
@@ -43,6 +64,7 @@ public class NodeImporter {
 		
 		FileUtils.moveDirectory(tempBrjsApp.dir(), targetApp.dir());
 	}
+	
 	
 	public static void importBladeset(File sourceBladesetDir, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix, Bladeset targetBladeset) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		BRJS tempBrjs = createTemporaryBRJSModel();
@@ -68,7 +90,9 @@ public class NodeImporter {
 		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
 		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
 		
-		return new BRJS(tempSdkDir, pluginLocator, new OptimisticFileModificationService(), new StubLoggerFactory(), new MockAppVersionGenerator());
+		BRJS brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new RealTimeAccessor(), new MockAppVersionGenerator());
+		
+		return brjs;
 	}
 	
 	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException {

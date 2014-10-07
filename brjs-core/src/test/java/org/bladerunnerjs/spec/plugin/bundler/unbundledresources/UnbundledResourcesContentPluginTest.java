@@ -150,7 +150,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
         		.and(brjs.applicationServer(appServerPort)).started();
         	then(brjs.applicationServer(appServerPort)).requestForUrlReturns("/app1/v/123/unbundled-resources/file.jsp", "2 + 2 = 4");
 		} finally {
-			brjs.applicationServer().stop();
+			given(brjs.applicationServer(appServerPort)).stopped()
+				.and(brjs.applicationServer(appServerPort)).requestTimesOutFor("/");
 		}
 	}
 	

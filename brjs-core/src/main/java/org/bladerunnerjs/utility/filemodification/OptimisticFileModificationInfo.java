@@ -1,7 +1,15 @@
 package org.bladerunnerjs.utility.filemodification;
 
 public class OptimisticFileModificationInfo implements FileModificationInfo {
-	private long lastModified = 1;
+	private long lastModified;
+	private final FileModificationInfo parent;
+	private final TimeAccessor timeAccessor;
+	
+	public OptimisticFileModificationInfo(FileModificationInfo parent, TimeAccessor timeAccessor) {
+		this.parent = parent;
+		this.timeAccessor = timeAccessor;
+		lastModified = timeAccessor.getTime();
+	}
 	
 	@Override
 	public long getLastModified() {
@@ -10,6 +18,10 @@ public class OptimisticFileModificationInfo implements FileModificationInfo {
 	
 	@Override
 	public void resetLastModified() {
-		lastModified++;
+		lastModified = timeAccessor.getTime();
+		
+		if(parent != null) {
+			parent.resetLastModified();
+		}
 	}
 }

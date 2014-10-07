@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +81,7 @@ import org.bladerunnerjs.utility.ServerUtility;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 
 
@@ -128,6 +130,15 @@ public abstract class SpecTest extends TestModelAccessor
 		
 		if (testSdkDirectory.exists() && cleanupTestSdkDirectory) {
 			FileUtils.deleteQuietly(testSdkDirectory);
+		}
+		
+		try (ServerSocket socket = new ServerSocket(appServerPort))
+		{
+			socket.getClass(); /* reference socket to prevent the compiler complaining that is isn't referenced */
+		}
+		catch (IOException ex)
+		{
+			Assert.fail("The app server is still running on port " + appServerPort + " for a test in " + this.getClass().getSimpleName()+". It should be stopped to prevent background threads.");
 		}
 	}
 	

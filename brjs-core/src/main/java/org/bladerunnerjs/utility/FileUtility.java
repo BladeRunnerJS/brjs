@@ -215,4 +215,29 @@ public class FileUtility {
 			}
 		}
 	}
+	
+	public static File getCanonicalFile(File file)
+	{
+		try
+		{
+			return file.getCanonicalFile();
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException("Unable to calculate canonical file for " + file.getAbsolutePath(), e);
+		}
+	}
+	
+	public static File getCanonicalFileWhenPossible(File file)
+	{
+		try
+		{
+			return file.getCanonicalFile();
+		}
+		catch (IOException e)
+		{
+			return file;
+		}
+	}
+	
 }

@@ -104,13 +104,13 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			addRhinoCommandArgs(commandArgs, workingDir, jsDocToolkitDir);			
 		}
 		
-		commandArgs.add( RelativePathUtility.get(brjs, workingDir, app.dir())+"/" ); // add the app dir
+		commandArgs.add( RelativePathUtility.get(brjs.getFileInfoAccessor(), workingDir, app.dir())+"/" ); // add the app dir
 		// sdk/libs/javascript is added via config file so dirs can be optionally ignored
 		commandArgs.add("-c"); // set the config file
-			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocConfFile) );
+			commandArgs.add( RelativePathUtility.get(brjs.getFileInfoAccessor(), workingDir, jsDocConfFile) );
 		commandArgs.add("-r"); // recurse into dirs
 		commandArgs.add("-d"); // the output dir
-			commandArgs.add( RelativePathUtility.get(brjs, workingDir, outputDir) );
+			commandArgs.add( RelativePathUtility.get(brjs.getFileInfoAccessor(), workingDir, outputDir) );
 		commandArgs.add("-q");
 			commandArgs.add( "date="+getBuildDate()+"&version="+brjs.versionInfo().getVersionNumber() );
 		
@@ -128,12 +128,12 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	private void addNodeCommandArgs(List<String> commandArgs, File workingDir, File jsDocToolkitDir)
 	{
 		commandArgs.add("node");
-		commandArgs.add(RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc.js");
+		commandArgs.add(RelativePathUtility.get(brjs.getFileInfoAccessor(), workingDir, jsDocToolkitDir)+"/jsdoc.js");
 	}
 	
 	private void addRhinoCommandArgs(List<String> commandArgs, File workingDir, File jsDocToolkitDir)
 	{
-		String command = RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc";
+		String command = RelativePathUtility.get(brjs.getFileInfoAccessor(), workingDir, jsDocToolkitDir)+"/jsdoc";
 		if(System.getProperty("os.name").split(" ")[0].toLowerCase().equals("windows"))
 		{
 			command = command.replace("/", "\\") + ".cmd";
@@ -166,7 +166,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		File placeholderDestDir = app.storageDir(APP_STORAGE_DIR_NAME);
 		placeholderDestDir.mkdirs();
 		for (File srcFile : FileUtils.listFiles(placeholderSrcDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-			String pathRelativeToDestDir = RelativePathUtility.get(app.root(), placeholderSrcDir, srcFile);
+			String pathRelativeToDestDir = RelativePathUtility.get(app.root().getFileInfoAccessor(), placeholderSrcDir, srcFile);
 			File destFile = new File(placeholderDestDir, pathRelativeToDestDir);
 			if (!destFile.exists()) {
 				FileUtils.copyFile(srcFile, destFile);
