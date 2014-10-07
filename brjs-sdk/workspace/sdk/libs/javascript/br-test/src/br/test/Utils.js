@@ -4,6 +4,7 @@
 
 var jQuery = require('jquery');
 var ko = require('presenter-knockout');
+var KeyboardEventUtility = require('./KeyboardEventUtility');
 
 /**
  * @class
@@ -62,20 +63,10 @@ Utils.getKeyCodeForChar = function(character) {
 	return character.charCodeAt(0);
 };
 
-/**
-* Fires a DOM KeyboardEvent in a cross Browser compatible way.
-*
-* @static
-* @param {DOMElement} element The DOM Element the Event is fired from
-* @param {String} eventString The Event to be fired without 'on', e.g. 'keydown'
-* @param {String} character a character associated with typing events.
-* @param {Map} options a map of values, passed in to <code>initKeyboardEvent</code>, associated with typing events.
-*/
-Utils.fireKeyEvent = function(element, eventString, character, options) {
-	var keyCode = Utils.getKeyCodeForChar(character),
-		args = Utils._mergeDefaultKeyEventArgumentsWithArgumentsMap(options || {}),
-		evt;
-
+// TODO: remove this function once we switch over to KeyboardEventUtility
+function initKeyboardEvent(eventString, args) {
+	var evt;
+	
 	if (document.createEvent) {
 		//FF, WEBKIT, IE9-IE9 mode etc..
 		evt = document.createEvent('KeyboardEvent');
@@ -93,8 +84,6 @@ Utils.fireKeyEvent = function(element, eventString, character, options) {
 			//Gecko.
 			evt.initKeyEvent(eventString, args.canBubble, args.cancelable, args.view, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, keyCode, 0);
 		}
-
-		return !element.dispatchEvent(evt);
 	} else if (document.createEventObject) {
 		//IE earlier then IE9-IE9 mode
 		evt = document.createEventObject();
@@ -106,7 +95,30 @@ Utils.fireKeyEvent = function(element, eventString, character, options) {
 				evt[arg] = args[arg];
 			}
 		}
+	}
+	
+	return evt;
+}
 
+/**
+* Fires a DOM KeyboardEvent in a cross Browser compatible way.
+*
+* @static
+* @param {DOMElement} element The DOM Element the Event is fired from
+* @param {String} eventString The Event to be fired without 'on', e.g. 'keydown'
+* @param {String} character a character associated with typing events.
+* @param {Map} options a map of values, passed in to <code>initKeyboardEvent</code>, associated with typing events.
+*/
+Utils.fireKeyEvent = function(element, eventString, character, options) {
+	var keyCode = Utils.getKeyCodeForChar(character);
+	var args = Utils._mergeDefaultKeyEventArgumentsWithArgumentsMap(options || {});
+//	var evt = KeyboardEventUtility.initKeyboardEvent(eventString, args);
+	var evt = initKeyboardEvent(eventString, args);
+	
+	if(element.dispatchEvent) {
+		return !element.dispatchEvent(evt);
+	}
+	else {
 		return element.fireEvent('on' + eventString, evt);
 	}
 };
