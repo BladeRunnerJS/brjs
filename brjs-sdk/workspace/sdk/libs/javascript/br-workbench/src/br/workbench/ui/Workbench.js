@@ -3,9 +3,7 @@
  */
 
 var JQuery = require( 'jquery' );
-var WorkbenchPanel = require( './WorkbenchPanel' );
-var SimpleFrame = require( 'br/component/SimpleFrame' );
-var ElementUtility = require( 'br/util/ElementUtility' );
+var WorkbenchPanel, SimpleFrame, ElementUtility;
 
 /**
  * @class
@@ -74,3 +72,7 @@ Workbench.prototype.addToRightWing = function(oWorkbenchComponent, sTitle, bColl
 };
 
 module.exports = Workbench;
+
+WorkbenchPanel = require( './WorkbenchPanel' );
+SimpleFrame = require( 'br/component/SimpleFrame' );
+ElementUtility = require( 'br/util/ElementUtility' );

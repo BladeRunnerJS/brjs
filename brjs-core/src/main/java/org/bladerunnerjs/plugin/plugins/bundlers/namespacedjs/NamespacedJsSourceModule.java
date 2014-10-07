@@ -26,11 +26,9 @@ import org.bladerunnerjs.utility.reader.factory.JsCommentAndCodeBlockStrippingRe
 import org.bladerunnerjs.utility.reader.factory.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
+import com.google.common.base.Joiner;
 
 public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
-	
-	public static final String STATIC_DEPENDENCIES_BLOCK_START = "requireAll([";
-	public static final String STATIC_DEPENDENCIES_BLOCK_END = "]);";
 	
 	private AssetLocation assetLocation;
 	private File assetFile;
@@ -78,27 +76,26 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public Reader getReader() throws IOException {
-		String staticDependenciesRequireDefinition;
-		try
-		{
-			staticDependenciesRequireDefinition = calculateStaticDependenciesRequireDefinition();
-			staticDependenciesRequireDefinition = (staticDependenciesRequireDefinition.isEmpty()) ? "" : " "+staticDependenciesRequireDefinition;
-		}
-		catch (ModelOperationException e)
-		{
-			throw new IOException("Unable to create the SourceModule reader", e);
-		}
-		
-		String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
-		
-		Reader[] readers = new Reader[] { 
+		try {
+			List<String> requirePaths = getDependencyCalculator().getRequirePaths(SourceModule.class);
+			String requireAllInvocation = (requirePaths.size() == 0) ? "" : "\n" + calculateDependenciesRequireDefinition(requirePaths) + "\n";
+			List<String> staticRequirePaths = getStaticDependencyCalculator().getRequirePaths(SourceModule.class);
+			String staticRequireAllInvocation = (staticRequirePaths.size() == 0) ? "" : " " + calculateDependenciesRequireDefinition(staticRequirePaths);
+			String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticRequireAllInvocation + "\n";
+			
+			Reader[] readers = new Reader[] { 
 				new StringReader( String.format(defineBlockHeader, getPrimaryRequirePath()) ), 
 				getUnalteredContentReader(),
 				new StringReader( "\n" ),
 				new StringReader( "module.exports = " + getPrimaryRequirePath().replaceAll("/", ".") + ";" ),
+				new StringReader( requireAllInvocation ),
 				new StringReader(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER), 
-		};
-		return new ConcatReader( readers );
+			};
+			return new ConcatReader( readers );
+		}
+		catch (ModelOperationException e) {
+			throw new IOException("Unable to create the SourceModule reader", e);
+		}
 	}
 	
 	@Override
@@ -134,20 +131,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return result;
 	}
 	
-	public String calculateStaticDependenciesRequireDefinition() throws ModelOperationException {
-		List<String> staticDependencyRequirePaths = getStaticDependencyCalculator().getRequirePaths(SourceModule.class);
-		if (staticDependencyRequirePaths.isEmpty()) {
-			return "";
-		}
-		
-		StringBuilder staticDependenciesRequireDefinition = new StringBuilder( STATIC_DEPENDENCIES_BLOCK_START );
-		for (String staticDependencyRequirePath : staticDependencyRequirePaths) {
-			staticDependenciesRequireDefinition.append( "'"+staticDependencyRequirePath+"'," );
-		}
-		staticDependenciesRequireDefinition.setLength( +staticDependenciesRequireDefinition.length() - 1 ); // remove the final ',' we added
-		staticDependenciesRequireDefinition.append( STATIC_DEPENDENCIES_BLOCK_END );
-		
-		return staticDependenciesRequireDefinition.toString()+"\n";
+	private String calculateDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {
+		return (requirePaths.isEmpty()) ? "" : "requireAll(window, ['" + Joiner.on("','").join(requirePaths) + "']);\n";
 	}
 	
 	@Override

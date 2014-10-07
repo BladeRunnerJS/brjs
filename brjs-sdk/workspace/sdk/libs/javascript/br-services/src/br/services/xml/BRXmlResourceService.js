@@ -7,9 +7,8 @@
 var br = require('br/Core');
 var Errors = require('br/Errors');
 var XmlResourceService = require('br/services/XmlResourceService');
-var XmlParser = require('br/util/XmlParser');
-var File = require('br/core/File');
 var i18n = require('br/I18n');
+var XmlParser, File;
 
 /**
  * @class
@@ -31,6 +30,8 @@ function BRXmlResourceService(url) {
 
 	this._loadXml();
 };
+
+br.implement(BRXmlResourceService, XmlResourceService);
 
 BRXmlResourceService.prototype.getXmlDocument = function(elementName) {
 	try {
@@ -57,6 +58,7 @@ BRXmlResourceService.prototype._loadXml = function() {
 	}
 };
 
-br.implement(BRXmlResourceService, XmlResourceService);
-
 module.exports = BRXmlResourceService;
+
+XmlParser = require('br/util/XmlParser');
+File = require('br/core/File');

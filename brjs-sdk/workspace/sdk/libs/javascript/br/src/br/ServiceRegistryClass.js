@@ -5,7 +5,7 @@
  */
 
 var Errors = require('./Errors');
-var AliasRegistry = require('./AliasRegistry');
+var AliasRegistry;
 
 /**
 * @class
@@ -136,3 +136,5 @@ ServiceRegistryClass.prototype._initializeServiceIfRequired = function(alias) {
 };
 
 module.exports = ServiceRegistryClass;
+
+AliasRegistry = require('./AliasRegistry');
