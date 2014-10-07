@@ -80,18 +80,23 @@ describe("a realm", function() {
 	});
 
 	it("we don't consider it to be a circular reference if the module has already exported at the point the circle is formed", function() {
-		var CLASSA = function() {};
 		testRealm.define("ClassA", function(require, exports, module) {
-			module.exports = CLASSA;
+			function LocalClass() {
+			};
+			module.exports = LocalClass;
 			require("ClassB");
 		});
-		var CLASSB = function() {};
 		testRealm.define("ClassB", function(require, exports, module) {
-			require("ClassA");
-			module.exports = CLASSB;
+			var SuperClass = require("ClassA");
+			function LocalClass() {
+			};
+			LocalClass.prototype = new SuperClass();
+			module.exports = LocalClass;
 		});
 
-		testRealm.require('ClassA');
+		var ClassA = testRealm.require('ClassA');
+		var ClassB = testRealm.require('ClassB');
+		expect((new ClassB()) instanceof ClassA).toBeTruthy();
 	});
 
 	it("allows the redefinition of a class in a subrealm.", function() {
