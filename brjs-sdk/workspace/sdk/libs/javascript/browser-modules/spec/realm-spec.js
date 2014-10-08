@@ -63,35 +63,41 @@ describe("a realm", function() {
 	});
 
 	it("we consider it to be a circular reference even if a module has partially exported", function() {
-		var CLASSA = function() {};
-		testRealm.define("ClassA", function(require, exports, module) {
-			require("ClassB");
-			module.exports = CLASSA;
+		testRealm.define("pkg/ClassA", function(require, exports, module) {
+			function LocalClass() {
+			};
+			require("pkg/ClassB");
+			module.exports = LocalClass;
 		});
-		testRealm.define("ClassB", function(require, exports, module) {
+		testRealm.define("pkg/ClassB", function(require, exports, module) {
 			exports.X = 'X';
-			require("ClassA");
+			require("pkg/ClassA");
 			exports.Y = 'Y';
 		});
 
 		expect(function() {
-			testRealm.require('ClassA');
-		}).toThrow(Error("Circular dependency detected: the module 'ClassA' (requested by module 'ClassB') is still in the process of exporting."));
+			testRealm.require('pkg/ClassA');
+		}).toThrow(Error("Circular dependency detected: the module 'pkg/ClassA' (requested by module 'pkg/ClassB') is still in the process of exporting."));
 	});
 
 	it("we don't consider it to be a circular reference if the module has already exported at the point the circle is formed", function() {
-		var CLASSA = function() {};
-		testRealm.define("ClassA", function(require, exports, module) {
-			module.exports = CLASSA;
-			require("ClassB");
+		testRealm.define("pkg/ClassA", function(require, exports, module) {
+			function LocalClass() {
+			};
+			module.exports = LocalClass;
+			require("pkg/ClassB");
 		});
-		var CLASSB = function() {};
-		testRealm.define("ClassB", function(require, exports, module) {
-			require("ClassA");
-			module.exports = CLASSB;
+		testRealm.define("pkg/ClassB", function(require, exports, module) {
+			var SuperClass = require("pkg/ClassA");
+			function LocalClass() {
+			};
+			LocalClass.prototype = new SuperClass();
+			module.exports = LocalClass;
 		});
 
-		testRealm.require('ClassA');
+		var ClassA = testRealm.require('pkg/ClassA');
+		var ClassB = testRealm.require('pkg/ClassB');
+		expect((new ClassB()) instanceof ClassA).toBeTruthy();
 	});
 
 	it("allows the redefinition of a class in a subrealm.", function() {
