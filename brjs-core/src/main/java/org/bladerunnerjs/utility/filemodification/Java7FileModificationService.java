@@ -12,6 +12,10 @@ import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.FileInfoAccessor;
 import org.bladerunnerjs.utility.FileUtility;
 
+/**
+ * A File modification service that uses the Java 7 file watcher to determine changes
+ *
+ */
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	private enum Status {
 		RUNNING, STOPPING, STOPPED

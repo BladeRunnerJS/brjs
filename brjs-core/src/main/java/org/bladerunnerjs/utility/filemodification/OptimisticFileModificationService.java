@@ -7,6 +7,10 @@ import java.util.Map;
 import org.bladerunnerjs.model.FileInfoAccessor;
 import org.bladerunnerjs.utility.FileUtility;
 
+/**
+ * A {@link FileModificationService} that assumes files have never changed.
+ *
+ */
 public class OptimisticFileModificationService implements FileModificationService {
 	private Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
 	private File rootDir;

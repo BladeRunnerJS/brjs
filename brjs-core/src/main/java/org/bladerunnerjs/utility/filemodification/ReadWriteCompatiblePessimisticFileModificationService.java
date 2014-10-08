@@ -4,6 +4,10 @@ import java.io.File;
 
 import org.bladerunnerjs.model.FileInfoAccessor;
 
+/**
+ * 
+ *
+ */
 public class ReadWriteCompatiblePessimisticFileModificationService extends PessimisticFileModificationService {
 	@Override
 	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
