@@ -45,11 +45,11 @@ public class MemoizedValue<T extends Object> {
 	
 	@SuppressWarnings("unchecked")
 	public <E extends Exception> T value(Getter<E> getter) throws E {
-		if(valueNeedsToBeRecomputed()) {
+		if (valueNeedsToBeRecomputed()) {
 			logger.debug( RECOMPUTING_LOG_MSG, valueIdentifier );
 			
-			try(FileAccessLimitScope scope = rootNode.io().limitAccessToWithin(valueIdentifier, watchItems)) {
-				scope.preventCompilerWarning();
+			try (FileAccessLimitScope scope = rootNode.io().limitAccessToWithin(valueIdentifier, watchItems)) {
+				scope.getClass(); // reference scope to prevent compiler warnings
 				exceptionThrownOnLastCompute = false;
 				value = (T) getter.get();
 			}
