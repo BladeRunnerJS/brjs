@@ -8,7 +8,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BundleCachingTest extends SpecTest 
@@ -53,14 +52,13 @@ public class BundleCachingTest extends SpecTest
 			.and(response).doesNotContainText("appns.Class1");
 	}
 	
-	// TODO: find out why this breaks even though it's not because of caching?
-	@Ignore
+
 	@Test
-	public void weDoNotCacheAspectSourceDependencies() throws Exception {
+	public void weDoNotCacheAspectSourceLibraryDependencies() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(app).hasReceivedRequest("/default-aspect/js/dev/combined/bundle.js");
+			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
 		when(thirdpartyLib).populate()
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file1.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file1.js", "thirdpartyLib content")
@@ -70,8 +68,8 @@ public class BundleCachingTest extends SpecTest
 				"// thirdpartyLib", 
 				"thirdpartyLib content", 
 				"mergePackageBlock(window, {\"appns\":{}});",
-				"Class1 = function()",
-				"module.exports = Class1");
+				"appns.Class1 = function()",
+				"module.exports = appns.Class1");
 	}
 	
 	@Test
@@ -120,6 +118,36 @@ public class BundleCachingTest extends SpecTest
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("USER jquery-content")
 			.and(response).doesNotContainText("SDK jquery-content");
+	}
+	
+	@Test
+	public void jsStyleCanChangeFromNamespacedJSDuringRuntime() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClass("appns.Class2")
+			.and(aspect).hasClass("appns.Class3")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1", "appns.Class2(); require('./Class3')")
+			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
+		when(aspect).hasCommonJsPackageStyle()
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).doesNotContainText("Class2 = ") // should not be included because it wasn't required and we're now using CommonJS
+			.and(response).containsText("Class3 = "); // should be included because we required it
+	}
+	
+	@Test
+	public void jsStyleCanChangeFromCommonJsJSDuringRuntime() throws Exception {
+		given(aspect).hasCommonJsPackageStyle()
+			.and(aspect).hasClass("appns/Class1")
+			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).hasClass("appns/Class3")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1", "appns.Class2(); require('./Class3')")
+			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
+		when(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("Class2 = ") // should be included because it was referenced globally and we're now using NamespacedJS
+			.and(response).doesNotContainText("Class3 = "); // should not be included because we required it using a relative require path in NamepsacedJS
 	}
 	
 }

@@ -18,7 +18,7 @@ import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class AssetLocator {
-	private final Map<String, Asset> cachedAssets = new TreeMap<>();
+	private final Map<String, Map<String, Asset>> cachedAssets = new TreeMap<>();
 	private final AssetLocation assetLocation;
 	private final MemoizedValue<Assets> assetsList;
 	
@@ -35,10 +35,19 @@ public class AssetLocator {
 				
 				for(File assetFile : assetFiles) {
 					for(AssetPlugin assetPlugin : assetLocation.root().plugins().assetPlugins()) {
+						
+						String jsStyle = assetLocation.jsStyle();
+						if (!cachedAssets.containsKey(jsStyle)) {
+							cachedAssets.put(jsStyle, new TreeMap<>());
+						}
+						
+						Map<String,Asset> assetMapForJsStyle = cachedAssets.get(jsStyle);
+						
+						
 						if(assetPlugin.canHandleAsset(assetFile, assetLocation)) {
 							String assetFilePath = assetFile.getAbsolutePath();
 							
-							if(!cachedAssets.containsKey(assetFilePath)) {
+							if(!assetMapForJsStyle.containsKey(assetFilePath)) {
 								try {
 									Asset createdAsset = assetPlugin.createAsset(assetFile, assetLocation);
 									assetLocation.root().logger(this.getClass()).debug("creating new asset for the path '%s'", 
@@ -68,14 +77,14 @@ public class AssetLocator {
 										assetLocation.root().logger(this.getClass()).debug("asset at '%s' is a '%s'", 
 												createdAsset.getAssetPath(), createdAsset.getClass().getSimpleName());
 									}
-									cachedAssets.put(assetFilePath, createdAsset);
+									assetMapForJsStyle.put(assetFilePath, createdAsset);
 								}
 								catch (AssetFileInstantationException e) {
 									throw new RuntimeException(e);
 								}
 							}
 							
-							Asset asset = cachedAssets.get(assetFilePath);
+							Asset asset = assetMapForJsStyle.get(assetFilePath);
 							if(asset instanceof SourceModule) {
 								assets.sourceModules.add((SourceModule) asset);
 							}

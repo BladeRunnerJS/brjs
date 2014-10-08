@@ -95,25 +95,25 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	private Map<String, AssetLocation> assetLocationsMap() {
-			return assetLocationsMap.value(() -> {
-				Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
+		return assetLocationsMap.value(() -> {
+			Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
+			
+			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
+				List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
 				
-				for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
-					List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
+				if(assetLocationDirectories.size() > 0) {
+					for(String locationPath : assetLocationDirectories) {
+						createAssetLocation(locationPath, assetLocations, assetLocationPlugin);
+					}
 					
-					if(assetLocationDirectories.size() > 0) {
-						for(String locationPath : assetLocationDirectories) {
-							createAssetLocation(locationPath, assetLocations, assetLocationPlugin);
-						}
-						
-						if(!assetLocationPlugin.allowFurtherProcessing()) {
-							break;
-						}
+					if(!assetLocationPlugin.allowFurtherProcessing()) {
+						break;
 					}
 				}
-				
-				return assetLocations;
-			});
+			}
+			
+			return assetLocations;
+		});
 	}
 	
 	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, AssetLocationPlugin assetLocationPlugin ) {
