@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CompositeJsContentPluginTest extends SpecTest {
@@ -87,8 +86,8 @@ public class CompositeJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments(
 			"// br-bootstrap",
 			"define('$alias-data'",
-			"define('appns/Class1'",
-			"define('br/AliasRegistry'");
+			"define('br/AliasRegistry'",
+			"define('appns/Class1'");
 	}
 	
 	@Test
@@ -156,7 +155,6 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			"appns.namespacedjs.Class = require('appns/namespacedjs/Class');");
 	}
 	
-	@Ignore // this test can't work while CommonJsSourceModule.getOrderDependentSourceModules() always returns an empty list
 	@Test
 	public void aNamespacedJsClassWillAppearFirstInTheGlobalizationBlockIfItIsRequiredByAnotherClass() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")

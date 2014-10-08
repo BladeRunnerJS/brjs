@@ -106,8 +106,8 @@ public class BundleDepsCommandTest extends SpecTest {
 		then(logging).containsConsoleText(
 			"Bundle 'apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
 			"    +--- 'bs-bladeset/blades/b1/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
-			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'",
-			"    |    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js'");
+			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js' (static dep.)",
+			"    |    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js' (static dep.)");
 	}
 	
 	@Test
