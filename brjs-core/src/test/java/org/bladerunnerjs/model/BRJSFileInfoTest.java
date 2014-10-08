@@ -5,23 +5,24 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.filemodification.FileModificationService;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.SpecTestFileModificationService;
 import org.bladerunnerjs.utility.filemodification.TestTimeAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
 public class BRJSFileInfoTest extends TestModelAccessor {
 	private File tmpDir;
-	private PessimisticFileModificationService fileModificationService;
+	private FileModificationService fileModificationService;
 	
 	@Before
 	public void setUp() throws Exception {
 		tmpDir = FileUtility.createTemporaryDirectory(this.getClass());
 		File sdkDir = new File(tmpDir, "sdk");
 		sdkDir.mkdir();
-		fileModificationService = new PessimisticFileModificationService();
+		fileModificationService = new SpecTestFileModificationService();
 		fileModificationService.initialise(sdkDir, new TestTimeAccessor(), null);
 	}
 	

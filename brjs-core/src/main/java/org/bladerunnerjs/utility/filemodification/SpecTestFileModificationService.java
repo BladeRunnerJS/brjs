@@ -8,16 +8,16 @@ import org.bladerunnerjs.model.FileInfoAccessor;
 import org.bladerunnerjs.utility.FileUtility;
 
 /**
- * A {@link FileModificationService} that assumes files always change.
+ * A file modification service used by spec tests. 
  *
  */
-public class PessimisticFileModificationService implements FileModificationService {
+public class SpecTestFileModificationService implements FileModificationService {
+	
 	protected Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
 	private File rootDir;
 	private TimeAccessor timeAccessor;
 	protected FileInfoAccessor fileInfoAccessor;
 	
-	@Override
 	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
 		this.rootDir = FileUtility.getCanonicalFile(rootDir.getParentFile());
 		this.timeAccessor = timeAccessor;
@@ -31,7 +31,22 @@ public class PessimisticFileModificationService implements FileModificationServi
 	
 	@Override
 	public FileModificationInfo getFileSetModificationInfo(File file, File primarySetFile) {
-		return getFileModificationInfo(file);
+		String fileKey = file.getPath() + ":" + primarySetFile.getPath();
+		
+		if(!fileModificationInfos.containsKey(fileKey)) {
+			FileModificationInfo fileModificationInfo;
+			
+			if(file.equals(primarySetFile)) {
+				fileModificationInfo = new PrimaryFileModificationInfo(fileInfoAccessor.getFileInfo(primarySetFile), getFileModificationInfo(primarySetFile));
+			}
+			else {
+				fileModificationInfo = new SecondaryFileModificationInfo((PrimaryFileModificationInfo) getFileSetModificationInfo(primarySetFile, primarySetFile), file, getFileModificationInfo(file));
+			}
+			
+			fileModificationInfos.put(fileKey, fileModificationInfo);
+		}
+		
+		return fileModificationInfos.get(fileKey);
 	}
 	
 	@Override

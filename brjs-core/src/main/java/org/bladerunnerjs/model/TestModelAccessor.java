@@ -13,7 +13,7 @@ import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
 import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
-import org.bladerunnerjs.utility.filemodification.ReadWriteCompatiblePessimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.SpecTestFileModificationService;
 import org.bladerunnerjs.utility.filemodification.RealTimeAccessor;
 import org.bladerunnerjs.utility.filemodification.TestTimeAccessor;
 
@@ -24,7 +24,7 @@ public class TestModelAccessor
 	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		pluginLocator = (pluginLocator != null) ? pluginLocator : new MockPluginLocator();
-		fileModificationService = (fileModificationService != null) ? fileModificationService : new ReadWriteCompatiblePessimisticFileModificationService();
+		fileModificationService = (fileModificationService != null) ? fileModificationService : new SpecTestFileModificationService();
 		loggerFactory = (loggerFactory != null) ? loggerFactory : new StubLoggerFactory();
 		appVersionGenerator = (appVersionGenerator != null) ? appVersionGenerator : new MockAppVersionGenerator();		
 		

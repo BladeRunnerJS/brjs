@@ -12,13 +12,13 @@ import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends TestModelAccessor {
+public class SpecTestFileModificationServiceTest extends TestModelAccessor {
 	private File testDir;
 	private File existentFile;
 	private File nonExistentFile;
 	private File existentDir;
 	private File nonExistentDir;
-	private ReadWriteCompatiblePessimisticFileModificationService fMS;
+	private SpecTestFileModificationService fMS;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -30,7 +30,7 @@ public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends T
 		
 		File brjsDir = new File(testDir, "brjs");
 		new File(brjsDir, "sdk").mkdir();
-		fMS = new ReadWriteCompatiblePessimisticFileModificationService();
+		fMS = new SpecTestFileModificationService();
 		createModel(brjsDir, fMS);
 		
 		FileUtils.write(existentFile, "initial content");
@@ -116,7 +116,7 @@ public class ReadWriteCompatiblePessimisticFileModificationServiceTest extends T
 	}
 	
 	// Note: this method was formerly part of the interface, but is now only used by the unit tests for this class
-	private List<FileModificationInfo> getModificationInfoSet(ReadWriteCompatiblePessimisticFileModificationService fMS, File[] files) {
+	private List<FileModificationInfo> getModificationInfoSet(SpecTestFileModificationService fMS, File[] files) {
 		List<FileModificationInfo> modificationInfoSet = new ArrayList<>();
 		PrimaryFileModificationInfo primaryFileModificationInfo = null;
 		File primarySetFile = null;
