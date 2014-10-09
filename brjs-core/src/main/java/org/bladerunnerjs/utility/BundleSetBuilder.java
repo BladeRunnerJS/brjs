@@ -100,7 +100,7 @@ public class BundleSetBuilder {
 			List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
 			
 			if (linkedAsset instanceof SourceModule) {
-				moduleDependencies.addAll( ((SourceModule) linkedAsset).getOrderDependentSourceModules(bundlableNode) );
+				moduleDependencies.addAll( ((SourceModule) linkedAsset).getDefineTimeSourceModules(bundlableNode) );
 			}
 			
 			addAliases( getAliases(linkedAsset.getAliasNames()) );

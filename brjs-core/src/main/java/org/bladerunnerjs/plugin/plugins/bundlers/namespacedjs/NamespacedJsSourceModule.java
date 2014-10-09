@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
@@ -114,7 +115,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+	public List<SourceModule> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		
 		List<SourceModule> result = new ArrayList<SourceModule>();
 		try {
@@ -129,6 +130,11 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 			throw new ModelOperationException(e);
 		}
 		return result;
+	}
+	
+	@Override
+	public List<SourceModule> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+		return Collections.emptyList();
 	}
 	
 	private String calculateDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {

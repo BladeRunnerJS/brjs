@@ -121,7 +121,7 @@ public class DependencyInfoFactory {
 	
 	private static void addSourceModuleDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, SourceModule sourceModule) throws ModelOperationException {
-		addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(bundlableNode));
+		addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDefineTimeSourceModules(bundlableNode));
 		List<Asset>  assets = sourceModule.getDependentAssets(bundlableNode);
 		addDependencies(dependencyAdder, dependencyInfo, sourceModule, extractSourceModules(assets));
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);

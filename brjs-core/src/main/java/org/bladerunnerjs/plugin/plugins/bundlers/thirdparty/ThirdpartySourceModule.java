@@ -179,7 +179,7 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
+	public List<SourceModule> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		List<SourceModule> result = new ArrayList<SourceModule>();
 		for(Asset dependentAsset : getDependentAssets(bundlableNode)){
@@ -188,6 +188,12 @@ public class ThirdpartySourceModule implements SourceModule
 			}
 		}
 		return result;
+	}
+	
+	@Override
+	public List<SourceModule> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException
+	{
+		return Collections.emptyList();
 	}
 	
 	@Override

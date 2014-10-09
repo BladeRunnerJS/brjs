@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -134,7 +135,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+	public List<SourceModule> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		List<SourceModule> result = new ArrayList<SourceModule>();
 		try {
 			List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, orderDependentRequirePaths());
@@ -148,6 +149,11 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 			throw new ModelOperationException(e);
 		}
 		return result;
+	}
+	
+	@Override
+	public List<SourceModule> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+		return Collections.emptyList();
 	}
 	
 	@Override

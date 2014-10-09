@@ -88,7 +88,7 @@ public class SourceModuleDependencyOrderCalculator
 	
 	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException
 	{
-		List<SourceModule> orderDependentSourceModules = new ArrayList<>(sourceModule.getOrderDependentSourceModules(bundlableNode));
+		List<SourceModule> orderDependentSourceModules = new ArrayList<>(sourceModule.getDefineTimeSourceModules(bundlableNode));
 		
 		if(orderDependentSourceModuleDependencies.containsKey(sourceModule)) {
 			orderDependentSourceModules.addAll(orderDependentSourceModuleDependencies.get(sourceModule));
