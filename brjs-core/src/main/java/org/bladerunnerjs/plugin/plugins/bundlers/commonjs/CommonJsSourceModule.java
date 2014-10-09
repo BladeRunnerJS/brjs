@@ -70,7 +70,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			return bundlableNode.getLinkedAssets(assetLocation, requirePaths());
+			List<String> requirePaths = new ArrayList<>( getComputedValue().useTimeRequirePaths );
+			return bundlableNode.getLinkedAssets(assetLocation, requirePaths);
 		}
 		catch (AmbiguousRequirePathException | UnresolvableRequirePathException e) {
 		    e.setSourceRequirePath(getPrimaryRequirePath());
@@ -138,7 +139,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	public List<SourceModule> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		List<SourceModule> result = new ArrayList<SourceModule>();
 		try {
-			List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, orderDependentRequirePaths());
+			List<String> orderDependentRequirePaths = new ArrayList<>( getComputedValue().orderDependentRequirePaths );
+			List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, orderDependentRequirePaths);
 			for(Asset asset : assets) {
 				if(asset instanceof SourceModule) {
 					result.add((SourceModule)asset);
@@ -171,14 +173,6 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		return RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.assetContainer().app().dir(), assetFile);
 	}
 	
-	private List<String> orderDependentRequirePaths() throws ModelOperationException {
-		return new ArrayList<>( getComputedValue().orderDependentRequirePaths );
-	}
-	
-	private List<String> requirePaths() throws ModelOperationException {
-		return new ArrayList<>( getComputedValue().requirePaths );
-	}
-
 	@Override
 	public AssetLocation assetLocation()
 	{
@@ -230,7 +224,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 					computedValue.orderDependentRequirePaths.add(requirePath);
 				}
 				else {
-					computedValue.requirePaths.add(requirePath);
+					computedValue.useTimeRequirePaths.add(requirePath);
 				}
 			}
 			else if(!defineTimeDependencies) {
@@ -248,7 +242,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 
 	private class ComputedValue {
 		public Set<String> orderDependentRequirePaths = new HashSet<>();
-		public Set<String> requirePaths = new HashSet<>();
+		public Set<String> useTimeRequirePaths = new HashSet<>();
 		public List<String> aliases = new ArrayList<>();
 	}
 	
