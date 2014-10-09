@@ -557,4 +557,6 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsNamespacedJsClasses("appns.AspectClass");
 	}
 	
+	
+	
 }
