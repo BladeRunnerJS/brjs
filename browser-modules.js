@@ -239,6 +239,11 @@
 					this.moduleExports[id] = definition;
 				}
 			}
+			catch(e) {
+				// this is here to slightly improve the dev experience when debugging exceptions that occur within this try/finally block.
+				// see <http://blog.hackedbrain.com/2009/03/28/ie-javascript-debugging-near-useless-when-trycatchfinally-is-used/> for more information.
+				throw e;
+			}
 			finally {
 				// If there was an error, we want to run the definition again next time it is required
 				// so we clean up whether it succeeded or failed.
