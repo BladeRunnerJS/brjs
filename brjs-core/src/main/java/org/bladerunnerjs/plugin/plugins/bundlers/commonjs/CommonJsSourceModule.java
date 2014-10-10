@@ -168,12 +168,12 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 				try {
 					try(Reader reader = new CommonJsDefineTimeDependenciesReader(sourceModule)) 
 					{
-						addToComputedValue(computedValue, reader, computedValue.defineTimeRequirePaths);
+						addRequirePathsFromReader(reader, computedValue.defineTimeRequirePaths, computedValue.aliases);
 					}
 
 					try(Reader reader = new CommonJsUseTimeDependenciesReader(sourceModule)) 
 					{
-						addToComputedValue(computedValue, reader, computedValue.useTimeRequirePaths);
+						addRequirePathsFromReader(reader, computedValue.useTimeRequirePaths, computedValue.aliases);
 					}
 				}
 				catch(IOException e) {
@@ -185,7 +185,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		});
 	}
 	
-	private void addToComputedValue(ComputedValue computedValue, Reader reader, Set<String> dependencies) throws IOException {
+	private void addRequirePathsFromReader(Reader reader, Set<String> dependencies, List<String> aliases) throws IOException {
 		StringWriter stringWriter = new StringWriter();
 		IOUtils.copy(reader, stringWriter);
 		
@@ -200,10 +200,10 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 			else if (m.group(1).startsWith("getService")){
 				String serviceAliasName = methodArgument;
 				//TODO: this is a big hack, remove the "SERVICE!" part and the same in BundleSetBuilder
-				computedValue.aliases.add("SERVICE!"+serviceAliasName);
+				aliases.add("SERVICE!"+serviceAliasName);
 			}
 			else {
-				computedValue.aliases.add(methodArgument);
+				aliases.add(methodArgument);
 			}
 		}
 	}
