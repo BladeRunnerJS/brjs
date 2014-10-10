@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
@@ -36,8 +35,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private LinkedFileAsset linkedFileAsset;
 	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;
-	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
-	private TrieBasedDependenciesCalculator trieBasedStaticDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedUseTimeDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedDefineTimeDependenciesCalculator;
 	public static final String JS_STYLE = "namespaced-js";
 	
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
@@ -52,18 +51,16 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
- 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
-		try {
-			return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
-		}
-		catch (RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
+ 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		List<Asset> dependendAssets = new ArrayList<>();
+		dependendAssets.addAll( getDefineTimeSourceModules(bundlableNode) );
+		dependendAssets.addAll( getUseTimeSourceModules(bundlableNode) );
+		return dependendAssets;
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return getDependencyCalculator().getAliases();
+		return getUseTimeDependencyCalculator().getAliases();
 	}
 	
 	@Override
@@ -78,9 +75,9 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		try {
-			List<String> requirePaths = getDependencyCalculator().getRequirePaths(SourceModule.class);
+			List<String> requirePaths = getUseTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String requireAllInvocation = (requirePaths.size() == 0) ? "" : "\n" + calculateDependenciesRequireDefinition(requirePaths) + "\n";
-			List<String> staticRequirePaths = getStaticDependencyCalculator().getRequirePaths(SourceModule.class);
+			List<String> staticRequirePaths = getDefineTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String staticRequireAllInvocation = (staticRequirePaths.size() == 0) ? "" : " " + calculateDependenciesRequireDefinition(staticRequirePaths);
 			String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticRequireAllInvocation + "\n";
 			
@@ -117,7 +114,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			 return bundlableNode.getLinkedAssets(assetLocation, getStaticDependencyCalculator().getRequirePaths());
+			 return bundlableNode.getLinkedAssets(assetLocation, getDefineTimeDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -126,7 +123,12 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<Asset> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return Collections.emptyList();
+		try {
+			return bundlableNode.getLinkedAssets(assetLocation, getUseTimeDependencyCalculator().getRequirePaths());
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 	
 	private String calculateDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {
@@ -161,18 +163,18 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	
-	private TrieBasedDependenciesCalculator getDependencyCalculator() {
-		if (trieBasedDependenciesCalculator == null) {
-			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+	private TrieBasedDependenciesCalculator getUseTimeDependencyCalculator() {
+		if (trieBasedUseTimeDependenciesCalculator == null) {
+			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
 		}
-		return trieBasedDependenciesCalculator;
+		return trieBasedUseTimeDependenciesCalculator;
 	}
 	
-	private TrieBasedDependenciesCalculator getStaticDependencyCalculator() {
-		if (trieBasedStaticDependenciesCalculator == null) {
-			trieBasedStaticDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+	private TrieBasedDependenciesCalculator getDefineTimeDependencyCalculator() {
+		if (trieBasedDefineTimeDependenciesCalculator == null) {
+			trieBasedDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
 		}
-		return trieBasedStaticDependenciesCalculator;
+		return trieBasedDefineTimeDependenciesCalculator;
 	}
 	
 	@Override
