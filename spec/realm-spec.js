@@ -268,6 +268,116 @@ describe("a realm", function() {
 		}).toThrow(new Error('define-time error!'));
 	});
 
+	it("a simple object required from a subrealm is unique to the subrealm.", function() {
+		testRealm.define("my/classes/ClassA", function(require, exports, module) {
+			function test() {}
+			test.prototype.foo = function() {};
+			module.exports = test;
+		});
+
+		var ClassA = testRealm.require('my/classes/ClassA');
+
+		var subrealm = testRealm.subrealm();
+
+		var SubrealmClassA = subrealm.require('my/classes/ClassA');
+		expect(SubrealmClassA).not.toBe(ClassA);
+	});
+
+	it("a complex object (with single dependency) required from a subrealm is unique to the subrealm (including its dependency)", function() {
+		testRealm.define('my/classes/Dependency', function(require, exports, module) {
+			function Dependency() {}
+			module.exports = Dependency;
+		});
+
+		testRealm.define('my/classes/ClassA', function(require, exports, module) {
+			var Dependency = require('my/classes/Dependency');
+
+			function test() {
+				this.dependency = Dependency;
+			}
+			module.exports = test;
+		});
+
+		var ClassA = testRealm.require('my/classes/ClassA');
+
+		var subrealm = testRealm.subrealm();
+
+		var SubrealmClassA = subrealm.require('my/classes/ClassA');
+
+		expect(SubrealmClassA).not.toBe(ClassA);
+
+		var classA = new ClassA();
+		var otherClassA = new ClassA();
+
+		expect(classA.dependency).toEqual(otherClassA.dependency);
+		var subrealmClassA = new SubrealmClassA();
+
+		expect(classA.dependency).not.toEqual(subrealmClassA.dependency);
+	});
+
+	it("a complex object (with dependencies) required from a subrealm is unique to the subrealm (including its dependency chain)", function() {
+
+		testRealm.define('my/classes/SubDependency', function(require, exports, module) {
+			function SubDependency() {}
+			SubDependency.prototype.baz = function() { return 'sub-dep'; };
+			module.exports = SubDependency;
+		});
+
+		testRealm.define('my/classes/Dependency', function(require, exports, module) {
+			var SubDependency = require('my/classes/SubDependency');
+			function Dependency() {
+				this.subDependency = new SubDependency();
+			}
+			Dependency.prototype.bar = function() { return 'dep'; };
+			module.exports = Dependency;
+		});
+
+		testRealm.define('my/classes/ClassA', function(require, exports, module) {
+			var Dependency = require('my/classes/Dependency');
+			function ClassA() {
+				this.dependency = new Dependency();
+			}
+			module.exports = ClassA;
+		});
+
+		var ClassA = testRealm.require('my/classes/ClassA');
+
+		var classA = new ClassA();
+		var otherClassA = new ClassA();
+
+		expect(classA).toEqual(otherClassA);
+		expect(classA.dependency).toEqual(otherClassA.dependency);
+		expect(classA.dependency.subDependency).toEqual(otherClassA.dependency.subDependency);
+		expect(classA.dependency.subDependency.baz()).toBe('sub-dep');
+
+		// start subrealm
+		var subrealm = testRealm.subrealm();
+
+		subrealm.define('my/classes/SubDependency', function(require, exports, module) {
+			function SubDependency() {
+			}
+
+			SubDependency.prototype.baz = function() { return 'sub-dep-changed'; };
+			module.exports = SubDependency;
+		});
+
+		var SubrealmClassA = subrealm.require('my/classes/ClassA');
+
+		expect(SubrealmClassA).not.toBe(ClassA);
+
+		var subrealmClassA = new SubrealmClassA();
+
+		// verify non-equality
+		expect(classA).not.toEqual(subrealmClassA);
+
+		// test dependency
+		expect(classA.dependency.bar()).toBe('dep');
+		expect(classA.dependency).not.toEqual(subrealmClassA.dependency);
+
+		// test redined sub-dependency
+		expect(subrealmClassA.dependency.subDependency.baz()).toBe('sub-dep-changed');
+	});
+
 	it("allows the redefinition of a class in a subrealm.", function() {
 		var CLASSA = function() {};
 		testRealm.define("my/classes/derived/ClassB", function(require, exports, module) {
