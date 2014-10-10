@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
@@ -88,13 +89,23 @@ public class SourceModuleDependencyOrderCalculator
 	
 	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException
 	{
-		List<SourceModule> orderDependentSourceModules = new ArrayList<>(sourceModule.getDefineTimeSourceModules(bundlableNode));
+		List<Asset> orderDependentSourceModules = new ArrayList<>(sourceModule.getDefineTimeSourceModules(bundlableNode));
 		
 		if(orderDependentSourceModuleDependencies.containsKey(sourceModule)) {
 			orderDependentSourceModules.addAll(orderDependentSourceModuleDependencies.get(sourceModule));
 		}
 		
-		return orderDependentSourceModules;
+		return extractSourceModules(orderDependentSourceModules);
+	}
+	
+	private static List<SourceModule> extractSourceModules(List<Asset> assets){
+		List<SourceModule> results = new ArrayList<SourceModule>();
+		for(Asset asset : assets){
+			if(asset instanceof SourceModule){
+				results.add((SourceModule)asset);
+			}
+		}
+		return results;
 	}
 	
 }

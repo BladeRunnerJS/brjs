@@ -19,7 +19,7 @@ public interface SourceModule extends LinkedAsset {
 	 *  
 	 * @param bundlableNode TODO
 	 */
-	List<SourceModule> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
+	List<Asset> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
 	
 	/**
 	 * Returns a list of source files that are 'use time' dependencies of this source module.
@@ -27,7 +27,7 @@ public interface SourceModule extends LinkedAsset {
 	 * 
 	 * @param bundlableNode TODO
 	 */
-	List<SourceModule> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
+	List<Asset> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
 	
 	List<AssetLocation> assetLocations();
 }

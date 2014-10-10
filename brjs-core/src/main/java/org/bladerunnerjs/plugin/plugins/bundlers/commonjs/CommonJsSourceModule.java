@@ -22,7 +22,6 @@ import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -129,12 +128,12 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+	public List<Asset> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().defineTimeRequirePaths );
 	}
 	
 	@Override
-	public List<SourceModule> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+	public List<Asset> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().useTimeRequirePaths );
 	}
 	
@@ -233,15 +232,9 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		}
 	}
 
-	private List<SourceModule> getSourceModulesForRequirePaths(BundlableNode bundlableNode, Set<String> requirePaths) throws ModelOperationException {
-		List<SourceModule> result = new ArrayList<SourceModule>();
+	private List<Asset> getSourceModulesForRequirePaths(BundlableNode bundlableNode, Set<String> requirePaths) throws ModelOperationException {
 		try {
-			List<Asset> assets = bundlableNode.getLinkedAssets( assetLocation, new ArrayList<>(requirePaths) );
-			for(Asset asset : assets) {
-				if(asset instanceof SourceModule) {
-					result.add((SourceModule)asset);
-				}
-			}
+			return bundlableNode.getLinkedAssets( assetLocation, new ArrayList<>(requirePaths) );
 		}
 		catch (AmbiguousRequirePathException | UnresolvableRequirePathException e) {
             e.setSourceRequirePath(getPrimaryRequirePath());
@@ -250,7 +243,6 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
         catch (RequirePathException e) {
             throw new ModelOperationException(e);
         }
-		return result;
 	}
 	
 	private class ComputedValue {
