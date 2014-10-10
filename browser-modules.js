@@ -76,6 +76,18 @@
 		throw new Error("No definition for module " + moduleId + " could be found in the global top level.");
 	}
 
+	function CircularDependencyError(requirePath) {
+		this.dependencies = [requirePath];
+		this.prototype = {};
+	}
+
+	function RecoverableCircularDependencyError(requirePath) {
+		this.requirePath = requirePath;
+	}
+
+	function ModuleExports() {
+	}
+
 	function Realm(fallbackRequire) {
 		this.moduleDefinitions = {};
 		this.incompleteExports = {};
@@ -133,7 +145,7 @@
 		define(id, eval("(function(require, exports, module){\n" + definitionString + "\n});"));
 	};
 
-	Realm.prototype._require = function require(context, id, contextId) {
+	Realm.prototype._require = function require(context, id) {
 		if (arguments.length === 1) {
 			id = arguments[0];
 			context = '';
@@ -149,13 +161,11 @@
 		}
 		else if (this.incompleteExports[id] != null) {
 			// the module is in the process of being exported
-			if((typeof(this.incompleteExports[id].exports) != 'object') || Object.keys(this.incompleteExports[id].exports).length > 0) {
-				// if `module.exports` has been defined then we assume the module is fully exported
+			if(this._isModuleExported(id)) {
 				return this.incompleteExports[id].exports;
 			}
 			else {
-				// if `module.exports` has not been defined then we clearly have a circular dependency
-				throw new Error("Circular dependency detected: the module '" + id + "' (requested by module '" + contextId + "') is still in the process of exporting.");
+				throw new CircularDependencyError(id);
 			}
 		}
 
@@ -171,35 +181,78 @@
 
 		// For closer spec compliance we should define id as a nonconfigurable, nonwritable
 		// property, but this at least works OK in non-es5 browsers (like ie8).
-		var module = { id: id, exports: {} };
+		var module = { id: id, exports: new ModuleExports() };
 		this.incompleteExports[id] = module;
 		try {
-			if (typeof definition === 'function') {
-				var idx = id.lastIndexOf("/");
-				// At the top level the context is the module id, at other levels, the context is the
-				// path to the module. This is because we assume that everything at the top level is
-				// a directory module and everything else is a file module.
-				var definitionContext = id;
-				if (idx >= 0) {
-					definitionContext = id.substring(0, id.lastIndexOf("/"));
+			try {
+				if (typeof definition === 'function') {
+					var idx = id.lastIndexOf("/");
+					// At the top level the context is the module id, at other levels, the context is the
+					// path to the module. This is because we assume that everything at the top level is
+					// a directory module and everything else is a file module.
+					var definitionContext = id;
+					if (idx >= 0) {
+						definitionContext = id.substring(0, id.lastIndexOf("/"));
+					}
+					// this is set to the module inside the definition code.
+					var realm = (window.require) ? window : this;
+					var returnValue = definition.call(module, function(requirePath) {
+						var exportVal;
+
+						try {
+							exportVal = realm.require(definitionContext, requirePath);
+						}
+						catch(e) {
+							if(e instanceof CircularDependencyError) {
+								e.dependencies.unshift(id);
+
+								if(e.dependencies[0] == e.dependencies[e.dependencies.length - 1]) {
+									var circularDependencyErrorMessage = "Circular dependency detected: " + e.dependencies.join(' -> ');
+
+									if(!e.requireFirst) throw new Error(circularDependencyErrorMessage);
+
+									console.warn(circularDependencyErrorMessage);
+									console.log("requiring '" + e.requireFirst + "' early to solve the circular dependency problem");
+									throw new RecoverableCircularDependencyError(e.requireFirst);
+								}
+								else {
+									if(!e.requireFirst && realm._isModuleExported(id)) {
+										e.requireFirst = id;
+									}
+
+									throw e;
+								}
+							}
+							else {
+								throw e;
+							}
+						}
+
+						return exportVal;
+					}, module.exports, module);
+					this.moduleExports[id] = returnValue || module.exports;
+				} else {
+					// this lets you define things without definition functions, e.g.
+					//    define('PI', 3); // Indiana House of Representatives compliant definition of PI
+					// If you want to define something to be a function, you'll need to define a function
+					// that sets module.exports to a function (or returns it).
+					this.moduleExports[id] = definition;
 				}
-				// this is set to the module inside the definition code.
-				var realm = (window.require) ? window : this;
-				var returnValue = definition.call(module, function(requirePath) {
-					return realm.require(definitionContext, requirePath, id);
-				}, module.exports, module);
-				this.moduleExports[id] = returnValue || module.exports;
-			} else {
-				// this lets you define things without definition functions, e.g.
-				//    define('PI', 3); // Indiana House of Representatives compliant definition of PI
-				// If you want to define something to be a function, you'll need to define a function
-				// that sets module.exports to a function (or returns it).
-				this.moduleExports[id] = definition;
 			}
-		} finally {
-			// If there was an error, we want to run the definition again next time it is required
-			// so we clean up whether it succeeded or failed.
-			delete this.incompleteExports[id];
+			finally {
+				// If there was an error, we want to run the definition again next time it is required
+				// so we clean up whether it succeeded or failed.
+				delete this.incompleteExports[id];
+			}
+		}
+		catch(e) {
+			if(e instanceof RecoverableCircularDependencyError) {
+				this._require(context, e.requirePath);
+				this._require(context, id);
+			}
+			else {
+				throw e;
+			}
 		}
 		return this.moduleExports[id];
 	};
@@ -210,6 +263,11 @@
 
 	Realm.prototype._getDefinition = function(id) {
 		return this.moduleDefinitions[id];
+	};
+
+	Realm.prototype._isModuleExported = function(id) {
+		var moduleExports = this.incompleteExports[id].exports;
+		return ((typeof(moduleExports) != 'object') || !(moduleExports instanceof ModuleExports));
 	};
 
 	// Subrealm ////////////////////////////////////////////////////////////////////////////
