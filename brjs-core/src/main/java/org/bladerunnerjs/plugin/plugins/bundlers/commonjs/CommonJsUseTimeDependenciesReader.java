@@ -18,7 +18,6 @@ public class CommonJsUseTimeDependenciesReader extends Reader
 	private Reader useTimeDependencesReader;
 
 	public CommonJsUseTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
-		super();
 		CharBufferPool pool = sourceModule.assetLocation().root().getCharBufferPool();
 		Predicate<Integer> insideCodeBlockPredicate = new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0);
 		

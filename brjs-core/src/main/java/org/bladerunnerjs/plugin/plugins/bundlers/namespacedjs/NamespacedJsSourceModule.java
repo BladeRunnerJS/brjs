@@ -22,8 +22,6 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.reader.factory.JsCommentAndCodeBlockStrippingReaderFactory;
-import org.bladerunnerjs.utility.reader.factory.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
 import com.google.common.base.Joiner;
@@ -165,14 +163,14 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	private TrieBasedDependenciesCalculator getUseTimeDependencyCalculator() {
 		if (trieBasedUseTimeDependenciesCalculator == null) {
-			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacaedJsUseTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}
 		return trieBasedUseTimeDependenciesCalculator;
 	}
 	
 	private TrieBasedDependenciesCalculator getDefineTimeDependencyCalculator() {
 		if (trieBasedDefineTimeDependenciesCalculator == null) {
-			trieBasedDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+			trieBasedDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}
 		return trieBasedDefineTimeDependenciesCalculator;
 	}

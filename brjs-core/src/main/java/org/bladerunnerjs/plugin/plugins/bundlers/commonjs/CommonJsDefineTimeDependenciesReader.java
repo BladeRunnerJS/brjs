@@ -15,7 +15,6 @@ public class CommonJsDefineTimeDependenciesReader extends Reader
 	private Reader defineTimeDependencesReader;
 
 	public CommonJsDefineTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
-		super();
 		CharBufferPool pool = sourceModule.assetLocation().root().getCharBufferPool();
 		Reader sourceReader = sourceModule.getUnalteredContentReader();
 		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false, pool);
