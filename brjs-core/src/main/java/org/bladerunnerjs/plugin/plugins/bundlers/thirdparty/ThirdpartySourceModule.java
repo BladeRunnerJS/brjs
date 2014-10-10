@@ -123,26 +123,10 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
-		
-		try 
-		{
-			for (String dependentLibName : manifest.getDepends())
-			{
-				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
-				if (!dependentLib.dirExists())
-				{
-					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
-				}
-				dependentLibs.addAll(dependentLib.linkedAssets());
-			}
-		}
-		catch (ConfigException ex)
-		{
-			throw new ModelOperationException( ex );
-		}
-		
-		return new ArrayList<Asset>( dependentLibs );
+		List<Asset> dependendAssets = new ArrayList<>();
+		dependendAssets.addAll( getDefineTimeSourceModules(bundlableNode) );
+		dependendAssets.addAll( getUseTimeSourceModules(bundlableNode) );
+		return dependendAssets;
 	}
 
 	@Override
@@ -181,7 +165,26 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<Asset> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return getDependentAssets(bundlableNode);
+		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
+		
+		try 
+		{
+			for (String dependentLibName : manifest.getDepends())
+			{
+				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
+				if (!dependentLib.dirExists())
+				{
+					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
+				}
+				dependentLibs.addAll(dependentLib.linkedAssets());
+			}
+		}
+		catch (ConfigException ex)
+		{
+			throw new ModelOperationException( ex );
+		}
+		
+		return new ArrayList<Asset>( dependentLibs );
 	}
 	
 	@Override
