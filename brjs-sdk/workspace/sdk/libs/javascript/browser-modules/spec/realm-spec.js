@@ -1,13 +1,75 @@
-describe("a realm", function() {
+// Object.create() polyfill for IE8 (taken from <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create>)
+if (typeof Object.create != 'function') {
+	Object.create = (function() {
+		var Object = function() {};
+		return function (prototype) {
+			if (arguments.length > 1) {
+				throw Error('Second argument not supported');
+			}
+			if (typeof prototype != 'object') {
+				throw TypeError('Argument must be an object');
+			}
+			Object.prototype = prototype;
+			var result = new Object();
+			Object.prototype = null;
+			return result;
+		};
+	})();
+}
 
+// Object.create() polyfill for IE8 (taken from <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind>)
+if (!Function.prototype.bind) {
+  Function.prototype.bind = function(oThis) {
+    if (typeof this !== 'function') {
+      // closest thing possible to the ECMAScript 5
+      // internal IsCallable function
+      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+    }
+
+    var aArgs   = Array.prototype.slice.call(arguments, 1),
+        fToBind = this,
+        fNOP    = function() {},
+        fBound  = function() {
+          return fToBind.apply(this instanceof fNOP && oThis
+                 ? this
+                 : oThis,
+                 aArgs.concat(Array.prototype.slice.call(arguments)));
+        };
+
+    fNOP.prototype = this.prototype;
+    fBound.prototype = new fNOP();
+
+    return fBound;
+  };
+}
+
+function MockConsole() {
+	this.messages = [];
+	this.log = MockConsole.log.bind(this, 'info');
+	this.warn = MockConsole.log.bind(this, 'warn');
+}
+
+MockConsole.log = function(messagePrefix, message) {
+	this.messages.push(messagePrefix + ': ' + message);
+};
+
+describe("a realm", function() {
 	var global = Function('return this')();
 	var globalRealm = global.realm || require('..');
 	var Realm = globalRealm.constructor;
 
-	var testRealm;
+	var testRealm, mockConsole, origConsole;
 
 	beforeEach(function() {
 		testRealm = new Realm();
+		mockConsole = new MockConsole();
+		origConsole = console;
+		console = mockConsole;
+	});
+
+	afterEach(function() {
+		console = origConsole;
+		expect(mockConsole.messages.join(', ')).toBe('');
 	});
 
 	it("does not call definition functions on define.", function() {
@@ -21,10 +83,10 @@ describe("a realm", function() {
 
 	it("allows one definition to require a definition defined later.", function() {
 		var CLASSA = function() {};
-		testRealm.define("ClassB", function(require, exports, module) {
-			exports.parent = require("ClassA");
+		testRealm.define('ClassB', function(require, exports, module) {
+			exports.parent = require('ClassA');
 		});
-		testRealm.define("ClassA", function(require, exports, module) {
+		testRealm.define('ClassA', function(require, exports, module) {
 			module.exports = CLASSA;
 		});
 
@@ -45,59 +107,275 @@ describe("a realm", function() {
 		expect(classB.parent).toBe(CLASSA);
 	});
 
-	it("throws an error if there is a circular reference", function() {
-		var CLASSA = function() {};
-		testRealm.define("ClassA", function(require, exports, module) {
-			require("ClassB");
-			module.exports = CLASSA;
+	it("throws an error if there is a define-time circular dependency", function() {
+		testRealm.define('pkg/ClassA', function(require, exports, module) {
+			require('pkg/ClassB');
+			module.exports = function() {};
 		});
-		var CLASSB = function() {};
-		testRealm.define("ClassB", function(require, exports, module) {
-			require("ClassA");
-			module.exports = CLASSB;
-		});
-
-		expect(function() {
-			testRealm.require('ClassA');
-		}).toThrow(Error("Circular dependency detected: the module 'ClassA' (requested by module 'ClassB') is still in the process of exporting."));
-	});
-
-	it("we consider it to be a circular reference even if a module has partially exported", function() {
-		testRealm.define("pkg/ClassA", function(require, exports, module) {
-			function LocalClass() {
-			};
-			require("pkg/ClassB");
-			module.exports = LocalClass;
-		});
-		testRealm.define("pkg/ClassB", function(require, exports, module) {
-			exports.X = 'X';
-			require("pkg/ClassA");
-			exports.Y = 'Y';
+		testRealm.define('pkg/ClassB', function(require, exports, module) {
+			require('pkg/ClassA');
+			module.exports = function() {};
 		});
 
 		expect(function() {
 			testRealm.require('pkg/ClassA');
-		}).toThrow(Error("Circular dependency detected: the module 'pkg/ClassA' (requested by module 'pkg/ClassB') is still in the process of exporting."));
+		}).toThrow(Error("Circular dependency detected: pkg/ClassA -> pkg/ClassB -> pkg/ClassA"));
 	});
 
-	it("we don't consider it to be a circular reference if the module has already exported at the point the circle is formed", function() {
-		testRealm.define("pkg/ClassA", function(require, exports, module) {
-			function LocalClass() {
-			};
-			module.exports = LocalClass;
-			require("pkg/ClassB");
+	it("throws an error even when a define-time dependency is partially, but not wholly, exported", function() {
+		testRealm.define('pkg/A', function(require, exports, module) {
+			var B = require('pkg/B');
+			function ClassA() {
+				this.x = B.X;
+				this.y = B.Y;
+			}
+			module.exports = new ClassA();
 		});
-		testRealm.define("pkg/ClassB", function(require, exports, module) {
-			var SuperClass = require("pkg/ClassA");
-			function LocalClass() {
-			};
-			LocalClass.prototype = new SuperClass();
-			module.exports = LocalClass;
+		testRealm.define('pkg/B', function(require, exports, module) {
+			exports.X = 'X';
+			exports.A = require('pkg/A');
+			exports.Y = 'Y';
 		});
 
-		var ClassA = testRealm.require('pkg/ClassA');
-		var ClassB = testRealm.require('pkg/ClassB');
-		expect((new ClassB()) instanceof ClassA).toBeTruthy();
+		expect(function() {
+			testRealm.require('pkg/A');
+		}).toThrow("Circular dependency detected: pkg/A -> pkg/B -> pkg/A");
+	});
+
+	it("tolerates use-time circular dependencies", function() {
+		testRealm.define('pkg/ClassA', function(require, exports, module) {
+			module.exports = function() {};
+			require('pkg/ClassB');
+		});
+		testRealm.define("pkg/ClassB", function(require, exports, module) {
+			module.exports = function() {};
+			require('pkg/ClassA');
+		});
+
+		expect(function() {
+			testRealm.require('pkg/ClassA');
+		}).not.toThrow();
+	});
+
+	it("tolerates mixed circular dependencies where the required node has a use-time dependency", function() {
+		testRealm.define('pkg/ClassA', function(require, exports, module) {
+			var ClassB;
+			function ClassA() {
+				this.b = new ClassB();
+			};
+			module.exports = ClassA;
+			ClassB = require('pkg/ClassB');
+		});
+		testRealm.define('pkg/ClassB', function(require, exports, module) {
+			var ClassA = require('pkg/ClassA');
+			function ClassB() {
+			};
+			ClassB.prototype = Object.create(ClassA.prototype);
+			module.exports = ClassB;
+		});
+
+		expect(function() {
+			testRealm.require('pkg/ClassA');
+		}).not.toThrow();
+
+		var A = testRealm.require('pkg/ClassA');
+		var B = testRealm.require('pkg/ClassB');
+		expect(new B() instanceof A).toBeTruthy();
+		expect((new A()).b instanceof B).toBeTruthy();
+	});
+
+	it("tolerates mixed circular dependencies where the required node has a define-time dependency", function() {
+		testRealm.define('pkg/ClassA', function(require, exports, module) {
+			var ClassB;
+			function ClassA() {
+				this.b = new ClassB();
+			};
+			module.exports = ClassA;
+			ClassB = require('pkg/ClassB');
+		});
+		testRealm.define('pkg/ClassB', function(require, exports, module) {
+			var ClassA = require('pkg/ClassA');
+			function ClassB() {
+			};
+			ClassB.prototype = Object.create(ClassA.prototype);
+			module.exports = ClassB;
+		});
+
+		expect(function() {
+			testRealm.require('pkg/ClassB');
+		}).not.toThrow();
+
+		var A = testRealm.require('pkg/ClassA');
+		var B = testRealm.require('pkg/ClassB');
+		expect(new B() instanceof A).toBeTruthy();
+		expect((new A()).b instanceof B).toBeTruthy();
+
+		expect(mockConsole.messages.shift()).toBe("warn: Circular dependency detected: pkg/ClassB -> pkg/ClassA -> pkg/ClassB");
+		expect(mockConsole.messages.shift()).toBe("info: requiring 'pkg/ClassA' early to solve the circular dependency problem");
+	});
+
+	it("tolerates large mixed circular dependencies where the required node has a define-time dependency", function() {
+		testRealm.define('pkg/ClassA', function(require, exports, module) {
+			var ClassB = require('pkg/ClassB');
+			function ClassA() {
+			};
+			ClassA.prototype = Object.create(ClassB.prototype);
+			module.exports = ClassA;
+		});
+		testRealm.define('pkg/ClassB', function(require, exports, module) {
+			var ClassC;
+			function ClassB() {
+				this.c = new ClassC();
+			};
+			module.exports = ClassB;
+			ClassC = require('pkg/ClassC');
+		});
+		testRealm.define('pkg/ClassC', function(require, exports, module) {
+			var ClassA = require('pkg/ClassA');
+			function ClassC() {
+			};
+			ClassC.prototype = Object.create(ClassA.prototype);
+			module.exports = ClassC;
+		});
+
+		expect(function() {
+			testRealm.require('pkg/ClassC');
+		}).not.toThrow();
+
+		var A = testRealm.require('pkg/ClassA');
+		var B = testRealm.require('pkg/ClassB');
+		var C = testRealm.require('pkg/ClassC');
+		expect(new A() instanceof B).toBeTruthy();
+		expect((new B()).c instanceof C).toBeTruthy();
+		expect(new C() instanceof A).toBeTruthy();
+
+		expect(mockConsole.messages.shift()).toBe("warn: Circular dependency detected: pkg/ClassC -> pkg/ClassA -> pkg/ClassB -> pkg/ClassC");
+		expect(mockConsole.messages.shift()).toBe("info: requiring 'pkg/ClassB' early to solve the circular dependency problem");
+	});
+
+	it("passes through exceptions that occur during definition", function() {
+		testRealm.define('ClassA', function(require, exports, module) {
+			require('ClassB');
+			module.exports = function() {};
+		});
+
+		testRealm.define('ClassB', function(require, exports, module) {
+			throw new Error('define-time error!');
+		});
+
+		expect(function() {
+			testRealm.require('ClassA');
+		}).toThrow(new Error('define-time error!'));
+	});
+
+	it("a simple object required from a subrealm is unique to the subrealm.", function() {
+		testRealm.define("my/classes/ClassA", function(require, exports, module) {
+			function test() {}
+			test.prototype.foo = function() {};
+			module.exports = test;
+		});
+
+		var ClassA = testRealm.require('my/classes/ClassA');
+
+		var subrealm = testRealm.subrealm();
+
+		var SubrealmClassA = subrealm.require('my/classes/ClassA');
+		expect(SubrealmClassA).not.toBe(ClassA);
+	});
+
+	it("a complex object (with single dependency) required from a subrealm is unique to the subrealm (including its dependency)", function() {
+		testRealm.define('my/classes/Dependency', function(require, exports, module) {
+			function Dependency() {}
+			module.exports = Dependency;
+		});
+
+		testRealm.define('my/classes/ClassA', function(require, exports, module) {
+			var Dependency = require('my/classes/Dependency');
+
+			function test() {
+				this.dependency = Dependency;
+			}
+			module.exports = test;
+		});
+
+		var ClassA = testRealm.require('my/classes/ClassA');
+
+		var subrealm = testRealm.subrealm();
+
+		var SubrealmClassA = subrealm.require('my/classes/ClassA');
+
+		expect(SubrealmClassA).not.toBe(ClassA);
+
+		var classA = new ClassA();
+		var otherClassA = new ClassA();
+
+		expect(classA.dependency).toEqual(otherClassA.dependency);
+		var subrealmClassA = new SubrealmClassA();
+
+		expect(classA.dependency).not.toEqual(subrealmClassA.dependency);
+	});
+
+	it("a complex object (with dependencies) required from a subrealm is unique to the subrealm (including its dependency chain)", function() {
+
+		testRealm.define('my/classes/SubDependency', function(require, exports, module) {
+			function SubDependency() {}
+			SubDependency.prototype.baz = function() { return 'sub-dep'; };
+			module.exports = SubDependency;
+		});
+
+		testRealm.define('my/classes/Dependency', function(require, exports, module) {
+			var SubDependency = require('my/classes/SubDependency');
+			function Dependency() {
+				this.subDependency = new SubDependency();
+			}
+			Dependency.prototype.bar = function() { return 'dep'; };
+			module.exports = Dependency;
+		});
+
+		testRealm.define('my/classes/ClassA', function(require, exports, module) {
+			var Dependency = require('my/classes/Dependency');
+			function ClassA() {
+				this.dependency = new Dependency();
+			}
+			module.exports = ClassA;
+		});
+
+		var ClassA = testRealm.require('my/classes/ClassA');
+
+		var classA = new ClassA();
+		var otherClassA = new ClassA();
+
+		expect(classA).toEqual(otherClassA);
+		expect(classA.dependency).toEqual(otherClassA.dependency);
+		expect(classA.dependency.subDependency).toEqual(otherClassA.dependency.subDependency);
+		expect(classA.dependency.subDependency.baz()).toBe('sub-dep');
+
+		// start subrealm
+		var subrealm = testRealm.subrealm();
+
+		subrealm.define('my/classes/SubDependency', function(require, exports, module) {
+			function SubDependency() {
+			}
+
+			SubDependency.prototype.baz = function() { return 'sub-dep-changed'; };
+			module.exports = SubDependency;
+		});
+
+		var SubrealmClassA = subrealm.require('my/classes/ClassA');
+
+		expect(SubrealmClassA).not.toBe(ClassA);
+
+		var subrealmClassA = new SubrealmClassA();
+
+		// verify non-equality
+		expect(classA).not.toEqual(subrealmClassA);
+
+		// test dependency
+		expect(classA.dependency.bar()).toBe('dep');
+		expect(classA.dependency).not.toEqual(subrealmClassA.dependency);
+
+		// test redined sub-dependency
+		expect(subrealmClassA.dependency.subDependency.baz()).toBe('sub-dep-changed');
 	});
 
 	it("allows the redefinition of a class in a subrealm.", function() {
