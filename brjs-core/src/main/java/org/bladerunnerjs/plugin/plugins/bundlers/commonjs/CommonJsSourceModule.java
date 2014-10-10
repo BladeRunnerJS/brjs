@@ -31,13 +31,8 @@ import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
-import org.bladerunnerjs.utility.reader.CharBufferPool;
-import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
-import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
-import org.bladerunnerjs.utility.reader.JsModuleExportsStrippingReader;
 
 import com.Ostermiller.util.ConcatReader;
-import com.google.common.base.Predicate;
 
 public class CommonJsSourceModule implements AugmentedContentSourceModule {
 
@@ -164,41 +159,22 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	private ComputedValue getComputedValue() throws ModelOperationException {
+		CommonJsSourceModule sourceModule = this;
 		return computedValue.value(new Getter<ModelOperationException>() {
 			@Override
 			public Object get() throws ModelOperationException {
 				ComputedValue computedValue = new ComputedValue();
-				CharBufferPool pool = assetLocation.root().getCharBufferPool();
 				
 				try {
-					// calculate 'define time' dependencies - outside of a code block and before module.exports
-					try(Reader reader = new JsModuleExportsStrippingReader(
-							new JsCodeBlockStrippingDependenciesReader(
-									new JsCommentStrippingReader(getUnalteredContentReader(), false, pool)
-							, pool), pool)
-					) {
+					try(Reader reader = new CommonJsDefineTimeDependenciesReader(sourceModule)) 
+					{
 						addToComputedValue(computedValue, reader, computedValue.defineTimeRequirePaths);
 					}
 
-					// calculate 'use time' dependencies - inside of a code block
-					Predicate<Integer> insideCodeBlockPredicate = new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0);
-					try(Reader reader = new JsModuleExportsStrippingReader(
-							new JsCodeBlockStrippingDependenciesReader(
-									new JsCommentStrippingReader(getUnalteredContentReader(), false, pool)
-							, pool, insideCodeBlockPredicate)
-						, pool)
-					) {
+					try(Reader reader = new CommonJsUseTimeDependenciesReader(sourceModule)) 
+					{
 						addToComputedValue(computedValue, reader, computedValue.useTimeRequirePaths);
 					}
-					
-					// calculate 'use time' dependencies - below module.exports
-					try(Reader reader = new JsModuleExportsStrippingReader(
-							new JsCommentStrippingReader(getUnalteredContentReader(), false, pool)
-						, pool, false)
-					) {
-						addToComputedValue(computedValue, reader, computedValue.useTimeRequirePaths);
-					}
-					
 				}
 				catch(IOException e) {
 					throw new ModelOperationException(e);

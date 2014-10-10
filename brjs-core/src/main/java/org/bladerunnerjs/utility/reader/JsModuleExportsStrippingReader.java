@@ -13,8 +13,8 @@ import org.bladerunnerjs.utility.TailBuffer;
  */
 
 public class JsModuleExportsStrippingReader extends Reader {
-	private static final String MODULE_EXPORTS_REGEX = "^.*(module\\.)?exports\\W*=.*";
-	private static final Pattern MODULE_EXPORTS_REGEX_PATTERN = Pattern.compile(MODULE_EXPORTS_REGEX, Pattern.DOTALL);
+	public static final String MODULE_EXPORTS_REGEX = "^.*(module\\.)?exports\\W*=.*";
+	public static final Pattern MODULE_EXPORTS_REGEX_PATTERN = Pattern.compile(MODULE_EXPORTS_REGEX, Pattern.DOTALL);
 
 	private final Reader sourceReader;
 	private final CharBufferPool pool;
