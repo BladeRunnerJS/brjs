@@ -2,27 +2,40 @@ package org.bladerunnerjs.utility.reader;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.bladerunnerjs.utility.TailBuffer;
 
 /*
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
  * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
  */
 
-public class JsPostModuleExportsStrippingReader extends Reader {
+public class JsModuleExportsStrippingReader extends Reader {
+	private static final String MODULE_EXPORTS_REGEX = "^.*(module\\.)?exports\\W*=.*";
+	private static final Pattern MODULE_EXPORTS_REGEX_PATTERN = Pattern.compile(MODULE_EXPORTS_REGEX, Pattern.DOTALL);
+
 	private final Reader sourceReader;
 	private final CharBufferPool pool;
 	
-	private String matchStr = "module.exports =";
-	private int matchPos = 0;
+	private final TailBuffer tailBuffer = new TailBuffer(MODULE_EXPORTS_REGEX.length() + 10); // + 10 to allow for extra spaces in the definition
+	
 	private boolean moduleExportsLocated = false;
 	
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
+	private boolean stripPostModuleExports;
 	
-	public JsPostModuleExportsStrippingReader(Reader sourceReader, CharBufferPool pool) {
+	public JsModuleExportsStrippingReader(Reader sourceReader, CharBufferPool pool) {
+		this(sourceReader, pool, true);
+	}
+	
+	public JsModuleExportsStrippingReader(Reader sourceReader, CharBufferPool pool, boolean stripPostModuleExports) {
 		super();
 		this.sourceReader = sourceReader;
 		this.pool = pool;
+		this.stripPostModuleExports = stripPostModuleExports;
 	}
 	
 	@Override
@@ -47,19 +60,15 @@ public class JsPostModuleExportsStrippingReader extends Reader {
 			}
 			
 			nextChar = sourceBuffer[nextCharPos++];
+			tailBuffer.push(nextChar);
 			
-			if(!moduleExportsLocated) {
-				if(nextChar == matchStr.charAt(matchPos)) {
-					++matchPos;
-					
-					if(matchPos == (matchStr.length() - 1)) {
-						moduleExportsLocated = true;
-					}
+			if (!moduleExportsLocated) {
+				if (matchesModuleExports()) {
+					moduleExportsLocated = true;
 				}
-				else {
-					matchPos = 0;
-				}
-				
+			}
+			
+			if (moduleExportsLocated != stripPostModuleExports) {
 				destBuffer[currentOffset++] = nextChar;
 			}
 		}
@@ -73,4 +82,12 @@ public class JsPostModuleExportsStrippingReader extends Reader {
 	public void close() throws IOException {
 		sourceReader.close();
 	}
+	
+	private boolean matchesModuleExports() {
+		String tail = new String(tailBuffer.toArray());
+		Matcher moduleExportsMatcher = MODULE_EXPORTS_REGEX_PATTERN.matcher(tail);
+		
+		return moduleExportsMatcher.matches();
+	}
+	
 }

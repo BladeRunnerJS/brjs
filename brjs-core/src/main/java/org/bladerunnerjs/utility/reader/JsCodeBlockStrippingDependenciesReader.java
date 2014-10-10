@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 import org.bladerunnerjs.utility.TailBuffer;
 
+import com.google.common.base.Predicate;
+
 /*
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
  * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
@@ -28,18 +30,24 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	private static final Pattern INLINE_MAP_DEFINITION_REGEX_PATTERN = Pattern.compile(INLINE_MAP_DEFINITION_REGEX);
 	
 	private final Reader sourceReader;
-	// buffer the length of the function definition + 10 to allow for things like new(<IIFE>) etc.
-	private final TailBuffer tailBuffer = new TailBuffer(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 10 + 1);
+	// buffer the length of the function definition + 12 to allow for things like new(<IIFE>) etc.
+	private final TailBuffer tailBuffer = new TailBuffer(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 12);
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private int depthCount = 0;
 	private CharBufferPool pool;
+	private Predicate<Integer> matcherPredicate;
 	
 	
 	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, CharBufferPool pool) {
+		this(sourceReader, pool, new LessThanPredicate(1));
+	}
+	
+	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, CharBufferPool pool, Predicate<Integer> matcherPredicate) {
 		super();
 		this.sourceReader = sourceReader;
 		this.pool = pool;
+		this.matcherPredicate = matcherPredicate;
 	}
 	
 	@Override
@@ -66,7 +74,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			nextChar = sourceBuffer[nextCharPos++];
 			tailBuffer.push(nextChar);
 			
-			if (depthCount == 0) {
+			if (matcherPredicate.apply(depthCount)) {
 				destBuffer[currentOffset++] = nextChar;
 			}
 			
@@ -79,7 +87,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 				if (depthCount > 0) {
 					--depthCount;
 					
-					if (depthCount == 0) {
+					if (matcherPredicate.apply(depthCount)) {
 						destBuffer[currentOffset++] = nextChar;
 					}
 				}
@@ -108,4 +116,30 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 		Matcher inlineMapDefinitionMatcher = INLINE_MAP_DEFINITION_REGEX_PATTERN.matcher( tail );
 		return inlineMapDefinitionMatcher.find();
 	}
+	
+	
+	public static class LessThanPredicate implements Predicate<Integer> {
+		private int value;
+		public LessThanPredicate(int value) {
+			this.value = value;
+		}
+		@Override
+		public boolean apply(Integer input)
+		{
+			return input < value;
+		}
+	}
+	
+	public static class MoreThanPredicate implements Predicate<Integer> {
+		private int value;
+		public MoreThanPredicate(int value) {
+			this.value = value;
+		}
+		@Override
+		public boolean apply(Integer input)
+		{
+			return input > value;
+		}
+	}
+	
 }

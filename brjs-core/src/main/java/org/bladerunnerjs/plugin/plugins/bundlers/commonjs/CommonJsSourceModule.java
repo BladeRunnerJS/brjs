@@ -36,7 +36,7 @@ import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
-import org.bladerunnerjs.utility.reader.JsPostModuleExportsStrippingReader;
+import org.bladerunnerjs.utility.reader.JsModuleExportsStrippingReader;
 
 import com.Ostermiller.util.ConcatReader;
 
@@ -196,7 +196,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 						addToComputedValue(computedValue, reader, false);
 					}
 					
-					try(Reader reader = new JsPostModuleExportsStrippingReader(new JsCodeBlockStrippingDependenciesReader(new JsCommentStrippingReader(getUnalteredContentReader(), false, pool), pool), pool)) {
+					try(Reader reader = new JsModuleExportsStrippingReader(new JsCodeBlockStrippingDependenciesReader(new JsCommentStrippingReader(getUnalteredContentReader(), false, pool), pool), pool)) {
 						addToComputedValue(computedValue, reader, true);
 					}
 				}
