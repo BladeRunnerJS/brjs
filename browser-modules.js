@@ -76,6 +76,44 @@
 		throw new Error("No definition for module " + moduleId + " could be found in the global top level.");
 	}
 
+	function realmRequireFunc(realm, definitionContext, id) {
+		return function(requirePath) {
+			var activeRealm = global.activeRealm || realm;
+			var exportVal;
+
+			try {
+				exportVal = activeRealm.require(definitionContext, requirePath);
+			}
+			catch(e) {
+				if(e instanceof CircularDependencyError) {
+					e.dependencies.unshift(id);
+
+					if(e.dependencies[0] == e.dependencies[e.dependencies.length - 1]) {
+						var circularDependencyErrorMessage = "Circular dependency detected: " + e.dependencies.join(' -> ');
+
+						if(!e.requireFirst) throw new Error(circularDependencyErrorMessage);
+
+						console.warn(circularDependencyErrorMessage);
+						console.log("requiring '" + e.requireFirst + "' early to solve the circular dependency problem");
+						throw new RecoverableCircularDependencyError(e.requireFirst);
+					}
+					else {
+						if(!e.requireFirst && activeRealm._isModuleExported(id)) {
+							e.requireFirst = id;
+						}
+
+						throw e;
+					}
+				}
+				else {
+					throw e;
+				}
+			}
+
+			return exportVal;
+		};
+	}
+
 	function CircularDependencyError(requirePath) {
 		this.dependencies = [requirePath];
 		this.prototype = {};
@@ -95,14 +133,6 @@
 		this.modulesFromParent = {};
 		this.fallbackRequire = fallbackRequire;
 		this.installedData = null;
-		
-		var realm = this;
-		this.require = function() {
-			return realm._require.apply(realm, arguments);
-		};
-		this.define = function() {
-			realm._define.apply(realm, arguments);
-		};
 	}
 
 	Realm.prototype.install = function install(target) {
@@ -111,10 +141,12 @@
 			this.installedData = {
 				target: target,
 				define: target.define,
-				require: target.require
+				require: target.require,
+				activeRealm: target.activeRealm
 			};
-			target.define = this.define;
-			target.require = this.require;
+			target.define = this.define.bind(this);
+			target.require = this.require.bind(this);
+			target.activeRealm = this;
 		} else {
 			throw new Error("Can only install to one place at once.");
 		}
@@ -124,11 +156,12 @@
 		if (this.installedData !== null) {
 			this.installedData.target.define = this.installedData.define;
 			this.installedData.target.require = this.installedData.require;
+			this.installedData.target.activeRealm = this.installedData.activeRealm;
 			this.installedData = null;
 		}
 	};
 
-	Realm.prototype._define = function define(id, definition) {
+	Realm.prototype.define = function define(id, definition) {
 		if (this.modulesFromParent[id] === true) {
 			throw new Error('Module ' + id + ' has already been loaded from a parent realm.  If you are sure that you want to override an already loaded parent module, you need to undefine this module or reset this realm first.');
 		}
@@ -145,7 +178,7 @@
 		define(id, eval("(function(require, exports, module){\n" + definitionString + "\n});"));
 	};
 
-	Realm.prototype._require = function require(context, id) {
+	Realm.prototype.require = function require(context, id) {
 		if (arguments.length === 1) {
 			id = arguments[0];
 			context = '';
@@ -194,42 +227,8 @@
 					if (idx >= 0) {
 						definitionContext = id.substring(0, id.lastIndexOf("/"));
 					}
-					// this is set to the module inside the definition code.
-					var realm = (window.require) ? window : this;
-					var returnValue = definition.call(module, function(requirePath) {
-						var exportVal;
-
-						try {
-							exportVal = realm.require(definitionContext, requirePath);
-						}
-						catch(e) {
-							if(e instanceof CircularDependencyError) {
-								e.dependencies.unshift(id);
-
-								if(e.dependencies[0] == e.dependencies[e.dependencies.length - 1]) {
-									var circularDependencyErrorMessage = "Circular dependency detected: " + e.dependencies.join(' -> ');
-
-									if(!e.requireFirst) throw new Error(circularDependencyErrorMessage);
-
-									console.warn(circularDependencyErrorMessage);
-									console.log("requiring '" + e.requireFirst + "' early to solve the circular dependency problem");
-									throw new RecoverableCircularDependencyError(e.requireFirst);
-								}
-								else {
-									if(!e.requireFirst && realm._isModuleExported(id)) {
-										e.requireFirst = id;
-									}
-
-									throw e;
-								}
-							}
-							else {
-								throw e;
-							}
-						}
-
-						return exportVal;
-					}, module.exports, module);
+					var requireFunc = realmRequireFunc(this, definitionContext, id);
+					var returnValue = definition.call(module, requireFunc, module.exports, module);
 					this.moduleExports[id] = returnValue || module.exports;
 				} else {
 					// this lets you define things without definition functions, e.g.
@@ -252,8 +251,8 @@
 		}
 		catch(e) {
 			if(e instanceof RecoverableCircularDependencyError) {
-				this._require(context, e.requirePath);
-				this._require(context, id);
+				this.require(context, e.requirePath);
+				this.require(context, id);
 			}
 			else {
 				throw e;
