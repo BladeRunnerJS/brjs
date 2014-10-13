@@ -135,7 +135,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			"Workbench dependencies found:",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
 			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js' (*)",
-			"    |    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class2.js'",
+			"    |    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class2.js' (static dep.)",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/resources/config.xml' (seed file)",
 			"",
 			"    (*) - subsequent instances not shown (use -A or --all to show)");
@@ -152,7 +152,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			"Workbench dependencies found:",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
 			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
-			"    |    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class2.js'",
+			"    |    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class2.js' (static dep.)",
 			"    +--- 'bladeset-bladeset/blades/blade/workbench/resources/config.xml' (seed file)",
 			"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js' (*)",
 			"",

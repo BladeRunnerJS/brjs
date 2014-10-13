@@ -113,12 +113,17 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer classRequires(String sourceClass, String dependencyClass) throws Exception {
 		File sourceFile = getSourceFile(sourceClass);
-		return classRequires(sourceClass, dependencyClass, sourceFile);
+		return classRequires(sourceClass, dependencyClass, sourceFile, false);
+	}
+	
+	public BuilderChainer classRequiresAtUseTime(String sourceClass, String dependencyClass) throws Exception {
+		File sourceFile = getSourceFile(sourceClass);
+		return classRequires(sourceClass, dependencyClass, sourceFile, true);
 	}
 	
 	public BuilderChainer testClassRequires(String sourceClass, String dependencyClass) throws Exception {
 		File sourceFile = getTestSourceFile(sourceClass);
-		return classRequires(sourceClass, dependencyClass, sourceFile);
+		return classRequires(sourceClass, dependencyClass, sourceFile, false);
 	}
 	
 	public BuilderChainer classDependsOnAlias(String sourceClass, String alias) throws Exception
@@ -211,7 +216,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	private BuilderChainer classRequires(String sourceClass, String dependencyClass, File sourceFile) throws Exception
+	private BuilderChainer classRequires(String sourceClass, String dependencyClass, File sourceFile, boolean atUseTime) throws Exception
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
@@ -222,7 +227,14 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		dependencyClass = dependencyClass.replaceAll("\\.(\\w)", "/$1");
 		String classRef = (dependencyClass.contains("/")) ? StringUtils.substringAfterLast(dependencyClass, "/") : dependencyClass;
 		String requireString = "var " + classRef + " = require('" + dependencyClass + "');\n";
-		fileUtil.write(sourceFile, requireString + getClassBody(sourceClass));
+		
+		if(atUseTime) {
+			fileUtil.write(sourceFile, "\nmodule.exports = {};\n" + requireString + getClassBody(sourceClass));
+		}
+		else {
+			fileUtil.write(sourceFile, requireString + getClassBody(sourceClass));
+		}
+		
 		
 		return builderChainer;
 	}
