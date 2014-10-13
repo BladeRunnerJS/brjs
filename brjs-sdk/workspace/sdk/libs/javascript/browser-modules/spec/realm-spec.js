@@ -53,15 +53,16 @@ MockConsole.log = function(messagePrefix, message) {
 	this.messages.push(messagePrefix + ': ' + message);
 };
 
-describe("a realm", function() {
+describe('a realm', function() {
 	var global = Function('return this')();
 	var globalRealm = global.realm || require('..');
 	var Realm = globalRealm.constructor;
 
-	var testRealm, mockConsole, origConsole;
+	var testRealm, subrealm, mockConsole, origConsole;
 
 	beforeEach(function() {
 		testRealm = new Realm();
+		subrealm = testRealm.subrealm();
 		mockConsole = new MockConsole();
 		origConsole = console;
 		console = mockConsole;
@@ -69,10 +70,12 @@ describe("a realm", function() {
 
 	afterEach(function() {
 		console = origConsole;
+		subrealm.uninstall();
+		testRealm.uninstall();
 		expect(mockConsole.messages.join(', ')).toBe('');
 	});
 
-	it("does not call definition functions on define.", function() {
+	it('does not call definition functions on define.', function() {
 		var definitionHasBeenCalled = false;
 		testRealm.define('MyClass', function(require, exports, module) {
 			definitionHasBeenCalled = true;
@@ -81,33 +84,43 @@ describe("a realm", function() {
 		expect(definitionHasBeenCalled).toBe(false);
 	});
 
-	it("allows one definition to require a definition defined later.", function() {
-		var CLASSA = function() {};
+	it('allows one definition to require a definition defined later.', function() {
 		testRealm.define('ClassB', function(require, exports, module) {
 			exports.parent = require('ClassA');
 		});
 		testRealm.define('ClassA', function(require, exports, module) {
-			module.exports = CLASSA;
+			module.exports = function() {};
 		});
 
-		var classB = testRealm.require('ClassB');
-		expect(classB.parent).toBe(CLASSA);
+		var ClassA = testRealm.require('ClassA');
+		var ClassB = testRealm.require('ClassB');
+		expect(ClassB.parent).toBe(ClassA);
 	});
 
-	it("allows one definition to require another in a relative way.", function() {
-		var CLASSA = function() {};
-		testRealm.define("my/classes/derived/ClassB", function(require, exports, module) {
-			exports.parent = require("../original/ClassA");
+	it('allows one definition to require another in a relative way.', function() {
+		testRealm.define('derived/ClassB', function(require, exports, module) {
+			exports.parent = require('../original/ClassA');
 		});
-		testRealm.define("my/classes/original/ClassA", function(require, exports, module) {
-			module.exports = CLASSA;
+		testRealm.define('original/ClassA', function(require, exports, module) {
+			module.exports = function() {};
 		});
 
-		var classB = testRealm.require('my/classes/derived/ClassB');
-		expect(classB.parent).toBe(CLASSA);
+		var ClassA = testRealm.require('original/ClassA');
+		var ClassB = testRealm.require('derived/ClassB');
+		expect(ClassB.parent).toBe(ClassA);
 	});
 
-	it("throws an error if there is a define-time circular dependency", function() {
+	it('allows require() to be used globally if the realm is installed.', function() {
+		var TheClass = function() {};
+		testRealm.define('TheClass', function(require, exports, module) {
+			module.exports = TheClass;
+		});
+
+		testRealm.install();
+		expect(require('TheClass')).toBe(TheClass);
+	});
+
+	it('throws an error if there is a define-time circular dependency', function() {
 		testRealm.define('pkg/ClassA', function(require, exports, module) {
 			require('pkg/ClassB');
 			module.exports = function() {};
@@ -119,10 +132,10 @@ describe("a realm", function() {
 
 		expect(function() {
 			testRealm.require('pkg/ClassA');
-		}).toThrow(Error("Circular dependency detected: pkg/ClassA -> pkg/ClassB -> pkg/ClassA"));
+		}).toThrow(Error('Circular dependency detected: pkg/ClassA -> pkg/ClassB -> pkg/ClassA'));
 	});
 
-	it("throws an error even when a define-time dependency is partially, but not wholly, exported", function() {
+	it('throws an error even when a define-time dependency is partially, but not wholly, exported', function() {
 		testRealm.define('pkg/A', function(require, exports, module) {
 			var B = require('pkg/B');
 			function ClassA() {
@@ -139,15 +152,15 @@ describe("a realm", function() {
 
 		expect(function() {
 			testRealm.require('pkg/A');
-		}).toThrow("Circular dependency detected: pkg/A -> pkg/B -> pkg/A");
+		}).toThrow('Circular dependency detected: pkg/A -> pkg/B -> pkg/A');
 	});
 
-	it("tolerates use-time circular dependencies", function() {
+	it('tolerates use-time circular dependencies', function() {
 		testRealm.define('pkg/ClassA', function(require, exports, module) {
 			module.exports = function() {};
 			require('pkg/ClassB');
 		});
-		testRealm.define("pkg/ClassB", function(require, exports, module) {
+		testRealm.define('pkg/ClassB', function(require, exports, module) {
 			module.exports = function() {};
 			require('pkg/ClassA');
 		});
@@ -157,7 +170,7 @@ describe("a realm", function() {
 		}).not.toThrow();
 	});
 
-	it("tolerates mixed circular dependencies where the required node has a use-time dependency", function() {
+	it('tolerates mixed circular dependencies where the required node has a use-time dependency', function() {
 		testRealm.define('pkg/ClassA', function(require, exports, module) {
 			var ClassB;
 			function ClassA() {
@@ -184,7 +197,7 @@ describe("a realm", function() {
 		expect((new A()).b instanceof B).toBeTruthy();
 	});
 
-	it("tolerates mixed circular dependencies where the required node has a define-time dependency", function() {
+	it('tolerates mixed circular dependencies where the required node has a define-time dependency', function() {
 		testRealm.define('pkg/ClassA', function(require, exports, module) {
 			var ClassB;
 			function ClassA() {
@@ -210,11 +223,11 @@ describe("a realm", function() {
 		expect(new B() instanceof A).toBeTruthy();
 		expect((new A()).b instanceof B).toBeTruthy();
 
-		expect(mockConsole.messages.shift()).toBe("warn: Circular dependency detected: pkg/ClassB -> pkg/ClassA -> pkg/ClassB");
+		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: pkg/ClassB -> pkg/ClassA -> pkg/ClassB');
 		expect(mockConsole.messages.shift()).toBe("info: requiring 'pkg/ClassA' early to solve the circular dependency problem");
 	});
 
-	it("tolerates large mixed circular dependencies where the required node has a define-time dependency", function() {
+	it('tolerates large mixed circular dependencies where the required node has a define-time dependency', function() {
 		testRealm.define('pkg/ClassA', function(require, exports, module) {
 			var ClassB = require('pkg/ClassB');
 			function ClassA() {
@@ -249,11 +262,11 @@ describe("a realm", function() {
 		expect((new B()).c instanceof C).toBeTruthy();
 		expect(new C() instanceof A).toBeTruthy();
 
-		expect(mockConsole.messages.shift()).toBe("warn: Circular dependency detected: pkg/ClassC -> pkg/ClassA -> pkg/ClassB -> pkg/ClassC");
+		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: pkg/ClassC -> pkg/ClassA -> pkg/ClassB -> pkg/ClassC');
 		expect(mockConsole.messages.shift()).toBe("info: requiring 'pkg/ClassB' early to solve the circular dependency problem");
 	});
 
-	it("passes through exceptions that occur during definition", function() {
+	it('passes through exceptions that occur during definition', function() {
 		testRealm.define('ClassA', function(require, exports, module) {
 			require('ClassB');
 			module.exports = function() {};
@@ -268,29 +281,29 @@ describe("a realm", function() {
 		}).toThrow(new Error('define-time error!'));
 	});
 
-	it("a simple object required from a subrealm is unique to the subrealm.", function() {
-		testRealm.define("my/classes/ClassA", function(require, exports, module) {
+	it('a simple object required from a subrealm is unique to the subrealm.', function() {
+		testRealm.define('ClassA', function(require, exports, module) {
 			function test() {}
 			test.prototype.foo = function() {};
 			module.exports = test;
 		});
 
-		var ClassA = testRealm.require('my/classes/ClassA');
+		var ClassA = testRealm.require('ClassA');
 
 		var subrealm = testRealm.subrealm();
 
-		var SubrealmClassA = subrealm.require('my/classes/ClassA');
+		var SubrealmClassA = subrealm.require('ClassA');
 		expect(SubrealmClassA).not.toBe(ClassA);
 	});
 
-	it("a complex object (with single dependency) required from a subrealm is unique to the subrealm (including its dependency)", function() {
-		testRealm.define('my/classes/Dependency', function(require, exports, module) {
+	it('a complex object (with single dependency) required from a subrealm is unique to the subrealm (including its dependency)', function() {
+		testRealm.define('Dependency', function(require, exports, module) {
 			function Dependency() {}
 			module.exports = Dependency;
 		});
 
-		testRealm.define('my/classes/ClassA', function(require, exports, module) {
-			var Dependency = require('my/classes/Dependency');
+		testRealm.define('ClassA', function(require, exports, module) {
+			var Dependency = require('Dependency');
 
 			function test() {
 				this.dependency = Dependency;
@@ -298,11 +311,11 @@ describe("a realm", function() {
 			module.exports = test;
 		});
 
-		var ClassA = testRealm.require('my/classes/ClassA');
+		var ClassA = testRealm.require('ClassA');
 
 		var subrealm = testRealm.subrealm();
 
-		var SubrealmClassA = subrealm.require('my/classes/ClassA');
+		var SubrealmClassA = subrealm.require('ClassA');
 
 		expect(SubrealmClassA).not.toBe(ClassA);
 
@@ -315,16 +328,16 @@ describe("a realm", function() {
 		expect(classA.dependency).not.toEqual(subrealmClassA.dependency);
 	});
 
-	it("a complex object (with dependencies) required from a subrealm is unique to the subrealm (including its dependency chain)", function() {
+	it('a complex object (with dependencies) required from a subrealm is unique to the subrealm (including its dependency chain)', function() {
 
-		testRealm.define('my/classes/SubDependency', function(require, exports, module) {
+		testRealm.define('SubDependency', function(require, exports, module) {
 			function SubDependency() {}
 			SubDependency.prototype.baz = function() { return 'sub-dep'; };
 			module.exports = SubDependency;
 		});
 
-		testRealm.define('my/classes/Dependency', function(require, exports, module) {
-			var SubDependency = require('my/classes/SubDependency');
+		testRealm.define('Dependency', function(require, exports, module) {
+			var SubDependency = require('SubDependency');
 			function Dependency() {
 				this.subDependency = new SubDependency();
 			}
@@ -332,15 +345,15 @@ describe("a realm", function() {
 			module.exports = Dependency;
 		});
 
-		testRealm.define('my/classes/ClassA', function(require, exports, module) {
-			var Dependency = require('my/classes/Dependency');
+		testRealm.define('ClassA', function(require, exports, module) {
+			var Dependency = require('Dependency');
 			function ClassA() {
 				this.dependency = new Dependency();
 			}
 			module.exports = ClassA;
 		});
 
-		var ClassA = testRealm.require('my/classes/ClassA');
+		var ClassA = testRealm.require('ClassA');
 
 		var classA = new ClassA();
 		var otherClassA = new ClassA();
@@ -353,7 +366,7 @@ describe("a realm", function() {
 		// start subrealm
 		var subrealm = testRealm.subrealm();
 
-		subrealm.define('my/classes/SubDependency', function(require, exports, module) {
+		subrealm.define('SubDependency', function(require, exports, module) {
 			function SubDependency() {
 			}
 
@@ -361,7 +374,7 @@ describe("a realm", function() {
 			module.exports = SubDependency;
 		});
 
-		var SubrealmClassA = subrealm.require('my/classes/ClassA');
+		var SubrealmClassA = subrealm.require('ClassA');
 
 		expect(SubrealmClassA).not.toBe(ClassA);
 
@@ -378,28 +391,137 @@ describe("a realm", function() {
 		expect(subrealmClassA.dependency.subDependency.baz()).toBe('sub-dep-changed');
 	});
 
-	it("allows the redefinition of a class in a subrealm.", function() {
-		var CLASSA = function() {};
-		testRealm.define("my/classes/derived/ClassB", function(require, exports, module) {
-			exports.parent = require("../original/ClassA");
+	it('allows the redefinition of a class in a subrealm.', function() {
+		testRealm.define('derived/ClassB', function(require, exports, module) {
+			exports.parent = require('../original/ClassA');
 		});
-		testRealm.define("my/classes/original/ClassA", function(require, exports, module) {
-			module.exports = CLASSA;
-		});
-
-		var classB = testRealm.require('my/classes/derived/ClassB');
-		expect(classB.parent).toBe(CLASSA);
-
-		var REPLACEMENT_CLASSA = function() {};
-		expect(CLASSA).not.toBe(REPLACEMENT_CLASSA);
-		var subrealm = testRealm.subrealm();
-
-		subrealm.define("my/classes/original/ClassA", function(require, exports, module) {
-			module.exports = REPLACEMENT_CLASSA;
+		testRealm.define('original/ClassA', function(require, exports, module) {
+			module.exports = function() {};
 		});
 
-		var subrealmClassB = subrealm.require('my/classes/derived/ClassB');
-		expect(subrealmClassB).not.toBe(classB);
-		expect(subrealmClassB.parent).toBe(REPLACEMENT_CLASSA);
+		var ClassA = testRealm.require('original/ClassA');
+		var ClassB = testRealm.require('derived/ClassB');
+		expect(ClassB.parent).toBe(ClassA);
+
+		var ReplacementClassA = function() {};
+		expect(ClassA).not.toBe(ReplacementClassA);
+
+		subrealm.define('original/ClassA', function(require, exports, module) {
+			module.exports = ReplacementClassA;
+		});
+
+		var subrealmClassB = subrealm.require('derived/ClassB');
+		expect(subrealmClassB).not.toBe(ClassB);
+		expect(subrealmClassB.parent).toBe(ReplacementClassA);
+	});
+
+	it('allows require() to be used globally if the sub-realm is installed.', function() {
+		testRealm.define('TheClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+		var TheClass = testRealm.require('TheClass');
+
+		subrealm.define('TheClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+
+		subrealm.install();
+		expect(require('TheClass')).not.toBe(TheClass);
+	});
+
+	it('allows a sub-realm to be installed/uninstalled at the same time a realm is already installed.', function() {
+		testRealm.define('TheClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+
+		testRealm.install();
+		var TheClass = require('TheClass');
+
+		subrealm.define('TheClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+
+		subrealm.install();
+		expect(require('TheClass')).not.toBe(TheClass);
+
+		subrealm.uninstall();
+		expect(require('TheClass')).toBe(TheClass);
+	});
+
+	it('allows a use-time require defined at the realm level to make use of an overridden definition at the sub-realm level.', function() {
+		testRealm.define('Class', function(require, exports, module) {
+			function Class() {
+			}
+
+			Class.getDependentClass = function() {
+				return require('DependentClass');
+			};
+			module.exports = Class;
+		});
+		testRealm.define('DependentClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+
+		testRealm.install();
+		var DependentClass = require('DependentClass');
+		expect(require('Class').getDependentClass()).toBe(DependentClass);
+
+		subrealm.define('DependentClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+		subrealm.install();
+		expect(require('Class').getDependentClass()).not.toBe(DependentClass);
+	});
+
+	it('allows a use-time require from a pre-existing object at the realm level to make use of an overridden definition at the sub-realm level.', function() {
+		testRealm.define('Class', function(require, exports, module) {
+			function Class() {
+			}
+
+			Class.prototype.getDependentClass = function() {
+				return require('DependentClass');
+			};
+			module.exports = Class;
+		});
+		testRealm.define('DependentClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+
+		testRealm.install();
+		var DependentClass = require('DependentClass');
+		var obj = new (require('Class'))();
+		expect(obj.getDependentClass()).toBe(DependentClass);
+
+		subrealm.define('DependentClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+		subrealm.install();
+		expect(obj.getDependentClass()).not.toBe(DependentClass);
+	});
+
+	it('does not allow you to keep references to objects created under the original realm and then not install a sub-realm you use to override definitions with.', function() {
+		testRealm.define('Class', function(require, exports, module) {
+			function Class() {
+			}
+
+			Class.prototype.getDependentClass = function() {
+				return require('DependentClass');
+			};
+			module.exports = Class;
+		});
+		testRealm.define('DependentClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+
+		var DependentClass = testRealm.require('DependentClass');
+		var obj = new (testRealm.require('Class'))();
+		expect(obj.getDependentClass()).toBe(DependentClass);
+
+		subrealm.define('DependentClass', function(require, exports, module) {
+			module.exports = function() {};
+		});
+
+		// Note: this should be 'not.toBe' if sub-realms could be used with pre-existing realm objects without re-installing
+		expect(obj.getDependentClass()).toBe(DependentClass);
 	});
 });
