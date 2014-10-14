@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.memoization.LegacyMemoizedValue;
 import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 
 public class NodeList<N extends Node> {
@@ -16,7 +16,7 @@ public class NodeList<N extends Node> {
 	private final Class<N> nodeClass;
 	private final Map<String, N> namedNodes = new TreeMap<>();
 	private final List<NamedNodeLocator> namedNodeLocators = new ArrayList<>();
-	private MemoizedValue<List<N>> list;
+	private LegacyMemoizedValue<List<N>> list;
 	
 	public NodeList(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter)
 	{
@@ -71,7 +71,7 @@ public class NodeList<N extends Node> {
 	
 	public List<N> list() {
 		if(list == null) {
-			list = new MemoizedValue<>("NodeList.list "+node.toString(), node.root(), node.dir());
+			list = new LegacyMemoizedValue<>("NodeList.list "+node.toString(), node.root(), node.dir());
 		}
 		
 		return list.value(() -> {

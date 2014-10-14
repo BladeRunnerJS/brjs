@@ -10,7 +10,7 @@ import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.memoization.LegacyMemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
@@ -27,8 +27,8 @@ import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private AliasesFile aliasesFile;
-	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
-	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
+	private final LegacyMemoizedValue<BundleSet> bundleSet = new LegacyMemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
+	private final LegacyMemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList = new LegacyMemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);

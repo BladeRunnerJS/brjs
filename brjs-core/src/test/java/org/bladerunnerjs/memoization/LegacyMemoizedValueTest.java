@@ -18,7 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MemoizedValueTest extends TestModelAccessor {
+public class LegacyMemoizedValueTest extends TestModelAccessor {
 	private File tempDir;
 	private File sdkDir;
 	private File watchFile;
@@ -43,7 +43,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 	
 	@Test
 	public void valueIsCalculatedOnFirstInvocationButMemoizedForSubsequentInvocations() {
-		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("id", brjs, watchFile);
+		LegacyMemoizedValue<Integer> memoizedValue = new LegacyMemoizedValue<>("id", brjs, watchFile);
 		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
@@ -53,7 +53,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 	
 	@Test
 	public void valueIsRecalculatedTheSecondTimeIfTheFileHasChanged() throws IOException {
-		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("id", brjs, watchFile);
+		LegacyMemoizedValue<Integer> memoizedValue = new LegacyMemoizedValue<>("id", brjs, watchFile);
 		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
@@ -64,7 +64,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 	
 	@Test
 	public void valueIsRecalculatedTheSecondTimeIfAnExceptionOcurredTheFirstTime() {
-		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("id", brjs, watchFile);
+		LegacyMemoizedValue<Integer> memoizedValue = new LegacyMemoizedValue<>("id", brjs, watchFile);
 		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		try {

@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 
-public class MemoizedValue<T extends Object> {
+public class LegacyMemoizedValue<T extends Object> {
 	private final List<FileModifiedChecker> watchList = new ArrayList<>();
 	private final File[] watchItems;
 	private boolean exceptionThrownOnLastCompute;
@@ -23,11 +23,11 @@ public class MemoizedValue<T extends Object> {
 	
 	private static final String RECOMPUTING_LOG_MSG = "Recomputing '%s'.";
 	
-	public MemoizedValue(String valueIdentifier, Node node) {
+	public LegacyMemoizedValue(String valueIdentifier, Node node) {
 		this(valueIdentifier, node.root(), node.memoizedScopeFiles());
 	}
 	
-	public MemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) {
+	public LegacyMemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) {
 		this.valueIdentifier = valueIdentifier;
 		this.rootNode = rootNode;
 		this.watchItems = watchItems;

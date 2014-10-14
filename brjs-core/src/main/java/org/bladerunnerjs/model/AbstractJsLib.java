@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.memoization.LegacyMemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -25,7 +25,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	private File[] scopeFiles;
 	
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
-	private final MemoizedValue<Boolean> isNamespaceEnforcedValue = new MemoizedValue<Boolean>("AbstractJsLib.isNamespaceEnforcedValue", root(), file("no-namespace-enforcement"));
+	private final LegacyMemoizedValue<Boolean> isNamespaceEnforcedValue = new LegacyMemoizedValue<Boolean>("AbstractJsLib.isNamespaceEnforcedValue", root(), file("no-namespace-enforcement"));
 	
 	public AbstractJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{

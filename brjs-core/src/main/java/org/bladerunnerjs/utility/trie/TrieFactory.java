@@ -7,7 +7,7 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.memoization.Getter;
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.memoization.LegacyMemoizedValue;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
@@ -19,7 +19,7 @@ import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
 
 public class TrieFactory {
-	private final MemoizedValue<Trie<AssetReference>> trie;
+	private final LegacyMemoizedValue<Trie<AssetReference>> trie;
 	private final AssetContainer assetContainer;
 	
 	private static final Pattern ALIAS_MATCHER_PATTERN = Pattern.compile("[\"'][\\S ]+[\"']|<\\S+[\\s/>]");
@@ -38,7 +38,7 @@ public class TrieFactory {
 	
 	private TrieFactory(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
-		trie = new MemoizedValue<>(assetContainer.dir()+" - TrieFactory.trie", assetContainer);
+		trie = new LegacyMemoizedValue<>(assetContainer.dir()+" - TrieFactory.trie", assetContainer);
 	}
 	
 	public Trie<AssetReference> createTrie() throws ModelOperationException {

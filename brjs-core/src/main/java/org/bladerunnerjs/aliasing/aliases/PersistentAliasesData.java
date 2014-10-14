@@ -2,7 +2,7 @@ package org.bladerunnerjs.aliasing.aliases;
 
 import java.io.File;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.memoization.LegacyMemoizedValue;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -10,12 +10,12 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 public class PersistentAliasesData {
 	private final BRJS brjs;
 	private final File aliasesFile;
-	private final MemoizedValue<AliasesData> aliasesData;
+	private final LegacyMemoizedValue<AliasesData> aliasesData;
 	
 	public PersistentAliasesData(BRJS brjs, File aliasesFile) {
 		this.brjs = brjs;
 		this.aliasesFile = aliasesFile;
-		aliasesData = new MemoizedValue<>("PersistentAliasesData.aliasesData", brjs, aliasesFile, brjs.file("conf/brjs.conf"));
+		aliasesData = new LegacyMemoizedValue<>("PersistentAliasesData.aliasesData", brjs, aliasesFile, brjs.file("conf/brjs.conf"));
 	}
 	
 	public AliasesData getData() throws ContentFileProcessingException {

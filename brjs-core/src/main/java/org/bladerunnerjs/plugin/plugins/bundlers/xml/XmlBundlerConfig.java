@@ -12,7 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.bladerunnerjs.memoization.Getter;
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.memoization.LegacyMemoizedValue;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.w3c.dom.Document;
@@ -28,12 +28,12 @@ public class XmlBundlerConfig {
 	private Map<String, XmlResourceConfig> configMap = null;
 	private BRJS brjs;
 	private File configFile;
-	private MemoizedValue<Map<String, XmlResourceConfig>> computedConfigValue;
+	private LegacyMemoizedValue<Map<String, XmlResourceConfig>> computedConfigValue;
 	
 	public XmlBundlerConfig(BRJS brjs) {
 		this.brjs = brjs;
 		configFile = brjs.conf().file(CONFIG_FILE_NAME);
-		computedConfigValue = new MemoizedValue<>(configFile.getPath()+" - XmlBundlerConfig.computedConfigValue", brjs, configFile);
+		computedConfigValue = new LegacyMemoizedValue<>(configFile.getPath()+" - XmlBundlerConfig.computedConfigValue", brjs, configFile);
 	}
 	
 	

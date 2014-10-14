@@ -9,15 +9,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.memoization.LegacyMemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final MemoizedValue<Map<String, LinkedAsset>> linkedAssetMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
-	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
+	private final LegacyMemoizedValue<Map<String, LinkedAsset>> linkedAssetMap = new LegacyMemoizedValue<>("AssetContainer.sourceModulesMap", this);
+	private final LegacyMemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new LegacyMemoizedValue<>("AssetContainer.assetLocationsMap", this);
 	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
