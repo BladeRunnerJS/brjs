@@ -22,7 +22,7 @@
 	 */
 
 	var global = Function("return this;")();
-	
+
 	var create = Object.create || function(proto, attributes) {
 		function object() {};
 		object.prototype = proto;
@@ -95,19 +95,16 @@
 
 						console.warn(circularDependencyErrorMessage);
 						console.log("requiring '" + e.requireFirst + "' early to solve the circular dependency problem");
-						throw new RecoverableCircularDependencyError(e.requireFirst);
+						e = new RecoverableCircularDependencyError(e.requireFirst);
 					}
 					else {
 						if(!e.requireFirst && activeRealm._isModuleExported(id)) {
 							e.requireFirst = id;
 						}
-
-						throw e;
 					}
 				}
-				else {
-					throw e;
-				}
+
+				throw e;
 			}
 
 			return exportVal;
@@ -229,14 +226,10 @@
 					}
 					var requireFunc = realmRequireFunc(this, definitionContext, id);
 					var returnValue = definition.call(module, requireFunc, module.exports, module);
-					this.moduleExports[id] = returnValue || module.exports;
-				} else {
-					// this lets you define things without definition functions, e.g.
-					//    define('PI', 3); // Indiana House of Representatives compliant definition of PI
-					// If you want to define something to be a function, you'll need to define a function
-					// that sets module.exports to a function (or returns it).
-					this.moduleExports[id] = definition;
+					definition = returnValue || module.exports;
 				}
+
+				this.moduleExports[id] = definition;
 			}
 			catch(e) {
 				// this is here to slightly improve the dev experience when debugging exceptions that occur within this try/finally block.
