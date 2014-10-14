@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
@@ -24,6 +25,7 @@ public final class TestRootNode extends AbstractRootNode
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(this, TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(this, TestMultiLocationItemNode.class, "single-item-primary-location");
 	private TimeAccessor timeAccessor = new TestTimeAccessor();
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry();
 	private final IO io = new IO();
 	
 	public TestRootNode(File dir) throws InvalidSdkDirectoryException
@@ -99,5 +101,11 @@ public final class TestRootNode extends AbstractRootNode
 	@Override
 	public IO io() {
 		return io ;
+	}
+
+	@Override
+	public FileModificationRegistry getFileModificationRegistry()
+	{
+		return fileModificationRegistry;
 	}
 }

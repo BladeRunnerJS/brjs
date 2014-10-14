@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
@@ -21,14 +22,15 @@ import org.bladerunnerjs.utility.filemodification.TestTimeAccessor;
 public class TestModelAccessor
 {
 
-	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator, FileModificationRegistry fileModificationRegistry) throws InvalidSdkDirectoryException
 	{
 		pluginLocator = (pluginLocator != null) ? pluginLocator : new MockPluginLocator();
 		fileModificationService = (fileModificationService != null) ? fileModificationService : new SpecTestFileModificationService();
 		loggerFactory = (loggerFactory != null) ? loggerFactory : new StubLoggerFactory();
 		appVersionGenerator = (appVersionGenerator != null) ? appVersionGenerator : new MockAppVersionGenerator();		
+		fileModificationRegistry = (fileModificationRegistry != null) ? fileModificationRegistry : new FileModificationRegistry();		
 		
-		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, new TestTimeAccessor(), appVersionGenerator);
+		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, new TestTimeAccessor(), appVersionGenerator, fileModificationRegistry);
 		brjs.setFileModificationService(fileModificationService);
 		
 		return brjs;
@@ -36,27 +38,27 @@ public class TestModelAccessor
 
 	protected BRJS createModel(File brjsDir, FileModificationService fileModificationService) throws InvalidSdkDirectoryException
 	{
-		return createModel(brjsDir, null, fileModificationService, null, null);
+		return createModel(brjsDir, null, fileModificationService, null, null, null);
 	}
 	
 	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, LogMessageStore logStore, AppVersionGenerator versionGenerator) throws InvalidSdkDirectoryException 
 	{	
-		return createModel(brjsDir, pluginLocator, null, new TestLoggerFactory(logStore), versionGenerator);
+		return createModel(brjsDir, pluginLocator, null, new TestLoggerFactory(logStore), versionGenerator, null);
 	}
 	
 	protected BRJS createModel(File brjsDir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{
-		return createModel(brjsDir, null, null, loggerFactory, null);
+		return createModel(brjsDir, null, null, loggerFactory, null, null);
 	}
 	
 	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator) throws InvalidSdkDirectoryException
 	{
-		return createModel(brjsDir, pluginLocator, null, null, null);
+		return createModel(brjsDir, pluginLocator, null, null, null, null);
 	}
 	
 	protected BRJS createModel(File brjsDir) throws InvalidSdkDirectoryException
 	{
-		return createModel(brjsDir, null, null, null, null);
+		return createModel(brjsDir, null, null, null, null, null);
 	}
 	
 	
@@ -71,7 +73,7 @@ public class TestModelAccessor
 	{
 		PluginLocator pluginLocator = new BRJSPluginLocator();
 		AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
-		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, new RealTimeAccessor(), appVersionGenerator);
+		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, new RealTimeAccessor(), appVersionGenerator, new FileModificationRegistry());
 		brjs.setFileModificationService(fileModificationService);
 		
 		return brjs;

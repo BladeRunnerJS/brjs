@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
@@ -18,12 +17,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LegacyMemoizedValueTest extends TestModelAccessor {
+public class MemoizedValueTest extends TestModelAccessor {
 	private File tempDir;
 	private File sdkDir;
 	private File watchFile;
 	private BRJS brjs;
-	private FileInfo watchFileInfo;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -33,7 +31,6 @@ public class LegacyMemoizedValueTest extends TestModelAccessor {
 		
 		sdkDir.mkdir();
 		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator(), new FileModificationRegistry());
-		watchFileInfo = brjs.getFileInfo(watchFile);
 	}
 
 	@After
@@ -43,7 +40,7 @@ public class LegacyMemoizedValueTest extends TestModelAccessor {
 	
 	@Test
 	public void valueIsCalculatedOnFirstInvocationButMemoizedForSubsequentInvocations() {
-		LegacyMemoizedValue<Integer> memoizedValue = new LegacyMemoizedValue<>("id", brjs, watchFile);
+		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("id", brjs, watchFile);
 		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
@@ -53,18 +50,18 @@ public class LegacyMemoizedValueTest extends TestModelAccessor {
 	
 	@Test
 	public void valueIsRecalculatedTheSecondTimeIfTheFileHasChanged() throws IOException {
-		LegacyMemoizedValue<Integer> memoizedValue = new LegacyMemoizedValue<>("id", brjs, watchFile);
+		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("id", brjs, watchFile);
 		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
-		watchFileInfo.resetLastModified();
+		brjs.getFileModificationRegistry().updateLastModified(watchFile);
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 	}
 	
 	@Test
 	public void valueIsRecalculatedTheSecondTimeIfAnExceptionOcurredTheFirstTime() {
-		LegacyMemoizedValue<Integer> memoizedValue = new LegacyMemoizedValue<>("id", brjs, watchFile);
+		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("id", brjs, watchFile);
 		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		try {
@@ -74,7 +71,7 @@ public class LegacyMemoizedValueTest extends TestModelAccessor {
 		}
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
-		watchFileInfo.resetLastModified();
+		brjs.getFileModificationRegistry().updateLastModified(watchFile);
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 	}

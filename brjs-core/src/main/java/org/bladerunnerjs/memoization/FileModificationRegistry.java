@@ -9,16 +9,16 @@ import org.bladerunnerjs.utility.FileUtility;
 public class FileModificationRegistry
 {
 	
-	private TreeMap<String,Integer> lastModifiedMap = new TreeMap<>();
+	private TreeMap<String,Long> lastModifiedMap = new TreeMap<>();
 	
-	public int getLastModified(File file) {
+	public Long getLastModified(File file) {
 		String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
 		return lastModifiedMap.get(canonicalFilePath);
 	}
 
 	public void updateLastModified(File file) {
 		String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
-		int currentLastModified = lastModifiedMap.get(canonicalFilePath);
+		Long currentLastModified = lastModifiedMap.get(canonicalFilePath);
 		lastModifiedMap.put(canonicalFilePath, ++currentLastModified);
 	}
 	
@@ -27,7 +27,7 @@ public class FileModificationRegistry
 	{
 		String canonicalFilePath = FileUtility.getCanonicalFileWhenPossible(file).getAbsolutePath();
 		if (!lastModifiedMap.containsKey(canonicalFilePath)) {
-			lastModifiedMap.put(canonicalFilePath, 0);
+			lastModifiedMap.put(canonicalFilePath, Long.valueOf(0));
 		}
 		return canonicalFilePath;
 	}

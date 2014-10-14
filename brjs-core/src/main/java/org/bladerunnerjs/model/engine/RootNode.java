@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
@@ -27,4 +28,5 @@ public interface RootNode extends Node {
 	Node getRegisteredNode(File childPath) throws MultipleNodesForPathException;
 	Node getRegisteredNode(File childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException;
 	List<Node> getRegisteredNodes(File childPath);
+	FileModificationRegistry getFileModificationRegistry();
 }

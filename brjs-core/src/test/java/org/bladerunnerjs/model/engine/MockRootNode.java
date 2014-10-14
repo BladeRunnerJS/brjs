@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
@@ -23,6 +24,7 @@ import org.bladerunnerjs.utility.filemodification.TimeAccessor;
 public class MockRootNode implements RootNode
 {
 	private TimeAccessor timeAccessor = new TestTimeAccessor();
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry();
 	
 	@Override
 	public Node parentNode()
@@ -259,5 +261,11 @@ public class MockRootNode implements RootNode
 	public String getTypeName()
 	{
 		return this.getClass().getSimpleName();
+	}
+
+	@Override
+	public FileModificationRegistry getFileModificationRegistry()
+	{
+		return fileModificationRegistry;
 	}
 }
