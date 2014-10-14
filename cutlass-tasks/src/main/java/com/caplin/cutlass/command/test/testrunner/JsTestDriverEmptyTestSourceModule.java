@@ -43,12 +43,12 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 		return sourceModule.getAssetName();
 	}
 	
-	public List<Asset> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return sourceModule.getDefineTimeSourceModules(bundlableNode);
+	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return sourceModule.getDefineTimeDependentAssets(bundlableNode);
 	}
 	
-	public List<Asset> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return sourceModule.getUseTimeSourceModules(bundlableNode);
+	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return sourceModule.getUseTimeDependentAssets(bundlableNode);
 	}
 	
 	public String getAssetPath() {

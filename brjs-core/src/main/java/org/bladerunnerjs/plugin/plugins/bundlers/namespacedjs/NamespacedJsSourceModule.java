@@ -51,8 +51,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
  	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependendAssets = new ArrayList<>();
-		dependendAssets.addAll( getDefineTimeSourceModules(bundlableNode) );
-		dependendAssets.addAll( getUseTimeSourceModules(bundlableNode) );
+		dependendAssets.addAll( getDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
 		return dependendAssets;
 	}
 	
@@ -110,7 +110,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<Asset> getDefineTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {		
+	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
 			 return bundlableNode.getLinkedAssets(assetLocation, getDefineTimeDependencyCalculator().getRequirePaths());
 		}
@@ -120,7 +120,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<Asset> getUseTimeSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
 			return bundlableNode.getLinkedAssets(assetLocation, getUseTimeDependencyCalculator().getRequirePaths());
 		}
