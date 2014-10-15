@@ -10,10 +10,19 @@ public class FileModificationRegistry
 {
 	
 	private TreeMap<String,Long> lastModifiedMap = new TreeMap<>();
+
+	// a temporary hack so we can optionally use values from disk until fully moved over to the new file modified checker
+	private boolean useLogicalModifiedTime;
+	public FileModificationRegistry() { this(false); }
+	public FileModificationRegistry(boolean useLogicalModifiedTime) { this.useLogicalModifiedTime = useLogicalModifiedTime; }
+	
 	
 	public Long getLastModified(File file) {
-		String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
-		return lastModifiedMap.get(canonicalFilePath);
+		if (useLogicalModifiedTime) {
+			String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
+			return lastModifiedMap.get(canonicalFilePath);
+		}
+		return file.lastModified();
 	}
 
 	public void updateLastModified(File file) {

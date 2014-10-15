@@ -30,7 +30,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 		sdkDir = new File(tempDir, "sdk");
 		
 		sdkDir.mkdir();
-		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator(), new FileModificationRegistry());
+		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator(), new FileModificationRegistry(true));
 	}
 
 	@After
