@@ -557,4 +557,19 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsNamespacedJsClasses("appns.AspectClass");
 	}
 	
+	@Test
+	public void useTimeDependenciesAreRequiredBelowModuleExports() throws Exception {
+		given(aspect).indexPageRequires("appns/Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+    		.and(aspect).classFileHasContent("appns.Class1", "function MyClass() { new appns.Class2(); }")
+    		.and(aspect).classFileHasContent("appns.Class2", "");
+		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+			"define('appns/Class1'",
+			"module.exports = appns.Class1;",
+			"requireAll(require, window, ['appns/Class2']);");
+	}
+	
+	
+	
 }

@@ -42,7 +42,7 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	}
 	
 	@Test
-	public void sourceInsidenestedBracesIsRemoved() throws IOException
+	public void sourceInsideNestedBracesIsRemoved() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -362,6 +362,23 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 			);
 	}
 	
+	@Test
+	public void codeOutsideOfCodeBlocksCanBeOptionalStrippedInstead() throws Exception {
+		stripCodeOutsideCodeBlocksAndAssertEquals(
+			lines(
+					"(function() {",
+					"filtered code...",
+					"function FOO() {",
+					"unfiltered code...",
+					"}",
+					")()"),
+			lines(
+					"",
+					"unfiltered code...",
+					"}")
+		);
+	}
+	
 	private String zeroPad(int size) {
 		return StringUtils.leftPad("", size, '0')+"\n";
 	}
@@ -374,12 +391,20 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	private void stripCodeBlocksAndAssertEquals(String input, String expectedOutput) throws IOException
 	{
 		CharBufferPool pool = new CharBufferPool();
-		try(Reader reader = new JsCodeBlockStrippingDependenciesReader(new StringReader(input), pool);
-			    StringWriter stringWriter = new StringWriter())
-			{
-				IOUtils.copy(reader, stringWriter);
-				assertEquals( expectedOutput, stringWriter.toString() );
-			}
+		stripCodeBlocksAndAssertEquals(input, expectedOutput, new JsCodeBlockStrippingDependenciesReader(new StringReader(input), pool));
 	}
+	
+	private void stripCodeOutsideCodeBlocksAndAssertEquals(String input, String expectedOutput) throws IOException
+	{
+		CharBufferPool pool = new CharBufferPool();
+		stripCodeBlocksAndAssertEquals(input, expectedOutput, new JsCodeBlockStrippingDependenciesReader(new StringReader(input), pool, new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0)));
+	}
+	
+	private void stripCodeBlocksAndAssertEquals(String input, String expectedOutput, Reader reader) throws IOException {
+		StringWriter stringWriter = new StringWriter();
+		IOUtils.copy(reader, stringWriter);
+		assertEquals( expectedOutput, stringWriter.toString() );
+	}
+	
 	
 }
