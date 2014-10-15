@@ -115,21 +115,11 @@
 					e.dependencies.unshift(id);
 
 					if(e.dependencies[0] == e.dependencies[e.dependencies.length - 1]) {
-						var circularDependencyErrorMessage = "Circular dependency detected: " + e.dependencyChain();
-
-						if(!e.requireFirst) throw new Error(circularDependencyErrorMessage);
-
-						console.warn(circularDependencyErrorMessage);
-						console.log("requiring '" + e.requireFirst + "' early to solve the circular dependency problem");
-						e = new RecoverableCircularDependencyError(e.requireFirst);
+						e = new Error("Circular dependency detected: " + e.dependencyChain());
 					}
 					else {
 						if(activeRealm._isModuleExported(id)) {
 							e.exportedModules[id] = true;
-
-							if(!e.requireFirst) {
-								e.requireFirst = id;
-							}
 						}
 					}
 				}
@@ -158,10 +148,6 @@
 		message.push(this.dependencies[this.dependencies.length - 1]);
 
 		return message.join(' ');
-	}
-
-	function RecoverableCircularDependencyError(requirePath) {
-		this.requirePath = requirePath;
 	}
 
 	function ModuleExports() {
@@ -258,43 +244,33 @@
 		var module = { id: id, exports: new ModuleExports() };
 		this.incompleteExports[id] = module;
 		try {
-			try {
-				if (typeof definition === 'function') {
-					var idx = id.lastIndexOf("/");
-					// At the top level the context is the module id, at other levels, the context is the
-					// path to the module. This is because we assume that everything at the top level is
-					// a directory module and everything else is a file module.
-					var definitionContext = id;
-					if (idx >= 0) {
-						definitionContext = id.substring(0, id.lastIndexOf("/"));
-					}
-					var requireFunc = realmRequireFunc(this, definitionContext, id);
-					var returnValue = definition.call(module, requireFunc, module.exports, module);
-					definition = returnValue || module.exports;
+			if (typeof definition === 'function') {
+				var idx = id.lastIndexOf("/");
+				// At the top level the context is the module id, at other levels, the context is the
+				// path to the module. This is because we assume that everything at the top level is
+				// a directory module and everything else is a file module.
+				var definitionContext = id;
+				if (idx >= 0) {
+					definitionContext = id.substring(0, id.lastIndexOf("/"));
 				}
+				var requireFunc = realmRequireFunc(this, definitionContext, id);
+				var returnValue = definition.call(module, requireFunc, module.exports, module);
+				definition = returnValue || module.exports;
+			}
 
-				this.moduleExports[id] = definition;
-			}
-			catch(e) {
-				// this is here to slightly improve the dev experience when debugging exceptions that occur within this try/finally block.
-				// see <http://blog.hackedbrain.com/2009/03/28/ie-javascript-debugging-near-useless-when-trycatchfinally-is-used/> for more information.
-				throw e;
-			}
-			finally {
-				// If there was an error, we want to run the definition again next time it is required
-				// so we clean up whether it succeeded or failed.
-				delete this.incompleteExports[id];
-			}
+			this.moduleExports[id] = definition;
 		}
 		catch(e) {
-			if(e instanceof RecoverableCircularDependencyError) {
-				this.require(context, e.requirePath);
-				this.require(context, id);
-			}
-			else {
-				throw e;
-			}
+			// this is here to slightly improve the dev experience when debugging exceptions that occur within this try/finally block.
+			// see <http://blog.hackedbrain.com/2009/03/28/ie-javascript-debugging-near-useless-when-trycatchfinally-is-used/> for more information.
+			throw e;
 		}
+		finally {
+			// If there was an error, we want to run the definition again next time it is required
+			// so we clean up whether it succeeded or failed.
+			delete this.incompleteExports[id];
+		}
+
 		return this.moduleExports[id];
 	};
 
