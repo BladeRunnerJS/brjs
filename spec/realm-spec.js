@@ -132,7 +132,7 @@ describe('a realm', function() {
 
 		expect(function() {
 			testRealm.require('pkg/ClassA');
-		}).toThrow(Error('Circular dependency detected: pkg/ClassA -> pkg/ClassB -> pkg/ClassA'));
+		}).toThrow(Error('Circular dependency detected: pkg/ClassA => pkg/ClassB => pkg/ClassA'));
 	});
 
 	it('throws an error even when a define-time dependency is partially, but not wholly, exported', function() {
@@ -152,7 +152,7 @@ describe('a realm', function() {
 
 		expect(function() {
 			testRealm.require('pkg/A');
-		}).toThrow('Circular dependency detected: pkg/A -> pkg/B -> pkg/A');
+		}).toThrow('Circular dependency detected: pkg/A => pkg/B => pkg/A');
 	});
 
 	it('tolerates use-time circular dependencies', function() {
@@ -223,7 +223,7 @@ describe('a realm', function() {
 		expect(new B() instanceof A).toBeTruthy();
 		expect((new A()).b instanceof B).toBeTruthy();
 
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: pkg/ClassB -> pkg/ClassA -> pkg/ClassB');
+		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: pkg/ClassB => pkg/ClassA -> pkg/ClassB');
 		expect(mockConsole.messages.shift()).toBe("info: requiring 'pkg/ClassA' early to solve the circular dependency problem");
 	});
 
@@ -262,7 +262,7 @@ describe('a realm', function() {
 		expect((new B()).c instanceof C).toBeTruthy();
 		expect(new C() instanceof A).toBeTruthy();
 
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: pkg/ClassC -> pkg/ClassA -> pkg/ClassB -> pkg/ClassC');
+		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: pkg/ClassC => pkg/ClassA => pkg/ClassB -> pkg/ClassC');
 		expect(mockConsole.messages.shift()).toBe("info: requiring 'pkg/ClassB' early to solve the circular dependency problem");
 	});
 
@@ -565,9 +565,9 @@ describe('a realm', function() {
 		var C = testRealm.require('C');
 		var X = testRealm.require('X');
 
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A -> B -> C -> A');
+		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A => B => C -> A');
 		expect(mockConsole.messages.shift()).toBe("info: requiring 'C' early to solve the circular dependency problem");
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A -> B -> X -> A');
+		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A => B -> X -> A');
 		expect(mockConsole.messages.shift()).toBe("info: requiring 'X' early to solve the circular dependency problem");
 
 		expect(new A() instanceof B).toBe(true);
@@ -630,9 +630,9 @@ describe('a realm', function() {
 		var X = testRealm.require('X');
 		var S = testRealm.require('S');
 
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A -> B -> C -> A');
+		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A => B => C -> A');
 		expect(mockConsole.messages.shift()).toBe("info: requiring 'C' early to solve the circular dependency problem");
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A -> B -> X -> S -> A');
+		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A => B -> X -> S -> A');
 		expect(mockConsole.messages.shift()).toBe("info: requiring 'S' early to solve the circular dependency problem");
 
 		expect(new A() instanceof B).toBe(true);

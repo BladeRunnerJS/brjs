@@ -89,7 +89,7 @@
 					e.dependencies.unshift(id);
 
 					if(e.dependencies[0] == e.dependencies[e.dependencies.length - 1]) {
-						var circularDependencyErrorMessage = "Circular dependency detected: " + e.dependencies.join(' -> ');
+						var circularDependencyErrorMessage = "Circular dependency detected: " + e.dependencyChain();
 
 						if(!e.requireFirst) throw new Error(circularDependencyErrorMessage);
 
@@ -98,8 +98,12 @@
 						e = new RecoverableCircularDependencyError(e.requireFirst);
 					}
 					else {
-						if(!e.requireFirst && activeRealm._isModuleExported(id)) {
-							e.requireFirst = id;
+						if(activeRealm._isModuleExported(id)) {
+							e.exportedModules[id] = true;
+
+							if(!e.requireFirst) {
+								e.requireFirst = id;
+							}
 						}
 					}
 				}
@@ -113,7 +117,21 @@
 
 	function CircularDependencyError(requirePath) {
 		this.dependencies = [requirePath];
+		this.exportedModules = {};
 		this.prototype = {};
+	}
+
+	CircularDependencyError.prototype.dependencyChain = function() {
+		var message = [];
+
+		for(var i = 0; i < (this.dependencies.length - 1); ++i) {
+			var dependency = this.dependencies[i];
+			message.push(dependency);
+			message.push((dependency in this.exportedModules) ? '->' : '=>')
+		}
+		message.push(this.dependencies[this.dependencies.length - 1]);
+
+		return message.join(' ');
 	}
 
 	function RecoverableCircularDependencyError(requirePath) {
