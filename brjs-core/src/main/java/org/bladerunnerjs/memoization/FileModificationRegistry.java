@@ -17,7 +17,7 @@ public class FileModificationRegistry
 	public FileModificationRegistry(boolean useLogicalModifiedTime) { this.useLogicalModifiedTime = useLogicalModifiedTime; }
 	
 	
-	public Long getLastModified(File file) {
+	public synchronized Long getLastModified(File file) {
 		if (useLogicalModifiedTime) {
 			String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
 			return lastModifiedMap.get(canonicalFilePath);
@@ -25,10 +25,15 @@ public class FileModificationRegistry
 		return file.lastModified();
 	}
 
-	public void updateLastModified(File file) {
+	public synchronized void updateLastModified(File file) {
 		String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
-		Long currentLastModified = lastModifiedMap.get(canonicalFilePath);
-		lastModifiedMap.put(canonicalFilePath, ++currentLastModified);
+		Long currentLastModified;
+		for (String filePathKey : lastModifiedMap.keySet()) {
+			if (filePathKey.startsWith(canonicalFilePath)) {
+				currentLastModified = lastModifiedMap.get(filePathKey);
+				lastModifiedMap.put(filePathKey, ++currentLastModified);
+			}
+		}
 	}
 	
 	

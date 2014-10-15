@@ -33,7 +33,7 @@ public class MemoizedValue<T extends Object> {
 		FileModificationRegistry fileModificationRegistry = rootNode.getFileModificationRegistry();
 		
 		for(File file : watchItems) {
-			watchList.add( new FileModifiedChecker(fileModificationRegistry, file));
+			watchList.add( new FileModifiedChecker(fileModificationRegistry, rootNode, file));
 		}
 	}
 	

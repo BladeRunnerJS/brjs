@@ -22,11 +22,13 @@ public class MemoizedValueTest extends TestModelAccessor {
 	private File sdkDir;
 	private File watchFile;
 	private BRJS brjs;
+	private File watchFileChild;
 	
 	@Before
 	public void setUp() throws Exception {
 		tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		watchFile = new File(tempDir, "watch-file");
+		watchFileChild = new File(tempDir, "watch-file/some/sub/dir/watch-file");
 		sdkDir = new File(tempDir, "sdk");
 		
 		sdkDir.mkdir();
@@ -69,6 +71,17 @@ public class MemoizedValueTest extends TestModelAccessor {
 		}
 		catch(RuntimeException e) {
 		}
+		
+		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
+		brjs.getFileModificationRegistry().updateLastModified(watchFile);
+		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
+		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
+	}
+	
+	@Test
+	public void valueIsRecreatedIfAParentDirectoryChanges() {
+		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("id", brjs, watchFileChild);
+		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
 		brjs.getFileModificationRegistry().updateLastModified(watchFile);
