@@ -355,4 +355,10 @@ public abstract class AbstractNode implements Node
 		}
 		return getTypeName()+", dir: " + dir().getPath();
 	}
+	
+	@Override
+	public void updateLastModified()
+	{
+    	rootNode.getFileModificationRegistry().updateLastModified( dir() );
+	}
 }

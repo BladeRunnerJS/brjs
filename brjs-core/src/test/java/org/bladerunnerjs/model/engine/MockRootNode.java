@@ -268,4 +268,9 @@ public class MockRootNode implements RootNode
 	{
 		return fileModificationRegistry;
 	}
+	
+	@Override
+	public void updateLastModified()
+	{		
+	}
 }

@@ -259,4 +259,10 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	{
 		return this.getClass().getSimpleName();
 	}
+	
+	@Override
+	public void updateLastModified()
+	{
+		bundlableNode.updateLastModified();	
+	}
 }

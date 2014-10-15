@@ -236,4 +236,10 @@ public final class AppSdkJsLib implements JsLib {
 	{
 		return sdkJsLib.testType(type);
 	}
+	
+	@Override
+	public void updateLastModified()
+	{
+		sdkJsLib.updateLastModified();
+	}
 }

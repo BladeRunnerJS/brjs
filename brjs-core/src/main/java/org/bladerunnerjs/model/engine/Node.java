@@ -31,4 +31,5 @@ public interface Node {
 	void notifyObservers(Event event, Node notifyForNode);
 	ObserverList getObservers();
 	void discoverAllChildren();
+	void updateLastModified();
 }
