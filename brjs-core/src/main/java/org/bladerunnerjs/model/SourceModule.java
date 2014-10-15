@@ -14,10 +14,20 @@ public interface SourceModule extends LinkedAsset {
 	boolean isGlobalisedModule();
 	
 	/**
-	 * Returns a list of source files that *must* precede this source file in the output 
+	 * Returns a list of source files that are 'define time' dependencies of this source module.
+	 * These dependencies *must* precede this source file in the output so they are available when the module is defined.
+	 *  
 	 * @param bundlableNode TODO
 	 */
-	List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
+	List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
+	
+	/**
+	 * Returns a list of source files that are 'use time' dependencies of this source module.
+	 * These dependencies can appear at any point in the output.
+	 * 
+	 * @param bundlableNode TODO
+	 */
+	List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
 	
 	List<AssetLocation> assetLocations();
 }
