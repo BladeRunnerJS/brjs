@@ -8,7 +8,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BundleCachingTest extends SpecTest 
@@ -53,14 +52,12 @@ public class BundleCachingTest extends SpecTest
 			.and(response).doesNotContainText("appns.Class1");
 	}
 	
-	// TODO: find out why this breaks even though it's not because of caching?
-	@Ignore
 	@Test
 	public void weDoNotCacheAspectSourceDependencies() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(app).hasReceivedRequest("/default-aspect/js/dev/combined/bundle.js");
+			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
 		when(thirdpartyLib).populate()
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file1.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file1.js", "thirdpartyLib content")
@@ -71,7 +68,7 @@ public class BundleCachingTest extends SpecTest
 				"thirdpartyLib content", 
 				"mergePackageBlock(window, {\"appns\":{}});",
 				"Class1 = function()",
-				"module.exports = Class1");
+				"module.exports = appns.Class1");
 	}
 	
 	@Test
