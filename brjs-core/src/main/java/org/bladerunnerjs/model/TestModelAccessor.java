@@ -41,9 +41,9 @@ public class TestModelAccessor
 		return createModel(brjsDir, null, fileModificationService, null, null, null);
 	}
 	
-	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, LogMessageStore logStore, AppVersionGenerator versionGenerator) throws InvalidSdkDirectoryException 
+	protected BRJS createModel(File brjsDir, PluginLocator pluginLocator, LogMessageStore logStore, AppVersionGenerator versionGenerator, FileModificationRegistry fileModificationRegistry) throws InvalidSdkDirectoryException 
 	{	
-		return createModel(brjsDir, pluginLocator, null, new TestLoggerFactory(logStore), versionGenerator, null);
+		return createModel(brjsDir, pluginLocator, null, new TestLoggerFactory(logStore), versionGenerator, fileModificationRegistry);
 	}
 	
 	protected BRJS createModel(File brjsDir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
@@ -62,18 +62,18 @@ public class TestModelAccessor
 	}
 	
 	
-	public BRJS createNonTestModel(File brjsDir, LogMessageStore logStore) throws InvalidSdkDirectoryException
+	public BRJS createNonTestModel(File brjsDir, LogMessageStore logStore, FileModificationRegistry fileModificationRegistry) throws InvalidSdkDirectoryException
 	{
 		LoggerFactory loggerFactory = new TestLoggerFactory(logStore);
 		FileModificationService fileModificationService = new Java7FileModificationService(loggerFactory);
-		return createNonTestModel(brjsDir, logStore, loggerFactory, fileModificationService);
+		return createNonTestModel(brjsDir, logStore, loggerFactory, fileModificationService, fileModificationRegistry);
 	}
 	
-	public BRJS createNonTestModel(File brjsDir, LogMessageStore logStore, LoggerFactory loggerFactory, FileModificationService fileModificationService) throws InvalidSdkDirectoryException
+	public BRJS createNonTestModel(File brjsDir, LogMessageStore logStore, LoggerFactory loggerFactory, FileModificationService fileModificationService, FileModificationRegistry fileModificationRegistry) throws InvalidSdkDirectoryException
 	{
 		PluginLocator pluginLocator = new BRJSPluginLocator();
 		AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
-		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, new RealTimeAccessor(), appVersionGenerator, new FileModificationRegistry());
+		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, new RealTimeAccessor(), appVersionGenerator, fileModificationRegistry);
 		brjs.setFileModificationService(fileModificationService);
 		
 		return brjs;

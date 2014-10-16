@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
@@ -103,6 +104,7 @@ public abstract class SpecTest extends TestModelAccessor
 	public int appServerPort;
 	public WebappTester webappTester;
 	public MockAppVersionGenerator appVersionGenerator;
+	public FileModificationRegistry fileModificationRegistry;
 	
 	@Before
 	public void resetTestObjects()
@@ -117,6 +119,7 @@ public abstract class SpecTest extends TestModelAccessor
 		pluginLocator = new MockPluginLocator();
 		webappTester = new WebappTester(testSdkDirectory);
 		appVersionGenerator = new MockAppVersionGenerator();
+		fileModificationRegistry = new FileModificationRegistry();
 	}
 	
 	@After
@@ -144,15 +147,15 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return super.createModel(testSdkDirectory, pluginLocator, logging, appVersionGenerator);
+		return super.createModel(testSdkDirectory, pluginLocator, logging, appVersionGenerator, fileModificationRegistry);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
-		return super.createNonTestModel(testSdkDirectory, logging);
+		return super.createNonTestModel(testSdkDirectory, logging, fileModificationRegistry);
 	}
 	
 	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
-		return super.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging), new SpecTestFileModificationService());
+		return super.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging), new SpecTestFileModificationService(), fileModificationRegistry);
 	}
 	
 	public String getActiveCharacterEncoding() {

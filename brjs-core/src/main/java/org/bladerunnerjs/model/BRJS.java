@@ -84,6 +84,8 @@ public class BRJS extends AbstractBRJSRootNode
 		super(brjsDir, loggerFactory);
 		this.timeAccessor = timeAccessor;
 		this.workingDir = new WorkingDirNode(this, brjsDir);
+		this.appVersionGenerator = appVersionGenerator;
+		this.fileModificationRegistry = fileModificationRegistry;
 		
 		fileModificationService.initialise(dir, timeAccessor, fileInfoAccessor);
 		
@@ -101,8 +103,6 @@ public class BRJS extends AbstractBRJSRootNode
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
-		this.appVersionGenerator = appVersionGenerator;
-		this.fileModificationRegistry = fileModificationRegistry;
 	}
 	
 	public void setFileModificationService(FileModificationService fileModificationService) {
