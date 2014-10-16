@@ -18,17 +18,16 @@
 		for (var i = 0; i < requirePaths.length; i++) {
 			var requirePath = requirePaths[i];
 			var namespacePath = requirePath.replace(/\//gi, ".");
-			mergePackageBlock( globalObj, convertToPackageBlock(namespacePath) );
-			globaliseRequirePath(require, requirePath, namespacePath);
+			globaliseRequirePath(namespacePath, require(requirePath));
 		}
 	}
 
 	/* private stuff */
 
-	var globaliseRequirePath = function(require, requirePath, namespacePath) {
+	var globaliseRequirePath = function(namespacePath, exportedObject) {
 		var namespacePathContext = getContextForNamespacePath(namespacePath);
 		var namespaceKeyName = namespacePath.split(".").pop();
-		namespacePathContext[namespaceKeyName] = require(requirePath);
+		namespacePathContext[namespaceKeyName] = exportedObject;
 	}
 
 	var convertToPackageBlock = function(namespacePath) {
