@@ -57,6 +57,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer hasClass(String className) throws Exception
 	{
 		fileUtil.write(getSourceFile(className), getClassBody(className));
+		specTest.fileModificationRegistry.incrementFileVersion(getSourceFile(className));
+		
 		return builderChainer;
 	}
 	

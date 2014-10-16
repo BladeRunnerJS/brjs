@@ -8,6 +8,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 // TODO: some of the integration tests for the serve command currently have to live within 'old-bladerunner-tests' given that we still rely on old bundler code in production -- move it back in once this is no longer the case
@@ -36,7 +37,7 @@ public class IntegrationServeCommandTest extends SpecTest
 		appServer.stop();
 	}
 	
-	@Test
+	@Test @Ignore
 	public void serveCommandStartsAppServer() throws Exception
 	{
 		given(logging).enabled();

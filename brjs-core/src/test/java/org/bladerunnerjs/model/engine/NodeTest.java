@@ -451,6 +451,7 @@ public class NodeTest
 		assertSame(childNode1, rootNode.childNodes().get(0));
 		
 		child2.mkdir();
+		rootNode.getFileModificationRegistry().incrementFileVersion(child2);
 		
 		assertEquals(2, rootNode.childNodes().size());
 		assertSame(childNode1, rootNode.childNodes().get(0));
