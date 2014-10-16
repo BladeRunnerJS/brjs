@@ -106,6 +106,8 @@ public abstract class SpecTest extends TestModelAccessor
 	public MockAppVersionGenerator appVersionGenerator;
 	public FileModificationRegistry fileModificationRegistry;
 	
+	private boolean fileModificationRegistryReset;;
+	
 	@Before
 	public void resetTestObjects()
 	{
@@ -120,6 +122,7 @@ public abstract class SpecTest extends TestModelAccessor
 		webappTester = new WebappTester(testSdkDirectory);
 		appVersionGenerator = new MockAppVersionGenerator();
 		fileModificationRegistry = new FileModificationRegistry(testSdkDirectory.getParentFile());
+		fileModificationRegistryReset = false;
 	}
 	
 	@After
@@ -191,114 +194,114 @@ public abstract class SpecTest extends TestModelAccessor
 
 	// File
 	public FileTestBuilder given(File file) { return new FileTestBuilder(this, file); }
-	public FileTestBuilder when(File file) { return new FileTestBuilder(this, file); }
+	public FileTestBuilder when(File file) { finishedTestSetup(); return new FileTestBuilder(this, file); }
 	
 	// exceptions
 	protected ExceptionsBuilder given(List<Throwable> exceptions) { return new ExceptionsBuilder(this, exceptions); }
-	public ExceptionsVerifier then(List<Throwable> exceptions) { return new ExceptionsVerifier(this, exceptions); }
+	public ExceptionsVerifier then(List<Throwable> exceptions) { finishedTestSetup(); return new ExceptionsVerifier(this, exceptions); }
 	public StringBuilder unquoted(String string) { return new StringBuilder(string); }
 	public StringBuilder doubleQuoted(String string) { return new StringBuilder("\"" + string + "\""); }
 	
 	// logging
 	public LoggerBuilder given(LogMessageStore logStore) { return new LoggerBuilder(this, logStore); }
-	public LoggerVerifier then(LogMessageStore logStore) { return new LoggerVerifier(this, logStore); }
+	public LoggerVerifier then(LogMessageStore logStore) { finishedTestSetup(); return new LoggerVerifier(this, logStore); }
 	
 	// node observer
 	public NodeObserverBuilder given(EventObserver observer) { return new NodeObserverBuilder(this, observer); }
-	public NodeObserverVerifier then(EventObserver observer) { return new NodeObserverVerifier(this, observer); }
+	public NodeObserverVerifier then(EventObserver observer) { finishedTestSetup(); return new NodeObserverVerifier(this, observer); }
 	
 	// NamedDirNode
 	public NamedNodeBuilder given(NamedNode namedDirNode) { return new NamedNodeBuilder(this, namedDirNode); }
-	public NamedNodeCommander when(NamedNode namedDirNode) { return new NamedNodeCommander(this, namedDirNode); }
-	public NamedNodeVerifier then(NamedNode namedDirNode) { return new NamedNodeVerifier(this, namedDirNode); }
+	public NamedNodeCommander when(NamedNode namedDirNode) { finishedTestSetup(); return new NamedNodeCommander(this, namedDirNode); }
+	public NamedNodeVerifier then(NamedNode namedDirNode) { finishedTestSetup(); return new NamedNodeVerifier(this, namedDirNode); }
 	
 	// Directory
-	public DirectoryVerifier then(File dir) { return new DirectoryVerifier(this, dir); }
+	public DirectoryVerifier then(File dir) { finishedTestSetup(); return new DirectoryVerifier(this, dir); }
 	
 	// StringBuffer
-	public StringVerifier then(StringBuffer stringBuffer) { return new StringVerifier(this, stringBuffer); }
-	public StringVerifier then(String string) { return new StringVerifier(this, string); }
+	public StringVerifier then(StringBuffer stringBuffer) { finishedTestSetup(); return new StringVerifier(this, stringBuffer); }
+	public StringVerifier then(String string) { finishedTestSetup(); return new StringVerifier(this, string); }
 	
 	// BRJS
 	public BRJSBuilder given(BRJS brjs) { return new BRJSBuilder(this, brjs); }
-	public BRJSCommander when(BRJS brjs) { return new BRJSCommander(this, brjs); }
-	public BRJSVerifier then(BRJS brjs) { return new BRJSVerifier(this, brjs); }
+	public BRJSCommander when(BRJS brjs) { finishedTestSetup(); return new BRJSCommander(this, brjs); }
+	public BRJSVerifier then(BRJS brjs) { finishedTestSetup(); return new BRJSVerifier(this, brjs); }
 	
 	// BladerunnerConf
 	public BladerunnerConfBuilder given(BladerunnerConf bladerunnerConf) { return new BladerunnerConfBuilder(this, bladerunnerConf); }
 	
 	// NodeProperties
 	public NodePropertiesBuilder given(NodeProperties nodeProperties) { return new NodePropertiesBuilder(this, nodeProperties); }
-	public NodePropertiesCommander when(NodeProperties nodeProperties) { return new NodePropertiesCommander(this, nodeProperties); }
-	public NodePropertiesVerifier then(NodeProperties nodeProperties) { return new NodePropertiesVerifier(this, nodeProperties); }
+	public NodePropertiesCommander when(NodeProperties nodeProperties) { finishedTestSetup(); return new NodePropertiesCommander(this, nodeProperties); }
+	public NodePropertiesVerifier then(NodeProperties nodeProperties) { finishedTestSetup(); return new NodePropertiesVerifier(this, nodeProperties); }
 	
 	// App
 	public AppBuilder given(App app) { return new AppBuilder(this, app); }
-	public AppCommander when(App app) { return new AppCommander(this, app); }
-	public AppVerifier then(App app) { return new AppVerifier(this, app); }
+	public AppCommander when(App app) { finishedTestSetup(); return new AppCommander(this, app); }
+	public AppVerifier then(App app) { finishedTestSetup(); return new AppVerifier(this, app); }
 	
 	// AppConf
 	public AppConfBuilder given(AppConf appConf) { return new AppConfBuilder(this, appConf); }
-	public AppConfCommander when(AppConf appConf) { return new AppConfCommander(this, appConf); }
-	public AppConfVerifier then(AppConf appConf) { return new AppConfVerifier(this, appConf); }
+	public AppConfCommander when(AppConf appConf) { finishedTestSetup(); return new AppConfCommander(this, appConf); }
+	public AppConfVerifier then(AppConf appConf) { finishedTestSetup(); return new AppConfVerifier(this, appConf); }
 	
 	// Aspect
 	public AspectBuilder given(Aspect aspect) { return new AspectBuilder(this, aspect); }
-	public AspectCommander when(Aspect aspect) { return new AspectCommander(this, aspect); }
-	public AspectVerifier then(Aspect aspect) { return new AspectVerifier(this, aspect); }
+	public AspectCommander when(Aspect aspect) { finishedTestSetup(); return new AspectCommander(this, aspect); }
+	public AspectVerifier then(Aspect aspect) { finishedTestSetup(); return new AspectVerifier(this, aspect); }
 	
 	// Blade
 	public AssetContainerBuilder<Blade> given(Blade blade) { return new BladeBuilder(this, blade); }
-	public BladeCommander when(Blade blade) { return new BladeCommander(this, blade); }
-	public BladeVerifier then(Blade blade) { return new BladeVerifier(this, blade); }
+	public BladeCommander when(Blade blade) { finishedTestSetup(); return new BladeCommander(this, blade); }
+	public BladeVerifier then(Blade blade) { finishedTestSetup(); return new BladeVerifier(this, blade); }
 
 	// Bladeset
 	public AssetContainerBuilder<Bladeset> given(Bladeset bladeset) { return new BladesetBuilder(this, bladeset); }
-	public BladesetCommander when(Bladeset bladeset) { return new BladesetCommander(this, bladeset); }
-	public BladesetVerifier then(Bladeset bladeset) { return new BladesetVerifier(this, bladeset); }
+	public BladesetCommander when(Bladeset bladeset) { finishedTestSetup(); return new BladesetCommander(this, bladeset); }
+	public BladesetVerifier then(Bladeset bladeset) { finishedTestSetup(); return new BladesetVerifier(this, bladeset); }
 	
 	// Workbench
 	public WorkbenchBuilder given(Workbench workbench) { return new WorkbenchBuilder(this, workbench); }
-	public WorkbenchCommander when(Workbench workbench) { return new WorkbenchCommander(this, workbench); }
-	public WorkbenchVerifier then(Workbench workbench) { return new WorkbenchVerifier(this, workbench); }
+	public WorkbenchCommander when(Workbench workbench) { finishedTestSetup(); return new WorkbenchCommander(this, workbench); }
+	public WorkbenchVerifier then(Workbench workbench) { finishedTestSetup(); return new WorkbenchVerifier(this, workbench); }
 	
 	// JsLib
 	public JsLibBuilder given(JsLib jsLib) { return new JsLibBuilder(this, jsLib); }
-	public JsLibCommander when(JsLib jsLib) { return new JsLibCommander(this, jsLib); }
-	public JsLibVerifier then(JsLib jsLib) { return new JsLibVerifier(this, jsLib); }
+	public JsLibCommander when(JsLib jsLib) { finishedTestSetup(); return new JsLibCommander(this, jsLib); }
+	public JsLibVerifier then(JsLib jsLib) { finishedTestSetup(); return new JsLibVerifier(this, jsLib); }
 	
 	// AssetLocation
 	public AssetLocationBuilder given(AssetLocation assetLocation) { return new AssetLocationBuilder(this, assetLocation); }
 	
 	// DirNode
 	public DirNodeBuilder given(DirNode dirNode) { return new DirNodeBuilder(this, dirNode); }
-	public DirNodeCommander when(DirNode dirNode) { return new DirNodeCommander(this, dirNode); }
-	public DirNodeVerifier then(DirNode dirNode) { return new DirNodeVerifier(this, dirNode); }
+	public DirNodeCommander when(DirNode dirNode) { finishedTestSetup(); return new DirNodeCommander(this, dirNode); }
+	public DirNodeVerifier then(DirNode dirNode) { finishedTestSetup(); return new DirNodeVerifier(this, dirNode); }
 	
 	// NamedDirNode
 	public NamedDirNodeBuilder given(NamedDirNode namedDirNode) { return new NamedDirNodeBuilder(this, namedDirNode); }
-	public NamedDirNodeCommander when(NamedDirNode namedDirNode) { return new NamedDirNodeCommander(this, namedDirNode); }
-	public NamedDirNodeVerifier then(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(this, namedDirNode); }
+	public NamedDirNodeCommander when(NamedDirNode namedDirNode) { finishedTestSetup(); return new NamedDirNodeCommander(this, namedDirNode); }
+	public NamedDirNodeVerifier then(NamedDirNode namedDirNode) { finishedTestSetup(); return new NamedDirNodeVerifier(this, namedDirNode); }
 	
 	// TestPack
-	public TestPackCommander when(TestPack testPack) { return new TestPackCommander(this, testPack); }
-	public TestPackVerifier then(TestPack testPack) { return new TestPackVerifier(this, testPack); }
+	public TestPackCommander when(TestPack testPack) { finishedTestSetup(); return new TestPackCommander(this, testPack); }
+	public TestPackVerifier then(TestPack testPack) { finishedTestSetup(); return new TestPackVerifier(this, testPack); }
 	
 	// ApplicationServer
-	public AppServerBuilder given(ApplicationServer appServer) { return new AppServerBuilder(this, appServer); }
-	public AppServerCommander when(ApplicationServer appServer) { return new AppServerCommander(this, appServer); }
-	public AppServerVerifier then(ApplicationServer appServer) { return new AppServerVerifier(this, appServer); }
+	public AppServerBuilder given(ApplicationServer appServer) { finishedTestSetup(); return new AppServerBuilder(this, appServer); }
+	public AppServerCommander when(ApplicationServer appServer) { finishedTestSetup(); return new AppServerCommander(this, appServer); }
+	public AppServerVerifier then(ApplicationServer appServer) { finishedTestSetup(); return new AppServerVerifier(this, appServer); }
 
 	// Content Plugins
-	public ContentPluginCommander when(ContentPlugin contentPlugin) { return new ContentPluginCommander(this, contentPlugin); }
+	public ContentPluginCommander when(ContentPlugin contentPlugin) { finishedTestSetup(); return new ContentPluginCommander(this, contentPlugin); }
 	
 	// JettyServer
 	public JettyServerBuilder given(Server jettyServer) { return new JettyServerBuilder(this, jettyServer); }
-	public JettyServerCommander when(Server jettyServer) { return new JettyServerCommander(this, jettyServer); }
-	public JettyServerVerifier then(Server jettyServer) { return new JettyServerVerifier(this, jettyServer); }
+	public JettyServerCommander when(Server jettyServer) { finishedTestSetup(); return new JettyServerCommander(this, jettyServer); }
+	public JettyServerVerifier then(Server jettyServer) { finishedTestSetup(); return new JettyServerVerifier(this, jettyServer); }
 	
 	// Webapp Tester
-	public WebappTesterCommander when(WebappTester webappTester) { return new WebappTesterCommander(this, webappTester); } 
+	public WebappTesterCommander when(WebappTester webappTester) { finishedTestSetup(); return new WebappTesterCommander(this, webappTester); } 
 
 	// AliasesFile
 	public AliasesFileBuilder given(AliasesFile aliasesFile) { return new AliasesFileBuilder(this, aliasesFile); }
@@ -308,11 +311,18 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	// Dir Observer
 	public SpecTestDirObserverBuilder given(SpecTestDirObserver observer) { return new SpecTestDirObserverBuilder(this, observer); }
-	public SpecTestDirObserverCommander then(SpecTestDirObserver observer) { return new SpecTestDirObserverCommander(this, observer); }
+	public SpecTestDirObserverCommander then(SpecTestDirObserver observer) { finishedTestSetup(); return new SpecTestDirObserverCommander(this, observer); }
 	
 	//TODO: we might find we need a better way to deal with multiple methods that want to return different verifiers based on a List
-	public RequestListVerifier thenRequests(List<String> requests) { return new RequestListVerifier(this, requests); }
+	public RequestListVerifier thenRequests(List<String> requests) { finishedTestSetup(); return new RequestListVerifier(this, requests); }
 	
+	
+	private void finishedTestSetup() {
+		if (!fileModificationRegistryReset && brjs != null) {
+			brjs.getFileModificationRegistry().incrementAllVersions();
+			fileModificationRegistryReset = true;
+		}
+	}
 	
 	private File createTestSdkDirectory() {
 		File sdkDir;

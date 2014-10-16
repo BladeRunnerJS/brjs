@@ -41,5 +41,14 @@ public class FileModificationRegistry
 		}
 		return canonicalFilePath;
 	}
+
+	public void incrementAllVersions()
+	{
+		Long currentLastModified;
+		for (String key : lastModifiedMap.keySet()) {
+			currentLastModified = lastModifiedMap.get(key);
+			lastModifiedMap.put(key, currentLastModified+1);
+		}
+	}
 	
 }
