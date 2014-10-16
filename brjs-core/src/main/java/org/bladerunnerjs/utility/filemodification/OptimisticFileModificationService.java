@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.model.FileInfoAccessor;
+import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.FileUtility;
 
 /**
@@ -17,7 +17,7 @@ public class OptimisticFileModificationService implements FileModificationServic
 	private TimeAccessor timeAccessor;
 	
 	@Override
-	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
+	public void initialise(File rootDir, TimeAccessor timeAccessor, RootNode rootNode) {
 		this.rootDir = FileUtility.getCanonicalFile(rootDir);
 		this.timeAccessor = timeAccessor;
 	}

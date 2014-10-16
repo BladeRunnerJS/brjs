@@ -149,7 +149,7 @@ public class TestCompiler
 	public File getCompiledClassDir(BRJS brjs, File testDir) throws IOException 
 	{
 		App app = brjs.locateAncestorNodeOfClass(testDir, App.class);
-		String relativePath = RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), testDir);
+		String relativePath = RelativePathUtility.get(brjs, app.dir(), testDir);
 		
 		return new File(getClassesRoot(testDir), relativePath + "/test-integration/webdriver/tests");
 	}

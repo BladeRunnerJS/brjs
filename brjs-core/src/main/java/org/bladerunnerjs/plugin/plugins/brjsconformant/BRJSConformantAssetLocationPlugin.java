@@ -50,14 +50,14 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		File sourceDir = assetContainer.file("src");
 		if(sourceDir.exists()) {
 			for(File dir : brjs.getFileInfo(sourceDir).nestedDirs()) {
-				assetLocationDirectories.add(RelativePathUtility.get(brjs.getFileInfoAccessor(), assetContainer.dir(), dir));
+				assetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
 			}
 		}
 		
 		File sourceTestDir = assetContainer.file("src-test");
 		if(sourceTestDir.exists()) {
 			for(File dir : brjs.getFileInfo(sourceTestDir).nestedDirs()) {
-				assetLocationDirectories.add(RelativePathUtility.get(brjs.getFileInfoAccessor(), assetContainer.dir(), dir));
+				assetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
 			}
 		}
 		return assetLocationDirectories;
@@ -71,7 +71,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		
 		FileInfo themesDirInfo = brjs.getFileInfo(themesDir);
 		for(File themeDir : themesDirInfo.dirs()) {
-			String relativePath = RelativePathUtility.get(brjs.getFileInfoAccessor(), assetContainer.dir(), themeDir);
+			String relativePath = RelativePathUtility.get(brjs, assetContainer.dir(), themeDir);
 			assetLocationDirectories.add(relativePath);
 		}
 	}
@@ -117,7 +117,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 					break;
 				}
 				
-				String parentLocationPath = RelativePathUtility.get(brjs.getFileInfoAccessor(), assetContainer.dir(), dir.getParentFile());
+				String parentLocationPath = RelativePathUtility.get(brjs, assetContainer.dir(), dir.getParentFile());
 				AssetLocation parentAssetLocation = assetLocationsMap.get(parentLocationPath);
 				
 				if((parentAssetLocation instanceof ChildSourceAssetLocation) || (parentAssetLocation instanceof SourceAssetLocation)) {

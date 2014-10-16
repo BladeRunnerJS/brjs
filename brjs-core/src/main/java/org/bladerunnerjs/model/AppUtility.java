@@ -11,8 +11,8 @@ public class AppUtility
 	static <AC extends AssetContainer> AC getImplicitOrExplicitAssetContainer(BRJS brjs, Class<? extends AC> type, AC implicitAssetContainer, AC explicitAssetContainer, boolean preferExplicitDefault) { 
 		if (implicitAssetContainer.exists() && explicitAssetContainer.exists()) {
 			throw new DuplicateAssetContainerException(type.getSimpleName(), 
-							RelativePathUtility.get(brjs.getFileInfoAccessor(), brjs.dir(), implicitAssetContainer.dir()), 
-							RelativePathUtility.get(brjs.getFileInfoAccessor(), brjs.dir(), explicitAssetContainer.dir())
+							RelativePathUtility.get(brjs, brjs.dir(), implicitAssetContainer.dir()), 
+							RelativePathUtility.get(brjs, brjs.dir(), explicitAssetContainer.dir())
 			);
 		}
 		AC assetContainer;

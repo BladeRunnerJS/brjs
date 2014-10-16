@@ -3,6 +3,7 @@ package org.bladerunnerjs.memoization;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class MemoizedFile extends File
 	private MemoizedValue<Boolean> isFile;
 	private MemoizedValue<List<File>> filesAndDirs;
 	private RootNode rootNode;
+	private File canonicalFile;
 	
 	public MemoizedFile(RootNode rootNode, String file) {
 		super(file);
@@ -82,6 +84,20 @@ public class MemoizedFile extends File
 	}
 	
 	// ---- End Methods Using Memoized Values ----
+	
+	@Override
+	public File getCanonicalFile() throws IOException
+	{
+		if (canonicalFile == null) {
+			try {
+				canonicalFile = super.getCanonicalFile();
+			} catch (IOException e) {
+				rootNode.logger(this.getClass()).warn("Unable to calculate canonical path for path '%s'.", getPath());
+				canonicalFile = super.getAbsoluteFile();
+			}
+		}
+		return canonicalFile;
+	}
 	
 	@Override
 	public File[] listFiles(FileFilter filter) {

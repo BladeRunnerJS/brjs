@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@SuppressWarnings("unused")
 public class Java7FileModificationServiceTest {
 	private final Java7FileModificationService fileModificationService = new Java7FileModificationService(new StubLoggerFactory());
 	private final Map<String, FileModifiedChecker> watches = new HashMap<>();
@@ -50,76 +51,76 @@ public class Java7FileModificationServiceTest {
 	 */
 	@Test @Ignore
 	public void java7FileModificationServiceTest() throws Exception {
-		// create directory structure
-		mkfile("root-dir/active-dir/active-file");
-		mkfile("root-dir/active-dir/inactive-file");
-		mkfile("root-dir/inactive-dir/inactive-file");
-		mkfile("root-dir/outgoing-dir/watched-file");
-		mkfile("root-dir/outgoing-dir/unwatched-file");
-		mkfile("root-dir/control-file");
-		
-		// initialize watching service
-		fileModificationService.initialise(tempDir, new RealTimeAccessor(), new BRJSFileInfoAccessor(fileModificationService, new StubLoggerFactory()));
-		
-		// watch files and directories
-		watch("root-dir");
-		watch("root-dir/active-dir");
-		watch("root-dir/active-dir/active-file");
-		watch("root-dir/active-dir/inactive-file");
-		watch("root-dir/inactive-dir");
-		watch("root-dir/inactive-dir/inactive-file");
-		watch("root-dir/incoming-dir");
-		watch("root-dir/incoming-dir/watched-file");
-		watch("root-dir/outgoing-dir");
-		watch("root-dir/outgoing-dir/watched-file");
-		watch("root-dir/control-file");
-		
-		// verify change is reported on first invocation
-		assertChanged("root-dir");
-		assertChanged("root-dir/active-dir");
-		assertChanged("root-dir/active-dir/active-file");
-		assertChanged("root-dir/active-dir/inactive-file");
-		assertChanged("root-dir/inactive-dir");
-		assertChanged("root-dir/inactive-dir/inactive-file");
-		assertChanged("root-dir/incoming-dir");
-		assertChanged("root-dir/incoming-dir/watched-file");
-		assertChanged("root-dir/outgoing-dir");
-		assertChanged("root-dir/outgoing-dir/watched-file");
-		assertChanged("root-dir/control-file");
-		
-		// perform change
-		touch("root-dir/active-dir/active-file");
-		mkfile("root-dir/incoming-dir/watched-file");
-		mkfile("root-dir/incoming-dir/unwatched-file");
-		delete("root-dir/outgoing-dir");
-		touch("root-dir/control-file");
-		
-		// wait for change
-		waitForChange("root-dir/control-file");
-		
-		// verify change
-		assertChanged("root-dir");
-		assertChanged("root-dir/active-dir");
-		assertChanged("root-dir/active-dir/active-file");
-		assertUnchanged("root-dir/active-dir/inactive-file");
-		assertUnchanged("root-dir/inactive-dir");
-		assertUnchanged("root-dir/inactive-dir/inactive-file");
-		assertChanged("root-dir/incoming-dir");
-		assertChanged("root-dir/incoming-dir/watched-file");
-		assertChanged("root-dir/outgoing-dir");
-		assertChanged("root-dir/outgoing-dir/watched-file");
-		
-		// verify no further change
-		assertUnchanged("root-dir");
-		assertUnchanged("root-dir/active-dir");
-		assertUnchanged("root-dir/active-dir/active-file");
-		assertUnchanged("root-dir/active-dir/inactive-file");
-		assertUnchanged("root-dir/inactive-dir");
-		assertUnchanged("root-dir/inactive-dir/inactive-file");
-		assertUnchanged("root-dir/incoming-dir");
-		assertUnchanged("root-dir/incoming-dir/watched-file");
-		assertUnchanged("root-dir/outgoing-dir");
-		assertUnchanged("root-dir/outgoing-dir/watched-file");
+//		// create directory structure
+//		mkfile("root-dir/active-dir/active-file");
+//		mkfile("root-dir/active-dir/inactive-file");
+//		mkfile("root-dir/inactive-dir/inactive-file");
+//		mkfile("root-dir/outgoing-dir/watched-file");
+//		mkfile("root-dir/outgoing-dir/unwatched-file");
+//		mkfile("root-dir/control-file");
+//		
+//		// initialize watching service
+//		fileModificationService.initialise(tempDir, new RealTimeAccessor(), new BRJSFileInfoAccessor(fileModificationService, new StubLoggerFactory()));
+//		
+//		// watch files and directories
+//		watch("root-dir");
+//		watch("root-dir/active-dir");
+//		watch("root-dir/active-dir/active-file");
+//		watch("root-dir/active-dir/inactive-file");
+//		watch("root-dir/inactive-dir");
+//		watch("root-dir/inactive-dir/inactive-file");
+//		watch("root-dir/incoming-dir");
+//		watch("root-dir/incoming-dir/watched-file");
+//		watch("root-dir/outgoing-dir");
+//		watch("root-dir/outgoing-dir/watched-file");
+//		watch("root-dir/control-file");
+//		
+//		// verify change is reported on first invocation
+//		assertChanged("root-dir");
+//		assertChanged("root-dir/active-dir");
+//		assertChanged("root-dir/active-dir/active-file");
+//		assertChanged("root-dir/active-dir/inactive-file");
+//		assertChanged("root-dir/inactive-dir");
+//		assertChanged("root-dir/inactive-dir/inactive-file");
+//		assertChanged("root-dir/incoming-dir");
+//		assertChanged("root-dir/incoming-dir/watched-file");
+//		assertChanged("root-dir/outgoing-dir");
+//		assertChanged("root-dir/outgoing-dir/watched-file");
+//		assertChanged("root-dir/control-file");
+//		
+//		// perform change
+//		touch("root-dir/active-dir/active-file");
+//		mkfile("root-dir/incoming-dir/watched-file");
+//		mkfile("root-dir/incoming-dir/unwatched-file");
+//		delete("root-dir/outgoing-dir");
+//		touch("root-dir/control-file");
+//		
+//		// wait for change
+//		waitForChange("root-dir/control-file");
+//		
+//		// verify change
+//		assertChanged("root-dir");
+//		assertChanged("root-dir/active-dir");
+//		assertChanged("root-dir/active-dir/active-file");
+//		assertUnchanged("root-dir/active-dir/inactive-file");
+//		assertUnchanged("root-dir/inactive-dir");
+//		assertUnchanged("root-dir/inactive-dir/inactive-file");
+//		assertChanged("root-dir/incoming-dir");
+//		assertChanged("root-dir/incoming-dir/watched-file");
+//		assertChanged("root-dir/outgoing-dir");
+//		assertChanged("root-dir/outgoing-dir/watched-file");
+//		
+//		// verify no further change
+//		assertUnchanged("root-dir");
+//		assertUnchanged("root-dir/active-dir");
+//		assertUnchanged("root-dir/active-dir/active-file");
+//		assertUnchanged("root-dir/active-dir/inactive-file");
+//		assertUnchanged("root-dir/inactive-dir");
+//		assertUnchanged("root-dir/inactive-dir/inactive-file");
+//		assertUnchanged("root-dir/incoming-dir");
+//		assertUnchanged("root-dir/incoming-dir/watched-file");
+//		assertUnchanged("root-dir/outgoing-dir");
+//		assertUnchanged("root-dir/outgoing-dir/watched-file");
 	}
 	
 	private void mkfile(String filePath) throws IOException {

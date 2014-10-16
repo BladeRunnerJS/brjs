@@ -14,7 +14,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.utility.EncodedFileUtil;
@@ -154,7 +153,7 @@ public abstract class NodeVerifier<N extends Node> {
 		fileAndDirPaths.addAll(files);
 		
 		for (File foundFile : recursivelyFoundFiles) {
-			String relativePath = RelativePathUtility.get(((BRJS)node.root()).getFileInfoAccessor(), node.dir(), foundFile);
+			String relativePath = RelativePathUtility.get(node.root(), node.dir(), foundFile);
 			if (foundFile.isFile()) {
 				assertFoundFileIsExpected(relativePath, fileAndDirPaths);
 			} else if (foundFile.isDirectory()) {

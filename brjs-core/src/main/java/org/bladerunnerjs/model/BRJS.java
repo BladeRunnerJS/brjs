@@ -90,7 +90,7 @@ public class BRJS extends AbstractBRJSRootNode
 		this.appVersionGenerator = appVersionGenerator;
 		this.fileModificationRegistry = fileModificationRegistry;
 		
-		fileModificationService.initialise(dir, timeAccessor, fileInfoAccessor);
+		fileModificationService.initialise(dir, timeAccessor, this);
 		
 		logger = loggerFactory.getLogger(BRJS.class);
 		
@@ -111,7 +111,7 @@ public class BRJS extends AbstractBRJSRootNode
 	public void setFileModificationService(FileModificationService fileModificationService) {
 		this.fileModificationService.close();
 		
-		fileModificationService.initialise(dir, timeAccessor, fileInfoAccessor);
+		fileModificationService.initialise(dir, timeAccessor, this);
 		fileInfoAccessor.setFileModificationService(fileModificationService);
 		
 		this.fileModificationService = fileModificationService;
@@ -181,7 +181,7 @@ public class BRJS extends AbstractBRJSRootNode
 			node = node.parentNode();
 		}
 		
-		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(getFileInfoAccessor(), dir(), file) );
+		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(this, dir(), file) );
 		
 		return bundlableNode;
 	}

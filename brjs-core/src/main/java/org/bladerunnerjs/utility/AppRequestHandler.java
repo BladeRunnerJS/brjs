@@ -142,14 +142,14 @@ public class AppRequestHandler
 				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
 			}
 			
-			String pathRelativeToApp = RelativePathUtility.get(app.root().getFileInfoAccessor(), app.dir(), indexPage);
+			String pathRelativeToApp = RelativePathUtility.get(app.root(), app.dir(), indexPage);
 			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
 			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
 			
 			return TagPluginUtility.getUsedTagsAndAttributes(indexPageContent.toString(), browsableNode.getBundleSet(), requestMode, locale, version);
 		}
 		catch (IOException | ConfigException | ModelOperationException | NoTagHandlerFoundException e) {
-			throw new ContentProcessingException(e, "Error when trying to calculate used tags in the index page for " + RelativePathUtility.get(browsableNode.root().getFileInfoAccessor(), browsableNode.root().dir(),indexPage));
+			throw new ContentProcessingException(e, "Error when trying to calculate used tags in the index page for " + RelativePathUtility.get(browsableNode.root(), browsableNode.root().dir(),indexPage));
 		}
 		
 	}
@@ -161,7 +161,7 @@ public class AppRequestHandler
 				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
 			}
 			
-			String pathRelativeToApp = RelativePathUtility.get(app.root().getFileInfoAccessor(), app.dir(), indexPage);
+			String pathRelativeToApp = RelativePathUtility.get(app.root(), app.dir(), indexPage);
 			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
 			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
 			
@@ -174,7 +174,7 @@ public class AppRequestHandler
 			return new CharResponseContent( browsableNode.root(), byteArrayOutputStream.toString() );
 		}
 		catch (IOException | ConfigException | ModelOperationException e) {
-			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(app.root().getFileInfoAccessor(), browsableNode.root().dir(), indexPage));
+			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(app.root(), browsableNode.root().dir(), indexPage));
 		}
 	}
 

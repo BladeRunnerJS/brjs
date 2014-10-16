@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.model.FileInfoAccessor;
+import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.FileUtility;
 
 /**
@@ -32,7 +32,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	private final Logger logger;
 	private TimeAccessor timeAccessor;
 
-	private FileInfoAccessor fileInfoAccessor;
+	private RootNode rootNode;
 
 	public Java7FileModificationService(LoggerFactory loggerFactory) {
 		try {
@@ -49,11 +49,11 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	@Override
-	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
+	public void initialise(File rootDir, TimeAccessor timeAccessor, RootNode rootNode) {
 		try {
 			this.rootDir = FileUtility.getCanonicalFile( rootDir );
 			this.timeAccessor = timeAccessor;
-			this.fileInfoAccessor = fileInfoAccessor;
+			this.rootNode = rootNode;
 			watchDirectory(rootDir.getCanonicalFile(), null, timeAccessor.getTime());
 			new Thread(this).start();
 		}
@@ -120,7 +120,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	
 	void watchDirectory(File file, WatchingFileModificationInfo parentModificationInfo, long lastModified) {
 		ProxyFileModificationInfo proxyFMI = getFileModificationInfo(file);
-		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(this, watchService, file, parentModificationInfo, timeAccessor, fileInfoAccessor) :
+		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(this, watchService, file, parentModificationInfo, timeAccessor, rootNode) :
 			new Java7FileModificationInfo(parentModificationInfo, file, timeAccessor);
 		proxyFMI.setFileModificationInfo(fileModificationInfo);
 		

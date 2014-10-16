@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.model.FileInfoAccessor;
+import org.bladerunnerjs.model.BRJS;
+
+import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.FileUtility;
 
 /**
@@ -16,12 +18,13 @@ public class SpecTestFileModificationService implements FileModificationService 
 	protected Map<String, FileModificationInfo> fileModificationInfos = new HashMap<>();
 	private File rootDir;
 	private TimeAccessor timeAccessor;
-	protected FileInfoAccessor fileInfoAccessor;
+	private RootNode rootNode;
 	
-	public void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor) {
+	
+	public void initialise(File rootDir, TimeAccessor timeAccessor, RootNode rootNode) {
 		this.rootDir = FileUtility.getCanonicalFile(rootDir.getParentFile());
 		this.timeAccessor = timeAccessor;
-		this.fileInfoAccessor = fileInfoAccessor;
+		this.rootNode = rootNode;
 	}
 
 	@Override
@@ -37,7 +40,7 @@ public class SpecTestFileModificationService implements FileModificationService 
 			FileModificationInfo fileModificationInfo;
 			
 			if(file.equals(primarySetFile)) {
-				fileModificationInfo = new PrimaryFileModificationInfo(fileInfoAccessor.getFileInfo(primarySetFile), getFileModificationInfo(primarySetFile));
+				fileModificationInfo = new PrimaryFileModificationInfo( ((BRJS)rootNode).getFileInfoAccessor().getFileInfo(primarySetFile), getFileModificationInfo(primarySetFile));
 			}
 			else {
 				fileModificationInfo = new SecondaryFileModificationInfo((PrimaryFileModificationInfo) getFileSetModificationInfo(primarySetFile, primarySetFile), file, getFileModificationInfo(file));

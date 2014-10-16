@@ -79,7 +79,7 @@ public class TypedTestPack extends SourceResources implements NamedNode
 		}
 		if (hasSingleDefaultTestTech()) {
 			throw new DuplicateAssetContainerException("The test pack at '%s' directly contains test configuration and therefore should not contain sub test tech nodes, yet a named test tech was requested.", 
-					RelativePathUtility.get(root().getFileInfoAccessor(), root().dir(), dir()) );
+					RelativePathUtility.get(root(), root().dir(), dir()) );
 		}
 		return technologyTestPacks.item(technologyName);
 	}
@@ -88,7 +88,7 @@ public class TypedTestPack extends SourceResources implements NamedNode
 	{
 		if (!hasSingleDefaultTestTech() && !technologyTestPacks.list().isEmpty()) {
 			throw new DuplicateAssetContainerException("The test pack at '%s' contains test tech nodes and therefore should not contain a 'deafult' test tech, yet the default test tech node was requested.", 
-					RelativePathUtility.get(root().getFileInfoAccessor(), root().dir(), dir()) );
+					RelativePathUtility.get(root(), root().dir(), dir()) );
 		}
 		return defaultTestPack.item();
 	}
