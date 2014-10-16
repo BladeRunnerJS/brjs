@@ -64,7 +64,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 	}
 	
 	@Override
-	protected File getSourceFile(String sourceClass) {
+	public File getSourceFile(String sourceClass) {
 		return testPack.testSource().file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 

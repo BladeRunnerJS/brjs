@@ -5,16 +5,16 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.bladerunnerjs.memoization.LegacyMemoizedValue;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.LinkedFileAsset;
 
 public class XMLAsset extends LinkedFileAsset {
-	private final LegacyMemoizedValue<List<String>> requirePaths;
+	private final MemoizedValue<List<String>> requirePaths;
 	
 	public XMLAsset(File assetFile, AssetLocation assetLocation) {
 		super(assetFile, assetLocation);
-		requirePaths = new LegacyMemoizedValue<>("XMLAsset.requirePaths", assetLocation.root(), assetFile);
+		requirePaths = new MemoizedValue<>("XMLAsset.requirePaths", assetLocation.root(), assetFile);
 	}
 	
 	@Override

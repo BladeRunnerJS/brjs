@@ -140,6 +140,7 @@ public abstract class AbstractNode implements Node
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
 				rootNode.getFileInfo(dir()).resetLastModified();
+				updateLastModified();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);

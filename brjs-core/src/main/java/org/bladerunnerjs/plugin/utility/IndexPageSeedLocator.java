@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.memoization.LegacyMemoizedValue;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedFileAsset;
@@ -14,10 +14,10 @@ import org.bladerunnerjs.model.LinkedAsset;
 
 public class IndexPageSeedLocator {
 	private final Map<String, LinkedAsset> cachedAssets = new HashMap<>();
-	private final LegacyMemoizedValue<List<LinkedAsset>> seedAssetsList;
+	private final MemoizedValue<List<LinkedAsset>> seedAssetsList;
 	
 	public IndexPageSeedLocator(BRJS brjs) {
-		seedAssetsList = new LegacyMemoizedValue<>("AssetLocation.seedAssets", brjs, brjs.dir());
+		seedAssetsList = new MemoizedValue<>("AssetLocation.seedAssets", brjs, brjs.dir());
 	}
 	
 	public List<LinkedAsset> seedAssets(BundlableNode viewableBundlableNode) {

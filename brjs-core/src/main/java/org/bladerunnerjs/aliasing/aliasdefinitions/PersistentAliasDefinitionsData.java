@@ -2,7 +2,7 @@ package org.bladerunnerjs.aliasing.aliasdefinitions;
 
 import java.io.File;
 
-import org.bladerunnerjs.memoization.LegacyMemoizedValue;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -12,13 +12,13 @@ public class PersistentAliasDefinitionsData {
 	private final BRJS brjs;
 	private final AssetLocation assetLocation;
 	private final File aliasesFile;
-	private final LegacyMemoizedValue<AliasDefinitionsData> aliasDefinitionsData;
+	private final MemoizedValue<AliasDefinitionsData> aliasDefinitionsData;
 	
 	public PersistentAliasDefinitionsData(AssetLocation assetLocation, File aliasesFile) {
 		this.brjs = assetLocation.root();
 		this.assetLocation = assetLocation;
 		this.aliasesFile = aliasesFile;
-		aliasDefinitionsData = new LegacyMemoizedValue<>("PersistentAliasDefinitionsData.aliasDefinitionsData", brjs, aliasesFile, assetLocation.assetContainer().dir(),
+		aliasDefinitionsData = new MemoizedValue<>("PersistentAliasDefinitionsData.aliasDefinitionsData", brjs, aliasesFile, assetLocation.assetContainer().dir(),
 			assetLocation.root().file("conf/brjs.conf"), assetLocation.assetContainer().app().file("app.conf"));
 	}
 	

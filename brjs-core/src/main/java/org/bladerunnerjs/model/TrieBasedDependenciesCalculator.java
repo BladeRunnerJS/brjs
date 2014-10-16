@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.memoization.Getter;
-import org.bladerunnerjs.memoization.LegacyMemoizedValue;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 import org.bladerunnerjs.utility.trie.AliasReference;
@@ -28,7 +28,7 @@ public class TrieBasedDependenciesCalculator
 	private final AssetReaderFactory readerFactory;
 	private final TrieFactory trieFactory;
 	
-	private LegacyMemoizedValue<ComputedValue> computedValue;
+	private MemoizedValue<ComputedValue> computedValue;
 	
 	public TrieBasedDependenciesCalculator(Asset asset, AssetReaderFactory readerFactory, File... readerFiles)
 	{
@@ -41,7 +41,7 @@ public class TrieBasedDependenciesCalculator
 		List<File> scopeFiles = new ArrayList<>();
 		scopeFiles.addAll(Arrays.asList(readerFiles));
 		scopeFiles.addAll(Arrays.asList(new File[] {assetLocation.root().file("js-patches"), BladerunnerConf.getConfigFilePath(assetLocation.root()), app.dir(), app.root().sdkJsLibsDir().dir()}));
-		computedValue = new LegacyMemoizedValue<>(asset.getAssetPath()+" - TrieBasedDependenciesCalculator.computedValue", assetLocation.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
+		computedValue = new MemoizedValue<>(asset.getAssetPath()+" - TrieBasedDependenciesCalculator.computedValue", assetLocation.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
 	}
 	
 	public List<String> getRequirePaths() throws ModelOperationException

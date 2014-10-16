@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.memoization.LegacyMemoizedValue;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
@@ -53,12 +53,12 @@ public class AppRequestHandler
 	public static final String WORKBENCH_BUNDLE_REQUEST = "workbench-bundle-request";
 
 	private final App app;
-	private final LegacyMemoizedValue<ContentPathParser> contentPathParser;
+	private final MemoizedValue<ContentPathParser> contentPathParser;
 
 	public AppRequestHandler(App app)
 	{
 		this.app = app;
-		contentPathParser = new LegacyMemoizedValue<>(app.getName()+" - AppRequestHandler.contentPathParser", app.root(), app.dir());
+		contentPathParser = new MemoizedValue<>(app.getName()+" - AppRequestHandler.contentPathParser", app.root(), app.dir());
 	}
 
 	public boolean canHandleLogicalRequest(String requestPath)

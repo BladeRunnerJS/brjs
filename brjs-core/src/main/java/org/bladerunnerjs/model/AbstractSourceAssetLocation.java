@@ -6,12 +6,12 @@ import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.memoization.LegacyMemoizedValue;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new TreeMap<>();
-	private final LegacyMemoizedValue<List<AssetLocation>> childAssetLocationList = new LegacyMemoizedValue<>(dir()+" - childAssetLocations", root(), dir());
+	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>(dir()+" - childAssetLocations", root(), dir());
 	
 	public AbstractSourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir, parentAssetLocation, dependentAssetLocations);

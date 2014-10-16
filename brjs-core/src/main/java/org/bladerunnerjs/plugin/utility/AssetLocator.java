@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.Getter;
-import org.bladerunnerjs.memoization.LegacyMemoizedValue;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -20,11 +20,11 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 public class AssetLocator {
 	private final Map<String, Asset> cachedAssets = new TreeMap<>();
 	private final AssetLocation assetLocation;
-	private final LegacyMemoizedValue<Assets> assetsList;
+	private final MemoizedValue<Assets> assetsList;
 	
 	public AssetLocator(AssetLocation assetLocation) {
 		this.assetLocation = assetLocation;
-		assetsList = new LegacyMemoizedValue<>(assetLocation.dir()+" - AssetLocation.assets", assetLocation.root(), assetLocation.root().dir());
+		assetsList = new MemoizedValue<>(assetLocation.dir()+" - AssetLocation.assets", assetLocation.root(), assetLocation.root().dir());
 	}
 	
 	public Assets assets(List<File> assetFiles) {

@@ -174,18 +174,14 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	
-	
-	
-	
-	
-	protected File getSourceFile(String sourceClass) {
+	public File getSourceFile(String sourceClass) {
 		AssetLocation assetLocation = node.assetLocation("src");
 		if (assetLocation == null) {
 			throw new RuntimeException("Cannot find asset location for the 'src' dir. Either it doesn't exist or there are no asset plugins to discover it.");
 		}
 		return assetLocation.file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
+	
 	
 	protected File getTestSourceFile(String sourceClass)
 	{

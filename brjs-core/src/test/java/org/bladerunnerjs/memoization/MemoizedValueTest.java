@@ -30,7 +30,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 		watchFile = new File(sdkDir, "watch-file");
 		
 		sdkDir.mkdir();
-		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator(), new FileModificationRegistry(sdkDir));
+		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator(), new FileModificationRegistry(sdkDir.getParentFile()));
 	}
 
 	@After

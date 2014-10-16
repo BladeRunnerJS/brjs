@@ -28,7 +28,7 @@ public class TestModelAccessor
 		fileModificationService = (fileModificationService != null) ? fileModificationService : new SpecTestFileModificationService();
 		loggerFactory = (loggerFactory != null) ? loggerFactory : new StubLoggerFactory();
 		appVersionGenerator = (appVersionGenerator != null) ? appVersionGenerator : new MockAppVersionGenerator();		
-		fileModificationRegistry = (fileModificationRegistry != null) ? fileModificationRegistry : new FileModificationRegistry(brjsDir);		
+		fileModificationRegistry = (fileModificationRegistry != null) ? fileModificationRegistry : new FileModificationRegistry(brjsDir.getParentFile());		
 		
 		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, new TestTimeAccessor(), appVersionGenerator, fileModificationRegistry);
 		brjs.setFileModificationService(fileModificationService);

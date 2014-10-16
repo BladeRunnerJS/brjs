@@ -27,7 +27,7 @@ public class FileModificationRegistry
 		while (fileToIncrement != null && !fileToIncrement.equals(rootFile)) {
 			String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(fileToIncrement);
 			currentLastModified = lastModifiedMap.get(canonicalFilePath);
-			lastModifiedMap.put(canonicalFilePath, ++currentLastModified);
+			lastModifiedMap.put(canonicalFilePath, currentLastModified+1);
 			fileToIncrement = fileToIncrement.getParentFile();
 		}
 	}

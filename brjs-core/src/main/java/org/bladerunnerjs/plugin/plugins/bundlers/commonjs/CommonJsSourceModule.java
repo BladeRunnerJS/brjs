@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.Getter;
-import org.bladerunnerjs.memoization.LegacyMemoizedValue;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -46,7 +46,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	private SourceModulePatch patch;
 	
-	private LegacyMemoizedValue<ComputedValue> computedValue;
+	private MemoizedValue<ComputedValue> computedValue;
 	private List<String> requirePaths = new ArrayList<>();
 	public static final String JS_STYLE = "common-js";
 	
@@ -58,7 +58,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
-		computedValue = new LegacyMemoizedValue<>(getAssetPath()+" - computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
+		computedValue = new MemoizedValue<>(getAssetPath()+" - computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
 	}
 	
 	@Override

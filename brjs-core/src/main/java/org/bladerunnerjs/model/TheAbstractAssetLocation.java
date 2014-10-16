@@ -25,7 +25,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private Map<String, AliasDefinitionsFile> aliasDefinitionsFilesMap = new HashMap<>();
 	private final Assets emptyAssets;
-	private final LegacyMemoizedValue<String> jsStyle = new LegacyMemoizedValue<>(dir()+" jsStyle", root(), dir());
+	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
 	
 	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir);

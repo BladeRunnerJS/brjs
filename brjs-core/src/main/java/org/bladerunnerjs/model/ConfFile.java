@@ -3,14 +3,14 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 
-import org.bladerunnerjs.memoization.LegacyMemoizedValue;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 import org.bladerunnerjs.yaml.ConfFactory;
 
 
 public class ConfFile<CF extends AbstractYamlConfFile> {
-	private final LegacyMemoizedValue<CF> conf;
+	private final MemoizedValue<CF> conf;
 	private final BRJSNode node;
 	private final Class<CF> confClass;
 	private final File confFile;
@@ -26,7 +26,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		this.confClass = confClass;
 		this.confFile = confFile;
 		this.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
-		conf = new LegacyMemoizedValue<>("ConfFile.conf", node.root(), confFile, node.root().file("conf/brjs.conf"));
+		conf = new MemoizedValue<>("ConfFile.conf", node.root(), confFile, node.root().file("conf/brjs.conf"));
 		
 		// needed to keep the pre-existing tests working
 		getConf();
