@@ -5,7 +5,9 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
@@ -24,10 +26,12 @@ public class MemoizedFile extends File
 	private MemoizedValue<List<File>> filesAndDirs;
 	private RootNode rootNode;
 	private File canonicalFile;
+	private File superFile;
 	
 	public MemoizedFile(RootNode rootNode, String file) {
 		super(file);
 		this.rootNode = rootNode;
+		superFile = new File(file); // use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
 		String className = this.getClass().getSimpleName();
 		exists = new MemoizedValue<>(className+".exists", rootNode, this);
 		isDirectory = new MemoizedValue<>(className+".isDirectory", rootNode, this);
@@ -51,35 +55,39 @@ public class MemoizedFile extends File
 	@Override
 	public boolean exists() {
 		return exists.value(() -> {
-			return super.exists();
+			return superFile.exists();
 		});
 	}
 	
 	@Override
 	public boolean isDirectory() {
 		return isDirectory.value(() -> {
-			return super.isDirectory();
+			return superFile.isDirectory();
 		});
 	}
 	
 	@Override
 	public boolean isFile() {
 		return isFile.value(() -> {
-			return super.isFile();
+			return superFile.isFile();
 		});
 	}
 	
-	public List<File> filesAndDirs(IOFileFilter fileFilter) {
+	public List<File> filesAndDirs() {
 		List<File> returnedFilesAndDirsCopy = new ArrayList<>();
-		returnedFilesAndDirsCopy.addAll( filesAndDirs.value(() -> {
+		List<File> foundFilesAndDirs = filesAndDirs.value(() -> {
 			List<File> returnedFilesAndDirs = new ArrayList<>();
-			for (File file : super.listFiles()) {
-				if (fileFilter.accept(file)) {
-					returnedFilesAndDirs.add(file);				
-				}
+			
+			if (!exists()) {
+				return Collections.emptyList();
+			}
+			
+			for (File file : superFile.listFiles()) {
+				returnedFilesAndDirs.add(file);
 			}
 			return returnedFilesAndDirs;
-		}) );
+		});
+		returnedFilesAndDirsCopy.addAll(foundFilesAndDirs);
 		return returnedFilesAndDirsCopy; // return a copy so multiple callers dont have the same object by reference
 	}
 	
@@ -141,8 +149,14 @@ public class MemoizedFile extends File
 		return list( TrueFileFilter.INSTANCE );
 	}	
 	
-	public List<File> filesAndDirs() {
-		return filesAndDirs(TrueFileFilter.INSTANCE);
+	public List<File> filesAndDirs(IOFileFilter fileFilter) {
+		List<File> returnedFilesAndDirsCopy = new ArrayList<>();
+		for (File file : filesAndDirs()) {
+			if (fileFilter.accept(file)) {
+				returnedFilesAndDirsCopy.add(file);
+			}
+		}
+		return returnedFilesAndDirsCopy;
 	}
 	
 	public List<File> files() {
@@ -177,8 +191,7 @@ public class MemoizedFile extends File
 			}
 		}
 		return nestedDirs;
-	}
-	
+	}	
 	
 	
 	private void populateNestedFilesAndDirs(MemoizedFile file, List<File> nestedFilesAndDirs) {

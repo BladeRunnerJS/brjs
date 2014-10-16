@@ -38,6 +38,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	}
 	
 	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
+		app.root().getFileModificationRegistry().incrementAllVersions();
 		app.build( targetDir );
 		
 		return builderChainer;

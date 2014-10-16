@@ -129,7 +129,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		
 		try
 		{
-			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFiles())
+			for (File file : brjs.getMemoizedFile(unbundledResourcesDir).nestedFiles())
 			{
     			String relativePath = RelativePathUtility.get(brjs, unbundledResourcesDir, file);
     			requestPaths.add( contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath) );

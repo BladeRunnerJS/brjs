@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
@@ -13,7 +14,6 @@ import org.bladerunnerjs.model.BladeResourcesAssetLocation;
 import org.bladerunnerjs.model.ChildSourceAssetLocation;
 import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
 import org.bladerunnerjs.model.DefaultBladeset;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
@@ -49,14 +49,14 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		
 		File sourceDir = assetContainer.file("src");
 		if(sourceDir.exists()) {
-			for(File dir : brjs.getFileInfo(sourceDir).nestedDirs()) {
+			for(File dir : brjs.getMemoizedFile(sourceDir).nestedDirs()) {
 				assetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
 			}
 		}
 		
 		File sourceTestDir = assetContainer.file("src-test");
 		if(sourceTestDir.exists()) {
-			for(File dir : brjs.getFileInfo(sourceTestDir).nestedDirs()) {
+			for(File dir : brjs.getMemoizedFile(sourceTestDir).nestedDirs()) {
 				assetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
 			}
 		}
@@ -64,13 +64,13 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	}
 	
 	private void addThemeDirectories(List<String> assetLocationDirectories, AssetContainer assetContainer) {
-		File themesDir = assetContainer.file("themes");
+		MemoizedFile themesDir = brjs.getMemoizedFile( assetContainer.file("themes") );
+		
 		if(!themesDir.exists()){
 			return;
 		}
 		
-		FileInfo themesDirInfo = brjs.getFileInfo(themesDir);
-		for(File themeDir : themesDirInfo.dirs()) {
+		for(File themeDir : themesDir.dirs()) {
 			String relativePath = RelativePathUtility.get(brjs, assetContainer.dir(), themeDir);
 			assetLocationDirectories.add(relativePath);
 		}

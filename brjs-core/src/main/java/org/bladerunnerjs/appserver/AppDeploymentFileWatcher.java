@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.FileInfo;
-
 import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.*;
 
 public class AppDeploymentFileWatcher extends Thread
@@ -31,7 +30,7 @@ public class AppDeploymentFileWatcher extends Thread
 	private BRJSApplicationServer appServer;
 	private BRJS brjs;
 
-	private List<FileInfo> watchDirIterators = new ArrayList<>();
+	private List<MemoizedFile> watchDirs = new ArrayList<>();
 	private volatile boolean running = true;
 	
 	// TODO: replace this with file watcher - recusive watching info here http://docs.oracle.com/javase/tutorial/essential/io/examples/WatchDir.java
@@ -43,11 +42,11 @@ public class AppDeploymentFileWatcher extends Thread
 		this.brjs = brjs;
 		
 		for(File rootWatchDir : rootWatchDirs) {
-			FileInfo rootWatchDirInfo = brjs.getFileInfo(rootWatchDir);
+			MemoizedFile memoizedFile = brjs.getMemoizedFile(rootWatchDir);
 			
-			if (rootWatchDirInfo.isDirectory())
+			if (memoizedFile.isDirectory())
 			{
-				watchDirIterators.add(rootWatchDirInfo);
+				watchDirs.add(memoizedFile);
 			}
 		}
 	}
@@ -59,9 +58,9 @@ public class AppDeploymentFileWatcher extends Thread
 		{
 			try
 			{
-				for (FileInfo watchDirIterator : watchDirIterators)
+				for (MemoizedFile watchDir : watchDirs)
 				{
-					checkForNewApps(watchDirIterator);
+					checkForNewApps(watchDir);
 				}
 				Thread.sleep(CHECK_INTERVAL);
 			}
@@ -77,9 +76,9 @@ public class AppDeploymentFileWatcher extends Thread
 		join();
 	}
 
-	private void checkForNewApps(FileInfo watchDirIterator)
+	private void checkForNewApps(MemoizedFile watchDir)
 	{
-		for (File dir : watchDirIterator.dirs())
+		for (File dir : watchDir.dirs())
 		{
 			if (isAppDirWithDeployFile(dir)) 
 			{

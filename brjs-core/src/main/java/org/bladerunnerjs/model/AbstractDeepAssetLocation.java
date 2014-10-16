@@ -12,6 +12,6 @@ public abstract class AbstractDeepAssetLocation extends TheAbstractAssetLocation
 	
 	@Override
 	protected List<File> getCandidateFiles() {
-		return getDirInfo().nestedFiles();
+		return rootNode.getMemoizedFile(dir()).nestedFiles();
 	}
 }

@@ -13,8 +13,8 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeDeletedEvent;
@@ -47,7 +47,7 @@ public abstract class AbstractNode implements Node
 	protected RootNode rootNode;
 	private Node parent;
 	protected File dir;
-	private FileInfo dirInfo;
+	private MemoizedFile dirInfo;
 	private File[] scopeFiles;
 	
 	public AbstractNode(RootNode rootNode, Node parent, File dir) {
@@ -95,7 +95,7 @@ public abstract class AbstractNode implements Node
 	public boolean dirExists()
 	{
 		if((dirInfo == null) && (dir != null)) {
-			dirInfo = rootNode.getFileInfo(dir);
+			dirInfo = rootNode.getMemoizedFile(dir);
 		}
 		
 		return (dirInfo == null) ? false : dirInfo.exists();
@@ -139,7 +139,6 @@ public abstract class AbstractNode implements Node
 				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
-				rootNode.getFileInfo(dir()).resetLastModified();
 				updateLastModified();
 			}
 			catch(IOException e) {
@@ -162,7 +161,7 @@ public abstract class AbstractNode implements Node
 			notifyObservers(new NodeCreatedEvent(), this);
 			logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
-			rootNode.getFileInfo(dir().getParentFile()).resetLastModified();
+			updateLastModified();
 		}
 		catch(Exception e) {
 			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getTypeName(), dir().getPath());
@@ -188,6 +187,7 @@ public abstract class AbstractNode implements Node
 				FileUtils.deleteDirectory(dir);
 				logger.debug(Messages.NODE_DELETED_LOG_MSG, getTypeName(), dir.getPath());
 				notifyObservers(new NodeDeletedEvent(), this);
+				updateLastModified();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);

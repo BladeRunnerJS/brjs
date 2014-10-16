@@ -7,7 +7,6 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.IO;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
@@ -19,8 +18,6 @@ public interface RootNode extends Node {
 	Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
-	FileInfo getFileInfo(File dir);
-	FileInfo getFileSetInfo(File file, File primaryFile);
 	IO io();
 	MemoizedFile getMemoizedFile(File file);
 	

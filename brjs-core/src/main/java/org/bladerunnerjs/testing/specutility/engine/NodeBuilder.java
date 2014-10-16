@@ -85,7 +85,9 @@ public abstract class NodeBuilder<N extends Node> {
 	
 	public BuilderChainer hasDir(String filePath)
 	{
-		node.file(filePath).mkdirs();
+		File dir = node.file(filePath);
+		dir.mkdirs();
+		node.root().getFileModificationRegistry().incrementFileVersion(dir);
 		
 		return builderChainer;
 	}

@@ -30,7 +30,7 @@ public class TemplateUtility
 			tempDir = FileUtility.createTemporaryDirectory( TemplateUtility.class, templateName );
 			
 			if(node.dirExists() && !(node instanceof BRJS)) {
-				List<File> dirContents = node.root().getFileInfo(node.dir()).filesAndDirs();
+				List<File> dirContents = node.root().getMemoizedFile(node.dir()).filesAndDirs();
 				
 				if((dirContents.size() != 0) && !allowNonEmptyDirectories) {
 					throw new TemplateDirectoryAlreadyExistsException(node);
@@ -55,6 +55,8 @@ public class TemplateUtility
 			if(!JsStyleUtility.getJsStyle(node.dir()).equals(CommonJsSourceModule.JS_STYLE)) {
 				JsStyleUtility.setJsStyle(node.dir(), CommonJsSourceModule.JS_STYLE);
 			}
+			
+			node.updateLastModified();
 		}
 		catch(IOException e) {
 			throw new TemplateInstallationException(e);

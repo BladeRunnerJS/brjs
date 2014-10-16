@@ -94,7 +94,7 @@ public class TypedTestPack extends SourceResources implements NamedNode
 	}
 	
 	private boolean hasSingleDefaultTestTech() {
-		for (File file : root().getFileInfo(dir()).filesAndDirs()) {
+		for (File file : root().getMemoizedFile(dir()).filesAndDirs()) {
 			if (file.getName().equals("tests") || file.getName().endsWith(".conf")) {
 				return true;
 			}

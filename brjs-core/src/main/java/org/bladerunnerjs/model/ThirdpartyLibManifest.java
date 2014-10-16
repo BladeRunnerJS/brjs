@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -16,13 +17,13 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	
 	public static final String commaWithOptionalSpacesSeparator = "[\\s]*,[\\s]*";
 	
-	private final FileInfo fileInfo;
+	private final MemoizedFile file;
 	private final File assetLocationDir;
 	private final AssetLocation assetLocation;
 	
 	public ThirdpartyLibManifest(AssetLocation assetLocation) throws ConfigException {
 		super(assetLocation, ThirdpartyLibYamlManifest.class, assetLocation.file(LIBRARY_MANIFEST_FILENAME));
-		fileInfo = assetLocation.root().getFileInfo(assetLocation.dir());
+		file = assetLocation.root().getMemoizedFile(assetLocation.dir());
 		assetLocationDir = assetLocation.dir();
 		this.assetLocation = assetLocation;
 	}
@@ -114,7 +115,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	private List<File> findAllFilesWithExtension(String extension, boolean includeNestedDirs)
 	{
 		List<File> foundFiles = new ArrayList<File>();
-		List<File> files = (includeNestedDirs) ? fileInfo.nestedFiles() : fileInfo.filesAndDirs();
+		List<File> files = (includeNestedDirs) ? file.nestedFiles() : file.filesAndDirs();
 		
 		for (File f : files)
 		{

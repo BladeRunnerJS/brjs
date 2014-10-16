@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
@@ -18,7 +19,6 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
@@ -308,10 +308,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	{
 		Set<String> contentPaths = new LinkedHashSet<>();
 		for (ResourcesAssetLocation assetLocation : getResourceAssetLocations(container)){
-			File assetLocationDir = assetLocation.dir();
-			FileInfo assetLocationDirInfo = brjs.getFileInfo(assetLocationDir);
-			if (assetLocationDirInfo.isDirectory()){
-				for (File file : assetLocationDirInfo.nestedFiles()) {
+			MemoizedFile assetLocationDir = brjs.getMemoizedFile( assetLocation.dir() );
+			if (assetLocationDir.isDirectory()){
+				for (File file : assetLocationDir.nestedFiles()) {
 					if (!fileIgnoredByBrjsConfig(file)) {
 						createRequestForNestedDir(container, themeRequestName, resourcesRequestName, contentPaths, assetLocation, file, requestArgs);
 					}

@@ -369,16 +369,6 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
-	@Override
-	public FileInfo getFileInfo(File file) {
-		return fileInfoAccessor.getFileInfo(file);
-	}
-	
-	@Override
-	public FileInfo getFileSetInfo(File file, File primarySetFile) {
-		return fileInfoAccessor.getFileSetInfo(file, primarySetFile);
-	}
-	
 	public LoggerFactory getLoggerFactory() {
 		return loggerFactory;
 	}

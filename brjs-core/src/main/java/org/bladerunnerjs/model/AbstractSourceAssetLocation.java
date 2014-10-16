@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.RootNode;
 
@@ -34,11 +35,11 @@ public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLo
 	
 	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
 	{
-		FileInfo dirInfo = root().getFileInfo(findInDir);
+		MemoizedFile memoizedFile = rootNode.getMemoizedFile(findInDir);
 		
-		if (dirInfo.isDirectory())
+		if (memoizedFile.isDirectory())
 		{
-			for (File childDir : dirInfo.dirs())
+			for (File childDir : memoizedFile.dirs())
 			{
 				if (childDir != dir())
 				{
