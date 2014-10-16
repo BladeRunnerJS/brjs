@@ -56,7 +56,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
-		brjs.getFileModificationRegistry().updateLastModified(watchFile);
+		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 	}
@@ -73,7 +73,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 		}
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
-		brjs.getFileModificationRegistry().updateLastModified(watchFile);
+		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 	}
@@ -84,7 +84,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
-		brjs.getFileModificationRegistry().updateLastModified(watchFile);
+		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 	}

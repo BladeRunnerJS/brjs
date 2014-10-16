@@ -359,6 +359,6 @@ public abstract class AbstractNode implements Node
 	@Override
 	public void updateLastModified()
 	{
-    	rootNode.getFileModificationRegistry().updateLastModified( dir() );
+    	rootNode.getFileModificationRegistry().incrementFileVersion( dir() );
 	}
 }

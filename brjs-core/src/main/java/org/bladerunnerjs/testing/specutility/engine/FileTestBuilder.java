@@ -21,7 +21,7 @@ public class FileTestBuilder extends SpecTestBuilder {
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		File theFile = new File(file, filePath);
 		fileUtil.write(theFile, fileContents);
-		specTest.fileModificationRegistry.updateLastModified(theFile);
+		specTest.fileModificationRegistry.incrementFileVersion(theFile);
 		
 		return builderChainer;
 	}
@@ -41,7 +41,7 @@ public class FileTestBuilder extends SpecTestBuilder {
 	public void isReadOnly()
 	{
 		file.setReadOnly();
-		specTest.fileModificationRegistry.updateLastModified(file);
+		specTest.fileModificationRegistry.incrementFileVersion(file);
 	}
 	
 }

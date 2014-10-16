@@ -19,7 +19,7 @@ public class FileModifiedChecker
 	}
 	
 	public boolean hasChangedSinceLastCheck() {
-		long newLastModified = fileModificationRegistry.getLastModified(file);
+		long newLastModified = fileModificationRegistry.getFileVersion(file);
 		boolean hasChangedSinceLastCheck = (newLastModified > lastModifiedTime);
 		lastModifiedTime = newLastModified;
 		
