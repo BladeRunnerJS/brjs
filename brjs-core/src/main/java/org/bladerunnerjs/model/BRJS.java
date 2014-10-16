@@ -33,9 +33,6 @@ import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
-import org.bladerunnerjs.utility.filemodification.FileModificationService;
-import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
-import org.bladerunnerjs.utility.filemodification.TimeAccessor;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
 
 
@@ -72,25 +69,19 @@ public class BRJS extends AbstractBRJSRootNode
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
 	private final PluginAccessor pluginAccessor;
-	private FileModificationService fileModificationService = new OptimisticFileModificationService();
-	private BRJSFileInfoAccessor fileInfoAccessor = new BRJSFileInfoAccessor(fileModificationService, loggerFactory);
 	private final IO io = new IO();
 	private boolean closed = false;
 	private AppVersionGenerator appVersionGenerator;
 	private CharBufferPool pool = new CharBufferPool();
-	private TimeAccessor timeAccessor;
 	private FileModificationRegistry fileModificationRegistry;
 	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	
-	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, TimeAccessor timeAccessor, AppVersionGenerator appVersionGenerator, FileModificationRegistry fileModificationRegistry) throws InvalidSdkDirectoryException
+	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator, FileModificationRegistry fileModificationRegistry) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
-		this.timeAccessor = timeAccessor;
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		this.appVersionGenerator = appVersionGenerator;
 		this.fileModificationRegistry = fileModificationRegistry;
-		
-		fileModificationService.initialise(dir, timeAccessor, this);
 		
 		logger = loggerFactory.getLogger(BRJS.class);
 		
@@ -106,15 +97,6 @@ public class BRJS extends AbstractBRJSRootNode
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
-	}
-	
-	public void setFileModificationService(FileModificationService fileModificationService) {
-		this.fileModificationService.close();
-		
-		fileModificationService.initialise(dir, timeAccessor, this);
-		fileInfoAccessor.setFileModificationService(fileModificationService);
-		
-		this.fileModificationService = fileModificationService;
 	}
 	
 	public CharBufferPool getCharBufferPool(){
@@ -163,7 +145,6 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public void close() {closed  = true;
-		fileModificationService.close();
 	}
 	
 	public BundlableNode locateFirstBundlableAncestorNode(File file) throws InvalidBundlableNodeException
@@ -371,14 +352,6 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public LoggerFactory getLoggerFactory() {
 		return loggerFactory;
-	}
-	
-	public FileInfoAccessor getFileInfoAccessor() {
-		return fileInfoAccessor;
-	}
-	
-	public TimeAccessor getTimeAccessor() {
-		return timeAccessor;
 	}
 	
 	public AppVersionGenerator getAppVersionGenerator()

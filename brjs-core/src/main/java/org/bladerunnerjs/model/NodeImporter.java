@@ -21,7 +21,6 @@ import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.JsStyleUtility;
-import org.bladerunnerjs.utility.filemodification.RealTimeAccessor;
 import org.mockito.Mockito;
 
 
@@ -92,7 +91,7 @@ public class NodeImporter {
 		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
 		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
 		
-		BRJS brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new RealTimeAccessor(), new MockAppVersionGenerator(), new FileModificationRegistry(tempSdkDir.getParentFile()));
+		BRJS brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator(), new FileModificationRegistry(tempSdkDir.getParentFile()));
 		
 		return brjs;
 	}

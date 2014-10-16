@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -73,9 +72,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException
 	{
 		try
-		{
-			brjs.setFileModificationService(new Java7FileModificationService(brjs.getLoggerFactory()));
-			
+		{			
 			if (appServer == null)
 			{
 				appServer = getApplicationServer(parsedArgs);

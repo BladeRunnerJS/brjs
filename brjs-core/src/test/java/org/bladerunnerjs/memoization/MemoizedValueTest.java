@@ -12,7 +12,6 @@ import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
-import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 		watchFile = new File(sdkDir, "watch-file");
 		
 		sdkDir.mkdir();
-		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator(), new FileModificationRegistry(sdkDir.getParentFile()));
+		brjs = createModel(sdkDir, new MockPluginLocator(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator(), new FileModificationRegistry(sdkDir.getParentFile()));
 	}
 
 	@After
