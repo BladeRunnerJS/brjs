@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.utility.FileUtility;
 
 
 public class MemoizedFile extends File
@@ -27,12 +27,16 @@ public class MemoizedFile extends File
 	private RootNode rootNode;
 	private File canonicalFile;
 	private File superFile;
+	private String name;
 	
 	public MemoizedFile(RootNode rootNode, String file) {
 		super(file);
 		this.rootNode = rootNode;
-		superFile = new File(file); // use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
+		superFile = FileUtility.getCanonicalFileWhenPossible(new File(file));
+			// ^^ use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
+		
 		String className = this.getClass().getSimpleName();
+		exists = new MemoizedValue<>(className+".getName", rootNode, this);
 		exists = new MemoizedValue<>(className+".exists", rootNode, this);
 		isDirectory = new MemoizedValue<>(className+".isDirectory", rootNode, this);
 		isFile = new MemoizedValue<>(className+".isFile", rootNode, this);
@@ -51,6 +55,15 @@ public class MemoizedFile extends File
 	
 	
 	// ---- Methods Using Memoized Values ----
+	
+	@Override
+	public String getName()
+	{
+		if (name == null) {
+			name = superFile.getName();
+		}
+		return name;
+	}
 	
 	@Override
 	public boolean exists() {
@@ -83,7 +96,7 @@ public class MemoizedFile extends File
 			}
 			
 			for (File file : superFile.listFiles()) {
-				returnedFilesAndDirs.add(file);
+				returnedFilesAndDirs.add( rootNode.getMemoizedFile(file) );
 			}
 			return returnedFilesAndDirs;
 		});

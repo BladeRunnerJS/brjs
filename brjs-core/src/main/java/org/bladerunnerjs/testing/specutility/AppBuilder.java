@@ -45,6 +45,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	}
 	
 	public BuilderChainer hasBeenBuiltAsWar(File targetDir) throws Exception {
+		app.root().getFileModificationRegistry().incrementAllVersions();
 		File warExportFile = new File(targetDir, app.getName()+".war");
 		warExportFile.getParentFile().mkdir();
 		app.buildWar( warExportFile );
