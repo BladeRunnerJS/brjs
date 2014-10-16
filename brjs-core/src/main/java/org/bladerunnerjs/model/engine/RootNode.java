@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.FileModificationRegistry;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
@@ -21,6 +22,7 @@ public interface RootNode extends Node {
 	FileInfo getFileInfo(File dir);
 	FileInfo getFileSetInfo(File file, File primaryFile);
 	IO io();
+	MemoizedFile getMemoizedFile(File file);
 	
 	boolean isNodeRegistered(Node node);
 	void registerNode(Node node) throws NodeAlreadyRegisteredException;

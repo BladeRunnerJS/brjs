@@ -21,6 +21,11 @@ public class MemoizedFile extends File
 		listFiles = new MemoizedValue<>(className+".listFiles", rootNode, this);
 	}
 	
+	public MemoizedFile(RootNode rootNode, File file)
+	{
+		this( rootNode, file.getAbsolutePath() );		
+	}
+	
 	public MemoizedFile(RootNode rootNode, File parent, String child)
 	{
 		this( rootNode, new File(parent, child).getAbsolutePath() );		

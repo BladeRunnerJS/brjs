@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.memoization.FileModificationRegistry;
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.memoization.MemoizedFileAccessor;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
@@ -27,6 +29,7 @@ public final class TestRootNode extends AbstractRootNode
 	private TimeAccessor timeAccessor = new TestTimeAccessor();
 	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."));
 	private final IO io = new IO();
+	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	
 	public TestRootNode(File dir) throws InvalidSdkDirectoryException
 	{
@@ -108,4 +111,11 @@ public final class TestRootNode extends AbstractRootNode
 	{
 		return fileModificationRegistry;
 	}
+
+	@Override
+	public MemoizedFile getMemoizedFile(File file)
+	{
+		return memoizedFileAccessor.getMemoizedFile(file);
+	}
+	
 }

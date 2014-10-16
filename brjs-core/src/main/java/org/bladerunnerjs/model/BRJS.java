@@ -13,6 +13,8 @@ import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.memoization.FileModificationRegistry;
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.memoization.MemoizedFileAccessor;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -78,6 +80,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private CharBufferPool pool = new CharBufferPool();
 	private TimeAccessor timeAccessor;
 	private FileModificationRegistry fileModificationRegistry;
+	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	
 	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, TimeAccessor timeAccessor, AppVersionGenerator appVersionGenerator, FileModificationRegistry fileModificationRegistry) throws InvalidSdkDirectoryException
 	{
@@ -403,5 +406,11 @@ public class BRJS extends AbstractBRJSRootNode
 	public FileModificationRegistry getFileModificationRegistry()
 	{
 		return fileModificationRegistry;
+	}
+	
+	@Override
+	public MemoizedFile getMemoizedFile(File file)
+	{
+		return memoizedFileAccessor.getMemoizedFile(file);
 	}
 }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.FileModificationRegistry;
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.memoization.MemoizedFileAccessor;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
@@ -25,6 +27,7 @@ public class MockRootNode implements RootNode
 {
 	private TimeAccessor timeAccessor = new TestTimeAccessor();
 	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."));
+	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	
 	@Override
 	public Node parentNode()
@@ -272,5 +275,11 @@ public class MockRootNode implements RootNode
 	@Override
 	public void updateLastModified()
 	{		
+	}
+	
+	@Override
+	public MemoizedFile getMemoizedFile(File file)
+	{
+		return memoizedFileAccessor.getMemoizedFile(file);
 	}
 }
