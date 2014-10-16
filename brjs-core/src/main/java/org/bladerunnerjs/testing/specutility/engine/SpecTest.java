@@ -119,7 +119,7 @@ public abstract class SpecTest extends TestModelAccessor
 		pluginLocator = new MockPluginLocator();
 		webappTester = new WebappTester(testSdkDirectory);
 		appVersionGenerator = new MockAppVersionGenerator();
-		fileModificationRegistry = new FileModificationRegistry();
+		fileModificationRegistry = new FileModificationRegistry(testSdkDirectory);
 	}
 	
 	@After

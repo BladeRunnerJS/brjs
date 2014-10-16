@@ -26,7 +26,7 @@ public class ThreadSafeStaticBRJSAccessor {
 	
 	public static synchronized BRJS initializeModel(File brjsDir) throws InvalidSdkDirectoryException {
 		if (model == null) {
-			model = new BRJS(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new RealTimeAccessor(), new TimestampAppVersionGenerator(), new FileModificationRegistry());
+			model = new BRJS(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new RealTimeAccessor(), new TimestampAppVersionGenerator(), new FileModificationRegistry(brjsDir));
 			root = model;
 		}
 		

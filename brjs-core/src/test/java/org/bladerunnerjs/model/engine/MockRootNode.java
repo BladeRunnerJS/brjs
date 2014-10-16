@@ -24,7 +24,7 @@ import org.bladerunnerjs.utility.filemodification.TimeAccessor;
 public class MockRootNode implements RootNode
 {
 	private TimeAccessor timeAccessor = new TestTimeAccessor();
-	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry();
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."));
 	
 	@Override
 	public Node parentNode()

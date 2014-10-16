@@ -22,17 +22,15 @@ public class MemoizedValueTest extends TestModelAccessor {
 	private File sdkDir;
 	private File watchFile;
 	private BRJS brjs;
-	private File watchFileChild;
 	
 	@Before
 	public void setUp() throws Exception {
 		tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
-		watchFile = new File(tempDir, "watch-file");
-		watchFileChild = new File(tempDir, "watch-file/some/sub/dir/watch-file");
 		sdkDir = new File(tempDir, "sdk");
+		watchFile = new File(sdkDir, "watch-file");
 		
 		sdkDir.mkdir();
-		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator(), new FileModificationRegistry(true));
+		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator(), new FileModificationRegistry(sdkDir));
 	}
 
 	@After
@@ -71,17 +69,6 @@ public class MemoizedValueTest extends TestModelAccessor {
 		}
 		catch(RuntimeException e) {
 		}
-		
-		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
-		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);
-		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
-		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
-	}
-	
-	@Test
-	public void valueIsRecreatedIfAParentDirectoryChanges() {
-		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("id", brjs, watchFileChild);
-		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
 		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);

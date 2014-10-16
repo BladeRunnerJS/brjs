@@ -25,7 +25,7 @@ public final class TestRootNode extends AbstractRootNode
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(this, TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(this, TestMultiLocationItemNode.class, "single-item-primary-location");
 	private TimeAccessor timeAccessor = new TestTimeAccessor();
-	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry();
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."));
 	private final IO io = new IO();
 	
 	public TestRootNode(File dir) throws InvalidSdkDirectoryException

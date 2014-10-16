@@ -10,29 +10,25 @@ public class FileModificationRegistry
 {
 	
 	private TreeMap<String,Long> lastModifiedMap = new TreeMap<>();
+	private File rootFile;
 
-	// a temporary hack so we can optionally use values from disk until fully moved over to the new file modified checker
-	private boolean useLogicalModifiedTime;
-	public FileModificationRegistry() { this(false); }
-	public FileModificationRegistry(boolean useLogicalModifiedTime) { this.useLogicalModifiedTime = useLogicalModifiedTime; }
-	
+	public FileModificationRegistry(File rootFile) { 
+		this.rootFile = FileUtility.getCanonicalFileWhenPossible(rootFile); 
+	}
 	
 	public synchronized Long getFileVersion(File file) {
-		if (useLogicalModifiedTime) {
-			String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
-			return lastModifiedMap.get(canonicalFilePath);
-		}
-		return file.lastModified();
+		String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
+		return lastModifiedMap.get(canonicalFilePath);
 	}
 
 	public synchronized void incrementFileVersion(File file) {
-		String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
 		Long currentLastModified;
-		for (String filePathKey : lastModifiedMap.keySet()) {
-			if (filePathKey.startsWith(canonicalFilePath)) {
-				currentLastModified = lastModifiedMap.get(filePathKey);
-				lastModifiedMap.put(filePathKey, ++currentLastModified);
-			}
+		File fileToIncrement = FileUtility.getCanonicalFileWhenPossible(file);
+		while (fileToIncrement != null && !fileToIncrement.equals(rootFile)) {
+			String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(fileToIncrement);
+			currentLastModified = lastModifiedMap.get(canonicalFilePath);
+			lastModifiedMap.put(canonicalFilePath, ++currentLastModified);
+			fileToIncrement = fileToIncrement.getParentFile();
 		}
 	}
 	
