@@ -14,7 +14,7 @@
 	}
 
 	/** @private */
-	window.requireAll = function(require, globalObj, requirePaths) {
+	window.requireAll = function(require, requirePaths) {
 		for (var i = 0; i < requirePaths.length; i++) {
 			var requirePath = requirePaths[i];
 			var namespacePath = requirePath.replace(/\//gi, ".");
