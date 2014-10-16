@@ -197,7 +197,7 @@ describe('a realm', function() {
 		expect((new A()).b instanceof B).toBeTruthy();
 	});
 
-	it('tolerates mixed circular dependencies where the required node has a define-time dependency', function() {
+	it('fails with a nice error message for mixed circular dependencies where the required node has a define-time dependency', function() {
 		testRealm.define('pkg/ClassA', function(require, exports, module) {
 			var ClassB;
 			function ClassA() {
@@ -216,54 +216,7 @@ describe('a realm', function() {
 
 		expect(function() {
 			testRealm.require('pkg/ClassB');
-		}).not.toThrow();
-
-		var A = testRealm.require('pkg/ClassA');
-		var B = testRealm.require('pkg/ClassB');
-		expect(new B() instanceof A).toBeTruthy();
-		expect((new A()).b instanceof B).toBeTruthy();
-
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: pkg/ClassB => pkg/ClassA -> pkg/ClassB');
-		expect(mockConsole.messages.shift()).toBe("info: requiring 'pkg/ClassA' early to solve the circular dependency problem");
-	});
-
-	it('tolerates large mixed circular dependencies where the required node has a define-time dependency', function() {
-		testRealm.define('pkg/ClassA', function(require, exports, module) {
-			var ClassB = require('pkg/ClassB');
-			function ClassA() {
-			};
-			ClassA.prototype = Object.create(ClassB.prototype);
-			module.exports = ClassA;
-		});
-		testRealm.define('pkg/ClassB', function(require, exports, module) {
-			var ClassC;
-			function ClassB() {
-				this.c = new ClassC();
-			};
-			module.exports = ClassB;
-			ClassC = require('pkg/ClassC');
-		});
-		testRealm.define('pkg/ClassC', function(require, exports, module) {
-			var ClassA = require('pkg/ClassA');
-			function ClassC() {
-			};
-			ClassC.prototype = Object.create(ClassA.prototype);
-			module.exports = ClassC;
-		});
-
-		expect(function() {
-			testRealm.require('pkg/ClassC');
-		}).not.toThrow();
-
-		var A = testRealm.require('pkg/ClassA');
-		var B = testRealm.require('pkg/ClassB');
-		var C = testRealm.require('pkg/ClassC');
-		expect(new A() instanceof B).toBeTruthy();
-		expect((new B()).c instanceof C).toBeTruthy();
-		expect(new C() instanceof A).toBeTruthy();
-
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: pkg/ClassC => pkg/ClassA => pkg/ClassB -> pkg/ClassC');
-		expect(mockConsole.messages.shift()).toBe("info: requiring 'pkg/ClassB' early to solve the circular dependency problem");
+		}).toThrow(new Error('Circular dependency detected: pkg/ClassB => pkg/ClassA -> pkg/ClassB'));
 	});
 
 	it('passes through exceptions that occur during definition', function() {
@@ -523,128 +476,5 @@ describe('a realm', function() {
 
 		// Note: this should be 'not.toBe' if sub-realms could be used with pre-existing realm objects without re-installing
 		expect(obj.getDependentClass()).toBe(DependentClass);
-	});
-
-	it('can recover from a second circular dependency error that occurs while we are still recovering from an earlier circular dependency error', function() {
-		testRealm.define('A', function(require, exports, module) {
-			var B = require('B');
-			function A() {
-			}
-			A.prototype = Object.create(B.prototype);
-			module.exports = A;
-		});
-
-		testRealm.define('B', function(require, exports, module) {
-			var C = require('C');
-			function B() {
-				this.x = new X();
-			}
-			B.prototype = Object.create(C.prototype);
-			module.exports = B;
-			var X = require('X');
-		});
-
-		testRealm.define('C', function(require, exports, module) {
-			function C() {
-				this.a = new A();
-			}
-			module.exports = C;
-			var A = require('A');
-		});
-
-		testRealm.define('X', function(require, exports, module) {
-			function X() {
-				this.a = new A();
-			}
-			module.exports = X;
-			var A = require('A');
-		});
-
-		var A = testRealm.require('A');
-		var B = testRealm.require('B');
-		var C = testRealm.require('C');
-		var X = testRealm.require('X');
-
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A => B => C -> A');
-		expect(mockConsole.messages.shift()).toBe("info: requiring 'C' early to solve the circular dependency problem");
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A => B -> X -> A');
-		expect(mockConsole.messages.shift()).toBe("info: requiring 'X' early to solve the circular dependency problem");
-
-		expect(new A() instanceof B).toBe(true);
-		expect(new A() instanceof C).toBe(true);
-
-		expect(new B() instanceof C).toBe(true);
-		expect(new B().x instanceof X).toBe(true);
-
-		expect(new C().a instanceof A).toBe(true);
-
-		expect(new X().a instanceof A).toBe(true);
-	});
-
-	it('can recover from a second circular dependency error that engulfs the first', function() {
-		testRealm.define('A', function(require, exports, module) {
-			var B = require('B');
-			function A() {
-			}
-			A.prototype = Object.create(B.prototype);
-			module.exports = A;
-		});
-
-		testRealm.define('B', function(require, exports, module) {
-			var C = require('C');
-			function B() {
-				this.x = new X();
-			}
-			B.prototype = Object.create(C.prototype);
-			module.exports = B;
-			var X = require('X');
-		});
-
-		testRealm.define('C', function(require, exports, module) {
-			function C() {
-				this.a = new A();
-			}
-			module.exports = C;
-			var A = require('A');
-		});
-
-		testRealm.define('X', function(require, exports, module) {
-			function X() {
-				this.s = new S();
-			}
-			module.exports = X;
-			var S = require('S');
-		});
-
-		testRealm.define('S', function(require, exports, module) {
-			function S() {
-				this.a = new A();
-			}
-			module.exports = S;
-			var A = require('A');
-		});
-
-		var A = testRealm.require('A');
-		var B = testRealm.require('B');
-		var C = testRealm.require('C');
-		var X = testRealm.require('X');
-		var S = testRealm.require('S');
-
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A => B => C -> A');
-		expect(mockConsole.messages.shift()).toBe("info: requiring 'C' early to solve the circular dependency problem");
-		expect(mockConsole.messages.shift()).toBe('warn: Circular dependency detected: A => B -> X -> S -> A');
-		expect(mockConsole.messages.shift()).toBe("info: requiring 'S' early to solve the circular dependency problem");
-
-		expect(new A() instanceof B).toBe(true);
-		expect(new A() instanceof C).toBe(true);
-
-		expect(new B() instanceof C).toBe(true);
-		expect(new B().x instanceof X).toBe(true);
-
-		expect(new C().a instanceof A).toBe(true);
-
-		expect(new X().s instanceof S).toBe(true);
-
-		expect(new S().a instanceof A).toBe(true);
 	});
 });
