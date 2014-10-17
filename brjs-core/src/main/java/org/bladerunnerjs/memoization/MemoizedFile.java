@@ -29,7 +29,7 @@ public class MemoizedFile extends File
 	private File superFile;
 	private String name;
 	
-	public MemoizedFile(RootNode rootNode, String file) {
+	MemoizedFile(RootNode rootNode, String file) {
 		super(file);
 		this.rootNode = rootNode;
 		superFile = FileUtility.getCanonicalFileWhenPossible(new File(file));

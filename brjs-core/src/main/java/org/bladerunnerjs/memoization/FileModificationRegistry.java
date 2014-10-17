@@ -9,46 +9,45 @@ import org.bladerunnerjs.utility.FileUtility;
 public class FileModificationRegistry
 {
 	
-	private TreeMap<String,Long> lastModifiedMap = new TreeMap<>();
+	private TreeMap<String,FileVersion> lastModifiedMap = new TreeMap<>();
 	private File rootFile;
 
 	public FileModificationRegistry(File rootFile) { 
 		this.rootFile = FileUtility.getCanonicalFileWhenPossible(rootFile); 
 	}
 	
-	public synchronized Long getFileVersion(File file) {
-		String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(file);
-		return lastModifiedMap.get(canonicalFilePath);
+	public synchronized long getFileVersion(File file) {
+		return getOrCreateVersionValue(file).getValue();
 	}
 
 	public synchronized void incrementFileVersion(File file) {
-		Long currentLastModified;
-		File fileToIncrement = FileUtility.getCanonicalFileWhenPossible(file);
-		while (fileToIncrement != null && !fileToIncrement.equals(rootFile)) {
-			String canonicalFilePath = createKeyAndInitEmptyValueIfRequired(fileToIncrement);
-			currentLastModified = lastModifiedMap.get(canonicalFilePath);
-			lastModifiedMap.put(canonicalFilePath, currentLastModified+1);
-			fileToIncrement = fileToIncrement.getParentFile();
+		while (file != null && !file.equals(rootFile)) {
+			getOrCreateVersionValue(file).incrememntValue();
+			file = file.getParentFile();
 		}
 	}
 	
-	
-	private String createKeyAndInitEmptyValueIfRequired(File file)
-	{
-		String canonicalFilePath = FileUtility.getCanonicalFileWhenPossible(file).getAbsolutePath();
-		if (!lastModifiedMap.containsKey(canonicalFilePath)) {
-			lastModifiedMap.put(canonicalFilePath, Long.valueOf(0));
-		}
-		return canonicalFilePath;
-	}
-
 	public void incrementAllVersions()
 	{
-		Long currentLastModified;
 		for (String key : lastModifiedMap.keySet()) {
-			currentLastModified = lastModifiedMap.get(key);
-			lastModifiedMap.put(key, currentLastModified+1);
+			getOrCreateVersionValue(key).incrememntValue();
 		}
+	}
+	
+	
+	private FileVersion getOrCreateVersionValue(File file)
+	{
+		return getOrCreateVersionValue( FileUtility.getCanonicalFileWhenPossible(file).getAbsolutePath() );
+	}
+	
+	private FileVersion getOrCreateVersionValue(String canonicalFilePath)
+	{
+		FileVersion version = lastModifiedMap.get(canonicalFilePath);
+		if (version == null) {
+			version = new FileVersion();
+			lastModifiedMap.put(canonicalFilePath, version);
+		}
+		return version;
 	}
 	
 }
