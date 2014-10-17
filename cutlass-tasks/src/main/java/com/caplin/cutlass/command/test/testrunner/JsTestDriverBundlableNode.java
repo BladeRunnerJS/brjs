@@ -261,8 +261,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 	
 	@Override
-	public void updateLastModified()
+	public void incrementFileVersion()
 	{
-		bundlableNode.updateLastModified();	
+		bundlableNode.incrementFileVersion();	
 	}
 }

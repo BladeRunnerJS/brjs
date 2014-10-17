@@ -238,8 +238,8 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public void updateLastModified()
+	public void incrementFileVersion()
 	{
-		sdkJsLib.updateLastModified();
+		sdkJsLib.incrementFileVersion();
 	}
 }

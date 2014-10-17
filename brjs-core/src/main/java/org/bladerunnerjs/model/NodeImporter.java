@@ -81,7 +81,7 @@ public class NodeImporter {
 		
 		renameBladeset(tempBrjsBladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix);
 		FileUtils.moveDirectory(tempBrjsBladeset.dir(), targetBladeset.dir());
-		targetBladeset.updateLastModified();
+		targetBladeset.incrementFileVersion();
 	}
 	
 	private static BRJS createTemporaryBRJSModel() throws InvalidSdkDirectoryException, IOException {

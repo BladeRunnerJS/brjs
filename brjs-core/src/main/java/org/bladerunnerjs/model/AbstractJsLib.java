@@ -109,7 +109,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 				rootAssetLocation.setRequirePrefix(libNamespace.replace('.', '/'));
 				rootAssetLocation.populate();
 			}
-			updateLastModified();
+			incrementFileVersion();
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {

@@ -56,7 +56,7 @@ public class TemplateUtility
 				JsStyleUtility.setJsStyle(node.dir(), CommonJsSourceModule.JS_STYLE);
 			}
 			
-			node.updateLastModified();
+			node.incrementFileVersion();
 		}
 		catch(IOException e) {
 			throw new TemplateInstallationException(e);

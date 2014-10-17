@@ -139,7 +139,7 @@ public abstract class AbstractNode implements Node
 				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
-				updateLastModified();
+				incrementFileVersion();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -161,7 +161,7 @@ public abstract class AbstractNode implements Node
 			notifyObservers(new NodeCreatedEvent(), this);
 			logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
-			updateLastModified();
+			incrementFileVersion();
 		}
 		catch(Exception e) {
 			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getTypeName(), dir().getPath());
@@ -187,7 +187,7 @@ public abstract class AbstractNode implements Node
 				FileUtils.deleteDirectory(dir);
 				logger.debug(Messages.NODE_DELETED_LOG_MSG, getTypeName(), dir.getPath());
 				notifyObservers(new NodeDeletedEvent(), this);
-				updateLastModified();
+				incrementFileVersion();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -358,7 +358,7 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
-	public void updateLastModified()
+	public void incrementFileVersion()
 	{
     	rootNode.getFileModificationRegistry().incrementFileVersion( dir() );
 	}

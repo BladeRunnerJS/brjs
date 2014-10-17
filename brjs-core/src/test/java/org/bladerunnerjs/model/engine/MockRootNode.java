@@ -258,7 +258,7 @@ public class MockRootNode implements RootNode
 	}
 	
 	@Override
-	public void updateLastModified()
+	public void incrementFileVersion()
 	{		
 	}
 	
