@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.memoization.FileModificationRegistry;
+import org.bladerunnerjs.memoization.Java7FileModificationWatcherThread;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedFileAccessor;
 import org.bladerunnerjs.model.engine.Node;
@@ -62,19 +64,21 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> userJars = new NodeItem<>(this, DirNode.class, "conf/java");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
-	private WorkingDirNode workingDir;
-	private final Logger logger;
-	private final CommandList commandList;
-	private BladerunnerConf bladerunnerConf;
-	private TestRunnerConf testRunnerConf;
+	private final MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
 	private final PluginAccessor pluginAccessor;
 	private final IO io = new IO();
+	private final Logger logger;
+	private final CommandList commandList;
+	private final AppVersionGenerator appVersionGenerator;
+	private final FileModificationRegistry fileModificationRegistry;
+	private final Thread fileWatcherThread;
+	
+	private WorkingDirNode workingDir;
+	private BladerunnerConf bladerunnerConf;
+	private TestRunnerConf testRunnerConf;
 	private boolean closed = false;
-	private AppVersionGenerator appVersionGenerator;
 	private CharBufferPool pool = new CharBufferPool();
-	private FileModificationRegistry fileModificationRegistry;
-	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	
 	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
@@ -82,6 +86,14 @@ public class BRJS extends AbstractBRJSRootNode
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		this.appVersionGenerator = appVersionGenerator;
 		this.fileModificationRegistry = new FileModificationRegistry( dir().getParentFile() );
+		try
+		{
+			fileWatcherThread = new Java7FileModificationWatcherThread( this );
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 		
 		logger = loggerFactory.getLogger(BRJS.class);
 		
@@ -376,4 +388,9 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		return memoizedFileAccessor.getMemoizedFile(file);
 	}
+	
+	public Thread getFileWatcherThread() {
+		return fileWatcherThread;
+	}
+	
 }
