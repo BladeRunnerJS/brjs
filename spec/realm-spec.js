@@ -135,7 +135,7 @@ describe('a realm', function() {
 		}).toThrow(Error('Circular dependency detected: pkg/ClassA => pkg/ClassB => pkg/ClassA'));
 	});
 
-	it('throws an error even when a define-time dependency is partially, but not wholly, exported', function() {
+	it('allows a circular define-time dependency that is partially, but not wholly, exported', function() {
 		testRealm.define('pkg/A', function(require, exports, module) {
 			var B = require('pkg/B');
 			function ClassA() {
@@ -151,8 +151,8 @@ describe('a realm', function() {
 		});
 
 		expect(function() {
-			testRealm.require('pkg/A');
-		}).toThrow('Circular dependency detected: pkg/A => pkg/B => pkg/A');
+			testRealm.require('pkg/B');
+		}).not.toThrow();
 	});
 
 	it('tolerates use-time circular dependencies', function() {

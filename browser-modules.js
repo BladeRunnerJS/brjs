@@ -47,6 +47,48 @@
 		};
 	}
 
+	// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+	if (!Object.keys) {
+	  Object.keys = (function() {
+	    'use strict';
+	    var hasOwnProperty = Object.prototype.hasOwnProperty,
+	        hasDontEnumBug = !({ toString: null }).propertyIsEnumerable('toString'),
+	        dontEnums = [
+	          'toString',
+	          'toLocaleString',
+	          'valueOf',
+	          'hasOwnProperty',
+	          'isPrototypeOf',
+	          'propertyIsEnumerable',
+	          'constructor'
+	        ],
+	        dontEnumsLength = dontEnums.length;
+
+	    return function(obj) {
+	      if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
+	        throw new TypeError('Object.keys called on non-object');
+	      }
+
+	      var result = [], prop, i;
+
+	      for (prop in obj) {
+	        if (hasOwnProperty.call(obj, prop)) {
+	          result.push(prop);
+	        }
+	      }
+
+	      if (hasDontEnumBug) {
+	        for (i = 0; i < dontEnumsLength; i++) {
+	          if (hasOwnProperty.call(obj, dontEnums[i])) {
+	            result.push(dontEnums[i]);
+	          }
+	        }
+	      }
+	      return result;
+	    };
+	  }());
+	}
+
 	var global = Function("return this;")();
 
 	var create = Object.create || function(proto, attributes) {
@@ -284,7 +326,8 @@
 
 	Realm.prototype._isModuleExported = function(id) {
 		var moduleExports = this.incompleteExports[id].exports;
-		return ((typeof(moduleExports) != 'object') || !(moduleExports instanceof ModuleExports));
+		return ((typeof(moduleExports) != 'object') || !(moduleExports instanceof ModuleExports) ||
+			(Object.keys(moduleExports).length > 0));
 	};
 
 	// Subrealm ////////////////////////////////////////////////////////////////////////////
