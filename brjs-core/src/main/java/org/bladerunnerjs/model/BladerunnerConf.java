@@ -19,8 +19,8 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	}
 	
 	public void setJettyPort(int jettyPort) throws ConfigException {
-		getConf().jettyPort = jettyPort;;
-		verify();
+		getConf().jettyPort = jettyPort;
+		verifyAndAutoWrite();
 	}
 	
 	public String getDefaultFileCharacterEncoding() throws ConfigException {
@@ -29,7 +29,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	
 	public void setDefaultFileCharacterEncoding(String defaultFileCharacterEncoding) throws ConfigException {
 		getConf().defaultFileCharacterEncoding = defaultFileCharacterEncoding;
-		verify();
+		verifyAndAutoWrite();
 	}
 
 	public String getLoginRealm() throws ConfigException
@@ -49,7 +49,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	
 	public void setIgnoredPaths(String... ignoredFiles) throws ConfigException {
 		getConf().ignoredPaths = StringUtils.join(ignoredFiles,",");
-		verify();
+		verifyAndAutoWrite();
 	}
 	
 	public boolean useNodeCommands() throws ConfigException

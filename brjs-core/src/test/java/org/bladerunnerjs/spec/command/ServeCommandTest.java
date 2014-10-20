@@ -11,7 +11,6 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServeCommandTest extends SpecTest
@@ -46,7 +45,7 @@ public class ServeCommandTest extends SpecTest
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
-	@Test @Ignore
+	@Test
 	public void exceptionIsThrownIfAppServerAlreadyStarted() throws Exception
 	{
 		given(appServer).started();

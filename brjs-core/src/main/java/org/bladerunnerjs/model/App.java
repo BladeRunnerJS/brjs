@@ -294,8 +294,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		NameValidator.assertValidRootPackageName(this, requirePrefix);
 		
 		try {
+			appConf().setAutoWrite(false);
 			appConf().setRequirePrefix(requirePrefix);
 			populate();
+			appConf().setAutoWrite(true);
 			appConf().write();
 		}
 		catch (ConfigException e) {
