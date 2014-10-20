@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.bladerunnerjs.logging.SLF4JLoggerFactory;
-import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 
@@ -25,7 +24,7 @@ public class ThreadSafeStaticBRJSAccessor {
 	
 	public static synchronized BRJS initializeModel(File brjsDir) throws InvalidSdkDirectoryException {
 		if (model == null) {
-			model = new BRJS(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new TimestampAppVersionGenerator(), new FileModificationRegistry(brjsDir.getParentFile().getParentFile()));
+			model = new BRJS(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new TimestampAppVersionGenerator());
 			root = model;
 		}
 		

@@ -48,7 +48,7 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	public CommanderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		File theFile = node.file(filePath);
 		fileUtil.write(theFile, fileContents);
-		specTest.fileModificationRegistry.incrementFileVersion(theFile);
+		specTest.incrementFileVersion(theFile);
 		
 		return commanderChainer;
 	}
