@@ -17,9 +17,9 @@ import org.bladerunnerjs.model.BRJS;
 import static java.nio.file.StandardWatchEventKinds.*;
 
 
-public class Java7FileModificationWatcherThread extends Thread
+public class FileModificationWatcherThread extends Thread
 {
-	public static final String THREAD_IDENTIFIER = Java7FileModificationWatcherThread.class.getSimpleName();
+	public static final String THREAD_IDENTIFIER = FileModificationWatcherThread.class.getSimpleName();
 	
 	private Path directoryToWatch;
 
@@ -29,16 +29,11 @@ public class Java7FileModificationWatcherThread extends Thread
 
 	private HashMap<Path, WatchKey> watchKeys;	
 	
-	public Java7FileModificationWatcherThread(BRJS brjs) throws IOException
+	public FileModificationWatcherThread(BRJS brjs) throws IOException
 	{
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().toPath();
 		watchService = FileSystems.getDefault().newWatchService();
-	}
-	
-	public void init() throws IOException {
-		watchKeys = new HashMap<>();
-		addWatchKeysForNestedDirs(watchService, watchKeys, directoryToWatch.toFile());
 	}
 	
 	@Override
@@ -46,18 +41,27 @@ public class Java7FileModificationWatcherThread extends Thread
 	{
 		Thread.currentThread().setName(THREAD_IDENTIFIER);
 		try {
-			init(); // call init here so we only recursive list files etc when the thread starts but in a seperate method so we can call it in tests
+			watchKeys = new HashMap<>();
+			addWatchKeysForNestedDirs(watchService, watchKeys, directoryToWatch.toFile());
     		
     		while (!isInterrupted()) {
     			checkForUpdates();
     			Thread.sleep(1000);
     		}
+		} catch (InterruptedException ex) {
+			// do nothing
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
+		
+		for (WatchKey watchKey : watchKeys.values()) {
+			watchKey.cancel();
+		}
+		watchKeys.clear();
+		Thread.interrupted();
 	}
 
-	public void checkForUpdates() throws IOException
+	private void checkForUpdates() throws IOException
 	{
 		List<Path> watchPaths = new ArrayList<>(watchKeys.keySet()); // create a duplicate so we can change the underlying map as we iterate over it
 		for (Path watchPath : watchPaths) {
@@ -80,6 +84,7 @@ public class Java7FileModificationWatcherThread extends Thread
 	        Path filename = ev.context();
 	        
             Path child = watchPath.resolve(filename);
+            
             if (kind == ENTRY_CREATE && child.toFile().isDirectory()) {
             	watchKeys.put( child , createWatchKeyForDir(watchService, child) );
             }

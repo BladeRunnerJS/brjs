@@ -14,7 +14,7 @@ import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.memoization.FileModificationRegistry;
-import org.bladerunnerjs.memoization.Java7FileModificationWatcherThread;
+import org.bladerunnerjs.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedFileAccessor;
 import org.bladerunnerjs.model.engine.Node;
@@ -88,7 +88,7 @@ public class BRJS extends AbstractBRJSRootNode
 		this.fileModificationRegistry = new FileModificationRegistry( dir().getParentFile() );
 		try
 		{
-			fileWatcherThread = new Java7FileModificationWatcherThread( this );
+			fileWatcherThread = new FileModificationWatcherThread( this );
 		}
 		catch (IOException ex)
 		{
