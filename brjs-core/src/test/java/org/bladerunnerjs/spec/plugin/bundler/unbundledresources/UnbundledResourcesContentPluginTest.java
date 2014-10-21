@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -32,8 +33,10 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private Aspect defaultAspect;
 	private File bladesetUnbundledResources;
 	private File bladeUnbundledResources;
+	private File workbenchUnbundledResources;
 	private Bladeset bladeset;	
 	private Blade blade;
+	private Workbench workbench;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -47,6 +50,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			unbundledResources = appAspect.file("unbundled-resources");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
+			workbench = blade.workbench();
 			bladesetUnbundledResources = bladeset.file("unbundled-resources");
 			bladeUnbundledResources = blade.file("unbundled-resources");
 			sysapp = brjs.systemApp("sysapp");
@@ -153,6 +157,44 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			.and(blade).hasBeenPopulated()
 			.and(blade).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(appAspect).requestReceivedInDev("/unbundled-resources/bladeset_bs/blade_b1/someFile.txt", response);
+		then(response).textEquals("some file contents");
+	}
+	
+	@Ignore
+	@Test
+	public void ifThereAreFilesInWorkbenchUnbundledResourcesThenRequestsWillBeGenerated() throws Exception {
+		given(appAspect).indexPageHasContent("index page")
+			.and(bladeset).hasBeenPopulated()
+			.and(blade).hasBeenPopulated()
+			.and(workbench).hasBeenPopulated()
+			.and(workbenchUnbundledResources).containsFile("some-file")
+			.and(workbenchUnbundledResources).containsFile("some-dir/some-file");
+		then(appAspect).prodAndDevRequestsForContentPluginsAre( "unbundled-resources",
+				"/unbundled-resources/bladeset_bs/blade_b1/workbench/some-file", 
+				"unbundled-resources/bladeset_bs/blade_b1/workbench/some-file", 
+				"/unbundled-resources/bladeset_bs/blade_b1/workbench/some-dir/some-file",
+				"unbundled-resources/bladeset_bs/blade_b1/workbench/some-dir/some-file");
+	}
+	
+	@Test
+	public void requestsCanBeMadeForAFileInWorkbenchVersionedUnbundledResources() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenPopulated()
+			.and(blade).hasBeenPopulated()
+			.and(workbench).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
+		when(appAspect).requestReceivedInDev("unbundled-resources/bladeset_bs/blade_b1/workbench/someFile.txt", response);
+		then(response).textEquals("some file contents");
+	}
+	
+	@Test
+	public void requestsCanBeMadeForAFileInWorkbenchUnbundledResources() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenPopulated()
+			.and(blade).hasBeenPopulated()
+			.and(workbench).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
+		when(appAspect).requestReceivedInDev("/unbundled-resources/bladeset_bs/blade_b1/workbench/someFile.txt", response);
 		then(response).textEquals("some file contents");
 	}
 	
