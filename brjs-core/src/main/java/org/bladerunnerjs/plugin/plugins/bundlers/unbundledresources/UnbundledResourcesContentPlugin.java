@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
@@ -37,6 +38,8 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	public static final String UNBUNDLED_RESOURCES_DIRNAME = "unbundled-resources";
 	public static final String BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST = "bladeset-versioned-unbundled-resources-request";
 	public static final String BLADESET_UNBUNDLED_RESOURCES_REQUEST = "bladeset-unbundled-resources-request";
+	public static final String BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST = "blade-versioned-unbundled-resources-request";
+	public static final String BLADE_UNBUNDLED_RESOURCES_REQUEST = "blade-unbundled-resources-request";
 	
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
@@ -44,12 +47,15 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("unbundled-resources/bladeset_<bladeset>/<file-path>").as(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
+			.accepts("unbundled-resources/bladeset_<bladeset>/blade_<blade>/<file-path>").as(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
+				.and("/unbundled-resources/bladeset_<bladeset>/blade_<blade>/<file-path>").as(BLADE_UNBUNDLED_RESOURCES_REQUEST)
+				.and("unbundled-resources/bladeset_<bladeset>/<file-path>").as(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
 				.and("/unbundled-resources/bladeset_<bladeset>/<file-path>").as(BLADESET_UNBUNDLED_RESOURCES_REQUEST)
 				.and("unbundled-resources/<file-path>").as(VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
 				.and("/unbundled-resources/<file-path>").as(UNBUNDLED_RESOURCES_REQUEST)
 			.where(FILE_PATH_REQUEST_FORM).hasForm(".*")
-				.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN);
+				.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+				.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 
 		contentPathParser = contentPathParserBuilder.build();
 	}
@@ -123,6 +129,24 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     			contentAccessor.handleRequest(requestedFilePathRelativeToApp, outputBuffer);
     			return new BinaryResponseContent( new ByteArrayInputStream(outputBuffer.toByteArray()) );
     		}
+    		else if (contentPath.formName.equals(BLADE_UNBUNDLED_RESOURCES_REQUEST)
+   				 || contentPath.formName.equals(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
+	   		{    			
+	   			String relativeFilePath = contentPath.properties.get(FILE_PATH_REQUEST_FORM);
+	   			Blade blade = bundleSet.getBundlableNode().app().bladeset(contentPath.properties.get("bladeset")).blade(contentPath.properties.get("blade"));
+	   			File unbundledResourcesDir = blade.file(UNBUNDLED_RESOURCES_DIRNAME);
+	   			App app = bundleSet.getBundlableNode().app();
+	   			File requestedFile = new File(unbundledResourcesDir, relativeFilePath);
+	   			String requestedFilePathRelativeToApp = RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), requestedFile);
+	   			if (!requestedFile.isFile())
+	   			{
+	   				String requestedFilePathRelativeToRoot = RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir().getParentFile(), requestedFile);
+	   				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
+	   			}
+	   			ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+	   			contentAccessor.handleRequest(requestedFilePathRelativeToApp, outputBuffer);
+	   			return new BinaryResponseContent( new ByteArrayInputStream(outputBuffer.toByteArray()) );
+	   		}
 			else {
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
@@ -166,6 +190,13 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 					Bladeset bladeset = (Bladeset) assetContainer;
 	    			requestPaths.add( contentPathParser.createRequest(BLADESET_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), relativePath) );
 	    			requestPaths.add( contentPathParser.createRequest(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), relativePath) );
+				}
+				if (assetContainer instanceof Blade)
+				{
+					Blade blade = (Blade) assetContainer;
+					Bladeset bladeset = brjs.locateAncestorNodeOfClass(blade, Bladeset.class);
+	    			requestPaths.add( contentPathParser.createRequest(BLADE_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
+	    			requestPaths.add( contentPathParser.createRequest(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
 				}
 			}
 		}
