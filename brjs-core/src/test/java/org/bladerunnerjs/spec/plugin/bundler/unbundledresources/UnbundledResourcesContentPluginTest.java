@@ -31,6 +31,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private Aspect sysappAspect;
 	private File unbundledResources;
 	private Aspect defaultAspect;
+	private Bladeset defaultBladeset;
+	private Blade bladeInDefaultBladeset;
 	private File bladesetUnbundledResources;
 	private File bladeUnbundledResources;
 	private File workbenchUnbundledResources;
@@ -47,6 +49,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			app = brjs.app("app1");
 			appAspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
+			defaultBladeset = app.defaultBladeset();
+			bladeInDefaultBladeset = defaultBladeset.blade("b2");
 			unbundledResources = appAspect.file("unbundled-resources");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
@@ -298,4 +302,30 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
     		.and(response).textEquals("default aspect unbundled-resources file");
 	}
 	
+	@Test
+	public void unbundledResourcesCanBeUsedFromDefaultBladesets() throws Exception {
+		given(defaultAspect).hasBeenCreated()
+			.and(defaultBladeset).hasBeenCreated()
+    		.and(defaultBladeset).containsFileWithContents("unbundled-resources/someFile.txt", "default bladeset unbundled-resources file");
+    	when(unbundledResourcesPlugin).getPossibleProdRequests(defaultAspect, requestsList)
+    		.and(defaultAspect).requestReceivedInDev("unbundled-resources/someFile.txt", response);
+    	thenRequests(requestsList).entriesEqual(
+    			"/unbundled-resources/someFile.txt",
+    			"unbundled-resources/someFile.txt")
+    		.and(response).textEquals("default bladeset unbundled-resources file");
+	}
+	
+	@Test
+	public void unbundledResourcesCanBeUsedFromABladeWithinDefaultBladesets() throws Exception {
+		given(defaultAspect).hasBeenCreated()
+			.and(defaultBladeset).hasBeenCreated()
+			.and(bladeInDefaultBladeset).hasBeenPopulated()
+    		.and(bladeInDefaultBladeset).containsFileWithContents("unbundled-resources/someFile.txt", "blade in default bladeset unbundled-resources file");
+    	when(unbundledResourcesPlugin).getPossibleProdRequests(defaultAspect, requestsList)
+    		.and(defaultAspect).requestReceivedInDev("unbundled-resources/bladeset_default/blade_b2/someFile.txt", response);
+    	thenRequests(requestsList).entriesEqual(
+    			"/unbundled-resources/bladeset_default/blade_b2/someFile.txt",
+    			"unbundled-resources/bladeset_default/blade_b2/someFile.txt")
+    		.and(response).textEquals("blade in default bladeset unbundled-resources file");
+	}
 }
