@@ -52,7 +52,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	public void weBundleExplicitTransitiveDependenciesForFromABladeset() throws Exception {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
-			.and(bladeset).classRequires("appns/bs/Class1", "appns.bs.Class2");
+			.and(bladeset).classRequires("appns/bs/Class1", "appns/bs/Class2");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.bs.Class1", "appns.bs.Class2");
 	}
@@ -72,7 +72,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	public void bladesetClassesCanOnlyDependOnExistentClasses() throws Exception {
 		given(bladeset).hasClass("appns/bs/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
-			.and(bladeset).classRequires("appns/bs/Class1", "appns.NonExistentClass");
+			.and(bladeset).classRequires("appns/bs/Class1", "appns/NonExistentClass");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/NonExistentClass")
 			.whereTopLevelExceptionIs(ContentProcessingException.class);

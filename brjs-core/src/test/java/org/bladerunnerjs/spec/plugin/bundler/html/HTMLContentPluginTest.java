@@ -120,10 +120,9 @@ public class HTMLContentPluginTest extends SpecTest
 
 	@Test
 	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAspectIndexPage() throws Exception {
-		given(blade).hasClass("appns/bs/b1/Class1")
-			.and(blade).containsResourceFileWithContents("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
-			.and(blade).hasNamespacedJsPackageStyle()
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).containsResourceFileWithContents("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("index.html", "appns.bs.b1.Class1");
 		when(aspect).requestReceivedInDev("html/bundle.html", response);
@@ -132,10 +131,9 @@ public class HTMLContentPluginTest extends SpecTest
 	
 	@Test
 	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAnAspectHTMLResourceFile() throws Exception {
-		given(blade).hasClass("appns/bs/b1/Class1")
-			.and(blade).containsResourceFileWithContents("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
-			.and(blade).hasNamespacedJsPackageStyle()
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).containsResourceFileWithContents("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.AppClass")
 			.and(aspect).containsResourceFileWithContents("html/aspect-view.html", "<div id='appns.stuff'>appns.bs.b1.Class1</div>")
