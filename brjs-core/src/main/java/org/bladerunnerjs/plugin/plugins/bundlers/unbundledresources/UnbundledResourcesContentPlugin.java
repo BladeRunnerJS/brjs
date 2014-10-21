@@ -8,10 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.BinaryResponseContent;
@@ -30,6 +35,8 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	public static final String VERSIONED_UNBUNDLED_RESOURCES_REQUEST = "versioned-unbundled-resources-request";
 	public static final String UNBUNDLED_RESOURCES_REQUEST = "unbundled-resources-request";
 	public static final String UNBUNDLED_RESOURCES_DIRNAME = "unbundled-resources";
+	public static final String BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST = "bladeset-versioned-unbundled-resources-request";
+	public static final String BLADESET_UNBUNDLED_RESOURCES_REQUEST = "bladeset-unbundled-resources-request";
 	
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
@@ -37,9 +44,12 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("unbundled-resources/<file-path>").as(VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
+			.accepts("unbundled-resources/bladeset_<bladeset>/<file-path>").as(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
+				.and("/unbundled-resources/bladeset_<bladeset>/<file-path>").as(BLADESET_UNBUNDLED_RESOURCES_REQUEST)
+				.and("unbundled-resources/<file-path>").as(VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
 				.and("/unbundled-resources/<file-path>").as(UNBUNDLED_RESOURCES_REQUEST)
-			.where(FILE_PATH_REQUEST_FORM).hasForm(".*");
+			.where(FILE_PATH_REQUEST_FORM).hasForm(".*")
+				.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 
 		contentPathParser = contentPathParserBuilder.build();
 	}
@@ -93,6 +103,26 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     			contentAccessor.handleRequest(requestedFilePathRelativeToApp, outputBuffer);
     			return new BinaryResponseContent( new ByteArrayInputStream(outputBuffer.toByteArray()) );
     		}
+    		else if (contentPath.formName.equals(BLADESET_UNBUNDLED_RESOURCES_REQUEST)
+    				 || contentPath.formName.equals(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
+    		{    			
+    			String relativeFilePath = contentPath.properties.get(FILE_PATH_REQUEST_FORM);
+    			Bladeset bladeset = bundleSet.getBundlableNode().app().bladeset(contentPath.properties.get("bladeset"));
+    			File unbundledResourcesDir = bladeset.file(UNBUNDLED_RESOURCES_DIRNAME);
+    			App app = bundleSet.getBundlableNode().app();
+    			File requestedFile = new File(unbundledResourcesDir, relativeFilePath);
+    			String requestedFilePathRelativeToApp = RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), requestedFile);
+    			
+    			if (!requestedFile.isFile())
+    			{
+    				String requestedFilePathRelativeToRoot = RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir().getParentFile(), requestedFile);
+    				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
+    			}
+				
+    			ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+    			contentAccessor.handleRequest(requestedFilePathRelativeToApp, outputBuffer);
+    			return new BinaryResponseContent( new ByteArrayInputStream(outputBuffer.toByteArray()) );
+    		}
 			else {
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
@@ -106,42 +136,51 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
-		return calculatValidRequestPaths(bundleSet);
+		return calculateValidRequestPaths(bundleSet);
 	}
 
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
-		return calculatValidRequestPaths(bundleSet);
+		return calculateValidRequestPaths(bundleSet);
 	}
-
-	private List<String> calculatValidRequestPaths(BundleSet bundleSet) throws ContentProcessingException
+	
+	private List<String> createRequest(AssetContainer assetContainer) throws ContentProcessingException 
 	{
-		
 		List<String> requestPaths = new ArrayList<String>();
-		
-		File unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
-		
+		File unbundledResourcesDir = assetContainer.file(UNBUNDLED_RESOURCES_DIRNAME);
 		if (!unbundledResourcesDir.isDirectory())
-		{
 			return requestPaths;
-		}
-		
 		try
 		{
 			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFiles())
 			{
-    			String relativePath = RelativePathUtility.get(brjs.getFileInfoAccessor(), unbundledResourcesDir, file);
-    			requestPaths.add( contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath) );
-    			requestPaths.add( contentPathParser.createRequest(VERSIONED_UNBUNDLED_RESOURCES_REQUEST, relativePath) );
+				String relativePath = RelativePathUtility.get(brjs.getFileInfoAccessor(), unbundledResourcesDir, file);
+				if (assetContainer instanceof Aspect)
+				{
+	    			requestPaths.add( contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath) );
+	    			requestPaths.add( contentPathParser.createRequest(VERSIONED_UNBUNDLED_RESOURCES_REQUEST, relativePath) );
+				}
+				if (assetContainer instanceof Bladeset)
+				{
+					Bladeset bladeset = (Bladeset) assetContainer;
+	    			requestPaths.add( contentPathParser.createRequest(BLADESET_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), relativePath) );
+	    			requestPaths.add( contentPathParser.createRequest(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), relativePath) );
+				}
 			}
 		}
 		catch (MalformedTokenException e)
 		{
 			throw new ContentProcessingException(e);
 		}
-		
 		return requestPaths;
 	}
 	
+	private List<String> calculateValidRequestPaths(BundleSet bundleSet) throws ContentProcessingException
+	{
+		List<String> requestPaths = new ArrayList<String>();
+		for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers())
+			requestPaths.addAll(createRequest(assetContainer));
+		return requestPaths;
+	}
 }

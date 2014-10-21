@@ -8,11 +8,13 @@ import java.util.List;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class UnbundledResourcesContentPluginTest extends SpecTest {
@@ -27,6 +29,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private Aspect sysappAspect;
 	private File unbundledResources;
 	private Aspect defaultAspect;
+	private File bladesetUnbundledResources;
+	private Bladeset bladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -38,6 +42,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			appAspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
 			unbundledResources = appAspect.file("unbundled-resources");
+			bladeset = app.bladeset("bs");
+			bladesetUnbundledResources = bladeset.file("unbundled-resources");
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
 			
@@ -73,6 +79,29 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(appAspect).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(appAspect).requestReceivedInDev("unbundled-resources/someFile.txt", response);
+		then(response).textEquals("some file contents");
+	}
+	
+	@Test
+	public void ifThereAreFilesInBladesetUnbundledResourcesThenRequestsWillBeGenerated() throws Exception {
+		given(appAspect).indexPageHasContent("index page")
+			.and(bladeset).hasBeenPopulated()
+			.and(bladesetUnbundledResources).containsFile("some-file")
+			.and(bladesetUnbundledResources).containsFile("some-dir/some-file");
+		then(appAspect).prodAndDevRequestsForContentPluginsAre( "unbundled-resources",
+				"/unbundled-resources/bladeset_bs/some-file", 
+				"unbundled-resources/bladeset_bs/some-file", 
+				"/unbundled-resources/bladeset_bs/some-dir/some-file",
+				"unbundled-resources/bladeset_bs/some-dir/some-file");
+	}
+	
+	@Test
+	public void requestsCanBeMadeForAFileInBladesetUnbundledResources() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenPopulated()
+			.and(bladeset).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
+		when(appAspect).requestReceivedInDev("unbundled-resources/bladeset_bs/someFile.txt", response);
 		then(response).textEquals("some file contents");
 	}
 	
@@ -166,7 +195,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void unbundledResourcesCanBeUsedFromDefaultBladesets() throws Exception {
+	public void unbundledResourcesCanBeUsedFromDefaultAspects() throws Exception {
 		given(defaultAspect).hasBeenCreated()
     		.and(defaultAspect).containsFileWithContents("unbundled-resources/someFile.txt", "default aspect unbundled-resources file");
     	when(unbundledResourcesPlugin).getPossibleProdRequests(defaultAspect, requestsList)
