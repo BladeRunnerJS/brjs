@@ -55,6 +55,25 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		return commanderChainer;
 	}
 	
+	public CommanderChainer runCommandInAnotherThread(final int delay, final String... args) throws Exception {
+		new Thread( new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				call(new Command() {
+					public void call() throws Exception {
+						brjs.runCommand(args);
+					}
+				});
+			}
+		}).start();
+		
+		Thread.sleep(2000); // give the command chance to initialise
+		
+		return commanderChainer;
+	}
+	
 	public CommanderChainer runUserCommand(final String... args) {
 		call(new Command() {
 			public void call() throws Exception {

@@ -79,12 +79,14 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 			}
 			
 			appServer.start();
+			brjs.getFileWatcherThread().start();
 			
 			logger.println("\n");
 			logger.println(Messages.SERVER_STARTUP_MESSAGE + appServer.getPort() + "/");
 			logger.println(Messages.SERVER_STOP_INSTRUCTION_MESSAGE + "\n");
 			
 			appServer.join();
+			brjs.getFileWatcherThread().interrupt();
 		}
 		catch(NumberFormatException e)
 		{

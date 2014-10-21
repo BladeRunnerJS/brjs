@@ -14,6 +14,7 @@ import org.bladerunnerjs.testing.specutility.engine.BundlableNodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
 
@@ -147,6 +148,13 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	{
 		aspectBuilder.containsResourceFileWithContents(resourceFileName, contents);
 		
+		return commanderChainer;
+	}
+
+	public CommanderChainer indexPageRefersToWithoutNotifyingFileRegistry(String content) throws IOException
+	{
+		new EncodedFileUtil(specTest.getActiveCharacterEncoding()).write( aspect.file("index.html"), content, false);
+
 		return commanderChainer;
 	}
 }
