@@ -4,7 +4,7 @@ import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.NodeVerifier;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 
-public class WorkbenchVerifier extends NodeVerifier<Workbench> {
+public class WorkbenchVerifier extends BundlableNodeVerifier<Workbench> {
 	
 	public WorkbenchVerifier(SpecTest modelTest, Workbench workbench) 
 	{

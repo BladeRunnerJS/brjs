@@ -53,6 +53,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			workbench = blade.workbench();
 			bladesetUnbundledResources = bladeset.file("unbundled-resources");
 			bladeUnbundledResources = blade.file("unbundled-resources");
+			workbenchUnbundledResources = workbench.file("unbundled-resources");
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
 			
@@ -160,16 +161,14 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		then(response).textEquals("some file contents");
 	}
 	
-	@Ignore
 	@Test
 	public void ifThereAreFilesInWorkbenchUnbundledResourcesThenRequestsWillBeGenerated() throws Exception {
 		given(appAspect).indexPageHasContent("index page")
 			.and(bladeset).hasBeenPopulated()
 			.and(blade).hasBeenPopulated()
-			.and(workbench).hasBeenPopulated()
 			.and(workbenchUnbundledResources).containsFile("some-file")
 			.and(workbenchUnbundledResources).containsFile("some-dir/some-file");
-		then(appAspect).prodAndDevRequestsForContentPluginsAre( "unbundled-resources",
+		then(workbench).prodAndDevRequestsForContentPluginsAre("unbundled-resources",
 				"/unbundled-resources/bladeset_bs/blade_b1/workbench/some-file", 
 				"unbundled-resources/bladeset_bs/blade_b1/workbench/some-file", 
 				"/unbundled-resources/bladeset_bs/blade_b1/workbench/some-dir/some-file",

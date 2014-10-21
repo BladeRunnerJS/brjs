@@ -13,12 +13,10 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.BinaryResponseContent;
@@ -51,7 +49,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
 			.accepts("unbundled-resources/bladeset_<bladeset>/blade_<blade>/workbench/<file-path>").as(WORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
-				.and("/unbundled-resources/bladeset_<bladeset>/blade_<blade>/workbench<file-path>").as(WORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
+				.and("/unbundled-resources/bladeset_<bladeset>/blade_<blade>/workbench/<file-path>").as(WORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
 				.and("unbundled-resources/bladeset_<bladeset>/blade_<blade>/<file-path>").as(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
 				.and("/unbundled-resources/bladeset_<bladeset>/blade_<blade>/<file-path>").as(BLADE_UNBUNDLED_RESOURCES_REQUEST)
 				.and("unbundled-resources/bladeset_<bladeset>/<file-path>").as(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
@@ -190,8 +188,8 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 					Workbench workbench = (Workbench) assetContainer;
 					Blade blade = brjs.locateAncestorNodeOfClass(workbench, Blade.class);
 					Bladeset bladeset = brjs.locateAncestorNodeOfClass(blade, Bladeset.class);
-	    			requestPaths.add( contentPathParser.createRequest(BLADE_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), "workbench", relativePath) );
-	    			requestPaths.add( contentPathParser.createRequest(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), "workbench", relativePath) );
+	    			requestPaths.add( contentPathParser.createRequest(WORKBENCH_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
+	    			requestPaths.add( contentPathParser.createRequest(WORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
 				}
 			}
 		}
