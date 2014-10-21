@@ -21,8 +21,34 @@
 	 * this is likely to be a problem, you might want to avoid calling .install().
 	 */
 
+	// bind() polyfill taken from <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind>
+	if (!Function.prototype.bind) {
+		Function.prototype.bind = function(oThis) {
+			if (typeof this !== 'function') {
+				// closest thing possible to the ECMAScript 5
+				// internal IsCallable function
+				throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+			}
+
+			var aArgs = Array.prototype.slice.call(arguments, 1),
+					fToBind = this,
+					fNOP = function() {},
+					fBound = function() {
+						return fToBind.apply(this instanceof fNOP && oThis
+							? this
+							: oThis,
+							aArgs.concat(Array.prototype.slice.call(arguments)));
+					};
+
+			fNOP.prototype = this.prototype;
+			fBound.prototype = new fNOP();
+
+			return fBound;
+		};
+	}
+
 	var global = Function("return this;")();
-	
+
 	var create = Object.create || function(proto, attributes) {
 		function object() {};
 		object.prototype = proto;
@@ -76,6 +102,57 @@
 		throw new Error("No definition for module " + moduleId + " could be found in the global top level.");
 	}
 
+	function realmRequireFunc(realm, definitionContext, id) {
+		return function(requirePath) {
+			var activeRealm = global.activeRealm || realm;
+			var exportVal;
+
+			try {
+				exportVal = activeRealm.require(definitionContext, requirePath);
+			}
+			catch(e) {
+				if(e instanceof CircularDependencyError) {
+					e.dependencies.unshift(id);
+
+					if(e.dependencies[0] == e.dependencies[e.dependencies.length - 1]) {
+						e = new Error("Circular dependency detected: " + e.dependencyChain());
+					}
+					else {
+						if(activeRealm._isModuleExported(id)) {
+							e.exportedModules[id] = true;
+						}
+					}
+				}
+
+				throw e;
+			}
+
+			return exportVal;
+		};
+	}
+
+	function CircularDependencyError(requirePath) {
+		this.dependencies = [requirePath];
+		this.exportedModules = {};
+		this.prototype = {};
+	}
+
+	CircularDependencyError.prototype.dependencyChain = function() {
+		var message = [];
+
+		for(var i = 0; i < (this.dependencies.length - 1); ++i) {
+			var dependency = this.dependencies[i];
+			message.push(dependency);
+			message.push((dependency in this.exportedModules) ? '->' : '=>')
+		}
+		message.push(this.dependencies[this.dependencies.length - 1]);
+
+		return message.join(' ');
+	}
+
+	function ModuleExports() {
+	}
+
 	function Realm(fallbackRequire) {
 		this.moduleDefinitions = {};
 		this.incompleteExports = {};
@@ -83,14 +160,6 @@
 		this.modulesFromParent = {};
 		this.fallbackRequire = fallbackRequire;
 		this.installedData = null;
-		
-		var realm = this;
-		this.require = function() {
-			return realm._require.apply(realm, arguments);
-		};
-		this.define = function() {
-			realm._define.apply(realm, arguments);
-		};
 	}
 
 	Realm.prototype.install = function install(target) {
@@ -99,10 +168,12 @@
 			this.installedData = {
 				target: target,
 				define: target.define,
-				require: target.require
+				require: target.require,
+				activeRealm: target.activeRealm
 			};
-			target.define = this.define;
-			target.require = this.require;
+			target.define = this.define.bind(this);
+			target.require = this.require.bind(this);
+			target.activeRealm = this;
 		} else {
 			throw new Error("Can only install to one place at once.");
 		}
@@ -112,11 +183,12 @@
 		if (this.installedData !== null) {
 			this.installedData.target.define = this.installedData.define;
 			this.installedData.target.require = this.installedData.require;
+			this.installedData.target.activeRealm = this.installedData.activeRealm;
 			this.installedData = null;
 		}
 	};
 
-	Realm.prototype._define = function define(id, definition) {
+	Realm.prototype.define = function define(id, definition) {
 		if (this.modulesFromParent[id] === true) {
 			throw new Error('Module ' + id + ' has already been loaded from a parent realm.  If you are sure that you want to override an already loaded parent module, you need to undefine this module or reset this realm first.');
 		}
@@ -133,7 +205,7 @@
 		define(id, eval("(function(require, exports, module){\n" + definitionString + "\n});"));
 	};
 
-	Realm.prototype._require = function require(context, id, contextId) {
+	Realm.prototype.require = function require(context, id) {
 		if (arguments.length === 1) {
 			id = arguments[0];
 			context = '';
@@ -149,13 +221,11 @@
 		}
 		else if (this.incompleteExports[id] != null) {
 			// the module is in the process of being exported
-			if((typeof(this.incompleteExports[id].exports) != 'object') || Object.keys(this.incompleteExports[id].exports).length > 0) {
-				// if `module.exports` has been defined then we assume the module is fully exported
+			if(this._isModuleExported(id)) {
 				return this.incompleteExports[id].exports;
 			}
 			else {
-				// if `module.exports` has not been defined then we clearly have a circular dependency
-				throw new Error("Circular dependency detected: the module '" + id + "' (requested by module '" + contextId + "') is still in the process of exporting.");
+				throw new CircularDependencyError(id);
 			}
 		}
 
@@ -171,7 +241,7 @@
 
 		// For closer spec compliance we should define id as a nonconfigurable, nonwritable
 		// property, but this at least works OK in non-es5 browsers (like ie8).
-		var module = { id: id, exports: {} };
+		var module = { id: id, exports: new ModuleExports() };
 		this.incompleteExports[id] = module;
 		try {
 			if (typeof definition === 'function') {
@@ -183,24 +253,24 @@
 				if (idx >= 0) {
 					definitionContext = id.substring(0, id.lastIndexOf("/"));
 				}
-				// this is set to the module inside the definition code.
-				var realm = (window.require) ? window : this;
-				var returnValue = definition.call(module, function(requirePath) {
-					return realm.require(definitionContext, requirePath, id);
-				}, module.exports, module);
-				this.moduleExports[id] = returnValue || module.exports;
-			} else {
-				// this lets you define things without definition functions, e.g.
-				//    define('PI', 3); // Indiana House of Representatives compliant definition of PI
-				// If you want to define something to be a function, you'll need to define a function
-				// that sets module.exports to a function (or returns it).
-				this.moduleExports[id] = definition;
+				var requireFunc = realmRequireFunc(this, definitionContext, id);
+				var returnValue = definition.call(module, requireFunc, module.exports, module);
+				definition = returnValue || module.exports;
 			}
-		} finally {
+
+			this.moduleExports[id] = definition;
+		}
+		catch(e) {
+			// this is here to slightly improve the dev experience when debugging exceptions that occur within this try/finally block.
+			// see <http://blog.hackedbrain.com/2009/03/28/ie-javascript-debugging-near-useless-when-trycatchfinally-is-used/> for more information.
+			throw e;
+		}
+		finally {
 			// If there was an error, we want to run the definition again next time it is required
 			// so we clean up whether it succeeded or failed.
 			delete this.incompleteExports[id];
 		}
+
 		return this.moduleExports[id];
 	};
 
@@ -210,6 +280,11 @@
 
 	Realm.prototype._getDefinition = function(id) {
 		return this.moduleDefinitions[id];
+	};
+
+	Realm.prototype._isModuleExported = function(id) {
+		var moduleExports = this.incompleteExports[id].exports;
+		return ((typeof(moduleExports) != 'object') || !(moduleExports instanceof ModuleExports));
 	};
 
 	// Subrealm ////////////////////////////////////////////////////////////////////////////
