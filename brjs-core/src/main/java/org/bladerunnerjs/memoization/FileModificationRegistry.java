@@ -27,13 +27,6 @@ public class FileModificationRegistry
 		}
 	}
 	
-	public void incrementAllVersions()
-	{
-		for (String key : lastModifiedMap.keySet()) {
-			getOrCreateVersionValue(key).incrememntValue();
-		}
-	}
-	
 	
 	private FileVersion getOrCreateVersionValue(File file)
 	{

@@ -76,7 +76,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer indexPageHasContent(String content) throws Exception
 	{
 		aspectBuilder.indexPageHasContent(content);
-		specTest.incrementFileVersion( aspectBuilder.getIndexFile() );
 		
 		return commanderChainer;
 	}
@@ -84,7 +83,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer indexPageRefersTo(String classNames) throws Exception
 	{
 		aspectBuilder.indexPageRefersTo(classNames);
-		specTest.incrementFileVersion( aspectBuilder.getIndexFile() );
 		
 		return commanderChainer;
 	}
@@ -92,7 +90,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer indexPageRequires(JsLib thirdpartyLib) throws Exception
 	{
 		aspectBuilder.indexPageRequires(thirdpartyLib);
-		specTest.incrementFileVersion( aspectBuilder.getIndexFile() );
 		
 		return commanderChainer;
 	}
@@ -100,7 +97,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer indexPageRequires(String requirePath) throws Exception
 	{
 		aspectBuilder.indexPageRequires(requirePath);
-		specTest.incrementFileVersion( aspectBuilder.getIndexFile() );
 		
 		return commanderChainer;
 	}
@@ -108,7 +104,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer classRefersTo(String sourceClass, String... referencedClasses) throws Exception
 	{
 		aspectBuilder.classDependsOn(sourceClass, referencedClasses);
-		specTest.incrementFileVersion( aspectBuilder.getSourceFile(sourceClass) );
 		
 		return commanderChainer;
 	}
@@ -116,7 +111,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer classDependsOn(String dependentClass, String referencedClass) throws Exception
 	{
 		aspectBuilder.classExtends(dependentClass, referencedClass);
-		specTest.incrementFileVersion( aspectBuilder.getSourceFile(referencedClass) );
 		
 		return commanderChainer;
 	}
@@ -124,7 +118,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer classDependsOnThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		aspectBuilder.classDependsOnThirdpartyLib(sourceClass, thirdpartyLib);
-		specTest.incrementFileVersion( aspectBuilder.getSourceFile(sourceClass) );
 		
 		return commanderChainer;
 	}
@@ -132,7 +125,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer classRequires(String sourceClass, String dependencyClass) throws Exception
 	{
 		aspectBuilder.classRequires(sourceClass, dependencyClass);
-		specTest.incrementFileVersion( aspectBuilder.getSourceFile(sourceClass) );
 		
 		return commanderChainer;
 	}
@@ -140,7 +132,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer classRequires(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		aspectBuilder.classRequiresThirdpartyLib(sourceClass, thirdpartyLib);
-		specTest.incrementFileVersion( aspectBuilder.getSourceFile(sourceClass) );
 		
 		return commanderChainer;
 	}
@@ -148,7 +139,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
 		aspectBuilder.resourceFileRefersTo(resourceFileName, classNames);
-		specTest.incrementFileVersion( aspectBuilder.getResourceFile(resourceFileName) );
 		
 		return commanderChainer;
 	}
@@ -156,7 +146,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer resourceFileContains(String resourceFileName, String contents) throws Exception 
 	{
 		aspectBuilder.containsResourceFileWithContents(resourceFileName, contents);
-		specTest.incrementFileVersion( aspectBuilder.getResourceFile(resourceFileName) );
 		
 		return commanderChainer;
 	}

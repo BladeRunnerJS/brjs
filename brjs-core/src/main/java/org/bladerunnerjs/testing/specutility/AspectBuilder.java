@@ -21,35 +21,35 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 	
 	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception 
 	{
-		fileUtil.write(getIndexFile(), generateStringClassReferencesContent(classNames));	
+		writeToFile(getIndexFile(), generateStringClassReferencesContent(classNames));	
 		
 		return builderChainer;
 	}
 
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		fileUtil.write(getResourceFile(resourceFileName), generateRootRefContentForClasses(classNames));
+		writeToFile(getResourceFile(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer indexPageHasAliasReferences(String... aliasReferences) throws Exception 
 	{
-		fileUtil.write(getIndexFile(), generateStringAliasReferencesContent(aliasReferences));	
+		writeToFile(getIndexFile(), generateStringAliasReferencesContent(aliasReferences));	
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		fileUtil.write(getSrcResourceFile(resourceFileName), generateRootRefContentForClasses(classNames));
+		writeToFile(getSrcResourceFile(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer indexPageHasContent(String content) throws Exception 
 	{
-		fileUtil.write(getIndexFile(), content);	
+		writeToFile(getIndexFile(), content);	
 		
 		return builderChainer;
 	}
@@ -65,7 +65,7 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 			throw new RuntimeException("The '" + requirePath + "' require path contains a dot. Did you mean to use indexPageRefersTo() instead?");
 		}
 		
-		fileUtil.write(getIndexFile(), "require('"+requirePath+"');");
+		writeToFile(getIndexFile(), "require('"+requirePath+"');");
 		
 		return builderChainer;
 	}

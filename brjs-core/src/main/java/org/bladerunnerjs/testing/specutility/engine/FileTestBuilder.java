@@ -2,10 +2,8 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.utility.EncodedFileUtil;
-
 public class FileTestBuilder extends SpecTestBuilder {
-	private final EncodedFileUtil fileUtil;
+	
 	private final File file;
 	private final BuilderChainer builderChainer;
 	private SpecTest specTest;
@@ -15,13 +13,11 @@ public class FileTestBuilder extends SpecTestBuilder {
 		this.specTest = specTest;
 		this.file = file;
 		builderChainer = new BuilderChainer(specTest);
-		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
 	}
 	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		File theFile = new File(file, filePath);
-		fileUtil.write(theFile, fileContents);
-		specTest.incrementFileVersion(theFile);
+		writeToFile(theFile, fileContents);
 		
 		return builderChainer;
 	}
@@ -41,7 +37,7 @@ public class FileTestBuilder extends SpecTestBuilder {
 	public void isReadOnly()
 	{
 		file.setReadOnly();
-		specTest.incrementFileVersion(file);
+		specTest.brjs.getFileModificationRegistry().incrementFileVersion(file);
 	}
 	
 }
