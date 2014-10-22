@@ -93,8 +93,9 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 		}
 		else
 		{
-			logger.error(Messages.ERROR_WHILE_BUNDLING_MSG, errorStream.toString());
 			readers.add( new StringReader(String.format(Messages.ERROR_WHILE_BUNDLING_MSG, errorStream.toString())) );
+			throw new ContentProcessingException(String.format(Messages.ERROR_WHILE_BUNDLING_MSG, errorStream.toString()));
+			//logger.error(Messages.ERROR_WHILE_BUNDLING_MSG, errorStream.toString());
 		}
 		
 		return new ConcatReader( readers.toArray(new Reader[0]) );
