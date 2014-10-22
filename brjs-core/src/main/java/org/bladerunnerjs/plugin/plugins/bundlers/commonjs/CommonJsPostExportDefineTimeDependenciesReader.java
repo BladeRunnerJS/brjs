@@ -6,33 +6,32 @@ import java.io.Reader;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
+import org.bladerunnerjs.utility.reader.JsModuleExportsStrippingReader;
 
-import com.google.common.base.Predicate;
 
-
-public class CommonJsUseTimeDependenciesReader extends Reader
+public class CommonJsPostExportDefineTimeDependenciesReader extends Reader 
 {
 
-	private Reader useTimeDependencesReader;
+	private Reader postExportDefineTimeDependencesReader;
 
-	public CommonJsUseTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
+	public CommonJsPostExportDefineTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
 		CharBufferPool pool = sourceModule.assetLocation().root().getCharBufferPool();
-		Predicate<Integer> insideCodeBlockPredicate = new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0);
-		
 		Reader sourceReader = sourceModule.getUnalteredContentReader();
 		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false, pool);
-		useTimeDependencesReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader , pool, insideCodeBlockPredicate);
+		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader, pool);
+		postExportDefineTimeDependencesReader = new JsModuleExportsStrippingReader(codeBlockStrippingReader, pool, false);
 	}
 	
 	@Override
 	public int read(char[] cbuf, int off, int len) throws IOException
 	{
-		return useTimeDependencesReader.read(cbuf, off, len);
+		return postExportDefineTimeDependencesReader.read(cbuf, off, len);
 	}
 
 	@Override
 	public void close() throws IOException
 	{
-		useTimeDependencesReader.close();
+		postExportDefineTimeDependencesReader.close();
 	}
+	
 }

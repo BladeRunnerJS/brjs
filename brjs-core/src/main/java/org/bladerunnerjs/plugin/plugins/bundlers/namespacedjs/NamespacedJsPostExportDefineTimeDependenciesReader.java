@@ -8,30 +8,29 @@ import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
-import org.bladerunnerjs.utility.reader.JsStringStrippingReader;
+import org.bladerunnerjs.utility.reader.JsModuleExportsStrippingReader;
 
-public class NamespacedJsDefineTimeDependenciesReader extends Reader {
+public class NamespacedJsPostExportDefineTimeDependenciesReader extends Reader {
+	private Reader namespacedJsPostExportDefineTimeDependenciesReader;
 	
-	private Reader namespacedJsDefineTimeDependenciesReader;
-	
-	public NamespacedJsDefineTimeDependenciesReader(AugmentedContentSourceModule sourceModule) throws IOException
+	public NamespacedJsPostExportDefineTimeDependenciesReader(AugmentedContentSourceModule sourceModule) throws IOException
 	{
 		CharBufferPool pool = sourceModule.assetLocation().root().getCharBufferPool();
 		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.getUnalteredContentReader(), false, pool);
-		Reader commentStrippingAndStringStrippingReader = new JsStringStrippingReader(commentStrippingReader, pool);
-		namespacedJsDefineTimeDependenciesReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingAndStringStrippingReader, pool);
+		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader, pool);
+		namespacedJsPostExportDefineTimeDependenciesReader = new JsModuleExportsStrippingReader(codeBlockStrippingReader, pool, false);
 	}
 	
 	@Override
 	public int read(char[] cbuf, int off, int len) throws IOException
 	{
-		return namespacedJsDefineTimeDependenciesReader.read(cbuf, off, len);
+		return namespacedJsPostExportDefineTimeDependenciesReader.read(cbuf, off, len);
 	}
 
 	@Override
 	public void close() throws IOException
 	{
-		namespacedJsDefineTimeDependenciesReader.close();
+		namespacedJsPostExportDefineTimeDependenciesReader.close();
 	}
 	
 	static class Factory implements AssetReaderFactory {
@@ -45,7 +44,7 @@ public class NamespacedJsDefineTimeDependenciesReader extends Reader {
 		
 		@Override
 		public Reader createReader() throws IOException {
-			return new NamespacedJsDefineTimeDependenciesReader(sourceModule);
+			return new NamespacedJsPostExportDefineTimeDependenciesReader(sourceModule);
 		}
 	}
 	

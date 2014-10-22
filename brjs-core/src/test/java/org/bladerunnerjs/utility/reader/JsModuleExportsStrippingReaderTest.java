@@ -14,7 +14,7 @@ import org.junit.Test;
 public class JsModuleExportsStrippingReaderTest {
 	@Test
 	public void codeNotContainingAModuleExportsIsCopiedThroughVerbatim() throws IOException {
-		stripModuleExportsAndAssertEquals(
+		stripAfterModuleExportsAndAssertEquals(
 			lines(
 				"line1",
 				"line2"),
@@ -26,7 +26,7 @@ public class JsModuleExportsStrippingReaderTest {
 	
 	@Test
 	public void linesSucceedingModuleExportsLineAreDropped() throws IOException {
-		stripModuleExportsAndAssertEquals(
+		stripAfterModuleExportsAndAssertEquals(
 			lines(
 				"line1",
 				"module.exports = {};",
@@ -39,7 +39,7 @@ public class JsModuleExportsStrippingReaderTest {
 	
 	@Test
 	public void linesSucceedingModuleExportsLineAreDroppedWhenSpacesAreOmmitted() throws IOException {
-		stripModuleExportsAndAssertEquals(
+		stripAfterModuleExportsAndAssertEquals(
 			lines(
 				"line1",
 				"module.exports={};",
@@ -52,7 +52,7 @@ public class JsModuleExportsStrippingReaderTest {
 	
 	@Test
 	public void linesSucceedingExportsLineAreDropped() throws IOException {
-		stripModuleExportsAndAssertEquals(
+		stripAfterModuleExportsAndAssertEquals(
 			lines(
 				"line1",
 				"exports = {};",
@@ -65,7 +65,7 @@ public class JsModuleExportsStrippingReaderTest {
 	
 	@Test
 	public void linesSucceedingExportsLineAreDroppedWhenSpacesAreOmmitted() throws IOException {
-		stripModuleExportsAndAssertEquals(
+		stripAfterModuleExportsAndAssertEquals(
 			lines(
 				"line1",
 				"exports={};",
@@ -106,7 +106,7 @@ public class JsModuleExportsStrippingReaderTest {
 		return StringUtils.join(input, "\n");
 	}
 	
-	private void stripModuleExportsAndAssertEquals(String input, String expectedOutput) throws IOException {
+	private void stripAfterModuleExportsAndAssertEquals(String input, String expectedOutput) throws IOException {
 		CharBufferPool pool = new CharBufferPool();
 		stripModuleExportsAndAssertEquals( input, expectedOutput, new JsModuleExportsStrippingReader(new StringReader(input), pool) );
 	}

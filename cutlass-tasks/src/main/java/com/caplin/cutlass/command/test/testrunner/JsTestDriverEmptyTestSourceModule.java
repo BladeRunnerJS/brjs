@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
@@ -57,7 +56,7 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	
 	@Override
 	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
-		return Collections.emptyList();
+		return sourceModule.getPostExportDefineTimeDependentAssets(bundlableNode);
 	}
 	
 	@Override

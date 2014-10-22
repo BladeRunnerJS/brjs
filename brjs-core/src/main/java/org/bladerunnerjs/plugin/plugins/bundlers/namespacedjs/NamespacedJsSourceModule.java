@@ -35,7 +35,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;
 	private TrieBasedDependenciesCalculator trieBasedUseTimeDependenciesCalculator;
-	private TrieBasedDependenciesCalculator trieBasedDefineTimeDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedPreExportDefineTimeDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedPostExportDefineTimeDependenciesCalculator;
 	public static final String JS_STYLE = "namespaced-js";
 	
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
@@ -53,6 +54,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
  	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependendAssets = new ArrayList<>();
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
 		return dependendAssets;
 	}
@@ -122,17 +124,22 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
-		return Collections.emptyList();
-	}
-	
-	@Override
-	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			return bundlableNode.getLinkedAssets(assetLocation, getUseTimeDependencyCalculator().getRequirePaths());
+			List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, getPostExportDefineTimeDependencyCalculator().getRequirePaths());
+			assets.addAll(bundlableNode.getLinkedAssets(assetLocation, getUseTimeDependencyCalculator().getRequirePaths()));
+			
+			return assets;
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+	}
+	
+	@Override
+	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		// Note: use-time NamespacedJs dependencies are promoted to post-export define-time since this makes our transpiler much easier to write,
+		// and since this also enables our CommonJs singleton-pattern to correctly require all of the dependencies needed for any singletons.
+		return Collections.emptyList();
 	}
 	
 	private String calculateDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {
@@ -166,19 +173,25 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 	}
 	
+	private TrieBasedDependenciesCalculator getPreExportDefineTimeDependencyCalculator() {
+		if (trieBasedPreExportDefineTimeDependenciesCalculator == null) {
+			trieBasedPreExportDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsPreExportDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
+		}
+		return trieBasedPreExportDefineTimeDependenciesCalculator;
+	}
+	
+	private TrieBasedDependenciesCalculator getPostExportDefineTimeDependencyCalculator() {
+		if (trieBasedPostExportDefineTimeDependenciesCalculator == null) {
+			trieBasedPostExportDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsPostExportDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
+		}
+		return trieBasedPostExportDefineTimeDependenciesCalculator;
+	}
 	
 	private TrieBasedDependenciesCalculator getUseTimeDependencyCalculator() {
 		if (trieBasedUseTimeDependenciesCalculator == null) {
-			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacaedJsUseTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
+			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsUseTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}
 		return trieBasedUseTimeDependenciesCalculator;
-	}
-	
-	private TrieBasedDependenciesCalculator getPreExportDefineTimeDependencyCalculator() {
-		if (trieBasedDefineTimeDependenciesCalculator == null) {
-			trieBasedDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
-		}
-		return trieBasedDefineTimeDependenciesCalculator;
 	}
 	
 	@Override

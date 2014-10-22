@@ -125,6 +125,7 @@ public class ThirdpartySourceModule implements SourceModule
 	{
 		List<Asset> dependendAssets = new ArrayList<>();
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
 		return dependendAssets;
 	}

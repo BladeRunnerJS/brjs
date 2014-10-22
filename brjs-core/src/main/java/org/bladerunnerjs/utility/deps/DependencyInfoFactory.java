@@ -121,8 +121,8 @@ public class DependencyInfoFactory {
 	
 	private static void addSourceModuleDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, SourceModule sourceModule) throws ModelOperationException {
-		List<SourceModule> defineTimeSourceModules = extractSourceModules( sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode) );
-		addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, defineTimeSourceModules);
+		List<SourceModule> orderDependentSourceModules = extractSourceModules( sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode) );
+		addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, orderDependentSourceModules);
 		List<Asset>  assets = sourceModule.getDependentAssets(bundlableNode);
 		addDependencies(dependencyAdder, dependencyInfo, sourceModule, extractSourceModules(assets));
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
