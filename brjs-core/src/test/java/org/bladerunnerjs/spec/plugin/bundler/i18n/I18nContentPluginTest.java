@@ -330,7 +330,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: foo/bar")
 			.and(sdkLib).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass")
+			.and(aspect).classRequires("appns/AspectClass", "foo/bar/SdkClass")
 			.and(sdkLib).containsResourceFileWithContents("en_GB.properties", "foo.bar.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).textEquals(	

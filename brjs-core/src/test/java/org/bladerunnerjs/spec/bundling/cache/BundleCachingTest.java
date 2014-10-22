@@ -54,8 +54,8 @@ public class BundleCachingTest extends SpecTest
 	
 	@Test
 	public void weDoNotCacheAspectSourceDependencies() throws Exception {
-		given(aspect).hasClass("appns/Class1")
-			.and(aspect).hasNamespacedJsPackageStyle()
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
 		when(thirdpartyLib).populate()

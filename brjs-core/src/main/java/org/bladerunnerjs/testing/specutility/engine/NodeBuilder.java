@@ -2,8 +2,11 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
@@ -94,7 +97,14 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
-		JsStyleUtility.setJsStyle(node.file(packagePath), jsStyle);
+		File packageDir = node.file(packagePath);
+		if (packageDir.isDirectory()) {
+    		Collection<File> subFiles = FileUtils.listFiles(packageDir, new SuffixFileFilter(".js"), TrueFileFilter.INSTANCE);
+    		if (subFiles.size() > 0) {
+    			throw new RuntimeException("Package style should be set before any JS files have been created");
+    		}
+		}
+		JsStyleUtility.setJsStyle(packageDir, jsStyle);
 		return builderChainer;
 	}
 	
