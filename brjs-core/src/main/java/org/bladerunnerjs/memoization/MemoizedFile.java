@@ -98,6 +98,7 @@ public class MemoizedFile extends File
 			for (File file : superFile.listFiles()) {
 				returnedFilesAndDirs.add( rootNode.getMemoizedFile(file) );
 			}
+			Collections.sort(returnedFilesAndDirs);
 			return returnedFilesAndDirs;
 		});
 		returnedFilesAndDirsCopy.addAll(foundFilesAndDirs);
