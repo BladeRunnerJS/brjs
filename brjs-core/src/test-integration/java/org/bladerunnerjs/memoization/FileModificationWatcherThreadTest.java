@@ -26,7 +26,7 @@ public class FileModificationWatcherThreadTest
 	
 	private BRJS mockBrjs;
 	private FileModificationRegistry mockModificationRegistry;
-	private File rootWatchDir;
+	private MemoizedFile rootWatchDir;
 	private FileModificationWatcherThread modificationWatcherThread;
 	private List<File> fileChanges = Collections.synchronizedList( new ArrayList<>() );
 	private File fileInRoot;
@@ -35,7 +35,6 @@ public class FileModificationWatcherThreadTest
 	
 	@Before
 	public void setup() throws IOException, InterruptedException {
-		rootWatchDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		
 		mockModificationRegistry = mock(FileModificationRegistry.class);
 		doAnswer(new Answer<Object>() {
@@ -47,6 +46,7 @@ public class FileModificationWatcherThreadTest
 	    }).when(mockModificationRegistry).incrementFileVersion(any(File.class));
 		
 		mockBrjs = mock(BRJS.class);
+		rootWatchDir = new MemoizedFile(mockBrjs, FileUtility.createTemporaryDirectory( this.getClass() ).getAbsolutePath() );
 		when(mockBrjs.dir()).thenReturn(rootWatchDir);
 		when(mockBrjs.getFileModificationRegistry()).thenReturn(mockModificationRegistry);
 		

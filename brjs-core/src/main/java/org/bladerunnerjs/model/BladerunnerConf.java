@@ -1,8 +1,7 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
-
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.yaml.YamlBladerunnerConf;
 
@@ -57,7 +56,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 		return getConf().useNodeCommands;
 	}
 	
-	public static File getConfigFilePath(BRJS brjs) {
+	public static MemoizedFile getConfigFilePath(BRJS brjs) {
 		return brjs.conf().file("brjs.conf");
 	}
 	

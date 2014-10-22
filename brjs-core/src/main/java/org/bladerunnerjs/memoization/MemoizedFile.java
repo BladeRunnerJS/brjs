@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -23,73 +24,62 @@ public class MemoizedFile extends File
 	private MemoizedValue<Boolean> exists;
 	private MemoizedValue<Boolean> isDirectory;
 	private MemoizedValue<Boolean> isFile;
-	private MemoizedValue<List<File>> filesAndDirs;
+	private MemoizedValue<List<MemoizedFile>> filesAndDirs;
 	private RootNode rootNode;
-	private File canonicalFile;
+	private MemoizedFile canonicalFile;
 	private File superFile;
 	private String name;
+	private MemoizedFile parentFile;
 	
 	MemoizedFile(RootNode rootNode, String file) {
-		super(file);
+		super( FileUtility.getCanonicalFileWhenPossible( new File(file) ).getAbsolutePath() );
 		this.rootNode = rootNode;
-		superFile = FileUtility.getCanonicalFileWhenPossible(new File(file));
+		superFile = FileUtility.getCanonicalFileWhenPossible( new File(file) );
 			// ^^ use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
 		
 		String className = this.getClass().getSimpleName();
-		exists = new MemoizedValue<>(className+".getName", rootNode, this);
 		exists = new MemoizedValue<>(className+".exists", rootNode, this);
 		isDirectory = new MemoizedValue<>(className+".isDirectory", rootNode, this);
 		isFile = new MemoizedValue<>(className+".isFile", rootNode, this);
 		filesAndDirs = new MemoizedValue<>(className+".filesAndDirs", rootNode, this);
-	}
-	
-	public MemoizedFile(RootNode rootNode, File file)
-	{
-		this( rootNode, file.getAbsolutePath() );		
-	}
-	
-	public MemoizedFile(RootNode rootNode, File parent, String child)
-	{
-		this( rootNode, new File(parent, child).getAbsolutePath() );		
-	}
-	
+	}	
 	
 	// ---- Methods Using Memoized Values ----
 	
-	@Override
-	public String getName()
-	{
-		if (name == null) {
-			name = superFile.getName();
-		}
-		return name;
-	}
+//	@Override
+//	public String getName()
+//	{
+//		if (name == null) {
+//			name = superFile.getName();
+//		}
+//		return name;
+//	}
+//	
+//	@Override
+//	public boolean exists() {
+//		return exists.value(() -> {
+//			return superFile.exists();
+//		});
+//	}
+//	
+//	@Override
+//	public boolean isDirectory() {
+//		return isDirectory.value(() -> {
+//			return superFile.isDirectory();
+//		});
+//	}
+//	
+//	@Override
+//	public boolean isFile() {
+//		return isFile.value(() -> {
+//			return superFile.isFile();
+//		});
+//	}
 	
-	@Override
-	public boolean exists() {
-		return exists.value(() -> {
-			return superFile.exists();
-		});
-	}
-	
-	@Override
-	public boolean isDirectory() {
-		return isDirectory.value(() -> {
-			return superFile.isDirectory();
-		});
-	}
-	
-	@Override
-	public boolean isFile() {
-		return isFile.value(() -> {
-			return superFile.isFile();
-		});
-	}
-	
-	public List<File> filesAndDirs() {
-		List<File> returnedFilesAndDirsCopy = new ArrayList<>();
-		List<File> foundFilesAndDirs = filesAndDirs.value(() -> {
-			List<File> returnedFilesAndDirs = new ArrayList<>();
+	public List<MemoizedFile> filesAndDirs() {
+		List<MemoizedFile> returnedFilesAndDirsCopy = new ArrayList<>();
+		List<MemoizedFile> foundFilesAndDirs = filesAndDirs.value(() -> {
+			List<MemoizedFile> returnedFilesAndDirs = new ArrayList<>();
 			
 			if (!exists()) {
 				return Collections.emptyList();
@@ -108,64 +98,76 @@ public class MemoizedFile extends File
 	// ---- End Methods Using Memoized Values ----
 	
 	@Override
-	public File getCanonicalFile() throws IOException
+	public MemoizedFile getCanonicalFile()
 	{
-		if (canonicalFile == null) {
-			try {
-				canonicalFile = super.getCanonicalFile();
-			} catch (IOException e) {
-				rootNode.logger(this.getClass()).warn("Unable to calculate canonical path for path '%s'.", getPath());
-				canonicalFile = super.getAbsoluteFile();
-			}
-		}
-		return canonicalFile;
+//		if (canonicalFile == null) {
+//			try {
+//				canonicalFile = rootNode.getMemoizedFile(superFile.getCanonicalFile());
+//			} catch (IOException e) {
+//				rootNode.logger(this.getClass()).warn("Unable to calculate canonical path for path '%s'.", getPath());
+//				canonicalFile = rootNode.getMemoizedFile(super.getAbsoluteFile());
+//			}
+//		}
+//		return canonicalFile;
+		return rootNode.getMemoizedFile( FileUtility.getCanonicalFileWhenPossible(superFile) );
 	}
 	
 	@Override
-	public File[] listFiles(FileFilter filter) {
-		List<File> listedFiles = new ArrayList<>();
-		List<File> filesAndDirs = filesAndDirs();
-		for (File file : filesAndDirs) {
-			if (file.isDirectory() && filter.accept(file)) {
-				listedFiles.add(file);
-			}
-		}
-		return listedFiles.toArray(new File[0]);
+	public String getCanonicalPath()
+	{
+		return getCanonicalFile().getAbsolutePath();
 	}
 	
 	@Override
-	public File[] listFiles(FilenameFilter filter) {
-		return listFiles( (FileFilter) FileFilterUtils.asFileFilter(filter) );
+	public MemoizedFile getParentFile()
+	{
+//		if (parentFile == null) {
+//			parentFile = rootNode.getMemoizedFile( superFile.getParentFile() );
+//		}
+//		return parentFile;
+		return rootNode.getMemoizedFile( superFile.getParentFile() );
 	}
+//	
+//	@Override
+//	public MemoizedFile[] listFiles(FileFilter filter) {
+//		List<MemoizedFile> listedFiles = new ArrayList<>();
+//		for (MemoizedFile file : filesAndDirs()) {
+//			if (file.isDirectory() && filter.accept(file)) {
+//				listedFiles.add(file);
+//			}
+//		}
+//		return listedFiles.toArray(new MemoizedFile[0]);
+//	}
+//	
+//	@Override
+//	public MemoizedFile[] listFiles(FilenameFilter filter) {
+//		return listFiles( (FileFilter) FileFilterUtils.asFileFilter(filter) );
+//	}
+//	
+//	@Override
+//	public MemoizedFile[] listFiles() {
+//		return listFiles( (FileFilter) TrueFileFilter.INSTANCE);
+//	}
+//	
+//	@Override
+//	public String[] list(FilenameFilter filter) {
+//		List<String> listedNames = new ArrayList<>();
+//		for (MemoizedFile file : filesAndDirs()) {
+//			if (file.isDirectory() && filter.accept(file.getParentFile(), file.getName())) {
+//				listedNames.add(file.getName());
+//			}
+//		}
+//		return listedNames.toArray(new String[0]);
+//	}
+//	
+//	@Override
+//	public String[] list() {
+//		return list( TrueFileFilter.INSTANCE );
+//	}	
 	
-	@Override
-	public File[] listFiles() {
-		return listFiles( (FileFilter) TrueFileFilter.INSTANCE);
-	}
-	
-	
-	
-	
-	@Override
-	public String[] list(FilenameFilter filter) {
-		List<String> listedNames = new ArrayList<>();
-		List<File> filesAndDirs = filesAndDirs();
-		for (File file : filesAndDirs) {
-			if (file.isDirectory() && filter.accept(file.getParentFile(), file.getName())) {
-				listedNames.add(file.getName());
-			}
-		}
-		return listedNames.toArray(new String[0]);
-	}
-	
-	@Override
-	public String[] list() {
-		return list( TrueFileFilter.INSTANCE );
-	}	
-	
-	public List<File> filesAndDirs(IOFileFilter fileFilter) {
-		List<File> returnedFilesAndDirsCopy = new ArrayList<>();
-		for (File file : filesAndDirs()) {
+	public List<MemoizedFile> filesAndDirs(IOFileFilter fileFilter) {
+		List<MemoizedFile> returnedFilesAndDirsCopy = new ArrayList<>();
+		for (MemoizedFile file : filesAndDirs()) {
 			if (fileFilter.accept(file)) {
 				returnedFilesAndDirsCopy.add(file);
 			}
@@ -173,23 +175,23 @@ public class MemoizedFile extends File
 		return returnedFilesAndDirsCopy;
 	}
 	
-	public List<File> files() {
+	public List<MemoizedFile> files() {
 		return filesAndDirs(FileFileFilter.FILE);
 	}
 	
-	public List<File> dirs() {
+	public List<MemoizedFile> dirs() {
 		return filesAndDirs(DirectoryFileFilter.DIRECTORY);
 	}
 	
-	public List<File> nestedFilesAndDirs() {
-		List<File> nestedFilesAndDirs = new ArrayList<>();
+	public List<MemoizedFile> nestedFilesAndDirs() {
+		List<MemoizedFile> nestedFilesAndDirs = new ArrayList<>();
 		populateNestedFilesAndDirs(this, nestedFilesAndDirs);
 		return nestedFilesAndDirs;
 	}
 	
-	public List<File> nestedFiles() {
-		List<File> nestedFiles = new ArrayList<>();
-		for(File file : nestedFilesAndDirs()) {
+	public List<MemoizedFile> nestedFiles() {
+		List<MemoizedFile> nestedFiles = new ArrayList<>();
+		for(MemoizedFile file : nestedFilesAndDirs()) {
 			if(!file.isDirectory()) {
 				nestedFiles.add(file);
 			}
@@ -197,9 +199,9 @@ public class MemoizedFile extends File
 		return nestedFiles;
 	}
 	
-	public List<File> nestedDirs() {
-		List<File> nestedDirs = new ArrayList<>();
-		for(File file : nestedFilesAndDirs()) {
+	public List<MemoizedFile> nestedDirs() {
+		List<MemoizedFile> nestedDirs = new ArrayList<>();
+		for(MemoizedFile file : nestedFilesAndDirs()) {
 			if(file.isDirectory()) {
 				nestedDirs.add(file);
 			}
@@ -208,10 +210,10 @@ public class MemoizedFile extends File
 	}	
 	
 	
-	private void populateNestedFilesAndDirs(MemoizedFile file, List<File> nestedFilesAndDirs) {
+	private void populateNestedFilesAndDirs(MemoizedFile file, List<MemoizedFile> nestedFilesAndDirs) {
 		nestedFilesAndDirs.addAll(file.filesAndDirs());
 		
-		for(File dir : file.dirs()) {
+		for(MemoizedFile dir : file.dirs()) {
 			MemoizedFile memoizedFile = rootNode.getMemoizedFile(dir);
 			populateNestedFilesAndDirs(memoizedFile, nestedFilesAndDirs);
 		}

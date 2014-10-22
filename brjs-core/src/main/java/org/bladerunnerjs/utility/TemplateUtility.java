@@ -11,6 +11,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
@@ -30,7 +31,7 @@ public class TemplateUtility
 			tempDir = FileUtility.createTemporaryDirectory( TemplateUtility.class, templateName );
 			
 			if(node.dirExists() && !(node instanceof BRJS)) {
-				List<File> dirContents = node.root().getMemoizedFile(node.dir()).filesAndDirs();
+				List<MemoizedFile> dirContents = node.root().getMemoizedFile(node.dir()).filesAndDirs();
 				
 				if((dirContents.size() != 0) && !allowNonEmptyDirectories) {
 					throw new TemplateDirectoryAlreadyExistsException(node);

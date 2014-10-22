@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -28,7 +29,7 @@ public class I18nFileAsset implements Asset
 	}
 	
 	private AssetLocation assetLocation;
-	private File assetFile;
+	private MemoizedFile assetFile;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 	private Locale locale;
@@ -36,7 +37,7 @@ public class I18nFileAsset implements Asset
 	public I18nFileAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
-			this.assetFile = assetFile;
+			this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
 			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			locale = Locale.createLocaleFromFilepath(getAssetName());
@@ -59,7 +60,7 @@ public class I18nFileAsset implements Asset
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return assetFile.getParentFile();
 	}

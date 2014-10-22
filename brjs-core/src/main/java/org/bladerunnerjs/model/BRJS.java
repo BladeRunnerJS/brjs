@@ -22,6 +22,7 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
@@ -64,7 +65,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> userJars = new NodeItem<>(this, DirNode.class, "conf/java");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
-	private final MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
+	private final MemoizedFileAccessor memoizedFileAccessor;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
 	private final PluginAccessor pluginAccessor;
 	private final IO io = new IO();
@@ -85,7 +86,18 @@ public class BRJS extends AbstractBRJSRootNode
 		super(brjsDir, loggerFactory);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		this.appVersionGenerator = appVersionGenerator;
-		this.fileModificationRegistry = new FileModificationRegistry( dir().getParentFile() );
+		this.fileModificationRegistry = new FileModificationRegistry( brjsDir.getParentFile() );
+		memoizedFileAccessor  = new MemoizedFileAccessor(this);
+		
+		try
+		{
+			registerNode(this);
+		}
+		catch (NodeAlreadyRegisteredException e)
+		{
+			throw new RuntimeException(e);
+		}
+		
 		try
 		{
 			fileWatcherThread = new FileModificationWatcherThread( this );
@@ -387,6 +399,12 @@ public class BRJS extends AbstractBRJSRootNode
 	public MemoizedFile getMemoizedFile(File file)
 	{
 		return memoizedFileAccessor.getMemoizedFile(file);
+	}
+	
+	@Override
+	public MemoizedFile getMemoizedFile(File dir, String name)
+	{
+		return getMemoizedFile( new File(dir, name) );
 	}
 	
 	public Thread getFileWatcherThread() {

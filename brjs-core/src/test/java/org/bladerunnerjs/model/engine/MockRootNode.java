@@ -31,19 +31,19 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return null;
 	}
 
 	@Override
-	public File file(String filePath)
+	public MemoizedFile file(String filePath)
 	{
 		return null;
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles()
+	public MemoizedFile[] memoizedScopeFiles()
 	{
 		return null;
 	}
@@ -266,5 +266,11 @@ public class MockRootNode implements RootNode
 	public MemoizedFile getMemoizedFile(File file)
 	{
 		return memoizedFileAccessor.getMemoizedFile(file);
+	}
+
+	@Override
+	public MemoizedFile getMemoizedFile(File dir, String filePath)
+	{
+		return getMemoizedFile( new File(dir, filePath) );
 	}
 }

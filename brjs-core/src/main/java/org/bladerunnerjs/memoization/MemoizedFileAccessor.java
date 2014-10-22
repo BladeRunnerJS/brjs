@@ -19,6 +19,8 @@ public class MemoizedFileAccessor
 	}
 	
 	public MemoizedFile getMemoizedFile(File file) {
+		if (file == null) return null;
+		
 		String canonicalPath = FileUtility.getCanonicalFileWhenPossible(file).getAbsolutePath();
 		MemoizedFile memoizedFile;
 		if (file instanceof MemoizedFile) {
@@ -30,7 +32,7 @@ public class MemoizedFileAccessor
 			if (memoizedFileMap.containsKey(canonicalPath)) {
 				memoizedFile = memoizedFileMap.get(canonicalPath);
 			} else {
-				memoizedFile = new MemoizedFile(rootNode, file);
+				memoizedFile = new MemoizedFile(rootNode, canonicalPath);
 				memoizedFileMap.put(canonicalPath, memoizedFile);
 			}
 		}

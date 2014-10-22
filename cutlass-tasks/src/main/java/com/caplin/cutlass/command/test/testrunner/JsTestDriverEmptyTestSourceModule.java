@@ -1,11 +1,11 @@
 package com.caplin.cutlass.command.test.testrunner;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
@@ -35,7 +35,7 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 		return sourceModule.isEncapsulatedModule();
 	}
 	
-	public File dir() {
+	public MemoizedFile dir() {
 		return sourceModule.dir();
 	}
 	

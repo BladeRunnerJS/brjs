@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -105,7 +106,7 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return assetLocation.dir();
 	}

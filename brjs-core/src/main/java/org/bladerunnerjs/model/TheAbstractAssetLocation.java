@@ -38,7 +38,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
-	protected abstract List<File> getCandidateFiles();
+	protected abstract List<MemoizedFile> getCandidateFiles();
 	
 	@Override
 	public String requirePrefix() {

@@ -23,7 +23,7 @@ public class RelativePathUtility {
 		try {
 			baseCanonicalPath = basePath.getCanonicalPath();
 			childCanonicalPath = childPath.getCanonicalPath();
-		} catch (NullPointerException | IOException ex) {
+		} catch (NullPointerException ex) {
 			//TODO: fix the chicken/egg issue that causes this NPE if RelaltivePath is used during the file modification service constructor
 			baseCanonicalPath = getCanonicalPath(basePath);
 			childCanonicalPath = getCanonicalPath(childPath);			

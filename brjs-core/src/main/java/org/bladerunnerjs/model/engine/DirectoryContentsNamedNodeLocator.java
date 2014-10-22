@@ -32,7 +32,7 @@ public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 			String dirNameMatcher = getDirNameMatcher(dirNameFilter);
 			String dirNameExcludeMatcher = getDirNameMatcher(dirNameExcludeFilter);
 			
-			List<File> childDirs = rootNode.getMemoizedFile(childDir).dirs();
+			List<MemoizedFile> childDirs = rootNode.getMemoizedFile(childDir).dirs();
 			for(File file : childDirs)
 			{
 				MemoizedFile fileInfo = rootNode.getMemoizedFile(file);

@@ -40,25 +40,29 @@ public abstract class AbstractNode implements Node
 	
 	private ObserverList observers = new ObserverList();
 	private Map<String, NodeProperties> propertiesMap = new TreeMap<String,NodeProperties>();
-	private Map<String, File> filesMap = new TreeMap<String,File>();
+	private Map<String, MemoizedFile> filesMap = new TreeMap<>();
 	
 	
 	
 	protected RootNode rootNode;
 	private Node parent;
-	protected File dir;
-	private MemoizedFile dirInfo;
-	private File[] scopeFiles;
+	protected File unmemoizedDir;
+	private MemoizedFile dir;
+	private MemoizedFile[] scopeFiles;
 	
 	public AbstractNode(RootNode rootNode, Node parent, File dir) {
 		this.rootNode = rootNode;
 		this.parent = parent;
-		this.dir = (dir == null) ? null : new File(getNormalizedPath(dir));
-		scopeFiles = new File[] {dir};
+		if (dir == null) throw new RuntimeException("dir must not be null");		
+		this.unmemoizedDir = dir;
 	}
 	
 	public AbstractNode() {
 		this.rootNode = (RootNode) this;
+	}
+	
+	protected void setNodeDir(File file) {
+		this.unmemoizedDir = file;
 	}
 	
 	@Override
@@ -74,14 +78,20 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
+		if (dir == null) {
+			dir = rootNode.getMemoizedFile(unmemoizedDir);
+		}
 		return dir;
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles()
+	public MemoizedFile[] memoizedScopeFiles()
 	{
+		if (scopeFiles == null) {
+			scopeFiles = new MemoizedFile[] {dir()};
+		}
 		return scopeFiles;
 	}
 	
@@ -94,11 +104,7 @@ public abstract class AbstractNode implements Node
 	@Override
 	public boolean dirExists()
 	{
-		if((dirInfo == null) && (dir != null)) {
-			dirInfo = rootNode.getMemoizedFile(dir);
-		}
-		
-		return (dirInfo == null) ? false : dirInfo.exists();
+		return dir().exists();
 	}
 	
 	@Override
@@ -108,12 +114,12 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
-	public File file(String filePath)
+	public MemoizedFile file(String filePath)
 	{
-		File cachedFile = filesMap.get(filePath);
+		MemoizedFile cachedFile = filesMap.get(filePath);
 		if (cachedFile == null)
 		{
-			cachedFile = new File(dir, filePath);
+			cachedFile = rootNode.getMemoizedFile(dir(), filePath);
 			filesMap.put(filePath, cachedFile);
 		}
 		return cachedFile;
@@ -122,7 +128,7 @@ public abstract class AbstractNode implements Node
 	@Override
 	public boolean containsFile(String filePath)
 	{
-		return (dir == null) ? false : new File(dir, filePath).exists();
+		return new File(dir(), filePath).exists();
 	}
 	
 	@Override
@@ -135,7 +141,7 @@ public abstract class AbstractNode implements Node
 			if(this instanceof NamedNode) ((NamedNode) this).assertValidName();
 			
 			try {
-				FileUtils.forceMkdir(dir);
+				FileUtils.forceMkdir(dir());
 				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
@@ -184,8 +190,8 @@ public abstract class AbstractNode implements Node
 			if(!dirExists()) throw new NoSuchDirectoryException(this);
 			
 			try {
-				FileUtils.deleteDirectory(dir);
-				logger.debug(Messages.NODE_DELETED_LOG_MSG, getTypeName(), dir.getPath());
+				FileUtils.deleteDirectory(dir());
+				logger.debug(Messages.NODE_DELETED_LOG_MSG, getTypeName(), dir().getPath());
 				notifyObservers(new NodeDeletedEvent(), this);
 				incrementFileVersion();
 			}
@@ -274,23 +280,6 @@ public abstract class AbstractNode implements Node
 		{
 			throw new RuntimeException(e);
 		}
-	}
-	
-	
-	protected String getNormalizedPath(File dir) {
-		String normalizedPath;
-		
-		try {
-			normalizedPath = dir.getCanonicalPath();
-		}
-		catch (IOException ex)
-		{
-			root().logger(this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
-			
-			normalizedPath = dir.getAbsolutePath();
-		}
-		
-		return normalizedPath;
 	}
 	
 	private void discoverAllChildren(List<Node> nodes)

@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
@@ -13,9 +14,9 @@ import org.bladerunnerjs.utility.ObserverList;
 public interface Node {
 	RootNode root();
 	Node parentNode();
-	File dir();
-	File file(String filePath);
-	File[] memoizedScopeFiles();
+	MemoizedFile dir();
+	MemoizedFile file(String filePath);
+	MemoizedFile[] memoizedScopeFiles();
 	String getTypeName();
 	boolean dirExists();
 	boolean exists();

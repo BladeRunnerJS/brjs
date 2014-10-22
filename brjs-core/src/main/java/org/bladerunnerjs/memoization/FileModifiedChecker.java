@@ -3,7 +3,6 @@ package org.bladerunnerjs.memoization;
 import java.io.File;
 
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.utility.FileUtility;
 
 
 public class FileModifiedChecker
@@ -14,7 +13,6 @@ public class FileModifiedChecker
 
 	public FileModifiedChecker(FileModificationRegistry fileModificationRegistry, RootNode rootNode, File file) {
 		this.fileModificationRegistry = fileModificationRegistry;
-		file = FileUtility.getCanonicalFileWhenPossible(file);
 		this.file = file;
 	}
 	

@@ -13,7 +13,9 @@ import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ObserverList;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 
 import java.io.File;
@@ -24,6 +26,9 @@ import static org.mockito.Mockito.*;
 
 public class NodeTest
 {
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+	
 	private static final String TEST_DIR = "src/test/resources/NodeTest";
 	private RootNode mockRootNode = new MockRootNode();
 	
@@ -46,14 +51,6 @@ public class NodeTest
 	}
 	
 	@Test
-	public void fileShouldReturnAnUnrootedFileIfDirIsNull()
-	{
-		Node node = new TestNode(mockRootNode, null, null);
-		
-		assertEquals(new File("path/to-file").getAbsolutePath(), node.file("path/to-file").getAbsolutePath());
-	}
-	
-	@Test
 	public void dirExistsShouldReturnTrueIfTheDirectoryExists()
 	{
 		Node node = new TestNode(mockRootNode, null, new File(TEST_DIR));
@@ -67,22 +64,6 @@ public class NodeTest
 		Node node = new TestNode(mockRootNode, null, new File(TEST_DIR, "non-existent-directory"));
 		
 		assertFalse(node.dirExists());
-	}
-	
-	@Test
-	public void dirExistsShouldNotThrowAnExceptionIfANullDirWasProvided()
-	{
-		Node node = new TestNode(mockRootNode, null, null);
-		
-		assertFalse(node.dirExists());
-	}
-	
-	@Test
-	public void containsFileShouldNotThrowAnExceptionIfDirIsNull()
-	{
-		Node node = new TestNode(mockRootNode, null, null);
-		
-		assertFalse(node.containsFile("some-file.txt"));
 	}
 	
 	@Test
@@ -131,9 +112,12 @@ public class NodeTest
 		assertFalse("great grandchild dir does not exist", greatGrandchildDir.exists());
 	}
 	
-	@Test(expected=NullPointerException.class)
+	@Test
 	public void createPathShouldThrowAnExceptionIfANullDirWasProvided() throws Exception
 	{
+		exception.expect(RuntimeException.class);
+		exception.expectMessage("dir must not be null");
+		
 		Node node = new TestNode(mockRootNode, null, null);
 		node.create();
 	}
@@ -964,6 +948,14 @@ public class NodeTest
 		verifyNoMoreInteractions(eventObserver);
 	}
 	
+	@Test
+	public void exceptionShouldBeThrownIfDirIsNull()
+	{
+		exception.expect(RuntimeException.class);
+		exception.expectMessage("dir must not be null");
+		
+		new TestNode(mockRootNode, null, null);		
+	}
 	
 	// TODO: create 'locator' versions of all the multi-location set-node tests above
 	

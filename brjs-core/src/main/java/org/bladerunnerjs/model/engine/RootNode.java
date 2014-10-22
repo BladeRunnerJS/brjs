@@ -20,6 +20,7 @@ public interface RootNode extends Node {
 	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
 	IO io();
 	MemoizedFile getMemoizedFile(File file);
+	MemoizedFile getMemoizedFile(File dir, String filePath);
 	
 	boolean isNodeRegistered(Node node);
 	void registerNode(Node node) throws NodeAlreadyRegisteredException;

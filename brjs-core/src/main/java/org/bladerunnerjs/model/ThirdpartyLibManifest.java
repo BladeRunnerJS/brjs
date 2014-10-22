@@ -33,11 +33,11 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 		return listify(getConf().depends);
 	}
 	
-	public List<File> getJsFiles() throws ConfigException {
+	public List<MemoizedFile> getJsFiles() throws ConfigException {
 		return getFilesForConfigPaths(getJs(), ".js");
 	}
 	
-	public List<File> getCssFiles() throws ConfigException {
+	public List<MemoizedFile> getCssFiles() throws ConfigException {
 		return getFilesForConfigPaths(getCss(), ".css");
 	}
 
@@ -71,7 +71,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 		return Collections.emptyList();
 	}
 	
-	private List<File> getFilesForConfigPaths(List<String> configPaths, String fileExtension) throws ConfigException
+	private List<MemoizedFile> getFilesForConfigPaths(List<String> configPaths, String fileExtension) throws ConfigException
 	{
 		if (configPaths.isEmpty())
 		{
@@ -92,9 +92,9 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 		return getFilesWithPaths(configPaths);
 	}
 	
-	private List<File> getFilesWithPaths(List<String> filePaths) throws ConfigException
+	private List<MemoizedFile> getFilesWithPaths(List<String> filePaths) throws ConfigException
 	{
-		List<File> foundFiles = new ArrayList<File>();
+		List<MemoizedFile> foundFiles = new ArrayList<>();
 		String assetLocationDirPath = assetLocationDir.getAbsolutePath();
 		
 		for (String filePath : filePaths)
@@ -103,7 +103,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 			File file = new File(fullFilePath);
 			
 			if(file.exists()){
-				foundFiles.add(file);
+				foundFiles.add( assetLocation.root().getMemoizedFile(file) );
 			}else{
 				String relativeManifestPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().root().dir(), assetLocation.file(LIBRARY_MANIFEST_FILENAME));
 				throw new ConfigException("Unable to find the file '" + filePath + "' required in the manifest at '" + relativeManifestPath + "'.");
@@ -112,16 +112,16 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 		return foundFiles;
 	}
 	
-	private List<File> findAllFilesWithExtension(String extension, boolean includeNestedDirs)
+	private List<MemoizedFile> findAllFilesWithExtension(String extension, boolean includeNestedDirs)
 	{
-		List<File> foundFiles = new ArrayList<File>();
-		List<File> files = (includeNestedDirs) ? file.nestedFiles() : file.filesAndDirs();
+		List<MemoizedFile> foundFiles = new ArrayList<>();
+		List<MemoizedFile> files = (includeNestedDirs) ? file.nestedFiles() : file.filesAndDirs();
 		
 		for (File f : files)
 		{
 			if (f.getName().endsWith(extension))
 			{
-				foundFiles.add(f);
+				foundFiles.add( assetLocation.root().getMemoizedFile(f) );
 			}
 		}
 		return foundFiles;

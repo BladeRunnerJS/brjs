@@ -27,7 +27,7 @@ public class AssetLocator {
 		assetsList = new MemoizedValue<>(assetLocation.dir()+" - AssetLocation.assets", assetLocation.root(), assetLocation.root().dir());
 	}
 	
-	public Assets assets(List<File> assetFiles) {
+	public Assets assets(List<? extends File> assetFiles) {
 		return assetsList.value(new Getter<RuntimeException>() {
 			@Override
 			public Object get() {

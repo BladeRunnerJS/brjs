@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 
 
@@ -38,16 +37,6 @@ public final class TestRootNode extends AbstractRootNode
 		multiLocationChildNodes.addAdditionalNamedLocation("X", "set-single-item-location");
 		multiLocationItemNode.addLegacyLocation("single-item-secondary-location");
 	}
-	
-	@Override
-	public void registerNode(Node node) {
-		try {
-			super.registerNode(node);
-		}
-		catch(NodeAlreadyRegisteredException ex) {
-			throw new RuntimeException(ex);
-		}
-	};
 	
 	@Override
 	public boolean isRootDir(File dir)
@@ -100,6 +89,12 @@ public final class TestRootNode extends AbstractRootNode
 	public MemoizedFile getMemoizedFile(File file)
 	{
 		return memoizedFileAccessor.getMemoizedFile(file);
+	}
+
+	@Override
+	public MemoizedFile getMemoizedFile(File dir, String filePath)
+	{
+		return getMemoizedFile( new File(dir, filePath) );
 	}
 	
 }

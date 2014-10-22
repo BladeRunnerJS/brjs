@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.EncodedFileUtil;
@@ -17,7 +18,7 @@ import com.google.common.base.Joiner;
 
 public abstract class AbstractYamlConfFile implements YamlConfFile {
 	protected BRJSNode node;
-	private File confFile;
+	private MemoizedFile confFile;
 	private EncodedFileUtil fileUtil;
 	
 	public void setNode(BRJSNode node) {
@@ -25,7 +26,7 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 	}
 	
 	public void setConfFile(File confFile) {
-		this.confFile = confFile;
+		this.confFile = node.root().getMemoizedFile(confFile);
 		
 		try {
 			// TODO: get rid of `node == null` guard once we delete no brjs-core code
@@ -41,7 +42,7 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 	public abstract void verify() throws ConfigException;
 	
 	@Override
-	public File getUnderlyingFile() {
+	public MemoizedFile getUnderlyingFile() {
 		return confFile;
 	}
 	

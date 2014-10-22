@@ -6,20 +6,21 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class FileAsset implements Asset {
-	private File file;
+	private MemoizedFile file;
 	private AssetLocation assetLocation;
 	private String defaultFileCharacterEncoding;
 	private String assetPath;
 	
 	public FileAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		try {
-			this.file = assetFile;
+			this.file = assetLocation.root().getMemoizedFile(assetFile);
 			this.assetLocation = assetLocation;
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), file);
@@ -40,7 +41,7 @@ public class FileAsset implements Asset {
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return file.getParentFile();
 	}
