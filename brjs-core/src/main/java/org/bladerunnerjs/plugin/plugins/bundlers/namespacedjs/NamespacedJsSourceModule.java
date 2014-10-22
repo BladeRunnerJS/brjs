@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
@@ -51,7 +52,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
  	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependendAssets = new ArrayList<>();
-		dependendAssets.addAll( getDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
 		return dependendAssets;
 	}
@@ -75,7 +76,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		try {
 			List<String> requirePaths = getUseTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String requireAllInvocation = (requirePaths.size() == 0) ? "" : "\n" + calculateDependenciesRequireDefinition(requirePaths) + "\n";
-			List<String> staticRequirePaths = getDefineTimeDependencyCalculator().getRequirePaths(SourceModule.class);
+			List<String> staticRequirePaths = getPreExportDefineTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String staticRequireAllInvocation = (staticRequirePaths.size() == 0) ? "" : " " + calculateDependenciesRequireDefinition(staticRequirePaths);
 			String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticRequireAllInvocation + "\n";
 			
@@ -110,13 +111,18 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
+	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			 return bundlableNode.getLinkedAssets(assetLocation, getDefineTimeDependencyCalculator().getRequirePaths());
+			 return bundlableNode.getLinkedAssets(assetLocation, getPreExportDefineTimeDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+	}
+	
+	@Override
+	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return Collections.emptyList();
 	}
 	
 	@Override
@@ -168,7 +174,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return trieBasedUseTimeDependenciesCalculator;
 	}
 	
-	private TrieBasedDependenciesCalculator getDefineTimeDependencyCalculator() {
+	private TrieBasedDependenciesCalculator getPreExportDefineTimeDependencyCalculator() {
 		if (trieBasedDefineTimeDependenciesCalculator == null) {
 			trieBasedDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}

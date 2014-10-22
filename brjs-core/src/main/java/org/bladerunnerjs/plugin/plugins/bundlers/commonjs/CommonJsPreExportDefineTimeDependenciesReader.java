@@ -9,12 +9,12 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.reader.JsModuleExportsStrippingReader;
 
 
-public class CommonJsDefineTimeDependenciesReader extends Reader 
+public class CommonJsPreExportDefineTimeDependenciesReader extends Reader 
 {
 
 	private Reader defineTimeDependencesReader;
 
-	public CommonJsDefineTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
+	public CommonJsPreExportDefineTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
 		CharBufferPool pool = sourceModule.assetLocation().root().getCharBufferPool();
 		Reader sourceReader = sourceModule.getUnalteredContentReader();
 		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false, pool);
