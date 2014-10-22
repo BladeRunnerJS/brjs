@@ -567,7 +567,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments(
 			"define('appns/Class1'",
 			"module.exports = appns.Class1;",
-			"requireAll(require, window, ['appns/Class2']);");
+			"requireAll(require, ['appns/Class2']);");
 	}
 	
 	
