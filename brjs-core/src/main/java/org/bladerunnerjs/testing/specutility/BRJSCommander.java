@@ -55,25 +55,6 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		return commanderChainer;
 	}
 	
-	public CommanderChainer runCommandInAnotherThread(final int delay, final String... args) throws Exception {
-		new Thread( new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				call(new Command() {
-					public void call() throws Exception {
-						brjs.runCommand(args);
-					}
-				});
-			}
-		}).start();
-		
-		Thread.sleep(2000); // give the command chance to initialise
-		
-		return commanderChainer;
-	}
-	
 	public CommanderChainer runUserCommand(final String... args) {
 		call(new Command() {
 			public void call() throws Exception {
@@ -121,9 +102,9 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 	}
 
 	//TODO: find a better way to run tests that use the 'serve' command - its the only command that doesnt immediately return 
-	public void runThreadedCommand(final String... args)
+	public CommanderChainer runThreadedCommand(final String... args)
 	{
-		Thread t = new Thread( new Runnable()
+		new Thread( new Runnable()
 		{
 			@Override
 			public void run()
@@ -139,8 +120,7 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 					throw new RuntimeException(e);
 				}
 			}
-		});
-		t.start();
+		}).start();
 		try
 		{
 			Thread.sleep(2000);
@@ -149,6 +129,8 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		{
 			throw new RuntimeException(e);
 		}
+		
+		return commanderChainer;
 	}
 
 	public void zipFileIsExtractedTo(String pathToZip, String pathToExtractZip) throws ZipException, IOException 

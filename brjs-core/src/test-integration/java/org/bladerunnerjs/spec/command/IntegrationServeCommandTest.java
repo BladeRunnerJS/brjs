@@ -4,11 +4,15 @@ import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
 import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Messages.*;
 
 import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.base.Predicate;
 
 public class IntegrationServeCommandTest extends SpecTest
 {
@@ -69,6 +73,43 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + "7777/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
 			.and(appServer).requestIs302Redirected("/","/dashboard");
+	}
+	
+	@Test
+	public void serverWillServeAppsOnceStarted() throws Exception
+	{
+		given(brjs).hasBeenAuthenticallyReCreated()
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs.app("app1")).hasBeenPopulated();
+		when(brjs).runThreadedCommand("serve");
+		then(appServer).requestCanEventuallyBeMadeFor("/app1");
+	}
+	
+	@Test
+	public void serveCommandStartsTheFileWatcher() throws Exception
+	{
+		brjs = null;
+		given(brjs).hasBeenAuthenticallyReCreated()
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).usedForServletModel();
+		App app = brjs.app("app1");
+		Aspect aspect = app.defaultAspect();
+		appServer = brjs.applicationServer();
+		
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
+		when(brjs).runThreadedCommand("serve")
+			.and(aspect).indexPageRefersToWithoutNotifyingFileRegistry("appns.Class2");
+		then(appServer).requestCanEventuallyBeMadeWhereResponseMatches("/app1/v/dev/js/dev/combined/bundle.js", new Predicate<String>()
+		{
+			@Override
+			public boolean apply(String input)
+			{
+				return input.contains("Class2 =") && !input.contains("Class1");
+			}
+		});
 	}
 	
 }
