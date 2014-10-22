@@ -22,30 +22,26 @@ public class FileModificationWatcherThread extends Thread
 	public static final String THREAD_IDENTIFIER = FileModificationWatcherThread.class.getSimpleName();
 	
 	private Path directoryToWatch;
-
 	private FileModificationRegistry fileModificationRegistry;
-
-	private WatchService watchService;
-
-	private HashMap<Path, WatchKey> watchKeys;	
 	
 	public FileModificationWatcherThread(BRJS brjs) throws IOException
 	{
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().toPath();
-		watchService = FileSystems.getDefault().newWatchService();
 	}
 	
 	@Override
 	public void run()
 	{
 		Thread.currentThread().setName(THREAD_IDENTIFIER);
+		WatchService watchService = null;
+		Map<Path,WatchKey> watchKeys = new HashMap<>();
 		try {
-			watchKeys = new HashMap<>();
+			watchService = FileSystems.getDefault().newWatchService();
 			addWatchKeysForNestedDirs(watchService, watchKeys, directoryToWatch.toFile());
     		
     		while (!isInterrupted()) {
-    			checkForUpdates();
+    			checkForUpdates(watchService, watchKeys);
     			Thread.sleep(1000);
     		}
 		} catch (InterruptedException ex) {
@@ -57,11 +53,20 @@ public class FileModificationWatcherThread extends Thread
 		for (WatchKey watchKey : watchKeys.values()) {
 			watchKey.cancel();
 		}
-		watchKeys.clear();
+		
 		Thread.interrupted();
+		watchKeys.clear();
+		try
+		{
+			if (watchService != null) watchService.close();
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 
-	private void checkForUpdates() throws IOException
+	private void checkForUpdates(WatchService watchService, Map<Path,WatchKey> watchKeys) throws IOException
 	{
 		List<Path> watchPaths = new ArrayList<>(watchKeys.keySet()); // create a duplicate so we can change the underlying map as we iterate over it
 		for (Path watchPath : watchPaths) {
