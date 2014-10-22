@@ -178,7 +178,7 @@ public class DepInsightCommandTest extends SpecTest {
 			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).classRequires("appns/Class1", "./Class2")
 			.and(aspect).classRequires("appns/Class2", "./Class3")
-			.and(aspect).classRequires("appns/Class3", "./Class1");
+			.and(aspect).classRequiresAtUseTime("appns/Class3", "./Class1");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class3");
 		then(logging).containsConsoleText(
 			"Source module 'appns/Class3' dependencies found:",
@@ -196,7 +196,7 @@ public class DepInsightCommandTest extends SpecTest {
 			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).classRequires("appns/Class1", "./Class2")
 			.and(aspect).classRequires("appns/Class2", "./Class3")
-			.and(aspect).classRequires("appns/Class3", "./Class1");
+			.and(aspect).classRequiresAtUseTime("appns/Class3", "./Class1");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class3", "--all");
 		then(logging).containsConsoleText(
 			"Source module 'appns/Class3' dependencies found:",
@@ -230,8 +230,8 @@ public class DepInsightCommandTest extends SpecTest {
 	public void requirePrefixDependenciesAreCorrectlyShown() throws Exception {
 		given(aspect).indexPageRequires("appns/pkg1/ClassA")
 			.and(aspect).hasClasses("appns/pkg1/ClassA", "appns/pkg1/ClassB", "appns/pkg1/UnbundledClass", "appns/pkg2/ClassC")
-			.and(aspect).classRequires("appns/pkg1/ClassA", "../pkg2/ClassC")
-			.and(aspect).classRequires("appns/pkg2/ClassC", "../pkg1/ClassB");
+			.and(aspect).classRequiresAtUseTime("appns/pkg1/ClassA", "../pkg2/ClassC")
+			.and(aspect).classRequiresAtUseTime("appns/pkg2/ClassC", "../pkg1/ClassB");
 		when(brjs).runCommand("dep-insight", "app", "appns/pkg1", "--prefix", "--all");
 		then(logging).containsConsoleText(
 			"Require path prefix 'appns/pkg1' dependencies found:",

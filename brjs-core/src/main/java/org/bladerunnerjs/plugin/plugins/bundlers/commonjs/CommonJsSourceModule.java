@@ -6,7 +6,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +22,6 @@ import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -33,7 +31,6 @@ import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
-import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 import com.Ostermiller.util.ConcatReader;
 
@@ -66,16 +63,10 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
-		try {
-			return bundlableNode.getLinkedAssets(assetLocation, requirePaths());
-		}
-		catch (AmbiguousRequirePathException | UnresolvableRequirePathException e) {
-		    e.setSourceRequirePath(getPrimaryRequirePath());
-		    throw new ModelOperationException(e);
-		}
-		catch (RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
+		List<Asset> dependendAssets = new ArrayList<>();
+		dependendAssets.addAll( getDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		return dependendAssets;
 	}
 	
 	@Override
@@ -132,8 +123,13 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return Collections.emptyList();
+	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().defineTimeRequirePaths );
+	}
+	
+	@Override
+	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().useTimeRequirePaths );
 	}
 	
 	@Override
@@ -151,10 +147,6 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		return RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.assetContainer().app().dir(), assetFile);
 	}
 	
-	private List<String> requirePaths() throws ModelOperationException {
-		return new ArrayList<>( getComputedValue().requirePaths );
-	}
-
 	@Override
 	public AssetLocation assetLocation()
 	{
@@ -167,32 +159,21 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	private ComputedValue getComputedValue() throws ModelOperationException {
+		CommonJsSourceModule sourceModule = this;
 		return computedValue.value(new Getter<ModelOperationException>() {
 			@Override
 			public Object get() throws ModelOperationException {
 				ComputedValue computedValue = new ComputedValue();
 				
-				
-				try(Reader fileReader = new JsCommentStrippingReader(getReader(), false, assetLocation.root().getCharBufferPool())) {
-					StringWriter stringWriter = new StringWriter();
-					IOUtils.copy(fileReader, stringWriter);
-					
-					Matcher m = matcherPattern.matcher(stringWriter.toString());
-					while (m.find()) {
-						String methodArgument = m.group(2);
-						
-						if (m.group(1).startsWith("require")) {
-							String requirePath = methodArgument;
-							computedValue.requirePaths.add(requirePath);
-						}
-						else if (m.group(1).startsWith("getService")){
-							String serviceAliasName = methodArgument;
-							//TODO: this is a big hack, remove the "SERVICE!" part and the same in BundleSetBuilder
-							computedValue.aliases.add("SERVICE!"+serviceAliasName);
-						}
-						else {
-							computedValue.aliases.add(methodArgument);
-						}
+				try {
+					try(Reader reader = new CommonJsDefineTimeDependenciesReader(sourceModule)) 
+					{
+						addRequirePathsFromReader(reader, computedValue.defineTimeRequirePaths, computedValue.aliases);
+					}
+
+					try(Reader reader = new CommonJsUseTimeDependenciesReader(sourceModule)) 
+					{
+						addRequirePathsFromReader(reader, computedValue.useTimeRequirePaths, computedValue.aliases);
 					}
 				}
 				catch(IOException e) {
@@ -204,8 +185,45 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		});
 	}
 	
+	private void addRequirePathsFromReader(Reader reader, Set<String> dependencies, List<String> aliases) throws IOException {
+		StringWriter stringWriter = new StringWriter();
+		IOUtils.copy(reader, stringWriter);
+		
+		Matcher m = matcherPattern.matcher(stringWriter.toString());
+		while (m.find()) {
+			String methodArgument = m.group(2);
+			
+			if (m.group(1).startsWith("require")) {
+				String requirePath = methodArgument;
+				dependencies.add(requirePath);
+			}
+			else if (m.group(1).startsWith("getService")){
+				String serviceAliasName = methodArgument;
+				//TODO: this is a big hack, remove the "SERVICE!" part and the same in BundleSetBuilder
+				aliases.add("SERVICE!"+serviceAliasName);
+			}
+			else {
+				aliases.add(methodArgument);
+			}
+		}
+	}
+
+	private List<Asset> getSourceModulesForRequirePaths(BundlableNode bundlableNode, Set<String> requirePaths) throws ModelOperationException {
+		try {
+			return bundlableNode.getLinkedAssets( assetLocation, new ArrayList<>(requirePaths) );
+		}
+		catch (AmbiguousRequirePathException | UnresolvableRequirePathException e) {
+            e.setSourceRequirePath(getPrimaryRequirePath());
+            throw new ModelOperationException(e);
+        }
+        catch (RequirePathException e) {
+            throw new ModelOperationException(e);
+        }
+	}
+	
 	private class ComputedValue {
-		public Set<String> requirePaths = new HashSet<>();
+		public Set<String> defineTimeRequirePaths = new HashSet<>();
+		public Set<String> useTimeRequirePaths = new HashSet<>();
 		public List<String> aliases = new ArrayList<>();
 	}
 	

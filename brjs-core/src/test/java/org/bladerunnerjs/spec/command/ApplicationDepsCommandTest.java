@@ -124,7 +124,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
-			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (static dep.)",
 			"    |    |    |    \\--- 'default-aspect/resources/config.xml' (seed file) (*)",
 			"",
 			"    (*) - subsequent instances not shown (use -A or --all to show)");
@@ -141,7 +141,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (static dep.)",
 			"    |    |    |    \\--- 'default-aspect/resources/config.xml' (seed file)",
 			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
 			"    |    |    \\--- 'default-aspect/resources/config.xml' (seed file) (*)",
@@ -160,7 +160,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (*)",
+			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (static dep.) (*)",
 			"",
 			"    (*) - subsequent instances not shown (use -A or --all to show)")			
 			.and(logging).doesNotcontainConsoleText("(*) - dependencies omitted (listed previously)");
@@ -176,7 +176,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (static dep.)",
 			"    |    \\--- 'default-aspect/src/appns/Class2.js' (*)")
 			.and(logging).doesNotcontainConsoleText("subsequent instances not shown (use -A or --all to show)");
 	}
@@ -193,7 +193,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js' (static dep.)",
 			"    |    |    |    \\--- 'default-aspect/src/appns/pkg/config.xml' (implicit resource)",
 			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
@@ -209,7 +209,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/pkg1/pkg2/NestedClass.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/pkg1/pkg2/NestedClass.js' (static dep.)",
 			"    |    |    |    \\--- 'default-aspect/src/appns/pkg1/config.xml' (implicit resource)",
 			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
@@ -270,7 +270,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js' (static dep.)",
 			"    |    |    |    \\--- 'default-aspect/src/appns/pkg/config.xml' (implicit resource)",
 			"    |    |    |    |    \\--- 'alias!alias-ref' (alias dep.)",
 			"    |    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");

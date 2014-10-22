@@ -368,7 +368,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.namespacedjs.Class1", "appns/commonjs/Class1", "appns/commonjs/Class2")
 			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1")
 			.and(aspect).classDependsOn("appns.namespacedjs.Class1", "appns.commonjs.Class1")
-			.and(aspect).classRequires("appns/commonjs/Class1", "appns.commonjs.Class2");
+			.and(aspect).classRequires("appns/commonjs/Class1", "appns/commonjs/Class2");
 		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"define('appns/namespacedjs/Class1', function(require, exports, module) {",
@@ -409,7 +409,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
     		.and(aspect).hasClasses("appns.namespacedjs.Class1", "appns/commonjs/Class1", "appns/commonjs/pkg/Class2")
     		.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1")
     		.and(aspect).classDependsOn("appns.namespacedjs.Class1", "appns.commonjs.Class1")
-    		.and(aspect).classRequires("appns/commonjs/Class1", "appns.commonjs.pkg.Class2");
+    		.and(aspect).classRequires("appns/commonjs/Class1", "appns/commonjs/pkg/Class2");
 		when(aspect).requestReceivedInDev("namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"namespacedjs\":{},\"commonjs\":{\"pkg\":{}}}});");
 	}
@@ -556,5 +556,20 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		when(defaultAspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsNamespacedJsClasses("appns.AspectClass");
 	}
+	
+	@Test
+	public void useTimeDependenciesAreRequiredBelowModuleExports() throws Exception {
+		given(aspect).indexPageRequires("appns/Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+    		.and(aspect).classFileHasContent("appns.Class1", "function MyClass() { new appns.Class2(); }")
+    		.and(aspect).classFileHasContent("appns.Class2", "");
+		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+			"define('appns/Class1'",
+			"module.exports = appns.Class1;",
+			"requireAll(require, window, ['appns/Class2']);");
+	}
+	
+	
 	
 }

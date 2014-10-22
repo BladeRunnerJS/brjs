@@ -113,12 +113,17 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer classRequires(String sourceClass, String dependencyClass) throws Exception {
 		File sourceFile = getSourceFile(sourceClass);
-		return classRequires(sourceClass, dependencyClass, sourceFile);
+		return classRequires(sourceClass, dependencyClass, sourceFile, false);
+	}
+	
+	public BuilderChainer classRequiresAtUseTime(String sourceClass, String dependencyClass) throws Exception {
+		File sourceFile = getSourceFile(sourceClass);
+		return classRequires(sourceClass, dependencyClass, sourceFile, true);
 	}
 	
 	public BuilderChainer testClassRequires(String sourceClass, String dependencyClass) throws Exception {
 		File sourceFile = getTestSourceFile(sourceClass);
-		return classRequires(sourceClass, dependencyClass, sourceFile);
+		return classRequires(sourceClass, dependencyClass, sourceFile, false);
 	}
 	
 	public BuilderChainer classDependsOnAlias(String sourceClass, String alias) throws Exception
@@ -193,12 +198,15 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
-			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "' for dir '"+sourceFile.getParentFile().getPath()+"'.");
+			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "' for dir '"+sourceFile.getParentFile().getPath()+"'.");
 		}
 		
 		String classReferencesContent = "var someFunction = function() {\n";
 		for(String referencedClass : referencedClasses)
 		{
+			if (referencedClass.contains("/")) {
+				throw new RuntimeException("Class names should not contain '/'s.");
+			}
 			classReferencesContent += "\tnew " + referencedClass + "();\n";
 		}
 		classReferencesContent += "};\n";
@@ -211,7 +219,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	private BuilderChainer classRequires(String sourceClass, String dependencyClass, File sourceFile) throws Exception
+	private BuilderChainer classRequires(String sourceClass, String dependencyClass, File sourceFile, boolean atUseTime) throws Exception
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
@@ -219,10 +227,20 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to '"+CommonJsSourceModule.JS_STYLE+"' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
-		dependencyClass = dependencyClass.replaceAll("\\.(\\w)", "/$1");
+		if (dependencyClass.matches(".*?\\.(?![/\\.]).*")) { // matches '.' unless it is immediately followed by another . or a /
+			throw new RuntimeException("Requre paths should not contain '.'s.");
+		}
+		
 		String classRef = (dependencyClass.contains("/")) ? StringUtils.substringAfterLast(dependencyClass, "/") : dependencyClass;
 		String requireString = "var " + classRef + " = require('" + dependencyClass + "');\n";
-		fileUtil.write(sourceFile, requireString + getClassBody(sourceClass));
+		
+		if(atUseTime) {
+			fileUtil.write(sourceFile, "\nmodule.exports = {};\n" + requireString + getClassBody(sourceClass));
+		}
+		else {
+			fileUtil.write(sourceFile, requireString + getClassBody(sourceClass));
+		}
+		
 		
 		return builderChainer;
 	}

@@ -22,8 +22,6 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.reader.factory.JsCommentAndCodeBlockStrippingReaderFactory;
-import org.bladerunnerjs.utility.reader.factory.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
 import com.google.common.base.Joiner;
@@ -35,8 +33,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private LinkedFileAsset linkedFileAsset;
 	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;
-	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
-	private TrieBasedDependenciesCalculator trieBasedStaticDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedUseTimeDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedDefineTimeDependenciesCalculator;
 	public static final String JS_STYLE = "namespaced-js";
 	
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
@@ -51,18 +49,16 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
- 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
-		try {
-			return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
-		}
-		catch (RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
+ 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		List<Asset> dependendAssets = new ArrayList<>();
+		dependendAssets.addAll( getDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		return dependendAssets;
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return getDependencyCalculator().getAliases();
+		return getUseTimeDependencyCalculator().getAliases();
 	}
 	
 	@Override
@@ -77,9 +73,9 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		try {
-			List<String> requirePaths = getDependencyCalculator().getRequirePaths(SourceModule.class);
+			List<String> requirePaths = getUseTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String requireAllInvocation = (requirePaths.size() == 0) ? "" : "\n" + calculateDependenciesRequireDefinition(requirePaths) + "\n";
-			List<String> staticRequirePaths = getStaticDependencyCalculator().getRequirePaths(SourceModule.class);
+			List<String> staticRequirePaths = getDefineTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String staticRequireAllInvocation = (staticRequirePaths.size() == 0) ? "" : " " + calculateDependenciesRequireDefinition(staticRequirePaths);
 			String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticRequireAllInvocation + "\n";
 			
@@ -114,21 +110,23 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		
-		List<SourceModule> result = new ArrayList<SourceModule>();
+	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			
-			 List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, getStaticDependencyCalculator().getRequirePaths());
-			 for(Asset asset : assets){
-				 if(asset instanceof SourceModule)
-					 result.add((SourceModule)asset);
-			 }
+			 return bundlableNode.getLinkedAssets(assetLocation, getDefineTimeDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
-		return result;
+	}
+	
+	@Override
+	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		try {
+			return bundlableNode.getLinkedAssets(assetLocation, getUseTimeDependencyCalculator().getRequirePaths());
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 	
 	private String calculateDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {
@@ -163,18 +161,18 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	
-	private TrieBasedDependenciesCalculator getDependencyCalculator() {
-		if (trieBasedDependenciesCalculator == null) {
-			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+	private TrieBasedDependenciesCalculator getUseTimeDependencyCalculator() {
+		if (trieBasedUseTimeDependenciesCalculator == null) {
+			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacaedJsUseTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}
-		return trieBasedDependenciesCalculator;
+		return trieBasedUseTimeDependenciesCalculator;
 	}
 	
-	private TrieBasedDependenciesCalculator getStaticDependencyCalculator() {
-		if (trieBasedStaticDependenciesCalculator == null) {
-			trieBasedStaticDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+	private TrieBasedDependenciesCalculator getDefineTimeDependencyCalculator() {
+		if (trieBasedDefineTimeDependenciesCalculator == null) {
+			trieBasedDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}
-		return trieBasedStaticDependenciesCalculator;
+		return trieBasedDefineTimeDependenciesCalculator;
 	}
 	
 	@Override

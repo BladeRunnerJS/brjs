@@ -42,7 +42,7 @@ public class AspectBundlingLoggingTest extends SpecTest {
 			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.bs.b1.Class1")
-			.and(blade).classRequires("appns/bs/b1/Class1", "appns.bs.b1.Class2")
+			.and(blade).classRequires("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(sdkLib).hasBeenCreated();
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/combined/bundle.js", "app1")
@@ -60,7 +60,7 @@ public class AspectBundlingLoggingTest extends SpecTest {
 	public void helpfulLoggingMessagesAreEmittedWhenThereAreNoSeedFiles() throws Exception {
 		given(logging).enabled()
 			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
-			.and(blade).classRequires("appns/bs/b1/Class1", "appns.bs.b1.Class2")
+			.and(blade).classRequires("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(aspect).hasBeenCreated()
 			.and(sdkLib).hasBeenCreated();
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
