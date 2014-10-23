@@ -226,7 +226,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).classExtends("appns.Class1", "appns.Class2")
 			.and(aspect).classExtends("appns.Class2", "appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(exceptions).verifyException(CircularDependencyException.class, "appns/Class1", "appns/Class2");
+		then(exceptions).verifyException(CircularDependencyException.class, unquoted("appns/Class1 => appns/Class2 => appns/Class1"));
 	}
 	
 	@Test
@@ -237,7 +237,18 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).classExtends("appns.Class2", "appns.Class3")
 			.and(aspect).classExtends("appns.Class3", "appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(exceptions).verifyException(CircularDependencyException.class, "appns/Class1", "appns/Class2", "appns/Class3");
+		then(exceptions).verifyException(CircularDependencyException.class, unquoted("appns/Class1 => appns/Class2 => appns/Class3 => appns/Class1"));
+	}
+	
+	@Test
+	public void theCircularDependencyMessageShouldNotIncludeClassesNotThemselvesPartOfTheCircle() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).indexPageHasContent("appns.Class1")
+			.and(aspect).classExtends("appns.Class1", "appns.Class2")
+			.and(aspect).classExtends("appns.Class2", "appns.Class3")
+			.and(aspect).classExtends("appns.Class3", "appns.Class2");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(CircularDependencyException.class, unquoted("appns/Class2 => appns/Class3 => appns/Class2"));
 	}
 	
 	@Test

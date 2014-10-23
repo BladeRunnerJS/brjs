@@ -40,7 +40,7 @@ public class SourceModuleDependencyOrderCalculator {
 			}
 			
 			if (!progressMade) {
-				throw new CircularDependencyException(unprocessedSourceModules);
+				throw new CircularDependencyException(bundlableNode, unprocessedSourceModules);
 			}
 			
 			unorderedSourceModules = unprocessedSourceModules;
