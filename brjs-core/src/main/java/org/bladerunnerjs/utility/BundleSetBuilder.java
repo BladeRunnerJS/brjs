@@ -35,7 +35,6 @@ public class BundleSetBuilder {
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Map<SourceModule, Set<SourceModule>> aliasDependencies = new LinkedHashMap<>();
 	private final Map<String,AliasDefinition> activeAliases = new LinkedHashMap<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
@@ -76,7 +75,7 @@ public class BundleSetBuilder {
 			throw new ModelOperationException(e);
 		}
 		
-		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules, aliasDependencies);
+		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		
 		return new StandardBundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
 	}
@@ -156,14 +155,16 @@ public class BundleSetBuilder {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
 				
 				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
-				if (alias != null)
-				{					
+				if (alias != null) {
 					SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
 					addSourceModule(sourceModule);
 					
 					if(alias.getInterfaceName() != null) {
-						LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
-						addAliasDependency(sourceModule, (SourceModule) linkedAsset);
+						SourceModule aliasInterface = (SourceModule) bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
+						
+						if(sourceModule != aliasInterface) {
+							addSourceModule(aliasInterface);
+						}
 					}
 					
 					aliases.add(alias);
@@ -175,17 +176,6 @@ public class BundleSetBuilder {
 		}
 		
 		return aliases;
-	}
-	
-	private void addAliasDependency(SourceModule sourceModule, SourceModule dependency) throws ModelOperationException {
-		if(sourceModule != dependency) {
-			if(!aliasDependencies.containsKey(sourceModule)) {
-				aliasDependencies.put(sourceModule, new LinkedHashSet<SourceModule>());
-			}
-			
-			addSourceModule(dependency);
-			aliasDependencies.get(sourceModule).add(dependency);
-		}
 	}
 	
 	private String assetFilePaths(List<Asset> assets) {

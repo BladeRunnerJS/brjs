@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.model.Asset;
@@ -15,8 +14,7 @@ import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class SourceModuleDependencyOrderCalculator {
-	// TODO: having alias dependencies passed in rather than having each source-module knowing it's dependencies is a hack we can remove once we fix <https://github.com/BladeRunnerJS/brjs/issues/482>
-	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules, Map<SourceModule, Set<SourceModule>> aliasDependencies) throws ModelOperationException {
+	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules) throws ModelOperationException {
 		Set<SourceModule> orderedSourceModules = new LinkedHashSet<>();
 		Set<SourceModule> metDependencies = new HashSet<>();		
 		
@@ -30,7 +28,7 @@ public class SourceModuleDependencyOrderCalculator {
 			boolean progressMade = false;
 			
 			for(SourceModule sourceModule : unorderedSourceModules) {
-				if (dependenciesHaveBeenMet(getOrderDependentSourceModules(bundlableNode, sourceModule, aliasDependencies), metDependencies)) {
+				if (dependenciesHaveBeenMet(extractSourceModules(sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode)), metDependencies)) {
 					progressMade = true;
 					orderedSourceModules.add(sourceModule);
 					metDependencies.add(sourceModule);
@@ -58,16 +56,6 @@ public class SourceModuleDependencyOrderCalculator {
 			}
 		}
 		return true;
-	}
-	
-	private static List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode, SourceModule sourceModule, Map<SourceModule, Set<SourceModule>> aliasDependencies) throws ModelOperationException {
-		List<Asset> orderDependentSourceModules = new ArrayList<>(sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode));
-		
-		if(aliasDependencies.containsKey(sourceModule)) {
-			orderDependentSourceModules.addAll(aliasDependencies.get(sourceModule));
-		}
-		
-		return extractSourceModules(orderDependentSourceModules);
 	}
 	
 	private static List<SourceModule> extractSourceModules(List<Asset> assets){
