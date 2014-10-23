@@ -39,8 +39,7 @@ public class SourceModuleDependencyOrderCalculator {
 				}
 			}
 			
-			if (!progressMade)
-			{
+			if (!progressMade) {
 				throw new CircularDependencyException(unprocessedSourceModules);
 			}
 			

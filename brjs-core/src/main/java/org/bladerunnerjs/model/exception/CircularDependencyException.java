@@ -11,23 +11,15 @@ import com.google.common.base.Joiner;
 public class CircularDependencyException extends ModelOperationException {
 	private static final long serialVersionUID = 1L;
 	
-	private final Set<SourceModule> unprocessedSourceModules;
-	
-	public CircularDependencyException(Set<SourceModule> unprocessedSourceModules) {
-		super("");
-		this.unprocessedSourceModules = unprocessedSourceModules;
+	public CircularDependencyException(Set<SourceModule> sourceModules) {
+		super("Circular dependency involving the classes '" + Joiner.on("', '").join(getRequirePaths(sourceModules)) + "' prevented the bundle from being written.");
 	}
 	
-	@Override
-	public String getMessage() {
-		return "Circular dependency involving the classes " + (Joiner.on(", ").join(getRequirePaths(unprocessedSourceModules)) + " prevented the bundle from being written.");
-	}
-	
-	private List<String> getRequirePaths(Set<SourceModule> sourceModules) {
+	private static List<String> getRequirePaths(Set<SourceModule> sourceModules) {
 		List<String> requirePaths = new ArrayList<>();
 		
 		for (SourceModule sourceModule : sourceModules) {
-			requirePaths.add("'" + sourceModule.getPrimaryRequirePath() + "'");
+			requirePaths.add(sourceModule.getPrimaryRequirePath());
 		}
 		
 		return requirePaths;
