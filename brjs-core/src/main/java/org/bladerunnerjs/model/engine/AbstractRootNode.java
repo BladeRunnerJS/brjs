@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -198,7 +199,14 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			dir = dir.getParentFile();
 		}
 		
-		return dir;
+		try
+		{
+			return (dir == null) ? dir : dir.getCanonicalFile();
+		}
+		catch (IOException e)
+		{
+			return dir.getAbsoluteFile();
+		}
 	}
 	
 	private Node locateFirstCachedNode(File file) {
