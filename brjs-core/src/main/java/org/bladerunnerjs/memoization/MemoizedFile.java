@@ -21,10 +21,7 @@ import org.bladerunnerjs.utility.FileUtility;
 public class MemoizedFile extends File
 {
 	private static final long serialVersionUID = 7406703034536312889L;
-	private MemoizedValue<Boolean> exists;
-	private MemoizedValue<Boolean> isDirectory;
-	private MemoizedValue<Boolean> isFile;
-	private MemoizedValue<List<MemoizedFile>> filesAndDirs;
+	private MemoizedValue<ComputedValue> computedValue;
 	private RootNode rootNode;
 	private MemoizedFile canonicalFile;
 	private File superFile;
@@ -38,61 +35,39 @@ public class MemoizedFile extends File
 			// ^^ use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
 		
 		String className = this.getClass().getSimpleName();
-		exists = new MemoizedValue<>(className+".exists", rootNode, this);
-		isDirectory = new MemoizedValue<>(className+".isDirectory", rootNode, this);
-		isFile = new MemoizedValue<>(className+".isFile", rootNode, this);
-		filesAndDirs = new MemoizedValue<>(className+".filesAndDirs", rootNode, this);
+		computedValue = new MemoizedValue<>(className+"."+superFile.getAbsolutePath(), rootNode, this);
 	}	
 	
 	// ---- Methods Using Memoized Values ----
 	
-//	@Override
-//	public String getName()
-//	{
-//		if (name == null) {
-//			name = superFile.getName();
-//		}
-//		return name;
-//	}
-//	
+	@Override
+	public String getName()
+	{
+		if (name == null) {
+			name = superFile.getName();
+		}
+		return name;
+	}
+	
 //	@Override
 //	public boolean exists() {
-//		return exists.value(() -> {
-//			return superFile.exists();
-//		});
+//		return getComputedValue().exists;
 //	}
 //	
 //	@Override
 //	public boolean isDirectory() {
-//		return isDirectory.value(() -> {
-//			return superFile.isDirectory();
-//		});
+//		return getComputedValue().isDirectory;
 //	}
 //	
 //	@Override
 //	public boolean isFile() {
-//		return isFile.value(() -> {
-//			return superFile.isFile();
-//		});
+//		return getComputedValue().isFile;
 //	}
 	
 	public List<MemoizedFile> filesAndDirs() {
-		List<MemoizedFile> returnedFilesAndDirsCopy = new ArrayList<>();
-		List<MemoizedFile> foundFilesAndDirs = filesAndDirs.value(() -> {
-			List<MemoizedFile> returnedFilesAndDirs = new ArrayList<>();
-			
-			if (!exists()) {
-				return Collections.emptyList();
-			}
-			
-			for (File file : superFile.listFiles()) {
-				returnedFilesAndDirs.add( rootNode.getMemoizedFile(file) );
-			}
-			Collections.sort(returnedFilesAndDirs);
-			return returnedFilesAndDirs;
-		});
-		returnedFilesAndDirsCopy.addAll(foundFilesAndDirs);
-		return returnedFilesAndDirsCopy; // return a copy so multiple callers dont have the same object by reference
+		List<MemoizedFile> filesAndDirs = new ArrayList<>();
+		filesAndDirs.addAll( getComputedValue().filesAndDirs );
+		return filesAndDirs; // return a copy so multiple callers dont have the same object by reference
 	}
 	
 	// ---- End Methods Using Memoized Values ----
@@ -100,16 +75,15 @@ public class MemoizedFile extends File
 	@Override
 	public MemoizedFile getCanonicalFile()
 	{
-//		if (canonicalFile == null) {
-//			try {
-//				canonicalFile = rootNode.getMemoizedFile(superFile.getCanonicalFile());
-//			} catch (IOException e) {
-//				rootNode.logger(this.getClass()).warn("Unable to calculate canonical path for path '%s'.", getPath());
-//				canonicalFile = rootNode.getMemoizedFile(super.getAbsoluteFile());
-//			}
-//		}
-//		return canonicalFile;
-		return rootNode.getMemoizedFile( FileUtility.getCanonicalFileWhenPossible(superFile) );
+		if (canonicalFile == null) {
+			try {
+				canonicalFile = rootNode.getMemoizedFile(superFile.getCanonicalFile());
+			} catch (IOException e) {
+				rootNode.logger(this.getClass()).warn("Unable to calculate canonical path for path '%s'.", getPath());
+				canonicalFile = rootNode.getMemoizedFile(super.getAbsoluteFile());
+			}
+		}
+		return canonicalFile;
 	}
 	
 	@Override
@@ -121,11 +95,10 @@ public class MemoizedFile extends File
 	@Override
 	public MemoizedFile getParentFile()
 	{
-//		if (parentFile == null) {
-//			parentFile = rootNode.getMemoizedFile( superFile.getParentFile() );
-//		}
-//		return parentFile;
-		return rootNode.getMemoizedFile( superFile.getParentFile() );
+		if (parentFile == null) {
+			parentFile = rootNode.getMemoizedFile( superFile.getParentFile() );
+		}
+		return parentFile;
 	}
 //	
 //	@Override
@@ -218,5 +191,28 @@ public class MemoizedFile extends File
 			populateNestedFilesAndDirs(memoizedFile, nestedFilesAndDirs);
 		}
 	}
+	
+	private ComputedValue getComputedValue() {		
+		return computedValue.value(() -> {
+			ComputedValue value = new ComputedValue();
+			value.exists = superFile.exists();
+			value.isFile = superFile.isFile();
+			value.isDirectory = superFile.isDirectory();			
+			if (value.isDirectory) {
+				for (File file : superFile.listFiles()) {
+					value.filesAndDirs.add( rootNode.getMemoizedFile(file) );
+				}				
+			}
+			return value;
+		});
+	}
+	
+	private class ComputedValue {
+		List<MemoizedFile> filesAndDirs = new ArrayList<>();
+		boolean exists;
+		boolean isFile;
+		boolean isDirectory;
+	}
+	
 	
 }
