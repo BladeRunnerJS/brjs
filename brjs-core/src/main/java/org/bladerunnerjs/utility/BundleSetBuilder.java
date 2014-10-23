@@ -35,7 +35,7 @@ public class BundleSetBuilder {
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Map<SourceModule, Set<SourceModule>> orderDependentSourceModuleDependencies = new LinkedHashMap<>();
+	private final Map<SourceModule, Set<SourceModule>> aliasDependencies = new LinkedHashMap<>();
 	private final Map<String,AliasDefinition> activeAliases = new LinkedHashMap<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
@@ -76,7 +76,7 @@ public class BundleSetBuilder {
 			throw new ModelOperationException(e);
 		}
 		
-		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules, orderDependentSourceModuleDependencies).getOrderedSourceModules();
+		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules, aliasDependencies);
 		
 		return new StandardBundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
 	}
@@ -163,7 +163,7 @@ public class BundleSetBuilder {
 					
 					if(alias.getInterfaceName() != null) {
 						LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
-						addOrderDependentSourceModuleDependency(sourceModule, (SourceModule)linkedAsset);
+						addAliasDependency(sourceModule, (SourceModule) linkedAsset);
 					}
 					
 					aliases.add(alias);
@@ -177,14 +177,14 @@ public class BundleSetBuilder {
 		return aliases;
 	}
 	
-	private void addOrderDependentSourceModuleDependency(SourceModule sourceModule, SourceModule dependency) throws ModelOperationException {
+	private void addAliasDependency(SourceModule sourceModule, SourceModule dependency) throws ModelOperationException {
 		if(sourceModule != dependency) {
-			if(!orderDependentSourceModuleDependencies.containsKey(sourceModule)) {
-				orderDependentSourceModuleDependencies.put(sourceModule, new LinkedHashSet<SourceModule>());
+			if(!aliasDependencies.containsKey(sourceModule)) {
+				aliasDependencies.put(sourceModule, new LinkedHashSet<SourceModule>());
 			}
 			
 			addSourceModule(dependency);
-			orderDependentSourceModuleDependencies.get(sourceModule).add(dependency);
+			aliasDependencies.get(sourceModule).add(dependency);
 		}
 	}
 	

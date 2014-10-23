@@ -14,33 +14,15 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
-public class SourceModuleDependencyOrderCalculator
-{
-	
-	private BundlableNode bundlableNode;
-	private Set<SourceModule> unorderedSourceModules;
-	private List<SourceModule> bootstrappingSourceModules;
-	private List<SourceModule> orderedSourceModules;
-	private Set<SourceModule> metDependencies;
-	private final Map<SourceModule, Set<SourceModule>> orderDependentSourceModuleDependencies;
-	
-	public SourceModuleDependencyOrderCalculator(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules, Map<SourceModule, Set<SourceModule>> orderDependentSourceModuleDependencies)
-	{
-		this.bundlableNode = bundlableNode;
-		this.bootstrappingSourceModules = bootstrappingSourceModules;
-		this.unorderedSourceModules = unorderedSourceModules;
-		this.orderDependentSourceModuleDependencies = orderDependentSourceModuleDependencies;
-		orderedSourceModules = new ArrayList<SourceModule>();
-		metDependencies = new HashSet<SourceModule>();
-	}
-	
-	public List<SourceModule> getOrderedSourceModules() throws ModelOperationException {
-		orderedSourceModules = new ArrayList<>();
-		metDependencies = new HashSet<>();		
+public class SourceModuleDependencyOrderCalculator {
+	// TODO: having alias dependencies passed in rather than having each source-module knowing it's dependencies is a hack we can remove once we fix <https://github.com/BladeRunnerJS/brjs/issues/482>
+	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules, Map<SourceModule, Set<SourceModule>> aliasDependencies) throws ModelOperationException {
+		Set<SourceModule> orderedSourceModules = new LinkedHashSet<>();
+		Set<SourceModule> metDependencies = new HashSet<>();		
 		
-		for (SourceModule bootstrapModule : bootstrappingSourceModules)
-		{
-			addMetDependencyToOrderedSourceModules(bootstrapModule);			
+		for (SourceModule bootstrapModule : bootstrappingSourceModules) {
+			orderedSourceModules.add(bootstrapModule);
+			metDependencies.add(bootstrapModule);
 		}
 		
 		while (!unorderedSourceModules.isEmpty()) {
@@ -48,9 +30,10 @@ public class SourceModuleDependencyOrderCalculator
 			boolean progressMade = false;
 			
 			for(SourceModule sourceModule : unorderedSourceModules) {
-				if (dependenciesHaveBeenMet(sourceModule)) {
+				if (dependenciesHaveBeenMet(getOrderDependentSourceModules(bundlableNode, sourceModule, aliasDependencies), metDependencies)) {
 					progressMade = true;
-					addMetDependencyToOrderedSourceModules(sourceModule);
+					orderedSourceModules.add(sourceModule);
+					metDependencies.add(sourceModule);
 				}
 				else {
 					unprocessedSourceModules.add(sourceModule);
@@ -65,20 +48,11 @@ public class SourceModuleDependencyOrderCalculator
 			unorderedSourceModules = unprocessedSourceModules;
 		}
 		
-		return orderedSourceModules;
-	}
-
-	private void addMetDependencyToOrderedSourceModules(SourceModule sourceModule)
-	{
-		if (!orderedSourceModules.contains(sourceModule))
-		{
-			orderedSourceModules.add(sourceModule);
-		}
-		metDependencies.add(sourceModule);
+		return new ArrayList<>(orderedSourceModules);
 	}
 	
-	private boolean dependenciesHaveBeenMet(SourceModule sourceModule) throws ModelOperationException {
-		for (LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule, bundlableNode)) {
+	private static boolean dependenciesHaveBeenMet(List<SourceModule> dependencies, Set<SourceModule> metDependencies) throws ModelOperationException {
+		for (LinkedAsset dependentSourceModule : dependencies) {
 			if(!metDependencies.contains(dependentSourceModule)) {
 				return false;
 			}
@@ -86,26 +60,23 @@ public class SourceModuleDependencyOrderCalculator
 		return true;
 	}
 	
-	
-	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException
-	{
+	private static List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode, SourceModule sourceModule, Map<SourceModule, Set<SourceModule>> aliasDependencies) throws ModelOperationException {
 		List<Asset> orderDependentSourceModules = new ArrayList<>(sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode));
 		
-		if(orderDependentSourceModuleDependencies.containsKey(sourceModule)) {
-			orderDependentSourceModules.addAll(orderDependentSourceModuleDependencies.get(sourceModule));
+		if(aliasDependencies.containsKey(sourceModule)) {
+			orderDependentSourceModules.addAll(aliasDependencies.get(sourceModule));
 		}
 		
 		return extractSourceModules(orderDependentSourceModules);
 	}
 	
 	private static List<SourceModule> extractSourceModules(List<Asset> assets){
-		List<SourceModule> results = new ArrayList<SourceModule>();
+		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
 		for(Asset asset : assets){
 			if(asset instanceof SourceModule){
-				results.add((SourceModule)asset);
+				sourceModules.add((SourceModule)asset);
 			}
 		}
-		return results;
+		return sourceModules;
 	}
-	
 }
