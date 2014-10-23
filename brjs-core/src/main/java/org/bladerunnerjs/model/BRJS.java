@@ -86,7 +86,7 @@ public class BRJS extends AbstractBRJSRootNode
 		super(brjsDir, loggerFactory);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		this.appVersionGenerator = appVersionGenerator;
-		this.fileModificationRegistry = new FileModificationRegistry( (unmemoizedDir.getParentFile() != null) ? unmemoizedDir.getParentFile() : unmemoizedDir );
+		this.fileModificationRegistry = new FileModificationRegistry( (dir.getParentFile() != null) ? dir.getParentFile() : dir );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		
 		try

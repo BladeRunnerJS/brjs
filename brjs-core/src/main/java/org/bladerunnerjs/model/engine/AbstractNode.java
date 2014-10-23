@@ -46,15 +46,15 @@ public abstract class AbstractNode implements Node
 	
 	protected RootNode rootNode;
 	private Node parent;
-	protected File unmemoizedDir;
-	private MemoizedFile dir;
+	protected File dir;
+	private MemoizedFile memoizedDir;
 	private MemoizedFile[] scopeFiles;
 	
 	public AbstractNode(RootNode rootNode, Node parent, File dir) {
 		this.rootNode = rootNode;
 		this.parent = parent;
 		if (dir == null) throw new RuntimeException("dir must not be null");		
-		this.unmemoizedDir = dir;
+		this.dir = dir;
 	}
 	
 	public AbstractNode() {
@@ -62,7 +62,7 @@ public abstract class AbstractNode implements Node
 	}
 	
 	protected void setNodeDir(File file) {
-		this.unmemoizedDir = file;
+		this.dir = file;
 	}
 	
 	@Override
@@ -80,10 +80,10 @@ public abstract class AbstractNode implements Node
 	@Override
 	public MemoizedFile dir()
 	{
-		if (dir == null) {
-			dir = rootNode.getMemoizedFile(unmemoizedDir);
+		if (memoizedDir == null) {
+			memoizedDir = rootNode.getMemoizedFile(dir);
 		}
-		return dir;
+		return memoizedDir;
 	}
 	
 	@Override
