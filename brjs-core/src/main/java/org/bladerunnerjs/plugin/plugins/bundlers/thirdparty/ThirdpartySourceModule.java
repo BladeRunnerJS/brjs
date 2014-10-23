@@ -125,7 +125,8 @@ public class ThirdpartySourceModule implements SourceModule
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		List<Asset> dependendAssets = new ArrayList<>();
-		dependendAssets.addAll( getDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
 		return dependendAssets;
 	}
@@ -164,7 +165,7 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
+	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
 		
@@ -186,6 +187,11 @@ public class ThirdpartySourceModule implements SourceModule
 		}
 		
 		return new ArrayList<Asset>( dependentLibs );
+	}
+	
+	@Override
+	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return Collections.emptyList();
 	}
 	
 	@Override

@@ -229,7 +229,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String requireString = "var " + classRef + " = require('" + dependencyClass + "');\n";
 		
 		if(atUseTime) {
-			writeToFile(sourceFile, "\nmodule.exports = {};\n" + requireString + getClassBody(sourceClass));
+			writeToFile(sourceFile, "\nfunction f() {\n" + requireString + getClassBody(sourceClass) + "\n};");
 		}
 		else {
 			writeToFile(sourceFile, requireString + getClassBody(sourceClass));

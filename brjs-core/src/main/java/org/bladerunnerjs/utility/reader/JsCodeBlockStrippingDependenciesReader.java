@@ -80,11 +80,13 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 				}
 			}
 			
+			boolean writtenChar = false;
 			nextChar = sourceBuffer[nextCharPos++];
 			tailBuffer.push(nextChar);
 			
 			if (satisfiesMatcherPredicateAndModuleExportsPredicate()) {
 				destBuffer[currentOffset++] = nextChar;
+				writtenChar = true;
 			}
 			
 			if (nextChar == '{') {
@@ -96,7 +98,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 				if (depthCount > 0) {
 					--depthCount;
 					
-					if (satisfiesMatcherPredicateAndModuleExportsPredicate()) {
+					if (satisfiesMatcherPredicateAndModuleExportsPredicate() && !writtenChar) {
 						destBuffer[currentOffset++] = nextChar;
 					}
 				}

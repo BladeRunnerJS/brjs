@@ -19,18 +19,22 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 		this.sourceModule = sourceModule;
 	}
 	
+	@Override
 	public Reader getReader() throws IOException {
 		return new StringReader("");
 	}
 	
+	@Override
 	public AssetLocation assetLocation() {
 		return sourceModule.assetLocation();
 	}
 	
+	@Override
 	public boolean isEncapsulatedModule() {
 		return sourceModule.isEncapsulatedModule();
 	}
 	
+	@Override
 	public boolean isGlobalisedModule() {
 		return sourceModule.isEncapsulatedModule();
 	}
@@ -39,38 +43,52 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 		return sourceModule.dir();
 	}
 	
+	@Override
 	public String getAssetName() {
 		return sourceModule.getAssetName();
 	}
 	
-	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
-		return sourceModule.getDefineTimeDependentAssets(bundlableNode);
+	@Override
+	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode);
 	}
 	
+	@Override
+	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return sourceModule.getPostExportDefineTimeDependentAssets(bundlableNode);
+	}
+	
+	@Override
 	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return sourceModule.getUseTimeDependentAssets(bundlableNode);
 	}
 	
+	@Override
 	public String getAssetPath() {
 		return sourceModule.getAssetPath();
 	}
 	
+	@Override
 	public List<String> getRequirePaths() {
 		return sourceModule.getRequirePaths();
 	}
 	
+	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return sourceModule.getDependentAssets(bundlableNode);
 	}
 	
+	@Override
 	public String getPrimaryRequirePath() {
 		return sourceModule.getPrimaryRequirePath();
 	}
 	
+	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
 		return sourceModule.getAliasNames();
 	}
 	
+	@Override
 	public List<AssetLocation> assetLocations() {
 		return sourceModule.assetLocations();
 	}

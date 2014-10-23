@@ -14,18 +14,24 @@ public interface SourceModule extends LinkedAsset {
 	boolean isGlobalisedModule();
 	
 	/**
-	 * Returns a list of source files that are 'define time' dependencies of this source module.
-	 * These dependencies *must* precede this source file in the output so they are available when the module is defined.
-	 *  
-	 * @param bundlableNode TODO
+	 * Returns the list of all dependencies required by the source-module before it's able to define itself.
+	 * 
+	 * @param bundlableNode The bundlable node for which a bundle-set is being generated.
 	 */
-	List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
+	List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
 	
 	/**
-	 * Returns a list of source files that are 'use time' dependencies of this source module.
-	 * These dependencies can appear at any point in the output.
+	 * Returns the list of dependencies that happen to be required at define-time, but which are not needed for the
+	 * source-module to actually define itself.
 	 * 
-	 * @param bundlableNode TODO
+	 * @param bundlableNode The bundlable node for which a bundle-set is being generated.
+	 */
+	List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
+	
+	/**
+	 * Returns the list of dependencies that are known not to be needed by the source-module until use-time.
+	 * 
+	 * @param bundlableNode The bundlable node for which a bundle-set is being generated.
 	 */
 	List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
 	

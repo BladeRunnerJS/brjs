@@ -72,7 +72,7 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 			if(isRequirePrefix) {
 				logger.println(DependencyGraphReportBuilder.createReportForRequirePrefix(aspect, requirePathOrAlias, showAllDependencies));
 			}
-			if(isAlias) {
+			else if(isAlias) {
 				logger.println(DependencyGraphReportBuilder.createReportForAlias(aspect, requirePathOrAlias, showAllDependencies));
 			}
 			else {
