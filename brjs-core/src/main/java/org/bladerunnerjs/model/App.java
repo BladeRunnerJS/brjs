@@ -315,6 +315,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		try {
 			notifyObservers(new AppDeployedEvent(), this);
+			incrementFileVersion();
 			logger.info(Messages.APP_DEPLOYED_LOG_MSG, getName(), dir().getPath());
 		}
 		catch (IllegalStateException e) {

@@ -17,13 +17,26 @@ public class FileModificationRegistry
 	}
 	
 	public synchronized long getFileVersion(File file) {
-		return getOrCreateVersionValue(file).getValue();
+		FileVersion version = getOrCreateVersionValue(file);
+		return version.getValue();
 	}
 
 	public synchronized void incrementFileVersion(File file) {
 		while (file != null && !file.equals(rootFile)) {
 			getOrCreateVersionValue(file).incrememntValue();
 			file = file.getParentFile();
+		}
+	}
+	
+	public synchronized void incrementChildFileVersions(File file) {
+		if (file instanceof MemoizedFile) {
+			file = new File(file.getAbsolutePath()); // create a standard file so listFiles() isnt cached
+		}
+		getOrCreateVersionValue(file).incrememntValue();
+		if (file.isDirectory()) {
+			for (File child : file.listFiles()) {
+				incrementChildFileVersions(child);
+			}
 		}
 	}
 	

@@ -243,4 +243,10 @@ public final class AppSdkJsLib implements JsLib {
 	{
 		sdkJsLib.incrementFileVersion();
 	}
+	
+	@Override
+	public void incrementChildFileVersions()
+	{
+		sdkJsLib.incrementChildFileVersions();
+	}
 }

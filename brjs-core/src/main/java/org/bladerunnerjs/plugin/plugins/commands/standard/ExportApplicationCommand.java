@@ -107,6 +107,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 				includeBannerInDirectoryClasses(new File(temporaryExportDir, "libs"), jsBanner, bannerExtensions);
 			}
 			FileUtility.zipFolder(temporaryExportDir, destinationZipLocation, false);
+			brjs.getFileModificationRegistry().incrementFileVersion(destinationZipLocation);
 		}
 		catch (Exception e)
 		{

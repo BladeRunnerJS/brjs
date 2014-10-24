@@ -33,4 +33,5 @@ public interface Node {
 	ObserverList getObservers();
 	void discoverAllChildren();
 	void incrementFileVersion();
+	void incrementChildFileVersions();
 }

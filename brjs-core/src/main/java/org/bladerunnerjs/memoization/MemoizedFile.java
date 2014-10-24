@@ -100,43 +100,43 @@ public class MemoizedFile extends File
 		}
 		return parentFile;
 	}
-//	
-//	@Override
-//	public MemoizedFile[] listFiles(FileFilter filter) {
-//		List<MemoizedFile> listedFiles = new ArrayList<>();
-//		for (MemoizedFile file : filesAndDirs()) {
-//			if (file.isDirectory() && filter.accept(file)) {
-//				listedFiles.add(file);
-//			}
-//		}
-//		return listedFiles.toArray(new MemoizedFile[0]);
-//	}
-//	
-//	@Override
-//	public MemoizedFile[] listFiles(FilenameFilter filter) {
-//		return listFiles( (FileFilter) FileFilterUtils.asFileFilter(filter) );
-//	}
-//	
-//	@Override
-//	public MemoizedFile[] listFiles() {
-//		return listFiles( (FileFilter) TrueFileFilter.INSTANCE);
-//	}
-//	
-//	@Override
-//	public String[] list(FilenameFilter filter) {
-//		List<String> listedNames = new ArrayList<>();
-//		for (MemoizedFile file : filesAndDirs()) {
-//			if (file.isDirectory() && filter.accept(file.getParentFile(), file.getName())) {
-//				listedNames.add(file.getName());
-//			}
-//		}
-//		return listedNames.toArray(new String[0]);
-//	}
-//	
-//	@Override
-//	public String[] list() {
-//		return list( TrueFileFilter.INSTANCE );
-//	}	
+	
+	@Override
+	public MemoizedFile[] listFiles(FileFilter filter) {
+		List<MemoizedFile> listedFiles = new ArrayList<>();
+		for (MemoizedFile file : filesAndDirs()) {
+			if (filter.accept(file)) {
+				listedFiles.add(file);
+			}
+		}
+		return listedFiles.toArray(new MemoizedFile[0]);
+	}
+	
+	@Override
+	public MemoizedFile[] listFiles(FilenameFilter filter) {
+		return listFiles( (FileFilter) FileFilterUtils.asFileFilter(filter) );
+	}
+	
+	@Override
+	public MemoizedFile[] listFiles() {
+		return listFiles( (FileFilter) TrueFileFilter.INSTANCE);
+	}
+	
+	@Override
+	public String[] list(FilenameFilter filter) {
+		List<String> listedNames = new ArrayList<>();
+		for (MemoizedFile file : filesAndDirs()) {
+			if (filter.accept(file.getParentFile(), file.getName())) {
+				listedNames.add(file.getName());
+			}
+		}
+		return listedNames.toArray(new String[0]);
+	}
+	
+	@Override
+	public String[] list() {
+		return list( TrueFileFilter.INSTANCE );
+	}
 	
 	public List<MemoizedFile> filesAndDirs(IOFileFilter fileFilter) {
 		List<MemoizedFile> returnedFilesAndDirsCopy = new ArrayList<>();
@@ -165,7 +165,7 @@ public class MemoizedFile extends File
 	public List<MemoizedFile> nestedFiles() {
 		List<MemoizedFile> nestedFiles = new ArrayList<>();
 		for(MemoizedFile file : nestedFilesAndDirs()) {
-			if(!file.isDirectory()) {
+			if(file.isFile()) {
 				nestedFiles.add(file);
 			}
 		}

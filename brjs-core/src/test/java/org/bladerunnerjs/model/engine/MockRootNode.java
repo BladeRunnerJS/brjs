@@ -263,6 +263,11 @@ public class MockRootNode implements RootNode
 	}
 	
 	@Override
+	public void incrementChildFileVersions()
+	{		
+	}
+	
+	@Override
 	public MemoizedFile getMemoizedFile(File file)
 	{
 		return memoizedFileAccessor.getMemoizedFile(file);

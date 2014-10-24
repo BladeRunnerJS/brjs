@@ -117,6 +117,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 			if (warExport) {
 				if(warExportFile.exists()) throw new DirectoryAlreadyExistsCommandException(warExportFile.getPath(), this);
 				app.buildWar(warExportFile);
+				brjs.getFileModificationRegistry().incrementFileVersion(warExportFile);
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getCanonicalPath());
 			} else {
 				if (hasExplicitExportDirArg) {
@@ -125,6 +126,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 					appExportDir.mkdir();			
 				}
 				app.build(appExportDir);
+				brjs.getFileModificationRegistry().incrementFileVersion(appExportDir);
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());
 			}
 		}

@@ -351,4 +351,10 @@ public abstract class AbstractNode implements Node
 	{
     	rootNode.getFileModificationRegistry().incrementFileVersion( dir() );
 	}
+	
+	@Override
+	public void incrementChildFileVersions()
+	{
+		rootNode.getFileModificationRegistry().incrementChildFileVersions( dir() );
+	}
 }

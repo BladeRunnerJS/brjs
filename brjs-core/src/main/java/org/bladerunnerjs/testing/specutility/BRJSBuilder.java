@@ -303,6 +303,8 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer commandHasBeenRun(String... args) throws Exception {
 		brjs.runCommand(args);
 		
+		brjs.incrementFileVersion();
+		
 		return builderChainer;
 	}
 	
