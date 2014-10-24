@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 
@@ -30,10 +31,10 @@ public class AppDeploymentFileWatcher extends Thread
 	private BRJSApplicationServer appServer;
 	private BRJS brjs;
 
-	private List<File> watchDirs;
+	private List<MemoizedFile> watchDirs;
 	private volatile boolean running = true;
 	
-	public AppDeploymentFileWatcher(BRJS brjs, BRJSApplicationServer appServer, File... rootWatchDirs)
+	public AppDeploymentFileWatcher(BRJS brjs, BRJSApplicationServer appServer, MemoizedFile... rootWatchDirs)
 	{
 		logger = brjs.logger(this.getClass());
 		
@@ -51,7 +52,7 @@ public class AppDeploymentFileWatcher extends Thread
 		{
 			try
 			{
-				for (File watchDir : watchDirs)
+				for (MemoizedFile watchDir : watchDirs)
 				{
 					checkForNewApps(watchDir);
 				}
@@ -69,12 +70,12 @@ public class AppDeploymentFileWatcher extends Thread
 		join();
 	}
 
-	private void checkForNewApps(File watchDir)
+	private void checkForNewApps(MemoizedFile watchDir)
 	{
 		if (!watchDir.isDirectory()) {
 			return;
 		}
-		for (File dir : watchDir.listFiles())
+		for (MemoizedFile dir : watchDir.listFiles())
 		{
 			if (isAppDirWithDeployFile(watchDir, dir)) 
 			{
@@ -84,13 +85,13 @@ public class AppDeploymentFileWatcher extends Thread
 	}
 
 
-	private boolean isAppDirWithDeployFile(File rootWatchDir, File dir)
+	private boolean isAppDirWithDeployFile(MemoizedFile rootWatchDir, MemoizedFile dir)
 	{
 		App app = brjs.locateAncestorNodeOfClass(dir, App.class);
 		return app != null && ApplicationServerUtils.getDeployFileForApp(app).isFile();
 	}
 
-	private void deployApp(File rootWatchDir, File appDir)
+	private void deployApp(MemoizedFile rootWatchDir, MemoizedFile appDir)
 	{
 		brjs.getFileModificationRegistry().incrementFileVersion(rootWatchDir);
 		App app = brjs.locateAncestorNodeOfClass(appDir, App.class);

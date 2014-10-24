@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -23,11 +24,11 @@ import com.caplin.cutlass.util.FileUtility;
 public class TestCompiler
 {
 
-	public List<File> compileTestDirs(BRJS brjs, List<File> testContainerDirs) throws CommandOperationException 
+	public List<File> compileTestDirs(BRJS brjs, List<MemoizedFile> testContainerDirs) throws CommandOperationException 
 	{
 		List<File> classRoots = new ArrayList<File>();
 		
-		for (File testContainerDir : testContainerDirs) 
+		for (MemoizedFile testContainerDir : testContainerDirs) 
 		{
 			File commonSrcDir = brjs.locateAncestorNodeOfClass(testContainerDir, App.class).file("test-integration-src");
 			commonSrcDir = (commonSrcDir.exists()) ? commonSrcDir : null;
@@ -146,7 +147,7 @@ public class TestCompiler
 		return loadedClasses;
 	}
 
-	public File getCompiledClassDir(BRJS brjs, File testDir) throws IOException 
+	public File getCompiledClassDir(BRJS brjs, MemoizedFile testDir) throws IOException 
 	{
 		App app = brjs.locateAncestorNodeOfClass(testDir, App.class);
 		String relativePath = RelativePathUtility.get(brjs, app.dir(), testDir);

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.Servlet;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.utility.ServerUtility;
@@ -77,8 +78,8 @@ public class BRJSApplicationServer implements ApplicationServer
 		ApplicationServerUtils.addRootContext(brjs, contexts);
 		contextMap = ApplicationServerUtils.addAppContexts(brjs, contexts);
 		
-		File appsDir = new File(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
-		File sysAppsDir = brjs.systemApp("no-such-app").dir().getParentFile();
+		MemoizedFile appsDir = brjs.getMemoizedFile(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
+		MemoizedFile sysAppsDir = brjs.systemApp("no-such-app").dir().getParentFile();
 		fileWatcher = new AppDeploymentFileWatcher(brjs, this, appsDir, sysAppsDir);
 		
 		fileWatcher.start();

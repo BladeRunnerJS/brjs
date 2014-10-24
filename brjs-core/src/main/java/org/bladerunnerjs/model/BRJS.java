@@ -173,7 +173,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public BundlableNode locateFirstBundlableAncestorNode(File file) throws InvalidBundlableNodeException
 	{
-		Node node = locateFirstAncestorNode(file, BundlableNode.class);
+		Node node = locateFirstAncestorNode( getMemoizedFile(file), BundlableNode.class);
 		BundlableNode bundlableNode = null;
 		
 		while((node != null) && (bundlableNode == null))

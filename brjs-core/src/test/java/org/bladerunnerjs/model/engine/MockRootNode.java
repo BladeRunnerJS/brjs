@@ -145,13 +145,19 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public Node locateFirstAncestorNode(File file)
+	public Node locateFirstAncestorNode(MemoizedFile file)
 	{
 		return null;
 	}
 	
 	@Override
 	public <N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass)
+	{
+		return null;
+	}
+	
+	@Override
+	public <N extends Node> N locateAncestorNodeOfClass(MemoizedFile file, Class<N> nodeClass)
 	{
 		return null;
 	}
@@ -167,13 +173,13 @@ public class MockRootNode implements RootNode
 	}
 	
 	@Override
-	public Node getRegisteredNode(File childPath)
+	public Node getRegisteredNode(MemoizedFile childPath)
 	{
 		return null;
 	}
 	
 	@Override
-	public List<Node> getRegisteredNodes(File childPath)
+	public List<Node> getRegisteredNodes(MemoizedFile childPath)
 	{
 		return null;
 	}
@@ -228,13 +234,13 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public Node getRegisteredNode(File childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException
+	public Node getRegisteredNode(MemoizedFile childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException
 	{
 		return null;
 	}
 
 	@Override
-	public Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass)
+	public Node locateFirstAncestorNode(MemoizedFile file, Class<? extends Node> nodeClass)
 	{
 		return null;
 	}

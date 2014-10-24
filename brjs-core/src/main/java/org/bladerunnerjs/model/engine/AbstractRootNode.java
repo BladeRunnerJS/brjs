@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
@@ -90,7 +91,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
-	public List<Node> getRegisteredNodes(File childPath)
+	public List<Node> getRegisteredNodes(MemoizedFile childPath)
 	{
 		String normalizedPath = getMemoizedFile(childPath).getCanonicalPath();
 		if (!nodeCache.containsKey(normalizedPath)) {
@@ -100,13 +101,13 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
-	public Node getRegisteredNode(File childPath) throws MultipleNodesForPathException
+	public Node getRegisteredNode(MemoizedFile childPath) throws MultipleNodesForPathException
 	{
 		return getRegisteredNode(childPath, null);
 	}
 	
 	@Override
-	public Node getRegisteredNode(File childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException
+	public Node getRegisteredNode(MemoizedFile childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException
 	{
 		List<Node> nodes = getRegisteredNodes(childPath);
 		if (nodes.size() == 0) {
@@ -122,13 +123,13 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
-	public Node locateFirstAncestorNode(File file)
+	public Node locateFirstAncestorNode(MemoizedFile file)
 	{
 		return locateFirstAncestorNode(file, null);
 	}
 	
 	@Override
-	public Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass)
+	public Node locateFirstAncestorNode(MemoizedFile file, Class<? extends Node> nodeClass)
 	{
 		Node node = locateFirstCachedNode(file, nodeClass);
 		
@@ -140,10 +141,16 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		return node;
 	}
+		
+	@Override
+	public <N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass)
+	{
+		return locateAncestorNodeOfClass(getMemoizedFile(file), nodeClass);
+	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass)
+	public <N extends Node> N locateAncestorNodeOfClass(MemoizedFile file, Class<N> nodeClass)
 	{
 		Node firstCachedNode = locateFirstCachedNode(file, nodeClass);
 		Node node = null;
@@ -209,13 +216,13 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		}
 	}
 	
-	private Node locateFirstCachedNode(File file) {
+	private Node locateFirstCachedNode(MemoizedFile file) {
 		return locateFirstCachedNode(file, null);
 	}
 	
-	private Node locateFirstCachedNode(File file, Class<? extends Node> nodeClass)
+	private Node locateFirstCachedNode(MemoizedFile file, Class<? extends Node> nodeClass)
 	{
-		File nextFile = file;
+		MemoizedFile nextFile = file;
 		
 		do
 		{	

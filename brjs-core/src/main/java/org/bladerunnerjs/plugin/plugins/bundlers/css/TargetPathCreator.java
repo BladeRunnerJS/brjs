@@ -56,7 +56,7 @@ public class TargetPathCreator
 	private String getTargetPath(File imageFile) throws ContentProcessingException
 	{
 
-		Node firstAncestorNode = brjs.locateFirstAncestorNode(imageFile);
+		Node firstAncestorNode = brjs.locateFirstAncestorNode( brjs.getMemoizedFile(imageFile) );
 		AssetLocation assetLocation  = null;
 		AssetContainer assetContainer = null;
 		if (firstAncestorNode instanceof AssetLocation){

@@ -96,5 +96,4 @@ public final class TestRootNode extends AbstractRootNode
 	{
 		return getMemoizedFile( new File(dir, filePath) );
 	}
-	
 }

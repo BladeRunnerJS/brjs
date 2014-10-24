@@ -13,10 +13,11 @@ import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 public interface RootNode extends Node {
 	Logger logger(Class<?> classRef);	
-	boolean isRootDir(File dir);
-	Node locateFirstAncestorNode(File file);
-	Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass);
+	boolean isRootDir(File dir); // this cant be a memoizedFile since its used before the memoization accessor is initialised
+	Node locateFirstAncestorNode(MemoizedFile file);
+	Node locateFirstAncestorNode(MemoizedFile file, Class<? extends Node> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);
+	<N extends Node> N locateAncestorNodeOfClass(MemoizedFile file, Class<N> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
 	IO io();
 	MemoizedFile getMemoizedFile(File file);
@@ -25,8 +26,8 @@ public interface RootNode extends Node {
 	boolean isNodeRegistered(Node node);
 	void registerNode(Node node) throws NodeAlreadyRegisteredException;
 	void clearRegisteredNode(Node node);
-	Node getRegisteredNode(File childPath) throws MultipleNodesForPathException;
-	Node getRegisteredNode(File childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException;
-	List<Node> getRegisteredNodes(File childPath);
+	Node getRegisteredNode(MemoizedFile childPath) throws MultipleNodesForPathException;
+	Node getRegisteredNode(MemoizedFile childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException;
+	List<Node> getRegisteredNodes(MemoizedFile childPath);
 	FileModificationRegistry getFileModificationRegistry();
 }

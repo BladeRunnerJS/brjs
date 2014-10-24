@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.Collection;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJSNode;
 
 public class NodeModelTester
@@ -16,8 +17,9 @@ public class NodeModelTester
 		assertTrue("you must provide possible node locations", possibleNodeLocations.size() > 0);
 
 		for(File possibleNodeLocation : possibleNodeLocations)
-		{			
-			locatedNode = parentNode.root().locateAncestorNodeOfClass(possibleNodeLocation, childNodeClass);
+		{
+			MemoizedFile memoizedFile = parentNode.root().getMemoizedFile(possibleNodeLocation);
+			locatedNode = parentNode.root().locateAncestorNodeOfClass(memoizedFile, childNodeClass);
 			
 			assertNotNull("no node of class " + childNodeClass + " found for location " + possibleNodeLocation, locatedNode);
 			assertNotNull("no '" + childNodeClass.getSimpleName() + "' node located for '" + possibleNodeLocation.getAbsolutePath() + "'", locatedNode.dir());
