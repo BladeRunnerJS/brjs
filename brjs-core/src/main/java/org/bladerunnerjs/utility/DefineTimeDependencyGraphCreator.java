@@ -11,12 +11,13 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
-public class SourceModuleDependencyCreator {
-	public static Map<SourceModule, List<SourceModule>> createGraph(BundlableNode bundlableNode, Set<SourceModule> sourceModules) throws ModelOperationException {
+public class DefineTimeDependencyGraphCreator {
+	public static Map<SourceModule, List<SourceModule>> createGraph(BundlableNode bundlableNode, Set<SourceModule> sourceModules, boolean isPreExport) throws ModelOperationException {
 		Map<SourceModule, List<SourceModule>> dependencyGraph = new HashMap<>();
 		
 		for(SourceModule sourceModule : sourceModules) {
-			dependencyGraph.put(sourceModule, extractSourceModules(sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode)));
+			List<Asset> dependentAssets = (isPreExport) ? sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode) : sourceModule.getPostExportDefineTimeDependentAssets(bundlableNode);
+			dependencyGraph.put(sourceModule, extractSourceModules(dependentAssets));
 		}
 		
 		return dependencyGraph;

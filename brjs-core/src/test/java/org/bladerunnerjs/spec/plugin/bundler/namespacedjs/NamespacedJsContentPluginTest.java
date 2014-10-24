@@ -247,6 +247,17 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void theGlobalizedBlockIsOrderedUsingTransitiveNonCircularPreExportDefineTimeOrdering() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).classDependsOn("appns.ClassA", "appns.ClassB")
+			.and(aspect).classExtends("appns.ClassB", "appns.ClassC")
+			.and(aspect).classDependsOn("appns.ClassC", "appns.ClassB")
+			.and(aspect).indexPageRefersTo("appns.ClassA");
+		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments("appns.ClassC = require('appns/ClassC')", "appns.ClassB = require('appns/ClassB')", "appns.ClassA = require('appns/ClassA')");
+	}
+	
+	@Test
 	public void requiresAreNotAutomaticallyAddedForThirdpartyLibrariesWhichAreNotEncapsulated() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.namespaced.Class")
@@ -268,20 +279,6 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.commonjs.Class();");
 		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsTextOnce("appns.commonjs.Class = require('appns/commonjs/Class');");
-	}
-	
-	@Test
-	public void requiresAreAddedForNamespacedJsClassesBeforeCommonJsClasses() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-			.and(aspect).hasCommonJsPackageStyle("src/appns/commonjs")
-			.and(aspect).hasClasses("appns.namespaced.Class", "appns/commonjs/Class")
-			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
-			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.commonjs.Class");
-		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
-		then(requestResponse).containsOrderedTextFragments(
-				"appns.namespaced.Class = function() {\n};",
-				"appns.namespaced.Class = require('appns/namespaced/Class');",
-				"appns.commonjs.Class = require('appns/commonjs/Class');");
 	}
 	
 	@Test
@@ -444,47 +441,6 @@ public class NamespacedJsContentPluginTest extends SpecTest {
     		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.subPkg.Class1(); new sdkLib.subPkg.TestClass1();");
     	when(sdkJsLibTests).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
     	then(requestResponse).doesNotContainText( "sdkLib.subPkg.LibTest = require" );
-	}
-	
-	@Test
-	public void dependenciesOfStaticDependenciesAreIncludedInTheRightOrder() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
-			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).classFileHasContent("appns.Class1",
-					"appns.Class1 = function() {};\n" +
-					"appns.Class2();")
-			.and(aspect).classFileHasContent("appns.Class2",
-					"appns.Class2 = function() {\n" +
-					"	appns.Class3();\n" +
-					"};\n")
-			.and(aspect).classFileHasContent("appns.Class3",
-					"appns.Class3 = function() {};\n");
-    	when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
-    	then(requestResponse).containsOrderedTextFragments(
-    			"appns.Class2 = function()",
-    			"appns.Class3 = function()",
-    			"appns.Class1 = function()");
-	}
-	
-	@Test
-	public void staticDependenciesOfStaticDependenciesAreIncludedInTheRightOrder() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle()
-		.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
-		.and(aspect).indexPageRefersTo("appns.Class1")
-		.and(aspect).classFileHasContent("appns.Class1",
-				"appns.Class1 = function() {};\n" +
-				"appns.Class2();")
-				.and(aspect).classFileHasContent("appns.Class2",
-						"appns.Class2 = function() {};\n" +
-						"appns.Class3();\n")
-						.and(aspect).classFileHasContent("appns.Class3",
-								"appns.Class3 = function() {};\n");
-		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
-		then(requestResponse).containsOrderedTextFragments(
-				"appns.Class3 = function()",
-				"appns.Class2 = function()",
-				"appns.Class1 = function()");
 	}
 	
 	@Test

@@ -15,7 +15,8 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class SourceModuleDependencyOrderCalculator {
 	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules) throws ModelOperationException {
-		Map<SourceModule, List<SourceModule>> sourceModuleDependencies = SourceModuleDependencyCreator.createGraph(bundlableNode, unorderedSourceModules);
+		Map<SourceModule, List<SourceModule>> sourceModuleDependencies = NonCircularTransitivePreExportDependencyGraphCreator.createGraph(
+			DefineTimeDependencyGraphCreator.createGraph(bundlableNode, unorderedSourceModules, true), DefineTimeDependencyGraphCreator.createGraph(bundlableNode, unorderedSourceModules, false));
 		Set<SourceModule> orderedSourceModules = new LinkedHashSet<>();
 		Set<SourceModule> metDependencies = new HashSet<>();		
 		
