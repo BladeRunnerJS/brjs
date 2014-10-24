@@ -24,8 +24,8 @@ public interface Node {
 	void create() throws InvalidNameException, ModelUpdateException;
 	void ready();
 	void delete() throws ModelUpdateException;
-	File storageDir(String pluginName);
-	File storageFile(String pluginName, String filePath);
+	MemoizedFile storageDir(String pluginName);
+	MemoizedFile storageFile(String pluginName, String filePath);
 	NodeProperties nodeProperties(String pluginName);
 	void addObserver(EventObserver observer);
 	void addObserver(Class<? extends Event> eventType, EventObserver observer);

@@ -160,12 +160,12 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public File storageDir(String pluginName) {
+	public MemoizedFile storageDir(String pluginName) {
 		return bundlableNode.storageDir(pluginName);
 	}
 
 	@Override
-	public File storageFile(String pluginName, String filePath) {
+	public MemoizedFile storageFile(String pluginName, String filePath) {
 		return bundlableNode.storageFile(pluginName, filePath);
 	}
 

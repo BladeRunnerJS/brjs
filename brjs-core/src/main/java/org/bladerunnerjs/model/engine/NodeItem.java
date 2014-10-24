@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 public class NodeItem<N extends Node>
@@ -59,7 +60,7 @@ public class NodeItem<N extends Node>
 		return item;
 	}
 	
-	private File getNodeDir(File dir)
+	private MemoizedFile getNodeDir(File dir)
 	{
 		File nodeDir = null;
 		
@@ -88,6 +89,6 @@ public class NodeItem<N extends Node>
 			nodeDir = nodeItemLocators.get(0).getNodeDir(dir);
 		}
 		
-		return nodeDir;
+		return node.root().getMemoizedFile(nodeDir);
 	}
 }

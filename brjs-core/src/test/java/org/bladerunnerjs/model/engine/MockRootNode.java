@@ -78,13 +78,13 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public File storageDir(String pluginName)
+	public MemoizedFile storageDir(String pluginName)
 	{
 		return null;
 	}
 
 	@Override
-	public File storageFile(String pluginName, String filePath)
+	public MemoizedFile storageFile(String pluginName, String filePath)
 	{
 		return null;
 	}

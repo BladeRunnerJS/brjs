@@ -181,12 +181,12 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public File storageDir(String pluginName) {
+	public MemoizedFile storageDir(String pluginName) {
 		return sdkJsLib.storageDir(pluginName);
 	}
 	
 	@Override
-	public File storageFile(String pluginName, String filePath) {
+	public MemoizedFile storageFile(String pluginName, String filePath) {
 		return sdkJsLib.storageFile(pluginName, filePath);
 	}
 	

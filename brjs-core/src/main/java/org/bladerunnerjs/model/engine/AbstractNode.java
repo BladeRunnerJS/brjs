@@ -206,15 +206,15 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
-	public File storageDir(String pluginName)
+	public MemoizedFile storageDir(String pluginName)
 	{
-		return new File(rootNode.dir(), "generated/" + NodePathGenerator.generatePath(this) + "/" + pluginName);
+		return rootNode.getMemoizedFile(rootNode.dir(), "generated/" + NodePathGenerator.generatePath(this) + "/" + pluginName);
 	}
 	
 	@Override
-	public File storageFile(String pluginName, String filePath)
+	public MemoizedFile storageFile(String pluginName, String filePath)
 	{
-		return new File(storageDir(pluginName), filePath);
+		return rootNode.getMemoizedFile(storageDir(pluginName), filePath);
 	}
 	
 	@Override
