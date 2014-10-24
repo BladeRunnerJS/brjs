@@ -7,22 +7,31 @@ public class ContentProcessingException extends RequestHandlingException
 {
 	
 	private static final long serialVersionUID = 1L;
+	private String message;
 	
 	public ContentProcessingException(Throwable cause)
 	{
 		super(cause);
+		message = cause.getMessage();
 	}
 	
 	public ContentProcessingException(String message)
 	{
 		super(message);
+		this.message = message;
 	}
 	
 	public ContentProcessingException(Throwable cause, String message)
 	{
 		super(message, cause);
+		this.message = message + "; " + cause.getMessage();
 	}
 		
+	@Override
+	public String getMessage() {
+		return message;
+	}
+	
 	public String toString()
 	{
 		StringBuilder errorMessage = new StringBuilder();

@@ -37,7 +37,8 @@ public class AppServerTest extends SpecTest
 
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
@@ -229,5 +230,27 @@ public class AppServerTest extends SpecTest
 		FileUtils.deleteDirectory(appJars.dir());
 		when(brjs.applicationServer()).started();
 		then(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
+	}
+	
+	@Test
+	public void errorCode500IsThrownIfBadFileIsRequired() throws Exception {
+		given(app1.defaultAspect()).indexPageRequires("appns/App")
+			.and(app1.defaultAspect()).classFileHasContent("appns/App", "require('badFile')")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "Error 500");
+	}
+	
+	@Test
+	public void errorCode400IsThrownIfTheRequestIsMalformed() throws Exception {
+		given(app1.defaultAspect()).indexPageRequires("appns/App")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app1/v/dev/js/malformed-request", "Error 400");
+	}
+	
+	@Test
+	public void errorCode404IsThrownIfResourceIsNotFound() throws Exception {
+		given(app1.defaultAspect()).indexPageRequires("appns/App")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app1/v/dev/no-such-content-plugin", "Error 404");
 	}
 }
