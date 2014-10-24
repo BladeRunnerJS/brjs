@@ -1,6 +1,5 @@
 package com.caplin.cutlass.command.test.testrunner;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

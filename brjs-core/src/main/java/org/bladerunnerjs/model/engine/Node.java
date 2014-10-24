@@ -1,7 +1,5 @@
 package org.bladerunnerjs.model.engine;
 
-import java.io.File;
-
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.memoization.MemoizedFile;

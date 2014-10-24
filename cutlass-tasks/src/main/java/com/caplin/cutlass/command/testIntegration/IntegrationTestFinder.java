@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.Workbench;
 
 import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.util.FileUtility;
 
 public class IntegrationTestFinder
 {

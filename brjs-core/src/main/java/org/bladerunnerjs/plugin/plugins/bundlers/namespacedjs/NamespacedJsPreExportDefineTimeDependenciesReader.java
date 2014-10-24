@@ -9,7 +9,6 @@ import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.reader.JsModuleExportsStrippingReader;
-import org.bladerunnerjs.utility.reader.JsStringStrippingReader;
 
 // TODO: merge this class with NamespacedJsPostExportDefineTimeDependenciesReader
 public class NamespacedJsPreExportDefineTimeDependenciesReader extends Reader {

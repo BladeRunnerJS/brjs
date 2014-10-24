@@ -18,12 +18,11 @@ public class MemoizedValue<T extends Object> {
 	
 	
 	public MemoizedValue(String valueIdentifier, Node node) {
-		this(valueIdentifier, node.root(), node.memoizedScopeFiles());
+		this(valueIdentifier, node.root(), (Object[])node.memoizedScopeFiles());
 	}
 	
-	public MemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) {
+	public MemoizedValue(String valueIdentifier, RootNode rootNode, Object... watchItems) { // take an array of objects so callers can pass in a mix of MemoizedFile and File
 		this.valueIdentifier = valueIdentifier;
-		this.watchItems = watchItems;
 		this.rootNode = rootNode;
 		
 		if(watchItems.length == 0) {
@@ -32,9 +31,20 @@ public class MemoizedValue<T extends Object> {
 		
 		FileModificationRegistry fileModificationRegistry = rootNode.getFileModificationRegistry();
 		
-		for(File file : watchItems) {
-			watchList.add( new FileModifiedChecker(fileModificationRegistry, rootNode, file));
+		List<File> watchItemsList = new ArrayList<>();
+		for(Object o : watchItems) {
+			File file;
+			if (o instanceof MemoizedFile) {
+				file = ((MemoizedFile) o).getUnderlyingFile();								
+			} else if (o instanceof File) {
+				file = (File) o;								
+			} else {
+				throw new RuntimeException("MemoizedValue watch items must be an instance of MemoizedFile or File");
+			}
+			watchList.add( new FileModifiedChecker(fileModificationRegistry, rootNode, file));				
+			watchItemsList.add( file );
 		}
+		this.watchItems = watchItemsList.toArray(new File[0]);
 	}
 	
 	@SuppressWarnings("unchecked")
