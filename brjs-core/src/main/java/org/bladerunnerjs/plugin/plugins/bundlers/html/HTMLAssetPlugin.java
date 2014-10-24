@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.html;
 
-import java.io.File;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -14,12 +14,12 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
+	public boolean canHandleAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
 		return assetFile.getName().endsWith(".html");
 	}
 	
 	@Override
-	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		return new LinkedFileAsset(assetFile, assetLocation);
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.Getter;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
@@ -34,13 +35,14 @@ public class AssetLocator {
 				Assets assets = new Assets(assetLocation.root());
 				
 				for(File assetFile : assetFiles) {
+					MemoizedFile memoizedFile = assetLocation.root().getMemoizedFile(assetFile);
 					for(AssetPlugin assetPlugin : assetLocation.root().plugins().assetPlugins()) {
-						if(assetPlugin.canHandleAsset(assetFile, assetLocation)) {
+						if(assetPlugin.canHandleAsset(memoizedFile, assetLocation)) {
 							String assetFilePath = assetFile.getAbsolutePath();
 							
 							if(!cachedAssets.containsKey(assetFilePath)) {
 								try {
-									Asset createdAsset = assetPlugin.createAsset(assetFile, assetLocation);
+									Asset createdAsset = assetPlugin.createAsset(memoizedFile, assetLocation);
 									assetLocation.root().logger(this.getClass()).debug("creating new asset for the path '%s'", 
 											createdAsset.getAssetPath());
 									String assetPrimaryRequirePath = createdAsset.getPrimaryRequirePath();
