@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.exception;
 
 /**
- * Class derived from RequirePathException -> Exception -> Throwable -> Object.
+ * Class derived from RequirePathException - Exception - Throwable - Object.
  * Thrown when an invalid location has been specified for the request.
 */
 

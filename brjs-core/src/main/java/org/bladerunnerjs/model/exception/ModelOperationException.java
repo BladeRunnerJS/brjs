@@ -3,7 +3,7 @@ package org.bladerunnerjs.model.exception;
 import org.bladerunnerjs.model.UrlContentAccessor;
 
 /**
- * Class derived from Exception -> Throwable -> Object.
+ * Class derived from Exception - Throwable - Object.
  * Thrown when the precise cause of the failure could not be pinpointed, and MalformedRequestException, ResourceNotFoundException and ContentProcessingException
  * have been excluded. It is an exception that we do not have a nicely specified message for. <code>ModelOperationException</code> is used primarily
  * when handling logical requests by the application request handler 

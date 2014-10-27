@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.exception;
 
 /**
- * Class derived from RequirePathException -> Exception -> Throwable -> Object.
+ * Class derived from RequirePathException - Exception - Throwable - Object.
  * Thrown when several resources match the required path.
 */
 public class AmbiguousRequirePathException extends RequirePathException {

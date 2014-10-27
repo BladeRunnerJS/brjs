@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.exception;
 
 /**
- * Class derived from Exception -> Throwable -> Object.
+ * Class derived from Exception - Throwable - Object.
  * Used as a superclass for request-path-related exceptions. 
 */ 
 

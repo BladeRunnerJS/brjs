@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.exception;
 
 /**
- * Class derived from RuntimeException -> Exception -> Throwable -> Object.
+ * Class derived from RuntimeException - Exception - Throwable - Object.
  * Thrown when the default asset container exists in two locations, since it may only exist in one.
 */
 

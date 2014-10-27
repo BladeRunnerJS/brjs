@@ -3,7 +3,7 @@ package org.bladerunnerjs.model.exception;
 import java.io.File;
 
 /**
- * Class derived from Exception -> Throwable -> Object.
+ * Class derived from Exception - Throwable - Object.
  * Thrown when there are multiple nodes for the specified path, and recommends another method than the one throwing the exception. 
 */ 
 

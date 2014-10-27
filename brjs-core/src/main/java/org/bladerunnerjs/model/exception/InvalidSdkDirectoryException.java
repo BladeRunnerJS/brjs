@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.exception;
 
 /**
- * Class derived from Exception -> Throwable -> Object.
+ * Class derived from Exception - Throwable - Object.
  * Thrown when the specified directory is not a valid SDK.
 */
 
