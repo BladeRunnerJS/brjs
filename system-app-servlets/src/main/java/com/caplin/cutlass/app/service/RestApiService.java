@@ -26,10 +26,8 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
 
-import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
-
 
 public class RestApiService
 {
@@ -277,7 +275,7 @@ public class RestApiService
 	
 	private File getLatestReleaseNoteFile() 
 	{
-		return new File( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) , "docs/release-notes/latest.html");
+		return new File( new File(brjs.root().dir(), "sdk") , "docs/release-notes/latest.html");
 	}
 
 	

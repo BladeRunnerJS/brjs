@@ -125,4 +125,24 @@ public class FileUtility {
 		}
 	}
 	
+	public static String getOS() {
+		String osNameProperty = System.getProperty("os.name").toLowerCase();
+		String os;
+		
+		if(osNameProperty.startsWith("linux")) {
+			os = "linux";
+		}
+		else if(osNameProperty.startsWith("mac")) {
+			os = "mac";
+		}
+		else if(osNameProperty.startsWith("windows")) {
+			os = "windows";
+		}
+		else {
+			os = "unix";
+		}
+		
+		return os;
+	}
+	
 }

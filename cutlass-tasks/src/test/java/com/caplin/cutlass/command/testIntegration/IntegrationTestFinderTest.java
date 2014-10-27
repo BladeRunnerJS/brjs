@@ -12,11 +12,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
-import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
 public class IntegrationTestFinderTest extends TestModelAccessor
 {
 
+	private static final String APPLICATIONS_DIR = "apps";
 	private static final String TEST_ROOT = "src/test/resources/TestIntegrationCommand";
 	private IntegrationTestFinder testFinder;
 	private BRJS brjs;

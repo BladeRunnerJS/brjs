@@ -10,8 +10,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.Workbench;
 
-import com.caplin.cutlass.CutlassConfig;
-
 public class IntegrationTestFinder
 {
 	
@@ -52,11 +50,11 @@ public class IntegrationTestFinder
 	private boolean isValidTestDir(BRJS brjs, MemoizedFile dir, boolean ignoreWorkbenches)
 	{		
 		boolean validTestDir = dir.isDirectory() 
-				&& dir.getName().equals(CutlassConfig.WEBDRIVER_DIRNAME) 
-				&& dir.getParentFile().getName().equals(CutlassConfig.TEST_INTEGRATION_DIRNAME);
+				&& dir.getName().equals("webdriver") 
+				&& dir.getParentFile().getName().equals("test-integration");
 		
 		File containingDir = dir.getParentFile().getParentFile().getParentFile();
-		if (validTestDir && !(containingDir.getName().endsWith(CutlassConfig.ASPECT_SUFFIX) || containingDir.getName().equals("workbench")))
+		if (validTestDir && !(containingDir.getName().endsWith("-aspect") || containingDir.getName().equals("workbench")))
 		{
 			validTestDir = false;
 			logger.info("Found integration test directory in "+dir.getPath()+"\n"+

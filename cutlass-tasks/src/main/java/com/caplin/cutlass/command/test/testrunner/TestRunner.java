@@ -29,7 +29,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.test.BrowserStartupException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
-import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 import org.bladerunnerjs.utility.ProcessLogger;
 import org.slf4j.impl.StaticLoggerBinder;
@@ -58,6 +57,9 @@ public class TestRunner {
 	
 	private static Pattern pattern = Pattern.compile(".*Captured Browsers: \\((\\d+)\\).*", Pattern.DOTALL);
 	private static Runtime runTime = Runtime.getRuntime();
+	
+	private static final String XML_TEST_RESULTS_DIR = "test-results/xml";
+	private static final String HTML_TEST_RESULTS_DIR = "test-results/html";
 	
 	private List<Process> childProcesses = new ArrayList<Process>();
 	private List<ProcessLogger> childLoggers = new ArrayList<ProcessLogger>();
@@ -147,7 +149,7 @@ public class TestRunner {
 		try {
 			startServer();
 			
-			MemoizedFile testResultsDir = brjs.getMemoizedFile( new File("../"+CutlassConfig.XML_TEST_RESULTS_DIR) );
+			MemoizedFile testResultsDir = brjs.getMemoizedFile( new File("../"+XML_TEST_RESULTS_DIR) );
 			if (testResultsDir.exists())
 			{
 				FileUtils.deleteDirectory(testResultsDir);
@@ -226,7 +228,7 @@ public class TestRunner {
 		//This is here due to a bug in ant, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=384757#c13 for more details.
 		System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
 
-		File htmlReportsDir = new File("../"+CutlassConfig.HTML_TEST_RESULTS_DIR);
+		File htmlReportsDir = new File("../"+HTML_TEST_RESULTS_DIR);
 		if (!htmlReportsDir.exists())
 		{
 			htmlReportsDir.mkdirs();
@@ -239,18 +241,18 @@ public class TestRunner {
 		project.addTarget(target);
 
 		FileSet fs = new FileSet();
-		fs.setDir(new File("../"+CutlassConfig.XML_TEST_RESULTS_DIR));
+		fs.setDir(new File("../"+XML_TEST_RESULTS_DIR));
 		fs.createInclude().setName("TEST-*.xml");
 		XMLResultAggregator aggregator = new XMLResultAggregator();
 		aggregator.setProject(project);
 		aggregator.addFileSet(fs);
-		aggregator.setTodir(new File("../"+CutlassConfig.XML_TEST_RESULTS_DIR));
+		aggregator.setTodir(new File("../"+XML_TEST_RESULTS_DIR));
 		
 		AggregateTransformer transformer = aggregator.createReport();
-		transformer.setTodir(new File("../"+CutlassConfig.HTML_TEST_RESULTS_DIR));		
+		transformer.setTodir(new File("../"+HTML_TEST_RESULTS_DIR));		
 		target.addTask(aggregator);
 		
-		logger.warn("Writing HTML reports to " + "../"+CutlassConfig.HTML_TEST_RESULTS_DIR + ".");
+		logger.warn("Writing HTML reports to " + "../"+HTML_TEST_RESULTS_DIR + ".");
 		project.executeTarget("junitreport");
 	}
 	
@@ -357,7 +359,7 @@ public class TestRunner {
 		logger.warn("Testing " + getFriendlyTestPath(baseDirectory, configFile) + ":");
 		
 		try {
-			File testResultsDir = new File("../"+CutlassConfig.XML_TEST_RESULTS_DIR);
+			File testResultsDir = new File("../"+XML_TEST_RESULTS_DIR);
 			if (!testResultsDir.exists())
 			{
 				testResultsDir.mkdirs();
@@ -379,7 +381,7 @@ public class TestRunner {
 			 */
 			
 			String classPath = getClassPath(jsTestDriverJar.getParentFile());
-			String[] args = CmdCreator.cmd(baseCmd, classPath, configFile.getPath(), "../"+CutlassConfig.XML_TEST_RESULTS_DIR,
+			String[] args = CmdCreator.cmd(baseCmd, classPath, configFile.getPath(), "../"+XML_TEST_RESULTS_DIR,
 				verboseFlag(), browserTimeout(), "INFO");
 			logger.debug("Running command: " + CmdCreator.printCmd(args));
 			Process process = runTime.exec(args);

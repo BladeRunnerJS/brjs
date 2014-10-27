@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import com.caplin.cutlass.CutlassConfig;
-
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
@@ -34,7 +32,7 @@ public class TestRunnerTest extends TestModelAccessor {
 	@Before
 	public void beforeTest() throws Exception {
 		// we're cheekily using another tests sdk structure so the test can work
-		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/" + CutlassConfig.SDK_DIR);
+		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/sdk");
 		brjs = createModel(sdkBaseDir);
 		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		

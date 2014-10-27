@@ -9,11 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
+import org.bladerunnerjs.utility.FileUtility;
 
-import com.caplin.cutlass.CutlassConfig;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
@@ -43,7 +42,7 @@ public class TestRunnerConfiguration {
 		}
 		
 		configuration.setRelativeDir(configFile.getParentFile());
-		configuration.setOperatingSystem(CutlassConfig.OS);
+		configuration.setOperatingSystem(FileUtility.getOS());
 		configuration.setBrowserNames(browserNames);
 		
 		return configuration;

@@ -18,7 +18,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.utility.FileUtility;
 
-import com.caplin.cutlass.CutlassConfig;
 
 public class TestCompiler
 {
@@ -157,7 +156,7 @@ public class TestCompiler
 	public String getTestClassName(File testFile) 
 	{
 		String testPath = testFile.getAbsolutePath().replace("\\", "/");
-		String classNamePath = StringUtils.substringAfter(testPath, CutlassConfig.TEST_INTEGRATION_PATH+"/");
+		String classNamePath = StringUtils.substringAfter(testPath, "test-integration/webdriver/tests/");
 		String className = StringUtils.substringBeforeLast(classNamePath, ".").replace("/", ".");
 		
 		return className;
@@ -167,7 +166,7 @@ public class TestCompiler
 	{
 		File temporaryClassesDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		
-		return new File(temporaryClassesDir, CutlassConfig.TEST_INTEGRATION_CLASSES_DIRNAME);
+		return new File(temporaryClassesDir, "classes");
 	}
 	
 	
