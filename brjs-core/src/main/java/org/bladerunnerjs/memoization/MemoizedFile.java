@@ -5,8 +5,10 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -199,7 +201,9 @@ public class MemoizedFile extends File
 			value.isFile = superFile.isFile();
 			value.isDirectory = superFile.isDirectory();			
 			if (value.isDirectory) {
-				for (File file : superFile.listFiles()) {
+				List<File> listedFiles = Arrays.asList(superFile.listFiles());
+				Collections.sort(listedFiles);
+				for (File file : listedFiles) {
 					value.filesAndDirs.add( rootNode.getMemoizedFile(file) );
 				}				
 			}
