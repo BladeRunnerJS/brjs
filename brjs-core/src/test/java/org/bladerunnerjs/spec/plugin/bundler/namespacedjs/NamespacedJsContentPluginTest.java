@@ -385,7 +385,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1");
 		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-				"define('appns/namespacedjs/Class1', function(require, exports, module) { requireAll(require, window, ['appns/namespacedjs/Class2']);",
+				"define('appns/namespacedjs/Class1', function(require, exports, module) { requireAll(require, ['appns/namespacedjs/Class2']);",
 				"appns.namespacedjs.Class1 = function()",
 				"module.exports = appns.namespacedjs.Class1;");
 	}
@@ -522,7 +522,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments(
 				"appns.Class2 = function()",
 				"appns.Class3 = function()",
-				"{ requireAll(require, window, ['appns/Class2','appns/Class3']);",
+				"{ requireAll(require, ['appns/Class2','appns/Class3']);",
 				"appns.Class1 = function()");
 	}
 	
@@ -567,7 +567,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments(
 			"define('appns/Class1'",
 			"module.exports = appns.Class1;",
-			"requireAll(require, window, ['appns/Class2']);");
+			"requireAll(require, ['appns/Class2']);");
 	}
 	
 	

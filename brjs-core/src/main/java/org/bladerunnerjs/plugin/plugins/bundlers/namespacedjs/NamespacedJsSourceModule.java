@@ -130,7 +130,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	private String calculateDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {
-		return (requirePaths.isEmpty()) ? "" : "requireAll(require, window, ['" + Joiner.on("','").join(requirePaths) + "']);\n";
+		return (requirePaths.isEmpty()) ? "" : "requireAll(require, ['" + Joiner.on("','").join(requirePaths) + "']);\n";
 	}
 	
 	@Override
