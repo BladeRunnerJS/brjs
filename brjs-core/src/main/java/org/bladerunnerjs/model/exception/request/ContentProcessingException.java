@@ -21,7 +21,7 @@ public class ContentProcessingException extends RequestHandlingException
 		this.message = message;
 	}
 	
-	public ContentProcessingException(Throwable cause, String message)
+	public ContentProcessingException(String message, Throwable cause)
 	{
 		super(message, cause);
 		this.message = message + "; " + cause.getMessage();

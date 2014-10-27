@@ -14,6 +14,11 @@ public class ModelOperationException extends Exception {
 		this.message = message;
 	}
 	
+	public ModelOperationException(String message, Exception e) {
+		super(message, e);
+		this.message = message + "; " + e.getMessage();
+	}
+	
 	@Override
 	public String getMessage() {
 		return message;
