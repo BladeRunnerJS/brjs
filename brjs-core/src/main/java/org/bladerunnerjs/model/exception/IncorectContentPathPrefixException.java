@@ -2,6 +2,10 @@ package org.bladerunnerjs.model.exception;
 
 import org.bladerunnerjs.plugin.ContentPlugin;
 
+/**
+ * Class derived from ModelOperationException -> Exception -> Throwable -> Object.
+ * Thrown when an incorrect content plugin request prefix has been specified.
+*/
 
 public class IncorectContentPathPrefixException extends ModelOperationException
 {

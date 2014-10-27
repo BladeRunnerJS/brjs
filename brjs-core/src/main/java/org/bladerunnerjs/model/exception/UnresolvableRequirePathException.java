@@ -1,5 +1,9 @@
 package org.bladerunnerjs.model.exception;
 
+/**
+ * Class derived from RequestHandlingException -> Exception -> Throwable -> Object.
+ * Thrown when the specified request path could not be found. 
+*/ 
 
 public class UnresolvableRequirePathException extends RequirePathException {
 	private static final long serialVersionUID = 1L;
