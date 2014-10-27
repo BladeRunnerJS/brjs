@@ -69,7 +69,6 @@ public class TargetPathCreator
 		String targetPath = null;
 		
 		File assetLocationParentDir = assetLocation.dir().getParentFile();
-		BRJS root = assetContainer.root();
 		try {
 			if(assetContainer instanceof Aspect) {
 				Aspect aspect = (Aspect) assetContainer;

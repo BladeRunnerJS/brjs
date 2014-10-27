@@ -218,6 +218,7 @@ public class MemoizedFile extends File
 		});
 	}
 	
+	@SuppressWarnings("unused")
 	private class ComputedValue {
 		List<MemoizedFile> filesAndDirs = new ArrayList<>();
 		boolean exists;

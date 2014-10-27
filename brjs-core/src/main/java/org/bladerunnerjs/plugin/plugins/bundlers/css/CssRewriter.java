@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Matcher;
@@ -91,12 +90,4 @@ public class CssRewriter {
 		return targetPath + ending;
 	}
 	
-	private String getCanonicalPath(String imagePath) throws ContentProcessingException {
-		try {
-			return new File(imagePath).getCanonicalPath();
-		}
-		catch (IOException e) {
-			throw new ContentProcessingException("referenced image ('" + imagePath + "') does not exist.");
-		}
-	}
 }
