@@ -5,6 +5,7 @@ import org.apache.commons.io.comparator.PathFileComparator;
 
 import com.caplin.cutlass.CutlassConfig;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.utility.DeleteTempFileShutdownHook;
 
 import java.io.*;
@@ -13,21 +14,21 @@ import java.util.*;
 public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 	
 	
-	public static Collection<File> sortFiles(Collection<File> files)
+	public static Collection<MemoizedFile> sortFiles(Collection<MemoizedFile> files)
 	{		
-		ArrayList<File> filesCopy = new ArrayList<File>(files);
+		ArrayList<MemoizedFile> filesCopy = new ArrayList<>(files);
 		Collections.sort( filesCopy, PathFileComparator.PATH_COMPARATOR );
 		return filesCopy;
 	}
 	
-	public static File[] sortFiles(File[] files)
+	public static File[] sortFiles(MemoizedFile[] files)
 	{
 		return sortFiles( Arrays.asList(files) ).toArray(new File[0]);
 	}
 
-	public static List<File> getAllFilesAndFoldersMatchingFilterIncludingSubdirectories(File directory, FileFilter filter)
+	public static List<MemoizedFile> getAllFilesAndFoldersMatchingFilterIncludingSubdirectories(MemoizedFile directory, FileFilter filter)
 	{
-		ArrayList<File> files = new ArrayList<File>();
+		ArrayList<MemoizedFile> files = new ArrayList<>();
 		recurseIntoSubfoldersAndAddAllFilesMatchingFilter(files, directory, filter);
 		return files;
 	}
@@ -84,11 +85,11 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 		}
 	}
 	
-	private static void recurseIntoSubfoldersAndAddAllFilesMatchingFilter(List<File> files, File file, FileFilter filter)
+	private static void recurseIntoSubfoldersAndAddAllFilesMatchingFilter(List<MemoizedFile> files, MemoizedFile file, FileFilter filter)
 	{
 		if(file.isDirectory())
 		{
-			for(File r : FileUtility.sortFiles(file.listFiles()))
+			for(MemoizedFile r : file.listFiles())
 			{
 				if (!r.getName().startsWith("."))
 				{

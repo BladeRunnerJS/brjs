@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.BRJSNode;
 
 public class NodeModelTester
 {
-	public static <PN extends BRJSNode, CN extends BRJSNode> void verifyBottomUpLocation(PN parentNode, Class<CN> childNodeClass, Collection<File> possibleNodeLocations) throws Exception
+	public static <PN extends BRJSNode, CN extends BRJSNode> void verifyBottomUpLocation(PN parentNode, Class<CN> childNodeClass, Collection<MemoizedFile> possibleNodeLocations) throws Exception
 	{
 		CN locatedNode = null;
 		

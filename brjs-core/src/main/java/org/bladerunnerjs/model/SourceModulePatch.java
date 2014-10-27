@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -35,7 +34,7 @@ public class SourceModulePatch
 		patchFile = brjs.jsPatches().file(patchPath);
 	}
 
-	public File getPatchFile()
+	public MemoizedFile getPatchFile()
 	{
 		return patchFile;
 	}

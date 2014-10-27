@@ -35,7 +35,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public MemoizedFile[] memoizedScopeFiles() {
-		List<File> scopeFiles = new ArrayList<>(Arrays.asList(testScope().memoizedScopeFiles()));
+		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(testScope().memoizedScopeFiles()));
 		scopeFiles.add(dir());
 		
 		return scopeFiles.toArray(new MemoizedFile[scopeFiles.size()]);

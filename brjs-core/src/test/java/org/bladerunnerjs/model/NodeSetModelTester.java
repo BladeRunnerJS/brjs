@@ -1,12 +1,12 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJSNode;
 
 import static org.junit.Assert.*;
@@ -18,7 +18,7 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 	private final Class<CN> childNodeClass;
 	private final String childrenMethodName;
 	private final String childMethodName;
-	private final Map<String, File> childPaths =  new LinkedHashMap<>();
+	private final Map<String, MemoizedFile> childPaths =  new LinkedHashMap<>();
 	
 	public NodeSetModelTester(PN parentNode, Class<PN> parentNodeClass, Class<CN> childNodeClass, String childrenMethodName, String childMethodName)
 	{
@@ -31,14 +31,7 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 	
 	public NodeSetModelTester<PN, CN> addChild(String childName, String childPath)
 	{
-		try
-		{
-			childPaths.put(childName, new File(parentNode.dir(), childPath).getCanonicalFile());
-		}
-		catch (IOException e)
-		{
-			new RuntimeException(e);
-		}
+		childPaths.put(childName, parentNode.dir().file(childPath).getCanonicalFile());
 		
 		return this;
 	}
@@ -69,7 +62,7 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 		
 		assertEquals("list lengths differ", childPaths.size(), childrenNodes.size());
 
-		for(Map.Entry<String, File> entry : childPaths.entrySet())
+		for(Map.Entry<String, MemoizedFile> entry : childPaths.entrySet())
 		{
 			File entryPath = entry.getValue();
 			CN childNode = childrenNodes.get(nextChild++);
@@ -83,7 +76,7 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 	{
 		Method getNamedItemMethod = parentNodeClass.getMethod(childMethodName, new Class<?>[] {String.class});
 		
-		for(Map.Entry<String, File> entry : childPaths.entrySet())
+		for(Map.Entry<String, MemoizedFile> entry : childPaths.entrySet())
 		{
 			String entryName = entry.getKey();
 			File entryPath = entry.getValue();

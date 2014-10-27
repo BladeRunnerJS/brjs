@@ -75,6 +75,10 @@ public class MemoizedFile extends File
 	
 	// ---- End Methods Using Memoized Values ----
 	
+	public MemoizedFile getAbsoluteFile() {
+		return rootNode.getMemoizedFile( super.getAbsoluteFile() );
+	}
+	
 	public MemoizedFile getCanonicalFile()
 	{
 		if (canonicalFile == null) {

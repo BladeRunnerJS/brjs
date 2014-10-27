@@ -30,7 +30,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	
 	@Override
 	public MemoizedFile[] memoizedScopeFiles() {
-		List<File> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
+		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
 		scopeFiles.add(dir());
 		
 		return scopeFiles.toArray(new MemoizedFile[scopeFiles.size()]);

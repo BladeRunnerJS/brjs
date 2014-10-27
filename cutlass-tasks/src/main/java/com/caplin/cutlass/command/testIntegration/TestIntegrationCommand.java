@@ -96,7 +96,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		}
 		logger.println("Found tests in " + testContainerDirs.size() + " location(s).");
 		
-		List<File> classDirs = testCompiler.compileTestDirs(brjs, testContainerDirs);
+		List<MemoizedFile> classDirs = testCompiler.compileTestDirs(brjs, testContainerDirs);
 		
 		List<Class<?>> testClasses = testCompiler.loadClasses(classDirs);
 		

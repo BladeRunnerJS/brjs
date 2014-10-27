@@ -22,20 +22,20 @@ import com.caplin.cutlass.util.FileUtility;
 public class TestCompiler
 {
 
-	public List<File> compileTestDirs(BRJS brjs, List<MemoizedFile> testContainerDirs) throws CommandOperationException 
+	public List<MemoizedFile> compileTestDirs(BRJS brjs, List<MemoizedFile> testContainerDirs) throws CommandOperationException 
 	{
-		List<File> classRoots = new ArrayList<File>();
+		List<MemoizedFile> classRoots = new ArrayList<>();
 		
 		for (MemoizedFile testContainerDir : testContainerDirs) 
 		{
-			File commonSrcDir = brjs.locateAncestorNodeOfClass(testContainerDir, App.class).file("test-integration-src");
+			MemoizedFile commonSrcDir = brjs.locateAncestorNodeOfClass(testContainerDir, App.class).file("test-integration-src");
 			commonSrcDir = (commonSrcDir.exists()) ? commonSrcDir : null;
 		
-			File testDir = new File(testContainerDir, "tests");
-			File srcDir = new File(testContainerDir, "src-test");
+			MemoizedFile testDir = testContainerDir.file("tests");
+			MemoizedFile srcDir = testContainerDir.file("src-test");
 			srcDir = (srcDir.exists()) ? srcDir : null;
 			String sourcePath = getSourcePath(commonSrcDir, srcDir);
-			File compiledClassDir = null;
+			MemoizedFile compiledClassDir = null;
 			
 			verifyClassNames(testDir, true);
 			if(srcDir != null)
@@ -45,7 +45,7 @@ public class TestCompiler
 			
 			try
 			{
-				compiledClassDir = getCompiledClassDir(brjs, testContainerDir);
+				compiledClassDir = brjs.getMemoizedFile( getCompiledClassDir(brjs, testContainerDir) );
 			}
 			catch (IOException ex)
 			{
@@ -69,9 +69,9 @@ public class TestCompiler
 		return classRoots;
 	}
 	
-	private void verifyClassNames(File classesDir, boolean isTestDir) throws CommandOperationException
+	private void verifyClassNames(MemoizedFile classesDir, boolean isTestDir) throws CommandOperationException
 	{
-		List<File> sourceFiles = recursiveListFiles(classesDir, new SuffixFileFilter(".java"));
+		List<MemoizedFile> sourceFiles = recursiveListFiles(classesDir, new SuffixFileFilter(".java"));
 		
 		for(File sourceFile : sourceFiles)
 		{
@@ -115,9 +115,9 @@ public class TestCompiler
 		return sourcePath.toString();
 	}
 
-	public List<Class<?>> loadClasses(List<File> classDirs) throws CommandOperationException
+	public List<Class<?>> loadClasses(List<MemoizedFile> classDirs) throws CommandOperationException
 	{
-		List<File> classFiles = recursiveListFiles(classDirs, new SuffixFileFilter(".class"));
+		List<MemoizedFile> classFiles = recursiveListFiles(classDirs, new SuffixFileFilter(".class"));
    		List<Class<?>> loadedClasses = new ArrayList<Class<?>>();
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		
@@ -171,30 +171,30 @@ public class TestCompiler
 	
 	
 	
-	private static List<File> recursiveListFiles(List<File> roots, IOFileFilter filter)
+	private static List<MemoizedFile> recursiveListFiles(List<MemoizedFile> roots, IOFileFilter filter)
 	{
-		List<File> files = new ArrayList<File>();
-		for (File root : roots)
+		List<MemoizedFile> files = new ArrayList<>();
+		for (MemoizedFile root : roots)
 		{
 			recursiveListFiles(root, files, filter);
 		}
 		return files;
 	}
 	
-	private static List<File> recursiveListFiles(File root, IOFileFilter filter)
+	private static List<MemoizedFile> recursiveListFiles(MemoizedFile root, IOFileFilter filter)
 	{
-		List<File> files = new ArrayList<File>();
+		List<MemoizedFile> files = new ArrayList<>();
 		recursiveListFiles(root, files, filter);
 		return files;
 	}
 	
-	private static void recursiveListFiles(File root, List<File> files, IOFileFilter filter)
+	private static void recursiveListFiles(MemoizedFile root, List<MemoizedFile> files, IOFileFilter filter)
 	{
 		if(!root.isHidden() && root.getName().charAt(0) != '.')
 		{
 			if (root.isDirectory())
 			{
-				for (File child : FileUtility.sortFiles(root.listFiles()))
+				for (MemoizedFile child : root.listFiles())
 				{
 					recursiveListFiles(child, files, filter);
 				}

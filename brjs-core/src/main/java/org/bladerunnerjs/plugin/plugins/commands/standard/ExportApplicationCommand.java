@@ -14,6 +14,7 @@ import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
@@ -93,7 +94,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 
 		try 
 		{
-			File temporaryExportDir = FileUtility.createTemporaryDirectory( this.getClass(), appName );
+			MemoizedFile temporaryExportDir = brjs.getMemoizedFile( FileUtility.createTemporaryDirectory( this.getClass(), appName ) );
 			
 			IOFileFilter excludeUserLibraryTestsFilter = createExcludeUserLibsTestsFilter(appName);
 			NotFileFilter brjsJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar")));
@@ -121,9 +122,9 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	}
 
 	
-	private void createResourcesFromSdkTemplate(File templateDir, File targetDir, FileFilter fileFilter) throws IOException, ConfigException
+	private void createResourcesFromSdkTemplate(MemoizedFile templateDir, MemoizedFile targetDir, FileFilter fileFilter) throws IOException, ConfigException
 	{
-		ArrayList<File> addList = new ArrayList<File>();
+		ArrayList<MemoizedFile> addList = new ArrayList<>();
 		recurseIntoSubfoldersAndAddAllFilesMatchingFilter( Arrays.asList(brjs.bladerunnerConf().getIgnoredPaths()) , addList, templateDir, fileFilter );
 		
 		if (!targetDir.exists())
@@ -163,7 +164,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		}
 	}
 
-	private ArrayList<File> recurseIntoSubfoldersAndAddAllFilesMatchingFilter(List<String> ignoredFiles, ArrayList<File> addList, File file, FileFilter filter)
+	private ArrayList<MemoizedFile> recurseIntoSubfoldersAndAddAllFilesMatchingFilter(List<String> ignoredFiles, ArrayList<MemoizedFile> addList, MemoizedFile file, FileFilter filter)
 	{
 		if (ignoredFiles.contains(file.getName())) {
 			return addList;
@@ -171,7 +172,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		
 		if (file.isDirectory())
 		{
-			for (File r : file.listFiles(filter))
+			for (MemoizedFile r : file.listFiles(filter))
 			{
 				recurseIntoSubfoldersAndAddAllFilesMatchingFilter(ignoredFiles, addList, r, filter);
 			}

@@ -90,11 +90,12 @@ public class FileModificationWatcherThread extends Thread
 	        
             Path child = watchPath.resolve(filename);
             
-            if (kind == ENTRY_CREATE && child.toFile().isDirectory()) {
+            File childFile = child.toFile();
+			if (kind == ENTRY_CREATE && childFile.isDirectory()) {
             	watchKeys.put( child , createWatchKeyForDir(watchService, child) );
             }
             
-            fileModificationRegistry.incrementFileVersion(child.toFile());
+            fileModificationRegistry.incrementFileVersion(childFile);
             
             if(!watchKey.reset()) {
             	watchKeys.remove(watchPath);

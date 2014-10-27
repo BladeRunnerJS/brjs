@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -29,7 +28,7 @@ import com.google.common.base.Joiner;
 public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	private AssetLocation assetLocation;
-	private File assetFile;
+	private MemoizedFile assetFile;
 	private LinkedFileAsset linkedFileAsset;
 	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;

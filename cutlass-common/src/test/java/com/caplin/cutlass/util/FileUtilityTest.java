@@ -3,7 +3,12 @@ package com.caplin.cutlass.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.TestModelAccessor;
+
 import com.caplin.cutlass.util.FileUtility;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,7 +21,7 @@ import java.util.zip.ZipFile;
 
 import static org.junit.Assert.*;
 
-public class FileUtilityTest
+public class FileUtilityTest extends TestModelAccessor
 {
 	
 	@Rule
@@ -154,7 +159,8 @@ public class FileUtilityTest
 	@Test
 	public void getAllFilesAndFoldersMatchingFilterIncludingSubdirectories() throws Exception
 	{
-		List<File> files = FileUtility.getAllFilesAndFoldersMatchingFilterIncludingSubdirectories(new File("src/test/resources/FileUtiltyTest"), new NameFileFilter("folderB"));
+		BRJS brjs = createModel(new File("src/test/resources/FileUtiltyTest"));
+		List<MemoizedFile> files = FileUtility.getAllFilesAndFoldersMatchingFilterIncludingSubdirectories( brjs.getMemoizedFile(new File("src/test/resources/FileUtiltyTest")), new NameFileFilter("folderB"));
 		assertEquals(1, files.size());
 		assertEquals("folderB", files.get(0).getName());
 	}
