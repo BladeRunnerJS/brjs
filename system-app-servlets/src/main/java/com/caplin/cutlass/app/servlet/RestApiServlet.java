@@ -155,7 +155,7 @@ public class RestApiServlet extends HttpServlet
 			{
 				File targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
 				File warTempFile = new File(targetDir, "x.war");
-				apiService.exportWar(appName, warTempFile);
+				apiService.exportWar(appName, brjs.getMemoizedFile(warTempFile));
 				response.setContentType("application/octet-stream");
 				response.setHeader("Content-Disposition", "attachment; filename=\""+appName+".war\"");
 				
@@ -370,7 +370,7 @@ public class RestApiServlet extends HttpServlet
 
 		if (!namespace.equals("") && zipFile != null && command.equals(IMPORT_MOTIF))
 		{
-			apiService.importMotif(appName, namespace, zipFile);
+			apiService.importMotif(appName, namespace, brjs.getMemoizedFile(zipFile));
 			responseHandled = true;
 		}
 		return responseHandled;

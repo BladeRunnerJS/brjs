@@ -4,8 +4,10 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
@@ -32,36 +34,36 @@ public class IntegrationTestFinderTest extends TestModelAccessor
 	@Test
 	public void testFindingAllTestDirsFromRoot() 
 	{
-		List<File> expectedFiles = Arrays.asList(
-				new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-integration/webdriver").getAbsoluteFile(),
-				new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1/workbench/tests/test-integration/webdriver").getAbsoluteFile()
+		List<MemoizedFile> expectedFiles = Arrays.asList(
+			brjs.getMemoizedFile(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-integration/webdriver").getAbsoluteFile()),
+			brjs.getMemoizedFile(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1/workbench/tests/test-integration/webdriver").getAbsoluteFile())
 		);
-		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, new File(TEST_ROOT)) );
+		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, brjs.getMemoizedFile(new File(TEST_ROOT))) );
 	}
 	
 	@Test
 	public void testFindingAllTestsForSingleWorkbench() 
 	{
-		List<File> expectedFiles = Arrays.asList(
-				new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1/workbench/tests/test-integration/webdriver").getAbsoluteFile()
+		List<MemoizedFile> expectedFiles = Arrays.asList(
+			brjs.getMemoizedFile(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1/workbench/tests/test-integration/webdriver").getAbsoluteFile())
 		);
-		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1")) );
+		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, brjs.getMemoizedFile(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/some-bladeset/blades/blade1"))) );
 	}
 	
 	@Test
 	public void testFindingAllTestsForSingleAspect() 
 	{
-		List<File> expectedFiles = Arrays.asList(
-				new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-integration/webdriver").getAbsoluteFile()
+		List<MemoizedFile> expectedFiles = Arrays.asList(
+			brjs.getMemoizedFile(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-integration/webdriver").getAbsoluteFile())
 		);
-		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect")) );
+		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, brjs.getMemoizedFile(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect"))) );
 	}
 	
 	@Test
 	public void testEmptyListReturnedIfNoTestsFound() 
 	{
-		List<File> expectedFiles = Arrays.asList(new File[0]);
-		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-unit")) );
+		List<MemoizedFile> expectedFiles = Collections.emptyList();
+		assertEquals( expectedFiles, testFinder.findTestDirs(brjs, brjs.getMemoizedFile(new File(TEST_ROOT, APPLICATIONS_DIR + "/app1/main-aspect/tests/test-unit"))) );
 	}
 	
 }

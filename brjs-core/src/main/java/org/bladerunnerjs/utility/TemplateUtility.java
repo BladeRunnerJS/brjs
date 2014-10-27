@@ -140,7 +140,7 @@ public class TemplateUtility
 	{
 		File destDir;
 		File srcDir;
-		FileDoesntAlreadyExistFileFilter(File srcDir, File destDir)
+		FileDoesntAlreadyExistFileFilter(File srcDir, MemoizedFile destDir)
 		{
 			this.destDir = destDir;
 			this.srcDir = srcDir;

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -25,7 +26,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private Aspect appAspect;
 	private App sysapp;
 	private Aspect sysappAspect;
-	private File unbundledResources;
+	private MemoizedFile unbundledResources;
 	private Aspect defaultAspect;
 	
 	@Before

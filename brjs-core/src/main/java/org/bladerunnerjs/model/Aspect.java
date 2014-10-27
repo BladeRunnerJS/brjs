@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +27,11 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	private MemoizedFile[] scopeFiles;
 	private IndexPageSeedLocator indexPageSeedLocator;
 	
-	public Aspect(RootNode rootNode, Node parent, File dir) {
+	public Aspect(RootNode rootNode, Node parent, MemoizedFile dir) {
 		this(rootNode, parent, dir, StringUtils.substringBeforeLast(dir.getName(), "-aspect"));
 	}
 	
-	public Aspect(RootNode rootNode, Node parent, File dir, String name)
+	public Aspect(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;

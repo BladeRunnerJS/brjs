@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +21,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private final IndexPageSeedLocator seedLocator;
 	
-	public Workbench(RootNode rootNode, Node parent, File dir)
+	public Workbench(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
 		super(rootNode, parent, dir);
 		seedLocator = new IndexPageSeedLocator(root());

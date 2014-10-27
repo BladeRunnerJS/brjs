@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -28,7 +29,7 @@ public class JsTestDriverBundleCreator
 
 	public static final String BUNDLES_DIR_NAME = "bundles";
 	
-	public static void createRequiredBundles(BRJS brjs, File jsTestDriverConf)
+	public static void createRequiredBundles(BRJS brjs, MemoizedFile jsTestDriverConf)
 			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
 	{
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
@@ -83,11 +84,11 @@ public class JsTestDriverBundleCreator
 		}
 	}
 	
-	private static File getBaseDirectory(File jsTestDriverConf, Map<String, Object> configMap)
+	private static MemoizedFile getBaseDirectory(MemoizedFile jsTestDriverConf, Map<String, Object> configMap)
 	{
-		File root = jsTestDriverConf.getParentFile();
+		MemoizedFile root = jsTestDriverConf.getParentFile();
 		String relativeBasePath = (String) configMap.get("basepath");
-		return new File(root, relativeBasePath);
+		return root.file(relativeBasePath);
 	}
 
 	private static List<String> getListOfResourcesToLoad(Map<String, Object> configMap)

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.ZipUtility;
@@ -13,7 +14,7 @@ import org.bladerunnerjs.utility.ZipUtility;
 public class WarAppBuilder implements AppBuilder
 {
 
-	public void build(App app, File appWarFile) throws ModelOperationException {
+	public void build(App app, MemoizedFile appWarFile) throws ModelOperationException {
 		if (!appWarFile.getParentFile().exists()) throw new ModelOperationException("'" + appWarFile.getParentFile().getPath() + "' does not exist");
 		if (appWarFile.exists()) throw new ModelOperationException("'" + appWarFile.getParentFile().getPath() + "' already exists");
 		

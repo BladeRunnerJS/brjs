@@ -46,7 +46,7 @@ public class RestApiServletEndToEndTests
 		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
 		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), "");
 		
-		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
+		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), brjs.getMemoizedFile(sdkRoot));
 		server.start();
 		client = HttpClientBuilder.create().build();
 	}

@@ -2,12 +2,18 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
+
 public class FileTestBuilder extends SpecTestBuilder {
 	
 	private final File file;
 	private final BuilderChainer builderChainer;
 	private SpecTest specTest;
 
+	public FileTestBuilder(SpecTest specTest, MemoizedFile file) {
+		this(specTest, file.getUnderlyingFile());
+	}
+	
 	public FileTestBuilder(SpecTest specTest, File file) {
 		super(specTest);
 		this.specTest = specTest;

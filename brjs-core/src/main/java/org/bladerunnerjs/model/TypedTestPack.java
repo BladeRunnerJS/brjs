@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -23,7 +24,7 @@ public class TypedTestPack extends SourceResources implements NamedNode
 	private final NodeItem<DefaultTestPack> defaultTestPack = new NodeItem<>(this, DefaultTestPack.class, ".");
 	private String name;
 	
-	public TypedTestPack(RootNode rootNode, Node parent, File dir, String name)
+	public TypedTestPack(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;

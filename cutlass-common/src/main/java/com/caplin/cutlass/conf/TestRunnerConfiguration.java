@@ -78,11 +78,14 @@ public class TestRunnerConfiguration {
 	}
 	
 	public File getJsTestDriverJarFile() {
-		try {
-			return new File(relativeDir, jsTestDriverJar).getCanonicalFile();
+		File jarFile = new File(relativeDir, jsTestDriverJar);
+		try
+		{
+			return jarFile.getCanonicalFile();
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException e)
+		{
+			return jarFile;
 		}
 	}
 	

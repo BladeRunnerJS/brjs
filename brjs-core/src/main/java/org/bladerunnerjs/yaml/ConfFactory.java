@@ -1,9 +1,9 @@
 package org.bladerunnerjs.yaml;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -12,7 +12,7 @@ import com.esotericsoftware.yamlbeans.YamlReader;
 import com.esotericsoftware.yamlbeans.YamlReader.YamlReaderException;
 
 public class ConfFactory {
-	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, File confFile, String defaultFileCharacterEncoding) throws ConfigException {
+	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, MemoizedFile confFile, String defaultFileCharacterEncoding) throws ConfigException {
 		CF conf = null;
 		
 		if(confFile.exists()) {
@@ -43,7 +43,7 @@ public class ConfFactory {
 		return conf;
 	}
 	
-	private static <CF extends AbstractYamlConfFile> CF readConf(BRJSNode node, File confFile, Class<CF> confClass, String defaultFileCharacterEncoding) throws ConfigException
+	private static <CF extends AbstractYamlConfFile> CF readConf(BRJSNode node, MemoizedFile confFile, Class<CF> confClass, String defaultFileCharacterEncoding) throws ConfigException
 	{
 		CF conf;
 		

@@ -3,6 +3,7 @@ package org.bladerunnerjs.testing.specutility;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
@@ -64,7 +65,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 	}
 	
 	@Override
-	public File getSourceFile(String sourceClass) {
+	public MemoizedFile getSourceFile(String sourceClass) {
 		return testPack.testSource().file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 

@@ -133,10 +133,10 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 			targetDir.mkdirs();
 		}
 		
-		for (File f : addList)
+		for (MemoizedFile f : addList)
 		{			
 			String relativePathFromTemplateDir = f.getAbsolutePath().replace(templateDir.getAbsolutePath(), "");
-			File newResourceToAdd = new File(targetDir, relativePathFromTemplateDir);
+			MemoizedFile newResourceToAdd = targetDir.file(relativePathFromTemplateDir);
 
 			if (f.isDirectory() == true)
 			{
@@ -149,7 +149,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		}
 	}
 	
-	private void createFile(File source, File newFileLocation) throws IOException
+	private void createFile(MemoizedFile source, MemoizedFile newFileLocation) throws IOException
 	{
 		if (source.exists() == true)
 		{

@@ -22,17 +22,18 @@ import org.bladerunnerjs.utility.FileUtility;
 public class TestCompiler
 {
 
-	public List<MemoizedFile> compileTestDirs(BRJS brjs, List<MemoizedFile> testContainerDirs) throws CommandOperationException 
+	public List<MemoizedFile> compileTestDirs(BRJS brjs, List<File> testContainerDirs) throws CommandOperationException 
 	{
 		List<MemoizedFile> classRoots = new ArrayList<>();
 		
-		for (MemoizedFile testContainerDir : testContainerDirs) 
+		for (File testContainerDir : testContainerDirs) 
 		{
+			MemoizedFile testContainerMemoizedDir = brjs.getMemoizedFile(testContainerDir);
 			MemoizedFile commonSrcDir = brjs.locateAncestorNodeOfClass(testContainerDir, App.class).file("test-integration-src");
 			commonSrcDir = (commonSrcDir.exists()) ? commonSrcDir : null;
 		
-			MemoizedFile testDir = testContainerDir.file("tests");
-			MemoizedFile srcDir = testContainerDir.file("src-test");
+			MemoizedFile testDir = testContainerMemoizedDir.file("tests");
+			MemoizedFile srcDir = testContainerMemoizedDir.file("src-test");
 			srcDir = (srcDir.exists()) ? srcDir : null;
 			String sourcePath = getSourcePath(commonSrcDir, srcDir);
 			MemoizedFile compiledClassDir = null;
@@ -45,7 +46,7 @@ public class TestCompiler
 			
 			try
 			{
-				compiledClassDir = brjs.getMemoizedFile( getCompiledClassDir(brjs, testContainerDir) );
+				compiledClassDir = brjs.getMemoizedFile( getCompiledClassDir(brjs, testContainerMemoizedDir) );
 			}
 			catch (IOException ex)
 			{
@@ -93,7 +94,7 @@ public class TestCompiler
 		}
 	}
 
-	private String getSourcePath(File commonSrcDir, File srcDir)
+	private String getSourcePath(File commonSrcDir, MemoizedFile srcDir)
 	{
 		StringBuilder sourcePath = new StringBuilder();
 		

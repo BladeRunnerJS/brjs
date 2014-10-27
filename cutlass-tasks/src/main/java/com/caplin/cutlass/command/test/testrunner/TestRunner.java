@@ -66,7 +66,7 @@ public class TestRunner {
 	private File jsTestDriverJar;
 	private int portNumber;
 	private List<String> browsers;
-//	private File resultDir; //TODO:uncomment
+//	private MemoizedFile resultDir; //TODO:uncomment
 	private boolean verbose;
 	private boolean generateReports;
 	private boolean noBrowserFlag;
@@ -78,11 +78,11 @@ public class TestRunner {
 	static boolean disableLogging = false;
 	
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
+	public TestRunner(MemoizedFile configFile, MemoizedFile resultDir, List<String> browserNames) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
 		this(configFile, resultDir, browserNames, false, false, false);
 	}
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean testServerOnly, boolean noBrowserFlag, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
+	public TestRunner(MemoizedFile configFile, MemoizedFile resultDir, List<String> browserNames, boolean testServerOnly, boolean noBrowserFlag, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
 		verbose = determineIfVerbose();
 		config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
 		

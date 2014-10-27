@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.JsLib;
@@ -84,13 +85,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer classDependsOn(String sourceClass, String... referencedClasses) throws Exception
 	{
-		File sourceFile = getSourceFile(sourceClass);
+		MemoizedFile sourceFile = getSourceFile(sourceClass);
 		return classDependsOn(sourceClass, sourceFile, referencedClasses);
 	}
 	
 	public BuilderChainer testClassDependsOn(String sourceClass, String... referencedClasses) throws Exception
 	{
-		File sourceFile = getTestSourceFile(sourceClass);
+		MemoizedFile sourceFile = getTestSourceFile(sourceClass);
 		return classDependsOn(sourceClass, sourceFile, referencedClasses);
 	}
 	
@@ -110,23 +111,23 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 	
 	public BuilderChainer classRequires(String sourceClass, String dependencyClass) throws Exception {
-		File sourceFile = getSourceFile(sourceClass);
+		MemoizedFile sourceFile = getSourceFile(sourceClass);
 		return classRequires(sourceClass, dependencyClass, sourceFile, false);
 	}
 	
 	public BuilderChainer classRequiresAtUseTime(String sourceClass, String dependencyClass) throws Exception {
-		File sourceFile = getSourceFile(sourceClass);
+		MemoizedFile sourceFile = getSourceFile(sourceClass);
 		return classRequires(sourceClass, dependencyClass, sourceFile, true);
 	}
 	
 	public BuilderChainer testClassRequires(String sourceClass, String dependencyClass) throws Exception {
-		File sourceFile = getTestSourceFile(sourceClass);
+		MemoizedFile sourceFile = getTestSourceFile(sourceClass);
 		return classRequires(sourceClass, dependencyClass, sourceFile, false);
 	}
 	
 	public BuilderChainer classDependsOnAlias(String sourceClass, String alias) throws Exception
 	{
-		File sourceFile = getSourceFile(sourceClass);
+		MemoizedFile sourceFile = getSourceFile(sourceClass);
 		return classDependsOn(sourceClass, sourceFile, "'" + alias + "'");
 	}
 	
@@ -172,7 +173,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	public File getSourceFile(String sourceClass) {
+	public MemoizedFile getSourceFile(String sourceClass) {
 		AssetLocation assetLocation = node.assetLocation("src");
 		if (assetLocation == null) {
 			throw new RuntimeException("Cannot find asset location for the 'src' dir. Either it doesn't exist or there are no asset plugins to discover it.");
@@ -181,13 +182,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 	
 	
-	protected File getTestSourceFile(String sourceClass)
+	protected MemoizedFile getTestSourceFile(String sourceClass)
 	{
 		return node.assetLocation("src-test").file(sourceClass.replaceAll("\\.", "/") + ".js");		
 	}
 	
 	
-	private BuilderChainer classDependsOn(String sourceClass, File sourceFile, String... referencedClasses) throws Exception
+	private BuilderChainer classDependsOn(String sourceClass, MemoizedFile sourceFile, String... referencedClasses) throws Exception
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
@@ -213,7 +214,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	private BuilderChainer classRequires(String sourceClass, String dependencyClass, File sourceFile, boolean atUseTime) throws Exception
+	private BuilderChainer classRequires(String sourceClass, String dependencyClass, MemoizedFile sourceFile, boolean atUseTime) throws Exception
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		

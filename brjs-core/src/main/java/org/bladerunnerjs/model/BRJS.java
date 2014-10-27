@@ -83,10 +83,10 @@ public class BRJS extends AbstractBRJSRootNode
 	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
-		this.workingDir = new WorkingDirNode(this, brjsDir);
 		this.appVersionGenerator = appVersionGenerator;
 		this.fileModificationRegistry = new FileModificationRegistry( (dir.getParentFile() != null) ? dir.getParentFile() : dir );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
+		this.workingDir = new WorkingDirNode(this, getMemoizedFile(brjsDir));
 		
 		try
 		{
@@ -194,7 +194,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return workingDir;
 	}
 	
-	public void setWorkingDir(File workingDir) {
+	public void setWorkingDir(MemoizedFile workingDir) {
 		this.workingDir = new WorkingDirNode(this, workingDir);
 	}
 	
@@ -313,14 +313,14 @@ public class BRJS extends AbstractBRJSRootNode
 		return new VersionInfo(this);
 	}
 	
-	public File loginRealmConf()
+	public MemoizedFile loginRealmConf()
 	{
-		return new File(dir(), "sdk/loginRealm.conf");
+		return dir().file("sdk/loginRealm.conf");
 	}
 	
-	public File usersPropertiesConf()
+	public MemoizedFile usersPropertiesConf()
 	{
-		return new File(dir(), "conf/users.properties");
+		return dir().file("conf/users.properties");
 	}
 	
 	public BladerunnerConf bladerunnerConf() throws ConfigException {

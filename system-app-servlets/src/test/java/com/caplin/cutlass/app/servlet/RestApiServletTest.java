@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ServerUtility;
 
@@ -137,7 +138,7 @@ public class RestApiServletTest
 
 		HttpResponse response = client.execute(httppost);
 		
-		verify(service,times(1)).importMotif(eq("my-imported-app"), eq("nsx"), any(File.class));
+		verify(service,times(1)).importMotif(eq("my-imported-app"), eq("nsx"), any(MemoizedFile.class));
 		assertEquals( "", RestApiServletTestUtils.getResponseTextFromResponse(response) );
 	}
 	

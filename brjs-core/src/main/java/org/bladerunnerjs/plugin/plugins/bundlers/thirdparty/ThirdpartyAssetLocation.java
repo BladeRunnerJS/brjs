@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 public final class ThirdpartyAssetLocation extends ResourcesAssetLocation {
 	private final ThirdpartyLibManifest manifest;
 	
-	public ThirdpartyAssetLocation(BRJS root, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation) {
+	public ThirdpartyAssetLocation(BRJS root, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation) {
 		super(root, assetContainer, dir, parentAssetLocation);
 		
 		try {

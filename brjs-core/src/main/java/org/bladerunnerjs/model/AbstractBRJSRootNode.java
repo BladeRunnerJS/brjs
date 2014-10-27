@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 
 public abstract class AbstractBRJSRootNode extends AbstractRootNode implements BRJSNode {
+	
 	public AbstractBRJSRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException {
 		super(dir, loggerFactory);
 	}

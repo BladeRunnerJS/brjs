@@ -44,7 +44,7 @@ public class NodeItem<N extends Node>
 		{
 			try
 			{
-				Constructor<N> classConstructor = nodeClass.getConstructor(RootNode.class, Node.class, File.class);
+				Constructor<N> classConstructor = nodeClass.getConstructor(RootNode.class, Node.class, MemoizedFile.class);
 				item = classConstructor.newInstance(node.root(), node, getNodeDir(node.dir()));
 				if (registerNode) {
 					item.root().registerNode(item);
@@ -60,7 +60,7 @@ public class NodeItem<N extends Node>
 		return item;
 	}
 	
-	private MemoizedFile getNodeDir(File dir)
+	private MemoizedFile getNodeDir(MemoizedFile dir)
 	{
 		File nodeDir = null;
 		

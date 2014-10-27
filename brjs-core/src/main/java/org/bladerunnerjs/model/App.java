@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model;
 
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -56,7 +55,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private MemoizedFile[] scopeFiles;
 	private final AppRequestHandler appRequestHandler;
 	
-	public App(RootNode rootNode, Node parent, File dir, String name)
+	public App(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
@@ -352,11 +351,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return appRequestHandler.createRequest("bundle-request", "", version, contentPath);
 	}
 	
-	public void build(File targetDir) throws ModelOperationException {
+	public void build(MemoizedFile targetDir) throws ModelOperationException {
 		new StaticAppBuilder().build(this, targetDir);
 	}
 	
-	public void buildWar(File targetFile) throws ModelOperationException {
+	public void buildWar(MemoizedFile targetFile) throws ModelOperationException {
 		new WarAppBuilder().build(this, targetFile);
 	}
 	

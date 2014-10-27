@@ -1,6 +1,5 @@
 package org.bladerunnerjs.spec.aliasing;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
@@ -10,6 +9,7 @@ import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
@@ -324,7 +324,7 @@ public class AliasModelTest extends SpecTest {
 			.and(aspect).hasAlias("appns.bs.b1.alias2", "Class2", "TheInterface");
 	}
 	
-	private void write(AssetContainer assetContainer, File file, String content) throws IOException {
+	private void write(AssetContainer assetContainer, MemoizedFile file, String content) throws IOException {
 		FileUtils.write(file, content);
 		assetContainer.root().getFileModificationRegistry().incrementFileVersion(file);
 	}

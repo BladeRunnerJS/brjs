@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
@@ -190,6 +191,8 @@ public abstract class SpecTest extends TestModelAccessor
 	
 
 	// File
+	public FileTestBuilder given(MemoizedFile file) { return new FileTestBuilder(this, file); }
+	public FileTestBuilder when(MemoizedFile file) { return new FileTestBuilder(this, file); }
 	public FileTestBuilder given(File file) { return new FileTestBuilder(this, file); }
 	public FileTestBuilder when(File file) { return new FileTestBuilder(this, file); }
 	
@@ -213,7 +216,8 @@ public abstract class SpecTest extends TestModelAccessor
 	public NamedNodeVerifier then(NamedNode namedDirNode) { return new NamedNodeVerifier(this, namedDirNode); }
 	
 	// Directory
-	public DirectoryVerifier then(File dir) { return new DirectoryVerifier(this, dir); }
+	public DirectoryVerifier then(MemoizedFile dir) { return new DirectoryVerifier(this, dir); }
+	public DirectoryVerifier then(File dir) { return new DirectoryVerifier(this, brjs.getMemoizedFile(dir)); }
 	
 	// StringBuffer
 	public StringVerifier then(StringBuffer stringBuffer) { return new StringVerifier(this, stringBuffer); }

@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.*;
 
 import org.apache.commons.lang3.*;
@@ -27,7 +26,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
 	
-	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir);
 		
 		this.dir = root().getMemoizedFile(dir);
@@ -81,8 +80,8 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		// TODO: fix this dependency from the model to plug-in code (ResourcesAssetLocation)
 		//       we instead need a way to either know this asset-location has a deep directory structure, or have way of getting it to list it's nested directories
 		if(dir().exists() && (this instanceof ResourcesAssetLocation)) {
-			for(File dir : root().getMemoizedFile(dir()).nestedDirs()) {
-				if(new File(dir, "aliasDefinitions.xml").exists()) {
+			for(MemoizedFile dir : root().getMemoizedFile(dir()).nestedDirs()) {
+				if(dir.file("aliasDefinitions.xml").exists()) {
 					String dirPath = dir.getAbsolutePath();
 					
 					if(!aliasDefinitionsFilesMap.containsKey(dirPath)) {

@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.plugin.bundler.css;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
@@ -21,8 +22,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	private Aspect aspect;
 	private StringBuffer response = new StringBuffer();
 	private Aspect loginAspect;
-	private File commonTheme;
-	private File standardTheme;
+	private MemoizedFile commonTheme;
+	private MemoizedFile standardTheme;
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;

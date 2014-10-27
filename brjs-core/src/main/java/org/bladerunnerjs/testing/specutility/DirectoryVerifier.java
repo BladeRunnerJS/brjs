@@ -7,15 +7,16 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 
 public class DirectoryVerifier {
-	private final File dir;
+	private final MemoizedFile dir;
 	private VerifierChainer verifierChainer;
 
-	public DirectoryVerifier(SpecTest specTest, File dir) {
+	public DirectoryVerifier(SpecTest specTest, MemoizedFile dir) {
 		this.dir = dir;
 		verifierChainer = new VerifierChainer(specTest);
 	}

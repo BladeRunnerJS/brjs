@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
@@ -103,10 +104,9 @@ public class RestApiService
 		}
 	}
 	
-	public File getAppImageLocation(String app) throws Exception
+	public MemoizedFile getAppImageLocation(String app) throws Exception
 	{
-		File appPath = brjs.userApp(app).dir();
-		File appImage = new File(appPath,"thumb.png"); 
+		MemoizedFile appImage = brjs.userApp(app).file("thumb.png"); 
 		if (appImage.exists())
 		{
 			return appImage;
@@ -139,7 +139,7 @@ public class RestApiService
 			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
 		}
 		
-		app.buildWar(destinationWar);
+		app.buildWar( brjs.getMemoizedFile(destinationWar) );
 	}
 	
 	public void importBladeset(String sourceApp, Map<String,Map<String,List<String>>> bladesets, String targetApp) throws Exception
@@ -229,7 +229,7 @@ public class RestApiService
 	
 	public String getSdkVersion() throws IOException
 	{
-		File versionFile = brjs.versionInfo().getFile();
+		MemoizedFile versionFile = brjs.versionInfo().getFile();
 		return FileUtils.readFileToString(versionFile);
 	}
 	
@@ -273,9 +273,9 @@ public class RestApiService
 		return commandOutput;
 	}
 	
-	private File getLatestReleaseNoteFile() 
+	private MemoizedFile getLatestReleaseNoteFile() 
 	{
-		return new File( new File(brjs.root().dir(), "sdk") , "docs/release-notes/latest.html");
+		return brjs.root().file("sdk/docs/release-notes/latest.html");
 	}
 
 	

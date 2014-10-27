@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +22,11 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	private String name;
 	private MemoizedFile[] scopeFiles;
 	
-	public Bladeset(RootNode rootNode, Node parent, File dir) {
+	public Bladeset(RootNode rootNode, Node parent, MemoizedFile dir) {
 		this(rootNode, parent, dir, StringUtils.substringBeforeLast(dir.getName(), "-bladeset"));
 	}
 	
-	public Bladeset(RootNode rootNode, Node parent, File dir, String name)
+	public Bladeset(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;

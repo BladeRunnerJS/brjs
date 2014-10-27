@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,12 +21,12 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	private AliasesFile aliasesFile;
 	private String name;
 	
-	public TestPack(RootNode rootNode, Node parent, File dir)
+	public TestPack(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
 		this(rootNode, parent, dir, dir.getName());
 	}
 	
-	public TestPack(RootNode rootNode, Node parent, File dir, String name)
+	public TestPack(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;

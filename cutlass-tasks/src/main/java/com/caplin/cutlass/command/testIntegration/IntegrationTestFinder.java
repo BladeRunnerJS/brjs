@@ -15,19 +15,14 @@ public class IntegrationTestFinder
 	
 	private Logger logger = ThreadSafeStaticBRJSAccessor.root.logger(IntegrationTestFinder.class);
 	
-	public List<MemoizedFile> findTestDirs(BRJS brjs, File root)
-	{
-		return findTestContainerDirs(brjs, brjs.getMemoizedFile(root), false);
-	}
-	
-	public List<MemoizedFile> findTestDirs(BRJS brjs, MemoizedFile root)
+	public List<File> findTestDirs(BRJS brjs, MemoizedFile root)
 	{
 		return findTestContainerDirs(brjs, root, false);
 	}
 	
-	public List<MemoizedFile> findTestContainerDirs(BRJS brjs, MemoizedFile root, boolean ignoreWorkbenches)
+	public List<File> findTestContainerDirs(BRJS brjs, MemoizedFile root, boolean ignoreWorkbenches)
 	{
-		List<MemoizedFile> testDirs = new ArrayList<>();
+		List<File> testDirs = new ArrayList<>();
 		
 		if (!root.isDirectory())
 		{

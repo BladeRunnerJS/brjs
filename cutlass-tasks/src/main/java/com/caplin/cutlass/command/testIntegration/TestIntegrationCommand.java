@@ -89,7 +89,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 			FileUtils.deleteQuietly(classesRoot);
 		}
 		
-		List<MemoizedFile> testContainerDirs = new IntegrationTestFinder().findTestContainerDirs(brjs, testRoot, ignoreWorkbenches(args));
+		List<File> testContainerDirs = new IntegrationTestFinder().findTestContainerDirs(brjs, testRoot, ignoreWorkbenches(args));
 		if (testContainerDirs.size() < 1) 
 		{
 			throw new CommandOperationException("No tests found.");

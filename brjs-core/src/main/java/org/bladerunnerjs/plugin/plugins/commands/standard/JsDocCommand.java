@@ -68,7 +68,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
-		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
+		MemoizedFile outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
 		
 		try {
 			if (outputDir.isDirectory()) {
@@ -88,7 +88,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		return 0;
 	}
 	
-	private void runCommand(App app, File outputDir) throws CommandOperationException, ConfigException {
+	private void runCommand(App app, MemoizedFile outputDir) throws CommandOperationException, ConfigException {
 		List<String> commandArgs = new ArrayList<>();
 		
 		MemoizedFile workingDir = brjs.dir();
@@ -142,7 +142,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		commandArgs.add(command);
 	}
 
-	private MemoizedFile getSystemOrUserConfPath(BRJS brjs, File systemDirBase, String dirName) {
+	private MemoizedFile getSystemOrUserConfPath(BRJS brjs, MemoizedFile systemDirBase, String dirName) {
 		File userConfDir = brjs.conf().file(dirName);
 		if (userConfDir.exists()) {
 			return brjs.getMemoizedFile( userConfDir );

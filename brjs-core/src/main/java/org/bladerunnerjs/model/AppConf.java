@@ -1,15 +1,14 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
-
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.yaml.YamlAppConf;
 
 public class AppConf extends ConfFile<YamlAppConf> {
 	
-	public AppConf(BRJS brjs, File confFile) throws ConfigException {
+	public AppConf(BRJS brjs, MemoizedFile confFile) throws ConfigException {
 		super(brjs, YamlAppConf.class, confFile);
 	}
 	

@@ -1,6 +1,5 @@
 package org.bladerunnerjs.aliasing.aliases;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -8,6 +7,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.bladerunnerjs.aliasing.AliasOverride;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.testing.specutility.XmlBuilderSerializer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 
@@ -16,7 +16,7 @@ import com.google.common.base.Joiner;
 import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasesWriter {
-	public static void write(AliasesData data, File file, String defaultFileCharacterEncoding) throws IOException {
+	public static void write(AliasesData data, MemoizedFile file, String defaultFileCharacterEncoding) throws IOException {
 		try {
 			EncodedFileUtil fileUtil = new EncodedFileUtil(defaultFileCharacterEncoding);
 			XMLBuilder builder = XMLBuilder.create("aliases").ns("http://schema.caplin.com/CaplinTrader/aliases");

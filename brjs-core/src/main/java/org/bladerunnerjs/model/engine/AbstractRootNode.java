@@ -212,7 +212,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		}
 		catch (IOException e)
 		{
-			return dir.getAbsoluteFile();
+			return dir;
 		}
 	}
 	

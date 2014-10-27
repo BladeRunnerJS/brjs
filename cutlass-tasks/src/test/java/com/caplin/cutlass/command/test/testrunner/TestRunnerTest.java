@@ -19,8 +19,8 @@ import com.caplin.cutlass.conf.TestRunnerConfiguration;
 public class TestRunnerTest extends TestModelAccessor {
 
 	TestRunnerConfiguration config;
-	File configFile = new File("src/test/resources/TestCommand/ct-runner-resources/test-runner.conf");
-	File resultDir = new File(".build/test-results");
+	MemoizedFile configFile;
+	MemoizedFile resultDir;
 	boolean verbose, debug;
 	private BRJS brjs;
 	
@@ -36,7 +36,10 @@ public class TestRunnerTest extends TestModelAccessor {
 		brjs = createModel(sdkBaseDir);
 		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		
-		config = TestRunnerConfiguration.getConfiguration(new File("src/test/resources/TestCommand/ct-runner-resources/test-runner.conf"), browserList("ff5"));
+		configFile = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources/test-runner.conf") );
+		resultDir = brjs.getMemoizedFile( new File(".build/test-results") );
+		
+		config = TestRunnerConfiguration.getConfiguration(configFile, browserList("ff5"));
 		config.setOperatingSystem("OS1");
 		TestRunner.disableLogging = true;
 	}

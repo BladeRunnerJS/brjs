@@ -3,6 +3,7 @@ package org.bladerunnerjs.utility;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 
@@ -26,7 +27,7 @@ public class VersionInfo
 	}
 	
 	// TODO: replace this method with a save facility, so we can encapsulate all of the version file functionality in this class
-	public File getFile()
+	public MemoizedFile getFile()
 	{
 		return brjs.file("sdk/version.txt");
 	}

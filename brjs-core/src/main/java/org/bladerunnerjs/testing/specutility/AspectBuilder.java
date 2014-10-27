@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility;
 
 import java.io.File;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
@@ -80,15 +81,15 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 	}
 	
 	
-	public File getResourceFile(String resourceFileName) {
+	public MemoizedFile getResourceFile(String resourceFileName) {
 		return aspect.assetLocation("resources").file(resourceFileName);
 	}
 	
-	public File getSrcResourceFile(String resourceFileName) {
+	public MemoizedFile getSrcResourceFile(String resourceFileName) {
 		return aspect.assetLocation("src").file(resourceFileName);
 	}
 	
-	public File getIndexFile() {
+	public MemoizedFile getIndexFile() {
 		return aspect.file("index.html");
 	}
 	

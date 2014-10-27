@@ -17,7 +17,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	public static final String commaWithOptionalSpacesSeparator = "[\\s]*,[\\s]*";
 	
 	private final MemoizedFile file;
-	private final File assetLocationDir;
+	private final MemoizedFile assetLocationDir;
 	private final AssetLocation assetLocation;
 	
 	public ThirdpartyLibManifest(AssetLocation assetLocation) throws ConfigException {
