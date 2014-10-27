@@ -39,8 +39,8 @@ import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.utility.FileUtility;
 
-import com.caplin.cutlass.util.FileUtility;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -363,7 +363,7 @@ public class RestApiServlet extends HttpServlet
 			}
 			else if (item.getFieldName().equals(FILE_PARAM))
 			{
-				zipFile = FileUtility.createTemporaryFile("import motif", ".zip");
+				zipFile = FileUtility.createTemporaryFile(this.getClass(), ".zip");
 				item.write(zipFile);
 			}
 		}

@@ -16,8 +16,9 @@ import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.utility.FileUtility;
+
 import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.util.FileUtility;
 
 public class TestCompiler
 {

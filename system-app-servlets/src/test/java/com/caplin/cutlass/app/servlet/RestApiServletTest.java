@@ -21,12 +21,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.app.RestApiServletTestUtils;
 import com.caplin.cutlass.app.service.RestApiService;
 import com.caplin.cutlass.app.servlet.RestApiServlet;
-import com.caplin.cutlass.util.FileUtility;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

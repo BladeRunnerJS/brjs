@@ -23,6 +23,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.ZipUtility;
 import org.bladerunnerjs.utility.filefilter.ExcludeDirFileFilter;
 
 import com.martiansoftware.jsap.FlaggedOption;
@@ -107,7 +108,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 				String jsBanner = "/*\n" + banner + "\n*/\n\n";
 				includeBannerInDirectoryClasses(new File(temporaryExportDir, "libs"), jsBanner, bannerExtensions);
 			}
-			FileUtility.zipFolder(temporaryExportDir, destinationZipLocation, false);
+			ZipUtility.zipFolder(temporaryExportDir, destinationZipLocation, false);
 			brjs.getFileModificationRegistry().incrementFileVersion(destinationZipLocation);
 		}
 		catch (Exception e)

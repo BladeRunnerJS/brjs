@@ -16,9 +16,8 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import com.caplin.cutlass.util.FileUtility;
+import org.bladerunnerjs.utility.FileUtility;
 
 
 public class RestApiServiceTest extends TestModelAccessor
@@ -168,7 +167,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	{
 		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(ONE_APP_PATH));
 		setupService(temporarySdk);
-		File warFile = FileUtility.createTemporaryFile("app1-war", ".war");
+		File warFile = FileUtility.createTemporaryFile(this.getClass(), ".war");
 		warFile.delete();
 		assertFalse( warFile.exists() );
 		service.exportWar("i-dont-exist", warFile);

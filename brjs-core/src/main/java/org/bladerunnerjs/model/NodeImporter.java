@@ -20,6 +20,7 @@ import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.JsStyleUtility;
+import org.bladerunnerjs.utility.ZipUtility;
 import org.mockito.Mockito;
 
 
@@ -29,7 +30,7 @@ public class NodeImporter {
 		BRJS tempBrjs = createTemporaryBRJSModel();
 		
 		File temporaryUnzipDir = FileUtility.createTemporaryDirectory( NodeImporter.class, targetApp.getName() );
-		FileUtility.unzip(sourceAppZip, temporaryUnzipDir );
+		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
 		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
 		if (temporaryUnzipDirFiles.length != 1) {
 			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);

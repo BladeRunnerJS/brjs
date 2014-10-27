@@ -15,10 +15,8 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.runner.CommandRunner;
 import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
+import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.UserCommandRunner;
-
-import com.caplin.cutlass.util.FileUtility;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

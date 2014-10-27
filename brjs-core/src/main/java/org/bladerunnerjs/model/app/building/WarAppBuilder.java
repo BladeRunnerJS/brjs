@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.ZipUtility;
 
 
 
@@ -22,7 +22,7 @@ public class WarAppBuilder implements AppBuilder
 		
 		try
 		{
-			FileUtility.zipFolder(exportDir, appWarFile, true);
+			ZipUtility.zipFolder(exportDir, appWarFile, true);
 			FileUtils.deleteQuietly(exportDir);
 		}
 		catch (IOException ex)

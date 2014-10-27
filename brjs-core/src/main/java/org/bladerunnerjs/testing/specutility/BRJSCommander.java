@@ -14,7 +14,7 @@ import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.ValueCommand;
 import org.bladerunnerjs.testing.specutility.logging.MockLogLevelAccessor;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.ZipUtility;
 
 
 public class BRJSCommander extends NodeCommander<BRJS> {
@@ -140,6 +140,6 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		
 		unzippedContentFolder.mkdirs();
 		
-		FileUtility.unzip(zipFile, unzippedContentFolder);		
+		ZipUtility.unzip(zipFile, unzippedContentFolder);		
 	}
 }

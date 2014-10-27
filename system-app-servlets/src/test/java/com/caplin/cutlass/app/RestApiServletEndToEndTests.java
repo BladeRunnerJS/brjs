@@ -18,9 +18,7 @@ import org.junit.Test;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.BRJS;
-
-import com.caplin.cutlass.util.FileUtility;
-
+import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.app.servlet.RestApiServlet;
