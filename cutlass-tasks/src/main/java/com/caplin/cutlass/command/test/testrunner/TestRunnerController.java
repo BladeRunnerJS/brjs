@@ -8,8 +8,9 @@ import javax.naming.InvalidNameException;
 
 import com.caplin.cutlass.command.test.testrunner.TestRunner.TestType;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
-import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -61,7 +62,7 @@ public class TestRunnerController
 		}
 	}
 	
-	public int run(String[] args, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
+	public int run(BRJS brjs, String[] args, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
 	{
 		File configFile = null;
 		try {
@@ -113,7 +114,7 @@ public class TestRunnerController
 			{
 				try
 				{
-					success = testRunner.runTests(new File(config.getString("dir")), getTestTypeEnum(config.getString("testType")));
+					success = testRunner.runTests( brjs.getMemoizedFile(new File(config.getString("dir"))), getTestTypeEnum(config.getString("testType")));
 				}
 				catch (Exception ex)
 				{

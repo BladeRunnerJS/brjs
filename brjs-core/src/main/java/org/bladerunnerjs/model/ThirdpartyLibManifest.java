@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 {
@@ -105,7 +104,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 			if(file.exists()){
 				foundFiles.add( assetLocation.root().getMemoizedFile(file) );
 			}else{
-				String relativeManifestPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().root().dir(), assetLocation.file(LIBRARY_MANIFEST_FILENAME));
+				String relativeManifestPath = assetLocation.assetContainer().root().dir().getRelativePath(assetLocation.file(LIBRARY_MANIFEST_FILENAME));
 				throw new ConfigException("Unable to find the file '" + filePath + "' required in the manifest at '" + relativeManifestPath + "'.");
 			}
 		}

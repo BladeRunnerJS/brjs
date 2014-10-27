@@ -16,8 +16,6 @@ import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.utility.RelativePathUtility;
-
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 
@@ -150,7 +148,7 @@ public class TestCompiler
 	public File getCompiledClassDir(BRJS brjs, MemoizedFile testDir) throws IOException 
 	{
 		App app = brjs.locateAncestorNodeOfClass(testDir, App.class);
-		String relativePath = RelativePathUtility.get(brjs, app.dir(), testDir);
+		String relativePath = app.dir().getRelativePath(testDir);
 		
 		return new File(getClassesRoot(testDir), relativePath + "/test-integration/webdriver/tests");
 	}

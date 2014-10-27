@@ -16,7 +16,6 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class AssetLocator {
 	private final Map<String, Asset> cachedAssets = new TreeMap<>();
@@ -48,7 +47,7 @@ public class AssetLocator {
 									String assetPrimaryRequirePath = createdAsset.getPrimaryRequirePath();
 									
 									if (createdAsset instanceof SourceModule && createdAsset.assetLocation().assetContainer().isNamespaceEnforced()) {
-										String relativePathFromAssetContainer = RelativePathUtility.get(assetLocation.root(), createdAsset.assetLocation().assetContainer().dir(), createdAsset.dir());
+										String relativePathFromAssetContainer = createdAsset.assetLocation().assetContainer().dir().getRelativePath(createdAsset.dir());
 										String relativeRequirePathPathFromAssetContainer = StringUtils.substringAfter(relativePathFromAssetContainer, "/"); // strip of 'src/' at the start of the relative path
 										String appRequirePrefix = assetLocation.assetContainer().app().getRequirePrefix();
 										String createdAssetContainerRequirePrefix = createdAsset.assetLocation().assetContainer().requirePrefix();

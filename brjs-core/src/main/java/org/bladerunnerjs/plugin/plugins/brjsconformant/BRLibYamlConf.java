@@ -5,7 +5,6 @@ import javax.validation.constraints.NotNull;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 
 
@@ -39,7 +38,7 @@ public class BRLibYamlConf extends AbstractYamlConfFile {
 		
 		if (!requirePrefix.matches(REQUIRE_PREFIX_REGEX))
 		{
-			String manifestPath = RelativePathUtility.get(node.root(), this.node.root().dir(), getUnderlyingFile());
+			String manifestPath = this.node.root().dir().getRelativePath(getUnderlyingFile());
 			throw new ConfigException( String.format(Messages.INVALID_REQUIRE_PREFIX_EXCEPTION, requirePrefix, manifestPath, REQUIRE_PREFIX_REGEX) );
 		}
 	}

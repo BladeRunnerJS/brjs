@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
@@ -16,7 +17,6 @@ import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestSourceAssetLocation;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	private BRJS brjs;
@@ -42,15 +42,15 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 			
 			File sourceTestDir = assetContainer.file("src-test");
 			if(sourceTestDir.exists()) {
-				for(File dir : brjs.getMemoizedFile(sourceTestDir).nestedDirs()) {
-					assetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
+				for(MemoizedFile dir : brjs.getMemoizedFile(sourceTestDir).nestedDirs()) {
+					assetLocationDirectories.add(assetContainer.dir().getRelativePath(dir));
 				}
 			}
 			
 			File testsDir = assetContainer.file("tests");
 			if(testsDir.exists()) {
-				for(File dir : brjs.getMemoizedFile(testsDir).nestedDirs()) {
-					assetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
+				for(MemoizedFile dir : brjs.getMemoizedFile(testsDir).nestedDirs()) {
+					assetLocationDirectories.add(assetContainer.dir().getRelativePath(dir));
 				}
 			}
 		}
@@ -67,8 +67,8 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 		
 		File testsDir = assetContainer.file("tests");
 		if(testsDir.exists()) {
-			for(File dir : brjs.getMemoizedFile(testsDir).nestedDirs()) {
-				seedAssetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
+			for(MemoizedFile dir : brjs.getMemoizedFile(testsDir).nestedDirs()) {
+				seedAssetLocationDirectories.add(assetContainer.dir().getRelativePath(dir));
 			}
 		}
 		
@@ -78,7 +78,7 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 	@Override
 	public AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap) {
 		AssetLocation assetLocation;
-		File dir = assetContainer.file(dirPath);
+		MemoizedFile dir = assetContainer.file(dirPath);
 		
 		switch(dirPath) {
 			case "resources":
@@ -94,7 +94,7 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 				break;
 			
 			default:
-				String parentLocationPath = RelativePathUtility.get(brjs, assetContainer.dir(), dir.getParentFile());
+				String parentLocationPath = assetContainer.dir().getRelativePath(dir.getParentFile());
 				AssetLocation parentAssetLocation = assetLocationsMap.get(parentLocationPath);
 				
 				if((parentAssetLocation instanceof ChildSourceAssetLocation) || (parentAssetLocation instanceof SourceAssetLocation)) {

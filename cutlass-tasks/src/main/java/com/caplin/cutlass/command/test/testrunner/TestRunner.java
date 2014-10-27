@@ -21,6 +21,7 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
@@ -30,10 +31,7 @@ import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
-import com.caplin.cutlass.util.FileUtility;
-
 import org.bladerunnerjs.utility.ProcessLogger;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.esotericsoftware.yamlbeans.YamlException;
@@ -143,13 +141,13 @@ public class TestRunner {
 		}
 	}
 	
-	public boolean runTests(File directory, TestType testType) throws Exception {
+	public boolean runTests(MemoizedFile directory, TestType testType) throws Exception {
 		execStartTime= System.currentTimeMillis();
 		
 		try {
 			startServer();
 			
-			File testResultsDir = new File("../"+CutlassConfig.XML_TEST_RESULTS_DIR);
+			MemoizedFile testResultsDir = brjs.getMemoizedFile( new File("../"+CutlassConfig.XML_TEST_RESULTS_DIR) );
 			if (testResultsDir.exists())
 			{
 				FileUtils.deleteDirectory(testResultsDir);
@@ -302,20 +300,20 @@ public class TestRunner {
 		return serverStarted;
 	}
 	
-	public void runAllTestsInDirectory(File baseDirectory, File directory, TestType testType) throws Exception {
+	public void runAllTestsInDirectory(MemoizedFile baseDirectory, MemoizedFile directory, TestType testType) throws Exception {
 		runAllTestsInDirectory(baseDirectory, directory, testType, false);
 	}
 	
-	public void runAllTestsInDirectory(File baseDirectory, File directory, TestType testType, boolean resetServer) throws Exception {
+	public void runAllTestsInDirectory(MemoizedFile baseDirectory, MemoizedFile directory, TestType testType, boolean resetServer) throws Exception {
 		if (baseDirectory == null || !baseDirectory.exists()) {
 			String failureMessage = "Base directory '" + baseDirectory +"' does not exist";
 			logger.warn(failureMessage);
 			throw new IOException(failureMessage);
 		}
 		
-		File[] dirContents = FileUtility.sortFiles(directory.listFiles());
+		MemoizedFile[] dirContents = directory.listFiles();
 		reverseDirectoryContentsIfContainsTestDir(dirContents);
-		for(File file : dirContents) {
+		for(MemoizedFile file : dirContents) {
 			if(file.isDirectory() && !file.isHidden()) {		
 				if(isValidTestDir(file, testType)) {
 					logger.debug("Found valid test directory : '" +file +"'");
@@ -332,10 +330,10 @@ public class TestRunner {
 		}
 	}
 	
-	private void reverseDirectoryContentsIfContainsTestDir(File[] dirContents) throws Exception
+	private void reverseDirectoryContentsIfContainsTestDir(MemoizedFile[] dirContents) throws Exception
 	{
 		boolean containsTestDir = false;
-		for (File f : dirContents)
+		for (MemoizedFile f : dirContents)
 		{
 			if (isValidTestDir(f, TestType.ALL)) {
 				containsTestDir = true;
@@ -348,13 +346,13 @@ public class TestRunner {
 		}
 	}
 
-	private void runTestAndRecordDuration(File baseDirectory, TestRunResult testRun, File testDir, boolean resetServer) throws Exception {
+	private void runTestAndRecordDuration(MemoizedFile baseDirectory, TestRunResult testRun, MemoizedFile testDir, boolean resetServer) throws Exception {
 		testRun.setStartTime(System.currentTimeMillis());
 		testRun.setSuccess(runTest(baseDirectory, getJsTestDriverConf(testDir), resetServer));
 		testRun.setEndTime(System.currentTimeMillis());
 	}
 	
-	private boolean runTest(File baseDirectory, File configFile, boolean resetServer) throws Exception  {
+	private boolean runTest(MemoizedFile baseDirectory, MemoizedFile configFile, boolean resetServer) throws Exception  {
 		logger.warn("\n");
 		logger.warn("Testing " + getFriendlyTestPath(baseDirectory, configFile) + ":");
 		
@@ -566,16 +564,16 @@ public class TestRunner {
 		return Joiner.on(System.getProperty("path.separator")).join(classPath);
 	}
 	
-	private String getFriendlyTestPath(File baseDir, File testDir)
+	private String getFriendlyTestPath(MemoizedFile baseDir, MemoizedFile testDir)
 	{
-		File testTypeDir = testDir.getParentFile();
+		MemoizedFile testTypeDir = testDir.getParentFile();
 		if (testTypeDir.getPath().contains("js-test-driver")) {
 			testTypeDir = testTypeDir.getParentFile();
 		}
 //		File projectDir = testTypeDir.getParentFile();
 //		String testPath = (projectDir.equals(baseDir)) ? projectDir.getName() : RelativePath.getRelativePath(baseDir, projectDir);
 		
-		String testPath = RelativePathUtility.get(brjs, baseDir, testTypeDir);
+		String testPath = baseDir.getRelativePath(testTypeDir);
 		
 		return testPath + " " + (getTestTypeFromDirectoryName(testTypeDir.getName()));
 	}
@@ -611,7 +609,7 @@ public class TestRunner {
 		return browserCount;
 	}
 	
-	private boolean isValidTestDir(File dir, TestType validTestTypes) throws Exception {
+	private boolean isValidTestDir(MemoizedFile dir, TestType validTestTypes) throws Exception {
 		TestType dirType = getDirType(dir);
 		boolean isJsTestDriverTestDir = false;
 		
@@ -683,12 +681,12 @@ public class TestRunner {
 		logger.error("ERROR: " + ex.toString());
 	}
 	
-	private File getJsTestDriverConf(File baseDir) {
-		File testTechDir = new File(baseDir,"js-test-driver");
-		File defaultTestTechDir = baseDir;
+	private MemoizedFile getJsTestDriverConf(MemoizedFile baseDir) {
+		MemoizedFile testTechDir = baseDir.file("js-test-driver");
+		MemoizedFile defaultTestTechDir = baseDir;
 		if ( new File(testTechDir, "jsTestDriver.conf").exists() ) {
-			return new File(testTechDir, "jsTestDriver.conf");
+			return testTechDir.file("jsTestDriver.conf");
 		}
-		return new File(defaultTestTechDir, "jsTestDriver.conf");
+		return defaultTestTechDir.file("jsTestDriver.conf");
 	}
 }

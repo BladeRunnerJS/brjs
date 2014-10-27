@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -30,7 +29,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
@@ -51,11 +49,11 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	private List<String> requirePaths = new ArrayList<>();
 	public static final String JS_STYLE = "common-js";
 	
-	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public CommonJsSourceModule(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		String requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().getRelativePath(assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
@@ -151,7 +149,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public String getAssetPath() {
-		return RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetFile);
+		return assetLocation.assetContainer().app().dir().getRelativePath(assetFile);
 	}
 	
 	@Override

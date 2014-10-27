@@ -23,7 +23,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
@@ -41,7 +40,7 @@ public class ThirdpartySourceModule implements SourceModule
 	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
-			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetLocation.dir());
+			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(assetLocation.dir());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 			manifest = assetLocation.getManifest();

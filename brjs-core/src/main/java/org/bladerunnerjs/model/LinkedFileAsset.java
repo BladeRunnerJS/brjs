@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collections;
@@ -12,7 +11,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 /**
@@ -27,12 +25,12 @@ public class LinkedFileAsset implements LinkedAsset {
 	private String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	
-	public LinkedFileAsset(File assetFile, AssetLocation assetLocation) {
+	public LinkedFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
 			app = assetLocation.assetContainer().app();
 			this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
-			assetPath = RelativePathUtility.get(app.root(), app.dir(), assetFile);
+			assetPath = app.dir().getRelativePath(assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {

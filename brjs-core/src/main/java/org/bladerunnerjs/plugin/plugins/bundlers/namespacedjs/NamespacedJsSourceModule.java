@@ -23,8 +23,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
-
 import com.Ostermiller.util.ConcatReader;
 import com.google.common.base.Joiner;
 
@@ -40,12 +38,12 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private TrieBasedDependenciesCalculator trieBasedPostExportDefineTimeDependenciesCalculator;
 	public static final String JS_STYLE = "namespaced-js";
 	
-	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public NamespacedJsSourceModule(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
 		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetLocation);
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		String requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().getRelativePath(assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
 
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());

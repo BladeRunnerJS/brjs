@@ -33,7 +33,6 @@ import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
@@ -186,7 +185,7 @@ public class BRJS extends AbstractBRJSRootNode
 			node = node.parentNode();
 		}
 		
-		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(this, dir(), file) );
+		if (bundlableNode == null) throw new InvalidBundlableNodeException( dir().getRelativePath( getMemoizedFile(file) ) );
 		
 		return bundlableNode;
 	}

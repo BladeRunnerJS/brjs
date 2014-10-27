@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -19,7 +19,6 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -92,11 +91,11 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	private void runCommand(App app, File outputDir) throws CommandOperationException, ConfigException {
 		List<String> commandArgs = new ArrayList<>();
 		
-		File workingDir = brjs.dir();
-		File jsdocToolkitInstallDir = getToolkitResourcesDir(brjs);
+		MemoizedFile workingDir = brjs.dir();
+		MemoizedFile jsdocToolkitInstallDir = getToolkitResourcesDir(brjs);
 		// this allows the toolkit and the conf to be overridden
-		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
-		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
+		MemoizedFile jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
+		MemoizedFile jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
 		
 		if (brjs.bladerunnerConf().useNodeCommands()) {
 			addNodeCommandArgs(commandArgs, workingDir, jsDocToolkitDir);
@@ -104,13 +103,13 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			addRhinoCommandArgs(commandArgs, workingDir, jsDocToolkitDir);			
 		}
 		
-		commandArgs.add( RelativePathUtility.get(brjs, workingDir, app.dir())+"/" ); // add the app dir
+		commandArgs.add( workingDir.getRelativePath(app.dir())+"/" ); // add the app dir
 		// sdk/libs/javascript is added via config file so dirs can be optionally ignored
 		commandArgs.add("-c"); // set the config file
-			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocConfFile) );
+			commandArgs.add( workingDir.getRelativePath(jsDocConfFile) );
 		commandArgs.add("-r"); // recurse into dirs
 		commandArgs.add("-d"); // the output dir
-			commandArgs.add( RelativePathUtility.get(brjs, workingDir, outputDir) );
+			commandArgs.add( workingDir.getRelativePath( brjs.getMemoizedFile(outputDir) ) );
 		commandArgs.add("-q");
 			commandArgs.add( "date="+getBuildDate()+"&version="+brjs.versionInfo().getVersionNumber() );
 		
@@ -125,15 +124,15 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		CommandRunnerUtility.runCommand(brjs, processBuilder);
 	}
 
-	private void addNodeCommandArgs(List<String> commandArgs, File workingDir, File jsDocToolkitDir)
+	private void addNodeCommandArgs(List<String> commandArgs, MemoizedFile workingDir, MemoizedFile jsDocToolkitDir)
 	{
 		commandArgs.add("node");
-		commandArgs.add(RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc.js");
+		commandArgs.add(workingDir.getRelativePath(jsDocToolkitDir)+"/jsdoc.js");
 	}
 	
-	private void addRhinoCommandArgs(List<String> commandArgs, File workingDir, File jsDocToolkitDir)
+	private void addRhinoCommandArgs(List<String> commandArgs, MemoizedFile workingDir, MemoizedFile jsDocToolkitDir)
 	{
-		String command = RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc";
+		String command = workingDir.getRelativePath(jsDocToolkitDir)+"/jsdoc";
 		if(System.getProperty("os.name").split(" ")[0].toLowerCase().equals("windows"))
 		{
 			command = command.replace("/", "\\") + ".cmd";
@@ -143,12 +142,12 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		commandArgs.add(command);
 	}
 
-	private File getSystemOrUserConfPath(BRJS brjs, File systemDirBase, String dirName) {
+	private MemoizedFile getSystemOrUserConfPath(BRJS brjs, File systemDirBase, String dirName) {
 		File userConfDir = brjs.conf().file(dirName);
 		if (userConfDir.exists()) {
-			return userConfDir;
+			return brjs.getMemoizedFile( userConfDir );
 		}
-		return new File(systemDirBase, dirName);
+		return brjs.getMemoizedFile( new File(systemDirBase, dirName) );
 	}
 	
 	private String getBuildDate() {
@@ -159,14 +158,14 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	
 	
 	public static void copyJsDocPlaceholder(App app) throws IOException {
-		File placeholderSrcDir = new File(getToolkitResourcesDir(app.root()), "jsdoc-placeholders");
+		MemoizedFile placeholderSrcDir = getToolkitResourcesDir(app.root()).file("jsdoc-placeholders");
 		if (!placeholderSrcDir.exists()) {
 			return;
 		}
-		File placeholderDestDir = app.storageDir(APP_STORAGE_DIR_NAME);
+		MemoizedFile placeholderDestDir = app.storageDir(APP_STORAGE_DIR_NAME);
 		placeholderDestDir.mkdirs();
-		for (File srcFile : FileUtils.listFiles(placeholderSrcDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-			String pathRelativeToDestDir = RelativePathUtility.get(app.root(), placeholderSrcDir, srcFile);
+		for (MemoizedFile srcFile : placeholderSrcDir.nestedFiles()) {
+			String pathRelativeToDestDir = placeholderSrcDir.getRelativePath(srcFile);
 			File destFile = new File(placeholderDestDir, pathRelativeToDestDir);
 			if (!destFile.exists()) {
 				FileUtils.copyFile(srcFile, destFile);
@@ -174,9 +173,9 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		}
 	}
 
-    private static File getToolkitResourcesDir(BRJS brjs)
+    private static MemoizedFile getToolkitResourcesDir(BRJS brjs)
     {
-    	return new File(brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
+    	return brjs.sdkRoot().file("jsdoc-toolkit-resources");
     }
 	
 }

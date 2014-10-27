@@ -14,7 +14,6 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.JSAP;
@@ -78,7 +77,7 @@ public class J2eeifyCommandPlugin extends ArgsParsingCommandPlugin
 			throw new CommandOperationException(ex);
 		}
 		
-		String relativeWebInf = RelativePathUtility.get(brjs, app.root().dir(), app.file("WEB-INF"));
+		String relativeWebInf = app.root().dir().getRelativePath(app.file("WEB-INF"));
 		logger.println(Messages.SUCCESSFULLY_J2EEIFIED_APP_MESSAGE, appName, relativeWebInf);
 		
 		return 0;

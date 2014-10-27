@@ -175,9 +175,18 @@ public class MemoizedFile extends File
 		return nestedDirs;
 	}	
 	
+	public MemoizedFile file(String childPath)
+	{
+		return rootNode.getMemoizedFile(this, childPath);
+	}
+	
 	public File getUnderlyingFile()
 	{
 		return wrappedFile;
+	}
+	
+	public String getRelativePath(MemoizedFile childFile) {
+		return MemoizedFileRelativePathUtility.getRelativePath(this, childFile);
 	}
 	
 	// -- Private Stuff --

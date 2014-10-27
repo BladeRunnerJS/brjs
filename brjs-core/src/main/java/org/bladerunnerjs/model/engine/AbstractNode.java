@@ -26,7 +26,6 @@ import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.NodePathGenerator;
 import org.bladerunnerjs.utility.ObserverList;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public abstract class AbstractNode implements Node
@@ -341,7 +340,7 @@ public abstract class AbstractNode implements Node
 	public String toString()
 	{
 		if (root() instanceof BRJS) { // check the type since root() is a TestRootNode in some tests
-			return getTypeName()+", dir: " + RelativePathUtility.get(root(), root().dir(), dir());
+			return getTypeName()+", dir: " + root().dir().getRelativePath(dir());
 		}
 		return getTypeName()+", dir: " + dir().getPath();
 	}

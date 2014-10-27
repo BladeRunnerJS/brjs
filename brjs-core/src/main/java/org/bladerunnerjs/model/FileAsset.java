@@ -9,7 +9,6 @@ import java.util.List;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class FileAsset implements Asset {
@@ -23,7 +22,7 @@ public class FileAsset implements Asset {
 			this.file = assetLocation.root().getMemoizedFile(assetFile);
 			this.assetLocation = assetLocation;
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), file);
+			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(file);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

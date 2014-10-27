@@ -1,12 +1,12 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -17,7 +17,6 @@ import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandExc
 import org.bladerunnerjs.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -74,37 +73,37 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		
 		App app = brjs.app(appName);
 		
-		File targetDir = brjs.storageDir("built-apps");
-		File appExportDir;
-		File warExportFile;
+		MemoizedFile targetDir = brjs.storageDir("built-apps");
+		MemoizedFile appExportDir;
+		MemoizedFile warExportFile;
 		
 		if (hasExplicitExportDirArg) 
 		{
-			targetDir = new File(targetDirPath);
+			targetDir = brjs.getMemoizedFile( new File(targetDirPath) );
 			if (!targetDir.isDirectory()) 
 			{
 				targetDir = brjs.file("sdk/" + targetDirPath);
 			}
 			appExportDir = targetDir;
-			warExportFile = new File(targetDir, appName+".war");			
+			warExportFile = targetDir.file(appName+".war");			
 		} 
 		else {
-			appExportDir = new File(targetDir, appName);
-			warExportFile = new File(targetDir, appName+".war");
+			appExportDir = targetDir.file(appName);
+			warExportFile = targetDir.file(appName+".war");
 			
 			if (warExport && warExportFile.exists()) {
 				boolean deleted = FileUtils.deleteQuietly(warExportFile);
 				if (!deleted) {
-					File oldWarExportFile = warExportFile;
-					warExportFile = new File(targetDir, appName+"_"+getBuiltAppTimestamp()+".war");
-					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs, app.dir(), oldWarExportFile), RelativePathUtility.get(brjs, app.dir(), warExportFile)); 
+					MemoizedFile oldWarExportFile = warExportFile;
+					warExportFile = targetDir.file(appName+"_"+getBuiltAppTimestamp()+".war");
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, app.dir().getRelativePath(oldWarExportFile), app.dir().getRelativePath(warExportFile)); 
 				}
 			} else if (!warExport && appExportDir.exists()){
 				boolean deleted = FileUtils.deleteQuietly(appExportDir);			
 				if (!deleted) {
-					File oldAppExportDir = appExportDir;
-					appExportDir = new File(targetDir, appName+"_"+getBuiltAppTimestamp());
-					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs, app.dir(), oldAppExportDir), RelativePathUtility.get(brjs, app.dir(), appExportDir));
+					MemoizedFile oldAppExportDir = appExportDir;
+					appExportDir = targetDir.file(appName+"_"+getBuiltAppTimestamp());
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, app.dir().getRelativePath(oldAppExportDir), app.dir().getRelativePath(appExportDir));
 				}
 			}
 			targetDir.mkdirs();
@@ -130,7 +129,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());
 			}
 		}
-		catch (ModelOperationException | IOException e) {
+		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
 		}
 		

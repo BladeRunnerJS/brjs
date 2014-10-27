@@ -1,44 +1,19 @@
-package org.bladerunnerjs.utility;
+package org.bladerunnerjs.memoization;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.engine.RootNode;
 
-public class RelativePathUtility {
+
+class MemoizedFileRelativePathUtility
+{
 	
-	public static String get(RootNode rootNode, File basePath, File childPath) {
-		return get( rootNode.getMemoizedFile(basePath), rootNode.getMemoizedFile(childPath) );
-	}
-	
-	public static String get(MemoizedFile basePath, MemoizedFile childPath) {
-		String baseCanonicalPath,  childCanonicalPath;
-		
-		try {
-			baseCanonicalPath = basePath.getCanonicalPath();
-			childCanonicalPath = childPath.getCanonicalPath();
-		} catch (NullPointerException ex) {
-			//TODO: fix the chicken/egg issue that causes this NPE if RelaltivePath is used during the file modification service constructor
-			baseCanonicalPath = getCanonicalPath(basePath);
-			childCanonicalPath = getCanonicalPath(childPath);			
-		}
-		
-		return getRelativePath( baseCanonicalPath, childCanonicalPath );
-	}
-	
-	private static String getCanonicalPath(File path)
-	{
-		try {
-			return path.getCanonicalPath();
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
+	static String getRelativePath(MemoizedFile parentFile, MemoizedFile childFile) {
+		return getRelativePath( parentFile.getAbsolutePath(), childFile.getAbsolutePath() );
 	}
 	
 	
@@ -145,5 +120,4 @@ public class RelativePathUtility {
         }
         return buffer.toString();
     }
-	
 }

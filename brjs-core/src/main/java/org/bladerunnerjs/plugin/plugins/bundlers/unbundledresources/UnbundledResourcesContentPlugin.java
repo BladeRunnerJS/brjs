@@ -2,11 +2,11 @@ package org.bladerunnerjs.plugin.plugins.bundlers.unbundledresources;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
@@ -20,7 +20,6 @@ import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
@@ -78,14 +77,14 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     		{
     			String relativeFilePath = contentPath.properties.get(FILE_PATH_REQUEST_FORM);
     			
-    			File unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
+    			MemoizedFile unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
     			App app = bundleSet.getBundlableNode().app();
-    			File requestedFile = new File(unbundledResourcesDir, relativeFilePath);
-    			String requestedFilePathRelativeToApp = RelativePathUtility.get(brjs, app.dir(), requestedFile);
+    			MemoizedFile requestedFile = unbundledResourcesDir.file(relativeFilePath);
+    			String requestedFilePathRelativeToApp = app.dir().getRelativePath(requestedFile);
     			
     			if (!requestedFile.isFile())
     			{
-    				String requestedFilePathRelativeToRoot = RelativePathUtility.get(brjs, app.dir().getParentFile(), requestedFile);
+    				String requestedFilePathRelativeToRoot = app.dir().getParentFile().getRelativePath(requestedFile);
     				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
     			}
 				
@@ -120,7 +119,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		
 		List<String> requestPaths = new ArrayList<String>();
 		
-		File unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
+		MemoizedFile unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
 		
 		if (!unbundledResourcesDir.isDirectory())
 		{
@@ -129,9 +128,9 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		
 		try
 		{
-			for (File file : brjs.getMemoizedFile(unbundledResourcesDir).nestedFiles())
+			for (MemoizedFile file : brjs.getMemoizedFile(unbundledResourcesDir).nestedFiles())
 			{
-    			String relativePath = RelativePathUtility.get(brjs, unbundledResourcesDir, file);
+    			String relativePath = unbundledResourcesDir.getRelativePath(file);
     			requestPaths.add( contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath) );
     			requestPaths.add( contentPathParser.createRequest(VERSIONED_UNBUNDLED_RESOURCES_REQUEST, relativePath) );
 			}

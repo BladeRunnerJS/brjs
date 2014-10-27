@@ -33,7 +33,6 @@ import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class CssResourceContentPlugin extends AbstractContentPlugin {	
 	public static final String ASPECT_THEME_REQUEST = "aspect-theme-request";
@@ -135,7 +134,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		String theme = contentPath.properties.get("theme");
 		String resourcePath = contentPath.properties.get("resourcePath");
-		File resourceFile = null;
+		MemoizedFile resourceFile = null;
 		
 		if (contentPath.formName.equals(ASPECT_THEME_REQUEST))
 		{
@@ -203,7 +202,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		try
 		{
 			if (fileIgnoredByBrjsConfig(resourceFile)) {
-				String relativePath = RelativePathUtility.get(brjs, brjs.dir(), resourceFile);
+				String relativePath = brjs.dir().getRelativePath(resourceFile);
 				throw new FileNotFoundException("The file at '"+relativePath+"' is ignored by the BRJS configuration so cannot be served");
 			}
 			return new BinaryResponseContent( new FileInputStream(resourceFile) );	
@@ -214,9 +213,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private boolean fileIgnoredByBrjsConfig(File resourceFile) throws ConfigException
+	private boolean fileIgnoredByBrjsConfig(MemoizedFile resourceFile) throws ConfigException
 	{
-		String relativePath = RelativePathUtility.get(brjs, brjs.dir(), resourceFile);
+		String relativePath = brjs.dir().getRelativePath(resourceFile);
 		for (String ignoredPath : brjs.bladerunnerConf().getIgnoredPaths()) {
 			if (relativePath.contains(ignoredPath+"/") || relativePath.endsWith(ignoredPath)) {
 				return true;
@@ -310,7 +309,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		for (ResourcesAssetLocation assetLocation : getResourceAssetLocations(container)){
 			MemoizedFile assetLocationDir = brjs.getMemoizedFile( assetLocation.dir() );
 			if (assetLocationDir.isDirectory()){
-				for (File file : assetLocationDir.nestedFiles()) {
+				for (MemoizedFile file : assetLocationDir.nestedFiles()) {
 					if (!fileIgnoredByBrjsConfig(file)) {
 						createRequestForNestedDir(container, themeRequestName, resourcesRequestName, contentPaths, assetLocation, file, requestArgs);
 					}
@@ -321,21 +320,21 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		return contentPaths;
 	}
 
-	private void createRequestForNestedDir(AssetContainer container, String themeRequestName, String resourcesRequestName, Set<String> contentPaths, AssetLocation assetLocation, File file, String... requestArgs) throws MalformedTokenException
+	private void createRequestForNestedDir(AssetContainer container, String themeRequestName, String resourcesRequestName, Set<String> contentPaths, AssetLocation assetLocation, MemoizedFile file, String... requestArgs) throws MalformedTokenException
 	{
 		File assetLocationParentDir = assetLocation.dir().getParentFile();
 		//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'?
 		if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
 			if (themeRequestName != null) {
 				ThemedAssetLocation themeAssetLocation = (ThemedAssetLocation) assetLocation;
-				String assetPath = RelativePathUtility.get(brjs, assetLocation.dir(), file);
+				String assetPath = assetLocation.dir().getRelativePath(file);
 				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themeAssetLocation.getThemeName(), assetPath } );
 				String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
 				contentPaths.add(request );
 			}
 		} else {
 			if (resourcesRequestName != null) {
-				String assetPath = RelativePathUtility.get(brjs, container.dir(), file);
+				String assetPath = container.dir().getRelativePath(file);
 				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
 				contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
 			}
