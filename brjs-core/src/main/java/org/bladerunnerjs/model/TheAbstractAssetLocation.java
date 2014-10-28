@@ -14,7 +14,7 @@ import org.bladerunnerjs.plugin.utility.*;
 import org.bladerunnerjs.utility.*;
 
 // TODO Java 8 (1.8.0-b123) compiler throws errors when this class is named 'AbstractAssetLocation'
-public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
+public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implements AssetLocation {
 	private final AssetLocation parentAssetLocation;
 	private final AssetContainer assetContainer;
 	private final MemoizedFile dir;
