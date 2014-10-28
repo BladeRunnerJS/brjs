@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.FileUtility;
 
 
-public class MemoizedFile extends File
+public class MemoizedFile extends File implements Comparable<File>
 {
 	private static final long serialVersionUID = 7406703034536312889L;
 	private MemoizedValue<ComputedValue> computedValue;
@@ -193,6 +193,30 @@ public class MemoizedFile extends File
 	
 	public String getRelativePath(MemoizedFile childFile) {
 		return MemoizedFileRelativePathUtility.getRelativePath(this, childFile);
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		return wrappedFile.equals(obj);
+	}
+	
+	@Override
+	public int compareTo(File pathname)
+	{
+		return wrappedFile.compareTo(pathname);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return wrappedFile.toString();
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return wrappedFile.hashCode();
 	}
 	
 	// -- Private Stuff --
