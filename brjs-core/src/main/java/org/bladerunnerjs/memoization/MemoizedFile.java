@@ -219,6 +219,16 @@ public class MemoizedFile extends File implements Comparable<File>
 		return wrappedFile.hashCode();
 	}
 	
+	public void incrementFileVersion()
+	{
+    	rootNode.getFileModificationRegistry().incrementFileVersion( wrappedFile );
+	}
+	
+	public void incrementChildFileVersions()
+	{
+		rootNode.getFileModificationRegistry().incrementChildFileVersions( wrappedFile );
+	}
+	
 	// -- Private Stuff --
 	
 	private void populateNestedFilesAndDirs(MemoizedFile file, List<MemoizedFile> nestedFilesAndDirs) {
