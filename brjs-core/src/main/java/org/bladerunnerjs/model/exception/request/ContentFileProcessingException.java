@@ -2,6 +2,10 @@ package org.bladerunnerjs.model.exception.request;
 
 import java.io.File;
 
+/**
+ * Class derived from ContentProcessingException - Exception - Throwable - Object.
+ * Thrown when problems have been encountered while processing the specified file. 
+*/
 
 public class ContentFileProcessingException extends ContentProcessingException
 {

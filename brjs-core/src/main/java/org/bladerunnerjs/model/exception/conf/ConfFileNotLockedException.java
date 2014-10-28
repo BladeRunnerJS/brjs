@@ -2,6 +2,11 @@ package org.bladerunnerjs.model.exception.conf;
 
 import java.io.File;
 
+/**
+ * Class derived from RuntimeException - Exception - Throwable - Object.
+ * Thrown when a configuration file is being written to without being locked beforehand. 
+*/ 
+
 public class ConfFileNotLockedException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	

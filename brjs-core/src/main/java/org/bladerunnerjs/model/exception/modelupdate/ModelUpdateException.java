@@ -1,5 +1,12 @@
 package org.bladerunnerjs.model.exception.modelupdate;
 
+/**
+ * Class derived from Exception - Throwable - Object.
+ * This is the superclass for 
+ * @see org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsModelException
+ * @see org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException
+*/ 
+
 public class ModelUpdateException extends Exception {
 	private static final long serialVersionUID = 1L;
 	private String message;

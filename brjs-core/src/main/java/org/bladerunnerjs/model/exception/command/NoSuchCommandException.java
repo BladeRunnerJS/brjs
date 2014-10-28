@@ -1,5 +1,10 @@
 package org.bladerunnerjs.model.exception.command;
 
+/**
+ * Class derived from Exception - Throwable - Object.
+ * Thrown when an invalid command that does not exist has been inputted. 
+*/ 
+
 public class NoSuchCommandException extends Exception {
 	private static final long serialVersionUID = 1L;
 	private final String commandName;

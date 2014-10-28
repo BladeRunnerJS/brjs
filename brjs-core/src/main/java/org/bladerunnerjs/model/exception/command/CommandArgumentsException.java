@@ -2,6 +2,17 @@ package org.bladerunnerjs.model.exception.command;
 
 import org.bladerunnerjs.plugin.CommandPlugin;
 
+/**
+ * Class derived from Exception - Throwable - Object.
+ * This is the superclass for 
+ * @see org.bladerunnerjs.model.exception.command.ArgumentParsingException
+ * @see org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandException
+ * @see org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException
+ * @see org.bladerunnerjs.model.exception.command.DirectoryNotEmptyCommandException
+ * @see org.bladerunnerjs.model.exception.command.IncorrectNumberOfArgumentsException
+ * @see org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException
+ * @see org.bladerunnerjs.model.exception.command.NodeDoesNotExistException
+*/ 
 
 public class CommandArgumentsException extends Exception
 {

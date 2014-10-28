@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.exception;
 
 /**
- * Class derived from RequestHandlingException - Exception - Throwable s Object.
+ * Class derived from RequirePathException - Exception - Throwable - Object.
  * Thrown when the specified request path could not be found. 
 */ 
 
