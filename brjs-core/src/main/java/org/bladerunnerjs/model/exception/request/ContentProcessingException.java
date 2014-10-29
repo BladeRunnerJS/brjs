@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.exception.request;
 
 /**
- * Class derived from RequestHandlingException - Exception - Throwable - Object.
  * Thrown when the request has failed, but has not been due to a malformed request or resource not found. 
 */ 
 

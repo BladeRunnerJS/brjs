@@ -1,5 +1,8 @@
 package org.bladerunnerjs.model.exception;
 
+/**
+ * Thrown when an error has been encountered while setting the properties of a plugin or node. 
+*/ 
 
 public class PropertiesException extends Exception
 {

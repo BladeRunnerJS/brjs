@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.exception;
 
 /**
- * Class derived from Exception - Throwable - Object.
  * Thrown when the required configuration could not be resolved.
 */
 

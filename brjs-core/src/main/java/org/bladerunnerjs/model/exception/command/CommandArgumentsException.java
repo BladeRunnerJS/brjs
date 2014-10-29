@@ -3,7 +3,6 @@ package org.bladerunnerjs.model.exception.command;
 import org.bladerunnerjs.plugin.CommandPlugin;
 
 /**
- * Class derived from Exception - Throwable - Object.
  * This is the superclass for 
  * @see org.bladerunnerjs.model.exception.command.ArgumentParsingException
  * @see org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandException

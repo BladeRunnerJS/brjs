@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.SourceModule;
 import com.google.common.base.Joiner;
 
 /**
- * Class derived from ModelOperationException - Exception - Throwable - Object.
  * Thrown when several classes have produced a circular dependency that prevented the bundle from being written.
 */
 

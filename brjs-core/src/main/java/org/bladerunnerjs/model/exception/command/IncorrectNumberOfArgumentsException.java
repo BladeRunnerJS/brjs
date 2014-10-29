@@ -3,7 +3,6 @@ package org.bladerunnerjs.model.exception.command;
 import org.bladerunnerjs.plugin.CommandPlugin;
 
 /**
- * Class derived from CommandArgumentsException - Exception - Throwable - Object.
  * Thrown when the inputted number of arguments does not match the required number of arguments. 
 */ 
 

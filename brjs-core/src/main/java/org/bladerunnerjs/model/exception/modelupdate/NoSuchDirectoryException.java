@@ -3,7 +3,6 @@ package org.bladerunnerjs.model.exception.modelupdate;
 import org.bladerunnerjs.model.engine.Node;
 
 /**
- * Class derived from ModelUpdateException - Exception - Throwable - Object.
  * Thrown when it was attempted to delete a non-existent directory. 
 */ 
 

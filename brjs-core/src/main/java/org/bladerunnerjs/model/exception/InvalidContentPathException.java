@@ -3,7 +3,6 @@ package org.bladerunnerjs.model.exception;
 import org.bladerunnerjs.plugin.ContentPlugin;
 
 /**
- * Class derived from ModelOperationException - Exception - Throwable - Object.
  * Thrown when an incorrect content plugin path has been specified.
 */
 

@@ -1,5 +1,9 @@
 package org.bladerunnerjs.model.exception.test;
 
+/**
+ * Thrown when the test configuration file does not contain any browser-related configuration.
+*/
+
 public class NoBrowsersDefinedException extends Exception {
 
 	private static final long serialVersionUID = 1L;

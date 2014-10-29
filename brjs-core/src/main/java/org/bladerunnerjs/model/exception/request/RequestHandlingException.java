@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.exception.request;
 
 /**
- * Class derived from Exception - Throwable - Object.
  * This is the superclass for 
  * @see org.bladerunnerjs.model.exception.request.ContentProcessingException
  * @see org.bladerunnerjs.model.exception.request.MalformedRequestException

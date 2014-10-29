@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.exception.conf;
 
 /**
- * Class derived from RuntimeException - Exception - Throwable - Object.
  * Thrown when the locking of a configuration file is being attempted when it has already been locked beforehand. 
 */ 
 

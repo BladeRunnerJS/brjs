@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.exception.command;
 
 /**
- * Class derived from Exception - Throwable - Object.
  * Thrown when an invalid command that does not exist has been inputted. 
 */ 
 

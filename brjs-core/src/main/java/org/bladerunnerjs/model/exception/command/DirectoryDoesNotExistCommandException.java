@@ -3,7 +3,6 @@ package org.bladerunnerjs.model.exception.command;
 import org.bladerunnerjs.plugin.CommandPlugin;
 
 /**
- * Class derived from CommandArgumentsException - Exception - Throwable - Object.
  * Thrown when the directory does not exist on the specified path. 
 */ 
 

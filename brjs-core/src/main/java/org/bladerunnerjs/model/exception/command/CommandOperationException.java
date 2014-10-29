@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.exception.command;
 
 /**
- * Class derived from Exception - Throwable - Object.
  * Thrown when the command operations failed e.g. due to invalid arguments or URL, error creating directory, no tests found in specified locations,
  * non-existent test path or failing test.
 */ 

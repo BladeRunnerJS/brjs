@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.exception.request;
 
 /**
- * Class derived from RequestHandlingException - Exception - Throwable - Object.
  * Thrown when the requested content plugin does not exist. 
 */
 

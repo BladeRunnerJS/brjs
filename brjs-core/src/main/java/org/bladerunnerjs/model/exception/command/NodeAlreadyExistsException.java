@@ -4,7 +4,6 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.plugin.CommandPlugin;
 
 /**
- * Class derived from CommandArgumentsException - Exception - Throwable - Object.
  * Thrown when the specified node already exists. 
 */ 
 

@@ -5,7 +5,6 @@ import javax.naming.InvalidNameException;
 import org.bladerunnerjs.model.engine.Node;
 
 /**
- * Class derived from InvalidNameException - NamingException - Exception - Throwable - Object.
  * Thrown when the specified Javascript package name is not valid for the node. 
 */ 
 

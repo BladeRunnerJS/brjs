@@ -3,7 +3,6 @@ package org.bladerunnerjs.model.exception.request;
 import java.util.regex.Pattern;
 
 /**
- * Class derived from Exception - Throwable - Object.
  * Thrown when the specified token-value pair does not match the required format. 
 */
 
