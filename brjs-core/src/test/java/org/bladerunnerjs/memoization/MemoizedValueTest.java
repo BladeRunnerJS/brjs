@@ -6,14 +6,12 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
-import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,17 +21,15 @@ public class MemoizedValueTest extends TestModelAccessor {
 	private File sdkDir;
 	private File watchFile;
 	private BRJS brjs;
-	private FileInfo watchFileInfo;
 	
 	@Before
 	public void setUp() throws Exception {
 		tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
-		watchFile = new File(tempDir, "watch-file");
 		sdkDir = new File(tempDir, "sdk");
+		watchFile = new File(sdkDir, "watch-file");
 		
 		sdkDir.mkdir();
-		brjs = createModel(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator());
-		watchFileInfo = brjs.getFileInfo(watchFile);
+		brjs = createModel(sdkDir, new MockPluginLocator(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator());
 	}
 
 	@After
@@ -57,7 +53,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
-		watchFileInfo.resetLastModified();
+		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 	}
@@ -74,7 +70,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 		}
 		
 		assertEquals(0, (int) memoizedValue.value(incrementingGetter));
-		watchFileInfo.resetLastModified();
+		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 	}

@@ -18,7 +18,7 @@ import org.bladerunnerjs.utility.*;
 public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
 	private final AssetLocation parentAssetLocation;
 	private final AssetContainer assetContainer;
-	private final FileInfo dirInfo;
+	private final MemoizedFile dir;
 	
 	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
@@ -30,7 +30,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir);
 		
-		dirInfo = root().getFileInfo(dir);
+		this.dir = root().getMemoizedFile(dir);
 		assetLocator = new AssetLocator(this);
 		emptyAssets = new Assets(root());
 		this.parentAssetLocation = parentAssetLocation;
@@ -38,7 +38,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
-	protected abstract List<File> getCandidateFiles();
+	protected abstract List<MemoizedFile> getCandidateFiles();
 	
 	@Override
 	public String requirePrefix() {
@@ -81,7 +81,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		// TODO: fix this dependency from the model to plug-in code (ResourcesAssetLocation)
 		//       we instead need a way to either know this asset-location has a deep directory structure, or have way of getting it to list it's nested directories
 		if(dir().exists() && (this instanceof ResourcesAssetLocation)) {
-			for(File dir : root().getFileInfo(dir()).nestedDirs()) {
+			for(File dir : root().getMemoizedFile(dir()).nestedDirs()) {
 				if(new File(dir, "aliasDefinitions.xml").exists()) {
 					String dirPath = dir.getAbsolutePath();
 					
@@ -134,7 +134,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	}
 	
 	private Assets assets() {
-		return (!dirInfo.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
+		return (!dir.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
 	}
 	
 	@Override
@@ -177,10 +177,6 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		}
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
-	}
-	
-	protected FileInfo getDirInfo() {
-		return dirInfo;
 	}
 	
 }

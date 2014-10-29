@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -28,11 +29,11 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles() {
+	public MemoizedFile[] memoizedScopeFiles() {
 		List<File> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
 		scopeFiles.add(dir());
 		
-		return scopeFiles.toArray(new File[scopeFiles.size()]);
+		return scopeFiles.toArray(new MemoizedFile[scopeFiles.size()]);
 	}
 
 	public DirNode styleResources()

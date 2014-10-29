@@ -23,7 +23,7 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	
 	public void setRequirePrefix(String requirePrefix) throws ConfigException {
 		getConf().requirePrefix = requirePrefix;
-		verify();
+		verifyAndAutoWrite();
 	}
 	
 	public Locale[] getLocales() throws ConfigException {
@@ -37,7 +37,7 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	
 	public void setLocales(Locale[] locales) throws ConfigException {
 		getConf().locales = StringUtils.join(locales,",");
-		verify();
+		verifyAndAutoWrite();
 	}
 	
 	public Locale getDefaultLocale() throws ConfigException {
@@ -50,6 +50,6 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	
 	public void setLocaleCookieName(String cookieName) throws ConfigException {
 		getConf().localeCookieName = cookieName;
-		verify();
+		verifyAndAutoWrite();
 	}
 }

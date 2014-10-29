@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractShallowAssetLocation extends TheAbstractAssetLocation {
@@ -11,7 +12,7 @@ public abstract class AbstractShallowAssetLocation extends TheAbstractAssetLocat
 	}
 	
 	@Override
-	protected List<File> getCandidateFiles() {
-		return getDirInfo().files();
+	protected List<MemoizedFile> getCandidateFiles() {
+		return rootNode.getMemoizedFile(dir()).files();
 	}
 }

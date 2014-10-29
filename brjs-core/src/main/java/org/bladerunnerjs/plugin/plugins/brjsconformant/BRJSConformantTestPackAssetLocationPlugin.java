@@ -42,15 +42,15 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 			
 			File sourceTestDir = assetContainer.file("src-test");
 			if(sourceTestDir.exists()) {
-				for(File dir : brjs.getFileInfo(sourceTestDir).nestedDirs()) {
-					assetLocationDirectories.add(RelativePathUtility.get(brjs.getFileInfoAccessor(), assetContainer.dir(), dir));
+				for(File dir : brjs.getMemoizedFile(sourceTestDir).nestedDirs()) {
+					assetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
 				}
 			}
 			
 			File testsDir = assetContainer.file("tests");
 			if(testsDir.exists()) {
-				for(File dir : brjs.getFileInfo(testsDir).nestedDirs()) {
-					assetLocationDirectories.add(RelativePathUtility.get(brjs.getFileInfoAccessor(), assetContainer.dir(), dir));
+				for(File dir : brjs.getMemoizedFile(testsDir).nestedDirs()) {
+					assetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
 				}
 			}
 		}
@@ -67,8 +67,8 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 		
 		File testsDir = assetContainer.file("tests");
 		if(testsDir.exists()) {
-			for(File dir : brjs.getFileInfo(testsDir).nestedDirs()) {
-				seedAssetLocationDirectories.add(RelativePathUtility.get(brjs.getFileInfoAccessor(), assetContainer.dir(), dir));
+			for(File dir : brjs.getMemoizedFile(testsDir).nestedDirs()) {
+				seedAssetLocationDirectories.add(RelativePathUtility.get(brjs, assetContainer.dir(), dir));
 			}
 		}
 		
@@ -94,7 +94,7 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 				break;
 			
 			default:
-				String parentLocationPath = RelativePathUtility.get(brjs.getFileInfoAccessor(), assetContainer.dir(), dir.getParentFile());
+				String parentLocationPath = RelativePathUtility.get(brjs, assetContainer.dir(), dir.getParentFile());
 				AssetLocation parentAssetLocation = assetLocationsMap.get(parentLocationPath);
 				
 				if((parentAssetLocation instanceof ChildSourceAssetLocation) || (parentAssetLocation instanceof SourceAssetLocation)) {

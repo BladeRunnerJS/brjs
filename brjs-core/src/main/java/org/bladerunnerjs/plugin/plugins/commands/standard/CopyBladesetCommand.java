@@ -86,6 +86,7 @@ public class CopyBladesetCommand  extends ArgsParsingCommandPlugin
 		
 		try {
 			NodeImporter.importBladeset(sourceBladeset.dir(), sourceApp.appConf().getRequirePrefix(), sourceApp.appConf().getRequirePrefix() + "/" + sourceBladesetName, targetBladeset);
+			targetBladeset.incrementFileVersion();
 			
 			logger.println("Successfully copied " + sourceAppName + "/" + sourceBladesetName + " to " + targetAppName + "/" + targetBladesetName);
 		}

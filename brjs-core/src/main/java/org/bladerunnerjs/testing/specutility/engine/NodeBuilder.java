@@ -1,6 +1,7 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
@@ -48,7 +49,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFile(String filePath) throws Exception {
-		fileUtil.write(node.file(filePath), filePath + "\n");
+		writeToFile(node.file(filePath), filePath + "\n");
 		
 		return builderChainer;
 	}
@@ -62,7 +63,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
-		fileUtil.write(node.file(filePath), fileContents);
+		writeToFile(node.file(filePath), fileContents);
 		
 		return builderChainer;
 	}
@@ -74,7 +75,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsStorageFile(String pluginName, String filePath) throws Exception {
-		fileUtil.write(node.storageFile(pluginName, filePath), "");
+		writeToFile(node.storageFile(pluginName, filePath), "");
 		
 		return builderChainer;
 	}
@@ -88,7 +89,9 @@ public abstract class NodeBuilder<N extends Node> {
 	
 	public BuilderChainer hasDir(String filePath)
 	{
-		node.file(filePath).mkdirs();
+		File dir = node.file(filePath);
+		dir.mkdirs();
+		node.root().getFileModificationRegistry().incrementFileVersion(dir);
 		
 		return builderChainer;
 	}
@@ -134,4 +137,14 @@ public abstract class NodeBuilder<N extends Node> {
 		
 		return builderChainer;
 	}
+	
+	public void writeToFile(File file, String content) throws IOException {
+		writeToFile(file, content, false);
+	}
+	
+	public void writeToFile(File file, String content, boolean append) throws IOException {
+		fileUtil.write(file, content, append);
+		specTest.brjs.getFileModificationRegistry().incrementFileVersion(file);
+	}
+	
 }

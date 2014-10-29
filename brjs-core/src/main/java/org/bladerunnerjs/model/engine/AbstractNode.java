@@ -13,8 +13,8 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeDeletedEvent;
@@ -40,25 +40,29 @@ public abstract class AbstractNode implements Node
 	
 	private ObserverList observers = new ObserverList();
 	private Map<String, NodeProperties> propertiesMap = new TreeMap<String,NodeProperties>();
-	private Map<String, File> filesMap = new TreeMap<String,File>();
+	private Map<String, MemoizedFile> filesMap = new TreeMap<>();
 	
 	
 	
 	protected RootNode rootNode;
 	private Node parent;
 	protected File dir;
-	private FileInfo dirInfo;
-	private File[] scopeFiles;
+	private MemoizedFile memoizedDir;
+	private MemoizedFile[] scopeFiles;
 	
 	public AbstractNode(RootNode rootNode, Node parent, File dir) {
 		this.rootNode = rootNode;
 		this.parent = parent;
-		this.dir = (dir == null) ? null : new File(getNormalizedPath(dir));
-		scopeFiles = new File[] {dir};
+		if (dir == null) throw new RuntimeException("dir must not be null");		
+		this.dir = dir;
 	}
 	
 	public AbstractNode() {
 		this.rootNode = (RootNode) this;
+	}
+	
+	protected void setNodeDir(File file) {
+		this.dir = file;
 	}
 	
 	@Override
@@ -74,14 +78,20 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
-		return dir;
+		if (memoizedDir == null) {
+			memoizedDir = rootNode.getMemoizedFile(dir);
+		}
+		return memoizedDir;
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles()
+	public MemoizedFile[] memoizedScopeFiles()
 	{
+		if (scopeFiles == null) {
+			scopeFiles = new MemoizedFile[] {dir()};
+		}
 		return scopeFiles;
 	}
 	
@@ -94,11 +104,7 @@ public abstract class AbstractNode implements Node
 	@Override
 	public boolean dirExists()
 	{
-		if((dirInfo == null) && (dir != null)) {
-			dirInfo = rootNode.getFileInfo(dir);
-		}
-		
-		return (dirInfo == null) ? false : dirInfo.exists();
+		return dir().exists();
 	}
 	
 	@Override
@@ -108,12 +114,12 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
-	public File file(String filePath)
+	public MemoizedFile file(String filePath)
 	{
-		File cachedFile = filesMap.get(filePath);
+		MemoizedFile cachedFile = filesMap.get(filePath);
 		if (cachedFile == null)
 		{
-			cachedFile = new File(dir, filePath);
+			cachedFile = rootNode.getMemoizedFile(dir(), filePath);
 			filesMap.put(filePath, cachedFile);
 		}
 		return cachedFile;
@@ -122,7 +128,7 @@ public abstract class AbstractNode implements Node
 	@Override
 	public boolean containsFile(String filePath)
 	{
-		return (dir == null) ? false : new File(dir, filePath).exists();
+		return new File(dir(), filePath).exists();
 	}
 	
 	@Override
@@ -135,11 +141,11 @@ public abstract class AbstractNode implements Node
 			if(this instanceof NamedNode) ((NamedNode) this).assertValidName();
 			
 			try {
-				FileUtils.forceMkdir(dir);
+				FileUtils.forceMkdir(dir());
 				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
-				rootNode.getFileInfo(dir()).resetLastModified();
+				incrementFileVersion();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -161,7 +167,7 @@ public abstract class AbstractNode implements Node
 			notifyObservers(new NodeCreatedEvent(), this);
 			logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
-			rootNode.getFileInfo(dir().getParentFile()).resetLastModified();
+			incrementFileVersion();
 		}
 		catch(Exception e) {
 			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getTypeName(), dir().getPath());
@@ -184,9 +190,10 @@ public abstract class AbstractNode implements Node
 			if(!dirExists()) throw new NoSuchDirectoryException(this);
 			
 			try {
-				FileUtils.deleteDirectory(dir);
-				logger.debug(Messages.NODE_DELETED_LOG_MSG, getTypeName(), dir.getPath());
+				FileUtils.deleteDirectory(dir());
+				logger.debug(Messages.NODE_DELETED_LOG_MSG, getTypeName(), dir().getPath());
 				notifyObservers(new NodeDeletedEvent(), this);
+				incrementFileVersion();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -275,23 +282,6 @@ public abstract class AbstractNode implements Node
 		}
 	}
 	
-	
-	protected String getNormalizedPath(File dir) {
-		String normalizedPath;
-		
-		try {
-			normalizedPath = dir.getCanonicalPath();
-		}
-		catch (IOException ex)
-		{
-			root().logger(this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
-			
-			normalizedPath = dir.getAbsolutePath();
-		}
-		
-		return normalizedPath;
-	}
-	
 	private void discoverAllChildren(List<Node> nodes)
 	{
 		for(Node node : nodes)
@@ -351,8 +341,20 @@ public abstract class AbstractNode implements Node
 	public String toString()
 	{
 		if (root() instanceof BRJS) { // check the type since root() is a TestRootNode in some tests
-			return getTypeName()+", dir: " + RelativePathUtility.get(((BRJS)root()).getFileInfoAccessor(), root().dir(), dir());
+			return getTypeName()+", dir: " + RelativePathUtility.get(root(), root().dir(), dir());
 		}
 		return getTypeName()+", dir: " + dir().getPath();
+	}
+	
+	@Override
+	public void incrementFileVersion()
+	{
+    	rootNode.getFileModificationRegistry().incrementFileVersion( dir() );
+	}
+	
+	@Override
+	public void incrementChildFileVersions()
+	{
+		rootNode.getFileModificationRegistry().incrementChildFileVersions( dir() );
 	}
 }

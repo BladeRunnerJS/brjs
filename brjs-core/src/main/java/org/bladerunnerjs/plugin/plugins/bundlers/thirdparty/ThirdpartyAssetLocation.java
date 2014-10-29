@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
@@ -30,9 +31,9 @@ public final class ThirdpartyAssetLocation extends ResourcesAssetLocation {
 		return manifest;
 	}
 	
-	protected List<File> getCandidateFiles() {
+	protected List<MemoizedFile> getCandidateFiles() {
 		try {
-			List<File> assetFiles = new ArrayList<>(manifest.getCssFiles());
+			List<MemoizedFile> assetFiles = new ArrayList<>(manifest.getCssFiles());
 			assetFiles.add(file("thirdparty-lib.manifest"));
 			
 			return assetFiles;

@@ -9,6 +9,7 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -24,7 +25,7 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 {
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private String name;
-	private File[] scopeFiles;
+	private MemoizedFile[] scopeFiles;
 	private IndexPageSeedLocator indexPageSeedLocator;
 	
 	public Aspect(RootNode rootNode, Node parent, File dir) {
@@ -40,9 +41,9 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles() {
+	public MemoizedFile[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {app().dir(), root().sdkJsLibsDir().dir(), root().file("js-patches"), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
+			scopeFiles = new MemoizedFile[] {app().dir(), root().sdkJsLibsDir().dir(), root().file("js-patches"), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
 		}
 		
 		return scopeFiles;

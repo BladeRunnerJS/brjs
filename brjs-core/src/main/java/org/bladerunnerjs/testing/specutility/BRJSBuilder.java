@@ -8,6 +8,7 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
@@ -253,12 +254,11 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenAuthenticallyCreatedWithPessamisticFileObserver() throws Exception
+	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
 	{
-		brjs = specTest.createNonTestModelWithTestFileObserver();
-		brjs.io().installFileAccessChecker();
-		specTest.brjs = brjs;
-		this.node = brjs;
+		hasBeenAuthenticallyCreated();
+		specTest.fileWatcherThread = new FileModificationWatcherThread(brjs);
+		specTest.fileWatcherThread.start();
 		
 		return builderChainer;
 	}
@@ -302,6 +302,8 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer commandHasBeenRun(String... args) throws Exception {
 		brjs.runCommand(args);
+		
+		brjs.incrementFileVersion();
 		
 		return builderChainer;
 	}

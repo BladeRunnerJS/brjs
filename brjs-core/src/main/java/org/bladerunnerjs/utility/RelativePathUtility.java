@@ -8,18 +8,21 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.FileInfo;
-import org.bladerunnerjs.model.FileInfoAccessor;
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.engine.RootNode;
 
 public class RelativePathUtility {
-	public static String get(FileInfoAccessor fileInfoAccessor, File basePath, File childPath) {
+	
+	public static String get(RootNode rootNode, File basePath, File childPath) {
+		return get( rootNode.getMemoizedFile(basePath), rootNode.getMemoizedFile(childPath) );
+	}
+	
+	public static String get(MemoizedFile basePath, MemoizedFile childPath) {
 		String baseCanonicalPath,  childCanonicalPath;
 		
 		try {
-			FileInfo baseFileInfo = fileInfoAccessor.getFileInfo(basePath);
-			FileInfo childFileInfo = fileInfoAccessor.getFileInfo(childPath);
-			baseCanonicalPath = baseFileInfo.canonicalPath();
-			childCanonicalPath = childFileInfo.canonicalPath();
+			baseCanonicalPath = basePath.getCanonicalPath();
+			childCanonicalPath = childPath.getCanonicalPath();
 		} catch (NullPointerException ex) {
 			//TODO: fix the chicken/egg issue that causes this NPE if RelaltivePath is used during the file modification service constructor
 			baseCanonicalPath = getCanonicalPath(basePath);

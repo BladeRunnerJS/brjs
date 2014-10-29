@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -32,7 +33,7 @@ public final class Blade extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles() {
+	public MemoizedFile[] memoizedScopeFiles() {
 		return parent().memoizedScopeFiles();
 	}
 	

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.app.building.StaticAppBuilder;
 import org.bladerunnerjs.model.app.building.WarAppBuilder;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -52,7 +53,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private String name;
 	private AppConf appConf;
 	private final Logger logger;
-	private File[] scopeFiles;
+	private MemoizedFile[] scopeFiles;
 	private final AppRequestHandler appRequestHandler;
 	
 	public App(RootNode rootNode, Node parent, File dir, String name)
@@ -64,9 +65,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles() {
+	public MemoizedFile[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {dir(), root().sdkJsLibsDir().dir(), BladerunnerConf.getConfigFilePath(root())};
+			scopeFiles = new MemoizedFile[] {dir(), root().sdkJsLibsDir().dir(), BladerunnerConf.getConfigFilePath(root())};
 		}
 		
 		return scopeFiles;
@@ -294,8 +295,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		NameValidator.assertValidRootPackageName(this, requirePrefix);
 		
 		try {
+			appConf().setAutoWrite(false);
 			appConf().setRequirePrefix(requirePrefix);
 			populate();
+			appConf().setAutoWrite(true);
 			appConf().write();
 		}
 		catch (ConfigException e) {
@@ -312,6 +315,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		try {
 			notifyObservers(new AppDeployedEvent(), this);
+			incrementFileVersion();
 			logger.info(Messages.APP_DEPLOYED_LOG_MSG, getName(), dir().getPath());
 		}
 		catch (IllegalStateException e) {
@@ -328,7 +332,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 	}
 	
-	public File libsDir() {
+	public MemoizedFile libsDir() {
 		return file("libs");
 	}
 	

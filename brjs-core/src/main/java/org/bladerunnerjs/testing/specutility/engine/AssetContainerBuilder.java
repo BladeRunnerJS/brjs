@@ -9,25 +9,22 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
-import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class AssetContainerBuilder<N extends AssetContainer> extends NodeBuilder<N>
 {
 	private AssetContainer node;
-	protected EncodedFileUtil fileUtil;
 	
 	public AssetContainerBuilder(SpecTest specTest, N node)
 	{
 		super(specTest, node);
 		
 		this.node = node;
-		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
 	}
 	
 	public BuilderChainer containsResourceFile(String resourceFilePath) throws Exception {
-		fileUtil.write(node.assetLocation("resources").file(resourceFilePath), resourceFilePath + "\n");
+		writeToFile(node.assetLocation("resources").file(resourceFilePath), resourceFilePath + "\n");
 		
 		return builderChainer;
 	}
@@ -42,7 +39,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer containsResourceFileWithContents(String resourceFileName, String contents) throws Exception 
 	{
-		fileUtil.write(node.assetLocation("resources").file(resourceFileName), contents);
+		writeToFile(node.assetLocation("resources").file(resourceFileName), contents);
 		
 		return builderChainer;
 	}
@@ -56,7 +53,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer hasClass(String className) throws Exception
 	{
-		fileUtil.write(getSourceFile(className), getClassBody(className));
+		writeToFile(getSourceFile(className), getClassBody(className));
+		
 		return builderChainer;
 	}
 	
@@ -70,7 +68,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer hasTestClass(String className) throws Exception
 	{
-		fileUtil.write(getTestSourceFile(className), getClassBody(className));
+		writeToFile(getTestSourceFile(className), getClassBody(className));
 		return builderChainer;
 	}
 	
@@ -106,7 +104,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String classBody = getClassBody(dependentClass);
 		String extendString = "br.Core.extend(" + dependentClass + ", " + referencedClass + ");\n";
 		
-		fileUtil.write(dependentSourceFile, classBody + extendString);
+		writeToFile(dependentSourceFile, classBody + extendString);
 		
 		return builderChainer;
 	}
@@ -135,7 +133,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer classFileHasContent(String sourceClass, String content) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		fileUtil.write(sourceFile, content);
+		writeToFile(sourceFile, content);
 		
 		return builderChainer;
 	}
@@ -149,7 +147,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "'");
 		}
 		
-		fileUtil.write( sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');" + getClassBody(sourceClass) );
+		writeToFile( sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');" + getClassBody(sourceClass) );
 		
 		return builderChainer;
 	}
@@ -163,7 +161,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
-		fileUtil.write(sourceFile, "require('"+thirdpartyLib.getName()+"');", true);
+		writeToFile(sourceFile, "require('"+thirdpartyLib.getName()+"');", true);
 		
 		return builderChainer;
 	}
@@ -174,18 +172,14 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	
-	
-	
-	
-	
-	protected File getSourceFile(String sourceClass) {
+	public File getSourceFile(String sourceClass) {
 		AssetLocation assetLocation = node.assetLocation("src");
 		if (assetLocation == null) {
 			throw new RuntimeException("Cannot find asset location for the 'src' dir. Either it doesn't exist or there are no asset plugins to discover it.");
 		}
 		return assetLocation.file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
+	
 	
 	protected File getTestSourceFile(String sourceClass)
 	{
@@ -213,7 +207,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		
 		if (referencedClasses.length > 0)
 		{
-			fileUtil.write(sourceFile, getClassBody(sourceClass) + classReferencesContent);
+			writeToFile(sourceFile, getClassBody(sourceClass) + classReferencesContent);
 		}
 		
 		return builderChainer;
@@ -235,10 +229,10 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String requireString = "var " + classRef + " = require('" + dependencyClass + "');\n";
 		
 		if(atUseTime) {
-			fileUtil.write(sourceFile, "\nfunction f() {\n" + requireString + getClassBody(sourceClass) + "\n};");
+			writeToFile(sourceFile, "\nfunction f() {\n" + requireString + getClassBody(sourceClass) + "\n};");
 		}
 		else {
-			fileUtil.write(sourceFile, requireString + getClassBody(sourceClass));
+			writeToFile(sourceFile, requireString + getClassBody(sourceClass));
 		}
 		
 		

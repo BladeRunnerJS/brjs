@@ -21,35 +21,35 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 	
 	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception 
 	{
-		fileUtil.write(aspect.file("index.html"), generateStringClassReferencesContent(classNames));	
+		writeToFile(getIndexFile(), generateStringClassReferencesContent(classNames));	
 		
 		return builderChainer;
 	}
 
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		fileUtil.write(aspect.assetLocation("resources").file(resourceFileName), generateRootRefContentForClasses(classNames));
+		writeToFile(getResourceFile(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer indexPageHasAliasReferences(String... aliasReferences) throws Exception 
 	{
-		fileUtil.write(aspect.file("index.html"), generateStringAliasReferencesContent(aliasReferences));	
+		writeToFile(getIndexFile(), generateStringAliasReferencesContent(aliasReferences));	
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		fileUtil.write(aspect.assetLocation("src").file(resourceFileName), generateRootRefContentForClasses(classNames));
+		writeToFile(getSrcResourceFile(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer indexPageHasContent(String content) throws Exception 
 	{
-		fileUtil.write(aspect.file("index.html"), content);	
+		writeToFile(getIndexFile(), content);	
 		
 		return builderChainer;
 	}
@@ -65,7 +65,7 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 			throw new RuntimeException("The '" + requirePath + "' require path contains a dot. Did you mean to use indexPageRefersTo() instead?");
 		}
 		
-		fileUtil.write(aspect.file("index.html"), "require('"+requirePath+"');");
+		writeToFile(getIndexFile(), "require('"+requirePath+"');");
 		
 		return builderChainer;
 	}
@@ -77,6 +77,19 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 		Assert.assertFalse( "The file at "+file.getAbsolutePath()+" was not meant to exist", file.exists() );
 		
 		return builderChainer;
+	}
+	
+	
+	public File getResourceFile(String resourceFileName) {
+		return aspect.assetLocation("resources").file(resourceFileName);
+	}
+	
+	public File getSrcResourceFile(String resourceFileName) {
+		return aspect.assetLocation("src").file(resourceFileName);
+	}
+	
+	public File getIndexFile() {
+		return aspect.file("index.html");
 	}
 	
 	

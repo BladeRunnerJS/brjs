@@ -37,7 +37,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 			content += className + "\n";
 		}
 		
-		fileUtil.write(testFile, content);
+		writeToFile(testFile, content);
 		
 		return builderChainer;
 	}
@@ -45,7 +45,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 	public BuilderChainer testFileHasContent(String testFilePath, String content) throws IOException
 	{
 		File testFile = testPack.tests().file(testFilePath);
-		fileUtil.write(testFile, content);
+		writeToFile(testFile, content);
 		return builderChainer;
 	}
 	
@@ -58,13 +58,13 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + CommonJsSourceModule.JS_STYLE + "'");
 		}
 		
-		fileUtil.write(testFile, "require('"+className+"');");
+		writeToFile(testFile, "require('"+className+"');");
 		
 		return builderChainer;
 	}
 	
 	@Override
-	protected File getSourceFile(String sourceClass) {
+	public File getSourceFile(String sourceClass) {
 		return testPack.testSource().file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 

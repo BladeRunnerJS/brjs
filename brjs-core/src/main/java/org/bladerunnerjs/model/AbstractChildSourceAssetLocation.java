@@ -21,6 +21,7 @@ public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAs
 	}
 	
 	protected String getAssumedRequirePath() {
+		File dir = rootNode.getMemoizedFile(dir());
 		return (!(parentAssetLocation() instanceof AbstractChildSourceAssetLocation)) ? dir.getName() :
 			((AbstractChildSourceAssetLocation) parentAssetLocation()).getAssumedRequirePath() + "/" + dir().getName();
 	}

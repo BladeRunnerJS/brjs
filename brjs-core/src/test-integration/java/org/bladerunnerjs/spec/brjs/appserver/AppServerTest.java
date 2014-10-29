@@ -195,7 +195,7 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstance() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreatedWithPessamisticFileObserver()
+		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
@@ -204,7 +204,7 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreHostedOnAppserverAfterServerRestart() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreatedWithPessamisticFileObserver()
+		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()

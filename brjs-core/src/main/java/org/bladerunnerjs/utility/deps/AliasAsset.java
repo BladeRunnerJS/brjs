@@ -1,12 +1,12 @@
 package org.bladerunnerjs.utility.deps;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
@@ -32,7 +32,7 @@ public class AliasAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public File dir() {
+	public MemoizedFile dir() {
 		return null;
 	}
 	

@@ -4,9 +4,10 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.memoization.FileModificationRegistry;
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.memoization.MemoizedFileAccessor;
 import org.bladerunnerjs.model.IO;
-import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -15,14 +16,13 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.ObserverList;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
-import org.bladerunnerjs.utility.filemodification.TestTimeAccessor;
-import org.bladerunnerjs.utility.filemodification.TimeAccessor;
 
 
 public class MockRootNode implements RootNode
 {
-	private TimeAccessor timeAccessor = new TestTimeAccessor();
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."));
+	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
+	private IO io = new IO();
 	
 	@Override
 	public Node parentNode()
@@ -31,19 +31,19 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return null;
 	}
 
 	@Override
-	public File file(String filePath)
+	public MemoizedFile file(String filePath)
 	{
 		return null;
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles()
+	public MemoizedFile[] memoizedScopeFiles()
 	{
 		return null;
 	}
@@ -215,16 +215,6 @@ public class MockRootNode implements RootNode
 	public void notifyObservers(Event event, Node notifyForNode)
 	{
 	}
-
-	@Override
-	public FileInfo getFileInfo(File dir) {
-		return new StandardFileInfo(dir, new PessimisticFileModificationInfo(dir, null, timeAccessor), null, null);
-	}
-	
-	@Override
-	public FileInfo getFileSetInfo(File file, File primarySetFile) {
-		return getFileInfo(file);
-	}
 	
 	@Override
 	public <N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass)
@@ -234,7 +224,7 @@ public class MockRootNode implements RootNode
 
 	@Override
 	public IO io() {
-		return null;
+		return io;
 	}
 
 	@Override
@@ -259,5 +249,33 @@ public class MockRootNode implements RootNode
 	public String getTypeName()
 	{
 		return this.getClass().getSimpleName();
+	}
+
+	@Override
+	public FileModificationRegistry getFileModificationRegistry()
+	{
+		return fileModificationRegistry;
+	}
+	
+	@Override
+	public void incrementFileVersion()
+	{		
+	}
+	
+	@Override
+	public void incrementChildFileVersions()
+	{		
+	}
+	
+	@Override
+	public MemoizedFile getMemoizedFile(File file)
+	{
+		return memoizedFileAccessor.getMemoizedFile(file);
+	}
+
+	@Override
+	public MemoizedFile getMemoizedFile(File dir, String filePath)
+	{
+		return getMemoizedFile( new File(dir, filePath) );
 	}
 }

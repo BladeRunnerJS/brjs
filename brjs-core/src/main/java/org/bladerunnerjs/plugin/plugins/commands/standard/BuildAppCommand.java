@@ -97,14 +97,14 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 				if (!deleted) {
 					File oldWarExportFile = warExportFile;
 					warExportFile = new File(targetDir, appName+"_"+getBuiltAppTimestamp()+".war");
-					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), oldWarExportFile), RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), warExportFile)); 
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs, app.dir(), oldWarExportFile), RelativePathUtility.get(brjs, app.dir(), warExportFile)); 
 				}
 			} else if (!warExport && appExportDir.exists()){
 				boolean deleted = FileUtils.deleteQuietly(appExportDir);			
 				if (!deleted) {
 					File oldAppExportDir = appExportDir;
 					appExportDir = new File(targetDir, appName+"_"+getBuiltAppTimestamp());
-					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), oldAppExportDir), RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), appExportDir));
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs, app.dir(), oldAppExportDir), RelativePathUtility.get(brjs, app.dir(), appExportDir));
 				}
 			}
 			targetDir.mkdirs();
@@ -117,6 +117,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 			if (warExport) {
 				if(warExportFile.exists()) throw new DirectoryAlreadyExistsCommandException(warExportFile.getPath(), this);
 				app.buildWar(warExportFile);
+				brjs.getFileModificationRegistry().incrementFileVersion(warExportFile);
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getCanonicalPath());
 			} else {
 				if (hasExplicitExportDirArg) {
@@ -125,6 +126,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 					appExportDir.mkdir();			
 				}
 				app.build(appExportDir);
+				brjs.getFileModificationRegistry().incrementFileVersion(appExportDir);
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());
 			}
 		}

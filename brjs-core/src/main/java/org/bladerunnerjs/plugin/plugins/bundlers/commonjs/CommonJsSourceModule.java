@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.Getter;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
@@ -41,7 +42,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 
 	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias|getAlias|getService)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
 	
-	private File assetFile;
+	private MemoizedFile assetFile;
 	private AssetLocation assetLocation;
 	
 	private SourceModulePatch patch;
@@ -52,9 +53,9 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
-		this.assetFile = assetFile;
+		this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
@@ -139,7 +140,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public File dir() {
+	public MemoizedFile dir() {
 		return assetFile.getParentFile();
 	}
 	
@@ -150,7 +151,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public String getAssetPath() {
-		return RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.assetContainer().app().dir(), assetFile);
+		return RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetFile);
 	}
 	
 	@Override

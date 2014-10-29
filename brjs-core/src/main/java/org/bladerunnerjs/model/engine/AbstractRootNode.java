@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			rootDir = dir;
 		}
 		
-		this.dir = new File(getNormalizedPath(rootDir));
+		setNodeDir(rootDir);
 		this.loggerFactory = loggerFactory;
 	}
 	
@@ -69,7 +70,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		if (nodeExistsForPath) {
 			throw new NodeAlreadyRegisteredException("A node of type '" + node.getTypeName() + 
-					"' has already been registered for path '" + getNormalizedPath(node.dir()) + "'");
+					"' has already been registered for path '" + node.dir() + "'");
 		}
 
 		notifyObservers(new NodeDiscoveredEvent(), node);
@@ -83,7 +84,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	@Override
 	public void clearRegisteredNode(Node node) {
-		String normalizedPath = getNormalizedPath(node.dir());
+		String normalizedPath = node.dir().getCanonicalPath();
 		List<Node> nodesForPath = nodeCache.get(normalizedPath);
 		nodesForPath.remove(node.getTypeName());
 	}
@@ -91,7 +92,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public List<Node> getRegisteredNodes(File childPath)
 	{
-		String normalizedPath = getNormalizedPath(childPath);
+		String normalizedPath = getMemoizedFile(childPath).getCanonicalPath();
 		if (!nodeCache.containsKey(normalizedPath)) {
 			nodeCache.put( normalizedPath, new LinkedList<>() );
 		}
@@ -198,7 +199,14 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			dir = dir.getParentFile();
 		}
 		
-		return dir;
+		try
+		{
+			return (dir == null) ? dir : dir.getCanonicalFile();
+		}
+		catch (IOException e)
+		{
+			return dir.getAbsoluteFile();
+		}
 	}
 	
 	private Node locateFirstCachedNode(File file) {

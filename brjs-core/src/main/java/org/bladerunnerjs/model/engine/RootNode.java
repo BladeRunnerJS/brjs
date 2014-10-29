@@ -4,8 +4,9 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.FileModificationRegistry;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.IO;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
@@ -17,9 +18,9 @@ public interface RootNode extends Node {
 	Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
-	FileInfo getFileInfo(File dir);
-	FileInfo getFileSetInfo(File file, File primaryFile);
 	IO io();
+	MemoizedFile getMemoizedFile(File file);
+	MemoizedFile getMemoizedFile(File dir, String filePath);
 	
 	boolean isNodeRegistered(Node node);
 	void registerNode(Node node) throws NodeAlreadyRegisteredException;
@@ -27,4 +28,5 @@ public interface RootNode extends Node {
 	Node getRegisteredNode(File childPath) throws MultipleNodesForPathException;
 	Node getRegisteredNode(File childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException;
 	List<Node> getRegisteredNodes(File childPath);
+	FileModificationRegistry getFileModificationRegistry();
 }

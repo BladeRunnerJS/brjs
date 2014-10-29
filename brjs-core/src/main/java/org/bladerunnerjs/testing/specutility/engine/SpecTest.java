@@ -73,12 +73,10 @@ import org.bladerunnerjs.testing.specutility.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
-import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ServerUtility;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Assert;
@@ -103,6 +101,7 @@ public abstract class SpecTest extends TestModelAccessor
 	public int appServerPort;
 	public WebappTester webappTester;
 	public MockAppVersionGenerator appVersionGenerator;
+	public Thread fileWatcherThread;
 	
 	@Before
 	public void resetTestObjects()
@@ -122,6 +121,10 @@ public abstract class SpecTest extends TestModelAccessor
 	@After
 	public void cleanUp() {
 		BRJS.allowInvalidRootDirectories = true;
+		
+		if (fileWatcherThread != null) {
+			fileWatcherThread.interrupt();
+		}
 		
 		if(brjs != null) {
 			brjs.io().uninstallFileAccessChecker();
@@ -144,7 +147,7 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return super.createModel(testSdkDirectory, pluginLocator, logging, appVersionGenerator);
+		return super.createModel(testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
@@ -152,7 +155,7 @@ public abstract class SpecTest extends TestModelAccessor
 	}
 	
 	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
-		return super.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging), new PessimisticFileModificationService());
+		return super.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
 	}
 	
 	public String getActiveCharacterEncoding() {
@@ -303,12 +306,9 @@ public abstract class SpecTest extends TestModelAccessor
 	// AliasDefinitionsFile
 	public AliasDefinitionsFileBuilder given(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile); }
 	
-	// Dir Observer
-	public SpecTestDirObserverBuilder given(SpecTestDirObserver observer) { return new SpecTestDirObserverBuilder(this, observer); }
-	public SpecTestDirObserverCommander then(SpecTestDirObserver observer) { return new SpecTestDirObserverCommander(this, observer); }
-	
 	//TODO: we might find we need a better way to deal with multiple methods that want to return different verifiers based on a List
 	public RequestListVerifier thenRequests(List<String> requests) { return new RequestListVerifier(this, requests); }
+	
 	
 	
 	private File createTestSdkDirectory() {
