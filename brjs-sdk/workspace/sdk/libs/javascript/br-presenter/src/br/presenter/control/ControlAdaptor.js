@@ -14,7 +14,8 @@ var Errors = require('br/Errors');
  * @classdesc
  * Interface implemented by control adaptor classes, that allow external controls to be used within presenter.
  */
-function ControlAdaptor() {};
+function ControlAdaptor() {
+}
 
 /**
  * Sets the element in which the control will be rendered in.
@@ -40,8 +41,7 @@ ControlAdaptor.prototype.setElement = function(eElement) {
  * 
  * @param {Object} mOptions A map of options
  */
-ControlAdaptor.prototype.setOptions = function(mOptions)
-{
+ControlAdaptor.prototype.setOptions = function(mOptions) {
 	throw new Errors.UnimplementedInterfaceError("ControlAdaptor.setOptions() has not been implemented.");
 };
 
@@ -73,8 +73,7 @@ ControlAdaptor.prototype.setOptions = function(mOptions)
  * @throws {br.presenter.control.InvalidControlModelError} if the wrong type of presentation
  * node is used.
  */
-ControlAdaptor.prototype.setPresentationNode = function(oPresentationNode)
-{
+ControlAdaptor.prototype.setPresentationNode = function(oPresentationNode) {
 		// do nothing -- this method is optional.
 };
 
@@ -84,16 +83,14 @@ ControlAdaptor.prototype.setPresentationNode = function(oPresentationNode)
  * <p>Controls that need to perform some additional work once the element they are contained within
  * has been added to the document (via {@link #getElement}),  can do so within this call-back.</p>
  */
-ControlAdaptor.prototype.onViewReady = function()
-{
+ControlAdaptor.prototype.onViewReady = function() {
 		// do nothing -- this method is optional.
 };
 
 /**
  * Called when the view is being disposed of to allow cleaning up of listeners and controls.
  */
-ControlAdaptor.prototype.destroy = function()
-{
+ControlAdaptor.prototype.destroy = function() {
 	// do nothing -- this method is optional.
 };
 
