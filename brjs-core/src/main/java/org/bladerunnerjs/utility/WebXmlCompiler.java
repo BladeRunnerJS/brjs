@@ -27,7 +27,7 @@ public class WebXmlCompiler {
 		try {
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			documentBuilderFactory.setNamespaceAware(true);
-			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			Document webXml = documentBuilder.parse(webXmlFile);
 			
 			processWebXmlNode(webXml.getDocumentElement().getChildNodes(), false);
