@@ -58,18 +58,15 @@ public class MemoizedFile extends File implements Comparable<File>
 	}
 	
 	public boolean exists() {
-//		return getComputedValue().exists;
-		return wrappedFile.exists();
+		return getComputedValue().exists;
 	}
 	
 	public boolean isDirectory() {
-//		return getComputedValue().isDirectory;
-		return wrappedFile.isDirectory();
+		return getComputedValue().isDirectory;
 	}
 	
 	public boolean isFile() {
-//		return getComputedValue().isFile;
-		return wrappedFile.isFile();
+		return getComputedValue().isFile;
 	}
 	
 	public List<MemoizedFile> filesAndDirs() {
@@ -200,30 +197,6 @@ public class MemoizedFile extends File implements Comparable<File>
 		return MemoizedFileRelativePathUtility.getRelativePath(this, childFile);
 	}
 	
-	@Override
-	public boolean equals(Object obj)
-	{
-		return wrappedFile.equals(obj);
-	}
-	
-	@Override
-	public int compareTo(File pathname)
-	{
-		return wrappedFile.compareTo(pathname);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return wrappedFile.toString();
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return wrappedFile.hashCode();
-	}
-	
 	public void incrementFileVersion()
 	{
     	rootNode.getFileModificationRegistry().incrementFileVersion( wrappedFile );
@@ -232,6 +205,42 @@ public class MemoizedFile extends File implements Comparable<File>
 	public void incrementChildFileVersions()
 	{
 		rootNode.getFileModificationRegistry().incrementChildFileVersions( wrappedFile );
+	}
+	
+	@Override
+	public boolean mkdir() {
+		boolean returnVal = super.mkdir();
+		incrementFileVersion();
+		return returnVal;
+	}
+	
+	@Override
+	public boolean mkdirs() {
+		boolean returnVal = super.mkdirs();
+		incrementFileVersion();
+		return returnVal;
+	}
+	
+	@Override
+	public boolean createNewFile() throws IOException {
+		boolean returnVal = super.createNewFile();
+		incrementFileVersion();
+		return returnVal;
+	}
+	
+	@Override
+	public boolean delete() {
+		boolean returnVal = super.delete();
+		incrementChildFileVersions();
+		return returnVal;
+	}
+	
+	@Override
+	public boolean renameTo(File dest) {
+		boolean returnVal = super.renameTo(dest);
+		incrementChildFileVersions();
+		rootNode.getMemoizedFile(dest).incrementChildFileVersions();
+		return returnVal;
 	}
 	
 	// -- Private Stuff --

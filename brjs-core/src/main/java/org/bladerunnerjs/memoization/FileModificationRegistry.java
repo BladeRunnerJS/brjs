@@ -37,7 +37,7 @@ public class FileModificationRegistry
 			file = new File(file.getAbsolutePath()); // create a standard file so listFiles() isnt cached
 		}
 		
-		getOrCreateVersionValue(file).incrememntValue();
+		incrementFileVersion(file);
 		
 		List<String> incrementedPaths = new ArrayList<>();
 		

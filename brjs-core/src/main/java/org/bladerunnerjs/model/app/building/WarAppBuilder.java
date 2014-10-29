@@ -23,6 +23,7 @@ public class WarAppBuilder implements AppBuilder
 		try
 		{
 			ZipUtility.zipFolder(exportDir, appWarFile, true);
+			appWarFile.incrementFileVersion();
 			org.apache.commons.io.FileUtils.deleteQuietly(exportDir);
 		}
 		catch (IOException ex)

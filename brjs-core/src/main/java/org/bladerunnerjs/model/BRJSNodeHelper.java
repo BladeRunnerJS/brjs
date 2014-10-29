@@ -35,6 +35,8 @@ public class BRJSNodeHelper {
 		catch(TemplateInstallationException e) {
 			throw new ModelUpdateException(e);
 		}
+		
+		node.incrementChildFileVersions();
 
 		node.ready();
 	}

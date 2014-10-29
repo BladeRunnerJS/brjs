@@ -144,7 +144,7 @@ public abstract class AbstractNode implements Node
 				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
-				incrementFileVersion();
+				incrementChildFileVersions();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -166,7 +166,7 @@ public abstract class AbstractNode implements Node
 			notifyObservers(new NodeCreatedEvent(), this);
 			logger.debug(Messages.NODE_CREATED_LOG_MSG, getTypeName(), dir().getPath());
 				
-			incrementFileVersion();
+			incrementChildFileVersions();
 		}
 		catch(Exception e) {
 			logger.error(Messages.NODE_CREATION_FAILED_LOG_MSG, getTypeName(), dir().getPath());

@@ -54,7 +54,7 @@ public class NodeImporter {
 		
 		
 		for(Aspect aspect : tempBrjsApp.aspects()) {
-			updateRequirePrefix(aspect.assetLocations(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
+			updateRequirePrefix(aspect, sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
 			renameTestLocations(aspect.testTypes(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
 		}
 		
@@ -97,17 +97,17 @@ public class NodeImporter {
 	}
 	
 	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException {
-		updateRequirePrefix(bladeset.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
+		updateRequirePrefix(bladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		renameTestLocations(bladeset.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		for(Blade blade : bladeset.blades()) {
-			updateRequirePrefix(blade.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+			updateRequirePrefix(blade, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
 			
 			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 			
 			Workbench workbench = blade.workbench();			
-			updateRequirePrefix(workbench.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
+			updateRequirePrefix(workbench, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
 		}
 	}
 	
@@ -116,14 +116,14 @@ public class NodeImporter {
 		for(TypedTestPack typedTestPack : testTypes)
 		{
 			for( TestPack testPack : typedTestPack.testTechs()){
-				updateRequirePrefix(testPack.assetLocations(), sourceAppRequirePrefix, sourceLocationRequirePrefix, requirePrefix);
+				updateRequirePrefix(testPack, sourceAppRequirePrefix, sourceLocationRequirePrefix, requirePrefix);
 			}
 		}		
 	}
 	
-	private static void updateRequirePrefix(List<AssetLocation> assetLocations, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
+	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
 		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
-			for(AssetLocation assetLocation : assetLocations) {
+			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 				if(assetLocation.dir().exists()) {
 					if(assetLocation.file(sourceRequirePrefix).exists()) {
 						FileUtils.moveDirectory(assetLocation.file(sourceRequirePrefix), assetLocation.file(targetRequirePrefix));
@@ -132,6 +132,10 @@ public class NodeImporter {
 						}
 					}
 					
+				}
+			}
+			for(AssetLocation assetLocation : assetContainer.assetLocations()) { // do this in a seperate loop since the asset locations will change when they are renamed
+				if(assetLocation.dir().exists()) {
 					findAndReplaceInAllTextFiles(assetLocation.root(), assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
 				}
 			}
