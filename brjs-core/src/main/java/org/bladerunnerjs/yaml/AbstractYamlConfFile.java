@@ -31,7 +31,7 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 		try {
 			// TODO: get rid of `node == null` guard once we delete no brjs-core code
 			String fileEncoding = ((node == null) || confFile.getName().equals("brjs.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			fileUtil = new EncodedFileUtil(fileEncoding);
+			fileUtil = new EncodedFileUtil(node.root(), fileEncoding);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

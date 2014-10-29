@@ -11,7 +11,7 @@ import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 	
 	@Before
 	public void setUp() throws Exception {
-		tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
+		tempDir = FileUtils.createTemporaryDirectory( this.getClass() );
 		sdkDir = new File(tempDir, "sdk");
 		watchFile = new File(sdkDir, "watch-file");
 		

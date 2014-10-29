@@ -15,9 +15,14 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 
-
+/**
+ * Provides similar methods to {@link File} and wraps a {@link File} object. Several of the methods' return values are 'memoized'
+ * and only regenerated if properties on the underlying file on disk change. Changes are detected by using {@link MemoizedValue} and 
+ * the {@link FileModificationRegistry}.
+ *
+ */
 public class MemoizedFile extends File implements Comparable<File>
 {
 	private static final long serialVersionUID = 7406703034536312889L;
@@ -29,9 +34,9 @@ public class MemoizedFile extends File implements Comparable<File>
 	private MemoizedFile parentFile;
 	
 	MemoizedFile(RootNode rootNode, String file) {
-		super( FileUtility.getCanonicalFileWhenPossible( new File(file) ).getAbsolutePath() );
+		super( FileUtils.getCanonicalFileWhenPossible( new File(file) ).getAbsolutePath() );
 		this.rootNode = rootNode;
-		wrappedFile = FileUtility.getCanonicalFileWhenPossible( new File(file) );
+		wrappedFile = FileUtils.getCanonicalFileWhenPossible( new File(file) );
 			// ^^ use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
 		
 		String className = this.getClass().getSimpleName();

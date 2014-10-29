@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.bladerunnerjs.logging.Logger;
@@ -15,6 +14,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
@@ -86,7 +86,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		}
 		if (classesRoot.exists()) 
 		{
-			FileUtils.deleteQuietly(classesRoot);
+			FileUtils.deleteQuietly(brjs, classesRoot);
 		}
 		
 		List<File> testContainerDirs = new IntegrationTestFinder().findTestContainerDirs(brjs, testRoot, ignoreWorkbenches(args));

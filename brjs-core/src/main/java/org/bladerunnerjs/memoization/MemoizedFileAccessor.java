@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 
 
 public class MemoizedFileAccessor
@@ -21,7 +21,7 @@ public class MemoizedFileAccessor
 	public MemoizedFile getMemoizedFile(File file) {
 		if (file == null) return null;
 		
-		String canonicalPath = FileUtility.getCanonicalFileWhenPossible(file).getAbsolutePath();
+		String canonicalPath = FileUtils.getCanonicalFileWhenPossible(file).getAbsolutePath();
 		MemoizedFile memoizedFile;
 		if (file instanceof MemoizedFile) {
 			memoizedFile = (MemoizedFile) file;

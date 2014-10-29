@@ -13,7 +13,7 @@ public class SpecTestBuilder {
 	public SpecTestBuilder(SpecTest specTest) {
 		this.specTest = specTest;
 		builderChainer = new BuilderChainer(specTest);
-		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
+		fileUtil = new EncodedFileUtil(specTest.brjs, specTest.getActiveCharacterEncoding());
 	}
 	
 	public BuilderChainer activeEncodingIs(String characterEncoding) {
@@ -27,8 +27,12 @@ public class SpecTestBuilder {
 	}
 	
 	public void writeToFile(File file, String content, boolean append) throws IOException {
-		fileUtil.write(file, content, append);
-		if (specTest.brjs != null) specTest.brjs.getFileModificationRegistry().incrementFileVersion(file);
+		if (specTest.brjs != null) {
+			fileUtil.write(file, content, append);
+		} else { // use plain old Apache commons to write if BRJS hasnt been created yet
+			org.apache.commons.io.FileUtils.write(file, content, append);
+		}
+		
 	}
 	
 	

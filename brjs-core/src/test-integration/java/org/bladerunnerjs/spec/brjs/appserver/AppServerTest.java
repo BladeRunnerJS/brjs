@@ -8,7 +8,6 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.App;
@@ -17,6 +16,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.plugin.plugins.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

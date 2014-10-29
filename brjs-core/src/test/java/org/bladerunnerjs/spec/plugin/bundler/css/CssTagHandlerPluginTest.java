@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin.Messages;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
-		targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
+		targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test

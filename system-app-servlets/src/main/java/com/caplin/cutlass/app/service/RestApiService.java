@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
@@ -26,6 +25,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
+import org.bladerunnerjs.utility.FileUtils;
 
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
@@ -222,7 +222,7 @@ public class RestApiService
 		File latestReleaseNote = getLatestReleaseNoteFile();
 		if (latestReleaseNote != null)
 		{
-			return FileUtils.readFileToString(latestReleaseNote);			
+			return org.apache.commons.io.FileUtils.readFileToString(latestReleaseNote);			
 		}
 		throw new Exception("Unable to find latest release note.");
 	}
@@ -230,7 +230,7 @@ public class RestApiService
 	public String getSdkVersion() throws IOException
 	{
 		MemoizedFile versionFile = brjs.versionInfo().getFile();
-		return FileUtils.readFileToString(versionFile);
+		return org.apache.commons.io.FileUtils.readFileToString(versionFile);
 	}
 	
 	public void getJsdocForApp(String appName) throws Exception {

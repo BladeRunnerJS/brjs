@@ -3,7 +3,7 @@ package org.bladerunnerjs.memoization;
 import java.io.File;
 import java.util.TreeMap;
 
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 
 
 public class FileModificationRegistry
@@ -13,7 +13,7 @@ public class FileModificationRegistry
 	private File rootFile;
 
 	public FileModificationRegistry(File rootFile) { 
-		this.rootFile = FileUtility.getCanonicalFileWhenPossible(rootFile); 
+		this.rootFile = FileUtils.getCanonicalFileWhenPossible(rootFile); 
 	}
 	
 	public synchronized long getFileVersion(File file) {
@@ -43,7 +43,7 @@ public class FileModificationRegistry
 	
 	private FileVersion getOrCreateVersionValue(File file)
 	{
-		return getOrCreateVersionValue( FileUtility.getCanonicalFileWhenPossible(file).getAbsolutePath() );
+		return getOrCreateVersionValue( FileUtils.getCanonicalFileWhenPossible(file).getAbsolutePath() );
 	}
 	
 	private FileVersion getOrCreateVersionValue(String canonicalFilePath)

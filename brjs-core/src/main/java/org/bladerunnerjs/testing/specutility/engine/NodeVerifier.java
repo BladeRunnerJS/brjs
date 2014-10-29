@@ -26,7 +26,7 @@ public abstract class NodeVerifier<N extends Node> {
 	
 	public NodeVerifier(SpecTest specTest, N node) {
 		this.node = node;
-		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
+		fileUtil = new EncodedFileUtil(specTest.brjs, specTest.getActiveCharacterEncoding());
 		verifierChainer = new VerifierChainer(specTest);
 	}
 	

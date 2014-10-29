@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.BRJSNode;
@@ -14,6 +13,7 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
@@ -26,7 +26,7 @@ public abstract class NodeBuilder<N extends Node> {
 	public NodeBuilder(SpecTest specTest, N node) {
 		this.specTest = specTest;
 		this.node = node;
-		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
+		fileUtil = new EncodedFileUtil(specTest.brjs, specTest.getActiveCharacterEncoding());
 		builderChainer = new BuilderChainer(specTest);
 	}
 	
@@ -43,7 +43,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFolder(String directoryName) throws Exception {
-		FileUtils.forceMkdir(new File(node.dir(), directoryName));
+		FileUtils.forceMkdir( node.file(directoryName) );
 		
 		return builderChainer;
 	}
@@ -104,7 +104,7 @@ public abstract class NodeBuilder<N extends Node> {
     			throw new RuntimeException("Package style should be set before any JS files have been created");
     		}
 		}
-		JsStyleUtility.setJsStyle(packageDir, jsStyle);
+		JsStyleUtility.setJsStyle(specTest.brjs, packageDir, jsStyle);
 		return builderChainer;
 	}
 	

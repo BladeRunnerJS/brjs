@@ -153,7 +153,7 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 
 	public CommanderChainer indexPageRefersToWithoutNotifyingFileRegistry(String content) throws IOException
 	{
-		new EncodedFileUtil(specTest.getActiveCharacterEncoding()).write( aspect.file("index.html"), content, false);
+		new EncodedFileUtil(aspect.root(), specTest.getActiveCharacterEncoding()).write( aspect.file("index.html"), content, false);
 
 		return commanderChainer;
 	}

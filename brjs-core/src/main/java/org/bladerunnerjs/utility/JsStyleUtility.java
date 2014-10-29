@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class JsStyleUtility {
@@ -36,11 +36,11 @@ public class JsStyleUtility {
 		dirStyleCache = new HashMap<String, String>();
 	}
 	
-	public static void setJsStyle(File dir, String jsStyle) {
+	public static void setJsStyle(BRJS brjs, File dir, String jsStyle) {
 		try {
 			File jsStyleFile = new File(dir, ".js-style");
 			
-			FileUtils.writeStringToFile(jsStyleFile, jsStyle, "UTF-8");
+			FileUtils.write(brjs, jsStyleFile, jsStyle, "UTF-8");
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
@@ -56,7 +56,7 @@ public class JsStyleUtility {
 			File jsStyleFile = new File(dir, ".js-style");
 			
 			if(jsStyleFile.exists()) {
-				jsStyle = FileUtils.readFileToString(jsStyleFile, "UTF-8").trim();
+				jsStyle = org.apache.commons.io.FileUtils.readFileToString(jsStyleFile, "UTF-8").trim();
 			}
 		}
 		catch (IOException e) {

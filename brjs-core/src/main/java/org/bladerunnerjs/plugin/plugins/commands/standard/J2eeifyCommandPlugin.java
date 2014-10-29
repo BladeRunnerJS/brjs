@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.appserver.ApplicationServerUtils;
 import org.bladerunnerjs.logging.Logger;
@@ -14,6 +13,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.JSAP;

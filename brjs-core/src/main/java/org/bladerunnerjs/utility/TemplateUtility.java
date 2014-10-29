@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
@@ -28,7 +27,7 @@ public class TemplateUtility
 	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
 		File tempDir = null; 
 		try {
-			tempDir = FileUtility.createTemporaryDirectory( TemplateUtility.class, templateName );
+			tempDir = FileUtils.createTemporaryDirectory( TemplateUtility.class, templateName );
 			
 			if(node.dirExists() && !(node instanceof BRJS)) {
 				List<MemoizedFile> dirContents = node.root().getMemoizedFile(node.dir()).filesAndDirs();
@@ -44,17 +43,17 @@ public class TemplateUtility
 				IOFileFilter hiddenFilesFilter = FileFilterUtils.or( 
 						FileFilterUtils.notFileFilter(new PrefixFileFilter(".")), new NameFileFilter(".gitignore") );
 				IOFileFilter fileFilter = FileFilterUtils.and( new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), hiddenFilesFilter );
-				FileUtils.copyDirectory(templateDir, tempDir, fileFilter);
+				FileUtils.copyDirectory(node.root(), templateDir, tempDir, fileFilter);
 			}
 			
 			if(!transformations.isEmpty()) {
-				transformDir(tempDir, transformations);
+				transformDir(node.root(), tempDir, transformations);
 			}
 			
-			FileUtility.moveDirectoryContents(tempDir, node.dir());
+			FileUtils.moveDirectoryContents(tempDir, node.dir());
 			
 			if(!JsStyleUtility.getJsStyle(node.dir()).equals(CommonJsSourceModule.JS_STYLE)) {
-				JsStyleUtility.setJsStyle(node.dir(), CommonJsSourceModule.JS_STYLE);
+				JsStyleUtility.setJsStyle(node.root(), node.dir(), CommonJsSourceModule.JS_STYLE);
 			}
 			
 			node.incrementFileVersion();
@@ -64,12 +63,12 @@ public class TemplateUtility
 		}
 		finally {
 			if (tempDir != null) {
-				FileUtils.deleteQuietly(tempDir);
+				FileUtils.deleteQuietly(node.root(), tempDir);
 			}
 		}
 	}
 	
-	private static void transformDir(File dir, Map<String, String> transformations) throws TemplateInstallationException
+	private static void transformDir(BRJS brjs, File dir, Map<String, String> transformations) throws TemplateInstallationException
 	{
 		for(String transformKey : transformations.keySet())
 		{
@@ -85,19 +84,19 @@ public class TemplateUtility
 			{
 				if(file.getName().matches("^.*\\.(txt|js|xml|properties|bundle|conf|css|htm|html|jsp|java)$"))
 				{
-					transformFile(file, transformations);
+					transformFile(brjs, file, transformations);
 				}
 			}
 			else
 			{
-				transformDir(file, transformations);
+				transformDir(brjs, file, transformations);
 			}
 		}
 	}
 	
-	private static void transformFile(File file, Map<String, String> transformations) throws TemplateInstallationException
+	private static void transformFile(BRJS brjs, File file, Map<String, String> transformations) throws TemplateInstallationException
 	{
-		EncodedFileUtil fileUtil = new EncodedFileUtil("UTF-8");
+		EncodedFileUtil fileUtil = new EncodedFileUtil(brjs, "UTF-8");
 		
 		try {
 			String fileContents = fileUtil.readFileToString(file);

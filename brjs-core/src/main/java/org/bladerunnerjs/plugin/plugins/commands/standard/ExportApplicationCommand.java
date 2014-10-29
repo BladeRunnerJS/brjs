@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
@@ -22,7 +21,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ZipUtility;
 import org.bladerunnerjs.utility.filefilter.ExcludeDirFileFilter;
 
@@ -95,7 +94,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 
 		try 
 		{
-			MemoizedFile temporaryExportDir = brjs.getMemoizedFile( FileUtility.createTemporaryDirectory( this.getClass(), appName ) );
+			MemoizedFile temporaryExportDir = brjs.getMemoizedFile( FileUtils.createTemporaryDirectory( this.getClass(), appName ) );
 			
 			IOFileFilter excludeUserLibraryTestsFilter = createExcludeUserLibsTestsFilter(appName);
 			NotFileFilter brjsJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar")));
@@ -106,7 +105,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 			createResourcesFromSdkTemplate(app.dir(), temporaryExportDir, combinedFilter);
 			if (banner != null) {
 				String jsBanner = "/*\n" + banner + "\n*/\n\n";
-				includeBannerInDirectoryClasses(new File(temporaryExportDir, "libs"), jsBanner, bannerExtensions);
+				includeBannerInDirectoryClasses(brjs, new File(temporaryExportDir, "libs"), jsBanner, bannerExtensions);
 			}
 			ZipUtility.zipFolder(temporaryExportDir, destinationZipLocation, false);
 			brjs.getFileModificationRegistry().incrementFileVersion(destinationZipLocation);
@@ -202,21 +201,21 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		return excludeDirFilter;
 	}
 	
-	private void includeBannerInDirectoryClasses(File dir, String banner, String[] extensions) throws IOException, ConfigException 
+	private void includeBannerInDirectoryClasses(BRJS brjs, File dir, String banner, String[] extensions) throws IOException, ConfigException 
 	{
 		if (dir.exists())
 		{
 			for (File file : FileUtils.listFiles(dir, extensions, true))
 			{
-				includeBanner(file, banner);
+				includeBanner(brjs, file, banner);
 			}
 		}
 	}
 
-	private void includeBanner(File file, String disclaimer) throws ConfigException, IOException 
+	private void includeBanner(BRJS brjs, File file, String disclaimer) throws ConfigException, IOException 
 	{
-		String fileContent = FileUtils.readFileToString(file, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+		String fileContent = org.apache.commons.io.FileUtils.readFileToString(file, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 	
-		FileUtils.writeStringToFile(file, disclaimer + fileContent, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+		FileUtils.write(brjs, file, disclaimer + fileContent, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 	}
 }

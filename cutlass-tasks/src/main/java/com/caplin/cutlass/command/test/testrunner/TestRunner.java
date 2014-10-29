@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -30,6 +29,8 @@ import org.bladerunnerjs.model.exception.test.BrowserStartupException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
+
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ProcessLogger;
 import org.slf4j.impl.StaticLoggerBinder;
 

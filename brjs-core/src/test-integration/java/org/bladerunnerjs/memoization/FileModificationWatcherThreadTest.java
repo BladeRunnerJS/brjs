@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +45,7 @@ public class FileModificationWatcherThreadTest
 	    }).when(mockModificationRegistry).incrementFileVersion(any(File.class));
 		
 		mockBrjs = mock(BRJS.class);
-		rootWatchDir = new MemoizedFile(mockBrjs, FileUtility.createTemporaryDirectory( this.getClass() ).getAbsolutePath() );
+		rootWatchDir = new MemoizedFile(mockBrjs, FileUtils.createTemporaryDirectory( this.getClass() ).getAbsolutePath() );
 		when(mockBrjs.dir()).thenReturn(rootWatchDir);
 		when(mockBrjs.getFileModificationRegistry()).thenReturn(mockModificationRegistry);
 		
@@ -85,7 +84,7 @@ public class FileModificationWatcherThreadTest
 	public void changesToFilesInTheRootDirAreDetected() throws Exception
 	{
 		newFilesInTheRootDirAreDetected();
-		FileUtils.write(fileInRoot, "some test data");
+		org.apache.commons.io.FileUtils.write(fileInRoot, "some test data");
 		
 		for (int i = 0; i < MAX_UPDATE_CHECKS; i++) {
 			if (fileChanges.size() > 0 && fileChanges.get(0).equals(fileInRoot)) {

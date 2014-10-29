@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -15,7 +14,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.runner.CommandRunner;
 import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.junit.After;
 import org.junit.Before;
@@ -36,7 +35,7 @@ public class CommandRunnerTest {
 		StaticLoggerBinder.getSingleton().getLoggerFactory().setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
 		commandRunner = new CommandRunner();
 		
-		tempDir = FileUtility.createTemporaryDirectory( getClass() );
+		tempDir = FileUtils.createTemporaryDirectory( getClass() );
 		ThreadSafeStaticBRJSAccessor.destroy();
 		oldSysOut = System.out;
 		System.setOut( new PrintStream(systemOutputStream) );
@@ -181,9 +180,9 @@ public class CommandRunnerTest {
 	{
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		dirFile("valid-sdk-directory/sdk/libs/java").mkdirs();
-		FileUtils.write( dirFile("valid-sdk-directory/sdk/libs/java/application/brjs-servlet-1.2.3.jar"), "some jar contents" );
+		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/sdk/libs/java/application/brjs-servlet-1.2.3.jar"), "some jar contents" );
 		dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib").mkdirs();
-		FileUtils.write( dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
+		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
 		
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
 		String output = outputStream.toString("UTF-8");

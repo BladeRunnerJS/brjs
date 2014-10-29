@@ -2,7 +2,6 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
@@ -10,6 +9,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
@@ -47,7 +47,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer containsFileCopiedFrom(String resourceFileName, String srcFile) throws Exception 
 	{
-		FileUtils.copyFile( new File(srcFile), node.file(resourceFileName) );
+		FileUtils.copyFile( specTest.brjs, new File(srcFile), node.file(resourceFileName) );
 		
 		return builderChainer;
 	}

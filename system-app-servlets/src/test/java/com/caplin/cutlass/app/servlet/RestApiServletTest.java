@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.app.RestApiServletTestUtils;
@@ -48,7 +48,7 @@ public class RestApiServletTest
 	public void setup() throws Exception
 	{
 		service = mock(RestApiService.class);
-		File testSdk = FileUtility.createTemporaryDirectory( this.getClass() );
+		File testSdk = FileUtils.createTemporaryDirectory( this.getClass() );
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(service), testSdk);
 		server.start();
 		client = new DefaultHttpClient();

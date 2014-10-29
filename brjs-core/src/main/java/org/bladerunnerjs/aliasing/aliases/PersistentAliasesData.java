@@ -25,7 +25,7 @@ public class PersistentAliasesData {
 	
 	public void writeData() throws ContentFileProcessingException {
 		try {
-			AliasesWriter.write(getData(), aliasesFile, getCharacterEncoding());
+			AliasesWriter.write(brjs, getData(), aliasesFile, getCharacterEncoding());
 		}
 		catch(Exception e) {
 			throw new ContentFileProcessingException(e, aliasesFile);

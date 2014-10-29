@@ -39,7 +39,7 @@ import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -153,7 +153,7 @@ public class RestApiServlet extends HttpServlet
 			}
 			else if (EXPORT_APP_PATTERN.matcher(requestPath).matches())
 			{
-				File targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
+				File targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 				File warTempFile = new File(targetDir, "x.war");
 				apiService.exportWar(appName, brjs.getMemoizedFile(warTempFile));
 				response.setContentType("application/octet-stream");
@@ -363,7 +363,7 @@ public class RestApiServlet extends HttpServlet
 			}
 			else if (item.getFieldName().equals(FILE_PARAM))
 			{
-				zipFile = FileUtility.createTemporaryFile(this.getClass(), ".zip");
+				zipFile = FileUtils.createTemporaryFile(this.getClass(), ".zip");
 				item.write(zipFile);
 			}
 		}

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
@@ -18,7 +17,7 @@ import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleUtility;
 import org.bladerunnerjs.utility.ZipUtility;
 import org.mockito.Mockito;
@@ -29,7 +28,7 @@ public class NodeImporter {
 	public static void importAppFromZip(ZipFile sourceAppZip, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		BRJS tempBrjs = createTemporaryBRJSModel();
 		
-		File temporaryUnzipDir = FileUtility.createTemporaryDirectory( NodeImporter.class, targetApp.getName() );
+		File temporaryUnzipDir = FileUtils.createTemporaryDirectory( NodeImporter.class, targetApp.getName() );
 		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
 		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
 		if (temporaryUnzipDirFiles.length != 1) {
@@ -37,10 +36,10 @@ public class NodeImporter {
 		}
 		
 		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
-		FileUtils.moveDirectory(temporaryUnzipDirFiles[0], tmpBrjsSourceApp.dir());
+		FileUtils.moveDirectory(tmpBrjsSourceApp, temporaryUnzipDirFiles[0], tmpBrjsSourceApp.dir());
 		
 		File unzippedLibDir = tmpBrjsSourceApp.file("WEB-INF/lib");
-		FileUtils.copyDirectory(targetApp.root().appJars().dir(), unzippedLibDir);
+		FileUtils.copyDirectory(targetApp, targetApp.root().appJars().dir(), unzippedLibDir);
 		
 		tmpBrjsSourceApp.incrementChildFileVersions();
 		targetApp.incrementChildFileVersions();
@@ -74,21 +73,20 @@ public class NodeImporter {
 		App tempBrjsApp = tempBrjs.app(targetBladeset.app().getName());
 		Bladeset tempBrjsBladeset = tempBrjsApp.bladeset(targetBladeset.getName());
 		
-		FileUtils.copyDirectory(sourceBladesetDir, tempBrjsBladeset.dir());
+		FileUtils.copyDirectory(targetBladeset, sourceBladesetDir, tempBrjsBladeset.dir());
 		tempBrjsApp.appConf().write();
 		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
 		
 		if(!JsStyleUtility.getJsStyle(sourceBladesetDir).equals(JsStyleUtility.getJsStyle(targetBladeset.dir()))) {
-			JsStyleUtility.setJsStyle(tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(sourceBladesetDir));
+			JsStyleUtility.setJsStyle(tempBrjsBladeset.root(), tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(sourceBladesetDir));
 		}
 		
 		renameBladeset(tempBrjsBladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix);
 		FileUtils.moveDirectory(tempBrjsBladeset.dir(), targetBladeset.dir());
-		targetBladeset.incrementFileVersion();
 	}
 	
 	private static BRJS createTemporaryBRJSModel() throws InvalidSdkDirectoryException, IOException {
-		File tempSdkDir = FileUtility.createTemporaryDirectory(NodeImporter.class);
+		File tempSdkDir = FileUtils.createTemporaryDirectory(NodeImporter.class);
 		new File(tempSdkDir, "sdk").mkdir();
 		MockPluginLocator pluginLocator = new MockPluginLocator();
 		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
@@ -139,23 +137,23 @@ public class NodeImporter {
 						assetLocation.incrementChildFileVersions();
 					}
 					
-					findAndReplaceInAllTextFiles(assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
+					findAndReplaceInAllTextFiles(assetLocation.root(), assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
 					assetLocation.incrementChildFileVersions();
 				}
 			}
 		}
 	}
 	
-	private static void findAndReplaceInAllTextFiles(File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
+	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
 		HashMap<String, String> replaceMap = getReplaceMap(sourceRequirePrefix, targetRequirePrefix);
 		for(File file : FileUtils.listFiles(rootRenameDirectory, null, true))
 		{
-			String content = FileUtils.readFileToString(file);
+			String content = org.apache.commons.io.FileUtils.readFileToString(file);
 			String updatedContent = findAndReplaceInText(content, replaceMap);
 			
 			if(content != updatedContent) {
-				FileUtils.writeStringToFile(file, updatedContent);
+				FileUtils.write(brjs, file, updatedContent);
 			}
 		}
 	}

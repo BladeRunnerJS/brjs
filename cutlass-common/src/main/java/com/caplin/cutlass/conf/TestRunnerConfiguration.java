@@ -11,7 +11,7 @@ import java.util.Map;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -42,7 +42,7 @@ public class TestRunnerConfiguration {
 		}
 		
 		configuration.setRelativeDir(configFile.getParentFile());
-		configuration.setOperatingSystem(FileUtility.getOS());
+		configuration.setOperatingSystem(FileUtils.getOS());
 		configuration.setBrowserNames(browserNames);
 		
 		return configuration;

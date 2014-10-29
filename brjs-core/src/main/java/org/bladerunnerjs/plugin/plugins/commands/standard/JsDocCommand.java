@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
@@ -19,6 +18,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.FileUtils;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -168,7 +168,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			String pathRelativeToDestDir = placeholderSrcDir.getRelativePath(srcFile);
 			File destFile = new File(placeholderDestDir, pathRelativeToDestDir);
 			if (!destFile.exists()) {
-				FileUtils.copyFile(srcFile, destFile);
+				FileUtils.copyFile(app.root(), srcFile, destFile);
 			}
 		}
 	}

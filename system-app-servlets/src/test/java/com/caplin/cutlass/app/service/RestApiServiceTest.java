@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 
 
 public class RestApiServiceTest extends TestModelAccessor
@@ -97,7 +98,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testCreatingANewApp() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(ONE_APP_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(ONE_APP_PATH));
 		setupService(temporarySdk);
 		service.createApp("aNewApp", "appx");
 		assertTrue( new File(temporarySdk.getParentFile(), "apps/aNewApp").exists() );
@@ -106,7 +107,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test(expected=Exception.class)
 	public void testCreatingANewAppThatAlreadyExists() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(THREE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(THREE_APPS_PATH));
 		setupService(temporarySdk);
 		service.createApp("app2", "appx");
 	}
@@ -134,7 +135,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testImportingAMotif() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(ONE_APP_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(ONE_APP_PATH));
 		setupService(temporarySdk);
 		service.importMotif("aNewApp", "appx", new File("src/test/resources/RestApiServiceTest/single-bladeset-single-blade-app.zip"));
 		assertTrue( new File(temporarySdk.getParentFile(), "apps/aNewApp").exists() );
@@ -143,7 +144,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test(expected=Exception.class)
 	public void testImportingAMotifWhenAppNameAlreadyExists() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(ONE_APP_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(ONE_APP_PATH));
 		setupService(temporarySdk);
 		service.importMotif("app1", "appx", new File("src/test/resources/RestApiServiceTest/single-bladeset-single-blade-app.zip"));
 	}
@@ -154,9 +155,9 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testExportingAWar() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(ONE_APP_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(ONE_APP_PATH));
 		setupService(temporarySdk);
-		File targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
+		File targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 		File warFile = new File(targetDir.getParentFile(), "app1-war.war");
 		service.exportWar("app1", warFile);
 		assertTrue( warFile.exists() );
@@ -165,9 +166,9 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test(expected=Exception.class)
 	public void testExportingAWarForNonExistantApp() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(ONE_APP_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(ONE_APP_PATH));
 		setupService(temporarySdk);
-		File warFile = FileUtility.createTemporaryFile(this.getClass(), ".war");
+		File warFile = FileUtils.createTemporaryFile(this.getClass(), ".war");
 		warFile.delete();
 		assertFalse( warFile.exists() );
 		service.exportWar("i-dont-exist", warFile);
@@ -179,7 +180,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testImportingExistingBladeset() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		
 		service.createApp("my-new-app", "appx");
@@ -200,7 +201,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testImportingExistingBladesetExcludingSomeBlades() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		
 		service.createApp("my-new-app", "appx");
@@ -221,7 +222,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testImportingExistingBladesetWithANewName() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		
 		service.createApp("my-new-app", "appx");
@@ -245,7 +246,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testCreatingNewBladeset() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		service.createBladeset("multi-bladeset-multi-blade-app", "basic");
 		assertTrue( new File(temporarySdk.getParentFile(), "apps/multi-bladeset-multi-blade-app/basic-bladeset").exists() );
@@ -254,7 +255,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test(expected=Exception.class)
 	public void testCreatingNewBladesetWhenBladesetExists() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		service.createBladeset("multi-bladeset-multi-blade-app", "a");
 	}
@@ -265,7 +266,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testCreatingNewBlade() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		service.createBlade("multi-bladeset-multi-blade-app", "a", "basic");
 		assertTrue( new File(temporarySdk.getParentFile(), "apps/multi-bladeset-multi-blade-app/a-bladeset/blades/basic").exists() );
@@ -274,7 +275,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test(expected=Exception.class)
 	public void testCreatingNewBladeWhenBladeExists() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		assertTrue( new File(temporarySdk.getParentFile(), "apps/multi-bladeset-multi-blade-app/a-bladeset/blades/a-blade").exists() );
 		service.createBlade("multi-bladeset-multi-blade-app", "a", "a-blade");
@@ -285,7 +286,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testGettingLatestReleaseNote() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		String cmdOutput = service.getCurrentReleaseNotes();
 		assertEquals( "latest release note", cmdOutput );
@@ -295,7 +296,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testRunBladesetTests() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		
 		try {
@@ -311,7 +312,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testRunBladeTests() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		
 		try 
@@ -331,7 +332,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	@Test
 	public void testgetJsdocForApp() throws Exception
 	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		App app1 = ThreadSafeStaticBRJSAccessor.root.userApp("app1");
 		File indexFile = new File(app1.storageDir("jsdoc"), "output/index.html");
@@ -350,6 +351,16 @@ public class RestApiServiceTest extends TestModelAccessor
 		ThreadSafeStaticBRJSAccessor.destroy();
 		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		service = new RestApiService(brjs);
+	}
+	
+	private static File createTemporarySdkInstall(File existingSDK) throws IOException
+	{
+		File tempDir = FileUtils.createTemporaryDirectory( RestApiServiceTest.class );
+		if ( !(tempDir.exists() && tempDir.isDirectory()) ) {
+			throw new AssertionError();
+		}
+		FileUtils.copyDirectory(ThreadSafeStaticBRJSAccessor.root, existingSDK, tempDir);
+		return new File(tempDir, "sdk");
 	}
 	
 }

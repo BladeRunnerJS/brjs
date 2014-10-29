@@ -8,7 +8,6 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.appserver.ApplicationServer;
@@ -76,7 +75,7 @@ import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
@@ -133,7 +132,7 @@ public abstract class SpecTest extends TestModelAccessor
 		}
 		
 		if (testSdkDirectory.exists() && cleanupTestSdkDirectory) {
-			FileUtils.deleteQuietly(testSdkDirectory);
+			org.apache.commons.io.FileUtils.deleteQuietly(testSdkDirectory);
 		}
 		
 		try (ServerSocket socket = new ServerSocket(appServerPort))
@@ -319,7 +318,7 @@ public abstract class SpecTest extends TestModelAccessor
 		File sdkDir;
 		
 		try {
-			sdkDir = FileUtility.createTemporaryDirectory( this.getClass() );
+			sdkDir = FileUtils.createTemporaryDirectory( this.getClass() );
 			new File(sdkDir, "sdk").mkdirs();
 		}
 		catch (IOException e) {

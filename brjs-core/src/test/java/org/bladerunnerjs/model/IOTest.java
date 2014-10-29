@@ -4,8 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,16 +19,16 @@ public class IOTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
+		tempDir = FileUtils.createTemporaryDirectory( this.getClass() );
 		subDir1 = new File(tempDir, "subdir1");
 		subDir2 = new File(tempDir, "subdir2");
-		FileUtils.forceMkdir(subDir1);
+		org.apache.commons.io.FileUtils.forceMkdir(subDir1);
 		
 		tempHelloWorldFile = new File(tempDir, "file.txt");
-		FileUtils.write(tempHelloWorldFile, "Hello World!");
+		org.apache.commons.io.FileUtils.write(tempHelloWorldFile, "Hello World!");
 		
 		subDir1HelloWorldFile = new File(subDir1, "file.txt");
-		FileUtils.write(subDir1HelloWorldFile, "Hello Other World!");
+		org.apache.commons.io.FileUtils.write(subDir1HelloWorldFile, "Hello Other World!");
 	}
 	
 	@After
@@ -40,14 +39,14 @@ public class IOTest {
 	@Test
 	public void weCanReadAFileIfWeveInstalledTheAccessCheckerButHaveNotYetLimitedAccess() throws Exception {
 		io.installFileAccessChecker();
-		assertEquals("Hello World!", FileUtils.readFileToString(tempHelloWorldFile));
+		assertEquals("Hello World!", org.apache.commons.io.FileUtils.readFileToString(tempHelloWorldFile));
 	}
 	
 	@Test
 	public void weCanReadAFileIfWeveLimitedAccessButHaveNotYetInstalledTheAccessChecker() throws Exception {
 		try(FileAccessLimitScope scope = io.limitAccessToWithin("id", new File[] {subDir1})) {
 			scope.getClass(); // reference scope to prevent compiler warnings
-			assertEquals("Hello World!", FileUtils.readFileToString(tempHelloWorldFile));
+			assertEquals("Hello World!", org.apache.commons.io.FileUtils.readFileToString(tempHelloWorldFile));
 		}
 	}
 	
@@ -57,7 +56,7 @@ public class IOTest {
 		
 		try(FileAccessLimitScope scope = io.limitAccessToWithin("id", new File[] {subDir1})) {
 			scope.getClass(); // reference scope to prevent compiler warnings
-			FileUtils.readFileToString(tempHelloWorldFile);
+			org.apache.commons.io.FileUtils.readFileToString(tempHelloWorldFile);
 		}
 	}
 	
@@ -67,7 +66,7 @@ public class IOTest {
 		
 		try(FileAccessLimitScope scope = io.limitAccessToWithin("id", new File[] {tempDir})) {
 			scope.getClass(); // reference scope to prevent compiler warnings
-			FileUtils.readFileToString(tempHelloWorldFile);
+			org.apache.commons.io.FileUtils.readFileToString(tempHelloWorldFile);
 		}
 	}
 	
@@ -77,7 +76,7 @@ public class IOTest {
 		
 		try(FileAccessLimitScope scope = io.limitAccessToWithin("id", new File[] {tempDir})) {
 			scope.getClass(); // reference scope to prevent compiler warnings
-			FileUtils.readFileToString(subDir1HelloWorldFile);
+			org.apache.commons.io.FileUtils.readFileToString(subDir1HelloWorldFile);
 		}
 	}
 	
@@ -87,7 +86,7 @@ public class IOTest {
 		
 		try(FileAccessLimitScope scope = io.limitAccessToWithin("id", new File[] {subDir1, subDir2})) {
 			scope.getClass(); // reference scope to prevent compiler warnings
-			FileUtils.readFileToString(subDir1HelloWorldFile);
+			org.apache.commons.io.FileUtils.readFileToString(subDir1HelloWorldFile);
 		}
 	}
 	
@@ -100,7 +99,7 @@ public class IOTest {
 			
 			try(FileAccessLimitScope outerScope = io.limitAccessToWithin("id", new File[] {subDir2})) {
 				outerScope.getClass(); // reference scope to prevent compiler warnings
-				FileUtils.readFileToString(subDir1HelloWorldFile);
+				org.apache.commons.io.FileUtils.readFileToString(subDir1HelloWorldFile);
 			}
 		}
 	}
@@ -114,7 +113,7 @@ public class IOTest {
 			
 			try(FileAccessLimitScope outerScope = io.limitAccessToWithin("id", new File[] {subDir1})) {
 				outerScope.getClass(); // reference scope to prevent compiler warnings
-				FileUtils.readFileToString(subDir1HelloWorldFile);
+				org.apache.commons.io.FileUtils.readFileToString(subDir1HelloWorldFile);
 			}
 		}
 	}
@@ -131,7 +130,7 @@ public class IOTest {
 				
 				try(FileAccessLimitScope outerScope = io.limitAccessToWithin("id", new File[] {subDir1})) {
 					outerScope.getClass(); // reference scope to prevent compiler warnings
-					FileUtils.readFileToString(subDir1HelloWorldFile);
+					org.apache.commons.io.FileUtils.readFileToString(subDir1HelloWorldFile);
 				}
 			}
 		}

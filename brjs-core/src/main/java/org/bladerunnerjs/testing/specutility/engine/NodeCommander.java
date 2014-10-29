@@ -17,7 +17,7 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	public NodeCommander(SpecTest specTest, N node) {
 		super(specTest);
 		this.node = node;
-		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
+		fileUtil = new EncodedFileUtil(specTest.brjs, specTest.getActiveCharacterEncoding());
 		commanderChainer = new CommanderChainer(specTest);
 	}
 	

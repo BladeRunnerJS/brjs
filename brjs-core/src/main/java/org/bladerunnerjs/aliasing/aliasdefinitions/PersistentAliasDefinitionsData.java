@@ -29,7 +29,7 @@ public class PersistentAliasDefinitionsData {
 	
 	public void writeData() throws ContentFileProcessingException {
 		try {
-			AliasDefinitionsWriter.write(getData(), aliasesFile, getCharacterEncoding());
+			AliasDefinitionsWriter.write(brjs, getData(), aliasesFile, getCharacterEncoding());
 		}
 		catch(Exception e) {
 			throw new ContentFileProcessingException(e, aliasesFile);

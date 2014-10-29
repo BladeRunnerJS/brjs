@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
@@ -19,7 +18,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -33,8 +32,8 @@ public class JsTestDriverBundleCreator
 			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
 	{
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
-		FileUtility.deleteDirectoryFromBottomUp(bundlesDir);
-		FileUtils.deleteQuietly(bundlesDir);
+		FileUtils.deleteDirectoryFromBottomUp(bundlesDir);
+		FileUtils.deleteQuietly(brjs, bundlesDir);
 		bundlesDir.mkdir();
 		
 		Map<String, Object> configMap = getMapFromYamlConfig(jsTestDriverConf);
