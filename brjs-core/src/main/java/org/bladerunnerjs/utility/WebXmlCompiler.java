@@ -25,6 +25,8 @@ import org.xml.sax.SAXException;
 public class WebXmlCompiler {
 	public static void compile(File webXmlFile) throws IOException, ParseException {
 		try {
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			documentBuilderFactory.setNamespaceAware(true);
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document webXml = documentBuilder.parse(webXmlFile);
 			
