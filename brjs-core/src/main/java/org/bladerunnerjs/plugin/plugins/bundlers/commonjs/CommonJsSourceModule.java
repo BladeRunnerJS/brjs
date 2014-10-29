@@ -213,16 +213,16 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 			return bundlableNode.getLinkedAssets( assetLocation, new ArrayList<>(requirePaths) );
 		}
 		catch (AmbiguousRequirePathException e) {
-            e.setSourceRequirePath(getPrimaryRequirePath());
-            throw new ModelOperationException(e);
-        }
+			e.setSourceRequirePath(getPrimaryRequirePath());
+			throw new ModelOperationException(e);
+		}
 		catch (UnresolvableRequirePathException e) {
-            e.setSourceRequirePath(getPrimaryRequirePath());
-            throw new ModelOperationException(e);
-        }
-        catch (RequirePathException e) {
-            throw new ModelOperationException(e);
-        }
+			e.setSourceRequirePath(getPrimaryRequirePath());
+			throw new ModelOperationException(e);
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 	
 	private class ComputedValue {
