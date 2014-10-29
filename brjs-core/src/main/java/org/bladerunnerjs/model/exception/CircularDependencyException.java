@@ -22,13 +22,24 @@ public class CircularDependencyException extends ModelOperationException {
 		SourceModule initialSourceModule = sourceModules.iterator().next();
 		ArrayList<String> dependencyChain = new ArrayList<>();
 		dependencyChain.add(initialSourceModule.getPrimaryRequirePath());
+		List<String> circularDependency = null;
 		
-		return Joiner.on(" => ").join(traverseDependencies(bundlableNode, initialSourceModule, dependencyChain, new HashSet<SourceModule>()));
+		for(SourceModule sourceModule : sourceModules) {
+			dependencyChain = new ArrayList<>();
+			dependencyChain.add(sourceModule.getPrimaryRequirePath());
+			circularDependency = traverseDependencies(bundlableNode, sourceModule, sourceModules, dependencyChain, new HashSet<SourceModule>());
+			
+			if(circularDependency != null) {
+				break;
+			}
+		}
+		
+		return Joiner.on(" => ").join(circularDependency);
 	}
 	
-	private static List<String> traverseDependencies(BundlableNode bundlableNode, SourceModule sourceModule, List<String> dependencyChain, HashSet<SourceModule> visitedSourceModules) throws ModelOperationException {
+	private static List<String> traverseDependencies(BundlableNode bundlableNode, SourceModule sourceModule, Set<SourceModule> sourceModules, List<String> dependencyChain, HashSet<SourceModule> visitedSourceModules) throws ModelOperationException {
 		for(Asset dependentAsset : sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode)) {
-			if(dependentAsset instanceof SourceModule) {
+			if(sourceModules.contains(dependentAsset)) {
 				SourceModule dependentSourceModule = (SourceModule) dependentAsset;
 				String requirePath = dependentSourceModule.getPrimaryRequirePath();
 				
@@ -41,7 +52,7 @@ public class CircularDependencyException extends ModelOperationException {
 						visitedSourceModules.add(dependentSourceModule);
 						dependencyChain.add(requirePath);
 						
-						List<String> circularDependency = traverseDependencies(bundlableNode, dependentSourceModule, dependencyChain, visitedSourceModules);
+						List<String> circularDependency = traverseDependencies(bundlableNode, dependentSourceModule, sourceModules, dependencyChain, visitedSourceModules);
 						if(circularDependency != null) {
 							return circularDependency;
 						}
