@@ -19,6 +19,8 @@ import static java.nio.file.StandardWatchEventKinds.*;
 
 public class FileModificationWatcherThread extends Thread
 {
+	private static final int THREAD_SLEEP_INTERVAL = 750;
+
 	public static final String THREAD_IDENTIFIER = FileModificationWatcherThread.class.getSimpleName();
 	
 	private Path directoryToWatch;
@@ -42,7 +44,7 @@ public class FileModificationWatcherThread extends Thread
     		
     		while (!isInterrupted()) {
     			checkForUpdates(watchService, watchKeys);
-    			Thread.sleep(1000);
+    			Thread.sleep(THREAD_SLEEP_INTERVAL);
     		}
 		} catch (InterruptedException ex) {
 			// do nothing

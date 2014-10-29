@@ -202,7 +202,7 @@ public class AppServerTest extends SpecTest
 	}
 	
 	@Test
-	public void newAppsAreHostedOnAppserverAfterServerRestart() throws Exception
+	public void newAppsAreHostedOnAppserverAfterServerRestartWhenCreateAppCommandUsedFromADifferentModelInstance() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
 			.and(brjs.applicationServer(appServerPort)).started();
