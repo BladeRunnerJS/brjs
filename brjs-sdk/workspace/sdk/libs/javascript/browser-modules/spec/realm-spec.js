@@ -368,6 +368,19 @@ describe('a realm', function() {
 		expect(subrealmClassB.parent).toBe(ReplacementClassA);
 	});
 
+	it('allows existing class definitions to be augmented or re-cast in a safe way.', function() {
+		testRealm.define('A', function(require, exports, module) {
+			module.exports = 5;
+		});
+
+		subrealm.define('A', function(require, exports, module) {
+			var A = subrealm.recast('A');
+			module.exports = A * 10;
+		});
+
+		expect(subrealm.require('A')).toBe(50);
+	});
+
 	it('allows require() to be used globally if the sub-realm is installed.', function() {
 		testRealm.define('TheClass', function(require, exports, module) {
 			module.exports = function() {};
