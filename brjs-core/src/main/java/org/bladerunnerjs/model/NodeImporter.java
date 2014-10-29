@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
@@ -41,9 +42,6 @@ public class NodeImporter {
 		File unzippedLibDir = tmpBrjsSourceApp.file("WEB-INF/lib");
 		FileUtils.copyDirectory(targetApp, targetApp.root().appJars().dir(), unzippedLibDir);
 		
-		tmpBrjsSourceApp.incrementChildFileVersions();
-		targetApp.incrementChildFileVersions();
-		
 		importApp(tempBrjs, tmpBrjsSourceApp, targetApp, targetAppRequirePrefix);
 	}
 	
@@ -68,12 +66,13 @@ public class NodeImporter {
 	}
 	
 	
-	public static void importBladeset(File sourceBladesetDir, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix, Bladeset targetBladeset) throws InvalidSdkDirectoryException, IOException, ConfigException {
+	public static void importBladeset(Bladeset sourceBladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix, Bladeset targetBladeset) throws InvalidSdkDirectoryException, IOException, ConfigException {
+		MemoizedFile sourceBladesetDir = sourceBladeset.dir();
 		BRJS tempBrjs = createTemporaryBRJSModel();
 		App tempBrjsApp = tempBrjs.app(targetBladeset.app().getName());
 		Bladeset tempBrjsBladeset = tempBrjsApp.bladeset(targetBladeset.getName());
 		
-		FileUtils.copyDirectory(targetBladeset, sourceBladesetDir, tempBrjsBladeset.dir());
+		FileUtils.copyDirectory(sourceBladesetDir, tempBrjsBladeset.dir());
 		tempBrjsApp.appConf().write();
 		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
 		
@@ -100,13 +99,11 @@ public class NodeImporter {
 	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException {
 		updateRequirePrefix(bladeset.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
-		bladeset.incrementChildFileVersions();
 		renameTestLocations(bladeset.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		for(Blade blade : bladeset.blades()) {
 			updateRequirePrefix(blade.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
 			
-			blade.incrementChildFileVersions();
 			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 			
 			Workbench workbench = blade.workbench();			
@@ -130,15 +127,12 @@ public class NodeImporter {
 				if(assetLocation.dir().exists()) {
 					if(assetLocation.file(sourceRequirePrefix).exists()) {
 						FileUtils.moveDirectory(assetLocation.file(sourceRequirePrefix), assetLocation.file(targetRequirePrefix));
-						assetLocation.root().getFileModificationRegistry().incrementChildFileVersions( assetLocation.file(sourceAppRequirePrefix) );
 						if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && assetLocation.file(sourceAppRequirePrefix).exists()) {
 							FileUtils.deleteDirectory( assetLocation.file(sourceAppRequirePrefix) );
 						}
-						assetLocation.incrementChildFileVersions();
 					}
 					
 					findAndReplaceInAllTextFiles(assetLocation.root(), assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
-					assetLocation.incrementChildFileVersions();
 				}
 			}
 		}

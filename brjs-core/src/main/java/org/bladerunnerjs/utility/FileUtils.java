@@ -170,7 +170,8 @@ public class FileUtils {
 	}
 	public static void moveDirectory(MemoizedFile srcFile, MemoizedFile destFile) throws IOException {
 		org.apache.commons.io.FileUtils.moveDirectory(srcFile.getUnderlyingFile(), destFile.getUnderlyingFile());
-		destFile.incrementFileVersion();
+		srcFile.incrementChildFileVersions();
+		destFile.incrementChildFileVersions();
 	}
 	
 	public static void copyDirectory(Node brjsNode, File srcFile, File destFile) throws IOException { 
@@ -184,7 +185,7 @@ public class FileUtils {
 	}
 	public static void copyDirectory(MemoizedFile srcFile, MemoizedFile destFile) throws IOException {
 		org.apache.commons.io.FileUtils.copyDirectory(srcFile.getUnderlyingFile(), destFile.getUnderlyingFile());
-		destFile.incrementFileVersion();
+		destFile.incrementChildFileVersions();
 	}
 	
 	public static void copyDirectory(Node brjsNode, File srcFile, File destFile, IOFileFilter fileFilter) throws IOException { 
@@ -198,7 +199,7 @@ public class FileUtils {
 	}
 	public static void copyDirectory(MemoizedFile srcFile, MemoizedFile destFile, IOFileFilter fileFilter) throws IOException {
 		org.apache.commons.io.FileUtils.copyDirectory(srcFile.getUnderlyingFile(), destFile.getUnderlyingFile(), fileFilter);
-		destFile.incrementFileVersion();
+		destFile.incrementChildFileVersions();
 	}
 	
 	public static boolean deleteQuietly(Node brjsNode, File file) {

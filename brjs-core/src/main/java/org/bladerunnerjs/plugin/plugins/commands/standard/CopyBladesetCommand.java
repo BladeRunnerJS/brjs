@@ -85,8 +85,7 @@ public class CopyBladesetCommand  extends ArgsParsingCommandPlugin
 		if (targetBladeset.dirExists()) throw new NodeAlreadyExistsException(targetBladeset, this);
 		
 		try {
-			NodeImporter.importBladeset(sourceBladeset.dir(), sourceApp.appConf().getRequirePrefix(), sourceApp.appConf().getRequirePrefix() + "/" + sourceBladesetName, targetBladeset);
-			targetBladeset.incrementFileVersion();
+			NodeImporter.importBladeset(sourceBladeset, sourceApp.appConf().getRequirePrefix(), sourceApp.appConf().getRequirePrefix() + "/" + sourceBladesetName, targetBladeset);
 			
 			logger.println("Successfully copied " + sourceAppName + "/" + sourceBladesetName + " to " + targetAppName + "/" + targetBladesetName);
 		}

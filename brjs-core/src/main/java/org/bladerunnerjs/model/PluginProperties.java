@@ -99,10 +99,11 @@ public class PluginProperties implements NodeProperties
 	
 	private void saveProperties(Properties properties) throws FileNotFoundException, IOException
 	{
-		File propertiesFile = getPropertiesFile();
+		MemoizedFile propertiesFile = getPropertiesFile();
 		try(OutputStream propertiesOutputStream = new FileOutputStream(propertiesFile)) {
 			properties.store(propertiesOutputStream, null);
 		}
+		propertiesFile.incrementFileVersion();
 	}
 	
 }

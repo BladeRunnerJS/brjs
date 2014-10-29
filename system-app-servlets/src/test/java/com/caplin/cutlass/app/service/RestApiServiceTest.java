@@ -359,7 +359,7 @@ public class RestApiServiceTest extends TestModelAccessor
 		if ( !(tempDir.exists() && tempDir.isDirectory()) ) {
 			throw new AssertionError();
 		}
-		FileUtils.copyDirectory(ThreadSafeStaticBRJSAccessor.root, existingSDK, tempDir);
+		org.apache.commons.io.FileUtils.copyDirectory(existingSDK, tempDir);
 		return new File(tempDir, "sdk");
 	}
 	

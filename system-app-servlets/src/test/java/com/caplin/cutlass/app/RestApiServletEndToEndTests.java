@@ -234,7 +234,7 @@ public class RestApiServletEndToEndTests
 		if ( !(tempDir.exists() && tempDir.isDirectory()) ) {
 			throw new AssertionError();
 		}
-		FileUtils.copyDirectory(brjs, existingSDK, tempDir);
+		org.apache.commons.io.FileUtils.copyDirectory(existingSDK, tempDir);
 		return new File(tempDir, "sdk");
 	}
 	
