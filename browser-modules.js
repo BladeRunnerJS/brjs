@@ -345,6 +345,12 @@
 		constructor: {value: SubRealm, enumerable: false, configurable: true, writable: true}
 	});
 
+	SubRealm.prototype.recast = function(id) {
+		var deltaId = id + '^';
+		this.define(deltaId, this.parentRealm._getDefinition(id));
+		return this.require(deltaId);
+	};
+
 	SubRealm.prototype._getDefinition = function(id, originalId) {
 		return this.moduleDefinitions[id] || this.parentRealm._getDefinition(id, originalId);
 	};
