@@ -227,7 +227,7 @@ public class TagPluginUtilityTest extends TestModelAccessor
 		File sdkDir;
 		
 		try {
-			sdkDir = FileUtility.createTemporaryDirectory("test");
+			sdkDir = FileUtility.createTemporaryDirectory( this.getClass() );
 			new File(sdkDir, "sdk").mkdirs();
 		}
 		catch (IOException e) {

@@ -29,7 +29,7 @@ public class TemplateUtilityTest extends TestModelAccessor
 	@Before
 	public void setUp() throws Exception
 	{
-		File tempDir = FileUtility.createTemporaryDirectory("TemplateUtilityTest");
+		File tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
 		brjs = createModel(tempDir);
 		fileUtil = new EncodedFileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());

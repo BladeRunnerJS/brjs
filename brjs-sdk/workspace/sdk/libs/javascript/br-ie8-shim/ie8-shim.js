@@ -30,3 +30,12 @@ if (!Function.prototype['bind']) {
 		}
 	};
 }
+
+if (Function.prototype.bind && typeof console == "object" && typeof console.log == "object") {
+	var logFns = ["log", "info", "warn", "error", "assert", "dir", "clear", "profile", "profileEnd"];
+	for(var i = 0, l = logFns.length; i < l; ++i)
+	{
+		var method = logFns[i];
+		console[method] = Function.prototype.call.bind(console[method], console);
+	}
+}

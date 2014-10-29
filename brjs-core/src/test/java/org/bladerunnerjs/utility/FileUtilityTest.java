@@ -21,10 +21,10 @@ public class FileUtilityTest {
 		
 		try
 		{
-			temporaryDirectory = FileUtility.createTemporaryDirectory("fileutilitytest");
+			temporaryDirectory = FileUtility.createTemporaryDirectory( this.getClass(), "fileutilitytest" );
 			
 			assertTrue(temporaryDirectory.exists());
-			assertTrue(temporaryDirectory.getName().startsWith("fileutilitytest"));
+			assertTrue(temporaryDirectory.getName().contains("fileutilitytest"));
 		}
 		finally
 		{
@@ -39,8 +39,8 @@ public class FileUtilityTest {
 	public void cantCreateATemporaryDirectoryWithLeadingSlash() throws IOException
 	{
 		exception.expect(IOException.class);
-		exception.expectMessage("prependedFolderName can't contain a /");
+		exception.expectMessage("subFolderName can't contain a /");
 
-		FileUtility.createTemporaryDirectory("/fileutilitytest");
+		FileUtility.createTemporaryDirectory( this.getClass(), "/fileutilitytest" );
 	}
 }

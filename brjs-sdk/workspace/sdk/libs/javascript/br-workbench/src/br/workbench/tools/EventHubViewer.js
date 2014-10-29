@@ -9,7 +9,7 @@ var ko = require( 'ko' );
 var moment = require( 'momentjs' );
 
 var WorkbenchComponent = require( 'br/workbench/ui/WorkbenchComponent' );
-var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
+var KnockoutComponent;
 
 /**
  * @class
@@ -124,3 +124,5 @@ EventHubViewer.prototype.close = function() {
 
 
 module.exports = EventHubViewer;
+
+KnockoutComponent = require( 'br/knockout/KnockoutComponent' );

@@ -40,7 +40,7 @@ public class ThirdpartySourceModule implements SourceModule
 	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
-			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetLocation.dir());
+			assetPath = RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.assetContainer().app().dir(), assetLocation.dir());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 			manifest = assetLocation.getManifest();
@@ -123,26 +123,11 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
-		
-		try 
-		{
-			for (String dependentLibName : manifest.getDepends())
-			{
-				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
-				if (!dependentLib.dirExists())
-				{
-					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
-				}
-				dependentLibs.addAll(dependentLib.linkedAssets());
-			}
-		}
-		catch (ConfigException ex)
-		{
-			throw new ModelOperationException( ex );
-		}
-		
-		return new ArrayList<Asset>( dependentLibs );
+		List<Asset> dependendAssets = new ArrayList<>();
+		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		return dependendAssets;
 	}
 
 	@Override
@@ -179,15 +164,39 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
+	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		List<SourceModule> result = new ArrayList<SourceModule>();
-		for(Asset dependentAsset : getDependentAssets(bundlableNode)){
-			if(dependentAsset instanceof SourceModule){
-				result.add((SourceModule)dependentAsset);
+		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
+		
+		try 
+		{
+			for (String dependentLibName : manifest.getDepends())
+			{
+				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
+				if (!dependentLib.dirExists())
+				{
+					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
+				}
+				dependentLibs.addAll(dependentLib.linkedAssets());
 			}
 		}
-		return result;
+		catch (ConfigException ex)
+		{
+			throw new ModelOperationException( ex );
+		}
+		
+		return new ArrayList<Asset>( dependentLibs );
+	}
+	
+	@Override
+	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return Collections.emptyList();
+	}
+	
+	@Override
+	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
+	{
+		return Collections.emptyList();
 	}
 	
 	@Override

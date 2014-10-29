@@ -5,11 +5,12 @@ import java.util.Set;
 
 public class ProxyFileModificationInfo implements WatchingFileModificationInfo {
 	private final Java7FileModificationService fileModificationService;
-	private NonExistentFileModificationInfo nonExistentFileModificationInfo = new NonExistentFileModificationInfo();
+	private final NonExistentFileModificationInfo nonExistentFileModificationInfo;
 	private WatchingFileModificationInfo existentFileModificationInfo = null;
 	
-	public ProxyFileModificationInfo(Java7FileModificationService fileModificationService) {
+	public ProxyFileModificationInfo(Java7FileModificationService fileModificationService, WatchingFileModificationInfo parent, TimeAccessor timeAccessor) {
 		this.fileModificationService = fileModificationService;
+		nonExistentFileModificationInfo = new NonExistentFileModificationInfo(parent, timeAccessor);
 	}
 	
 	public void setFileModificationInfo(WatchingFileModificationInfo fileModificationInfo) {
@@ -64,7 +65,7 @@ public class ProxyFileModificationInfo implements WatchingFileModificationInfo {
 	public void delete() {
 		if(existentFileModificationInfo != null) {
 			for(WatchingFileModificationInfo childInfo : getChildren()) {
-				fileModificationService.getModificationInfo(childInfo.getFile()).delete();
+				fileModificationService.getFileModificationInfo(childInfo.getFile()).delete();
 			}
 			
 			nonExistentFileModificationInfo.setLastModified(existentFileModificationInfo.getLastModified() + 1);

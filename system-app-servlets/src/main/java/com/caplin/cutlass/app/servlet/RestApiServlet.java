@@ -39,7 +39,6 @@ import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 import com.caplin.cutlass.util.FileUtility;
 import com.google.gson.Gson;
@@ -105,7 +104,7 @@ public class RestApiServlet extends HttpServlet
 			context = config.getServletContext();
 			
 			File contextDir = new File( context.getRealPath("/") );
-			brjs = ThreadSafeStaticBRJSAccessor.initializeModel( contextDir, new PessimisticFileModificationService() );
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel( contextDir );
 			
 			if (apiService == null) { apiService = new RestApiService(brjs); };
 			logger = brjs.logger(this.getClass());
@@ -154,7 +153,7 @@ public class RestApiServlet extends HttpServlet
 			}
 			else if (EXPORT_APP_PATTERN.matcher(requestPath).matches())
 			{
-				File targetDir = FileUtility.createTemporaryDirectory(RestApiServlet.class.getSimpleName());
+				File targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
 				File warTempFile = new File(targetDir, "x.war");
 				apiService.exportWar(appName, warTempFile);
 				response.setContentType("application/octet-stream");

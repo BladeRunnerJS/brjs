@@ -35,7 +35,6 @@ public class BundleSetBuilder {
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Map<SourceModule, Set<SourceModule>> orderDependentSourceModuleDependencies = new LinkedHashMap<>();
 	private final Map<String,AliasDefinition> activeAliases = new LinkedHashMap<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
@@ -76,7 +75,7 @@ public class BundleSetBuilder {
 			throw new ModelOperationException(e);
 		}
 		
-		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules, orderDependentSourceModuleDependencies).getOrderedSourceModules();
+		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		
 		return new StandardBundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
 	}
@@ -98,10 +97,6 @@ public class BundleSetBuilder {
 		
 		if(linkedAssets.add(linkedAsset)) {
 			List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
-			
-			if (linkedAsset instanceof SourceModule) {
-				moduleDependencies.addAll( ((SourceModule) linkedAsset).getOrderDependentSourceModules(bundlableNode) );
-			}
 			
 			addAliases( getAliases(linkedAsset.getAliasNames()) );
 			
@@ -160,14 +155,16 @@ public class BundleSetBuilder {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
 				
 				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
-				if (alias != null)
-				{					
+				if (alias != null) {
 					SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
 					addSourceModule(sourceModule);
 					
 					if(alias.getInterfaceName() != null) {
-						LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
-						addOrderDependentSourceModuleDependency(sourceModule, (SourceModule)linkedAsset);
+						SourceModule aliasInterface = (SourceModule) bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
+						
+						if(sourceModule != aliasInterface) {
+							addSourceModule(aliasInterface);
+						}
 					}
 					
 					aliases.add(alias);
@@ -179,17 +176,6 @@ public class BundleSetBuilder {
 		}
 		
 		return aliases;
-	}
-	
-	private void addOrderDependentSourceModuleDependency(SourceModule sourceModule, SourceModule dependency) throws ModelOperationException {
-		if(sourceModule != dependency) {
-			if(!orderDependentSourceModuleDependencies.containsKey(sourceModule)) {
-				orderDependentSourceModuleDependencies.put(sourceModule, new LinkedHashSet<SourceModule>());
-			}
-			
-			addSourceModule(dependency);
-			orderDependentSourceModuleDependencies.get(sourceModule).add(dependency);
-		}
 	}
 	
 	private String assetFilePaths(List<Asset> assets) {

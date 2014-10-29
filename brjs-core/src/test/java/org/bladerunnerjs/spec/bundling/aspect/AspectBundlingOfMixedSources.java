@@ -65,7 +65,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 				// The classes are both made available globally
 				"mergePackageBlock(window, {\"sdkNamespaceLib\":{},\"sdkCommonJsLib\":{}});",
 				// The namespaced style sdk class is assigned to the require of the CommonJsLib class  
-				"requireAll(['sdkCommonJsLib/Class1']);",
+				"requireAll(require, ['sdkCommonJsLib/Class1']);",
 				"sdkNamespaceLib.ProxyClass = sdkCommonJsLib.Class1;",
 				"sdkCommonJsLib.Class1 = require('sdkCommonJsLib/Class1');");
 	}
@@ -96,7 +96,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(otherUserLib).hasClass("otherUserLib/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1", "sdkCommonJsLib.Class1")
 			.and(aspect).hasClass("appns/Class1")
-			.and(aspect).classRequires("appns/Class1", "userLib.Class1")
+			.and(aspect).classRequires("appns/Class1", "userLib/Class1")
 			.and(otherAspect).indexPageRefersTo("otherUserLib.Class1", "sdkNamespaceLib.Class1");
 		when(otherAspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("otherUserLib.Class1")

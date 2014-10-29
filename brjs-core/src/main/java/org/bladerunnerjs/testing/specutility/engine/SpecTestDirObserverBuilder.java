@@ -19,8 +19,8 @@ public class SpecTestDirObserverBuilder
 
 	public BuilderChainer isObservingDir(File dir, BRJS brjs)
 	{
-		observer.getFileModificationService().initialise(brjs, dir);
-		observer.setDirObserver( observer.getFileModificationService().getModificationInfo(dir) );
+		observer.getFileModificationService().initialise(dir, brjs.getTimeAccessor(), brjs.getFileInfoAccessor());
+		observer.setDirObserver( observer.getFileModificationService().getFileModificationInfo(dir) );
 		
 		return builderChainer;
 	}

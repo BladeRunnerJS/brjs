@@ -188,7 +188,9 @@ public class AppTest extends SpecTest {
 	
 	@Test
 	public void appIsAvailableImmediatelyAfterCreationSinceFileModificationServiceListensForReadyEvent() throws Exception {
-		given(brjs).hasBeenAuthenticallyCreated();
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(brjs).appsHaveBeeniterated()
+			.and(brjs).hasBeenInactiveForOneMillisecond();
 		when(brjs.app("app1")).populate();
 		then(brjs).hasApps("app1");
 	}

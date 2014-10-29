@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="lib/topiarist.js" type="text/javascript"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+
+	var oo = typeof require !== 'undefined' ? require('topiarist') : window['topiarist'];
+
+	// Traditional style
+	function Furry() {}
+	Furry.prototype.stroke = function() {};
+
+	function Animal() {}
+
+	function Mammal() {};
+	oo.extend(Mammal, Animal);
+	oo.mixin(Mammal, Furry);
+
+	function Cat() {};
+	oo.extend(Cat, Mammal);
+
+	var tabby  = new Cat();
+	oo.isA(tabby, Cat); // true
+	oo.isA(tabby, Mammal); // true
+	oo.isA(tabby, Furry); // true
+
+	// there is also a topiarist.export, which will copy these methods to the global object, so you
+	// don't have to prefix everything with oo.
+
+	// dsl style, using install:
+
+	// this sets some nonenmerable versions of the methods on Object.prototype and Function.prototype.
+	// I generally consider this fine for an application, but bad practice for a library, which is
+	// why it doesn't happen automatically.
+
+	oo.install();
+
+	function Mammal() {};
+	Mammal.extends(Animal);
+	Mammal.mixin(Furry);
+
+	function Cat() {};
+	Cat.extends(Mammal);
+
+	var tabby = new Cat();
+	tabby.isA(Cat); // true
+	tabby.isA(Mammal); // true
+
+	// Same example using base class:
+
+	var Animal = oo.Base.extend();
+	var Furry = oo.Base.extend({
+		stroke: function() {}
+	});
+	var Mammal = Animal.extend();
+	Mammal.mixin(Furry);
+	var Cat = Mammal.extend();
+</script>
+
+</body>
+</html>

@@ -13,7 +13,6 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
-import org.bladerunnerjs.utility.reader.factory.JsAndXmlCommentStrippingReaderFactory;
 
 /**
  * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
@@ -32,7 +31,7 @@ public class LinkedFileAsset implements LinkedAsset {
 			this.assetLocation = assetLocation;
 			app = assetLocation.assetContainer().app();
 			this.assetFile = assetFile;
-			assetPath = RelativePathUtility.get(app.root(), app.dir(), assetFile);
+			assetPath = RelativePathUtility.get(app.root().getFileInfoAccessor(), app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
@@ -89,7 +88,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	private TrieBasedDependenciesCalculator getDependencyCalculator() {
 		if (trieBasedDependenciesCalculator == null) {
-			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsAndXmlCommentStrippingReaderFactory(this), assetFile);
+			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new LinkedFileAssetDependenciesReader.Factory(this), assetFile);
 		}
 		return trieBasedDependenciesCalculator;
 	}

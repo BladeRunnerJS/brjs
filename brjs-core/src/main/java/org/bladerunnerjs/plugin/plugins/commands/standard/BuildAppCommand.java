@@ -97,14 +97,14 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 				if (!deleted) {
 					File oldWarExportFile = warExportFile;
 					warExportFile = new File(targetDir, appName+"_"+getBuiltAppTimestamp()+".war");
-					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs, app.dir(), oldWarExportFile), RelativePathUtility.get(brjs, app.dir(), warExportFile)); 
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), oldWarExportFile), RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), warExportFile)); 
 				}
 			} else if (!warExport && appExportDir.exists()){
 				boolean deleted = FileUtils.deleteQuietly(appExportDir);			
 				if (!deleted) {
 					File oldAppExportDir = appExportDir;
 					appExportDir = new File(targetDir, appName+"_"+getBuiltAppTimestamp());
-					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs, app.dir(), oldAppExportDir), RelativePathUtility.get(brjs, app.dir(), appExportDir));
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), oldAppExportDir), RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), appExportDir));
 				}
 			}
 			targetDir.mkdirs();

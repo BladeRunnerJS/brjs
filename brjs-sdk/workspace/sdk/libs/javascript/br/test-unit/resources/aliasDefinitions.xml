@@ -1,0 +1,8 @@
+<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+	<alias name="some.alias1" defaultClass="br.a.AliasClass1" interface="br.Alias1Interface"/>
+	<alias name="some.alias2" defaultClass="br.b.AliasClass2"/>
+	<alias name="some.alias3" interface="br.Alias3Interface"/>
+	
+	<alias name="my.service" defaultClass="br.UnknownClass"/>
+	<alias name="my.404-service" defaultClass="br.UnknownClass"/>
+</aliasDefinitions>

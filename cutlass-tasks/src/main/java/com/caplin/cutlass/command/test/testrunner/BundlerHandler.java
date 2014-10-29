@@ -54,9 +54,11 @@ public class BundlerHandler
 			throw new IllegalArgumentException("Invalid bundlePath - it should not contain '\', only '/' as a seperator");
 		}
 		
-		bundleFile.getParentFile().mkdirs();
 		String modelRequestPath = getModelRequestPath(bundlePath);
-		try (OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
+		
+		repeatedlyAttemptToCreateBundleFile(bundleFile);
+		
+		try (OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile, false);
 			ResponseContent content = BundleSetRequestHandler.handle(new JsTestDriverBundleSet(bundlableNode.getBundleSet()), modelRequestPath, new StaticContentAccessor(app), version); )
 		{
 			content.write( bundleFileOutputStream );
@@ -64,6 +66,26 @@ public class BundlerHandler
 		}
 		
 	}
+	
+	// this is a workaround for the scenario where Windows indexing service or virus scanners etc can lock the file when we try to create it
+	// see http://stackoverflow.com/a/10516563/2634854 for more info
+	private void repeatedlyAttemptToCreateBundleFile(File bundleFile) throws IOException
+	{
+		bundleFile.getParentFile().mkdirs();
+		for (int i = 0; i < 100; i++) {
+			try {
+    			boolean fileCreated = bundleFile.createNewFile();
+    			if (fileCreated) {
+    				return;
+    			}
+    			Thread.sleep(10);
+			} catch (IOException | InterruptedException ex) {
+				// ignore the exception from creating the file or thread interupted
+			}
+		}
+		throw new IOException("Unable to create an empty bundle file at " + bundleFile.getAbsolutePath());
+	}
+
 
 	private String getModelRequestPath(String bundlerPath)
 	{

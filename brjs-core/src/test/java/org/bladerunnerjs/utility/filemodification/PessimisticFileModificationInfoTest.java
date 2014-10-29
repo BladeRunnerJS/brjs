@@ -11,16 +11,18 @@ import org.junit.Test;
 
 public class PessimisticFileModificationInfoTest {
 	private File testDir;
+	private TestTimeAccessor timeAccessor;
 	
 	@Before
 	public void setUp() throws Exception {
-		testDir = FileUtility.createTemporaryDirectory(PessimisticFileModificationInfoTest.class.getSimpleName());
+		testDir = FileUtility.createTemporaryDirectory(this.getClass());
+		timeAccessor = new TestTimeAccessor();
 	}
 	
 	@Test
 	public void lastModifiedShouldNotChangeForANonExistentFile() {
 		File nonExistentFile = new File(testDir, "non-existent-file");
-		FileModificationInfo fMI = new PessimisticFileModificationInfo(nonExistentFile);
+		FileModificationInfo fMI = new PessimisticFileModificationInfo(nonExistentFile, null, timeAccessor);
 		
 		assertEquals(0, fMI.getLastModified());
 		assertEquals(0, fMI.getLastModified());
@@ -29,7 +31,7 @@ public class PessimisticFileModificationInfoTest {
 	@Test
 	public void lastModifiedChangesAsAFileComesIntoExistence() throws Exception {
 		File initiallyNonExistentFile = new File(testDir, "initialially-non-existent-file");
-		FileModificationInfo fMI = new PessimisticFileModificationInfo(initiallyNonExistentFile);
+		FileModificationInfo fMI = new PessimisticFileModificationInfo(initiallyNonExistentFile, null, timeAccessor);
 		
 		assertEquals(0, fMI.getLastModified());
 		
@@ -43,7 +45,7 @@ public class PessimisticFileModificationInfoTest {
 	public void lastModifiedChangesAsAFileGoesOutOfExistence() throws Exception {
 		File existentFile = new File(testDir, "existent-file");
 		FileUtils.write(existentFile, "content");
-		FileModificationInfo fMI = new PessimisticFileModificationInfo(existentFile);
+		FileModificationInfo fMI = new PessimisticFileModificationInfo(existentFile, null, timeAccessor);
 		
 		assertEquals(1, fMI.getLastModified());
 		assertEquals(1, fMI.getLastModified());
@@ -55,10 +57,10 @@ public class PessimisticFileModificationInfoTest {
 	}
 	
 	@Test
-	public void lastModifiedShouldChangeIfTheFileDoesntChange() throws Exception {
+	public void lastModifiedShouldntChangeIfTheFileDoesntChange() throws Exception {
 		File file = new File(testDir, "file");
 		FileUtils.write(file, "content");
-		FileModificationInfo fMI = new PessimisticFileModificationInfo(file);
+		FileModificationInfo fMI = new PessimisticFileModificationInfo(file, null, timeAccessor);
 		
 		assertEquals(1, fMI.getLastModified());
 		assertEquals(1, fMI.getLastModified());
@@ -68,7 +70,7 @@ public class PessimisticFileModificationInfoTest {
 	public void lastModifiedShouldChangeIfTheFileChanges() throws Exception {
 		File file = new File(testDir, "file");
 		FileUtils.write(file, "initial content");
-		FileModificationInfo fMI = new PessimisticFileModificationInfo(file);
+		FileModificationInfo fMI = new PessimisticFileModificationInfo(file, null, timeAccessor);
 		
 		assertEquals(1, fMI.getLastModified());
 		
@@ -82,7 +84,7 @@ public class PessimisticFileModificationInfoTest {
 	public void lastModifiedShouldNotChangeIfTheExactSameContentIsReWritten() throws Exception {
 		File file = new File(testDir, "file");
 		FileUtils.write(file, "unchanging content");
-		FileModificationInfo fMI = new PessimisticFileModificationInfo(file);
+		FileModificationInfo fMI = new PessimisticFileModificationInfo(file, null, timeAccessor);
 		
 		assertEquals(1, fMI.getLastModified());
 		

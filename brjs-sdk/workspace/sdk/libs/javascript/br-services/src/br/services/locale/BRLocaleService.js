@@ -7,7 +7,7 @@
 var Errors = require('br/Errors');
 var br = require('br/Core');
 var LocaleService = require('br/services/LocaleService');
-var ServiceRegistry = require('br/ServiceRegistry');
+var ServiceRegistry;
 
 /**
  * @class
@@ -29,6 +29,7 @@ function BRLocaleService( localeUtility ) {
 	this.appMetaService = ServiceRegistry.getService("br.app-meta-service");
 };
 
+br.implement(BRLocaleService, LocaleService);
 
 /**
 * Sets the locale cookie
@@ -64,6 +65,6 @@ BRLocaleService.prototype.getPageLocale = function() {
 	return pageUrlSplit[pageUrlSplit.length - 1];
 };
 
-br.implement(BRLocaleService, LocaleService);
-
 module.exports = BRLocaleService;
+
+ServiceRegistry = require('br/ServiceRegistry');

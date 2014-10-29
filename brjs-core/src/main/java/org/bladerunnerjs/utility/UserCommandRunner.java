@@ -104,7 +104,7 @@ public class UserCommandRunner {
 		}
 		
 		if (containsInvalidJars) {
-			logger.warn( Messages.OUTDATED_JAR_MESSAGE, app.getName(), "brjs-", RelativePathUtility.get(app.root(), app.root().dir(), appJarsDir) );
+			logger.warn( Messages.OUTDATED_JAR_MESSAGE, app.getName(), "brjs-", RelativePathUtility.get(app.root().getFileInfoAccessor(), app.root().dir(), appJarsDir) );
 		}
 	}
 	

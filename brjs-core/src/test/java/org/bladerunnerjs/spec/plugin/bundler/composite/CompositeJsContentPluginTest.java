@@ -37,7 +37,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			brLib = app.jsLib("br");
 			brbootstrap = brjs.sdkLib("br-bootstrap");
 			appLib = app.jsLib("appLib");
-			targetDir = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
+			targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test
@@ -86,8 +86,8 @@ public class CompositeJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments(
 			"// br-bootstrap",
 			"define('$alias-data'",
-			"define('appns/Class1'",
-			"define('br/AliasRegistry'");
+			"define('br/AliasRegistry'",
+			"define('appns/Class1'");
 	}
 	
 	@Test
@@ -140,6 +140,32 @@ public class CompositeJsContentPluginTest extends SpecTest {
 		then(targetDir).containsFileWithContents("en/index.html", "v/1234/js/prod/combined/bundle.js")
 			.and(targetDir).containsFile("v/1234/js/prod/combined/bundle.js")
 			.and(targetDir).doesNotContainFile("v/1234/js/prod/closure-whitespace/bundle.js");
+	}
+	
+	@Test
+	public void aCommonJsClassWillAppearFirstInTheGlobalizationBlockIfItIsRequiredByAnotherClass() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
+			.and(aspect).hasCommonJsPackageStyle("src/appns/commonjs")
+			.and(aspect).hasClass("appns/commonjs/Class")
+			.and(aspect).classExtends("appns.namespacedjs.Class", "appns.commonjs.Class")
+			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+			"appns.commonjs.Class = require('appns/commonjs/Class');",
+			"appns.namespacedjs.Class = require('appns/namespacedjs/Class');");
+	}
+	
+	@Test
+	public void aNamespacedJsClassWillAppearFirstInTheGlobalizationBlockIfItIsRequiredByAnotherClass() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
+			.and(aspect).hasCommonJsPackageStyle("src/appns/commonjs")
+			.and(aspect).hasClass("appns.namespacedjs.Class")
+			.and(aspect).classRequires("appns/commonjs/Class", "appns/namespacedjs/Class")
+			.and(aspect).indexPageRequires("appns/commonjs/Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+			"appns.namespacedjs.Class = require('appns/namespacedjs/Class');",
+			"appns.commonjs.Class = require('appns/commonjs/Class');");
 	}
 	
 }

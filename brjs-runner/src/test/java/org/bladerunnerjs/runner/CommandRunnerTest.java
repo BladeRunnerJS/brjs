@@ -38,7 +38,7 @@ public class CommandRunnerTest {
 		StaticLoggerBinder.getSingleton().getLoggerFactory().setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
 		commandRunner = new CommandRunner();
 		
-		tempDir = FileUtility.createTemporaryDirectory(getClass().getSimpleName());
+		tempDir = FileUtility.createTemporaryDirectory( getClass() );
 		ThreadSafeStaticBRJSAccessor.destroy();
 		oldSysOut = System.out;
 		System.setOut( new PrintStream(systemOutputStream) );

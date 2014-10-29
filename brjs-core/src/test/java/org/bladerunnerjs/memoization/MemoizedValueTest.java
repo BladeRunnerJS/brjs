@@ -27,7 +27,7 @@ public class MemoizedValueTest extends TestModelAccessor {
 	
 	@Before
 	public void setUp() throws Exception {
-		tempDir = FileUtility.createTemporaryDirectory(MemoizedValueTest.class.getSimpleName());
+		tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		watchFile = new File(tempDir, "watch-file");
 		sdkDir = new File(tempDir, "sdk");
 		

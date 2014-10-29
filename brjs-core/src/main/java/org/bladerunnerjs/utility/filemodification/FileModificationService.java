@@ -1,13 +1,12 @@
 package org.bladerunnerjs.utility.filemodification;
 
 import java.io.File;
-import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.FileInfoAccessor;
 
 public interface FileModificationService {
-	void initialise(BRJS brjs, File rootDir);
-	FileModificationInfo getModificationInfo(File file);
-	List<FileModificationInfo> getModificationInfoSet(File[] files);
+	void initialise(File rootDir, TimeAccessor timeAccessor, FileInfoAccessor fileInfoAccessor);
+	FileModificationInfo getFileModificationInfo(File file);
+	FileModificationInfo getFileSetModificationInfo(File file, File primarySetFile);
 	void close();
 }

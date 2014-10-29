@@ -58,12 +58,6 @@ public class XMLContentPluginTest extends SpecTest{
 	}
 	
 	@Test
-	public void ifThereAreXmlFilesButNoBundleConfigThenNoRequestsWillBeGenerated() throws Exception {
-		given(aspect).containsResourceFile("config.xml");
-		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("xml");
-	}
-	
-	@Test
 	public void ifThereIsABundleConfigButNoXmlFilesThenNoRequestsWillBeGenerated() throws Exception {
 		given(brjsConf).containsFile("bundleConfig.xml");
 		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("xml");
@@ -73,6 +67,12 @@ public class XMLContentPluginTest extends SpecTest{
 	public void ifThereIsBothABundleConfigAndXmlFilesThenRequestsWillBeGenerated() throws Exception {
 		given(brjsConf).containsFile("bundleConfig.xml")
 			.and(aspect).containsResourceFile("config.xml");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("xml", "xml/bundle.xml");
+	}
+	
+	@Test
+	public void ifThereAreXmlFilesButNoBundleConfigThenRequestsWillStillBeGenerated() throws Exception {
+		given(aspect).containsResourceFile("config.xml");
 		then(aspect).prodAndDevRequestsForContentPluginsAre("xml", "xml/bundle.xml");
 	}
 	
@@ -91,6 +91,14 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).containsResourceFileWithContents("config.xml", rootElem("<xxx=\">"));
 		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(exceptions).verifyException(XMLStreamException2.class);
+	}
+	
+	@Test
+	public void xmlFilesAreConcatenatedIfNoXmlConfigExists() throws Exception {
+		given(aspect).containsResourceFileWithContents("file1.xml", rootElem(mergeElem("id1")))
+			.and(aspect).containsResourceFileWithContents("file2.xml", rootElem(mergeElem("id2")));
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText( rootElem(mergeElem("id1")) + rootElem(mergeElem("id2")) );
 	}
 	
 	@Test
@@ -286,9 +294,8 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void bladeXMLFilesAreBundledIfTheBladeIsReferredToByAspectIndexPage() throws Exception {
 		String config = bundleConfig();
-		given(blade).hasClass("appns/bs/b1/Class1")
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).containsResourceFileWithContents("xml/config.xml", rootElem( mergeElem("appns.bs.b1.SomeClass1")))
-			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
@@ -300,10 +307,9 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void bladeXMLFilesAreBundledIfTheBladeIsReferredToByAnAspectHTMLResourceFile() throws Exception {
 		String config = bundleConfig();
-		given(blade).hasClass("appns/bs/b1/Class1")
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)	
 			.and(blade).containsResourceFileWithContents("xml/config.xml", rootElem( mergeElem("appns.bs.b1.SomeClass1")))
-			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.AppClass")

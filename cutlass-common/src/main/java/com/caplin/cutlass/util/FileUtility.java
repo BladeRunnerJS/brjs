@@ -105,7 +105,7 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 	
 	public static File createTemporarySdkInstall(File existingSDK) throws IOException
 	{
-		File tempDir = createTemporaryDirectory("tempSdk");
+		File tempDir = createTemporaryDirectory( FileUtility.class );
 		if ( !(tempDir.exists() && tempDir.isDirectory()) ) {
 			throw new AssertionError();
 		}

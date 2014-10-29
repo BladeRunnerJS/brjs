@@ -16,7 +16,7 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 {
 
 	@Test
-	public void sourceWithNoBracesIfLeftUntouched() throws IOException
+	public void sourceWithNoBraces() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -24,12 +24,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"more content"),
 			lines(
 				"some content",
-				"more content")
+				"more content"),
+			lines(
+				"")
 		);
 	}
 	
 	@Test
-	public void sourceInsideBracesIsRemoved() throws IOException
+	public void sourceCodeInsideBraces() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -37,12 +39,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"{ more content }"),
 			lines(
 				"some content",
-				"{}")
+				"{}"),
+    		lines(
+				" more content }")
 		);
 	}
 	
 	@Test
-	public void sourceInsidenestedBracesIsRemoved() throws IOException
+	public void sourceInsideNestedBraces() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -50,34 +54,56 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"{ abc { more content } }"),
 			lines(
 				"some content",
-				"{}")
+				"{}"),
+			lines(
+				" abc { more content } }")
 		);
 	}
 	
 	@Test
-	public void sourceAfterBracesIsNotRemoved() throws IOException
+	public void sourceInsideNestedBracesWithCodeAfter() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"some content",
+				"{ abc { more content } } yet more content"),
+			lines(
+				"some content",
+				"{} yet more content"),
+			lines(
+				" abc { more content } }")
+		);
+	}
+	
+	
+	@Test
+	public void sourceAfterBraces() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
 				"{ code block } some content"),
 			lines(
-				"{} some content")
+				"{} some content"),
+			lines(
+				" code block }")
 		);
 	}
 	
 	@Test
-	public void sourceBeforeBracesIsNotRemoved() throws IOException
+	public void sourceBeforeBraces() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
 				"{ code block } some content"),
 			lines(
-				"{} some content")
+				"{} some content"),
+			lines(
+				" code block }")
 		);
 	}
 	
 	@Test
-	public void codeBlocksSpanningMultipleLinesAreRemoved() throws IOException
+	public void codeBlocksSpanningMultipleLines() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -87,12 +113,18 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"code block",
 				"}"),
 			lines(
-				"{}")
+				"{}"),
+			lines(
+				"",
+				"multi",
+				"line",
+				"code block",
+				"}")
 		);
 	}
 	
 	@Test
-	public void contentAfterMultipleLineCodeBlocksIsNotRemoved() throws IOException
+	public void contentAfterMultipleLineCodeBlock() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -104,12 +136,18 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"some content"),
 			lines(
 				"{}",
-				"some content")
+				"some content"),
+			lines(
+				"",
+				"multi",
+				"line",
+				"code block",
+				"}")
 		);
 	}
 	
 	@Test
-	public void contentBeforeMultipleLineCodeBlocksIsNotRemoved() throws IOException
+	public void contentBeforeMultipleLineCodeBlocks() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -121,12 +159,18 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"}"),
 			lines(
 				"some content",
-				"{}")
+				"{}"),
+			lines(
+				"",
+				"multi",
+				"line",
+				"code block",
+				"}")
 		);
 	}
 	
 	@Test
-	public void selfExecutingFunctionsAtTheStartOfAClassAreNotStripped() throws IOException
+	public void selfExecutingFunctionsAtTheStartOfAClass() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -136,12 +180,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 			lines(
 				"(function() {",
 				"some code...",
-				"})()")
-			);
+				"})()"),
+			lines(
+				"")
+		);
 	}
 	
 	@Test
-	public void selfExecutingFunctionsPrefixedByASemicolonAtTheStartOfAClassAreNotStripped() throws IOException
+	public void selfExecutingFunctionsPrefixedByASemicolonAtTheStartOfAClass() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -151,7 +197,9 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 			lines(
 				";(function() {",
 				"some code...",
-				"})()")
+				"})()"),
+			lines(
+				"")
 			);
 	}
 	
@@ -170,8 +218,12 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"(function() {",
 				"some code...",
 				"function() {}",
-				")()")
-			);
+				")()"),
+			lines(
+				"",
+				"  inner code block...",
+				"}")
+		);
 	}
 	
 	@Test
@@ -187,12 +239,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"some code...",
 				"(function() {",
 				"some more code...",
-				"})()")
+				"})()"),
+			lines(
+				"")
 			);
 	}
 	
 	@Test
-	public void codeBlocksInSelfExecutingFunctionsInTheMiddleOfAClassAreStripped() throws IOException
+	public void codeBlocksInSelfExecutingFunctionsInTheMiddleOfAClass() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -208,7 +262,11 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"(function() {",
 				"some more code...",
 				"function() {}",
-				")()")
+				")()"),
+			lines(
+				"",
+				"  inner code block...",
+				"}")
 		);
 	}
 	
@@ -231,7 +289,9 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 					"some more code...",
 					"(function(arg1,arg3) {",
 					"yet more code...",
-					"})()")
+					"})()"),
+				lines(
+    				"")
 			);
 	}
 	
@@ -246,7 +306,9 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 			lines(
 				"new function() {",
 				"some code...",
-				"}")
+				"}"),
+			lines(
+				"")
 			);
 	}
 	
@@ -265,12 +327,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"(function() {",
 				"some code...",
 				"})()",
-				")()")
+				")()"),
+			lines(
+				"")
 			);
 	}
 	
 	@Test
-	public void largeSourceWithCodeBlocksAreStripped() throws IOException
+	public void largeSourceWithCodeBlocks() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
 			lines(
@@ -280,12 +344,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 			lines(
 				zeroPad(4090),
 				"some content",
-				"{}")
+				"{}"),
+			lines(
+				" more content }")
 		);
 	}
 	
 	@Test
-	public void largeSourceWithCodeWithSelfExecutingFunctionsAreNotStripped() throws Exception {
+	public void largeSourceWithCodeWithSelfExecutingFunctions() throws Exception {
 		stripCodeBlocksAndAssertEquals(
 			lines(
 				zeroPad(4090),
@@ -300,12 +366,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"(function() {",
 				"some code...",
 				"})()",
-				")()")
+				")()"),
+			lines(
+				"")
 			);
 	}
 	
 	@Test
-	public void functionsInInlineMapsInsideOfASelfExeuctingCodeBlockAreNotStripped() throws Exception {
+	public void functionsInInlineMapsInsideOfASelfExeuctingCodeBlock() throws Exception {
 		stripCodeBlocksAndAssertEquals(
 			lines(
 				"(function() {",
@@ -318,12 +386,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				"var someMap = {",
 				" key: some.function()",
 				"}",
-				")()")
+				")()"),
+			lines(
+				"")
 			);
 	}
 	
 	@Test
-	public void constructorsInInlineMapsInsideOfASelfExeuctingCodeBlockAreNotStripped() throws Exception {
+	public void constructorsInInlineMapsInsideOfASelfExeuctingCodeBlock() throws Exception {
 		stripCodeBlocksAndAssertEquals(
 			lines(
 				"(function() {",
@@ -338,12 +408,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				" key: new some.Class()",
 				" key: new (some.Class())",
 				"}",
-				")()")
+				")()"),
+			lines(
+				"")
 			);
 	}
 	
 	@Test
-	public void requiresInsideInlineMapsAreNotStripped() throws Exception {
+	public void requiresInsideInlineMaps() throws Exception {
 		stripCodeBlocksAndAssertEquals(
 			lines(
 				"(function() {",
@@ -358,9 +430,30 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 				" key: require('package/subpkg/Class')",
 				" key: require('package/subpkg/Class').function()",
 				"}",
-				")()")
+				")()"),
+			lines(
+				"")
 			);
 	}
+	
+	@Test
+	public void sourceInsideManyNestedBracesDoesntCauseIndexOutOfBounds() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				StringUtils.leftPad("", 4090, '{'),
+				"content",
+				StringUtils.leftPad("", 4090, '}')),
+			lines(
+				"{}"),
+			lines(
+				StringUtils.leftPad("", 4089, '{'), // 4089 is correct - the first { is swallowed by the reader
+				"content",
+				StringUtils.leftPad("", 4090, '}'))
+		);
+	}
+	
+	
 	
 	private String zeroPad(int size) {
 		return StringUtils.leftPad("", size, '0')+"\n";
@@ -371,15 +464,17 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 		return StringUtils.join(input, "\n");
 	}
 	
-	private void stripCodeBlocksAndAssertEquals(String input, String expectedOutput) throws IOException
-	{
+	private void stripCodeBlocksAndAssertEquals(String input, String expectedInsideCodeBlocksOutput, String expectedOutsideCodeBlocksOutput) throws IOException {
 		CharBufferPool pool = new CharBufferPool();
-		try(Reader reader = new JsCodeBlockStrippingDependenciesReader(new StringReader(input), pool);
-			    StringWriter stringWriter = new StringWriter())
-			{
-				IOUtils.copy(reader, stringWriter);
-				assertEquals( expectedOutput, stringWriter.toString() );
-			}
+		stripCodeBlocksAndAssertEquals("Got an incorrect value for outside code block filtering", input, expectedInsideCodeBlocksOutput, new JsCodeBlockStrippingDependenciesReader(new StringReader(input), pool));
+		stripCodeBlocksAndAssertEquals("Got an incorrect value for inside code block filtering", input, expectedOutsideCodeBlocksOutput, new JsCodeBlockStrippingDependenciesReader(new StringReader(input), pool, new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0)));
 	}
+	
+	private void stripCodeBlocksAndAssertEquals(String failMessage, String input, String expectedOutput, Reader reader) throws IOException {
+		StringWriter stringWriter = new StringWriter();
+		IOUtils.copy(reader, stringWriter);
+		assertEquals( failMessage, expectedOutput, stringWriter.toString() );
+	}
+	
 	
 }

@@ -29,10 +29,6 @@ If you are interested in contributing to the BRJS core toolkit then the followin
 
     git clone git@github.com:BladeRunnerJS/brjs.git
     cd brjs
-    git submodule init
-    git submodule update
-
-You may need to run `git submodule sync` and `git submodule update` when changing branches if submodules have changed.
 
 #### Install JDK
 

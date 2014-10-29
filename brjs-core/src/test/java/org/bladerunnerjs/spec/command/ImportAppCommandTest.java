@@ -101,6 +101,18 @@ public class ImportAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void exportedAppsCanBeReimportedWithADifferentModel() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).classRequires("appns/Class2", "appns/Class1")
+    		.and(brjs).commandHasBeenRun("export-app", "app")
+    		.and(appJars).containsFile("brjs-lib1.jar")
+    		.and(brjs).hasBeenAuthenticallyReCreated();
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedAspect).fileContentsContains("src/importedns/Class2.js", "require('importedns/Class1')")
+			.and(importedApp).hasFile("WEB-INF/lib/brjs-lib1.jar");
+	}
+	
+	@Test
 	public void directoriesAreNotDuplicatedWhenExportedAppsAreImportedWithNewNamespace() throws Exception {
 		given(aspect).containsFile("src/appns/AspectClass.js")
 			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
@@ -145,7 +157,8 @@ public class ImportAppCommandTest extends SpecTest {
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedApp).fileContentsContains("blades/b1/src/Class1.js", "default-bladeset/b1/Class");
 	}
-		
+	
+	@Test
 	public void allSrcDirectoriesAreCorrectlyReNamespacedWhenImported() throws Exception {
 		given(aspect).containsFile("src/appns/AspectClass.js")
 			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
@@ -158,5 +171,26 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).hasDir("bs-bladeset/src/importedns")
 			.and(importedApp).hasDir("default-aspect/src/importedns")
 			.and(importedApp).hasDir("bs-bladeset/blades/b1/workbench/src/importedns/bs/b1/");
+	}
+	
+	@Test
+	public void allTestDirectoriesAreCorrectlyReNamespacedWhenImported() throws Exception {
+		given(aspect).containsFile("tests/appns/AspectTestClass.js")
+			.and(aspect).containsFile("tests/test-unit/js-test-driver/src-test/appns/AspectTestClass.js")
+			.and(aspect).containsFile("tests/test-unit/js-test-driver/tests/appns/AspectTest.js")
+			.and(bladeset).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/BladeTestClass.js")
+			.and(bladeset).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/BladeTest.js")
+			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(blade).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/b1/BladeTestClass.js")
+			.and(blade).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/b1/BladeTest.js")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).hasDir("bs-bladeset/blades/b1/tests/test-unit/js-test-driver/src-test/importedns/")
+			.and(importedApp).hasDir("bs-bladeset/blades/b1/tests/test-unit/js-test-driver/tests/importedns/")
+			.and(importedApp).hasDir("bs-bladeset/tests/test-unit/js-test-driver/src-test/importedns/")
+			.and(importedApp).hasDir("bs-bladeset/tests/test-unit/js-test-driver/tests/importedns/")
+			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/src-test/importedns/")
+			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/tests/importedns/");
 	}
 }
