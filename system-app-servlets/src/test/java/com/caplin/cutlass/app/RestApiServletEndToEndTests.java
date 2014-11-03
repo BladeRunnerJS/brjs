@@ -115,7 +115,6 @@ public class RestApiServletEndToEndTests
 		assertEquals( "{\"newbladeset\":[\"a\", \"b\", \"c\"]}", RestApiServletTestUtils.getResponseTextFromResponse(response) );
 	}
 	
-	@Ignore //temp ignore to get release through since this test only fails on newgo
 	@Test
 	public void testGettingASingleAppWithMultipleBladesetsAndBlades() throws Exception
 	{
