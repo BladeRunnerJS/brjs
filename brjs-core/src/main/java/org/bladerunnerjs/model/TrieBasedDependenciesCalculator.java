@@ -42,7 +42,7 @@ public class TrieBasedDependenciesCalculator
 		List<MemoizedFile> scopeFiles = new ArrayList<>();
 		scopeFiles.addAll(Arrays.asList(readerFiles));
 		scopeFiles.addAll(Arrays.asList(new MemoizedFile[] {assetLocation.root().file("js-patches"), BladerunnerConf.getConfigFilePath(assetLocation.root()), app.dir(), app.root().sdkJsLibsDir().dir()}));
-		computedValue = new MemoizedValue<>(asset.getAssetPath()+" - TrieBasedDependenciesCalculator.computedValue", assetLocation.root(), (Object[])scopeFiles.toArray(new File[scopeFiles.size()]));
+		computedValue = new MemoizedValue<>(asset.getAssetPath()+" - TrieBasedDependenciesCalculator.computedValue", assetLocation.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
 	}
 	
 	public List<String> getRequirePaths() throws ModelOperationException

@@ -18,10 +18,10 @@ public class MemoizedValue<T extends Object> {
 	
 	
 	public MemoizedValue(String valueIdentifier, Node node) {
-		this(valueIdentifier, node.root(), (Object[])node.memoizedScopeFiles());
+		this(valueIdentifier, node.root(), node.memoizedScopeFiles());
 	}
 	
-	public MemoizedValue(String valueIdentifier, RootNode rootNode, Object... watchItems) { // take an array of objects so callers can pass in a mix of MemoizedFile and File
+	public MemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) { // take an array of objects so callers can pass in a mix of MemoizedFile and File
 		this.valueIdentifier = valueIdentifier;
 		this.rootNode = rootNode;
 		
@@ -32,15 +32,7 @@ public class MemoizedValue<T extends Object> {
 		FileModificationRegistry fileModificationRegistry = rootNode.getFileModificationRegistry();
 		
 		List<File> watchItemsList = new ArrayList<>();
-		for(Object o : watchItems) {
-			File file;
-			if (o instanceof MemoizedFile) {
-				file = ((MemoizedFile) o).getUnderlyingFile();								
-			} else if (o instanceof File) {
-				file = (File) o;								
-			} else {
-				throw new RuntimeException("MemoizedValue watch items must be an instance of MemoizedFile or File");
-			}
+		for(File file : watchItems) {
 			watchList.add( new FileModifiedChecker(fileModificationRegistry, rootNode, file));				
 			watchItemsList.add( file );
 		}

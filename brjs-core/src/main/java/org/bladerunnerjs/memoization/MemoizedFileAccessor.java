@@ -1,11 +1,11 @@
 package org.bladerunnerjs.memoization;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.utility.FileUtils;
 
 
 public class MemoizedFileAccessor
@@ -21,19 +21,27 @@ public class MemoizedFileAccessor
 	public MemoizedFile getMemoizedFile(File file) {
 		if (file == null) return null;
 		
-		String canonicalPath = FileUtils.getCanonicalFileWhenPossible(file).getAbsolutePath();
 		MemoizedFile memoizedFile;
 		if (file instanceof MemoizedFile) {
 			memoizedFile = (MemoizedFile) file;
-			if (!memoizedFileMap.containsKey(canonicalPath)) {
-				memoizedFileMap.put( canonicalPath, memoizedFile );
+			if (!memoizedFileMap.containsKey(memoizedFile.getCanonicalPath())) {
+				memoizedFileMap.put( memoizedFile.getCanonicalPath(), memoizedFile );
 			}
 		} else {
-			if (memoizedFileMap.containsKey(canonicalPath)) {
-				memoizedFile = memoizedFileMap.get(canonicalPath);
+			String pathKey;
+			try
+			{
+				pathKey = file.getCanonicalPath();
+			}
+			catch (IOException e)
+			{
+				pathKey = file.getAbsolutePath();
+			}
+			if (memoizedFileMap.containsKey(pathKey)) {
+				memoizedFile = memoizedFileMap.get(pathKey);
 			} else {
-				memoizedFile = new MemoizedFile(rootNode, canonicalPath);
-				memoizedFileMap.put(canonicalPath, memoizedFile);
+				memoizedFile = new MemoizedFile(rootNode, pathKey);
+				memoizedFileMap.put(pathKey, memoizedFile);
 			}
 		}
 		return memoizedFile;
