@@ -125,6 +125,16 @@ public class ServedAppTest extends SpecTest
 	}
 	
 	@Test
+	public void localeRequestsAreOnlyRedirectedIfTheyAreValidModelRequests() throws Exception
+	{
+		given(app).hasBeenPopulated()
+    		.and(anotherAspect).containsFileWithContents("index.html", "aspect index.html")
+    		.and(appServer).started()
+    		.and(appServer).appHasServlet(app, new HelloWorldServlet(), "/my_servlet/*");
+		then(appServer).requestForUrlReturns("/app/my_servlet/en", "Hello World!");
+	}
+	
+	@Test
 	public void workbenchLocaleForwarderPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
 		given(app).hasBeenPopulated()

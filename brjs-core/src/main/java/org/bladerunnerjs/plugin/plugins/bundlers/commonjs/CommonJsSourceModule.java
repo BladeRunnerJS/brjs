@@ -64,7 +64,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependendAssets = new ArrayList<>();
-		dependendAssets.addAll( getDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
 		return dependendAssets;
 	}
@@ -123,8 +124,13 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
-		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().defineTimeRequirePaths );
+	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().preExportDefineTimeRequirePaths );
+	}
+	
+	@Override
+	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().postExportDefineTimeRequirePaths );
 	}
 	
 	@Override
@@ -166,9 +172,14 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 				ComputedValue computedValue = new ComputedValue();
 				
 				try {
-					try(Reader reader = new CommonJsDefineTimeDependenciesReader(sourceModule)) 
+					try(Reader reader = new CommonJsPreExportDefineTimeDependenciesReader(sourceModule)) 
 					{
-						addRequirePathsFromReader(reader, computedValue.defineTimeRequirePaths, computedValue.aliases);
+						addRequirePathsFromReader(reader, computedValue.preExportDefineTimeRequirePaths, computedValue.aliases);
+					}
+					
+					try(Reader reader = new CommonJsPostExportDefineTimeDependenciesReader(sourceModule)) 
+					{
+						addRequirePathsFromReader(reader, computedValue.postExportDefineTimeRequirePaths, computedValue.aliases);
 					}
 
 					try(Reader reader = new CommonJsUseTimeDependenciesReader(sourceModule)) 
@@ -226,7 +237,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	private class ComputedValue {
-		public Set<String> defineTimeRequirePaths = new HashSet<>();
+		public Set<String> preExportDefineTimeRequirePaths = new HashSet<>();
+		public Set<String> postExportDefineTimeRequirePaths = new HashSet<>();
 		public Set<String> useTimeRequirePaths = new HashSet<>();
 		public List<String> aliases = new ArrayList<>();
 	}
