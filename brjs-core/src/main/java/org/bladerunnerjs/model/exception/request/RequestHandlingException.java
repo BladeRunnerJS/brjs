@@ -24,6 +24,6 @@ public abstract class RequestHandlingException extends Exception
 	
 	public RequestHandlingException(String message, Throwable wrappedException)
 	{
-		super(message + "; " + wrappedException.getMessage(), wrappedException);
+		super(message, wrappedException);
 	}	
 }
