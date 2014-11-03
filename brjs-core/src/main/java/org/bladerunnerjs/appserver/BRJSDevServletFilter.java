@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.Locale;
 
@@ -60,7 +62,7 @@ public class BRJSDevServletFilter implements Filter {
 		String servletPath = request.getServletPath();
 		String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath() + "/", "");
 		
-		if (requestShouldHaveASlashAppended(requestPath)) {
+		if (requestShouldHaveASlashAppended(requestPath, app)) {
 			/* this is done here rather than in the model for several reasons:
 			 *  - this is closer to how apps in production would behave
 			 *  - the model shouldn't have any concept of 'welcome' pages
@@ -75,18 +77,41 @@ public class BRJSDevServletFilter implements Filter {
 		}
 	}
 
-	private boolean requestShouldHaveASlashAppended(String requestPath)
+	private boolean requestShouldHaveASlashAppended(String requestPath, App app) throws ServletException
 	{
-		if (Pattern.matches("^[a-zA-Z0-9_]+$", requestPath)) {
+		if (requestPath.endsWith("/")) {
+			return false;
+		}
+		
+		boolean appCanHandleRequestWithAppendedSlash = app.canHandleLogicalRequest(requestPath+"/");
+		if (Pattern.matches("^[a-zA-Z0-9_]+$", requestPath) && appCanHandleRequestWithAppendedSlash) {
 			return true; // /app/aspect was requested
 		}
-		if (requestPath.endsWith("/workbench")) {
+		if (requestPath.endsWith("/workbench") && appCanHandleRequestWithAppendedSlash) {
 			return true; // a workbench without a trailing / was requested
 		}
-		if (Pattern.matches(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT, StringUtils.substringAfterLast(requestPath, "/")) && !requestPath.endsWith("/")) {
-			return true; // a locale without a trailing / was requested
+		
+		String lastPartOfUrl = StringUtils.substringAfterLast(requestPath, "/");
+		if (Pattern.matches(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT, lastPartOfUrl) && appCanHandleRequestWithAppendedSlash) {
+			for (Locale supportedLocale : getAppLocales(app)) {
+				if (supportedLocale.toString().equals(lastPartOfUrl)) {
+					return true; // a locale without a trailing / was requested
+				}
+			}
 		}
 		return false;
+	}
+
+	private Locale[] getAppLocales(App app) throws ServletException
+	{
+		try
+		{
+			return app.appConf().getLocales();
+		}
+		catch (ConfigException ex)
+		{
+			throw new ServletException(ex);
+		}
 	}
 	
 }
