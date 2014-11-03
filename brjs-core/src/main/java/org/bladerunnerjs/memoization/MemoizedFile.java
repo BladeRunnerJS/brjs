@@ -26,12 +26,16 @@ import org.bladerunnerjs.utility.FileUtils;
 public class MemoizedFile extends File implements Comparable<File>
 {
 	private static final long serialVersionUID = 7406703034536312889L;
-	private MemoizedValue<ComputedValue> computedValue;
 	private RootNode rootNode;
 	private MemoizedFile canonicalFile;
 	private File wrappedFile;
 	private String name;
 	private MemoizedFile parentFile;
+	
+	private MemoizedValue<Boolean> isFile;
+	private MemoizedValue<Boolean> isDirectory;
+	private MemoizedValue<Boolean> exists;
+	private MemoizedValue<List<MemoizedFile>> filesAndDirs;
 	
 	MemoizedFile(RootNode rootNode, String file) {
 		super( FileUtils.getCanonicalFileWhenPossible( new File(file) ).getAbsolutePath() );
@@ -40,7 +44,10 @@ public class MemoizedFile extends File implements Comparable<File>
 			// ^^ use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
 		
 		String className = this.getClass().getSimpleName();
-		computedValue = new MemoizedValue<>(className+"."+wrappedFile.getAbsolutePath(), rootNode, this);
+		isFile = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".isFile", rootNode, this);
+		isDirectory = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".isDirectory", rootNode, this);
+		exists = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".exists", rootNode, this);
+		filesAndDirs = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".filesAndDirs", rootNode, this);
 	}	
 	
 	// ---- Methods Using Memoized Values ----
@@ -58,21 +65,40 @@ public class MemoizedFile extends File implements Comparable<File>
 	}
 	
 	public boolean exists() {
-		return getComputedValue().exists;
+		return exists.value(() -> {
+			return wrappedFile.exists();
+		});
 	}
 	
 	public boolean isDirectory() {
-		return getComputedValue().isDirectory;
+		return isDirectory.value(() -> {
+			return wrappedFile.isDirectory();
+		});
 	}
 	
 	public boolean isFile() {
-		return getComputedValue().isFile;
+		return isFile.value(() -> {
+			return wrappedFile.isFile();
+		});
 	}
 	
-	public List<MemoizedFile> filesAndDirs() {
-		List<MemoizedFile> filesAndDirs = new ArrayList<>();
-		filesAndDirs.addAll( getComputedValue().filesAndDirs );
-		return filesAndDirs; // return a copy so multiple callers dont have the same object by reference
+	public List<MemoizedFile> filesAndDirs() {		
+		List<MemoizedFile> filesAndDirsList = filesAndDirs.value(() -> {
+			if (!wrappedFile.isDirectory()) {
+				return Collections.emptyList();
+			}
+			List<File> listedFiles = Arrays.asList(wrappedFile.listFiles());
+			Collections.sort(listedFiles);
+			List<MemoizedFile> memoizedFileList = new ArrayList<>();
+			for (File file : listedFiles) {
+				memoizedFileList.add( rootNode.getMemoizedFile(file) );
+			}
+			return memoizedFileList;
+		});
+		
+		List<MemoizedFile> wrappedFilesAndDirs = new ArrayList<>();
+		wrappedFilesAndDirs.addAll( filesAndDirsList ); // return a copy so multiple callers dont have the same object by reference
+		return wrappedFilesAndDirs;
 	}
 	
 	// ---- End Methods Using Memoized Values ----
@@ -251,31 +277,6 @@ public class MemoizedFile extends File implements Comparable<File>
 		for(MemoizedFile dir : file.dirs()) {
 			populateNestedFilesAndDirs(dir, nestedFilesAndDirs);
 		}
-	}
-	
-	private ComputedValue getComputedValue() {		
-		return computedValue.value(() -> {
-			ComputedValue value = new ComputedValue();
-			value.exists = wrappedFile.exists();
-			value.isFile = wrappedFile.isFile();
-			value.isDirectory = wrappedFile.isDirectory();			
-			if (value.isDirectory) {
-				List<File> listedFiles = Arrays.asList(wrappedFile.listFiles());
-				Collections.sort(listedFiles);
-				for (File file : listedFiles) {
-					value.filesAndDirs.add( rootNode.getMemoizedFile(file) );
-				}				
-			}
-			return value;
-		});
-	}
-	
-	@SuppressWarnings("unused")
-	private class ComputedValue {
-		List<MemoizedFile> filesAndDirs = new ArrayList<>();
-		boolean exists;
-		boolean isFile;
-		boolean isDirectory;
 	}
 	
 	
