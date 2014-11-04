@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class HTMLContentPluginTest extends SpecTest
 	private StringBuffer response = new StringBuffer();
 	private Bladeset bladeset;
 	private Blade blade;
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	private NamedDirNode workbenchTemplate;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;

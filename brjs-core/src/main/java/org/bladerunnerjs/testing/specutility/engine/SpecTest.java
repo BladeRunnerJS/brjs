@@ -26,7 +26,7 @@ import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -265,9 +265,9 @@ public abstract class SpecTest extends TestModelAccessor
 	public BladesetVerifier then(Bladeset bladeset) { return new BladesetVerifier(this, bladeset); }
 	
 	// Workbench
-	public WorkbenchBuilder given(Workbench workbench) { return new WorkbenchBuilder(this, workbench); }
-	public WorkbenchCommander when(Workbench workbench) { return new WorkbenchCommander(this, workbench); }
-	public WorkbenchVerifier then(Workbench workbench) { return new WorkbenchVerifier(this, workbench); }
+	public WorkbenchBuilder given(BladeWorkbench workbench) { return new WorkbenchBuilder(this, workbench); }
+	public WorkbenchCommander when(BladeWorkbench workbench) { return new WorkbenchCommander(this, workbench); }
+	public WorkbenchVerifier then(BladeWorkbench workbench) { return new WorkbenchVerifier(this, workbench); }
 	
 	// JsLib
 	public JsLibBuilder given(JsLib jsLib) { return new JsLibBuilder(this, jsLib); }

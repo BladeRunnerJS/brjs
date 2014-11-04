@@ -29,7 +29,7 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.ThemedAssetLocation;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -259,7 +259,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		{
 			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
 			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
-			Workbench workbench = blade.workbench();
+			BladeWorkbench workbench = blade.workbench();
 			resourceFile = workbench.file(resourcePath);
 		}
 		else if (contentPath.formName.equals(LIB_REQUEST))
@@ -328,9 +328,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			resourcesRequestName = BLADE_RESOURCE_REQUEST;
 			requestArgs = new String[] { bladeset.getName(), blade.getName() };
 		}
-		else if (assetContainer instanceof Workbench)
+		else if (assetContainer instanceof BladeWorkbench)
 		{
-			Workbench workbench = (Workbench) assetContainer;
+			BladeWorkbench workbench = (BladeWorkbench) assetContainer;
 			Blade blade = brjs.locateAncestorNodeOfClass(workbench, Blade.class);
 			Bladeset bladeset = brjs.locateAncestorNodeOfClass(blade, Bladeset.class);
 			themeRequestName = WORKBENCH_THEME_REQUEST;

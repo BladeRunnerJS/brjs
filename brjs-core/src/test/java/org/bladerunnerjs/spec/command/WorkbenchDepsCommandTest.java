@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
@@ -21,7 +21,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	Aspect aspect;
 	Bladeset bladeset;
 	Blade blade;
-	Workbench workbench;
+	BladeWorkbench workbench;
 	JsLib brLib;
 	AliasDefinitionsFile brLibAliasDefinitionsFile;
 	private Blade bladeInDefaultBladeset;

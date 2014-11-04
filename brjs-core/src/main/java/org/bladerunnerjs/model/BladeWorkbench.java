@@ -14,14 +14,13 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.TestRunner;
 
-
-public final class Workbench extends AbstractBrowsableNode implements TestableNode
+public final class BladeWorkbench extends AbstractBrowsableNode implements TestableNode
 {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private final IndexPageSeedLocator seedLocator;
 	
-	public Workbench(RootNode rootNode, Node parent, MemoizedFile dir)
+	public BladeWorkbench(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
 		super(rootNode, parent, dir);
 		seedLocator = new IndexPageSeedLocator(root());
@@ -100,5 +99,8 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 		return testTypes.item(typedTestPackName);
 	}
 	
-	
+	@Override
+	public String getTypeName() {
+		return "workbench";
+	}
 }

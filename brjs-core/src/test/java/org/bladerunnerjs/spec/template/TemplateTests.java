@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -22,7 +22,7 @@ public class TemplateTests extends SpecTest
 	Aspect defaultAspect;
 	Bladeset bladeset;
 	Blade blade;
-	Workbench workbench;
+	BladeWorkbench workbench;
 	JsLib userLib, thirdpartyLib;
 	Blade bladeInDefaultBladeset;
 	Aspect anotherAspect;

@@ -8,7 +8,7 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 
 public class IntegrationTestFinder
 {
@@ -59,7 +59,7 @@ public class IntegrationTestFinder
 					"\tIntegration tests are only allowed in an aspect or workbench - this directory will be ignored.");
 		}
 		
-		boolean isWorkbenchDir = brjs.locateAncestorNodeOfClass(dir, Workbench.class) != null && brjs.locateAncestorNodeOfClass(dir, Workbench.class) instanceof Workbench;
+		boolean isWorkbenchDir = brjs.locateAncestorNodeOfClass(dir, BladeWorkbench.class) != null && brjs.locateAncestorNodeOfClass(dir, BladeWorkbench.class) instanceof BladeWorkbench;
 
 		if (ignoreWorkbenches && isWorkbenchDir)
 		{

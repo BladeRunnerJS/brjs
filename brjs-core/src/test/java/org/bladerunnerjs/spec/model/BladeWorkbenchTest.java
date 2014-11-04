@@ -4,16 +4,16 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class WorkbenchTest extends SpecTest {
+public class BladeWorkbenchTest extends SpecTest {
 	private App app;
 	private Bladeset bladeset;
 	private Blade blade;
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	private NamedDirNode workbenchTemplate;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;

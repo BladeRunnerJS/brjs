@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.testing.specutility.AppVerifier;
@@ -51,7 +51,7 @@ public class VerifierChainer {
 	public AspectVerifier and(Aspect aspect) { return new AspectVerifier(specTest, aspect); }
 	public BladeVerifier and(Blade blade) { return new BladeVerifier(specTest, blade); }
 	public BladesetVerifier and(Bladeset bladeset) { return new BladesetVerifier(specTest, bladeset); }
-	public WorkbenchVerifier and(Workbench workbench) { return new WorkbenchVerifier(specTest, workbench); }
+	public WorkbenchVerifier and(BladeWorkbench workbench) { return new WorkbenchVerifier(specTest, workbench); }
 	public JsLibVerifier and(JsLib jsLib) { return new JsLibVerifier(specTest, jsLib); }
 	public DirNodeVerifier and(DirNode dirNode) { return new DirNodeVerifier(specTest, dirNode); }
 	public NamedDirNodeVerifier and(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(specTest, namedDirNode); }

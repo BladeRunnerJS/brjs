@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.testing.specutility.AppBuilder;
@@ -56,7 +56,7 @@ public class BuilderChainer {
 	public AspectBuilder and(Aspect aspect) { return new AspectBuilder(specTest, aspect); }
 	public AssetContainerBuilder<Bladeset> and(Bladeset bladeset) { return new BladesetBuilder(specTest, bladeset); }
 	public AssetContainerBuilder<Blade> and(Blade blade) { return new BladeBuilder(specTest, blade); }
-	public WorkbenchBuilder and(Workbench workbench) { return new WorkbenchBuilder(specTest, workbench); }
+	public WorkbenchBuilder and(BladeWorkbench workbench) { return new WorkbenchBuilder(specTest, workbench); }
 	public JsLibBuilder and(JsLib jsLib) { return new JsLibBuilder(specTest, jsLib); }
 	public DirNodeBuilder and(DirNode dirNode) { return new DirNodeBuilder(specTest, dirNode); }
 	public NamedDirNodeBuilder and(NamedDirNode namedDirNode) { return new NamedDirNodeBuilder(specTest, namedDirNode); }

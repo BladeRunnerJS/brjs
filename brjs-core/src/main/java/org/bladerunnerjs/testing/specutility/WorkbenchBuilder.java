@@ -1,15 +1,15 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.BundlableNodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 
-public class WorkbenchBuilder extends BundlableNodeBuilder<Workbench>
+public class WorkbenchBuilder extends BundlableNodeBuilder<BladeWorkbench>
 {
-	private final Workbench workbench;
+	private final BladeWorkbench workbench;
 	
-	public WorkbenchBuilder(SpecTest modelTest, Workbench workbench)
+	public WorkbenchBuilder(SpecTest modelTest, BladeWorkbench workbench)
 	{
 		super(modelTest, workbench);
 		this.workbench = workbench;

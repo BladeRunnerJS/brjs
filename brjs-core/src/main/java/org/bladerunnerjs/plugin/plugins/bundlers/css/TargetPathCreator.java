@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ThemedAssetLocation;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -106,8 +106,8 @@ public class TargetPathCreator
 					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
 				}
 			}
-			else if(assetContainer instanceof Workbench) {
-				Workbench workbench = (Workbench) assetContainer;
+			else if(assetContainer instanceof BladeWorkbench) {
+				BladeWorkbench workbench = (BladeWorkbench) assetContainer;
 				Blade blade = workbench.parent();
 				Bladeset bladeset = blade.parent();
 				

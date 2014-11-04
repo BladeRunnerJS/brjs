@@ -22,7 +22,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
 import org.bladerunnerjs.model.StandardBundleSet;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -50,7 +50,7 @@ public class BundleSetBuilder {
 		List<AliasDefinition> activeAliasList = new ArrayList<>();
 		List<AssetLocation> resourceLocationList = new ArrayList<>();
 		
-		if (bundlableNode instanceof Workbench) {
+		if (bundlableNode instanceof BladeWorkbench) {
 			for ( AssetLocation assetLocation : bundlableNode.app().aspect("default").seedAssetLocations() ) {
 				addUnscopedAssetLocation( assetLocation );				
 			}
