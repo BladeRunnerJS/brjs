@@ -174,8 +174,6 @@ public class AppRequestHandler
 			return new CharResponseContent( browsableNode.root(), byteArrayOutputStream.toString() );
 		}
 		catch (IOException | ConfigException | ModelOperationException e) {
-			//ContentProcessingException ex = new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(app.root().getFileInfoAccessor(), browsableNode.root().dir(), indexPage));
-			//System.out.println(ex.getMessage());
 			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(app.root().getFileInfoAccessor(), browsableNode.root().dir(), indexPage));
 		}
 	}
