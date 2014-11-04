@@ -7,7 +7,7 @@ import java.util.List;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
@@ -58,7 +58,7 @@ public class IntegrationTestFinder
 					"\tIntegration tests are only allowed in an aspect or workbench - this directory will be ignored.");
 		}
 		
-		boolean isWorkbenchDir = brjs.locateAncestorNodeOfClass(dir, Workbench.class) != null;
+		boolean isWorkbenchDir = brjs.locateAncestorNodeOfClass(dir, BladeWorkbench.class) != null;
 
 		if (ignoreWorkbenches && isWorkbenchDir)
 		{

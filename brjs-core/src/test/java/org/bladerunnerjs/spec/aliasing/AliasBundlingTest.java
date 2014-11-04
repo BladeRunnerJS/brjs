@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class AliasBundlingTest extends SpecTest {
 	private AliasesFile aspectAliasesFile;
 	private AliasDefinitionsFile brLibAliasDefinitionsFile, bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	private AliasesFile worbenchAliasesFile;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;

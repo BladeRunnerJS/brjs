@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +25,7 @@ public class ServedAppTest extends SpecTest
 	Aspect aspect;
 	Aspect systemAspect;
 	Blade blade;
-	Workbench workbench;
+	BladeWorkbench workbench;
 	DirNode appJars;
 	ServerSocket socket;
 	StringBuffer response = new StringBuffer();

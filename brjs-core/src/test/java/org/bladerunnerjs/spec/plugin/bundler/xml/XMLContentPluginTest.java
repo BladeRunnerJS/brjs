@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -23,7 +23,7 @@ public class XMLContentPluginTest extends SpecTest{
 	private StringBuffer response = new StringBuffer();
 	private Bladeset bladeset;
 	private Blade blade = null;
-	private Workbench workbench = null;
+	private BladeWorkbench workbench = null;
 	private NamedDirNode workbenchTemplate;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;

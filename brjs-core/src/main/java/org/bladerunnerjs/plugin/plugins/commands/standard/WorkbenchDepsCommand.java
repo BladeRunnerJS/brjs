@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -62,7 +62,7 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 		App app = brjs.app(appName);
 		Bladeset bladeset = app.bladeset(bladesetName);
 		Blade blade = bladeset.blade(bladeName);
-		Workbench workbench = blade.workbench();
+		BladeWorkbench workbench = blade.workbench();
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		if(!bladeset.dirExists()) throw new NodeDoesNotExistException(bladeset, this);

@@ -2,7 +2,7 @@ package org.bladerunnerjs.spec.model;
 
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import org.junit.Test;
 public class JsStyleUtilityTest extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade;
-	private Workbench bladeWorkbench;
+	private BladeWorkbench bladeWorkbench;
 	
 	@Before
 	public void initTestObjects() throws Exception
