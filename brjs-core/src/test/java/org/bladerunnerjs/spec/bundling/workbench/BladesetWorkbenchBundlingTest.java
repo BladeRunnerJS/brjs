@@ -65,10 +65,10 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 	public void bladesetsCanNotDependOnWorkbenchClasses() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(workbench).hasClass("appns.WorkbenchClass")
-			.and(bladeset).classDependsOn("appns.bs.b1.BladeClass", "appns.WorkbenchClass")
-			.and(workbench).indexPageRefersTo("appns.bs.b1.BladeClass");
+			.and(bladeset).classDependsOn("appns.bs.b1.BladesetClass", "appns.WorkbenchClass")
+			.and(workbench).indexPageRefersTo("appns.bs.b1.BladesetClass");
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("appns.bs.b1.BladeClass =")
+		then(response).containsText("appns.bs.b1.BladesetClass =")
 			.and(response).doesNotContainText("appns.WorkbenchClass =");
 	}
 }
