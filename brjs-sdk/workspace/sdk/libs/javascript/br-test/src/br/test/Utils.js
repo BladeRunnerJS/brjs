@@ -4,12 +4,11 @@
 
 var jQuery = require('jquery');
 var ko = require('presenter-knockout');
-var KeyboardEventUtility = require('./KeyboardEventUtility');
 
 /**
  * @class
  * @alias module:br/test/ns/Utils
- * 
+ *
  * @classdesc
  * Utility class containing static methods that can be useful for tests.
  */
@@ -63,10 +62,9 @@ Utils.getKeyCodeForChar = function(character) {
 	return character.charCodeAt(0);
 };
 
-// TODO: remove this function once we switch over to KeyboardEventUtility
 function initKeyboardEvent(eventString, args) {
 	var evt;
-	
+
 	if (document.createEvent) {
 		//FF, WEBKIT, IE9-IE9 mode etc..
 		evt = document.createEvent('KeyboardEvent');
@@ -96,7 +94,7 @@ function initKeyboardEvent(eventString, args) {
 			}
 		}
 	}
-	
+
 	return evt;
 }
 
@@ -110,11 +108,11 @@ function initKeyboardEvent(eventString, args) {
 * @param {Map} options a map of values, passed in to <code>initKeyboardEvent</code>, associated with typing events.
 */
 Utils.fireKeyEvent = function(element, eventString, character, options) {
-	var keyCode = Utils.getKeyCodeForChar(character);
+	options = options || {};
+	options.key = character;
 	var args = Utils._mergeDefaultKeyEventArgumentsWithArgumentsMap(options || {});
-	var evt = KeyboardEventUtility.initKeyboardEvent(eventString, args);
-//	var evt = initKeyboardEvent(eventString, args);
-	
+	var evt = initKeyboardEvent(eventString, args);
+
 	if(element.dispatchEvent) {
 		return !element.dispatchEvent(evt);
 	}
