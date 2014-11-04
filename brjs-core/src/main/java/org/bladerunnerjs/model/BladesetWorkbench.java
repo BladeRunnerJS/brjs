@@ -7,17 +7,16 @@ import java.util.List;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
-public final class BladeWorkbench extends Workbench
-{
-	
-	public BladeWorkbench(RootNode rootNode, Node parent, File dir)
+public class BladesetWorkbench extends Workbench {
+
+	public BladesetWorkbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
 	}
 		
-	public Blade parent()
+	public Bladeset parent()
 	{
-		return (Blade) parentNode();
+		return (Bladeset) parentNode();
 	}
 	
 	@Override
@@ -27,10 +26,10 @@ public final class BladeWorkbench extends Workbench
 		{
 			assetContainers.add( jsLib );			
 		}
-		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
-		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
-		assetContainers.add(this);
+		Bladeset bladeset = root().locateAncestorNodeOfClass(this, Bladeset.class);
+		assetContainers.add(bladeset);
+		assetContainers.addAll(bladeset.blades());
+		assetContainers.add(this);		
 		return assetContainers;
 	}
-
 }

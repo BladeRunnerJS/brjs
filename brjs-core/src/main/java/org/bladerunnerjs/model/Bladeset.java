@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -18,6 +19,7 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class Bladeset extends AbstractComponent implements NamedNode
 {
+	private final NodeItem<BladesetWorkbench> workbench = new NodeItem<>(this, BladesetWorkbench.class, "workbench");
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
 	private File[] scopeFiles;
@@ -85,6 +87,7 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	{
 		super.populate();
 		testType("unit").defaultTestTech().populate();
+		workbench().populate();
 	}
 	
 	@Override
@@ -111,5 +114,10 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	public Blade blade(String bladeName)
 	{
 		return blades.item(bladeName);
+	}
+	
+	public BladesetWorkbench workbench()
+	{
+		return workbench.item();
 	}
 }
