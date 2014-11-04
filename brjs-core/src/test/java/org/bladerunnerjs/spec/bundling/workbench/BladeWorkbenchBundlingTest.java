@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class WorkbenchBundlingTest extends SpecTest {
+public class BladeWorkbenchBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private Bladeset bladeset;
