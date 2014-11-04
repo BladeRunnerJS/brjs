@@ -67,7 +67,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final MemoizedFileAccessor memoizedFileAccessor;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
 	private final PluginAccessor pluginAccessor;
-	private final IO io = new IO();
+	private final IO io = new IO( new BRJSGlobalFilesIOFileFilter(this) );
 	private final Logger logger;
 	private final CommandList commandList;
 	private final AppVersionGenerator appVersionGenerator;
@@ -119,7 +119,6 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
-		
 	}
 	
 	public CharBufferPool getCharBufferPool(){

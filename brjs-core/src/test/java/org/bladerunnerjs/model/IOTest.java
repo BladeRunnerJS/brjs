@@ -4,13 +4,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
+import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.NameFileFilter;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class IOTest {
-	private final IO io = new IO();
+	private IO io = new IO( FalseFileFilter.INSTANCE );
 	private File tempDir;
 	private File subDir1;
 	private File subDir2;
@@ -135,4 +137,17 @@ public class IOTest {
 			}
 		}
 	}
+	
+	@Test
+	public void weCanUseTheGlobalFileFIlterToIgnoreGlobalFiles() throws Exception {
+		io = new IO( new NameFileFilter(tempHelloWorldFile.getName()) );
+		
+		io.installFileAccessChecker();
+		
+		try(FileAccessLimitScope scope = io.limitAccessToWithin("id", new File[] {subDir1})) {
+			scope.getClass(); // reference scope to prevent compiler warnings
+			org.apache.commons.io.FileUtils.readFileToString(tempHelloWorldFile);
+		}
+	}
+	
 }
