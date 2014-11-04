@@ -112,8 +112,8 @@ function initKeyboardEvent(eventString, args) {
 Utils.fireKeyEvent = function(element, eventString, character, options) {
 	var keyCode = Utils.getKeyCodeForChar(character);
 	var args = Utils._mergeDefaultKeyEventArgumentsWithArgumentsMap(options || {});
-//	var evt = KeyboardEventUtility.initKeyboardEvent(eventString, args);
-	var evt = initKeyboardEvent(eventString, args);
+	var evt = KeyboardEventUtility.initKeyboardEvent(eventString, args);
+//	var evt = initKeyboardEvent(eventString, args);
 	
 	if(element.dispatchEvent) {
 		return !element.dispatchEvent(evt);
