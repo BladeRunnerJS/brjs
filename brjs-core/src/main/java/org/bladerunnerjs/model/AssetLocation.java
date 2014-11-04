@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
@@ -25,4 +26,5 @@ public interface AssetLocation extends BRJSNode {
 	String canonicaliseRequirePath(String requirePath) throws RequirePathException;
 	String jsStyle();
 	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException;
+	List<MemoizedFile> getCandidateFiles();
 }

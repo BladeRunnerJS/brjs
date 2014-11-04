@@ -17,27 +17,22 @@ import org.bladerunnerjs.utility.*;
 public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implements AssetLocation {
 	private final AssetLocation parentAssetLocation;
 	private final AssetContainer assetContainer;
-	private final MemoizedFile dir;
 	
-	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private Map<String, AliasDefinitionsFile> aliasDefinitionsFilesMap = new HashMap<>();
-	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
+	private final Map<String, Assets> assetsMap = new HashMap<>();
 	
 	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir);
 		
-		this.dir = root().getMemoizedFile(dir);
-		assetLocator = new AssetLocator(this);
-		emptyAssets = new Assets(root());
 		this.parentAssetLocation = parentAssetLocation;
 		this.assetContainer = assetContainer;
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
-	protected abstract List<MemoizedFile> getCandidateFiles();
+	public abstract List<MemoizedFile> getCandidateFiles();
 	
 	@Override
 	public String requirePrefix() {
@@ -98,17 +93,17 @@ public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implemen
 	
 	@Override
 	public List<LinkedAsset> linkedAssets() {
-		return assets().linkedAssets;
+		return assets().linkedAssets();
 	}
 	
 	@Override
 	public List<Asset> bundlableAssets(AssetPlugin assetPlugin) {
-		return assets().pluginAssets.get(assetPlugin);
+		return assets().pluginAssets().get(assetPlugin);
 	}
 	
 	@Override
 	public List<SourceModule> sourceModules() {
-		return assets().sourceModules;
+		return assets().sourceModules();
 	}
 	
 	@Override
@@ -132,8 +127,14 @@ public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implemen
 		// do nothing
 	}
 	
-	private Assets assets() {
-		return (!dir.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
+	private Assets assets() {		
+		String jsStyle = jsStyle();
+		if (assetsMap.containsKey(jsStyle)) {
+			return assetsMap.get(jsStyle);
+		}
+		Assets assets = new Assets(this);
+		assetsMap.put(jsStyle, assets);
+		return assets;
 	}
 	
 	@Override
