@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 
@@ -17,9 +18,11 @@ public class FileModificationRegistry
 	private TreeMap<String,FileVersion> lastModifiedMap = new TreeMap<>();
 	private File rootFile;
 	private Map<File, File> canonicalFileMap = new HashMap<>();
+	private IOFileFilter globalFileFilter;
 
-	public FileModificationRegistry(File rootFile) { 
-		this.rootFile = getCanonicalFile(rootFile); 
+	public FileModificationRegistry(File rootFile, IOFileFilter globalFileFilter) {
+		this.rootFile = getCanonicalFile(rootFile);
+		this.globalFileFilter = globalFileFilter;
 	}
 	
 	public synchronized long getFileVersion(File file) {
@@ -28,9 +31,10 @@ public class FileModificationRegistry
 	}
 
 	public synchronized void incrementFileVersion(File file) {
-		while (file != null && !file.equals(rootFile)) {
-			getOrCreateVersionValue(file).incrememntValue();
-			file = file.getParentFile();
+		if (globalFileFilter.accept(file)) {
+			incrementAllFileVersions();
+		} else {
+			incrementFileAndParentVersion(file);
 		}
 	}
 	
@@ -58,6 +62,18 @@ public class FileModificationRegistry
 		}
 	}
 	
+	private  void incrementAllFileVersions() {
+		for (FileVersion version : lastModifiedMap.values()) {
+			version.incrememntValue();
+		}
+	}
+	
+	private void incrementFileAndParentVersion(File file) {
+		while (file != null && !file.equals(rootFile)) {
+			getOrCreateVersionValue(file).incrememntValue();
+			file = file.getParentFile();
+		}
+	}
 	
 	private FileVersion getOrCreateVersionValue(File file)
 	{

@@ -8,11 +8,8 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 public class BRJSGlobalFilesIOFileFilter implements IOFileFilter
 {
 
-	private BRJS brjs;
-
 	public BRJSGlobalFilesIOFileFilter(BRJS brjs)
 	{
-		this.brjs = brjs;
 	}
 
 	@Override
@@ -24,7 +21,7 @@ public class BRJSGlobalFilesIOFileFilter implements IOFileFilter
 	@Override
 	public boolean accept(File dir, String name)
 	{
-		return name.equals(".js-style") || name.endsWith(".class") || name.endsWith(".jar");
+		return name.equals(".js-style") || name.equals("brjs.conf") || name.equals("app.conf");
 	}
 
 }
