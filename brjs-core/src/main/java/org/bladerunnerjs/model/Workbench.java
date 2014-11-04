@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.TestRunner;
 
-public abstract class Workbench extends AbstractBrowsableNode implements TestableNode
+public abstract class Workbench<N extends Node> extends AbstractBrowsableNode implements TestableNode
 {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);

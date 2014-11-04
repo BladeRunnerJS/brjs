@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -17,11 +17,11 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
 
-public class WorkbenchCommander extends BundlableNodeCommander<BladeWorkbench> 
+public class WorkbenchCommander extends BundlableNodeCommander<Workbench<?>> 
 {
-	private final BladeWorkbench workbench;
+	private final Workbench<?> workbench;
 	
-	public WorkbenchCommander(SpecTest modelTest, BladeWorkbench workbench) 
+	public WorkbenchCommander(SpecTest modelTest, Workbench<?> workbench) 
 	{
 		super(modelTest, workbench);
 		this.workbench = workbench;
