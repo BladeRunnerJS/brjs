@@ -44,7 +44,6 @@ public class MemoizedValue<T extends Object> {
 		if (valueNeedsToBeRecomputed()) {
 			
 			try (FileAccessLimitScope scope = rootNode.io().limitAccessToWithin(valueIdentifier, watchItems)) {
-				scope.getClass(); // reference scope to prevent compiler warnings
 				exceptionThrownOnLastCompute = false;
 				value = (T) getter.get();
 			}
