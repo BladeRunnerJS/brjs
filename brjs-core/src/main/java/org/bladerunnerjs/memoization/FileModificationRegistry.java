@@ -4,17 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 
 public class FileModificationRegistry
 {
-	
-	private TreeMap<String,FileVersion> lastModifiedMap = new TreeMap<>();
+	private Map<String,FileVersion> lastModifiedMap = new LinkedHashMap<String,FileVersion>();
 	private File rootFile;
 	private Map<File, File> canonicalFileMap = new HashMap<>();
 
@@ -22,19 +20,19 @@ public class FileModificationRegistry
 		this.rootFile = getCanonicalFile(rootFile); 
 	}
 	
-	public synchronized long getFileVersion(File file) {
+	public long getFileVersion(File file) {
 		FileVersion version = getOrCreateVersionValue(file);
 		return version.getValue();
 	}
 
-	public synchronized void incrementFileVersion(File file) {
+	public void incrementFileVersion(File file) {
 		while (file != null && !file.equals(rootFile)) {
 			getOrCreateVersionValue(file).incrememntValue();
 			file = file.getParentFile();
 		}
 	}
 	
-	public synchronized void incrementChildFileVersions(File file) {
+	public void incrementChildFileVersions(File file) {
 		if (file instanceof MemoizedFile) {
 			file = new File(file.getAbsolutePath()); // create a standard file so listFiles() isnt cached
 		}
@@ -67,7 +65,7 @@ public class FileModificationRegistry
 		return getOrCreateVersionValue( getCanonicalFile(file).getAbsolutePath() );
 	}
 	
-	private FileVersion getOrCreateVersionValue(String canonicalFilePath)
+	private synchronized FileVersion getOrCreateVersionValue(String canonicalFilePath)
 	{
 		FileVersion version;
 		if (!lastModifiedMap.containsKey(canonicalFilePath)) {
