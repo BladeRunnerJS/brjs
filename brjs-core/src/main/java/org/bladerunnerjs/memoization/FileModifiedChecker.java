@@ -10,6 +10,7 @@ public class FileModifiedChecker
 	private FileModificationRegistry fileModificationRegistry;
 	private File file;
 	private long lastModifiedTime = -1;
+	private FileVersion fileVersion;
 
 	public FileModifiedChecker(FileModificationRegistry fileModificationRegistry, RootNode rootNode, File file) {
 		this.fileModificationRegistry = fileModificationRegistry;
@@ -17,7 +18,10 @@ public class FileModifiedChecker
 	}
 	
 	public boolean hasChangedSinceLastCheck() {
-		long newLastModified = fileModificationRegistry.getFileVersion(file);
+		if (fileVersion == null) {
+			fileVersion = fileModificationRegistry.getFileVersionObject(file);
+		}
+		long newLastModified = fileVersion.getValue();
 		boolean hasChangedSinceLastCheck = (newLastModified > lastModifiedTime);
 		lastModifiedTime = newLastModified;
 		

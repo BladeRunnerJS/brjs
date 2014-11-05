@@ -37,7 +37,7 @@ import com.google.common.base.Predicate;
 public class WebappTester 
 {
 	
-	private static final int MAX_POLL_REQUESTS = 20;
+	private static final int MAX_POLL_REQUESTS = 30;
 	private static final int POLL_INTERVAL = 1000;
 	
 	private int defaultSocketTimeout = 9999999;

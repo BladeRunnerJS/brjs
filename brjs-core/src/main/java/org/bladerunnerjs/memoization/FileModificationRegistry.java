@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -14,8 +13,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 
 public class FileModificationRegistry
 {
-	
-	private TreeMap<String,FileVersion> lastModifiedMap = new TreeMap<>();
+	private Map<String,FileVersion> lastModifiedMap = new HashMap<String,FileVersion>();
 	private File rootFile;
 	private Map<File, File> canonicalFileMap = new HashMap<>();
 	private IOFileFilter globalFileFilter;
@@ -25,20 +23,23 @@ public class FileModificationRegistry
 		this.globalFileFilter = globalFileFilter;
 	}
 	
-	public synchronized long getFileVersion(File file) {
-		FileVersion version = getOrCreateVersionValue(file);
-		return version.getValue();
+	public long getFileVersion(File file) {
+		return getFileVersionObject(file).getValue();
 	}
-
-	public synchronized void incrementFileVersion(File file) {
+	
+	public FileVersion getFileVersionObject(File file) {
+		return getOrCreateVersionValue(file);
+	}
+	
+	public void incrementFileVersion(File file) {
 		if (globalFileFilter.accept(file)) {
 			incrementAllFileVersions();
 		} else {
-			incrementFileAndParentVersion(file);
+		incrementFileAndParentVersion(file);
 		}
 	}
 	
-	public synchronized void incrementChildFileVersions(File file) {
+	public void incrementChildFileVersions(File file) {
 		if (file instanceof MemoizedFile) {
 			file = new File(file.getAbsolutePath()); // create a standard file so listFiles() isnt cached
 		}
@@ -83,7 +84,7 @@ public class FileModificationRegistry
 		return getOrCreateVersionValue( getCanonicalFile(file).getAbsolutePath() );
 	}
 	
-	private FileVersion getOrCreateVersionValue(String canonicalFilePath)
+	private synchronized FileVersion getOrCreateVersionValue(String canonicalFilePath)
 	{
 		FileVersion version;
 		if (!lastModifiedMap.containsKey(canonicalFilePath)) {

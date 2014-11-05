@@ -2,17 +2,12 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-
-import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
-import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
