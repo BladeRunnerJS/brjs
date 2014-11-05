@@ -22,7 +22,9 @@ public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implemen
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private Map<String, AliasDefinitionsFile> aliasDefinitionsFilesMap = new HashMap<>();
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
-	private final Map<String, Assets> assetsMap = new HashMap<>();
+	
+	private String previousAssetsJsStyle;
+	private Assets assets;
 	
 	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir);
@@ -127,13 +129,12 @@ public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implemen
 		// do nothing
 	}
 	
-	private Assets assets() {		
-		String jsStyle = jsStyle();
-		if (assetsMap.containsKey(jsStyle)) {
-			return assetsMap.get(jsStyle);
+	private Assets assets() {
+		String currentJsStyle = jsStyle();
+		if (assets == null || !currentJsStyle.equals(previousAssetsJsStyle)) {
+			previousAssetsJsStyle = jsStyle();
+			assets = new Assets(this);
 		}
-		Assets assets = new Assets(this);
-		assetsMap.put(jsStyle, assets);
 		return assets;
 	}
 	
