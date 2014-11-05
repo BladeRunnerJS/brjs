@@ -1,9 +1,3 @@
----
-layout: main
-permalink: /index.html
-title: browser-modules
----
-
 <script type="text/javascript" src="browser-modules.js"></script>
 <script type="text/javascript" src="install.js"></script>
 
