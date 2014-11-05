@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -12,7 +11,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 
 public class FileModificationRegistry
 {
-	private Map<String,FileVersion> lastModifiedMap = new LinkedHashMap<String,FileVersion>();
+	private Map<String,FileVersion> lastModifiedMap = new HashMap<String,FileVersion>();
 	private File rootFile;
 	private Map<File, File> canonicalFileMap = new HashMap<>();
 
@@ -21,8 +20,11 @@ public class FileModificationRegistry
 	}
 	
 	public long getFileVersion(File file) {
-		FileVersion version = getOrCreateVersionValue(file);
-		return version.getValue();
+		return getFileVersionObject(file).getValue();
+	}
+	
+	public FileVersion getFileVersionObject(File file) {
+		return getOrCreateVersionValue(file);
 	}
 
 	public void incrementFileVersion(File file) {
