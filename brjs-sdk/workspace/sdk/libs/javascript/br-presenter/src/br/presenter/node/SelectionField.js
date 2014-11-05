@@ -119,6 +119,13 @@ br.presenter.node.SelectionField = function(vOptions, vValue)
 	
 	// validate the initial values
 	this.value.forceValidation();
+
+	/**
+	 * The current text value of the selected option's label.
+	 * @type {br.presenter.property.Property}
+	 */
+	this.selectedOptionLabel = new br.presenter.property.Property();
+	this.value.addChangeListener(this, '_updateSelectedOptionLabel', true);
 };
 br.Core.extend(br.presenter.node.SelectionField, br.presenter.node.PresentationNode);
 
@@ -178,5 +185,16 @@ br.presenter.node.SelectionField.prototype._automaticallyUpdateValueOnOptionsCha
 				oValueProperty.setUserEnteredValue(vNewValue);
 			}
 		}
+	}
+};
+
+/** @private */
+br.presenter.node.SelectionField.prototype._updateSelectedOptionLabel = function() {
+	var selectedOption = this.options.getOptionByValue(this.value.getValue());
+
+	if (selectedOption) {
+		this.selectedOptionLabel._$setInternalValue(selectedOption.label.getValue());
+	} else {
+		this.selectedOptionLabel._$setInternalValue("");
 	}
 };
