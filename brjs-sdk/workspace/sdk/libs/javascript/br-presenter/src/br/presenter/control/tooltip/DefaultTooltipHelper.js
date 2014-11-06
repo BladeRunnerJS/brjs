@@ -17,6 +17,7 @@ br.presenter.control.tooltip.DefaultTooltipHelper = function()
 
 	this.m_vParent = document.body;
 };
+br.Core.implement(br.presenter.control.tooltip.DefaultTooltipHelper, br.presenter.control.tooltip.TooltipHelper);
 
 /**
  * @private

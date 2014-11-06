@@ -74,10 +74,11 @@ br.presenter.control.tooltip.TooltipControl.prototype.onTooltipMoved = function(
 
 br.presenter.control.tooltip.TooltipControl.prototype._addTooltip = function(sFailureMessage)
 {
+	var TooltipHelper = br.AliasRegistry.getClass('br.presenter.tooltip-helper');
 	this._removeTooltip();
 
 	var ePointTo = br.util.ElementUtility.getElementsByClassName(this.m_eNode, "*", this.m_oPresentationNode.getTooltipClassName());
-	this.m_oTooltip = new br.presenter.control.tooltip.DefaultTooltipHelper()
+	this.m_oTooltip = new TooltipHelper()
 		.updateTooltip(sFailureMessage)
 		.containWithin(this.m_eNode)
 		.pointTo(ePointTo);
