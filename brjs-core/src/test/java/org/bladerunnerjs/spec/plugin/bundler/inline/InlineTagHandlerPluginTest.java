@@ -37,6 +37,15 @@ public class InlineTagHandlerPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void fileCanBeInlinedFromASubFolder() throws Exception {
+		given(aspect).indexPageHasContent("<@inline file=\"subfolder/inline.js\" @/>")
+			.and(aspect).containsFileWithContents("subfolder/inline.js", "My JavaScript to Inline");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		
+		then(response).containsText("My JavaScript to Inline");
+	}
+	
+	@Test
 	public void errorIsThrownIfFileDoesntExist() throws Exception {
 		given(aspect).indexPageHasContent("<@inline file=\"doesntexist.js\" @/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
