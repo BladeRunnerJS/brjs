@@ -9,20 +9,19 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
 
 public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 {
-	private I18nContentPlugin i18nContentPlugin;
+	private ContentPlugin i18nContentPlugin;
 
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		VirtualProxyContentPlugin virtualProxyContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentPlugin("i18n");
-		i18nContentPlugin = (I18nContentPlugin) virtualProxyContentPlugin.getUnderlyingPlugin();
+		i18nContentPlugin = brjs.plugins().contentPlugin("i18n");
 	}
 	
 	@Override
