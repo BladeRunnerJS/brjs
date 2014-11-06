@@ -59,10 +59,24 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 
 	@Override
+	public List<String> getDevContentPathsUsedFromBrowsableNode(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	{
+		initializePlugin();
+		return contentPlugin.getDevContentPathsUsedFromBrowsableNode(bundleSet, locales);
+	}
+	
+	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
 		initializePlugin();
 		return contentPlugin.getValidProdContentPaths(bundleSet, locales);
+	}
+	
+	@Override
+	public List<String> getProdContentPathsUsedFromBrowsableNode(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	{
+		initializePlugin();
+		return contentPlugin.getProdContentPathsUsedFromBrowsableNode(bundleSet, locales);
 	}
 
 	@Override

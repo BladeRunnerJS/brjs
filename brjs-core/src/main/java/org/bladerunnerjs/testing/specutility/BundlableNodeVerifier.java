@@ -54,9 +54,27 @@ public class BundlableNodeVerifier<T extends BundlableNode> extends NodeVerifier
 		return verifierChainer;
 	}
 	
+	public VerifierChainer usedDevContentPathsForPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
+		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentPlugin(contentPluginPrefix);
+		List<String> actualRequests = contentPlugin.getDevContentPathsUsedFromBrowsableNode(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
+		
+		assertEquals("dev requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
+		
+		return verifierChainer;
+	}
+	
 	public VerifierChainer prodRequestsForContentPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
 		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentPlugin(contentPluginPrefix);
 		List<String> actualRequests = contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
+		
+		assertEquals("prod requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer usedProdContentPathsForPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
+		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentPlugin(contentPluginPrefix);
+		List<String> actualRequests = contentPlugin.getProdContentPathsUsedFromBrowsableNode(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		
 		assertEquals("prod requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
 		

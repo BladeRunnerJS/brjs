@@ -11,11 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -33,7 +28,6 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.AppRequestHandler;
@@ -51,7 +45,6 @@ public class AppBuilderUtilis
 		
 		try {
 			String version = app.root().getAppVersionGenerator().getProdVersion();
-			Map<String,List<String>> contentPluginProdRequestsMap = new HashMap<>();
 			BRJS brjs = app.root();
 			AppRequestHandler appRequestHandler = new AppRequestHandler(app);
 			UrlContentAccessor urlContentAccessor = new StaticContentAccessor(app);
@@ -67,36 +60,15 @@ public class AppBuilderUtilis
 				
 				for (Locale locale : locales) {
 					outputAspectIndexPage(aspect, locale, bundleSet, targetDir, appRequestHandler, aspectRequestPrefix, urlContentAccessor, version);
-					calculateUsedContentPlugins(aspect, locale, bundleSet, appRequestHandler, urlContentAccessor, contentPluginProdRequestsMap);
 				}
 				
 				for (ContentPlugin contentPlugin : brjs.plugins().contentPlugins()) {
-					outputContentPluginBundles(contentPlugin, bundleSet, locales, targetDir, version, appRequestHandler, aspectRequestPrefix, urlContentAccessor, contentPluginProdRequestsMap);
+					outputContentPluginBundles(contentPlugin, bundleSet, locales, targetDir, version, appRequestHandler, aspectRequestPrefix, urlContentAccessor);
 				}
 			}
 		}
 		catch(Exception e) {
 			throw new ModelOperationException(e);
-		}
-	}
-
-	private static void calculateUsedContentPlugins(Aspect aspect, Locale locale, BundleSet bundleSet, AppRequestHandler appRequestHandler, UrlContentAccessor urlContentAccessor, Map<String, List<String>> contentPluginProdRequestsMap) throws ContentProcessingException, ResourceNotFoundException, MalformedTokenException
-	{
-		Map<String,Map<String,String>> usedTagsAndAttributes = appRequestHandler.getTagsAndAttributesFromIndexPage(aspect, locale, urlContentAccessor, RequestMode.Prod);		
-		
-		for (TagHandlerPlugin tagPlugin : aspect.app().root().plugins().tagHandlerPlugins()) {
-			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
-				contentPluginProdRequestsMap.put(contentPluginPrefix, new ArrayList<String>());							
-			}
-		}
-		
-		for (String tag : usedTagsAndAttributes.keySet()) {
-			TagHandlerPlugin tagPlugin = aspect.root().plugins().tagHandlerPlugin(tag);
-			Map<String,String> tagAttributes = usedTagsAndAttributes.get(tag);
-			List<String> generatedRequests = tagPlugin.getGeneratedProdContentPaths(tagAttributes, bundleSet, locale);
-			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
-				contentPluginProdRequestsMap.get(contentPluginPrefix).addAll(generatedRequests);
-			}
 		}
 	}
 
@@ -113,18 +85,11 @@ public class AppBuilderUtilis
 	}
 	
 	
-	private static void outputContentPluginBundles(ContentPlugin contentPlugin, BundleSet bundleSet, Locale[] locales, File target, String version, AppRequestHandler appRequestHandler, String aspectRequestPrefix, UrlContentAccessor urlContentAccessor, Map<String, List<String>> contentPluginProdRequestsMap) throws ContentProcessingException, MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException
+	private static void outputContentPluginBundles(ContentPlugin contentPlugin, BundleSet bundleSet, Locale[] locales, File target, String version, AppRequestHandler appRequestHandler, String aspectRequestPrefix, UrlContentAccessor urlContentAccessor) throws ContentProcessingException, MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException
 	{
 		if (contentPlugin.getCompositeGroupName() == null) {
-			String requestPrefix = contentPlugin.getRequestPrefix();
-			for (String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-				String versionedContentPath = bundleSet.getBundlableNode().app().createProdBundleRequest(contentPath, version);
-				if ( contentPlugin.outputAllBundles()
-						|| !contentPluginProdRequestsMap.containsKey(requestPrefix)
-						|| contentPluginProdRequestsMap.get(requestPrefix).contains(contentPath)
-						|| contentPluginProdRequestsMap.get(requestPrefix).contains(versionedContentPath) ) {
-					writeContentFile(bundleSet, urlContentAccessor, target, appRequestHandler, version, aspectRequestPrefix, contentPlugin, contentPath);
-				}
+			for (String contentPath : contentPlugin.getProdContentPathsUsedFromBrowsableNode(bundleSet, locales)) {
+				writeContentFile(bundleSet, urlContentAccessor, target, appRequestHandler, version, aspectRequestPrefix, contentPlugin, contentPath);
 			}
 		} else {
 			ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
