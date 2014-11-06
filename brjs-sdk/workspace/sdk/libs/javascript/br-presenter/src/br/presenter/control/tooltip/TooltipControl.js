@@ -77,7 +77,7 @@ br.presenter.control.tooltip.TooltipControl.prototype._addTooltip = function(sFa
 	this._removeTooltip();
 
 	var ePointTo = br.util.ElementUtility.getElementsByClassName(this.m_eNode, "*", this.m_oPresentationNode.getTooltipClassName());
-	this.m_oTooltip = new br.presenter.control.tooltip.TooltipHelper()
+	this.m_oTooltip = new br.presenter.control.tooltip.DefaultTooltipHelper()
 		.updateTooltip(sFailureMessage)
 		.containWithin(this.m_eNode)
 		.pointTo(ePointTo);

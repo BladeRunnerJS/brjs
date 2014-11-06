@@ -1,13 +1,13 @@
 /**
- * @module br/presenter/control/tooltip/TooltipHelper
+ * @module br/presenter/control/tooltip/DefaultTooltipHelper
  */
 
 /**
  * @private
  * @class
- * @alias module:br/presenter/control/tooltip/TooltipHelper
+ * @alias module:br/presenter/control/tooltip/DefaultTooltipHelper
  */
-br.presenter.control.tooltip.TooltipHelper = function()
+br.presenter.control.tooltip.DefaultTooltipHelper = function()
 {
 	this.m_eContainer = document.createElement('div');
 	this.m_eContainer.className = "tooltip-container";
@@ -21,7 +21,7 @@ br.presenter.control.tooltip.TooltipHelper = function()
 /**
  * @private
  */
-br.presenter.control.tooltip.TooltipHelper.prototype.updateTooltip = function(sMessage)
+br.presenter.control.tooltip.DefaultTooltipHelper.prototype.updateTooltip = function(sMessage)
 {
 	this.m_eMessage.textContent = sMessage;
 	return this;
@@ -30,7 +30,7 @@ br.presenter.control.tooltip.TooltipHelper.prototype.updateTooltip = function(sM
 /**
  * @private
  */
-br.presenter.control.tooltip.TooltipHelper.prototype.containWithin = function(oContainer)
+br.presenter.control.tooltip.DefaultTooltipHelper.prototype.containWithin = function(oContainer)
 {
 	this.m_vParent = oContainer;
 	return this;
@@ -39,7 +39,7 @@ br.presenter.control.tooltip.TooltipHelper.prototype.containWithin = function(oC
 /**
  * @private
  */
-br.presenter.control.tooltip.TooltipHelper.prototype.pointTo = function(eErrorElement)
+br.presenter.control.tooltip.DefaultTooltipHelper.prototype.pointTo = function(eErrorElement)
 {
 	if(eErrorElement.length > 1) {
 		return this;
@@ -63,7 +63,7 @@ br.presenter.control.tooltip.TooltipHelper.prototype.pointTo = function(eErrorEl
 /**
  * @private
  */
-br.presenter.control.tooltip.TooltipHelper.prototype.remove = function()
+br.presenter.control.tooltip.DefaultTooltipHelper.prototype.remove = function()
 {
 	this.m_vParent.removeChild(this.m_eContainer);
 };
@@ -75,7 +75,7 @@ br.presenter.control.tooltip.TooltipHelper.prototype.remove = function()
  * Gets the dimensions of the tooltip, assuming the current content will not be changed. Do not call this function
  * in quick succession as it requires some heavy DOM lifting by the browser.
  */
-br.presenter.control.tooltip.TooltipHelper.prototype._getTooltipDimensions = function()
+br.presenter.control.tooltip.DefaultTooltipHelper.prototype._getTooltipDimensions = function()
 {
 	var eClone = this.m_eContainer.cloneNode(true);
 	eClone.style.visibility = "hidden";
