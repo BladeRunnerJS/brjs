@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -31,7 +32,7 @@ public class InlineTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private static String FILE_ATTRIBUTE = "file";
 	
 	public static class Messages {
-		public static final String FILE_NOT_FOUND = "\n\nError while trying to parse the <@inline file='%s' @/> tag.\nFile was not found at: - '%s' Please check that this file is in the correct location. \n\n";
+		public static final String FILE_NOT_FOUND = "\n\nError while trying to parse the <@inline file='%s' @/> tag.\nThe file was not found at '%s' relative to '%s'.\nPlease check that this file exists and is in the correct location. \n\n";
 	}
 
 	@Override
@@ -67,12 +68,13 @@ public class InlineTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	private void writeTagContent(Writer writer, BundleSet bundleSet, Map<String, String> tagAttributes) throws IOException {
 		String filePath = tagAttributes.get(FILE_ATTRIBUTE);
+		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		try {
-			File file = bundleSet.getBundlableNode().file(filePath);
+			File file = bundlableNode.file(filePath);
 			writer.write( FileUtils.readFileToString(file) );
 		}
 		catch(IOException e) {
-			throw new IOException( String.format(Messages.FILE_NOT_FOUND, filePath, filePath));
+			throw new IOException( String.format(Messages.FILE_NOT_FOUND, filePath, filePath, bundlableNode.dir()));
 		}
 	}
 
