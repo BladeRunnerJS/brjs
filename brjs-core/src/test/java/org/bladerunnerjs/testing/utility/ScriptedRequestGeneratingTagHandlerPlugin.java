@@ -50,13 +50,13 @@ public class ScriptedRequestGeneratingTagHandlerPlugin extends AbstractTagHandle
 	}
 
 	@Override
-	public List<String> getGeneratedDevRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedDevContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
 		return usedUrls;
 	}
 	
 	@Override
-	public List<String> getGeneratedProdRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedProdContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
 		return usedUrls;
 	}

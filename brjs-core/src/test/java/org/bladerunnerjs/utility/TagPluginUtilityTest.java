@@ -219,7 +219,7 @@ public class TagPluginUtilityTest extends TestModelAccessor
 	
 	private void filterAndAssertMapReturned(String input, Map<String,Map<String,String>> expectedResult, BundleSet bundleSet, RequestMode opMode, String locale) throws Exception
 	{
-		 Map<String,Map<String,String>> actualResult = TagPluginUtility.getUsedTagsAndAttributes(input, bundleSet, opMode, new Locale(locale), brjs.getAppVersionGenerator().getDevVersion());
+		 Map<String,Map<String,String>> actualResult = TagPluginUtility.getUsedTagsAndAttributes(input, bundleSet, opMode, new Locale(locale));
 		assertEquals(expectedResult, actualResult);
 	}
 	

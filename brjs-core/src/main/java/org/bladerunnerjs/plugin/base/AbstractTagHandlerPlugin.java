@@ -20,11 +20,13 @@ public abstract class AbstractTagHandlerPlugin extends AbstractPlugin implements
 		return Collections.emptyList();
 	}
 	
-	public List<String> getGeneratedDevRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException {
+	@Override
+	public List<String> getGeneratedDevContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException {
 		return Collections.emptyList();
 	}
 	
-	public List<String> getGeneratedProdRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException {
+	@Override
+	public List<String> getGeneratedProdContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException {
 		return Collections.emptyList();
 	}
 	

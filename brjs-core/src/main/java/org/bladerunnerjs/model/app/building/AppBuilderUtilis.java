@@ -67,7 +67,7 @@ public class AppBuilderUtilis
 				
 				for (Locale locale : locales) {
 					outputAspectIndexPage(aspect, locale, bundleSet, targetDir, appRequestHandler, aspectRequestPrefix, urlContentAccessor, version);
-					calculateUsedContentPlugins(aspect, locale, bundleSet, appRequestHandler, urlContentAccessor, version, contentPluginProdRequestsMap);
+					calculateUsedContentPlugins(aspect, locale, bundleSet, appRequestHandler, urlContentAccessor, contentPluginProdRequestsMap);
 				}
 				
 				for (ContentPlugin contentPlugin : brjs.plugins().contentPlugins()) {
@@ -80,9 +80,9 @@ public class AppBuilderUtilis
 		}
 	}
 
-	private static void calculateUsedContentPlugins(Aspect aspect, Locale locale, BundleSet bundleSet, AppRequestHandler appRequestHandler, UrlContentAccessor urlContentAccessor, String version, Map<String, List<String>> contentPluginProdRequestsMap) throws ContentProcessingException, ResourceNotFoundException, MalformedTokenException
+	private static void calculateUsedContentPlugins(Aspect aspect, Locale locale, BundleSet bundleSet, AppRequestHandler appRequestHandler, UrlContentAccessor urlContentAccessor, Map<String, List<String>> contentPluginProdRequestsMap) throws ContentProcessingException, ResourceNotFoundException, MalformedTokenException
 	{
-		Map<String,Map<String,String>> usedTagsAndAttributes = appRequestHandler.getTagsAndAttributesFromIndexPage(aspect, locale, version, urlContentAccessor, RequestMode.Prod);		
+		Map<String,Map<String,String>> usedTagsAndAttributes = appRequestHandler.getTagsAndAttributesFromIndexPage(aspect, locale, urlContentAccessor, RequestMode.Prod);		
 		
 		for (TagHandlerPlugin tagPlugin : aspect.app().root().plugins().tagHandlerPlugins()) {
 			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
@@ -93,7 +93,7 @@ public class AppBuilderUtilis
 		for (String tag : usedTagsAndAttributes.keySet()) {
 			TagHandlerPlugin tagPlugin = aspect.root().plugins().tagHandlerPlugin(tag);
 			Map<String,String> tagAttributes = usedTagsAndAttributes.get(tag);
-			List<String> generatedRequests = tagPlugin.getGeneratedProdRequests(tagAttributes, bundleSet, locale, version);
+			List<String> generatedRequests = tagPlugin.getGeneratedProdContentPaths(tagAttributes, bundleSet, locale);
 			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
 				contentPluginProdRequestsMap.get(contentPluginPrefix).addAll(generatedRequests);
 			}

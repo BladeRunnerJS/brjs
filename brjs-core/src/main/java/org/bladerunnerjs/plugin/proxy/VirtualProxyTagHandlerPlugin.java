@@ -44,17 +44,17 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 	}
 
 	@Override
-	public List<String> getGeneratedDevRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedDevContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
 		initializePlugin();
-		return tagHandlerPlugin.getGeneratedDevRequests(tagAttributes, bundleSet, locale, version);
+		return tagHandlerPlugin.getGeneratedDevContentPaths(tagAttributes, bundleSet, locale);
 	}
 	
 	@Override
-	public List<String> getGeneratedProdRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedProdContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
 		initializePlugin();
-		return tagHandlerPlugin.getGeneratedProdRequests(tagAttributes, bundleSet, locale, version);
+		return tagHandlerPlugin.getGeneratedProdContentPaths(tagAttributes, bundleSet, locale);
 	}
 	
 }

@@ -66,7 +66,7 @@ public class TagPluginUtility {
 			}
 		};
 		
-		findAndHandleTagMatches(content, bundleSet, requestMode, locale, version, tagMatchHandler);
+		findAndHandleTagMatches(content, bundleSet, requestMode, locale, tagMatchHandler);
 		
 		String filteredContent = result.toString();
 		if (filteredContent.endsWith(NEW_LINE)) // matcher.appendTail seems to append an extra \n that wasn't in the original content, so we remove it
@@ -78,7 +78,7 @@ public class TagPluginUtility {
 		writer.flush();
 	}
 
-	public static Map<String, Map<String, String>> getUsedTagsAndAttributes(String content, BundleSet bundleSet, RequestMode requestMode, Locale locale, String version) throws IOException, NoTagHandlerFoundException
+	public static Map<String, Map<String, String>> getUsedTagsAndAttributes(String content, BundleSet bundleSet, RequestMode requestMode, Locale locale) throws IOException, NoTagHandlerFoundException
 	{
 		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.getBundlableNode().root().plugins().tagHandlerPlugins();
 		
@@ -104,12 +104,12 @@ public class TagPluginUtility {
 			}
 		};
 		
-		findAndHandleTagMatches(content, bundleSet, requestMode, locale, version, tagMatchHandler);
+		findAndHandleTagMatches(content, bundleSet, requestMode, locale, tagMatchHandler);
 		
 		return tagsAndAttributes;
 	}
 	
-	private static void findAndHandleTagMatches(String content, BundleSet bundleSet, RequestMode requestMode, Locale locale, String version, TagMatchHandler tagMatchHandler) throws IOException, NoTagHandlerFoundException {
+	private static void findAndHandleTagMatches(String content, BundleSet bundleSet, RequestMode requestMode, Locale locale, TagMatchHandler tagMatchHandler) throws IOException, NoTagHandlerFoundException {
 		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.getBundlableNode().root().plugins().tagHandlerPlugins();
 		
 		Matcher matcher = tagPattern.matcher(content);
@@ -118,7 +118,7 @@ public class TagPluginUtility {
 			String tagContent = matcher.group(0);
 			try
 			{
-				TagMatch tagMatch = handleTag(tagHandlerPlugins, bundleSet, requestMode, locale, version, tagContent);
+				TagMatch tagMatch = handleTag(tagHandlerPlugins, bundleSet, requestMode, locale, tagContent);
 				tagMatchHandler.handleTagMatch(matcher, tagMatch);
 			}
 			catch (ParserConfigurationException | SAXException e)
@@ -129,7 +129,7 @@ public class TagPluginUtility {
 		tagMatchHandler.handleMatcherTail(matcher);
 	}
 	
-	private static TagMatch handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, Locale locale, String version, String tagContent) throws ParserConfigurationException, SAXException, IOException
+	private static TagMatch handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, Locale locale, String tagContent) throws ParserConfigurationException, SAXException, IOException
 	{
 		String xmlContent = StringUtils.replaceOnce(tagContent, TAG_START, XML_TAG_START);
 		xmlContent = xmlContent.replaceFirst(TAG_END, XML_TAG_END);

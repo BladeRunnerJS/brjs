@@ -42,15 +42,15 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}	
 	
 	@Override
-	public List<String> getGeneratedDevRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedDevContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
-		return getGeneratedRequests(true, tagAttributes, bundleSet, locale, version);
+		return getGeneratedContentPaths(true, tagAttributes, bundleSet, locale);
 	}
 	
 	@Override
-	public List<String> getGeneratedProdRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedProdContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
-		return getGeneratedRequests(false, tagAttributes, bundleSet, locale, version);
+		return getGeneratedContentPaths(false, tagAttributes, bundleSet, locale);
 	}
 	
 	@Override
@@ -63,29 +63,33 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	
 	
-	private List<String> getGeneratedRequests(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	private List<String> getGeneratedContentPaths(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
-		List<String> possibleRequests = new ArrayList<String>();
+		List<String> contentPaths = new ArrayList<String>();
 		MinifierSetting minifierSettings = new MinifierSetting(tagAttributes);
 		String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
-		App app = bundleSet.getBundlableNode().app();
 		
 		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
 			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
-				List<String> contentPaths = (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet) : contentPlugin.getValidProdContentPaths(bundleSet);
-				for (String contentPath : contentPaths) {
-					String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
-					possibleRequests.add(requestPath);
-				}
+				contentPaths.addAll( (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet) : contentPlugin.getValidProdContentPaths(bundleSet) );
 			}
 		}
 		else {
 			String bundleRequestForm = (isDev) ? "dev-bundle-request" : "prod-bundle-request";
-			String contentPath = compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting);
-			String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
-			possibleRequests.add( requestPath );
+			contentPaths.add( compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting) );
 		}
-		return possibleRequests;
+		return contentPaths;
+	}
+	
+	private List<String> getGeneratedRequests(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	{
+		List<String> requests = new ArrayList<String>();
+		App app = bundleSet.getBundlableNode().app();
+		for (String contentPath : getGeneratedContentPaths(isDev, tagAttributes, bundleSet, locale)) {
+			String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
+			requests.add(requestPath);
+		}
+		return requests;
 	}
 	
 	private void writeTagContent(Map<String, String> tagAttributes, boolean isDev, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {

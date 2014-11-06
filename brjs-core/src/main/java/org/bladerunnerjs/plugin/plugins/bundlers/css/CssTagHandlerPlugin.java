@@ -74,10 +74,10 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public List<String> getGeneratedDevRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedDevContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
 		try {
-			return getGeneratedRequests(true, tagAttributes, bundleSet, locale, version);
+			return getGeneratedContentPaths(true, tagAttributes, bundleSet, locale);
 		}
 		catch(IOException e) {
 			throw new ContentProcessingException(e);
@@ -85,10 +85,10 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public List<String> getGeneratedProdRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedProdContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
 		try {
-			return getGeneratedRequests(false, tagAttributes, bundleSet, locale, version);
+			return getGeneratedContentPaths(false, tagAttributes, bundleSet, locale);
 		}
 		catch(IOException e) {
 			throw new ContentProcessingException(e);
@@ -107,11 +107,12 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 
-	public List<String> getGeneratedRequests(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException, IOException
+	public List<String> getGeneratedContentPaths(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException, IOException
 	{
 		List<String> requests = new ArrayList<>();
+		String version = bundleSet.getBundlableNode().root().getAppVersionGenerator().getDevVersion();
 		for (StylesheetRequest stylesheet : getOrderedStylesheets(isDev, tagAttributes, bundleSet, locale, version)) {
-			requests.add( stylesheet.href );
+			requests.add( stylesheet.contentPath );
 		}
 		return requests;
 	}
@@ -185,7 +186,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, COMMON_THEME_NAME)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
-				stylesheetRequests.add( new StylesheetRequest(requestPath) );
+				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath) );
 			}
 		}
 	}
@@ -195,7 +196,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
-				stylesheetRequests.add( new StylesheetRequest(requestPath, themeTitle, isAlternate) );
+				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath, themeTitle, isAlternate) );
 				foundTheme = true;
 			}
 		}
@@ -208,7 +209,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
-				stylesheetRequests.add( new StylesheetRequest(requestPath, themeName) );
+				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath, themeName) );
 			}
 		}
 	}
@@ -218,7 +219,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
-				stylesheetRequests.add( new StylesheetRequest(requestPath, themeName, true) );
+				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath, themeName, true) );
 				foundTheme = true;
 			}
 		}
@@ -256,16 +257,18 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	class StylesheetRequest {
+		String contentPath;
 		String rel;
 		String title;
 		String href;
-		public StylesheetRequest(String href) {
-			this(href, null);
+		public StylesheetRequest(String contentPath, String href) {
+			this(contentPath, href, null);
 		}
-		public StylesheetRequest(String href, String title) {
-			this(href, title, false);
+		public StylesheetRequest(String contentPath, String href, String title) {
+			this(contentPath, href, title, false);
 		}
-		public StylesheetRequest(String href, String title, boolean isAlternate) {
+		public StylesheetRequest(String contentPath, String href, String title, boolean isAlternate) {
+			this.contentPath = contentPath;
 			this.rel = (isAlternate) ? "alternate stylesheet" : "stylesheet";
 			this.title = title;
 			this.href = href;
