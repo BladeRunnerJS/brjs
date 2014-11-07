@@ -19,10 +19,14 @@ public abstract class Workbench<N extends Node> extends AbstractBrowsableNode im
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private final IndexPageSeedLocator seedLocator;
+	private final N parent;
 	
+	// TODO add type checking
+	@SuppressWarnings("unchecked")
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
+		this.parent = (N) parent;
 		seedLocator = new IndexPageSeedLocator(root());
 	}
 	
@@ -36,6 +40,10 @@ public abstract class Workbench<N extends Node> extends AbstractBrowsableNode im
 	public DirNode styleResources()
 	{
 		return styleResources.item();
+	}
+	
+	public N parent() {
+		return parent;
 	}
 	
 	@Override

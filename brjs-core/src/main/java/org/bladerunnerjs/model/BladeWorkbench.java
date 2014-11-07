@@ -14,11 +14,6 @@ public final class BladeWorkbench extends Workbench<Blade>
 	{
 		super(rootNode, parent, dir);
 	}
-		
-	public Blade parent()
-	{
-		return (Blade) parentNode();
-	}
 	
 	@Override
 	public List<AssetContainer> scopeAssetContainers() {

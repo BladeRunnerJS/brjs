@@ -13,11 +13,6 @@ public class BladesetWorkbench extends Workbench<Bladeset> {
 	{
 		super(rootNode, parent, dir);
 	}
-		
-	public Bladeset parent()
-	{
-		return (Bladeset) parentNode();
-	}
 	
 	@Override
 	public List<AssetContainer> scopeAssetContainers() {
