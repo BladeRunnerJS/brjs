@@ -43,8 +43,8 @@ br.presenter.validator.ValidSelectionValidator.prototype.validate = function(vVa
 		var pOptions = this.m_oOptions.getOptions();
 		for(var i = 0; i < pOptions.length; i++)
 		{
-			var vOptionValue = pOptions[i].value.getValue();
-			if(vOptionValue == vValue)
+			var vOptionValue = pOptions[i].value.getValue().toUpperCase();
+			if(vValue && vOptionValue === vValue.toUpperCase())
 			{
 				bIsValid = true;
 				sValidationMessage = "";
