@@ -9,6 +9,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.model.Aspect;
@@ -122,12 +124,30 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		List<String> validContentPaths = getValidContentPaths(bundleSet, requestMode, locales);
 		List<String> usedContentPaths = new ArrayList<>();
 		
+		// This is to protect against .less or .sass files referencing the file where we wont detect it since we only look at .css files
+		for (String imageExtension : ImageIO.getReaderFormatNames()) {
+			List<String> foundContentPaths = new ArrayList<>();
+			for (String contentPath : validContentPaths) {
+				if (contentPath.endsWith(imageExtension)) {
+					foundContentPaths.add(contentPath);
+				}
+			}
+			usedContentPaths.addAll(foundContentPaths);
+			validContentPaths.removeAll(foundContentPaths);			
+		}
+		
 		for (Asset cssAsset : bundleSet.getResourceFiles(brjs.plugins().assetPlugin(CssAssetPlugin.class))) {
 			filterUsedContentPaths(cssAsset, validContentPaths, usedContentPaths, true);
+			if (validContentPaths.isEmpty()) {
+				break;
+			}
 		}
 		
 		for (Asset seedAsset : bundleSet.getBundlableNode().seedAssets()) {
 			filterUsedContentPaths(seedAsset, validContentPaths, usedContentPaths, false);
+			if (validContentPaths.isEmpty()) {
+				break;
+			}
 		}
 		
 		return usedContentPaths;
