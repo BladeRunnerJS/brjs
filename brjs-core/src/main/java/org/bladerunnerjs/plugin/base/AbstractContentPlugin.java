@@ -37,7 +37,6 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 		return Collections.emptyList();
 	}
 	
-	@Override
 	public boolean outputAllBundles() {
 		return true;
 	}

@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.cssresource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
@@ -32,6 +34,8 @@ import org.bladerunnerjs.plugin.BinaryResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.css.CssAssetPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.css.CssRewriter;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.RelativePathUtility;
@@ -109,6 +113,38 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 		
 		return contentPaths;
+	}
+	
+	@Override
+	public List<String> getUsedContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
+	{
+		List<String> validContentPaths = getValidContentPaths(bundleSet, requestMode, locales);
+		List<String> usedContentPaths = new ArrayList<>();
+		
+		for (Asset cssAsset : bundleSet.getResourceFiles(brjs.plugins().assetPlugin(CssAssetPlugin.class))) {
+			List<String> foundContentPaths = new ArrayList<>();
+			String assetContents = getCssAssetFileContents(cssAsset);
+			for (String contentPath : validContentPaths) {
+				if (assetContents.contains(contentPath)) {
+					foundContentPaths.add(contentPath);
+				}
+			}
+			usedContentPaths.addAll(foundContentPaths);
+			validContentPaths.removeAll(foundContentPaths);
+		}
+		
+		return usedContentPaths;
+	}
+	
+	private String getCssAssetFileContents(Asset cssAsset) throws ContentProcessingException {
+		try
+		{
+			return new CssRewriter(cssAsset).getRewrittenFileContents();
+		}
+		catch (ContentProcessingException | IOException ex)
+		{
+			throw new ContentProcessingException(ex);
+		}
 	}
 	
 	private ThemedAssetLocation getThemedResourceLocation(AssetContainer container, String themeName){

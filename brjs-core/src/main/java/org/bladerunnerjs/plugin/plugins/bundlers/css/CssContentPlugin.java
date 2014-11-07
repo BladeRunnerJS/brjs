@@ -120,7 +120,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				CssRewriter processor = new CssRewriter(cssAsset);
 				
 				try {
-					String css = processor.getFileContents();
+					String css = processor.getRewrittenFileContents();
 					readerList.add(new StringReader(css));
 				} catch (IOException e) {
 					throw new ContentProcessingException(e);

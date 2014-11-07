@@ -34,6 +34,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	private List<String> requestsList;
 	private Aspect defaultAspect;
 	private Blade bladeInDefaultBladeset;
+	private File targetDir;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -47,6 +48,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			workbench = blade.workbench();
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
+			targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
 		
 		binaryResponseFile = FileUtility.createTemporaryFile( this.getClass() );
 		binaryResponse = new FileOutputStream(binaryResponseFile);
@@ -450,6 +452,31 @@ public class CssResourceContentPluginTest extends SpecTest {
     	then(aspect).prodRequestsForContentPluginsAre("cssresource", "")
     		.and(aspect).devRequestsForContentPluginsAre("cssresource", "")
     		.and(exceptions).verifyException(FileNotFoundException.class, "sdk/libs/javascript/sdkLib/.git");
+	}
+	
+	@Test
+	public void onlyCssResourceBundlesUsedFromCssFilesAreReturnedAsContentPaths() throws Exception {
+		given(defaultAspect).indexPageHasContent("")
+			.and(defaultAspect).containsFiles("themes/common/usedFile.png", "resources/css/usedFile.png", "resources/css/unusedFile.png", "resources/some-dir/unusedFile.png")
+			.and(defaultAspect).containsFileWithContents("themes/common/style.css", ".style { background:url('usedFile.png'); background:url('../../resources/css/usedFile.png');")
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).hasProdVersion("1234");
+		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default_resource/resources/css/usedFile.png", "cssresource/aspect_default/theme_common/usedFile.png");
+	}
+	
+	@Test
+	public void onlyCssResourceBundlesUsedFromCssFilesArePresentInTheBuiltArtifact() throws Exception {
+		given(defaultAspect).indexPageHasContent("")
+			.and(defaultAspect).containsFiles("themes/common/usedFile.png", "resources/css/usedFile.png", "resources/css/unusedFile.png", "resources/some-dir/unusedFile.png")
+    		.and(defaultAspect).containsFileWithContents("themes/common/style.css", ".style { background:url('usedFile.png'); background:url('../../resources/css/usedFile.png');")
+    		.and(brjs).localeForwarderHasContents("")
+    		.and(brjs).hasProdVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFile("v/1234/cssresource/aspect_default_resource/resources/css/usedFile.png")
+			.and(targetDir).containsFile("v/1234/cssresource/aspect_default/theme_common/usedFile.png")
+			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default_resource/resources/css/unusedFile.png")
+			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default_resource/resources/some-dir/unusedFile.png")
+			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default/theme_common/style.css");
 	}
 	
 }

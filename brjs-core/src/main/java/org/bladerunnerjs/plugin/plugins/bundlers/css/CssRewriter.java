@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,7 +33,7 @@ public class CssRewriter {
 		targetPathCreator = new TargetPathCreator(cssAsset.assetLocation().root());
 	}
 	
-	public String getFileContents() throws IOException, ContentProcessingException {
+	public String getRewrittenFileContents() throws IOException, ContentProcessingException {
 		try {
 			String unprocessedCss = "";
 			
@@ -49,9 +50,9 @@ public class CssRewriter {
 		catch (Exception e) {
 			throw new ContentProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
 		}
-	}
+	}	
 	
-	public String rewriteCss(File cssBasePath, final CharSequence input) throws ContentProcessingException {
+	private String rewriteCss(File cssBasePath, final CharSequence input) throws ContentProcessingException {
 		Matcher urlMatcher = URL_PATTERN.matcher(input);
 		StringBuffer css = new StringBuffer();
 		

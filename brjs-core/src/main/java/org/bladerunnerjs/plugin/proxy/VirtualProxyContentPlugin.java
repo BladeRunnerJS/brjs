@@ -65,11 +65,5 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 		initializePlugin();
 		return contentPlugin.getUsedContentPaths(bundleSet, requestMode, locales);
 	}
-
-	@Override
-	public boolean outputAllBundles()
-	{
-		return contentPlugin.outputAllBundles();
-	}
 	
 }
