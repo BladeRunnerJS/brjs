@@ -152,13 +152,9 @@ public class TagPluginUtility {
 	private static String getTagReplacement(BundleSet bundleSet, RequestMode requestMode, Locale locale, String version, TagHandlerPlugin tagHandler, Map<String, String> attributes) throws IOException
 	{
 		StringWriter writer = new StringWriter();
-		if (requestMode == RequestMode.Dev)
+		if (requestMode == RequestMode.Dev || requestMode == RequestMode.Prod)
 		{
-			tagHandler.writeDevTagContent(attributes, bundleSet, locale, writer, version);
-		}
-		else if (requestMode == RequestMode.Prod)
-		{
-			tagHandler.writeProdTagContent(attributes, bundleSet, locale, writer, version);
+			tagHandler.writeTagContent(attributes, bundleSet, requestMode, locale, writer, version);
 		}
 		else
 		{

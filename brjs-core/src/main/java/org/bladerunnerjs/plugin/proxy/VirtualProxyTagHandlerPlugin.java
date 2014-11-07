@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.Locale;
@@ -25,15 +26,9 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
+	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException {
 		initializePlugin();
-		tagHandlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer, version);
-	}
-	
-	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
-		initializePlugin();
-		tagHandlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer, version);
+		tagHandlerPlugin.writeTagContent(tagAttributes, bundleSet, requestMode, locale, writer, version);
 	}
 
 	@Override
@@ -44,17 +39,10 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 	}
 
 	@Override
-	public List<String> getGeneratedDevContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
 		initializePlugin();
-		return tagHandlerPlugin.getGeneratedDevContentPaths(tagAttributes, bundleSet, locale);
-	}
-	
-	@Override
-	public List<String> getGeneratedProdContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
-	{
-		initializePlugin();
-		return tagHandlerPlugin.getGeneratedProdContentPaths(tagAttributes, bundleSet, locale);
+		return tagHandlerPlugin.getGeneratedContentPaths(tagAttributes, bundleSet, requestMode, locale);
 	}
 	
 }

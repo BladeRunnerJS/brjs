@@ -94,7 +94,7 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 		for (String tag : usedTagsAndAttributes.keySet()) {
 			TagHandlerPlugin tagPlugin = browsableNode.root().plugins().tagHandlerPlugin(tag);
 			Map<String,String> tagAttributes = usedTagsAndAttributes.get(tag);
-			List<String> generatedRequests = tagPlugin.getGeneratedProdContentPaths(tagAttributes, bundleSet, locale);
+			List<String> generatedRequests = tagPlugin.getGeneratedContentPaths(tagAttributes, bundleSet, requestMode, locale);
 			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
 				contentPluginProdRequestsMap.get(contentPluginPrefix).addAll(generatedRequests);
 			}

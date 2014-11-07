@@ -33,71 +33,10 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
-		writeTagContent(tagAttributes, true, bundleSet, locale, writer, version);
-	}
-	
-	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
-		writeTagContent(tagAttributes, false, bundleSet, locale, writer, version);
-	}	
-	
-	@Override
-	public List<String> getGeneratedDevContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
-	{
-		return getGeneratedContentPaths(true, tagAttributes, bundleSet, locale);
-	}
-	
-	@Override
-	public List<String> getGeneratedProdContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
-	{
-		return getGeneratedContentPaths(false, tagAttributes, bundleSet, locale);
-	}
-	
-	@Override
-	public List<String> getDependentContentPluginRequestPrefixes()
-	{
-		return Arrays.asList( "js" );
-	}
-	
-	
-	
-	
-	
-	private List<String> getGeneratedContentPaths(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
-	{
-		RequestMode requestMode = (isDev) ? RequestMode.Dev : RequestMode.Prod;
-		List<String> contentPaths = new ArrayList<String>();
-		MinifierSetting minifierSettings = new MinifierSetting(tagAttributes);
-		String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
-		
-		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
-			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
-				contentPaths.addAll( contentPlugin.getValidContentPaths(bundleSet, requestMode) );
-			}
-		}
-		else {
-			String bundleRequestForm = (isDev) ? "dev-bundle-request" : "prod-bundle-request";
-			contentPaths.add( compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting) );
-		}
-		return contentPaths;
-	}
-	
-	private List<String> getGeneratedRequests(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
-	{
-		List<String> requests = new ArrayList<String>();
-		App app = bundleSet.getBundlableNode().app();
-		for (String contentPath : getGeneratedContentPaths(isDev, tagAttributes, bundleSet, locale)) {
-			String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
-			requests.add(requestPath);
-		}
-		return requests;
-	}
-	
-	private void writeTagContent(Map<String, String> tagAttributes, boolean isDev, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
+	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException {
 		try
 		{
-			List<String> possibleRequests = getGeneratedRequests(isDev, tagAttributes, bundleSet, locale, version);
+			List<String> possibleRequests = getGeneratedRequests(requestMode, tagAttributes, bundleSet, locale, version);
 			for (String request : possibleRequests) {
 				writer.write("<script type='text/javascript' src='" + request + "'></script>\n");
 			}
@@ -106,6 +45,42 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		{
 			throw new IOException(e);
 		}
+	}
+	
+	@Override
+	public List<String> getGeneratedContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale) throws MalformedTokenException, ContentProcessingException
+	{
+		List<String> contentPaths = new ArrayList<String>();
+		MinifierSetting minifierSettings = new MinifierSetting(tagAttributes);
+		String minifierSetting = (requestMode == RequestMode.Dev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
+		
+		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
+			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
+				contentPaths.addAll( contentPlugin.getValidContentPaths(bundleSet, requestMode) );
+			}
+		}
+		else {
+			String bundleRequestForm = (requestMode == RequestMode.Dev) ? "dev-bundle-request" : "prod-bundle-request";
+			contentPaths.add( compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting) );
+		}
+		return contentPaths;
+	}
+	
+	@Override
+	public List<String> getDependentContentPluginRequestPrefixes()
+	{
+		return Arrays.asList( "js" );
+	}
+	
+	private List<String> getGeneratedRequests(RequestMode requestMode, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	{
+		List<String> requests = new ArrayList<String>();
+		App app = bundleSet.getBundlableNode().app();
+		for (String contentPath : getGeneratedContentPaths(tagAttributes, bundleSet, requestMode, locale)) {
+			String requestPath = (requestMode == RequestMode.Dev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
+			requests.add(requestPath);
+		}
+		return requests;
 	}
 	
 }

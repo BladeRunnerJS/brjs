@@ -55,9 +55,11 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
+	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException {
 		try {
-			writeTagContent(true, writer, bundleSet, tagAttributes, locale, version);
+			for (StylesheetRequest stylesheet : getOrderedStylesheets(requestMode, tagAttributes, bundleSet, locale, version)) {
+				writeStylesheet(writer, stylesheet);
+			}
 		}
 		catch(MalformedTokenException | ContentProcessingException e) {
 			throw new IOException(e);
@@ -65,31 +67,15 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
-		try {
-			writeTagContent(false, writer, bundleSet, tagAttributes, locale, version);
-		}
-		catch(MalformedTokenException | ContentProcessingException e) {
-			throw new IOException(e);
-		}
-	}
-	
-	@Override
-	public List<String> getGeneratedDevContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
+	public List<String> getGeneratedContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
 		try {
-			return getGeneratedContentPaths(true, tagAttributes, bundleSet, locale);
-		}
-		catch(IOException e) {
-			throw new ContentProcessingException(e);
-		}
-	}
-	
-	@Override
-	public List<String> getGeneratedProdContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
-	{
-		try {
-			return getGeneratedContentPaths(false, tagAttributes, bundleSet, locale);
+			List<String> requests = new ArrayList<>();
+			String version = bundleSet.getBundlableNode().root().getAppVersionGenerator().getDevVersion();
+			for (StylesheetRequest stylesheet : getOrderedStylesheets(requestMode, tagAttributes, bundleSet, locale, version)) {
+				requests.add( stylesheet.contentPath );
+			}
+			return requests;
 		}
 		catch(IOException e) {
 			throw new ContentProcessingException(e);
@@ -102,26 +88,9 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		return Arrays.asList( "css" );
 	}
 	
-	private void writeTagContent(boolean isDev, Writer writer, BundleSet bundleSet, Map<String, String> tagAttributes, Locale locale, String version) throws IOException, ContentProcessingException, MalformedTokenException {
-		for (StylesheetRequest stylesheet : getOrderedStylesheets(isDev, tagAttributes, bundleSet, locale, version)) {
-			writeStylesheet(writer, stylesheet);
-		}
-	}
-
-	public List<String> getGeneratedContentPaths(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException, IOException
-	{
-		List<String> requests = new ArrayList<>();
-		String version = bundleSet.getBundlableNode().root().getAppVersionGenerator().getDevVersion();
-		for (StylesheetRequest stylesheet : getOrderedStylesheets(isDev, tagAttributes, bundleSet, locale, version)) {
-			requests.add( stylesheet.contentPath );
-		}
-		return requests;
-	}
-	
-	public List<StylesheetRequest> getOrderedStylesheets(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException, IOException
+	public List<StylesheetRequest> getOrderedStylesheets(RequestMode requestMode, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException, IOException
 	{
 		try {
-			RequestMode requestMode = (isDev) ? RequestMode.Dev : RequestMode.Prod;
 			App app = bundleSet.getBundlableNode().app();
 			String theme = getTheme(tagAttributes);
 			List<String> alternateThemes = getAlternateThemes(tagAttributes);
@@ -129,21 +98,21 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			List<StylesheetRequest> stylesheetRequests = new ArrayList<>();
 			
 			if (theme == null && alternateThemes.size() == 0) {
-				appendStylesheetRequestsForCommonTheme(stylesheetRequests, isDev, app, contentPaths, version, locale);
+				appendStylesheetRequestsForCommonTheme(stylesheetRequests, requestMode, app, contentPaths, version, locale);
 			} else if (theme != null) {
-				appendStylesheetRequestsForCommonTheme(stylesheetRequests, isDev, app, contentPaths, version, locale);
+				appendStylesheetRequestsForCommonTheme(stylesheetRequests, requestMode, app, contentPaths, version, locale);
 				Matcher themeMatcher = VARIANT_THEME_PATTERN.matcher(theme);
 				if (themeMatcher.matches()){
 					String parentTheme = themeMatcher.group(1);
 					try {
-						appendStylesheetRequestsForMainTheme(stylesheetRequests, isDev, app, contentPaths, parentTheme, theme, false, version, locale);
+						appendStylesheetRequestsForMainTheme(stylesheetRequests, requestMode, app, contentPaths, parentTheme, theme, false, version, locale);
 					}
 					catch (IOException e){
 						logger.warn(Messages.NO_PARENT_THEME_FOUND_MESSAGE, theme, parentTheme);
 					}
-					appendStylesheetRequestsForVariantTheme(stylesheetRequests, isDev, app, contentPaths, theme, version, locale);
+					appendStylesheetRequestsForVariantTheme(stylesheetRequests, requestMode, app, contentPaths, theme, version, locale);
 				} else {
-					appendStylesheetRequestsForMainTheme(stylesheetRequests, isDev, app, contentPaths, theme, theme, false, version, locale);
+					appendStylesheetRequestsForMainTheme(stylesheetRequests, requestMode, app, contentPaths, theme, theme, false, version, locale);
 				}
 			}
 			
@@ -152,13 +121,13 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 				if (themeMatcher.matches()){
 					String parentTheme = themeMatcher.group(1);
 					try {
-						appendStylesheetRequestsForMainTheme(stylesheetRequests, isDev, app, contentPaths, parentTheme, alternateTheme, true, version, locale);
+						appendStylesheetRequestsForMainTheme(stylesheetRequests, requestMode, app, contentPaths, parentTheme, alternateTheme, true, version, locale);
 					}
 					catch (IOException e){
 						logger.warn(Messages.NO_PARENT_THEME_FOUND_MESSAGE, alternateTheme, parentTheme);
 					}
 				}
-				appendStylesheetRequestsForAlternateTheme(stylesheetRequests, isDev, app, contentPaths, alternateTheme, version, locale);
+				appendStylesheetRequestsForAlternateTheme(stylesheetRequests, requestMode, app, contentPaths, alternateTheme, version, locale);
 			}
 			
 			return stylesheetRequests;
@@ -184,20 +153,20 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		return Arrays.asList( tagAttributes.get(ALT_THEME_ATTRIBUTE).split(",") );
 	}
 	
-	private void appendStylesheetRequestsForCommonTheme(List<StylesheetRequest> stylesheetRequests, boolean isDev, App app, List<String> contentPaths, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void appendStylesheetRequestsForCommonTheme(List<StylesheetRequest> stylesheetRequests, RequestMode requestMode, App app, List<String> contentPaths, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, COMMON_THEME_NAME)) {
-				String requestPath = getRequestPath(isDev, app, contentPath, version);
+				String requestPath = getRequestPath(requestMode, app, contentPath, version);
 				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath) );
 			}
 		}
 	}
 	
-	private void appendStylesheetRequestsForMainTheme(List<StylesheetRequest> stylesheetRequests, boolean isDev, App app, List<String> contentPaths, String themeName, String themeTitle, boolean isAlternate, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void appendStylesheetRequestsForMainTheme(List<StylesheetRequest> stylesheetRequests, RequestMode requestMode, App app, List<String> contentPaths, String themeName, String themeTitle, boolean isAlternate, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
-				String requestPath = getRequestPath(isDev, app, contentPath, version);
+				String requestPath = getRequestPath(requestMode, app, contentPath, version);
 				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath, themeTitle, isAlternate) );
 				foundTheme = true;
 			}
@@ -207,20 +176,20 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 
-	private void appendStylesheetRequestsForVariantTheme(List<StylesheetRequest> stylesheetRequests, boolean isDev, App app, List<String> contentPaths, String themeName, String version, Locale locale) throws MalformedRequestException, MalformedTokenException, IOException {
+	private void appendStylesheetRequestsForVariantTheme(List<StylesheetRequest> stylesheetRequests, RequestMode requestMode, App app, List<String> contentPaths, String themeName, String version, Locale locale) throws MalformedRequestException, MalformedTokenException, IOException {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
-				String requestPath = getRequestPath(isDev, app, contentPath, version);
+				String requestPath = getRequestPath(requestMode, app, contentPath, version);
 				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath, themeName) );
 			}
 		}
 	}
 	
-	private void appendStylesheetRequestsForAlternateTheme(List<StylesheetRequest> stylesheetRequests, boolean isDev, App app, List<String> contentPaths, String themeName, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void appendStylesheetRequestsForAlternateTheme(List<StylesheetRequest> stylesheetRequests, RequestMode requestMode, App app, List<String> contentPaths, String themeName, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
-				String requestPath = getRequestPath(isDev, app, contentPath, version);
+				String requestPath = getRequestPath(requestMode, app, contentPath, version);
 				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath, themeName, true) );
 				foundTheme = true;
 			}
@@ -231,8 +200,8 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	
-	private String getRequestPath(boolean isDev, App app, String contentPath, String version) throws MalformedTokenException {
-		return (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version); 
+	private String getRequestPath(RequestMode requestMode, App app, String contentPath, String version) throws MalformedTokenException {
+		return (requestMode == RequestMode.Dev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version); 
 	}
 	
 	private boolean themeMatches(String contentPath, String themeName) throws MalformedRequestException {
