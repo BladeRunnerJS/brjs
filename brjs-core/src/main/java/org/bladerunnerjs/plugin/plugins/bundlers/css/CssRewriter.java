@@ -1,12 +1,12 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.eclipse.jetty.util.URIUtil;
@@ -51,7 +51,7 @@ public class CssRewriter {
 		}
 	}	
 	
-	private String rewriteCss(File cssBasePath, final CharSequence input) throws ContentProcessingException {
+	public String rewriteCss(MemoizedFile cssBasePath, final CharSequence input) throws ContentProcessingException {
 		Matcher urlMatcher = URL_PATTERN.matcher(input);
 		StringBuffer css = new StringBuffer();
 		
@@ -72,7 +72,7 @@ public class CssRewriter {
 		return css.toString();
 	}
 	
-	private String parseUrl(File cssBasePath, String relativePath) throws ContentProcessingException {
+	private String parseUrl(MemoizedFile cssBasePath, String relativePath) throws ContentProcessingException {
 		String ending = "";
 		
 		for (char postPathSymbol : postPathSymbols) {
@@ -84,18 +84,10 @@ public class CssRewriter {
 			}
 		}
 		
-		File imageFile = new File(getCanonicalPath(cssBasePath.getPath() + "/" + relativePath));
+		MemoizedFile imageFile = cssBasePath.file(relativePath);
 		String targetPath = targetPathCreator.getRelativeBundleRequestForImage(imageFile);
 		targetPath = URIUtil.encodePath(targetPath);
 		return targetPath + ending;
 	}
 	
-	private String getCanonicalPath(String imagePath) throws ContentProcessingException {
-		try {
-			return new File(imagePath).getCanonicalPath();
-		}
-		catch (IOException e) {
-			throw new ContentProcessingException("referenced image ('" + imagePath + "') does not exist.");
-		}
-	}
 }

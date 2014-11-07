@@ -1,6 +1,5 @@
 package org.bladerunnerjs.aliasing.aliases;
 
-import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -9,23 +8,24 @@ import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class AliasesFile {
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
 	
-	private final File file;
+	private final MemoizedFile file;
 	private final BundlableNode bundlableNode;
 	private final PersistentAliasesData persistentAliasesData;
 	
-	public AliasesFile(File parent, String child, BundlableNode bundlableNode) {
+	public AliasesFile(MemoizedFile parent, String child, BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
-		file = new File(parent, child);
+		file = parent.file(child);
 		persistentAliasesData = new PersistentAliasesData(bundlableNode.root(), file);
 	}
 	
-	public File getUnderlyingFile() {
+	public MemoizedFile getUnderlyingFile() {
 		return file;
 	}
 	

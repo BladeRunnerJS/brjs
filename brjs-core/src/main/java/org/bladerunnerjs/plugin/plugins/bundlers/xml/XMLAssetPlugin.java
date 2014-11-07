@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
-import java.io.File;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -14,14 +14,14 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
+	public boolean canHandleAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
 		String assetName = assetFile.getName();
 		// TODO: should the aliases xml filtering be moved into the model once getAssets() has been deleted?
 		return (assetName.endsWith(".xml") && !assetName.equals("aliases.xml")  && !assetName.equals("aliasDefinitions.xml"));
 	}
 	
 	@Override
-	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		return new XMLAsset(assetFile, assetLocation);
 	}
 }

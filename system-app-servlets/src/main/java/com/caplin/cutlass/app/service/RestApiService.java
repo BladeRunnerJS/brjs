@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
@@ -25,11 +25,10 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
+import org.bladerunnerjs.utility.FileUtils;
 
-import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
-
 
 public class RestApiService
 {
@@ -105,10 +104,9 @@ public class RestApiService
 		}
 	}
 	
-	public File getAppImageLocation(String app) throws Exception
+	public MemoizedFile getAppImageLocation(String app) throws Exception
 	{
-		File appPath = brjs.userApp(app).dir();
-		File appImage = new File(appPath,"thumb.png"); 
+		MemoizedFile appImage = brjs.userApp(app).file("thumb.png"); 
 		if (appImage.exists())
 		{
 			return appImage;
@@ -126,7 +124,7 @@ public class RestApiService
 		String[] args = new String[]{ appZip.getAbsolutePath(), appName, requirePrefix };		
 		doCommand( cmd, args );
 		
-		brjs.getFileInfo(brjs.app(appName).dir()).resetLastModified();
+		brjs.app(appName).incrementFileVersion();
 	}
 	
 	public void exportWar(String appName, File destinationWar) throws Exception
@@ -141,7 +139,7 @@ public class RestApiService
 			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
 		}
 		
-		app.buildWar(destinationWar);
+		app.buildWar( brjs.getMemoizedFile(destinationWar) );
 	}
 	
 	public void importBladeset(String sourceApp, Map<String,Map<String,List<String>>> bladesets, String targetApp) throws Exception
@@ -166,7 +164,7 @@ public class RestApiService
 					FileUtils.deleteDirectory(bladeNode.dir());
 				}
 				
-				brjs.getFileInfo(bladeNode.dir()).resetLastModified();
+				bladeNode.incrementFileVersion();
 			}
 		}
 	}
@@ -178,7 +176,7 @@ public class RestApiService
 		String[] args = new String[]{ appName, requirePrefix };		
 		doCommand( cmd, args );
 		
-		brjs.getFileInfo(brjs.app(appName).dir()).resetLastModified();
+		brjs.app(appName).incrementFileVersion();
 	}
 	
 	public void createBladeset(String appName, String bladesetName) throws Exception
@@ -188,7 +186,7 @@ public class RestApiService
 		String[] args = new String[]{ appName, bladesetName };		
 		doCommand( cmd, args );
 		
-		brjs.getFileInfo(brjs.app(appName).bladeset(bladesetName).dir()).resetLastModified();
+		brjs.app(appName).bladeset(bladesetName).incrementFileVersion();
 	}
 	
 	public void createBlade(String appName, String bladesetName, String bladeName) throws Exception
@@ -198,7 +196,7 @@ public class RestApiService
 		String[] args = new String[]{ appName, bladesetName, bladeName };		
 		doCommand( cmd, args );
 		
-		brjs.getFileInfo(brjs.app(appName).bladeset(bladesetName).blade(bladeName).dir()).resetLastModified();
+		brjs.app(appName).bladeset(bladesetName).blade(bladeName).incrementFileVersion();
 	}
 	
 	public String runBladesetTests(String appName, String bladesetName, String testType) throws Exception
@@ -224,15 +222,15 @@ public class RestApiService
 		File latestReleaseNote = getLatestReleaseNoteFile();
 		if (latestReleaseNote != null)
 		{
-			return FileUtils.readFileToString(latestReleaseNote);			
+			return org.apache.commons.io.FileUtils.readFileToString(latestReleaseNote);			
 		}
 		throw new Exception("Unable to find latest release note.");
 	}
 	
 	public String getSdkVersion() throws IOException
 	{
-		File versionFile = brjs.versionInfo().getFile();
-		return FileUtils.readFileToString(versionFile);
+		MemoizedFile versionFile = brjs.versionInfo().getFile();
+		return org.apache.commons.io.FileUtils.readFileToString(versionFile);
 	}
 	
 	public void getJsdocForApp(String appName) throws Exception {
@@ -275,9 +273,9 @@ public class RestApiService
 		return commandOutput;
 	}
 	
-	private File getLatestReleaseNoteFile() 
+	private MemoizedFile getLatestReleaseNoteFile() 
 	{
-		return new File( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) , "docs/release-notes/latest.html");
+		return brjs.root().file("sdk/docs/release-notes/latest.html");
 	}
 
 	

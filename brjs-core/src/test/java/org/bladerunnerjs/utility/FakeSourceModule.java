@@ -1,6 +1,5 @@
 package org.bladerunnerjs.utility;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -8,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
@@ -56,7 +56,7 @@ public class FakeSourceModule implements SourceModule {
 	}
 
 	@Override
-	public File dir() {
+	public MemoizedFile dir() {
 		// TODO Auto-generated method stub
 		return null;
 	}

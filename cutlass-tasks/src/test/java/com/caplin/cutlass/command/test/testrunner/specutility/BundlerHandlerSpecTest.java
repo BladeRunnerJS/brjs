@@ -3,11 +3,9 @@ package com.caplin.cutlass.command.test.testrunner.specutility;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-
 import com.caplin.cutlass.command.test.testrunner.BundlerHandler;
 import com.caplin.cutlass.command.test.testrunner.JsTestDriverBundleCreator;
 
@@ -59,7 +57,7 @@ public class BundlerHandlerSpecTest extends SpecTest
 		public void testBundleContainsText(String bundleFilePath, String expectedContents) throws IOException
 		{
 			File bundleFile = testPack.file(bundleFilePath);
-			String bundleFileContents = FileUtils.readFileToString(bundleFile);
+			String bundleFileContents = org.apache.commons.io.FileUtils.readFileToString(bundleFile);
 			if (!bundleFileContents.contains(expectedContents))
 			{
 				assertEquals("bundle file didnt contain expected text", expectedContents, bundleFileContents);
@@ -69,7 +67,7 @@ public class BundlerHandlerSpecTest extends SpecTest
 		public void testBundleDoesNotContainText(String bundleFilePath, String doesNotContainContents) throws IOException
 		{
 			File bundleFile = testPack.file(bundleFilePath);
-			String bundleFileContents = FileUtils.readFileToString(bundleFile);
+			String bundleFileContents = org.apache.commons.io.FileUtils.readFileToString(bundleFile);
 			if (bundleFileContents.contains(doesNotContainContents))
 			{
 				assertEquals("bundle file didnt contain expected text", doesNotContainContents, bundleFileContents);

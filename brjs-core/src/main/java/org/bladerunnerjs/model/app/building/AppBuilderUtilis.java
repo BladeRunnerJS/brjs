@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
-import org.apache.commons.io.FileUtils;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
@@ -31,7 +31,7 @@ import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.AppRequestHandler;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.WebXmlCompiler;
 
 
@@ -76,7 +76,7 @@ public class AppBuilderUtilis
 	{
 		try
 		{
-			return FileUtility.createTemporaryDirectory(AppBuilderUtilis.class, app.getName());
+			return FileUtils.createTemporaryDirectory(AppBuilderUtilis.class, app.getName());
 		}
 		catch (IOException ex)
 		{
@@ -129,13 +129,13 @@ public class AppBuilderUtilis
 		File appWebInf = app.file("WEB-INF");
 		if (appWebInf.exists()) {
 			File exportedWebInf = new File(targetDir, "WEB-INF");
-			FileUtils.copyDirectory(appWebInf, exportedWebInf);
+			FileUtils.copyDirectory(app, appWebInf, exportedWebInf);
 			File exportedWebXml = new File(exportedWebInf, "web.xml");
 			if (exportedWebXml.isFile()) {
-				WebXmlCompiler.compile(exportedWebXml);					
-				String webXmlContents = FileUtils.readFileToString(exportedWebXml);
+				WebXmlCompiler.compile(app.root(), exportedWebXml);					
+				String webXmlContents = org.apache.commons.io.FileUtils.readFileToString(exportedWebXml);
 				webXmlContents = webXmlContents.replace(AppMetadataUtility.APP_VERSION_TOKEN, version);
-				FileUtils.writeStringToFile(exportedWebXml, webXmlContents, false);
+				FileUtils.write(app, exportedWebXml, webXmlContents, false);
 			}
 		}
 	}

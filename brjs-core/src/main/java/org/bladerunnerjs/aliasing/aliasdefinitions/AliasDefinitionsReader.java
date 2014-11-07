@@ -1,6 +1,5 @@
 package org.bladerunnerjs.aliasing.aliasdefinitions;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -43,7 +43,7 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	public static AliasDefinitionsData read(File aliasDefinitionsFile, AssetLocation assetLocation, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
+	public static AliasDefinitionsData read(MemoizedFile aliasDefinitionsFile, AssetLocation assetLocation, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
 		AliasDefinitionsData data = new AliasDefinitionsData();
 		data.aliasDefinitions = new ArrayList<>();
 		data.scenarioAliases = new HashMap<>();
@@ -83,7 +83,7 @@ public class AliasDefinitionsReader {
 		return data;
 	}
 	
-	private static void processAlias(XMLStreamReader2 streamReader, AliasDefinitionsData data, File aliasDefinitionsFile, AssetLocation assetLocation) throws XMLStreamException, NamespaceException, RequirePathException, AliasException {
+	private static void processAlias(XMLStreamReader2 streamReader, AliasDefinitionsData data, MemoizedFile aliasDefinitionsFile, AssetLocation assetLocation) throws XMLStreamException, NamespaceException, RequirePathException, AliasException {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "defaultClass");
 		String aliasInterface = streamReader.getAttributeValue(null, "interface");

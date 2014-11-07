@@ -2,6 +2,7 @@ package org.bladerunnerjs.spec.plugin.bundler.css;
 
 import java.io.File;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
@@ -11,7 +12,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,9 +21,9 @@ public class CssContentPluginTest extends SpecTest {
 	private App app;
 	private AppConf appConf;
 	private Aspect aspect;
-	private File commonTheme;
-	private File mainTheme;
-	private File bladeMainTheme;
+	private MemoizedFile commonTheme;
+	private MemoizedFile mainTheme;
+	private MemoizedFile bladeMainTheme;
 	private JsLib brBoostrapLib;
 	private JsLib nonConformantLib;
 	private JsLib nonConformantLib2;
@@ -56,7 +57,7 @@ public class CssContentPluginTest extends SpecTest {
 			workbench = blade.workbench();
 			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
-			targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
+			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test

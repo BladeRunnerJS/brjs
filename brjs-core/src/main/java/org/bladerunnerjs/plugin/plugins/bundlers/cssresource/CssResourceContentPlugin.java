@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
@@ -24,7 +25,6 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
@@ -41,7 +41,6 @@ import org.bladerunnerjs.plugin.plugins.bundlers.css.CssAssetPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.css.CssRewriter;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class CssResourceContentPlugin extends AbstractContentPlugin {	
 	public static final String ASPECT_THEME_REQUEST = "aspect-theme-request";
@@ -208,7 +207,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		String theme = contentPath.properties.get("theme");
 		String resourcePath = contentPath.properties.get("resourcePath");
-		File resourceFile = null;
+		MemoizedFile resourceFile = null;
 		
 		if (contentPath.formName.equals(ASPECT_THEME_REQUEST))
 		{
@@ -276,7 +275,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		try
 		{
 			if (fileIgnoredByBrjsConfig(resourceFile)) {
-				String relativePath = RelativePathUtility.get(brjs.getFileInfoAccessor(), brjs.dir(), resourceFile);
+				String relativePath = brjs.dir().getRelativePath(resourceFile);
 				throw new FileNotFoundException("The file at '"+relativePath+"' is ignored by the BRJS configuration so cannot be served");
 			}
 			return new BinaryResponseContent( new FileInputStream(resourceFile) );	
@@ -287,9 +286,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private boolean fileIgnoredByBrjsConfig(File resourceFile) throws ConfigException
+	private boolean fileIgnoredByBrjsConfig(MemoizedFile resourceFile) throws ConfigException
 	{
-		String relativePath = RelativePathUtility.get(brjs.getFileInfoAccessor(), brjs.dir(), resourceFile);
+		String relativePath = brjs.dir().getRelativePath(resourceFile);
 		for (String ignoredPath : brjs.bladerunnerConf().getIgnoredPaths()) {
 			if (relativePath.contains(ignoredPath+"/") || relativePath.endsWith(ignoredPath)) {
 				return true;
@@ -369,10 +368,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	{
 		Set<String> contentPaths = new LinkedHashSet<>();
 		for (ResourcesAssetLocation assetLocation : getResourceAssetLocations(container)){
-			File assetLocationDir = assetLocation.dir();
-			FileInfo assetLocationDirInfo = brjs.getFileInfo(assetLocationDir);
-			if (assetLocationDirInfo.isDirectory()){
-				for (File file : assetLocationDirInfo.nestedFiles()) {
+			MemoizedFile assetLocationDir = brjs.getMemoizedFile( assetLocation.dir() );
+			if (assetLocationDir.isDirectory()){
+				for (MemoizedFile file : assetLocationDir.nestedFiles()) {
 					if (!fileIgnoredByBrjsConfig(file)) {
 						createRequestForNestedDir(container, themeRequestName, resourcesRequestName, contentPaths, assetLocation, file, requestArgs);
 					}
@@ -383,21 +381,21 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		return contentPaths;
 	}
 
-	private void createRequestForNestedDir(AssetContainer container, String themeRequestName, String resourcesRequestName, Set<String> contentPaths, AssetLocation assetLocation, File file, String... requestArgs) throws MalformedTokenException
+	private void createRequestForNestedDir(AssetContainer container, String themeRequestName, String resourcesRequestName, Set<String> contentPaths, AssetLocation assetLocation, MemoizedFile file, String... requestArgs) throws MalformedTokenException
 	{
 		File assetLocationParentDir = assetLocation.dir().getParentFile();
 		//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'?
 		if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
 			if (themeRequestName != null) {
 				ThemedAssetLocation themeAssetLocation = (ThemedAssetLocation) assetLocation;
-				String assetPath = RelativePathUtility.get(brjs.getFileInfoAccessor(), assetLocation.dir(), file);
+				String assetPath = assetLocation.dir().getRelativePath(file);
 				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themeAssetLocation.getThemeName(), assetPath } );
 				String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
 				contentPaths.add(request );
 			}
 		} else {
 			if (resourcesRequestName != null) {
-				String assetPath = RelativePathUtility.get(brjs.getFileInfoAccessor(), container.dir(), file);
+				String assetPath = container.dir().getRelativePath(file);
 				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
 				contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
 			}

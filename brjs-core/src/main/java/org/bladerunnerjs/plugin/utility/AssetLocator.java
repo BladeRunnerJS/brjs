@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.Getter;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
@@ -15,7 +16,6 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class AssetLocator {
 	private final Map<String, Asset> cachedAssets = new TreeMap<>();
@@ -27,26 +27,27 @@ public class AssetLocator {
 		assetsList = new MemoizedValue<>(assetLocation.dir()+" - AssetLocation.assets", assetLocation.root(), assetLocation.root().dir());
 	}
 	
-	public Assets assets(List<File> assetFiles) {
+	public Assets assets(List<? extends File> assetFiles) {
 		return assetsList.value(new Getter<RuntimeException>() {
 			@Override
 			public Object get() {
 				Assets assets = new Assets(assetLocation.root());
 				
 				for(File assetFile : assetFiles) {
+					MemoizedFile memoizedFile = assetLocation.root().getMemoizedFile(assetFile);
 					for(AssetPlugin assetPlugin : assetLocation.root().plugins().assetPlugins()) {
-						if(assetPlugin.canHandleAsset(assetFile, assetLocation)) {
+						if(assetPlugin.canHandleAsset(memoizedFile, assetLocation)) {
 							String assetFilePath = assetFile.getAbsolutePath();
 							
 							if(!cachedAssets.containsKey(assetFilePath)) {
 								try {
-									Asset createdAsset = assetPlugin.createAsset(assetFile, assetLocation);
+									Asset createdAsset = assetPlugin.createAsset(memoizedFile, assetLocation);
 									assetLocation.root().logger(this.getClass()).debug("creating new asset for the path '%s'", 
 											createdAsset.getAssetPath());
 									String assetPrimaryRequirePath = createdAsset.getPrimaryRequirePath();
 									
 									if (createdAsset instanceof SourceModule && createdAsset.assetLocation().assetContainer().isNamespaceEnforced()) {
-										String relativePathFromAssetContainer = RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), createdAsset.assetLocation().assetContainer().dir(), createdAsset.dir());
+										String relativePathFromAssetContainer = createdAsset.assetLocation().assetContainer().dir().getRelativePath(createdAsset.dir());
 										String relativeRequirePathPathFromAssetContainer = StringUtils.substringAfter(relativePathFromAssetContainer, "/"); // strip of 'src/' at the start of the relative path
 										String appRequirePrefix = assetLocation.assetContainer().app().getRequirePrefix();
 										String createdAssetContainerRequirePrefix = createdAsset.assetLocation().assetContainer().requirePrefix();

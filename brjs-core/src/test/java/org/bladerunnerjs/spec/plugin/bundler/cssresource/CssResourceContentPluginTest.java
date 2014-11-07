@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -48,9 +48,9 @@ public class CssResourceContentPluginTest extends SpecTest {
 			workbench = blade.workbench();
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
-			targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
+			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 		
-		binaryResponseFile = FileUtility.createTemporaryFile( this.getClass() );
+		binaryResponseFile = FileUtils.createTemporaryFile( this.getClass() );
 		binaryResponse = new FileOutputStream(binaryResponseFile);
 		cssResourcePlugin = brjs.plugins().contentPlugin("cssresource");
 		requestsList = new ArrayList<String>();

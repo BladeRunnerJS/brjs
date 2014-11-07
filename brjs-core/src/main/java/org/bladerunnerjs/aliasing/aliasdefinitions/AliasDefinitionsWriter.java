@@ -1,6 +1,5 @@
 package org.bladerunnerjs.aliasing.aliasdefinitions;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -10,15 +9,17 @@ import javax.xml.transform.TransformerException;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.testing.specutility.XmlBuilderSerializer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasDefinitionsWriter {
-	public static void write(AliasDefinitionsData data, File file, String defaultFileCharacterEncoding) throws IOException {
+	public static void write(BRJS brjs, AliasDefinitionsData data, MemoizedFile file, String defaultFileCharacterEncoding) throws IOException {
 		try {
-			EncodedFileUtil fileUtil = new EncodedFileUtil(defaultFileCharacterEncoding);
+			EncodedFileUtil fileUtil = new EncodedFileUtil(brjs, defaultFileCharacterEncoding);
 			XMLBuilder builder = XMLBuilder.create("aliasDefinitions").ns("http://schema.caplin.com/CaplinTrader/aliasDefinitions");
 			
 			for (AliasDefinition aliasDefinition : data.aliasDefinitions) {
