@@ -65,7 +65,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 				// The classes are both made available globally
 				"mergePackageBlock(window, {\"sdkNamespaceLib\":{},\"sdkCommonJsLib\":{}});",
 				// The namespaced style sdk class is assigned to the require of the CommonJsLib class  
-				"requireAll(require, window, ['sdkCommonJsLib/Class1']);",
+				"requireAll(require, ['sdkCommonJsLib/Class1']);",
 				"sdkNamespaceLib.ProxyClass = sdkCommonJsLib.Class1;",
 				"sdkCommonJsLib.Class1 = require('sdkCommonJsLib/Class1');");
 	}

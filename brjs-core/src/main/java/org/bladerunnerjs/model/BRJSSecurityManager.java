@@ -6,8 +6,6 @@ import java.net.InetAddress;
 import java.security.Permission;
 import java.util.Map;
 
-import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
-
 public class BRJSSecurityManager extends SecurityManager {
 	private final Map<FileAccessLimitScope, File[]> activeScopes;
 	private boolean allowUnscopedFileAccess = false;
@@ -17,9 +15,7 @@ public class BRJSSecurityManager extends SecurityManager {
 	}
 	
 	private void assertWithinScope(File file) throws BRJSMemoizationFileAccessException {
-		String threadName = Thread.currentThread().getName();
-		
-		if((!threadName.equals(Java7FileModificationService.THREAD_IDENTIFIER)) && !allowUnscopedFileAccess) {
+		if(!allowUnscopedFileAccess) {
 			try {
 				allowUnscopedFileAccess = true;
 				forceAssertWithinScope(file);

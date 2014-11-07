@@ -1,11 +1,11 @@
 package org.bladerunnerjs.plugin.utility;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
@@ -23,7 +23,7 @@ public class IndexPageSeedLocator {
 	public List<LinkedAsset> seedAssets(BundlableNode viewableBundlableNode) {
 		return seedAssetsList.value(() -> {
 			List<LinkedAsset> seedFiles = new ArrayList<>();
-			File indexFile = getIndexFile(viewableBundlableNode);
+			MemoizedFile indexFile = getIndexFile(viewableBundlableNode);
 			
 			if (indexFile != null) {
 				String indexFilePath = indexFile.getAbsolutePath();
@@ -39,8 +39,8 @@ public class IndexPageSeedLocator {
 		});
 	}
 	
-	private File getIndexFile(BundlableNode viewableBundlableNode) {
-		File indexFile = null;
+	private MemoizedFile getIndexFile(BundlableNode viewableBundlableNode) {
+		MemoizedFile indexFile = null;
 		
 		if(viewableBundlableNode.file("index.html").exists()) {
 			indexFile = viewableBundlableNode.file("index.html");

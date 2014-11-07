@@ -1,15 +1,15 @@
 package com.caplin.cutlass.conf;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 public class TestRunnerConfLocator
 {
-	public static File getTestRunnerConf() throws FileNotFoundException
+	public static MemoizedFile getTestRunnerConf() throws FileNotFoundException
 	{
-		File testRunnerConf = ThreadSafeStaticBRJSAccessor.root.file("conf/test-runner.conf");
+		MemoizedFile testRunnerConf = ThreadSafeStaticBRJSAccessor.root.file("conf/test-runner.conf");
 		
 		if (!testRunnerConf.exists() || !testRunnerConf.isFile())
 		{

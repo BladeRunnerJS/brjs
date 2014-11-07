@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -14,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.Getter;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
@@ -29,7 +29,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
@@ -41,7 +40,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 
 	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias|getAlias|getService)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
 	
-	private File assetFile;
+	private MemoizedFile assetFile;
 	private AssetLocation assetLocation;
 	
 	private SourceModulePatch patch;
@@ -50,11 +49,11 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	private List<String> requirePaths = new ArrayList<>();
 	public static final String JS_STYLE = "common-js";
 	
-	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public CommonJsSourceModule(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
-		this.assetFile = assetFile;
+		this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		String requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().getRelativePath(assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
@@ -64,7 +63,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependendAssets = new ArrayList<>();
-		dependendAssets.addAll( getDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
 		return dependendAssets;
 	}
@@ -123,8 +123,13 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
-		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().defineTimeRequirePaths );
+	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().preExportDefineTimeRequirePaths );
+	}
+	
+	@Override
+	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return getSourceModulesForRequirePaths( bundlableNode, getComputedValue().postExportDefineTimeRequirePaths );
 	}
 	
 	@Override
@@ -133,7 +138,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public File dir() {
+	public MemoizedFile dir() {
 		return assetFile.getParentFile();
 	}
 	
@@ -144,7 +149,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public String getAssetPath() {
-		return RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.assetContainer().app().dir(), assetFile);
+		return assetLocation.assetContainer().app().dir().getRelativePath(assetFile);
 	}
 	
 	@Override
@@ -166,9 +171,14 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 				ComputedValue computedValue = new ComputedValue();
 				
 				try {
-					try(Reader reader = new CommonJsDefineTimeDependenciesReader(sourceModule)) 
+					try(Reader reader = new CommonJsPreExportDefineTimeDependenciesReader(sourceModule)) 
 					{
-						addRequirePathsFromReader(reader, computedValue.defineTimeRequirePaths, computedValue.aliases);
+						addRequirePathsFromReader(reader, computedValue.preExportDefineTimeRequirePaths, computedValue.aliases);
+					}
+					
+					try(Reader reader = new CommonJsPostExportDefineTimeDependenciesReader(sourceModule)) 
+					{
+						addRequirePathsFromReader(reader, computedValue.postExportDefineTimeRequirePaths, computedValue.aliases);
 					}
 
 					try(Reader reader = new CommonJsUseTimeDependenciesReader(sourceModule)) 
@@ -222,7 +232,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	private class ComputedValue {
-		public Set<String> defineTimeRequirePaths = new HashSet<>();
+		public Set<String> preExportDefineTimeRequirePaths = new HashSet<>();
+		public Set<String> postExportDefineTimeRequirePaths = new HashSet<>();
 		public Set<String> useTimeRequirePaths = new HashSet<>();
 		public List<String> aliases = new ArrayList<>();
 	}

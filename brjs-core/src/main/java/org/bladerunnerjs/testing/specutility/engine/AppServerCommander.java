@@ -1,5 +1,8 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
 import org.bladerunnerjs.appserver.ApplicationServer;
 
 
@@ -40,10 +43,25 @@ public class AppServerCommander extends ModelCommander
 		return chainer;
 	}
 
-	public void requestIsMadeFor(String urlPath, StringBuffer response) throws Exception
+	public BuilderChainer requestIsMadeFor(String urlPath, StringBuffer response) throws Exception
 	{
 		String url = String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, specTest.appServerPort, urlPath);
 		specTest.webappTester.whenRequestMadeTo(url).storeContentIn(response);
+		
+		return chainer;
+	}
+
+	public BuilderChainer requestCanEventuallyBeMadeFor(String urlPath, StringBuffer response) throws ClientProtocolException, IOException, InterruptedException
+	{
+		String url = getUrl(urlPath);
+		response.append( specTest.webappTester.pollServerForStatusCode(url, 200) );
+		
+		return chainer;	
+	}
+	
+	private String getUrl(String urlPath)
+	{
+		return String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, specTest.appServerPort, urlPath);
 	}
 
 }

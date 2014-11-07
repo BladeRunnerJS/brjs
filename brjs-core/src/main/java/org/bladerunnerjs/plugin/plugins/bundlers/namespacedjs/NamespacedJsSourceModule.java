@@ -1,12 +1,13 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -21,28 +22,27 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
-
 import com.Ostermiller.util.ConcatReader;
 import com.google.common.base.Joiner;
 
 public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	private AssetLocation assetLocation;
-	private File assetFile;
+	private MemoizedFile assetFile;
 	private LinkedFileAsset linkedFileAsset;
 	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;
 	private TrieBasedDependenciesCalculator trieBasedUseTimeDependenciesCalculator;
-	private TrieBasedDependenciesCalculator trieBasedDefineTimeDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedPreExportDefineTimeDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedPostExportDefineTimeDependenciesCalculator;
 	public static final String JS_STYLE = "namespaced-js";
 	
-	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public NamespacedJsSourceModule(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
 		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetLocation);
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		String requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().getRelativePath(assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
 
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
@@ -51,14 +51,19 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
  	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependendAssets = new ArrayList<>();
-		dependendAssets.addAll( getDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
 		return dependendAssets;
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return getUseTimeDependencyCalculator().getAliases();
+		List<String> aliases = new ArrayList<>(getPreExportDefineTimeDependencyCalculator().getAliases());
+		aliases.addAll(getPostExportDefineTimeDependencyCalculator().getAliases());
+		aliases.addAll(getUseTimeDependencyCalculator().getAliases());
+		
+		return aliases;
 	}
 	
 	@Override
@@ -75,7 +80,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		try {
 			List<String> requirePaths = getUseTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String requireAllInvocation = (requirePaths.size() == 0) ? "" : "\n" + calculateDependenciesRequireDefinition(requirePaths) + "\n";
-			List<String> staticRequirePaths = getDefineTimeDependencyCalculator().getRequirePaths(SourceModule.class);
+			List<String> staticRequirePaths = getPreExportDefineTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String staticRequireAllInvocation = (staticRequirePaths.size() == 0) ? "" : " " + calculateDependenciesRequireDefinition(staticRequirePaths);
 			String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticRequireAllInvocation + "\n";
 			
@@ -110,9 +115,22 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
+	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			 return bundlableNode.getLinkedAssets(assetLocation, getDefineTimeDependencyCalculator().getRequirePaths());
+			 return bundlableNode.getLinkedAssets(assetLocation, getPreExportDefineTimeDependencyCalculator().getRequirePaths());
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
+	}
+	
+	@Override
+	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		try {
+			List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, getPostExportDefineTimeDependencyCalculator().getRequirePaths());
+			assets.addAll(bundlableNode.getLinkedAssets(assetLocation, getUseTimeDependencyCalculator().getRequirePaths()));
+			
+			return assets;
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -121,20 +139,17 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
-		try {
-			return bundlableNode.getLinkedAssets(assetLocation, getUseTimeDependencyCalculator().getRequirePaths());
-		}
-		catch (RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
+		// Note: use-time NamespacedJs dependencies are promoted to post-export define-time since this makes our transpiler much easier to write,
+		// and since this also enables our CommonJs singleton-pattern to correctly require all of the dependencies needed for any singletons.
+		return Collections.emptyList();
 	}
 	
 	private String calculateDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {
-		return (requirePaths.isEmpty()) ? "" : "requireAll(require, window, ['" + Joiner.on("','").join(requirePaths) + "']);\n";
+		return (requirePaths.isEmpty()) ? "" : "requireAll(require, ['" + Joiner.on("','").join(requirePaths) + "']);\n";
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return linkedFileAsset.dir();
 	}
@@ -160,19 +175,25 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 	}
 	
+	private TrieBasedDependenciesCalculator getPreExportDefineTimeDependencyCalculator() {
+		if (trieBasedPreExportDefineTimeDependenciesCalculator == null) {
+			trieBasedPreExportDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsPreExportDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
+		}
+		return trieBasedPreExportDefineTimeDependenciesCalculator;
+	}
+	
+	private TrieBasedDependenciesCalculator getPostExportDefineTimeDependencyCalculator() {
+		if (trieBasedPostExportDefineTimeDependenciesCalculator == null) {
+			trieBasedPostExportDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsPostExportDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
+		}
+		return trieBasedPostExportDefineTimeDependenciesCalculator;
+	}
 	
 	private TrieBasedDependenciesCalculator getUseTimeDependencyCalculator() {
 		if (trieBasedUseTimeDependenciesCalculator == null) {
-			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacaedJsUseTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
+			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsUseTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}
 		return trieBasedUseTimeDependenciesCalculator;
-	}
-	
-	private TrieBasedDependenciesCalculator getDefineTimeDependencyCalculator() {
-		if (trieBasedDefineTimeDependenciesCalculator == null) {
-			trieBasedDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
-		}
-		return trieBasedDefineTimeDependenciesCalculator;
 	}
 	
 	@Override

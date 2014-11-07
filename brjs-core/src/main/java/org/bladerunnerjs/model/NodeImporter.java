@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
@@ -18,9 +18,9 @@ import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleUtility;
-import org.bladerunnerjs.utility.filemodification.RealTimeAccessor;
+import org.bladerunnerjs.utility.ZipUtility;
 import org.mockito.Mockito;
 
 
@@ -29,20 +29,20 @@ public class NodeImporter {
 	public static void importAppFromZip(ZipFile sourceAppZip, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		BRJS tempBrjs = createTemporaryBRJSModel();
 		
-		File temporaryUnzipDir = FileUtility.createTemporaryDirectory( NodeImporter.class, targetApp.getName() );
-		FileUtility.unzip(sourceAppZip, temporaryUnzipDir );
+		File temporaryUnzipDir = FileUtils.createTemporaryDirectory( NodeImporter.class, targetApp.getName() );
+		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
 		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
 		if (temporaryUnzipDirFiles.length != 1) {
 			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
 		}
 		
-		App sourceApp = tempBrjs.app( targetApp.getName() );
-		FileUtils.moveDirectory(temporaryUnzipDirFiles[0], sourceApp.dir());
+		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
+		FileUtils.moveDirectory(tmpBrjsSourceApp, temporaryUnzipDirFiles[0], tmpBrjsSourceApp.dir());
 		
-		File unzippedLibDir = sourceApp.file("WEB-INF/lib");
-		FileUtils.copyDirectory(targetApp.root().appJars().dir(), unzippedLibDir);
+		File unzippedLibDir = tmpBrjsSourceApp.file("WEB-INF/lib");
+		FileUtils.copyDirectory(targetApp, targetApp.root().appJars().dir(), unzippedLibDir);
 		
-		importApp(tempBrjs, sourceApp, targetApp, targetAppRequirePrefix);
+		importApp(tempBrjs, tmpBrjsSourceApp, targetApp, targetAppRequirePrefix);
 	}
 	
 	public static void importApp(BRJS tempBrjs, App sourceApp, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
@@ -54,7 +54,7 @@ public class NodeImporter {
 		
 		
 		for(Aspect aspect : tempBrjsApp.aspects()) {
-			updateRequirePrefix(aspect.assetLocations(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);			
+			updateRequirePrefix(aspect, sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
 			renameTestLocations(aspect.testTypes(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
 		}
 		
@@ -66,17 +66,18 @@ public class NodeImporter {
 	}
 	
 	
-	public static void importBladeset(File sourceBladesetDir, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix, Bladeset targetBladeset) throws InvalidSdkDirectoryException, IOException, ConfigException {
+	public static void importBladeset(Bladeset sourceBladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix, Bladeset targetBladeset) throws InvalidSdkDirectoryException, IOException, ConfigException {
+		MemoizedFile sourceBladesetDir = sourceBladeset.dir();
 		BRJS tempBrjs = createTemporaryBRJSModel();
 		App tempBrjsApp = tempBrjs.app(targetBladeset.app().getName());
 		Bladeset tempBrjsBladeset = tempBrjsApp.bladeset(targetBladeset.getName());
 		
 		FileUtils.copyDirectory(sourceBladesetDir, tempBrjsBladeset.dir());
-		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
 		tempBrjsApp.appConf().write();
+		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
 		
 		if(!JsStyleUtility.getJsStyle(sourceBladesetDir).equals(JsStyleUtility.getJsStyle(targetBladeset.dir()))) {
-			JsStyleUtility.setJsStyle(tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(sourceBladesetDir));
+			JsStyleUtility.setJsStyle(tempBrjsBladeset.root(), tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(sourceBladesetDir));
 		}
 		
 		renameBladeset(tempBrjsBladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix);
@@ -84,44 +85,45 @@ public class NodeImporter {
 	}
 	
 	private static BRJS createTemporaryBRJSModel() throws InvalidSdkDirectoryException, IOException {
-		File tempSdkDir = FileUtility.createTemporaryDirectory(NodeImporter.class);
+		File tempSdkDir = FileUtils.createTemporaryDirectory(NodeImporter.class);
 		new File(tempSdkDir, "sdk").mkdir();
 		MockPluginLocator pluginLocator = new MockPluginLocator();
 		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
 		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
 		
-		BRJS brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new RealTimeAccessor(), new MockAppVersionGenerator());
+		BRJS brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
 		
 		return brjs;
 	}
 	
 	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException {
-		updateRequirePrefix(bladeset.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
+		updateRequirePrefix(bladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		renameTestLocations(bladeset.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		for(Blade blade : bladeset.blades()) {
-			updateRequirePrefix(blade.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+			updateRequirePrefix(blade, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
 			
 			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 			
 			Workbench workbench = blade.workbench();			
-			updateRequirePrefix(workbench.assetLocations(), sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
+			updateRequirePrefix(workbench, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
 		}
 	}
 	
 	private static void renameTestLocations(List<TypedTestPack> testTypes, String sourceAppRequirePrefix, String sourceLocationRequirePrefix, String requirePrefix) throws IOException{
+		
 		for(TypedTestPack typedTestPack : testTypes)
 		{
 			for( TestPack testPack : typedTestPack.testTechs()){
-				updateRequirePrefix(testPack.assetLocations(), sourceAppRequirePrefix, sourceLocationRequirePrefix, requirePrefix);
+				updateRequirePrefix(testPack, sourceAppRequirePrefix, sourceLocationRequirePrefix, requirePrefix);
 			}
 		}		
 	}
 	
-	private static void updateRequirePrefix(List<AssetLocation> assetLocations, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
+	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
 		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
-			for(AssetLocation assetLocation : assetLocations) {
+			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 				if(assetLocation.dir().exists()) {
 					if(assetLocation.file(sourceRequirePrefix).exists()) {
 						FileUtils.moveDirectory(assetLocation.file(sourceRequirePrefix), assetLocation.file(targetRequirePrefix));
@@ -130,22 +132,26 @@ public class NodeImporter {
 						}
 					}
 					
-					findAndReplaceInAllTextFiles(assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
+				}
+			}
+			for(AssetLocation assetLocation : assetContainer.assetLocations()) { // do this in a seperate loop since the asset locations will change when they are renamed
+				if(assetLocation.dir().exists()) {
+					findAndReplaceInAllTextFiles(assetLocation.root(), assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
 				}
 			}
 		}
 	}
 	
-	private static void findAndReplaceInAllTextFiles(File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
+	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
 		HashMap<String, String> replaceMap = getReplaceMap(sourceRequirePrefix, targetRequirePrefix);
 		for(File file : FileUtils.listFiles(rootRenameDirectory, null, true))
 		{
-			String content = FileUtils.readFileToString(file);
+			String content = org.apache.commons.io.FileUtils.readFileToString(file);
 			String updatedContent = findAndReplaceInText(content, replaceMap);
 			
 			if(content != updatedContent) {
-				FileUtils.writeStringToFile(file, updatedContent);
+				FileUtils.write(brjs, file, updatedContent);
 			}
 		}
 	}

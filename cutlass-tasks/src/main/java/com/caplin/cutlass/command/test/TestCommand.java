@@ -11,6 +11,7 @@ import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
 public class TestCommand extends AbstractPlugin implements LegacyCommandPlugin
 {
 	private TestRunnerController testRunner;
+	private BRJS brjs;
 	
 	public TestCommand()
 	{
@@ -19,7 +20,8 @@ public class TestCommand extends AbstractPlugin implements LegacyCommandPlugin
 	
 	@Override
 	public void setBRJS(BRJS brjs)
-	{	
+	{
+		this.brjs = brjs;
 	}
 	
 	@Override
@@ -50,7 +52,7 @@ public class TestCommand extends AbstractPlugin implements LegacyCommandPlugin
 	{
 		if (validArgs(args))
 		{
-			return testRunner.run(args, this);
+			return testRunner.run(brjs, args, this);
 		}
 		else 
 		{

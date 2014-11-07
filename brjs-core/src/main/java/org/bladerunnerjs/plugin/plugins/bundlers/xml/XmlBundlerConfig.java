@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.bladerunnerjs.memoization.Getter;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -27,7 +28,7 @@ public class XmlBundlerConfig {
 	public static final String CONFIG_FILE_NAME = "bundleConfig.xml";
 	private Map<String, XmlResourceConfig> configMap = null;
 	private BRJS brjs;
-	private File configFile;
+	private MemoizedFile configFile;
 	private MemoizedValue<Map<String, XmlResourceConfig>> computedConfigValue;
 	
 	public XmlBundlerConfig(BRJS brjs) {

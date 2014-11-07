@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model.engine;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
@@ -9,12 +8,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 public class NodeCreator
 {
 	@SuppressWarnings("unchecked")
-	protected static <N extends Node> Node createNode(RootNode rootNode, Node parent, File file, String name, Class<N> nodeClass)
+	protected static <N extends Node> Node createNode(RootNode rootNode, Node parent, MemoizedFile file, String name, Class<N> nodeClass)
 	{
 		Node node = null;
 		

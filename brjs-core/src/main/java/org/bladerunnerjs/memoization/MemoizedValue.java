@@ -2,54 +2,48 @@ package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.util.ArrayList;
-//import java.util.Date;
 import java.util.List;
 
-import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.FileAccessLimitScope;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
-import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 
 public class MemoizedValue<T extends Object> {
 	private final List<FileModifiedChecker> watchList = new ArrayList<>();
 	private final File[] watchItems;
 	private boolean exceptionThrownOnLastCompute;
-	private final RootNode rootNode;
 	private T value;
-	private final Logger logger;
+	private final RootNode rootNode;
 	private final String valueIdentifier;
 	
-	private static final String RECOMPUTING_LOG_MSG = "Recomputing '%s'.";
 	
 	public MemoizedValue(String valueIdentifier, Node node) {
 		this(valueIdentifier, node.root(), node.memoizedScopeFiles());
 	}
 	
-	public MemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) {
+	public MemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) { // take an array of objects so callers can pass in a mix of MemoizedFile and File
 		this.valueIdentifier = valueIdentifier;
 		this.rootNode = rootNode;
-		this.watchItems = watchItems;
-		logger = rootNode.logger(getClass());
 		
 		if(watchItems.length == 0) {
 			throw new IllegalStateException("At least one directory or file must be provided within the watch list.");
 		}
 		
-		File primaryFile = watchItems[0];
+		FileModificationRegistry fileModificationRegistry = rootNode.getFileModificationRegistry();
+		
+		List<File> watchItemsList = new ArrayList<>();
 		for(File file : watchItems) {
-			watchList.add(new InfoFileModifiedChecker(rootNode.getFileSetInfo(file, primaryFile)));
+			watchList.add( new FileModifiedChecker(fileModificationRegistry, rootNode, file));				
+			watchItemsList.add( file );
 		}
+		this.watchItems = watchItemsList.toArray(new File[0]);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <E extends Exception> T value(Getter<E> getter) throws E {
-		if(valueNeedsToBeRecomputed()) {
-			logger.debug( RECOMPUTING_LOG_MSG, valueIdentifier );
+		if (valueNeedsToBeRecomputed()) {
 			
-			try(FileAccessLimitScope scope = rootNode.io().limitAccessToWithin(valueIdentifier, watchItems)) {
-				scope.preventCompilerWarning();
+			try (FileAccessLimitScope scope = rootNode.io().limitAccessToWithin(valueIdentifier, watchItems)) {
 				exceptionThrownOnLastCompute = false;
 				value = (T) getter.get();
 			}

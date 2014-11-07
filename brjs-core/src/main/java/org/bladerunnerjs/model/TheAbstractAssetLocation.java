@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.*;
 
 import org.apache.commons.lang3.*;
@@ -15,10 +14,10 @@ import org.bladerunnerjs.plugin.utility.*;
 import org.bladerunnerjs.utility.*;
 
 // TODO Java 8 (1.8.0-b123) compiler throws errors when this class is named 'AbstractAssetLocation'
-public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
+public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implements AssetLocation {
 	private final AssetLocation parentAssetLocation;
 	private final AssetContainer assetContainer;
-	private final FileInfo dirInfo;
+	private final MemoizedFile dir;
 	
 	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
@@ -27,10 +26,10 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(dir()+" jsStyle", root(), dir());
 	
-	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+	public TheAbstractAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir);
 		
-		dirInfo = root().getFileInfo(dir);
+		this.dir = root().getMemoizedFile(dir);
 		assetLocator = new AssetLocator(this);
 		emptyAssets = new Assets(root());
 		this.parentAssetLocation = parentAssetLocation;
@@ -38,7 +37,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
-	protected abstract List<File> getCandidateFiles();
+	protected abstract List<MemoizedFile> getCandidateFiles();
 	
 	@Override
 	public String requirePrefix() {
@@ -81,8 +80,8 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		// TODO: fix this dependency from the model to plug-in code (ResourcesAssetLocation)
 		//       we instead need a way to either know this asset-location has a deep directory structure, or have way of getting it to list it's nested directories
 		if(dir().exists() && (this instanceof ResourcesAssetLocation)) {
-			for(File dir : root().getFileInfo(dir()).nestedDirs()) {
-				if(new File(dir, "aliasDefinitions.xml").exists()) {
+			for(MemoizedFile dir : root().getMemoizedFile(dir()).nestedDirs()) {
+				if(dir.file("aliasDefinitions.xml").exists()) {
 					String dirPath = dir.getAbsolutePath();
 					
 					if(!aliasDefinitionsFilesMap.containsKey(dirPath)) {
@@ -134,7 +133,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	}
 	
 	private Assets assets() {
-		return (!dirInfo.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
+		return (!dir.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
 	}
 	
 	@Override
@@ -177,10 +176,6 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		}
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
-	}
-	
-	protected FileInfo getDirInfo() {
-		return dirInfo;
 	}
 	
 }

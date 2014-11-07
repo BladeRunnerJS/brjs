@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -22,7 +23,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
@@ -40,7 +40,7 @@ public class ThirdpartySourceModule implements SourceModule
 	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
-			assetPath = RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.assetContainer().app().dir(), assetLocation.dir());
+			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(assetLocation.dir());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 			manifest = assetLocation.getManifest();
@@ -105,7 +105,7 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return assetLocation.dir();
 	}
@@ -124,7 +124,8 @@ public class ThirdpartySourceModule implements SourceModule
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		List<Asset> dependendAssets = new ArrayList<>();
-		dependendAssets.addAll( getDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
 		return dependendAssets;
 	}
@@ -163,7 +164,7 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public List<Asset> getDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
+	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
 		
@@ -185,6 +186,11 @@ public class ThirdpartySourceModule implements SourceModule
 		}
 		
 		return new ArrayList<Asset>( dependentLibs );
+	}
+	
+	@Override
+	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return Collections.emptyList();
 	}
 	
 	@Override

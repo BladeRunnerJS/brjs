@@ -1,15 +1,14 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
-
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.yaml.YamlAppConf;
 
 public class AppConf extends ConfFile<YamlAppConf> {
 	
-	public AppConf(BRJS brjs, File confFile) throws ConfigException {
+	public AppConf(BRJS brjs, MemoizedFile confFile) throws ConfigException {
 		super(brjs, YamlAppConf.class, confFile);
 	}
 	
@@ -23,7 +22,7 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	
 	public void setRequirePrefix(String requirePrefix) throws ConfigException {
 		getConf().requirePrefix = requirePrefix;
-		verify();
+		verifyAndAutoWrite();
 	}
 	
 	public Locale[] getLocales() throws ConfigException {
@@ -37,7 +36,7 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	
 	public void setLocales(Locale[] locales) throws ConfigException {
 		getConf().locales = StringUtils.join(locales,",");
-		verify();
+		verifyAndAutoWrite();
 	}
 	
 	public Locale getDefaultLocale() throws ConfigException {
@@ -50,6 +49,6 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	
 	public void setLocaleCookieName(String cookieName) throws ConfigException {
 		getConf().localeCookieName = cookieName;
-		verify();
+		verifyAndAutoWrite();
 	}
 }

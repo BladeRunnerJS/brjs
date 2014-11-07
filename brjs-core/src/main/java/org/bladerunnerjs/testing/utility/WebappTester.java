@@ -31,11 +31,13 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.UnicodeReader;
 
+import com.google.common.base.Predicate;
+
 @SuppressWarnings("deprecation")
 public class WebappTester 
 {
 	
-	private static final int MAX_POLL_REQUESTS = 20;
+	private static final int MAX_POLL_REQUESTS = 30;
 	private static final int POLL_INTERVAL = 1000;
 	
 	private int defaultSocketTimeout = 9999999;
@@ -121,20 +123,46 @@ public class WebappTester
 		return this;		
 	}
 	
-	public void pollServerForStatusCode(String url, int requiredStatusCode) throws ClientProtocolException, IOException, InterruptedException
+	public String pollServerForStatusCode(String url, int requiredStatusCode) throws ClientProtocolException, IOException, InterruptedException
 	{
 		int requestCount = 0;
-		while(statusCode != requiredStatusCode && requestCount < MAX_POLL_REQUESTS)
+		while(requestCount < MAX_POLL_REQUESTS)
 		{
-			whenRequestMadeTo(url);
+			try {
+				whenRequestMadeTo(url);
+			} catch (Exception ex) {
+				// do nothing
+			}
 			if (statusCode == requiredStatusCode)
+			{
+				return response;
+			}
+			requestCount++;
+			Thread.sleep(POLL_INTERVAL);
+		}
+		assertEquals("Never got required status code", requiredStatusCode, statusCode);
+		return null;
+	}
+	
+	public void pollServerUntilMatchesPredicate(String url, Predicate<String> predicate) throws ClientProtocolException, IOException, InterruptedException
+	{
+		int requestCount = 0;
+		
+		while(requestCount < MAX_POLL_REQUESTS)
+		{
+			try {
+				whenRequestMadeTo(url);
+			} catch (Exception ex) {
+				// do nothing
+			}
+			if (response != null && predicate.apply(response))
 			{
 				return;
 			}
 			requestCount++;
 			Thread.sleep(POLL_INTERVAL);
 		}
-		assertEquals("Never got required status code", requiredStatusCode, statusCode);
+		fail("Never got response that matched the predicate");
 	}
 	
 	public WebappTester printOutcome() 

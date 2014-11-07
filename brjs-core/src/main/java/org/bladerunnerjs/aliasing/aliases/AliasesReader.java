@@ -1,6 +1,5 @@
 package org.bladerunnerjs.aliasing.aliases;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
@@ -41,7 +41,7 @@ public class AliasesReader {
 		}
 	}
 	
-	public static AliasesData read(File aliasesFile, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
+	public static AliasesData read(MemoizedFile aliasesFile, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
 		AliasesData aliasesData = new AliasesData();
 		aliasesData.aliasOverrides = new ArrayList<>();
 		aliasesData.groupNames = new ArrayList<>();
@@ -88,7 +88,7 @@ public class AliasesReader {
 		}
 	}
 	
-	private static void processAlias(XMLStreamReader2 streamReader, AliasesData aliasesData, File aliasesFile) throws AliasException {
+	private static void processAlias(XMLStreamReader2 streamReader, AliasesData aliasesData, MemoizedFile aliasesFile) throws AliasException {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "class");
 		

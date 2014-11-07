@@ -1,13 +1,12 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
-import java.io.File;
-
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.exception.RequirePathException;
 
@@ -17,7 +16,7 @@ public class XmlSiblingReader
 	private PeekableXmlStreamReader streamReader;
 	private XmlSiblingReader childReader = null;
 	private int depth = 1;
-	private File document;
+	private MemoizedFile document;
 	private Asset xmlAsset;
 	
 	public XmlSiblingReader(XMLStreamReader streamReader) throws XMLStreamException
@@ -169,12 +168,12 @@ public class XmlSiblingReader
 		}
 	}
 	
-	public void setXmlDocument(File document)
+	public void setXmlDocument(MemoizedFile document)
 	{
 		this.document = document;
 	}
 	
-	public File getXmlDocument()
+	public MemoizedFile getXmlDocument()
 	{
 		if(document == null)
 		{

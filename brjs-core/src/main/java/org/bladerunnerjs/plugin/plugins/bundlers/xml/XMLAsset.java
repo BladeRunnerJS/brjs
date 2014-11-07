@@ -1,10 +1,10 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.LinkedFileAsset;
@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.LinkedFileAsset;
 public class XMLAsset extends LinkedFileAsset {
 	private final MemoizedValue<List<String>> requirePaths;
 	
-	public XMLAsset(File assetFile, AssetLocation assetLocation) {
+	public XMLAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
 		super(assetFile, assetLocation);
 		requirePaths = new MemoizedValue<>("XMLAsset.requirePaths", assetLocation.root(), assetFile);
 	}
