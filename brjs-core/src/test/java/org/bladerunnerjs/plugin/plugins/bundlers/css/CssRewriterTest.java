@@ -180,7 +180,6 @@ public class CssRewriterTest extends SpecTest
 			.and(response).containsText("background:url('../../cssresource/aspect_default/theme_common/another(image.png');");
 	}
 	 
-	@Ignore
 	@Test
 	public void poundSignCharactersInFilenamesAreCorrectlyEncoded() throws Exception
 	{

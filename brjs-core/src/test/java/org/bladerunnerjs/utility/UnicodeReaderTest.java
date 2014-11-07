@@ -17,8 +17,7 @@ public class UnicodeReaderTest
 {
 	private static final String resourceDir = "src/test/resources/UnicodeReaderTest";
 	private static final String testFileContents = "test-€";
-	
-	@Ignore
+
 	@Test
 	public void testUtf8FileWithoutBOMCanBeReadCorrectly() throws IOException
 	{
@@ -27,7 +26,6 @@ public class UnicodeReaderTest
 		assertEquals(testFileContents, removeLineEndingSymbols(br.readLine()));
 	}
 	
-	@Ignore
 	@Test
 	public void testUtf8FileWithBOMCanBeReadCorrectly() throws IOException
 	{
