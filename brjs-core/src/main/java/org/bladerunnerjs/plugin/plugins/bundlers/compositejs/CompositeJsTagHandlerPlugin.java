@@ -10,6 +10,7 @@ import java.util.Map;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
@@ -65,13 +66,14 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	private List<String> getGeneratedContentPaths(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale) throws MalformedTokenException, ContentProcessingException
 	{
+		RequestMode requestMode = (isDev) ? RequestMode.Dev : RequestMode.Prod;
 		List<String> contentPaths = new ArrayList<String>();
 		MinifierSetting minifierSettings = new MinifierSetting(tagAttributes);
 		String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
 		
 		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
 			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
-				contentPaths.addAll( (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet) : contentPlugin.getValidProdContentPaths(bundleSet) );
+				contentPaths.addAll( contentPlugin.getValidContentPaths(bundleSet, requestMode) );
 			}
 		}
 		else {

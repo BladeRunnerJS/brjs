@@ -13,6 +13,7 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -120,10 +121,11 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	public List<StylesheetRequest> getOrderedStylesheets(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException, IOException
 	{
 		try {
+			RequestMode requestMode = (isDev) ? RequestMode.Dev : RequestMode.Prod;
 			App app = bundleSet.getBundlableNode().app();
 			String theme = getTheme(tagAttributes);
 			List<String> alternateThemes = getAlternateThemes(tagAttributes);
-			List<String> contentPaths = (isDev) ? cssContentPlugin.getValidDevContentPaths(bundleSet, locale) : cssContentPlugin.getValidProdContentPaths(bundleSet, locale);
+			List<String> contentPaths = cssContentPlugin.getValidContentPaths(bundleSet, requestMode, locale);
 			List<StylesheetRequest> stylesheetRequests = new ArrayList<>();
 			
 			if (theme == null && alternateThemes.size() == 0) {

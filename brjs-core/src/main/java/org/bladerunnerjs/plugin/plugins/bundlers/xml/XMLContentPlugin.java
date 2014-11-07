@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -70,15 +71,9 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return getValidContentPaths(bundleSet);
-	}
-	
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
-	{
-		return getValidContentPaths(bundleSet);
+		return bundleSet.getResourceFiles(xmlAssetPlugin).isEmpty() ? Collections.emptyList() : requestPaths;
 	}
 
 	@Override
@@ -108,7 +103,4 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		}
 	}
 	
-	private List<String> getValidContentPaths(BundleSet bundleSet) throws ContentProcessingException {		
-		return bundleSet.getResourceFiles(xmlAssetPlugin).isEmpty() ? Collections.emptyList() : requestPaths;
-	}
 }

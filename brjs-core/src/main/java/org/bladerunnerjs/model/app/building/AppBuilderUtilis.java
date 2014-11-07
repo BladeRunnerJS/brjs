@@ -88,7 +88,7 @@ public class AppBuilderUtilis
 	private static void outputContentPluginBundles(ContentPlugin contentPlugin, BundleSet bundleSet, Locale[] locales, File target, String version, AppRequestHandler appRequestHandler, String aspectRequestPrefix, UrlContentAccessor urlContentAccessor) throws ContentProcessingException, MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException
 	{
 		if (contentPlugin.getCompositeGroupName() == null) {
-			for (String contentPath : contentPlugin.getProdContentPathsUsedFromBrowsableNode(bundleSet, locales)) {
+			for (String contentPath : contentPlugin.getUsedContentPaths(bundleSet, RequestMode.Prod, locales)) {
 				writeContentFile(bundleSet, urlContentAccessor, target, appRequestHandler, version, aspectRequestPrefix, contentPlugin, contentPath);
 			}
 		} else {

@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin;
 import java.util.List;
 
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -19,8 +20,8 @@ import org.bladerunnerjs.utility.ContentPathParser;
  *   <dd>The same response must always be returned given the same request and the same set of files on disk.</dd>
  *   
  *   <dt>Discoverability</dt>
- *   <dd>The complete list of valid content paths must be provided by content plug-ins on demand (using {@link #getValidDevContentPaths getValidDevContentPaths()} &amp;
- *   {@link #getValidProdContentPaths getValidProdContentPaths()}), such that any requests from the browser that are not included in this list are considered to be an
+ *   <dd>The complete list of valid content paths must be provided by content plug-ins on demand (using {@link #getValidContentPaths getValidDevContentPaths()}), 
+ *   such that any requests from the browser that are not included in this list are considered to be an
  *   error.</dd>
  * </dl>
  * 
@@ -77,26 +78,16 @@ public interface ContentPlugin extends OrderedPlugin {
 	ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException;
 	
 	/**
-	 * Returns the list of valid content paths, when in development, for the given bundle-set and locale.
+	 * Returns the list of valid content paths for the given bundle-set and locale.
 	 * 
 	 * @param bundleSet The bundle-set for which content paths must be generated.
+	 * @param requestMode An enum representing the 'mode' for this request - either dev or prod.
 	 * @param locales The locale for which content paths must be generated.
 	 * 
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException;
-	List<String> getDevContentPathsUsedFromBrowsableNode(BundleSet bundleSet, Locale... locales) throws ContentProcessingException;
-	
-	/**
-	 * Returns the list of valid content paths, when in production, for the given bundle-set and locale.
-	 * 
-	 * @param bundleSet The bundle-set for which content paths must be generated.
-	 * @param locales The locale for which content paths must be generated.
-	 * 
-	 * @throws ContentProcessingException if a problem is encountered.
-	 */
-	List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException;
-	List<String> getProdContentPathsUsedFromBrowsableNode(BundleSet bundleSet, Locale... locales) throws ContentProcessingException;
+	List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException;
+	List<String> getUsedContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException;
 	
 	/**
 	 * Determines whether to output all bundles regardless of whether they are only used by a corresponding tag handler plugin.

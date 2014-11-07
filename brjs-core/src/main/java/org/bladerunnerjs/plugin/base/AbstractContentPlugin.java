@@ -43,22 +43,10 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 	}
 	
 	@Override
-	public List<String> getDevContentPathsUsedFromBrowsableNode(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
+	public List<String> getUsedContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException {
 		try
 		{
-			return filterUnusedContentPaths( true, bundleSet, getValidDevContentPaths(bundleSet, locales), locales );
-		}
-		catch (ResourceNotFoundException | MalformedTokenException ex)
-		{
-			throw new ContentProcessingException(ex);
-		}
-	}
-	
-	@Override
-	public List<String> getProdContentPathsUsedFromBrowsableNode(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-		try
-		{
-			return filterUnusedContentPaths( false, bundleSet, getValidProdContentPaths(bundleSet, locales), locales );
+			return filterUnusedContentPaths( requestMode, bundleSet, getValidContentPaths(bundleSet, requestMode, locales), locales );
 		}
 		catch (ResourceNotFoundException | MalformedTokenException ex)
 		{
@@ -67,7 +55,7 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 	}
 	
 	
-	private List<String> filterUnusedContentPaths(boolean isDev, BundleSet bundleSet, List<String> contentPaths, Locale... locales) throws ContentProcessingException, ResourceNotFoundException, MalformedTokenException {
+	private List<String> filterUnusedContentPaths(RequestMode requestMode, BundleSet bundleSet, List<String> contentPaths, Locale... locales) throws ContentProcessingException, ResourceNotFoundException, MalformedTokenException {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		if (outputAllBundles() || !(bundlableNode instanceof BrowsableNode) || locales.length <= 0) {			
 			return contentPaths;
@@ -78,7 +66,7 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 		UrlContentAccessor urlContentAccessor = new StaticContentAccessor(app);
 		Map<String,List<String>> contentPluginRequestsMap = new LinkedHashMap<>();
 		for (Locale locale : locales) {
-			calculateContentPathsUsedInBrowsableNode( isDev, (BrowsableNode) bundlableNode, locale, bundleSet, appRequestHandler, urlContentAccessor, contentPluginRequestsMap);
+			calculateContentPathsUsedInBrowsableNode( requestMode, (BrowsableNode) bundlableNode, locale, bundleSet, appRequestHandler, urlContentAccessor, contentPluginRequestsMap);
 		}
 				
 		List<String> usedContentPathsForThisContentPlugin = new ArrayList<>();
@@ -93,9 +81,8 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 		return usedContentPathsForThisContentPlugin;
 	}
 	
-	private static void calculateContentPathsUsedInBrowsableNode(boolean isDev, BrowsableNode browsableNode, Locale locale, BundleSet bundleSet, AppRequestHandler appRequestHandler, UrlContentAccessor urlContentAccessor, Map<String, List<String>> contentPluginProdRequestsMap) throws ContentProcessingException, ResourceNotFoundException, MalformedTokenException
+	private static void calculateContentPathsUsedInBrowsableNode(RequestMode requestMode, BrowsableNode browsableNode, Locale locale, BundleSet bundleSet, AppRequestHandler appRequestHandler, UrlContentAccessor urlContentAccessor, Map<String, List<String>> contentPluginProdRequestsMap) throws ContentProcessingException, ResourceNotFoundException, MalformedTokenException
 	{
-		RequestMode requestMode = (isDev) ? RequestMode.Dev : RequestMode.Prod;
 		Map<String,Map<String,String>> usedTagsAndAttributes = appRequestHandler.getTagsAndAttributesFromIndexPage(browsableNode, locale, urlContentAccessor, requestMode);		
 		
 		for (TagHandlerPlugin tagPlugin : browsableNode.app().root().plugins().tagHandlerPlugins()) {

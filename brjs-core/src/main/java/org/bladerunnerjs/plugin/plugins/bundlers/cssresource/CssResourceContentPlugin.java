@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
@@ -92,27 +93,22 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException {
+		List<String> contentPaths = new ArrayList<>();
+		
 		try
 		{
-			return getValidContentPaths(bundleSet, locales);
+			for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers())
+			{
+				contentPaths.addAll( getValidContentPaths(assetContainer) );
+			}
 		}
 		catch (MalformedTokenException | ConfigException ex)
 		{
 			throw new ContentProcessingException(ex);
 		}
-	}
-	
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-		try
-		{
-			return getValidContentPaths(bundleSet, locales);
-		}
-		catch (MalformedTokenException | ConfigException ex)
-		{
-			throw new ContentProcessingException(ex);
-		}
+		
+		return contentPaths;
 	}
 	
 	private ThemedAssetLocation getThemedResourceLocation(AssetContainer container, String themeName){
@@ -224,18 +220,6 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 		return false;
 	}
-
-	private List<String> getValidContentPaths(BundleSet bundleSet, Locale... locales) throws MalformedTokenException, ConfigException {
-		List<String> contentPaths = new ArrayList<>();
-		
-		for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers())
-		{
-			contentPaths.addAll( getValidContentPaths(assetContainer) );
-		}
-		
-		return contentPaths;
-	}
-
 	
 	private List< String> getValidContentPaths(AssetContainer assetContainer) throws MalformedTokenException, ConfigException
 	{		
