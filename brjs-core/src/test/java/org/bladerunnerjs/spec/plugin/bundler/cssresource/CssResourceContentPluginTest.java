@@ -465,6 +465,15 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void cssResourcesUsedInIndexPagesShouldBeIncludedInFilteredContentPaths() throws Exception {
+		given(defaultAspect).indexPageHasContent(".style { background:url('v/1234/cssresource/aspect_default_resource/resources/css/usedFile.png') }")
+			.and(defaultAspect).containsFiles("themes/common/usedFile.png", "resources/css/usedFile.png", "resources/css/unusedFile.png", "resources/some-dir/unusedFile.png")
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).hasProdVersion("1234");
+		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default_resource/resources/css/usedFile.png");
+	}
+	
+	@Test
 	public void onlyCssResourceBundlesUsedFromCssFilesArePresentInTheBuiltArtifact() throws Exception {
 		given(defaultAspect).indexPageHasContent("")
 			.and(defaultAspect).containsFiles("themes/common/usedFile.png", "resources/css/usedFile.png", "resources/css/unusedFile.png", "resources/some-dir/unusedFile.png")

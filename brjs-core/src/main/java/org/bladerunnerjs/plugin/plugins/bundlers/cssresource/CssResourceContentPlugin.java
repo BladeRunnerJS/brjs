@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Asset;
@@ -122,18 +123,38 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		List<String> usedContentPaths = new ArrayList<>();
 		
 		for (Asset cssAsset : bundleSet.getResourceFiles(brjs.plugins().assetPlugin(CssAssetPlugin.class))) {
-			List<String> foundContentPaths = new ArrayList<>();
-			String assetContents = getCssAssetFileContents(cssAsset);
-			for (String contentPath : validContentPaths) {
-				if (assetContents.contains(contentPath)) {
-					foundContentPaths.add(contentPath);
-				}
-			}
-			usedContentPaths.addAll(foundContentPaths);
-			validContentPaths.removeAll(foundContentPaths);
+			filterUsedContentPaths(cssAsset, validContentPaths, usedContentPaths, true);
+		}
+		
+		for (Asset seedAsset : bundleSet.getBundlableNode().seedAssets()) {
+			filterUsedContentPaths(seedAsset, validContentPaths, usedContentPaths, false);
 		}
 		
 		return usedContentPaths;
+	}
+
+	private void filterUsedContentPaths(Asset asset, List<String> validContentPaths, List<String> usedContentPaths, boolean rewriteUrls) throws ContentProcessingException {
+		List<String> foundContentPaths = new ArrayList<>();
+		String assetContents = (rewriteUrls) ? getCssAssetFileContents(asset) : readAssetToString(asset);
+		for (String contentPath : validContentPaths) {
+			if (assetContents.contains(contentPath)) {
+				foundContentPaths.add(contentPath);
+			}
+		}
+		usedContentPaths.addAll(foundContentPaths);
+		validContentPaths.removeAll(foundContentPaths);
+	}
+	
+	private String readAssetToString(Asset seedAsset) throws ContentProcessingException
+	{
+		try
+		{
+			return IOUtils.toString(seedAsset.getReader());
+		}
+		catch (IOException ex)
+		{
+			throw new ContentProcessingException(ex);
+		}
 	}
 	
 	private String getCssAssetFileContents(Asset cssAsset) throws ContentProcessingException {
