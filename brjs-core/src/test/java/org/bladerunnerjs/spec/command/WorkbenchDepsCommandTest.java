@@ -74,7 +74,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfTheAppDoesntExist() throws Exception {
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(app.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(app.getTypeName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -82,7 +82,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheBladesetDoesntExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(bladeset.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(bladeset.getTypeName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -90,7 +90,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheBladeDoesntExist() throws Exception {
 		given(bladeset).hasBeenCreated();
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(blade.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(blade.getTypeName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -98,7 +98,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheWorkbenchDoesntExist() throws Exception {
 		given(blade).hasBeenCreated();
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(workbench.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(workbench.getTypeName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	

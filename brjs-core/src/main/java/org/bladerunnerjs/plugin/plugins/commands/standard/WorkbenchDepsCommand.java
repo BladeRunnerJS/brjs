@@ -67,7 +67,7 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		if(!bladeset.dirExists()) throw new NodeDoesNotExistException(bladeset, this);
 		if(!blade.dirExists()) throw new NodeDoesNotExistException(blade, this);
-		if(!workbench.dirExists()) throw new NodeDoesNotExistException(workbench, "workbench", this);
+		if(!workbench.dirExists()) throw new NodeDoesNotExistException(workbench, workbench.getTypeName(), this);
 		
 		try {
 			logger.println(DependencyGraphReportBuilder.createReport(workbench, showAllDependencies));

@@ -77,8 +77,7 @@ public class BladeWorkbenchBundlingTest extends SpecTest {
 			.and(aspect).hasClasses("appns.Class1")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
-			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1")
-			.and(workbench).indexPageRefersTo("appns.Class1");
+			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1", "appns.Class1");
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainClasses("appns.Class1")
 			.and(exceptions).verifyNoOutstandingExceptions();

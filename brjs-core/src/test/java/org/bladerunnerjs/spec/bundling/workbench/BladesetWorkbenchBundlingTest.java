@@ -15,7 +15,7 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private Bladeset bladeset;
-	private Blade blade;
+	private Blade blade1, blade2;
 	private BladesetWorkbench workbench;
 	private JsLib thirdpartyLib, brjsLib, appLib;
 	private NamedDirNode workbenchTemplate;
@@ -32,7 +32,8 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 		app = brjs.app("app1");
 		aspect = app.aspect("default");
 		bladeset = app.bladeset("bs");
-		blade = bladeset.blade("b1");
+		blade1 = bladeset.blade("b1");
+		blade2 = bladeset.blade("b2");
 		workbench = bladeset.workbench();
 		workbenchTemplate = brjs.template("workbench");
 		brjsLib = brjs.sdkLib("br");
@@ -47,7 +48,19 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 			.and(workbenchTemplate).containsFolder("src");
 	}
 	
-	// ----------------------------------- H T M L  -------------------------------------
+	@Test
+	public void workbenchBundlesCodeFromTwoBladesInsideTheWorkbench() throws Exception {
+		given(blade1).hasNamespacedJsPackageStyle()
+			.and(blade1).hasClass("appns.bs.b1.Class1")
+			.and(blade2).hasNamespacedJsPackageStyle()
+			.and(blade2).hasClass("appns.bs.b2.Class2")
+			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1", "appns.bs.b2.Class2");
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("appns.bs.b1.Class1")
+			.and(response).containsText("appns.bs.b2.Class2")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
 	@Test
 	public void workbenchCanBundleSdkLibHtmlResources() throws Exception {
 		given(brjsLib).hasBeenCreated()

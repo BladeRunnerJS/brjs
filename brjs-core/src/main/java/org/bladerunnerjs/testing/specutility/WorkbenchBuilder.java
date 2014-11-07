@@ -5,6 +5,8 @@ import org.bladerunnerjs.testing.specutility.engine.AssetContainerBuilder;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 
+import com.google.common.base.Joiner;
+
 public class WorkbenchBuilder extends AssetContainerBuilder<Workbench<?>> 
 {
 	private final Workbench<?> workbench;
@@ -15,9 +17,9 @@ public class WorkbenchBuilder extends AssetContainerBuilder<Workbench<?>>
 		this.workbench = workbench;
 	}
 	
-	public BuilderChainer indexPageRefersTo(String className) throws Exception 
+	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception 
 	{
-		fileUtil.write(workbench.file("index.html"), className);
+		fileUtil.write(workbench.file("index.html"), Joiner.on(",").join(classNames));
 		
 		return builderChainer;
 	}
