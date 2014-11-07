@@ -17,7 +17,6 @@ import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class UnbundledResourcesContentPluginTest extends SpecTest {
