@@ -8,12 +8,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
-import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.TemplateUtility;
 import org.junit.After;
 import org.junit.Before;
@@ -29,10 +27,10 @@ public class TemplateUtilityTest extends TestModelAccessor
 	@Before
 	public void setUp() throws Exception
 	{
-		File tempDir = FileUtility.createTemporaryDirectory( this.getClass() );
-		FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
+		File tempDir = FileUtils.createTemporaryDirectory( this.getClass() );
+		org.apache.commons.io.FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
 		brjs = createModel(tempDir);
-		fileUtil = new EncodedFileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+		fileUtil = new EncodedFileUtil(brjs, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 	}
 	
 	@After

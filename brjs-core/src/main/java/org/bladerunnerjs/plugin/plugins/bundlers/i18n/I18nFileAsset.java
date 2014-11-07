@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collections;
@@ -10,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -17,7 +17,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class I18nFileAsset implements Asset
@@ -28,16 +27,16 @@ public class I18nFileAsset implements Asset
 	}
 	
 	private AssetLocation assetLocation;
-	private File assetFile;
+	private MemoizedFile assetFile;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 	private Locale locale;
 	
-	public I18nFileAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public I18nFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
-			this.assetFile = assetFile;
-			assetPath = RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.assetContainer().app().dir(), assetFile);
+			this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
+			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			locale = Locale.createLocaleFromFilepath(getAssetName());
 		}
@@ -59,7 +58,7 @@ public class I18nFileAsset implements Asset
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return assetFile.getParentFile();
 	}

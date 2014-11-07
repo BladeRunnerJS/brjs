@@ -1,17 +1,16 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 /**
@@ -20,18 +19,18 @@ import org.bladerunnerjs.utility.UnicodeReader;
  */
 public class LinkedFileAsset implements LinkedAsset {
 	private App app;
-	private File assetFile;
+	private MemoizedFile assetFile;
 	private AssetLocation assetLocation;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	
-	public LinkedFileAsset(File assetFile, AssetLocation assetLocation) {
+	public LinkedFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
 			app = assetLocation.assetContainer().app();
-			this.assetFile = assetFile;
-			assetPath = RelativePathUtility.get(app.root().getFileInfoAccessor(), app.dir(), assetFile);
+			this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
+			assetPath = app.dir().getRelativePath(assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
@@ -64,11 +63,10 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return assetFile.getParentFile();
 	}
-	
 	
 	@Override
 	public String getAssetName() {

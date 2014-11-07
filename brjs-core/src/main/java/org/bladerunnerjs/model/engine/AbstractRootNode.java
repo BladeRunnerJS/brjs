@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.TreeMap;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
@@ -36,7 +38,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			rootDir = dir;
 		}
 		
-		this.dir = new File(getNormalizedPath(rootDir));
+		setNodeDir(rootDir);
 		this.loggerFactory = loggerFactory;
 	}
 	
@@ -69,7 +71,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		if (nodeExistsForPath) {
 			throw new NodeAlreadyRegisteredException("A node of type '" + node.getTypeName() + 
-					"' has already been registered for path '" + getNormalizedPath(node.dir()) + "'");
+					"' has already been registered for path '" + node.dir() + "'");
 		}
 
 		notifyObservers(new NodeDiscoveredEvent(), node);
@@ -83,15 +85,15 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	@Override
 	public void clearRegisteredNode(Node node) {
-		String normalizedPath = getNormalizedPath(node.dir());
+		String normalizedPath = node.dir().getCanonicalPath();
 		List<Node> nodesForPath = nodeCache.get(normalizedPath);
 		nodesForPath.remove(node.getTypeName());
 	}
 	
 	@Override
-	public List<Node> getRegisteredNodes(File childPath)
+	public List<Node> getRegisteredNodes(MemoizedFile childPath)
 	{
-		String normalizedPath = getNormalizedPath(childPath);
+		String normalizedPath = getMemoizedFile(childPath).getCanonicalPath();
 		if (!nodeCache.containsKey(normalizedPath)) {
 			nodeCache.put( normalizedPath, new LinkedList<>() );
 		}
@@ -99,13 +101,13 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
-	public Node getRegisteredNode(File childPath) throws MultipleNodesForPathException
+	public Node getRegisteredNode(MemoizedFile childPath) throws MultipleNodesForPathException
 	{
 		return getRegisteredNode(childPath, null);
 	}
 	
 	@Override
-	public Node getRegisteredNode(File childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException
+	public Node getRegisteredNode(MemoizedFile childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException
 	{
 		List<Node> nodes = getRegisteredNodes(childPath);
 		if (nodes.size() == 0) {
@@ -121,13 +123,13 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
-	public Node locateFirstAncestorNode(File file)
+	public Node locateFirstAncestorNode(MemoizedFile file)
 	{
 		return locateFirstAncestorNode(file, null);
 	}
 	
 	@Override
-	public Node locateFirstAncestorNode(File file, Class<? extends Node> nodeClass)
+	public Node locateFirstAncestorNode(MemoizedFile file, Class<? extends Node> nodeClass)
 	{
 		Node node = locateFirstCachedNode(file, nodeClass);
 		
@@ -139,10 +141,16 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		return node;
 	}
+		
+	@Override
+	public <N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass)
+	{
+		return locateAncestorNodeOfClass(getMemoizedFile(file), nodeClass);
+	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass)
+	public <N extends Node> N locateAncestorNodeOfClass(MemoizedFile file, Class<N> nodeClass)
 	{
 		Node firstCachedNode = locateFirstCachedNode(file, nodeClass);
 		Node node = null;
@@ -198,16 +206,23 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			dir = dir.getParentFile();
 		}
 		
-		return dir;
+		try
+		{
+			return (dir == null) ? dir : dir.getCanonicalFile();
+		}
+		catch (IOException e)
+		{
+			return dir;
+		}
 	}
 	
-	private Node locateFirstCachedNode(File file) {
+	private Node locateFirstCachedNode(MemoizedFile file) {
 		return locateFirstCachedNode(file, null);
 	}
 	
-	private Node locateFirstCachedNode(File file, Class<? extends Node> nodeClass)
+	private Node locateFirstCachedNode(MemoizedFile file, Class<? extends Node> nodeClass)
 	{
-		File nextFile = file;
+		MemoizedFile nextFile = file;
 		
 		do
 		{	

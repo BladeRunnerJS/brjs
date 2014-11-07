@@ -1,6 +1,5 @@
 package org.bladerunnerjs.aliasing.aliasdefinitions;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,19 +9,20 @@ import java.util.Set;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class AliasDefinitionsFile {
-	private final File aliasDefinitionsFile;
+	private final MemoizedFile aliasDefinitionsFile;
 	private final PersistentAliasDefinitionsData persistentAliasDefinitionsData;
 	
-	public AliasDefinitionsFile(AssetLocation assetLocation, File parent, String child) {
-		aliasDefinitionsFile = new File(parent, child);
+	public AliasDefinitionsFile(AssetLocation assetLocation, MemoizedFile parent, String child) {
+		aliasDefinitionsFile = parent.file(child);
 		persistentAliasDefinitionsData = new PersistentAliasDefinitionsData(assetLocation, aliasDefinitionsFile);
 	}
 	
-	public File getUnderlyingFile() {
+	public MemoizedFile getUnderlyingFile() {
 		return aliasDefinitionsFile;
 	}
 	

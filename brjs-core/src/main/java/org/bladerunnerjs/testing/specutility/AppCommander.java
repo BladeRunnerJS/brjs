@@ -3,10 +3,9 @@ package org.bladerunnerjs.testing.specutility;
 import static org.junit.Assert.assertFalse;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -18,6 +17,7 @@ import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.ValueCommand;
+import org.bladerunnerjs.utility.FileUtils;
 
 public class AppCommander extends NodeCommander<App> {
 	private final App app;
@@ -85,7 +85,7 @@ public class AppCommander extends NodeCommander<App> {
 	{
 		call(new Command() {
 			public void call() throws Exception {
-				File deleteFile = app.file(filePath);
+				MemoizedFile deleteFile = app.file(filePath);
 				FileUtils.forceDelete( deleteFile );
 				assertFalse( "failed to delete " + deleteFile.getAbsolutePath(), deleteFile.exists() );
 			}

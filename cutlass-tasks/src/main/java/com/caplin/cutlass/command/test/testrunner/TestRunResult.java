@@ -1,19 +1,19 @@
 package com.caplin.cutlass.command.test.testrunner;
 
-import java.io.File;
+import org.bladerunnerjs.memoization.MemoizedFile;
 
 import com.caplin.cutlass.command.test.testrunner.TestRunner.TestType;
 
 public class TestRunResult {
 
 	private boolean success;
-	private File baseDir;
-	private File testDir;
+	private MemoizedFile baseDir;
+	private MemoizedFile testDir;
 	private long startTime;
 	private long endTime;
 	private TestType testType;
 	
-	public TestRunResult(File baseDir, File testDir, TestType testType) {
+	public TestRunResult(MemoizedFile baseDir, MemoizedFile testDir, TestType testType) {
 		this.baseDir = baseDir;
 		this.testDir = testDir;
 		this.testType = testType;
@@ -39,19 +39,19 @@ public class TestRunResult {
 		return success;
 	}
 	
-	public void setBaseDirectory(File baseDir) {
+	public void setBaseDirectory(MemoizedFile baseDir) {
 		this.baseDir = baseDir;
 	}
 	
-	public File getBaseDirectory() {
+	public MemoizedFile getBaseDirectory() {
 		return baseDir;
 	}
 
-	public void setTestDirectory(File testDir) {
+	public void setTestDirectory(MemoizedFile testDir) {
 		this.testDir = testDir;
 	}
 	
-	public File getTestDirectory() {
+	public MemoizedFile getTestDirectory() {
 		return testDir;
 	}
 	

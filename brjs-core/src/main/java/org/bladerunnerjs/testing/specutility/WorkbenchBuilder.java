@@ -17,21 +17,21 @@ public class WorkbenchBuilder extends AssetContainerBuilder<Workbench>
 	
 	public BuilderChainer indexPageRefersTo(String className) throws Exception 
 	{
-		fileUtil.write(workbench.file("index.html"), className);
+		writeToFile(workbench.file("index.html"), className);
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String className) throws Exception 
 	{
-		fileUtil.write(workbench.assetLocation("resources").file(resourceFileName), "<root refs='" + className + "'/>");
+		writeToFile(workbench.assetLocation("resources").file(resourceFileName), "<root refs='" + className + "'/>");
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception 
 	{
-		fileUtil.write(workbench.aliasesFile().getUnderlyingFile(),
+		writeToFile(workbench.aliasesFile().getUnderlyingFile(),
 			"<aliases xmlns='http://schema.caplin.com/CaplinTrader/aliases'>" +
 			"	<alias name='" + aliasName + "' class='" + classRef + "'/>" +
 			"</aliases>");
@@ -46,7 +46,7 @@ public class WorkbenchBuilder extends AssetContainerBuilder<Workbench>
 
 	public BuilderChainer indexPageRequires(String requirePath) throws Exception
 	{
-		fileUtil.write(workbench.file("index.html"), "require('"+requirePath+"');");
+		writeToFile(workbench.file("index.html"), "require('"+requirePath+"');");
 		
 		return builderChainer;
 	}

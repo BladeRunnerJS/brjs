@@ -11,8 +11,6 @@ import java.util.List;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
-import com.caplin.cutlass.CutlassConfig;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +27,7 @@ public class ConfigurationTest extends TestModelAccessor {
 	@Before
 	public void beforeTest() throws Exception {
 		// we're cheekily using another tests sdk structure so the test can work
-		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/" + CutlassConfig.SDK_DIR);
+		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/sdk");
 		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(sdkBaseDir));
 				
 		config = TestRunnerConfiguration.getConfiguration(new File("src/test/resources/TestCommand/test-runner.conf"), browserList("browser1"));

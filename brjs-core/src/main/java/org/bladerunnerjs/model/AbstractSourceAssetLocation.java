@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.RootNode;
 
@@ -13,11 +14,11 @@ public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLo
 	private final Map<File, AssetLocation> assetLocations = new TreeMap<>();
 	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>(dir()+" - childAssetLocations", root(), dir());
 	
-	public AbstractSourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+	public AbstractSourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir, parentAssetLocation, dependentAssetLocations);
 	}
 	
-	protected abstract AssetLocation createNewAssetLocationForChildDir(File dir, AssetLocation parentAssetLocation);
+	protected abstract AssetLocation createNewAssetLocationForChildDir(MemoizedFile dir, AssetLocation parentAssetLocation);
 	
 	public List<AssetLocation> getChildAssetLocations() {
 		return childAssetLocationList.value(() -> {
@@ -32,13 +33,11 @@ public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLo
 		return assetContainer().requirePrefix();
 	}
 	
-	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
+	private void addChildAssetLocations(List<AssetLocation> assetLocations, MemoizedFile findInDir)
 	{
-		FileInfo dirInfo = root().getFileInfo(findInDir);
-		
-		if (dirInfo.isDirectory())
+		if (findInDir.isDirectory())
 		{
-			for (File childDir : dirInfo.dirs())
+			for (MemoizedFile childDir : findInDir.dirs())
 			{
 				if (childDir != dir())
 				{
@@ -49,7 +48,7 @@ public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLo
 		}
 	}
 	
-	private AssetLocation getAssetLocationForChildDir(File dir) {
+	private AssetLocation getAssetLocationForChildDir(MemoizedFile dir) {
 		AssetLocation assetLocation = assetLocations.get(dir);
 		
 		if (assetLocation == null) {

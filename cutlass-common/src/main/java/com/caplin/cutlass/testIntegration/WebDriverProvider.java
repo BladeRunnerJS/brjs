@@ -10,8 +10,9 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.bladerunnerjs.logging.Logger;
-
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 
@@ -33,7 +34,7 @@ public class WebDriverProvider
 	// eventually be added to the test-runner to allow the browser to be specified at the command line.
 	public static WebDriver getDriver() throws Exception
 	{
-		File runnerConfPath = getTestRunnerConfig();
+		MemoizedFile runnerConfPath = getTestRunnerConfig();
 		TestRunnerConfiguration runnerConf = TestRunnerConfiguration.getConfiguration(runnerConfPath, null);
 		
 		return getDriver(runnerConf.getDefaultBrowser());
@@ -107,10 +108,10 @@ public class WebDriverProvider
 	
 	// private methods
 	
-	private static File getBrowserPathFromConf(String browser) throws Exception
+	private static MemoizedFile getBrowserPathFromConf(String browser) throws Exception
 	{
 		String browserPath = null;
-		File runnerConfPath = getTestRunnerConfig();
+		MemoizedFile runnerConfPath = getTestRunnerConfig();
 		TestRunnerConfiguration runnerConf = TestRunnerConfiguration.getConfiguration(runnerConfPath, null);
 		
 		Map<String, String> browserPaths = runnerConf.getBrowserPathsForOS();
@@ -121,7 +122,7 @@ public class WebDriverProvider
 		}
 		browserPath = sanitizeBrowserPathForWebdriver(browserPaths.get(browser));
 		
-		return new File(runnerConfPath.getParentFile(), browserPath);
+		return runnerConfPath.getParentFile().file(browserPath);
 
 	}
 	
@@ -132,7 +133,7 @@ public class WebDriverProvider
 		return path;
 	}
 	
-	private static File getTestRunnerConfig() throws IOException
+	private static MemoizedFile getTestRunnerConfig() throws IOException
 	{
 		return TestRunnerConfLocator.getTestRunnerConf();
 	}
