@@ -313,4 +313,15 @@ public class ServedAppTest extends SpecTest
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/anotherApp/en/", "aspect index.html");
 	}
+	
+	@Test
+	public void correctContentLengthHeaderIsSetWhenTagsAreReplaced() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>");
+		when(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en/", "dev replacement")
+			.and(appServer).contentLengthForRequestIs("/app/en/", "dev replacement".getBytes().length);
+	}
+	
 }

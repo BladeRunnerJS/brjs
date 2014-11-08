@@ -55,6 +55,7 @@ public class WebappTester
 	
 	public String requestLocale = "";
 	private String defaultFileCharacterEncoding;
+	private int contentLength;
 	
 	public WebappTester(BRJS brjs, File filePathBase, int defaultSocketTimeout, int defaultConnectionTimeout)
 	{
@@ -102,6 +103,7 @@ public class WebappTester
 		statusText = httpResponse.getStatusLine().getReasonPhrase();
 		response = EntityUtils.toString(httpResponse.getEntity());
 		contentType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
+		contentLength = response.length();
 		Charset charset = ContentType.getOrDefault(httpResponse.getEntity()).getCharset();
 		characterEncoding = (charset == null) ? "" : charset.displayName();
 		EntityUtils.consume(httpResponse.getEntity());
@@ -188,6 +190,12 @@ public class WebappTester
 		if(!contentType.equals(this.contentType)) {
 			assertEquals("Content types don't match.", contentTypeText(contentType, null), contentTypeText(this.contentType, response));
 		}
+		return this;
+	}
+	
+	public WebappTester contentLengthIs(int contentLength)
+	{
+		assertEquals("Content lengths don't match.", contentLength, this.contentLength);
 		return this;
 	}
 	

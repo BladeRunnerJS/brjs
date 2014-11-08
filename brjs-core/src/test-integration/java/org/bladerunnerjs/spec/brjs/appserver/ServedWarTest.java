@@ -27,6 +27,7 @@ public class ServedWarTest extends SpecTest {
 		given(brjs).hasCommandPlugins(new BuildAppCommand())
 			.and(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).automaticallyFindsMinifierPlugins()
+			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement"))
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -122,4 +123,17 @@ public class ServedWarTest extends SpecTest {
 		then(warResponse).textEquals("** SOME GIF STUFF... **");
 	}
 	
+	@Test
+	public void correctContentLengthHeaderIsSetWhenTagsAreReplaced() throws Exception
+	{
+		given(brjs).localeForwarderHasContents("Locale Forwarder")
+    		.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuiltAsWar(brjs.dir())
+    		.and(warServer).hasWar("app1.war", "app")
+    		.and(warServer).hasStarted();
+    	then(warServer).requestForUrlReturns("/app/en/", "prod replacement")
+    		.and(warServer).contentLengthForRequestIs("/app/en/", "prod replacement".getBytes().length);
+		
+	}
 }
