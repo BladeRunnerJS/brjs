@@ -12,9 +12,9 @@ import org.junit.Test;
 
 public class BladesetWorkbenchBundlingTest extends SpecTest {
 	private App app;
-	private Bladeset bladeset1, bladeset2;
-	private Blade blade1, blade2, blade3;
-	private BladesetWorkbench bladeset1Workbench;
+	private Bladeset bladeset1, bladeset2, defaultBladeset;
+	private Blade blade1, blade2, blade3, bladeInDefaultBladeset;
+	private BladesetWorkbench bladeset1Workbench, defaultBladesetWorkbench;
 	private JsLib brjsLib;
 	private NamedDirNode workbenchTemplate;
 	private StringBuffer response;
@@ -33,6 +33,9 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 		blade2 = bladeset1.blade("b2");
 		blade3 = bladeset2.blade("b3");
 		bladeset1Workbench = bladeset1.workbench();
+		defaultBladeset = app.defaultBladeset();
+		bladeInDefaultBladeset = defaultBladeset.blade("b4");
+		defaultBladesetWorkbench = defaultBladeset.workbench();
 		workbenchTemplate = brjs.template("workbench");
 		brjsLib = brjs.sdkLib("br");
 		
@@ -101,5 +104,15 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 		when(bladeset1Workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("appns.bs1.b1.BladesetClass =")
 			.and(response).doesNotContainText("appns.WorkbenchClass =");
+	}
+	
+	@Test
+	public void theDefaultBladesetCanHaveAWorkbench() throws Exception {
+		given(bladeInDefaultBladeset).hasNamespacedJsPackageStyle()
+			.and(bladeInDefaultBladeset).hasClass("appns.b4.Class4")
+			.and(defaultBladesetWorkbench).indexPageRefersTo("appns.b4.Class4");
+		when(defaultBladesetWorkbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("appns.b4.Class4")
+			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 }

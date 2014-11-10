@@ -1,15 +1,15 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public class BladesetWorkbench extends Workbench<Bladeset> {
 
-	public BladesetWorkbench(RootNode rootNode, Node parent, File dir)
+	public BladesetWorkbench(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
 		super(rootNode, parent, dir);
 	}
