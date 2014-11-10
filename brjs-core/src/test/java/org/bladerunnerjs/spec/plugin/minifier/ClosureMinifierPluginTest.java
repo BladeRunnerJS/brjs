@@ -6,7 +6,6 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class ClosureMinifierPluginTest extends SpecTest

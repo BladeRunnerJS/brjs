@@ -20,6 +20,7 @@ import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.Plugin;
+import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
@@ -27,6 +28,7 @@ import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyMinifierPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyModelObserverPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyRequirePlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
@@ -195,6 +197,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		automaticallyFindsTagHandlerPlugins();
 		automaticallyFindsAssetPlugins();
 		automaticallyFindsAssetLocationPlugins();
+		automaticallyFindsRequirePlugins();
 		
 		return builderChainer;
 	}
@@ -209,6 +212,16 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer automaticallyFindsRequirePlugins() 
+	{
+		verifyBrjsIsNotSet();
+		verifyPluginsUnitialized(specTest.pluginLocator.requirePlugins);
+		
+		specTest.pluginLocator.requirePlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), RequirePlugin.class, VirtualProxyRequirePlugin.class) );
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer automaticallyFindsAllPlugins() {
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlerPlugins();
@@ -216,6 +229,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		automaticallyFindsAssetLocationPlugins();
 		automaticallyFindsCommandPlugins();
 		automaticallyFindsModelObservers();
+		automaticallyFindsRequirePlugins();
 		
 		return builderChainer;
 	}
