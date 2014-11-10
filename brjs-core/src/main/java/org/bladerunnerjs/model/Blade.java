@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +7,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -22,7 +22,7 @@ public final class Blade extends AbstractComponent implements NamedNode
 	private final String name;
 	private final List<AssetContainer> bladeAssetContainers;
 	
-	public Blade(RootNode rootNode, Node parent, File dir, String name)
+	public Blade(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
@@ -32,7 +32,7 @@ public final class Blade extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles() {
+	public MemoizedFile[] memoizedScopeFiles() {
 		return parent().memoizedScopeFiles();
 	}
 	

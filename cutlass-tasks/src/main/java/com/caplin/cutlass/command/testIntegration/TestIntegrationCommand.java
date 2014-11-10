@@ -6,14 +6,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
@@ -65,7 +66,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		validateArguments(args);
-		File testRoot = getTestRoot(args);
+		MemoizedFile testRoot = getTestRoot(args);
 		WebDriverProvider.setBaseUrl(getUrl(args));
 				
 		TestCompiler testCompiler = new TestCompiler();
@@ -85,7 +86,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		}
 		if (classesRoot.exists()) 
 		{
-			FileUtils.deleteQuietly(classesRoot);
+			FileUtils.deleteQuietly(brjs, classesRoot);
 		}
 		
 		List<File> testContainerDirs = new IntegrationTestFinder().findTestContainerDirs(brjs, testRoot, ignoreWorkbenches(args));
@@ -95,7 +96,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		}
 		logger.println("Found tests in " + testContainerDirs.size() + " location(s).");
 		
-		List<File> classDirs = testCompiler.compileTestDirs(brjs, testContainerDirs);
+		List<MemoizedFile> classDirs = testCompiler.compileTestDirs(brjs, testContainerDirs);
 		
 		List<Class<?>> testClasses = testCompiler.loadClasses(classDirs);
 		
@@ -151,7 +152,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		}
 	}
 	
-	private File getTestRoot(String[] args) throws CommandOperationException
+	private MemoizedFile getTestRoot(String[] args) throws CommandOperationException
 	{
 		File testRoot = new File(args[0]);
 		
@@ -162,7 +163,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		
 		if(testRoot.isDirectory())
 		{
-			return testRoot;
+			return brjs.getMemoizedFile(testRoot);
 		}
 		
 		throw new CommandOperationException("Supplied test path does not exist.");

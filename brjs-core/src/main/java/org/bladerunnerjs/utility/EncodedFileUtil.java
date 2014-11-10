@@ -6,14 +6,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.model.BRJS;
 
 public class EncodedFileUtil {
 	private final String characterEncoding;
+	private BRJS brjs;
 	
-	public EncodedFileUtil(String characterEncoding) {
+	public EncodedFileUtil(BRJS brjs, String characterEncoding) {
 		this.characterEncoding = characterEncoding;
+		this.brjs = brjs;
 	}
 	
 	public void write(File file, String content) throws IOException {
@@ -21,7 +23,7 @@ public class EncodedFileUtil {
 	}
 	
 	public void write(File file, String content, boolean append) throws IOException {
-		FileUtils.write(file, content, characterEncoding, append);
+		FileUtils.write(brjs, file, content, characterEncoding, append);
 	}
 	
 	public String readFileToString(File file) throws IOException {
@@ -35,6 +37,6 @@ public class EncodedFileUtil {
 	}
 	
 	public void writeStringToFile(File file, String content) throws IOException {
-		FileUtils.write(file, content, characterEncoding);
+		FileUtils.write(brjs, file, content, characterEncoding);
 	}
 }

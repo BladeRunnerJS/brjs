@@ -10,7 +10,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.bladerunnerjs.testing.utility.ScriptedContentPlugin;
 import org.bladerunnerjs.testing.utility.ScriptedRequestGeneratingTagHandlerPlugin;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class BuildAppTest extends SpecTest {
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");
 			nonDefaultAspect = app.aspect("aspect2");
-			targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
+			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 			bladerunnerConf = brjs.bladerunnerConf();
 	}
 	

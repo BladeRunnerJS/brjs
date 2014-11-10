@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.PropertiesException;
@@ -71,13 +72,13 @@ public class PluginProperties implements NodeProperties
 	
 	
 
-	private File getPropertiesFile() throws IOException
+	private MemoizedFile getPropertiesFile() throws IOException
 	{
-		File storageDir = node.storageDir(pluginName);
-		File propertiesFile = new File(storageDir, PROPERTIES_FILE_NAME);
+		MemoizedFile storageDir = node.storageDir(pluginName);
+		MemoizedFile propertiesFile = storageDir.file(PROPERTIES_FILE_NAME);
 		if (!propertiesFile.exists())
 		{
-			storageDir.mkdirs();
+			 storageDir.mkdirs();
 			propertiesFile.createNewFile();
 		}
 		return propertiesFile;
@@ -98,10 +99,11 @@ public class PluginProperties implements NodeProperties
 	
 	private void saveProperties(Properties properties) throws FileNotFoundException, IOException
 	{
-		File propertiesFile = getPropertiesFile();
+		MemoizedFile propertiesFile = getPropertiesFile();
 		try(OutputStream propertiesOutputStream = new FileOutputStream(propertiesFile)) {
 			properties.store(propertiesOutputStream, null);
 		}
+		propertiesFile.incrementFileVersion();
 	}
 	
 }

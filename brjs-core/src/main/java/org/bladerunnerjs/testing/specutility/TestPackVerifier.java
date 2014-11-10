@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.TestPack;
@@ -28,24 +29,24 @@ public class TestPackVerifier extends AssetContainerVerifier
 		this.verifierChainer = new VerifierChainer(specTest);
 	}
 
-	public VerifierChainer bundledFilesEquals(File... expectedFiles) throws Exception
+	public VerifierChainer bundledFilesEquals(MemoizedFile... expectedFiles) throws Exception
 	{
-		List<File> bundleSetFiles = new ArrayList<File>();
+		List<MemoizedFile> bundleSetFiles = new ArrayList<>();
 		List<SourceModule> sourceModules = testPack.getBundleSet().getSourceModules();
 		
 		for (SourceModule sourceModule : sourceModules)
 		{
 			if(!(sourceModule.assetLocation() instanceof TestAssetLocation)) {
-				bundleSetFiles.add( new File(sourceModule.dir(), sourceModule.getAssetName()) );
+				bundleSetFiles.add( sourceModule.dir().file(sourceModule.getAssetName()) );
 			}
 		}
 		
-		for (File expectedFile : expectedFiles)
+		for (MemoizedFile expectedFile : expectedFiles)
 		{
 			if(!bundleSetFiles.contains(expectedFile) || expectedFiles.length != bundleSetFiles.size())
 			{
-				List<File> sortedExpectedFiles = Arrays.asList(expectedFiles);
-				List<File> sortedActualFiles = Arrays.asList(bundleSetFiles.toArray(new File[bundleSetFiles.size()]));
+				List<MemoizedFile> sortedExpectedFiles = Arrays.asList(expectedFiles);
+				List<MemoizedFile> sortedActualFiles = Arrays.asList(bundleSetFiles.toArray(new MemoizedFile[bundleSetFiles.size()]));
 				
 				Collections.sort(sortedExpectedFiles);
 				Collections.sort(sortedActualFiles);
@@ -60,7 +61,7 @@ public class TestPackVerifier extends AssetContainerVerifier
 	}
 	
 	
-	private String getFileList(List<File> files)
+	private String getFileList(List<MemoizedFile> files)
 	{
 		List<String> fileNames = new ArrayList<>();
 		

@@ -1,19 +1,18 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
-
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public class SdkJsLib extends AbstractJsLib
 {
 	
-	public SdkJsLib(RootNode rootNode, Node parent, File dir, String name)
+	public SdkJsLib(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 	}
 	
-	public SdkJsLib(RootNode rootNode, Node parent, File dir)
+	public SdkJsLib(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
 		this(rootNode, parent, dir, null);
 	}

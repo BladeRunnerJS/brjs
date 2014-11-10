@@ -5,6 +5,7 @@ import java.io.File;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
@@ -33,7 +34,6 @@ import org.bladerunnerjs.testing.specutility.NamedNodeBuilder;
 import org.bladerunnerjs.testing.specutility.TestPackBuilder;
 import org.bladerunnerjs.testing.specutility.WorkbenchBuilder;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
-import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
 import org.eclipse.jetty.server.Server;
 
 
@@ -48,6 +48,7 @@ public class BuilderChainer {
 	public TestPackBuilder and(TestPack testPack) { return new TestPackBuilder(specTest, testPack); }
 	public NamedNodeBuilder and(NamedNode namedDirNode) { return new NamedNodeBuilder(specTest, namedDirNode); }
 	public BRJSBuilder and(BRJS brjs) { return new BRJSBuilder(specTest, brjs); }
+	public FileTestBuilder and(MemoizedFile file) { return new FileTestBuilder(specTest, file); }
 	public FileTestBuilder and(File file) { return new FileTestBuilder(specTest, file); }
 	public BladerunnerConfBuilder and(BladerunnerConf bladerunnerConf) { return new BladerunnerConfBuilder(specTest, bladerunnerConf); }
 	public AppBuilder and(App app) { return new AppBuilder(specTest, app); }
@@ -65,6 +66,5 @@ public class BuilderChainer {
 	public JettyServerBuilder and(Server jettyServer) { return new JettyServerBuilder(specTest, jettyServer); }
 	public AliasesFileBuilder and(AliasesFile aliasesFile) { return new AliasesFileBuilder(specTest, aliasesFile); }
 	public AliasDefinitionsFileBuilder and(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(specTest, aliasDefinitionsFile); }
-	public SpecTestDirObserverBuilder and(SpecTestDirObserver observer) { return new SpecTestDirObserverBuilder(specTest, observer); }
 	
 }

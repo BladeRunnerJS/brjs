@@ -1,18 +1,19 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bladerunnerjs.memoization.MemoizedFile;
 
 public class ResourcesAssetLocation extends AbstractDeepAssetLocation implements ThemedAssetLocation{
 	
 	private String themeName = "";
 	
-	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file, AssetLocation parentAssetLocation) {
+	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, MemoizedFile file, AssetLocation parentAssetLocation) {
 		this(root, assetContainer, file, parentAssetLocation, "common");
 	}
 	
-	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file, AssetLocation parentAssetLocation, String themeName) {
+	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, MemoizedFile file, AssetLocation parentAssetLocation, String themeName) {
 		super(root, assetContainer, file, parentAssetLocation);
 		this.themeName = themeName;
 	}

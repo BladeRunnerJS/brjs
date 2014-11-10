@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
-
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
@@ -9,7 +8,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 public class BRSdkTestPack extends TestPack
 {
 	
-	public BRSdkTestPack(RootNode rootNode, Node parent, File dir, String name)
+	public BRSdkTestPack(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir, name);
 	}

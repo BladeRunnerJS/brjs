@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
-import java.io.File;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -13,12 +13,12 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
+	public boolean canHandleAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
 		return ((assetLocation instanceof ThirdpartyAssetLocation) && assetFile.getName().equals("thirdparty-lib.manifest"));
 	}
 	
 	@Override
-	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		ThirdpartySourceModule sourceModule = new ThirdpartySourceModule((ThirdpartyAssetLocation)assetLocation);
 		return sourceModule;
 	}

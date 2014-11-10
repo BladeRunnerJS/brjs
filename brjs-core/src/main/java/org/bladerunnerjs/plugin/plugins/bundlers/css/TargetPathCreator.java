@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.File;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
@@ -17,7 +18,6 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.plugins.bundlers.cssresource.CssResourceContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class TargetPathCreator
 {
@@ -29,12 +29,12 @@ public class TargetPathCreator
 		cssResourceContentPathParser = brjs.plugins().contentPlugin("cssresource").getContentPathParser();
 	}
 	
-	public String getRelativeBundleRequestForImage(File imageFile) throws ContentProcessingException
+	public String getRelativeBundleRequestForImage(MemoizedFile imageFile) throws ContentProcessingException
 	{
 		return "../../" + getBundleRequestForImage(imageFile);
 	}
 	
-	public String getBundleRequestForImage(File imageFile) throws ContentProcessingException
+	public String getBundleRequestForImage(MemoizedFile imageFile) throws ContentProcessingException
 	{
 		try 
 		{
@@ -53,10 +53,10 @@ public class TargetPathCreator
 		}
 	}
 	
-	private String getTargetPath(File imageFile) throws ContentProcessingException
+	private String getTargetPath(MemoizedFile imageFile) throws ContentProcessingException
 	{
 
-		Node firstAncestorNode = brjs.locateFirstAncestorNode(imageFile);
+		Node firstAncestorNode = brjs.locateFirstAncestorNode( brjs.getMemoizedFile(imageFile) );
 		AssetLocation assetLocation  = null;
 		AssetContainer assetContainer = null;
 		if (firstAncestorNode instanceof AssetLocation){
@@ -69,16 +69,15 @@ public class TargetPathCreator
 		String targetPath = null;
 		
 		File assetLocationParentDir = assetLocation.dir().getParentFile();
-		BRJS root = assetContainer.root();
 		try {
 			if(assetContainer instanceof Aspect) {
 				Aspect aspect = (Aspect) assetContainer;
 				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
 					ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
-					String resourcePath = RelativePathUtility.get(root.getFileInfoAccessor(), theme.dir(), imageFile);
+					String resourcePath = theme.dir().getRelativePath(imageFile);
 					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_THEME_REQUEST, ((Aspect) assetContainer).getName(), theme.dir().getName(), resourcePath);
 				} else {
-					String resourcePath = RelativePathUtility.get(root.getFileInfoAccessor(), assetContainer.dir(), imageFile);
+					String resourcePath = assetContainer.dir().getRelativePath(imageFile);
 					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_RESOURCE_REQUEST, aspect.getName(), resourcePath);
 				}
 			}
@@ -86,11 +85,11 @@ public class TargetPathCreator
 				Bladeset bladeset = (Bladeset) assetContainer;
 				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
     				ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
-    				String resourcePath = RelativePathUtility.get(root.getFileInfoAccessor(), theme.dir(), imageFile);
+    				String resourcePath = theme.dir().getRelativePath(imageFile);
     				
     				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_THEME_REQUEST, bladeset.getName(), theme.dir().getName(), resourcePath);
 				} else {
-					String resourcePath = RelativePathUtility.get(root.getFileInfoAccessor(), bladeset.dir(), imageFile);
+					String resourcePath = bladeset.dir().getRelativePath(imageFile);
 					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_RESOURCE_REQUEST, bladeset.getName(), resourcePath);
 				}
 			}
@@ -99,11 +98,11 @@ public class TargetPathCreator
 				Bladeset bladeset = blade.parent();
 				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
     				ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
-    				String resourcePath = RelativePathUtility.get(root.getFileInfoAccessor(), theme.dir(), imageFile);
+    				String resourcePath = theme.dir().getRelativePath(imageFile);
     				
     				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_THEME_REQUEST, bladeset.getName(), blade.getName(), theme.dir().getName(), resourcePath);
 				} else {
-					String resourcePath = RelativePathUtility.get(root.getFileInfoAccessor(), blade.dir(), imageFile);
+					String resourcePath = blade.dir().getRelativePath(imageFile);
 					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
 				}
 			}
@@ -113,16 +112,16 @@ public class TargetPathCreator
 				Bladeset bladeset = blade.parent();
 				
 				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-					String resourcePath = RelativePathUtility.get(root.getFileInfoAccessor(), assetLocation.file("resources"), imageFile);
+					String resourcePath = assetLocation.file("resources").getRelativePath(imageFile);
 					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.WORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
 				} else {
-					String resourcePath = RelativePathUtility.get(root.getFileInfoAccessor(), workbench.dir(), imageFile);
+					String resourcePath = workbench.dir().getRelativePath(imageFile);
 					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.WORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
 				}
 			}
 			else if(assetContainer instanceof JsLib) {
 				JsLib jsLib = (JsLib) assetContainer;
-				String resourcePath = RelativePathUtility.get(root.getFileInfoAccessor(), jsLib.dir(), imageFile);
+				String resourcePath = jsLib.dir().getRelativePath(imageFile);
 				
 				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.LIB_REQUEST, jsLib.getName(), resourcePath);
 			}

@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
@@ -21,7 +21,8 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
+import org.bladerunnerjs.utility.ZipUtility;
 import org.bladerunnerjs.utility.filefilter.ExcludeDirFileFilter;
 
 import com.martiansoftware.jsap.FlaggedOption;
@@ -93,7 +94,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 
 		try 
 		{
-			File temporaryExportDir = FileUtility.createTemporaryDirectory( this.getClass(), appName );
+			MemoizedFile temporaryExportDir = brjs.getMemoizedFile( FileUtils.createTemporaryDirectory( this.getClass(), appName ) );
 			
 			IOFileFilter excludeUserLibraryTestsFilter = createExcludeUserLibsTestsFilter(appName);
 			NotFileFilter brjsJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar")));
@@ -104,9 +105,10 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 			createResourcesFromSdkTemplate(app.dir(), temporaryExportDir, combinedFilter);
 			if (banner != null) {
 				String jsBanner = "/*\n" + banner + "\n*/\n\n";
-				includeBannerInDirectoryClasses(new File(temporaryExportDir, "libs"), jsBanner, bannerExtensions);
+				includeBannerInDirectoryClasses(brjs, new File(temporaryExportDir, "libs"), jsBanner, bannerExtensions);
 			}
-			FileUtility.zipFolder(temporaryExportDir, destinationZipLocation, false);
+			ZipUtility.zipFolder(temporaryExportDir, destinationZipLocation, false);
+			brjs.getFileModificationRegistry().incrementFileVersion(destinationZipLocation);
 		}
 		catch (Exception e)
 		{
@@ -120,9 +122,9 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	}
 
 	
-	private void createResourcesFromSdkTemplate(File templateDir, File targetDir, FileFilter fileFilter) throws IOException, ConfigException
+	private void createResourcesFromSdkTemplate(MemoizedFile templateDir, MemoizedFile targetDir, FileFilter fileFilter) throws IOException, ConfigException
 	{
-		ArrayList<File> addList = new ArrayList<File>();
+		ArrayList<MemoizedFile> addList = new ArrayList<>();
 		recurseIntoSubfoldersAndAddAllFilesMatchingFilter( Arrays.asList(brjs.bladerunnerConf().getIgnoredPaths()) , addList, templateDir, fileFilter );
 		
 		if (!targetDir.exists())
@@ -130,10 +132,10 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 			targetDir.mkdirs();
 		}
 		
-		for (File f : addList)
+		for (MemoizedFile f : addList)
 		{			
 			String relativePathFromTemplateDir = f.getAbsolutePath().replace(templateDir.getAbsolutePath(), "");
-			File newResourceToAdd = new File(targetDir, relativePathFromTemplateDir);
+			MemoizedFile newResourceToAdd = targetDir.file(relativePathFromTemplateDir);
 
 			if (f.isDirectory() == true)
 			{
@@ -146,7 +148,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		}
 	}
 	
-	private void createFile(File source, File newFileLocation) throws IOException
+	private void createFile(MemoizedFile source, MemoizedFile newFileLocation) throws IOException
 	{
 		if (source.exists() == true)
 		{
@@ -162,7 +164,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		}
 	}
 
-	private ArrayList<File> recurseIntoSubfoldersAndAddAllFilesMatchingFilter(List<String> ignoredFiles, ArrayList<File> addList, File file, FileFilter filter)
+	private ArrayList<MemoizedFile> recurseIntoSubfoldersAndAddAllFilesMatchingFilter(List<String> ignoredFiles, ArrayList<MemoizedFile> addList, MemoizedFile file, FileFilter filter)
 	{
 		if (ignoredFiles.contains(file.getName())) {
 			return addList;
@@ -170,7 +172,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		
 		if (file.isDirectory())
 		{
-			for (File r : file.listFiles(filter))
+			for (MemoizedFile r : file.listFiles(filter))
 			{
 				recurseIntoSubfoldersAndAddAllFilesMatchingFilter(ignoredFiles, addList, r, filter);
 			}
@@ -199,21 +201,21 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		return excludeDirFilter;
 	}
 	
-	private void includeBannerInDirectoryClasses(File dir, String banner, String[] extensions) throws IOException, ConfigException 
+	private void includeBannerInDirectoryClasses(BRJS brjs, File dir, String banner, String[] extensions) throws IOException, ConfigException 
 	{
 		if (dir.exists())
 		{
 			for (File file : FileUtils.listFiles(dir, extensions, true))
 			{
-				includeBanner(file, banner);
+				includeBanner(brjs, file, banner);
 			}
 		}
 	}
 
-	private void includeBanner(File file, String disclaimer) throws ConfigException, IOException 
+	private void includeBanner(BRJS brjs, File file, String disclaimer) throws ConfigException, IOException 
 	{
-		String fileContent = FileUtils.readFileToString(file, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+		String fileContent = org.apache.commons.io.FileUtils.readFileToString(file, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 	
-		FileUtils.writeStringToFile(file, disclaimer + fileContent, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+		FileUtils.write(brjs, file, disclaimer + fileContent, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 	}
 }

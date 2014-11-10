@@ -1,6 +1,5 @@
 package com.caplin.cutlass.command.test.testrunner;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +10,7 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
@@ -89,12 +89,12 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public File dir() {
+	public MemoizedFile dir() {
 		return bundlableNode.dir();
 	}
 
 	@Override
-	public File file(String filePath) {
+	public MemoizedFile file(String filePath) {
 		return bundlableNode.file(filePath);
 	}
 
@@ -104,7 +104,7 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public File[] memoizedScopeFiles() {
+	public MemoizedFile[] memoizedScopeFiles() {
 		return bundlableNode.memoizedScopeFiles();
 	}
 
@@ -159,12 +159,12 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public File storageDir(String pluginName) {
+	public MemoizedFile storageDir(String pluginName) {
 		return bundlableNode.storageDir(pluginName);
 	}
 
 	@Override
-	public File storageFile(String pluginName, String filePath) {
+	public MemoizedFile storageFile(String pluginName, String filePath) {
 		return bundlableNode.storageFile(pluginName, filePath);
 	}
 
@@ -258,5 +258,17 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public String getTypeName()
 	{
 		return this.getClass().getSimpleName();
+	}
+	
+	@Override
+	public void incrementFileVersion()
+	{
+		bundlableNode.incrementFileVersion();	
+	}
+	
+	@Override
+	public void incrementChildFileVersions()
+	{
+		bundlableNode.incrementChildFileVersions();	
 	}
 }

@@ -1,10 +1,10 @@
 package org.bladerunnerjs.model.engine;
 
-import java.io.File;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
@@ -17,7 +17,7 @@ public final class TestChildNode extends AbstractNode implements NamedNode
 	NodeList<TestGrandChildNode> grandChildNodes;
 	private String name;
 	
-	public TestChildNode(RootNode rootNode, Node parent, File dir, String name)
+	public TestChildNode(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;

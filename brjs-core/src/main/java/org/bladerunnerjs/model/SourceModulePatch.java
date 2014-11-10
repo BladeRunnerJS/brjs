@@ -1,15 +1,14 @@
 package org.bladerunnerjs.model;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.TreeMap;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class SourceModulePatch
@@ -19,7 +18,7 @@ public class SourceModulePatch
 	
 	private static Map<String, SourceModulePatch> patchesCache = new TreeMap<String, SourceModulePatch>();
 	
-	private File patchFile;
+	private MemoizedFile patchFile;
 	private BRJS brjs;
 	private AssetLocation assetLocation;
 	private String requirePath;
@@ -32,10 +31,10 @@ public class SourceModulePatch
 		this.requirePath = requirePath;
 		
 		String patchPath = requirePath.replace(".", "/") + ".js";
-		patchFile = new File(brjs.jsPatches().dir(), patchPath);
+		patchFile = brjs.jsPatches().file(patchPath);
 	}
 
-	public File getPatchFile()
+	public MemoizedFile getPatchFile()
 	{
 		return patchFile;
 	}
@@ -56,7 +55,7 @@ public class SourceModulePatch
 		{
     		if (patchFile.isFile())
     		{
-    			brjs.logger(SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.getFileInfoAccessor(), brjs.dir(), patchFile));
+    			brjs.logger(SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, brjs.dir().getRelativePath(patchFile));
     			try
     			{
     				reader = new BufferedReader(new UnicodeReader(patchFile, brjs.bladerunnerConf().getDefaultFileCharacterEncoding()));
@@ -68,7 +67,7 @@ public class SourceModulePatch
     		}
     		else
     		{
-				brjs.logger(SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.getFileInfoAccessor(), brjs.dir(), patchFile));
+				brjs.logger(SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, brjs.dir().getRelativePath(patchFile));
 				reader = new StringReader("");
     		}
 		}

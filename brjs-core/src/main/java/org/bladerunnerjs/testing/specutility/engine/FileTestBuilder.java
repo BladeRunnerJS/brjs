@@ -1,37 +1,40 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.bladerunnerjs.utility.EncodedFileUtil;
+import org.bladerunnerjs.memoization.MemoizedFile;
 
 public class FileTestBuilder extends SpecTestBuilder {
-	private final EncodedFileUtil fileUtil;
+	
 	private final File file;
 	private final BuilderChainer builderChainer;
+	private SpecTest specTest;
 
-	public FileTestBuilder(SpecTest specTest, File file) {
-		super(specTest);
-		this.file = file;
-		builderChainer = new BuilderChainer(specTest);
-		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
+	public FileTestBuilder(SpecTest specTest, MemoizedFile file) {
+		this(specTest, file.getUnderlyingFile());
 	}
 	
-	public BuilderChainer containsFile(String filePath) throws Exception {
-		fileUtil.write(new File(file, filePath), filePath);
-		
-		return builderChainer;
+	public FileTestBuilder(SpecTest specTest, File file) {
+		super(specTest);
+		this.specTest = specTest;
+		this.file = file;
+		builderChainer = new BuilderChainer(specTest);
 	}
 	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
-		fileUtil.write(new File(file, filePath), fileContents);
+		File theFile = new File(file, filePath);
+		writeToFile(theFile, fileContents);
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer containsFiles(String... filePaths) throws IOException {
+	public BuilderChainer containsFile(String filePath) throws Exception {
+		return containsFileWithContents(filePath, filePath);
+	}
+	
+	public BuilderChainer containsFiles(String... filePaths) throws Exception {
 		for(String filePath : filePaths) {
-			fileUtil.write(new File(file, filePath), filePath);
+			containsFile(filePath);
 		}
 		
 		return builderChainer;
@@ -40,5 +43,7 @@ public class FileTestBuilder extends SpecTestBuilder {
 	public void isReadOnly()
 	{
 		file.setReadOnly();
+		specTest.brjs.getFileModificationRegistry().incrementFileVersion(file);
 	}
+	
 }

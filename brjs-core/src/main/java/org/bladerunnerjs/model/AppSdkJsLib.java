@@ -1,12 +1,12 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -17,7 +17,7 @@ import org.bladerunnerjs.utility.ObserverList;
 public final class AppSdkJsLib implements JsLib {
 	private App app;
 	private JsLib sdkJsLib;
-	private File[] scopeFiles;
+	private MemoizedFile[] scopeFiles;
 	
 	public AppSdkJsLib(App app, SdkJsLib sdkJsLib) {
 		this.app = app;
@@ -109,19 +109,19 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public File dir() {
+	public MemoizedFile dir() {
 		return sdkJsLib.dir();
 	}
 	
 	@Override
-	public File file(String filePath) {
+	public MemoizedFile file(String filePath) {
 		return sdkJsLib.file(filePath);
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles() {
+	public MemoizedFile[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {app().libsDir(), app().libsDir(), root().sdkJsLibsDir().dir(), root().file("js-patches"), BladerunnerConf.getConfigFilePath(root())};
+			scopeFiles = new MemoizedFile[] {app().libsDir(), app().libsDir(), root().sdkJsLibsDir().dir(), root().file("js-patches"), BladerunnerConf.getConfigFilePath(root())};
 		}
 		
 		return scopeFiles;
@@ -180,12 +180,12 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public File storageDir(String pluginName) {
+	public MemoizedFile storageDir(String pluginName) {
 		return sdkJsLib.storageDir(pluginName);
 	}
 	
 	@Override
-	public File storageFile(String pluginName, String filePath) {
+	public MemoizedFile storageFile(String pluginName, String filePath) {
 		return sdkJsLib.storageFile(pluginName, filePath);
 	}
 	
@@ -235,5 +235,17 @@ public final class AppSdkJsLib implements JsLib {
 	public TypedTestPack testType(String type)
 	{
 		return sdkJsLib.testType(type);
+	}
+	
+	@Override
+	public void incrementFileVersion()
+	{
+		sdkJsLib.incrementFileVersion();
+	}
+	
+	@Override
+	public void incrementChildFileVersions()
+	{
+		sdkJsLib.incrementChildFileVersions();
 	}
 }

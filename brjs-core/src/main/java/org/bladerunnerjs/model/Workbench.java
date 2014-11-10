@@ -1,11 +1,11 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -23,7 +23,7 @@ public abstract class Workbench<N extends Node> extends AbstractBrowsableNode im
 	
 	// TODO add type checking
 	@SuppressWarnings("unchecked")
-	public Workbench(RootNode rootNode, Node parent, File dir)
+	public Workbench(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
 		super(rootNode, parent, dir);
 		this.parent = (N) parent;
@@ -31,10 +31,10 @@ public abstract class Workbench<N extends Node> extends AbstractBrowsableNode im
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles() {
-		List<File> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
+	public MemoizedFile[] memoizedScopeFiles() {
+		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
 		scopeFiles.add(dir());
-		return scopeFiles.toArray(new File[scopeFiles.size()]);
+		return scopeFiles.toArray(new MemoizedFile[scopeFiles.size()]);
 	}
 
 	public DirNode styleResources()

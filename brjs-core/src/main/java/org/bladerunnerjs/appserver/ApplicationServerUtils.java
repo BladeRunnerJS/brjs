@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -115,7 +116,7 @@ public class ApplicationServerUtils
 		return Thread.currentThread().getContextClassLoader().getResource("org/bladerunnerjs/model/appserver/non-j2ee-app-web.xml");
 	}
 
-	static File getDeployFileForApp(App app)
+	static MemoizedFile getDeployFileForApp(App app)
 	{
 		return app.file(BRJSApplicationServer.DEPLOY_APP_FILENAME);
 	}
