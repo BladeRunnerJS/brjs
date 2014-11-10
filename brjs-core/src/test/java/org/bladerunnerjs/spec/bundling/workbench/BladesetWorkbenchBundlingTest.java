@@ -1,7 +1,6 @@
 package org.bladerunnerjs.spec.bundling.workbench;
 
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BladesetWorkbench;
@@ -13,14 +12,12 @@ import org.junit.Test;
 
 public class BladesetWorkbenchBundlingTest extends SpecTest {
 	private App app;
-	private Aspect aspect;
-	private Bladeset bladeset;
-	private Blade blade1, blade2;
-	private BladesetWorkbench workbench;
-	private JsLib thirdpartyLib, brjsLib, appLib;
+	private Bladeset bladeset1, bladeset2;
+	private Blade blade1, blade2, blade3;
+	private BladesetWorkbench bladeset1Workbench;
+	private JsLib brjsLib;
 	private NamedDirNode workbenchTemplate;
 	private StringBuffer response;
-	private JsLib bootstrapLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -30,16 +27,14 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 
 		app = brjs.app("app1");
-		aspect = app.aspect("default");
-		bladeset = app.bladeset("bs");
-		blade1 = bladeset.blade("b1");
-		blade2 = bladeset.blade("b2");
-		workbench = bladeset.workbench();
+		bladeset1 = app.bladeset("bs1");
+		bladeset2 = app.bladeset("bs2");
+		blade1 = bladeset1.blade("b1");
+		blade2 = bladeset1.blade("b2");
+		blade3 = bladeset2.blade("b3");
+		bladeset1Workbench = bladeset1.workbench();
 		workbenchTemplate = brjs.template("workbench");
 		brjsLib = brjs.sdkLib("br");
-		thirdpartyLib = brjs.sdkLib("thirdparty-lib1");
-		appLib = app.jsLib("appLib");
-		bootstrapLib = brjs.sdkLib("br-bootstrap");
 		
 		response = new StringBuffer();
 
@@ -49,15 +44,38 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 	}
 	
 	@Test
+	public void codeFromBladesNotInTheBladesetCannotBeBundled() throws Exception {
+		given(blade1).hasNamespacedJsPackageStyle()
+			.and(blade1).hasClass("appns.bs1.b1.Class1")
+			.and(blade3).hasNamespacedJsPackageStyle()
+			.and(blade3).hasClass("appns.bs2.b3.Class2")
+			.and(bladeset1Workbench).indexPageRefersTo("appns.bs1.b1.Class1");
+		when(bladeset1Workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("appns.bs1.b1.Class1")
+			.and(response).doesNotContainText("appns.bs2.b3.Class2")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void tagsInTheBladesetWorkbenchAreReplaced() throws Exception {
+		given(bladeset1Workbench).containsFileWithContents("index.html", "<@css.bundle@/>")
+			.and(bladeset1Workbench).containsFiles("themes/common/style.css", "themes/common/style_en.css", "themes/common/style_en_GB.css");
+		when(bladeset1Workbench).pageLoaded(response, "en");
+		then(response).containsOrderedTextFragments(
+			"<link rel=\"stylesheet\" href=\"v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"v/dev/css/common_en/bundle.css\"/>");
+	}
+	
+	@Test
 	public void workbenchBundlesCodeFromTwoBladesInsideTheWorkbench() throws Exception {
 		given(blade1).hasNamespacedJsPackageStyle()
-			.and(blade1).hasClass("appns.bs.b1.Class1")
+			.and(blade1).hasClass("appns.bs1.b1.Class1")
 			.and(blade2).hasNamespacedJsPackageStyle()
-			.and(blade2).hasClass("appns.bs.b2.Class2")
-			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1", "appns.bs.b2.Class2");
-		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("appns.bs.b1.Class1")
-			.and(response).containsText("appns.bs.b2.Class2")
+			.and(blade2).hasClass("appns.bs1.b2.Class2")
+			.and(bladeset1Workbench).indexPageRefersTo("appns.bs1.b1.Class1", "appns.bs1.b2.Class2");
+		when(bladeset1Workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("appns.bs1.b1.Class1")
+			.and(response).containsText("appns.bs1.b2.Class2")
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -67,21 +85,21 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 			.and(brjsLib).hasNamespacedJsPackageStyle()
 			.and(brjsLib).containsResourceFileWithContents("html/view.html", "<div id='br.tree-view'></div>")
 			.and(brjsLib).hasClass("br.workbench.ui.Workbench")
-			.and(workbench).containsResourceFileWithContents("workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
-			.and(workbench).indexPageRefersTo("br.workbench.ui.Workbench");
-		when(workbench).requestReceivedInDev("html/bundle.html", response);
+			.and(bladeset1Workbench).containsResourceFileWithContents("workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
+			.and(bladeset1Workbench).indexPageRefersTo("br.workbench.ui.Workbench");
+		when(bladeset1Workbench).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsOrderedTextFragments("<div id='br.tree-view'></div>",
 													"<div id='appns.bs.b1.workbench-view'></div>");							
 	}
 	
 	@Test
 	public void bladesetsCanNotDependOnWorkbenchClasses() throws Exception {
-		given(bladeset).hasNamespacedJsPackageStyle()
-			.and(workbench).hasClass("appns.WorkbenchClass")
-			.and(bladeset).classDependsOn("appns.bs.b1.BladesetClass", "appns.WorkbenchClass")
-			.and(workbench).indexPageRefersTo("appns.bs.b1.BladesetClass");
-		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("appns.bs.b1.BladesetClass =")
+		given(bladeset1).hasNamespacedJsPackageStyle()
+			.and(bladeset1Workbench).hasClass("appns.WorkbenchClass")
+			.and(bladeset1).classDependsOn("appns.bs1.b1.BladesetClass", "appns.WorkbenchClass")
+			.and(bladeset1Workbench).indexPageRefersTo("appns.bs1.b1.BladesetClass");
+		when(bladeset1Workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("appns.bs1.b1.BladesetClass =")
 			.and(response).doesNotContainText("appns.WorkbenchClass =");
 	}
 }
