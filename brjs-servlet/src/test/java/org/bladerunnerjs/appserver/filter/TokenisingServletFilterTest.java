@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.bladerunnerjs.appserver.filter.TestContextFactory;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 
-// TODO: ensure this functionality is tested once it becomes a file transform
 @SuppressWarnings("deprecation")
 public class TokenisingServletFilterTest
 {

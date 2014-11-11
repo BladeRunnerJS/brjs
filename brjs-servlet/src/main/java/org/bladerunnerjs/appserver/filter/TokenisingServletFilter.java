@@ -40,7 +40,7 @@ public class TokenisingServletFilter implements Filter
 	}
 	
 	/* this should only be used for testing */
-	protected TokenisingServletFilter(JndiTokenFinder tokenFinder) throws ServletException
+	public TokenisingServletFilter(JndiTokenFinder tokenFinder) throws ServletException
 	{
 		this.tokenFinder = tokenFinder;
 	}

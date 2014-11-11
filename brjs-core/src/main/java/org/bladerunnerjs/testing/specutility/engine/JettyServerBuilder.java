@@ -1,9 +1,15 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
+import java.io.File;
+import javax.naming.NamingException;
+import javax.servlet.Filter;
+
 import org.eclipse.jetty.server.HandlerContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
+
 
 public class JettyServerBuilder {
 	private final SpecTest specTest;
@@ -21,7 +27,22 @@ public class JettyServerBuilder {
 	}
 	
 	public BuilderChainer hasWar(String warPath, String appName) {
-		new WebAppContext((HandlerContainer) jettyServer.getHandler(), specTest.brjs.workingDir().file(warPath).getPath(), "/" + appName);
+		return hasWar(specTest.brjs.workingDir().file(warPath), appName);
+	}
+	
+	public BuilderChainer hasWar(File warPath, String appName) {
+		new WebAppContext((HandlerContainer) jettyServer.getHandler(), warPath.getPath(), "/" + appName);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasWarWithFilter(String warPath, String appName, Filter filter) throws NamingException {
+		return hasWarWithFilter(specTest.brjs.workingDir().file(warPath), appName, filter);
+	}
+	
+	public BuilderChainer hasWarWithFilter(File warPath, String appName, Filter filter) throws NamingException {
+		WebAppContext webappContext = new WebAppContext((HandlerContainer) jettyServer.getHandler(), warPath.getPath(), "/" + appName);
+		webappContext.addFilter(new FilterHolder(filter), "/*", 1);
 		
 		return builderChainer;
 	}
@@ -32,4 +53,5 @@ public class JettyServerBuilder {
 		
 		return builderChainer;
 	}
+	
 }
