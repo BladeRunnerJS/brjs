@@ -136,7 +136,7 @@ public class XmlBundleWriter
 				if (!configMap.containsKey(rootElement))
 				{
 					siblingReader.close();
-					throw new ContentFileProcessingException(document, "Document contain unsupported root element: '" + rootElement + "'");
+					throw new ContentFileProcessingException(document, "Document contains unsupported root element: '" + rootElement + "'");
 				}
 				else
 				{

@@ -1,5 +1,8 @@
 package org.bladerunnerjs.model.exception;
 
+/**
+ * Thrown when an error has been encountered while setting the properties of a plugin or node. 
+*/ 
 
 public class PropertiesException extends Exception
 {
@@ -8,8 +11,15 @@ public class PropertiesException extends Exception
 	
 	private static final long serialVersionUID = 1L;
 	
-	public PropertiesException(String msg, Exception ex)
-	{
-		super(msg, ex);
+	public PropertiesException(Exception e) {
+		super(e);
+	}
+
+	public PropertiesException(String message) {
+		super(message);
+	}
+	
+	public PropertiesException(String message, Exception e) {
+		super(message + "; " + e.getMessage(), e);
 	}
 }

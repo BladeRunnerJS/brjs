@@ -2,6 +2,10 @@ package org.bladerunnerjs.model.exception.command;
 
 import org.bladerunnerjs.plugin.CommandPlugin;
 
+/**
+ * Thrown when the directory already exists on the specified path. 
+*/ 
+
 public class DirectoryAlreadyExistsCommandException extends CommandArgumentsException {
 	private static final long serialVersionUID = 1L;
 	

@@ -2,6 +2,9 @@ package org.bladerunnerjs.model.exception;
 
 import org.bladerunnerjs.plugin.ContentPlugin;
 
+/**
+ * Thrown when an incorrect content plugin path has been specified.
+*/
 
 public class InvalidContentPathException extends ModelOperationException
 {

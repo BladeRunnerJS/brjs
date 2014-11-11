@@ -2,6 +2,9 @@ package org.bladerunnerjs.model.exception.request;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 
+/**
+ * Thrown when problems have been encountered while processing the specified file. 
+*/
 
 public class ContentFileProcessingException extends ContentProcessingException
 {
