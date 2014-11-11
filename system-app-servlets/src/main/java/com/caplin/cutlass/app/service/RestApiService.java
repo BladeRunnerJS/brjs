@@ -202,6 +202,7 @@ public class RestApiService
 	public String runBladesetTests(String appName, String bladesetName, String testType) throws Exception
 	{
 		TestCommand cmd = new TestCommand();
+		cmd.setBRJS(brjs);
 		String bladesetPath = brjs.app(appName).bladeset(bladesetName).dir().getAbsolutePath();
 		String[] args = new String[]{ bladesetPath, testType, JS_TEST_REPORT_SWITCH };	
 		OutputStream out = doCommand( cmd, args );
@@ -211,6 +212,7 @@ public class RestApiService
 	public String runBladeTests(String appName, String bladesetName, String bladeName, String testType) throws Exception
 	{
 		TestCommand cmd = new TestCommand();
+		cmd.setBRJS(brjs);
 		String bladePath = brjs.app(appName).bladeset(bladesetName).blade(bladeName).dir().getAbsolutePath();
 		String[] args = new String[]{ bladePath, testType, JS_TEST_REPORT_SWITCH };
 		OutputStream out = doCommand( cmd, args );
