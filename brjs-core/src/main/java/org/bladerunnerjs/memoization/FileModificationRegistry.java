@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.bladerunnerjs.model.engine.RootNode;
 
 
 public class FileModificationRegistry
@@ -14,9 +16,11 @@ public class FileModificationRegistry
 	private Map<String,FileVersion> lastModifiedMap = new HashMap<String,FileVersion>();
 	private File rootFile;
 	private Map<File, File> canonicalFileMap = new HashMap<>();
+	private RootNode rootNode;
 
-	public FileModificationRegistry(File rootFile) { 
-		this.rootFile = getCanonicalFile(rootFile); 
+	public FileModificationRegistry(RootNode rootNode, File rootFile) { 
+		this.rootFile = getCanonicalFile(rootFile);
+		this.rootNode = rootNode;
 	}
 	
 	public long getFileVersion(File file) {
@@ -88,7 +92,8 @@ public class FileModificationRegistry
 			}
 			catch (IOException e)
 			{
-				throw new RuntimeException("Unable to calculate canonical file for the path: " + file.getAbsolutePath());
+				canonicalFile = file.getAbsoluteFile();
+				rootNode.logger(this.getClass()).warn("Unable to calculate canonical file for the path: " + file.getAbsolutePath());
 			}
 			canonicalFileMap.put(file, canonicalFile);
 		} else {

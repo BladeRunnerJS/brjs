@@ -20,7 +20,7 @@ public final class TestRootNode extends AbstractRootNode
 	NodeList<TestChildNode> multiLocationChildNodes = new NodeList<>(this, TestChildNode.class, "set-primary-location", "^child-");
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(this, TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(this, TestMultiLocationItemNode.class, "single-item-primary-location");
-	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."));
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(this, new File("."));
 	private final IO io = new IO();
 	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	
