@@ -4,6 +4,10 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.plugin.CommandPlugin;
 
+/**
+ * Thrown when the specified node does not exist. 
+*/ 
+
 public class NodeDoesNotExistException extends CommandArgumentsException {
 	private static final long serialVersionUID = 1L;
 	

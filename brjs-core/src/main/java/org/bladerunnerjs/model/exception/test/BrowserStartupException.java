@@ -4,6 +4,10 @@ import java.io.IOException;
 
 import com.google.common.base.Joiner;
 
+/**
+ * Thrown when browser could not be started with the specified parameters.
+*/
+
 public class BrowserStartupException extends Exception {
 	private static final long serialVersionUID = 1L;
 	

@@ -79,12 +79,21 @@ public class BRJSDevServlet extends HttpServlet {
 				content.write( response.getOutputStream() );
 			}
 		}
-		catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException | ModelOperationException e) {
+		catch (MalformedRequestException e) {
+			response.sendError(400, e.getMessage());
+		}
+		catch (ResourceNotFoundException e) {
+			response.sendError(404, e.getMessage());
+		}
+		catch (ContentProcessingException e) {
+			response.sendError(500, e.getMessage());
+		}
+		catch (ModelOperationException e) {
 			throw new ServletException(e);
 		}
 		finally {
 			ThreadSafeStaticBRJSAccessor.releaseModel();
-		}
+		} 
 	}
 	
 }

@@ -6,6 +6,7 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
@@ -28,13 +29,13 @@ public class JsDocNodeObserver implements EventObserver
 	
 	@Override
 	public void onEventEmitted(Event event, Node node) {
-		if (event instanceof NodeReadyEvent) {
+		if (event instanceof NodeReadyEvent || event instanceof NodeDiscoveredEvent) {
 			createJsDocPlaceHolder(node);
 		}
 	}
 	
 	private void createJsDocPlaceHolder(Node node) {
-		if(node instanceof App) {
+		if (node instanceof App) {
 			App app = (App) node;
 			
 			try {

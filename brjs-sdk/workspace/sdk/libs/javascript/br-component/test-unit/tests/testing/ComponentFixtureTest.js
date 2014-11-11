@@ -96,6 +96,18 @@ ComponentFixtureTest.prototype.test_aNewViewHandlerCanBeAdded = function() {
 	oComponentFixture.addViewFixtureHandlers(viewHandlerMap);
 };
 
+ComponentFixtureTest.prototype.test_SelectorMappingsCanBeAdded = function() {
+	var oComponentFixture = new br.component.testing.ComponentFixture("<component/>",
+		this.m_oMockModelFixture.proxy(), this.m_oMockViewFixture.proxy());
+
+	var mMappings = {
+		'foo': 'bar',
+		'baz': 'faz'
+	};
+
+	this.m_oMockViewFixture.expects(once()).setSelectorMappings(mMappings);
+	oComponentFixture.setSelectorMappings(mMappings);
+};
 
 /* ********************************************************************
 *						 Handling 'opened'
