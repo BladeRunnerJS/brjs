@@ -98,6 +98,14 @@ ViewFixtureTest.prototype.test_getViewElementsFromPropertyString = function() {
 	assertEquals("SELECT", this.m_oViewFixture._getViewElements("view.(.darryl).value")[0].nodeName);
 };
 
+ViewFixtureTest.prototype.test_getViewElementsFromAMappedSelector = function() {
+	this.m_oViewFixture.setSelectorMappings({
+		'mapped-selector': '.darryl'
+	});
+
+	assertEquals('SELECT', this.m_oViewFixture._getViewElements('view.(mapped-selector).value')[0].nodeName);
+};
+
 ViewFixtureTest.prototype.test_canParsePropertyName = function() {
 	assertEquals("value", this.m_oViewFixture._getPropertyName("view.(darryl).value"));
 };
