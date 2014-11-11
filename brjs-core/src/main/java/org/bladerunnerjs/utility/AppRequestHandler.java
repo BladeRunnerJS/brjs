@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -140,6 +141,10 @@ public class AppRequestHandler
 		try {
 			if ( !Arrays.asList(app.appConf().getLocales()).contains(locale) ) {
 				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
+			}
+			
+			if (!indexPage.isFile()) {
+				return new HashMap<>();
 			}
 			
 			String pathRelativeToApp = app.dir().getRelativePath(indexPage);
