@@ -9,8 +9,11 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.ServerUtility;
+import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -174,6 +177,31 @@ public class ServedWarTest extends SpecTest {
 			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
     	then(warServer).requestForUrlReturns("/app/en/", "some token replacement")
     		.and(warServer).contentLengthForRequestIs("/app/en/", "some token replacement".getBytes().length);
+	}
+	
+	@Ignore //TODO: why cant we use real JNDI (a non mock naming context) in tests?
+	@Test
+	public void jndiTokensCanBeReplacedInAStandaloneWebserverWithoutAMockNamingContext() throws Exception {
+		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
+		System.setProperty("java.naming.factory.initial", "org.eclipse.jetty.jndi.InitialContextFactory");
+		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
+		
+		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+    		.and(app).hasBeenPopulated()
+    		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuiltAsWar(brjs.dir());
+		
+		// taken from http://www.eclipse.org/jetty/documentation/current/jndi-embedded.html
+		warServer = new Server(appServerPort);
+        WebAppContext webapp = new WebAppContext();
+        webapp.setContextPath("/");
+        webapp.setWar(brjs.workingDir().file("app1.war").getAbsolutePath());
+        warServer.setHandler(webapp);
+        new EnvEntry(warServer, "SOME.TOKEN", "some token replacement", false);
+ 
+        given(warServer).hasStarted();
+        then(warServer).requestForUrlReturns("/en/", "some token replacement");
 	}
 	
 }
