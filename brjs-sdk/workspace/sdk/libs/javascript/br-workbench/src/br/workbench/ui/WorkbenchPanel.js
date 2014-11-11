@@ -3,36 +3,34 @@ var jQuery = require('jquery');
 var sessionItemName = 'brjs-workbench-tools-collapsed';
 
 /**
- * Returns a wether the workbench tool with the title `title` is collapsed or not. Returns `null` if state is unknown.
+ * Returns wether the workbench tool with the title `title` is collapsed or not. Returns `null` if state is unknown.
  */
 function getCollapsedStateFromStorage(title) {
-	var store = sessionStorage.getItem(sessionItemName);
+	var storeData = sessionStorage.getItem(sessionItemName);
+	var parsedStoreData;
 
-	if (store == null) {
-		return null;
+	if (storeData) {
+		parsedStoreData = JSON.parse(storeData);
+
+		if (parsedStoreData[title]) {
+			return parsedStoreData[title];
+		}
 	}
 
-	store = JSON.parse(store);
-
-	if (typeof store[title] === 'undefined') {
-		return null;
-	}
-
-	return store[title];
+	return null;
 }
 
 function storeCollapsedStateToStorage(title, collapsed) {
-	var store = sessionStorage.getItem(sessionItemName);
+	var storeData = sessionStorage.getItem(sessionItemName);
+	var parsedStoreData = {};
 
-	if (store == null) {
-		store = {};
-	} else {
-		store = JSON.parse(store);
+	if (storeData) {
+		parsedStoreData = JSON.parse(storeData);
 	}
 
-	store[title] = collapsed;
+	parsedStoreData[title] = collapsed;
 
-	sessionStorage.setItem(sessionItemName, JSON.stringify(store));
+	sessionStorage.setItem(sessionItemName, JSON.stringify(parsedStoreData));
 }
 
 /**
