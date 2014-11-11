@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +84,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	@Override
 	public void clearRegisteredNode(Node node) {
-		String normalizedPath = node.dir().getCanonicalPath();
+		String normalizedPath = node.dir().getAbsolutePath();
 		List<Node> nodesForPath = nodeCache.get(normalizedPath);
 		nodesForPath.remove(node.getTypeName());
 	}
@@ -93,7 +92,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public List<Node> getRegisteredNodes(MemoizedFile childPath)
 	{
-		String normalizedPath = getMemoizedFile(childPath).getCanonicalPath();
+		String normalizedPath = childPath.getAbsolutePath();
 		if (!nodeCache.containsKey(normalizedPath)) {
 			nodeCache.put( normalizedPath, new LinkedList<>() );
 		}
@@ -210,14 +209,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			dir = dir.getParentFile();
 		}
 		
-		try
-		{
-			return (dir == null) ? dir : dir.getCanonicalFile();
-		}
-		catch (IOException e)
-		{
-			return dir;
-		}
+		return (dir == null) ? dir : dir.getAbsoluteFile();
 	}
 	
 	private Node locateFirstCachedNode(MemoizedFile file) {

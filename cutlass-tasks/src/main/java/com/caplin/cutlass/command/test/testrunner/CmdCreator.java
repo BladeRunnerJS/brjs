@@ -1,7 +1,6 @@
 package com.caplin.cutlass.command.test.testrunner;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Formatter;
 
 public class CmdCreator {
@@ -16,12 +15,7 @@ public class CmdCreator {
 			String cmdArg = cmdArgs[i];
 			
 			if(cmdArg.startsWith("../")) {
-				try {
-					cmdArgs[i] = new File(cmdArg).getCanonicalPath();
-				}
-				catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				cmdArgs[i] = new File(cmdArg).getAbsolutePath();
 			}
 		}
 		

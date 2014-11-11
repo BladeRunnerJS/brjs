@@ -1,7 +1,6 @@
 package org.bladerunnerjs.memoization;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,16 +10,14 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
 
 
+@SuppressWarnings("unused")
 public class FileModificationRegistry
 {
 	private Map<String,FileVersion> lastModifiedMap = new HashMap<String,FileVersion>();
 	private File rootFile;
-	private Map<File, File> canonicalFileMap = new HashMap<>();
-	private RootNode rootNode;
 
-	public FileModificationRegistry(RootNode rootNode, File rootFile) { 
-		this.rootFile = getCanonicalFile(rootFile);
-		this.rootNode = rootNode;
+	public FileModificationRegistry(File rootFile) { 
+		this.rootFile = rootFile;
 	}
 	
 	public long getFileVersion(File file) {
@@ -49,14 +46,14 @@ public class FileModificationRegistry
 		
 		if (file.isDirectory()) {
 			for (File child : org.apache.commons.io.FileUtils.listFilesAndDirs(file, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-				incrementedPaths.add( getCanonicalFile(file).getAbsolutePath() );
+				incrementedPaths.add( file.getAbsolutePath() );
 				getOrCreateVersionValue(child).incrememntValue();
 			}
 		}
 		
-		String fileCanonicalPath = getCanonicalFile(file).getAbsolutePath();
+		String filePath = file.getAbsolutePath();
 		for (String path : lastModifiedMap.keySet()) {
-			if (fileCanonicalPath.startsWith(path) && !incrementedPaths.contains(fileCanonicalPath)) {
+			if (filePath.startsWith(path) && !incrementedPaths.contains(filePath)) {
 				lastModifiedMap.get(path).incrememntValue();
 			}
 		}
@@ -66,40 +63,21 @@ public class FileModificationRegistry
 	private FileVersion getOrCreateVersionValue(File file)
 	{
 		if (file instanceof MemoizedFile) {
-			return getOrCreateVersionValue( ((MemoizedFile) file).getCanonicalPath() );
+			return getOrCreateVersionValue( ((MemoizedFile) file).getAbsolutePath() );
 		}
-		return getOrCreateVersionValue( getCanonicalFile(file).getAbsolutePath() );
+		return getOrCreateVersionValue( file.getAbsolutePath() );
 	}
 	
-	private synchronized FileVersion getOrCreateVersionValue(String canonicalFilePath)
+	private synchronized FileVersion getOrCreateVersionValue(String filePath)
 	{
 		FileVersion version;
-		if (!lastModifiedMap.containsKey(canonicalFilePath)) {
+		if (!lastModifiedMap.containsKey(filePath)) {
 			version = new FileVersion();
-			lastModifiedMap.put(canonicalFilePath, version);
+			lastModifiedMap.put(filePath, version);
 		} else {
-			version = lastModifiedMap.get(canonicalFilePath);
+			version = lastModifiedMap.get(filePath);
 		}
 		return version;
-	}
-	
-	private File getCanonicalFile(File file) {
-		File canonicalFile;
-		if (!canonicalFileMap.containsKey(file)) {
-			try
-			{
-				canonicalFile = file.getCanonicalFile();
-			}
-			catch (IOException e)
-			{
-				canonicalFile = file.getAbsoluteFile();
-				rootNode.logger(this.getClass()).warn("Unable to calculate canonical file for the path: " + file.getAbsolutePath());
-			}
-			canonicalFileMap.put(file, canonicalFile);
-		} else {
-			canonicalFile = canonicalFileMap.get(file);
-		}
-		return canonicalFile;
 	}
 	
 }
