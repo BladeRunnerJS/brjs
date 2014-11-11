@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -8,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -22,15 +22,13 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
-
 import com.Ostermiller.util.ConcatReader;
 import com.google.common.base.Joiner;
 
 public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	private AssetLocation assetLocation;
-	private File assetFile;
+	private MemoizedFile assetFile;
 	private LinkedFileAsset linkedFileAsset;
 	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;
@@ -39,12 +37,12 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private TrieBasedDependenciesCalculator trieBasedPostExportDefineTimeDependenciesCalculator;
 	public static final String JS_STYLE = "namespaced-js";
 	
-	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public NamespacedJsSourceModule(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
 		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetLocation);
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		String requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().getRelativePath(assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
 
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
@@ -151,7 +149,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return linkedFileAsset.dir();
 	}

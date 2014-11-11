@@ -1,8 +1,8 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -13,7 +13,7 @@ public abstract class AbstractComponent extends AbstractAssetContainer implement
 {
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	
-	public AbstractComponent(RootNode rootNode, Node parent, File dir) {
+	public AbstractComponent(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
 	}
 	

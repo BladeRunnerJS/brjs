@@ -188,7 +188,7 @@ public class TestPackBundlingTest extends SpecTest
     		.and(response).containsCommonJsClasses("appns/App");
 	}
 	
-	@Test // test when an existing app is used and the model re-created the 'discoverAllNodes()' method doesnt discover test packs as children of the default bladeset instead of the default aspect
+	@Test // test when an existing app is used and the model re-created the 'discoverAllChildren()' method doesnt discover test packs as children of the default bladeset instead of the default aspect
 	public void bundleCanBeGeneratedForTestsInsideADefaultAspectWhereABladeInTheDefaultBladesetIsAlsoUsedAndANewModelIsUsed() throws Exception {
 		given(defaultAspect).hasClasses("App")
     		.and( defaultAspect.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/App")

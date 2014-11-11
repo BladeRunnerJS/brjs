@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			brLib = app.jsLib("br");
 			brbootstrap = brjs.sdkLib("br-bootstrap");
 			appLib = app.jsLib("appLib");
-			targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
+			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test

@@ -56,9 +56,10 @@ public class ServeCommandTest extends SpecTest
 	@Test
 	public void providingInvalidPortValueThrowsException() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreated();
+		given(brjs).hasBeenAuthenticallyReCreated();
 		when(brjs).runCommand("serve", "-p", "invalid-port");
 		then(exceptions).verifyException(NumberFormatException.class)
 			.whereTopLevelExceptionContainsString(CommandArgumentsException.class, INVALID_PORT_MESSAGE + " 'invalid-port'");
 	}
+	
 }

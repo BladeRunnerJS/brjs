@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model.engine;
 
-import java.io.File;
+import org.bladerunnerjs.memoization.MemoizedFile;
 
 public class DirectoryNodeLocator implements NodeLocator
 {
@@ -12,8 +12,8 @@ public class DirectoryNodeLocator implements NodeLocator
 	}
 	
 	@Override
-	public File getNodeDir(File sourceDir)
+	public MemoizedFile getNodeDir(MemoizedFile sourceDir)
 	{
-		return new File(sourceDir, subDirPath);
+		return sourceDir.file(subDirPath);
 	}
 }

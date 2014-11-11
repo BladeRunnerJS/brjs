@@ -6,12 +6,13 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private Aspect appAspect;
 	private App sysapp;
 	private Aspect sysappAspect;
-	private File unbundledResources;
+	private MemoizedFile unbundledResources;
 	private Aspect defaultAspect;
 	
 	@Before
@@ -41,7 +42,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
 			
-		binaryResponseFile = FileUtility.createTemporaryFile( this.getClass() );
+		binaryResponseFile = FileUtils.createTemporaryFile( this.getClass() );
 		binaryResponse = new FileOutputStream(binaryResponseFile);
 		unbundledResourcesPlugin = brjs.plugins().contentPlugin("unbundled-resources");
 		requestsList = new ArrayList<String>();

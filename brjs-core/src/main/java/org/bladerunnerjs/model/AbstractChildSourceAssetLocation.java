@@ -2,10 +2,11 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAssetLocation {
-	public AbstractChildSourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+	public AbstractChildSourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir, parentAssetLocation, dependentAssetLocations);
 	}
 	
@@ -21,6 +22,7 @@ public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAs
 	}
 	
 	protected String getAssumedRequirePath() {
+		File dir = rootNode.getMemoizedFile(dir());
 		return (!(parentAssetLocation() instanceof AbstractChildSourceAssetLocation)) ? dir.getName() :
 			((AbstractChildSourceAssetLocation) parentAssetLocation()).getAssumedRequirePath() + "/" + dir().getName();
 	}

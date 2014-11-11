@@ -1,11 +1,11 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -19,7 +19,7 @@ public class DefaultBladeset extends Bladeset
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, BLADES_DIRNAME, null);
 	private final List<TypedTestPack> testTypes = Collections.emptyList(); // needed to prevent 'discoverAllChildren' from using the superclass NodeList
 	
-	public DefaultBladeset(RootNode rootNode, Node parent, File dir)
+	public DefaultBladeset(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
 		super(rootNode, parent, dir, "default");
 	}

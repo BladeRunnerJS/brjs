@@ -39,8 +39,8 @@ import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.utility.FileUtils;
 
-import com.caplin.cutlass.util.FileUtility;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -153,9 +153,9 @@ public class RestApiServlet extends HttpServlet
 			}
 			else if (EXPORT_APP_PATTERN.matcher(requestPath).matches())
 			{
-				File targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
+				File targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 				File warTempFile = new File(targetDir, "x.war");
-				apiService.exportWar(appName, warTempFile);
+				apiService.exportWar(appName, brjs.getMemoizedFile(warTempFile));
 				response.setContentType("application/octet-stream");
 				response.setHeader("Content-Disposition", "attachment; filename=\""+appName+".war\"");
 				
@@ -363,14 +363,14 @@ public class RestApiServlet extends HttpServlet
 			}
 			else if (item.getFieldName().equals(FILE_PARAM))
 			{
-				zipFile = FileUtility.createTemporaryFile("import motif", ".zip");
+				zipFile = FileUtils.createTemporaryFile(this.getClass(), ".zip");
 				item.write(zipFile);
 			}
 		}
 
 		if (!namespace.equals("") && zipFile != null && command.equals(IMPORT_MOTIF))
 		{
-			apiService.importMotif(appName, namespace, zipFile);
+			apiService.importMotif(appName, namespace, brjs.getMemoizedFile(zipFile));
 			responseHandled = true;
 		}
 		return responseHandled;

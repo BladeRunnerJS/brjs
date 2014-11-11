@@ -1,10 +1,10 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -17,7 +17,7 @@ public final class Theme extends AbstractBRJSNode implements NamedNode
 {
 	private String name;
 	
-	public Theme(RootNode rootNode, Node parent, File dir, String name)
+	public Theme(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;

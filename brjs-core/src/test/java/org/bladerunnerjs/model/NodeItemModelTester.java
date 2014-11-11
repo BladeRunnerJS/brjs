@@ -1,10 +1,10 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJSNode;
 
 import static org.junit.Assert.*;
@@ -15,8 +15,8 @@ public class NodeItemModelTester<PN extends BRJSNode, CN extends BRJSNode>
 	private final Class<PN> parentNodeClass;
 	private final Class<CN> childNodeClass;
 	private final String itemMethodName;
-	private final File childPath;
-	private final List<File> childPaths = new ArrayList<>();
+	private final MemoizedFile childPath;
+	private final List<MemoizedFile> childPaths = new ArrayList<>();
 	
 	public NodeItemModelTester(PN parentNode, Class<PN> parentNodeClass, Class<CN> childNodeClass, String itemMethodName, String childPath)
 	{
@@ -24,7 +24,7 @@ public class NodeItemModelTester<PN extends BRJSNode, CN extends BRJSNode>
 		this.parentNodeClass = parentNodeClass;
 		this.childNodeClass = childNodeClass;
 		this.itemMethodName = itemMethodName;
-		this.childPath = new File(parentNode.dir(), childPath);
+		this.childPath = parentNode.dir().file(childPath);
 		
 		childPaths.add(this.childPath);
 	}
