@@ -91,7 +91,7 @@ public class AspectTest extends SpecTest {
 	}
 	
 	@Test
-	public void exceptionIsThrownIfThereAreTwoDefaultBladesets() throws Exception
+	public void exceptionIsThrownIfThereAreTwoDefaultAspect() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(app).containsFile("index.html")
