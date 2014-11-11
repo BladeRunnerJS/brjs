@@ -21,7 +21,6 @@ import org.bladerunnerjs.appserver.util.StreamTokeniser;
 
 public class TokenisingServletFilter implements Filter
 {
-//	private Logger logger;
 	private StreamTokeniser streamTokeniser = new StreamTokeniser();
 	private JndiTokenFinder tokenFinder;
 	private final List<String> validExtensions = Arrays.asList(".xml", ".json", ".html", ".htm", ".jsp", "/");
@@ -49,7 +48,6 @@ public class TokenisingServletFilter implements Filter
 	public void init(FilterConfig filterConfig)
 	{
 		contextPath = filterConfig.getServletContext().getContextPath();
-//		logger = brjs.logger(LoggerType.FILTER, TokenisingServletFilter.class);
 	}
 	
 	@Override
@@ -72,8 +70,6 @@ public class TokenisingServletFilter implements Filter
 			
 			try
 			{
-//				logger.debug("processing and replacing JNDI tokens within response.");
-				
 				StringBuffer filteredResponse = streamTokeniser.replaceTokens(responseWrapper.getReader(), tokenFinder, requestUri);
 				byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
 				if (!response.isCommitted()) {
@@ -88,8 +84,6 @@ public class TokenisingServletFilter implements Filter
 		}
 		else
 		{
-//			logger.debug("bundler token replacement not applicable for this resource.");
-			
 			chain.doFilter(request, response);
 		}
 	}

@@ -16,6 +16,7 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -103,7 +104,14 @@ public class WebappTester
 		statusText = httpResponse.getStatusLine().getReasonPhrase();
 		response = EntityUtils.toString(httpResponse.getEntity());
 		contentType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
-		contentLength = response.length();
+		
+		Header[] headers = httpResponse.getAllHeaders();
+		for(Header h:headers){
+			if (h.getName().equals("Content-Length")) {
+				contentLength = Integer.parseInt( h.getValue() );
+			}
+		}
+		
 		Charset charset = ContentType.getOrDefault(httpResponse.getEntity()).getCharset();
 		characterEncoding = (charset == null) ? "" : charset.displayName();
 		EntityUtils.consume(httpResponse.getEntity());
