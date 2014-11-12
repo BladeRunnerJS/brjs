@@ -337,17 +337,15 @@ public class TestRunner {
 	}
 	
 	private boolean isDefaultBladeset(MemoizedFile path) {
-		MemoizedFile pathCopy = path;
-		String pathString = pathCopy.toString();
 		if (path.toString().contains("/")) 
-			return isMainAppFolder(pathString, "/");
+			return isMainAppFolder(path, "/");
 		else 
-			return isMainAppFolder(pathString, "\\");
+			return isMainAppFolder(path, "\\");
 	}
 
-	private boolean isMainAppFolder(String pathString, String separator) {
-		int indexOfApps = pathString.indexOf(APPS_DIR + separator);
-		String pathAfterApps = pathString.substring(indexOfApps + (APPS_DIR + separator).length());
+	private boolean isMainAppFolder(MemoizedFile path, String separator) {
+		int indexOfApps = path.toString().indexOf(APPS_DIR + separator);
+		String pathAfterApps = path.toString().substring(indexOfApps + (APPS_DIR + separator).length());
 		if (pathAfterApps.contains(separator))
 			return false;
 		return true;
