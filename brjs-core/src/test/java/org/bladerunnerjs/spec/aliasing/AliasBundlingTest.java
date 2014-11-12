@@ -13,7 +13,6 @@ import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -401,7 +400,6 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsText("module.exports = {'the-alias':{'class':'appns/Class3','className':'appns.Class3'}};");
 	}
 	
-	@Ignore // TODO: figure out why enabling this test breaks an unrelated test -- probably memoization
 	@Test
 	public void aliasesInDefaultBladesetCanBeBundled() throws Exception {
 		given(bladeInDefaultBladeset).hasClasses("appns/b1/BladeClass", "appns/b1/Class1")

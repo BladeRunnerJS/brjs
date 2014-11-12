@@ -5,37 +5,22 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
-	private final static Map<String, ServiceCommonJsSourceModule> sourceModules = new HashMap<>();
-	private static AssetLocation assetLocation;
-	private String requirePath;
-
-	public static ServiceCommonJsSourceModule getSourceModule(BRJS brjs, String requirePath) {
-		if(assetLocation == null) {
-			assetLocation = new NullAssetLocation(brjs);
-		}
-		
-		if(!sourceModules.containsKey(requirePath)) {
-			sourceModules.put(requirePath, new ServiceCommonJsSourceModule(requirePath));
-		}
-		
-		return sourceModules.get(requirePath);
-	}
+	private final AssetLocation assetLocation;
+	private final String requirePath;
 	
-	public ServiceCommonJsSourceModule(String requirePath) {
+	public ServiceCommonJsSourceModule(AssetLocation assetLocation, String requirePath) {
+		this.assetLocation = assetLocation;
 		this.requirePath = requirePath;
 	}
 
