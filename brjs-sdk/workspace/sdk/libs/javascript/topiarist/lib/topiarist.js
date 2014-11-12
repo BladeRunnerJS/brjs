@@ -811,7 +811,7 @@
 			return target;
 		}
 	};
-	exporting.export = exporting.exportTo; // for backwards compatibility
+	exporting['export'] = exporting.exportTo; // for backwards compatibility
 
 	methods.Base = exporting.install(function BaseClass() {});
 
