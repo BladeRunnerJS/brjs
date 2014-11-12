@@ -14,7 +14,7 @@ import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.*;
 public class AppDeploymentFileWatcher extends Thread
 {
 	
-	private static final long CHECK_INTERVAL = 1000;
+	private static final long CHECK_INTERVAL = 100;
 
 	//TOOD: these messages arent tested in our spec tests
 	public class Messages
