@@ -230,4 +230,15 @@ public class AppServerTest extends SpecTest
 		when(brjs.applicationServer()).started();
 		then(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}
+	
+	@Test
+	public void fileWatcherThreadDoesntThrowAnExceptionWhenAFileExistsInAppsDir() throws Exception
+	{
+		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
+			.and(brjs).containsFile("apps/file.txt")
+			.and(brjs.applicationServer(appServerPort)).started();
+		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
+		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
+	}
+	
 }
