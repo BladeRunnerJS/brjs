@@ -15,7 +15,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bladerunnerjs.appserver.util.CharResponseWrapper;
+import org.bladerunnerjs.appserver.util.CommitedResponseCharResponseWrapper;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.bladerunnerjs.appserver.util.StreamTokeniser;
 
@@ -65,17 +65,16 @@ public class TokenisingServletFilter implements Filter
 			String hostIdentifier = httpRequest.getRequestURL().toString().replaceAll(contextPath + ".*$", "");
 			String requestUri = hostIdentifier + parentRequestPath;
 			ServletOutputStream out = response.getOutputStream();
-			CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
+			CommitedResponseCharResponseWrapper responseWrapper = new CommitedResponseCharResponseWrapper((HttpServletResponse) response);
 			chain.doFilter(request, responseWrapper);
 			
 			try
 			{
 				StringBuffer filteredResponse = streamTokeniser.replaceTokens(responseWrapper.getReader(), tokenFinder, requestUri);
 				byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
-				if (!response.isCommitted()) {
-					response.setContentLength(filteredData.length);
-					out.write(filteredData);
-				}
+				response.setContentLength(filteredData.length);
+				out.write(filteredData);
+				response.flushBuffer();
 			}
 			catch(Exception e)
 			{

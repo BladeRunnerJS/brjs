@@ -36,13 +36,15 @@ public class JettyServerBuilder {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasWarWithFilter(String warPath, String appName, Filter filter) throws NamingException {
-		return hasWarWithFilter(specTest.brjs.workingDir().file(warPath), appName, filter);
+	public BuilderChainer hasWarWithFilters(String warPath, String appName, Filter... filters) throws NamingException {
+		return hasWarWithFilters(specTest.brjs.workingDir().file(warPath), appName, filters);
 	}
 	
-	public BuilderChainer hasWarWithFilter(File warPath, String appName, Filter filter) throws NamingException {
+	public BuilderChainer hasWarWithFilters(File warPath, String appName, Filter... filters) throws NamingException {
 		WebAppContext webappContext = new WebAppContext((HandlerContainer) jettyServer.getHandler(), warPath.getPath(), "/" + appName);
-		webappContext.addFilter(new FilterHolder(filter), "/*", 1);
+		for (Filter filter : filters) {
+			webappContext.addFilter(new FilterHolder(filter), "/*", 1);
+		}
 		
 		return builderChainer;
 	}

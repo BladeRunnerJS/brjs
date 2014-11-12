@@ -15,13 +15,13 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.bladerunnerjs.appserver.filter.BRJSHeaderFilter;
 
-public class CharResponseWrapper extends HttpServletResponseWrapper
+public class CommitedResponseCharResponseWrapper extends HttpServletResponseWrapper
 {
 	private ByteArrayOutputStream byteArrayOutputStream;
 	private ServletOutputStream servletOutputStream;
 	private PrintWriter printWriter;
 	
-	public CharResponseWrapper(HttpServletResponse response) throws UnsupportedEncodingException
+	public CommitedResponseCharResponseWrapper(HttpServletResponse response) throws UnsupportedEncodingException
 	{
 		super(response);
 		
@@ -53,5 +53,10 @@ public class CharResponseWrapper extends HttpServletResponseWrapper
 	{
 		printWriter.flush();
 		return new InputStreamReader(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), BRJSHeaderFilter.OUTPUT_ENCODING);
+	}
+	
+	@Override
+	public void flushBuffer() throws IOException
+	{
 	}
 }

@@ -1,6 +1,14 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
+import java.io.IOException;
+
 import javax.naming.Context;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
@@ -158,7 +166,7 @@ public class ServedWarTest extends SpecTest {
 			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
 			.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
-    		.and(warServer).hasWarWithFilter("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
+    		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
     		.and(warServer).hasStarted();
 			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
 		then(warServer).requestForUrlReturns("/app/en/", "some token replacement");
@@ -172,7 +180,22 @@ public class ServedWarTest extends SpecTest {
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
-    		.and(warServer).hasWarWithFilter("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
+    		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
+    		.and(warServer).hasStarted();
+			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
+    	then(warServer).requestForUrlReturns("/app/en/", "some token replacement")
+    		.and(warServer).contentLengthForRequestIs("/app/en/", "some token replacement".getBytes().length);
+	}
+	
+	@Test
+	public void correctContentLengthIsSetWhenJNDITokensAreReplacedAndADownstreamFilterCommitsTheResponseEarly() throws Exception
+	{
+		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(app).hasBeenPopulated()
+    		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuiltAsWar(brjs.dir())
+    		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)), new MockCommitResponseFilter())
     		.and(warServer).hasStarted();
 			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
     	then(warServer).requestForUrlReturns("/app/en/", "some token replacement")
@@ -202,6 +225,26 @@ public class ServedWarTest extends SpecTest {
  
         given(warServer).hasStarted();
         then(warServer).requestForUrlReturns("/en/", "some token replacement");
+	}
+	
+	
+	
+	
+	private class MockCommitResponseFilter implements Filter {
+		@Override
+		public void init(FilterConfig filterConfig) throws ServletException
+		{
+		}
+		@Override
+		public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
+		{
+			response.flushBuffer();
+			chain.doFilter(request, response);
+		}
+		@Override
+		public void destroy()
+		{			
+		}
 	}
 	
 }
