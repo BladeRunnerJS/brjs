@@ -133,10 +133,10 @@ Specifically, sub-realms must be used exactly as follows:
   3. Start requiring things.
   4. Un-install the sub-realm.
 
-Consider the following test for example:
+Consider the following test for example, that tests the 'acme/module2' module defined earlier within the [Defining Modules](https://github.com/BladeRunnerJS/browser-modules#defining-modules) section:
 
 ``` javascript
-describe('module2', function() {
+describe('acme/module2', function() {
   var subrealm;
 
   beforeEach(function() {
