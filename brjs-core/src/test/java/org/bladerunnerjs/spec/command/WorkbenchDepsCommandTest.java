@@ -162,17 +162,17 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void dependenciesAreShownForWorkbenchUsingAliasWhenAllArgumentsAreValid() throws Exception {
-		given(brLib).hasClasses("br/Class1", "br/Class2")
+		given(brLib).hasClasses("br/Class1", "br/Class2", "br/AliasInterfaceError")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
-			.and(blade).classFileHasContent("appns/bladeset/blade/Class1", "ServiceRegistry.getService('br.alias')")
+			.and(blade).classFileHasContent("appns/bladeset/blade/Class1", "require('alias!br.alias')")
 			.and(workbench).indexPageRequires("appns/bladeset/blade/Class1");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
 		then(logging).containsConsoleText(
 				"Workbench dependencies found:",
 				"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
 				"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
-				"    |    |    \\--- 'alias!br.alias' (alias dep.)",
-				"    |    |    |    \\--- '../../libs/javascript/br/src/br/Class2.js'" );
+				"    |    |    \\--- 'alias!br.alias' (static dep.)",
+				"    |    |    |    \\--- '../../libs/javascript/br/src/br/Class2.js' (static dep.)");
 	}
 	
 	@Test

@@ -33,7 +33,7 @@ import org.bladerunnerjs.utility.UnicodeReader;
 import com.Ostermiller.util.ConcatReader;
 
 public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
-	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias|getAlias|getService)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
+	private static final Pattern matcherPattern = Pattern.compile("require\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
 	
 	private MemoizedFile assetFile;
 	private AssetLocation assetLocation;
@@ -195,20 +195,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		
 		Matcher m = matcherPattern.matcher(stringWriter.toString());
 		while (m.find()) {
-			String methodArgument = m.group(2);
-			
-			if (m.group(1).startsWith("require")) {
-				String requirePath = methodArgument;
-				dependencies.add(requirePath);
-			}
-			else if (m.group(1).startsWith("getService")){
-				String serviceAliasName = methodArgument;
-				//TODO: this is a big hack, remove the "SERVICE!" part and the same in BundleSetBuilder
-				aliases.add("SERVICE!"+serviceAliasName);
-			}
-			else {
-				aliases.add(methodArgument);
-			}
+			dependencies.add(m.group(1));
 		}
 	}
 

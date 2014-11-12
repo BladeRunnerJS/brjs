@@ -21,7 +21,7 @@ var i18n = require('br/I18n');
 function BRHtmlResourceService(url) {
 	var ServiceRegistry = require("br/ServiceRegistry");
 	/** @private */
-	this.url = url || ServiceRegistry.getService('br.app-meta-service').getVersionedBundlePath("html/bundle.html");
+	this.url = url || require('service!br.app-meta-service').getVersionedBundlePath("html/bundle.html");
 
 	/** @private */
 	this.templates = {};

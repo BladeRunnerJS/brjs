@@ -10,6 +10,7 @@ import org.bladerunnerjs.testing.specutility.engine.BundlableNodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Assert;
 
+import com.google.common.base.Joiner;
 
 public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 	private final Aspect aspect;
@@ -60,13 +61,15 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 		return indexPageRequires(thirdpartyLib.getName());
 	}
 	
-	public BuilderChainer indexPageRequires(String requirePath) throws Exception
+	public BuilderChainer indexPageRequires(String... requirePaths) throws Exception
 	{
-		if(requirePath.contains(".")) {
-			throw new RuntimeException("The '" + requirePath + "' require path contains a dot. Did you mean to use indexPageRefersTo() instead?");
+		for(String requirePath : requirePaths) {
+			if(requirePath.contains(".")) {
+				throw new RuntimeException("The '" + requirePath + "' require path contains a dot. Did you mean to use indexPageRefersTo() instead?");
+			}
 		}
 		
-		writeToFile(getIndexFile(), "require('"+requirePath+"');");
+		writeToFile(getIndexFile(), "require('" + Joiner.on("');\nrequire('").join(requirePaths) + "');");
 		
 		return builderChainer;
 	}
