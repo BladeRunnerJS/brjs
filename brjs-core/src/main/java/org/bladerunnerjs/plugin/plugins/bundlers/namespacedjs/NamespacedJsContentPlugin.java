@@ -267,8 +267,13 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		if (dependentSourceModule.isEncapsulatedModule() && !globalizedModules.contains(dependentSourceModule))
 		{
 			globalizedModules.add(dependentSourceModule);
-			String sourceModuleClassName = dependentSourceModule.getPrimaryRequirePath().replace('/', '.').replace('-', '_').replace('!', '_');
-			return "\t" + sourceModuleClassName + " = require('" + dependentSourceModule.getPrimaryRequirePath() + "');\n";
+			String requirePath = dependentSourceModule.getPrimaryRequirePath();
+			
+			if(!requirePath.contains("!")) {
+				String sourceModuleClassName = requirePath.replace('/', '.').replace('-', '_');
+				
+				return "\t" + sourceModuleClassName + " = require('" + requirePath + "');\n";
+			}
 		}
 		return "";
 	}
