@@ -1,5 +1,8 @@
 package org.bladerunnerjs.model.exception;
 
+/**
+ * Thrown when a relative require path goes above root.
+*/
 
 public class UnresolvableRelativeRequirePathException extends RequirePathException {
 	private static final long serialVersionUID = 1L;

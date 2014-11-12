@@ -4,6 +4,9 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.App;
 
+/**
+ * Thrown when the app namespace could not be determined and one must be supplied instead. 
+*/ 
 
 public class UnableToAutomaticallyGenerateAppRequirePrefixException extends InvalidNameException
 {

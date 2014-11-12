@@ -1,5 +1,8 @@
 package org.bladerunnerjs.model.exception;
 
+/**
+ * Thrown when the default asset container exists in two locations, since it may only exist in one.
+*/
 
 public class DuplicateAssetContainerException extends RuntimeException
 {

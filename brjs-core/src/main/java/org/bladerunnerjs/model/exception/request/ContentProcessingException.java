@@ -1,7 +1,8 @@
 package org.bladerunnerjs.model.exception.request;
 
-
-
+/**
+ * Thrown when the request has failed, but has not been due to a malformed request or resource not found. 
+*/ 
 
 public class ContentProcessingException extends RequestHandlingException
 {
@@ -20,9 +21,9 @@ public class ContentProcessingException extends RequestHandlingException
 	
 	public ContentProcessingException(Throwable cause, String message)
 	{
-		super(message, cause);
+		super(message + "; " + cause.getMessage(), cause);
 	}
-		
+	
 	public String toString()
 	{
 		StringBuilder errorMessage = new StringBuilder();

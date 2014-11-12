@@ -1,6 +1,8 @@
 package org.bladerunnerjs.model.exception;
 
-
+/**
+ * Thrown when several resources match the required path.
+*/
 public class AmbiguousRequirePathException extends RequirePathException {
 	private static final long serialVersionUID = 1L;
 	private String message;

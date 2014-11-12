@@ -2,6 +2,10 @@ package org.bladerunnerjs.model.exception.command;
 
 import org.bladerunnerjs.plugin.CommandPlugin;
 
+/**
+ * Thrown when the directory on the specified path is not empty. 
+*/ 
+
 public class DirectoryNotEmptyCommandException extends CommandArgumentsException {
 	private static final long serialVersionUID = 1L;
 	
