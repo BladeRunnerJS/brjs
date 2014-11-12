@@ -27,14 +27,11 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 public class CommonJsContentPlugin extends AbstractContentPlugin
 {
-
 	private static final String SINGLE_MODULE_REQUEST = "single-module-request";
-
 	private static final String BUNDLE_REQUEST = "bundle-request";
-
+	
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
-
 	private BRJS brjs;
 
 	{

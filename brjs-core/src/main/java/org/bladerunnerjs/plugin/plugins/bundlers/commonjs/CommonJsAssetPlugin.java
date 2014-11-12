@@ -19,6 +19,6 @@ public class CommonJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new CommonJsSourceModule(assetFile, assetLocation);
+		return new DefaultCommonJsSourceModule(assetFile, assetLocation);
 	}
 }
