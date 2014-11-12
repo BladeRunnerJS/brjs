@@ -3,3 +3,4 @@ _site
 *.idea
 node_modules/
 sauce_connect.log*
+npm-debug.log

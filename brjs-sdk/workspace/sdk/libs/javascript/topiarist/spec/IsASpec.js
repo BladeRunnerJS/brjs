@@ -47,7 +47,7 @@ describe("topiarist.isA", function() {
 	it('throws an error if the potential assignee is not a constructor.', function() {
 		expect( function() {
 			topiarist.isA(instance, 34);
-		}).toThrow(err.NOT_CONSTRUCTOR('Parent', 'isA', 'number'));
+		}).toThrow();
 	});
 
 	it('returns false for a null instance.', function() {
