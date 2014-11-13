@@ -217,10 +217,9 @@ public class FileModificationWatcherThreadTest
 		verifyNoMoreInteractions(mockWatchService);
 	}
 	
-	@Test // we use the protected methods here to avoid having a multithreaded test
+	@Test // we use the protected methods on FileModificationWatcherThread here to avoid having a multithreaded test
 	public void usingTheRealWatchServiceDetectsFileChanges() throws Exception {
 		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs);
-		modificationWatcherThread.start();
 		
 		modificationWatcherThread.init();
 		
