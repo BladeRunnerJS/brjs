@@ -22,13 +22,6 @@ public class BRJSApplicationServer implements ApplicationServer
 {
 	public static final String DEPLOY_APP_FILENAME = ".deploy";
 	
-	static
-	{
-		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
-		System.setProperty("java.naming.factory.initial", "org.eclipse.jetty.jndi.InitialContextFactory");
-		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
-	}
-	
 	public class Messages {
 		public static final String SERVER_STARTING_LOG_MSG = "%s server starting.";
 		public static final String SERVER_STOPPING_LOG_MSG = "%s server stopping.";
@@ -65,6 +58,10 @@ public class BRJSApplicationServer implements ApplicationServer
 	@Override
 	public void start() throws Exception
 	{
+		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
+		System.setProperty("java.naming.factory.initial", "org.eclipse.jetty.jndi.InitialContextFactory");
+		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
+		
 		logger.info(SERVER_STARTING_LOG_MSG, BRJS.PRODUCT_NAME);
 
 		if (ServerUtility.isPortBound(port))
