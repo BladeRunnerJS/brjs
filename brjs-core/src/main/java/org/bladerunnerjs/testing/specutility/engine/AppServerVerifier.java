@@ -65,7 +65,7 @@ public class AppServerVerifier
 		String url = getUrl(urlPath);
 		specTest.webappTester.whenRequestMadeTo(url,false).responseIs(response);
 		
-		return verifierChainer;		
+		return verifierChainer;	
 	}
 	
 	public VerifierChainer requestForUrlHasResponseCode(String urlPath, int statusCode) throws ClientProtocolException, IOException
@@ -99,11 +99,6 @@ public class AppServerVerifier
 		
 		return verifierChainer;		
 	}
-	
-	private String getUrl(String urlPath)
-	{
-		return String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, specTest.appServerPort, urlPath);
-	}
 
 	public VerifierChainer requestCanEventuallyBeMadeWhereResponseMatches(String urlPath, Predicate<String> predicate) throws ClientProtocolException, IOException, InterruptedException
 	{
@@ -111,5 +106,19 @@ public class AppServerVerifier
 		specTest.webappTester.pollServerUntilMatchesPredicate(url, predicate);
 		
 		return verifierChainer;	
+	}
+
+	public VerifierChainer contentLengthForRequestIs(String urlPath, int length) throws ClientProtocolException, IOException
+	{
+		String url = getUrl(urlPath);
+		specTest.webappTester.whenRequestMadeTo(url,false).contentLengthIs(length);
+		
+		return verifierChainer;
+	}
+	
+	
+	private String getUrl(String urlPath)
+	{
+		return String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, specTest.appServerPort, urlPath);
 	}
 }
