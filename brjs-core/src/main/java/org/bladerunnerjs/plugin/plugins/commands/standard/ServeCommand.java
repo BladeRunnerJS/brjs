@@ -112,6 +112,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 			int port = Integer.parseInt(parsedArgs.getString("port"));
 			ApplicationServer appServer = brjs.applicationServer(port);
 			appServer.setAppDeploymentWatcherInterval(1000);
+			return appServer;
 		}
 		
 		return brjs.applicationServer();
