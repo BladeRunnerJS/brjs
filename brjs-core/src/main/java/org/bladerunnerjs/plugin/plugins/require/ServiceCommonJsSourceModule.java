@@ -120,6 +120,6 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	private String getModuleContent() {
-		return "	module.exports = new (require('alias!" + requirePath + "'))();\n";
+		return "	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n";
 	}
 }
