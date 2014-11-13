@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
@@ -33,7 +34,9 @@ import org.bladerunnerjs.utility.UnicodeReader;
 import com.Ostermiller.util.ConcatReader;
 
 public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
-	private static final Pattern matcherPattern = Pattern.compile("require\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
+	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias|getAlias|getService)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
+	
+	private final Logger logger;
 	
 	private MemoizedFile assetFile;
 	private AssetLocation assetLocation;
@@ -42,8 +45,9 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	
 	private MemoizedValue<ComputedValue> computedValue;
 	private List<String> requirePaths = new ArrayList<>();
-	
+
 	public DefaultCommonJsSourceModule(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+		logger = assetLocation.root().getLoggerFactory().getLogger(DefaultCommonJsSourceModule.class);
 		this.assetLocation = assetLocation;
 		this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
 		
@@ -195,7 +199,26 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		
 		Matcher m = matcherPattern.matcher(stringWriter.toString());
 		while (m.find()) {
-			dependencies.add(m.group(1));
+			String methodArgument = m.group(2);
+			
+			if (m.group(1).startsWith("require")) {
+				String requirePath = methodArgument;
+				dependencies.add(requirePath);
+			}
+			else if (m.group(1).startsWith("getService")){
+				String serviceAliasName = methodArgument;
+				dependencies.add("service!" + serviceAliasName);
+				
+				logger.warn("The CommonJs source-module defined within '" + assetFile.getAbsolutePath() + "' is using a deprecated API to retrieve the '" +
+					serviceAliasName + "' service alias (should use require('service!" + serviceAliasName + "')).");
+			}
+			else {
+				String aliasName = methodArgument;
+				aliases.add(aliasName);
+				
+				logger.warn("The CommonJs source-module defined within '" + assetFile.getAbsolutePath() + "' is using a deprecated API to retrieve the '" +
+					aliasName + "' alias (should use require('alias!" + aliasName + "')).");
+			}
 		}
 	}
 
