@@ -313,4 +313,56 @@ public class ServedAppTest extends SpecTest
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/anotherApp/en/", "aspect index.html");
 	}
+	
+	@Test
+	public void correctContentLengthHeaderIsSetWhenTagsAreReplaced() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>");
+		when(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en/", "dev replacement")
+			.and(appServer).contentLengthForRequestIs("/app/en/", "dev replacement".getBytes().length);
+	}
+	
+	@Test
+	public void jndiTokensAreReplaced() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
+			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", ""
+					+ "<?xml version=\"1.0\"?>"
+					+ "<!DOCTYPE Configure PUBLIC \"-//Jetty//Configure//EN\" \"http://www.eclipse.org/jetty/configure.dtd\">"
+					+ "<Configure id=\"webAppCtx\" class=\"org.eclipse.jetty.webapp.WebAppContext\">"
+					+ "	<New class=\"org.eclipse.jetty.plus.jndi.EnvEntry\">"
+					+ "		<Arg><Ref id='webAppCtx'/></Arg>"
+					+ "		<Arg>SOME.TOKEN</Arg>"
+					+ "		<Arg type=\"java.lang.String\">some token replacement</Arg>"
+					+ "		<Arg type=\"boolean\">true</Arg>"
+					+ "	</New>"
+					+ "</Configure>");
+		when(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en/", "some token replacement");
+	}
+	
+	@Test
+	public void correctContentLengthIsSetWhenJNDITokensAreReplaced() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
+			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", ""
+					+ "<?xml version=\"1.0\"?>"
+					+ "<!DOCTYPE Configure PUBLIC \"-//Jetty//Configure//EN\" \"http://www.eclipse.org/jetty/configure.dtd\">"
+					+ "<Configure id=\"webAppCtx\" class=\"org.eclipse.jetty.webapp.WebAppContext\">"
+					+ "	<New class=\"org.eclipse.jetty.plus.jndi.EnvEntry\">"
+					+ "		<Arg><Ref id='webAppCtx'/></Arg>"
+					+ "		<Arg>SOME.TOKEN</Arg>"
+					+ "		<Arg type=\"java.lang.String\">some token replacement</Arg>"
+					+ "		<Arg type=\"boolean\">true</Arg>"
+					+ "	</New>"
+					+ "</Configure>");
+		when(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en/", "some token replacement")
+			.and(appServer).contentLengthForRequestIs("/app/en/", "some token replacement".getBytes().length);
+	}
+	
 }

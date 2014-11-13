@@ -14,7 +14,7 @@ public class JndiTokenFinder
 	}
 
 	/* this constructor is only used for testing */
-	protected JndiTokenFinder(Context appServerContext) {
+	public JndiTokenFinder(Context appServerContext) {
 		this.appServerContext = appServerContext;
 	}
 

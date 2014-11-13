@@ -15,13 +15,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bladerunnerjs.appserver.util.CharResponseWrapper;
+import org.bladerunnerjs.appserver.util.CommitedResponseCharResponseWrapper;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.bladerunnerjs.appserver.util.StreamTokeniser;
 
 public class TokenisingServletFilter implements Filter
 {
-//	private Logger logger;
 	private StreamTokeniser streamTokeniser = new StreamTokeniser();
 	private JndiTokenFinder tokenFinder;
 	private final List<String> validExtensions = Arrays.asList(".xml", ".json", ".html", ".htm", ".jsp", "/");
@@ -40,7 +39,7 @@ public class TokenisingServletFilter implements Filter
 	}
 	
 	/* this should only be used for testing */
-	protected TokenisingServletFilter(JndiTokenFinder tokenFinder) throws ServletException
+	public TokenisingServletFilter(JndiTokenFinder tokenFinder) throws ServletException
 	{
 		this.tokenFinder = tokenFinder;
 	}
@@ -49,7 +48,6 @@ public class TokenisingServletFilter implements Filter
 	public void init(FilterConfig filterConfig)
 	{
 		contextPath = filterConfig.getServletContext().getContextPath();
-//		logger = brjs.logger(LoggerType.FILTER, TokenisingServletFilter.class);
 	}
 	
 	@Override
@@ -67,19 +65,16 @@ public class TokenisingServletFilter implements Filter
 			String hostIdentifier = httpRequest.getRequestURL().toString().replaceAll(contextPath + ".*$", "");
 			String requestUri = hostIdentifier + parentRequestPath;
 			ServletOutputStream out = response.getOutputStream();
-			CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
+			CommitedResponseCharResponseWrapper responseWrapper = new CommitedResponseCharResponseWrapper((HttpServletResponse) response);
 			chain.doFilter(request, responseWrapper);
 			
 			try
 			{
-//				logger.debug("processing and replacing JNDI tokens within response.");
-				
 				StringBuffer filteredResponse = streamTokeniser.replaceTokens(responseWrapper.getReader(), tokenFinder, requestUri);
 				byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
-				if (!response.isCommitted()) {
-					response.setContentLength(filteredData.length);
-					out.write(filteredData);
-				}
+				response.setContentLength(filteredData.length);
+				out.write(filteredData);
+				response.flushBuffer();
 			}
 			catch(Exception e)
 			{
@@ -88,8 +83,6 @@ public class TokenisingServletFilter implements Filter
 		}
 		else
 		{
-//			logger.debug("bundler token replacement not applicable for this resource.");
-			
 			chain.doFilter(request, response);
 		}
 	}
