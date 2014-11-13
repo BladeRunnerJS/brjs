@@ -3,31 +3,15 @@ package org.bladerunnerjs.plugin.plugins.bundlers.inline;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin.Messages;
 
 public class InlineTagHandlerPlugin extends AbstractTagHandlerPlugin {
-
-	private Logger logger;
 	
 	private static String FILE_ATTRIBUTE = "file";
 	
@@ -38,7 +22,6 @@ public class InlineTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
