@@ -267,7 +267,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		{
 			globalizedModules.add(dependentSourceModule);
 			String sourceModuleClassName = dependentSourceModule.getPrimaryRequirePath().replaceAll("/", ".").replace("-", "_");
-			return sourceModuleClassName + " = require('" + dependentSourceModule.getPrimaryRequirePath() + "');\n";
+			return "\t" + sourceModuleClassName + " = require('" + dependentSourceModule.getPrimaryRequirePath() + "');\n";
 		}
 		return "";
 	}
@@ -281,7 +281,9 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
 		}
 		
-		return output.toString();
+		String globalizedSourceModules = output.toString();
+		
+		return (globalizedSourceModules.length() == 0) ? "" : "function globalizeSourceModules() {\n" + globalizedSourceModules + "}\nglobalizeSourceModules();\n";
 	}
 	
 	

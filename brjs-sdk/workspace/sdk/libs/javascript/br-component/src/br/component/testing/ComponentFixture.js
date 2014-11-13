@@ -98,6 +98,14 @@ ComponentFixture.prototype.addViewFixtureHandlers = function(viewHandlersMap) {
 	this.m_oViewFixture.addViewHandlers(viewHandlersMap);
 };
 
+/**
+ * Set the selector mappings to use with the view fixture. This method proxies the call to the
+ *  {@link module:br/test/ViewFixture#setSelectorMappings} method.
+ * @param {Object} selectorMappings Map of selector mappings.
+ */
+ComponentFixture.prototype.setSelectorMappings = function(selectorMappings) {
+	this.m_oViewFixture.setSelectorMappings(selectorMappings);
+};
 
 /**
  * ComponentFixture handles the 'opened' property.

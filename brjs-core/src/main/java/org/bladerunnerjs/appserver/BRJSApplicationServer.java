@@ -45,6 +45,7 @@ public class BRJSApplicationServer implements ApplicationServer
 	private ContextHandlerCollection contexts;
 	private Map<App,WebAppContext> contextMap;
 	private AppDeploymentFileWatcher fileWatcher;
+	private long fileWatcherInterval = -1;
 	
 	public BRJSApplicationServer(BRJS brjs, int port)
 	{
@@ -79,7 +80,7 @@ public class BRJSApplicationServer implements ApplicationServer
 		
 		MemoizedFile appsDir = brjs.getMemoizedFile(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
 		MemoizedFile sysAppsDir = brjs.systemApp("no-such-app").dir().getParentFile();
-		fileWatcher = new AppDeploymentFileWatcher(brjs, this, appsDir, sysAppsDir);
+		fileWatcher = new AppDeploymentFileWatcher(brjs, this, fileWatcherInterval, appsDir, sysAppsDir);
 		
 		fileWatcher.start();
 		server.start();
@@ -120,6 +121,10 @@ public class BRJSApplicationServer implements ApplicationServer
 		ServletHolder servletHolder = new ServletHolder(servlet);
 		appContext.addServlet(servletHolder, servletPath);
 		servletHolder.start();
+	}
+	
+	public void setAppDeploymentWatcherInterval(long interval) {
+		this.fileWatcherInterval = interval;
 	}
 
 	@Override

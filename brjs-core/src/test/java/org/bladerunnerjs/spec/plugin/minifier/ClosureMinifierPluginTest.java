@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class ClosureMinifierPluginTest extends SpecTest
 {
@@ -16,6 +16,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	
 	private StringBuffer response = new StringBuffer();
 	private String unminifiedContent;
+	private String unminifiedContentReserved;
 	private String minifyWhitespaceContent;
 	private String minifySimpleContent;
 	private String minifyAdvancedContent;
@@ -39,6 +40,24 @@ public class ClosureMinifierPluginTest extends SpecTest
 		minifyWhitespaceContent = "function hello(name){alert(\"Hello, \"+name)}hello(\"New user\")";
 		minifySimpleContent		= "function(a,b,c){alert(\"Hello, New user\")";
 		minifyAdvancedContent	= "alert(\"Hello, New user\")";
+		
+		// for closure compiler test using reserved words as var names
+		unminifiedContentReserved = "function hello(name) {\n" +
+				"  var while = 1000;\n" +
+				"  alert('Hello, ' + name + ' ' + while);\n" +
+				"}\n" +
+				"hello('New user');\n" +
+				"\n";
+	}
+	
+	@Test
+	public void closureMinifierThrowsExceptionWhenReservedWordsAreVariableNames() throws Exception
+	{
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1", unminifiedContentReserved);
+		when(aspect).requestReceivedInDev("js/prod/closure-whitespace/bundle.js", response);
+		then(exceptions).verifyException(ContentProcessingException.class);
 	}
 	
 	@Test

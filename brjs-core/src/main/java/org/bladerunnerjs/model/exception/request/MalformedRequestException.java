@@ -1,5 +1,9 @@
 package org.bladerunnerjs.model.exception.request;
 
+/**
+ * Thrown when the requested content plugin does not exist. 
+*/
+
 public class MalformedRequestException extends RequestHandlingException
 {
 

@@ -1,5 +1,9 @@
 package org.bladerunnerjs.model.exception;
 
+/**
+ * Thrown when the required configuration could not be resolved.
+*/
+
 public class ConfigException extends Exception
 {
 	private static final long serialVersionUID = 1L;
@@ -13,6 +17,6 @@ public class ConfigException extends Exception
 	}
 
 	public ConfigException(String message, Exception e) {
-		super(message, e);
+		super(message + "; " + e.getMessage(), e);
 	}
 }

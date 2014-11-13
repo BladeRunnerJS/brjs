@@ -260,6 +260,21 @@ ElementUtility.setInnerHtml = function(element, htmlToSet) {
 };
 
 /**
+ * Sets the text contents of the specified element in an efficient way. This function should only be used for setting
+ *  plain text contents.
+ *
+ * @param {Element} element The element on which to set the new text content.
+ * @param {String} textToSet Text content to set on the element.
+ */
+ElementUtility.setNodeText = function(element, textToSet) {
+	if (!element.firstChild) {
+		element.appendChild(document.createTextNode(textToSet));
+	} else {
+		element.firstChild.nodeValue = textToSet;
+	}
+};
+
+/**
  * Removes the specified child from its parent.
  *
  * @param {Element} childElement The child to remove.

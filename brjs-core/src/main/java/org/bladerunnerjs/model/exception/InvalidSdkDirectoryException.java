@@ -1,9 +1,13 @@
 package org.bladerunnerjs.model.exception;
 
+/**
+ * Thrown when the specified directory is not a valid SDK.
+*/
+
 public class InvalidSdkDirectoryException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
-	public InvalidSdkDirectoryException(String msg) {
-		super(msg);
-	}
+	public InvalidSdkDirectoryException(String message) {
+		super(message);
+	}	
 }

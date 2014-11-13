@@ -3,6 +3,11 @@ package org.bladerunnerjs.model.exception.command;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.plugin.CommandPlugin;
 
+/**
+ * Thrown when the specified node already exists. 
+*/ 
+
+
 public class NodeAlreadyExistsException extends CommandArgumentsException {
 	private static final long serialVersionUID = 1L;
 	

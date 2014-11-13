@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 public class FileModificationWatcherThreadTest
 {
-	private static final int MAX_UPDATE_CHECKS = 100;
+	private static final int MAX_UPDATE_CHECKS = 300; // 300 x 200ms (wait 1 minute before failing)
 	private static final int THREAD_SLEEP_INTEVAL = 200;
 	
 	
