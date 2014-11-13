@@ -336,17 +336,11 @@ public class TestRunner {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	private boolean isDefaultBladeset(MemoizedFile path) {
-		if (path.toString().contains("/")) 
-			return isMainAppFolder(path, "/");
-		else 
-			return isMainAppFolder(path, "\\");
-	}
-
-	private boolean isMainAppFolder(MemoizedFile path, String separator) {
-		int indexOfApps = path.toString().indexOf(APPS_DIR + separator);
-		String pathAfterApps = path.toString().substring(indexOfApps + (APPS_DIR + separator).length());
-		if (pathAfterApps.contains(separator))
+		int indexOfApps = path.toString().indexOf(APPS_DIR + path.separator);
+		String pathAfterApps = path.toString().substring(indexOfApps + (APPS_DIR + path.separator).length());
+		if (pathAfterApps.contains(path.separator))
 			return false;
 		return true;
 	}
