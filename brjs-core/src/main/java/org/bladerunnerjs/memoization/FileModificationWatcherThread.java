@@ -2,11 +2,9 @@ package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,25 +23,31 @@ public class FileModificationWatcherThread extends Thread
 	
 	private Path directoryToWatch;
 	private FileModificationRegistry fileModificationRegistry;
+
+	private WatchService fileWatcherService;
+
+	private Map<Path,WatchKey>  watchKeys;
 	
 	public FileModificationWatcherThread(BRJS brjs) throws IOException
 	{
+		this(brjs, null);
+	}
+	
+	protected FileModificationWatcherThread(BRJS brjs, WatchService fileWatcherService)
+	{
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().toPath();
+		this.fileWatcherService = fileWatcherService;
 	}
 	
 	@Override
 	public void run()
 	{
 		Thread.currentThread().setName(THREAD_IDENTIFIER);
-		WatchService watchService = null;
-		Map<Path,WatchKey> watchKeys = new HashMap<>();
 		try {
-			watchService = FileSystems.getDefault().newWatchService();
-			addWatchKeysForNestedDirs(watchService, watchKeys, directoryToWatch.toFile());
-    		
+    		init();
     		while (!isInterrupted()) {
-    			checkForUpdates(watchService, watchKeys);
+    			checkForUpdates();
     			Thread.sleep(THREAD_SLEEP_INTERVAL);
     		}
 		} catch (InterruptedException ex) {
@@ -51,16 +55,37 @@ public class FileModificationWatcherThread extends Thread
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
-		
+		finally {
+			tearDown();
+		}
+	}
+
+	protected void init() throws IOException {
+		if (fileWatcherService == null) {
+			fileWatcherService = new WatchService();
+		}
+		watchKeys = new HashMap<>();
+		addWatchKeysForNestedDirs(directoryToWatch.toFile());
+	}
+	
+	protected void checkForUpdates() throws IOException
+	{
+		List<Path> watchPaths = new ArrayList<>(watchKeys.keySet()); // create a duplicate so we can change the underlying map as we iterate over it
+		for (Path watchPath : watchPaths) {
+			WatchKey watchKey = watchKeys.get(watchPath);
+			pollWatchKeyForEvents(watchKeys, watchPath, watchKey);
+		}
+	}
+	
+	protected void tearDown() {
 		for (WatchKey watchKey : watchKeys.values()) {
 			watchKey.cancel();
 		}
-		
 		Thread.interrupted();
 		watchKeys.clear();
 		try
 		{
-			if (watchService != null) watchService.close();
+			fileWatcherService.close();
 		}
 		catch (IOException ex)
 		{
@@ -68,20 +93,10 @@ public class FileModificationWatcherThread extends Thread
 		}
 	}
 
-	private void checkForUpdates(WatchService watchService, Map<Path,WatchKey> watchKeys) throws IOException
-	{
-		List<Path> watchPaths = new ArrayList<>(watchKeys.keySet()); // create a duplicate so we can change the underlying map as we iterate over it
-		for (Path watchPath : watchPaths) {
-			WatchKey watchKey = watchKeys.get(watchPath);
-			pollWatchKeyForEvents(watchService, watchKeys, watchPath, watchKey);
-		}
-	}
-
-	private void pollWatchKeyForEvents(WatchService watchService, Map<Path,WatchKey> watchKeys, Path watchPath, WatchKey watchKey) throws IOException
+	private void pollWatchKeyForEvents(Map<Path,WatchKey> watchKeys, Path watchPath, WatchKey watchKey) throws IOException
 	{
 		for (WatchEvent<?> event: watchKey.pollEvents()) {
 	        WatchEvent.Kind<?> kind = event.kind();
-	        
 	        if (kind == OVERFLOW) {
 	            continue;
 	        }
@@ -94,7 +109,7 @@ public class FileModificationWatcherThread extends Thread
             
             File childFile = child.toFile();
 			if (kind == ENTRY_CREATE && childFile.isDirectory()) {
-            	watchKeys.put( child , createWatchKeyForDir(watchService, child) );
+            	watchKeys.put( child , fileWatcherService.createWatchKeyForDir(child) );
             }
             
             fileModificationRegistry.incrementFileVersion(childFile);
@@ -105,20 +120,16 @@ public class FileModificationWatcherThread extends Thread
 		}
 	}
 
-	private void addWatchKeysForNestedDirs(WatchService watchService, Map<Path,WatchKey> watchKeys, File dir) throws IOException
+	private void addWatchKeysForNestedDirs(File dir) throws IOException
 	{
 		if (!dir.isDirectory()) {
 			return;
 		}
 		Path dirPath = dir.toPath();
-		watchKeys.put( dirPath, createWatchKeyForDir(watchService, dirPath) );
+		watchKeys.put( dirPath, fileWatcherService.createWatchKeyForDir(dirPath) );
 		for (File child : dir.listFiles()) {
-			addWatchKeysForNestedDirs(watchService, watchKeys, child);
+			addWatchKeysForNestedDirs(child);
 		}
-	}
-
-	private WatchKey createWatchKeyForDir(WatchService watchService, Path dirPath) throws IOException {
-		return dirPath.register(watchService,ENTRY_CREATE,ENTRY_DELETE,ENTRY_MODIFY);
 	}
 	
 }
