@@ -13,9 +13,9 @@ import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.*;
 
 public class AppDeploymentFileWatcher extends Thread
 {
-	
-	private static final long CHECK_INTERVAL = 100;
 
+	private static final long DEFAULT_CHECK_INTERVAL = 100;
+	
 	//TOOD: these messages arent tested in our spec tests
 	public class Messages
 	{
@@ -33,8 +33,9 @@ public class AppDeploymentFileWatcher extends Thread
 
 	private List<MemoizedFile> watchDirs;
 	private volatile boolean running = true;
+	private final long checkInterval;
 	
-	public AppDeploymentFileWatcher(BRJS brjs, BRJSApplicationServer appServer, MemoizedFile... rootWatchDirs)
+	public AppDeploymentFileWatcher(BRJS brjs, BRJSApplicationServer appServer, long checkInterval, MemoizedFile... rootWatchDirs)
 	{
 		logger = brjs.logger(this.getClass());
 		
@@ -42,6 +43,7 @@ public class AppDeploymentFileWatcher extends Thread
 		this.brjs = brjs;
 		
 		watchDirs = Arrays.asList(rootWatchDirs);
+		this.checkInterval = (checkInterval > 0) ? checkInterval : DEFAULT_CHECK_INTERVAL;
 	}
 	
 	@Override
@@ -55,7 +57,7 @@ public class AppDeploymentFileWatcher extends Thread
 				{
 					checkForNewApps(watchDir);
 				}
-				Thread.sleep(CHECK_INTERVAL);
+				Thread.sleep(checkInterval);
 			}
 			catch (InterruptedException e)
 			{
