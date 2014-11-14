@@ -10,8 +10,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class JsStyleUtility {
-		
-	// TODO: stop recursing outside of the BRJS root dir
+	
 	private static Map<String, MemoizedValue<String>> dirStyleCache = new HashMap<>();
 	
 	public static String getJsStyle(BRJS brjs, File dir) {
@@ -27,9 +26,9 @@ public class JsStyleUtility {
 			String jsStyle = readJsStyleFile(dir);
 			if(jsStyle == null){
 				File parent = dir.getParentFile();
-				if(parent == null){
+				if ( parent == null || parent.equals(brjs.dir().getUnderlyingFile().getParentFile()) ){
 					jsStyle = CommonJsSourceModule.JS_STYLE;
-				}else{
+				} else {
 					jsStyle = getJsStyle(brjs, parent);
 				}
 			}
