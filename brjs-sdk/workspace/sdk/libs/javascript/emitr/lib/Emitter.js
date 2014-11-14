@@ -16,7 +16,9 @@ function notify(listeners, args) {
 	listeners = listeners.slice();
 	for (var i = 0, len = listeners.length; i < len; ++i) {
 		var listener = listeners[i];
-		listener.callback.apply(listener.context, args);
+		try {
+			listener.callback.apply(listener.context, args);
+		} catch(e) {}
 	}
 	return true;
 }

@@ -4,7 +4,7 @@
 		// Does not work with strict CommonJS, but only CommonJS-like environments
 		// that support module.exports - like Node.
 		module.exports = factory();
-	} else if (typeof define === 'function') {
+	} else if ((typeof define === 'function') && (define.amd)) {
 		define(factory);
 	} else {
 		// For an environment with no require/define framework loaded - e.g. a browser.
@@ -14,10 +14,10 @@
 })
 ( "emitr", function() {
 	var global = Function("return this")();
-	
+
 	function realm(parentRequire) {
 		var moduleDefinitions = {}, incompleteExports = {}, moduleExports = {}, modulesFromParent = {};
-	
+
 		function derelativise(context, path) {
 			var result = (context === "" || path.charAt(0) !== '.') ? [] : context.split("/");
 			var working = path.split("/"), item;
@@ -30,7 +30,7 @@
 			}
 			return result.join("/");
 		}
-	
+
 		function define(id, definition) {
 			if (id in moduleDefinitions) {
 				throw new Error('Module ' + id + ' has already been defined.');
@@ -40,17 +40,17 @@
 			}
 			moduleDefinitions[id] = definition;
 		}
-	
+
 		function require(context, id) {
 			id = derelativise(context, id).replace(/\.js$/, "");
-	
+
 			if (moduleExports[id] != null) { return moduleExports[id]; }
-	
+
 			if (incompleteExports[id] != null) {
 				// there is a circular dependency, we do the best we can in the circumstances.
 				return incompleteExports[id].exports;
 			}
-	
+
 			var definition = moduleDefinitions[id];
 			if (definition == null) {
 				if (parentRequire != null) {
@@ -60,7 +60,7 @@
 				}
 				throw new Error("No definition for module " + id + " has been loaded.");
 			}
-	
+
 			var module = { exports: {}, id: id };
 			incompleteExports[id] = module;
 			try {
@@ -80,19 +80,19 @@
 			}
 			return moduleExports[id];
 		}
-	
+
 		return {
 			define: define, require: require.bind(null, '')
 		};
 	}
-	
+
 	var defaultRealm = realm(global.require || function(moduleId) {
 		if (global[moduleId]) {
 			return global[moduleId];
 		}
 		throw new Error("No definition for module " + moduleId + " could be found in the global top level.");
 	});
-	
+
 	var require = defaultRealm.require;
 	var _define = defaultRealm.define;
 
@@ -106,17 +106,17 @@
 	});
 	_define("emitr/lib/Emitter", function(require, exports, module) {
 		"use strict";
-		
+
 		var slice = Array.prototype.slice;
-		
+
 		var metaEvents = require('./events');
 		var MultiMap = require('./MultiMap');
-		
+
 		var getPrototypeOf = require('./shams').getPrototypeOf;
-		
+
 		///////////////////////////////////////////////////////////////////////////
 		var ONCE_FUNCTION_MARKER = {};
-		
+
 		function notify(listeners, args) {
 			if (listeners.length === 0) { return false; }
 			// take a copy in case one of the callbacks modifies the listeners array.
@@ -127,14 +127,14 @@
 			}
 			return true;
 		}
-		
+
 		function notifyRemoves(emitter, listenerRecords) {
 			for (var i = 0, len = listenerRecords.length; i < len; ++i) {
 				var listenerRecord = listenerRecords[i];
 				emitter.trigger(new metaEvents.RemoveListenerEvent(listenerRecord.eventIdentifier, listenerRecord.callback, listenerRecord.registeredContext));
 			}
 		}
-		
+
 		/**
 		 * This constructor function can be used directly, but most commonly, you will
 		 * call it from within your own constructor.
@@ -153,7 +153,7 @@
 			this._emitterListeners = new MultiMap();
 			this._emitterMetaEventsOn = false;
 		};
-		
+
 		Emitter.prototype = {
 			/**
 			 * Registers a listener for an event.
@@ -167,18 +167,18 @@
 			 */
 			on: function listen(eventIdentifier, callback, context) {
 				if (typeof callback !== 'function') { throw new TypeError("on: Illegal Argument: callback must be a function, was " + (typeof callback)); }
-		
+
 				// This allows us to work even if the constructor hasn't been called.  Useful for mixins.
 				if (this._emitterListeners === undefined) {
 					this._emitterListeners = new MultiMap();
 				}
-		
+
 				if (typeof eventIdentifier === 'function' && (eventIdentifier.prototype instanceof metaEvents.MetaEvent || eventIdentifier === metaEvents.MetaEvent)) {
 					// Since triggering meta events can be expensive, we only
 					// do so if a listener has been added to listen to them.
 					this._emitterMetaEventsOn = true;
 				}
-		
+
 				var currentListeners = this._emitterListeners.getValues(eventIdentifier);
 				currentListeners = currentListeners.filter(function(listenerRecord) {
 					return listenerRecord.registeredContext === context
@@ -189,19 +189,19 @@
 				if (currentListeners.length > 0) {
 					throw new Error('This callback is already listening to this event.');
 				}
-		
+
 				this._emitterListeners.add(eventIdentifier, {
 					eventIdentifier: eventIdentifier,
 					callback: callback,
 					registeredContext: context,
 					context: context !== undefined ? context : this
 				});
-		
+
 				if (this._emitterMetaEventsOn === true) {
 					this.trigger(new metaEvents.AddListenerEvent(eventIdentifier, callback._onceFunctionMarker === ONCE_FUNCTION_MARKER ? callback._wrappedCallback : callback, context));
 				}
 			},
-		
+
 			/**
 			 * Registers a listener to receive an event only once.
 			 *
@@ -214,9 +214,9 @@
 			 */
 			once: function(eventIdentifier, callback, context) {
 				if (typeof callback !== 'function') { throw new TypeError("onnce: Illegal Argument: callback must be a function, was " + (typeof callback)); }
-		
+
 				var off = this.off.bind(this), hasFired = false;
-		
+
 				function onceEventHandler() {
 					if (hasFired === false) {
 						hasFired = true;
@@ -228,10 +228,10 @@
 				// when off is called with the original callback.
 				onceEventHandler._onceFunctionMarker = ONCE_FUNCTION_MARKER;
 				onceEventHandler._wrappedCallback = callback;
-		
+
 				this.on(eventIdentifier, onceEventHandler, context);
 			},
-		
+
 			/**
 			 * Clear previously registered listeners.
 			 *
@@ -249,7 +249,7 @@
 			off: function off(eventIdentifier, callback, context) {
 				// not initialised - so no listeners of any kind
 				if (this._emitterListeners == null) { return false; }
-		
+
 				if (arguments.length === 0) {
 					// clear all listeners.
 					if (this._emitterMetaEventsOn === true) {
@@ -275,21 +275,21 @@
 				} else {
 					// clear a specific listener.
 					if (typeof callback !== 'function') { throw new TypeError("off: Illegal Argument: callback must be a function, was " + (typeof callback)); }
-		
+
 					var removedAListener = this._emitterListeners.removeLastMatch(eventIdentifier, function(record) {
 						var callbackToCompare = record.callback._onceFunctionMarker === ONCE_FUNCTION_MARKER ? record.callback._wrappedCallback : record.callback;
 						var callbackMatches = callback === callbackToCompare;
 						var contextMatches = record.registeredContext === context;
 						return callbackMatches && contextMatches;
 					});
-		
+
 					if (removedAListener && this._emitterMetaEventsOn === true) {
 						this.trigger(new metaEvents.RemoveListenerEvent(eventIdentifier, callback, context));
 					}
 					return removedAListener;
 				}
 			},
-		
+
 			/**
 			 * Fires an event, causing all the listeners registered for this event to be called.
 			 *
@@ -309,7 +309,7 @@
 						anyListeners = true;
 						notify(this._emitterListeners.getValues(event), args);
 					}
-		
+
 					// navigate up the prototype chain emitting against the constructors.
 					if (typeof event === 'object') {
 						var last = event, proto = getPrototypeOf(event);
@@ -328,7 +328,7 @@
 				}
 				return anyListeners;
 			},
-		
+
 			/**
 			 * Clears all listeners registered for a particular context.
 			 *
@@ -354,7 +354,7 @@
 				}
 			}
 		};
-		
+
 		/**
 		 * Copies the Emitter methods onto the provided object.
 		 *
@@ -380,15 +380,15 @@
 				destination[key] = Emitter.prototype[key];
 			}
 		};
-		
+
 		module.exports = Emitter;
-		
+
 	});
 	_define("emitr/lib/events", function(require, exports, module) {
 		"use strict";
-		
+
 		var Event = require('./Event');
-		
+
 		var MetaEvent = Event.extend(
 				/**
 				 * @memberOf Emitter.meta
@@ -453,7 +453,7 @@
 					this.data = args;
 				}
 		);
-		
+
 		/**
 		 * Where the meta events live.
 		 * @memberOf Emitter
@@ -466,14 +466,14 @@
 			RemoveListenerEvent: RemoveListenerEvent,
 			DeadEvent: DeadEvent
 		};
-		
+
 	});
 	_define("emitr/lib/Event", function(require, exports, module) {
 		"use strict";
-		
+
 		var shams = require('./shams');
 		// Event ///////////////////////////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Creates a base Event object.
 		 * @constructor
@@ -483,7 +483,7 @@
 		 * Event provides a convenient base class for events.
 		 */
 		var Event = function() {};
-		
+
 		/**
 		 * Extend provides a shorthand for creating subclasses of the class
 		 * whose constructor it is attached to.
@@ -502,7 +502,7 @@
 		Event.extend = function inlineExtend(properties) {
 			var superclass = this, subclassConstructor;
 			if (typeof superclass !== 'function') { throw new TypeError("extend: Superclass must be a constructor function, was a " + typeof superclass); }
-		
+
 			if (typeof properties === 'function') {
 				subclassConstructor = properties;
 			} else if (properties != null && properties.hasOwnProperty('constructor')) {
@@ -518,12 +518,12 @@
 					enumerable: false, value: subclassConstructor
 				}
 			});
-			
+
 			//IE8 bug. https://developer.mozilla.org/en-US/docs/ECMAScript_DontEnum_attribute
 			if (subclassConstructor.prototype.constructor !== subclassConstructor) {
 				subclassConstructor.prototype.constructor = subclassConstructor;
 			}
-		
+
 			if (typeof properties === 'object') {
 				if (shams.getPrototypeOf(properties) !== Object.prototype) {
 					throw new Error("extend: Can't extend something that already has a prototype chain.");
@@ -539,7 +539,7 @@
 					subclassConstructor[staticProperty] = superclass[staticProperty];
 				}
 			}
-		
+
 			return subclassConstructor;
 		};
 		/**
@@ -558,36 +558,36 @@
 			}
 			return result.join(" ");
 		};
-		
+
 		module.exports = Event;
 	});
 	_define("emitr/lib/shams", function(require, exports, module) {
 		// Partial 'sham' to work around ie8s lack of es5 //////////////////////////////////////////////
 		// When IE8 support is no longer needed, all these can be dropped in favour of the es5 methods.
-		
+
 		exports.getPrototypeOf = function getPrototypeOf(obj) {
 			if (Object.getPrototypeOf) {
 				var proto = Object.getPrototypeOf(obj);
-		
+
 				// to avoid bad shams...
 				if (proto !== obj) return proto;
 			}
-		
+
 			// this is what most shams do, but sometimes it's wrong.
 			if (obj.constructor && obj.constructor.prototype && obj.constructor.prototype !== obj) {
 				return obj.constructor.prototype;
 			}
-		
+
 			// this works only if we've been kind enough to supply a superclass property
 			// (which we do when we extend classes).
 			if (obj.constructor && obj.constructor.superclass) {
 				return obj.constructor.superclass.prototype;
 			}
-		
+
 			// can't find a good prototype.
 			return null;
 		};
-		
+
 		var defineProperty = function(obj, prop, descriptor) {
 			obj[prop] = descriptor.value;
 		};
@@ -599,15 +599,15 @@
 			} catch (e) {}
 		}
 		exports.defineProperty = defineProperty;
-		
+
 		exports.create = function create(proto, descriptors) {
 			var result;
-		
+
 			if(Object.create) {
 				result = Object.create(proto, descriptors);
-		
+
 				var dunderProtoPassedIn = (proto && proto.__proto__) || (descriptors && descriptors.__proto__);
-		
+
 				if(result.__proto__ && !dunderProtoPassedIn) {
 					//ES5 shim added this and it's a lie so delete it.
 					delete result.__proto__;
@@ -615,23 +615,23 @@
 			} else {
 				var myConstructor = function() {};
 				myConstructor.prototype = proto;
-		
+
 				result = new myConstructor();
-		
+
 				var keys = Object.keys(descriptors);
 				for (var i = 0; i < keys.length; ++i) {
 					var key = keys[i];
 					defineProperty(result, key, descriptors[key]);
 				}
 			}
-		
+
 			return result;
 		};
-		
+
 	});
 	_define("emitr/lib/MultiMap", function(require, exports, module) {
 		var Map = require('./Map');
-		
+
 		function MultiMap() {
 			this._map = new Map();
 		}
@@ -663,7 +663,7 @@
 			'filter': function filter(key, filterFunction) {
 				if (this._map.has(key) === false) { return; }
 				var values = this._map.get(key).filter(filterFunction);
-		
+
 				if (values.length === 0) {
 					this._map['delete'](key);
 				} else {
@@ -698,16 +698,16 @@
 				this._map['delete'](key);
 			}
 		};
-		
+
 		module.exports = MultiMap;
 	});
 	_define("emitr/lib/Map", function(require, exports, module) {
 		"use strict";
-		
+
 		var global = Function("return this")();
-		
+
 		var Map = global.Map;
-		
+
 		// Uses a map for string keys and two arrays for nonstring keys.
 		// Another alternative would have been to add a nonenumerable id to everything that was set.
 		function MapShim() {
@@ -760,15 +760,15 @@
 				}
 			}
 		};
-		
+
 		// Older versions of Firefox had Map, but didn't have forEach, so we'll use the shim there too.
 		if (Map === undefined || Map.prototype.forEach === undefined) {
 			Map = MapShim;
 		}
-		
+
 		module.exports = Map;
 	});
-	
+
 
 	return require("emitr");
 });
