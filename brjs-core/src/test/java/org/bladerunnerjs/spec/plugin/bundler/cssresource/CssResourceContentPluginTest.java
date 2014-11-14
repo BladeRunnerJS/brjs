@@ -34,6 +34,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	private List<String> requestsList;
 	private Aspect defaultAspect;
 	private Blade bladeInDefaultBladeset;
+	private File targetDir;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -47,6 +48,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			workbench = blade.workbench();
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
+			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 		
 		binaryResponseFile = FileUtils.createTemporaryFile( this.getClass() );
 		binaryResponse = new FileOutputStream(binaryResponseFile);
@@ -450,6 +452,49 @@ public class CssResourceContentPluginTest extends SpecTest {
     	then(aspect).prodRequestsForContentPluginsAre("cssresource", "")
     		.and(aspect).devRequestsForContentPluginsAre("cssresource", "")
     		.and(exceptions).verifyException(FileNotFoundException.class, "sdk/libs/javascript/sdkLib/.git");
+	}
+	
+	@Test // This is to protect against .less or .sass files referencing the file where we wont detect it
+	public void cssResourcesWithCommonExtensionsAreIncludedInContentPathsEvenIfTheyArentUsed() throws Exception {
+		given(defaultAspect).indexPageHasContent("")
+			.and(defaultAspect).containsFiles("themes/common/unusedFile.png")
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).hasProdVersion("1234");
+		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default/theme_common/unusedFile.png");
+	}
+	
+	@Test
+	public void onlyCssResourceBundlesUsedFromCssFilesAreReturnedAsContentPaths() throws Exception {
+		given(defaultAspect).indexPageHasContent("")
+			.and(defaultAspect).containsFiles("themes/common/usedFile.ext", "resources/css/usedFile.ext", "resources/css/unusedFile.ext", "resources/some-dir/unusedFile.ext")
+			.and(defaultAspect).containsFileWithContents("themes/common/style.css", ".style { background:url('usedFile.ext'); background:url('../../resources/css/usedFile.ext');")
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).hasProdVersion("1234");
+		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default_resource/resources/css/usedFile.ext", "cssresource/aspect_default/theme_common/usedFile.ext");
+	}
+	
+	@Test
+	public void cssResourcesUsedInIndexPagesShouldBeIncludedInFilteredContentPaths() throws Exception {
+		given(defaultAspect).indexPageHasContent(".style { background:url('v/1234/cssresource/aspect_default_resource/resources/css/usedFile.ext') }")
+			.and(defaultAspect).containsFiles("themes/common/usedFile.ext", "resources/css/usedFile.ext", "resources/css/unusedFile.ext", "resources/some-dir/unusedFile.ext")
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).hasProdVersion("1234");
+		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default_resource/resources/css/usedFile.ext");
+	}
+	
+	@Test
+	public void onlyCssResourceBundlesUsedFromCssFilesArePresentInTheBuiltArtifact() throws Exception {
+		given(defaultAspect).indexPageHasContent("")
+			.and(defaultAspect).containsFiles("themes/common/usedFile.ext", "resources/css/usedFile.ext", "resources/css/unusedFile.ext", "resources/some-dir/unusedFile.ext")
+    		.and(defaultAspect).containsFileWithContents("themes/common/style.css", ".style { background:url('usedFile.ext'); background:url('../../resources/css/usedFile.ext');")
+    		.and(brjs).localeForwarderHasContents("")
+    		.and(brjs).hasProdVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFile("v/1234/cssresource/aspect_default_resource/resources/css/usedFile.ext")
+			.and(targetDir).containsFile("v/1234/cssresource/aspect_default/theme_common/usedFile.ext")
+			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default_resource/resources/css/unusedFile.ext")
+			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default_resource/resources/some-dir/unusedFile.ext")
+			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default/theme_common/style.css");
 	}
 	
 }
