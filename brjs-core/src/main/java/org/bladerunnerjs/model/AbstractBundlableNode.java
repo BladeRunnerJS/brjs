@@ -13,15 +13,14 @@ import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
@@ -82,27 +81,21 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
-		LinkedAsset asset = null;
-		for(AssetContainer assetContainer : scopeAssetContainers()) {
-			LinkedAsset locationAsset = assetContainer.linkedAsset(requirePath);
-			
-			if(locationAsset != null) {
-				if(asset == null) {
-					asset = locationAsset;
-				}
-				else {
-					throw new AmbiguousRequirePathException("'" + asset.getAssetPath() + "' and '" +
-						locationAsset.getAssetPath() + "' source files both available via require path '" +
-						requirePath + "'.");
-				}
-			}			
-		}		
+		RequirePlugin requirePlugin;
+		String requirePathSuffix;
 		
-		if(asset == null) {
-			throw new UnresolvableRequirePathException(requirePath);
+		if(requirePath.contains("!")) {
+			String[] parts = requirePath.split("!");
+			String pluginName = parts[0];
+			requirePathSuffix = parts[1];
+			requirePlugin = root().plugins().requirePlugin(pluginName);
+		}
+		else {
+			requirePlugin = root().plugins().requirePlugin("default");
+			requirePathSuffix = requirePath;
 		}
 		
-		return asset;
+		return (LinkedAsset) requirePlugin.getAsset(this, requirePathSuffix);
 	}
 	
 	@Override

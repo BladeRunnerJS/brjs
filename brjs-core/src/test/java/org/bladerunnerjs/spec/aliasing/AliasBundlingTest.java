@@ -107,7 +107,7 @@ public class AliasBundlingTest extends SpecTest {
 		given(brLib).hasClasses("br/Class1", "br/Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
 			.and(aspect).hasCommonJsPackageStyle()
-			.and(aspect).classFileHasContent("Class1", "aliasRegistry.getAlias('br.alias')")
+			.and(aspect).classFileHasContent("Class1", "require('alias!br.alias')")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("br/Class2");
@@ -118,7 +118,7 @@ public class AliasBundlingTest extends SpecTest {
 		given(brLib).hasClasses("br/Class1", "br/Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.service", "br.Class2")
 			.and(aspect).hasCommonJsPackageStyle()
-			.and(aspect).classFileHasContent("Class1", "serviceRegistry.getService('br.service')")
+			.and(aspect).classRequires("Class1", "service!br.service")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("br/Class2");
@@ -128,7 +128,7 @@ public class AliasBundlingTest extends SpecTest {
 	public void anExceptionIsntThrownIfAServiceClassesReferencedByACommonJsSourceModuleDoesntExist() throws Exception {
 		given(brLib).hasClasses("br/Class1", "br/Class2")
     		.and(aspect).hasCommonJsPackageStyle()
-    		.and(aspect).classFileHasContent("Class1", "serviceRegistry.getService('br.service')")
+    		.and(aspect).classRequires("Class1", "service!br.service")
     		.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyNoOutstandingExceptions();
@@ -364,7 +364,7 @@ public class AliasBundlingTest extends SpecTest {
 							"<alias defaultClass=\"appns.Class3\" name=\"appns.alias3\"/>\n" +
 						"</aliasDefinitions>")
 			.and(aspect).indexPageRequires("appns/App")	
-			.and(aspect).classFileHasContent("appns.App", "sr.getService('appns.alias1'); sr.getService('appns.alias2'); sr.getService('appns.alias3');");	
+			.and(aspect).classFileHasContent("appns.App", "require('service!appns.alias1'); require('service!appns.alias2'); require('service!appns.alias3');");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.Class1", "appns.Class2", "appns.Class3");
 	}
@@ -390,22 +390,22 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void theAliasBlobContainsAliasDefinitionsOnlyOnceEvenIfTheyAreReferencedMultipleTimes() throws Exception {
-		given(aspect).hasClasses("appns/Class1", "appns/Class2")
-			.and(aspect).classFileHasContent("appns/Class1", "require('br/AliasRegistry').getService('the-alias');")
-			.and(aspect).classFileHasContent("appns/Class2", "require('br/AliasRegistry').getService('the-alias');")
+		given(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/Class3")
+			.and(aspect).classRequires("appns/Class1", "alias!the-alias")
+			.and(aspect).classRequires("appns/Class2", "alias!the-alias")
 			.and(brLib).hasClass("br/AliasRegistry")
-			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
-			.and(aspect).indexPageRequires("appns/Class1");
+			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class3")
+			.and(aspect).indexPageRequires("appns/Class1", "appns/Class2", "br/AliasRegistry"); 
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
-		then(response).containsText("module.exports = {'the-alias':{'class':'appns/Class1','className':'appns.Class1'}};");
+		then(response).containsText("module.exports = {'the-alias':{'class':'appns/Class3','className':'appns.Class3'}};");
 	}
 	
 	@Test
 	public void aliasesInDefaultBladesetCanBeBundled() throws Exception {
 		given(bladeInDefaultBladeset).hasClasses("appns/b1/BladeClass", "appns/b1/Class1")
-			.and(bladeInDefaultBladeset).classFileHasContent("appns/b1/BladeClass", "require('br/AliasRegistry').getService('the-alias');")
+			.and(bladeInDefaultBladeset).classRequires("appns/b1/BladeClass", "alias!the-alias")
     		.and(aspectAliasesFile).hasAlias("the-alias", "appns.b1.Class1")
-    		.and(aspect).indexPageRequires("appns/b1/BladeClass")
+    		.and(aspect).indexPageRequires("appns/b1/BladeClass", "br/AliasRegistry")
     		.and(brLib).hasClass("br/AliasRegistry");
 		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
     	then(response).containsText("module.exports = {'the-alias':{'class':'appns/b1/Class1','className':'appns.b1.Class1'}};");
@@ -416,7 +416,7 @@ public class AliasBundlingTest extends SpecTest {
 		given(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
-			.and(blade).classFileHasContent("appns/bs/b1/Class1", "aliasRegistry.getAlias('appns.bs.b1.the-alias')");
+			.and(blade).classFileHasContent("appns/bs/b1/Class1", "require('alias!appns.bs.b1.the-alias')");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2");
 	}

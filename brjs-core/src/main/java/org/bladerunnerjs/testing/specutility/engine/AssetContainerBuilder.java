@@ -223,7 +223,9 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		}
 		
 		if (dependencyClass.matches(".*?\\.(?![/\\.]).*")) { // matches '.' unless it is immediately followed by another . or a /
-			throw new RuntimeException("Requre paths should not contain '.'s.");
+			if(!dependencyClass.contains("!")) {
+				throw new RuntimeException("Requre paths should not contain '.'s.");
+			}
 		}
 		
 		String classRef = (dependencyClass.contains("/")) ? StringUtils.substringAfterLast(dependencyClass, "/") : dependencyClass;

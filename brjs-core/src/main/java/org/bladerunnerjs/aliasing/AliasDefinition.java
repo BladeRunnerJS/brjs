@@ -21,7 +21,7 @@ public class AliasDefinition {
 	
 	public String getInterfaceRequirePath() {
 		// TODO: we need to make require paths a first class concept in aliasing
-		return interfaceName.replaceAll("\\.", "/");
+		return (interfaceName == null) ? null : interfaceName.replaceAll("\\.", "/");
 	}
 	
 	public String getClassName() {
