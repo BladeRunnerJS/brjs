@@ -4,9 +4,18 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.OrFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+
 public class IO {
 	private final Map<FileAccessLimitScope, File[]> activeScopes = new HashMap<>();
-	private final SecurityManager securityManager = new BRJSSecurityManager(activeScopes);
+	private final SecurityManager securityManager;
+	private final IOFileFilter classFileAndJarFileFilter = new SuffixFileFilter( new String[] { ".class", ".jar" } );
+	
+	public IO(IOFileFilter globalFileFilter) {
+		securityManager = new BRJSSecurityManager( new OrFileFilter(classFileAndJarFileFilter, globalFileFilter), activeScopes);
+	}
 	
 	public FileAccessLimitScope limitAccessToWithin(String scopeIdentifier, File[] watchItems) {
 		return new FileAccessLimitScope(scopeIdentifier, activeScopes, watchItems);

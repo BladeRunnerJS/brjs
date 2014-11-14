@@ -3,6 +3,7 @@ package org.bladerunnerjs.model.engine;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.memoization.MemoizedFile;
@@ -20,9 +21,9 @@ import org.bladerunnerjs.utility.ObserverList;
 
 public class MockRootNode implements RootNode
 {
-	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."));
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(this, new File("."), FalseFileFilter.INSTANCE);
 	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
-	private IO io = new IO();
+	private IO io = new IO( FalseFileFilter.INSTANCE );
 	
 	@Override
 	public Node parentNode()

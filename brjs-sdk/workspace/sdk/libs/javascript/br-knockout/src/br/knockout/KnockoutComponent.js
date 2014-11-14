@@ -9,16 +9,14 @@ var br = require( 'br/Core' );
 var Errors = require('br/Errors');
 var Component = require( 'br/component/Component' );
 
-var ServiceRegistry = require('br/ServiceRegistry');
-
 /**
 * @class
 * @alias module:br/knockout/KnockoutComponent
 * @implements module:br/component/Component
-* 
+*
 * @classdesc
 * Constructs a new instance of <code>KnockoutComponent</code>.
-* 
+*
 * @param {String} sTemplateId The id of a template to render the presentation model with.
 * @param {Object} oViewModel A Knockout View Model object instance.
 */
@@ -64,7 +62,7 @@ KnockoutComponent.prototype.getElement = function() {
 /** @private */
 KnockoutComponent.prototype._getTemplate = function(sTemplateId) {
 	var eTemplateHolder;
-	var eTemplateNode = ServiceRegistry.getService("br.html-service").getHTMLTemplate(sTemplateId);
+	var eTemplateNode = require('service!br.html-service').getHTMLTemplate(sTemplateId);
 
 	if (!eTemplateNode) {
 	    throw new KnockoutComponent.TemplateNotFoundError("Template with ID "+sTemplateId+" couldn't be found");

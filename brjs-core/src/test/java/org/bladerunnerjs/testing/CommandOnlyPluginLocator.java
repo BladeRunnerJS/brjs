@@ -11,6 +11,7 @@ import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.PluginLocator;
+import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
@@ -55,6 +56,11 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	
 	@Override
 	public List<AssetLocationPlugin> getAssetLocationPlugins() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<RequirePlugin> getRequirePlugins() {
 		return Collections.emptyList();
 	}
 }

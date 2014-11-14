@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.bladerunnerjs.utility.UnicodeReader;
-import org.junit.Ignore;
 import org.junit.Test;
 
 @SuppressWarnings("resource")

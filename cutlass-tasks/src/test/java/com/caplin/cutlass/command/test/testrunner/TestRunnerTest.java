@@ -103,7 +103,7 @@ public class TestRunnerTest extends TestModelAccessor {
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.ALL);
 		TestRunResult specificUTsTestRun = testRunner.getTestResultList().get(0);
 		
-		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-unit").getAbsolutePath(), specificUTsTestRun.getTestDirectory().toString().replace("\\","/"));
+		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-unit").getAbsolutePath(), specificUTsTestRun.getTestDirectory().toString());
 	}
 	
 	@Test
@@ -115,8 +115,8 @@ public class TestRunnerTest extends TestModelAccessor {
 		TestRunResult specificATsTestRun = testRunner.getTestResultList().get(1);
 		
 		assertTrue(testRunner.getTestResultList().size() == 2);
-		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-unit").getAbsolutePath(), specificUTsTestRun.getTestDirectory().toString().replace("\\","/"));
-		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-acceptance").getAbsolutePath(), specificATsTestRun.getTestDirectory().toString().replace("\\","/"));
+		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-unit").getAbsolutePath(), specificUTsTestRun.getTestDirectory().toString());
+		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-acceptance").getAbsolutePath(), specificATsTestRun.getTestDirectory().toString());
 	}
 	
 	@Test
@@ -127,7 +127,7 @@ public class TestRunnerTest extends TestModelAccessor {
 		TestRunResult specificITsTestRun = testRunner.getTestResultList().get(0);
 		
 		assertTrue(testRunner.getTestResultList().size() == 1);
-		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-integration").getAbsolutePath(), specificITsTestRun.getTestDirectory().toString().replace("\\","/"));
+		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-integration").getAbsolutePath(), specificITsTestRun.getTestDirectory().toString());
 	}
 
 	@Test

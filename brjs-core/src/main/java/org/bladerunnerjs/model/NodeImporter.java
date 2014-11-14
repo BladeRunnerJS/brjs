@@ -76,8 +76,9 @@ public class NodeImporter {
 		tempBrjsApp.appConf().write();
 		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
 		
-		if(!JsStyleUtility.getJsStyle(sourceBladesetDir).equals(JsStyleUtility.getJsStyle(targetBladeset.dir()))) {
-			JsStyleUtility.setJsStyle(tempBrjsBladeset.root(), tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(sourceBladesetDir));
+		BRJS brjs = targetBladeset.root();
+		if(!JsStyleUtility.getJsStyle(brjs, sourceBladesetDir).equals(JsStyleUtility.getJsStyle(brjs, targetBladeset.dir()))) {
+			JsStyleUtility.setJsStyle(tempBrjsBladeset.root(), tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(brjs, sourceBladesetDir));
 		}
 		
 		renameBladeset(tempBrjsBladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix);

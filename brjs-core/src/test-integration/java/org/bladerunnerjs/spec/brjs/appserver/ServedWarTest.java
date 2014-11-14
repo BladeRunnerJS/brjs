@@ -1,13 +1,29 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
+import java.io.IOException;
+
+import javax.naming.Context;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
+import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.ServerUtility;
+import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class ServedWarTest extends SpecTest {
 	private App app;
@@ -20,18 +36,25 @@ public class ServedWarTest extends SpecTest {
 	private Aspect aspect;
 	private Aspect loginAspect;
 	private Aspect rootAspect;
+	private Context mockJndiContext;
 	
 	@Before
 	public void initTestObjects() throws Exception
 	{
+		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
+		System.setProperty("java.naming.factory.initial", "org.bladerunnerjs.appserver.filter.TestContextFactory");
+		
 		given(brjs).hasCommandPlugins(new BuildAppCommand())
 			.and(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).automaticallyFindsMinifierPlugins()
+			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement"))
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			loginAspect = app.aspect("login");
 			rootAspect = app.defaultAspect();
+			mockJndiContext = TestContextFactory.getTestContext();
+			
 	}
 	
 	@Test
@@ -113,6 +136,7 @@ public class ServedWarTest extends SpecTest {
 	public void warCommandDoesntExportFilesFromAnotherAspect() throws Exception {
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(loginAspect).containsFileWithContents("index.html", "Hello World!")
+			.and(loginAspect).containsFileWithContents("themes/noir/style.css", ".style { background:url('images/file.gif'); }")
 			.and(loginAspect).containsFileWithContents("themes/noir/images/file.gif", "** SOME GIF STUFF... **")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -120,6 +144,108 @@ public class ServedWarTest extends SpecTest {
 			.and(warServer).hasStarted();
 		when(warServer).receivesRequestFor("/app/login/v/1234/cssresource/aspect_login/theme_noir/images/file.gif", warResponse);
 		then(warResponse).textEquals("** SOME GIF STUFF... **");
+	}
+
+	@Test
+	public void correctContentLengthHeaderIsSetWhenTagsAreReplaced() throws Exception
+	{
+		given(brjs).localeForwarderHasContents("Locale Forwarder")
+    		.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuiltAsWar(brjs.dir())
+    		.and(warServer).hasWar("app1.war", "app")
+    		.and(warServer).hasStarted();
+    	then(warServer).requestForUrlReturns("/app/en/", "prod replacement")
+    		.and(warServer).contentLengthForRequestIs("/app/en/", "prod replacement".getBytes().length);	
+	}
+	
+	@Test
+	public void jndiTokensAreReplaced() throws Exception
+	{
+		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
+			.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuiltAsWar(brjs.dir())
+    		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
+    		.and(warServer).hasStarted();
+			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
+		then(warServer).requestForUrlReturns("/app/en/", "some token replacement");
+	}
+	
+	@Test
+	public void correctContentLengthIsSetWhenJNDITokensAreReplaced() throws Exception
+	{
+		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(app).hasBeenPopulated()
+    		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuiltAsWar(brjs.dir())
+    		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
+    		.and(warServer).hasStarted();
+			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
+    	then(warServer).requestForUrlReturns("/app/en/", "some token replacement")
+    		.and(warServer).contentLengthForRequestIs("/app/en/", "some token replacement".getBytes().length);
+	}
+	
+	@Test
+	public void correctContentLengthIsSetWhenJNDITokensAreReplacedAndADownstreamFilterCommitsTheResponseEarly() throws Exception
+	{
+		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(app).hasBeenPopulated()
+    		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuiltAsWar(brjs.dir())
+    		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)), new MockCommitResponseFilter())
+    		.and(warServer).hasStarted();
+			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
+    	then(warServer).requestForUrlReturns("/app/en/", "some token replacement")
+    		.and(warServer).contentLengthForRequestIs("/app/en/", "some token replacement".getBytes().length);
+	}
+	
+	@Ignore //TODO: why cant we use real JNDI (a non mock naming context) in tests?
+	@Test
+	public void jndiTokensCanBeReplacedInAStandaloneWebserverWithoutAMockNamingContext() throws Exception {
+		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
+		System.setProperty("java.naming.factory.initial", "org.eclipse.jetty.jndi.InitialContextFactory");
+		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
+		
+		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+    		.and(app).hasBeenPopulated()
+    		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuiltAsWar(brjs.dir());
+		
+		// taken from http://www.eclipse.org/jetty/documentation/current/jndi-embedded.html
+		warServer = new Server(appServerPort);
+        WebAppContext webapp = new WebAppContext();
+        webapp.setContextPath("/");
+        webapp.setWar(brjs.workingDir().file("app1.war").getAbsolutePath());
+        warServer.setHandler(webapp);
+        new EnvEntry(warServer, "SOME.TOKEN", "some token replacement", false);
+ 
+        given(warServer).hasStarted();
+        then(warServer).requestForUrlReturns("/en/", "some token replacement");
+	}
+	
+	
+	
+	
+	private class MockCommitResponseFilter implements Filter {
+		@Override
+		public void init(FilterConfig filterConfig) throws ServletException
+		{
+		}
+		@Override
+		public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
+		{
+			response.flushBuffer();
+			chain.doFilter(request, response);
+		}
+		@Override
+		public void destroy()
+		{			
+		}
 	}
 	
 }

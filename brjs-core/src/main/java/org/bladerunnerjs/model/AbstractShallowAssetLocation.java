@@ -11,7 +11,7 @@ public abstract class AbstractShallowAssetLocation extends TheAbstractAssetLocat
 	}
 	
 	@Override
-	protected List<MemoizedFile> getCandidateFiles() {
+	public List<MemoizedFile> getCandidateFiles() {
 		return rootNode.getMemoizedFile(dir()).files();
 	}
 }

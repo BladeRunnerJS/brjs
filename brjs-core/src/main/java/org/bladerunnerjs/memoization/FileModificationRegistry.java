@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.bladerunnerjs.model.engine.RootNode;
 
 
 public class FileModificationRegistry
@@ -14,9 +17,13 @@ public class FileModificationRegistry
 	private Map<String,FileVersion> lastModifiedMap = new HashMap<String,FileVersion>();
 	private File rootFile;
 	private Map<File, File> canonicalFileMap = new HashMap<>();
+	private IOFileFilter globalFileFilter;
+	private RootNode rootNode;
 
-	public FileModificationRegistry(File rootFile) { 
-		this.rootFile = getCanonicalFile(rootFile); 
+	public FileModificationRegistry(RootNode rootNode, File rootFile, IOFileFilter globalFileFilter) {
+		this.rootFile = getCanonicalFile(rootFile);
+		this.globalFileFilter = globalFileFilter;
+		this.rootNode = rootNode;
 	}
 	
 	public long getFileVersion(File file) {
@@ -26,11 +33,12 @@ public class FileModificationRegistry
 	public FileVersion getFileVersionObject(File file) {
 		return getOrCreateVersionValue(file);
 	}
-
+	
 	public void incrementFileVersion(File file) {
-		while (file != null && !file.equals(rootFile)) {
-			getOrCreateVersionValue(file).incrememntValue();
-			file = file.getParentFile();
+		if (globalFileFilter.accept(file)) {
+			incrementAllFileVersions();
+		} else {
+			incrementFileAndParentVersion(file);
 		}
 	}
 	
@@ -58,6 +66,18 @@ public class FileModificationRegistry
 		}
 	}
 	
+	private  void incrementAllFileVersions() {
+		for (FileVersion version : lastModifiedMap.values()) {
+			version.incrememntValue();
+		}
+	}
+	
+	private void incrementFileAndParentVersion(File file) {
+		while (file != null && !file.equals(rootFile)) {
+			getOrCreateVersionValue(file).incrememntValue();
+			file = file.getParentFile();
+		}
+	}
 	
 	private FileVersion getOrCreateVersionValue(File file)
 	{
@@ -88,7 +108,8 @@ public class FileModificationRegistry
 			}
 			catch (IOException e)
 			{
-				throw new RuntimeException("Unable to calculate canonical file for the path: " + file.getAbsolutePath());
+				canonicalFile = file.getAbsoluteFile();
+				rootNode.logger(this.getClass()).warn("Unable to calculate canonical file for the path: " + file.getAbsolutePath());
 			}
 			canonicalFileMap.put(file, canonicalFile);
 		} else {

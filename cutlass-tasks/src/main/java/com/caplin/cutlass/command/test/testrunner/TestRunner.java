@@ -62,6 +62,8 @@ public class TestRunner {
 	private static final String XML_TEST_RESULTS_DIR = "test-results/xml";
 	private static final String HTML_TEST_RESULTS_DIR = "test-results/html";
 	
+	private static final String APPS_DIR = "apps";
+	
 	private List<Process> childProcesses = new ArrayList<Process>();
 	private List<ProcessLogger> childLoggers = new ArrayList<ProcessLogger>();
 	private File jsTestDriverJar;
@@ -313,7 +315,8 @@ public class TestRunner {
 			logger.warn(failureMessage);
 			throw new IOException(failureMessage);
 		}
-		
+		if (isDefaultBladeset(directory))
+			directory = brjs.getMemoizedFile( new File(directory, "blades") );
 		MemoizedFile[] dirContents = directory.listFiles();
 		reverseDirectoryContentsIfContainsTestDir(dirContents);
 		for(MemoizedFile file : dirContents) {
@@ -331,6 +334,15 @@ public class TestRunner {
 				}
 			}
 		}
+	}
+	
+	@SuppressWarnings("static-access")
+	private boolean isDefaultBladeset(MemoizedFile path) {
+		int indexOfApps = path.toString().indexOf(APPS_DIR + path.separator);
+		String pathAfterApps = path.toString().substring(indexOfApps + (APPS_DIR + path.separator).length());
+		if (pathAfterApps.contains(path.separator))
+			return false;
+		return true;
 	}
 	
 	private void reverseDirectoryContentsIfContainsTestDir(MemoizedFile[] dirContents) throws Exception

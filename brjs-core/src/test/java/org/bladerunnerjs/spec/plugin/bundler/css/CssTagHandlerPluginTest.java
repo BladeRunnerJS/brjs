@@ -1,6 +1,5 @@
 package org.bladerunnerjs.spec.plugin.bundler.css;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
@@ -12,7 +11,6 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin.Messages;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,8 +25,6 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade;
 	private BladeWorkbench workbench;
-	private Aspect defaultAspect;
-	private File targetDir;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -36,7 +32,6 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		app = brjs.app("app1");
 		appConf = app.appConf();
 		aspect = app.aspect("default");
-		defaultAspect = app.defaultAspect();
 		commonTheme = aspect.file("themes/common");
 		standardTheme = aspect.file("themes/standard");
 		blade = app.bladeset("bs").blade("b1");
@@ -44,7 +39,6 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
-		targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test
@@ -459,18 +453,6 @@ public class CssTagHandlerPluginTest extends SpecTest {
     			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant/bundle.css\"/>",
     			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en/bundle.css\"/>",
     			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en_GB/bundle.css\"/>");
-	}
-	
-	@Test
-	public void onlyCssBundlesUsedFromATagHandlerArePresentInTheBuiltArtifact() throws Exception {
-		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
-			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
-			.and(brjs).localeForwarderHasContents("")
-			.and(brjs).hasProdVersion("1234")
-			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "v/1234/css/usedtheme/bundle.css")
-			.and(targetDir).containsFile("v/1234/css/usedtheme/bundle.css")
-			.and(targetDir).doesNotContainFile("v/1234/css/unusedtheme/bundle.css");
 	}
 	
 }

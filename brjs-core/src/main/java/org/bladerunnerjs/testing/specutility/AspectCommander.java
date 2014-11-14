@@ -157,4 +157,5 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 
 		return commanderChainer;
 	}
+	
 }

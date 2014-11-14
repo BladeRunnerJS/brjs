@@ -3,14 +3,19 @@ package org.bladerunnerjs.plugin.plugins.bundlers.cssresource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
@@ -18,6 +23,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
@@ -31,6 +37,8 @@ import org.bladerunnerjs.plugin.BinaryResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.css.CssAssetPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.css.CssRewriter;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -91,24 +99,89 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException {
+		List<String> contentPaths = new ArrayList<>();
+		
 		try
 		{
-			return getValidContentPaths(bundleSet, locales);
+			for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers())
+			{
+				contentPaths.addAll( getValidContentPaths(assetContainer) );
+			}
 		}
 		catch (MalformedTokenException | ConfigException ex)
 		{
 			throw new ContentProcessingException(ex);
 		}
+		
+		return contentPaths;
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
+	public List<String> getUsedContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
+	{
+		List<String> validContentPaths = getValidContentPaths(bundleSet, requestMode, locales);
+		List<String> usedContentPaths = new ArrayList<>();
+		
+		// This is to protect against .less or .sass files referencing the file where we wont detect it since we only look at .css files
+		for (String imageExtension : ImageIO.getReaderFormatNames()) {
+			List<String> foundContentPaths = new ArrayList<>();
+			for (String contentPath : validContentPaths) {
+				if (contentPath.endsWith(imageExtension)) {
+					foundContentPaths.add(contentPath);
+				}
+			}
+			usedContentPaths.addAll(foundContentPaths);
+			validContentPaths.removeAll(foundContentPaths);			
+		}
+		
+		for (Asset cssAsset : bundleSet.getResourceFiles(brjs.plugins().assetPlugin(CssAssetPlugin.class))) {
+			filterUsedContentPaths(cssAsset, validContentPaths, usedContentPaths, true);
+			if (validContentPaths.isEmpty()) {
+				break;
+			}
+		}
+		
+		for (Asset seedAsset : bundleSet.getBundlableNode().seedAssets()) {
+			filterUsedContentPaths(seedAsset, validContentPaths, usedContentPaths, false);
+			if (validContentPaths.isEmpty()) {
+				break;
+			}
+		}
+		
+		return usedContentPaths;
+	}
+
+	private void filterUsedContentPaths(Asset asset, List<String> validContentPaths, List<String> usedContentPaths, boolean rewriteUrls) throws ContentProcessingException {
+		List<String> foundContentPaths = new ArrayList<>();
+		String assetContents = (rewriteUrls) ? getCssAssetFileContents(asset) : readAssetToString(asset);
+		for (String contentPath : validContentPaths) {
+			if (assetContents.contains(contentPath)) {
+				foundContentPaths.add(contentPath);
+			}
+		}
+		usedContentPaths.addAll(foundContentPaths);
+		validContentPaths.removeAll(foundContentPaths);
+	}
+	
+	private String readAssetToString(Asset seedAsset) throws ContentProcessingException
+	{
 		try
 		{
-			return getValidContentPaths(bundleSet, locales);
+			return IOUtils.toString(seedAsset.getReader());
 		}
-		catch (MalformedTokenException | ConfigException ex)
+		catch (IOException ex)
+		{
+			throw new ContentProcessingException(ex);
+		}
+	}
+	
+	private String getCssAssetFileContents(Asset cssAsset) throws ContentProcessingException {
+		try
+		{
+			return new CssRewriter(cssAsset).getRewrittenFileContents();
+		}
+		catch (ContentProcessingException | IOException ex)
 		{
 			throw new ContentProcessingException(ex);
 		}
@@ -223,18 +296,6 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 		return false;
 	}
-
-	private List<String> getValidContentPaths(BundleSet bundleSet, Locale... locales) throws MalformedTokenException, ConfigException {
-		List<String> contentPaths = new ArrayList<>();
-		
-		for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers())
-		{
-			contentPaths.addAll( getValidContentPaths(assetContainer) );
-		}
-		
-		return contentPaths;
-	}
-
 	
 	private List< String> getValidContentPaths(AssetContainer assetContainer) throws MalformedTokenException, ConfigException
 	{		

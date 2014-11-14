@@ -16,6 +16,7 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -37,8 +38,8 @@ import com.google.common.base.Predicate;
 public class WebappTester 
 {
 	
-	private static final int MAX_POLL_REQUESTS = 30;
-	private static final int POLL_INTERVAL = 1000;
+	private static final int MAX_POLL_REQUESTS = 100;
+	private static final int POLL_INTERVAL = 500;
 	
 	private int defaultSocketTimeout = 9999999;
 	private int defaultConnectionTimeout = 9999999;
@@ -55,6 +56,7 @@ public class WebappTester
 	
 	public String requestLocale = "";
 	private String defaultFileCharacterEncoding;
+	private int contentLength;
 	
 	public WebappTester(BRJS brjs, File filePathBase, int defaultSocketTimeout, int defaultConnectionTimeout)
 	{
@@ -102,6 +104,14 @@ public class WebappTester
 		statusText = httpResponse.getStatusLine().getReasonPhrase();
 		response = EntityUtils.toString(httpResponse.getEntity());
 		contentType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
+		
+		Header[] headers = httpResponse.getAllHeaders();
+		for(Header h:headers){
+			if (h.getName().equals("Content-Length")) {
+				contentLength = Integer.parseInt( h.getValue() );
+			}
+		}
+		
 		Charset charset = ContentType.getOrDefault(httpResponse.getEntity()).getCharset();
 		characterEncoding = (charset == null) ? "" : charset.displayName();
 		EntityUtils.consume(httpResponse.getEntity());
@@ -188,6 +198,12 @@ public class WebappTester
 		if(!contentType.equals(this.contentType)) {
 			assertEquals("Content types don't match.", contentTypeText(contentType, null), contentTypeText(this.contentType, response));
 		}
+		return this;
+	}
+	
+	public WebappTester contentLengthIs(int contentLength)
+	{
+		assertEquals("Content lengths don't match.", contentLength, this.contentLength);
 		return this;
 	}
 	

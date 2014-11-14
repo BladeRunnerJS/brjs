@@ -52,7 +52,7 @@ public class TemplateUtility
 			
 			FileUtils.moveDirectoryContents(tempDir, node.dir());
 			
-			if(!JsStyleUtility.getJsStyle(node.dir()).equals(CommonJsSourceModule.JS_STYLE)) {
+			if(!JsStyleUtility.getJsStyle(node.root(), node.dir()).equals(CommonJsSourceModule.JS_STYLE)) {
 				JsStyleUtility.setJsStyle(node.root(), node.dir(), CommonJsSourceModule.JS_STYLE);
 			}
 			

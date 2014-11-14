@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.utility.AppMetadataUtility;
@@ -21,20 +22,9 @@ public class BaseTagHandlePlugin extends AbstractTagHandlerPlugin
 	}
 
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException
+	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException
 	{
-		writeTagContent( writer, AppMetadataUtility.getPathRelativeToIndexPage("") );
-	}
-
-	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException
-	{
-		writeTagContent( writer, AppMetadataUtility.getPathRelativeToIndexPage("") );
-	}
-	
-	public void writeTagContent(Writer writer, String href) throws IOException
-	{
-		writer.write("<base href=\""+href+"\"/>");
+		writer.write("<base href=\""+AppMetadataUtility.getPathRelativeToIndexPage("")+"\"/>");
 		// from https://stackoverflow.com/a/13373180/2634854
 		writer.write("<!--[if IE]><script type=\"text/javascript\">\n"+
 					"// Fix IE ignoring relative base tags.\n"+

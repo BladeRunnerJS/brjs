@@ -133,6 +133,8 @@ function ViewFixture(viewSelector) {
 		onKeyDown: new OnKeyDown(),
 		top: new Top()
 	};
+
+	this.m_mSelectorMappings = {};
 }
 br.inherit(ViewFixture, Fixture);
 
@@ -180,6 +182,18 @@ ViewFixture.prototype.addViewHandlers = function(viewHandlersMap) {
 	keys.forEach(function(key) {
 		this.m_mViewHandlers[key] = new (viewHandlersMap[key])();
 	}, this);
+};
+
+/**
+ * Set the selector mappings to use with this fixture.
+ * <p>This allows users to create a shorthand for a selector, so that the same selector doesn't need to be repeated
+ *  across different tests.</p>
+ * <p>Calling: <code>viewFixture.setSelectorMappings({'my-mapping': '.some .selector'});</code> then allows you to use
+ *  that mapping in the test: <code>then("form.view.(my-mapping).text = 'foo'");</code>.</p>
+ * @param {Object} selectorMappings Map of selector mappings.
+ */
+ViewFixture.prototype.setSelectorMappings = function(selectorMappings) {
+	this.m_mSelectorMappings = selectorMappings;
 };
 
 ViewFixture.prototype.setViewElement = function(viewElement) {
@@ -268,6 +282,11 @@ ViewFixture.prototype._getPropertyName = function (propertyName) {
 /** @private */
 ViewFixture.prototype._getViewElements = function(propertyName) {
 	var selector = propertyName.match(/\((.*)\)\.[^.]+/)[1];
+
+	if (typeof this.m_mSelectorMappings[selector] !== 'undefined') {
+		selector = this.m_mSelectorMappings[selector];
+	}
+
 	return jQuery(this.m_eViewElement).find(selector);
 };
 

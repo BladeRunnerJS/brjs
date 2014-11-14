@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -59,13 +60,24 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-		return generateRequiredRequestPaths(bundleSet, DEV_BUNDLE_REQUEST, locales);
-	}
-	
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-		return generateRequiredRequestPaths(bundleSet, PROD_BUNDLE_REQUEST, locales);
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException {		
+		List<String> requestPaths = new ArrayList<>();
+		String requestFormName = (requestMode == RequestMode.Prod) ? PROD_BUNDLE_REQUEST : DEV_BUNDLE_REQUEST;
+		
+		if(bundleSet.getSourceModules().size() > 0) {
+			try {
+				for(MinifierPlugin minifier : brjs.plugins().minifierPlugins()) {
+					for(String minifierSettingName : minifier.getSettingNames()) {
+						requestPaths.add(contentPathParser.createRequest(requestFormName, minifierSettingName));
+					}
+				}
+			}
+			catch(MalformedTokenException e) {
+				throw new ContentProcessingException(e);
+			}
+		}
+		
+		return requestPaths;
 	}
 	
 	@Override
@@ -74,7 +86,9 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			String minifierSetting = contentPath.properties.get("minifier-setting");
 			MinifierPlugin minifierPlugin = brjs.plugins().minifierPlugin(minifierSetting);
 			
-			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, contentAccessor, version);
+			RequestMode requestMode = (contentPath.formName.equals(PROD_BUNDLE_REQUEST)) ? RequestMode.Prod : RequestMode.Dev;
+			
+			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(requestMode, contentPath, bundleSet, contentAccessor, version);
 			ResponseContent content = new CharResponseContent( bundleSet.getBundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
 			
 			closeInputSources(inputSources);
@@ -104,33 +118,13 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			}
 		}
 	}
-
-	private List<String> generateRequiredRequestPaths(BundleSet bundleSet, String requestFormName, Locale... locales) throws ContentProcessingException {
-		List<String> requestPaths = new ArrayList<>();
-		
-		if(bundleSet.getSourceModules().size() > 0) {
-			try {
-				for(MinifierPlugin minifier : brjs.plugins().minifierPlugins()) {
-					for(String minifierSettingName : minifier.getSettingNames()) {
-						requestPaths.add(contentPathParser.createRequest(requestFormName, minifierSettingName));
-					}
-				}
-			}
-			catch(MalformedTokenException e) {
-				throw new ContentProcessingException(e);
-			}
-		}
-		
-		return requestPaths;
-	}
 	
-	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	private List<InputSource> getInputSourcesFromOtherBundlers(RequestMode requestMode, ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {
 			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
-				List<String> requestPaths = (contentPath.formName.equals(DEV_BUNDLE_REQUEST)) ? contentPlugin.getValidDevContentPaths(bundleSet) :
-					contentPlugin.getValidProdContentPaths(bundleSet);
+				List<String> requestPaths = contentPlugin.getValidContentPaths(bundleSet, requestMode);
 				ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
 				
 				for(String requestPath : requestPaths) {

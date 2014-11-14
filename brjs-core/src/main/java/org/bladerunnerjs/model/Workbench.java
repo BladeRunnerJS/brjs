@@ -34,7 +34,7 @@ public abstract class Workbench<N extends Node> extends AbstractBrowsableNode im
 	public MemoizedFile[] memoizedScopeFiles() {
 		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
 		scopeFiles.add(dir());
-		return scopeFiles.toArray(new MemoizedFile[scopeFiles.size()]);
+		return scopeFiles.toArray(new MemoizedFile[0]);
 	}
 
 	public DirNode styleResources()

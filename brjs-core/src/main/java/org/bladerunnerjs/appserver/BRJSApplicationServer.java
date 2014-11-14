@@ -22,13 +22,6 @@ public class BRJSApplicationServer implements ApplicationServer
 {
 	public static final String DEPLOY_APP_FILENAME = ".deploy";
 	
-	static
-	{
-		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
-		System.setProperty("java.naming.factory.initial", "org.eclipse.jetty.jndi.InitialContextFactory");
-		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
-	}
-	
 	public class Messages {
 		public static final String SERVER_STARTING_LOG_MSG = "%s server starting.";
 		public static final String SERVER_STOPPING_LOG_MSG = "%s server stopping.";
@@ -45,6 +38,7 @@ public class BRJSApplicationServer implements ApplicationServer
 	private ContextHandlerCollection contexts;
 	private Map<App,WebAppContext> contextMap;
 	private AppDeploymentFileWatcher fileWatcher;
+	private long fileWatcherInterval = -1;
 	
 	public BRJSApplicationServer(BRJS brjs, int port)
 	{
@@ -64,6 +58,10 @@ public class BRJSApplicationServer implements ApplicationServer
 	@Override
 	public void start() throws Exception
 	{
+		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
+		System.setProperty("java.naming.factory.initial", "org.eclipse.jetty.jndi.InitialContextFactory");
+		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
+		
 		logger.info(SERVER_STARTING_LOG_MSG, BRJS.PRODUCT_NAME);
 
 		if (ServerUtility.isPortBound(port))
@@ -79,7 +77,7 @@ public class BRJSApplicationServer implements ApplicationServer
 		
 		MemoizedFile appsDir = brjs.getMemoizedFile(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
 		MemoizedFile sysAppsDir = brjs.systemApp("no-such-app").dir().getParentFile();
-		fileWatcher = new AppDeploymentFileWatcher(brjs, this, appsDir, sysAppsDir);
+		fileWatcher = new AppDeploymentFileWatcher(brjs, this, fileWatcherInterval, appsDir, sysAppsDir);
 		
 		fileWatcher.start();
 		server.start();
@@ -120,6 +118,10 @@ public class BRJSApplicationServer implements ApplicationServer
 		ServletHolder servletHolder = new ServletHolder(servlet);
 		appContext.addServlet(servletHolder, servletPath);
 		servletHolder.start();
+	}
+	
+	public void setAppDeploymentWatcherInterval(long interval) {
+		this.fileWatcherInterval = interval;
 	}
 
 	@Override

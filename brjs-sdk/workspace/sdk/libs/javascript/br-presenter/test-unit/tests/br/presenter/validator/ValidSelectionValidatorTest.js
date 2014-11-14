@@ -2,7 +2,7 @@ ValidSelectionValidatorTest = TestCase("ValidSelectionValidatorTest");
 
 ValidSelectionValidatorTest.prototype.setUp = function()
 {
-	this.oOptions = new br.presenter.node.OptionsNodeList(["a", "b"]);
+	this.oOptions = new br.presenter.node.OptionsNodeList(["a", "b", "fOoBaR"]);
 	this.oValidSelectionValidator = new br.presenter.validator.ValidSelectionValidator(this.oOptions);
 };
 
@@ -48,4 +48,11 @@ ValidSelectionValidatorTest.prototype.test_weCanAllowInvalidSelectionsToPassVali
 	this.oValidSelectionValidator.allowInvalidSelections(true);
 	this.oValidSelectionValidator.validate("c", {}, oValidationResult);
 	assertTrue("1a", oValidationResult.isValid());
+};
+
+ValidSelectionValidatorTest.prototype.test_caseIsIgnoredWhenValidating = function()
+{
+	var oValidationResult = new br.presenter.validator.ValidationResult();
+	this.oValidSelectionValidator.validate("FOObar", {}, oValidationResult);
+	assertTrue(oValidationResult.isValid());
 };
