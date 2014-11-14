@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ThemedAssetLocation;
@@ -69,13 +70,37 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-		return getValidContentPaths(bundleSet, locales);
-	}
-	
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-		return getValidContentPaths(bundleSet, locales);
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException {
+		Set<String> contentPaths = new LinkedHashSet<>();
+		
+		try {
+			List<Locale> supportedLocales = Arrays.asList(bundleSet.getBundlableNode().app().appConf().getLocales());
+			
+			for(Asset cssAsset : bundleSet.getResourceFiles(cssAssetPlugin)) {
+				AssetLocation cssAssetLocation = cssAsset.assetLocation();
+				String themeName = (cssAssetLocation instanceof ThemedAssetLocation) ? ((ThemedAssetLocation) cssAssetLocation).getThemeName() : "common";
+				
+				Locale assetLocale = Locale.createLocaleFromFilepath(".*_", cssAsset.getAssetName());
+				
+				if(assetLocale.isEmptyLocale()) {
+					contentPaths.add(getContentPathParser().createRequest("simple-request", themeName));
+				}
+				else {
+					if(supportedLocales.contains(assetLocale)) {
+						if (!assetLocale.isCompleteLocale()) {
+							contentPaths.add(getContentPathParser().createRequest("language-request", themeName, assetLocale.getLanguageCode()));
+						} else {
+							contentPaths.add(getContentPathParser().createRequest("locale-request", themeName, assetLocale.getLanguageCode(), assetLocale.getCountryCode()));
+						}
+					}
+				}
+			}
+		}
+		catch(MalformedTokenException | ConfigException e) {
+			throw new ContentProcessingException(e);
+		}
+		
+		return new ArrayList<>(contentPaths);
 	}
 	
 	@Override
@@ -95,7 +120,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				CssRewriter processor = new CssRewriter(cssAsset);
 				
 				try {
-					String css = processor.getFileContents();
+					String css = processor.getRewrittenFileContents();
 					readerList.add(new StringReader(css));
 				} catch (IOException e) {
 					throw new ContentProcessingException(e);
@@ -130,39 +155,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		}
 		
 		return themeName;
-	}
-	
-	private List<String> getValidContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-		Set<String> contentPaths = new LinkedHashSet<>();
-		
-		try {
-			List<Locale> supportedLocales = Arrays.asList(bundleSet.getBundlableNode().app().appConf().getLocales());
-			
-			for(Asset cssAsset : bundleSet.getResourceFiles(cssAssetPlugin)) {
-				AssetLocation cssAssetLocation = cssAsset.assetLocation();
-				String themeName = (cssAssetLocation instanceof ThemedAssetLocation) ? ((ThemedAssetLocation) cssAssetLocation).getThemeName() : "common";
-				
-				Locale assetLocale = Locale.createLocaleFromFilepath(".*_", cssAsset.getAssetName());
-				
-				if(assetLocale.isEmptyLocale()) {
-					contentPaths.add(getContentPathParser().createRequest("simple-request", themeName));
-				}
-				else {
-					if(supportedLocales.contains(assetLocale)) {
-						if (!assetLocale.isCompleteLocale()) {
-							contentPaths.add(getContentPathParser().createRequest("language-request", themeName, assetLocale.getLanguageCode()));
-						} else {
-							contentPaths.add(getContentPathParser().createRequest("locale-request", themeName, assetLocale.getLanguageCode(), assetLocale.getCountryCode()));
-						}
-					}
-				}
-			}
-		}
-		catch(MalformedTokenException | ConfigException e) {
-			throw new ContentProcessingException(e);
-		}
-		
-		return new ArrayList<>(contentPaths);
 	}
 	
 }

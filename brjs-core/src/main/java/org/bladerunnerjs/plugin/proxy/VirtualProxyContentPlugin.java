@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.proxy;
 import java.util.List;
 
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -52,23 +53,17 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
 		initializePlugin();
-		return contentPlugin.getValidDevContentPaths(bundleSet, locales);
+		return contentPlugin.getValidContentPaths(bundleSet, requestMode, locales);
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getUsedContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
 		initializePlugin();
-		return contentPlugin.getValidProdContentPaths(bundleSet, locales);
-	}
-
-	@Override
-	public boolean outputAllBundles()
-	{
-		return contentPlugin.outputAllBundles();
+		return contentPlugin.getUsedContentPaths(bundleSet, requestMode, locales);
 	}
 	
 }

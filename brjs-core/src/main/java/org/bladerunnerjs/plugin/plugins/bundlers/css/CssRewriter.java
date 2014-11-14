@@ -32,7 +32,7 @@ public class CssRewriter {
 		targetPathCreator = new TargetPathCreator(cssAsset.assetLocation().root());
 	}
 	
-	public String getFileContents() throws IOException, ContentProcessingException {
+	public String getRewrittenFileContents() throws IOException, ContentProcessingException {
 		try {
 			String unprocessedCss = "";
 			
@@ -49,7 +49,7 @@ public class CssRewriter {
 		catch (Exception e) {
 			throw new ContentProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
 		}
-	}
+	}	
 	
 	public String rewriteCss(MemoizedFile cssBasePath, final CharSequence input) throws ContentProcessingException {
 		Matcher urlMatcher = URL_PATTERN.matcher(input);

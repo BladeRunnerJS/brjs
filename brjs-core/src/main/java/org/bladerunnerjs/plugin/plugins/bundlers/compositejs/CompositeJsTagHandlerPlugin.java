@@ -10,6 +10,7 @@ import java.util.Map;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
@@ -32,66 +33,10 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
-		writeTagContent(tagAttributes, true, bundleSet, locale, writer, version);
-	}
-	
-	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
-		writeTagContent(tagAttributes, false, bundleSet, locale, writer, version);
-	}	
-	
-	@Override
-	public List<String> getGeneratedDevRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
-	{
-		return getGeneratedRequests(true, tagAttributes, bundleSet, locale, version);
-	}
-	
-	@Override
-	public List<String> getGeneratedProdRequests(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
-	{
-		return getGeneratedRequests(false, tagAttributes, bundleSet, locale, version);
-	}
-	
-	@Override
-	public List<String> getDependentContentPluginRequestPrefixes()
-	{
-		return Arrays.asList( "js" );
-	}
-	
-	
-	
-	
-	
-	private List<String> getGeneratedRequests(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
-	{
-		List<String> possibleRequests = new ArrayList<String>();
-		MinifierSetting minifierSettings = new MinifierSetting(tagAttributes);
-		String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
-		App app = bundleSet.getBundlableNode().app();
-		
-		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
-			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
-				List<String> contentPaths = (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet) : contentPlugin.getValidProdContentPaths(bundleSet);
-				for (String contentPath : contentPaths) {
-					String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
-					possibleRequests.add(requestPath);
-				}
-			}
-		}
-		else {
-			String bundleRequestForm = (isDev) ? "dev-bundle-request" : "prod-bundle-request";
-			String contentPath = compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting);
-			String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
-			possibleRequests.add( requestPath );
-		}
-		return possibleRequests;
-	}
-	
-	private void writeTagContent(Map<String, String> tagAttributes, boolean isDev, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
+	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException {
 		try
 		{
-			List<String> possibleRequests = getGeneratedRequests(isDev, tagAttributes, bundleSet, locale, version);
+			List<String> possibleRequests = getGeneratedRequests(requestMode, tagAttributes, bundleSet, locale, version);
 			for (String request : possibleRequests) {
 				writer.write("<script type='text/javascript' src='" + request + "'></script>\n");
 			}
@@ -100,6 +45,42 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		{
 			throw new IOException(e);
 		}
+	}
+	
+	@Override
+	public List<String> getGeneratedContentPaths(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale) throws MalformedTokenException, ContentProcessingException
+	{
+		List<String> contentPaths = new ArrayList<String>();
+		MinifierSetting minifierSettings = new MinifierSetting(tagAttributes);
+		String minifierSetting = (requestMode == RequestMode.Dev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
+		
+		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
+			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
+				contentPaths.addAll( contentPlugin.getValidContentPaths(bundleSet, requestMode) );
+			}
+		}
+		else {
+			String bundleRequestForm = (requestMode == RequestMode.Dev) ? "dev-bundle-request" : "prod-bundle-request";
+			contentPaths.add( compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting) );
+		}
+		return contentPaths;
+	}
+	
+	@Override
+	public List<String> getDependentContentPluginRequestPrefixes()
+	{
+		return Arrays.asList( "js" );
+	}
+	
+	private List<String> getGeneratedRequests(RequestMode requestMode, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
+	{
+		List<String> requests = new ArrayList<String>();
+		App app = bundleSet.getBundlableNode().app();
+		for (String contentPath : getGeneratedContentPaths(tagAttributes, bundleSet, requestMode, locale)) {
+			String requestPath = app.createBundleRequest(requestMode, contentPath, version);
+			requests.add(requestPath);
+		}
+		return requests;
 	}
 	
 }

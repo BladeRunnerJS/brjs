@@ -136,6 +136,7 @@ public class ServedWarTest extends SpecTest {
 	public void warCommandDoesntExportFilesFromAnotherAspect() throws Exception {
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(loginAspect).containsFileWithContents("index.html", "Hello World!")
+			.and(loginAspect).containsFileWithContents("themes/noir/style.css", ".style { background:url('images/file.gif'); }")
 			.and(loginAspect).containsFileWithContents("themes/noir/images/file.gif", "** SOME GIF STUFF... **")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())

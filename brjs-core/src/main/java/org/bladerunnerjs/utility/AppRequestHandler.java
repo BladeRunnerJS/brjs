@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -135,18 +136,22 @@ public class AppRequestHandler
 		return (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 	}
 	
-	public Map<String,Map<String,String>> getTagsAndAttributesFromIndexPage(BrowsableNode browsableNode, Locale locale, String version, UrlContentAccessor contentAccessor, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
+	public Map<String,Map<String,String>> getTagsAndAttributesFromIndexPage(BrowsableNode browsableNode, Locale locale, UrlContentAccessor contentAccessor, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
 		MemoizedFile indexPage = getIndexPage(browsableNode);
 		try {
 			if ( !Arrays.asList(app.appConf().getLocales()).contains(locale) ) {
 				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
 			}
 			
+			if (!indexPage.isFile()) {
+				return new HashMap<>();
+			}
+			
 			String pathRelativeToApp = app.dir().getRelativePath(indexPage);
 			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
 			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
 			
-			return TagPluginUtility.getUsedTagsAndAttributes(indexPageContent.toString(), browsableNode.getBundleSet(), requestMode, locale, version);
+			return TagPluginUtility.getUsedTagsAndAttributes(indexPageContent.toString(), browsableNode.getBundleSet(), requestMode, locale);
 		}
 		catch (IOException | ConfigException | ModelOperationException | NoTagHandlerFoundException e) {
 			throw new ContentProcessingException(e, "Error when trying to calculate used tags in the index page for " + browsableNode.root().dir().getRelativePath(indexPage));
