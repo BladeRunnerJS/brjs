@@ -72,9 +72,11 @@ public class TokenisingServletFilter implements Filter
 			{
 				StringBuffer filteredResponse = streamTokeniser.replaceTokens(responseWrapper.getReader(), tokenFinder, requestUri);
 				byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
-				response.setContentLength(filteredData.length);
-				out.write(filteredData);
-				response.flushBuffer();
+				if (!response.isCommitted()) { // only write the content if the headers havent been commited (an error code hasnt been sent)
+					response.setContentLength(filteredData.length);
+					out.write(filteredData);
+					response.flushBuffer();
+				}
 			}
 			catch(Exception e)
 			{
