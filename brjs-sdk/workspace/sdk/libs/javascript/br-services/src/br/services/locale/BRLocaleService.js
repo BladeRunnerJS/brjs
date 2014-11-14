@@ -13,11 +13,11 @@ var ServiceRegistry;
  * @class
  * @alias module:br/services/locale/BRLocaleService
  * @implements module:br/services/locale/BRLocaleServices
- * 
+ *
  * @classdesc
  * The default locale service for BRJS apps. This class should not be constructed
  * directly, but instead used via the service registry.
- * 
+ *
  * @param {LocaleUtility} localeUtility The locale utility to use
  */
 function BRLocaleService( localeUtility ) {
@@ -26,7 +26,7 @@ function BRLocaleService( localeUtility ) {
 	} else {
 		this.localeUtility = require("br-locale-utility");
 	}
-	this.appMetaService = ServiceRegistry.getService("br.app-meta-service");
+	this.appMetaService = require('service!br.app-meta-service');
 };
 
 br.implement(BRLocaleService, LocaleService);
