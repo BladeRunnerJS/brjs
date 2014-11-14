@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
@@ -82,10 +83,14 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
 		List<String> requestPaths = new ArrayList<>();
 
+		if (requestMode == RequestMode.Prod) {
+			return (InstanceFinder.containsInstance(bundleSet.getSourceModules(), CommonJsSourceModule.class)) ? prodRequestPaths : Collections.emptyList();
+		}
+		
 		try
 		{
 			for (SourceModule sourceModule : bundleSet.getSourceModules())
@@ -102,12 +107,6 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 		}
 
 		return requestPaths;
-	}
-
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
-	{
-		return (InstanceFinder.containsInstance(bundleSet.getSourceModules(), CommonJsSourceModule.class)) ? prodRequestPaths : Collections.emptyList();
 	}
 	
 	@Override

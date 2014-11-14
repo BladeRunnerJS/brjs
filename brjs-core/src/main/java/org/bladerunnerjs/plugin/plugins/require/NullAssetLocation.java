@@ -215,4 +215,9 @@ public class NullAssetLocation implements AssetLocation {
 	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
 		// do nothing
 	}
+
+	@Override
+	public List<MemoizedFile> getCandidateFiles() {
+		return Collections.emptyList();
+	}
 }

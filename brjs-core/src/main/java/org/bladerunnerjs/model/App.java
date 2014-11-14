@@ -66,7 +66,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	@Override
 	public MemoizedFile[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new MemoizedFile[] {dir(), root().sdkJsLibsDir().dir(), BladerunnerConf.getConfigFilePath(root())};
+			scopeFiles = new MemoizedFile[] {dir(), root().sdkJsLibsDir().dir()};
 		}
 		
 		return scopeFiles;
@@ -343,12 +343,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return appRequestHandler.handleLogicalRequest(requestPath, contentAccessor);
 	}
 	
-	public String createDevBundleRequest(String contentPath, String version) throws MalformedTokenException {
-		return appRequestHandler.createRequest("bundle-request", "", version, contentPath);
-	}
-	
-	public String createProdBundleRequest(String contentPath, String version) throws MalformedTokenException {
-		return appRequestHandler.createRequest("bundle-request", "", version, contentPath);
+	public String createBundleRequest(RequestMode requestMode, String contentPath, String version) throws MalformedTokenException {
+		if (contentPath.startsWith("/")) {
+			return appRequestHandler.createRequest(AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
+		}
+		return appRequestHandler.createRequest(AppRequestHandler.BUNDLE_REQUEST, "", version, contentPath);
 	}
 	
 	public void build(MemoizedFile targetDir) throws ModelOperationException {

@@ -1,5 +1,7 @@
 package org.bladerunnerjs.spec.plugin.bundler.css;
 
+import java.io.File;
+
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
@@ -10,6 +12,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,6 +35,7 @@ public class CssContentPluginTest extends SpecTest {
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;
 	private Aspect defaultAspect;
+	private File targetDir;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -53,6 +57,7 @@ public class CssContentPluginTest extends SpecTest {
 			workbench = blade.workbench();
 			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
+			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test
@@ -510,6 +515,27 @@ public class CssContentPluginTest extends SpecTest {
 			.and(defaultAspect).indexPageRequires("appns/AspectClass");
 		when(defaultAspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("aspect css");
+	}
+	
+	@Test
+	public void onlyCssBundlesUsedFromATagHandlerAreReturnedAsUsedContentPaths() throws Exception {
+		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
+			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).hasProdVersion("1234");
+		then(defaultAspect).usedProdContentPathsForPluginsAre("css", "css/usedtheme/bundle.css");
+	}
+	
+	@Test
+	public void onlyCssBundlesUsedFromATagHandlerArePresentInTheBuiltArtifact() throws Exception {
+		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
+			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
+			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).hasProdVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("en/index.html", "v/1234/css/usedtheme/bundle.css")
+			.and(targetDir).containsFile("v/1234/css/usedtheme/bundle.css")
+			.and(targetDir).doesNotContainFile("v/1234/css/unusedtheme/bundle.css");
 	}
 	
 }

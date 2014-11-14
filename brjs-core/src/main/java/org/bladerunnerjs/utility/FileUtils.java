@@ -232,7 +232,7 @@ public class FileUtils {
 	}
 	public static void write(MemoizedFile file, String contents, String encoding, boolean append) throws IOException {
 		org.apache.commons.io.FileUtils.write(file.getUnderlyingFile(), contents, encoding, append);
-		file.incrementChildFileVersions();
+		file.incrementFileVersion();
 	}
 
 	public static Collection<File> listFiles(File directory, IOFileFilter fileFilter, IOFileFilter dirFilter)

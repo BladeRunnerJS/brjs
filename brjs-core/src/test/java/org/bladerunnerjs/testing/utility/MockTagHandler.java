@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
@@ -45,20 +46,11 @@ public class MockTagHandler extends AbstractTagHandlerPlugin implements TagHandl
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException
-	{
-		writeOutContentAndTagAttributes(writer, devContent, tagAttributes, locale);
-	}
-
-	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException
-	{
-		writeOutContentAndTagAttributes(writer, prodContent, tagAttributes, locale);
-	}
-	
-	private void writeOutContentAndTagAttributes(Writer writer, String content, Map<String, String> tagAttributes, Locale locale) throws IOException
+	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException
 	{
 		PrintWriter printWriter = new PrintWriter(writer);
+		String content = (requestMode == RequestMode.Dev) ? devContent : prodContent;
+		
 		if (!content.equals(""))
 		{
 			printWriter.print(content);

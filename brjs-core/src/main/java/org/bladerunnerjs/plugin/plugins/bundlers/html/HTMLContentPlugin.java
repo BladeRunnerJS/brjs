@@ -18,6 +18,7 @@ import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -80,15 +81,9 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return getValidContentPaths(bundleSet);
-	}
-	
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
-	{
-		return getValidContentPaths(bundleSet);
+		return (bundleSet.getResourceFiles(htmlAssetPlugin).isEmpty()) ? Collections.emptyList() : requestPaths;
 	}
 
 	@Override
@@ -119,10 +114,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		}
 		
 		return new CharResponseContent( brjs, readerList );		
-	}
-	
-	private List<String> getValidContentPaths(BundleSet bundleSet) {
-		return (bundleSet.getResourceFiles(htmlAssetPlugin).isEmpty()) ? Collections.emptyList() : requestPaths;
 	}
 	
 	private void validateSourceHtml(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException

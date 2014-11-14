@@ -27,7 +27,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		this.confClass = confClass;
 		this.confFile = confFile;
 		this.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
-		conf = new MemoizedValue<>("ConfFile.conf", node.root(), confFile, node.root().file("conf/brjs.conf"));
+		conf = new MemoizedValue<>("ConfFile.conf", node.root(), confFile);
 		
 		// needed to keep the pre-existing tests working
 		getConf();

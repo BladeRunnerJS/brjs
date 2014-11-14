@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.Workbench;
@@ -142,15 +143,13 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return calculateValidRequestPaths(bundleSet);
-	}
-
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
-	{
-		return calculateValidRequestPaths(bundleSet);
+		List<String> requestPaths = new ArrayList<String>();
+		for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers()) {
+			requestPaths.addAll(createRequest(assetContainer));
+		}
+		return requestPaths;
 	}
 	
 	private List<String> createRequest(AssetContainer assetContainer) throws ContentProcessingException 
@@ -199,11 +198,4 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		return requestPaths;
 	}
 	
-	private List<String> calculateValidRequestPaths(BundleSet bundleSet) throws ContentProcessingException
-	{
-		List<String> requestPaths = new ArrayList<String>();
-		for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers())
-			requestPaths.addAll(createRequest(assetContainer));
-		return requestPaths;
-	}
 }

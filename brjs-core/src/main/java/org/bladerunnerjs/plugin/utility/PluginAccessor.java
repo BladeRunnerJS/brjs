@@ -40,7 +40,7 @@ public class PluginAccessor {
 		assetLocationPlugins = sort(pluginLocator.getAssetLocationPlugins());
 		requirePlugins = pluginLocator.getRequirePlugins();
 	}
-	
+
 	public List<Plugin> allPlugins() {
 		List<Plugin> plugins = new ArrayList<>();
 		
@@ -198,4 +198,5 @@ public class PluginAccessor {
 			throw new RuntimeException(e);
 		}
 	}
+	
 }

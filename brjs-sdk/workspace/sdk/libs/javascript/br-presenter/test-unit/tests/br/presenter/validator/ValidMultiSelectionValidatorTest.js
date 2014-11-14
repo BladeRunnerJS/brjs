@@ -2,7 +2,7 @@ ValidMultiSelectionValidatorTest = TestCase("ValidMultiSelectionValidatorTest");
 
 ValidMultiSelectionValidatorTest.prototype.setUp = function()
 {
-	this.oOptions = new br.presenter.node.OptionsNodeList(["a", "b", "c"]);
+	this.oOptions = new br.presenter.node.OptionsNodeList(["a", "b", "c", "fOoBaR"]);
 	this.oValidMultiSelectionValidator = new br.presenter.validator.ValidMultiSelectionValidator(this.oOptions);
 };
 
@@ -52,4 +52,11 @@ ValidMultiSelectionValidatorTest.prototype.test_weCanAllowInvalidArraysOfSelecti
 	this.oValidMultiSelectionValidator.allowInvalidSelections(true);
 	this.oValidMultiSelectionValidator.validate(["c", "d"], {}, oValidationResult);
 	assertTrue("1a", oValidationResult.isValid());
+};
+
+ValidMultiSelectionValidatorTest.prototype.test_caseIsIgnoredWhenValidating = function()
+{
+	var oValidationResult = new br.presenter.validator.ValidationResult();
+	this.oValidMultiSelectionValidator.validate(["FOObar"], {}, oValidationResult);
+	assertTrue(oValidationResult.isValid());
 };
