@@ -5,35 +5,36 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class JsStyleUtility {
 		
-	private static Map<String, String> dirStyleCache = new HashMap<String, String>();
+	// TODO: stop recursing outside of the BRJS root dir
+	private static Map<String, MemoizedValue<String>> dirStyleCache = new HashMap<>();
 	
-	
-	public static String getJsStyle(File dir) {
-		// TODO: if any .js-style files change (or are added/removed) the server must restart
-		// We also recurse up out of BRJS root - should stop doing that.
+	public static String getJsStyle(BRJS brjs, File dir) {
 		String path = dir.getAbsolutePath();
-		String jsStyle = dirStyleCache.get(path);
-		if(jsStyle == null){
-			jsStyle = readJsStyleFile(dir);
+		MemoizedValue<String> jsStyleMemoizedValue = dirStyleCache.get(path);
+		
+		if (jsStyleMemoizedValue == null) {
+			jsStyleMemoizedValue = new MemoizedValue<String>("JsStyle", brjs);
+			dirStyleCache.put(path, jsStyleMemoizedValue);
+		}
+		
+		return jsStyleMemoizedValue.value(() -> {
+			String jsStyle = readJsStyleFile(dir);
 			if(jsStyle == null){
 				File parent = dir.getParentFile();
 				if(parent == null){
 					jsStyle = CommonJsSourceModule.JS_STYLE;
 				}else{
-					jsStyle = getJsStyle(parent);
+					jsStyle = getJsStyle(brjs, parent);
 				}
 			}
-			dirStyleCache.put(path, jsStyle);
-		}
-		return jsStyle;
-	}
-	public  static void clear(){
-		dirStyleCache = new HashMap<String, String>();
+			return jsStyle;
+		});
 	}
 	
 	public static void setJsStyle(BRJS brjs, File dir, String jsStyle) {
@@ -45,8 +46,6 @@ public class JsStyleUtility {
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		//TODO: Dont invalidate whole tree, just sub branches
-		dirStyleCache = new HashMap<String, String>();
 	}
 	
 	private static String readJsStyleFile(File dir) {

@@ -123,6 +123,29 @@ public class BundleCachingTest extends SpecTest
 			.and(response).doesNotContainText("SDK jquery-content");
 	}
 	
+	public void sourceFilesAreReadAsCorrectTypeIfJsStyleChangesFromNamespacedJsDuringRuntime() throws Exception {
+		given(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).classFileHasContent("Class1", "require('./CommonJSClass'); appns.NamespacedJSClass();")
+			.and(aspect).hasClasses("CommonJSClass", "NamespacedJSClass")
+			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
+		when(aspect).hasCommonJsPackageStyle()
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("CommonJSClass = ");
+	}
+	
+	@Test
+	public void sourceFilesAreReadAsCorrectTypeIfJsStyleChangesFromCommonJsDuringRuntime() throws Exception {
+		given(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasCommonJsPackageStyle()
+			.and(aspect).classFileHasContent("Class1", "require('./CommonJSClass'); appns.NamespacedJSClass();")
+			.and(aspect).hasClasses("CommonJSClass", "NamespacedJSClass")
+			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
+		when(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("NamespacedJSClass = ");
+	}
+	
 	@Test
 	public void jsStyleCanChangeFromNamespacedJsDuringRuntime() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
@@ -192,27 +215,22 @@ public class BundleCachingTest extends SpecTest
     		.and(secondResponse).doesNotContainText("lib.Lib = require(");
 	}
 	
-	public void jsStyleFilesCanFromNamespacedJSToCommonJSChangeDuringRuntime() throws Exception {
-		given(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).classFileHasContent("Class1", "require('./CommonJSClass'); appns.NamespacedJSClass();")
-			.and(aspect).hasClasses("CommonJSClass", "NamespacedJSClass")
-			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
-		when(aspect).hasCommonJsPackageStyle()
-			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("CommonJSClass = ");
-	}
-	
 	@Test
-	public void jsStyleFilesCanFromCommonJSToNamesapcedSChangeDuringRuntime() throws Exception {
-		given(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).hasCommonJsPackageStyle()
-			.and(aspect).classFileHasContent("Class1", "require('./CommonJSClass'); appns.NamespacedJSClass();")
-			.and(aspect).hasClasses("CommonJSClass", "NamespacedJSClass")
-			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
-		when(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("NamespacedJSClass = ");
+	public void jsStyleChangesAreProperlyDetectedIfTheFileChangesDirectlyOnDisk() throws Exception {
+		given(aspect).hasCommonJsPackageStyle()
+    		.and(library).hasBeenCreated()
+    		.and(library).hasNamespacedJsPackageStyle()
+    		.and(library).hasClass("lib.Lib")
+    		.and(aspect).classFileHasContent("appns.Class1", "require('lib/Lib');")
+    		.and(aspect).indexPageRefersTo("appns.Class1")
+    		.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js", initialResponse);
+    	when(library).containsFileWithContents(".js-style", "common-js");
+    		library.file(".js-style").incrementFileVersion(); // do not use the 'hasCommonJsPackageStyle' spec test method here, we need to mimic what the file watcher thread does
+    		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", secondResponse);
+    	then(initialResponse).containsText("mergePackageBlock(window, {\"lib\":{},\"appns\":{}});")
+    		.and(initialResponse).containsText("lib.Lib =")
+    		.and(secondResponse).doesNotContainText("mergePackageBlock")
+    		.and(secondResponse).doesNotContainText("lib.Lib = require(");
 	}
 	
 }

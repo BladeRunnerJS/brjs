@@ -111,7 +111,7 @@ public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implemen
 	@Override
 	public String jsStyle() {
 		return jsStyle.value(() -> {
-			return JsStyleUtility.getJsStyle(dir());
+			return JsStyleUtility.getJsStyle(root(), dir());
 		});
 	}
 	
