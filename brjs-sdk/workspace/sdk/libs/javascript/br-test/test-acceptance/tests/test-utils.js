@@ -3,8 +3,7 @@ require("jquery");
 var testHtml = null;
 setupPage = function() {
 	if (testHtml == null) {
-		var resourceService = require('service!br.html-service');
-		testHtml = new resourceService("/test/bundles/html.bundle").getHTMLTemplate("testWrapper");
+		testHtml = require("service!br.html-service").getHTMLTemplate("testWrapper");
 
 		jQuery('body').empty();
 	}
