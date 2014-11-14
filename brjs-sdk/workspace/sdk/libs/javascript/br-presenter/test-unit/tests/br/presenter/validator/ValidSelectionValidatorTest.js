@@ -56,3 +56,13 @@ ValidSelectionValidatorTest.prototype.test_caseIsIgnoredWhenValidating = functio
 	this.oValidSelectionValidator.validate("FOObar", {}, oValidationResult);
 	assertTrue(oValidationResult.isValid());
 };
+
+ValidSelectionValidatorTest.prototype.test_canValidateNumericOptions = function()
+{
+	var oNumericOptions = new br.presenter.node.OptionsNodeList([1, 2, 5]);
+	var oValidSelectionValidator = new br.presenter.validator.ValidSelectionValidator(oNumericOptions);
+	
+	var oValidationResult = new br.presenter.validator.ValidationResult();
+	oValidSelectionValidator.validate(1, {}, oValidationResult);
+	assertTrue(oValidationResult.isValid());
+};
