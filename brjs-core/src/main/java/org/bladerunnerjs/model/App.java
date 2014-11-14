@@ -66,7 +66,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	@Override
 	public MemoizedFile[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new MemoizedFile[] {dir(), root().sdkJsLibsDir().dir(), BladerunnerConf.getConfigFilePath(root())};
+			scopeFiles = new MemoizedFile[] {dir(), root().sdkJsLibsDir().dir()};
 		}
 		
 		return scopeFiles;

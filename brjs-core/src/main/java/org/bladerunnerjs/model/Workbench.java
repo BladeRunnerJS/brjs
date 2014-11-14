@@ -32,7 +32,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
 		scopeFiles.add(dir());
 		
-		return scopeFiles.toArray(new MemoizedFile[scopeFiles.size()]);
+		return scopeFiles.toArray(new MemoizedFile[0]);
 	}
 
 	public DirNode styleResources()

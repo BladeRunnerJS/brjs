@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.logging.Logger;
@@ -67,7 +68,8 @@ public class BRJS extends AbstractBRJSRootNode
 	private final MemoizedFileAccessor memoizedFileAccessor;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
 	private final PluginAccessor pluginAccessor;
-	private final IO io = new IO();
+	private final IOFileFilter globalFilesFilter = new BRJSGlobalFilesIOFileFilter(this);
+	private final IO io = new IO( globalFilesFilter );
 	private final Logger logger;
 	private final CommandList commandList;
 	private final AppVersionGenerator appVersionGenerator;
@@ -84,7 +86,7 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		super(brjsDir, loggerFactory);
 		this.appVersionGenerator = appVersionGenerator;
-		this.fileModificationRegistry = new FileModificationRegistry( this, (dir.getParentFile() != null) ? dir.getParentFile() : dir );
+		this.fileModificationRegistry = new FileModificationRegistry( this, ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		this.workingDir = new WorkingDirNode(this, getMemoizedFile(brjsDir));
 		
@@ -119,7 +121,6 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
-		
 	}
 	
 	public CharBufferPool getCharBufferPool(){

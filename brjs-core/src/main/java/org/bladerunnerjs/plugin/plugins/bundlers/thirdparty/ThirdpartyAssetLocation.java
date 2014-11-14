@@ -30,7 +30,7 @@ public final class ThirdpartyAssetLocation extends ResourcesAssetLocation {
 		return manifest;
 	}
 	
-	protected List<MemoizedFile> getCandidateFiles() {
+	public List<MemoizedFile> getCandidateFiles() {
 		try {
 			List<MemoizedFile> assetFiles = new ArrayList<>(manifest.getCssFiles());
 			assetFiles.add(file("thirdparty-lib.manifest"));
