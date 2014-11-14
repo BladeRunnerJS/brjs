@@ -14,7 +14,7 @@ public class PersistentAliasesData {
 	public PersistentAliasesData(BRJS brjs, MemoizedFile aliasesFile) {
 		this.brjs = brjs;
 		this.aliasesFile = aliasesFile;
-		aliasesData = new MemoizedValue<>("PersistentAliasesData.aliasesData", brjs, aliasesFile, brjs.file("conf/brjs.conf"));
+		aliasesData = new MemoizedValue<>("PersistentAliasesData.aliasesData", brjs, aliasesFile);
 	}
 	
 	public AliasesData getData() throws ContentFileProcessingException {

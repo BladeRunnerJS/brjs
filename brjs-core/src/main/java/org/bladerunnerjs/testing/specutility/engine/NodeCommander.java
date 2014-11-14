@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.model.BRJS;
+
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
@@ -48,6 +49,7 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 		
 		return commanderChainer;
 	}
+	
 	
 	// TODO Unable to use composition to create new private NodeBuilder instance because it's an abstract class
 	public CommanderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {

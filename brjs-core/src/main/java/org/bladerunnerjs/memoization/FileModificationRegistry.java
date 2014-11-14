@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
 
@@ -16,10 +17,12 @@ public class FileModificationRegistry
 	private Map<String,FileVersion> lastModifiedMap = new HashMap<String,FileVersion>();
 	private File rootFile;
 	private Map<File, File> canonicalFileMap = new HashMap<>();
+	private IOFileFilter globalFileFilter;
 	private RootNode rootNode;
 
-	public FileModificationRegistry(RootNode rootNode, File rootFile) { 
+	public FileModificationRegistry(RootNode rootNode, File rootFile, IOFileFilter globalFileFilter) {
 		this.rootFile = getCanonicalFile(rootFile);
+		this.globalFileFilter = globalFileFilter;
 		this.rootNode = rootNode;
 	}
 	
@@ -30,11 +33,12 @@ public class FileModificationRegistry
 	public FileVersion getFileVersionObject(File file) {
 		return getOrCreateVersionValue(file);
 	}
-
+	
 	public void incrementFileVersion(File file) {
-		while (file != null && !file.equals(rootFile)) {
-			getOrCreateVersionValue(file).incrememntValue();
-			file = file.getParentFile();
+		if (globalFileFilter.accept(file)) {
+			incrementAllFileVersions();
+		} else {
+			incrementFileAndParentVersion(file);
 		}
 	}
 	
@@ -62,6 +66,18 @@ public class FileModificationRegistry
 		}
 	}
 	
+	private  void incrementAllFileVersions() {
+		for (FileVersion version : lastModifiedMap.values()) {
+			version.incrememntValue();
+		}
+	}
+	
+	private void incrementFileAndParentVersion(File file) {
+		while (file != null && !file.equals(rootFile)) {
+			getOrCreateVersionValue(file).incrememntValue();
+			file = file.getParentFile();
+		}
+	}
 	
 	private FileVersion getOrCreateVersionValue(File file)
 	{

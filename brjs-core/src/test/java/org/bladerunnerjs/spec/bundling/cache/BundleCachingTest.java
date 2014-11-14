@@ -192,5 +192,27 @@ public class BundleCachingTest extends SpecTest
     		.and(secondResponse).doesNotContainText("lib.Lib = require(");
 	}
 	
+	public void jsStyleFilesCanFromNamespacedJSToCommonJSChangeDuringRuntime() throws Exception {
+		given(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).classFileHasContent("Class1", "require('./CommonJSClass'); appns.NamespacedJSClass();")
+			.and(aspect).hasClasses("CommonJSClass", "NamespacedJSClass")
+			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
+		when(aspect).hasCommonJsPackageStyle()
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("CommonJSClass = ");
+	}
+	
+	@Test
+	public void jsStyleFilesCanFromCommonJSToNamesapcedSChangeDuringRuntime() throws Exception {
+		given(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasCommonJsPackageStyle()
+			.and(aspect).classFileHasContent("Class1", "require('./CommonJSClass'); appns.NamespacedJSClass();")
+			.and(aspect).hasClasses("CommonJSClass", "NamespacedJSClass")
+			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
+		when(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("NamespacedJSClass = ");
+	}
 	
 }
