@@ -151,25 +151,5 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 		aspectBuilder.containsResourceFileWithContents(resourceFileName, contents);
 		return commanderChainer;
 	}
-
-	public CommanderChainer hasPackageStyle(String packagePath, String jsStyle) {
-		JsStyleUtility.setJsStyle(aspect.file(packagePath), jsStyle);
-		return commanderChainer;
-	}
 	
-	public CommanderChainer hasNamespacedJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, NamespacedJsSourceModule.JS_STYLE);
-	}
-	
-	public CommanderChainer hasNamespacedJsPackageStyle() {
-		return hasNamespacedJsPackageStyle("");
-	}
-	
-	public CommanderChainer hasCommonJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, CommonJsSourceModule.JS_STYLE);
-	}
-	
-	public CommanderChainer hasCommonJsPackageStyle() {
-		return hasCommonJsPackageStyle("");
-	}
 }

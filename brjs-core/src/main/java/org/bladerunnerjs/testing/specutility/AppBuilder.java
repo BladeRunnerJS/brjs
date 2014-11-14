@@ -1,10 +1,12 @@
 package org.bladerunnerjs.testing.specutility;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.StaticContentAccessor;
@@ -15,6 +17,7 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -79,7 +82,19 @@ public class AppBuilder extends NodeBuilder<App> {
 	
 	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException 
 	{
-		app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+		return hasReceivedRequest(requestPath, null);	
+	}
+	
+	public BuilderChainer hasReceivedRequest(String requestPath, StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException 
+	{
+		ResponseContent content = app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+		if (response == null) {
+			return builderChainer;
+		}
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		content.write( baos );
+		response.append(baos.toString());
 		
 		return builderChainer;	
 	}
