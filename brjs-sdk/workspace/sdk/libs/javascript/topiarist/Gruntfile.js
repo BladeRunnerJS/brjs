@@ -1,10 +1,17 @@
 module.exports = function(grunt) {
     var browsers = [{
         browserName: "firefox",
+        platform: "WIN7"
+    }, {
+        browserName: "firefox",
         version: "19",
         platform: "XP"
     }, {
         browserName: "chrome",
+        platform: "WIN7"
+    }, {
+        browserName: "chrome",
+        version: "26",
         platform: "XP"
     }, {
         browserName: "chrome",
@@ -19,12 +26,24 @@ module.exports = function(grunt) {
         version: "10"
     }, {
         browserName: "internet explorer",
-        platform: "VISTA",
+        platform: "WIN7",
         version: "9"
     }, {
         browserName: "internet explorer",
-        platform: "VISTA",
+        platform: "WIN7",
         version: "8"
+    }, {
+        browserName: "internet explorer",
+        platform: "XP",
+        version: "8"
+    }, {
+        browserName: "safari",
+        platform: "OS X 10.9",
+        version: "7"
+    }, {
+        browserName: "safari",
+        platform: "OS X 10.8",
+        version: "6"
     }];
 
     grunt.initConfig({
@@ -44,6 +63,7 @@ module.exports = function(grunt) {
                     tunnelTimeout: 5,
                     build: process.env.TRAVIS_JOB_ID,
                     concurrency: 3,
+                    maxRetries: 3,
                     browsers: browsers,
                     testname: "topiarist tests"
                 }

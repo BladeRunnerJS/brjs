@@ -1,15 +1,14 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
-
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public final class SourceAssetLocation extends AbstractSourceAssetLocation {
-	public SourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+	public SourceAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir, parentAssetLocation, dependentAssetLocations);
 	}
 	
-	protected AssetLocation createNewAssetLocationForChildDir(File dir, AssetLocation parentAssetLocation) {
+	protected AssetLocation createNewAssetLocationForChildDir(MemoizedFile dir, AssetLocation parentAssetLocation) {
 		return new ChildSourceAssetLocation(assetContainer().root(), assetContainer(), dir, parentAssetLocation, parentAssetLocation);
 	}
 }

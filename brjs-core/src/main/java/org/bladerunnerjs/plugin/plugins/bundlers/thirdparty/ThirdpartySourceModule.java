@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -22,7 +23,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
@@ -40,7 +40,7 @@ public class ThirdpartySourceModule implements SourceModule
 	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
-			assetPath = RelativePathUtility.get(assetLocation.root().getFileInfoAccessor(), assetLocation.assetContainer().app().dir(), assetLocation.dir());
+			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(assetLocation.dir());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 			manifest = assetLocation.getManifest();
@@ -105,7 +105,7 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public File dir()
+	public MemoizedFile dir()
 	{
 		return assetLocation.dir();
 	}
@@ -123,26 +123,11 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
-		
-		try 
-		{
-			for (String dependentLibName : manifest.getDepends())
-			{
-				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
-				if (!dependentLib.dirExists())
-				{
-					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
-				}
-				dependentLibs.addAll(dependentLib.linkedAssets());
-			}
-		}
-		catch (ConfigException ex)
-		{
-			throw new ModelOperationException( ex );
-		}
-		
-		return new ArrayList<Asset>( dependentLibs );
+		List<Asset> dependendAssets = new ArrayList<>();
+		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		return dependendAssets;
 	}
 
 	@Override
@@ -179,15 +164,39 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
+	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		List<SourceModule> result = new ArrayList<SourceModule>();
-		for(Asset dependentAsset : getDependentAssets(bundlableNode)){
-			if(dependentAsset instanceof SourceModule){
-				result.add((SourceModule)dependentAsset);
+		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
+		
+		try 
+		{
+			for (String dependentLibName : manifest.getDepends())
+			{
+				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
+				if (!dependentLib.dirExists())
+				{
+					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
+				}
+				dependentLibs.addAll(dependentLib.linkedAssets());
 			}
 		}
-		return result;
+		catch (ConfigException ex)
+		{
+			throw new ModelOperationException( ex );
+		}
+		
+		return new ArrayList<Asset>( dependentLibs );
+	}
+	
+	@Override
+	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		return Collections.emptyList();
+	}
+	
+	@Override
+	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
+	{
+		return Collections.emptyList();
 	}
 	
 	@Override

@@ -211,7 +211,7 @@
 		var targetPrototype = target.prototype;
 		for (var propertyName in parent.prototype) {
 			// These properties should be nonenumerable in modern browsers, but shims might create them in ie8.
-			if (propertyName === 'constructor' || propertyName === '__proto__') {
+			if (propertyName === 'constructor' || propertyName === '__proto__' || propertyName === 'toString') {
 				continue;
 			}
 
@@ -398,19 +398,17 @@
 	 *  or is null, false otherwise.
 	 */
 	function isA(instance, parent) {
+		if(instance == null) {
+			return false;
+		}
+
 		// sneaky edge case where we're checking against an object literal we've mixed in or against a prototype of
 		//  something.
 		if (typeof parent === 'object' && parent.hasOwnProperty('constructor')) {
 			parent = parent.constructor;
 		}
 
-		assertArgumentOfType('function', parent, ERROR_MESSAGES.NOT_CONSTRUCTOR, 'Parent', 'isA');
-
-		if (instance == null) {
-			return false;
-		}
-
-		if (instance instanceof parent) {
+		if((instance.constructor === parent) || (instance instanceof parent)) {
 			return true;
 		}
 
@@ -766,8 +764,8 @@
 
 	var methods = {
 		'extend': extend, 'inherit': inherit, 'mixin': mixin, 'implement': implement,
-		'hasImplemented': hasImplemented, 'classIsA': classIsA, 'isA': isA, 'fulfills': fulfills,
-		'classFulfills': classFulfills
+		'hasImplemented': hasImplemented, 'classIsA': classIsA, 'isAssignableFrom': classIsA,
+		'isA': isA, 'fulfills': fulfills, 'classFulfills': classFulfills
 	};
 
 	/* jshint evil:true */
@@ -813,6 +811,7 @@
 			return target;
 		}
 	};
+	exporting['export'] = exporting.exportTo; // for backwards compatibility
 
 	methods.Base = exporting.install(function BaseClass() {});
 

@@ -264,3 +264,17 @@ SelectionFieldTest.prototype.test_canSetControlNameIndependentlyOfOtherPropertie
 	assertEquals("1b", "label", oSelectionField.label.getValue());
 	assertEquals("1c", "controlName", oSelectionField.controlName.getValue());
 };
+
+SelectionFieldTest.prototype.test_selectedOptionLabelIsInitiallySetToTheCorrectValue = function() {
+	var selectionField = new br.presenter.node.SelectionField(['foo', 'bar'], 'bar');
+
+	assertEquals('selectedOptionLabel is initialised correctly', 'bar', selectionField.selectedOptionLabel.getValue());
+};
+
+SelectionFieldTest.prototype.test_selectedOptionLabelIsUpdatedWhenSelectedValueChanges = function() {
+	var selectionField = new br.presenter.node.SelectionField(['foo', 'bar'], 'bar');
+
+	selectionField.value.setUserEnteredValue('foo');
+
+	assertEquals('selectedOptionLabel is updated', 'foo', selectionField.selectedOptionLabel.getValue());
+};

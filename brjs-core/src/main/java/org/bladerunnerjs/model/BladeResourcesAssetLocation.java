@@ -1,14 +1,15 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.List;
+
+import org.bladerunnerjs.memoization.MemoizedFile;
 
 public final class BladeResourcesAssetLocation extends ResourcesAssetLocation {
 	
 	
 	private Bladeset parentBladeset;
 
-	public BladeResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file, AssetLocation parentAssetLocation) {
+	public BladeResourcesAssetLocation(BRJS root, AssetContainer assetContainer, MemoizedFile file, AssetLocation parentAssetLocation) {
 		super(root, assetContainer, file, parentAssetLocation);
 		parentBladeset = root.locateAncestorNodeOfClass(this, Bladeset.class);
 	}

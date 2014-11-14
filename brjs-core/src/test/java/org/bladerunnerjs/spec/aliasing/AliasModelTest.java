@@ -1,18 +1,22 @@
 package org.bladerunnerjs.spec.aliasing;
 
-import org.apache.commons.io.FileUtils;
+import java.io.IOException;
+
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -310,14 +314,19 @@ public class AliasModelTest extends SpecTest {
 	@Test
 	public void nestedAliasDefinitionsFilesCanBeUsedInResourcesDirectories() throws Exception {
 		// TODO: think of a way of doing this in a more BDD way
-		FileUtils.write(blade.assetLocation("resources").file("aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
-		FileUtils.write(blade.assetLocation("resources").file("dir/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
+		write(blade, blade.assetLocation("resources").file("aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
+		write(blade, blade.assetLocation("resources").file("dir/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
 		AliasDefinitionsFile nestedBladeAliasDefinitionsFile = blade.assetLocation("resources").aliasDefinitionsFiles().get(1);
 		
 		given(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias1", "Class1", "TheInterface")
 			.and(nestedBladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias2", "Class2", "TheInterface");
 		then(aspect).hasAlias("appns.bs.b1.alias1", "Class1", "TheInterface")
 			.and(aspect).hasAlias("appns.bs.b1.alias2", "Class2", "TheInterface");
+	}
+	
+	private void write(AssetContainer assetContainer, MemoizedFile file, String content) throws IOException {
+		FileUtils.write(file, content);
+		assetContainer.root().getFileModificationRegistry().incrementFileVersion(file);
 	}
 	
 }

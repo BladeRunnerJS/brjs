@@ -10,13 +10,11 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.BundlableNodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.JsStyleUtility;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
 
@@ -149,6 +147,14 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer resourceFileContains(String resourceFileName, String contents) throws Exception 
 	{
 		aspectBuilder.containsResourceFileWithContents(resourceFileName, contents);
+		
+		return commanderChainer;
+	}
+
+	public CommanderChainer indexPageRefersToWithoutNotifyingFileRegistry(String content) throws IOException
+	{
+		new EncodedFileUtil(aspect.root(), specTest.getActiveCharacterEncoding()).write( aspect.file("index.html"), content, false);
+
 		return commanderChainer;
 	}
 	

@@ -2,6 +2,16 @@ package org.bladerunnerjs.model.exception.command;
 
 import org.bladerunnerjs.plugin.CommandPlugin;
 
+/**
+ * This is the superclass for 
+ * @see org.bladerunnerjs.model.exception.command.ArgumentParsingException
+ * @see org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandException
+ * @see org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException
+ * @see org.bladerunnerjs.model.exception.command.DirectoryNotEmptyCommandException
+ * @see org.bladerunnerjs.model.exception.command.IncorrectNumberOfArgumentsException
+ * @see org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException
+ * @see org.bladerunnerjs.model.exception.command.NodeDoesNotExistException
+*/ 
 
 public class CommandArgumentsException extends Exception
 {
@@ -22,7 +32,7 @@ public class CommandArgumentsException extends Exception
 
 	public CommandArgumentsException(String msg, Throwable cause, CommandPlugin commandPlugin)
 	{
-		super(msg, cause);
+		super(msg + "; " + cause.getMessage(), cause);
 		this.commandPlugin = commandPlugin;
 	}
 	

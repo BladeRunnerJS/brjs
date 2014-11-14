@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +32,7 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 import com.Ostermiller.util.ConcatReader;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -268,7 +268,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		{
 			globalizedModules.add(dependentSourceModule);
 			String sourceModuleClassName = dependentSourceModule.getPrimaryRequirePath().replaceAll("/", ".").replace("-", "_");
-			return sourceModuleClassName + " = require('" + dependentSourceModule.getPrimaryRequirePath() + "');\n";
+			return "\t" + sourceModuleClassName + " = require('" + dependentSourceModule.getPrimaryRequirePath() + "');\n";
 		}
 		return "";
 	}
@@ -276,21 +276,15 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	private String getGlobalizedClassesContent(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
 	{		
 		StringBuffer output = new StringBuffer();
+		Predicate<SourceModule> sourceModuleFilter = Predicates.or(new IsSourceModuleTypePredicate(NamespacedJsSourceModule.class), new IsSourceModuleTypePredicate(CommonJsSourceModule.class));
 		
-		List<SourceModule> allSourceModules = bundleSet.getSourceModules();
-
-		List<Predicate<SourceModule>> sourceModuleOrderingFilters = new LinkedList<>();
-		sourceModuleOrderingFilters.add( new IsSourceModuleTypePredicate(NamespacedJsSourceModule.class) );
-		sourceModuleOrderingFilters.add( new IsSourceModuleTypePredicate(CommonJsSourceModule.class) );
-		
-		for (Predicate<SourceModule> sourceModuleFilter : sourceModuleOrderingFilters) {
-			for ( SourceModule sourceModule : Collections2.filter(allSourceModules,sourceModuleFilter) )
-			{
-				output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
-			}
+		for(SourceModule sourceModule : Collections2.filter(bundleSet.getSourceModules(), sourceModuleFilter)) {
+			output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
 		}
 		
-		return output.toString();
+		String globalizedSourceModules = output.toString();
+		
+		return (globalizedSourceModules.length() == 0) ? "" : "function globalizeSourceModules() {\n" + globalizedSourceModules + "}\nglobalizeSourceModules();\n";
 	}
 	
 	

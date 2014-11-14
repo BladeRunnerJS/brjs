@@ -1,30 +1,33 @@
 package org.bladerunnerjs.model.exception.request;
 
-import java.io.File;
+import org.bladerunnerjs.memoization.MemoizedFile;
 
+/**
+ * Thrown when problems have been encountered while processing the specified file. 
+*/
 
 public class ContentFileProcessingException extends ContentProcessingException
 {
 	 
 	private static final long serialVersionUID = 1L;
 	
-	private File sourceFile;
+	private MemoizedFile sourceFile;
 	private int lineNumber = -1;
 	private int characterNumber = -1;
 	
-	public ContentFileProcessingException(Exception e, File sourceFile)
+	public ContentFileProcessingException(Exception e, MemoizedFile sourceFile)
 	{
 		super(e);
 		this.sourceFile = sourceFile;
 	}
 	
-	public ContentFileProcessingException(File sourceFile, String message)
+	public ContentFileProcessingException(MemoizedFile sourceFile, String message)
 	{
 		super(message);
 		this.sourceFile = sourceFile;
 	}
 	
-	public ContentFileProcessingException(File sourceFile, int lineNumber, int characterNumber, Exception cause)
+	public ContentFileProcessingException(MemoizedFile sourceFile, int lineNumber, int characterNumber, Exception cause)
 	{
 		super(cause);
 		this.sourceFile = sourceFile;
@@ -32,7 +35,7 @@ public class ContentFileProcessingException extends ContentProcessingException
 		this.characterNumber = characterNumber;
 	}
 	
-	public ContentFileProcessingException(File sourceFile, Exception cause) {
+	public ContentFileProcessingException(MemoizedFile sourceFile, Exception cause) {
 		super(cause);
 		this.sourceFile = sourceFile;
 	}

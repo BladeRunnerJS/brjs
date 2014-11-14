@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -21,23 +21,23 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	private AliasesFile aliasesFile;
 	private String name;
 	
-	public TestPack(RootNode rootNode, Node parent, File dir)
+	public TestPack(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
 		this(rootNode, parent, dir, dir.getName());
 	}
 	
-	public TestPack(RootNode rootNode, Node parent, File dir, String name)
+	public TestPack(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles() {
-		List<File> scopeFiles = new ArrayList<>(Arrays.asList(testScope().memoizedScopeFiles()));
+	public MemoizedFile[] memoizedScopeFiles() {
+		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(testScope().memoizedScopeFiles()));
 		scopeFiles.add(dir());
 		
-		return scopeFiles.toArray(new File[scopeFiles.size()]);
+		return scopeFiles.toArray(new MemoizedFile[scopeFiles.size()]);
 	}
 	
 	@Override

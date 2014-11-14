@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.memoization.Getter;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
-import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.trie.AliasReference;
 import org.bladerunnerjs.utility.trie.AssetReference;
 import org.bladerunnerjs.utility.trie.LinkedAssetReference;
@@ -31,7 +31,7 @@ public class TrieBasedDependenciesCalculator
 	
 	private MemoizedValue<ComputedValue> computedValue;
 	
-	public TrieBasedDependenciesCalculator(Asset asset, AssetReaderFactory readerFactory, File... readerFiles)
+	public TrieBasedDependenciesCalculator(Asset asset, AssetReaderFactory readerFactory, MemoizedFile... readerFiles)
 	{
 		this.asset = asset;
 		this.readerFactory = readerFactory;
@@ -39,9 +39,9 @@ public class TrieBasedDependenciesCalculator
 		app = assetLocation.assetContainer().app();
 		trieFactory = TrieFactory.getFactoryForAssetContainer(assetLocation.assetContainer());
 		
-		List<File> scopeFiles = new ArrayList<>();
+		List<MemoizedFile> scopeFiles = new ArrayList<>();
 		scopeFiles.addAll(Arrays.asList(readerFiles));
-		scopeFiles.addAll(Arrays.asList(new File[] {assetLocation.root().file("js-patches"), BladerunnerConf.getConfigFilePath(assetLocation.root()), app.dir(), app.root().sdkJsLibsDir().dir()}));
+		scopeFiles.addAll(Arrays.asList(new MemoizedFile[] {assetLocation.root().file("js-patches"), BladerunnerConf.getConfigFilePath(assetLocation.root()), app.dir(), app.root().sdkJsLibsDir().dir()}));
 		computedValue = new MemoizedValue<>(asset.getAssetPath()+" - TrieBasedDependenciesCalculator.computedValue", assetLocation.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
 	}
 	
@@ -73,9 +73,8 @@ public class TrieBasedDependenciesCalculator
 			@Override
 			public Object get() throws ModelOperationException {
 				ComputedValue computedValue = new ComputedValue();
-				CharBufferPool pool = assetLocation.root().getCharBufferPool();
 				
-				try(Reader reader = readerFactory.createReader(pool)) {
+				try(Reader reader = readerFactory.createReader()) {
 					Trie<AssetReference> trie = trieFactory.createTrie();
 					
 					for(Object match : trie.getMatches(reader)) {

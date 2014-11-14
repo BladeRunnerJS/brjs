@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.memoization.MemoizedFile;
 
 public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 {
@@ -32,10 +32,10 @@ public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 			String dirNameMatcher = getDirNameMatcher(dirNameFilter);
 			String dirNameExcludeMatcher = getDirNameMatcher(dirNameExcludeFilter);
 			
-			List<File> childDirs = rootNode.getFileInfo(childDir).dirs();
+			List<MemoizedFile> childDirs = rootNode.getMemoizedFile(childDir).dirs();
 			for(File file : childDirs)
 			{
-				FileInfo fileInfo = rootNode.getFileInfo(file);
+				MemoizedFile fileInfo = rootNode.getMemoizedFile(file);
 				
 				if ( fileInfo.isDirectory() && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
 				{

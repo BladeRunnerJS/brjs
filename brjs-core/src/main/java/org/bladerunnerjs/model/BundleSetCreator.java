@@ -1,14 +1,13 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.BundleSetBuilder;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.google.common.base.Joiner;
 
@@ -57,8 +56,8 @@ public class BundleSetCreator {
 		List<String> assetContainerPaths = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
-			File baseDir = assetContainer instanceof AppSdkJsLib ? app.root().dir() : app.dir();
-			assetContainerPaths.add(RelativePathUtility.get(assetContainer.root().getFileInfoAccessor(), baseDir, assetContainer.dir()));
+			MemoizedFile baseDir = assetContainer instanceof AppSdkJsLib ? app.root().dir() : app.dir();
+			assetContainerPaths.add(baseDir.getRelativePath(assetContainer.dir()));
 		}
 		
 		return "'" + Joiner.on("', '").join(assetContainerPaths) + "'";

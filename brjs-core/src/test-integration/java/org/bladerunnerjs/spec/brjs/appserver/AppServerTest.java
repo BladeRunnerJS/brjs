@@ -8,7 +8,6 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.App;
@@ -17,6 +16,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.plugin.plugins.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,8 @@ public class AppServerTest extends SpecTest
 
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
@@ -195,16 +196,16 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstance() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreatedWithPessamisticFileObserver()
+		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
 	}
 	
 	@Test
-	public void newAppsAreHostedOnAppserverAfterServerRestart() throws Exception
+	public void newAppsAreHostedOnAppserverAfterServerRestartWhenCreateAppCommandUsedFromADifferentModelInstance() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreatedWithPessamisticFileObserver()
+		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
@@ -229,5 +230,27 @@ public class AppServerTest extends SpecTest
 		FileUtils.deleteDirectory(appJars.dir());
 		when(brjs.applicationServer()).started();
 		then(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
+	}
+	
+	@Test
+	public void errorCode500IsThrownIfBadFileIsRequired() throws Exception {
+		given(app1.defaultAspect()).indexPageRequires("appns/App")
+			.and(app1.defaultAspect()).classFileHasContent("appns/App", "require('badFile')")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "Error 500");
+	}
+	
+	@Test
+	public void errorCode400IsThrownIfTheRequestIsMalformed() throws Exception {
+		given(app1.defaultAspect()).indexPageRequires("appns/App")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app1/v/dev/js/malformed-request", "Error 400");
+	}
+	
+	@Test
+	public void errorCode404IsThrownIfResourceIsNotFound() throws Exception {
+		given(app1.defaultAspect()).indexPageRequires("appns/App")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app1/v/dev/no-such-content-plugin", "Error 404");
 	}
 }

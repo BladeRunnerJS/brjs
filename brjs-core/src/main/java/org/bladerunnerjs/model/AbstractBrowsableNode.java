@@ -1,9 +1,9 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -12,7 +12,7 @@ import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
 
 public abstract class AbstractBrowsableNode extends AbstractBundlableNode implements BrowsableNode {
-	public AbstractBrowsableNode(RootNode rootNode, Node parent, File dir) {
+	public AbstractBrowsableNode(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
 	}
 	

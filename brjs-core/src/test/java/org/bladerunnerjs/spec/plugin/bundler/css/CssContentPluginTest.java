@@ -1,7 +1,6 @@
 package org.bladerunnerjs.spec.plugin.bundler.css;
 
-import java.io.File;
-
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
@@ -19,9 +18,9 @@ public class CssContentPluginTest extends SpecTest {
 	private App app;
 	private AppConf appConf;
 	private Aspect aspect;
-	private File commonTheme;
-	private File mainTheme;
-	private File bladeMainTheme;
+	private MemoizedFile commonTheme;
+	private MemoizedFile mainTheme;
+	private MemoizedFile bladeMainTheme;
 	private JsLib brBoostrapLib;
 	private JsLib nonConformantLib;
 	private JsLib nonConformantLib2;

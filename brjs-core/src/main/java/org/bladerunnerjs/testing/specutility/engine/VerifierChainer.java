@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
@@ -58,7 +59,8 @@ public class VerifierChainer {
 	public AppServerVerifier and(ApplicationServer appServer) { return new AppServerVerifier(specTest, appServer); }
 	public JettyServerVerifier and(Server jettyServer) { return new JettyServerVerifier(specTest, jettyServer); }
 	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(specTest, appConf); }
-	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(specTest, dir); }
+	public DirectoryVerifier and(MemoizedFile dir) { return new DirectoryVerifier(specTest, dir); }
+	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(specTest, specTest.brjs.getMemoizedFile(dir)); }
 	public StringVerifier and(StringBuffer stringBuffer) { return new StringVerifier(specTest, stringBuffer); }
 	public TestPackVerifier and(TestPack testPack) { return new TestPackVerifier(specTest, testPack); }
 }

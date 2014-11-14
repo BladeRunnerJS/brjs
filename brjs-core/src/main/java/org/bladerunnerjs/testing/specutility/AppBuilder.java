@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.StaticContentAccessor;
@@ -40,14 +40,20 @@ public class AppBuilder extends NodeBuilder<App> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
+	public BuilderChainer hasBeenBuilt(MemoizedFile targetDir) throws Exception {
 		app.build( targetDir );
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenBuiltAsWar(File targetDir) throws Exception {
-		File warExportFile = new File(targetDir, app.getName()+".war");
+	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
+		app.build( specTest.brjs.getMemoizedFile(targetDir) );
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenBuiltAsWar(MemoizedFile targetDir) throws Exception {
+		MemoizedFile warExportFile = targetDir.file(app.getName()+".war");
 		warExportFile.getParentFile().mkdir();
 		app.buildWar( warExportFile );
 		

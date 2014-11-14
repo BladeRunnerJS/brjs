@@ -56,11 +56,10 @@ public class BundleCachingTest extends SpecTest
 			.and(response).doesNotContainText("appns.Class1");
 	}
 	
-
 	@Test
-	public void weDoNotCacheAspectSourceLibraryDependencies() throws Exception {
-		given(aspect).hasClass("appns/Class1")
-			.and(aspect).hasNamespacedJsPackageStyle()
+	public void weDoNotCacheAspectSourceDependencies() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
 		when(thirdpartyLib).populate()
@@ -72,7 +71,7 @@ public class BundleCachingTest extends SpecTest
 				"// thirdpartyLib", 
 				"thirdpartyLib content", 
 				"mergePackageBlock(window, {\"appns\":{}});",
-				"appns.Class1 = function()",
+				"Class1 = function()",
 				"module.exports = appns.Class1");
 	}
 	

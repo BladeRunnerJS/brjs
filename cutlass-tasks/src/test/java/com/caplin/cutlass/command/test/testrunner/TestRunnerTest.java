@@ -7,21 +7,22 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import com.caplin.cutlass.CutlassConfig;
-
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 
 public class TestRunnerTest extends TestModelAccessor {
 
 	TestRunnerConfiguration config;
-	File configFile = new File("src/test/resources/TestCommand/ct-runner-resources/test-runner.conf");
-	File resultDir = new File(".build/test-results");
+	MemoizedFile configFile;
+	MemoizedFile resultDir;
 	boolean verbose, debug;
+	private BRJS brjs;
 	
 	private List<String> browserList(String browsers) {
 		return Arrays.asList(browsers.split(", *"));
@@ -31,17 +32,21 @@ public class TestRunnerTest extends TestModelAccessor {
 	@Before
 	public void beforeTest() throws Exception {
 		// we're cheekily using another tests sdk structure so the test can work
-		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/" + CutlassConfig.SDK_DIR);
-		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(sdkBaseDir));
+		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/sdk");
+		brjs = createModel(sdkBaseDir);
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		
-		config = TestRunnerConfiguration.getConfiguration(new File("src/test/resources/TestCommand/ct-runner-resources/test-runner.conf"), browserList("ff5"));
+		configFile = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources/test-runner.conf") );
+		resultDir = brjs.getMemoizedFile( new File(".build/test-results") );
+		
+		config = TestRunnerConfiguration.getConfiguration(configFile, browserList("ff5"));
 		config.setOperatingSystem("OS1");
 		TestRunner.disableLogging = true;
 	}
 	
 	@Test
 	public void runATsWhenTestAcceptanceDirDoesNotExist() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/dir-with-no-tests");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/dir-with-no-tests") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.ATs);
 		
@@ -50,7 +55,7 @@ public class TestRunnerTest extends TestModelAccessor {
 	
 	@Test
 	public void runUTsWhenTestUnitDirExists() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/ct-runner-resources");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());	
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.UTs);
 		TestRunResult specificTestRun = testRunner.getTestResultList().get(0);
@@ -61,7 +66,7 @@ public class TestRunnerTest extends TestModelAccessor {
 	
 	@Test
 	public void runUTsWithValidBaseDir() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/ct-runner-resources");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());		
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.UTs);
 		
@@ -70,7 +75,7 @@ public class TestRunnerTest extends TestModelAccessor {
 	
 	@Test
 	public void runUTsWithSameBaseDirAsTestDir() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/ct-runner-resources");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());		
 		testRunner.runAllTestsInDirectory(directory, directory, TestRunner.TestType.UTs);
 		
@@ -79,7 +84,7 @@ public class TestRunnerTest extends TestModelAccessor {
 	
 	@Test
 	public void runUTsWithInvalidBaseDir() throws Exception {
-		File directory = new File ("src/test/resources/DOESNOTEXIST");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/DOESNOTEXIST") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());		
 		
 		try {
@@ -93,41 +98,41 @@ public class TestRunnerTest extends TestModelAccessor {
 
 	@Test
 	public void runUTsAndCheckThatTheTestDirForATestRunIsStoredCorrectlyTest() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/ct-runner-resources");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());		
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.ALL);
 		TestRunResult specificUTsTestRun = testRunner.getTestResultList().get(0);
 		
-		assertEquals("src/test/resources/TestCommand/ct-runner-resources/test-unit",specificUTsTestRun.getTestDirectory().toString().replace("\\","/"));
+		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-unit").getAbsolutePath(), specificUTsTestRun.getTestDirectory().toString());
 	}
 	
 	@Test
 	public void runUTsAndATs() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/ct-runner-resources");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());		
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.UTsAndATs);
 		TestRunResult specificUTsTestRun = testRunner.getTestResultList().get(0);
 		TestRunResult specificATsTestRun = testRunner.getTestResultList().get(1);
 		
 		assertTrue(testRunner.getTestResultList().size() == 2);
-		assertEquals("src/test/resources/TestCommand/ct-runner-resources/test-unit",specificUTsTestRun.getTestDirectory().toString().replace("\\","/"));
-		assertEquals("src/test/resources/TestCommand/ct-runner-resources/test-acceptance",specificATsTestRun.getTestDirectory().toString().replace("\\","/"));
+		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-unit").getAbsolutePath(), specificUTsTestRun.getTestDirectory().toString());
+		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-acceptance").getAbsolutePath(), specificATsTestRun.getTestDirectory().toString());
 	}
 	
 	@Test
 	public void runITs() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/ct-runner-resources");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());		
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.ITs);
 		TestRunResult specificITsTestRun = testRunner.getTestResultList().get(0);
 		
 		assertTrue(testRunner.getTestResultList().size() == 1);
-		assertEquals("src/test/resources/TestCommand/ct-runner-resources/test-integration",specificITsTestRun.getTestDirectory().toString().replace("\\","/"));
+		assertEquals( new File("src/test/resources/TestCommand/ct-runner-resources/test-integration").getAbsolutePath(), specificITsTestRun.getTestDirectory().toString());
 	}
 
 	@Test
 	public void getDurationDoesNotThrowException() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/ct-runner-resources");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());		
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.UTs);
 		TestRunResult specificTestRun = testRunner.getTestResultList().get(0);
@@ -137,7 +142,7 @@ public class TestRunnerTest extends TestModelAccessor {
 	
 	@Test
 	public void getDurationAfterSettingStartTime() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/ct-runner-resources");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());		
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.UTs);
 		TestRunResult specificTestRun = testRunner.getTestResultList().get(0);
@@ -148,7 +153,7 @@ public class TestRunnerTest extends TestModelAccessor {
 	
 	@Test
 	public void runALLWhenThereIsAreAllTestDirTypes() throws Exception {
-		File directory = new File ("src/test/resources/TestCommand/ct-runner-resources");
+		MemoizedFile directory = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources") );
 		TestRunner testRunner = new TestRunner(configFile, resultDir, config.getBrowserNames());		
 		testRunner.runAllTestsInDirectory(directory.getParentFile(), directory, TestRunner.TestType.ALL);
 		TestRunResult testRunA = testRunner.getTestResultList().get(0);

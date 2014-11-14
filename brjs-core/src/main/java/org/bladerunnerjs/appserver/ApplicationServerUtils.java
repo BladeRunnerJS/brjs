@@ -50,7 +50,7 @@ public class ApplicationServerUtils
 
 		contexts.addHandler(appContext);
 		appContext.start();
-		ApplicationServerUtils.getDeployFileForApp(app).delete();
+		ApplicationServerUtils.getDeployFile(app).delete();
 
 		return appContext;
 	}
@@ -114,10 +114,13 @@ public class ApplicationServerUtils
 	{
 		return Thread.currentThread().getContextClassLoader().getResource("org/bladerunnerjs/model/appserver/non-j2ee-app-web.xml");
 	}
-
-	static File getDeployFileForApp(App app)
-	{
-		return app.file(BRJSApplicationServer.DEPLOY_APP_FILENAME);
+	
+	static File getDeployFile(App app) {
+		return getDeployFile(app.dir());
+	}
+	
+	static File getDeployFile(File dir) {
+		return new File(dir, BRJSApplicationServer.DEPLOY_APP_FILENAME);
 	}
 
 }

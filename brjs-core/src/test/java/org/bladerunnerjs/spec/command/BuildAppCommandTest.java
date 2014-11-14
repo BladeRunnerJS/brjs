@@ -216,6 +216,18 @@ public class BuildAppCommandTest extends SpecTest
 			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "start-env")
 			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "end-env");
 	}
+	
+	@Test
+	public void webXmlNameSpaceIsPreserved_WarExport() throws Exception
+	{
+		given(app).hasBeenCreated().and(app).containsFileWithContents("WEB-INF/web.xml", 
+				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+					"<web-app xmlns=\"http://java.sun.com/xml/ns/javaee\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " + 
+					"version=\"2.5\" xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd\">" +
+				"</web-app>");
+		when(brjs).runCommand("build-app", "app", "-w").and(brjs).zipFileIsExtractedTo("generated/built-apps/app.war", "generated/built-apps/app.war.exploded");
+		then(brjs).fileContentsContains("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "xmlns=\"http://java.sun.com/xml/ns/javaee\"");
+	}
 
 	@Test
 	public void appVersionTokenIsReplaced() throws Exception

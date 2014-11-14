@@ -1,7 +1,6 @@
 package org.bladerunnerjs.aliasing.aliasdefinitions;
 
-import java.io.File;
-
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
@@ -11,10 +10,10 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 public class PersistentAliasDefinitionsData {
 	private final BRJS brjs;
 	private final AssetLocation assetLocation;
-	private final File aliasesFile;
+	private final MemoizedFile aliasesFile;
 	private final MemoizedValue<AliasDefinitionsData> aliasDefinitionsData;
 	
-	public PersistentAliasDefinitionsData(AssetLocation assetLocation, File aliasesFile) {
+	public PersistentAliasDefinitionsData(AssetLocation assetLocation, MemoizedFile aliasesFile) {
 		this.brjs = assetLocation.root();
 		this.assetLocation = assetLocation;
 		this.aliasesFile = aliasesFile;
@@ -30,7 +29,7 @@ public class PersistentAliasDefinitionsData {
 	
 	public void writeData() throws ContentFileProcessingException {
 		try {
-			AliasDefinitionsWriter.write(getData(), aliasesFile, getCharacterEncoding());
+			AliasDefinitionsWriter.write(brjs, getData(), aliasesFile, getCharacterEncoding());
 		}
 		catch(Exception e) {
 			throw new ContentFileProcessingException(e, aliasesFile);

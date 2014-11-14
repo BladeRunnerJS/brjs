@@ -1,21 +1,21 @@
 package org.bladerunnerjs.appserver;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.FileInfo;
 
 import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.*;
 
 public class AppDeploymentFileWatcher extends Thread
 {
-	
-	private static final long CHECK_INTERVAL = 100;
 
+	private static final long DEFAULT_CHECK_INTERVAL = 100;
+	
 	//TOOD: these messages arent tested in our spec tests
 	public class Messages
 	{
@@ -31,25 +31,19 @@ public class AppDeploymentFileWatcher extends Thread
 	private BRJSApplicationServer appServer;
 	private BRJS brjs;
 
-	private List<FileInfo> watchDirIterators = new ArrayList<>();
+	private List<MemoizedFile> watchDirs;
 	private volatile boolean running = true;
+	private final long checkInterval;
 	
-	// TODO: replace this with file watcher - recusive watching info here http://docs.oracle.com/javase/tutorial/essential/io/examples/WatchDir.java
-	public AppDeploymentFileWatcher(BRJS brjs, BRJSApplicationServer appServer, File... rootWatchDirs)
+	public AppDeploymentFileWatcher(BRJS brjs, BRJSApplicationServer appServer, long checkInterval, MemoizedFile... rootWatchDirs)
 	{
 		logger = brjs.logger(this.getClass());
 		
 		this.appServer = appServer;
 		this.brjs = brjs;
 		
-		for(File rootWatchDir : rootWatchDirs) {
-			FileInfo rootWatchDirInfo = brjs.getFileInfo(rootWatchDir);
-			
-			if (rootWatchDirInfo.isDirectory())
-			{
-				watchDirIterators.add(rootWatchDirInfo);
-			}
-		}
+		watchDirs = Arrays.asList(rootWatchDirs);
+		this.checkInterval = (checkInterval > 0) ? checkInterval : DEFAULT_CHECK_INTERVAL;
 	}
 	
 	@Override
@@ -59,11 +53,11 @@ public class AppDeploymentFileWatcher extends Thread
 		{
 			try
 			{
-				for (FileInfo watchDirIterator : watchDirIterators)
+				for (MemoizedFile watchDir : watchDirs)
 				{
-					checkForNewApps(watchDirIterator);
+					checkForNewApps(watchDir);
 				}
-				Thread.sleep(CHECK_INTERVAL);
+				Thread.sleep(checkInterval);
 			}
 			catch (InterruptedException e)
 			{
@@ -77,26 +71,32 @@ public class AppDeploymentFileWatcher extends Thread
 		join();
 	}
 
-	private void checkForNewApps(FileInfo watchDirIterator)
+	private void checkForNewApps(MemoizedFile watchDir)
 	{
-		for (File dir : watchDirIterator.dirs())
+		if (!watchDir.isDirectory()) {
+			return;
+		}
+		for (File dir : watchDir.getUnderlyingFile().listFiles()) // get the underlying file so listFiles isnt cached
 		{
-			if (isAppDirWithDeployFile(dir)) 
+			if (isAppDirWithDeployFile(watchDir, dir)) 
 			{
-				deployApp(dir);
+				deployApp(watchDir, dir);
 			}
 		}
 	}
 
 
-	private boolean isAppDirWithDeployFile(File dir)
+	private boolean isAppDirWithDeployFile(File rootWatchDir, File dir)
 	{
-		App app = brjs.locateAncestorNodeOfClass(dir, App.class);
-		return app != null && ApplicationServerUtils.getDeployFileForApp(app).isFile();
+		if (!dir.isDirectory()) {
+			return false;
+		}
+		return ApplicationServerUtils.getDeployFile(dir).isFile(); // get the underlying file so listFiles isnt cached
 	}
 
-	private void deployApp(File appDir)
+	private void deployApp(File rootWatchDir, File appDir)
 	{
+		brjs.getFileModificationRegistry().incrementFileVersion(rootWatchDir);
 		App app = brjs.locateAncestorNodeOfClass(appDir, App.class);
 		try 
 		{

@@ -1,8 +1,11 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
@@ -10,6 +13,7 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
@@ -22,7 +26,7 @@ public abstract class NodeBuilder<N extends Node> {
 	public NodeBuilder(SpecTest specTest, N node) {
 		this.specTest = specTest;
 		this.node = node;
-		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
+		fileUtil = new EncodedFileUtil(specTest.brjs, specTest.getActiveCharacterEncoding());
 		builderChainer = new BuilderChainer(specTest);
 	}
 	
@@ -39,13 +43,13 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFolder(String directoryName) throws Exception {
-		FileUtils.forceMkdir(new File(node.dir(), directoryName));
+		FileUtils.forceMkdir( node.file(directoryName) );
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer containsFile(String filePath) throws Exception {
-		fileUtil.write(node.file(filePath), filePath + "\n");
+		writeToFile(node.file(filePath), filePath + "\n");
 		
 		return builderChainer;
 	}
@@ -59,7 +63,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
-		fileUtil.write(node.file(filePath), fileContents);
+		writeToFile(node.file(filePath), fileContents);
 		
 		return builderChainer;
 	}
@@ -71,7 +75,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsStorageFile(String pluginName, String filePath) throws Exception {
-		fileUtil.write(node.storageFile(pluginName, filePath), "");
+		writeToFile(node.storageFile(pluginName, filePath), "");
 		
 		return builderChainer;
 	}
@@ -85,13 +89,22 @@ public abstract class NodeBuilder<N extends Node> {
 	
 	public BuilderChainer hasDir(String filePath)
 	{
-		node.file(filePath).mkdirs();
+		File dir = node.file(filePath);
+		dir.mkdirs();
+		node.root().getFileModificationRegistry().incrementFileVersion(dir);
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
-		JsStyleUtility.setJsStyle(node.file(packagePath), jsStyle);
+		File packageDir = node.file(packagePath);
+		if (packageDir.isDirectory()) {
+    		Collection<File> subFiles = FileUtils.listFiles(packageDir, new SuffixFileFilter(".js"), TrueFileFilter.INSTANCE);
+    		if (subFiles.size() > 0) {
+    			throw new RuntimeException("Package style should be set before any JS files have been created");
+    		}
+		}
+		JsStyleUtility.setJsStyle(specTest.brjs, packageDir, jsStyle);
 		return builderChainer;
 	}
 	
@@ -124,4 +137,14 @@ public abstract class NodeBuilder<N extends Node> {
 		
 		return builderChainer;
 	}
+	
+	public void writeToFile(File file, String content) throws IOException {
+		writeToFile(file, content, false);
+	}
+	
+	public void writeToFile(File file, String content, boolean append) throws IOException {
+		fileUtil.write(file, content, append);
+		specTest.brjs.getFileModificationRegistry().incrementFileVersion(file);
+	}
+	
 }

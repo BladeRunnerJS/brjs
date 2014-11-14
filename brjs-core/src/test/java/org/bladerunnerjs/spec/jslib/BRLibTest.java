@@ -35,7 +35,7 @@ public class BRLibTest extends SpecTest {
 			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: foo/bar")
 			.and(sdkLib).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
+			.and(aspect).classRequires("appns/AspectClass", "foo/bar/SdkClass");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("foo.bar.SdkClass");
 	}
@@ -46,7 +46,7 @@ public class BRLibTest extends SpecTest {
 			.and(sdkLib).hasClass("foo/bar/SdkClass")
 			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: foo.bar")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
+			.and(aspect).classRequires("appns/AspectClass", "foo/bar/SdkClass");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(ConfigException.class, "foo.bar", "sdk/libs/javascript/br/br-lib.conf", BRLibYamlConf.REQUIRE_PREFIX_REGEX);
 	}
@@ -59,7 +59,7 @@ public class BRLibTest extends SpecTest {
 			.and(sdkLib2).containsFileWithContents("br-lib.conf", "requirePrefix: foo/bar")
 			.and(sdkLib2).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns/AspectClass", "foo.Bar");
+			.and(aspect).classRequires("appns/AspectClass", "foo/Bar");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("foo.Bar");
 	}
