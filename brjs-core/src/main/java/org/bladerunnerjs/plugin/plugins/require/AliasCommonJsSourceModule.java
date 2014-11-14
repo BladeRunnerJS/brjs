@@ -147,7 +147,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 			"	var AliasInterfaceError = require('br/AliasInterfaceError');\n" +
 			"	var classRef = require('" + aliasDefinition.getRequirePath() + "');\n" +
 			"	var interfaceRef = require('" + aliasDefinition.getInterfaceRequirePath() + "');\n" +
-			"	if(br.classIsA(classRef, interfaceRef)) throw new AliasInterfaceError('" + aliasDefinition.getName() + "', '" + aliasDefinition.getRequirePath() + "', '" + aliasDefinition.getInterfaceRequirePath() + "');\n" +
+			"	if(!br.classIsA(classRef, interfaceRef)) throw new AliasInterfaceError('" + aliasDefinition.getName() + "', '" + aliasDefinition.getRequirePath() + "', '" + aliasDefinition.getInterfaceRequirePath() + "');\n" +
 			"\n" +
 			"	module.exports = classRef;\n";
 	}
