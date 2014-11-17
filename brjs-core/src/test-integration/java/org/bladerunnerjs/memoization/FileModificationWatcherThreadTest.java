@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -65,7 +66,7 @@ public class FileModificationWatcherThreadTest
 		FileUtils.deleteQuietly(rootWatchDir);
 	}
 	
-	@Test
+	@Test @Ignore
 	public void newFilesInTheRootDirAreDetected() throws Exception
 	{
 		fileInRoot.createNewFile();
@@ -80,7 +81,7 @@ public class FileModificationWatcherThreadTest
 		fail("Changes were not detected");		
 	}
 	
-	@Test
+	@Test @Ignore
 	public void changesToFilesInTheRootDirAreDetected() throws Exception
 	{
 		newFilesInTheRootDirAreDetected();
@@ -96,7 +97,7 @@ public class FileModificationWatcherThreadTest
 		fail("Changes were not detected");		
 	}
 	
-	@Test
+	@Test @Ignore
 	public void deletedFilesInTheRootDirAreDetected() throws Exception
 	{
 		newFilesInTheRootDirAreDetected();
@@ -112,7 +113,7 @@ public class FileModificationWatcherThreadTest
 		fail("Changes were not detected");		
 	}
 	
-	@Test
+	@Test @Ignore
 	public void newDirectoriesInTheRootDirAreDetected() throws Exception
 	{
 		dirInRoot.mkdir();
@@ -127,7 +128,7 @@ public class FileModificationWatcherThreadTest
 		fail("Changes were not detected");		
 	}
 	
-	@Test
+	@Test @Ignore
 	public void deletedDirectoriesInTheRootDirAreDetected() throws Exception
 	{
 		newDirectoriesInTheRootDirAreDetected();
@@ -143,7 +144,7 @@ public class FileModificationWatcherThreadTest
 		fail("Changes were not detected");		
 	}
 	
-	@Test
+	@Test @Ignore
 	public void newFilesInChildDirsAreDetected() throws Exception
 	{
 		newDirectoriesInTheRootDirAreDetected();
