@@ -369,7 +369,7 @@ public class TestRunner {
 	
 	private boolean runTest(MemoizedFile baseDirectory, MemoizedFile configFile, boolean resetServer) throws Exception  {
 		logger.warn("\n");
-		logger.warn("Testing " + getFriendlyTestPath(baseDirectory, configFile) + ":");
+		logger.warn("Testing " + getFullTestPath(baseDirectory, configFile) + ":");
 		
 		try {
 			File testResultsDir = new File("../"+XML_TEST_RESULTS_DIR);
@@ -422,6 +422,13 @@ public class TestRunner {
 		return true;
 	}
 
+	@SuppressWarnings("static-access")
+	private String getFullTestPath(MemoizedFile baseDirectory, MemoizedFile configFile) {
+		int indexOfApps = baseDirectory.toString().indexOf(APPS_DIR + baseDirectory.separator);
+		return baseDirectory.toString().substring(indexOfApps + (APPS_DIR + baseDirectory.separator).length()) 
+				+ " " + getTestTypeFromDirectoryName(configFile.getParentFile().getName());
+	}
+	
 	protected String getJavaOpts() {
 		String javaopts = "";
 		logger.debug("System env JAVA_OPTS is '" + System.getenv("JAVA_OPTS") +"'");
