@@ -104,7 +104,9 @@ public class FileModificationWatcherThread extends Thread
             
             fileModificationRegistry.incrementFileVersion(childFile);
             
-            if(!watchKey.reset()) {
+            boolean isWatchKeyReset = watchKey.reset();
+            if( !isWatchKeyReset || (kind == ENTRY_DELETE && childFile.isDirectory()) ) {
+            	watchKey.cancel();
             	watchKeys.remove(watchPath);
 			}
 		}
