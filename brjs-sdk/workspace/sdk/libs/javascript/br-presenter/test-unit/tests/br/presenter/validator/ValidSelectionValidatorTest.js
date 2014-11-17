@@ -59,10 +59,20 @@ ValidSelectionValidatorTest.prototype.test_caseIsIgnoredWhenValidating = functio
 
 ValidSelectionValidatorTest.prototype.test_canValidateNumericOptions = function()
 {
-	var oNumericOptions = new br.presenter.node.OptionsNodeList([1, 2, 5]);
+	var oNumericOptions = new br.presenter.node.OptionsNodeList([1, 2, 3]);
 	var oValidSelectionValidator = new br.presenter.validator.ValidSelectionValidator(oNumericOptions);
 	
 	var oValidationResult = new br.presenter.validator.ValidationResult();
 	oValidSelectionValidator.validate(1, {}, oValidationResult);
+	assertTrue(oValidationResult.isValid());
+};
+
+ValidSelectionValidatorTest.prototype.test_canValidateNumericOptionsWhenComparisonValueIsZero = function()
+{
+	var oNumericOptions = new br.presenter.node.OptionsNodeList([0, 1, 2]);
+	var oValidSelectionValidator = new br.presenter.validator.ValidSelectionValidator(oNumericOptions);
+	
+	var oValidationResult = new br.presenter.validator.ValidationResult();
+	oValidSelectionValidator.validate(0, {}, oValidationResult);
 	assertTrue(oValidationResult.isValid());
 };
