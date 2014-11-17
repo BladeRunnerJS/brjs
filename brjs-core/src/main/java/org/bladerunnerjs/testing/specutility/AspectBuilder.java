@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility;
 
 import java.io.File;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
@@ -9,6 +10,7 @@ import org.bladerunnerjs.testing.specutility.engine.BundlableNodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Assert;
 
+import com.google.common.base.Joiner;
 
 public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 	private final Aspect aspect;
@@ -21,35 +23,35 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 	
 	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception 
 	{
-		fileUtil.write(aspect.file("index.html"), generateStringClassReferencesContent(classNames));	
+		writeToFile(getIndexFile(), generateStringClassReferencesContent(classNames));	
 		
 		return builderChainer;
 	}
 
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		fileUtil.write(aspect.assetLocation("resources").file(resourceFileName), generateRootRefContentForClasses(classNames));
+		writeToFile(getResourceFile(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer indexPageHasAliasReferences(String... aliasReferences) throws Exception 
 	{
-		fileUtil.write(aspect.file("index.html"), generateStringAliasReferencesContent(aliasReferences));	
+		writeToFile(getIndexFile(), generateStringAliasReferencesContent(aliasReferences));	
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		fileUtil.write(aspect.assetLocation("src").file(resourceFileName), generateRootRefContentForClasses(classNames));
+		writeToFile(getSrcResourceFile(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer indexPageHasContent(String content) throws Exception 
 	{
-		fileUtil.write(aspect.file("index.html"), content);	
+		writeToFile(getIndexFile(), content);	
 		
 		return builderChainer;
 	}
@@ -59,13 +61,15 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 		return indexPageRequires(thirdpartyLib.getName());
 	}
 	
-	public BuilderChainer indexPageRequires(String requirePath) throws Exception
+	public BuilderChainer indexPageRequires(String... requirePaths) throws Exception
 	{
-		if(requirePath.contains(".")) {
-			throw new RuntimeException("The '" + requirePath + "' require path contains a dot. Did you mean to use indexPageRefersTo() instead?");
+		for(String requirePath : requirePaths) {
+			if(requirePath.contains(".")) {
+				throw new RuntimeException("The '" + requirePath + "' require path contains a dot. Did you mean to use indexPageRefersTo() instead?");
+			}
 		}
 		
-		fileUtil.write(aspect.file("index.html"), "require('"+requirePath+"');");
+		writeToFile(getIndexFile(), "require('" + Joiner.on("');\nrequire('").join(requirePaths) + "');");
 		
 		return builderChainer;
 	}
@@ -77,6 +81,19 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 		Assert.assertFalse( "The file at "+file.getAbsolutePath()+" was not meant to exist", file.exists() );
 		
 		return builderChainer;
+	}
+	
+	
+	public MemoizedFile getResourceFile(String resourceFileName) {
+		return aspect.assetLocation("resources").file(resourceFileName);
+	}
+	
+	public MemoizedFile getSrcResourceFile(String resourceFileName) {
+		return aspect.assetLocation("src").file(resourceFileName);
+	}
+	
+	public MemoizedFile getIndexFile() {
+		return aspect.file("index.html");
 	}
 	
 	

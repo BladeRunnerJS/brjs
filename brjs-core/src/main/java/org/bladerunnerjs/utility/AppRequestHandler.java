@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -10,10 +9,12 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -131,37 +132,41 @@ public class AppRequestHandler
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public File getIndexPage(BrowsableNode browsableNode) {
+	public MemoizedFile getIndexPage(BrowsableNode browsableNode) {
 		return (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 	}
 	
-	public Map<String,Map<String,String>> getTagsAndAttributesFromIndexPage(BrowsableNode browsableNode, Locale locale, String version, UrlContentAccessor contentAccessor, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
-		File indexPage = getIndexPage(browsableNode);
+	public Map<String,Map<String,String>> getTagsAndAttributesFromIndexPage(BrowsableNode browsableNode, Locale locale, UrlContentAccessor contentAccessor, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
+		MemoizedFile indexPage = getIndexPage(browsableNode);
 		try {
 			if ( !Arrays.asList(app.appConf().getLocales()).contains(locale) ) {
 				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
 			}
 			
-			String pathRelativeToApp = RelativePathUtility.get(app.root().getFileInfoAccessor(), app.dir(), indexPage);
+			if (!indexPage.isFile()) {
+				return new HashMap<>();
+			}
+			
+			String pathRelativeToApp = app.dir().getRelativePath(indexPage);
 			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
 			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
 			
-			return TagPluginUtility.getUsedTagsAndAttributes(indexPageContent.toString(), browsableNode.getBundleSet(), requestMode, locale, version);
+			return TagPluginUtility.getUsedTagsAndAttributes(indexPageContent.toString(), browsableNode.getBundleSet(), requestMode, locale);
 		}
 		catch (IOException | ConfigException | ModelOperationException | NoTagHandlerFoundException e) {
-			throw new ContentProcessingException(e, "Error when trying to calculate used tags in the index page for " + RelativePathUtility.get(browsableNode.root().getFileInfoAccessor(), browsableNode.root().dir(),indexPage));
+			throw new ContentProcessingException(e, "Error when trying to calculate used tags in the index page for " + browsableNode.root().dir().getRelativePath(indexPage));
 		}
 		
 	}
 	
 	public ResponseContent getIndexPageContent(BrowsableNode browsableNode, Locale locale, String version, UrlContentAccessor contentAccessor, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
-		File indexPage = getIndexPage(browsableNode);
+		MemoizedFile indexPage = getIndexPage(browsableNode);
 		try {
 			if ( !Arrays.asList(app.appConf().getLocales()).contains(locale) ) {
 				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
 			}
 			
-			String pathRelativeToApp = RelativePathUtility.get(app.root().getFileInfoAccessor(), app.dir(), indexPage);
+			String pathRelativeToApp = app.dir().getRelativePath(indexPage);
 			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
 			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
 			
@@ -174,7 +179,7 @@ public class AppRequestHandler
 			return new CharResponseContent( browsableNode.root(), byteArrayOutputStream.toString() );
 		}
 		catch (IOException | ConfigException | ModelOperationException e) {
-			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(app.root().getFileInfoAccessor(), browsableNode.root().dir(), indexPage));
+			throw new ContentProcessingException(e, "Error when trying to write the index page for " + browsableNode.root().dir().getRelativePath(indexPage));
 		}
 	}
 

@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class BRJSUnitTest extends TestModelAccessor
 	@Before
 	public void setup() throws Exception
 	{
-		File rootDir = FileUtility.createTemporaryDirectory( this.getClass() );
+		File rootDir = FileUtils.createTemporaryDirectory( this.getClass() );
 		new File(rootDir, "sdk").mkdir();
 		
 		brjs = createModel(rootDir);

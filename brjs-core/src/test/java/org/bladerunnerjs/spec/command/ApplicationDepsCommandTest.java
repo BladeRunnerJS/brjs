@@ -30,6 +30,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		given(brjs).hasCommandPlugins(new ApplicationDepsCommand())
 			.and(brjs).automaticallyFindsAssetLocationPlugins()
 			.and(brjs).automaticallyFindsAssetPlugins()
+			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");

@@ -14,6 +14,7 @@ import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.PluginLocator;
+import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLocatorUtils;
@@ -28,6 +29,7 @@ public class MockPluginLocator implements PluginLocator
 	public List<TagHandlerPlugin> tagHandlers = new ArrayList<>();
 	public List<AssetPlugin> assetPlugins = new ArrayList<>();
 	public List<AssetLocationPlugin> assetLocationPlugins = new ArrayList<>();
+	public List<RequirePlugin> requirePlugins = new ArrayList<>();
 	
 	public void createPlugins(BRJS brjs) {
 		setBRJSForPlugins(brjs, pluginCommands);
@@ -37,6 +39,7 @@ public class MockPluginLocator implements PluginLocator
 		setBRJSForPlugins(brjs, tagHandlers);
 		setBRJSForPlugins(brjs, assetPlugins);
 		setBRJSForPlugins(brjs, assetLocationPlugins);
+		setBRJSForPlugins(brjs, requirePlugins);
 	}
 	
 	@Override
@@ -74,6 +77,11 @@ public class MockPluginLocator implements PluginLocator
 	@Override
 	public List<AssetLocationPlugin> getAssetLocationPlugins() {
 		return assetLocationPlugins;
+	}
+	
+	@Override
+	public List<RequirePlugin> getRequirePlugins() {
+		return requirePlugins;
 	}
 	
 	public static List<? extends Plugin> setBRJSForPlugins(BRJS brjs, List<? extends Plugin> plugins)

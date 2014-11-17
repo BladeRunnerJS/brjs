@@ -1,17 +1,17 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractDeepAssetLocation extends TheAbstractAssetLocation {
-	public AbstractDeepAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
+	public AbstractDeepAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation, AssetLocation... dependentAssetLocations) {
 		super(rootNode, assetContainer, dir, parentAssetLocation, dependentAssetLocations);
 	}
 	
 	@Override
-	protected List<File> getCandidateFiles() {
-		return getDirInfo().nestedFiles();
+	public List<MemoizedFile> getCandidateFiles() {
+		return rootNode.getMemoizedFile(dir()).nestedFiles();
 	}
 }

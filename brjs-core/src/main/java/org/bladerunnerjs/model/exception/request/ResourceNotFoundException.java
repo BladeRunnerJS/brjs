@@ -1,6 +1,8 @@
 package org.bladerunnerjs.model.exception.request;
 
-
+/**
+ * Thrown when the specified resource could not be located. 
+*/
 
 public class ResourceNotFoundException extends RequestHandlingException {
 

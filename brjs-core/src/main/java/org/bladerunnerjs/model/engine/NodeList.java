@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model.engine;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
 
@@ -48,7 +48,7 @@ public class NodeList<N extends Node> {
 	@SuppressWarnings("unchecked")
 	public N item(String logicalNodeName) {
 		if (!namedNodes.containsKey(logicalNodeName)) {
-			File childPath = getNodeDir(logicalNodeName);
+			MemoizedFile childPath = getNodeDir(logicalNodeName);
 			N child;
 			try
 			{
@@ -108,14 +108,14 @@ public class NodeList<N extends Node> {
 		return new ArrayList<>(combinedLogicalNodeNames);
 	}
 	
-	private File getNodeDir(String logicalNodeName)
+	private MemoizedFile getNodeDir(String logicalNodeName)
 	{
 		List<String> possibleDirNames = getPossibleDirNames(logicalNodeName);
-		File childDir = null;
+		MemoizedFile childDir = null;
 		
 		for(String dirName : possibleDirNames)
 		{
-			File nextDir = new File(node.dir(), dirName);
+			MemoizedFile nextDir = node.root().getMemoizedFile(node.dir(), dirName);
 			
 			if(nextDir.exists())
 			{
@@ -125,7 +125,7 @@ public class NodeList<N extends Node> {
 		}
 		
 		if(childDir == null) {
-			childDir = new File(node.dir(), possibleDirNames.get(0));
+			childDir = node.root().getMemoizedFile(node.dir(), possibleDirNames.get(0));
 		}
 		
 		return childDir;

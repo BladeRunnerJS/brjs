@@ -1,10 +1,12 @@
 package org.bladerunnerjs.testing.specutility;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.StaticContentAccessor;
@@ -15,6 +17,7 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -37,14 +40,20 @@ public class AppBuilder extends NodeBuilder<App> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
+	public BuilderChainer hasBeenBuilt(MemoizedFile targetDir) throws Exception {
 		app.build( targetDir );
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenBuiltAsWar(File targetDir) throws Exception {
-		File warExportFile = new File(targetDir, app.getName()+".war");
+	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
+		app.build( specTest.brjs.getMemoizedFile(targetDir) );
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenBuiltAsWar(MemoizedFile targetDir) throws Exception {
+		MemoizedFile warExportFile = targetDir.file(app.getName()+".war");
 		warExportFile.getParentFile().mkdir();
 		app.buildWar( warExportFile );
 		
@@ -79,7 +88,19 @@ public class AppBuilder extends NodeBuilder<App> {
 	
 	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException 
 	{
-		app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+		return hasReceivedRequest(requestPath, null);	
+	}
+	
+	public BuilderChainer hasReceivedRequest(String requestPath, StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException 
+	{
+		ResponseContent content = app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+		if (response == null) {
+			return builderChainer;
+		}
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		content.write( baos );
+		response.append(baos.toString());
 		
 		return builderChainer;	
 	}

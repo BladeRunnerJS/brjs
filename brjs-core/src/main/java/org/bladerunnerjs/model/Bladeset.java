@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +8,7 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -20,22 +20,22 @@ public class Bladeset extends AbstractComponent implements NamedNode
 {
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
-	private File[] scopeFiles;
+	private MemoizedFile[] scopeFiles;
 	
-	public Bladeset(RootNode rootNode, Node parent, File dir) {
+	public Bladeset(RootNode rootNode, Node parent, MemoizedFile dir) {
 		this(rootNode, parent, dir, StringUtils.substringBeforeLast(dir.getName(), "-bladeset"));
 	}
 	
-	public Bladeset(RootNode rootNode, Node parent, File dir, String name)
+	public Bladeset(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
 	}
 	
 	@Override
-	public File[] memoizedScopeFiles() {
+	public MemoizedFile[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {dir(), app().libsDir(), app().libsDir(), root().sdkJsLibsDir().dir(), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
+			scopeFiles = new MemoizedFile[] {dir(), app().libsDir(), app().libsDir(), root().sdkJsLibsDir().dir()};
 		}
 		
 		return scopeFiles;

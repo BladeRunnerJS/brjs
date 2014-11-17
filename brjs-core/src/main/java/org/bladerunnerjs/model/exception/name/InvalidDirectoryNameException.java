@@ -4,6 +4,9 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.NamedNode;
 
+/**
+ * Thrown when the specified directory name is not valid for the node. 
+*/ 
 
 public class InvalidDirectoryNameException extends InvalidNameException {
 	private static final long serialVersionUID = 1L;

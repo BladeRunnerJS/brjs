@@ -17,6 +17,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.NamespaceException;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -122,7 +123,7 @@ public class XmlBundleWriter
 				continue;
 			}
 			
-			File document = new File(xmlAsset.dir(), xmlAsset.getAssetName());
+			MemoizedFile document = xmlAsset.dir().file(xmlAsset.getAssetName());
 			try{
 				Reader bundlerFileReader = xmlAsset.getReader();
 				XmlSiblingReader siblingReader = new XmlSiblingReader(inputFactory.createXMLStreamReader(bundlerFileReader));
@@ -135,7 +136,7 @@ public class XmlBundleWriter
 				if (!configMap.containsKey(rootElement))
 				{
 					siblingReader.close();
-					throw new ContentFileProcessingException(document, "Document contain unsupported root element: '" + rootElement + "'");
+					throw new ContentFileProcessingException(document, "Document contains unsupported root element: '" + rootElement + "'");
 				}
 				else
 				{

@@ -1,14 +1,13 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetLocation;
@@ -20,7 +19,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.FileUtils;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -139,23 +138,23 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 	}
 	
 	void copyTheme(AssetLocation location, String origTheme, String newTheme) throws CommandOperationException{
-		 File srcDir = new File(location.dir().getPath());
-		 File dstDir = new File(location.dir().getParentFile().getPath(), newTheme);	 			 
+		MemoizedFile srcDir = location.dir();
+		MemoizedFile dstDir = location.dir().getParentFile().file(newTheme);	 			 
 		 
-		 if(dstDir.exists())
-		 {
-			 logger.warn(Messages.THEME_FOLDER_EXISTS, RelativePathUtility.get(brjs.getFileInfoAccessor(), brjs.dir(), dstDir));
-			 return;
-		 }
+		if(dstDir.exists())
+		{
+			logger.warn(Messages.THEME_FOLDER_EXISTS, brjs.dir().getRelativePath(dstDir));
+			return;
+		}
 		 
-		 try {
-				FileUtils.copyDirectory(srcDir, dstDir);
-		 } 
-		 catch (IOException e) {
-				e.printStackTrace();
-		 }
+		try {
+			FileUtils.copyDirectory(srcDir, dstDir);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-		logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), srcDir), RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), dstDir));			
+		logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, app.dir().getRelativePath(srcDir), app.dir().getRelativePath(dstDir));			
 	}
 	
 	private boolean themeExists(List<AssetLocation> assetLocations, String origTheme, String matchLocation) {
@@ -170,7 +169,7 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 	
 	private boolean themeExistsWithinAssetLocation(AssetLocation location, String origTheme, String matchLocation) {
 		matchLocation = Paths.get(matchLocation).toString();
-		String pathToCompare = Paths.get(RelativePathUtility.get(brjs.getFileInfoAccessor(), app.dir(), location.dir())).toString();
+		String pathToCompare = Paths.get(app.dir().getRelativePath(location.dir())).toString();
 		
 		return location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
 				&& pathToCompare.contains(matchLocation);

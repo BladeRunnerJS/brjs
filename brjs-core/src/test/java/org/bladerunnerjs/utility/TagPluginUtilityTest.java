@@ -18,7 +18,6 @@ import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.MockTagHandler;
-import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
 import org.junit.*;
@@ -219,7 +218,7 @@ public class TagPluginUtilityTest extends TestModelAccessor
 	
 	private void filterAndAssertMapReturned(String input, Map<String,Map<String,String>> expectedResult, BundleSet bundleSet, RequestMode opMode, String locale) throws Exception
 	{
-		 Map<String,Map<String,String>> actualResult = TagPluginUtility.getUsedTagsAndAttributes(input, bundleSet, opMode, new Locale(locale), brjs.getAppVersionGenerator().getDevVersion());
+		 Map<String,Map<String,String>> actualResult = TagPluginUtility.getUsedTagsAndAttributes(input, bundleSet, opMode, new Locale(locale));
 		assertEquals(expectedResult, actualResult);
 	}
 	
@@ -227,7 +226,7 @@ public class TagPluginUtilityTest extends TestModelAccessor
 		File sdkDir;
 		
 		try {
-			sdkDir = FileUtility.createTemporaryDirectory( this.getClass() );
+			sdkDir = FileUtils.createTemporaryDirectory( this.getClass() );
 			new File(sdkDir, "sdk").mkdirs();
 		}
 		catch (IOException e) {

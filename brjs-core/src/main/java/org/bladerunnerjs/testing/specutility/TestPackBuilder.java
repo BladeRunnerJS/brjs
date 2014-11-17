@@ -3,6 +3,7 @@ package org.bladerunnerjs.testing.specutility;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
@@ -25,7 +26,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 	public BuilderChainer testRefersTo(String testFilePath, String... classNames) throws IOException
 	{
 		File testFile = testPack.tests().file(testFilePath);
-		String jsStyle = JsStyleUtility.getJsStyle(testFile.getParentFile());
+		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, testFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
 			throw new RuntimeException("testRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "'");
@@ -37,7 +38,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 			content += className + "\n";
 		}
 		
-		fileUtil.write(testFile, content);
+		writeToFile(testFile, content);
 		
 		return builderChainer;
 	}
@@ -45,26 +46,26 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 	public BuilderChainer testFileHasContent(String testFilePath, String content) throws IOException
 	{
 		File testFile = testPack.tests().file(testFilePath);
-		fileUtil.write(testFile, content);
+		writeToFile(testFile, content);
 		return builderChainer;
 	}
 	
 	public BuilderChainer testRequires(String testFilePath, String className) throws IOException
 	{
 		File testFile = testPack.tests().file(testFilePath);
-		String jsStyle = JsStyleUtility.getJsStyle(testFile.getParentFile());
+		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, testFile.getParentFile());
 		
 		if(!jsStyle.equals(CommonJsSourceModule.JS_STYLE)) {
 			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + CommonJsSourceModule.JS_STYLE + "'");
 		}
 		
-		fileUtil.write(testFile, "require('"+className+"');");
+		writeToFile(testFile, "require('"+className+"');");
 		
 		return builderChainer;
 	}
 	
 	@Override
-	protected File getSourceFile(String sourceClass) {
+	public MemoizedFile getSourceFile(String sourceClass) {
 		return testPack.testSource().file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 

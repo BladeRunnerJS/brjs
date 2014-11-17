@@ -24,6 +24,7 @@ public class ServeAppTest extends SpecTest {
 		given(brjs).automaticallyFindsAssetLocationPlugins()
 			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsContentPlugins()
+			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasContentPlugins(new AppMetadataContentPlugin())

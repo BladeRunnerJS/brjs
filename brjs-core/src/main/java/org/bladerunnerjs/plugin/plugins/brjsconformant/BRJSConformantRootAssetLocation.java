@@ -1,11 +1,11 @@
 package org.bladerunnerjs.plugin.plugins.brjsconformant;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJSNodeHelper;
@@ -16,12 +16,12 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation implements RootAssetLocation {
-	public BRJSConformantRootAssetLocation(RootNode rootNode, AssetContainer assetContainer, File dir, AssetLocation parentAssetLocation) {
+	public BRJSConformantRootAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation) {
 		super(rootNode, assetContainer, dir, parentAssetLocation);
 	}
 	
 	@Override
-	protected List<File> getCandidateFiles() {
+	public List<MemoizedFile> getCandidateFiles() {
 		return Collections.emptyList();
 	}
 	

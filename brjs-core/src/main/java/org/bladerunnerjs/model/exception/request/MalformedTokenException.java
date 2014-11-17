@@ -2,6 +2,10 @@ package org.bladerunnerjs.model.exception.request;
 
 import java.util.regex.Pattern;
 
+/**
+ * Thrown when the specified token-value pair does not match the required format. 
+*/
+
 public class MalformedTokenException extends Exception {
 	private static final long serialVersionUID = 1L;
 	

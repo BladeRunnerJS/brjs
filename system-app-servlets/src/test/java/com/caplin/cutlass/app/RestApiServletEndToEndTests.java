@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -18,9 +17,7 @@ import org.junit.Test;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.BRJS;
-
-import com.caplin.cutlass.util.FileUtility;
-
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.app.servlet.RestApiServlet;
@@ -41,14 +38,14 @@ public class RestApiServletEndToEndTests
 	@Before
 	public void setup() throws Exception
 	{
-		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
+		File sdkRoot = createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
 		
 		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot );
 		
 		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
 		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), "");
 		
-		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
+		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), brjs.getMemoizedFile(sdkRoot));
 		server.start();
 		client = HttpClientBuilder.create().build();
 	}
@@ -215,6 +212,7 @@ public class RestApiServletEndToEndTests
 	{
 		return createBlade(app, bladeset, blade, true);
 	}
+	
 	private HttpResponse createBlade(String app, String bladeset, String blade, boolean releaseConnection) throws IOException 
 	{
 		String jsonBody = "{\n" +
@@ -228,6 +226,16 @@ public class RestApiServletEndToEndTests
 			RestApiServletTestUtils.getResponseTextFromResponse(response);
 		}
 		return response;
+	}
+	
+	private File createTemporarySdkInstall(File existingSDK) throws IOException
+	{
+		File tempDir = FileUtils.createTemporaryDirectory( RestApiServletEndToEndTests.class );
+		if ( !(tempDir.exists() && tempDir.isDirectory()) ) {
+			throw new AssertionError();
+		}
+		org.apache.commons.io.FileUtils.copyDirectory(existingSDK, tempDir);
+		return new File(tempDir, "sdk");
 	}
 	
 }

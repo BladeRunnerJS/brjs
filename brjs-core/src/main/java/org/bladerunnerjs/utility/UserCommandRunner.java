@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LogLevelAccessor;
@@ -82,7 +82,7 @@ public class UserCommandRunner {
 	private static void checkApplicationLibVersions(App app, Logger logger)
 	{
 		File webinfLib = app.file("WEB-INF/lib");
-		File appJarsDir = app.root().appJars().dir();
+		MemoizedFile appJarsDir = app.root().appJars().dir();
 		if (!webinfLib.exists() || !appJarsDir.exists()) {
 			return;
 		}
@@ -104,7 +104,7 @@ public class UserCommandRunner {
 		}
 		
 		if (containsInvalidJars) {
-			logger.warn( Messages.OUTDATED_JAR_MESSAGE, app.getName(), "brjs-", RelativePathUtility.get(app.root().getFileInfoAccessor(), app.root().dir(), appJarsDir) );
+			logger.warn( Messages.OUTDATED_JAR_MESSAGE, app.getName(), "brjs-", app.root().dir().getRelativePath(appJarsDir) );
 		}
 	}
 	

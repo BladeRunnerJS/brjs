@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
-import java.io.File;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -13,12 +13,12 @@ public class CommonJsAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
+	public boolean canHandleAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
 		return (assetLocation.jsStyle().equals(CommonJsSourceModule.JS_STYLE) && assetFile.getName().endsWith(".js"));
 	}
 	
 	@Override
-	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new CommonJsSourceModule(assetFile, assetLocation);
+	public Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+		return new DefaultCommonJsSourceModule(assetFile, assetLocation);
 	}
 }

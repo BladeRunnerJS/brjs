@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
@@ -20,6 +20,7 @@ import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.Plugin;
+import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
@@ -27,12 +28,14 @@ import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyMinifierPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyModelObserverPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyRequirePlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.logging.MockLogLevelAccessor;
+import org.bladerunnerjs.utility.FileUtils;
 import org.mockito.Mockito;
 
 
@@ -194,6 +197,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		automaticallyFindsTagHandlerPlugins();
 		automaticallyFindsAssetPlugins();
 		automaticallyFindsAssetLocationPlugins();
+		automaticallyFindsRequirePlugins();
 		
 		return builderChainer;
 	}
@@ -208,6 +212,16 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer automaticallyFindsRequirePlugins() 
+	{
+		verifyBrjsIsNotSet();
+		verifyPluginsUnitialized(specTest.pluginLocator.requirePlugins);
+		
+		specTest.pluginLocator.requirePlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), RequirePlugin.class, VirtualProxyRequirePlugin.class) );
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer automaticallyFindsAllPlugins() {
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlerPlugins();
@@ -215,6 +229,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		automaticallyFindsAssetLocationPlugins();
 		automaticallyFindsCommandPlugins();
 		automaticallyFindsModelObservers();
+		automaticallyFindsRequirePlugins();
 		
 		return builderChainer;
 	}
@@ -253,12 +268,11 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenAuthenticallyCreatedWithPessamisticFileObserver() throws Exception
+	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
 	{
-		brjs = specTest.createNonTestModelWithTestFileObserver();
-		brjs.io().installFileAccessChecker();
-		specTest.brjs = brjs;
-		this.node = brjs;
+		hasBeenAuthenticallyCreated();
+		specTest.fileWatcherThread = new FileModificationWatcherThread(brjs);
+		specTest.fileWatcherThread.start();
 		
 		return builderChainer;
 	}
@@ -303,6 +317,8 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer commandHasBeenRun(String... args) throws Exception {
 		brjs.runCommand(args);
 		
+		brjs.incrementFileVersion();
+		
 		return builderChainer;
 	}
 	
@@ -315,11 +331,11 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer usesProductionTemplates() throws IOException {
 		verifyBrjsIsSet();
 		File templateDir = new File("../brjs-sdk/build-resources/includes/sdk/templates");
-		FileUtils.copyDirectory(templateDir, brjs.template("template").dir().getParentFile());
+		FileUtils.copyDirectory(brjs, templateDir, brjs.template("template").dir().getParentFile());
 		
 		File jsdocResourcesDir = new File("../brjs-sdk/build-resources/includes/sdk/jsdoc-toolkit-resources");
 		File jsdocResourcesDest = brjs.sdkRoot().file("jsdoc-toolkit-resources");
-		FileUtils.copyDirectory(jsdocResourcesDir, jsdocResourcesDest);
+		FileUtils.copyDirectory(brjs, jsdocResourcesDir, jsdocResourcesDest);
 		new File(jsdocResourcesDest, "jsdoc-toolkit/jsdoc").setExecutable(true);
 		
 		return builderChainer;

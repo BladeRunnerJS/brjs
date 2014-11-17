@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 import org.bladerunnerjs.appserver.ApplicationServer;
 
+import com.google.common.base.Predicate;
+
 
 public class AppServerVerifier
 {
@@ -63,7 +65,7 @@ public class AppServerVerifier
 		String url = getUrl(urlPath);
 		specTest.webappTester.whenRequestMadeTo(url,false).responseIs(response);
 		
-		return verifierChainer;		
+		return verifierChainer;	
 	}
 	
 	public VerifierChainer requestForUrlHasResponseCode(String urlPath, int statusCode) throws ClientProtocolException, IOException
@@ -97,6 +99,23 @@ public class AppServerVerifier
 		
 		return verifierChainer;		
 	}
+
+	public VerifierChainer requestCanEventuallyBeMadeWhereResponseMatches(String urlPath, Predicate<String> predicate) throws ClientProtocolException, IOException, InterruptedException
+	{
+		String url = getUrl(urlPath);
+		specTest.webappTester.pollServerUntilMatchesPredicate(url, predicate);
+		
+		return verifierChainer;	
+	}
+
+	public VerifierChainer contentLengthForRequestIs(String urlPath, int length) throws ClientProtocolException, IOException
+	{
+		String url = getUrl(urlPath);
+		specTest.webappTester.whenRequestMadeTo(url,false).contentLengthIs(length);
+		
+		return verifierChainer;
+	}
+	
 	
 	private String getUrl(String urlPath)
 	{

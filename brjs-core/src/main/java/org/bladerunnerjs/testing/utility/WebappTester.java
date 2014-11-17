@@ -16,6 +16,7 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -31,12 +32,14 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.UnicodeReader;
 
+import com.google.common.base.Predicate;
+
 @SuppressWarnings("deprecation")
 public class WebappTester 
 {
 	
-	private static final int MAX_POLL_REQUESTS = 20;
-	private static final int POLL_INTERVAL = 1000;
+	private static final int MAX_POLL_REQUESTS = 100;
+	private static final int POLL_INTERVAL = 500;
 	
 	private int defaultSocketTimeout = 9999999;
 	private int defaultConnectionTimeout = 9999999;
@@ -53,6 +56,7 @@ public class WebappTester
 	
 	public String requestLocale = "";
 	private String defaultFileCharacterEncoding;
+	private int contentLength;
 	
 	public WebappTester(BRJS brjs, File filePathBase, int defaultSocketTimeout, int defaultConnectionTimeout)
 	{
@@ -100,6 +104,14 @@ public class WebappTester
 		statusText = httpResponse.getStatusLine().getReasonPhrase();
 		response = EntityUtils.toString(httpResponse.getEntity());
 		contentType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
+		
+		Header[] headers = httpResponse.getAllHeaders();
+		for(Header h:headers){
+			if (h.getName().equals("Content-Length")) {
+				contentLength = Integer.parseInt( h.getValue() );
+			}
+		}
+		
 		Charset charset = ContentType.getOrDefault(httpResponse.getEntity()).getCharset();
 		characterEncoding = (charset == null) ? "" : charset.displayName();
 		EntityUtils.consume(httpResponse.getEntity());
@@ -121,20 +133,46 @@ public class WebappTester
 		return this;		
 	}
 	
-	public void pollServerForStatusCode(String url, int requiredStatusCode) throws ClientProtocolException, IOException, InterruptedException
+	public String pollServerForStatusCode(String url, int requiredStatusCode) throws ClientProtocolException, IOException, InterruptedException
 	{
 		int requestCount = 0;
-		while(statusCode != requiredStatusCode && requestCount < MAX_POLL_REQUESTS)
+		while(requestCount < MAX_POLL_REQUESTS)
 		{
-			whenRequestMadeTo(url);
+			try {
+				whenRequestMadeTo(url);
+			} catch (Exception ex) {
+				// do nothing
+			}
 			if (statusCode == requiredStatusCode)
+			{
+				return response;
+			}
+			requestCount++;
+			Thread.sleep(POLL_INTERVAL);
+		}
+		assertEquals("Never got required status code", requiredStatusCode, statusCode);
+		return null;
+	}
+	
+	public void pollServerUntilMatchesPredicate(String url, Predicate<String> predicate) throws ClientProtocolException, IOException, InterruptedException
+	{
+		int requestCount = 0;
+		
+		while(requestCount < MAX_POLL_REQUESTS)
+		{
+			try {
+				whenRequestMadeTo(url);
+			} catch (Exception ex) {
+				// do nothing
+			}
+			if (response != null && predicate.apply(response))
 			{
 				return;
 			}
 			requestCount++;
 			Thread.sleep(POLL_INTERVAL);
 		}
-		assertEquals("Never got required status code", requiredStatusCode, statusCode);
+		fail("Never got response that matched the predicate");
 	}
 	
 	public WebappTester printOutcome() 
@@ -160,6 +198,12 @@ public class WebappTester
 		if(!contentType.equals(this.contentType)) {
 			assertEquals("Content types don't match.", contentTypeText(contentType, null), contentTypeText(this.contentType, response));
 		}
+		return this;
+	}
+	
+	public WebappTester contentLengthIs(int contentLength)
+	{
+		assertEquals("Content lengths don't match.", contentLength, this.contentLength);
 		return this;
 	}
 	

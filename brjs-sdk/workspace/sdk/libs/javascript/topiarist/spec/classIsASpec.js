@@ -88,4 +88,8 @@ describe("topiarist.classIsA", function() {
 	it('returns true for a class that inherits other class.', function() {
 		expect( topiarist.classIsA(ChildThatInherits, OtherClass)).toBe( true );
 	});
+
+	it('is also available under the alias isAssignableFrom, for backwards compatibility reasons.', function() {
+		expect( topiarist.isAssignableFrom(ChildClass, ParentClass)).toBe( true );
+	});
 });

@@ -1,27 +1,32 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
+import java.io.IOException;
+
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class AliasDefinitionsFileBuilder {
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private BuilderChainer builderChainer;
+	private SpecTest specTest;
 	
 	public AliasDefinitionsFileBuilder(SpecTest specTest, AliasDefinitionsFile aliasDefinitionsFile) {
 		this.aliasDefinitionsFile = aliasDefinitionsFile;
 		builderChainer = new BuilderChainer(specTest);
+		this.specTest = specTest;
 	}
 	
 	public BuilderChainer exists() throws Exception {
-		aliasDefinitionsFile.write();
+		writeAliasDefinitionsFile();
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef, String interfaceRef) throws Exception {
 		aliasDefinitionsFile.addAlias(new AliasDefinition(aliasName, classRef, interfaceRef));
-		aliasDefinitionsFile.write();
+		writeAliasDefinitionsFile();
 		
 		return builderChainer;
 	}
@@ -32,15 +37,21 @@ public class AliasDefinitionsFileBuilder {
 	
 	public BuilderChainer hasScenarioAlias(String scenarioName, String aliasName, String classRef) throws Exception {
 		aliasDefinitionsFile.addScenarioAlias(scenarioName, new AliasOverride(aliasName, classRef));
-		aliasDefinitionsFile.write();
+		writeAliasDefinitionsFile();
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasGroupAlias(String groupName, String aliasName, String classRef) throws Exception {
 		aliasDefinitionsFile.addGroupAliasOverride(groupName, new AliasOverride(aliasName, classRef));
-		aliasDefinitionsFile.write();
+		writeAliasDefinitionsFile();
 		
 		return builderChainer;
 	}
+	
+	public void writeAliasDefinitionsFile() throws ContentFileProcessingException, IOException {
+		aliasDefinitionsFile.write();
+		specTest.brjs.getFileModificationRegistry().incrementFileVersion(aliasDefinitionsFile.getUnderlyingFile());
+	}
+	
 }

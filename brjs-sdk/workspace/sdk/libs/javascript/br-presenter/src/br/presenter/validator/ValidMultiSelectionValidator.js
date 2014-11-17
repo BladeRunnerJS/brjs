@@ -44,7 +44,7 @@ br.presenter.validator.ValidMultiSelectionValidator.prototype.validate = functio
 		var mOptionsAsMap = this._getOptionsAsMap(this.m_oOptions);
 		for(var i = 0, l = pValues.length; i < l; ++i)
 		{
-			var vValue = pValues[i];
+			var vValue = pValues[i].toUpperCase();
 			if(!mOptionsAsMap[vValue])
 			{
 				bIsValid = false;
@@ -66,7 +66,7 @@ br.presenter.validator.ValidMultiSelectionValidator.prototype._getOptionsAsMap =
 	var pOptions = oOptions.getOptions();
 	for(var i = 0; i < pOptions.length; i++)
 	{
-		oResult[pOptions[i].value.getValue()] = pOptions[i].label.getValue();
+		oResult[pOptions[i].value.getValue().toUpperCase()] = pOptions[i].label.getValue();
 	}
 	return oResult;
 };

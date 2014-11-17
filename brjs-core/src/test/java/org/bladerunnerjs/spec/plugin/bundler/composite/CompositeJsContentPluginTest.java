@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			brLib = app.jsLib("br");
 			brbootstrap = brjs.sdkLib("br-bootstrap");
 			appLib = app.jsLib("appLib");
-			targetDir = FileUtility.createTemporaryDirectory( this.getClass() );
+			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 	}
 	
 	@Test
@@ -128,6 +128,15 @@ public class CompositeJsContentPluginTest extends SpecTest {
 					"require('appns.node.Class');\n" );
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).doesNotContainText("window._brjsI18nProperties = [{");
+	}
+	
+	@Test
+	public void onlyMinifiersUsedFromATagHandlerAreReturnedAsUsedContentPaths() throws Exception {
+		given(defaultAspect).indexPageHasContent("<@js.bundle dev-minifier='combined' prod-minifier='closure-whitespace' @/>\n"+"require('appns/Class');")
+			.and(brjs).localeForwarderHasContents("")
+			.and(defaultAspect).hasClass("appns/Class")
+			.and(brjs).hasProdVersion("1234");
+		then(defaultAspect).usedProdContentPathsForPluginsAre("js", "js/prod/closure-whitespace/bundle.js");
 	}
 	
 	@Test

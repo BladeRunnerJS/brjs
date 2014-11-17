@@ -38,13 +38,14 @@ br.presenter.validator.ValidSelectionValidator.prototype.validate = function(vVa
 		bIsValid = true;
 		sValidationMessage = i18n("br.presenter.validator.invalidSelectionsAllowed");
 	}
-	else
+	else if(vValue !== null)
 	{
 		var pOptions = this.m_oOptions.getOptions();
 		for(var i = 0; i < pOptions.length; i++)
 		{
-			var vOptionValue = pOptions[i].value.getValue();
-			if(vOptionValue == vValue)
+			var vOptionValue = pOptions[i].value.getValue().toUpperCase ? pOptions[i].value.getValue().toUpperCase() : pOptions[i].value.getValue();
+			var vAssertionValue = vValue.toUpperCase ? vValue.toUpperCase() : vValue;
+			if(vOptionValue === vAssertionValue)
 			{
 				bIsValid = true;
 				sValidationMessage = "";

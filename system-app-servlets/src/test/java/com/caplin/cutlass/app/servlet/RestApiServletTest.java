@@ -21,12 +21,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.app.RestApiServletTestUtils;
 import com.caplin.cutlass.app.service.RestApiService;
 import com.caplin.cutlass.app.servlet.RestApiServlet;
-import com.caplin.cutlass.util.FileUtility;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -47,7 +48,7 @@ public class RestApiServletTest
 	public void setup() throws Exception
 	{
 		service = mock(RestApiService.class);
-		File testSdk = FileUtility.createTemporaryDirectory( this.getClass() );
+		File testSdk = FileUtils.createTemporaryDirectory( this.getClass() );
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(service), testSdk);
 		server.start();
 		client = new DefaultHttpClient();
@@ -137,7 +138,7 @@ public class RestApiServletTest
 
 		HttpResponse response = client.execute(httppost);
 		
-		verify(service,times(1)).importMotif(eq("my-imported-app"), eq("nsx"), any(File.class));
+		verify(service,times(1)).importMotif(eq("my-imported-app"), eq("nsx"), any(MemoizedFile.class));
 		assertEquals( "", RestApiServletTestUtils.getResponseTextFromResponse(response) );
 	}
 	

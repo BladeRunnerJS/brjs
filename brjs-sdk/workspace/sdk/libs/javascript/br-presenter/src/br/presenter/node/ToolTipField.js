@@ -24,7 +24,7 @@
 br.presenter.node.ToolTipField = function(vValue)
 {
 	br.presenter.node.Field.call(this, vValue);
-	this.tooltipClassName = new br.presenter.property.WritableProperty(false);
+	this.tooltipClassName = new br.presenter.property.WritableProperty('');
 
 	this.hasToolTip = new br.presenter.property.WritableProperty(false);
 

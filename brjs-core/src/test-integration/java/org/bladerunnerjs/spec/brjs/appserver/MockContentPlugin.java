@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -78,13 +79,7 @@ public class MockContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
-	{
-		return Arrays.asList();
-	}
-
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
 		return Arrays.asList();
 	}

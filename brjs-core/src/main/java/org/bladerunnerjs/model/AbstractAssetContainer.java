@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -9,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -20,7 +20,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
 	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
 	
-	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
+	public AbstractAssetContainer(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
 	}
 	
@@ -95,25 +95,25 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	private Map<String, AssetLocation> assetLocationsMap() {
-			return assetLocationsMap.value(() -> {
-				Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
+		return assetLocationsMap.value(() -> {
+			Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
+			
+			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
+				List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
 				
-				for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
-					List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
+				if(assetLocationDirectories.size() > 0) {
+					for(String locationPath : assetLocationDirectories) {
+						createAssetLocation(locationPath, assetLocations, assetLocationPlugin);
+					}
 					
-					if(assetLocationDirectories.size() > 0) {
-						for(String locationPath : assetLocationDirectories) {
-							createAssetLocation(locationPath, assetLocations, assetLocationPlugin);
-						}
-						
-						if(!assetLocationPlugin.allowFurtherProcessing()) {
-							break;
-						}
+					if(!assetLocationPlugin.allowFurtherProcessing()) {
+						break;
 					}
 				}
-				
-				return assetLocations;
-			});
+			}
+			
+			return assetLocations;
+		});
 	}
 	
 	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, AssetLocationPlugin assetLocationPlugin ) {

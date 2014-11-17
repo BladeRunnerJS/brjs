@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,15 +9,21 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.memoization.FileModificationRegistry;
+import org.bladerunnerjs.memoization.FileModificationWatcherThread;
+import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.memoization.MemoizedFileAccessor;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
@@ -27,12 +34,8 @@ import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
-import org.bladerunnerjs.utility.filemodification.FileModificationService;
-import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
-import org.bladerunnerjs.utility.filemodification.TimeAccessor;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
 
 
@@ -62,28 +65,48 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> userJars = new NodeItem<>(this, DirNode.class, "conf/java");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
-	private WorkingDirNode workingDir;
-	private final Logger logger;
-	private final CommandList commandList;
-	private BladerunnerConf bladerunnerConf;
-	private TestRunnerConf testRunnerConf;
+	private final MemoizedFileAccessor memoizedFileAccessor;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
 	private final PluginAccessor pluginAccessor;
-	private FileModificationService fileModificationService = new OptimisticFileModificationService();
-	private BRJSFileInfoAccessor fileInfoAccessor = new BRJSFileInfoAccessor(fileModificationService, loggerFactory);
-	private final IO io = new IO();
-	private boolean closed = false;
-	private AppVersionGenerator appVersionGenerator;
-	private CharBufferPool pool = new CharBufferPool();
-	private TimeAccessor timeAccessor;
+	private final IOFileFilter globalFilesFilter = new BRJSGlobalFilesIOFileFilter(this);
+	private final IO io = new IO( globalFilesFilter );
+	private final Logger logger;
+	private final CommandList commandList;
+	private final AppVersionGenerator appVersionGenerator;
+	private final FileModificationRegistry fileModificationRegistry;
+	private final Thread fileWatcherThread;
 	
-	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, TimeAccessor timeAccessor, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+	private WorkingDirNode workingDir;
+	private BladerunnerConf bladerunnerConf;
+	private TestRunnerConf testRunnerConf;
+	private boolean closed = false;
+	private CharBufferPool pool = new CharBufferPool();
+	
+	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
-		this.timeAccessor = timeAccessor;
-		this.workingDir = new WorkingDirNode(this, brjsDir);
+		this.appVersionGenerator = appVersionGenerator;
+		this.fileModificationRegistry = new FileModificationRegistry( this, ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
+		memoizedFileAccessor  = new MemoizedFileAccessor(this);
+		this.workingDir = new WorkingDirNode(this, getMemoizedFile(brjsDir));
 		
-		fileModificationService.initialise(dir, timeAccessor, fileInfoAccessor);
+		try
+		{
+			registerNode(this);
+		}
+		catch (NodeAlreadyRegisteredException e)
+		{
+			throw new RuntimeException(e);
+		}
+		
+		try
+		{
+			fileWatcherThread = new FileModificationWatcherThread( this );
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 		
 		logger = loggerFactory.getLogger(BRJS.class);
 		
@@ -92,23 +115,12 @@ public class BRJS extends AbstractBRJSRootNode
 		PluginLocatorLogger.logPlugins(logger, pluginLocator);
 		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
-		discoverAllChildren();
+		
 		
 		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
-		
-		this.appVersionGenerator = appVersionGenerator;
-	}
-	
-	public void setFileModificationService(FileModificationService fileModificationService) {
-		this.fileModificationService.close();
-		
-		fileModificationService.initialise(dir, timeAccessor, fileInfoAccessor);
-		fileInfoAccessor.setFileModificationService(fileModificationService);
-		
-		this.fileModificationService = fileModificationService;
 	}
 	
 	public CharBufferPool getCharBufferPool(){
@@ -157,12 +169,11 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public void close() {closed  = true;
-		fileModificationService.close();
 	}
 	
 	public BundlableNode locateFirstBundlableAncestorNode(File file) throws InvalidBundlableNodeException
 	{
-		Node node = locateFirstAncestorNode(file, BundlableNode.class);
+		Node node = locateFirstAncestorNode( getMemoizedFile(file), BundlableNode.class);
 		BundlableNode bundlableNode = null;
 		
 		while((node != null) && (bundlableNode == null))
@@ -175,7 +186,7 @@ public class BRJS extends AbstractBRJSRootNode
 			node = node.parentNode();
 		}
 		
-		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(getFileInfoAccessor(), dir(), file) );
+		if (bundlableNode == null) throw new InvalidBundlableNodeException( dir().getRelativePath( getMemoizedFile(file) ) );
 		
 		return bundlableNode;
 	}
@@ -184,7 +195,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return workingDir;
 	}
 	
-	public void setWorkingDir(File workingDir) {
+	public void setWorkingDir(MemoizedFile workingDir) {
 		this.workingDir = new WorkingDirNode(this, workingDir);
 	}
 	
@@ -303,14 +314,14 @@ public class BRJS extends AbstractBRJSRootNode
 		return new VersionInfo(this);
 	}
 	
-	public File loginRealmConf()
+	public MemoizedFile loginRealmConf()
 	{
-		return new File(dir(), "sdk/loginRealm.conf");
+		return dir().file("sdk/loginRealm.conf");
 	}
 	
-	public File usersPropertiesConf()
+	public MemoizedFile usersPropertiesConf()
 	{
-		return new File(dir(), "conf/users.properties");
+		return dir().file("conf/users.properties");
 	}
 	
 	public BladerunnerConf bladerunnerConf() throws ConfigException {
@@ -363,26 +374,8 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
-	@Override
-	public FileInfo getFileInfo(File file) {
-		return fileInfoAccessor.getFileInfo(file);
-	}
-	
-	@Override
-	public FileInfo getFileSetInfo(File file, File primarySetFile) {
-		return fileInfoAccessor.getFileSetInfo(file, primarySetFile);
-	}
-	
 	public LoggerFactory getLoggerFactory() {
 		return loggerFactory;
-	}
-	
-	public FileInfoAccessor getFileInfoAccessor() {
-		return fileInfoAccessor;
-	}
-	
-	public TimeAccessor getTimeAccessor() {
-		return timeAccessor;
 	}
 	
 	public AppVersionGenerator getAppVersionGenerator()
@@ -395,4 +388,27 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		return getTypeName()+", dir: " + dir().getPath();
 	}
+
+	@Override
+	public FileModificationRegistry getFileModificationRegistry()
+	{
+		return fileModificationRegistry;
+	}
+	
+	@Override
+	public MemoizedFile getMemoizedFile(File file)
+	{
+		return memoizedFileAccessor.getMemoizedFile(file);
+	}
+	
+	@Override
+	public MemoizedFile getMemoizedFile(File dir, String name)
+	{
+		return getMemoizedFile( new File(dir, name) );
+	}
+	
+	public Thread getFileWatcherThread() {
+		return fileWatcherThread;
+	}
+	
 }

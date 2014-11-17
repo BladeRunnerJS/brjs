@@ -7,7 +7,7 @@
 
 	EventHubTest.setUp = function() {
 		this.hasFired = {};
-		this.eventHub = ServiceRegistry.getService('br.event-hub');
+		this.eventHub = require('service!br.event-hub');
 		this.callback = this._callback.bind(this);
 	};
 

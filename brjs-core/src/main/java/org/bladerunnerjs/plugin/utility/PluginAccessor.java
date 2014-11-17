@@ -15,6 +15,7 @@ import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.OrderedPlugin;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.PluginLocator;
+import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
@@ -27,6 +28,7 @@ public class PluginAccessor {
 	private final List<ModelObserverPlugin> modelObserverPlugins;
 	private final List<AssetPlugin> assetPlugins;
 	private final List<AssetLocationPlugin> assetLocationPlugins;
+	private final List<RequirePlugin> requirePlugins;
 	
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
@@ -36,8 +38,9 @@ public class PluginAccessor {
 		modelObserverPlugins = pluginLocator.getModelObserverPlugins();
 		assetPlugins = sort(pluginLocator.getAssetPlugins());
 		assetLocationPlugins = sort(pluginLocator.getAssetLocationPlugins());
+		requirePlugins = pluginLocator.getRequirePlugins();
 	}
-	
+
 	public List<Plugin> allPlugins() {
 		List<Plugin> plugins = new ArrayList<>();
 		
@@ -48,6 +51,7 @@ public class PluginAccessor {
 		plugins.addAll(modelObserverPlugins());
 		plugins.addAll(assetPlugins());
 		plugins.addAll(assetLocationPlugins());
+		plugins.addAll(requirePlugins());
 		
 		return plugins;
 	}
@@ -173,6 +177,19 @@ public class PluginAccessor {
 		return result;
 	}
 	
+	public List<RequirePlugin> requirePlugins() {
+		return requirePlugins;
+	}
+	
+	public RequirePlugin requirePlugin(String pluginName) {
+		for (RequirePlugin requirePlugin : requirePlugins()) {
+			if(requirePlugin.getPluginName().equals(pluginName)) {
+				return requirePlugin;
+			}
+		}
+		return null;
+	}
+	
 	private <P extends OrderedPlugin> List<P> sort(List<P> plugins) {
 		try {
 			return PluginSorter.sort(plugins);
@@ -181,4 +198,5 @@ public class PluginAccessor {
 			throw new RuntimeException(e);
 		}
 	}
+	
 }
