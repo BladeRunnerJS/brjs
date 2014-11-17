@@ -44,7 +44,7 @@ public class FileModificationWatcherThread extends Thread
 		try {
 			watchService = FileSystems.getDefault().newWatchService();
 			addWatchKeysForNestedDirs(watchService, watchKeys, directoryToWatch.toFile());
-    		
+    			
     		while (!isInterrupted()) {
     			checkForUpdates(watchService, watchKeys);
     			Thread.sleep(THREAD_SLEEP_INTERVAL);
@@ -105,9 +105,14 @@ public class FileModificationWatcherThread extends Thread
             fileModificationRegistry.incrementFileVersion(childFile);
             
             boolean isWatchKeyReset = watchKey.reset();
-            if( !isWatchKeyReset || (kind == ENTRY_DELETE && childFile.isDirectory()) ) {
-            	watchKey.cancel();
-            	watchKeys.remove(watchPath);
+            if( !isWatchKeyReset ) {
+            	if (kind == ENTRY_DELETE && childFile.isDirectory()) {
+            		watchKey.cancel();
+            		watchKeys.remove(watchPath);            		
+            	} else {
+            		brjs.logger(this.getClass()).warn("A watch key could not be reset for the path '%s' but the directory or file still exists. "+
+            				"You might need to reset the process for file changes to be detected.", watchPath);
+            	}
 			}
 		}
 	}
