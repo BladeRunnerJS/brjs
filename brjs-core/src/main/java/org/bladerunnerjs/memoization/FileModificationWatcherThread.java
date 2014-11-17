@@ -106,7 +106,7 @@ public class FileModificationWatcherThread extends Thread
             
             boolean isWatchKeyReset = watchKey.reset();
             if( !isWatchKeyReset ) {
-            	if (kind == ENTRY_DELETE && childFile.isDirectory()) {
+            	if (!childFile.exists()) {
             		watchKey.cancel();
             		watchKeys.remove(watchPath);            		
             	} else {
