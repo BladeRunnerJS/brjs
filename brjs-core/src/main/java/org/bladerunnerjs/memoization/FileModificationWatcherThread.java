@@ -103,7 +103,7 @@ public class FileModificationWatcherThread extends Thread
 	        WatchEvent.Kind<?> kind = event.kind();
 	        if (kind == OVERFLOW) {
 	        	// invalidate all files since the OVERFLOW event is only generated if there were too many events on the queue
-	        	fileModificationRegistry.incrementFileVersion(brjs.dir()); 
+	        	fileModificationRegistry.incrementAllFileVersions(); 
 	            continue;
 	        }
 
