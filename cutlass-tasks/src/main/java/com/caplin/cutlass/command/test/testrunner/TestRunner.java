@@ -415,7 +415,7 @@ public class TestRunner {
 	private String getTestPath(MemoizedFile baseDirectory, MemoizedFile configFile) {
 		int indexOfApps = baseDirectory.toString().indexOf(APPS_DIR + baseDirectory.separator);
 		return baseDirectory.toString().substring(indexOfApps + (APPS_DIR + baseDirectory.separator).length()) 
-				+ " " + getTestTypeFromDirectoryName(configFile.getParentFile().getName());
+				+ " " + getTestTypeFromDirectoryName(configFile.getParentFile());
 	}
 	
 	protected String getJavaOpts() {
@@ -575,23 +575,28 @@ public class TestRunner {
 		return Joiner.on(System.getProperty("path.separator")).join(classPath);
 	}
 	
-	private String getTestTypeFromDirectoryName(String directoryName)
+	private String getTestTypeFromDirectoryName(MemoizedFile directoryName)
 	{
-		if(directoryName.equalsIgnoreCase("test-unit"))
+		if(directoryName.getName().equalsIgnoreCase("test-unit"))
 		{
 			return "(UTs)";
 		}
-		else if(directoryName.equalsIgnoreCase("test-acceptance"))
+		else if(directoryName.getName().equalsIgnoreCase("test-acceptance"))
 		{
 			return "(ATs)";
 		}
-		else if(directoryName.equalsIgnoreCase("test-integration"))
+		else if(directoryName.getName().equalsIgnoreCase("test-integration"))
 		{
 			return "(ITs)";
 		}
 		else 
 		{
-			return null;
+			if (directoryName.getParentFile().getName().equalsIgnoreCase("test-unit") ||
+					directoryName.getParentFile().getName().equalsIgnoreCase("test-acceptance") ||
+					directoryName.getParentFile().getName().equalsIgnoreCase("test-integration")) 
+				return getTestTypeFromDirectoryName(directoryName.getParentFile());
+			else 
+				throw new RuntimeException("The test directory name does not indicate a valid test type.");
 		}
 	}
 	
