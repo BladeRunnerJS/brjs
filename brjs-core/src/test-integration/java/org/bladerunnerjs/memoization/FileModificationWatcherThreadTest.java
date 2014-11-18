@@ -46,6 +46,7 @@ public class FileModificationWatcherThreadTest
 	private Path rootWatchDirPath;
 	private Path dirInRootPath;
 	private Path nestedDirPath;
+	private WatchServiceFactory mockWatchServiceFactory;
 	
 	@Before
 	public void setup() throws IOException, InterruptedException {
@@ -66,6 +67,8 @@ public class FileModificationWatcherThreadTest
 		when(mockBrjs.logger(any(Class.class))).thenReturn(mock(Logger.class));
 		
 		mockWatchService = mock(DefaultWatchService.class);
+		mockWatchServiceFactory = mock(WatchServiceFactory.class);
+		when(mockWatchServiceFactory.createWatchService()).thenReturn(mockWatchService);
 		
 		rootWatchDirWatchKey = mock(WatchKey.class);
 		dirInRootWatchKey = mock(WatchKey.class);
@@ -96,7 +99,7 @@ public class FileModificationWatcherThreadTest
 		when(mockWatchService.createWatchKeysForDir( eq(rootWatchDir.toPath()), any(Boolean.class)) )
 			.thenReturn( ImmutableMap.of( rootWatchDirPath, rootWatchDirWatchKey) );
 		
-		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchService);
+		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
 
 		@SuppressWarnings("unchecked")
@@ -121,7 +124,7 @@ public class FileModificationWatcherThreadTest
 		when(mockWatchService.createWatchKeysForDir( eq(dirInRoot.toPath()), any(Boolean.class)) )
 			.thenReturn( ImmutableMap.of( dirInRootPath, dirInRootWatchKey) );
 
-		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchService);
+		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
 		
 		@SuppressWarnings("unchecked")
@@ -148,7 +151,7 @@ public class FileModificationWatcherThreadTest
 		when(mockWatchService.createWatchKeysForDir( eq(dirInRoot.toPath()), any(Boolean.class)) )
 			.thenReturn( ImmutableMap.of( dirInRootPath, dirInRootWatchKey) );
 
-		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchService);
+		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
 		
 		@SuppressWarnings("unchecked")
@@ -174,7 +177,7 @@ public class FileModificationWatcherThreadTest
 		when(mockWatchService.createWatchKeysForDir( eq(dirInRoot.toPath()), any(Boolean.class)) )
 			.thenReturn( ImmutableMap.of( dirInRootPath, dirInRootWatchKey) );
 
-		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchService);
+		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
 		
 		@SuppressWarnings("unchecked")
@@ -210,7 +213,7 @@ public class FileModificationWatcherThreadTest
 		when(mockWatchService.createWatchKeysForDir( eq(nestedDir.toPath()), any(Boolean.class)) )
 			.thenReturn( ImmutableMap.of( nestedDirPath, nestedDirWatchKey) );
 
-		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchService);
+		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
 		
 		@SuppressWarnings("unchecked")
@@ -240,7 +243,7 @@ public class FileModificationWatcherThreadTest
 	
 	@Test // we use the protected methods on FileModificationWatcherThread here to avoid having a multithreaded test
 	public void usingTheRealWatchServiceDetectsFileChanges() throws Exception {
-		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs);
+		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, new WatchServiceFactory());
 		
 		modificationWatcherThread.init();
 		

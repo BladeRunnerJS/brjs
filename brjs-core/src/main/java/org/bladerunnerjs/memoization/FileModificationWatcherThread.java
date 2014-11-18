@@ -29,17 +29,12 @@ public class FileModificationWatcherThread extends Thread
 
 	private Map<Path,WatchKey>  watchKeys;
 	
-	public FileModificationWatcherThread(BRJS brjs) throws IOException
+	public FileModificationWatcherThread(BRJS brjs, WatchServiceFactory watchServiceFactory) throws IOException
 	{
-		this(brjs, null);
-	}
-	
-	protected FileModificationWatcherThread(BRJS brjs, WatchService fileWatcherService)
-	{
+		fileWatcherService = watchServiceFactory.createWatchService();
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().toPath();
 		this.brjs = brjs;
-		this.fileWatcherService = fileWatcherService;
 	}
 	
 	@Override
@@ -65,9 +60,6 @@ public class FileModificationWatcherThread extends Thread
 	}
 
 	protected void init() throws IOException {
-		if (fileWatcherService == null) {
-			fileWatcherService = new DefaultWatchService();
-		}
 		watchKeys = new HashMap<>();
 		watchKeys.putAll( fileWatcherService.createWatchKeysForDir(directoryToWatch, false) );
 	}
