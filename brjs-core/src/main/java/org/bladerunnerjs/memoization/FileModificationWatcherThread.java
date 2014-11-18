@@ -25,11 +25,14 @@ public class FileModificationWatcherThread extends Thread
 	
 	private Path directoryToWatch;
 	private FileModificationRegistry fileModificationRegistry;
+
+	private BRJS brjs;
 	
 	public FileModificationWatcherThread(BRJS brjs) throws IOException
 	{
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().toPath();
+		this.brjs = brjs;
 	}
 	
 	@Override
@@ -41,7 +44,7 @@ public class FileModificationWatcherThread extends Thread
 		try {
 			watchService = FileSystems.getDefault().newWatchService();
 			addWatchKeysForNestedDirs(watchService, watchKeys, directoryToWatch.toFile());
-    		
+    			
     		while (!isInterrupted()) {
     			checkForUpdates(watchService, watchKeys);
     			Thread.sleep(THREAD_SLEEP_INTERVAL);
@@ -83,6 +86,8 @@ public class FileModificationWatcherThread extends Thread
 	        WatchEvent.Kind<?> kind = event.kind();
 	        
 	        if (kind == OVERFLOW) {
+	        	// invalidate all files since the OVERFLOW event is only generated if there were too many events on the queue
+	        	fileModificationRegistry.incrementFileVersion(brjs.dir()); 
 	            continue;
 	        }
 
@@ -99,8 +104,15 @@ public class FileModificationWatcherThread extends Thread
             
             fileModificationRegistry.incrementFileVersion(childFile);
             
-            if(!watchKey.reset()) {
-            	watchKeys.remove(watchPath);
+            boolean isWatchKeyReset = watchKey.reset();
+            if( !isWatchKeyReset ) {
+            	if (!childFile.exists()) {
+            		watchKey.cancel();
+            		watchKeys.remove(watchPath);            		
+            	} else {
+            		brjs.logger(this.getClass()).warn("A watch key could not be reset for the path '%s' but the directory or file still exists. "+
+            				"You might need to reset the process for file changes to be detected.", watchPath);
+            	}
 			}
 		}
 	}
