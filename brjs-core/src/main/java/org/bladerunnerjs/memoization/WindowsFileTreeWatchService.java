@@ -2,7 +2,6 @@ package org.bladerunnerjs.memoization;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
@@ -10,24 +9,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class WindowsFileTreeWatchService implements WatchService
+public class WindowsFileTreeWatchService extends AbstractWatchService
 {
-
-	private java.nio.file.WatchService watchService;
-
+	
 	public WindowsFileTreeWatchService() throws IOException {
-		watchService = FileSystems.getDefault().newWatchService();
+		super();
 	}
 
 	@Override
-	public Map<Path,WatchKey> createWatchKeysForDir(Path dirPath, boolean isNewlyDiscovered) throws IOException {
-		Map<Path,WatchKey> watchKeys = new HashMap<>();
+	public Map<WatchKey,Path> createWatchKeysForDir(Path dirPath, boolean isNewlyDiscovered) throws IOException {
+		Map<WatchKey,Path> watchKeys = new HashMap<>();
 		
 		if (isNewlyDiscovered) {
 			return watchKeys;
 		}
 		
-		watchKeys.put(dirPath, createWatchKeyForDir(dirPath));
+		watchKeys.put(createWatchKeyForDir(dirPath), dirPath);
 		
 		return watchKeys;
 	}

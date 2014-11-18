@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -17,8 +16,6 @@ import static java.nio.file.StandardWatchEventKinds.*;
 
 public class FileModificationWatcherThread extends Thread
 {
-	private static final int THREAD_SLEEP_INTERVAL = 750;
-
 	public static final String THREAD_IDENTIFIER = FileModificationWatcherThread.class.getSimpleName();
 	
 	private Path directoryToWatch;
@@ -26,9 +23,11 @@ public class FileModificationWatcherThread extends Thread
 
 	private BRJS brjs;
 	private WatchServiceFactory watchServiceFactory;
-	private WatchService fileWatcherService;
+	private WatchService watcherService;
 
-	private Map<Path,WatchKey>  watchKeys;
+	private Map<WatchKey,Path> watchKeys;
+
+	private Logger logger;
 
 	
 	public FileModificationWatcherThread(BRJS brjs, WatchServiceFactory watchServiceFactory) throws IOException
@@ -47,9 +46,8 @@ public class FileModificationWatcherThread extends Thread
 
     		init();
     		
-    		while (!isInterrupted()) {
+    		while(true) {
     			checkForUpdates();
-    			Thread.sleep(THREAD_SLEEP_INTERVAL);
     		}
 		} catch (InterruptedException ex) {
 			// do nothing
@@ -63,30 +61,34 @@ public class FileModificationWatcherThread extends Thread
 
 	protected void init() throws IOException {
 		// create the watch service in the init method so we get a 'too many open files' exception
-		fileWatcherService = watchServiceFactory.createWatchService();
-		brjs.logger(this.getClass()).debug("%s using %s as the file watcher service", this.getClass().getSimpleName(), fileWatcherService.getClass().getSimpleName());
+		watcherService = watchServiceFactory.createWatchService();
+		logger = brjs.logger(this.getClass());
+		logger.debug("%s using %s as the file watcher service", this.getClass().getSimpleName(), watcherService.getClass().getSimpleName());
 		watchKeys = new HashMap<>();
-		watchKeys.putAll( fileWatcherService.createWatchKeysForDir(directoryToWatch, false) );
+		watchKeys.putAll( watcherService.createWatchKeysForDir(directoryToWatch, false) );
 	}
 	
-	protected void checkForUpdates() throws IOException
+	protected void checkForUpdates() throws IOException, InterruptedException
 	{
-		List<Path> watchPaths = new ArrayList<>(watchKeys.keySet()); // create a duplicate so we can change the underlying map as we iterate over it
-		for (Path watchPath : watchPaths) {
-			WatchKey watchKey = watchKeys.get(watchPath);
-			pollWatchKeyForEvents(watchKeys, watchPath, watchKey);
+		WatchKey key = watcherService.waitForEvents();
+		Path path = watchKeys.get(key);
+		
+		if (path == null) {
+			return; // the watch service picked up an event that we didn't register for (possibly from another process/user of the WatchService
 		}
+		
+		pollWatchKeyForEvents(watchKeys, path, key);
 	}
 	
 	protected void tearDown() {
-		for (WatchKey watchKey : watchKeys.values()) {
+		for (WatchKey watchKey : watchKeys.keySet()) {
 			watchKey.cancel();
 		}
 		Thread.interrupted();
 		watchKeys.clear();
 		try
 		{
-			fileWatcherService.close();
+			watcherService.close();
 		}
 		catch (IOException ex)
 		{
@@ -94,7 +96,7 @@ public class FileModificationWatcherThread extends Thread
 		}
 	}
 
-	private void pollWatchKeyForEvents(Map<Path,WatchKey> watchKeys, Path watchPath, WatchKey watchKey) throws IOException
+	private void pollWatchKeyForEvents(Map<WatchKey,Path> watchKeys, Path watchPath, WatchKey watchKey) throws IOException
 	{
 		for (WatchEvent<?> event: watchKey.pollEvents()) {
 	        WatchEvent.Kind<?> kind = event.kind();
@@ -112,7 +114,7 @@ public class FileModificationWatcherThread extends Thread
             
             File childFile = child.toFile();
 			if (kind == ENTRY_CREATE && childFile.isDirectory()) {
-            	watchKeys.putAll( fileWatcherService.createWatchKeysForDir(child, true) );
+            	watchKeys.putAll( watcherService.createWatchKeysForDir(child, true) );
             }
             
             fileModificationRegistry.incrementFileVersion(childFile);
@@ -123,7 +125,7 @@ public class FileModificationWatcherThread extends Thread
             		watchKey.cancel();
             		watchKeys.remove(watchPath);            		
             	} else {
-            		brjs.logger(this.getClass()).debug("A watch key could not be reset for the path '%s' but the directory or file still exists. "+
+            		logger.debug("A watch key could not be reset for the path '%s' but the directory or file still exists. "+
             				"You might need to reset the process for file changes to be detected.", watchPath);
             	}
 			}

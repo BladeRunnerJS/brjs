@@ -97,7 +97,7 @@ public class FileModificationWatcherThreadTest
 	public void watchEventsCauseTheFileModificationRegistryToBeNotified() throws Exception
 	{
 		when(mockWatchService.createWatchKeysForDir( eq(rootWatchDir.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( rootWatchDirPath, rootWatchDirWatchKey) );
+			.thenReturn( ImmutableMap.of( rootWatchDirWatchKey, rootWatchDirPath ) );
 		
 		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
@@ -108,10 +108,12 @@ public class FileModificationWatcherThreadTest
 		when(createNewFileWatchEvent.context()).thenReturn(fileInRoot.toPath());
 		fileInRoot.createNewFile();
 
+		when(mockWatchService.waitForEvents()).thenReturn(rootWatchDirWatchKey);
 		when(rootWatchDirWatchKey.pollEvents()).thenReturn( Arrays.asList(createNewFileWatchEvent) ).thenReturn( Arrays.asList() );
 
 		modificationWatcherThread.checkForUpdates();
 		
+		verify(mockWatchService, times(1)).waitForEvents();
 		assertEquals(1, fileChanges.size());
 		assertEquals(fileInRoot, fileChanges.get(0));
 	}
@@ -120,9 +122,9 @@ public class FileModificationWatcherThreadTest
 	public void newDirectoryWatchEventsCauseWatchKeysToBeCreatedForTheNewDirectory() throws Exception
 	{
 		when(mockWatchService.createWatchKeysForDir( eq(rootWatchDir.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( rootWatchDirPath, rootWatchDirWatchKey) );
+			.thenReturn( ImmutableMap.of( rootWatchDirWatchKey, rootWatchDirPath ) );
 		when(mockWatchService.createWatchKeysForDir( eq(dirInRoot.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( dirInRootPath, dirInRootWatchKey) );
+			.thenReturn( ImmutableMap.of( dirInRootWatchKey, dirInRootPath) );
 
 		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
@@ -132,12 +134,14 @@ public class FileModificationWatcherThreadTest
 		when(mkdirWatchEvent.kind()).thenReturn(ENTRY_CREATE);
 		when(mkdirWatchEvent.context()).thenReturn(dirInRoot.toPath());
 		dirInRoot.mkdir();
-		
+
+		when(mockWatchService.waitForEvents()).thenReturn(rootWatchDirWatchKey).thenReturn(dirInRootWatchKey);
 		when(rootWatchDirWatchKey.pollEvents()).thenReturn( Arrays.asList(mkdirWatchEvent) ).thenReturn( Arrays.asList() );
 		when(dirInRootWatchKey.pollEvents()).thenReturn( Arrays.asList() );
 
 		modificationWatcherThread.checkForUpdates();
 		
+		verify(mockWatchService, times(1)).waitForEvents();
 		verify(mockWatchService).createWatchKeysForDir(rootWatchDir.toPath(), false);
 		verify(mockWatchService).createWatchKeysForDir(dirInRoot.toPath(), true);
 		verifyNoMoreInteractions(mockWatchService);
@@ -147,9 +151,9 @@ public class FileModificationWatcherThreadTest
 	public void newDirectoryWatchEventsCauseTheFileModificationServiceToBeNotified() throws Exception
 	{
 		when(mockWatchService.createWatchKeysForDir( eq(rootWatchDir.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( rootWatchDirPath, rootWatchDirWatchKey) );
+			.thenReturn( ImmutableMap.of( rootWatchDirWatchKey, rootWatchDirPath ) );
 		when(mockWatchService.createWatchKeysForDir( eq(dirInRoot.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( dirInRootPath, dirInRootWatchKey) );
+			.thenReturn( ImmutableMap.of( dirInRootWatchKey, dirInRootPath) );
 
 		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
@@ -160,11 +164,13 @@ public class FileModificationWatcherThreadTest
 		when(mkdirWatchEvent.context()).thenReturn(dirInRoot.toPath());
 		dirInRoot.mkdir();
 		
+		when(mockWatchService.waitForEvents()).thenReturn(rootWatchDirWatchKey).thenReturn(dirInRootWatchKey);
 		when(rootWatchDirWatchKey.pollEvents()).thenReturn( Arrays.asList(mkdirWatchEvent) ).thenReturn( Arrays.asList() );
 		when(dirInRootWatchKey.pollEvents()).thenReturn( Arrays.asList() );
 
 		modificationWatcherThread.checkForUpdates();
 		
+		verify(mockWatchService, times(1)).waitForEvents();
 		assertEquals(1, fileChanges.size());
 		assertEquals(dirInRoot, fileChanges.get(0));
 	}
@@ -173,9 +179,9 @@ public class FileModificationWatcherThreadTest
 	public void changesToFilesInNewDirectoriesCauseTheFileModifictationRegistryToBeNotified() throws Exception
 	{
 		when(mockWatchService.createWatchKeysForDir( eq(rootWatchDir.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( rootWatchDirPath, rootWatchDirWatchKey) );
+			.thenReturn( ImmutableMap.of( rootWatchDirWatchKey, rootWatchDirPath ) );
 		when(mockWatchService.createWatchKeysForDir( eq(dirInRoot.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( dirInRootPath, dirInRootWatchKey) );
+			.thenReturn( ImmutableMap.of( dirInRootWatchKey, dirInRootPath) );
 
 		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
@@ -192,6 +198,7 @@ public class FileModificationWatcherThreadTest
 		when(createNewFileWatchEvent.context()).thenReturn(fileInChildDir.toPath());
 		fileInChildDir.createNewFile();
 		
+		when(mockWatchService.waitForEvents()).thenReturn(rootWatchDirWatchKey).thenReturn(dirInRootWatchKey);
 		when(rootWatchDirWatchKey.pollEvents()).thenReturn( Arrays.asList(mkdirWatchEvent) ).thenReturn( Arrays.asList() );
 		when(dirInRootWatchKey.pollEvents()).thenReturn( Arrays.asList(createNewFileWatchEvent) ).thenReturn( Arrays.asList() );
 		
@@ -207,11 +214,11 @@ public class FileModificationWatcherThreadTest
 	public void newNestedDirectoriesCauseWatchKeysToBeCreatedForTheNewDirectory() throws Exception
 	{		
 		when(mockWatchService.createWatchKeysForDir( eq(rootWatchDir.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( rootWatchDirPath, rootWatchDirWatchKey) );
+			.thenReturn( ImmutableMap.of( rootWatchDirWatchKey, rootWatchDirPath ) );
 		when(mockWatchService.createWatchKeysForDir( eq(dirInRoot.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( dirInRootPath, dirInRootWatchKey) );
+			.thenReturn( ImmutableMap.of( dirInRootWatchKey, dirInRootPath) );
 		when(mockWatchService.createWatchKeysForDir( eq(nestedDir.toPath()), any(Boolean.class)) )
-			.thenReturn( ImmutableMap.of( nestedDirPath, nestedDirWatchKey) );
+			.thenReturn( ImmutableMap.of( nestedDirWatchKey, nestedDirPath ) );
 
 		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
@@ -227,7 +234,8 @@ public class FileModificationWatcherThreadTest
 		when(nestedMkdirWatchEvent.kind()).thenReturn(ENTRY_CREATE);
 		when(nestedMkdirWatchEvent.context()).thenReturn(nestedDir.toPath());
 		nestedDir.mkdir();
-		
+
+		when(mockWatchService.waitForEvents()).thenReturn(rootWatchDirWatchKey).thenReturn(dirInRootWatchKey).thenReturn(nestedDirWatchKey);
 		when(rootWatchDirWatchKey.pollEvents()).thenReturn( Arrays.asList(mkdirWatchEvent) ).thenReturn( Arrays.asList() );
 		when(dirInRootWatchKey.pollEvents()).thenReturn( Arrays.asList(nestedMkdirWatchEvent) ).thenReturn( Arrays.asList() );
 		when(nestedDirWatchKey.pollEvents()).thenReturn( Arrays.asList() );
@@ -235,6 +243,7 @@ public class FileModificationWatcherThreadTest
 		modificationWatcherThread.checkForUpdates();
 		modificationWatcherThread.checkForUpdates();
 		
+		verify(mockWatchService, times(2)).waitForEvents();
 		verify(mockWatchService).createWatchKeysForDir(rootWatchDir.toPath(), false);
 		verify(mockWatchService).createWatchKeysForDir(dirInRoot.toPath(), true);
 		verify(mockWatchService).createWatchKeysForDir(nestedDir.toPath(), true);

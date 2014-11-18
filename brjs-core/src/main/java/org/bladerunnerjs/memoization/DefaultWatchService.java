@@ -6,7 +6,6 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchKey;
 import java.util.Collection;
@@ -18,24 +17,22 @@ import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 
-public class DefaultWatchService implements WatchService
+public class DefaultWatchService extends AbstractWatchService
 {
-
-	protected java.nio.file.WatchService watchService;
-
+	
 	public DefaultWatchService() throws IOException {
-		watchService = FileSystems.getDefault().newWatchService();
+		super();
 	}
-
+	
 	@Override
-	public Map<Path,WatchKey> createWatchKeysForDir(Path dirPath, boolean isNewlyDiscovered) throws IOException {
-		Map<Path,WatchKey> watchKeys = new HashMap<>();
-		watchKeys.put(dirPath, createWatchKeyForDir(dirPath));
+	public Map<WatchKey,Path> createWatchKeysForDir(Path dirPath, boolean isNewlyDiscovered) throws IOException {
+		Map<WatchKey,Path> watchKeys = new HashMap<>();
+		watchKeys.put(createWatchKeyForDir(dirPath), dirPath);
 		
 		File dir = dirPath.toFile();
 		Collection<File> subDirs = FileUtils.listFilesAndDirs(dir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File subDir : subDirs) {
-			watchKeys.put(subDir.toPath(), createWatchKeyForDir(subDir.toPath()));
+			watchKeys.put(createWatchKeyForDir(subDir.toPath()), subDir.toPath());
 		}
 		
 		return watchKeys;
