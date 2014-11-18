@@ -66,10 +66,10 @@ public class FileModificationWatcherThread extends Thread
 
 	protected void init() throws IOException {
 		if (fileWatcherService == null) {
-			fileWatcherService = new WatchService();
+			fileWatcherService = new DefaultWatchService();
 		}
 		watchKeys = new HashMap<>();
-		addWatchKeysForNestedDirs(directoryToWatch.toFile());
+		watchKeys.putAll( fileWatcherService.createWatchKeysForDir(directoryToWatch, false) );
 	}
 	
 	protected void checkForUpdates() throws IOException
@@ -110,12 +110,12 @@ public class FileModificationWatcherThread extends Thread
 	        @SuppressWarnings("unchecked")
 			WatchEvent<Path> ev = (WatchEvent<Path>)event;
 	        Path filename = ev.context();
-	        
+
             Path child = watchPath.resolve(filename);
             
             File childFile = child.toFile();
 			if (kind == ENTRY_CREATE && childFile.isDirectory()) {
-            	watchKeys.put( child , fileWatcherService.createWatchKeyForDir(child) );
+            	watchKeys.putAll( fileWatcherService.createWatchKeysForDir(child, true) );
             }
             
             fileModificationRegistry.incrementFileVersion(childFile);
@@ -130,18 +130,6 @@ public class FileModificationWatcherThread extends Thread
             				"You might need to reset the process for file changes to be detected.", watchPath);
             	}
 			}
-		}
-	}
-
-	private void addWatchKeysForNestedDirs(File dir) throws IOException
-	{
-		if (!dir.isDirectory()) {
-			return;
-		}
-		Path dirPath = dir.toPath();
-		watchKeys.put( dirPath, fileWatcherService.createWatchKeyForDir(dirPath) );
-		for (File child : dir.listFiles()) {
-			addWatchKeysForNestedDirs(child);
 		}
 	}
 	
