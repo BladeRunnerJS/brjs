@@ -126,7 +126,7 @@ public class FileModificationWatcherThread extends Thread
             		watchKey.cancel();
             		watchKeys.remove(watchPath);            		
             	} else {
-            		brjs.logger(this.getClass()).warn("A watch key could not be reset for the path '%s' but the directory or file still exists. "+
+            		brjs.logger(this.getClass()).debug("A watch key could not be reset for the path '%s' but the directory or file still exists. "+
             				"You might need to reset the process for file changes to be detected.", watchPath);
             	}
 			}
