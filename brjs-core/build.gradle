@@ -19,13 +19,6 @@ project.afterEvaluate {
 	compileTestJava.dependsOn compileRetrolambdaMain
 }
 
-
-test {
-    testLogging {
-        events "passed", "skipped", "failed", "standardOut", "standardError"
-    }
-}
-
 sourceSets {
 	test {
 		java {
