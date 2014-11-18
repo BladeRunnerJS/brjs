@@ -6,11 +6,8 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchEvent.Modifier;
 import java.nio.file.WatchKey;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +21,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 public class DefaultWatchService implements WatchService
 {
 
-	private java.nio.file.WatchService watchService;
+	protected java.nio.file.WatchService watchService;
 
 	public DefaultWatchService() throws IOException {
 		watchService = FileSystems.getDefault().newWatchService();
@@ -51,19 +48,7 @@ public class DefaultWatchService implements WatchService
 	
 	@Override
 	public WatchKey createWatchKeyForDir(Path dirPath) throws IOException {
-		Modifier high = get_com_sun_nio_file_SensitivityWatchEventModifier_HIGH();
-		WatchKey watchKey = (high == null) ? dirPath.register(watchService,ENTRY_CREATE,ENTRY_DELETE,ENTRY_MODIFY) : dirPath.register(watchService, new WatchEvent.Kind<?>[]{ENTRY_CREATE,ENTRY_DELETE,ENTRY_MODIFY}, high);
+		WatchKey watchKey = dirPath.register(watchService,ENTRY_CREATE,ENTRY_DELETE,ENTRY_MODIFY);
 		return watchKey;
-	}
-	
-	// from https://github.com/HotswapProjects/HotswapAgent/issues/41
-	private Modifier get_com_sun_nio_file_SensitivityWatchEventModifier_HIGH() {
-		try {
-			Class<?> c = Class.forName("com.sun.nio.file.SensitivityWatchEventModifier");
-			Field f = c.getField("HIGH");
-			return (Modifier) f.get(c);
-		} catch (Exception e) {
-			return null;
-		}
 	}
 }
