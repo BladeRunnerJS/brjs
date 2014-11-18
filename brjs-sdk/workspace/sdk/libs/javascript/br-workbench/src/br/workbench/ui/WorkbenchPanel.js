@@ -2,9 +2,7 @@ var jQuery = require('jquery');
 
 var sessionItemName = 'brjs-workbench-tools-collapsed';
 
-/**
- * Returns wether the workbench tool with the title `title` is collapsed or not. Returns `null` if state is unknown.
- */
+// Returns whether the workbench tool with the title `title` is collapsed or not. Returns `null` if state is unknown.
 function getCollapsedStateFromStorage(title) {
 	var storeData = sessionStorage.getItem(sessionItemName);
 	var parsedStoreData;
