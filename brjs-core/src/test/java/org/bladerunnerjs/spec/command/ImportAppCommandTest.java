@@ -15,6 +15,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationComma
 import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -192,5 +193,16 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).hasDir("bs-bladeset/tests/test-unit/js-test-driver/tests/importedns/")
 			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/src-test/importedns/")
 			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/tests/importedns/");
+	}
+	
+	@Ignore
+	@Test
+	public void xmlConfigIsRenamespacedWhenImportingAnApp() throws Exception {
+		given(app).hasBeenCreated()
+		.and(app).containsFileWithContents("WEBINF/jetty-env.xml", "<New><Arg><New><Set name='url'>/app/app;</Set></New></Arg></New>" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEBINF/jetty-env.xml", "<New><Arg><New><Set name='url'>/imported-app/imported-app;</Set></New></Arg></New>");
 	}
 }
