@@ -212,7 +212,7 @@ public class TestRunner {
 			{
 				for (TestRunResult failedTest : failedTests)
 				{
-					logger.warn("  " + getFriendlyTestPath(failedTest.getBaseDirectory(), getJsTestDriverConf(failedTest.getTestDirectory())));
+					logger.warn("  " + getTestPath(failedTest.getBaseDirectory(), getJsTestDriverConf(failedTest.getTestDirectory())));
 				}
 			} else
 			{
@@ -369,7 +369,7 @@ public class TestRunner {
 	
 	private boolean runTest(MemoizedFile baseDirectory, MemoizedFile configFile, boolean resetServer) throws Exception  {
 		logger.warn("\n");
-		logger.warn("Testing " + getFullTestPath(baseDirectory, configFile) + ":");
+		logger.warn("Testing " + getTestPath(baseDirectory, configFile) + ":");
 		
 		try {
 			File testResultsDir = new File("../"+XML_TEST_RESULTS_DIR);
@@ -423,7 +423,7 @@ public class TestRunner {
 	}
 
 	@SuppressWarnings("static-access")
-	private String getFullTestPath(MemoizedFile baseDirectory, MemoizedFile configFile) {
+	private String getTestPath(MemoizedFile baseDirectory, MemoizedFile configFile) {
 		int indexOfApps = baseDirectory.toString().indexOf(APPS_DIR + baseDirectory.separator);
 		return baseDirectory.toString().substring(indexOfApps + (APPS_DIR + baseDirectory.separator).length()) 
 				+ " " + getTestTypeFromDirectoryName(configFile.getParentFile().getName());
@@ -584,20 +584,6 @@ public class TestRunner {
 		}
 		
 		return Joiner.on(System.getProperty("path.separator")).join(classPath);
-	}
-	
-	private String getFriendlyTestPath(MemoizedFile baseDir, MemoizedFile testDir)
-	{
-		MemoizedFile testTypeDir = testDir.getParentFile();
-		if (testTypeDir.getPath().contains("js-test-driver")) {
-			testTypeDir = testTypeDir.getParentFile();
-		}
-//		File projectDir = testTypeDir.getParentFile();
-//		String testPath = (projectDir.equals(baseDir)) ? projectDir.getName() : RelativePath.getRelativePath(baseDir, projectDir);
-		
-		String testPath = baseDir.getRelativePath(testTypeDir);
-		
-		return testPath + " " + (getTestTypeFromDirectoryName(testTypeDir.getName()));
 	}
 	
 	private String getTestTypeFromDirectoryName(String directoryName)
