@@ -40,10 +40,6 @@ public class MacHighSensitivityWatchService extends DefaultWatchService
 	}	
 	
 	public static boolean isSupported() {
-		return getHighSensitivityWatchEventModifier() != null && isMac();
+		return getHighSensitivityWatchEventModifier() != null;
 	}
-	
-	private static boolean isMac() {
-        return (System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0);
-    }
 }

@@ -249,15 +249,52 @@ public class FileModificationWatcherThreadTest
 		
 		fileInRoot.createNewFile();
 		
+		if (!waitForUpdate(fileInRoot, true)) {
+			fail("Changes were not detected");			
+		}
+	}
+	
+	@Test // we use the protected methods on FileModificationWatcherThread here to avoid having a multithreaded test
+	public void usingTheRealWatchServiceDetectsFileNestedChanges() throws Exception {
+		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, new WatchServiceFactory());
+		
+		modificationWatcherThread.init();
+		
+		File dir1 = new File(rootWatchDir, "dir1");
+		File dir2 = new File(dir1, "dir2");
+		File dir3 = new File(dir2, "dir3");
+		File nestedFile = new File(dir3, "file.txt");
+		
+		for (File f : Arrays.asList(dir1, dir2, dir3)) {
+			f.mkdir();
+			if (!waitForUpdate(f)) {
+				fail("Changes were not detected");			
+			}
+		}
+		
+		nestedFile.createNewFile();
+		if (!waitForUpdate(nestedFile)) {
+			fail("Changes were not detected");			
+		}
+	}
+	
+	
+	
+	private boolean waitForUpdate(File expectedFile) throws InterruptedException, IOException {
+		return waitForUpdate(expectedFile, false);
+	}
+	
+	private boolean waitForUpdate(File expectedFile, boolean mustBeIndex0) throws InterruptedException, IOException {
 		for (int i = 0; i < MAX_UPDATE_CHECKS; i++) {
 			modificationWatcherThread.checkForUpdates();
-			if (fileChanges.size() > 0 && fileChanges.get(0).equals(fileInRoot)) {
-				return;
+			boolean foundFileChange = (mustBeIndex0) ? fileChanges.indexOf(expectedFile) == 0 : fileChanges.contains(expectedFile);
+			if (fileChanges.size() > 0 && foundFileChange) {
+				fileChanges.remove(foundFileChange);
+				return true;
 			}
 			Thread.sleep(THREAD_SLEEP_INTEVAL);
 		}
-		
-		fail("Changes were not detected");
+		return false;
 	}
 	
 }

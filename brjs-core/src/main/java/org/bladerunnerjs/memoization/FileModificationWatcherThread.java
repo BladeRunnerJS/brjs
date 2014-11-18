@@ -32,6 +32,7 @@ public class FileModificationWatcherThread extends Thread
 	public FileModificationWatcherThread(BRJS brjs, WatchServiceFactory watchServiceFactory) throws IOException
 	{
 		fileWatcherService = watchServiceFactory.createWatchService();
+		brjs.logger(this.getClass()).debug("%s using %s as the file watcher service", this.getClass().getSimpleName(), fileWatcherService.getClass().getSimpleName());
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().toPath();
 		this.brjs = brjs;

@@ -55,10 +55,6 @@ public class WindowsFileTreeWatchService implements WatchService
 	}
 	
 	public static boolean isSupported() {
-		return getExtendedWatchEventFileTreeEnum() != null && isWindows();
+		return getExtendedWatchEventFileTreeEnum() != null;
 	}
-	
-	private static boolean isWindows() {
-        return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
-    }
 }
