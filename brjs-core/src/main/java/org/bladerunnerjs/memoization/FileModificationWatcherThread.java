@@ -25,14 +25,15 @@ public class FileModificationWatcherThread extends Thread
 	private FileModificationRegistry fileModificationRegistry;
 
 	private BRJS brjs;
+	private WatchServiceFactory watchServiceFactory;
 	private WatchService fileWatcherService;
 
 	private Map<Path,WatchKey>  watchKeys;
+
 	
 	public FileModificationWatcherThread(BRJS brjs, WatchServiceFactory watchServiceFactory) throws IOException
 	{
-		fileWatcherService = watchServiceFactory.createWatchService();
-		brjs.logger(this.getClass()).debug("%s using %s as the file watcher service", this.getClass().getSimpleName(), fileWatcherService.getClass().getSimpleName());
+		this.watchServiceFactory = watchServiceFactory;
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().toPath();
 		this.brjs = brjs;
@@ -61,6 +62,9 @@ public class FileModificationWatcherThread extends Thread
 	}
 
 	protected void init() throws IOException {
+		// create the watch service in the init method so we get a 'too many open files' exception
+		fileWatcherService = watchServiceFactory.createWatchService();
+		brjs.logger(this.getClass()).debug("%s using %s as the file watcher service", this.getClass().getSimpleName(), fileWatcherService.getClass().getSimpleName());
 		watchKeys = new HashMap<>();
 		watchKeys.putAll( fileWatcherService.createWatchKeysForDir(directoryToWatch, false) );
 	}
