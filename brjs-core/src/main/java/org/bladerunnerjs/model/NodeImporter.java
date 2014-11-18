@@ -2,8 +2,10 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
@@ -23,6 +25,8 @@ import org.bladerunnerjs.utility.JsStyleUtility;
 import org.bladerunnerjs.utility.ZipUtility;
 import org.mockito.Mockito;
 
+import com.google.common.collect.ImmutableMap;
+
 
 public class NodeImporter {
 	
@@ -37,15 +41,17 @@ public class NodeImporter {
 		}
 		
 		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
-		FileUtils.moveDirectory(tmpBrjsSourceApp, temporaryUnzipDirFiles[0], tmpBrjsSourceApp.dir());
+		File unzippedAppDir = temporaryUnzipDirFiles[0];
+		FileUtils.moveDirectory(tmpBrjsSourceApp, unzippedAppDir, tmpBrjsSourceApp.dir());
 		
 		File unzippedLibDir = tmpBrjsSourceApp.file("WEB-INF/lib");
 		FileUtils.copyDirectory(targetApp, targetApp.root().appJars().dir(), unzippedLibDir);
 		
-		importApp(tempBrjs, tmpBrjsSourceApp, targetApp, targetAppRequirePrefix);
+		String sourceAppName = unzippedAppDir.getName();
+		importApp(tempBrjs, sourceAppName, tmpBrjsSourceApp, targetApp, targetAppRequirePrefix);
 	}
 	
-	public static void importApp(BRJS tempBrjs, App sourceApp, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
+	public static void importApp(BRJS tempBrjs, String oldAppName, App sourceApp, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		App tempBrjsApp = tempBrjs.app(targetApp.getName());
 		String sourceAppRequirePrefix = sourceApp.getRequirePrefix();
 		
@@ -60,6 +66,12 @@ public class NodeImporter {
 		
 		for(Bladeset bladeset : tempBrjsApp.bladesets()) {
 			renameBladeset(bladeset, sourceAppRequirePrefix, sourceAppRequirePrefix + "/" + bladeset.getName());
+		}
+		
+		File jettyEnv = tempBrjsApp.file("WEB-INF/jetty-env.xml");
+		if (jettyEnv.isFile()) {
+			Map<String,String> findReplaceMap = ImmutableMap.of( "([ /])"+oldAppName+"([ /])", "$1"+targetApp.getName()+"$2" );
+			findAndReplaceInTextFile(tempBrjs, jettyEnv, findReplaceMap);
 		}
 		
 		FileUtils.moveDirectory(tempBrjsApp.dir(), targetApp.dir());
@@ -143,17 +155,27 @@ public class NodeImporter {
 		}
 	}
 	
+	
 	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
+		findAndReplaceInTextFiles(brjs, FileUtils.listFiles(rootRenameDirectory, null, true), sourceRequirePrefix, targetRequirePrefix);
+	}
+	
+	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
+	{
 		HashMap<String, String> replaceMap = getReplaceMap(sourceRequirePrefix, targetRequirePrefix);
-		for(File file : FileUtils.listFiles(rootRenameDirectory, null, true))
-		{
-			String content = org.apache.commons.io.FileUtils.readFileToString(file);
-			String updatedContent = findAndReplaceInText(content, replaceMap);
-			
-			if(content != updatedContent) {
-				FileUtils.write(brjs, file, updatedContent);
-			}
+		for (File f : files) {
+			findAndReplaceInTextFile(brjs, f, replaceMap);
+		}
+	}
+	
+	private static void findAndReplaceInTextFile(BRJS brjs, File file, Map<String,String> findReplaceValues) throws IOException
+	{
+		String content = org.apache.commons.io.FileUtils.readFileToString(file);
+		String updatedContent = findAndReplaceInText(content, findReplaceValues);
+		
+		if(content != updatedContent) {
+			FileUtils.write(brjs, file, updatedContent);
 		}
 	}
 	
@@ -169,7 +191,7 @@ public class NodeImporter {
 		return replaceMap;
 	}
 	
-	private static String findAndReplaceInText(String content, HashMap<String,String> replaceMap) {
+	private static String findAndReplaceInText(String content, Map<String,String> replaceMap) {
 		for (String find : replaceMap.keySet())
 		{
 			String replace = replaceMap.get(find);

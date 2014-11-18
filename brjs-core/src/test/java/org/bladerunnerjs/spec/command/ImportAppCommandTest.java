@@ -19,6 +19,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
+@SuppressWarnings("unused")
 public class ImportAppCommandTest extends SpecTest {
 	App app;
 	Aspect aspect;
@@ -195,14 +196,33 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/tests/importedns/");
 	}
 	
-	@Ignore
 	@Test
-	public void xmlConfigIsRenamespacedWhenImportingAnApp() throws Exception {
+	public void oldAppNameFollowedByASlashIsReplacedInJettyEnv() throws Exception {
 		given(app).hasBeenCreated()
-		.and(app).containsFileWithContents("WEBINF/jetty-env.xml", "<New><Arg><New><Set name='url'>/app/app;</Set></New></Arg></New>" )
+		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app/some-url" )
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
-		then(importedApp).fileContentsContains("WEBINF/jetty-env.xml", "<New><Arg><New><Set name='url'>/imported-app/imported-app;</Set></New></Arg></New>");
+		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "/imported-app/some-url");
+	}
+	
+	@Test
+	public void oldAppNameNotFollowedByASlashIsNotReplacedInJettyEnv() throws Exception {
+		given(app).hasBeenCreated()
+		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "here be webapps. and my app" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "here be webapps. and my app");
+	}
+
+	@Test
+	public void oldAppNameIsNotReplacedInOtherXmlFiles() throws Exception {
+		given(app).hasBeenCreated()
+		.and(app).containsFileWithContents("WEB-INF/web.xml", "/app/some-url" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEB-INF/web.xml", "/app/some-url");
 	}
 }
