@@ -122,6 +122,53 @@ Although relaxing CommonJs compliance may seem strange, we believe there are goo
   3. It complements [BladeRunnerJS](https://github.com/BladeRunnerJS/brjs), which exports libraries as a _bag-of-classes_ rather than as a single encapsulated module, so that circular dependencies can be happened upon in third-party libraries.
 
 
+### Fixing Circular Dependencies
+
+Although these aren't officially endorsed classifications, we find it useful to consider that there are three distinct types of inter-module dependency:
+
+  1. Pre-export _define-time_ dependencies.
+  2. Post-export _define-time_ dependencies.
+  3. _use-time_ dependencies.
+
+A module's _define-time_ dependencies are any dependencies that are expressed (via `require()` invocations) at the point the module is exporting whatever it exports, whereas _use-time_ dependencies are the remaining dependencies that aren't required until the module is actually used.
+
+Additionally, if a dependency is required before the module has exported anything then we consider it as being a _pre-export_ dependency, whereas if it's required after a module has exported then it's a _post-export_ dependency.
+
+The following example hopefully makes these distinctions clear:
+
+``` javascript
+define('some-module', function(require, exports, module) {
+  require('pre-export-dependency');
+
+  exports.stuff = function() {
+    require('use-time-dependency');
+    return 'stuff';
+  };
+
+  require('post-export-dependency');
+});
+```
+
+When a circular dependency error occurs, you will see an error message that looks like this:
+
+```
+Circular dependency detected: moduleA => moduleB -> moduleC => moduleD -> moduleA
+```
+
+Regarding these error messages:
+
+  1. pre-export _define-time_ dependencies are represented by double-bar arrows.
+  2. post-export _define-time_ dependencies are represented by single-bar arrows.
+  3. _use-time_ dependencies will never appear, since they prevent circular dependencies from becoming problematic.
+
+Additionally, although there may be a number of _pre-export_ dependencies within the circle (i.e. `=>`), the first dependency will always be a pre-export dependency, since if it was either a _post-export_ dependency or a _use-time_ dependency then it would cease to be problematic.
+
+Therefore, you can fix circular dependencies by either:
+
+  1. Introducing a _use-time_ dependency anywhere within the circle.
+  2. Ensuring that the first module required within the circle has a _post-export_ dependency.
+
+
 ## Sub-Realms
 
 To aid testing, _browser-modules_ supports hierarchical realms, providing comparable functionality to what [mockery](https://github.com/mfncooper/mockery) provides to Node.js developers. This allows developers to install a sub-realm for the duration of a test, where arbitrary definitions within the realm can be replaced for the duration of that test, leaving the original realm unchanged and unaffected.
