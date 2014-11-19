@@ -100,8 +100,6 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsNamespacedJsClasses("appns.Class1", "appns.Class2", "appns.Class3");
 	}
 	
-	// TODO: refactor/remove these tests once we have a more thought-through support for alias and service dependency analysis
-	// e.g. require('alias!someAlias') and require('service!someService');
 	@Test
 	public void aliasClassesReferencedByACommonJsSourceModuleAreIncludedInTheBundle() throws Exception {
 		given(brLib).hasClasses("br/Class1", "br/Class2")
