@@ -66,7 +66,7 @@ public class FileModificationRegistry
 		}
 	}
 	
-	private  void incrementAllFileVersions() {
+	public void incrementAllFileVersions() {
 		for (FileVersion version : lastModifiedMap.values()) {
 			version.incrememntValue();
 		}

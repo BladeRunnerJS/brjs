@@ -18,6 +18,7 @@ import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedFileAccessor;
+import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -101,7 +102,7 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		try
 		{
-			fileWatcherThread = new FileModificationWatcherThread( this );
+			fileWatcherThread = new FileModificationWatcherThread( this, new WatchKeyServiceFactory() );
 		}
 		catch (IOException ex)
 		{
