@@ -13,6 +13,7 @@ ThousandsFormatterTest.prototype.setUp = function()
 ThousandsFormatterTest.prototype.tearDown = function()
 {
 	this.subrealm.uninstall();
+	globalizeSourceModules();
 };
 
 ThousandsFormatterTest.prototype.test_nonDecimals = function()
