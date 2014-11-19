@@ -95,6 +95,7 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 		List<Asset> dependencies = new ArrayList<>();
 		
 		try {
+			dependencies.add(bundlableNode.getLinkedAsset("br/ServiceRegistry"));
 			dependencies.add(bundlableNode.getLinkedAsset("alias!" + requirePath));
 		}
 		catch(RequirePathException e) {

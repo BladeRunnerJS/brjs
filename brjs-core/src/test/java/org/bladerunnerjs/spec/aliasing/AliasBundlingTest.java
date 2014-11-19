@@ -115,7 +115,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void serviceClassesReferencedByACommonJsSourceModuleAreIncludedInTheBundle() throws Exception {
-		given(brLib).hasClasses("br/Class1", "br/Class2")
+		given(brLib).hasClasses("br/ServiceRegistry", "br/Class1", "br/Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.service", "br.Class2")
 			.and(aspect).hasCommonJsPackageStyle()
 			.and(aspect).classRequires("Class1", "service!br.service")
@@ -352,7 +352,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void multipleAliasDefinitionsCanBeInsideResourcesFolderAndSubfoldersAndUsedInACommonJsClass() throws Exception {
-		given(aspect).hasCommonJsPackageStyle()
+		given(brLib).hasClass("br/ServiceRegistry")
 			.and(aspect).hasClasses("appns/App", "appns/Class1", "appns/Class2", "appns/Class3")
 			.and(aspect.assetLocation("resources").aliasDefinitionsFile()).hasAlias("appns.alias1", "appns.Class1")
 			.and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml",
