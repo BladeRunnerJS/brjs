@@ -7,11 +7,11 @@ public class WatchServiceFactory
 {
 
 	public WatchService createWatchService() throws IOException {
-		if (WindowsFileTreeWatchService.isSupported()) {
-			return new WindowsFileTreeWatchService();
+		if (ExtendedWatchEventModifierWatchService.isSupported()) {
+			return new ExtendedWatchEventModifierWatchService();
 		}
-		if (MacHighSensitivityWatchService.isSupported()) {
-			return new MacHighSensitivityWatchService();
+		if (SensitivityWatchEventModifierWatchService.isSupported()) {
+			return new SensitivityWatchEventModifierWatchService();
 		}
 		return new DefaultWatchService();
 	}

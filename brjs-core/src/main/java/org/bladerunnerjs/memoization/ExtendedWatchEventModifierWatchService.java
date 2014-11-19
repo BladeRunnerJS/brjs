@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class WindowsFileTreeWatchService extends AbstractWatchService
+public class ExtendedWatchEventModifierWatchService extends AbstractWatchService
 {
 	
-	public WindowsFileTreeWatchService() throws IOException {
+	public ExtendedWatchEventModifierWatchService() throws IOException {
 		super();
 	}
 
