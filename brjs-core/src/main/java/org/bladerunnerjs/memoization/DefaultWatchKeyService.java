@@ -6,6 +6,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchKey;
 import java.util.Collection;
@@ -17,11 +18,13 @@ import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 
-public class DefaultWatchService extends AbstractWatchService
+public class DefaultWatchKeyService implements WatchKeyService
 {
 	
-	public DefaultWatchService() throws IOException {
-		super();
+	protected final java.nio.file.WatchService watchService;
+
+	public DefaultWatchKeyService() throws IOException {
+		watchService = FileSystems.getDefault().newWatchService();
 	}
 	
 	@Override
@@ -36,6 +39,12 @@ public class DefaultWatchService extends AbstractWatchService
 		}
 		
 		return watchKeys;
+	}
+	
+	@Override
+	public WatchKey waitForEvents() throws InterruptedException
+	{
+		return watchService.take();
 	}
 	
 	@Override

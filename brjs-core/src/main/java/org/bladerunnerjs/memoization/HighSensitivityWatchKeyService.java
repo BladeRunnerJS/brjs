@@ -12,10 +12,10 @@ import java.nio.file.WatchEvent.Modifier;
 import java.nio.file.WatchKey;
 
 
-public class SensitivityWatchEventModifierWatchService extends DefaultWatchService
+public class HighSensitivityWatchKeyService extends DefaultWatchKeyService
 {
 	
-	public SensitivityWatchEventModifierWatchService() throws IOException
+	public HighSensitivityWatchKeyService() throws IOException
 	{
 		super();
 	}

@@ -32,7 +32,7 @@ public class FileModificationWatcherThreadTest
 	private static final int THREAD_SLEEP_INTEVAL = 500;
 	
 	private BRJS mockBrjs;
-	private DefaultWatchService mockWatchService;
+	private DefaultWatchKeyService mockWatchKeyService;
 	private FileModificationRegistry mockModificationRegistry;
 	private MemoizedFile rootWatchDir;
 	private FileModificationWatcherThread modificationWatcherThread;
@@ -44,7 +44,7 @@ public class FileModificationWatcherThreadTest
 	private WatchKey dirInRootWatchKey;
 	private File nestedDir;
 	private WatchKey nestedDirWatchKey;
-	private WatchServiceFactory mockWatchServiceFactory;
+	private WatchKeyServiceFactory mockWatchServiceFactory;
 	
 	@Before
 	public void setup() throws IOException, InterruptedException {
@@ -64,9 +64,9 @@ public class FileModificationWatcherThreadTest
 		when(mockBrjs.getFileModificationRegistry()).thenReturn(mockModificationRegistry);
 		when(mockBrjs.logger(any(Class.class))).thenReturn(mock(Logger.class));
 		
-		mockWatchService = mock(DefaultWatchService.class);
-		mockWatchServiceFactory = mock(WatchServiceFactory.class);
-		when(mockWatchServiceFactory.createWatchService()).thenReturn(mockWatchService);
+		mockWatchKeyService = mock(DefaultWatchKeyService.class);
+		mockWatchServiceFactory = mock(WatchKeyServiceFactory.class);
+		when(mockWatchServiceFactory.createWatchService()).thenReturn(mockWatchKeyService);
 		
 		rootWatchDirWatchKey = mock(WatchKey.class);
 		dirInRootWatchKey = mock(WatchKey.class);
@@ -102,7 +102,7 @@ public class FileModificationWatcherThreadTest
 		
 		checkForUpdates(1);
 		
-		verify(mockWatchService, times(1)).waitForEvents();
+		verify(mockWatchKeyService, times(1)).waitForEvents();
 		assertEquals(1, fileChanges.size());
 		assertEquals(fileInRoot, fileChanges.get(0));
 	}
@@ -124,10 +124,10 @@ public class FileModificationWatcherThreadTest
 
 		checkForUpdates(1);
 		
-		verify(mockWatchService, times(1)).waitForEvents();
-		verify(mockWatchService).createWatchKeysForDir(rootWatchDir.toPath(), false);
-		verify(mockWatchService).createWatchKeysForDir(dirInRoot.toPath(), true);
-		verifyNoMoreInteractions(mockWatchService);
+		verify(mockWatchKeyService, times(1)).waitForEvents();
+		verify(mockWatchKeyService).createWatchKeysForDir(rootWatchDir.toPath(), false);
+		verify(mockWatchKeyService).createWatchKeysForDir(dirInRoot.toPath(), true);
+		verifyNoMoreInteractions(mockWatchKeyService);
 	}
 
 	@Test
@@ -147,7 +147,7 @@ public class FileModificationWatcherThreadTest
 
 		checkForUpdates(1);
 		
-		verify(mockWatchService, times(1)).waitForEvents();
+		verify(mockWatchKeyService, times(1)).waitForEvents();
 		assertEquals(1, fileChanges.size());
 		assertEquals(dirInRoot, fileChanges.get(0));
 	}
@@ -196,16 +196,16 @@ public class FileModificationWatcherThreadTest
 		
 		checkForUpdates(2);
 		
-		verify(mockWatchService, times(2)).waitForEvents();
-		verify(mockWatchService).createWatchKeysForDir(rootWatchDir.toPath(), false);
-		verify(mockWatchService).createWatchKeysForDir(dirInRoot.toPath(), true);
-		verify(mockWatchService).createWatchKeysForDir(nestedDir.toPath(), true);
-		verifyNoMoreInteractions(mockWatchService);
+		verify(mockWatchKeyService, times(2)).waitForEvents();
+		verify(mockWatchKeyService).createWatchKeysForDir(rootWatchDir.toPath(), false);
+		verify(mockWatchKeyService).createWatchKeysForDir(dirInRoot.toPath(), true);
+		verify(mockWatchKeyService).createWatchKeysForDir(nestedDir.toPath(), true);
+		verifyNoMoreInteractions(mockWatchKeyService);
 	}
 	
 	@Test // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
 	public void usingTheRealWatchServiceDetectsFileChanges() throws Exception {
-		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, new WatchServiceFactory());
+		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, new WatchKeyServiceFactory());
 		
 		modificationWatcherThread.init();
 		
@@ -218,7 +218,7 @@ public class FileModificationWatcherThreadTest
 	
 	@Test // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
 	public void usingTheRealWatchServiceDetectsFileNestedChanges() throws Exception {
-		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, new WatchServiceFactory());
+		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, new WatchKeyServiceFactory());
 		
 		modificationWatcherThread.init();
 		
@@ -267,7 +267,7 @@ public class FileModificationWatcherThreadTest
 	
 	private void queueWatchServiceEventKeys(WatchKey... watchKeys) throws InterruptedException
 	{
-		OngoingStubbing<WatchKey> stub = when(mockWatchService.waitForEvents());
+		OngoingStubbing<WatchKey> stub = when(mockWatchKeyService.waitForEvents());
 		for (WatchKey key : watchKeys) {
 			stub = stub.thenReturn(key);
 		}
@@ -304,7 +304,7 @@ public class FileModificationWatcherThreadTest
 	
 	private void allowMockWatchKeyForDir(File watchDir, WatchKey watchKey) throws IOException
 	{
-		when(mockWatchService.createWatchKeysForDir( eq(watchDir.toPath()), any(Boolean.class)) )
+		when(mockWatchKeyService.createWatchKeysForDir( eq(watchDir.toPath()), any(Boolean.class)) )
 			.thenReturn( ImmutableMap.of( watchKey, watchDir.toPath() ) );
 	}
 	

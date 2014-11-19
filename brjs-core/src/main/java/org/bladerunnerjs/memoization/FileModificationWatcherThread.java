@@ -22,17 +22,17 @@ public class FileModificationWatcherThread extends Thread
 	private FileModificationRegistry fileModificationRegistry;
 
 	private BRJS brjs;
-	private WatchServiceFactory watchServiceFactory;
-	private WatchService watcherService;
+	private WatchKeyServiceFactory watchKeyServiceFactory;
+	private WatchKeyService watchKeyService;
 
 	private Map<WatchKey,Path> watchKeys;
 
 	private Logger logger;
 
 	
-	public FileModificationWatcherThread(BRJS brjs, WatchServiceFactory watchServiceFactory) throws IOException
+	public FileModificationWatcherThread(BRJS brjs, WatchKeyServiceFactory watchKeyServiceFactory) throws IOException
 	{
-		this.watchServiceFactory = watchServiceFactory;
+		this.watchKeyServiceFactory = watchKeyServiceFactory;
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().toPath();
 		this.brjs = brjs;
@@ -61,16 +61,16 @@ public class FileModificationWatcherThread extends Thread
 
 	void init() throws IOException {
 		// create the watch service in the init method so we get a 'too many open files' exception
-		watcherService = watchServiceFactory.createWatchService();
+		watchKeyService = watchKeyServiceFactory.createWatchService();
 		logger = brjs.logger(this.getClass());
-		logger.debug("%s using %s as the file watcher service", this.getClass().getSimpleName(), watcherService.getClass().getSimpleName());
+		logger.debug("%s using %s as the file watcher service", this.getClass().getSimpleName(), watchKeyService.getClass().getSimpleName());
 		watchKeys = new HashMap<>();
-		watchKeys.putAll( watcherService.createWatchKeysForDir(directoryToWatch, false) );
+		watchKeys.putAll( watchKeyService.createWatchKeysForDir(directoryToWatch, false) );
 	}
 	
 	void checkForUpdates() throws IOException, InterruptedException
 	{
-		WatchKey key = watcherService.waitForEvents();
+		WatchKey key = watchKeyService.waitForEvents();
 		Path path = watchKeys.get(key);
 		
 		if (path == null) {
@@ -88,7 +88,7 @@ public class FileModificationWatcherThread extends Thread
 		watchKeys.clear();
 		try
 		{
-			watcherService.close();
+			watchKeyService.close();
 		}
 		catch (IOException ex)
 		{
@@ -114,7 +114,7 @@ public class FileModificationWatcherThread extends Thread
             
             File childFile = child.toFile();
 			if (kind == ENTRY_CREATE && childFile.isDirectory()) {
-            	watchKeys.putAll( watcherService.createWatchKeysForDir(child, true) );
+            	watchKeys.putAll( watchKeyService.createWatchKeysForDir(child, true) );
             }
             
             fileModificationRegistry.incrementFileVersion(childFile);

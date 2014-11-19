@@ -2,6 +2,7 @@ package org.bladerunnerjs.memoization;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
@@ -9,11 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ExtendedWatchEventModifierWatchService extends AbstractWatchService
+public class FileTreeWatchKeyService implements WatchKeyService
 {
 	
-	public ExtendedWatchEventModifierWatchService() throws IOException {
-		super();
+	private final java.nio.file.WatchService watchService;
+	
+	public FileTreeWatchKeyService() throws IOException {
+		watchService = FileSystems.getDefault().newWatchService();
 	}
 
 	@Override
@@ -27,6 +30,12 @@ public class ExtendedWatchEventModifierWatchService extends AbstractWatchService
 		watchKeys.put(createWatchKeyForDir(dirPath), dirPath);
 		
 		return watchKeys;
+	}
+	
+	@Override
+	public WatchKey waitForEvents() throws InterruptedException
+	{
+		return watchService.take();
 	}
 	
 	@Override

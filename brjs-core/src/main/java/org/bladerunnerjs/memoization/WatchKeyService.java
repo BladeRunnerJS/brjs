@@ -6,7 +6,7 @@ import java.nio.file.WatchKey;
 import java.util.Map;
 
 
-public interface WatchService
+public interface WatchKeyService
 {
 	public WatchKey waitForEvents() throws InterruptedException;
 	public Map<WatchKey,Path> createWatchKeysForDir(Path dirPath, boolean isNewlyDiscovered) throws IOException;
