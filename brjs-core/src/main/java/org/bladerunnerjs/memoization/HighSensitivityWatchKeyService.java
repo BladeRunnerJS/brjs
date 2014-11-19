@@ -20,8 +20,7 @@ public class HighSensitivityWatchKeyService extends DefaultWatchKeyService
 		super();
 	}
 
-	@Override
-	public WatchKey createWatchKeyForDir(Path dirPath) throws IOException {
+	protected WatchKey createWatchKeyForDir(Path dirPath) throws IOException {
 		Modifier high = getHighSensitivityWatchEventModifier();
 		WatchKey watchKey = dirPath.register(watchService, new WatchEvent.Kind<?>[]{ENTRY_CREATE,ENTRY_DELETE,ENTRY_MODIFY}, high);
 		return watchKey;

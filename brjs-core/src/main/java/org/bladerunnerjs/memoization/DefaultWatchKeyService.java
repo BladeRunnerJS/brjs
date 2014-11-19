@@ -52,8 +52,7 @@ public class DefaultWatchKeyService implements WatchKeyService
 		watchService.close();
 	}
 	
-	@Override
-	public WatchKey createWatchKeyForDir(Path dirPath) throws IOException {
+	protected WatchKey createWatchKeyForDir(Path dirPath) throws IOException {
 		WatchKey watchKey = dirPath.register(watchService,ENTRY_CREATE,ENTRY_DELETE,ENTRY_MODIFY);
 		return watchKey;
 	}

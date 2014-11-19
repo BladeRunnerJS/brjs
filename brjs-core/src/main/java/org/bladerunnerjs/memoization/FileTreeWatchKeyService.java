@@ -43,8 +43,7 @@ public class FileTreeWatchKeyService implements WatchKeyService
 		watchService.close();
 	}
 	
-	@Override
-	public WatchKey createWatchKeyForDir(Path dirPath) throws IOException {
+	private WatchKey createWatchKeyForDir(Path dirPath) throws IOException {
 		WatchKey watchKey = dirPath.register(watchService,getExtendedWatchEventFileTreeEnum());
 		return watchKey;
 	}
