@@ -14,8 +14,6 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 public class DefaultBladeset extends Bladeset
 {
-	private static final String BLADES_DIRNAME = "blades";
-	
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, BLADES_DIRNAME, null);
 	private final List<TypedTestPack> testTypes = Collections.emptyList(); // needed to prevent 'discoverAllChildren' from using the superclass NodeList
 	
