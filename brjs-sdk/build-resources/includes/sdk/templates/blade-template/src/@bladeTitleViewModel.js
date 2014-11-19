@@ -2,10 +2,9 @@
 
 var ko = require( 'ko' );
 var i18n = require( 'br/I18n' );
-var ServiceRegistry = require( 'br/ServiceRegistry' );
 
 function @bladeTitleViewModel() {
-	this.eventHub = ServiceRegistry.getService( 'br.event-hub' );
+	this.eventHub = require('service!br.event-hub');
 	this.welcomeMessage = ko.observable( 'Welcome to your new Blade.' );
 	this.buttonClickMessage = ko.observable( i18n( '@bladeNamespace.button.click.message' ) );
 	this.logWelcome();
