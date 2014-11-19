@@ -197,13 +197,23 @@ public class ImportAppCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void oldAppNameFollowedByASlashIsReplacedInJettyEnv() throws Exception {
+	public void oldAppNamePrefixedAndFollowedByASlashIsReplacedInJettyEnv() throws Exception {
 		given(app).hasBeenCreated()
 		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app/some-url" )
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "/imported-app/some-url");
+	}
+	
+	@Test
+	public void oldAppNamePrefixedByASlashAndFollowedByASemicolonIsReplacedInJettyEnv() throws Exception {
+		given(app).hasBeenCreated()
+		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app;" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "/imported-app;");
 	}
 	
 	@Test

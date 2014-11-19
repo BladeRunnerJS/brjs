@@ -76,7 +76,8 @@ public class NodeImporter {
 		
 		File jettyEnv = tempBrjsApp.file("WEB-INF/jetty-env.xml");
 		if (jettyEnv.isFile()) {
-			Map<String,String> findReplaceMap = ImmutableMap.of( "([ /])"+oldAppName+"([ /])", "$1"+targetApp.getName()+"$2" );
+			String prefixAndSuffixRegex = "([ /;])";
+			Map<String,String> findReplaceMap = ImmutableMap.of( prefixAndSuffixRegex+oldAppName+prefixAndSuffixRegex, "$1"+targetApp.getName()+"$2" );
 			findAndReplaceInTextFile(tempBrjs, jettyEnv, findReplaceMap);
 		}
 		
