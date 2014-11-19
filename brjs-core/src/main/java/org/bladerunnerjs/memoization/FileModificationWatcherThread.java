@@ -59,7 +59,7 @@ public class FileModificationWatcherThread extends Thread
 		}
 	}
 
-	protected void init() throws IOException {
+	void init() throws IOException {
 		// create the watch service in the init method so we get a 'too many open files' exception
 		watcherService = watchServiceFactory.createWatchService();
 		logger = brjs.logger(this.getClass());
@@ -68,7 +68,7 @@ public class FileModificationWatcherThread extends Thread
 		watchKeys.putAll( watcherService.createWatchKeysForDir(directoryToWatch, false) );
 	}
 	
-	protected void checkForUpdates() throws IOException, InterruptedException
+	void checkForUpdates() throws IOException, InterruptedException
 	{
 		WatchKey key = watcherService.waitForEvents();
 		Path path = watchKeys.get(key);
@@ -80,7 +80,7 @@ public class FileModificationWatcherThread extends Thread
 		pollWatchKeyForEvents(watchKeys, path, key);
 	}
 	
-	protected void tearDown() {
+	void tearDown() {
 		for (WatchKey watchKey : watchKeys.keySet()) {
 			watchKey.cancel();
 		}

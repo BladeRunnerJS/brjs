@@ -203,7 +203,7 @@ public class FileModificationWatcherThreadTest
 		verifyNoMoreInteractions(mockWatchService);
 	}
 	
-	@Test // we use the protected methods on FileModificationWatcherThread here to avoid having a multithreaded test
+	@Test // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
 	public void usingTheRealWatchServiceDetectsFileChanges() throws Exception {
 		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, new WatchServiceFactory());
 		
@@ -216,7 +216,7 @@ public class FileModificationWatcherThreadTest
 		}
 	}
 	
-	@Test // we use the protected methods on FileModificationWatcherThread here to avoid having a multithreaded test
+	@Test // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
 	public void usingTheRealWatchServiceDetectsFileNestedChanges() throws Exception {
 		modificationWatcherThread = new FileModificationWatcherThread(mockBrjs, new WatchServiceFactory());
 		
