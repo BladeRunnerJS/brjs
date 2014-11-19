@@ -35,6 +35,7 @@ public class RestApiService
 	private static final String JS_TEST_REPORT_SWITCH = "--" + TestRunnerController.REPORT_SWITCH;
 	public static final String IMPORT_BLADESETS_NEWBLADESET_NAME_KEY = "newBladesetName";
 	public static final String IMPORT_BLADESETS_BLADES_KEY = "blades";
+	private static final String APPS_DIR = "apps";
 	private BRJS brjs;
 	
 	private Logger logger;
@@ -203,10 +204,26 @@ public class RestApiService
 	{
 		TestCommand cmd = new TestCommand();
 		cmd.setBRJS(brjs);
-		String bladesetPath = brjs.app(appName).bladeset(bladesetName).dir().getAbsolutePath();
+		String bladesetPath;
+		if (isDefaultBladeset(brjs.app(appName).bladeset(bladesetName)))
+		{
+			bladesetPath = brjs.app(appName).bladeset(bladesetName).dir().getAbsolutePath() + File.separator + Bladeset.BLADES_DIRNAME;
+		}
+		else 
+		{
+			bladesetPath = brjs.app(appName).bladeset(bladesetName).dir().getAbsolutePath();
+		}
 		String[] args = new String[]{ bladesetPath, testType, JS_TEST_REPORT_SWITCH };	
 		OutputStream out = doCommand( cmd, args );
 		return out.toString();
+	}
+	
+	private boolean isDefaultBladeset(Bladeset bladeset) {
+		int indexOfApps = bladeset.dir().getAbsolutePath().indexOf(APPS_DIR + File.separator);
+		String pathAfterApps = bladeset.dir().getAbsolutePath().substring(indexOfApps + (APPS_DIR + File.separator).length());
+		if (pathAfterApps.contains(File.separator))
+			return false;
+		return true;
 	}
 	
 	public String runBladeTests(String appName, String bladesetName, String bladeName, String testType) throws Exception
