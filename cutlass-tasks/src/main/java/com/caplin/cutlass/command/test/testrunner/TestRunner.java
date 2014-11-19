@@ -212,7 +212,7 @@ public class TestRunner {
 			{
 				for (TestRunResult failedTest : failedTests)
 				{
-					logger.warn("  " + getTestPath(failedTest.getBaseDirectory(), getJsTestDriverConf(failedTest.getTestDirectory())));
+					logger.warn("  " + getTestPath(getJsTestDriverConf(failedTest.getTestDirectory())));
 				}
 			} else
 			{
@@ -358,7 +358,7 @@ public class TestRunner {
 	
 	private boolean runTest(MemoizedFile baseDirectory, MemoizedFile configFile, boolean resetServer) throws Exception  {
 		logger.warn("\n");
-		logger.warn("Testing " + getTestPath(baseDirectory, configFile) + ":");
+		logger.warn("Testing " + getTestPath(configFile) + ":");
 		
 		try {
 			File testResultsDir = new File("../"+XML_TEST_RESULTS_DIR);
@@ -411,10 +411,17 @@ public class TestRunner {
 		return true;
 	}
 
-	@SuppressWarnings("static-access")
-	private String getTestPath(MemoizedFile baseDirectory, MemoizedFile configFile) {
-		int indexOfApps = baseDirectory.toString().indexOf(APPS_DIR + baseDirectory.separator);
-		return baseDirectory.toString().substring(indexOfApps + (APPS_DIR + baseDirectory.separator).length()) 
+	private String getTestPath(MemoizedFile configFile) {
+		if (configFile.getParentFile().getParentFile().toString().endsWith("test-unit") 
+				|| configFile.getParentFile().getParentFile().toString().endsWith("test-acceptance") 
+				|| configFile.getParentFile().getParentFile().toString().endsWith("test-integration") )
+		{
+			int indexOfApps = configFile.getParentFile().getParentFile().getParentFile().getParentFile().toString().indexOf(APPS_DIR + File.separator);
+			return configFile.getParentFile().getParentFile().getParentFile().getParentFile().toString().substring(indexOfApps + (APPS_DIR + File.separator).length()) 
+					+ " " + getTestTypeFromDirectoryName(configFile.getParentFile());
+		}
+		int indexOfApps = configFile.getParentFile().getParentFile().toString().indexOf(APPS_DIR + File.separator);
+		return configFile.getParentFile().getParentFile().toString().substring(indexOfApps + (APPS_DIR + File.separator).length()) 
 				+ " " + getTestTypeFromDirectoryName(configFile.getParentFile());
 	}
 	
