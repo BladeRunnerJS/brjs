@@ -207,6 +207,18 @@ public class ImportAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void appNameIsReplacedIfPreviousAppRequirePrefixWasTheSameAsTheAppNameAndADefaultAspectIsUsed() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app.appConf()).hasRequirePrefix(app.getName())
+			.and(app.defaultAspect()).containsFile("index.html")
+			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app/some-url" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "/imported-app/some-url");
+	}
+	
+	@Test
 	public void oldAppNameNotFollowedByASlashIsNotReplacedInJettyEnv() throws Exception {
 		given(app).hasBeenCreated()
 		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "here be webapps. and my app" )
