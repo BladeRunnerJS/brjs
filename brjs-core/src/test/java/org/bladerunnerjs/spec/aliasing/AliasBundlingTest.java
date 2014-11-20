@@ -113,7 +113,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void serviceClassesReferencedByACommonJsSourceModuleAreIncludedInTheBundle() throws Exception {
-		given(brLib).hasClasses("br/ServiceRegistry", "br/Class1", "br/Class2")
+		given(brLib).hasClasses("br/ServiceRegistry", "br/Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.service", "br.Class2")
 			.and(aspect).hasCommonJsPackageStyle()
 			.and(aspect).classRequires("Class1", "service!br.service")
