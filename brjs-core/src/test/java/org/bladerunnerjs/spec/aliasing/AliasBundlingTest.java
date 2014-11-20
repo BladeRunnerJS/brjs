@@ -431,4 +431,19 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsDefinedClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2");
 	}
 	
+	@Test // Note: this test was written in an attempt to exactly replicate a bug we were seeing in the product
+	public void workbenchesThatRequestTheDevScenarioArentInsteadGivenANonDevNamedGroupInstead() throws Exception {
+		given(brLib).hasClasses("br/AliasRegistry", "br/ServiceRegistry", "br/Core", "br/UnknownClass", "br/AliasInterfaceError")
+			.and(brLib).hasClasses("br/Interface", "br/DevScenarioClass", "br/GroupProductionClass")
+			.and(brLibAliasDefinitionsFile).hasIncompleteAlias("br.service", "br/Interface")
+			.and(brLibAliasDefinitionsFile).hasScenarioAlias("dev", "br.service", "br/DevScenarioClass")
+			.and(brLibAliasDefinitionsFile).hasGroupAlias("br.g1", "br.service", "br/GroupProductionClass")
+			.and(workbench).indexPageRequires("appns/WorkbenchClass")
+			.and(workbench).classFileHasContent("appns/WorkbenchClass", "require('service!br.service'); require('br/AliasRegistry');")
+			.and(worbenchAliasesFile).usesScenario("dev");
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("br/DevScenarioClass")
+			.and(response).doesNotContainClasses("br/GroupProductionClass")
+			.and(response).containsText("'br.service':{'class':'br/DevScenarioClass'");
+	}
 }
