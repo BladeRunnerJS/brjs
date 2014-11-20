@@ -122,6 +122,18 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsText("br/Class2");
 	}
 	
+	@Test
+	public void incompleteServiceClassesReferencedByACommonJsSourceModuleCauseTheAliasToBeIncludedInTheBundle() throws Exception {
+		given(brLib).hasClasses("br/ServiceRegistry", "br/Core", "br/UnknownClass", "br/AliasInterfaceError", "br/Class2", "br/Interface")
+			.and(brLibAliasDefinitionsFile).hasIncompleteAlias("br.service", "br/Interface")
+			.and(aspect).hasCommonJsPackageStyle()
+			.and(aspect).classRequires("Class1", "service!br.service")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('alias!br.service',")
+			.and(response).doesNotContainText("br/Class2");
+	}
+	
 	@Test // test exception isnt thrown for services - services can be defined and configure at run time, which differs from aliases
 	public void anExceptionIsntThrownIfAServiceClassesReferencedByACommonJsSourceModuleDoesntExist() throws Exception {
 		given(brLib).hasClasses("br/Class1", "br/Class2")
