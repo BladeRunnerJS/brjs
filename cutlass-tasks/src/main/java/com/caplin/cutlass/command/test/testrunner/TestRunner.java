@@ -212,7 +212,7 @@ public class TestRunner {
 			{
 				for (TestRunResult failedTest : failedTests)
 				{
-					logger.warn("  " + getFriendlyTestPath(failedTest.getBaseDirectory(), getJsTestDriverConf(failedTest.getTestDirectory())));
+					logger.warn("  " + getTestPath(getJsTestDriverConf(failedTest.getTestDirectory())));
 				}
 			} else
 			{
@@ -315,8 +315,6 @@ public class TestRunner {
 			logger.warn(failureMessage);
 			throw new IOException(failureMessage);
 		}
-		if (isDefaultBladeset(directory))
-			directory = brjs.getMemoizedFile( new File(directory, "blades") );
 		MemoizedFile[] dirContents = directory.listFiles();
 		reverseDirectoryContentsIfContainsTestDir(dirContents);
 		for(MemoizedFile file : dirContents) {
@@ -334,15 +332,6 @@ public class TestRunner {
 				}
 			}
 		}
-	}
-	
-	@SuppressWarnings("static-access")
-	private boolean isDefaultBladeset(MemoizedFile path) {
-		int indexOfApps = path.toString().indexOf(APPS_DIR + path.separator);
-		String pathAfterApps = path.toString().substring(indexOfApps + (APPS_DIR + path.separator).length());
-		if (pathAfterApps.contains(path.separator))
-			return false;
-		return true;
 	}
 	
 	private void reverseDirectoryContentsIfContainsTestDir(MemoizedFile[] dirContents) throws Exception
@@ -369,7 +358,7 @@ public class TestRunner {
 	
 	private boolean runTest(MemoizedFile baseDirectory, MemoizedFile configFile, boolean resetServer) throws Exception  {
 		logger.warn("\n");
-		logger.warn("Testing " + getFriendlyTestPath(baseDirectory, configFile) + ":");
+		logger.warn("Testing " + getTestPath(configFile) + ":");
 		
 		try {
 			File testResultsDir = new File("../"+XML_TEST_RESULTS_DIR);
@@ -422,6 +411,20 @@ public class TestRunner {
 		return true;
 	}
 
+	private String getTestPath(MemoizedFile configFile) {
+		if (configFile.getParentFile().getParentFile().toString().endsWith("test-unit") 
+				|| configFile.getParentFile().getParentFile().toString().endsWith("test-acceptance") 
+				|| configFile.getParentFile().getParentFile().toString().endsWith("test-integration") )
+		{
+			int indexOfApps = configFile.getParentFile().getParentFile().getParentFile().getParentFile().toString().indexOf(APPS_DIR + File.separator);
+			return configFile.getParentFile().getParentFile().getParentFile().getParentFile().toString().substring(indexOfApps + (APPS_DIR + File.separator).length()) 
+					+ " " + getTestTypeFromDirectoryName(configFile.getParentFile());
+		}
+		int indexOfApps = configFile.getParentFile().getParentFile().toString().indexOf(APPS_DIR + File.separator);
+		return configFile.getParentFile().getParentFile().toString().substring(indexOfApps + (APPS_DIR + File.separator).length()) 
+				+ " " + getTestTypeFromDirectoryName(configFile.getParentFile());
+	}
+	
 	protected String getJavaOpts() {
 		String javaopts = "";
 		logger.debug("System env JAVA_OPTS is '" + System.getenv("JAVA_OPTS") +"'");
@@ -579,37 +582,28 @@ public class TestRunner {
 		return Joiner.on(System.getProperty("path.separator")).join(classPath);
 	}
 	
-	private String getFriendlyTestPath(MemoizedFile baseDir, MemoizedFile testDir)
+	private String getTestTypeFromDirectoryName(MemoizedFile directoryName)
 	{
-		MemoizedFile testTypeDir = testDir.getParentFile();
-		if (testTypeDir.getPath().contains("js-test-driver")) {
-			testTypeDir = testTypeDir.getParentFile();
-		}
-//		File projectDir = testTypeDir.getParentFile();
-//		String testPath = (projectDir.equals(baseDir)) ? projectDir.getName() : RelativePath.getRelativePath(baseDir, projectDir);
-		
-		String testPath = baseDir.getRelativePath(testTypeDir);
-		
-		return testPath + " " + (getTestTypeFromDirectoryName(testTypeDir.getName()));
-	}
-	
-	private String getTestTypeFromDirectoryName(String directoryName)
-	{
-		if(directoryName.equalsIgnoreCase("test-unit"))
+		if(directoryName.getName().equalsIgnoreCase("test-unit"))
 		{
 			return "(UTs)";
 		}
-		else if(directoryName.equalsIgnoreCase("test-acceptance"))
+		else if(directoryName.getName().equalsIgnoreCase("test-acceptance"))
 		{
 			return "(ATs)";
 		}
-		else if(directoryName.equalsIgnoreCase("test-integration"))
+		else if(directoryName.getName().equalsIgnoreCase("test-integration"))
 		{
 			return "(ITs)";
 		}
 		else 
 		{
-			return null;
+			if (directoryName.getParentFile().getName().equalsIgnoreCase("test-unit") ||
+					directoryName.getParentFile().getName().equalsIgnoreCase("test-acceptance") ||
+					directoryName.getParentFile().getName().equalsIgnoreCase("test-integration")) 
+				return getTestTypeFromDirectoryName(directoryName.getParentFile());
+			else 
+				throw new RuntimeException("The test directory name does not indicate a valid test type.");
 		}
 	}
 	

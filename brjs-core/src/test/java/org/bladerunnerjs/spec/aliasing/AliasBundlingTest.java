@@ -100,8 +100,6 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsNamespacedJsClasses("appns.Class1", "appns.Class2", "appns.Class3");
 	}
 	
-	// TODO: refactor/remove these tests once we have a more thought-through support for alias and service dependency analysis
-	// e.g. require('alias!someAlias') and require('service!someService');
 	@Test
 	public void aliasClassesReferencedByACommonJsSourceModuleAreIncludedInTheBundle() throws Exception {
 		given(brLib).hasClasses("br/Class1", "br/Class2")
@@ -115,13 +113,25 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void serviceClassesReferencedByACommonJsSourceModuleAreIncludedInTheBundle() throws Exception {
-		given(brLib).hasClasses("br/Class1", "br/Class2")
+		given(brLib).hasClasses("br/ServiceRegistry", "br/Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.service", "br.Class2")
 			.and(aspect).hasCommonJsPackageStyle()
 			.and(aspect).classRequires("Class1", "service!br.service")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("br/Class2");
+	}
+	
+	@Test
+	public void incompleteServiceClassesReferencedByACommonJsSourceModuleCauseTheAliasToBeIncludedInTheBundle() throws Exception {
+		given(brLib).hasClasses("br/ServiceRegistry", "br/Core", "br/UnknownClass", "br/AliasInterfaceError", "br/Class2", "br/Interface")
+			.and(brLibAliasDefinitionsFile).hasIncompleteAlias("br.service", "br/Interface")
+			.and(aspect).hasCommonJsPackageStyle()
+			.and(aspect).classRequires("Class1", "service!br.service")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('alias!br.service',")
+			.and(response).doesNotContainText("br/Class2");
 	}
 	
 	@Test // test exception isnt thrown for services - services can be defined and configure at run time, which differs from aliases
@@ -352,7 +362,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void multipleAliasDefinitionsCanBeInsideResourcesFolderAndSubfoldersAndUsedInACommonJsClass() throws Exception {
-		given(aspect).hasCommonJsPackageStyle()
+		given(brLib).hasClass("br/ServiceRegistry")
 			.and(aspect).hasClasses("appns/App", "appns/Class1", "appns/Class2", "appns/Class3")
 			.and(aspect.assetLocation("resources").aliasDefinitionsFile()).hasAlias("appns.alias1", "appns.Class1")
 			.and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml",
