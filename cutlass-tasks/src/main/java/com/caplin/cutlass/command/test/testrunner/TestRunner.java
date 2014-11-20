@@ -21,10 +21,12 @@ import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
 import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.test.BrowserStartupException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
@@ -61,8 +63,6 @@ public class TestRunner {
 	
 	private static final String XML_TEST_RESULTS_DIR = "test-results/xml";
 	private static final String HTML_TEST_RESULTS_DIR = "test-results/html";
-	
-	private static final String APPS_DIR = "apps";
 	
 	private List<Process> childProcesses = new ArrayList<Process>();
 	private List<ProcessLogger> childLoggers = new ArrayList<ProcessLogger>();
@@ -412,17 +412,9 @@ public class TestRunner {
 	}
 
 	private String getTestPath(MemoizedFile configFile) {
-		if (configFile.getParentFile().getParentFile().toString().endsWith("test-unit") 
-				|| configFile.getParentFile().getParentFile().toString().endsWith("test-acceptance") 
-				|| configFile.getParentFile().getParentFile().toString().endsWith("test-integration") )
-		{
-			int indexOfApps = configFile.getParentFile().getParentFile().getParentFile().getParentFile().toString().indexOf(APPS_DIR + File.separator);
-			return configFile.getParentFile().getParentFile().getParentFile().getParentFile().toString().substring(indexOfApps + (APPS_DIR + File.separator).length()) 
-					+ " " + getTestTypeFromDirectoryName(configFile.getParentFile());
-		}
-		int indexOfApps = configFile.getParentFile().getParentFile().toString().indexOf(APPS_DIR + File.separator);
-		return configFile.getParentFile().getParentFile().toString().substring(indexOfApps + (APPS_DIR + File.separator).length()) 
-				+ " " + getTestTypeFromDirectoryName(configFile.getParentFile());
+		Node location = brjs.locateAncestorNodeOfClass(configFile, AssetContainer.class);
+		return brjs.dir().getRelativePath(location.parentNode().parentNode().dir()) + " " 
+					+ getTestTypeFromDirectoryName(configFile.getParentFile());
 	}
 	
 	protected String getJavaOpts() {
