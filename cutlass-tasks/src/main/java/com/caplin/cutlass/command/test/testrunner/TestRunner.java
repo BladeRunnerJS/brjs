@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
@@ -61,8 +62,6 @@ public class TestRunner {
 	
 	private static final String XML_TEST_RESULTS_DIR = "test-results/xml";
 	private static final String HTML_TEST_RESULTS_DIR = "test-results/html";
-	
-	private static final String APPS_DIR = "apps";
 	
 	private List<Process> childProcesses = new ArrayList<Process>();
 	private List<ProcessLogger> childLoggers = new ArrayList<ProcessLogger>();
@@ -358,7 +357,7 @@ public class TestRunner {
 	
 	private boolean runTest(MemoizedFile baseDirectory, MemoizedFile configFile, boolean resetServer) throws Exception  {
 		logger.warn("\n");
-		logger.warn("Testing " + getTestPath(configFile) + ":");
+		logger.warn("Testing " + getTestPath(configFile) + " " + getTestTypeFromDirectoryName(configFile.getParentFile()) + ":");
 		
 		try {
 			File testResultsDir = new File("../"+XML_TEST_RESULTS_DIR);
@@ -411,18 +410,21 @@ public class TestRunner {
 		return true;
 	}
 
-	private String getTestPath(MemoizedFile configFile) {
-		if (configFile.getParentFile().getParentFile().toString().endsWith("test-unit") 
-				|| configFile.getParentFile().getParentFile().toString().endsWith("test-acceptance") 
-				|| configFile.getParentFile().getParentFile().toString().endsWith("test-integration") )
+	private String getTestPath(MemoizedFile testDirectory) {
+		while (testDirectory != null && !testDirectory.getName().startsWith("test-"))
 		{
-			int indexOfApps = configFile.getParentFile().getParentFile().getParentFile().getParentFile().toString().indexOf(APPS_DIR + File.separator);
-			return configFile.getParentFile().getParentFile().getParentFile().getParentFile().toString().substring(indexOfApps + (APPS_DIR + File.separator).length()) 
-					+ " " + getTestTypeFromDirectoryName(configFile.getParentFile());
+			testDirectory = testDirectory.getParentFile();
 		}
-		int indexOfApps = configFile.getParentFile().getParentFile().toString().indexOf(APPS_DIR + File.separator);
-		return configFile.getParentFile().getParentFile().toString().substring(indexOfApps + (APPS_DIR + File.separator).length()) 
-				+ " " + getTestTypeFromDirectoryName(configFile.getParentFile());
+		String testPath = testDirectory.getAbsolutePath();
+		if (testPath.contains("apps" + File.separator))
+		{
+			return StringUtils.substringAfterLast(testPath, "apps" + File.separator);
+		}
+		if (testPath.contains("sdk"+File.separator)) 
+		{
+			return StringUtils.substringAfterLast(testPath, "sdk" + File.separator);
+		}
+		return testPath;
 	}
 	
 	protected String getJavaOpts() {
