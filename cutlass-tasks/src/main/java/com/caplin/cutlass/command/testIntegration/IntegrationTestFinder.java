@@ -48,15 +48,16 @@ public class IntegrationTestFinder
 				&& dir.getName().equals("webdriver") 
 				&& dir.getParentFile().getName().equals("test-integration");
 		
-		File containingDir = dir.getParentFile().getParentFile().getParentFile();
-		if (validTestDir && !(containingDir.getName().endsWith("-aspect") || containingDir.getName().equals("workbench")))
+		File containingDir = dir.getParentFile().getParentFile();
+		File ancestorContainingDir = containingDir.getParentFile();
+		if (validTestDir && !(containingDir.getName().endsWith("-aspect") || ancestorContainingDir.getName().endsWith("-aspect") || containingDir.getName().equals("workbench")))
 		{
 			validTestDir = false;
 			logger.info("Found integration test directory in "+dir.getPath()+"\n"+
 					"\tIntegration tests are only allowed in an aspect or workbench - this directory will be ignored.");
 		}
 		
-		boolean isWorkbenchDir = brjs.locateAncestorNodeOfClass(dir, Workbench.class) != null;
+		boolean isWorkbenchDir = brjs.locateAncestorNodeOfClass(dir, Workbench.class) != null && brjs.locateAncestorNodeOfClass(dir, Workbench.class) instanceof Workbench;
 
 		if (ignoreWorkbenches && isWorkbenchDir)
 		{
