@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
@@ -21,12 +22,10 @@ import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.test.BrowserStartupException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
@@ -358,7 +357,7 @@ public class TestRunner {
 	
 	private boolean runTest(MemoizedFile baseDirectory, MemoizedFile configFile, boolean resetServer) throws Exception  {
 		logger.warn("\n");
-		logger.warn("Testing " + getTestPath(configFile) + ":");
+		logger.warn("Testing " + getTestPath(configFile) + " " + getTestTypeFromDirectoryName(configFile.getParentFile()) + ":");
 		
 		try {
 			File testResultsDir = new File("../"+XML_TEST_RESULTS_DIR);
@@ -411,10 +410,21 @@ public class TestRunner {
 		return true;
 	}
 
-	private String getTestPath(MemoizedFile configFile) {
-		Node location = brjs.locateAncestorNodeOfClass(configFile, AssetContainer.class);
-		return brjs.dir().getRelativePath(location.parentNode().parentNode().dir()) + " " 
-					+ getTestTypeFromDirectoryName(configFile.getParentFile());
+	private String getTestPath(MemoizedFile testDirectory) {
+		while (testDirectory != null && !testDirectory.getName().startsWith("test-"))
+		{
+			testDirectory = testDirectory.getParentFile();
+		}
+		String testPath = testDirectory.getAbsolutePath();
+		if (testPath.contains("apps" + File.separator))
+		{
+			return StringUtils.substringAfterLast(testPath, "apps" + File.separator);
+		}
+		if (testPath.contains("sdk"+File.separator)) 
+		{
+			return StringUtils.substringAfterLast(testPath, "sdk" + File.separator);
+		}
+		return testPath;
 	}
 	
 	protected String getJavaOpts() {
