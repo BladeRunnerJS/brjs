@@ -17,36 +17,14 @@ if (typeof Object.create != 'function') {
 	})();
 }
 
-// Object.create() polyfill for IE8 (taken from <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind>)
-if (!Function.prototype.bind) {
-  Function.prototype.bind = function(oThis) {
-    if (typeof this !== 'function') {
-      // closest thing possible to the ECMAScript 5
-      // internal IsCallable function
-      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-    }
-
-    var aArgs   = Array.prototype.slice.call(arguments, 1),
-        fToBind = this,
-        fNOP    = function() {},
-        fBound  = function() {
-          return fToBind.apply(this instanceof fNOP && oThis
-                 ? this
-                 : oThis,
-                 aArgs.concat(Array.prototype.slice.call(arguments)));
-        };
-
-    fNOP.prototype = this.prototype;
-    fBound.prototype = new fNOP();
-
-    return fBound;
-  };
-}
-
 function MockConsole() {
 	this.messages = [];
-	this.log = MockConsole.log.bind(this, 'info');
-	this.warn = MockConsole.log.bind(this, 'warn');
+	this.log = function() {
+		MockConsole.log.call(this, 'info');
+	};
+	this.warn = function() {
+		MockConsole.log.call(this, 'warn');
+	}
 }
 
 MockConsole.log = function(messagePrefix, message) {
@@ -63,8 +41,10 @@ describe('a realm', function() {
 	beforeEach(function() {
 		testRealm = new Realm();
 		subrealm = testRealm.subrealm();
+		if(typeof(console) !== 'undefined') {
+			origConsole = console;
+		}
 		mockConsole = new MockConsole();
-		origConsole = console;
 		console = mockConsole;
 	});
 
