@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
-import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.memoization.MemoizedFile;
@@ -99,14 +98,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
-		try
-		{
-			return aliasesFile().getAlias(aliasName);
-		}
-		catch (UnresolvableAliasException ex)
-		{
-			throw ex;
-		}
+		return aliasesFile().getAlias(aliasName);
 	}
 	
 	@Override
