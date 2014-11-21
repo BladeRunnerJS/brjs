@@ -2,13 +2,10 @@ package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
 
 
@@ -49,18 +46,9 @@ public class FileModificationRegistry
 		
 		incrementFileVersion(file);
 		
-		List<String> incrementedPaths = new ArrayList<>();
-		
-		if (file.isDirectory()) {
-			for (File child : org.apache.commons.io.FileUtils.listFilesAndDirs(file, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-				incrementedPaths.add( getCanonicalFile(file).getAbsolutePath() );
-				getOrCreateVersionValue(child).incrememntValue();
-			}
-		}
-		
 		String fileCanonicalPath = getCanonicalFile(file).getAbsolutePath();
 		for (String path : lastModifiedMap.keySet()) {
-			if (fileCanonicalPath.startsWith(path) && !incrementedPaths.contains(fileCanonicalPath)) {
+			if (path.startsWith(fileCanonicalPath)) {
 				lastModifiedMap.get(path).incrememntValue();
 			}
 		}
