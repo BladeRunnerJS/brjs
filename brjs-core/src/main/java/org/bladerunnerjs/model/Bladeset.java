@@ -18,6 +18,7 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class Bladeset extends AbstractComponent implements NamedNode
 {
+	public static final String BLADES_DIRNAME = "blades";
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
 	private MemoizedFile[] scopeFiles;
