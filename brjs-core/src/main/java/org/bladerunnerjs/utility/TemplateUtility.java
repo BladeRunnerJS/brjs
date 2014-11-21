@@ -50,13 +50,11 @@ public class TemplateUtility
 				transformDir(node.root(), tempDir, transformations);
 			}
 			
-			FileUtils.moveDirectoryContents(tempDir, node.dir());
+			FileUtils.moveDirectoryContents(node.root(), tempDir, node.dir());
 			
 			if(!JsStyleUtility.getJsStyle(node.root(), node.dir()).equals(CommonJsSourceModule.JS_STYLE)) {
 				JsStyleUtility.setJsStyle(node.root(), node.dir(), CommonJsSourceModule.JS_STYLE);
 			}
-			
-			node.incrementFileVersion();
 		}
 		catch(IOException e) {
 			throw new TemplateInstallationException(e);

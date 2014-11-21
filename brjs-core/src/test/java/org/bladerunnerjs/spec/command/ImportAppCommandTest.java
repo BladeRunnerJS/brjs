@@ -15,9 +15,11 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationComma
 import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
+@SuppressWarnings("unused")
 public class ImportAppCommandTest extends SpecTest {
 	App app;
 	Aspect aspect;
@@ -192,5 +194,57 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).hasDir("bs-bladeset/tests/test-unit/js-test-driver/tests/importedns/")
 			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/src-test/importedns/")
 			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/tests/importedns/");
+	}
+	
+	@Test
+	public void oldAppNamePrefixedAndFollowedByASlashIsReplacedInJettyEnv() throws Exception {
+		given(app).hasBeenCreated()
+		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app/some-url" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "/imported-app/some-url");
+	}
+	
+	@Test
+	public void oldAppNamePrefixedByASlashAndFollowedByASemicolonIsReplacedInJettyEnv() throws Exception {
+		given(app).hasBeenCreated()
+		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app;" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "/imported-app;");
+	}
+	
+	@Test
+	public void appNameIsReplacedIfPreviousAppRequirePrefixWasTheSameAsTheAppNameAndADefaultAspectIsUsed() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app.appConf()).hasRequirePrefix(app.getName())
+			.and(app.defaultAspect()).containsFile("index.html")
+			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app/some-url" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "/imported-app/some-url");
+	}
+	
+	@Test
+	public void oldAppNameNotFollowedByASlashIsNotReplacedInJettyEnv() throws Exception {
+		given(app).hasBeenCreated()
+		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "here be webapps. and my app" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "here be webapps. and my app");
+	}
+
+	@Test
+	public void oldAppNameIsNotReplacedInOtherXmlFiles() throws Exception {
+		given(app).hasBeenCreated()
+		.and(app).containsFileWithContents("WEB-INF/web.xml", "/app/some-url" )
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsContains("WEB-INF/web.xml", "/app/some-url");
 	}
 }
