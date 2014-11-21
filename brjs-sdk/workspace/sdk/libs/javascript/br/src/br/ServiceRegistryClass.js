@@ -6,15 +6,16 @@
 
 var Errors = require('./Errors');
 var AliasRegistry;
+var legacyWarningLogged = false;
 
 /**
 * @class
 * @alias module:br/ServiceRegistryClass
-* 
+*
 * @classdesc
 * The <code>ServiceRegistryClass</code> is used to allow a given application access to application
 * services. The <code>ServiceRegistryClass</code> is a static class and does not need to be constructed.
-* 
+*
 * <p>Services are typically registered or requested using an alias name, but older applications
 * may still register and request using interfaces, which is also still supported. Applications
 * that use aliases don't normally need to manually register services as these are created lazily
@@ -44,7 +45,7 @@ var AliasRegistry;
 *	<li>Many-To-Many dependencies are resolved by having zero or more classes register with the
 *		{@link module:br/EventHub}.</li>
 * </ul>
-* 
+*
 * @see {@link http://bladerunnerjs.org/docs/concepts/service_registry/}
 * @see {@link http://bladerunnerjs.org/docs/use/service_registry/}
 */
@@ -118,7 +119,13 @@ ServiceRegistryClass.prototype.isServiceRegistered = function(alias) {
 * <p>This method isn't normally called within an application, but is called automatically before
 * each test is run.</p>
 */
-ServiceRegistryClass.prototype.clear = function() {
+ServiceRegistryClass.prototype.legacyClear = function() {
+	if(!legacyWarningLogged) {
+		legacyWarningLogged = true;
+		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
+		logConsole.warn('ServiceRegistry.legacyClear() is deprecated. Please use sub-realms instead.');
+	}
+
 	this.registry = {};
 };
 
