@@ -1,10 +1,15 @@
 package org.bladerunnerjs.memoization;
 
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.WatchEvent.Modifier;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.WatchEvent.Kind;
+import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,16 +49,17 @@ public class FileTreeWatchKeyService implements WatchKeyService
 	}
 	
 	private WatchKey createWatchKeyForDir(Path dirPath) throws IOException {
-		WatchKey watchKey = dirPath.register(watchService,getExtendedWatchEventFileTreeEnum());
+		Modifier fileTree = getExtendedWatchEventFileTreeEnum();
+		WatchKey watchKey = dirPath.register(watchService, new WatchEvent.Kind<?>[]{ENTRY_CREATE,ENTRY_DELETE,ENTRY_MODIFY}, fileTree);
 		return watchKey;
 	}
 	
 	// com.sun.nio.file.ExtendedWatchEventModifier isn't a globally support class and may not be available so use reflection
-	private static Kind<?> getExtendedWatchEventFileTreeEnum() {
+	private static Modifier getExtendedWatchEventFileTreeEnum() {
 		try {
 			Class<?> c = Class.forName("com.sun.nio.file.ExtendedWatchEventModifier");
 			Field f = c.getField("FILE_TREE");
-			return (Kind<?>) f.get(c);
+			return (Modifier) f.get(c);
 		} catch (Exception e) {
 			return null;
 		}
