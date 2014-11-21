@@ -57,7 +57,7 @@ public class WindowsFileTreeWatchKeyService implements WatchKeyService
 	
 	// com.sun.nio.file.ExtendedWatchEventModifier isn't a globally support class and may not be available so use reflection
 	private static Modifier getExtendedWatchEventFileTreeEnum() {
-		return WatchKeyService.getModifierEnum("com.sun.nio.file.ExtendedWatchEventModifier", "FILE_TREE");
+		return WatchKeyServiceUtility.getModifierEnum("com.sun.nio.file.ExtendedWatchEventModifier", "FILE_TREE");
 	}
 	
 	public static boolean isSupported() {

@@ -22,14 +22,14 @@ public class MacHighSensitivityWatchKeyService extends DefaultWatchKeyService
 	}
 
 	protected WatchKey createWatchKeyForDir(Path dirPath) throws IOException {
-		Modifier high = WatchKeyService.getModifierEnum("com.sun.nio.file.SensitivityWatchEventModifier", "HIGH");
+		Modifier high = getHighSensitivityWatchEventModifier();
 		WatchKey watchKey = dirPath.register(watchService, new WatchEvent.Kind<?>[]{ENTRY_CREATE,ENTRY_DELETE,ENTRY_MODIFY}, high);
 		return watchKey;
 	}
 	
 	// com.sun.nio.file.SensitivityWatchEventModifier isn't a globally support class and may not be available so use reflection
 	private static Modifier getHighSensitivityWatchEventModifier() {
-		return WatchKeyService.getModifierEnum("com.sun.nio.file.SensitivityWatchEventModifier", "HIGH");
+		return WatchKeyServiceUtility.getModifierEnum("com.sun.nio.file.SensitivityWatchEventModifier", "HIGH");
 	}	
 	
 	public static boolean isSupported() {
