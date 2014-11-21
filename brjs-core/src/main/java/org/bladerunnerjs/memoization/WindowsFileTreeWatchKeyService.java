@@ -5,7 +5,6 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.WatchEvent.Modifier;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -14,13 +13,15 @@ import java.nio.file.WatchKey;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.SystemUtils;
 
-public class FileTreeWatchKeyService implements WatchKeyService
+
+public class WindowsFileTreeWatchKeyService implements WatchKeyService
 {
 	
 	private final java.nio.file.WatchService watchService;
 	
-	public FileTreeWatchKeyService() throws IOException {
+	public WindowsFileTreeWatchKeyService() throws IOException {
 		watchService = FileSystems.getDefault().newWatchService();
 	}
 
@@ -56,16 +57,10 @@ public class FileTreeWatchKeyService implements WatchKeyService
 	
 	// com.sun.nio.file.ExtendedWatchEventModifier isn't a globally support class and may not be available so use reflection
 	private static Modifier getExtendedWatchEventFileTreeEnum() {
-		try {
-			Class<?> c = Class.forName("com.sun.nio.file.ExtendedWatchEventModifier");
-			Field f = c.getField("FILE_TREE");
-			return (Modifier) f.get(c);
-		} catch (Exception e) {
-			return null;
-		}
+		return WatchKeyService.getModifierEnum("com.sun.nio.file.ExtendedWatchEventModifier", "FILE_TREE");
 	}
 	
 	public static boolean isSupported() {
-		return getExtendedWatchEventFileTreeEnum() != null;
+		return getExtendedWatchEventFileTreeEnum() != null && SystemUtils.IS_OS_WINDOWS;
 	}
 }
