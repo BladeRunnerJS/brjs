@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure id="webAppCtx" class="org.eclipse.jetty.webapp.WebAppContext">
+	<!-- required to stop Jetty warning that no transaction manager has been set -->
+	<New id="tx" class="org.eclipse.jetty.plus.jndi.Transaction">
+		<Arg></Arg>
+	</New>
+</Configure>
