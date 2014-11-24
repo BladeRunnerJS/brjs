@@ -1,4 +1,0 @@
-css:
-depends:
-exports: @lib
-js:
