@@ -52,6 +52,31 @@ From the root `brjs` source directory:
 
 The built zip file will be found in `BRJS_ROOT/brjs-sdk/build/distributions/` in the format `BladeRunner-VERSION.zip`.
 
+
+### Developing on Windows
+
+The BladeRunnerJS source code is encoded in UTF-8, which is the default file encoding on Mac and Linux, but not on Windows. Developement on Windows is possible, but requires that you manually configure your tool chain to use the UTF-8 encoding.
+
+
+#### Git
+
+From within the `brjs` repository, type:
+
+``` bash
+git config gui.encoding utf-8
+```
+
+
+#### Eclipse
+
+**TODO:** @ioanalianabalas to create instructions for this section...
+
+
+#### Other Text Editors
+
+If you plan to use use any other text editors to edit files then you'll need to search for instructions yourself.
+
+
 ### More information
 
 See the [BRJS Developer Setup Guide](https://github.com/BladeRunnerJS/brjs/wiki/BRJS-Developer-Setup) for more information.
