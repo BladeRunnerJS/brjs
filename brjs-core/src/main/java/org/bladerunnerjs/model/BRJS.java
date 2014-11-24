@@ -57,7 +57,8 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript", null);
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
-	private final NodeList<NamedDirNode> templates = new NodeList<>(this, NamedDirNode.class, "sdk/templates", "-template$");
+	private final NodeList<NamedDirNode> templatesInConf = new NodeList<>(this, NamedDirNode.class, "conf/templates/default", "-template$");
+	private final NodeList<NamedDirNode> templatesInSdk = new NodeList<>(this, NamedDirNode.class, "sdk/templates/default", "-template$");
 	private final NodeItem<DirNode> appJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/application");
 	private final NodeItem<DirNode> configuration = new NodeItem<>(this, DirNode.class, "conf");
 	private final NodeItem<DirNode> systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");
@@ -270,12 +271,19 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<NamedDirNode> templates()
 	{
-		return templates.list();
+		List<NamedDirNode> templates = new ArrayList<>();
+		templates.addAll(templatesInConf.list());
+		templates.addAll(templatesInSdk.list());
+		return templates;
 	}
 	
 	public NamedDirNode template(String templateName)
 	{
-		return templates.item(templateName);
+		if (templatesInConf.item(templateName).dirExists())
+		{
+			return templatesInConf.item(templateName);
+		}
+		return templatesInSdk.item(templateName);
 	}
 	
 	// TODO: delete this method -- the test results should live within a generated directory

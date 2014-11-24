@@ -107,4 +107,22 @@ public class BRJSTest extends SpecTest {
 		then(brjs).ancestorNodeCanBeFound(brjs.file("libs/javascript/br/test-unit/file.txt"), TestPack.class);
 	}
 	
+	@Test
+	public void templateFromConfIsUsedIfTemplateDefinedBothInConfAndSdk() throws Exception {
+		given(brjs.file("sdk/templates/default/foo-template")).containsFile("file.txt")
+		   .and(brjs.file("conf/templates/default/foo-template")).containsFile("something.txt");
+		then(brjs.template("foo")).hasFile("something.txt");
+	}
+	
+	@Test
+	public void templateFromConfIsUsedIfTemplateOnlyDefinedInConf() throws Exception {
+		given(brjs.file("conf/templates/default/foo-template")).containsFile("something.txt");
+		then(brjs.template("foo")).hasFile("something.txt");
+	}
+	
+	@Test
+	public void templateFromSdkIsUsedIfTemplateOnlyDefinedIn() throws Exception {
+		given(brjs.file("sdk/templates/default/foo-template")).containsFile("file.txt");
+		then(brjs.template("foo")).hasFile("file.txt");
+	}
 }
