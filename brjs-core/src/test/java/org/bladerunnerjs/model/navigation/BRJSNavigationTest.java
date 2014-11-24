@@ -86,8 +86,8 @@ public class BRJSNavigationTest extends TestModelAccessor
 	public void templates()
 	{
 		nodeTesterFactory.createSetTester(NamedDirNode.class, "templates", "template")
-			.addChild("t1", "sdk/templates/t1-template")
-			.addChild("t2", "sdk/templates/t2-template")
+			.addChild("t1", "sdk/templates/t1")
+			.addChild("t2", "sdk/templates/t2")
 			.assertModelIsOK();
 	}
 	

@@ -109,20 +109,20 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void templateFromConfIsUsedIfTemplateDefinedBothInConfAndSdk() throws Exception {
-		given(brjs.file("sdk/templates/foo-template")).containsFile("file.txt")
-		   .and(brjs.file("conf/templates/default/foo-template")).containsFile("something.txt");
+		given(brjs.file("sdk/templates/foo")).containsFile("file.txt")
+		   .and(brjs.file("conf/templates/default/foo")).containsFile("something.txt");
 		then(brjs.template("foo")).hasFile("something.txt");
 	}
 	
 	@Test
 	public void templateFromConfIsUsedIfTemplateOnlyDefinedInConf() throws Exception {
-		given(brjs.file("conf/templates/default/foo-template")).containsFile("something.txt");
+		given(brjs.file("conf/templates/default/foo")).containsFile("something.txt");
 		then(brjs.template("foo")).hasFile("something.txt");
 	}
 	
 	@Test
 	public void templateFromSdkIsUsedIfTemplateOnlyDefinedIn() throws Exception {
-		given(brjs.file("sdk/templates/foo-template")).containsFile("file.txt");
+		given(brjs.file("sdk/templates/foo")).containsFile("file.txt");
 		then(brjs.template("foo")).hasFile("file.txt");
 	}
 }
