@@ -3,9 +3,11 @@ package org.bladerunnerjs.utility;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 
 public class FileUtils {	
@@ -67,7 +69,11 @@ public class FileUtils {
 		}
 	}
 	
-	public static void moveDirectoryContents(File srcDir, File destDir) throws IOException {
+	public static void moveDirectoryContents(BRJS brjs, File srcDir, File destDir) throws IOException {
+		moveDirectoryContents(brjs, srcDir, destDir, true);
+	}
+	
+	private static void moveDirectoryContents(BRJS brjs, File srcDir, File destDir, boolean incrementVersions) throws IOException {
 		if(!destDir.exists()) {
 			org.apache.commons.io.FileUtils.moveDirectory(srcDir, destDir);
 		}
@@ -84,10 +90,13 @@ public class FileUtils {
 						org.apache.commons.io.FileUtils.moveToDirectory(srcFile, destDir, false);
 					}
 					else {
-						moveDirectoryContents(srcFile, destFile);
+						moveDirectoryContents(brjs, srcFile, destFile, false);
 					}
 				}
 			}
+		}
+		if (incrementVersions) {
+			brjs.getFileModificationRegistry().incrementChildFileVersions(destDir);
 		}
 	}
 	

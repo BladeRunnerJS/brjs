@@ -2,12 +2,20 @@
 	'use strict';
 
 	var ServiceRegistryTest = TestCase('ServiceRegistryTest').prototype;
+	var Errors;
+	var ServiceRegistry;
+	var subrealm;
 
-	var Errors = require('br/Errors');
-	var ServiceRegistry = require('br/ServiceRegistry');
+	ServiceRegistryTest.setUp = function() {
+		subrealm = realm.subrealm();
+		subrealm.install();
+
+		Errors = require('br/Errors');
+		ServiceRegistry = require('br/ServiceRegistry');
+	};
 
 	ServiceRegistryTest.tearDown = function() {
-		ServiceRegistry.clear();
+		subrealm.uninstall();
 	};
 
 	ServiceRegistryTest.test_registerService_WithNoInstanceThrowsException = function() {
@@ -61,7 +69,7 @@
 
 	ServiceRegistryTest.test_clear_Works = function() {
 		ServiceRegistry.registerService('my.service', {});
-		ServiceRegistry.clear();
+		ServiceRegistry.legacyClear();
 
 		assertFalse(ServiceRegistry.isServiceRegistered('my.service'));
 	};

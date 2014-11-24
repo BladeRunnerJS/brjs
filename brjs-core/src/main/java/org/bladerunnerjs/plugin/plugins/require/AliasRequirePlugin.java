@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.require;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
@@ -39,8 +40,13 @@ public class AliasRequirePlugin extends AbstractRequirePlugin implements Require
 	}
 	
 	private AliasCommonJsSourceModule getSourceModule(BundlableNode bundlableNode, String requirePathSuffix) throws ContentFileProcessingException, AliasException {
+		AliasDefinition aliasDefinition = bundlableNode.getAlias(requirePathSuffix);
+		
 		if(!sourceModules.containsKey(requirePathSuffix)) {
-			sourceModules.put(requirePathSuffix, new AliasCommonJsSourceModule(assetLocation, bundlableNode.getAlias(requirePathSuffix)));
+			sourceModules.put(requirePathSuffix, new AliasCommonJsSourceModule(assetLocation, aliasDefinition));
+		}
+		else {
+			sourceModules.get(requirePathSuffix).setAlias(aliasDefinition);
 		}
 		
 		return sourceModules.get(requirePathSuffix);
