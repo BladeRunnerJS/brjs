@@ -127,8 +127,17 @@ public class AppRequestHandler
 		
 		throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 	}
+	
+	public String createRelativeBundleRequest(String contentPath, String version) throws MalformedTokenException
+	{
+		if (contentPath.startsWith("/"))
+		{
+			return getContentPathParser().createRequest(UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
+		}
+		return getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
+	}
 
-	public String createBundleRequest(Aspect aspect, String version, String contentPath) throws MalformedTokenException
+	public String createBundleRequest(Aspect aspect, String contentPath, String version) throws MalformedTokenException
 	{
 		if (contentPath.startsWith("/")) {
 			return createRequest(aspect, AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, contentPath);

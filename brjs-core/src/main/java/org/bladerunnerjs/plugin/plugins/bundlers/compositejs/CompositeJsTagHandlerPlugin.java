@@ -77,7 +77,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		List<String> requests = new ArrayList<String>();
 		App app = bundleSet.getBundlableNode().app();
 		for (String contentPath : getGeneratedContentPaths(tagAttributes, bundleSet, requestMode, locale)) {
-			String requestPath = app.createBundleRequest(contentPath, version);
+			String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
 			requests.add(requestPath);
 		}
 		return requests;

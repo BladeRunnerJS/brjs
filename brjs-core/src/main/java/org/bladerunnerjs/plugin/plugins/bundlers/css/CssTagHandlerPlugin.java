@@ -156,7 +156,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private void appendStylesheetRequestsForCommonTheme(List<StylesheetRequest> stylesheetRequests, RequestMode requestMode, App app, List<String> contentPaths, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, COMMON_THEME_NAME)) {
-				String requestPath = app.createBundleRequest(contentPath, version);
+				String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
 				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath) );
 			}
 		}
@@ -166,7 +166,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
-				String requestPath = app.createBundleRequest(contentPath, version);
+				String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
 				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath, themeTitle, isAlternate) );
 				foundTheme = true;
 			}
@@ -179,7 +179,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private void appendStylesheetRequestsForVariantTheme(List<StylesheetRequest> stylesheetRequests, RequestMode requestMode, App app, List<String> contentPaths, String themeName, String version, Locale locale) throws MalformedRequestException, MalformedTokenException, IOException {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
-				String requestPath = app.createBundleRequest(contentPath, version);
+				String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
 				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath, themeName) );
 			}
 		}
@@ -189,7 +189,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
-				String requestPath = app.createBundleRequest(contentPath, version);
+				String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
 				stylesheetRequests.add( new StylesheetRequest(contentPath, requestPath, themeName, true) );
 				foundTheme = true;
 			}

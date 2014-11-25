@@ -200,8 +200,8 @@ public class AppTest extends SpecTest {
 	@Test
 	public void correctUnversionedBundleRequestsAreCreated() throws Exception
 	{
-		assertEquals("/mock-content-plugin/some file", app.createBundleRequest(app.defaultAspect(), "/mock-content-plugin/some file", "dev"));
-		assertEquals("v/dev/mock-content-plugin/some file", app.createBundleRequest(app.defaultAspect(), "mock-content-plugin/some file", "dev"));
+		assertEquals("/mock-content-plugin/some file", app.requestHandler().createBundleRequest(app.defaultAspect(), "/mock-content-plugin/some file", "dev"));
+		assertEquals("v/dev/mock-content-plugin/some file", app.requestHandler().createBundleRequest(app.defaultAspect(), "mock-content-plugin/some file", "dev"));
 	}
 	
 }
