@@ -29,13 +29,13 @@
             <sup class="variation"><?js= doc.variation ?></sup>
         <?js } ?></h2>
         <?js if (doc.classdesc) { ?>
-            <h2>Summary</h2>
             <div class="class-description"><?js= doc.classdesc ?></div>
         <?js } ?>
     <?js } else if (doc.kind === 'module' && doc.modules) { ?>
-        <h2>Summary</h2>
         <?js doc.modules.forEach(function(module) { ?>
-            <div class="class-description"><?js= module.classdesc ?></div>
+            <?js if (module.classdesc) { ?>
+                <div class="class-description"><?js= module.classdesc ?></div>
+            <?js } ?>
         <?js }) ?>
     <?js } ?>
 </header>
@@ -69,9 +69,7 @@
     <?js if (doc.augments && doc.augments.length) { ?>
         <h3 class="subsection-title">Extends</h3>
 
-        <ul><?js doc.augments.forEach(function(a) { ?>
-            <li><?js= self.linkto(a, a) ?></li>
-        <?js }); ?></ul>
+        <?js= self.partial('augments.tmpl', doc) ?>
     <?js } ?>
 
     <?js if (doc.requires && doc.requires.length) { ?>
