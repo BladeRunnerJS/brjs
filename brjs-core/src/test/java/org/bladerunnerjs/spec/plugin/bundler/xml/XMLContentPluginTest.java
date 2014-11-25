@@ -43,7 +43,7 @@ public class XMLContentPluginTest extends SpecTest{
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
-		workbenchTemplate = brjs.template("workbench");
+		workbenchTemplate = brjs.templateGroup("default").template("workbench");
 		defaultBladeset = app.defaultBladeset();
 		bladeInDefaultBladeset = defaultBladeset.blade("b1");
 		

@@ -27,7 +27,7 @@ public class BladesetTest extends SpecTest {
 	{
 		given(brjs).hasBeenCreated();
 			app = brjs.app("app");
-			bladesetTemplate = brjs.template("bladeset");
+			bladesetTemplate = brjs.templateGroup("default").template("bladeset");
 			bladeset = app.bladeset("bs");
 			invalidBladesetName = app.bladeset("#Invalid");
 			JSKeywordBladesetName = app.bladeset("else");

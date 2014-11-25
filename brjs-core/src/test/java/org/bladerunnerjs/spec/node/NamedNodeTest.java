@@ -41,7 +41,7 @@ public class NamedNodeTest extends SpecTest {
 		given(brjs).hasBeenCreated();
 			node = namedNodeFactory.createNamedNode(brjs, "node");
 			badNode = namedNodeFactory.createNamedNode(brjs, "!$%&");
-			nodeTemplate = brjs.template(getTemplateName());
+			nodeTemplate = brjs.templateGroup("default").template(getTemplateName());
 	}
 	
 	public NamedNodeTest(String testName, NamedNodeFactory namedNodeFactory) {

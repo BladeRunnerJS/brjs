@@ -33,7 +33,7 @@ public class AspectTest extends SpecTest {
     		.and(brjs).automaticallyFindsMinifierPlugins()
     		.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
-			aspectTemplate = brjs.template("aspect");
+			aspectTemplate = brjs.templateGroup("default").template("aspect");
 			aspect = app.aspect("default");
 			badAspect = app.aspect("!#*");
 			defaultBladeset = app.defaultBladeset();

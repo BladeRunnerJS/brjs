@@ -33,7 +33,7 @@ public class BladeTest extends SpecTest {
 			blade1 = bladeset.blade("b1");
 			bladeWithInvalidName = bladeset.blade("_-=+");
 			bladeWithJSKeyWordName = bladeset.blade("export");
-			bladeTemplate = brjs.template("blade");
+			bladeTemplate = brjs.templateGroup("default").template("blade");
 	}
 	
 	@Test

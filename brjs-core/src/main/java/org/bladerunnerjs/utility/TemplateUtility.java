@@ -2,7 +2,6 @@ package org.bladerunnerjs.utility;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -21,18 +20,20 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class TemplateUtility
 {
-	private static final String[] USER_DEFINED_TEMPLATES = {"app", "aspect", "aspect-test-acceptance-default",
-		"aspect-test-unit-default", "blade", "bladeset", "bladeset-test-acceptance-default", "bladeset-test-unit-default",
-		"blade-test-acceptance-default", "blade-test-unit-default"};
 	
 	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations) throws TemplateInstallationException {
 		installTemplate(node, templateName, transformations, false);
 	}
 	
 	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
+		File templateDir = node.root().templateGroup("default").template(templateName).dir();
+		installTemplate(node, templateDir, transformations, allowNonEmptyDirectories);
+	}
+	
+	public static void installTemplate(BRJSNode node, File templateDir, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
 		File tempDir = null; 
 		try {
-			tempDir = FileUtils.createTemporaryDirectory( TemplateUtility.class, templateName );
+			tempDir = FileUtils.createTemporaryDirectory( TemplateUtility.class, templateDir.getName() );
 			
 			if(node.dirExists() && !(node instanceof BRJS)) {
 				List<MemoizedFile> dirContents = node.root().getMemoizedFile(node.dir()).filesAndDirs();
@@ -42,8 +43,6 @@ public class TemplateUtility
 				}
 			}
 			
-			File templateDir;
-			templateDir = node.root().template(templateName).dir();
 			if(templateDir.exists()) {
 				IOFileFilter hiddenFilesFilter = FileFilterUtils.or( 
 						FileFilterUtils.notFileFilter(new PrefixFileFilter(".")), new NameFileFilter(".gitignore") );

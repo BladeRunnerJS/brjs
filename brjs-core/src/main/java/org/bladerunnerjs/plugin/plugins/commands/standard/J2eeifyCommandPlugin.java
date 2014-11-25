@@ -67,7 +67,7 @@ public class J2eeifyCommandPlugin extends ArgsParsingCommandPlugin
 		transformations.put("app-name", app.getName());
 		try
 		{
-			TemplateUtility.installTemplate(app, "j2eeify-app", transformations, true );
+			TemplateUtility.installTemplate(app, brjs.file("sdk/templates/j2eeify-app"), transformations, true );
 			String webXmlContents =  IOUtils.toString( ApplicationServerUtils.getDefaultWebXmlResourceLocation() );
 			FileUtils.write( app.file("WEB-INF/web.xml") , webXmlContents );
 			FileUtils.copyDirectory(brjs.appJars().dir(), app.file("WEB-INF/lib"));

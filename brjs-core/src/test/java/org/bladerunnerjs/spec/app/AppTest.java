@@ -36,7 +36,7 @@ public class AppTest extends SpecTest {
 			sdkLib = brjs.sdkLib("br");
 			app = brjs.app("app1");
 			appLib = app.jsLib("lib1");
-			appTemplate = brjs.template("app");
+			appTemplate = brjs.templateGroup("default").template("app");
 			appJars = brjs.appJars();
 			defaultAspect = app.defaultAspect();
 			globalNonBladeRunnerLib = brjs.sdkLib("legacy-thirdparty");

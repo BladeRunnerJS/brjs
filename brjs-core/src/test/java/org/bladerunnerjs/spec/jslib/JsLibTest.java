@@ -27,7 +27,7 @@ public class JsLibTest extends SpecTest {
 			app = brjs.app("app");
 			lib = app.jsLib("lib1");
 			badLib = app.jsLib("%$&@");
-			libTemplate = brjs.template(BRJSConformantJsLibRootAssetLocation.class.getSimpleName().toLowerCase());
+			libTemplate = brjs.templateGroup("default").template(BRJSConformantJsLibRootAssetLocation.class.getSimpleName().toLowerCase());
 	}
 	
 	@Test
