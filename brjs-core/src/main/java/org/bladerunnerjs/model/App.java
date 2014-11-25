@@ -343,11 +343,13 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return appRequestHandler.handleLogicalRequest(requestPath, contentAccessor);
 	}
 	
-	public String createBundleRequest(RequestMode requestMode, String contentPath, String version) throws MalformedTokenException {
-		if (contentPath.startsWith("/")) {
-			return appRequestHandler.createRequest(AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
-		}
-		return appRequestHandler.createRequest(AppRequestHandler.BUNDLE_REQUEST, "", version, contentPath);
+	public String createBundleRequest(Aspect aspect, String contentPath, String version) throws MalformedTokenException {
+		return appRequestHandler.createBundleRequest(aspect, version, contentPath);
+	}
+	
+	//TODO: remove this method - all requests need to be relative to a specified aspect
+	public String createBundleRequest(String contentPath, String version) throws MalformedTokenException {
+		return appRequestHandler.createBundleRequest(defaultAspect(), version, contentPath);
 	}
 	
 	public void build(MemoizedFile targetDir) throws ModelOperationException {
