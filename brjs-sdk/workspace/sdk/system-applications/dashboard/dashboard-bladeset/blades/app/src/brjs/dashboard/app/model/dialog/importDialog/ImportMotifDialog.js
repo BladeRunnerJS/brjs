@@ -101,5 +101,4 @@ brjs.dashboard.app.model.dialog.importDialog.ImportMotifDialog.prototype._onSucc
 brjs.dashboard.app.model.dialog.importDialog.ImportMotifDialog.prototype._onFailure = function(sFailureMessage)
 {
 	this.m_oPresentationModel.dialog.displayNotification(sFailureMessage);
-	this.m_oPresentationModel.dialog.visible.setValue(false);
 };
