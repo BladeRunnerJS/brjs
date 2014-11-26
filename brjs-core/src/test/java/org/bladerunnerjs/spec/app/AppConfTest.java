@@ -50,21 +50,21 @@ public class AppConfTest extends SpecTest {
 	}
 	
 	@Test
-	public void updateAppNamespaceInAppConf() throws Exception {
+	public void updateRequirePrefixInAppConf() throws Exception {
 		given(app).hasBeenPopulated("appx");
-		when(app).appConf().setAppNamespace("newns").write();
+		when(app).appConf().setRequirePrefix("newns").write();
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: newns");
 	}
 	
 	@Test
-	public void settingAppNamespaceToJSKeywordCausesException() throws Exception {
-		when(app).appConf().setAppNamespace("try");
+	public void settingRequirePrefixToJSKeywordCausesException() throws Exception {
+		when(app).appConf().setRequirePrefix("try");
 		then(exceptions).verifyException(InvalidPackageNameException.class, "try", app.dir().getPath());
 	}
 	
 	@Test
-	public void settingAppNamespaceToReservedWordIsAllowedInConf() throws Exception {
-		when(app).appConf().setAppNamespace("caplin");
+	public void settingRequirePrefixToReservedWordIsAllowedInConf() throws Exception {
+		when(app).appConf().setRequirePrefix("caplin");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -76,7 +76,7 @@ public class AppConfTest extends SpecTest {
 	}
 
 	@Test
-	public void readingAnAppConfFileWithMissingAppNamespaceWillUseADefault() throws Exception{
+	public void readingAnAppConfFileWithMissingRequirePrefixWillUseADefault() throws Exception{
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "\nlocales: en");
 		then(app.appConf().getRequirePrefix()).textEquals("appns");
@@ -91,7 +91,7 @@ public class AppConfTest extends SpecTest {
 	}
 	
 	@Test
-	public void readingAnAppConfFileWithEmptyAppNamespaceWillCauseAnException() throws Exception {
+	public void readingAnAppConfFileWithEmptyRequirePrefixWillCauseAnException() throws Exception {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "requirePrefix: \nlocales: en");
 		when(app).appConf();
