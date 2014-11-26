@@ -170,7 +170,7 @@ public class NamedNodeTest extends SpecTest {
 	@Test
 	public void weCanCreateANodeUsingATemplate() throws Exception {
 		given(nodeTemplate).containsFile("some-file.blah");
-		when(node).populate();
+		when(node).populate("default");
 		then(node).dirExists()
 			.and(node).hasFile("some-file.blah");
 	}
@@ -178,7 +178,7 @@ public class NamedNodeTest extends SpecTest {
 	@Test
 	public void populateFailsIfTheDirectoryNameIsInvalid() throws Exception {
 		given(logging).enabled();
-		when(badNode).populate();
+		when(badNode).populate("default");
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, node.getClass().getSimpleName(), badNode.dir().getPath())
 			.and(exceptions).verifyException(InvalidDirectoryNameException.class, badNode.getName(), badNode.dir().getPath());
 	}
@@ -186,7 +186,7 @@ public class NamedNodeTest extends SpecTest {
 	@Test
 	public void weCanCreateANodeUsingATemplateWhichHasADirectory() throws Exception {
 		given(nodeTemplate).containsFolder("the-dir");
-		when(node).populate();
+		when(node).populate("default");
 		then(node).dirExists()
 			.and(node).hasDir("the-dir");
 	}
@@ -195,7 +195,7 @@ public class NamedNodeTest extends SpecTest {
 	public void cantPopulateALibraryIfAlreadyExist() throws Exception {
 		given(node).hasBeenCreated()
 			.and(logging).enabled();
-		when(node).populate();
+		when(node).populate("default");
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, node.getClass().getSimpleName(), node.dir().getPath())
 			.and(exceptions).verifyException(DirectoryAlreadyExistsModelException.class, node.dir().getPath());
 	}

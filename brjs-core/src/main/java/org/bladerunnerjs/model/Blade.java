@@ -73,12 +73,12 @@ public final class Blade extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException
 	{
-		super.populate();
-		testType("unit").defaultTestTech().populate();
-		testType("acceptance").defaultTestTech().populate();
-		workbench().populate();
+		super.populate(templateGroup);
+		testType("unit").defaultTestTech().populate(templateGroup);
+		testType("acceptance").defaultTestTech().populate(templateGroup);
+		workbench().populate(templateGroup);
 	}
 	
 	@Override

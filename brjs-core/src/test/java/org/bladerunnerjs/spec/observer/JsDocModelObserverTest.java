@@ -22,7 +22,7 @@ public class JsDocModelObserverTest extends SpecTest {
 		given(brjs).hasModelObserverPlugins(new JsDocObserver())
 			.and(brjs).hasBeenCreated()
     		.and(testSdkDirectory).containsFileWithContents("sdk/jsdoc-toolkit-resources/jsdoc-placeholders/index.html", "PLACEHOLDER");
-		when( brjs.app("app1" ) ).populate();
+		when( brjs.app("app1" ) ).populate("default");
 		then(brjs).hasDir("generated/app/app1/jsdoc")
 			.and(brjs.app("app1").storageDir("jsdoc")).containsFileWithContents("index.html", "PLACEHOLDER");
 	}

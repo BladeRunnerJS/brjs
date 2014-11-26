@@ -82,10 +82,10 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException
 	{
-		super.populate();
-		testType("unit").defaultTestTech().populate();
+		super.populate(templateGroup);
+		testType("unit").defaultTestTech().populate(templateGroup);
 	}
 	
 	@Override

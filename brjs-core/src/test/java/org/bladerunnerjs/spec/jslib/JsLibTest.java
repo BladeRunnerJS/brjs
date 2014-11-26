@@ -46,13 +46,13 @@ public class JsLibTest extends SpecTest {
 	
 	@Test
 	public void populateFailsIfTheLibraryNamespaceIsInvalid() throws Exception {
-		when(lib).populate("LIBX");
+		when(lib).populate("LIBX", "default");
 		then(exceptions).verifyException(InvalidRootPackageNameException.class, "LIBX", lib.dir().getPath());
 	}
 	
 	@Test
 	public void populateFailsIfTheLibraryNamespaceIsReserved() throws Exception {
-		when(lib).populate("caplin");
+		when(lib).populate("caplin", "default");
 		then(exceptions).verifyException(InvalidRootPackageNameException.class, "caplin", lib.dir().getPath());
 	}
 	
@@ -60,7 +60,7 @@ public class JsLibTest extends SpecTest {
 	public void libraryIsBaselinedDuringPopulation() throws Exception {
 		given(libTemplate).containsFolder("@libns")
 			.and(libTemplate).containsFileWithContents("some-@libns-file.txt", "'@libns'");
-		when(lib).populate("libx");
+		when(lib).populate("libx", "default");
 		then(lib).hasDir("libx")
 			.and(lib).doesNotHaveDir("@libns")
 			.and(lib).fileHasContents("some-libx-file.txt", "'libx'");

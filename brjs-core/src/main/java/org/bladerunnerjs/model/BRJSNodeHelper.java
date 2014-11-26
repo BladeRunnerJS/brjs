@@ -14,14 +14,18 @@ import org.bladerunnerjs.utility.TemplateUtility;
 
 public class BRJSNodeHelper {
 	public static void populate(BRJSNode node) throws InvalidNameException, ModelUpdateException {
-		populate(node, false);
+		populate(node, "default", false);
 	}
 	
-	public static void populate(BRJSNode node, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException {
-		populate(node, new HashMap<String,String>(), allowNonEmptyDirectories);
+	public static void populate(BRJSNode node, String templateGroup) throws InvalidNameException, ModelUpdateException {
+		populate(node, templateGroup, false);
 	}
 	
-	public static void populate(BRJSNode node, Map<String, String> overrideTransformations, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException {
+	public static void populate(BRJSNode node, String templateGroup, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException {
+		populate(node, templateGroup, new HashMap<String,String>(), allowNonEmptyDirectories);
+	}
+	
+	public static void populate(BRJSNode node, String templateGroup, Map<String, String> overrideTransformations, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException {
 		if(!allowNonEmptyDirectories) {
 			node.create();
 		}
@@ -30,7 +34,7 @@ public class BRJSNodeHelper {
 			Map<String, String> transformations = getNodeTransformations(node);
 			transformations.putAll( overrideTransformations );
 			
-			TemplateUtility.installTemplate(node, node.getTemplateName(), transformations, allowNonEmptyDirectories);
+			TemplateUtility.installTemplate(node, templateGroup, node.getTemplateName(), transformations, allowNonEmptyDirectories);
 		}
 		catch(TemplateInstallationException e) {
 			throw new ModelUpdateException(e);

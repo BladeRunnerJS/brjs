@@ -26,8 +26,8 @@ public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation im
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
-		BRJSNodeHelper.populate(this, true);
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException {
+		BRJSNodeHelper.populate(this, templateGroup, true);
 	}
 	
 	@Override

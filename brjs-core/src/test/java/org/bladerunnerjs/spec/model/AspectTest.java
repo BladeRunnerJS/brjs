@@ -56,7 +56,7 @@ public class AspectTest extends SpecTest {
 	public void aspectIsBaselinedDuringPopulation() throws Exception {
 		given(aspectTemplate).containsFolder("@appns")
 			.and(aspectTemplate).containsFileWithContents("index.jsp", "'<html>@appns</html>'");
-    	when(aspect).populate();
+    	when(aspect).populate("default");
     	then(aspect).dirExists()
     		.and(app).hasDir("default-aspect")
     		.and(aspect).hasDir("appns")
@@ -112,7 +112,7 @@ public class AspectTest extends SpecTest {
 	
 	@Test
 	public void multipleAspectsAreDiscoveredWhenThereAreOtherDirectories() throws Exception {
-		given(app).hasBeenPopulated()		
+		given(app).hasBeenPopulated("default")		
 			.and(app).hasDir("a-folder")
 			.and(app).hasDir("another-aspect")
 			.and(app).hasDir("default-aspect")

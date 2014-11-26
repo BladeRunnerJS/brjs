@@ -32,8 +32,8 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 		return commanderChainer;
 	}
 	
-	public CommanderChainer populate() throws Exception {
-		call(() -> ((BRJSNode) node).populate());
+	public CommanderChainer populate(String templateGroup) throws Exception {
+		call(() -> ((BRJSNode) node).populate(templateGroup));
 		
 		return commanderChainer;
 	}

@@ -98,7 +98,7 @@ public class CommandRunner {
 				throw new CommandOperationException(e);
 			}
 			
-			brjs.populate();
+			brjs.populate("default");
 			
 			injectLegacyCommands(brjs);
 			return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);

@@ -39,7 +39,7 @@ public class TemplateUtilityTest extends TestModelAccessor
 	@Test(expected=TemplateDirectoryAlreadyExistsException.class)
 	public void installingATemplateToAPreExistingDirectoryCausesAnException() throws Exception
 	{
-		TemplateUtility.installTemplate(brjs.app("pre-existing-app"), "app", new HashMap<String, String>());
+		TemplateUtility.installTemplate(brjs.app("pre-existing-app"), "default", "app", new HashMap<String, String>());
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class TemplateUtilityTest extends TestModelAccessor
 		App app = brjs.app("app");
 		assertFalse("app dir does not exist", app.dirExists());
 		
-		TemplateUtility.installTemplate(brjs.app("app"), "app", new HashMap<String, String>());
+		TemplateUtility.installTemplate(brjs.app("app"), "default", "app", new HashMap<String, String>());
 		
 		assertTrue("app dir exists", app.dirExists());
 		
@@ -75,7 +75,7 @@ public class TemplateUtilityTest extends TestModelAccessor
 		Map<String, String> transformations = new HashMap<>();
 		
 		transformations.put("dir", "folder");
-		TemplateUtility.installTemplate(brjs.app("app"), "app", transformations);
+		TemplateUtility.installTemplate(brjs.app("app"),  "default", "app", transformations);
 		
 		assertTrue("app folder exists", app.dirExists());
 		

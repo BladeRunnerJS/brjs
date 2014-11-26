@@ -262,7 +262,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void jspsCanBeUsedInUnbundledResources() throws Exception
 	{
 		try {
-    		given(app).hasBeenPopulated()
+    		given(app).hasBeenPopulated("default")
         		.and(appAspect).containsFileWithContents("unbundled-resources/file.jsp", "2 + 2 = <%= 2 + 2 %>")
         		.and(brjs).hasDevVersion("1234")
         		.and(brjs.applicationServer(appServerPort)).started();

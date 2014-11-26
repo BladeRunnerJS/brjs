@@ -282,14 +282,14 @@ public class App extends AbstractBRJSNode implements NamedNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException
 	{
-		super.populate();
-		defaultAspect().populate();
-		defaultBladeset().populate();
+		super.populate(templateGroup);
+		defaultAspect().populate(templateGroup);
+		defaultBladeset().populate(templateGroup);
 	};
 	
-	public void populate(String requirePrefix) throws InvalidNameException, ModelUpdateException
+	public void populate(String requirePrefix, String templateGroup) throws InvalidNameException, ModelUpdateException
 	{
 		NameValidator.assertValidRootPackageName(this, requirePrefix);
 		
@@ -297,7 +297,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 			AppConf appConf = appConf();
 			appConf.setAutoWrite(false);
 			appConf.setRequirePrefix(requirePrefix);
-			populate();
+			populate(templateGroup);
 			appConf.setAutoWrite(true);
 		}
 		catch (ConfigException e) {

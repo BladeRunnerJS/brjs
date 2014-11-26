@@ -20,13 +20,12 @@ public abstract class AbstractBRJSNode extends AbstractNode implements BRJSNode 
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
-		BRJSNodeHelper.populate(this);
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException {
+		BRJSNodeHelper.populate(this, templateGroup);
 	}
 	
 	@Override
 	public String getTemplateName() {
 		return BRJSNodeHelper.getTemplateName(this);
 	}
-	
 }

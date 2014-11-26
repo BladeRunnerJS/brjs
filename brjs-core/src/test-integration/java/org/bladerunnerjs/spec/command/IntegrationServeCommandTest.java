@@ -80,7 +80,7 @@ public class IntegrationServeCommandTest extends SpecTest
 	{
 		given(brjs).hasBeenAuthenticallyReCreated()
 			.and(brjs).localeForwarderHasContents("")
-			.and(brjs.app("app1")).hasBeenPopulated();
+			.and(brjs.app("app1")).hasBeenPopulated("default");
 		when(brjs).runThreadedCommand("serve");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1");
 	}

@@ -10,9 +10,11 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -87,5 +89,49 @@ public class CreateBladesetCommandTest extends SpecTest {
 			.and(app).hasBeenCreated();
 		when(brjs).runCommand("create-bladeset", "app", "bladeset");
 		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void bladesetIsCreatedWithTheSpecifiedTemplate() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).containsFile("conf/templates/angular/bladeset/fileForBladeset.txt");
+		when(brjs).runCommand("create-bladeset", "app", "bladeset", "--template", "angular");
+		then(bladeset).dirExists()
+			.and(bladeset).hasFile("fileForBladeset.txt");
+	}
+	
+	@Test
+	public void bladesetIsCreatedWithTheSpecifiedTemplateIfMoreTemplatesExist() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).containsFile("conf/templates/angular/bladeset/fileForBladesetAngular.txt")
+			.and(brjs).containsFile("conf/templates/default/bladeset/fileForBladesetDefault.txt")
+			.and(brjs).containsFile("conf/templates/myTemplate/bladeset/fileForBladesetMyTemplate.txt");
+		when(brjs).runCommand("create-bladeset", "app", "bladeset", "--template", "myTemplate");
+		then(bladeset).dirExists()
+			.and(bladeset).hasFile("fileForBladesetMyTemplate.txt");
+	}
+	
+	@Test
+	public void defaultTemplateIsUsedIfNoneSpecifiedAndMultipleTemplatesExist() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).containsFile("conf/templates/angular/bladeset/fileForBladesetAngular.txt")
+			.and(brjs).containsFile("conf/templates/default/bladeset/fileForBladesetDefault.txt")
+			.and(brjs).containsFile("conf/templates/myTemplate/bladeset/fileForBladesetMyTemplate.txt");
+		when(brjs).runCommand("create-bladeset", "app", "bladeset");
+		then(bladeset).dirExists()
+			.and(bladeset).hasFile("fileForBladesetDefault.txt");
+	}
+	
+	//TODO figure out where to throw the exception
+	@Ignore
+	@Test
+	public void exceptionIsThrownIfSpecifiedTemplateDoesNotExist() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).containsFile("conf/templates/angular/app/fileForAppAngular.txt")
+			.and(brjs).containsFile("conf/templates/angular/bladeset/fileForBladesetAngular.txt")
+			.and(brjs).containsFile("conf/templates/default/bladeset/fileForBladesetDefault.txt")
+			.and(brjs).containsFile("conf/templates/myTemplate/bladeset/fileForBladesetMyTemplate.txt");
+		when(brjs).runCommand("create-bladeset", "app", "bladeset", "--template", "nonexistent");
+		then(exceptions).verifyException(TemplateInstallationException.class);
 	}
 }

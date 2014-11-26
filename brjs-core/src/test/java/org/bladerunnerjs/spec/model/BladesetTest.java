@@ -50,7 +50,7 @@ public class BladesetTest extends SpecTest {
 	public void bladesetIsBaselinedDuringPopulation() throws Exception {
 		given(bladesetTemplate).containsFolder("@bladeset")
 			.and(bladesetTemplate).containsFileWithContents("class1.js", "@appns.@bladeset = function() {};");
-		when(bladeset).populate();
+		when(bladeset).populate("default");
 		then(bladeset).hasDir(bladeset.getName())
 			.and(bladeset).doesNotHaveDir("@bladeset")
 			.and(bladeset).fileHasContents("class1.js", "app.bs = function() {};");
@@ -59,31 +59,31 @@ public class BladesetTest extends SpecTest {
 	@Test
 	public void populatingABladesetCausesAppObserversToBeNotified() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(observer).observing(app)
 			.and(observer).allNotificationsHandled();
-		when(bladeset).populate();
+		when(bladeset).populate("default");
 		then(observer).notified(NodeReadyEvent.class, bladeset)
 			.and(observer).notified(NodeReadyEvent.class, bladeset.testType("unit").defaultTestTech());
 	}
 	
 	@Test
 	public void invalidBladesetDirectoryNameSpaceThrowsException() throws Exception {
-		when(invalidBladesetName).populate();
+		when(invalidBladesetName).populate("default");
 		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Bladeset", invalidBladesetName.dir())
 			.and(exceptions).verifyException(InvalidDirectoryNameException.class,invalidBladesetName.dir(), "#Invalid");
 	}
 	
 	@Test
 	public void usingJSKeywordAsBladesetNameSpaceThrowsException() throws Exception {
-		when(JSKeywordBladesetName).populate();
+		when(JSKeywordBladesetName).populate("default");
 		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Bladeset", JSKeywordBladesetName.dir())
 			.and(exceptions).verifyException(InvalidPackageNameException.class,JSKeywordBladesetName.dir(), "else");
 	}
 	
 	@Test
 	public void invalidBladesetPackageNameSpaceThrowsException() throws Exception {
-		when(invalidPackageName).populate();
+		when(invalidPackageName).populate("default");
 		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Bladeset", invalidPackageName.dir())
 			.and(exceptions).verifyException(InvalidPackageNameException.class,invalidPackageName.dir(), "_invalid");
 	}

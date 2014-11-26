@@ -21,12 +21,12 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 public class TemplateUtility
 {
 	
-	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations) throws TemplateInstallationException {
-		installTemplate(node, templateName, transformations, false);
+	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations) throws TemplateInstallationException {
+		installTemplate(node, templateGroup, templateName, transformations, false);
 	}
 	
-	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
-		File templateDir = node.root().templateGroup("default").template(templateName).dir();
+	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
+		File templateDir = node.root().templateGroup(templateGroup).template(templateName).dir();
 		installTemplate(node, templateDir, transformations, allowNonEmptyDirectories);
 	}
 	

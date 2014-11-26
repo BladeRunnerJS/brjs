@@ -23,11 +23,11 @@ public class DefaultAspect extends Aspect
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException
 	{
-		BRJSNodeHelper.populate(this, true);
-		testType("unit").defaultTestTech().populate();
-		testType("acceptance").defaultTestTech().populate();
+		BRJSNodeHelper.populate(this, templateGroup, true);
+		testType("unit").defaultTestTech().populate(templateGroup);
+		testType("acceptance").defaultTestTech().populate(templateGroup);
 	}
 
 	public boolean exists()

@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -99,6 +100,55 @@ public class CreateAppCommandTest extends SpecTest {
 			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, app.getName(), app.dir().getPath())
 			.and(logging).containsFormattedConsoleMessage(APP_CREATED_CONSOLE_MSG, app.getName())
 			.and(logging).containsFormattedConsoleMessage(APP_DEPLOYED_CONSOLE_MSG, app.getName());
+	}
+	
+	@Test
+	public void appIsCreatedWithTheSpecifiedTemplate() throws Exception {
+		given(brjs).containsFile("conf/templates/angular/app/fileForApp.txt")
+			.and(brjs).containsFile("conf/templates/angular/aspect/fileForAspect.txt");
+		when(brjs).runCommand("create-app", "app", "--template", "angular");
+		then(app).dirExists()
+			.and(app).hasFile("fileForApp.txt");
+	}
+	
+	@Test
+	public void appIsCreatedWithTheSpecifiedTemplateIfMoreTemplatesExist() throws Exception {
+		given(brjs).containsFile("conf/templates/angular/app/fileForAppAngular.txt")
+			.and(brjs).containsFile("conf/templates/angular/aspect/fileForAspectAngular.txt")
+			.and(brjs).containsFile("conf/templates/default/app/fileForAppDefault.txt")
+			.and(brjs).containsFile("conf/templates/default/aspect/fileForAspectDefault.txt")
+			.and(brjs).containsFile("conf/templates/myTemplate/app/fileForAppMyTemplate.txt")
+			.and(brjs).containsFile("conf/templates/myTemplate/aspect/fileForAspectMyTemplate.txt");
+		when(brjs).runCommand("create-app", "app", "--template", "myTemplate");
+		then(app).dirExists()
+			.and(app).hasFile("fileForAppMyTemplate.txt");
+	}
+	
+	@Test
+	public void defaultTemplateIsUsedIfNoneSpecifiedAndMultipleTemplatesExist() throws Exception {
+		given(brjs).containsFile("conf/templates/angular/app/fileForAppAngular.txt")
+			.and(brjs).containsFile("conf/templates/angular/aspect/fileForAspectAngular.txt")
+			.and(brjs).containsFile("conf/templates/default/app/fileForAppDefault.txt")
+			.and(brjs).containsFile("conf/templates/default/aspect/fileForAspectDefault.txt")
+			.and(brjs).containsFile("conf/templates/myTemplate/app/fileForAppMyTemplate.txt")
+			.and(brjs).containsFile("conf/templates/myTemplate/aspect/fileForAspectMyTemplate.txt");
+		when(brjs).runCommand("create-app", "app");
+		then(app).dirExists()
+			.and(app).hasFile("fileForAppDefault.txt");
+	}
+	
+	//TODO figure out where to throw the exception
+	@Ignore
+	@Test
+	public void exceptionIsThrownIfSpecifiedTemplateDoesNotExist() throws Exception {
+		given(brjs).containsFile("conf/templates/angular/app/fileForAppAngular.txt")
+			.and(brjs).containsFile("conf/templates/angular/aspect/fileForAspectAngular.txt")
+			.and(brjs).containsFile("conf/templates/default/app/fileForAppDefault.txt")
+			.and(brjs).containsFile("conf/templates/default/aspect/fileForAspectDefault.txt")
+			.and(brjs).containsFile("conf/templates/myTemplate/app/fileForAppMyTemplate.txt")
+			.and(brjs).containsFile("conf/templates/myTemplate/aspect/fileForAspectMyTemplate.txt");
+		when(brjs).runCommand("create-app", "app", "--template", "nonexistent");
+		then(exceptions).verifyException(TemplateInstallationException.class);
 	}
 	
 	@Test

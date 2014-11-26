@@ -45,7 +45,7 @@ public class WorkbenchTest extends SpecTest {
 		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
 			.and(workbenchTemplate).containsFolder("resources")
 			.and(workbenchTemplate).containsFolder("src");
-		when(blade).populate();
+		when(blade).populate("default");
 		then(workbench).hasDir("resources")
 			.and(workbench).hasDir("src")
 			.and(workbench).fileHasContents("index.html", "'<html>hello world</html>'");

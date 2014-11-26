@@ -13,11 +13,11 @@ import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.NameValidator;
 
+import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
-
 
 public class CreateAppCommand extends ArgsParsingCommandPlugin
 {
@@ -33,6 +33,7 @@ public class CreateAppCommand extends ArgsParsingCommandPlugin
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("new-app-name").setRequired(true).setHelp("the name of the application that will be created"));
 		argsParser.registerParameter(new UnflaggedOption("require-prefix").setRequired(false).setHelp("the require prefix that all source code will be available within"));
+		argsParser.registerParameter(new FlaggedOption("template-group").setShortFlag('T').setLongFlag("template").setDefault("default").setRequired(false).setHelp("the user-defined template that will be used"));
 	}
 	
 	@Override
@@ -58,6 +59,8 @@ public class CreateAppCommand extends ArgsParsingCommandPlugin
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("new-app-name");
 		String requirePrefix = parsedArgs.getString("require-prefix");
+		String templateGroup = parsedArgs.getString("template-group");
+		
 		App app = brjs.app(appName);
 		
 		if(app.dirExists()) throw new NodeAlreadyExistsException(app, this);
@@ -65,8 +68,7 @@ public class CreateAppCommand extends ArgsParsingCommandPlugin
 		try {
 			NameValidator.assertValidDirectoryName(app);
 			requirePrefix = (requirePrefix == null) ? NameValidator.generateRequirePrefixFromApp(app) : requirePrefix;
-			
-			app.populate(requirePrefix);
+			app.populate(requirePrefix, templateGroup);
 			logger.println(Messages.APP_CREATED_CONSOLE_MSG, appName);
 			logger.println(" " + app.dir().getPath());
 			

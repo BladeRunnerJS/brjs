@@ -101,7 +101,7 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreAutomaticallyHosted() throws Exception
 	{
 		given(appServer).started();
-		when(app1).populate()
+		when(app1).populate("default")
 			.and(app1).deployApp();
 		then(appServer).requestCanEventuallyBeMadeFor("/app1");
 	}	
@@ -109,7 +109,7 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void deployFileIsOnlyCreatedIfAppServerIsStarted() throws Exception
 	{
-		when(app1).populate()
+		when(app1).populate("default")
 			.and(app1).deployApp();
 		then(app1).doesNotHaveFile(".deploy");
 	}
@@ -118,7 +118,7 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreOnlyHostedOnAppDeployedEvent() throws Exception
 	{
 		given(appServer).started();
-		when(app1).populate()
+		when(app1).populate("default")
 			.and(brjs).eventFires(new NodeReadyEvent(), app1);
 		then(appServer).requestCannotBeMadeFor("/app1/default-aspect/index.html");
 	}
@@ -154,7 +154,7 @@ public class AppServerTest extends SpecTest
 	public void systemAppIsAutomaticallyHostedOnDeploy() throws Exception
 	{
 		given(appServer).started();
-		when(sysapp1).populate()
+		when(sysapp1).populate("default")
 			.and(sysapp1).deployApp();
 		then(appServer).requestCanEventuallyBeMadeFor("/sysapp1");
 	}
@@ -177,7 +177,7 @@ public class AppServerTest extends SpecTest
 	public void otherServletsCanBeAddedWithRootMapping() throws Exception
 	{
 		given(brjs).usedForServletModel()
-			.and(app1).hasBeenPopulated()
+			.and(app1).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "/servlet/hello/*");
 		then(appServer).requestForUrlReturns("/app1/servlet/hello", "Hello World!");
@@ -187,7 +187,7 @@ public class AppServerTest extends SpecTest
 	public void otherServletsCanBeAddedWithExtensionMapping() throws Exception
 	{
 		given(brjs).usedForServletModel()
-			.and(app1).hasBeenPopulated()
+			.and(app1).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "*.mock");
 		then(appServer).requestForUrlReturns("/app1/hello.mock", "Hello World!");

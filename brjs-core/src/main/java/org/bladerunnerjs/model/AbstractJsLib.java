@@ -90,14 +90,14 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException
 	{
 		String libNamespace = getName().toLowerCase();
-		populate( libNamespace );
+		populate(libNamespace, templateGroup);
 	}
 	
 	@Override
-	public void populate(String libNamespace) throws InvalidNameException, ModelUpdateException
+	public void populate(String libNamespace, String templateGroup) throws InvalidNameException, ModelUpdateException
 	{
 		if (!dir().exists()) { create(); }
 
@@ -107,7 +107,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 			RootAssetLocation rootAssetLocation = rootAssetLocation();
 			if(rootAssetLocation != null) {
 				rootAssetLocation.setRequirePrefix(libNamespace.replace('.', '/'));
-				rootAssetLocation.populate();
+				rootAssetLocation.populate(templateGroup);
 			}
 			incrementChildFileVersions();
 		}

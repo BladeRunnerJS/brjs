@@ -69,8 +69,8 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
-		sdkJsLib.populate();
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException {
+		sdkJsLib.populate(templateGroup);
 	}
 	
 	@Override
@@ -128,8 +128,8 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public void populate(String libNamespace) throws InvalidNameException, ModelUpdateException {
-		sdkJsLib.populate(libNamespace);
+	public void populate(String libNamespace, String templateGroup) throws InvalidNameException, ModelUpdateException {
+		sdkJsLib.populate(libNamespace, templateGroup);
 	}
 	
 	@Override

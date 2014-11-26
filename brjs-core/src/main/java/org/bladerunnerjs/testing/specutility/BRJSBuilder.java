@@ -51,7 +51,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	//TODO: look at brjs is null - commands must be added before BRJS is created
 	
 	public BuilderChainer hasBeenPopulated() throws Exception {
-		brjs.populate();
+		brjs.populate("default");
 		
 		return builderChainer;
 	}

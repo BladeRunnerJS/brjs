@@ -36,8 +36,8 @@ public abstract class NodeBuilder<N extends Node> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenPopulated() throws Exception {
-		((BRJSNode) node).populate();
+	public BuilderChainer hasBeenPopulated(String templateGroup) throws Exception {
+		((BRJSNode) node).populate(templateGroup);
 		
 		return builderChainer;
 	}

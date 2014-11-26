@@ -54,8 +54,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
-		bundlableNode.populate();
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException {
+		bundlableNode.populate(templateGroup);
 	}
 	
 	@Override

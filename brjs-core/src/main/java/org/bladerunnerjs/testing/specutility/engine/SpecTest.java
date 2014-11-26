@@ -177,7 +177,7 @@ public abstract class SpecTest extends TestModelAccessor
 	@After
 	public void verifyLogs() {
 		then(logging).verifyNoUnhandledMessages()
-			.and(logging).verifyLogsRecievedIfCaptureEnabled();
+			.and(logging).verifyLogsReceivedIfCaptureEnabled();
 	}
 	
 	@After

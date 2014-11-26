@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 
+import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
@@ -40,7 +41,8 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
 		argsParser.registerParameter(new UnflaggedOption(Parameters.BLADESET_NAME).setRequired(true).setHelp("the bladeset within which the new blade will be created"));
-		argsParser.registerParameter(new UnflaggedOption(Parameters.BLADE_NAME).setRequired(true).setHelp("the name of the blade that will be created"));
+		argsParser.registerParameter(new UnflaggedOption(Parameters.BLADE_NAME).setRequired(true).setHelp("the name of the blade that will be created"));	
+		argsParser.registerParameter(new FlaggedOption("template-group").setShortFlag('T').setLongFlag("template").setDefault("default").setRequired(false).setHelp("the user-defined template that will be used"));
 	}
 	
 	@Override
@@ -67,6 +69,7 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		String appName = parsedArgs.getString(Parameters.APP_NAME);
 		String bladesetName = parsedArgs.getString(Parameters.BLADESET_NAME);
 		String bladeName = parsedArgs.getString(Parameters.BLADE_NAME);
+		String templateGroup = parsedArgs.getString("template-group");
 		
 		App app = brjs.app(appName);
 		Bladeset bladeset = getBladeset(app, bladesetName);
@@ -77,7 +80,7 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		if(blade.dirExists()) throw new NodeAlreadyExistsException(blade, this);
 		
 		try {
-			blade.populate();
+			blade.populate(templateGroup);
 		}
 		catch(InvalidNameException e) {
 			throw new CommandArgumentsException(e, this);

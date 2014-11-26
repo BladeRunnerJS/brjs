@@ -163,7 +163,7 @@ public class ServedWarTest extends SpecTest {
 	public void jndiTokensAreReplaced() throws Exception
 	{
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(app).hasBeenPopulated()
+			.and(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
 			.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -177,7 +177,7 @@ public class ServedWarTest extends SpecTest {
 	public void correctContentLengthIsSetWhenJNDITokensAreReplaced() throws Exception
 	{
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(app).hasBeenPopulated()
+			.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -192,7 +192,7 @@ public class ServedWarTest extends SpecTest {
 	public void correctContentLengthIsSetWhenJNDITokensAreReplacedAndADownstreamFilterCommitsTheResponseEarly() throws Exception
 	{
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(app).hasBeenPopulated()
+			.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -211,7 +211,7 @@ public class ServedWarTest extends SpecTest {
 		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
 		
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-    		.and(app).hasBeenPopulated()
+    		.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir());

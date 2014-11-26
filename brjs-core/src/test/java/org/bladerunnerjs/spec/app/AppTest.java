@@ -50,7 +50,7 @@ public class AppTest extends SpecTest {
 	public void weCanCreateAnAppUsingATemplate() throws Exception {
 		given(appTemplate).containsFile("some-file.blah")
 			.and(logging).enabled();
-		when(app).populate("appx");
+		when(app).populate("appx", "default");
 		then(app).dirExists()
 			.and(app).hasFile("some-file.blah")
 			.and(logging).noMessagesLogged();
@@ -59,14 +59,14 @@ public class AppTest extends SpecTest {
 	@Test
 	public void weCanCreateAnAppUsingTheRealTemplate() throws Exception {
 		given(brjs).usesProductionTemplates();
-		when(app).populate("appxyz");
+		when(app).populate("appxyz", "default");
 		then(defaultAspect).hasFile("src/App.js");
 	}
 	
 	@Test
 	public void populatingAnAppCausesRootObserversToBeNotified() throws Exception {
 		given(observer).observing(brjs);
-		when(app).populate();
+		when(app).populate("default");
 		then(observer).notified(NodeReadyEvent.class, app)
 			.and(observer).notified(NodeReadyEvent.class, defaultAspect);
 	}
@@ -74,21 +74,21 @@ public class AppTest extends SpecTest {
 	@Test
 	public void theAppConfIsWrittenOnPopulate() throws Exception {
 		given(appTemplate).hasBeenCreated();
-		when(app).populate("appx");
+		when(app).populate("appx", "default");
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appx");
 	}
 	
 	@Test
 	public void theAppConfIsNotWrittenOnZeroArgPopulate() throws Exception {
 		given(appTemplate).hasBeenCreated();
-		when(app).populate();
+		when(app).populate("default");
 		then(app).doesNotHaveFile("app.conf");
 	}
 	
 	@Test
 	public void theAppConfCanBeManuallyWrittenOnZeroArgPopulate() throws Exception {
 		given(appTemplate).hasBeenCreated()
-			.and(app).hasBeenPopulated();
+			.and(app).hasBeenPopulated("default");
 		when(app).appConf().write();
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appns");
 	}
@@ -96,28 +96,28 @@ public class AppTest extends SpecTest {
 	@Test
 	public void invalidAppNameSpaceThrowsException() throws Exception {
 		given(appTemplate).containsFile("some-file.blah");
-		when(app).populate("appX");
+		when(app).populate("appX", "default");
 		then(exceptions).verifyException(InvalidRootPackageNameException.class, app.dir(), unquoted("'appX'"));
 	}
 	
 	@Test
 	public void usingJSKeywordAsAppNameSpaceThrowsException() throws Exception {
 		given(appTemplate).containsFile("some-file.blah");
-		when(app).populate("transient");
+		when(app).populate("transient", "default");
 		then(exceptions).verifyException(InvalidRootPackageNameException.class, app.dir(), unquoted("'transient'"));
 	}
 	
 	@Test
 	public void usingReservedKeywordAsAppNameSpaceThrowsException() throws Exception {
 		given(appTemplate).containsFile("some-file.blah");
-		when(app).populate("caplinx");
+		when(app).populate("caplinx", "default");
 		then(exceptions).verifyException(InvalidRootPackageNameException.class, app.dir(), unquoted("'caplinx'"));
 	}
 	
 	@Test
 	public void appIsBaselinedDuringPopulation() throws Exception {
 		given(appTemplate).containsFolder("@appns");
-		when(app).populate("appx");
+		when(app).populate("appx", "default");
 		then(app).dirExists()
 			.and(app).hasDir("appx")
 			.and(app).doesNotHaveDir("appns");
@@ -194,7 +194,7 @@ public class AppTest extends SpecTest {
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(brjs).appsHaveBeeniterated()
 			.and(brjs).hasBeenInactiveForOneMillisecond();
-		when(brjs.app("app1")).populate();
+		when(brjs.app("app1")).populate("default");
 		then(brjs).hasApps("app1");
 	}
 	
