@@ -1,5 +1,7 @@
 package org.bladerunnerjs.spec.app;
 
+import static org.bladerunnerjs.yaml.YamlAppConf.Messages.*;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
@@ -32,6 +34,24 @@ public class AppConfTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(app).appConf().write();
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appns");
+	}
+	
+	@Test
+	public void requirePrefixCanAlsoBeSetUsingLegacyAppNamespaceProperty() throws Exception {
+		given(app).hasBeenCreated()
+			.and(logging).enabled()
+			.and(app).containsFileWithContents("app.conf", "appNamespace: requireprefix");
+		when(app).appConfHasBeenRead();
+		then(app.appConf().getRequirePrefix().toString()).textEquals("requireprefix")
+			.and(logging).warnMessageReceived(APP_NAMESPACE_PROPERTY_DEPRECATED);
+	}
+	
+	@Test
+	public void havingBothARequirePrefixAndAnAppNamespacePropertyCausesAnException() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "appNamespace: requireprefix1\nrequirePrefix: requireprefix2");
+		when(app).appConfHasBeenRead();
+		then(exceptions).verifyException(ConfigException.class, "appNamespace", "requirePrefix");
 	}
 	
 	@Ignore
