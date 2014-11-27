@@ -153,14 +153,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
-		ant {
-			["brjs", "jsdoc"].each {
-				fileTree(dir:projectDir, include:"**/${it}").each { fixFile ->
-					fixcrlf( file:fixFile.path, eol:"lf" )
-					fixcrlf( file:"${fixFile.path}.cmd", eol:"crlf" )
-				}
-			}
-		}
 		file("sdk/version.txt").text =  "{"+
                             			"	Version: \"${buildVersion}\","+
                             			"	BuildDate: \"${buildDate}\","+
@@ -380,31 +372,16 @@ task cleanTemporaryFiles {
 	doFirst {
 		ant.delete(includeemptydirs: 'true') {
 			fileset(dir: projectDir) {
-				exclude(name: 'sdk/system-applications/')
-				exclude(name: 'apps/')
-				exclude(name: 'sdk/libs/javascript/')
-			}
-			fileset(dir: projectDir) {
+				include(name: 'brjs.conf')
 				include(name: '**/test-*/**/bundles/')
-			}
-			fileset(dir: 'sdk/system-applications') {
-    			include(name: '**/WEB-INF/lib/brjs-*.jar')
-    		}
-		}
-		if (file('apps').exists()) {
-			ant.delete(includeemptydirs: 'true') {
-    			fileset(dir: 'apps') {
-    				include(name: '**/WEB-INF/lib/brjs-*.jar')
-    			}
+				include(name: '**/WEB-INF/lib/brjs-*.jar')
 			}
 		}
 	}
 }
-
 clean {
 	dependsOn = [cleanTemporaryFiles]
 }
-
 
 
 // util class
