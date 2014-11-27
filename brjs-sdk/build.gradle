@@ -6,15 +6,11 @@ apply plugin: 'maven'
 configurations {
 	system
 	application
-	systemAppServlets {
-		exclude module: 'jetty-all-server'
-		extendsFrom application
-	}
+	systemAppServlets
 	testRunner
 	javadocs
 
 	browsers_dep
-	browsers_webdriver
 	phantomjs
 }
 
@@ -40,15 +36,13 @@ dependencies {
 	testRunner project(path: ':brjs-logger-binding')
 	testRunner files('build-resources/JsTestDriver.conf')
 	
-	phantomjs dependency('phantomjs')
 //	phantomjs dependency('phantomjs_windows')
 //	phantomjs dependency('phantomjs_mac')
 //	phantomjs dependency('phantomjs_linux')
 	
 	browsers_dep dependency('chrome')
 	browsers_dep dependency('firefox')
-	
-	browsers_webdriver dependency('firefox-webdriver')
+	browsers_dep dependency('phantomjs')
 }
 
 
@@ -57,8 +51,6 @@ def browserProfileDir = "${browserRootDir}/profile"
 task copyBrowsers(type: Sync) {
 	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
 	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
-	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
-	from { configurations.phantomjs.collect { browser -> zipTree(browser) } }
 	eachFile {
 		it.path = it.path.replaceAll("-[0-9\\.]+/", "/") // strip the version string
 		it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip phantomjs version
@@ -314,32 +306,33 @@ check.dependsOn checkVersionTxt
 
 
 task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, dependsOn: explodeSdk, {
-	checkRoot = file(explodedSdkDir)
+	checkRoot = file("${explodedSdkDir}/BladeRunnerJS")
 	expectedPaths = [
-		"*/sdk/**",
-		"*/sdk/brjs",
-		"*/sdk/brjs.cmd",
-		"*/sdk/version.txt",
-		"*/sdk/libs/java/testRunner/*",
-		"*/sdk/libs/java/system/*",
-		"*/sdk/libs/java/application/**",
-		"*/sdk/libs/javascript/*/src/**",
-		"*/sdk/libs/javascript/*/resources/**",
-		"*/sdk/system-applications/*/*",
-		"*/sdk/system-applications/*/WEB-INF/lib/*",
-		"*/sdk/templates/*/*",
-		"*/sdk/templates/*/tests/*",
-        "*/sdk/docs/java/*",
-		"*/sdk/docs/java/**/*",
-		"*/sdk/docs/js/*",
-		"*/sdk/docs/js/**/*",
-		"*/sdk/jsdoc-toolkit-resources/**",
-		"*/sdk/jsdoc-toolkit-resources/jsdoc-toolkit/node_modules/**",
-		"*/README.txt",
-		"*/LICENSE",
-		"*/apps/apps.txt"
+		"sdk/**",
+		"sdk/brjs",
+		"sdk/brjs.cmd",
+		"sdk/version.txt",
+		"sdk/libs/java/testRunner/*",
+		"sdk/libs/java/system/*",
+		"sdk/libs/java/application/**",
+		"sdk/libs/javascript/*/src/**",
+		"sdk/libs/javascript/*/resources/**",
+		"sdk/system-applications/*/*",
+		"sdk/system-applications/*/WEB-INF/lib/*",
+		"sdk/templates/*/*",
+		"sdk/templates/*/tests/*",
+        "sdk/docs/java/*",
+		"sdk/docs/java/**/*",
+		"sdk/docs/js/*",
+		"sdk/docs/js/**/*",
+		"sdk/jsdoc-toolkit-resources/**",
+		"sdk/jsdoc-toolkit-resources/jsdoc-toolkit/node_modules/**",
+		"README.txt",
+		"LICENSE",
+		"apps/apps.txt"
 	]
 	bannedPaths = [
+	   "**/build/**",
 	   "**/.p4ignore",
 	   "**/.gitignore",
 	   "**/empty.txt",
