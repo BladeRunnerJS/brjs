@@ -3,6 +3,7 @@ package org.bladerunnerjs.yaml;
 import javax.validation.constraints.NotNull;
 
 import org.apache.bval.constraints.NotEmpty;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
@@ -12,6 +13,12 @@ import org.bladerunnerjs.utility.NameValidator;
 
 
 public class YamlAppConf extends AbstractYamlConfFile {
+	public class Messages {
+		public static final String APP_NAMESPACE_PROPERTY_DEPRECATED = "The 'appNamespace' property within 'app.conf' is deprecated, and it should be renamed to 'requirePrefix' instead.";
+	}
+	
+	public String appNamespace;
+	
 	@NotNull
 	@NotEmpty
 	public String requirePrefix;
@@ -24,7 +31,12 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	
 	@Override
 	public void initialize(BRJSNode node) {
-		requirePrefix = getDefault(requirePrefix, "appns");
+		if(appNamespace != null) {
+			Logger logger = node.root().getLoggerFactory().getLogger(YamlAppConf.class);
+			logger.warn(Messages.APP_NAMESPACE_PROPERTY_DEPRECATED);
+		}
+		
+		requirePrefix = getDefault(requirePrefix, (appNamespace != null) ? appNamespace : "appns");
 		locales = getDefault(locales, "en");
 		localeCookieName = getDefault(localeCookieName, "BRJS.LOCALE");
 	}
@@ -32,6 +44,8 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	@Override
 	public void verify() throws ConfigException {
 		try {
+			if((appNamespace != null) && (appNamespace != requirePrefix)) throw new ConfigException("The 'appNamespace' and 'requirePrefix' properties within 'app.conf' should not both be defined.");
+			
 			ConfigValidationChecker.validate(this);
 			NameValidator.assertValidPackageName(node, requirePrefix);
 			verifyLocales(locales);
