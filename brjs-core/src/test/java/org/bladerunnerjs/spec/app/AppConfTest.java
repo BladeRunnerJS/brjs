@@ -44,14 +44,22 @@ public class AppConfTest extends SpecTest {
 	
 	@Test
 	public void updateLocaleInAppConf() throws Exception {
-		given(app).hasBeenPopulated("appx", "default");
+		given(brjs.templateGroup("default").template("app")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(app).hasBeenPopulated("appx", "default");
 		when(app).appConf().setLocales("de").write();
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: de\nrequirePrefix: appx");
 	}
 	
 	@Test
 	public void updateAppNamespaceInAppConf() throws Exception {
-		given(app).hasBeenPopulated("appx");
+		given(brjs.templateGroup("default").template("app")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(app).hasBeenPopulated("appx", "default");
 		when(app).appConf().setAppNamespace("newns").write();
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: newns");
 	}

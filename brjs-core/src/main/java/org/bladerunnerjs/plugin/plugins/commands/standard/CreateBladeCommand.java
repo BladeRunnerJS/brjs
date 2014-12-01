@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 
 import com.martiansoftware.jsap.FlaggedOption;
@@ -88,7 +89,9 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		catch(ModelUpdateException e) {
 			throw new CommandOperationException("Cannot create blade '" + blade.dir().getPath() + "'", e);
 		}
-		
+		catch(TemplateInstallationException e) {
+			throw new CommandArgumentsException(e, this);
+		}
 		logger.println(Messages.BLADE_CREATE_SUCCESS_CONSOLE_MSG, bladeName);
 		logger.println(Messages.BLADE_PATH_CONSOLE_MSG, blade.dir().getPath());
 		

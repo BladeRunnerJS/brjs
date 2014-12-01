@@ -67,7 +67,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	
 	@Override
 	public List<AssetContainer> scopeAssetContainers() {
-List<AssetContainer> assetContainers = new ArrayList<>();
+		List<AssetContainer> assetContainers = new ArrayList<>();
 		
 		for (JsLib jsLib : app().jsLibs())
 		{

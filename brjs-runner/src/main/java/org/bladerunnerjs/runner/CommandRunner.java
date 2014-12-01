@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.command.test.TestCommand;
@@ -105,6 +106,8 @@ public class CommandRunner {
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);
+		} catch (TemplateInstallationException e) {
+			throw new CommandOperationException(e);
 		}
 		finally {
 			AbstractRootNode.allowInvalidRootDirectories = true;

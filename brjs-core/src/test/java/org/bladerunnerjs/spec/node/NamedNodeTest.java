@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-
 @RunWith(Parameterized.class)
 public class NamedNodeTest extends SpecTest {
 	private NamedNode node;
@@ -169,7 +168,14 @@ public class NamedNodeTest extends SpecTest {
 	
 	@Test
 	public void weCanCreateANodeUsingATemplate() throws Exception {
-		given(nodeTemplate).containsFile("some-file.blah");
+		given(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(nodeTemplate).containsFile("some-file.blah")
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("workbench")).hasBeenCreated();
 		when(node).populate("default");
 		then(node).dirExists()
 			.and(node).hasFile("some-file.blah");
@@ -185,7 +191,14 @@ public class NamedNodeTest extends SpecTest {
 	
 	@Test
 	public void weCanCreateANodeUsingATemplateWhichHasADirectory() throws Exception {
-		given(nodeTemplate).containsFolder("the-dir");
+		given(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(nodeTemplate).containsFolder("the-dir")
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("workbench")).hasBeenCreated();
 		when(node).populate("default");
 		then(node).dirExists()
 			.and(node).hasDir("the-dir");

@@ -72,7 +72,10 @@ public class CreateAspectCommandTest extends SpecTest {
 
 	@Test
 	public void aspectIsCreatedWhenAllArgumentsAreValid() throws Exception {
-		given(app).hasBeenCreated();
+		given(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(app).hasBeenCreated();
 		when(brjs).runCommand("create-aspect", "app", "aspect");
 		then(aspect).dirExists()
 			.and(logging).containsFormattedConsoleMessage(ASPECT_CREATE_SUCCESS_CONSOLE_MSG, "aspect")
@@ -82,7 +85,10 @@ public class CreateAspectCommandTest extends SpecTest {
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreated()
+		given(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated();
 		when(brjs).runCommand("create-aspect", "app", "aspect");
 		then(exceptions).verifyNoOutstandingExceptions();

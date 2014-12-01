@@ -6,11 +6,13 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.engine.AbstractNode.Messages;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 
 import com.martiansoftware.jsap.FlaggedOption;
@@ -77,7 +79,9 @@ public class CreateAspectCommand extends ArgsParsingCommandPlugin
 		catch(ModelUpdateException e) {
 			throw new CommandOperationException("Cannot create aspect '" + aspect.dir().getPath() + "'", e);
 		}
-		
+		catch(TemplateInstallationException e) {
+			throw new CommandArgumentsException(e, this);
+		}
 		logger.println(Messages.ASPECT_CREATE_SUCCESS_CONSOLE_MSG, aspectName);
 		logger.println(Messages.ASPECT_PATH_CONSOLE_MSG, aspect.dir().getPath());
 		

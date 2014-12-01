@@ -34,7 +34,7 @@ public class BRJSTest extends SpecTest {
 	@Test
 	public void observersArentNotifiedOfEventsThatArentBeneathThem() throws Exception {
 		given(observer).observing(app2);
-		when(app1).populate("default");
+		when(app1).create();
 		then(observer).noNotifications();
 	}
 	

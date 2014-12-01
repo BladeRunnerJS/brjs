@@ -94,7 +94,11 @@ public class CreateAppCommandTest extends SpecTest {
 	@Test
 	public void appIsCreatedWhenAllArgumentsAreValid() throws Exception {
 		given(appJars).hasBeenCreated()
-			.and(logging).enabled();
+			.and(logging).enabled()
+			.and(brjs.templateGroup("default").template("app")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(app).dirExists()
 			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, app.getName(), app.dir().getPath())
@@ -104,8 +108,10 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void appIsCreatedWithTheSpecifiedTemplate() throws Exception {
-		given(brjs).containsFile("conf/templates/angular/app/fileForApp.txt")
-			.and(brjs).containsFile("conf/templates/angular/aspect/fileForAspect.txt");
+		given(brjs.templateGroup("angular").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.templateGroup("angular").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(brjs).runCommand("create-app", "app", "--template", "angular");
 		then(app).dirExists()
 			.and(app).hasFile("fileForApp.txt");
@@ -113,12 +119,18 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void appIsCreatedWithTheSpecifiedTemplateIfMoreTemplatesExist() throws Exception {
-		given(brjs).containsFile("conf/templates/angular/app/fileForAppAngular.txt")
-			.and(brjs).containsFile("conf/templates/angular/aspect/fileForAspectAngular.txt")
-			.and(brjs).containsFile("conf/templates/default/app/fileForAppDefault.txt")
-			.and(brjs).containsFile("conf/templates/default/aspect/fileForAspectDefault.txt")
-			.and(brjs).containsFile("conf/templates/myTemplate/app/fileForAppMyTemplate.txt")
-			.and(brjs).containsFile("conf/templates/myTemplate/aspect/fileForAspectMyTemplate.txt");
+		given(brjs.templateGroup("angular").template("app")).containsFile("fileForAppAngular.txt")
+			.and(brjs.templateGroup("angular").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("app")).containsFile("fileForAppDefault.txt")
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.templateGroup("myTemplate").template("app")).containsFile("fileForAppMyTemplate.txt")
+			.and(brjs.templateGroup("myTemplate").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("myTemplate").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("myTemplate").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(brjs).runCommand("create-app", "app", "--template", "myTemplate");
 		then(app).dirExists()
 			.and(app).hasFile("fileForAppMyTemplate.txt");
@@ -126,12 +138,18 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void defaultTemplateIsUsedIfNoneSpecifiedAndMultipleTemplatesExist() throws Exception {
-		given(brjs).containsFile("conf/templates/angular/app/fileForAppAngular.txt")
-			.and(brjs).containsFile("conf/templates/angular/aspect/fileForAspectAngular.txt")
-			.and(brjs).containsFile("conf/templates/default/app/fileForAppDefault.txt")
-			.and(brjs).containsFile("conf/templates/default/aspect/fileForAspectDefault.txt")
-			.and(brjs).containsFile("conf/templates/myTemplate/app/fileForAppMyTemplate.txt")
-			.and(brjs).containsFile("conf/templates/myTemplate/aspect/fileForAspectMyTemplate.txt");
+		given(brjs.templateGroup("angular").template("app")).containsFile("fileForAppAngular.txt")
+			.and(brjs.templateGroup("angular").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("app")).containsFile("fileForAppDefault.txt")
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.templateGroup("myTemplate").template("app")).containsFile("fileForAppMyTemplate.txt")
+			.and(brjs.templateGroup("myTemplate").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("myTemplate").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("myTemplate").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(brjs).runCommand("create-app", "app");
 		then(app).dirExists()
 			.and(app).hasFile("fileForAppDefault.txt");
@@ -155,16 +173,25 @@ public class CreateAppCommandTest extends SpecTest {
 	public void requirePrefixIsOptional() throws Exception {
 		App myApp = brjs.app("myApp");
 		
-		given(appJars).hasBeenCreated();
+		given(appJars).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("app")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(brjs).runCommand("create-app", "myApp");
 		then(myApp).dirExists()
 			.and(myApp.appConf()).namespaceIs("myapp");
 	}
+	
 	@Test
 	public void requirePrefixIsOptionalAndCorrectPrefixIsWrittenToAppConf() throws Exception {
 		App myApp = brjs.app("myApp");
 		
-		given(appJars).hasBeenCreated();
+		given(appJars).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("app")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(brjs).runCommand("create-app", "myApp");
 		then(myApp).dirExists()
 			.and(myApp).fileContentsContains("app.conf","myapp");
@@ -184,7 +211,11 @@ public class CreateAppCommandTest extends SpecTest {
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
-			.and(appJars).hasBeenCreated();
+			.and(appJars).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("app")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}

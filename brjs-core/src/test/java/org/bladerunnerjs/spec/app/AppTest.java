@@ -48,7 +48,8 @@ public class AppTest extends SpecTest {
 	// TODO: does this add anything over the baselining test?
 	@Test
 	public void weCanCreateAnAppUsingATemplate() throws Exception {
-		given(appTemplate).containsFile("some-file.blah")
+		given(brjs).usesProductionTemplates()
+			.and(appTemplate).containsFile("some-file.blah")
 			.and(logging).enabled();
 		when(app).populate("appx", "default");
 		then(app).dirExists()
@@ -65,7 +66,8 @@ public class AppTest extends SpecTest {
 	
 	@Test
 	public void populatingAnAppCausesRootObserversToBeNotified() throws Exception {
-		given(observer).observing(brjs);
+		given(brjs).usesProductionTemplates()
+			.and(observer).observing(brjs);
 		when(app).populate("default");
 		then(observer).notified(NodeReadyEvent.class, app)
 			.and(observer).notified(NodeReadyEvent.class, defaultAspect);
@@ -73,21 +75,21 @@ public class AppTest extends SpecTest {
 	
 	@Test
 	public void theAppConfIsWrittenOnPopulate() throws Exception {
-		given(appTemplate).hasBeenCreated();
+		given(brjs).usesProductionTemplates();
 		when(app).populate("appx", "default");
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appx");
 	}
 	
 	@Test
 	public void theAppConfIsNotWrittenOnZeroArgPopulate() throws Exception {
-		given(appTemplate).hasBeenCreated();
+		given(brjs).usesProductionTemplates();
 		when(app).populate("default");
 		then(app).doesNotHaveFile("app.conf");
 	}
 	
 	@Test
 	public void theAppConfCanBeManuallyWrittenOnZeroArgPopulate() throws Exception {
-		given(appTemplate).hasBeenCreated()
+		given(brjs).usesProductionTemplates()
 			.and(app).hasBeenPopulated("default");
 		when(app).appConf().write();
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appns");
@@ -116,7 +118,8 @@ public class AppTest extends SpecTest {
 	
 	@Test
 	public void appIsBaselinedDuringPopulation() throws Exception {
-		given(appTemplate).containsFolder("@appns");
+		given(brjs).usesProductionTemplates()
+			.and(appTemplate).containsFolder("@appns");
 		when(app).populate("appx", "default");
 		then(app).dirExists()
 			.and(app).hasDir("appx")
@@ -192,6 +195,10 @@ public class AppTest extends SpecTest {
 	@Test
 	public void appIsAvailableImmediatelyAfterCreationSinceFileModificationServiceListensForReadyEvent() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreated()
+			.and(brjs.templateGroup("default").template("app")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(brjs).appsHaveBeeniterated()
 			.and(brjs).hasBeenInactiveForOneMillisecond();
 		when(brjs.app("app1")).populate("default");

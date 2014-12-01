@@ -13,23 +13,22 @@ import org.bladerunnerjs.utility.TemplateUtility;
 
 
 public class BRJSNodeHelper {
-	public static void populate(BRJSNode node) throws InvalidNameException, ModelUpdateException {
+	public static void populate(BRJSNode node) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
 		populate(node, "default", false);
 	}
 	
-	public static void populate(BRJSNode node, String templateGroup) throws InvalidNameException, ModelUpdateException {
+	public static void populate(BRJSNode node, String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
 		populate(node, templateGroup, false);
 	}
 	
-	public static void populate(BRJSNode node, String templateGroup, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException {
+	public static void populate(BRJSNode node, String templateGroup, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
 		populate(node, templateGroup, new HashMap<String,String>(), allowNonEmptyDirectories);
 	}
 	
-	public static void populate(BRJSNode node, String templateGroup, Map<String, String> overrideTransformations, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException {
+	public static void populate(BRJSNode node, String templateGroup, Map<String, String> overrideTransformations, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
 		if(!allowNonEmptyDirectories) {
 			node.create();
 		}
-		
 		try {
 			Map<String, String> transformations = getNodeTransformations(node);
 			transformations.putAll( overrideTransformations );
@@ -37,11 +36,9 @@ public class BRJSNodeHelper {
 			TemplateUtility.installTemplate(node, templateGroup, node.getTemplateName(), transformations, allowNonEmptyDirectories);
 		}
 		catch(TemplateInstallationException e) {
-			throw new ModelUpdateException(e);
+			throw new TemplateInstallationException(e);
 		}
-		
 		node.incrementChildFileVersions();
-
 		node.ready();
 	}
 	

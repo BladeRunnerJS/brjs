@@ -29,6 +29,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
@@ -147,7 +148,7 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	@Override
-	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException {
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
 		try {
 			super.populate(templateGroup);
 			bladerunnerConf().write();

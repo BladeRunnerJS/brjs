@@ -32,6 +32,7 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.plugin.ResponseContent;
@@ -54,7 +55,7 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 	
 	@Override
-	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException {
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
 		bundlableNode.populate(templateGroup);
 	}
 	

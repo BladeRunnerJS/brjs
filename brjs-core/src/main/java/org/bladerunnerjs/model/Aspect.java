@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.NameValidator;
@@ -82,7 +83,7 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	}
 	
 	@Override
-	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
 		super.populate(templateGroup);
 		testType("unit").defaultTestTech().populate(templateGroup);

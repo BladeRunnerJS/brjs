@@ -44,7 +44,10 @@ public class WorkbenchTest extends SpecTest {
 	public void workbenchTemplateIsPopulatedAsExpected() throws Exception {
 		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
 			.and(workbenchTemplate).containsFolder("resources")
-			.and(workbenchTemplate).containsFolder("src");
+			.and(workbenchTemplate).containsFolder("src")
+			.and(brjs.templateGroup("default").template("blade")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated();
 		when(blade).populate("default");
 		then(workbench).hasDir("resources")
 			.and(workbench).hasDir("src")

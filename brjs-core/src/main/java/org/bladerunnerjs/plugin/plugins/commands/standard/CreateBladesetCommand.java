@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 
 import com.martiansoftware.jsap.FlaggedOption;
@@ -77,7 +78,9 @@ public class CreateBladesetCommand extends ArgsParsingCommandPlugin
 		catch(ModelUpdateException e) {
 			throw new CommandOperationException("Cannot create bladeset '" + bladeset.dir().getPath() + "'", e);
 		}
-		
+		catch (TemplateInstallationException e) {
+			throw new CommandOperationException(e);
+		}
 		logger.println(Messages.BLADESET_CREATE_SUCCESS_CONSOLE_MSG, bladesetName);
 		logger.println(Messages.BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
 		

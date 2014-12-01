@@ -6,6 +6,7 @@ import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 
 
 public class DefaultAspect extends Aspect
@@ -23,11 +24,11 @@ public class DefaultAspect extends Aspect
 	}
 	
 	@Override
-	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
 		BRJSNodeHelper.populate(this, templateGroup, true);
 		testType("unit").defaultTestTech().populate(templateGroup);
-		testType("acceptance").defaultTestTech().populate(templateGroup);
+		testType("acceptance").defaultTestTech().populate(templateGroup);	
 	}
 
 	public boolean exists()

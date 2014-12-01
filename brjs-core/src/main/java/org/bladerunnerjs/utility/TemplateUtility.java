@@ -15,6 +15,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 
@@ -25,9 +26,14 @@ public class TemplateUtility
 		installTemplate(node, templateGroup, templateName, transformations, false);
 	}
 	
-	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
+	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException{
 		File templateDir = node.root().templateGroup(templateGroup).template(templateName).dir();
-		installTemplate(node, templateDir, transformations, allowNonEmptyDirectories);
+		if (node.root().templateGroup(templateGroup).dirExists()) {
+			installTemplate(node, templateDir, transformations, allowNonEmptyDirectories);
+		}
+		else {
+			throw new TemplateNotFoundException("The template group '" + templateGroup + "' does not exist in " + templateDir.getParentFile().getParentFile() + ".");
+		}
 	}
 	
 	public static void installTemplate(BRJSNode node, File templateDir, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
@@ -49,6 +55,10 @@ public class TemplateUtility
 				IOFileFilter fileFilter = FileFilterUtils.and( new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), hiddenFilesFilter );
 				FileUtils.copyDirectory(node.root(), templateDir, tempDir, fileFilter);
 			}
+			else {
+				throw new TemplateNotFoundException("The template for '" + node.getTemplateName() + "' does not exist"
+						+ " for the template group '" + templateDir.getParentFile().getName() + "' in " + templateDir.getParentFile() + ".");
+			}	
 			
 			if(!transformations.isEmpty()) {
 				transformDir(node.root(), tempDir, transformations);
