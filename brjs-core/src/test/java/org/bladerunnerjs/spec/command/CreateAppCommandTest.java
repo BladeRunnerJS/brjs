@@ -11,13 +11,12 @@ import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
-import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
 
 public class CreateAppCommandTest extends SpecTest {
 	App app;
@@ -155,18 +154,31 @@ public class CreateAppCommandTest extends SpecTest {
 			.and(app).hasFile("fileForAppDefault.txt");
 	}
 	
-	//TODO figure out where to throw the exception
-	@Ignore
 	@Test
 	public void exceptionIsThrownIfSpecifiedTemplateDoesNotExist() throws Exception {
-		given(brjs).containsFile("conf/templates/angular/app/fileForAppAngular.txt")
-			.and(brjs).containsFile("conf/templates/angular/aspect/fileForAspectAngular.txt")
-			.and(brjs).containsFile("conf/templates/default/app/fileForAppDefault.txt")
-			.and(brjs).containsFile("conf/templates/default/aspect/fileForAspectDefault.txt")
-			.and(brjs).containsFile("conf/templates/myTemplate/app/fileForAppMyTemplate.txt")
-			.and(brjs).containsFile("conf/templates/myTemplate/aspect/fileForAspectMyTemplate.txt");
 		when(brjs).runCommand("create-app", "app", "--template", "nonexistent");
-		then(exceptions).verifyException(TemplateInstallationException.class);
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedAspectDoesNotExist() throws Exception {
+		given(brjs.templateGroup("angular").template("app")).containsFile("fileForAppAngular.txt");
+		when(brjs).runCommand("create-app", "app", "--template", "angular");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedAspectTestUnitDefaultDoesNotExist() throws Exception {
+		given(brjs.templateGroup("angular").template("app")).containsFile("fileForAppAngular.txt")
+			.and(brjs.templateGroup("angular").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("aspect-test-unit-default")).hasBeenCreated();
+		when(brjs).runCommand("create-app", "app", "--template", "angular");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedAspectTestAcceptanceDefaultDoesNotExist() throws Exception {
+		given(brjs.templateGroup("angular").template("app")).containsFile("fileForAppAngular.txt")
+			.and(brjs.templateGroup("angular").template("aspect")).hasBeenCreated();
+		when(brjs).runCommand("create-app", "app", "--template", "angular");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 	
 	@Test

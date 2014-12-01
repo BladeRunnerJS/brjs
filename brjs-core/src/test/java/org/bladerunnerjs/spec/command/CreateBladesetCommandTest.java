@@ -10,11 +10,10 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -133,16 +132,17 @@ public class CreateBladesetCommandTest extends SpecTest {
 			.and(bladeset).hasFile("fileForBladesetDefault.txt");
 	}
 	
-	//TODO figure out where to throw the exception
-	@Ignore
 	@Test
 	public void exceptionIsThrownIfSpecifiedTemplateDoesNotExist() throws Exception {
-		given(app).hasBeenCreated()
-			.and(brjs).containsFile("conf/templates/angular/app/fileForAppAngular.txt")
-			.and(brjs).containsFile("conf/templates/angular/bladeset/fileForBladesetAngular.txt")
-			.and(brjs).containsFile("conf/templates/default/bladeset/fileForBladesetDefault.txt")
-			.and(brjs).containsFile("conf/templates/myTemplate/bladeset/fileForBladesetMyTemplate.txt");
+		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-bladeset", "app", "bladeset", "--template", "nonexistent");
-		then(exceptions).verifyException(TemplateInstallationException.class);
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedTestUnitDefaultDoesNotExist() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("bladeset")).containsFile("fileForBladeset.txt");
+		when(brjs).runCommand("create-app", "app", "--template", "angular");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 }

@@ -163,6 +163,10 @@ public class ServedWarTest extends SpecTest {
 	public void jndiTokensAreReplaced() throws Exception
 	{
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
 			.and(brjs).hasProdVersion("1234")
@@ -177,6 +181,10 @@ public class ServedWarTest extends SpecTest {
 	public void correctContentLengthIsSetWhenJNDITokensAreReplaced() throws Exception
 	{
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")
@@ -192,6 +200,10 @@ public class ServedWarTest extends SpecTest {
 	public void correctContentLengthIsSetWhenJNDITokensAreReplacedAndADownstreamFilterCommitsTheResponseEarly() throws Exception
 	{
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")

@@ -11,13 +11,11 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
 
 public class CreateBladeCommandTest extends SpecTest {
 	App app;
@@ -205,16 +203,35 @@ public class CreateBladeCommandTest extends SpecTest {
 			.and(blade1InDefaultBladeset).hasFile("fileForBladeDefault.txt");
 	}
 	
-	//TODO figure out where to throw the exception
-	@Ignore
 	@Test
 	public void exceptionIsThrownIfSpecifiedTemplateDoesNotExist() throws Exception {
-		given(bladeset).hasBeenCreated()
-			.and(brjs).containsFile("conf/templates/angular/blade/fileForBladeAngular.txt")
-			.and(brjs).containsFile("conf/templates/default/blade/fileForBladeDefault.txt")
-			.and(brjs).containsFile("conf/templates/myTemplate/blade/fileForBladeMyTemplate.txt");
+		given(bladeset).hasBeenCreated();
 		when(brjs).runCommand("create-blade", "app", "default", "blade1", "--template", "nonexistent");
-		then(exceptions).verifyException(TemplateInstallationException.class);
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedTestUnitDefaultDoesNotExist() throws Exception {
+		given(bladeset).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("blade")).containsFile("fileForBladeset.txt");
+		when(brjs).runCommand("create-app", "app", "--template", "angular");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedTestAcceptanceDefaultDoesNotExist() throws Exception {
+		given(bladeset).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("blade")).containsFile("fileForBladeset.txt")
+			.and(brjs.templateGroup("angular").template("blade-test-unit-default")).hasBeenCreated();
+		when(brjs).runCommand("create-app", "app", "--template", "angular");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedWorkbenchDoesNotExist() throws Exception {
+		given(bladeset).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("blade")).containsFile("fileForBladeset.txt")
+			.and(brjs.templateGroup("angular").template("blade-test-unit-default")).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("blade-test-acceptance-default")).hasBeenCreated();
+		when(brjs).runCommand("create-app", "app", "--template", "angular");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 	
 }
