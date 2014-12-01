@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -179,5 +180,47 @@ public class CreateLibraryCommandTest extends SpecTest {
 			.and(app).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void appIsCreatedWithTheSpecifiedTemplate() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(app).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt");
+		when(brjs).runCommand("create-library", "app", "lib", "--template", "angular");
+		then(app.appJsLib("lib")).dirExists()
+			.and(app.appJsLib("lib")).hasFile("fileForLibAngular.txt");
+	}
+	
+	@Test
+	public void appIsCreatedWithTheSpecifiedTemplateIfMoreTemplatesExist() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(app).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
+			.and(brjs.templateGroup("default").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
+			.and(brjs.templateGroup("myTemplate").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
+		when(brjs).runCommand("create-library", "app", "lib", "--template", "myTemplate");
+		then(app.appJsLib("lib")).dirExists()
+			.and(app.appJsLib("lib")).hasFile("fileForLibMyTemplate.txt");
+	}
+	
+	@Test
+	public void defaultTemplateIsUsedIfNoneSpecifiedAndMultipleTemplatesExist() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(app).hasBeenCreated()
+			.and(brjs.templateGroup("angular").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
+			.and(brjs.templateGroup("default").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
+			.and(brjs.templateGroup("myTemplate").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
+		when(brjs).runCommand("create-library", "app", "lib");
+		then(app.appJsLib("lib")).dirExists()
+			.and(app.appJsLib("lib")).hasFile("fileForLibDefault.txt");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfSpecifiedTemplateDoesNotExist() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(app).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib", "--template", "nonexistent");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 }

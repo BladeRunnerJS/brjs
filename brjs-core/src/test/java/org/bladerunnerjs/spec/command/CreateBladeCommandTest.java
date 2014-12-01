@@ -212,14 +212,14 @@ public class CreateBladeCommandTest extends SpecTest {
 	
 	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedTestUnitDefaultDoesNotExist() throws Exception {
 		given(bladeset).hasBeenCreated()
-			.and(brjs.templateGroup("angular").template("blade")).containsFile("fileForBladeset.txt");
+			.and(brjs.templateGroup("angular").template("blade")).containsFile("fileForBlade.txt");
 		when(brjs).runCommand("create-app", "app", "--template", "angular");
 		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 	
 	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedTestAcceptanceDefaultDoesNotExist() throws Exception {
 		given(bladeset).hasBeenCreated()
-			.and(brjs.templateGroup("angular").template("blade")).containsFile("fileForBladeset.txt")
+			.and(brjs.templateGroup("angular").template("blade")).containsFile("fileForBlade.txt")
 			.and(brjs.templateGroup("angular").template("blade-test-unit-default")).hasBeenCreated();
 		when(brjs).runCommand("create-app", "app", "--template", "angular");
 		then(exceptions).verifyException(TemplateNotFoundException.class);
@@ -227,7 +227,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	
 	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedWorkbenchDoesNotExist() throws Exception {
 		given(bladeset).hasBeenCreated()
-			.and(brjs.templateGroup("angular").template("blade")).containsFile("fileForBladeset.txt")
+			.and(brjs.templateGroup("angular").template("blade")).containsFile("fileForBlade.txt")
 			.and(brjs.templateGroup("angular").template("blade-test-unit-default")).hasBeenCreated()
 			.and(brjs.templateGroup("angular").template("blade-test-acceptance-default")).hasBeenCreated();
 		when(brjs).runCommand("create-app", "app", "--template", "angular");
