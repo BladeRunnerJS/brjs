@@ -180,7 +180,7 @@ public class CreateBladeCommandTest extends SpecTest {
 			.and(brjs.templateGroup("myTemplate").template("blade-test-unit-default")).hasBeenCreated()
 			.and(brjs.templateGroup("myTemplate").template("blade-test-acceptance-default")).hasBeenCreated()
 			.and(brjs.templateGroup("myTemplate").template("workbench")).hasBeenCreated();
-		when(brjs).runCommand("create-blade", "app", "default", "blade1", "--template", "iuhu");
+		when(brjs).runCommand("create-blade", "app", "default", "blade1", "--template", "myTemplate");
 		then(blade1InDefaultBladeset).dirExists()
 			.and(blade1InDefaultBladeset).hasFile("fileForBladeMyTemplate.txt");
 	}
