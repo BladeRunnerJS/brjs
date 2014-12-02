@@ -26,7 +26,10 @@ LocaleUtility.getBrowserAcceptedLocales = function() {
 		userAcceptedLocales = [navigator.language];
 	}
 	else {
-		userAcceptedLocales = [navigator.userLanguage];
+		var parts = navigator.userLanguage.split('-');
+		var locale = (parts.length == 1) ? parts[0] : parts[0] + '-' + parts[1].toUpperCase()
+		
+		userAcceptedLocales = [locale];
 	}
 
 	// convert locale codes to use underscores like we do on the server
