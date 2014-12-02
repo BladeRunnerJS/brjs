@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.TreeMap;
-import java.util.Map;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -15,8 +13,6 @@ public class SourceModulePatch
 {
 	public static final String PATCH_APPLIED_MESSAGE = "Patch found for %s, applying patch from %s.";
 	public static final String NO_PATCH_APPLIED_MESSAGE = "No patch found for %s, there was no patch file at %s so no patch will be applied.";
-	
-	private static final Map<String, SourceModulePatch> patchesCache = new TreeMap<String, SourceModulePatch>();
 	
 	private MemoizedFile patchFile;
 	private BRJS brjs;
@@ -75,23 +71,7 @@ public class SourceModulePatch
 		return reader;
 	}
 	
-	
-	/*----- static methods for getting patches so we can cache them -----*/
-	
-	public static SourceModulePatch getPatchForRequirePath(AssetLocation assetLocation, String requirePath)
-	{
-		String key = getPatchesCacheKey(assetLocation, requirePath);
-		if (patchesCache.containsKey(key))
-		{
-			return patchesCache.get(key);
-		}
+	public static SourceModulePatch getPatchForRequirePath(AssetLocation assetLocation, String requirePath) {
 		return new SourceModulePatch(assetLocation, requirePath);
 	}
-	
-	
-	private static String getPatchesCacheKey(AssetLocation assetLocation, String requirePath)
-	{
-		return assetLocation.toString() + "-" + requirePath;
-	}
-	
 }
