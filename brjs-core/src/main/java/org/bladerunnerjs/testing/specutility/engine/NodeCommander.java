@@ -11,7 +11,6 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
-import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class NodeCommander<N extends Node> extends ModelCommander {
@@ -60,7 +59,7 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	}
 	
 	public CommanderChainer hasPackageStyle(String packagePath, String jsStyle) {
-		JsStyleUtility.setJsStyle( (BRJS) node.root(), node.file(packagePath), jsStyle);
+		((BRJS) node.root()).jsStyleAccessor().setJsStyle(node.file(packagePath), jsStyle);
 		return commanderChainer;
 	}
 	
