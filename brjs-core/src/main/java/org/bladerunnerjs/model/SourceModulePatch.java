@@ -16,7 +16,7 @@ public class SourceModulePatch
 	public static final String PATCH_APPLIED_MESSAGE = "Patch found for %s, applying patch from %s.";
 	public static final String NO_PATCH_APPLIED_MESSAGE = "No patch found for %s, there was no patch file at %s so no patch will be applied.";
 	
-	private static Map<String, SourceModulePatch> patchesCache = new TreeMap<String, SourceModulePatch>();
+	private static final Map<String, SourceModulePatch> patchesCache = new TreeMap<String, SourceModulePatch>();
 	
 	private MemoizedFile patchFile;
 	private BRJS brjs;

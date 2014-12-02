@@ -11,7 +11,7 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class JsStyleUtility {
 	
-	private static Map<String, MemoizedValue<String>> dirStyleCache = new HashMap<>();
+	private static final Map<String, MemoizedValue<String>> dirStyleCache = new HashMap<>();
 	
 	public static String getJsStyle(BRJS brjs, File dir) {
 		String path = dir.getAbsolutePath();
