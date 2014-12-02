@@ -18,9 +18,6 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	}
 	
 	public String appNamespace;
-	
-	@NotNull
-	@NotEmpty
 	public String requirePrefix;
 	
 	@NotNull
@@ -31,12 +28,14 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	
 	@Override
 	public void initialize(BRJSNode node) {
-		if(appNamespace != null) {
+		if((appNamespace == null) && (requirePrefix == null)) {
+			requirePrefix = "appns";
+		}
+		else if(appNamespace != null) {
 			Logger logger = node.root().getLoggerFactory().getLogger(YamlAppConf.class);
 			logger.warn(Messages.APP_NAMESPACE_PROPERTY_DEPRECATED);
 		}
 		
-		requirePrefix = getDefault(requirePrefix, (appNamespace != null) ? appNamespace : "appns");
 		locales = getDefault(locales, "en");
 		localeCookieName = getDefault(localeCookieName, "BRJS.LOCALE");
 	}
@@ -44,15 +43,21 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	@Override
 	public void verify() throws ConfigException {
 		try {
-			if((appNamespace != null) && (appNamespace != requirePrefix)) throw new ConfigException("The 'appNamespace' and 'requirePrefix' properties within 'app.conf' should not both be defined.");
+			if((appNamespace != null) && (requirePrefix != null)) throw new ConfigException("The 'appNamespace' and 'requirePrefix' properties within 'app.conf' should not both be defined.");
+			if(requirePrefix() == null) throw new ConfigException("The 'requirePrefix' property within 'app.conf' must be defined.");
+			if(requirePrefix().equals("")) throw new ConfigException("'requirePrefix' may not be empty");
 			
 			ConfigValidationChecker.validate(this);
-			NameValidator.assertValidPackageName(node, requirePrefix);
+			NameValidator.assertValidPackageName(node, requirePrefix());
 			verifyLocales(locales);
 		}
 		catch(InvalidPackageNameException e) {
 			throw new ConfigException(e);
 		}
+	}
+
+	public String requirePrefix() {
+		return (requirePrefix != null) ? requirePrefix : appNamespace;
 	}
 	
 	private void verifyLocales(String locales) throws ConfigException {

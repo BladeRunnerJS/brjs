@@ -49,7 +49,7 @@ public class AppConfTest extends SpecTest {
 	@Test
 	public void havingBothARequirePrefixAndAnAppNamespacePropertyCausesAnException() throws Exception {
 		given(app).hasBeenCreated()
-			.and(app).containsFileWithContents("app.conf", "appNamespace: requireprefix1\nrequirePrefix: requireprefix2");
+			.and(app).containsFileWithContents("app.conf", "appNamespace: requireprefix\nrequirePrefix: requireprefix");
 		when(app).appConfHasBeenRead();
 		then(exceptions).verifyException(ConfigException.class, "appNamespace", "requirePrefix");
 	}
@@ -115,7 +115,7 @@ public class AppConfTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "requirePrefix: \nlocales: en");
 		when(app).appConf();
-		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'requirePrefix' may not be empty"));
+		then(exceptions).verifyException(ConfigException.class, unquoted("'requirePrefix' may not be empty"));
 	}
 	
 	@Test
