@@ -89,17 +89,19 @@ public class I18nFileAsset implements Asset
 	public Map<String,String> getLocaleProperties() throws IOException, RequirePathException, NamespaceException
 	{
 		Map<String, String> propertiesMap = new HashMap<String,String>();
-		
 		Properties i18nProperties = new Properties();
-		i18nProperties.load( new UnicodeReader(assetFile, defaultFileCharacterEncoding) );
 		
-		for (String property : i18nProperties.stringPropertyNames())
-		{
-			assetLocation().assertIdentifierCorrectlyNamespaced(property);
-			String value = i18nProperties.getProperty(property);
-			propertiesMap.put(property, value.replaceAll("\n", "\\\\n"));
+		try(Reader propertiesReader = new UnicodeReader(assetFile, defaultFileCharacterEncoding)) {
+			i18nProperties.load( propertiesReader );
+			
+			for (String property : i18nProperties.stringPropertyNames())
+			{
+				assetLocation().assertIdentifierCorrectlyNamespaced(property);
+				String value = i18nProperties.getProperty(property);
+				propertiesMap.put(property, value.replaceAll("\n", "\\\\n"));
+			}
 		}
-
+		
 		return propertiesMap;
 	}
 	
