@@ -30,7 +30,6 @@ LocaleUtility.getBrowserAcceptedLocales = function() {
 	}
 
 	// convert locale codes to use underscores like we do on the server
-debugger;
 	for(var i = 0, l = userAcceptedLocales.length; i < l; ++i) {
 		var userAcceptedLocale = userAcceptedLocales[i];
 		userAcceptedLocales[i] = userAcceptedLocale.replace('-', '_');
