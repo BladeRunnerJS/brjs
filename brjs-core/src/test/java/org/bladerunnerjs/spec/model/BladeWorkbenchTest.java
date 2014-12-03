@@ -26,7 +26,7 @@ public class BladeWorkbenchTest extends SpecTest {
 			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
-			workbenchTemplate = brjs.template("workbench");
+			workbenchTemplate = brjs.template("bladeworkbench");
 			bladeset = app.bladeset("bladeset");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();

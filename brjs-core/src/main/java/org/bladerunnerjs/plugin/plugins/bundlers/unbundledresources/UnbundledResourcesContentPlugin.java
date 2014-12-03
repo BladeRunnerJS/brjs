@@ -12,7 +12,9 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.BladesetWorkbench;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
@@ -39,8 +41,10 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	public static final String BLADESET_UNBUNDLED_RESOURCES_REQUEST = "bladeset-unbundled-resources-request";
 	public static final String BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST = "blade-versioned-unbundled-resources-request";
 	public static final String BLADE_UNBUNDLED_RESOURCES_REQUEST = "blade-unbundled-resources-request";
-	public static final String WORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST = "workbench-versioned-unbundled-resources-request";
-	public static final String WORKBENCH_UNBUNDLED_RESOURCES_REQUEST = "workbench-unbundled-resources-request";
+	public static final String BLADEWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST = "bladeworkbench-versioned-unbundled-resources-request";
+	public static final String BLADEWORKBENCH_UNBUNDLED_RESOURCES_REQUEST = "bladeworkbench-unbundled-resources-request";
+	public static final String BLADESETWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST = "bladesetworkbench-versioned-unbundled-resources-request";
+	public static final String BLADESETWORKBENCH_UNBUNDLED_RESOURCES_REQUEST = "bladesetworkbench-unbundled-resources-request";
 	
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
@@ -48,8 +52,10 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("unbundled-resources/bladeset_<bladeset>/blade_<blade>/workbench/<file-path>").as(WORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
-				.and("/unbundled-resources/bladeset_<bladeset>/blade_<blade>/workbench/<file-path>").as(WORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
+			.accepts("unbundled-resources/bladeset_<bladeset>/blade_<blade>/workbench/<file-path>").as(BLADEWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
+				.and("/unbundled-resources/bladeset_<bladeset>/blade_<blade>/workbench/<file-path>").as(BLADEWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
+				.and("unbundled-resources/bladeset_<bladeset>/workbench/<file-path>").as(BLADESETWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
+				.and("/unbundled-resources/bladeset_<bladeset>/workbench/<file-path>").as(BLADESETWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
 				.and("unbundled-resources/bladeset_<bladeset>/blade_<blade>/<file-path>").as(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
 				.and("/unbundled-resources/bladeset_<bladeset>/blade_<blade>/<file-path>").as(BLADE_UNBUNDLED_RESOURCES_REQUEST)
 				.and("unbundled-resources/bladeset_<bladeset>/<file-path>").as(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST)
@@ -109,12 +115,18 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	   			Blade blade = bundleSet.getBundlableNode().app().bladeset(contentPath.properties.get("bladeset")).blade(contentPath.properties.get("blade"));
 	   			return getFileContents(bundleSet, contentPath, contentAccessor, blade);
 	   		}
-    		else if (contentPath.formName.equals(WORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
-      				 || contentPath.formName.equals(WORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
+    		else if (contentPath.formName.equals(BLADEWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
+      				 || contentPath.formName.equals(BLADEWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
    	   		{    			
    	   			Workbench<?> workbench = bundleSet.getBundlableNode().app().bladeset(contentPath.properties.get("bladeset")).blade(contentPath.properties.get("blade")).workbench();
    	   			return getFileContents(bundleSet, contentPath, contentAccessor, workbench);
    	   		}
+    		else if (contentPath.formName.equals(BLADESETWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
+     				 || contentPath.formName.equals(BLADESETWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
+  	   		{    			
+  	   			Workbench<?> workbench = bundleSet.getBundlableNode().app().bladeset(contentPath.properties.get("bladeset")).workbench();
+  	   			return getFileContents(bundleSet, contentPath, contentAccessor, workbench);
+  	   		}
 			else {
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
@@ -181,13 +193,22 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	    			requestPaths.add( contentPathParser.createRequest(BLADE_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
 	    			requestPaths.add( contentPathParser.createRequest(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
 				}
-				if (assetContainer instanceof Workbench)
+				if (assetContainer instanceof BladeWorkbench)
 				{
-					Workbench<?> workbench = (Workbench<?>) assetContainer;
+					@SuppressWarnings("unchecked")
+					Workbench<BladeWorkbench> workbench = (Workbench<BladeWorkbench>) assetContainer;
 					Blade blade = brjs.locateAncestorNodeOfClass(workbench, Blade.class);
 					Bladeset bladeset = brjs.locateAncestorNodeOfClass(blade, Bladeset.class);
-	    			requestPaths.add( contentPathParser.createRequest(WORKBENCH_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
-	    			requestPaths.add( contentPathParser.createRequest(WORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
+	    			requestPaths.add( contentPathParser.createRequest(BLADEWORKBENCH_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
+	    			requestPaths.add( contentPathParser.createRequest(BLADEWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), relativePath) );
+				}
+				if (assetContainer instanceof BladesetWorkbench)
+				{
+					@SuppressWarnings("unchecked")
+					Workbench<BladesetWorkbench> workbench = (Workbench<BladesetWorkbench>) assetContainer;
+					Bladeset bladeset = brjs.locateAncestorNodeOfClass(workbench, Bladeset.class);
+	    			requestPaths.add( contentPathParser.createRequest(BLADESETWORKBENCH_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), relativePath) );
+	    			requestPaths.add( contentPathParser.createRequest(BLADESETWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST, bladeset.getName(), relativePath) );
 				}
 			}
 		}

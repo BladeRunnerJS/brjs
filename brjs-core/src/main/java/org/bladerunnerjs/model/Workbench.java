@@ -86,6 +86,6 @@ public abstract class Workbench<N extends Node> extends AbstractBrowsableNode im
 	
 	@Override
 	public String getTypeName() {
-		return getClass().getSuperclass().getSimpleName();
+		return getClass().getSimpleName();
 	}
 }

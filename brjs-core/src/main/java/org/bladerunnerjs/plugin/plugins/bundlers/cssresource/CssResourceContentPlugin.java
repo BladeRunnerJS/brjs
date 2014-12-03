@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.BladesetWorkbench;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
@@ -49,9 +50,10 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	public static final String BLADESET_RESOURCE_REQUEST = "bladeset-resource-request";
 	public static final String BLADE_THEME_REQUEST = "blade-theme-request";
 	public static final String BLADE_RESOURCE_REQUEST = "blade-resource-request";
-	public static final String WORKBENCH_THEME_REQUEST = "workbench-theme-request";
-	public static final String WORKBENCH_RESOURCE_REQUEST = "workbench-resource-request";
+	public static final String BLADEWORKBENCH_RESOURCE_REQUEST = "bladeworkbench-resource-request";
+	public static final String BLADESETWORKBENCH_RESOURCE_REQUEST = "bladesetworkbench-resource-request";
 	public static final String LIB_REQUEST = "lib-request";
+	public static final String WORKBENCH_THEME_REQUEST = "workbench-theme-request";
 	
 	private final ContentPathParser contentPathParser;
 	private BRJS brjs;
@@ -65,8 +67,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 				.and("cssresource/bladeset_<bladeset>_resource/<resourcePath>").as(BLADESET_RESOURCE_REQUEST)
 				.and("cssresource/bladeset_<bladeset>/blade_<blade>/theme_<theme>/<resourcePath>").as(BLADE_THEME_REQUEST)
 				.and("cssresource/bladeset_<bladeset>/blade_<blade>_resource/<resourcePath>").as(BLADE_RESOURCE_REQUEST)
+				.and("cssresource/bladeset_<bladeset>/blade_<blade>/workbench_resource/<resourcePath>").as(BLADEWORKBENCH_RESOURCE_REQUEST)
+				.and("cssresource/bladeset_<bladeset>/workbench_resource/<resourcePath>").as(BLADESETWORKBENCH_RESOURCE_REQUEST)
 				.and("cssresource/bladeset_<bladeset>/blade_<blade>/workbench/theme_<theme>/<resourcePath>").as(WORKBENCH_THEME_REQUEST)
-				.and("cssresource/bladeset_<bladeset>/blade_<blade>/workbench_resource/<resourcePath>").as(WORKBENCH_RESOURCE_REQUEST)
 				.and("cssresource/lib_<lib>/<resourcePath>").as(LIB_REQUEST)
 			.where("aspect").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 				.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
@@ -255,11 +258,17 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			//TODO: this needs implementing
 			// Workbenches dont have themes ?
 		}
-		else if (contentPath.formName.equals(WORKBENCH_RESOURCE_REQUEST))
+		else if (contentPath.formName.equals(BLADEWORKBENCH_RESOURCE_REQUEST))
 		{
 			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
 			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
 			BladeWorkbench workbench = blade.workbench();
+			resourceFile = workbench.file(resourcePath);
+		}
+		else if (contentPath.formName.equals(BLADESETWORKBENCH_RESOURCE_REQUEST))
+		{
+			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
+			BladesetWorkbench workbench = bladeset.workbench();
 			resourceFile = workbench.file(resourcePath);
 		}
 		else if (contentPath.formName.equals(LIB_REQUEST))
@@ -334,8 +343,15 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			Blade blade = brjs.locateAncestorNodeOfClass(workbench, Blade.class);
 			Bladeset bladeset = brjs.locateAncestorNodeOfClass(blade, Bladeset.class);
 			themeRequestName = WORKBENCH_THEME_REQUEST;
-			resourcesRequestName = WORKBENCH_RESOURCE_REQUEST;
+			resourcesRequestName = BLADEWORKBENCH_RESOURCE_REQUEST;
 			requestArgs = new String[] { bladeset.getName(), blade.getName() };
+		}
+		else if (assetContainer instanceof BladesetWorkbench)
+		{
+			BladesetWorkbench workbench = (BladesetWorkbench) assetContainer;
+			Bladeset bladeset = brjs.locateAncestorNodeOfClass(workbench, Bladeset.class);
+			resourcesRequestName = BLADESETWORKBENCH_RESOURCE_REQUEST;
+			requestArgs = new String[] { bladeset.getName() };
 		}
 		else if (assetContainer instanceof JsLib)
 		{

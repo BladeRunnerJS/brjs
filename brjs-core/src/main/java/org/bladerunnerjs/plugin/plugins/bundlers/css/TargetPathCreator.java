@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.BladesetWorkbench;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.BladeWorkbench;
@@ -113,10 +114,22 @@ public class TargetPathCreator
 				
 				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
 					String resourcePath = assetLocation.file("resources").getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.WORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
+					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADEWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
 				} else {
 					String resourcePath = workbench.dir().getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.WORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
+					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADEWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
+				}
+			}
+			else if(assetContainer instanceof BladesetWorkbench) {
+				BladesetWorkbench workbench = (BladesetWorkbench) assetContainer;
+				Bladeset bladeset = workbench.parent();
+				
+				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
+					String resourcePath = assetLocation.file("resources").getRelativePath(imageFile);
+					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESETWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), resourcePath);
+				} else {
+					String resourcePath = workbench.dir().getRelativePath(imageFile);
+					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESETWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), resourcePath);
 				}
 			}
 			else if(assetContainer instanceof JsLib) {

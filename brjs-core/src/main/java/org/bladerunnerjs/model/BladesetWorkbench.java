@@ -24,7 +24,7 @@ public class BladesetWorkbench extends Workbench<Bladeset> {
 		Bladeset bladeset = root().locateAncestorNodeOfClass(this, Bladeset.class);
 		assetContainers.add(bladeset);
 		assetContainers.addAll(bladeset.blades());
-		assetContainers.add(this);		
-		return assetContainers;
+		assetContainers.add(this);
+		return assetContainers;	
 	}
 }

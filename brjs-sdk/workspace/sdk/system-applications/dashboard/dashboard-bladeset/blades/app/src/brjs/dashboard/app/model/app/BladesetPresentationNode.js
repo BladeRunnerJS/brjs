@@ -10,9 +10,12 @@ brjs.dashboard.app.model.app.BladesetPresentationNode = function(sBladesetName, 
 	this.bladeSetClasses = new br.presenter.property.EditableProperty("bladeset");
 	this.blades = new br.presenter.node.NodeList(this._getBladePresentationModels(pBlades || []),
 		brjs.dashboard.app.model.app.BladePresentationNode);
-	var appName = this.m_oPresentationModel.appDetailScreen.appName.getValue();
-	var sWorkbenchPopoutUrl = "/" + appName + "/" + sBladesetName + "/workbench/";
-	this.workbenchUrl.setValue(sWorkbenchPopoutUrl);
+	if(this.m_oPresentationModel)
+	{
+		var appName = this.m_oPresentationModel.appDetailScreen.appName.getValue();
+		var sWorkbenchPopoutUrl = "/" + appName + "/" + sBladesetName + "/workbench/";
+		this.workbenchUrl.setValue(sWorkbenchPopoutUrl);
+	}
 };
 br.Core.extend(brjs.dashboard.app.model.app.BladesetPresentationNode, br.presenter.node.PresentationNode);
 
