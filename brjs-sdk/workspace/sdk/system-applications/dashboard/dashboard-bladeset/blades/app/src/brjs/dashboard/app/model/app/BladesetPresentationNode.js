@@ -4,11 +4,15 @@ brjs.dashboard.app.model.app.BladesetPresentationNode = function(sBladesetName, 
 	this.m_fOnTestProgress = this._onTestProgress.bind(this);
 	this.m_fOnTestError = this._onTestError.bind(this);
 	this.m_oHoverTimeout = null;
+	this.workbenchUrl = new br.presenter.property.WritableProperty();
 	
 	this.bladesetName = new br.presenter.property.Property(sBladesetName);
 	this.bladeSetClasses = new br.presenter.property.EditableProperty("bladeset");
 	this.blades = new br.presenter.node.NodeList(this._getBladePresentationModels(pBlades || []),
 		brjs.dashboard.app.model.app.BladePresentationNode);
+	var appName = this.m_oPresentationModel.appDetailScreen.appName.getValue();
+	var sWorkbenchPopoutUrl = "/" + appName + "/" + sBladesetName + "/workbench/";
+	this.workbenchUrl.setValue(sWorkbenchPopoutUrl);
 };
 br.Core.extend(brjs.dashboard.app.model.app.BladesetPresentationNode, br.presenter.node.PresentationNode);
 
@@ -52,6 +56,11 @@ brjs.dashboard.app.model.app.BladesetPresentationNode.prototype._onTestError = f
 	this.m_oPresentationModel.getDashboardService().setTestRunInProgress(false);
 	this.m_oPresentationModel.dialog.showDialog("testRunnerDialog");
 	this.m_oPresentationModel.dialog.testRunnerDialog.displayTestError(sErrorMessage);
+};
+
+brjs.dashboard.app.model.app.BladesetPresentationNode.prototype.popoutWorkbench = function()
+{
+	this.m_oPresentationModel.getWindowOpenerService().openWindow(this.workbenchUrl.getValue());
 };
 
 brjs.dashboard.app.model.app.BladesetPresentationNode.prototype._getBladePresentationModels = function(pBlades)
