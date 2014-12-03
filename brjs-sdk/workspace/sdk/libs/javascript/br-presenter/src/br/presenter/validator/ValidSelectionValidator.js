@@ -38,7 +38,7 @@ br.presenter.validator.ValidSelectionValidator.prototype.validate = function(vVa
 		bIsValid = true;
 		sValidationMessage = i18n("br.presenter.validator.invalidSelectionsAllowed");
 	}
-	else if(vValue !== null)
+	else if(vValue !== null && typeof(vValue) !== 'undefined')
 	{
 		var pOptions = this.m_oOptions.getOptions();
 		for(var i = 0; i < pOptions.length; i++)
