@@ -5,13 +5,15 @@ brjs.dashboard.app.model.app.BladesetPresentationNode = function(sBladesetName, 
 	this.m_fOnTestError = this._onTestError.bind(this);
 	this.m_oHoverTimeout = null;
 	this.workbenchUrl = new br.presenter.property.WritableProperty();
-	
+	this.isBladeset = new br.presenter.property.WritableProperty(false);
+
 	this.bladesetName = new br.presenter.property.Property(sBladesetName);
 	this.bladeSetClasses = new br.presenter.property.EditableProperty("bladeset");
 	this.blades = new br.presenter.node.NodeList(this._getBladePresentationModels(pBlades || []),
 		brjs.dashboard.app.model.app.BladePresentationNode);
-	if(this.m_oPresentationModel)
+	if(this.m_oPresentationModel && sBladesetName != "default")
 	{
+		this.isBladeset.setValue(true);
 		var appName = this.m_oPresentationModel.appDetailScreen.appName.getValue();
 		var sWorkbenchPopoutUrl = "/" + appName + "/" + sBladesetName + "/workbench/";
 		this.workbenchUrl.setValue(sWorkbenchPopoutUrl);
