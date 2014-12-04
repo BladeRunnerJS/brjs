@@ -1,6 +1,7 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.IOException;
+
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -15,9 +16,29 @@ public class BundlableNodeBuilder<N extends BundlableNode> extends AssetContaine
 		this.bundlableNode = bundlableNode;
 	}
 	
+	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception  {
+		writeToFile(bundlableNode.file("index.html"), generateStringClassReferencesContent(classNames));
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException {
 		bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getDevVersion());
 		
 		return builderChainer;
+	}
+	
+	private String generateStringClassReferencesContent(String... classNames) {
+		String content = "";
+		
+		for(String className : classNames) {
+			if(className.contains("/")) {
+				throw new RuntimeException("The '" + className + "' class name contains a slash. Did you mean to use indexPageRequires() instead?");
+			}
+			
+			content += className + "\n";
+		}
+		
+		return content;
 	}
 }
