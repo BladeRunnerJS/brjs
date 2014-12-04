@@ -336,11 +336,10 @@ public class TestRunner {
 		}
 	}
 	
-	@SuppressWarnings("static-access")
 	private boolean isDefaultBladeset(MemoizedFile path) {
-		int indexOfApps = path.toString().indexOf(APPS_DIR + path.separator);
-		String pathAfterApps = path.toString().substring(indexOfApps + (APPS_DIR + path.separator).length());
-		if (pathAfterApps.contains(path.separator))
+		int indexOfApps = path.toString().indexOf(APPS_DIR + File.separator);
+		String pathAfterApps = path.toString().substring(indexOfApps + (APPS_DIR + File.separator).length());
+		if (pathAfterApps.contains(File.separator))
 			return false;
 		return true;
 	}
@@ -576,7 +575,7 @@ public class TestRunner {
 			}
 		}
 		
-		return Joiner.on(System.getProperty("path.separator")).join(classPath);
+		return Joiner.on(System.getProperty("File.separator")).join(classPath);
 	}
 	
 	private String getFriendlyTestPath(MemoizedFile baseDir, MemoizedFile testDir)
