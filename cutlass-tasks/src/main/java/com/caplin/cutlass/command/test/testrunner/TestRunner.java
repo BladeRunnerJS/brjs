@@ -575,7 +575,7 @@ public class TestRunner {
 			}
 		}
 		
-		return Joiner.on(System.getProperty("File.separator")).join(classPath);
+		return Joiner.on(System.getProperty("path.separator")).join(classPath);
 	}
 	
 	private String getFriendlyTestPath(MemoizedFile baseDir, MemoizedFile testDir)
