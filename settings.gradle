@@ -1,9 +1,24 @@
-include "cutlass-tasks",
-		"cutlass-common",
-		"brjs-sdk",
-		"system-app-servlets",
-		"brjs-core",
-		"brjs-servlet",
-        "brjs-logger",
-        "brjs-logger-binding",
-        "brjs-runner"
+// from http://forums.gradle.org/gradle/topics/creating_sbprojects_dynamically_without_having_a_settings_gradle
+
+import static groovy.io.FileVisitResult.*  
+import static groovy.io.FileType.*
+
+def skipDirs = ~/^(build|\..*|src|out)/  
+def preDir = {  
+	if (skipDirs.matcher(it.name).matches())  
+		return SKIP_SUBTREE  
+}
+
+def getProjectName(String dir) {
+	return dir.minus(rootDir.toString() + "/").replaceAll("/", ":")  
+}
+
+rootDir.traverse(  
+	type: DIRECTORIES,  
+	preDir: preDir) { dir->  
+	def dstr = dir.toString()  
+	if ((!skipDirs.matcher(dir.name)) &&  
+			new File(dstr + "/build.gradle").exists()) {  
+		include getProjectName(dstr)  
+  }  
+}

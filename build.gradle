@@ -46,8 +46,15 @@ allprojects {
 		buildHostname = projectBuildHostname
 	}
 
-	def projectContainingSharedLogic = (project.parent) ? project.parent : project
-	apply from: projectContainingSharedLogic.file('dependencies.gradle')
+	def projectContainingSharedLogic = project
+	while (projectContainingSharedLogic != null) {
+		def dependenciesFile = projectContainingSharedLogic.file('dependencies.gradle')
+		if (dependenciesFile.isFile()) {
+			apply from: dependenciesFile
+			break
+		}
+		projectContainingSharedLogic = projectContainingSharedLogic.parent
+	}
 
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
