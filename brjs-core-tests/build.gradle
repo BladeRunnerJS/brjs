@@ -33,4 +33,7 @@ sourceSets {
 dependencies {
 	testCompile project(path: ":brjs-core")
 	testCompile project(path: ":plugins:brjs-plugins")
+	
+	testRuntime project(path: ':brjs-logger-binding')
+	testRuntime dependency('jetty-jsp')
 }

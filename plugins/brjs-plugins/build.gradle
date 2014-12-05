@@ -25,4 +25,6 @@ buildscript {
     	retrolambdaConfig dependency('retrolambda')
 	
     	compile project(path: ":brjs-core")
+    	
+    	testRuntime dependency('jetty-jsp')
     }

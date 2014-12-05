@@ -62,7 +62,6 @@ dependencies {
 	compileOnly dependency('servlet-api')
 	
 	testRuntime project(path: ':brjs-logger-binding')
-	testRuntime dependency('jetty-jsp')
 }
 
 jar {
