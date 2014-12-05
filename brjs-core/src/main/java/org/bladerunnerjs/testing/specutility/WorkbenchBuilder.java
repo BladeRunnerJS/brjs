@@ -31,16 +31,4 @@ public class WorkbenchBuilder extends BundlableNodeBuilder<Workbench>
 		
 		return builderChainer;
 	}
-	
-	public BuilderChainer indexPageHasContent(String content) throws Exception 
-	{
-		return indexPageRefersTo(content);
-	}
-
-	public BuilderChainer indexPageRequires(String requirePath) throws Exception
-	{
-		writeToFile(workbench.file("index.html"), "require('"+requirePath+"');");
-		
-		return builderChainer;
-	}
 }

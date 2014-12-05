@@ -16,8 +16,20 @@ public class BundlableNodeBuilder<N extends BundlableNode> extends AssetContaine
 		this.bundlableNode = bundlableNode;
 	}
 	
+	public BuilderChainer indexPageRequires(String requirePath) throws Exception {
+		writeToFile(bundlableNode.file("index.html"), "require('"+requirePath+"');");
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception  {
 		writeToFile(bundlableNode.file("index.html"), generateStringClassReferencesContent(classNames));
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer indexPageHasContent(String content) throws Exception {
+		writeToFile(bundlableNode.file("index.html"), content);
 		
 		return builderChainer;
 	}
