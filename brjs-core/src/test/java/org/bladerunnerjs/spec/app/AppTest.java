@@ -36,7 +36,7 @@ public class AppTest extends SpecTest {
 			sdkLib = brjs.sdkLib("br");
 			app = brjs.app("app1");
 			appLib = app.jsLib("lib1");
-			appTemplate = brjs.templateGroup("default").template("app");
+			appTemplate = brjs.confTemplateGroup("default").template("app");
 			appJars = brjs.appJars();
 			defaultAspect = app.defaultAspect();
 			globalNonBladeRunnerLib = brjs.sdkLib("legacy-thirdparty");
@@ -195,10 +195,10 @@ public class AppTest extends SpecTest {
 	@Test
 	public void appIsAvailableImmediatelyAfterCreationSinceFileModificationServiceListensForReadyEvent() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreated()
-			.and(brjs.templateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(brjs).appsHaveBeeniterated()
 			.and(brjs).hasBeenInactiveForOneMillisecond();
 		when(brjs.app("app1")).populate("default");

@@ -27,12 +27,18 @@ public class TemplateUtility
 	}
 	
 	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException{
-		File templateDir = node.root().templateGroup(templateGroup).template(templateName).dir();
-		if (node.root().templateGroup(templateGroup).dirExists()) {
-			installTemplate(node, templateDir, transformations, allowNonEmptyDirectories);
+		File confTemplateDir = node.root().confTemplateGroup(templateGroup).template(templateName).dir();
+		File sdkTemplateDir = node.root().sdkTemplateGroup(templateGroup).template(templateName).dir();
+		if (confTemplateDir.exists()) {
+			installTemplate(node, confTemplateDir, transformations, allowNonEmptyDirectories);
+		}
+		else if (sdkTemplateDir.exists())
+		{
+			installTemplate(node, sdkTemplateDir, transformations, allowNonEmptyDirectories);
 		}
 		else {
-			throw new TemplateNotFoundException("The template group '" + templateGroup + "' does not exist in " + templateDir.getParentFile().getParentFile() + ".");
+			throw new TemplateNotFoundException("The template for '" + node.getTemplateName() + "' does not exist"
+					+ " for the template group '" + templateGroup + "' in " + confTemplateDir.getParentFile().getParentFile() + ".");
 		}
 	}
 	
@@ -55,10 +61,6 @@ public class TemplateUtility
 				IOFileFilter fileFilter = FileFilterUtils.and( new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), hiddenFilesFilter );
 				FileUtils.copyDirectory(node.root(), templateDir, tempDir, fileFilter);
 			}
-			else {
-				throw new TemplateNotFoundException("The template for '" + node.getTemplateName() + "' does not exist"
-						+ " for the template group '" + templateDir.getParentFile().getName() + "' in " + templateDir.getParentFile() + ".");
-			}	
 			
 			if(!transformations.isEmpty()) {
 				transformDir(node.root(), tempDir, transformations);

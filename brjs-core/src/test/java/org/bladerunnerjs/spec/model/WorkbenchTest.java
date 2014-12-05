@@ -26,7 +26,7 @@ public class WorkbenchTest extends SpecTest {
 			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
-			workbenchTemplate = brjs.templateGroup("default").template("workbench");
+			workbenchTemplate = brjs.confTemplateGroup("default").template("workbench");
 			bladeset = app.bladeset("bladeset");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
@@ -45,9 +45,9 @@ public class WorkbenchTest extends SpecTest {
 		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
 			.and(workbenchTemplate).containsFolder("resources")
 			.and(workbenchTemplate).containsFolder("src")
-			.and(brjs.templateGroup("default").template("blade")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated();
+			.and(brjs.confTemplateGroup("default").template("blade")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated();
 		when(blade).populate("default");
 		then(workbench).hasDir("resources")
 			.and(workbench).hasDir("src")

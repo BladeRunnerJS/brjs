@@ -27,7 +27,7 @@ public class BladesetTest extends SpecTest {
 	{
 		given(brjs).hasBeenCreated();
 			app = brjs.app("app");
-			bladesetTemplate = brjs.templateGroup("default").template("bladeset");
+			bladesetTemplate = brjs.confTemplateGroup("default").template("bladeset");
 			bladeset = app.bladeset("bs");
 			invalidBladesetName = app.bladeset("#Invalid");
 			JSKeywordBladesetName = app.bladeset("else");
@@ -59,12 +59,12 @@ public class BladesetTest extends SpecTest {
 	@Test
 	public void populatingABladesetCausesAppObserversToBeNotified() throws Exception
 	{
-		given(brjs.templateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("bladeset")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+		given(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("bladeset")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(app).hasBeenPopulated("default")
 			.and(observer).observing(app)
 			.and(observer).allNotificationsHandled();

@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -207,4 +208,52 @@ public class TemplateTests extends SpecTest
 		);
 	}
 	
+	@Test
+	public void templateFromConfIsUsedIfTemplateDefinedBothInConfAndSdk() throws Exception {
+		given(brjs.confTemplateGroup("default").template("app")).containsFile("fileFromConf.txt")
+		   .and(brjs.sdkTemplateGroup("default").template("app")).containsFile("fileFromSdk.txt");
+		when(brjs).runCommand("create-app", "app");
+		then(app).hasFile("fileFromConf.txt");
+	}
+	
+	@Test
+	public void templateFromSdkIsUsedIfTemplateNotDefinedInConf() throws Exception {
+		given(brjs.confTemplateGroup("default").template("app")).doesNotExist()
+			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("fileFromSdk.txt");
+		when(brjs).runCommand("create-app", "app");
+		then(app).hasFile("fileFromSdk.txt");
+	}
+	
+	@Test
+	public void templateFromSdkIsUsedIfMainTemplateExistsInConfButImplicitlyCalledTemplatesOnlyExistInSdk() 
+			throws Exception {
+		given(brjs.confTemplateGroup("default").template("app")).containsFile("appFileFromConf.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).doesNotExist()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).doesNotExist()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).doesNotExist()
+			.and(brjs.sdkTemplateGroup("default").template("aspect")).containsFile("aspectFileFromSdk.txt")
+			.and(brjs.sdkTemplateGroup("default").template("aspect-test-unit-default")).containsFile("aspectTestUnitFileFromSdk.txt")
+			.and(brjs.sdkTemplateGroup("default").template("aspect-test-acceptance-default")).containsFile("aspectTestAcceptanceFileFromSdk.txt");
+		when(brjs).runCommand("create-app", "app");
+		then(app).hasFilesAndDirs(Arrays.asList("app.conf", "appFileFromConf.txt", "aspectFileFromSdk.txt", 
+				"test-unit/aspectTestUnitFileFromSdk.txt", "test-acceptance/aspectTestAcceptanceFileFromSdk.txt"), 
+				Arrays.asList());
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTemplateDoesNotExistInEitherConfOrSdk() throws Exception {
+		given(brjs.confTemplateGroup("default").template("app")).doesNotExist();
+		when(brjs).runCommand("create-app", "app");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	@Test
+	public void exceptionIsThrownIfImplicitlyCalledTemplateDoesNotExistInEitherConfOrSdk() throws Exception {
+		given(brjs.confTemplateGroup("default").template("app")).containsFile("appFileFromConf.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).doesNotExist()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).doesNotExist()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).doesNotExist();
+		when(brjs).runCommand("create-app", "app");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
 }

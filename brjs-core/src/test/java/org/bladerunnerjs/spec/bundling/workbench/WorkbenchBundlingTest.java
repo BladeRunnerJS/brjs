@@ -35,7 +35,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
-		workbenchTemplate = brjs.templateGroup("default").template("workbench");
+		workbenchTemplate = brjs.confTemplateGroup("default").template("workbench");
 		brjsLib = brjs.sdkLib("br");
 		thirdpartyLib = brjs.sdkLib("thirdparty-lib1");
 		appLib = app.jsLib("appLib");

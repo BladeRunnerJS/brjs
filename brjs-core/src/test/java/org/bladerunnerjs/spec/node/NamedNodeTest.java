@@ -40,7 +40,7 @@ public class NamedNodeTest extends SpecTest {
 		given(brjs).hasBeenCreated();
 			node = namedNodeFactory.createNamedNode(brjs, "node");
 			badNode = namedNodeFactory.createNamedNode(brjs, "!$%&");
-			nodeTemplate = brjs.templateGroup("default").template(getTemplateName());
+			nodeTemplate = brjs.confTemplateGroup("default").template(getTemplateName());
 	}
 	
 	public NamedNodeTest(String testName, NamedNodeFactory namedNodeFactory) {
@@ -168,14 +168,14 @@ public class NamedNodeTest extends SpecTest {
 	
 	@Test
 	public void weCanCreateANodeUsingATemplate() throws Exception {
-		given(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+		given(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
 			.and(nodeTemplate).containsFile("some-file.blah")
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("workbench")).hasBeenCreated();
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("workbench")).hasBeenCreated();
 		when(node).populate("default");
 		then(node).dirExists()
 			.and(node).hasFile("some-file.blah");
@@ -191,14 +191,14 @@ public class NamedNodeTest extends SpecTest {
 	
 	@Test
 	public void weCanCreateANodeUsingATemplateWhichHasADirectory() throws Exception {
-		given(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
+		given(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
 			.and(nodeTemplate).containsFolder("the-dir")
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("workbench")).hasBeenCreated();
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("workbench")).hasBeenCreated();
 		when(node).populate("default");
 		then(node).dirExists()
 			.and(node).hasDir("the-dir");

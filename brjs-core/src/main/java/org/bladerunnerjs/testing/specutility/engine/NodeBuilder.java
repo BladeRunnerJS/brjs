@@ -68,6 +68,12 @@ public abstract class NodeBuilder<N extends Node> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer doesNotExist() throws Exception {
+		if (node.exists())
+			node.delete();		
+		return builderChainer;
+	}
+	
 	public BuilderChainer containsEmptyFile(String filePath) throws Exception {
 		containsFileWithContents(filePath, "");
 		

@@ -186,7 +186,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void appIsCreatedWithTheSpecifiedTemplate() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated()
-			.and(brjs.templateGroup("angular").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt");
+			.and(brjs.confTemplateGroup("angular").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt");
 		when(brjs).runCommand("create-library", "app", "lib", "--template", "angular");
 		then(app.appJsLib("lib")).dirExists()
 			.and(app.appJsLib("lib")).hasFile("fileForLibAngular.txt");
@@ -196,9 +196,9 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void appIsCreatedWithTheSpecifiedTemplateIfMoreTemplatesExist() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated()
-			.and(brjs.templateGroup("angular").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
-			.and(brjs.templateGroup("default").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
-			.and(brjs.templateGroup("myTemplate").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
+			.and(brjs.confTemplateGroup("angular").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
+			.and(brjs.confTemplateGroup("default").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
+			.and(brjs.confTemplateGroup("myTemplate").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
 		when(brjs).runCommand("create-library", "app", "lib", "--template", "myTemplate");
 		then(app.appJsLib("lib")).dirExists()
 			.and(app.appJsLib("lib")).hasFile("fileForLibMyTemplate.txt");
@@ -208,9 +208,9 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void defaultTemplateIsUsedIfNoneSpecifiedAndMultipleTemplatesExist() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated()
-			.and(brjs.templateGroup("angular").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
-			.and(brjs.templateGroup("default").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
-			.and(brjs.templateGroup("myTemplate").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
+			.and(brjs.confTemplateGroup("angular").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
+			.and(brjs.confTemplateGroup("default").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
+			.and(brjs.confTemplateGroup("myTemplate").template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(app.appJsLib("lib")).dirExists()
 			.and(app.appJsLib("lib")).hasFile("fileForLibDefault.txt");

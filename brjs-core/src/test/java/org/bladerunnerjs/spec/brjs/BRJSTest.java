@@ -19,7 +19,7 @@ public class BRJSTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-			brjsTemplate = brjs.templateGroup("default").template("brjs");
+			brjsTemplate = brjs.confTemplateGroup("default").template("brjs");
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
 	}
@@ -106,23 +106,4 @@ public class BRJSTest extends SpecTest {
 		given(brjs.file("libs/javascript/br/test-unit")).containsFile("file.txt");
 		then(brjs).ancestorNodeCanBeFound(brjs.file("libs/javascript/br/test-unit/file.txt"), TestPack.class);
 	}
-	
-	@Test
-	public void templateFromConfIsUsedIfTemplateDefinedBothInConfAndSdk() throws Exception {
-		given(brjs.file("sdk/templates/foo")).containsFile("file.txt")
-		   .and(brjs.file("conf/templates/default/foo")).containsFile("something.txt");
-		then(brjs.templateGroup("default").template("foo")).hasFile("something.txt");
-	}
-	
-	@Test
-	public void templateFromConfIsUsedIfTemplateOnlyDefinedInConf() throws Exception {
-		given(brjs.file("conf/templates/default/foo")).containsFile("something.txt");
-		then(brjs.templateGroup("default").template("foo")).hasFile("something.txt");
-	}
-	
-//	@Test
-//	public void templateFromSdkIsUsedIfTemplateOnlyDefinedInSdk() throws Exception {
-//		given(brjs.file("sdk/templates/foo")).containsFile("file.txt");
-//		then(brjs.templateGroup("default").template("foo")).hasFile("file.txt");
-//	}
 }

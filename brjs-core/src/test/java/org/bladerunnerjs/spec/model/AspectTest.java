@@ -33,7 +33,7 @@ public class AspectTest extends SpecTest {
     		.and(brjs).automaticallyFindsMinifierPlugins()
     		.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
-			aspectTemplate = brjs.templateGroup("default").template("aspect");
+			aspectTemplate = brjs.confTemplateGroup("default").template("aspect");
 			aspect = app.aspect("default");
 			badAspect = app.aspect("!#*");
 			defaultBladeset = app.defaultBladeset();
@@ -55,8 +55,8 @@ public class AspectTest extends SpecTest {
 	@Test
 	public void aspectIsBaselinedDuringPopulation() throws Exception {
 		given(aspectTemplate).containsFolder("@appns")
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(aspectTemplate).containsFileWithContents("index.jsp", "'<html>@appns</html>'");
     	when(aspect).populate("default");
     	then(aspect).dirExists()

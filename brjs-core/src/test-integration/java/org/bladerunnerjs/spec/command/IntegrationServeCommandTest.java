@@ -80,10 +80,10 @@ public class IntegrationServeCommandTest extends SpecTest
 	{
 		given(brjs).hasBeenAuthenticallyReCreated()
 			.and(brjs).localeForwarderHasContents("")
-			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(brjs.app("app1")).hasBeenPopulated("default");
 		when(brjs).runThreadedCommand("serve");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1");

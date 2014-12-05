@@ -101,10 +101,10 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreAutomaticallyHosted() throws Exception
 	{
 		given(appServer).started()
-			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
+			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(app1).populate("default")
 			.and(app1).deployApp();
 		then(appServer).requestCanEventuallyBeMadeFor("/app1");
@@ -113,10 +113,10 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void deployFileIsOnlyCreatedIfAppServerIsStarted() throws Exception
 	{
-		given(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
+		given(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(app1).populate("default")
 			.and(app1).deployApp();
 		then(app1).doesNotHaveFile(".deploy");
@@ -126,10 +126,10 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreOnlyHostedOnAppDeployedEvent() throws Exception
 	{
 		given(appServer).started()
-			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
+			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
 		when(app1).populate("default")
 			.and(brjs).eventFires(new NodeReadyEvent(), app1);
 		then(appServer).requestCannotBeMadeFor("/app1/default-aspect/index.html");
@@ -165,10 +165,10 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void systemAppIsAutomaticallyHostedOnDeploy() throws Exception
 	{
-		given(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+		given(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(appServer).started();
 		when(sysapp1).populate("default")
 			.and(sysapp1).deployApp();
@@ -193,10 +193,10 @@ public class AppServerTest extends SpecTest
 	public void otherServletsCanBeAddedWithRootMapping() throws Exception
 	{
 		given(brjs).usedForServletModel()
-			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(app1).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "/servlet/hello/*");
@@ -207,10 +207,10 @@ public class AppServerTest extends SpecTest
 	public void otherServletsCanBeAddedWithExtensionMapping() throws Exception
 	{
 		given(brjs).usedForServletModel()
-			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(app1).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "*.mock");
@@ -221,10 +221,10 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstance() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
-			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
@@ -234,10 +234,10 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreHostedOnAppserverAfterServerRestartWhenCreateAppCommandUsedFromADifferentModelInstance() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
-			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
@@ -249,10 +249,10 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreHostedViaADifferentModelOnAppserverAfterServerRestart() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
-			.and(brjs.templateGroup("default").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.templateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.templateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForApp.txt")
+			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
+			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
