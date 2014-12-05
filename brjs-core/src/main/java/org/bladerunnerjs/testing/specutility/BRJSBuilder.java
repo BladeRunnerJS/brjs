@@ -331,10 +331,10 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer usesProductionTemplates() throws IOException {
 		verifyBrjsIsSet();
-		File templateDir = new File("../brjs-sdk/build-resources/includes/sdk/templates");
+		File templateDir = new File("../brjs-sdk/sdk/templates");
 		FileUtils.copyDirectory(brjs, templateDir, brjs.template("template").dir().getParentFile());
 		
-		File jsdocResourcesDir = new File("../brjs-sdk/build-resources/includes/sdk/jsdoc-toolkit-resources");
+		File jsdocResourcesDir = new File("../brjs-sdk/sdk/jsdoc-toolkit-resources");
 		File jsdocResourcesDest = brjs.sdkRoot().file("jsdoc-toolkit-resources");
 		FileUtils.copyDirectory(brjs, jsdocResourcesDir, jsdocResourcesDest);
 		new File(jsdocResourcesDest, "jsdoc-toolkit/jsdoc").setExecutable(true);
