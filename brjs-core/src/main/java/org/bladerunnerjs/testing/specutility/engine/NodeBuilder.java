@@ -9,8 +9,6 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.FileUtils;
@@ -109,7 +107,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer hasNamespacedJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, NamespacedJsSourceModule.JS_STYLE);
+		return hasPackageStyle(packagePath, SpecTest.NAMESPACED_JS_STYLE);
 	}
 	
 	public BuilderChainer hasNamespacedJsPackageStyle() {
@@ -117,7 +115,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer hasCommonJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, CommonJsSourceModule.JS_STYLE);
+		return hasPackageStyle(packagePath, SpecTest.COMMON_JS_STYLE);
 	}
 	
 	public BuilderChainer hasCommonJsPackageStyle() {

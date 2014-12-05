@@ -8,21 +8,21 @@ buildscript {
 }
 
 subprojects {
-	apply plugin: 'java'
-	apply plugin: 'eclipse'
-	apply plugin: 'retrolambda'
-	apply plugin: com.caplin.gradle.plugins.CompileOnly
-
-    retrolambda {
-    	javaVersion JavaVersion.VERSION_1_7
-    }
-    project.afterEvaluate {
-    	compileTestJava.dependsOn compileRetrolambdaMain
-    }
-
-    dependencies {
-    	retrolambdaConfig dependency('retrolambda')
-	
-    	compile project(path: ":brjs-core")
-    } 
+//	apply plugin: 'java'
+//	apply plugin: 'eclipse'
+//	apply plugin: 'retrolambda'
+//	apply plugin: com.caplin.gradle.plugins.CompileOnly
+//
+//    retrolambda {
+//    	javaVersion JavaVersion.VERSION_1_7
+//    }
+//    project.afterEvaluate {
+//    	compileTestJava.dependsOn compileRetrolambdaMain
+//    }
+//
+//    dependencies {
+//    	retrolambdaConfig dependency('retrolambda')
+//	
+//    	compile project(path: ":brjs-core")
+//    } 
 }

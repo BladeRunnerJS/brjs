@@ -32,4 +32,5 @@ sourceSets {
 
 dependencies {
 	testCompile project(path: ":brjs-core")
+	testCompile project(path: ":plugins:brjs-plugins")
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.exception.InvalidBundlableNodeException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;

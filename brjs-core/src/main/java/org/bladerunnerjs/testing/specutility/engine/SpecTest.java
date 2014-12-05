@@ -87,6 +87,9 @@ public abstract class SpecTest extends TestModelAccessor
 {
 	public static final String HTTP_REQUEST_PREFIX = "http://localhost";
 	
+	public static final String COMMON_JS_STYLE = "common-js";
+	public static final String NAMESPACED_JS_STYLE = "namespaced-js";
+	
 	private String activeCharacterEncoding = "UTF-8";
 	private String activeClientCharacterEncoding = "UTF-8";
 	

@@ -94,7 +94,9 @@ subprojects { p ->
 	afterEvaluate { project ->
 
 		if (project.plugins.hasPlugin(JavaPlugin)) {
-			if(project.name == 'brjs-core') {
+			if(project.name == 'brjs-core' 
+					|| project.name == 'brjs-core-tests'
+					|| project.name == 'brjs-plugins') {
 				sourceCompatibility = '1.8'
 				targetCompatibility = '1.8'
 			}

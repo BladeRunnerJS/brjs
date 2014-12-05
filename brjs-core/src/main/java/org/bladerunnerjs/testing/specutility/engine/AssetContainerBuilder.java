@@ -7,8 +7,6 @@ import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
@@ -144,8 +142,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
-			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "'");
+		if(!jsStyle.equals(SpecTest.NAMESPACED_JS_STYLE)) {
+			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + SpecTest.NAMESPACED_JS_STYLE + "'");
 		}
 		
 		writeToFile( sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');" + getClassBody(sourceClass) );
@@ -158,7 +156,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(CommonJsSourceModule.JS_STYLE)) {
+		if(!jsStyle.equals(SpecTest.COMMON_JS_STYLE)) {
 			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
@@ -192,8 +190,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
-			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "' for dir '"+sourceFile.getParentFile().getPath()+"'.");
+		if(!jsStyle.equals(SpecTest.NAMESPACED_JS_STYLE)) {
+			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + SpecTest.NAMESPACED_JS_STYLE + "' for dir '"+sourceFile.getParentFile().getPath()+"'.");
 		}
 		
 		String classReferencesContent = "var someFunction = function() {\n";
@@ -218,8 +216,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(CommonJsSourceModule.JS_STYLE)) {
-			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to '"+CommonJsSourceModule.JS_STYLE+"' for dir '"+sourceFile.getParentFile().getPath()+"'");
+		if(!jsStyle.equals(SpecTest.COMMON_JS_STYLE)) {
+			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to '"+SpecTest.COMMON_JS_STYLE+"' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
 		if (dependencyClass.matches(".*?\\.(?![/\\.]).*")) { // matches '.' unless it is immediately followed by another . or a /
@@ -247,7 +245,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		String classBody;
 		
-		if(jsStyle.equals(CommonJsSourceModule.JS_STYLE)) {
+		if(jsStyle.equals(SpecTest.COMMON_JS_STYLE)) {
 			if (className.contains("."))
 			{
 				throw new RuntimeException("Require paths must not contain the '.' character");
@@ -259,7 +257,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 				"\n" +
 				"module.exports = " + commonJsClassName + ";\n";
 		}
-		else if(jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
+		else if(jsStyle.equals(SpecTest.NAMESPACED_JS_STYLE)) {
 			if (className.contains("/"))
 			{
 				throw new RuntimeException("Class names must not contain the '/' character");

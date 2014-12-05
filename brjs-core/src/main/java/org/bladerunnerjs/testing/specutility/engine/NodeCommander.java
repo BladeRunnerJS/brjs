@@ -7,8 +7,6 @@ import org.bladerunnerjs.model.BRJS;
 
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
@@ -65,7 +63,7 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	}
 	
 	public CommanderChainer hasNamespacedJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, NamespacedJsSourceModule.JS_STYLE);
+		return hasPackageStyle(packagePath, SpecTest.NAMESPACED_JS_STYLE);
 	}
 	
 	public CommanderChainer hasNamespacedJsPackageStyle() {
@@ -73,7 +71,7 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	}
 	
 	public CommanderChainer hasCommonJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, CommonJsSourceModule.JS_STYLE);
+		return hasPackageStyle(packagePath, SpecTest.COMMON_JS_STYLE);
 	}
 	
 	public CommanderChainer hasCommonJsPackageStyle() {

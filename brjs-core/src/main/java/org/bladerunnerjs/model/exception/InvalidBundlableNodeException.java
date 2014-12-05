@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.commands.standard;
+package org.bladerunnerjs.model.exception;
 
 
 public class InvalidBundlableNodeException extends Exception {
