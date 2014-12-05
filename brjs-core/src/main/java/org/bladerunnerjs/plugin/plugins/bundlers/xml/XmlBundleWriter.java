@@ -69,7 +69,12 @@ public class XmlBundleWriter
 				{
 					for(XmlSiblingReader siblingReader : siblingReaders)
 					{
-						siblingReader.close();
+						try {
+							siblingReader.close();
+						}
+						catch(XMLStreamException e) {
+							// do nothing: we want to close as many readers as possible
+						}
 					}
 				}
 			}
