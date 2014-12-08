@@ -80,8 +80,6 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 		{
 			String entryName = entry.getKey();
 			File entryPath = entry.getValue();
-			System.out.println(parentNode);
-			System.out.println(entryName);
 			@SuppressWarnings("unchecked")
 			CN childNode = (CN) getNamedItemMethod.invoke(parentNode, entryName);
 			
