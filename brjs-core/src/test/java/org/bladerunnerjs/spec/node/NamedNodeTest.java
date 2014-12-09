@@ -168,14 +168,8 @@ public class NamedNodeTest extends SpecTest {
 	
 	@Test
 	public void weCanCreateANodeUsingATemplate() throws Exception {
-		given(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(nodeTemplate).containsFile("some-file.blah")
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("workbench")).hasBeenCreated();
+		given(brjs.confTemplateGroup("default")).templateGroupCreated()
+			.and(nodeTemplate).containsFile("some-file.blah");
 		when(node).populate("default");
 		then(node).dirExists()
 			.and(node).hasFile("some-file.blah");
@@ -191,14 +185,8 @@ public class NamedNodeTest extends SpecTest {
 	
 	@Test
 	public void weCanCreateANodeUsingATemplateWhichHasADirectory() throws Exception {
-		given(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(nodeTemplate).containsFolder("the-dir")
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("workbench")).hasBeenCreated();
+		given(brjs.confTemplateGroup("default")).templateGroupCreated()
+			.and(nodeTemplate).containsFolder("the-dir");
 		when(node).populate("default");
 		then(node).dirExists()
 			.and(node).hasDir("the-dir");

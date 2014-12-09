@@ -5,6 +5,7 @@ import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppComman
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
@@ -22,6 +23,9 @@ public class CreateAppCommandTest extends SpecTest {
 	App app;
 	App badApp;
 	DirNode appJars;
+	TemplateGroup angularTemplates; 
+	TemplateGroup defaultTemplates; 
+	TemplateGroup myTemplateTemplates; 
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -31,6 +35,9 @@ public class CreateAppCommandTest extends SpecTest {
 			app = brjs.app("app");
 			badApp = brjs.app("app#$@/");
 			appJars = brjs.appJars();
+			angularTemplates = brjs.confTemplateGroup("angular");
+			defaultTemplates = brjs.confTemplateGroup("default");
+			myTemplateTemplates = brjs.confTemplateGroup("myTemplate");
 	}
 	
 	@Test
@@ -92,12 +99,9 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void appIsCreatedWhenAllArgumentsAreValid() throws Exception {
-		given(appJars).hasBeenCreated()
-			.and(logging).enabled()
-			.and(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
+		given(defaultTemplates).templateGroupCreated()
+			.and(appJars).hasBeenCreated()
+			.and(logging).enabled();
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(app).dirExists()
 			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, app.getName(), app.dir().getPath())
@@ -107,10 +111,8 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void appIsCreatedWithTheSpecifiedTemplate() throws Exception {
-		given(brjs.confTemplateGroup("angular").template("app")).containsFile("fileForApp.txt")
-			.and(brjs.confTemplateGroup("angular").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("angular").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("angular").template("aspect-test-acceptance-default")).hasBeenCreated();
+		given(angularTemplates).templateGroupCreated()
+			.and(angularTemplates.template("app")).containsFile("fileForApp.txt");
 		when(brjs).runCommand("create-app", "app", "--template", "angular");
 		then(app).dirExists()
 			.and(app).hasFile("fileForApp.txt");
@@ -118,18 +120,12 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void appIsCreatedWithTheSpecifiedTemplateIfMoreTemplatesExist() throws Exception {
-		given(brjs.confTemplateGroup("angular").template("app")).containsFile("fileForAppAngular.txt")
-			.and(brjs.confTemplateGroup("angular").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("angular").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("angular").template("aspect-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForAppDefault.txt")
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("myTemplate").template("app")).containsFile("fileForAppMyTemplate.txt")
-			.and(brjs.confTemplateGroup("myTemplate").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("myTemplate").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("myTemplate").template("aspect-test-acceptance-default")).hasBeenCreated();
+		given(angularTemplates).templateGroupCreated()
+			.and(angularTemplates.template("app")).containsFile("fileForAppAngular.txt")
+			.and(defaultTemplates).templateGroupCreated()
+			.and(defaultTemplates.template("app")).containsFile("fileForAppDefault.txt")
+			.and(myTemplateTemplates).templateGroupCreated()
+			.and(myTemplateTemplates.template("app")).containsFile("fileForAppMyTemplate.txt");
 		when(brjs).runCommand("create-app", "app", "--template", "myTemplate");
 		then(app).dirExists()
 			.and(app).hasFile("fileForAppMyTemplate.txt");
@@ -137,18 +133,12 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void defaultTemplateIsUsedIfNoneSpecifiedAndMultipleTemplatesExist() throws Exception {
-		given(brjs.confTemplateGroup("angular").template("app")).containsFile("fileForAppAngular.txt")
-			.and(brjs.confTemplateGroup("angular").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("angular").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("angular").template("aspect-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("app")).containsFile("fileForAppDefault.txt")
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("myTemplate").template("app")).containsFile("fileForAppMyTemplate.txt")
-			.and(brjs.confTemplateGroup("myTemplate").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("myTemplate").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("myTemplate").template("aspect-test-acceptance-default")).hasBeenCreated();
+		given(angularTemplates).templateGroupCreated()
+			.and(angularTemplates.template("app")).containsFile("fileForAppAngular.txt")
+			.and(defaultTemplates).templateGroupCreated()
+			.and(defaultTemplates.template("app")).containsFile("fileForAppDefault.txt")
+			.and(myTemplateTemplates).templateGroupCreated()
+			.and(myTemplateTemplates.template("app")).containsFile("fileForAppMyTemplate.txt");
 		when(brjs).runCommand("create-app", "app");
 		then(app).dirExists()
 			.and(app).hasFile("fileForAppDefault.txt");
@@ -161,22 +151,20 @@ public class CreateAppCommandTest extends SpecTest {
 	}
 	
 	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedAspectDoesNotExist() throws Exception {
-		given(brjs.confTemplateGroup("angular").template("app")).containsFile("fileForAppAngular.txt");
+		given(angularTemplates.template("app")).containsFile("fileForAppAngular.txt");
 		when(brjs).runCommand("create-app", "app", "--template", "angular");
 		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 	
 	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedAspectTestUnitDefaultDoesNotExist() throws Exception {
-		given(brjs.confTemplateGroup("angular").template("app")).containsFile("fileForAppAngular.txt")
-			.and(brjs.confTemplateGroup("angular").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("angular").template("aspect-test-unit-default")).hasBeenCreated();
+		given(angularTemplates).templateGroupCreated()
+			.and(angularTemplates.template("app")).containsFile("fileForAppAngular.txt");
 		when(brjs).runCommand("create-app", "app", "--template", "angular");
 		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 	
 	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedAspectTestAcceptanceDefaultDoesNotExist() throws Exception {
-		given(brjs.confTemplateGroup("angular").template("app")).containsFile("fileForAppAngular.txt")
-			.and(brjs.confTemplateGroup("angular").template("aspect")).hasBeenCreated();
+		given(angularTemplates.template("app")).containsFile("fileForAppAngular.txt");
 		when(brjs).runCommand("create-app", "app", "--template", "angular");
 		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
@@ -186,10 +174,7 @@ public class CreateAppCommandTest extends SpecTest {
 		App myApp = brjs.app("myApp");
 		
 		given(appJars).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
+			.and(defaultTemplates).templateGroupCreated();
 		when(brjs).runCommand("create-app", "myApp");
 		then(myApp).dirExists()
 			.and(myApp.appConf()).namespaceIs("myapp");
@@ -200,10 +185,7 @@ public class CreateAppCommandTest extends SpecTest {
 		App myApp = brjs.app("myApp");
 		
 		given(appJars).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
+			.and(defaultTemplates).templateGroupCreated();
 		when(brjs).runCommand("create-app", "myApp");
 		then(myApp).dirExists()
 			.and(myApp).fileContentsContains("app.conf","myapp");
@@ -224,10 +206,7 @@ public class CreateAppCommandTest extends SpecTest {
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(appJars).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated();
+			.and(defaultTemplates).templateGroupCreated();
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}

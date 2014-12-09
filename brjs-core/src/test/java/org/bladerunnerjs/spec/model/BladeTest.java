@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
@@ -21,6 +22,7 @@ public class BladeTest extends SpecTest {
 	private Blade bladeWithInvalidName;
 	private Blade bladeWithJSKeyWordName;
 	private NamedDirNode bladeTemplate;
+	private TemplateGroup templates;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -33,7 +35,8 @@ public class BladeTest extends SpecTest {
 			blade1 = bladeset.blade("b1");
 			bladeWithInvalidName = bladeset.blade("_-=+");
 			bladeWithJSKeyWordName = bladeset.blade("export");
-			bladeTemplate = brjs.confTemplateGroup("default").template("blade");
+			templates = brjs.confTemplateGroup("default");
+			bladeTemplate = templates.template("blade");
 	}
 	
 	@Test
@@ -45,10 +48,7 @@ public class BladeTest extends SpecTest {
 	@Test
 	public void populatingABladeCausesBladesetObserversToBeNotified() throws Exception {
 		given(observer).observing(brjs)
-			.and(bladeTemplate).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("workbench")).hasBeenCreated();
+			.and(templates).templateGroupCreated();
 		when(blade1).populate("default");
 		then(observer).notified(NodeReadyEvent.class, blade1)
 			.and(observer).notified(NodeReadyEvent.class, blade1.testType("unit").defaultTestTech())
@@ -71,10 +71,8 @@ public class BladeTest extends SpecTest {
 	
 	@Test
 	public void bladeIsBaselinedDuringPopulation() throws Exception {
-		given(bladeTemplate).containsFolder("@blade")
-			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("workbench")).hasBeenCreated()
+		given(templates).templateGroupCreated()
+			.and(bladeTemplate).containsFolder("@blade")
 			.and(bladeTemplate).containsFileWithContents("MyClass.js", "@appns.@bladeset.@blade = function() {};");
 		when(blade1).populate("default");
 		then(blade1).hasDir(blade1.getName())
@@ -85,10 +83,8 @@ public class BladeTest extends SpecTest {
 	@Test
 	public void bladeHasClassNameTranformAddedDuringPopulation() throws Exception {
 		String expectedClassName = WordUtils.capitalize( blade1.getName() );
-		given(bladeTemplate).containsFolder("@blade")
-			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("workbench")).hasBeenCreated()
+		given(templates).templateGroupCreated()
+			.and(bladeTemplate).containsFolder("@blade")
 			.and(bladeTemplate).containsFileWithContents("@bladeTitle.js", "function @bladeTitle(){}");
 		when(blade1).populate("default");
 		then(blade1).hasDir(blade1.getName())
@@ -98,10 +94,7 @@ public class BladeTest extends SpecTest {
 	@Test
 	public void populatingABladeIntoANamespacedJsBladesetCausesAJsStyleFileToBeCreated() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
-			.and(bladeTemplate).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("workbench")).hasBeenCreated();
+			.and(templates).templateGroupCreated();
 		when(blade1).populate("default");
 		then(blade1).hasFile(".js-style");
 	}
@@ -109,10 +102,7 @@ public class BladeTest extends SpecTest {
 	@Test
 	public void populatingABladeIntoACommonJsBladesetDoesNotCausesAJsStyleFileToBeCreated() throws Exception {
 		given(bladeset).hasBeenCreated()
-			.and(bladeTemplate).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("blade-test-acceptance-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("workbench")).hasBeenCreated();;
+			.and(templates).templateGroupCreated();
 		when(blade1).populate("default");
 		then(blade1).doesNotHaveFile(".js-style");
 	}

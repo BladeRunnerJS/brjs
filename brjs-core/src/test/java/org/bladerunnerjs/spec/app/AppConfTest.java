@@ -1,6 +1,7 @@
 package org.bladerunnerjs.spec.app;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -14,6 +15,7 @@ public class AppConfTest extends SpecTest {
 	private App JSKeyWordApp;
 	@SuppressWarnings("unused")
 	private App reseverWordApp;
+	private TemplateGroup templates;
 	
 	
 	@Before
@@ -23,6 +25,7 @@ public class AppConfTest extends SpecTest {
 			app = brjs.app("app1");
 			JSKeyWordApp = brjs.app("if");
 			reseverWordApp = brjs.app("caplin");
+			templates = brjs.confTemplateGroup("default");
 	}
 	
 	
@@ -44,21 +47,16 @@ public class AppConfTest extends SpecTest {
 	
 	@Test
 	public void updateLocaleInAppConf() throws Exception {
-		given(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+		given(templates).templateGroupCreated()
 			.and(app).hasBeenPopulated("appx", "default");
 		when(app).appConf().setLocales("de").write();
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: de\nrequirePrefix: appx");
 	}
-	
+
+
 	@Test
 	public void updateAppNamespaceInAppConf() throws Exception {
-		given(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+		given(templates).templateGroupCreated()
 			.and(app).hasBeenPopulated("appx", "default");
 		when(app).appConf().setAppNamespace("newns").write();
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: newns");

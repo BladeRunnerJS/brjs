@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
@@ -28,6 +29,7 @@ public class AppTest extends SpecTest {
 	private NamedDirNode appTemplate;
 	private DirNode appJars;
 	private Aspect defaultAspect;
+	private TemplateGroup templates;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -36,7 +38,8 @@ public class AppTest extends SpecTest {
 			sdkLib = brjs.sdkLib("br");
 			app = brjs.app("app1");
 			appLib = app.jsLib("lib1");
-			appTemplate = brjs.confTemplateGroup("default").template("app");
+			templates = brjs.confTemplateGroup("default");
+			appTemplate = templates.template("app");
 			appJars = brjs.appJars();
 			defaultAspect = app.defaultAspect();
 			globalNonBladeRunnerLib = brjs.sdkLib("legacy-thirdparty");
@@ -48,7 +51,7 @@ public class AppTest extends SpecTest {
 	// TODO: does this add anything over the baselining test?
 	@Test
 	public void weCanCreateAnAppUsingATemplate() throws Exception {
-		given(brjs).usesProductionTemplates()
+		given(templates).templateGroupCreated()
 			.and(appTemplate).containsFile("some-file.blah")
 			.and(logging).enabled();
 		when(app).populate("appx", "default");
@@ -66,7 +69,7 @@ public class AppTest extends SpecTest {
 	
 	@Test
 	public void populatingAnAppCausesRootObserversToBeNotified() throws Exception {
-		given(brjs).usesProductionTemplates()
+		given(templates).templateGroupCreated()
 			.and(observer).observing(brjs);
 		when(app).populate("default");
 		then(observer).notified(NodeReadyEvent.class, app)
@@ -75,21 +78,21 @@ public class AppTest extends SpecTest {
 	
 	@Test
 	public void theAppConfIsWrittenOnPopulate() throws Exception {
-		given(brjs).usesProductionTemplates();
+		given(templates).templateGroupCreated();
 		when(app).populate("appx", "default");
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appx");
 	}
 	
 	@Test
 	public void theAppConfIsNotWrittenOnZeroArgPopulate() throws Exception {
-		given(brjs).usesProductionTemplates();
+		given(templates).templateGroupCreated();
 		when(app).populate("default");
 		then(app).doesNotHaveFile("app.conf");
 	}
 	
 	@Test
 	public void theAppConfCanBeManuallyWrittenOnZeroArgPopulate() throws Exception {
-		given(brjs).usesProductionTemplates()
+		given(templates).templateGroupCreated()
 			.and(app).hasBeenPopulated("default");
 		when(app).appConf().write();
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appns");
@@ -118,7 +121,7 @@ public class AppTest extends SpecTest {
 	
 	@Test
 	public void appIsBaselinedDuringPopulation() throws Exception {
-		given(brjs).usesProductionTemplates()
+		given(templates).templateGroupCreated()
 			.and(appTemplate).containsFolder("@appns");
 		when(app).populate("appx", "default");
 		then(app).dirExists()
@@ -194,11 +197,8 @@ public class AppTest extends SpecTest {
 	
 	@Test
 	public void appIsAvailableImmediatelyAfterCreationSinceFileModificationServiceListensForReadyEvent() throws Exception {
-		given(brjs).hasBeenAuthenticallyCreated()
-			.and(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+		given(templates).templateGroupCreated()
+			.and(brjs).hasBeenAuthenticallyCreated()
 			.and(brjs).appsHaveBeeniterated()
 			.and(brjs).hasBeenInactiveForOneMillisecond();
 		when(brjs.app("app1")).populate("default");

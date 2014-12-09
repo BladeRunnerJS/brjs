@@ -59,12 +59,7 @@ public class BladesetTest extends SpecTest {
 	@Test
 	public void populatingABladesetCausesAppObserversToBeNotified() throws Exception
 	{
-		given(brjs.confTemplateGroup("default").template("app")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("bladeset")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("bladeset-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+		given(brjs.confTemplateGroup("default")).templateGroupCreated()
 			.and(app).hasBeenPopulated("default")
 			.and(observer).observing(app)
 			.and(observer).allNotificationsHandled();

@@ -54,9 +54,8 @@ public class AspectTest extends SpecTest {
 	
 	@Test
 	public void aspectIsBaselinedDuringPopulation() throws Exception {
-		given(aspectTemplate).containsFolder("@appns")
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).hasBeenCreated()
+		given(brjs.confTemplateGroup("default")).templateGroupCreated()
+			.and(aspectTemplate).containsFolder("@appns")
 			.and(aspectTemplate).containsFileWithContents("index.jsp", "'<html>@appns</html>'");
     	when(aspect).populate("default");
     	then(aspect).dirExists()

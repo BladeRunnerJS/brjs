@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -26,6 +27,7 @@ public class TemplateTests extends SpecTest
 	JsLib userLib, thirdpartyLib;
 	Blade bladeInDefaultBladeset;
 	Aspect anotherAspect;
+	TemplateGroup templates; 
 	
 	@Before
 	public void initTestObjects() throws Exception {		
@@ -45,6 +47,7 @@ public class TemplateTests extends SpecTest
 		userLib = app.jsLib("userlib");
 		thirdpartyLib = app.jsLib("thirdpartyLib");
 		bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
+		templates = brjs.confTemplateGroup("default");
 	}
 	
 	
@@ -210,7 +213,7 @@ public class TemplateTests extends SpecTest
 	
 	@Test
 	public void templateFromConfIsUsedIfTemplateDefinedBothInConfAndSdk() throws Exception {
-		given(brjs.confTemplateGroup("default").template("app")).containsFile("fileFromConf.txt")
+		given(templates.template("app")).containsFile("fileFromConf.txt")
 		   .and(brjs.sdkTemplateGroup("default").template("app")).containsFile("fileFromSdk.txt");
 		when(brjs).runCommand("create-app", "app");
 		then(app).hasFile("fileFromConf.txt");
@@ -218,7 +221,7 @@ public class TemplateTests extends SpecTest
 	
 	@Test
 	public void templateFromSdkIsUsedIfTemplateNotDefinedInConf() throws Exception {
-		given(brjs.confTemplateGroup("default").template("app")).doesNotExist()
+		given(templates.template("app")).doesNotExist()
 			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("fileFromSdk.txt");
 		when(brjs).runCommand("create-app", "app");
 		then(app).hasFile("fileFromSdk.txt");
@@ -227,10 +230,10 @@ public class TemplateTests extends SpecTest
 	@Test
 	public void templateFromSdkIsUsedIfMainTemplateExistsInConfButImplicitlyCalledTemplatesOnlyExistInSdk() 
 			throws Exception {
-		given(brjs.confTemplateGroup("default").template("app")).containsFile("appFileFromConf.txt")
-			.and(brjs.confTemplateGroup("default").template("aspect")).doesNotExist()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).doesNotExist()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).doesNotExist()
+		given(templates.template("app")).containsFile("appFileFromConf.txt")
+			.and(templates.template("aspect")).doesNotExist()
+			.and(templates.template("aspect-test-unit-default")).doesNotExist()
+			.and(templates.template("aspect-test-acceptance-default")).doesNotExist()
 			.and(brjs.sdkTemplateGroup("default").template("aspect")).containsFile("aspectFileFromSdk.txt")
 			.and(brjs.sdkTemplateGroup("default").template("aspect-test-unit-default")).containsFile("aspectTestUnitFileFromSdk.txt")
 			.and(brjs.sdkTemplateGroup("default").template("aspect-test-acceptance-default")).containsFile("aspectTestAcceptanceFileFromSdk.txt");
@@ -242,17 +245,17 @@ public class TemplateTests extends SpecTest
 	
 	@Test
 	public void exceptionIsThrownIfTemplateDoesNotExistInEitherConfOrSdk() throws Exception {
-		given(brjs.confTemplateGroup("default").template("app")).doesNotExist();
+		given(templates.template("app")).doesNotExist();
 		when(brjs).runCommand("create-app", "app");
 		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 	
 	@Test
 	public void exceptionIsThrownIfImplicitlyCalledTemplateDoesNotExistInEitherConfOrSdk() throws Exception {
-		given(brjs.confTemplateGroup("default").template("app")).containsFile("appFileFromConf.txt")
-			.and(brjs.confTemplateGroup("default").template("aspect")).doesNotExist()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-unit-default")).doesNotExist()
-			.and(brjs.confTemplateGroup("default").template("aspect-test-acceptance-default")).doesNotExist();
+		given(templates.template("app")).containsFile("appFileFromConf.txt")
+			.and(templates.template("aspect")).doesNotExist()
+			.and(templates.template("aspect-test-unit-default")).doesNotExist()
+			.and(templates.template("aspect-test-acceptance-default")).doesNotExist();
 		when(brjs).runCommand("create-app", "app");
 		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
