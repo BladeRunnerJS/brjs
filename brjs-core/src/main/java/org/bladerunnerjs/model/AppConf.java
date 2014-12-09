@@ -17,11 +17,12 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	}
 	
 	public String getRequirePrefix() throws ConfigException {
-		return getConf().requirePrefix;
+		return getConf().requirePrefix();
 	}
 	
 	public void setRequirePrefix(String requirePrefix) throws ConfigException {
 		getConf().requirePrefix = requirePrefix;
+		getConf().appNamespace = null;
 		verifyAndAutoWrite();
 	}
 	

@@ -126,4 +126,14 @@ public class AppCommander extends NodeCommander<App> {
 		
 		return commanderChainer;
 	}
+
+	public CommanderChainer appConfHasBeenRead() {
+		call(new Command() {
+			public void call() throws Exception {
+				app.appConf();
+			}
+		});
+		
+		return commanderChainer;
+	}
 }
