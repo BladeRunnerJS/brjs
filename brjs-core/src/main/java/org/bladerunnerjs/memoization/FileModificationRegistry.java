@@ -3,7 +3,10 @@ package org.bladerunnerjs.memoization;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -11,7 +14,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 
 public class FileModificationRegistry
 {
-	private Map<String,FileVersion> lastModifiedMap = new HashMap<String,FileVersion>();
+	private Map<String,FileVersion> lastModifiedMap = new ConcurrentHashMap<>();
 	private File rootFile;
 	private Map<File, File> canonicalFileMap = new HashMap<>();
 	private IOFileFilter globalFileFilter;
@@ -47,7 +50,8 @@ public class FileModificationRegistry
 		incrementFileVersion(file);
 		
 		String fileCanonicalPath = getCanonicalFile(file).getAbsolutePath();
-		for (String path : lastModifiedMap.keySet()) {
+		Set<String> lastModifiedMapKeySet = new HashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
+		for (String path : lastModifiedMapKeySet) {
 			if (path.startsWith(fileCanonicalPath)) {
 				lastModifiedMap.get(path).incrememntValue();
 			}
