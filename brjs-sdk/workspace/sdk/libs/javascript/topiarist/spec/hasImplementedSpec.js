@@ -58,6 +58,18 @@ describe("topiarist.hasImplemented", function() {
 		expect(true).toBe(true);
 	});
 
+	it("does not throw an error if the class doesn't define static 'class' properties specified by the interface.", function() {
+		Class.prototype.interfaceMethod = function() {};
+		Class.prototype.anotherInterfaceMethod = function() {};
+
+		[1, NaN, 'a', null, true].forEach(function(prop, idx) {
+			Interface['staticProperty_'+idx] = prop;
+		});
+
+		topiarist.hasImplemented(Class, Interface);
+		expect(true).toBe(true);
+	});
+
 	it("does not throw an error if the class inherits (using topiarist.extend) methods required by the interface.", function() {
 		Class.prototype.interfaceMethod = function() {};
 		Class.prototype.anotherInterfaceMethod = function() {};
