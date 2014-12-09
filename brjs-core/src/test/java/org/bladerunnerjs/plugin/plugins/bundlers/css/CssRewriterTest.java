@@ -326,7 +326,7 @@ public class CssRewriterTest extends SpecTest
 	{
 		given(workbench).containsFileWithContents("resources/style.css", "background-image: url(images/flower.png);")
 			.and(blade).hasClass("bs/b1/Class1")
-			.and(workbench).indexPageHasContent("require('bs/b1/Class1');");
+			.and(workbench).indexPageRequires("bs/b1/Class1");
 		when(workbench).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1/workbench_resource/resources/images/flower.png);");
 	}
