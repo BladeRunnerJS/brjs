@@ -260,8 +260,8 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem2(templateElem(mergeElem("id2"))));
 		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(bundleElem(
-				bundleResourceElem("rootElem2", rootElem2(templateElem(mergeElem("id2")))),
-				bundleResourceElem("rootElem", rootElem(templateElem(mergeElem("id1"))))
+				bundleResourceElem("rootElem", rootElem(templateElem(mergeElem("id1")))),
+				bundleResourceElem("rootElem2", rootElem2(templateElem(mergeElem("id2"))))
 			));
 	}
 	
