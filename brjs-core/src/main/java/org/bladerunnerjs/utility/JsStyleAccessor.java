@@ -9,11 +9,15 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
-public class JsStyleUtility {
+public class JsStyleAccessor {
+	private final Map<String, MemoizedValue<String>> dirStyleCache = new HashMap<>();
+	private final BRJS brjs;
 	
-	private static Map<String, MemoizedValue<String>> dirStyleCache = new HashMap<>();
+	public JsStyleAccessor(BRJS brjs) {
+		this.brjs = brjs;
+	}
 	
-	public static String getJsStyle(BRJS brjs, File dir) {
+	public String getJsStyle(File dir) {
 		String path = dir.getAbsolutePath();
 		MemoizedValue<String> jsStyleMemoizedValue = dirStyleCache.get(path);
 		
@@ -29,14 +33,14 @@ public class JsStyleUtility {
 				if ( parent == null || parent.equals(brjs.dir().getUnderlyingFile().getParentFile()) ){
 					jsStyle = CommonJsSourceModule.JS_STYLE;
 				} else {
-					jsStyle = getJsStyle(brjs, parent);
+					jsStyle = getJsStyle(parent);
 				}
 			}
 			return jsStyle;
 		});
 	}
 	
-	public static void setJsStyle(BRJS brjs, File dir, String jsStyle) {
+	public void setJsStyle(File dir, String jsStyle) {
 		try {
 			File jsStyleFile = new File(dir, ".js-style");
 			
