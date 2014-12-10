@@ -40,9 +40,9 @@ public class CreateBladeCommandTest extends SpecTest {
 			badBlade = bladeset.blade("!$%$^");
 			blade1InDefaultBladeset = app.defaultBladeset().blade("blade1");
 			blade2InDefaultBladeset = app.defaultBladeset().blade("blade2");
-			angularTemplates = brjs.confTemplateGroup("angular");
-			defaultTemplates = brjs.confTemplateGroup("default");
-			myTemplateTemplates = brjs.confTemplateGroup("myTemplate");
+			angularTemplates = brjs.sdkTemplateGroup("angular");
+			defaultTemplates = brjs.sdkTemplateGroup("default");
+			myTemplateTemplates = brjs.sdkTemplateGroup("myTemplate");
 	}
 	
 	

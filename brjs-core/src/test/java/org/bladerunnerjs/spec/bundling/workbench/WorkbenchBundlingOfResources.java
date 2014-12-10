@@ -36,7 +36,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 			blade = bladeset.blade("b1");
 			blade2 = bladeset.blade("b2");
 			workbench = blade.workbench();
-			workbenchTemplate = brjs.confTemplateGroup("default").template("workbench");
+			workbenchTemplate = brjs.sdkTemplateGroup("default").template("workbench");
 			// workbench setup
 			given(workbenchTemplate).containsFileWithContents("index.html", "<@css.bundle theme='standard'@/>")
 				.and(workbenchTemplate).containsFolder("resources")

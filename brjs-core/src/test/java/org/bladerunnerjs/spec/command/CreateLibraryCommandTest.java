@@ -42,9 +42,9 @@ public class CreateLibraryCommandTest extends SpecTest {
 			aspect = app.aspect("default");
 			lib = app.jsLib("lib");
 			badLib = app.jsLib("lib#$@/");
-			angularTemplates = brjs.confTemplateGroup("angular");
-			defaultTemplates = brjs.confTemplateGroup("default");
-			myTemplateTemplates = brjs.confTemplateGroup("myTemplate");
+			angularTemplates = brjs.sdkTemplateGroup("angular");
+			defaultTemplates = brjs.sdkTemplateGroup("default");
+			myTemplateTemplates = brjs.sdkTemplateGroup("myTemplate");
 	}
 	
 	@Test

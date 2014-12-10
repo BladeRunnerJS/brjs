@@ -27,7 +27,7 @@ public class AppConfTest extends SpecTest {
 			app = brjs.app("app1");
 			JSKeyWordApp = brjs.app("if");
 			reseverWordApp = brjs.app("caplin");
-			templates = brjs.confTemplateGroup("default");
+			templates = brjs.sdkTemplateGroup("default");
 	}
 	
 	

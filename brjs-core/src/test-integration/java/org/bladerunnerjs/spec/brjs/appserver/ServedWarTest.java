@@ -57,7 +57,7 @@ public class ServedWarTest extends SpecTest {
 			aspect = app.aspect("default");
 			loginAspect = app.aspect("login");
 			rootAspect = app.defaultAspect();
-			templates = brjs.confTemplateGroup("default");
+			templates = brjs.sdkTemplateGroup("default");
 			mockJndiContext = mock(Context.class);
 	}
 	

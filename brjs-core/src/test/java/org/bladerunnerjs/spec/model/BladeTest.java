@@ -35,7 +35,7 @@ public class BladeTest extends SpecTest {
 			blade1 = bladeset.blade("b1");
 			bladeWithInvalidName = bladeset.blade("_-=+");
 			bladeWithJSKeyWordName = bladeset.blade("export");
-			templates = brjs.confTemplateGroup("default");
+			templates = brjs.sdkTemplateGroup("default");
 			bladeTemplate = templates.template("blade");
 	}
 	

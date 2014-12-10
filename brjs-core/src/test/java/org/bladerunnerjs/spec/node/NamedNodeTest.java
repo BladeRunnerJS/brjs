@@ -40,7 +40,7 @@ public class NamedNodeTest extends SpecTest {
 		given(brjs).hasBeenCreated();
 			node = namedNodeFactory.createNamedNode(brjs, "node");
 			badNode = namedNodeFactory.createNamedNode(brjs, "!$%&");
-			nodeTemplate = brjs.confTemplateGroup("default").template(getTemplateName());
+			nodeTemplate = brjs.sdkTemplateGroup("default").template(getTemplateName());
 	}
 	
 	public NamedNodeTest(String testName, NamedNodeFactory namedNodeFactory) {
@@ -168,7 +168,7 @@ public class NamedNodeTest extends SpecTest {
 	
 	@Test
 	public void weCanCreateANodeUsingATemplate() throws Exception {
-		given(brjs.confTemplateGroup("default")).templateGroupCreated()
+		given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(nodeTemplate).containsFile("some-file.blah");
 		when(node).populate("default");
 		then(node).dirExists()
@@ -185,7 +185,7 @@ public class NamedNodeTest extends SpecTest {
 	
 	@Test
 	public void weCanCreateANodeUsingATemplateWhichHasADirectory() throws Exception {
-		given(brjs.confTemplateGroup("default")).templateGroupCreated()
+		given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(nodeTemplate).containsFolder("the-dir");
 		when(node).populate("default");
 		then(node).dirExists()

@@ -29,7 +29,7 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).containsFolder("sdk/system-applications");
 		appServer = brjs.applicationServer(appServerPort);
 		brjs.bladerunnerConf().setJettyPort(appServerPort);
-		templates = brjs.confTemplateGroup("default");
+		templates = brjs.sdkTemplateGroup("default");
 		brjs.appJars().create();
 	}
 	

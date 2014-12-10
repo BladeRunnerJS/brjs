@@ -35,9 +35,9 @@ public class CreateAppCommandTest extends SpecTest {
 			app = brjs.app("app");
 			badApp = brjs.app("app#$@/");
 			appJars = brjs.appJars();
-			angularTemplates = brjs.confTemplateGroup("angular");
-			defaultTemplates = brjs.confTemplateGroup("default");
-			myTemplateTemplates = brjs.confTemplateGroup("myTemplate");
+			angularTemplates = brjs.sdkTemplateGroup("angular");
+			defaultTemplates = brjs.sdkTemplateGroup("default");
+			myTemplateTemplates = brjs.sdkTemplateGroup("myTemplate");
 	}
 	
 	@Test

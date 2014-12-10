@@ -332,8 +332,8 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer usesProductionTemplates() throws IOException {
 		verifyBrjsIsSet();
 		
-		File templateDir = new File("../brjs-sdk/build-resources/includes/conf/templates/default"); 
-		FileUtils.copyDirectory(brjs, templateDir, brjs.file("conf/templates/default"));
+		File templateDir = new File("../brjs-sdk/build-resources/includes/sdk/templates/default"); 
+		FileUtils.copyDirectory(brjs, templateDir, brjs.file("sdk/templates/default"));
 		
 		File j2eeify = new File("../brjs-sdk/build-resources/includes/sdk/j2eeify-app"); 
 		FileUtils.copyDirectory(brjs, j2eeify, brjs.file("sdk/j2eeify-app"));

@@ -72,7 +72,7 @@ public class CreateAspectCommandTest extends SpecTest {
 
 	@Test
 	public void aspectIsCreatedWhenAllArgumentsAreValid() throws Exception {
-		given(brjs.confTemplateGroup("default")).templateGroupCreated()
+		given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(app).hasBeenCreated();
 		when(brjs).runCommand("create-aspect", "app", "aspect");
 		then(aspect).dirExists()
@@ -83,7 +83,7 @@ public class CreateAspectCommandTest extends SpecTest {
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
-		given(brjs.confTemplateGroup("default")).templateGroupCreated()
+		given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated();
 		when(brjs).runCommand("create-aspect", "app", "aspect");

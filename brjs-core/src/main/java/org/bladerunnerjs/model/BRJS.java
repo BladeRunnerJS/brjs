@@ -61,7 +61,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript", null);
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
 	private final NodeList<TemplateGroup> confTemplateGroups = new NodeList<>(this, TemplateGroup.class, "conf/templates", null);
-	private final NodeList<TemplateGroup> sdkTemplateGroups = new NodeList<>(this, TemplateGroup.class, "sdk/conf/templates", null);
+	private final NodeList<TemplateGroup> sdkTemplateGroups = new NodeList<>(this, TemplateGroup.class, "sdk/templates", null);
 	private final NodeItem<DirNode> appJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/application");
 	private final NodeItem<DirNode> configuration = new NodeItem<>(this, DirNode.class, "conf");
 	private final NodeItem<DirNode> systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");

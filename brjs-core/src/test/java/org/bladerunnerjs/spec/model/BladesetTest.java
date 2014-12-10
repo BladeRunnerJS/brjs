@@ -27,7 +27,7 @@ public class BladesetTest extends SpecTest {
 	{
 		given(brjs).hasBeenCreated();
 			app = brjs.app("app");
-			bladesetTemplate = brjs.confTemplateGroup("default").template("bladeset");
+			bladesetTemplate = brjs.sdkTemplateGroup("default").template("bladeset");
 			bladeset = app.bladeset("bs");
 			invalidBladesetName = app.bladeset("#Invalid");
 			JSKeywordBladesetName = app.bladeset("else");
@@ -59,7 +59,7 @@ public class BladesetTest extends SpecTest {
 	@Test
 	public void populatingABladesetCausesAppObserversToBeNotified() throws Exception
 	{
-		given(brjs.confTemplateGroup("default")).templateGroupCreated()
+		given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(app).hasBeenPopulated("default")
 			.and(observer).observing(app)
 			.and(observer).allNotificationsHandled();

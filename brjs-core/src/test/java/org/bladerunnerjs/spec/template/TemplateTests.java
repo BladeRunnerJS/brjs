@@ -47,7 +47,7 @@ public class TemplateTests extends SpecTest
 		userLib = app.jsLib("userlib");
 		thirdpartyLib = app.jsLib("thirdpartyLib");
 		bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
-		templates = brjs.confTemplateGroup("default");
+		templates = brjs.sdkTemplateGroup("default");
 	}
 	
 	

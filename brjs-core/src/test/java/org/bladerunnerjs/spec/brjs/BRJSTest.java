@@ -19,7 +19,7 @@ public class BRJSTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-			brjsTemplate = brjs.confTemplateGroup("default").template("brjs");
+			brjsTemplate = brjs.sdkTemplateGroup("default").template("brjs");
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
 	}

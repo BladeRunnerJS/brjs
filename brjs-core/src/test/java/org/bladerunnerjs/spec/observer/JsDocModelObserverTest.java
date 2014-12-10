@@ -21,7 +21,7 @@ public class JsDocModelObserverTest extends SpecTest {
 	public void placeholdersAreCreatedWhenANewAppIsCreatedViaTheModel() throws Exception {
 		given(brjs).hasModelObserverPlugins(new JsDocObserver())
 			.and(brjs).hasBeenCreated()
-			.and(brjs.confTemplateGroup("default")).templateGroupCreated()
+			.and(brjs.sdkTemplateGroup("default")).templateGroupCreated()
     		.and(testSdkDirectory).containsFileWithContents("sdk/jsdoc-toolkit-resources/jsdoc-placeholders/index.html", "PLACEHOLDER");
 		when( brjs.app("app1" ) ).create();
 		then(brjs).hasDir("generated/app/app1/jsdoc")

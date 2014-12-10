@@ -51,7 +51,7 @@ public class AppServerTest extends SpecTest
 			appServer = brjs.applicationServer(appServerPort);
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
-			templates = brjs.confTemplateGroup("default");
+			templates = brjs.sdkTemplateGroup("default");
 			sysapp1 = brjs.systemApp("sysapp1");
 			sysapp2 = brjs.systemApp("sysapp2");
 			appJars = brjs.appJars();

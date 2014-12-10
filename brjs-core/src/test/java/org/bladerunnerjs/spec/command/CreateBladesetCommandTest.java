@@ -34,9 +34,9 @@ public class CreateBladesetCommandTest extends SpecTest {
 			app = brjs.app("app");
 			bladeset = app.bladeset("bladeset");
 			badBladeset = app.bladeset("bladeset#$@/");
-			angularTemplates = brjs.confTemplateGroup("angular");
-			defaultTemplates = brjs.confTemplateGroup("default");
-			myTemplateTemplates = brjs.confTemplateGroup("myTemplate");
+			angularTemplates = brjs.sdkTemplateGroup("angular");
+			defaultTemplates = brjs.sdkTemplateGroup("default");
+			myTemplateTemplates = brjs.sdkTemplateGroup("myTemplate");
 	}
 	
 	
