@@ -1,4 +1,3 @@
-/*global afterEach, beforeEach, describe, env, expect, it, spyOn */
 'use strict';
 
 var hasOwnProp = Object.prototype.hasOwnProperty;
@@ -43,6 +42,7 @@ describe('jsdoc/tag', function() {
         var tagExample;
         var tagExampleIndented;
         var tagParam;
+        var tagParamWithType;
         var tagType;
 
         // allow each test to recreate the tags (for example, after enabling debug mode)
@@ -51,8 +51,10 @@ describe('jsdoc/tag', function() {
             tagArg = new jsdoc.tag.Tag('arg  ', text, meta);
             // @param with no type, but with optional and defaultvalue
             tagParam = new jsdoc.tag.Tag('param', '[foo=1]', meta);
+            // @param with type and no type modifiers (such as optional)
+            tagParamWithType = new jsdoc.tag.Tag('param', '{string} foo', meta);
             // @example that does not need indentation to be removed
-            tagExample  = new jsdoc.tag.Tag('example', textExample, meta);
+            tagExample = new jsdoc.tag.Tag('example', textExample, meta);
             // @example that needs indentation to be removed
             tagExampleIndented = new jsdoc.tag.Tag('example', textExampleIndented, meta);
             // for testing that onTagText is run when necessary
@@ -111,6 +113,26 @@ describe('jsdoc/tag', function() {
                 // @type adds {} around the type if necessary.
                 expect(tagType.text).toBeDefined();
                 expect(tagType.text).toBe(def.onTagText('MyType'));
+            });
+
+            it('should be enclosed in quotes, with no whitespace trimming, if it is a symbol name with leading or trailing whitespace', function() {
+                var wsBoth;
+                var wsLeading;
+                var wsOnly;
+                var wsTrailing;
+
+                spyOn(logger, 'error');
+
+                wsOnly = new jsdoc.tag.Tag('name', ' ', { code: { name: ' ' } });
+                wsLeading = new jsdoc.tag.Tag('name', '  foo', { code: { name: '  foo' } });
+                wsTrailing = new jsdoc.tag.Tag('name', 'foo  ', { code: { name: 'foo  ' } });
+                wsBoth = new jsdoc.tag.Tag('name', '  foo  ', { code: { name: '  foo  ' } });
+
+                expect(logger.error).not.toHaveBeenCalled();
+                expect(wsOnly.text).toBe('" "');
+                expect(wsLeading.text).toBe('"  foo"');
+                expect(wsTrailing.text).toBe('"foo  "');
+                expect(wsBoth.text).toBe('"  foo  "');
             });
         });
 
@@ -184,6 +206,12 @@ describe('jsdoc/tag', function() {
                 expect(tagArg.value.name).toBe('foo');
 
                 expect(tagType.value.name).not.toBeDefined();
+            });
+
+            it('if the tag has a type without modifiers, tag.value should not include properties for the modifiers', function() {
+                ['optional', 'nullable', 'variable', 'defaultvalue'].forEach(function(modifier) {
+                    expect( hasOwnProp.call(tagParamWithType.value, modifier) ).toBe(false);
+                });
             });
         });
 

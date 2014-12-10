@@ -19,7 +19,7 @@ var hasOwnProp = Object.prototype.hasOwnProperty;
 var data;
 var view;
 
-var outdir = env.opts.destination;
+var outdir = path.normalize(env.opts.destination);
 
 function find(spec) {
     return helper.find(data, spec);
@@ -105,7 +105,7 @@ function addParamAttributes(params) {
 function buildItemTypeStrings(item) {
     var types = [];
 
-    if (item.type && item.type.names) {
+    if (item && item.type && item.type.names) {
         item.type.names.forEach(function(name) {
             types.push( linkto(name, htmlsafe(name)) );
         });
@@ -283,32 +283,32 @@ function attachModuleSymbols(doclets, modules) {
 }
 
 function buildMemberNav(items, itemHeading, itemsSeen) {
-    var nav = '';
+  var nav = '';
 
-    if (items.length) {
-        var itemsNav = '';
+  if (items.length) {
+    var itemsNav = '';
 
-        items.forEach(function(item) {
-            if ( !hasOwnProp.call(itemsSeen, item.longname) ) {
-                itemsNav += '<li>' + linkto(item.longname, item.name.replace(/^module:/, '')) + '</li>';
-            }
-            itemsSeen[item.longname] = true;
-        });
+    items.forEach(function(item) {
+      if ( !hasOwnProp.call(itemsSeen, item.longname) ) {
+        itemsNav += '<li>' + linkto(item.longname, item.name.replace(/^module:/, '')) + '</li>';
+      }
+      itemsSeen[item.longname] = true;
+    });
 
-        if (itemsNav !== '') {
-            nav += '<h3>' + itemHeading  + '</h3><ul>' + itemsNav + '</ul>';
-        }
+    if (itemsNav !== '') {
+      nav += '<h3>' + itemHeading + '</h3><ul>' + itemsNav + '</ul>';
     }
+  }
 
-    return nav;
+  return nav;
 }
 
 function linktoTutorial(longName, name) {
-    return tutoriallink(name);
+  return tutoriallink(name);
 }
 
 function linktoExternal(longName, name) {
-    return linkto(longName, name.replace(/(^"|"$)/g, ''));
+  return linkto(longName, name.replace(/(^"|"$)/g, ''));
 }
 
 /**
@@ -339,7 +339,7 @@ function buildNav(members) {
     nav += buildMemberNav(members.modules, 'Modules', {}, linkto);
 
     if (members.globals.length) {
-        var globalNav = '';
+      var globalNav = '';
 
         members.globals.forEach(function(g) {
             if ( g.kind !== 'typedef' && !hasOwnProp.call(seen, g.longname) ) {
@@ -371,8 +371,8 @@ exports.publish = function(taffyData, opts, tutorials) {
     var conf = env.conf.templates || {};
     conf['default'] = conf['default'] || {};
 
-    var templatePath = opts.template;
-    view = new template.Template(templatePath + '/tmpl');
+    var templatePath = path.normalize(opts.template);
+    view = new template.Template( path.join(templatePath, 'tmpl') );
 
     // claim some special filenames in advance, so the All-Powerful Overseer of Filename Uniqueness
     // doesn't try to hand them out later
@@ -406,7 +406,7 @@ exports.publish = function(taffyData, opts, tutorials) {
 
                 if (example.match(/^\s*<caption>([\s\S]+?)<\/caption>(\s*[\n\r])([\s\S]+)$/i)) {
                     caption = RegExp.$1;
-                    code    = RegExp.$3;
+                    code = RegExp.$3;
                 }
 
                 return {
@@ -438,7 +438,7 @@ exports.publish = function(taffyData, opts, tutorials) {
     // update outdir if necessary, then create outdir
     var packageInfo = ( find({kind: 'package'}) || [] ) [0];
     if (packageInfo && packageInfo.name) {
-        outdir = path.join(outdir, packageInfo.name, packageInfo.version);
+        outdir = path.join( outdir, packageInfo.name, (packageInfo.version || '') );
     }
     fs.mkPath(outdir);
 
@@ -457,7 +457,11 @@ exports.publish = function(taffyData, opts, tutorials) {
     var staticFileFilter;
     var staticFileScanner;
     if (conf['default'].staticFiles) {
-        staticFilePaths = conf['default'].staticFiles.paths || [];
+        // The canonical property name is `include`. We accept `paths` for backwards compatibility
+        // with a bug in JSDoc 3.2.x.
+        staticFilePaths = conf['default'].staticFiles.include ||
+            conf['default'].staticFiles.paths ||
+            [];
         staticFileFilter = new (require('jsdoc/src/filter')).Filter(conf['default'].staticFiles);
         staticFileScanner = new (require('jsdoc/src/scanner')).Scanner();
 

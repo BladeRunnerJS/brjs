@@ -26,7 +26,7 @@ import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.utility.JsStyleUtility;
+import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.ZipUtility;
 import org.mockito.Mockito;
 
@@ -96,8 +96,8 @@ public class NodeImporter {
 		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
 		
 		BRJS brjs = targetBladeset.root();
-		if(!JsStyleUtility.getJsStyle(brjs, sourceBladesetDir).equals(JsStyleUtility.getJsStyle(brjs, targetBladeset.dir()))) {
-			JsStyleUtility.setJsStyle(tempBrjsBladeset.root(), tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(brjs, sourceBladesetDir));
+		if(!brjs.jsStyleAccessor().getJsStyle(sourceBladesetDir).equals(brjs.jsStyleAccessor().getJsStyle(targetBladeset.dir()))) {
+			tempBrjsBladeset.root().jsStyleAccessor().setJsStyle(tempBrjsBladeset.dir(), brjs.jsStyleAccessor().getJsStyle(sourceBladesetDir));
 		}
 		
 		renameBladeset(tempBrjsBladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix);

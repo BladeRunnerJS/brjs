@@ -226,6 +226,13 @@ pull request, please contact me in advance so I can help things go smoothly.
 
 ## Changelog ##
 
++ 0.8.3 (October 2014):
+    + Type applications are no longer required to include a period (`.`) as a separator, regardless
+    of whether JSDoc-style type expressions are enabled.
+    + Type unions that are not enclosed in parentheses can now include the repeatable (`...`)
+    modifier when JSDoc-style type expressions are enabled.
+    + Name expressions may now be enclosed in single or double quotation marks when JSDoc-style
+    type expressions are enabled.
 + 0.8.2 (June 2014): Fixed a compatibility issue with the JSDoc fork of Mozilla Rhino.
 + 0.8.1 (June 2014): Added support for type unions that are not enclosed in parentheses, and that
 contain nullable or non-nullable modifiers (for example, `!string|!number`).

@@ -35,6 +35,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeEx
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
+import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -78,6 +79,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final AppVersionGenerator appVersionGenerator;
 	private final FileModificationRegistry fileModificationRegistry;
 	private final Thread fileWatcherThread;
+	private final JsStyleAccessor jsStyleAccessor = new JsStyleAccessor(this);
 	
 	private WorkingDirNode workingDir;
 	private BladerunnerConf bladerunnerConf;
@@ -205,6 +207,10 @@ public class BRJS extends AbstractBRJSRootNode
 	@Override
 	public IO io() {
 		return io;
+	}
+	
+	public JsStyleAccessor jsStyleAccessor() {
+		return jsStyleAccessor;
 	}
 	
 	public List<App> apps()

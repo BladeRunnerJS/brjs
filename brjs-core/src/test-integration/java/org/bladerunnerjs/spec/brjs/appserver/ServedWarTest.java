@@ -1,5 +1,7 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 
 import javax.naming.Context;
@@ -56,8 +58,7 @@ public class ServedWarTest extends SpecTest {
 			loginAspect = app.aspect("login");
 			rootAspect = app.defaultAspect();
 			templates = brjs.confTemplateGroup("default");
-			mockJndiContext = TestContextFactory.getTestContext();
-			
+			mockJndiContext = mock(Context.class);
 	}
 	
 	@Test

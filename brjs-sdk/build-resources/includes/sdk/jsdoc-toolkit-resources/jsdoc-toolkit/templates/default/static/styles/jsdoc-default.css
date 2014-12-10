@@ -2,33 +2,33 @@
     font-family: 'Open Sans';
     font-weight: normal;
     font-style: normal;
-    src: url('OpenSans-Regular-webfont.eot');
+    src: url('../fonts/OpenSans-Regular-webfont.eot');
     src:
         local('Open Sans'),
         local('OpenSans'),
-        url('OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-        url('OpenSans-Regular-webfont.woff') format('woff'),
-        url('OpenSans-Regular-webfont.svg#open_sansregular') format('svg');
+        url('../fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/OpenSans-Regular-webfont.woff') format('woff'),
+        url('../fonts/OpenSans-Regular-webfont.svg#open_sansregular') format('svg');
 }
 
 @font-face {
     font-family: 'Open Sans Light';
     font-weight: normal;
     font-style: normal;
-    src: url('OpenSans-Light-webfont.eot');
+    src: url('../fonts/OpenSans-Light-webfont.eot');
     src:
         local('Open Sans Light'),
         local('OpenSans Light'),
-        url('OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'),
-        url('OpenSans-Light-webfont.woff') format('woff'),
-        url('OpenSans-Light-webfont.svg#open_sanslight') format('svg');
+        url('../fonts/OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/OpenSans-Light-webfont.woff') format('woff'),
+        url('../fonts/OpenSans-Light-webfont.svg#open_sanslight') format('svg');
 }
 
 html
 {
     overflow: auto;
     background-color: #fff;
-    font-size:14px;
+    font-size: 14px;
 }
 
 body
@@ -45,13 +45,17 @@ a, a:visited, a:active {
 }
 
 a:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 header
 {
     display: block;
-    padding: 6px 4px;
+    padding: 0px 4px;
+}
+
+tt, code, kbd, samp {
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
 }
 
 .class-description {
@@ -61,16 +65,19 @@ header
     margin-top: 1em;
 }
 
+.class-description:empty {
+    margin: 0;
+}
+
 #main {
     float: left;
     width: 70%;
     box-sizing: border-box;
     padding: 12px 24px;
-    overflow: hidden;
 }
 
-article dd {
-	margin-bottom:40px;
+article dl {
+    margin-bottom: 40px;
 }
 
 section
@@ -101,20 +108,20 @@ nav
     width: 30%;
     box-sizing: border-box;
     border-left: 1px solid #ccc;
-    padding: 0 16px;
+    padding-left: 16px;
 }
 
 nav ul {
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', arial, sans-serif;
     font-size: 100%;
     line-height: 17px;
-    padding:0;
-    margin:0;
-    list-style-type:none;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
 }
 
 nav ul a, nav ul a:visited, nav ul a:active {
-    font-family: 'Courier New', 'Andale Mono', monospace;
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
     line-height: 18px;
     color: #4D4E53;
 }
@@ -140,13 +147,13 @@ p {
 }
 
 h1, h2, h3, h4 {
-	font-weight: 200;
-	margin: 0;
+    font-weight: 200;
+    margin: 0;
 }
 
 h1
 {
-	font-family: 'Open Sans Light', sans-serif;
+    font-family: 'Open Sans Light', sans-serif;
     font-size: 48px;
     letter-spacing: -2px;
     margin-bottom: 20px;
@@ -165,7 +172,7 @@ h4
     font-size: 18px;
     letter-spacing: -0.33px;
     margin-bottom: 12px;
-    color: #A35A00;
+    color: #4d4e53;
 }
 
 h5, .container-overview .subsection-title
@@ -206,11 +213,11 @@ h6
 }
 
 .name, .signature {
-    font-family: 'Courier New', 'Andale Mono', monospace;
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
 }
 
 .details { margin-top: 14px; border-left: 2px solid #DDD; }
-.details dt { width:120px; float:left; padding-left: 10px;  padding-top: 6px; }
+.details dt { width: 120px; float: left; padding-left: 10px;  padding-top: 6px; }
 .details dd { margin-left: 70px; }
 .details ul { margin: 0; }
 .details ul { list-style-type: none; }
@@ -220,7 +227,6 @@ h6
 
 .description {
     margin-bottom: 1em;
-    margin-left: -16px;
     margin-top: 1em;
 }
 
@@ -244,7 +250,6 @@ h6
 
 .prettyprint code
 {
-	font-family: 'Courier New', 'Andale Mono', monospace;
     font-size: 100%;
     line-height: 18px;
     display: block;
@@ -300,8 +305,8 @@ h6
 }
 
 .params .name, .props .name, .name code {
-	color: #4D4E53;
-    font-family: 'Courier New', 'Andale Mono', monospace;
+    color: #4D4E53;
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
     font-size: 100%;
 }
 

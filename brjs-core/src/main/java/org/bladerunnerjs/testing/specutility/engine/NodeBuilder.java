@@ -14,7 +14,6 @@ import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSource
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class NodeBuilder<N extends Node> {
@@ -110,7 +109,7 @@ public abstract class NodeBuilder<N extends Node> {
     			throw new RuntimeException("Package style should be set before any JS files have been created");
     		}
 		}
-		JsStyleUtility.setJsStyle(specTest.brjs, packageDir, jsStyle);
+		specTest.brjs.jsStyleAccessor().setJsStyle(packageDir, jsStyle);
 		return builderChainer;
 	}
 	
