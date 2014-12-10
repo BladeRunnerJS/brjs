@@ -386,7 +386,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(blade).containsResourceFileWithContents("xml/myconfig.xml", "@bundlePath@/some/path")
 			.and(brjs).hasDevVersion("dev")
 			.and(blade).hasClass("appns/bs/b1/Class1")
-			.and(workbench).indexPageRefersTo("appns/bs/b1/Class1");
+			.and(workbench).indexPageRequires("appns/bs/b1/Class1");
 		when(workbench).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText("v/dev/some/path"); 
 	}

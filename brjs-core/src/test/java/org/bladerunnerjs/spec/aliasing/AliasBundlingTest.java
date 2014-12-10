@@ -446,4 +446,16 @@ public class AliasBundlingTest extends SpecTest {
 			.and(response).doesNotContainClasses("br/GroupProductionClass")
 			.and(response).containsText("'br.service':{'class':'br/DevScenarioClass'");
 	}
+	
+	@Test
+	public void aliasesRequestedForAWorkbenchArentCachedAndReusedForAnAspect() throws Exception {
+		given(brLib).hasClasses("br/AliasRegistry", "br/Class", "br/StubClass")
+			.and(aspectAliasesFile).hasAlias("the-alias", "br/Class")
+			.and(worbenchAliasesFile).hasAlias("the-alias", "br/StubClass")
+			.and(aspect).indexPageRefersTo("'the-alias'", "br.AliasRegistry")
+			.and(workbench).indexPageRefersTo("'the-alias'", "br.AliasRegistry")
+			.and(workbench).hasReceivedRequest("aliasing/bundle.js");
+		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
+		then(response).containsText("module.exports = {'the-alias':{'class':'br/Class','className':'br/Class'}};");
+	}
 }
