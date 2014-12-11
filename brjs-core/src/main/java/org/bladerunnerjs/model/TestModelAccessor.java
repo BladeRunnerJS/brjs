@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -11,6 +12,7 @@ import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
+import org.bladerunnerjs.utility.FileUtils;
 
 
 public class TestModelAccessor
@@ -56,6 +58,20 @@ public class TestModelAccessor
 		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, appVersionGenerator);
 		
 		return brjs;
+	}
+	
+	public File createTestSdkDirectory() {
+		File sdkDir;
+		
+		try {
+			sdkDir = FileUtils.createTemporaryDirectory( this.getClass() );
+			new File(sdkDir, "sdk").mkdirs();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return sdkDir;
 	}
 	
 }

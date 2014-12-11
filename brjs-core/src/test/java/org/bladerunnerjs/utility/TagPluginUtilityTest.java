@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -221,19 +220,4 @@ public class TagPluginUtilityTest extends TestModelAccessor
 		 Map<String,Map<String,String>> actualResult = TagPluginUtility.getUsedTagsAndAttributes(input, bundleSet, opMode, new Locale(locale));
 		assertEquals(expectedResult, actualResult);
 	}
-	
-	private File createTestSdkDirectory() {
-		File sdkDir;
-		
-		try {
-			sdkDir = FileUtils.createTemporaryDirectory( this.getClass() );
-			new File(sdkDir, "sdk").mkdirs();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return sdkDir;
-	}
-	
 }

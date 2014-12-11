@@ -75,7 +75,6 @@ import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
-import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
@@ -311,21 +310,5 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	//TODO: we might find we need a better way to deal with multiple methods that want to return different verifiers based on a List
 	public RequestListVerifier thenRequests(List<String> requests) { return new RequestListVerifier(this, requests); }
-	
-	
-	
-	private File createTestSdkDirectory() {
-		File sdkDir;
-		
-		try {
-			sdkDir = FileUtils.createTemporaryDirectory( this.getClass() );
-			new File(sdkDir, "sdk").mkdirs();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return sdkDir;
-	}
 	
 }
