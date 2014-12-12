@@ -21,7 +21,8 @@ public class FileModifiedChecker
 		if (fileVersion == null) {
 			fileVersion = fileModificationRegistry.getFileVersionObject(file);
 		}
-		long newLastModified = fileVersion.getValue();
+		long newLastModified = fileVersion.getValue();		
+		
 		boolean hasChangedSinceLastCheck = (newLastModified > lastModifiedTime);
 		lastModifiedTime = newLastModified;
 		

@@ -3,10 +3,8 @@ package org.bladerunnerjs.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
-import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.memoization.MemoizedFile;
@@ -100,28 +98,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
-		
-		//TODO: remove the hack that differs in behaviour if an alias starts with "SERVICE!"
-		
-		boolean isService = aliasName.startsWith("SERVICE!");
-		if (isService)
-		{
-			aliasName = StringUtils.substringAfter(aliasName, "SERVICE!");
-		}
-		
-		try
-		{
-			return aliasesFile().getAlias(aliasName);
-		}
-		catch (UnresolvableAliasException ex)
-		{
-			if (isService)
-			{
-				// do nothing with the exception since a service might be configured at runtime
-				return null;
-			}
-			throw ex;
-		}
+		return aliasesFile().getAlias(aliasName);
 	}
 	
 	@Override

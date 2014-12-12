@@ -35,6 +35,10 @@ public class AliasDefinitionsFileBuilder {
 		return hasAlias(aliasName, classRef, null);
 	}
 	
+	public BuilderChainer hasIncompleteAlias(String aliasName, String interfaceRef) throws Exception {
+		return hasAlias(aliasName, interfaceRef);
+	}
+	
 	public BuilderChainer hasScenarioAlias(String scenarioName, String aliasName, String classRef) throws Exception {
 		aliasDefinitionsFile.addScenarioAlias(scenarioName, new AliasOverride(aliasName, classRef));
 		writeAliasDefinitionsFile();

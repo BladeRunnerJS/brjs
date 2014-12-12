@@ -18,7 +18,7 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	private final AssetLocation assetLocation;
-	private final AliasDefinition aliasDefinition;
+	private AliasDefinition aliasDefinition;
 	
 	public AliasCommonJsSourceModule(AssetLocation assetLocation, AliasDefinition aliasDefinition) {
 		this.assetLocation = assetLocation;
@@ -27,6 +27,10 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	
 	public AliasDefinition getAliasDefinition() {
 		return aliasDefinition;
+	}
+	
+	public void setAlias(AliasDefinition aliasDefinition) {
+		this.aliasDefinition = aliasDefinition;
 	}
 
 	@Override

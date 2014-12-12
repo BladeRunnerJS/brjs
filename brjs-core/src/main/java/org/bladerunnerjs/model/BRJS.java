@@ -18,6 +18,7 @@ import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedFileAccessor;
+import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -33,6 +34,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeEx
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
+import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -75,6 +77,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final AppVersionGenerator appVersionGenerator;
 	private final FileModificationRegistry fileModificationRegistry;
 	private final Thread fileWatcherThread;
+	private final JsStyleAccessor jsStyleAccessor = new JsStyleAccessor(this);
 	
 	private WorkingDirNode workingDir;
 	private BladerunnerConf bladerunnerConf;
@@ -101,7 +104,7 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		try
 		{
-			fileWatcherThread = new FileModificationWatcherThread( this );
+			fileWatcherThread = new FileModificationWatcherThread( this, new WatchKeyServiceFactory() );
 		}
 		catch (IOException ex)
 		{
@@ -148,7 +151,9 @@ public class BRJS extends AbstractBRJSRootNode
 	public void populate() throws InvalidNameException, ModelUpdateException {
 		try {
 			super.populate();
-			bladerunnerConf().write();
+			if (!bladerunnerConf().fileExists()) {
+				bladerunnerConf().write();
+			}
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {
@@ -202,6 +207,10 @@ public class BRJS extends AbstractBRJSRootNode
 	@Override
 	public IO io() {
 		return io;
+	}
+	
+	public JsStyleAccessor jsStyleAccessor() {
+		return jsStyleAccessor;
 	}
 	
 	public List<App> apps()
