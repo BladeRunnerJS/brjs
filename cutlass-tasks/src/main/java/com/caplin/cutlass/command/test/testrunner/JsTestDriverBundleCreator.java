@@ -9,8 +9,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestPack;
@@ -27,10 +30,14 @@ public class JsTestDriverBundleCreator
 {
 
 	public static final String BUNDLES_DIR_NAME = "bundles";
+	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "^.*([\\(\\!\\~\\-\\+]|(new\\s+))function\\s*\\([^)]*\\)\\s*\\{";
+	private static final Pattern SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN = Pattern.compile(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX, Pattern.DOTALL);
+	private static Logger logger;
 	
 	public static void createRequiredBundles(BRJS brjs, MemoizedFile jsTestDriverConf)
 			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
 	{
+		logger = brjs.logger(JsTestDriverBundleCreator.class);
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
 		FileUtils.deleteDirectoryFromBottomUp(bundlesDir);
 		FileUtils.deleteQuietly(brjs, bundlesDir);
@@ -49,6 +56,7 @@ public class JsTestDriverBundleCreator
 		
 		for (String resourceToLoad : getListOfResourcesToLoad(configMap))
 		{
+			System.out.println(resourceToLoad);
 			File requestedFile = new File(baseDirectory, resourceToLoad);
 			
 			if (fileIsInBundlesDirectory(requestedFile) && isNotWildcardFilename(requestedFile))
@@ -57,6 +65,15 @@ public class JsTestDriverBundleCreator
 				bundlePath = StringUtils.replace(bundlePath, "\\", "/");
 				bundlerHandler.createBundleFile(requestedFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
 			}
+		}
+		for (File currentTestFile : jsTestDriverConf.getParentFile().file("tests").listFiles())
+		{
+			Matcher m = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(currentTestFile));
+			while (!m.find())
+			{
+				logger.debug("The CommonJsTest " + currentTestFile.getName() + " is not wrapped within an IIFE, which may cause unreliability in tests.");
+				break;
+			}				
 		}
 	}
 
@@ -125,6 +142,5 @@ public class JsTestDriverBundleCreator
 			return collection;
 		}
 	}	
-	
 	
 }
