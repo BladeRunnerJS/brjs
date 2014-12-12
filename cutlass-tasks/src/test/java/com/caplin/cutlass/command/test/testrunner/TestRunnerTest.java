@@ -9,14 +9,14 @@ import java.util.List;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 
-public class TestRunnerTest extends TestModelAccessor {
+public class TestRunnerTest {
 
 	TestRunnerConfiguration config;
 	MemoizedFile configFile;
@@ -33,7 +33,7 @@ public class TestRunnerTest extends TestModelAccessor {
 	public void beforeTest() throws Exception {
 		// we're cheekily using another tests sdk structure so the test can work
 		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/sdk");
-		brjs = createModel(sdkBaseDir);
+		brjs = BRJSTestModelFactory.createModel(sdkBaseDir);
 		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		
 		configFile = brjs.getMemoizedFile( new File("src/test/resources/TestCommand/ct-runner-resources/test-runner.conf") );

@@ -9,13 +9,13 @@ import java.util.List;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 
-public class IntegrationTestFinderTest extends TestModelAccessor
+public class IntegrationTestFinderTest
 {
 
 	private static final String APPLICATIONS_DIR = "apps";
@@ -26,7 +26,7 @@ public class IntegrationTestFinderTest extends TestModelAccessor
 	@Before
 	public void setup() throws Exception
 	{
-		brjs = createModel(new File(TEST_ROOT));
+		brjs = BRJSTestModelFactory.createModel(new File(TEST_ROOT));
 		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		testFinder = new IntegrationTestFinder();
 	}

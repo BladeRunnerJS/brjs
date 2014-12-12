@@ -8,7 +8,7 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -24,7 +24,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 
-public class JsTestDriverBundleCreatorTest extends TestModelAccessor {
+public class JsTestDriverBundleCreatorTest {
 
 	private BRJS brjs;
 	private MemoizedFile memoizedConfigFile;
@@ -34,7 +34,7 @@ public class JsTestDriverBundleCreatorTest extends TestModelAccessor {
 	
 	@Before
 	public void setup() throws InvalidSdkDirectoryException, IOException, InvalidNameException, ModelUpdateException {
-		brjs = createModel(createTestSdkDirectory(), new TestLoggerFactory(logMessageStore));
+		brjs = BRJSTestModelFactory.createModel(BRJSTestModelFactory.createTestSdkDirectory(), new TestLoggerFactory(logMessageStore));
 		TypedTestPack aspectTestPack = brjs.app("app1").aspect("default").testType("unit");
 		aspectTestConfig = new File(aspectTestPack.dir(), "jsTestDriver.conf");
 		aspectTest = new File(aspectTestPack.dir(), "tests/AppTest.js");

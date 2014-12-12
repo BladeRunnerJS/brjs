@@ -5,13 +5,13 @@ import java.io.File;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.NodeTesterFactory;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AspectNavigationTest extends TestModelAccessor
+public class AspectNavigationTest
 {
 	private NodeTesterFactory<Aspect> nodeTesterFactory;
 	private Aspect aspect;
@@ -20,7 +20,7 @@ public class AspectNavigationTest extends TestModelAccessor
 	@Before
 	public void setup() throws Exception
 	{
-		brjs = createModel(new File("src/test/resources/BRJSTest"));
+		brjs = BRJSTestModelFactory.createModel(new File("src/test/resources/BRJSTest"));
 		aspect = brjs.app("a1").aspect("a1");
 		nodeTesterFactory = new NodeTesterFactory<>(aspect, Aspect.class);
 	}

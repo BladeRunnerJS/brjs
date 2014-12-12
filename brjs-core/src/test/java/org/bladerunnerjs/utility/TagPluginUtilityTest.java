@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
@@ -24,7 +24,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
-public class TagPluginUtilityTest extends TestModelAccessor
+public class TagPluginUtilityTest
 {
 
 	@Rule
@@ -54,8 +54,8 @@ public class TagPluginUtilityTest extends TestModelAccessor
 		/* asset location support */
 		mockPluginLocator.assetLocationPlugins.add(new VirtualProxyAssetLocationPlugin(new BRJSConformantAssetLocationPlugin()));
 		
-		File tempDir = createTestSdkDirectory();
-		brjs = createModel(tempDir, mockPluginLocator);
+		File tempDir = BRJSTestModelFactory.createTestSdkDirectory();
+		brjs = BRJSTestModelFactory.createModel(tempDir, mockPluginLocator);
 		
 		app = brjs.app("app");
 			app.create();

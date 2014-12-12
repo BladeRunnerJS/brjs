@@ -23,7 +23,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -82,7 +82,7 @@ import org.junit.Assert;
 import org.junit.Before;
 
 
-public abstract class SpecTest extends TestModelAccessor
+public abstract class SpecTest
 {
 	public static final String HTTP_REQUEST_PREFIX = "http://localhost";
 	
@@ -111,7 +111,7 @@ public abstract class SpecTest extends TestModelAccessor
 		logging = new LogMessageStore();
 		exceptions = new ArrayList<>();
 		observer = mock(EventObserver.class);
-		testSdkDirectory = createTestSdkDirectory();
+		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
 		pluginLocator = new MockPluginLocator();
 		webappTester = new WebappTester(testSdkDirectory);
 		appVersionGenerator = new MockAppVersionGenerator();
@@ -146,15 +146,15 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return super.createModel(testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
+		return BRJSTestModelFactory.createModel(testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
-		return super.createNonTestModel(testSdkDirectory, logging);
+		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging);
 	}
 	
 	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
-		return super.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
+		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
 	}
 	
 	public String getActiveCharacterEncoding() {

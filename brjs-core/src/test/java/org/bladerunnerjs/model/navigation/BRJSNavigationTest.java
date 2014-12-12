@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.NodeTesterFactory;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.junit.After;
@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class BRJSNavigationTest extends TestModelAccessor
+public class BRJSNavigationTest
 {
 	private NodeTesterFactory<BRJS> nodeTesterFactory;
 	private final File testBase = new File("src/test/resources/BRJSTest");
@@ -28,7 +28,7 @@ public class BRJSNavigationTest extends TestModelAccessor
 	@Before
 	public void setup() throws Exception
 	{
-		brjs = createModel(testBase, new TestLoggerFactory(new LogMessageStore()));
+		brjs = BRJSTestModelFactory.createModel(testBase, new TestLoggerFactory(new LogMessageStore()));
 		nodeTesterFactory = new NodeTesterFactory<>(brjs, BRJS.class);
 	}
 	
