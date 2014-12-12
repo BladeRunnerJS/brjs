@@ -151,7 +151,9 @@ public class BRJS extends AbstractBRJSRootNode
 	public void populate() throws InvalidNameException, ModelUpdateException {
 		try {
 			super.populate();
-			bladerunnerConf().write();
+			if (!bladerunnerConf().fileExists()) {
+				bladerunnerConf().write();
+			}
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {
