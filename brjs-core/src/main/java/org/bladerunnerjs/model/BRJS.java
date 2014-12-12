@@ -153,7 +153,9 @@ public class BRJS extends AbstractBRJSRootNode
 	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
 		try {
 			super.populate(templateGroup);
-			bladerunnerConf().write();
+			if (!bladerunnerConf().fileExists()) {
+				bladerunnerConf().write();
+			}
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {
