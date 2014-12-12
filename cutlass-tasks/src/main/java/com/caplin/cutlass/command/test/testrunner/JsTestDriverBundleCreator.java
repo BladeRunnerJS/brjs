@@ -68,12 +68,15 @@ public class JsTestDriverBundleCreator
 		}
 		for (File currentTestFile : jsTestDriverConf.getParentFile().file("tests").listFiles())
 		{
-			Matcher m = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(currentTestFile));
-			while (!m.find())
+			if (currentTestFile.isFile())
 			{
-				logger.debug("The CommonJsTest " + currentTestFile.getName() + " is not wrapped within an IIFE, which may cause unreliability in tests.");
-				break;
-			}				
+				Matcher m = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(currentTestFile));
+				while (!m.find())
+				{
+					logger.debug("The CommonJsTest " + currentTestFile.getName() + " is not wrapped within an IIFE, which may cause unreliability in tests.");
+					break;
+				}
+			}
 		}
 	}
 
