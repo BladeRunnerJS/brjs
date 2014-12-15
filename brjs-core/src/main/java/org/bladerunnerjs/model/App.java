@@ -285,8 +285,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
 		super.populate(templateGroup);
-		defaultAspect().populate(templateGroup);
-		defaultBladeset().populate(templateGroup);
+		
+		ImplicitTemplateHandlerUtility templateUtility = new ImplicitTemplateHandlerUtility();
+		templateUtility.populateOrCreate(defaultAspect(), templateGroup);
+		templateUtility.populateOrCreate(defaultBladeset(), templateGroup);
 	}
 	
 	public void populate(String requirePrefix, String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException

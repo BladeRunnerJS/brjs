@@ -86,8 +86,10 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
 		super.populate(templateGroup);
-		testType("unit").defaultTestTech().populate(templateGroup);
-		testType("acceptance").defaultTestTech().populate(templateGroup);
+		
+		ImplicitTemplateHandlerUtility templateUtility = new ImplicitTemplateHandlerUtility();
+		templateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
+		templateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
 	}
 	
 	@Override

@@ -31,3 +31,4 @@ workspace/sdk/phantomjs
 brjs-*.jar
 *.bundle
 bundle.js
+/build/

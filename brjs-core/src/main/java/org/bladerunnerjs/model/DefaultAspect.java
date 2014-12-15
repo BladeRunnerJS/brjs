@@ -27,8 +27,10 @@ public class DefaultAspect extends Aspect
 	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
 		BRJSNodeHelper.populate(this, templateGroup, true);
-		testType("unit").defaultTestTech().populate(templateGroup);
-		testType("acceptance").defaultTestTech().populate(templateGroup);	
+		
+		ImplicitTemplateHandlerUtility templateUtility = new ImplicitTemplateHandlerUtility();
+		templateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
+		templateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
 	}
 
 	public boolean exists()

@@ -20,14 +20,8 @@ public class TemplateGroupBuilder {
 	public BuilderChainer templateGroupCreated() throws InvalidNameException, ModelUpdateException {
 		templateGroup.template("app").create();
 		templateGroup.template("aspect").create();
-		templateGroup.template("aspect-test-unit-default").create();
-		templateGroup.template("aspect-test-acceptance-default").create();
 		templateGroup.template("bladeset").create();
-		templateGroup.template("bladeset-test-unit-default").create();
 		templateGroup.template("blade").create();
-		templateGroup.template("workbench").create();
-		templateGroup.template("blade-test-unit-default").create();
-		templateGroup.template("blade-test-acceptance-default").create();
 		return builderChainer;
 	}
 }
