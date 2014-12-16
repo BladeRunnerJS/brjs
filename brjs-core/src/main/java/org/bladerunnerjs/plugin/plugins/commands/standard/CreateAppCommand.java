@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.NameValidator;
-import org.bladerunnerjs.utility.TemplateVerificationUtility;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -66,7 +66,7 @@ public class CreateAppCommand extends ArgsParsingCommandPlugin
 		
 		if(app.dirExists()) throw new NodeAlreadyExistsException(app, this);
 		
-		if (TemplateVerificationUtility.templateExists(brjs, app, templateGroup, this)) {
+		if (TemplateUtility.templateExists(brjs, app, templateGroup, this)) {
 			try {
 				NameValidator.assertValidDirectoryName(app);
 				requirePrefix = (requirePrefix == null) ? NameValidator.generateRequirePrefixFromApp(app) : requirePrefix;

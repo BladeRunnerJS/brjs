@@ -19,7 +19,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.TemplateVerificationUtility;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -98,7 +98,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		JsLib library = app.appJsLib(libraryName);
 		if (library.dirExists()) throw new NodeAlreadyExistsException(library, this);
 		
-		if (TemplateVerificationUtility.templateExists(brjs, library.rootAssetLocation(), templateGroup, this)) {
+		if (TemplateUtility.templateExists(brjs, library.rootAssetLocation(), templateGroup, this)) {
 		
 			switch ( createLibraryType ) {
 				case br:

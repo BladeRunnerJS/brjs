@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.TemplateVerificationUtility;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -70,7 +70,7 @@ public class CreateBladesetCommand extends ArgsParsingCommandPlugin
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		if(bladeset.dirExists()) throw new NodeAlreadyExistsException(bladeset, this);
 		
-		if (TemplateVerificationUtility.templateExists(brjs, bladeset, templateGroup, this)) {
+		if (TemplateUtility.templateExists(brjs, bladeset, templateGroup, this)) {
 			try {
 				bladeset.populate(templateGroup);
 			}

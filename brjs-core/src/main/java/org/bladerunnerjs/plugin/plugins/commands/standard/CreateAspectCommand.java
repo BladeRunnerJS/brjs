@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.TemplateVerificationUtility;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -70,7 +70,7 @@ public class CreateAspectCommand extends ArgsParsingCommandPlugin
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		if(aspect.dirExists()) throw new NodeAlreadyExistsException(aspect, this);
 		
-		if (TemplateVerificationUtility.templateExists(brjs, aspect, templateGroup, this)) {
+		if (TemplateUtility.templateExists(brjs, aspect, templateGroup, this)) {
 			try {
 				aspect.populate(templateGroup);
 			}

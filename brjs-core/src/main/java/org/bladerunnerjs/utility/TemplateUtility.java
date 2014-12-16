@@ -15,15 +15,31 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
+import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
+import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 
 public class TemplateUtility
 {
+	public static boolean templateExists(BRJS brjs, BRJSNode node, String templateGroup, CommandPlugin command) throws CommandArgumentsException {
+		if (!brjs.confTemplateGroup(templateGroup).exists() && !brjs.sdkTemplateGroup(templateGroup).exists()) {
+			throw new CommandArgumentsException(new TemplateNotFoundException(("The '" + templateGroup + "' template group "
+					+ "could not be found at '" + brjs.confTemplateGroup(templateGroup).dir() + "'.")), command);
+		}
+		if (!brjs.confTemplateGroup(templateGroup).template(node.getTemplateName()).dir().exists() &&
+				!brjs.sdkTemplateGroup(templateGroup).template(node.getTemplateName()).dir().exists()) {
+			throw new CommandArgumentsException(new TemplateNotFoundException("The '" + node.getTemplateName() + 
+					"' template for the '" + templateGroup + "' template" + " group could not be found at '" 
+					+ brjs.confTemplateGroup(templateGroup).template(node.getTemplateName()).dir() + "'."), command);
+		}	
+		return true;
+	}
+	
 	public static void populateOrCreate(BRJSNode node, String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
 		File confTemplateDir = node.root().confTemplateGroup(templateGroup).template(node.getTemplateName()).dir();
 		File sdkTemplateDir = node.root().sdkTemplateGroup(templateGroup).template(node.getTemplateName()).dir();
