@@ -2,19 +2,19 @@ package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
 
 
 public class FileModificationRegistry
 {
-	private Map<String,FileVersion> lastModifiedMap = new HashMap<String,FileVersion>();
+	private Map<String,FileVersion> lastModifiedMap = new ConcurrentHashMap<>();
 	private File rootFile;
 	private Map<File, File> canonicalFileMap = new HashMap<>();
 	private IOFileFilter globalFileFilter;
@@ -49,24 +49,16 @@ public class FileModificationRegistry
 		
 		incrementFileVersion(file);
 		
-		List<String> incrementedPaths = new ArrayList<>();
-		
-		if (file.isDirectory()) {
-			for (File child : org.apache.commons.io.FileUtils.listFilesAndDirs(file, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-				incrementedPaths.add( getCanonicalFile(file).getAbsolutePath() );
-				getOrCreateVersionValue(child).incrememntValue();
-			}
-		}
-		
 		String fileCanonicalPath = getCanonicalFile(file).getAbsolutePath();
-		for (String path : lastModifiedMap.keySet()) {
-			if (fileCanonicalPath.startsWith(path) && !incrementedPaths.contains(fileCanonicalPath)) {
+		Set<String> lastModifiedMapKeySet = new HashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
+		for (String path : lastModifiedMapKeySet) {
+			if (path.startsWith(fileCanonicalPath)) {
 				lastModifiedMap.get(path).incrememntValue();
 			}
 		}
 	}
 	
-	private  void incrementAllFileVersions() {
+	public void incrementAllFileVersions() {
 		for (FileVersion version : lastModifiedMap.values()) {
 			version.incrememntValue();
 		}

@@ -8,10 +8,10 @@
 
 The best way to get started depends on why you're here.
 
-* **I want to build an application with BRJS:** Try the [getting started guide](http://bladerunnerjs.org/docs/use/getting_started/).
-* **I want to learn more about BRJS:** Head to the [BRJS documentation](http://bladerunnerjs.org/docs/)
-* **I'm already familiar with BRJS and want to write a plugin:** Check out the [CommandPlugin tutorial](http://bladerunnerjs.org/docs/extend/command_plugin_tutorial/)
-* **I'd like to get the core BRJS development environment set up:** See the [BRJS Core Toolkit Development section](https://github.com/BladeRunnerJS/brjs#brjs-core-toolkit-development) below.
+* [I want to build an application with BRJS](http://bladerunnerjs.org/docs/use/getting_started/).
+* [I want to learn more about BRJS](http://bladerunnerjs.org/docs/).
+* [I'm already familiar with BRJS and want to write a plugin](http://bladerunnerjs.org/docs/extend/command_plugin_tutorial/).
+* [I'd like to get the core BRJS development environment set up](https://github.com/BladeRunnerJS/brjs#brjs-core-toolkit-development).
 
 ## Documentation
 

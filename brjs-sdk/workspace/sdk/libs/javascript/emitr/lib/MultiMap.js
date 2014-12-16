@@ -39,7 +39,13 @@ MultiMap.prototype = {
 		}
 	},
 	'filterAll': function(filterFunction) {
-		this._map.forEach(function(values, key, map) {
+
+		//TODO: The following line can be removed and instead a third 'map' parameter 
+		// can be added to the forEach callback once the following webkit bug is resovled
+		// https://bugs.webkit.org/show_bug.cgi?id=138563
+
+		var map = this._map;
+		this._map.forEach(function(values, key) {
 			var newValues = values.filter(filterFunction);
 			if (newValues.length === 0) {
 				map['delete'](key);

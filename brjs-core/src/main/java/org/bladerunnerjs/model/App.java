@@ -294,11 +294,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 		NameValidator.assertValidRootPackageName(this, requirePrefix);
 		
 		try {
-			appConf().setAutoWrite(false);
-			appConf().setRequirePrefix(requirePrefix);
+			AppConf appConf = appConf();
+			appConf.setAutoWrite(false);
+			appConf.setRequirePrefix(requirePrefix);
 			populate();
-			appConf().setAutoWrite(true);
-			appConf().write();
+			appConf.setAutoWrite(true);
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {

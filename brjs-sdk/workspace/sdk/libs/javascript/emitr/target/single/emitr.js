@@ -1,4 +1,4 @@
-// emitr built for browser 2014-09-15T13:48:25.212Z
+// emitr built for browser 2014-12-10T10:43:19.131Z
 ;(function (name, factory) {
 	if (typeof module === 'object') {
 		// Does not work with strict CommonJS, but only CommonJS-like environments
@@ -123,7 +123,9 @@
 			listeners = listeners.slice();
 			for (var i = 0, len = listeners.length; i < len; ++i) {
 				var listener = listeners[i];
-				listener.callback.apply(listener.context, args);
+				try {
+					listener.callback.apply(listener.context, args);
+				} catch(e) {}
 			}
 			return true;
 		}
@@ -384,90 +386,6 @@
 		module.exports = Emitter;
 		
 	});
-	_define("emitr/lib/events", function(require, exports, module) {
-		"use strict";
-		
-		var Event = require('./Event');
-		
-		var MetaEvent = Event.extend(
-				/**
-				 * @memberOf Emitter.meta
-				 * @class MetaEvent
-				 * @param {*} event The event this MetaEvent is about
-				 * @classdesc
-				 * A parent class for all meta events.
-				 */
-						function(event) {
-					/**
-					 * Event provides the identifier of the event that this MetaEvent is about.
-					 * @name Emitter.meta.MetaEvent#event
-					 * @type {*}
-					 */
-					this.event = event;
-				}
-		);
-		/**
-		 * @memberOf Emitter.meta
-		 * @extends Emitter.meta.MetaEvent
-		 * @class ListenerEvent
-		 * @classdesc
-		 * A parent class for all MetaEvents about listeners.
-		 */
-		var ListenerEvent = MetaEvent.extend(
-				function(event, listener, context) {
-					MetaEvent.call(this, event);
-					/**
-					 * The listener this ListenerEvent is about.
-					 * @name Emitter.meta.ListenerEvent#listener
-					 * @type {function}
-					 */
-					this.listener = listener;
-					/**
-					 * The context associated with the listener.
-					 * @name Emitter.meta.ListenerEvent#context
-					 * @type {?object}
-					 */
-					this.context = context;
-				}
-		);
-		/**
-		 * @memberOf Emitter.meta
-		 * @class AddListenerEvent
-		 * @extends Emitter.meta.ListenerEvent
-		 */
-		var AddListenerEvent = ListenerEvent.extend();
-		/**
-		 * @memberOf Emitter.meta
-		 * @class RemoveListenerEvent
-		 * @extends Emitter.meta.ListenerEvent
-		 */
-		var RemoveListenerEvent = ListenerEvent.extend();
-		/**
-		 * @memberOf Emitter.meta
-		 * @class DeadEvent
-		 * @extends Emitter.meta.MetaEvent
-		 */
-		var DeadEvent = MetaEvent.extend(
-				function(event, args) {
-					MetaEvent.call(this, event);
-					this.data = args;
-				}
-		);
-		
-		/**
-		 * Where the meta events live.
-		 * @memberOf Emitter
-		 * @namespace meta
-		 */
-		module.exports = {
-			MetaEvent: MetaEvent,
-			ListenerEvent: ListenerEvent,
-			AddListenerEvent: AddListenerEvent,
-			RemoveListenerEvent: RemoveListenerEvent,
-			DeadEvent: DeadEvent
-		};
-		
-	});
 	_define("emitr/lib/Event", function(require, exports, module) {
 		"use strict";
 		
@@ -560,6 +478,90 @@
 		};
 		
 		module.exports = Event;
+	});
+	_define("emitr/lib/events", function(require, exports, module) {
+		"use strict";
+		
+		var Event = require('./Event');
+		
+		var MetaEvent = Event.extend(
+				/**
+				 * @memberOf Emitter.meta
+				 * @class MetaEvent
+				 * @param {*} event The event this MetaEvent is about
+				 * @classdesc
+				 * A parent class for all meta events.
+				 */
+						function(event) {
+					/**
+					 * Event provides the identifier of the event that this MetaEvent is about.
+					 * @name Emitter.meta.MetaEvent#event
+					 * @type {*}
+					 */
+					this.event = event;
+				}
+		);
+		/**
+		 * @memberOf Emitter.meta
+		 * @extends Emitter.meta.MetaEvent
+		 * @class ListenerEvent
+		 * @classdesc
+		 * A parent class for all MetaEvents about listeners.
+		 */
+		var ListenerEvent = MetaEvent.extend(
+				function(event, listener, context) {
+					MetaEvent.call(this, event);
+					/**
+					 * The listener this ListenerEvent is about.
+					 * @name Emitter.meta.ListenerEvent#listener
+					 * @type {function}
+					 */
+					this.listener = listener;
+					/**
+					 * The context associated with the listener.
+					 * @name Emitter.meta.ListenerEvent#context
+					 * @type {?object}
+					 */
+					this.context = context;
+				}
+		);
+		/**
+		 * @memberOf Emitter.meta
+		 * @class AddListenerEvent
+		 * @extends Emitter.meta.ListenerEvent
+		 */
+		var AddListenerEvent = ListenerEvent.extend();
+		/**
+		 * @memberOf Emitter.meta
+		 * @class RemoveListenerEvent
+		 * @extends Emitter.meta.ListenerEvent
+		 */
+		var RemoveListenerEvent = ListenerEvent.extend();
+		/**
+		 * @memberOf Emitter.meta
+		 * @class DeadEvent
+		 * @extends Emitter.meta.MetaEvent
+		 */
+		var DeadEvent = MetaEvent.extend(
+				function(event, args) {
+					MetaEvent.call(this, event);
+					this.data = args;
+				}
+		);
+		
+		/**
+		 * Where the meta events live.
+		 * @memberOf Emitter
+		 * @namespace meta
+		 */
+		module.exports = {
+			MetaEvent: MetaEvent,
+			ListenerEvent: ListenerEvent,
+			AddListenerEvent: AddListenerEvent,
+			RemoveListenerEvent: RemoveListenerEvent,
+			DeadEvent: DeadEvent
+		};
+		
 	});
 	_define("emitr/lib/shams", function(require, exports, module) {
 		// Partial 'sham' to work around ie8s lack of es5 //////////////////////////////////////////////
@@ -671,7 +673,13 @@
 				}
 			},
 			'filterAll': function(filterFunction) {
-				this._map.forEach(function(values, key, map) {
+		
+				//TODO: The following line can be removed and instead a third 'map' parameter 
+				// can be added to the forEach callback once the following webkit bug is resovled
+				// https://bugs.webkit.org/show_bug.cgi?id=138563
+		
+				var map = this._map;
+				this._map.forEach(function(values, key) {
 					var newValues = values.filter(filterFunction);
 					if (newValues.length === 0) {
 						map['delete'](key);

@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.require;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
@@ -15,7 +16,7 @@ import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.base.AbstractRequirePlugin;
 
 public class AliasRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
-	private final Map<String, AliasCommonJsSourceModule> sourceModules = new HashMap<>();
+	private final Map<BundlableNode, Map<String, AliasCommonJsSourceModule>> bundlableNodeSourceModules = new HashMap<>();
 	private AssetLocation assetLocation;
 	
 	@Override
@@ -39,8 +40,18 @@ public class AliasRequirePlugin extends AbstractRequirePlugin implements Require
 	}
 	
 	private AliasCommonJsSourceModule getSourceModule(BundlableNode bundlableNode, String requirePathSuffix) throws ContentFileProcessingException, AliasException {
+		if(!bundlableNodeSourceModules.containsKey(bundlableNode)) {
+			bundlableNodeSourceModules.put(bundlableNode, new HashMap<>());
+		}
+		
+		Map<String, AliasCommonJsSourceModule> sourceModules = bundlableNodeSourceModules.get(bundlableNode);
+		AliasDefinition aliasDefinition = bundlableNode.getAlias(requirePathSuffix);
+		
 		if(!sourceModules.containsKey(requirePathSuffix)) {
-			sourceModules.put(requirePathSuffix, new AliasCommonJsSourceModule(assetLocation, bundlableNode.getAlias(requirePathSuffix)));
+			sourceModules.put(requirePathSuffix, new AliasCommonJsSourceModule(assetLocation, aliasDefinition));
+		}
+		else {
+			sourceModules.get(requirePathSuffix).setAlias(aliasDefinition);
 		}
 		
 		return sourceModules.get(requirePathSuffix);

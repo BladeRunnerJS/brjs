@@ -207,16 +207,10 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 			else if (m.group(1).startsWith("getService")){
 				String serviceAliasName = methodArgument;
 				dependencies.add("service!" + serviceAliasName);
-				
-				logger.warn("The CommonJs source-module defined within '" + assetFile.getAbsolutePath() + "' is using a deprecated API to retrieve the '" +
-					serviceAliasName + "' service alias (should use require('service!" + serviceAliasName + "')).");
 			}
 			else {
 				String aliasName = methodArgument;
 				aliases.add(aliasName);
-				
-				logger.warn("The CommonJs source-module defined within '" + assetFile.getAbsolutePath() + "' is using a deprecated API to retrieve the '" +
-					aliasName + "' alias (should use require('alias!" + aliasName + "')).");
 			}
 		}
 	}

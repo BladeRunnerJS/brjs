@@ -59,7 +59,8 @@ function filepathMinusPrefix(filepath) {
     var result = '';
 
     if (filepath) {
-        // always use forward slashes
+        filepath = path.normalize(filepath);
+        // always use forward slashes in the result
         result = (filepath + path.sep).replace(commonPrefix, '')
             .replace(/\\/g, '/');
     }
@@ -176,6 +177,10 @@ function parseBorrows(doclet, tag) {
     }
 }
 
+function stripModuleNamespace(name) {
+    return name.replace(/^module\:/, '');
+}
+
 function firstWordOf(string) {
     var m = /^(\S+)/.exec(string);
     if (m) { return m[1]; }
@@ -213,9 +218,7 @@ var baseTags = exports.baseTags = {
     },
     // Special separator tag indicating that multiple doclets should be generated for the same
     // comment. Used internally (and by some JSDoc users, although it's not officially supported).
-    //
     // In the following example, the parser will replace `//**` with an `@also` tag:
-    //
     // /**
     //  * Foo.
     //  *//**
@@ -320,7 +323,7 @@ var baseTags = exports.baseTags = {
                 type = doclet.meta.code.type;
                 value = doclet.meta.code.value;
 
-                switch(type) {
+                switch (type) {
                     case Syntax.ArrayExpression:
                         doclet.defaultvalue = nodeToString(doclet.meta.code.node);
                         doclet.defaultvaluetype = 'array';
@@ -382,7 +385,8 @@ var baseTags = exports.baseTags = {
         onTagged: function(doclet, tag) {
             var modName = firstWordOf(tag.value);
 
-            doclet.addTag('alias', modName);
+            // in case the user wrote something like `/** @exports module:foo */`:
+            doclet.addTag( 'alias', stripModuleNamespace(modName) );
             doclet.addTag('kind', 'module');
          }
     },
@@ -430,7 +434,7 @@ var baseTags = exports.baseTags = {
     global: {
         mustNotHaveValue: true,
         onTagged: function(doclet, tag) {
-            doclet.scope = 'global';
+            doclet.scope = jsdoc.name.SCOPE.NAMES.GLOBAL;
             delete doclet.memberof;
         }
     },
@@ -534,6 +538,9 @@ var baseTags = exports.baseTags = {
             if (!doclet.name) {
                 setDocletNameToFilename(doclet, tag);
             }
+            // in case the user wrote something like `/** @module module:foo */`:
+            doclet.name = stripModuleNamespace(doclet.name);
+
             setDocletTypeToValueType(doclet, tag);
         }
     },
@@ -664,7 +671,6 @@ var baseTags = exports.baseTags = {
         onTagged: function(doclet, tag) {
             doclet.exceptions = doclet.exceptions || [];
             doclet.exceptions.push(tag.value);
-            setDocletTypeToValueType(doclet, tag);
         },
         synonyms: ['exception']
     },

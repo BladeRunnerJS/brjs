@@ -19,6 +19,8 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class Bladeset extends AbstractComponent implements NamedNode
 {
+	public static final String BLADES_DIRNAME = "blades";
+
 	private final NodeItem<BladesetWorkbench> workbench = new NodeItem<>(this, BladesetWorkbench.class, "workbench");
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
