@@ -19,6 +19,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.TemplateVerificationUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -97,29 +98,32 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		JsLib library = app.appJsLib(libraryName);
 		if (library.dirExists()) throw new NodeAlreadyExistsException(library, this);
 		
-		switch ( createLibraryType ) {
-			case br:
-				break;
-			case thirdparty:
-				createThirdpartyManifest(library);
-				break;
-		}
+		if (TemplateVerificationUtility.templateExists(brjs, library.rootAssetLocation(), templateGroup, this)) {
 		
-		try {
-			library.populate(templateGroup);
+			switch ( createLibraryType ) {
+				case br:
+					break;
+				case thirdparty:
+					createThirdpartyManifest(library);
+					break;
+			}
+			
+			try {
+				library.populate(templateGroup);
+			}
+			catch(InvalidNameException e) {
+				throw new CommandArgumentsException(e, this);
+			}
+			catch(ModelUpdateException e) {
+				throw new CommandOperationException("Cannot create library '" + library.dir().getPath() + "'", e);
+			}
+			catch(TemplateInstallationException e) {
+				throw new CommandArgumentsException(e, this);
+			}
+			logger.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
+			logger.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
+			
 		}
-		catch(InvalidNameException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		catch(ModelUpdateException e) {
-			throw new CommandOperationException("Cannot create library '" + library.dir().getPath() + "'", e);
-		}
-		catch(TemplateInstallationException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		logger.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
-		logger.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
-		
 		return 0;
 	}
 

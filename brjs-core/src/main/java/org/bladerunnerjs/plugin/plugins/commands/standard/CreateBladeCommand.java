@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.TemplateVerificationUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -80,21 +81,22 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		if(!bladeset.dirExists()) throw new NodeDoesNotExistException(bladeset, this);
 		if(blade.dirExists()) throw new NodeAlreadyExistsException(blade, this);
 		
-		try {
-			blade.populate(templateGroup);
+		if (TemplateVerificationUtility.templateExists(brjs, blade, templateGroup, this)) {
+			try {
+				blade.populate(templateGroup);
+			}
+			catch(InvalidNameException e) {
+				throw new CommandArgumentsException(e, this);
+			}
+			catch(ModelUpdateException e) {
+				throw new CommandOperationException("Cannot create blade '" + blade.dir().getPath() + "'", e);
+			}
+			catch(TemplateInstallationException e) {
+				throw new CommandArgumentsException(e, this);
+			}
+			logger.println(Messages.BLADE_CREATE_SUCCESS_CONSOLE_MSG, bladeName);
+			logger.println(Messages.BLADE_PATH_CONSOLE_MSG, blade.dir().getPath());
 		}
-		catch(InvalidNameException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		catch(ModelUpdateException e) {
-			throw new CommandOperationException("Cannot create blade '" + blade.dir().getPath() + "'", e);
-		}
-		catch(TemplateInstallationException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		logger.println(Messages.BLADE_CREATE_SUCCESS_CONSOLE_MSG, bladeName);
-		logger.println(Messages.BLADE_PATH_CONSOLE_MSG, blade.dir().getPath());
-		
 		return 0;
 	}
 	

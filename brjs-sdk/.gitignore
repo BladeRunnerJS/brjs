@@ -32,3 +32,4 @@ brjs-*.jar
 *.bundle
 bundle.js
 /build/
+/build/

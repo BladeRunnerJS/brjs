@@ -98,6 +98,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 	@Test
 	public void theCorrectStructureIsCreatedWhenABRLibIsCreated() throws Exception {
 		given(app).hasBeenCreated();
+			//.and(defaultTemplates).templateGroupCreated();
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(lib).dirExists()
 			.and(lib).hasDir("src")

@@ -86,6 +86,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfBladeNameIsInvalid() throws Exception {
 		given(bladeset).hasBeenCreated()
+			.and(defaultTemplates).templateGroupCreated()
 			.and(logging).enabled();
 		when(brjs).runCommand("create-blade", "app", "bladeset", "!$%$^");
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, "Blade", badBlade.dir().getPath())
@@ -189,27 +190,12 @@ public class CreateBladeCommandTest extends SpecTest {
 		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 	
-	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedTestUnitDefaultDoesNotExist() throws Exception {
+	public void emptyFolderIsCreatedIfTemplateForImplicitlyPopulatedTemplateDoesNotExist() throws Exception {
 		given(bladeset).hasBeenCreated()
-			.and(angularTemplates.template("blade")).containsFile("fileForBlade.txt");
+			.and(angularTemplates).templateGroupCreated();
 		when(brjs).runCommand("create-app", "app", "--template", "angular");
-		then(exceptions).verifyException(TemplateNotFoundException.class);
-	}
-	
-	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedTestAcceptanceDefaultDoesNotExist() throws Exception {
-		given(bladeset).hasBeenCreated()
-			.and(angularTemplates).templateGroupCreated()
-			.and(angularTemplates.template("blade")).containsFile("fileForBlade.txt");
-		when(brjs).runCommand("create-app", "app", "--template", "angular");
-		then(exceptions).verifyException(TemplateNotFoundException.class);
-	}
-	
-	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedWorkbenchDoesNotExist() throws Exception {
-		given(bladeset).hasBeenCreated()
-			.and(angularTemplates).templateGroupCreated()
-			.and(angularTemplates.template("blade")).containsFile("fileForBlade.txt");
-		when(brjs).runCommand("create-app", "app", "--template", "angular");
-		then(exceptions).verifyException(TemplateNotFoundException.class);
+		then(blade).hasDir("test-unit")
+			.and(blade.file("test-unit")).isEmpty();
 	}
 	
 }

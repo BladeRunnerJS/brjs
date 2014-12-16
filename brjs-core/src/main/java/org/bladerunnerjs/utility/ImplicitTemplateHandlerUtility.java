@@ -1,9 +1,10 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.utility;
 
 import java.io.File;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 

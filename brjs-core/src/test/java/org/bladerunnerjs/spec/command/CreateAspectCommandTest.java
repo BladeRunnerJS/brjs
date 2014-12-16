@@ -5,11 +5,13 @@ import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCom
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -20,6 +22,7 @@ public class CreateAspectCommandTest extends SpecTest {
 	App app;
 	Aspect aspect;
 	Aspect badAspect;
+	TemplateGroup templates;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -29,6 +32,7 @@ public class CreateAspectCommandTest extends SpecTest {
 			app = brjs.app("app");
 			aspect = app.aspect("aspect");
 			badAspect = app.aspect("aspect#$@/");
+			templates = brjs.sdkTemplateGroup("default");
 	}
 	
 	@Test
@@ -61,8 +65,16 @@ public class CreateAspectCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void exceptionIsThrownIfTheAspectTemplateDoesNotExist() throws Exception {
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("create-aspect", "app", "aspect");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	@Test
 	public void exceptionIsThrownIfAspectNameIsInvalid() throws Exception {
 		given(app).hasBeenCreated()
+			.and(templates).templateGroupCreated()
 			.and(logging).enabled();
 		when(brjs).runCommand("create-aspect", "app", "aspect#$@/");
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, "Aspect", badAspect.dir().getPath())

@@ -36,7 +36,7 @@ public class BRJSNodeHelper {
 			TemplateUtility.installTemplate(node, templateGroup, node.getTemplateName(), transformations, allowNonEmptyDirectories);
 		}
 		catch(TemplateInstallationException e) {
-			throw new TemplateInstallationException(e);
+			throw new TemplateInstallationException(e.getMessage());
 		}
 		node.incrementChildFileVersions();
 		node.ready();

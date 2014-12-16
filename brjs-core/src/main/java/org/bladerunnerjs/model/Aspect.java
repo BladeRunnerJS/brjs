@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
+import org.bladerunnerjs.utility.ImplicitTemplateHandlerUtility;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 

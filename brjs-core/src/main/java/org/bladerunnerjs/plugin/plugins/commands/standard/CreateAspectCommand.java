@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.TemplateVerificationUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -69,21 +70,22 @@ public class CreateAspectCommand extends ArgsParsingCommandPlugin
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		if(aspect.dirExists()) throw new NodeAlreadyExistsException(aspect, this);
 		
-		try {
-			aspect.populate(templateGroup);
+		if (TemplateVerificationUtility.templateExists(brjs, aspect, templateGroup, this)) {
+			try {
+				aspect.populate(templateGroup);
+			}
+			catch(InvalidNameException e) {
+				throw new CommandArgumentsException(e, this);
+			}
+			catch(ModelUpdateException e) {
+				throw new CommandOperationException("Cannot create aspect '" + aspect.dir().getPath() + "'", e);
+			}
+			catch(TemplateInstallationException e) {
+				throw new CommandArgumentsException(e, this);
+			}
+			logger.println(Messages.ASPECT_CREATE_SUCCESS_CONSOLE_MSG, aspectName);
+			logger.println(Messages.ASPECT_PATH_CONSOLE_MSG, aspect.dir().getPath());
 		}
-		catch(InvalidNameException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		catch(ModelUpdateException e) {
-			throw new CommandOperationException("Cannot create aspect '" + aspect.dir().getPath() + "'", e);
-		}
-		catch(TemplateInstallationException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		logger.println(Messages.ASPECT_CREATE_SUCCESS_CONSOLE_MSG, aspectName);
-		logger.println(Messages.ASPECT_PATH_CONSOLE_MSG, aspect.dir().getPath());
-		
 		return 0;
 	}
 }

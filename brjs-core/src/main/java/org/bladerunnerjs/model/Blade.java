@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.utility.ImplicitTemplateHandlerUtility;
 import org.bladerunnerjs.utility.NameValidator;
 
 

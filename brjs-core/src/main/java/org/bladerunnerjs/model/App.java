@@ -28,6 +28,7 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.utility.AppRequestHandler;
+import org.bladerunnerjs.utility.ImplicitTemplateHandlerUtility;
 import org.bladerunnerjs.utility.NameValidator;
 
 

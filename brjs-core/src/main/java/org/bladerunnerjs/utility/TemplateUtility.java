@@ -37,8 +37,8 @@ public class TemplateUtility
 			installTemplate(node, sdkTemplateDir, transformations, allowNonEmptyDirectories);
 		}
 		else {
-			throw new TemplateNotFoundException("The template for '" + node.getTemplateName() + "' does not exist"
-					+ " for the template group '" + templateGroup + "' in " + confTemplateDir.getParentFile().getParentFile() + ".");
+			throw new TemplateNotFoundException("The '" + node.getTemplateName() + "' template for the '" + templateGroup + "' template"
+					+ " group could not be found at '" + confTemplateDir + "'.");
 		}
 	}
 	

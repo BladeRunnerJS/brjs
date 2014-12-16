@@ -72,6 +72,7 @@ public class CreateBladesetCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfBladesetNameIsInvalid() throws Exception {
 		given(bladeset).hasBeenCreated()
+			.and(defaultTemplates).templateGroupCreated()
 			.and(logging).enabled();
 		when(brjs).runCommand("create-bladeset", "app", "bladeset#$@/");
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, "Bladeset", badBladeset.dir().getPath())
@@ -144,10 +145,10 @@ public class CreateBladesetCommandTest extends SpecTest {
 		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 	
-	public void exceptionIsThrownIfTemplateForImplicitlyPopulatedTestUnitDefaultDoesNotExist() throws Exception {
-		given(app).hasBeenCreated()
-			.and(angularTemplates.template("bladeset")).containsFile("fileForBladeset.txt");
-		when(brjs).runCommand("create-app", "app", "--template", "angular");
-		then(exceptions).verifyException(TemplateNotFoundException.class);
+	public void emptyFilesAreCreatedIfTemplateForImplicitlyPopulatedTestUnitDefaultDoesNotExist() throws Exception {
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("create-bladeset", "app", "bladeset", "--template", "angular");
+		then(bladeset).hasDir("test-acceptance")
+			.and(bladeset.file("test-acceptance")).isEmpty();
 	}
 }
