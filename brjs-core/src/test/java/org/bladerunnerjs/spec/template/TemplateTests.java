@@ -18,9 +18,9 @@ import org.junit.Test;
 
 public class TemplateTests extends SpecTest
 {
-		App app;
+	App app;
 	Aspect defaultAspect;
-	Bladeset bladeset1;
+	Bladeset bladeset;
 	Blade blade;
 	Workbench workbench;
 	JsLib userLib, thirdpartyLib;
@@ -40,8 +40,8 @@ public class TemplateTests extends SpecTest
 		app = brjs.app("app");
 		defaultAspect = app.defaultAspect();
 		anotherAspect = app.aspect("another");
-		bladeset1 = app.bladeset("bs");
-		blade = bladeset1.blade("b1");
+		bladeset = app.bladeset("bs");
+		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
 		userLib = app.jsLib("userlib");
 		thirdpartyLib = app.jsLib("thirdpartyLib");
@@ -112,17 +112,17 @@ public class TemplateTests extends SpecTest
 	public void bladesetHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-bladeset", "app", "bs");
-		then(bladeset1).hasFilesAndDirs(
+		then(bladeset).hasFilesAndDirs(
 				Arrays.asList("src/bsClass.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes")
-		).and(bladeset1).fileContentsContains("resources/i18n/en.properties", "appns.bs.hello.world");
+		).and(bladeset).fileContentsContains("resources/i18n/en.properties", "appns.bs.hello.world");
 	}
 	
 	@Test
 	public void bladesetTestsHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-bladeset", "app", "bs");
-		then(bladeset1.testType("unit")).hasFilesAndDirs(
+		then(bladeset.testType("unit")).hasFilesAndDirs(
 				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/bsClassTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
 		);
@@ -255,8 +255,8 @@ public class TemplateTests extends SpecTest
 			.and(templates.template("bladeset")).containsFile("bladesetFileFromConf.txt")
 			.and(templates.template("bladeset-test-unit-default")).doesNotExist();
 		when(brjs).runCommand("create-bladeset", "app", "bs");
-		then(bladeset1).hasDir("test-unit")
-			.and(bladeset1.file("test-unit")).isEmpty();
+		then(bladeset).hasDir("test-unit")
+			.and(bladeset.file("test-unit")).isEmpty();
 	}
 	
 	@Test
