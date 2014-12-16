@@ -150,11 +150,6 @@ public class LogMessageStore
 		verifyLogMessage("debug", false, debugMessages, new LogMessage(message, params));
 	}
 	
-	public void verifyDebugLogMessageDoesNotExist(String message, Object... params)
-	{
-		verifyNoLogMessage("debug", debugMessages, new LogMessage(message, params));
-	}
-	
 	public void addFatal(String loggerName, String message, Object... params)
 	{
 		registerLogMessage(fatalMessages, loggerName, new LogMessage(message, params));

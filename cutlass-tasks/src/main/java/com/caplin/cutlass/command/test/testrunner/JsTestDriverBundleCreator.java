@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.Logger;
@@ -22,6 +21,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.utility.FileUtils;
+import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -30,8 +30,6 @@ public class JsTestDriverBundleCreator
 {
 
 	public static final String BUNDLES_DIR_NAME = "bundles";
-	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "^.*([\\(\\!\\~\\-\\+]|(new\\s+))function\\s*\\([^)]*\\)\\s*\\{";
-	private static final Pattern SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN = Pattern.compile(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX, Pattern.DOTALL);
 	private static Logger logger;
 	
 	public static void createRequiredBundles(BRJS brjs, MemoizedFile jsTestDriverConf)
@@ -70,10 +68,10 @@ public class JsTestDriverBundleCreator
 		{
 			if (currentTestFile.isFile())
 			{
-				Matcher m = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(currentTestFile));
-				while (!m.find())
+				Matcher m = JsCodeBlockStrippingDependenciesReader.SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(currentTestFile));
+				if (!m.find())
 				{
-					logger.debug("The CommonJsTest " + currentTestFile.getName() + " is not wrapped within an IIFE, which may cause unreliability in tests.");
+					logger.warn("The CommonJsTest " + currentTestFile.getName() + " is not wrapped within an IIFE, which may cause unreliability in tests.");
 					break;
 				}
 			}
