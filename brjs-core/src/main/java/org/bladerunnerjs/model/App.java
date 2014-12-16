@@ -28,8 +28,8 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.utility.AppRequestHandler;
-import org.bladerunnerjs.utility.ImplicitTemplateHandlerUtility;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -287,9 +287,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		super.populate(templateGroup);
 		
-		ImplicitTemplateHandlerUtility templateUtility = new ImplicitTemplateHandlerUtility();
-		templateUtility.populateOrCreate(defaultAspect(), templateGroup);
-		templateUtility.populateOrCreate(defaultBladeset(), templateGroup);
+		TemplateUtility.populateOrCreate(defaultAspect(), templateGroup);
+		TemplateUtility.populateOrCreate(defaultBladeset(), templateGroup);
 	}
 	
 	public void populate(String requirePrefix, String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException

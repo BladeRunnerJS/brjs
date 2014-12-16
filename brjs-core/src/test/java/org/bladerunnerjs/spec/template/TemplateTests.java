@@ -18,10 +18,9 @@ import org.junit.Test;
 
 public class TemplateTests extends SpecTest
 {
-	
-	App app;
+		App app;
 	Aspect defaultAspect;
-	Bladeset bladeset1, bladeset2;
+	Bladeset bladeset1;
 	Blade blade;
 	Workbench workbench;
 	JsLib userLib, thirdpartyLib;
@@ -41,8 +40,7 @@ public class TemplateTests extends SpecTest
 		app = brjs.app("app");
 		defaultAspect = app.defaultAspect();
 		anotherAspect = app.aspect("another");
-		bladeset1 = app.bladeset("bs1");
-		bladeset2 = app.bladeset("bs2");
+		bladeset1 = app.bladeset("bs");
 		blade = bladeset1.blade("b1");
 		workbench = blade.workbench();
 		userLib = app.jsLib("userlib");
@@ -113,19 +111,19 @@ public class TemplateTests extends SpecTest
 	@Test
 	public void bladesetHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
-		when(brjs).runCommand("create-bladeset", "app", "bs1");
+		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset1).hasFilesAndDirs(
-				Arrays.asList("src/Bs1Class.js", "themes/common/style.css"),
+				Arrays.asList("src/bsClass.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes")
-		).and(bladeset1).fileContentsContains("resources/i18n/en.properties", "appns.bs1.hello.world");
+		).and(bladeset1).fileContentsContains("resources/i18n/en.properties", "appns.bs.hello.world");
 	}
 	
 	@Test
 	public void bladesetTestsHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
-		when(brjs).runCommand("create-bladeset", "app", "bs1");
+		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset1.testType("unit")).hasFilesAndDirs(
-				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/Bs1ClassTest.js", ".gitignore"),
+				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/bsClassTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
 		);
 	}
@@ -133,8 +131,8 @@ public class TemplateTests extends SpecTest
 	@Test	
 	public void bladeHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns")
-			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs1");
-		when(brjs).runCommand("create-blade", "app", "bs1", "b1");
+			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
+		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade).hasFilesAndDirs(
 				Arrays.asList("src/B1ViewModel.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "test-unit", "test-acceptance", "workbench", "themes")
@@ -157,8 +155,8 @@ public class TemplateTests extends SpecTest
 	@Test
 	public void bladeUnitTestsHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns")
-			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs1");
-		when(brjs).runCommand("create-blade", "app", "bs1", "b1");
+			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
+		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade.testType("unit")).hasFilesAndDirs(
 				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/B1ViewModelTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
@@ -168,8 +166,8 @@ public class TemplateTests extends SpecTest
 	@Test
 	public void bladeAcceptanceTestsHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns")
-			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs1");
-		when(brjs).runCommand("create-blade", "app", "bs1", "b1");
+			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
+		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(blade.testType("acceptance")).hasFilesAndDirs(
 				Arrays.asList("jsTestDriver.conf", "resources/aliases.xml", "tests/B1ViewModelTest.js", ".gitignore"),
 				Arrays.asList("tests", "resources")
@@ -179,8 +177,8 @@ public class TemplateTests extends SpecTest
 	@Test
 	public void workbenchHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns")
-			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs1");
-		when(brjs).runCommand("create-blade", "app", "bs1", "b1");
+			.and(brjs).commandHasBeenRun("create-bladeset", "app", "bs");
+		when(brjs).runCommand("create-blade", "app", "bs", "b1");
 		then(workbench).hasFilesAndDirs(
 				Arrays.asList("index.html", "resources/aliases.xml", "resources/style/workbench.css"),
 				Arrays.asList("resources", "resources/html", "resources/style/", "src")
@@ -256,9 +254,9 @@ public class TemplateTests extends SpecTest
 		given(app).hasBeenCreated()
 			.and(templates.template("bladeset")).containsFile("bladesetFileFromConf.txt")
 			.and(templates.template("bladeset-test-unit-default")).doesNotExist();
-		when(brjs).runCommand("create-bladeset", "app", "bs2");
-		then(bladeset2).hasDir("test-unit")
-			.and(bladeset2.file("test-unit")).isEmpty();
+		when(brjs).runCommand("create-bladeset", "app", "bs");
+		then(bladeset1).hasDir("test-unit")
+			.and(bladeset1.file("test-unit")).isEmpty();
 	}
 	
 	@Test

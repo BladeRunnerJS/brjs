@@ -14,8 +14,8 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.utility.ImplicitTemplateHandlerUtility;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 
 public final class Blade extends AbstractComponent implements NamedNode
@@ -79,10 +79,9 @@ public final class Blade extends AbstractComponent implements NamedNode
 	{
 		super.populate(templateGroup);
 		
-		ImplicitTemplateHandlerUtility templateUtility = new ImplicitTemplateHandlerUtility();
-		templateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
-		templateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
-		templateUtility.populateOrCreate(workbench(), templateGroup);
+		TemplateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(workbench(), templateGroup);
 	}
 	
 	@Override

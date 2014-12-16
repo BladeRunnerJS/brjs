@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.utility.ImplicitTemplateHandlerUtility;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 
 public class DefaultAspect extends Aspect
@@ -29,9 +29,8 @@ public class DefaultAspect extends Aspect
 	{
 		BRJSNodeHelper.populate(this, templateGroup, true);
 		
-		ImplicitTemplateHandlerUtility templateUtility = new ImplicitTemplateHandlerUtility();
-		templateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
-		templateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
 	}
 
 	public boolean exists()

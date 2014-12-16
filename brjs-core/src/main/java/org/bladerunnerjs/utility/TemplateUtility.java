@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InvalidNameException;
+
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
@@ -22,6 +24,17 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class TemplateUtility
 {
+	public static void populateOrCreate(BRJSNode node, String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
+		File confTemplateDir = node.root().confTemplateGroup(templateGroup).template(node.getTemplateName()).dir();
+		File sdkTemplateDir = node.root().sdkTemplateGroup(templateGroup).template(node.getTemplateName()).dir();
+		if (confTemplateDir.exists() || sdkTemplateDir.exists()) {
+			node.populate(templateGroup);
+		}
+		else {
+			node.create();
+			node.ready();		
+		}
+	}
 	
 	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations) throws TemplateInstallationException, ModelUpdateException {
 		installTemplate(node, templateGroup, templateName, transformations, false);

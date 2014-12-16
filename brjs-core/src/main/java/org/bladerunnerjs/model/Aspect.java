@@ -17,8 +17,8 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
-import org.bladerunnerjs.utility.ImplicitTemplateHandlerUtility;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TemplateUtility;
 import org.bladerunnerjs.utility.TestRunner;
 
 
@@ -88,9 +88,8 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	{
 		super.populate(templateGroup);
 		
-		ImplicitTemplateHandlerUtility templateUtility = new ImplicitTemplateHandlerUtility();
-		templateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
-		templateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
 	}
 	
 	@Override
