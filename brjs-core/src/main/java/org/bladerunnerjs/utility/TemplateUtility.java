@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
+import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
@@ -22,11 +23,11 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 public class TemplateUtility
 {
 	
-	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations) throws TemplateInstallationException {
+	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations) throws TemplateInstallationException, ModelUpdateException {
 		installTemplate(node, templateGroup, templateName, transformations, false);
 	}
 	
-	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException{
+	public static void installTemplate(BRJSNode node, String templateGroup, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException, ModelUpdateException{
 		File confTemplateDir = node.root().confTemplateGroup(templateGroup).template(templateName).dir();
 		File sdkTemplateDir = node.root().sdkTemplateGroup(templateGroup).template(templateName).dir();
 		if (confTemplateDir.exists()) {
