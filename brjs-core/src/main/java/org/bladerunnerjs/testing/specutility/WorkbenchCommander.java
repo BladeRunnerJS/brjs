@@ -17,11 +17,11 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
 
-public class WorkbenchCommander extends BundlableNodeCommander<Workbench> 
+public class WorkbenchCommander extends BundlableNodeCommander<Workbench<?>> 
 {
-	private final Workbench workbench;
+	private final Workbench<?> workbench;
 	
-	public WorkbenchCommander(SpecTest modelTest, Workbench workbench) 
+	public WorkbenchCommander(SpecTest modelTest, Workbench<?> workbench) 
 	{
 		super(modelTest, workbench);
 		this.workbench = workbench;

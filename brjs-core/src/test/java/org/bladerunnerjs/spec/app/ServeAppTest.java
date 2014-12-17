@@ -2,7 +2,7 @@ package org.bladerunnerjs.spec.app;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.plugins.bundlers.appmeta.AppMetadataContentPlugin;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
@@ -15,7 +15,7 @@ public class ServeAppTest extends SpecTest {
 	private App app;
 	private Aspect defaultAspect;
 	private Aspect alternateAspect;
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before

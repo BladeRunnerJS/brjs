@@ -52,6 +52,9 @@ public class AppRequestHandler
 	public static final String WORKBENCH_LOCALE_FORWARDING_REQUEST = "workbench-locale-forwarding-request";
 	public static final String WORKBENCH_INDEX_PAGE_REQUEST = "workbench-index-page-request";
 	public static final String WORKBENCH_BUNDLE_REQUEST = "workbench-bundle-request";
+	public static final String WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST = "workbench-bladeset-locale-forwarding-request";
+	public static final String WORKBENCH_BLADESET_INDEX_PAGE_REQUEST = "workbench-bladeset-index-page-request";
+	public static final String WORKBENCH_BLADESET_BUNDLE_REQUEST = "workbench-bladeset-bundle-request";
 
 	private final App app;
 	private final MemoizedValue<ContentPathParser> contentPathParser;
@@ -107,12 +110,18 @@ public class AppRequestHandler
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
 				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
+				
+			case WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST:
+				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);	
 
 			case INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 
 			case WORKBENCH_INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+			
+			case WORKBENCH_BLADESET_INDEX_PAGE_REQUEST:
+				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
 				return app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), contentAccessor, devVersion);
@@ -122,6 +131,10 @@ public class AppRequestHandler
 
 			case WORKBENCH_BUNDLE_REQUEST:
 				return app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+			
+			case WORKBENCH_BLADESET_BUNDLE_REQUEST:
+				return app.bladeset(pathProperties.get("bladeset")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+				
 		}
 		
 		throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
@@ -257,6 +270,9 @@ public class AppRequestHandler
 					.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
 					.and("<aspect><bladeset>/<blade>/workbench/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
 					.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
+					.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST)
+					.and("<aspect><bladeset>/workbench/<locale>/").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
+					.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
 					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
 					.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
 				.where("aspect").hasForm("((" + getAspectNames() + ")/)?")

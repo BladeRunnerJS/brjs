@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.NodeTesterFactory;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.TypedTestPack;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class BladeNavigationTest extends TestModelAccessor
 	@Test
 	public void workbench()
 	{
-		nodeTesterFactory.createItemTester(Workbench.class, "workbench", "workbench").assertModelIsOK();
+		nodeTesterFactory.createItemTester(BladeWorkbench.class, "workbench", "workbench").assertModelIsOK();
 	}
 	
 }

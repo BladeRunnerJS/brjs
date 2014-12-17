@@ -55,7 +55,7 @@ public class BuilderChainer {
 	public AspectBuilder and(Aspect aspect) { return new AspectBuilder(specTest, aspect); }
 	public AssetContainerBuilder<Bladeset> and(Bladeset bladeset) { return new BladesetBuilder(specTest, bladeset); }
 	public AssetContainerBuilder<Blade> and(Blade blade) { return new BladeBuilder(specTest, blade); }
-	public WorkbenchBuilder and(Workbench workbench) { return new WorkbenchBuilder(specTest, workbench); }
+	public WorkbenchBuilder and(Workbench<?> workbench) { return new WorkbenchBuilder(specTest, workbench); }
 	public JsLibBuilder and(JsLib jsLib) { return new JsLibBuilder(specTest, jsLib); }
 	public DirNodeBuilder and(DirNode dirNode) { return new DirNodeBuilder(specTest, dirNode); }
 	public NamedDirNodeBuilder and(NamedDirNode namedDirNode) { return new NamedDirNodeBuilder(specTest, namedDirNode); }
