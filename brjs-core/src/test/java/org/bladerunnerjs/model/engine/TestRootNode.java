@@ -3,6 +3,7 @@ package org.bladerunnerjs.model.engine;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.memoization.FileModificationRegistry;
 import org.bladerunnerjs.memoization.MemoizedFile;
@@ -20,8 +21,8 @@ public final class TestRootNode extends AbstractRootNode
 	NodeList<TestChildNode> multiLocationChildNodes = new NodeList<>(this, TestChildNode.class, "set-primary-location", "^child-");
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(this, TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(this, TestMultiLocationItemNode.class, "single-item-primary-location");
-	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."));
-	private final IO io = new IO();
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."), FalseFileFilter.INSTANCE);
+	private final IO io = new IO( FalseFileFilter.INSTANCE );
 	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	
 	public TestRootNode(File dir) throws InvalidSdkDirectoryException

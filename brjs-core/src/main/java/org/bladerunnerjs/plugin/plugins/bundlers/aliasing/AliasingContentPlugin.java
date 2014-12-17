@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -57,13 +58,15 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-		return getValidRequestPaths();
-	}
-	
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-		return getValidRequestPaths();
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException {
+		List<String> requestPaths = new ArrayList<>();
+		
+		try {
+			requestPaths.add(contentPathParser.createRequest("aliasing-request"));
+		} catch (MalformedTokenException e) {
+			throw new ContentProcessingException(e);
+		}
+		return requestPaths;
 	}
 	
 	@Override
@@ -87,14 +90,4 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 		return new CharResponseContent(brjs, "");
 	}
 	
-	private List<String> getValidRequestPaths() throws ContentProcessingException {
-		List<String> requestPaths = new ArrayList<>();
-		
-		try {
-			requestPaths.add(contentPathParser.createRequest("aliasing-request"));
-		} catch (MalformedTokenException e) {
-			throw new ContentProcessingException(e);
-		}
-		return requestPaths;
-	}
 }

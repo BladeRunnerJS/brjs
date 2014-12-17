@@ -13,15 +13,15 @@ var ServiceRegistry = require('br/ServiceRegistry');
 /**
  * Constructs a new instance of <code>PresenterComponent</code>. Instances of <code>PresenterComponent</code> can also
  * be created from an XML snippet using the {@link module:br/presenter/component/PresenterComponent#deserialize} method.
- * 
+ *
  * @class
  * @alias module:br/presenter/component/PresenterComponent
  * @implements module:br/component/Component
- * 
+ *
  * @classdesc
- * <p>When component life cycle events are triggered on the <code>PresenterComponent</code> these 
+ * <p>When component life cycle events are triggered on the <code>PresenterComponent</code> these
  * are proxied through to the <code>PresentationModel</code> if they are defined in the <code>PresentationModel</code>.</p>
- * 
+ *
  * @param {String} sTemplateId The id of a template to render the presentation model with.
  * @param {Object} vPresentationModel A presentation model instance, or the name of a presentation model class that can be constructed.
  */
@@ -34,13 +34,13 @@ function PresenterComponent(sTemplateId, vPresentationModel) {
 	this.m_bViewAttached = false;
 	this.m_oFrame = null;
 	this.m_pLifecycleListeners = [];
-	
+
 	var oPresentationModel;
 	if (typeof(vPresentationModel) == "string") {
 		this.m_sPresentationModel = vPresentationModel;
 		var fPresentationModel = Utility.locate(this.m_sPresentationModel);
 		oPresentationModel = new fPresentationModel();
-	} else {		
+	} else {
 		oPresentationModel = vPresentationModel;
 	}
 
@@ -48,9 +48,9 @@ function PresenterComponent(sTemplateId, vPresentationModel) {
 		throw new Errors.InvalidParametersError("Presentation Model passed to PresenterComponent is not a br.presenter.PresentationModel");
 	}
 	this.m_oPresentationModel = oPresentationModel;
-	
+
 	PresenterComponent._initializePlugins();
-	
+
 	this.m_oPresentationModel._$setPath(this);
 };
 
@@ -78,7 +78,7 @@ PresenterComponent._initializePlugins = function() {
 
 /**
  * Retrieve the presentation model being displayed by this component.
- * 
+ *
  * @type br.presenter.PresentationModel
  */
 PresenterComponent.prototype.getPresentationModel = function() {
@@ -88,7 +88,7 @@ PresenterComponent.prototype.getPresentationModel = function() {
 /**
  * Returns <code>true</code> once {@link br/component/Frame#onOpen} has
  * fired, and the display element has been attached to the page.
- * 
+ *
  * @type boolean
  */
 PresenterComponent.prototype.isViewAttached = function() {
@@ -99,11 +99,11 @@ PresenterComponent.prototype.isViewAttached = function() {
 
 PresenterComponent.prototype.setDisplayFrame = function(frame) {
 	this.m_oFrame = frame;
-	
+
 	this.m_oPresentationModel.setComponentFrame(frame);
 
 	function getEventHandler(event) {
-		var handlerName = "on"+event.charAt(0).toUpperCase()+event.substring(1); 
+		var handlerName = "on"+event.charAt(0).toUpperCase()+event.substring(1);
 		if (this[handlerName]) {
 			return function() {
 				this[handlerName].apply(this, arguments);
@@ -113,7 +113,7 @@ PresenterComponent.prototype.setDisplayFrame = function(frame) {
 			this._propagateComponentEvent(handlerName, arguments);
 		};
 	}
-	
+
 	br.component.Frame.EVENTS.forEach(function(event) {
 		frame.on(event, getEventHandler.call(this, event), this);
 	}, this);
@@ -127,38 +127,38 @@ PresenterComponent.prototype.getElement = function() {
 		this.m_bViewBound = true;
 		presenter_knockout.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
 	}
-	
+
 	return this.m_eTemplate;
 };
 
 // It is the responsibility of the containing system to call serialize and then persist the resultant string.
-// It can then call deserialize with that string to (re)create an instance of the component. 
+// It can then call deserialize with that string to (re)create an instance of the component.
 // We write the component class into the serialized form so this component can throw an exception
 // if an attempt is made to deserialize it with a string that was not created by this class.
-// This class identifier should NOT be used by the containing system to map its serialized blobs to component type as 
+// This class identifier should NOT be used by the containing system to map its serialized blobs to component type as
 // it is a private concern of this class and liable to change.
 PresenterComponent.prototype.serialize = function() {
 	var sSerializedState = "";
-	
+
 	if (!this.m_sPresentationModel) {
 		this.m_sPresentationModel = this.m_oPresentationModel.getClassName();
 	}
-	
+
 	if (br.Core.fulfills(this.m_oPresentationModel, br.presenter.SerializablePresentationModel)) {
 		sSerializedState = this.m_oPresentationModel.serialize();
 	}
-	
+
 	var sSerializedString = '<br.presenter.component.PresenterComponent templateId="' + this.m_sTemplateId + '" presentationModel="' + this.m_sPresentationModel + '">'
-							+ sSerializedState + 
+							+ sSerializedState +
 							'</br.presenter.component.PresenterComponent>';
-	
+
 	return sSerializedString;
 };
 
 /**
  * Extracts the data inside the presenter tag and gives it to the PresentationModel for deserialization.
  * Only has affect if the Presentation Model implements {@link module:br/presenter/SerializablePresentationModel}.
- * 
+ *
  * @param {String} sPresenterData The presenter xml node in string format
  */
 PresenterComponent.prototype.deserialize = function(sPresenterData) {
@@ -172,30 +172,30 @@ PresenterComponent.prototype.deserialize = function(sPresenterData) {
 	}
 };
 
-PresenterComponent.deserialize = function(sXml) 
+PresenterComponent.deserialize = function(sXml)
 {
 	var oPresenterNode = br.util.XmlParser.parse( sXml );
 	var sPresenterNodeName = oPresenterNode.nodeName;
-	
+
 	if(sPresenterNodeName !== "br.presenter.component.PresenterComponent" ) {
 		var sErrorMsg = "Nodename for Presenter Configuration XML must be 'br.presenter.component.PresenterComponent', but was:" + sPresenterNodeName;
-		
+
 		throw new Errors.InvalidParametersError(sErrorMsg);
 	}
-	
+
 	var sTemplateId = oPresenterNode.getAttribute("templateId");
 	var sPresentationModel = oPresenterNode.getAttribute("presentationModel");
-	
+
 	var oPresenterComponent = new br.presenter.component.PresenterComponent(sTemplateId, sPresentationModel);
 	oPresenterComponent.deserialize(sXml);
-	
+
 	return oPresenterComponent;
 };
 
 /**
- * When invoked, the onOpen component life cycle event is propagated to the 
+ * When invoked, the onOpen component life cycle event is propagated to the
  * <code>PresentationModel</code>.
- * 
+ *
  * @private
  */
 PresenterComponent.prototype.onAttach = function() {
@@ -207,7 +207,7 @@ PresenterComponent.prototype.onAttach = function() {
 };
 
 /**
- * When invoked, the onClose component life cycle event is propagated to the 
+ * When invoked, the onClose component life cycle event is propagated to the
  * <code>PresentationModel</code>.
  *
  * @private
@@ -227,9 +227,9 @@ PresenterComponent.prototype.onClose = function() {
 };
 
 /**
- * When invoked, the onResize component life cycle event is propagated to the 
+ * When invoked, the onResize component life cycle event is propagated to the
  * <code>PresentationModel</code>.
- * 
+ *
  * @private
  * @param {int} nWidth
  * @param {int} nHeight
@@ -240,9 +240,9 @@ PresenterComponent.prototype.onResize = function() {
 };
 
 /**
- * When invoked, the onActivate component life cycle event is propagated to the 
+ * When invoked, the onActivate component life cycle event is propagated to the
  * <code>PresentationModel</code>.
- * 
+ *
  * @private
  * @see br/component/Component#onActivate
  */
@@ -251,9 +251,9 @@ PresenterComponent.prototype.onFocus = function() {
 };
 
 /**
- * When invoked, the onDeactivate component life cycle event is propagated to the 
+ * When invoked, the onDeactivate component life cycle event is propagated to the
  * <code>PresentationModel</code>.
- * 
+ *
  * @private
  * @param {int} nWidth
  * @param {int} nHeight
@@ -272,10 +272,10 @@ PresenterComponent.prototype.onBlur = function(nWidth, nHeight) {
 PresenterComponent.prototype._nullObject = function(oObjectToBeCleaned) {
 	for(var sChildToBeCleaned in oObjectToBeCleaned) {
 		var oChildToBeCleaned = oObjectToBeCleaned[sChildToBeCleaned];
-		
+
 		if (typeof oChildToBeCleaned === "object" && oChildToBeCleaned !== null) {
 			oObjectToBeCleaned[sChildToBeCleaned] = null;
-			
+
 			if (oChildToBeCleaned instanceof br.presenter.node.PresentationNode) {
 				this._nullObject(oChildToBeCleaned);
 			}
@@ -321,7 +321,7 @@ PresenterComponent.prototype._getTemplate = function(sTemplateId) {
 
 	if (!eTemplateNode)
 	{
-		throw new PresenterComponent.TemplateNotFoundError("Template with ID "+sTemplateId+" couldn't be found");		
+		throw new PresenterComponent.TemplateNotFoundError("Template with ID "+sTemplateId+" couldn't be found");
 	}
 
 	eTemplateHolder = eTemplateNode.cloneNode(true);

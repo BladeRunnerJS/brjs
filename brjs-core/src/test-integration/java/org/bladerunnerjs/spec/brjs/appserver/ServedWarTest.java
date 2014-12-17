@@ -1,5 +1,7 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 
 import javax.naming.Context;
@@ -53,7 +55,7 @@ public class ServedWarTest extends SpecTest {
 			aspect = app.aspect("default");
 			loginAspect = app.aspect("login");
 			rootAspect = app.defaultAspect();
-			mockJndiContext = TestContextFactory.getTestContext();
+			mockJndiContext = mock(Context.class);
 			
 	}
 	
@@ -136,6 +138,7 @@ public class ServedWarTest extends SpecTest {
 	public void warCommandDoesntExportFilesFromAnotherAspect() throws Exception {
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(loginAspect).containsFileWithContents("index.html", "Hello World!")
+			.and(loginAspect).containsFileWithContents("themes/noir/style.css", ".style { background:url('images/file.gif'); }")
 			.and(loginAspect).containsFileWithContents("themes/noir/images/file.gif", "** SOME GIF STUFF... **")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())

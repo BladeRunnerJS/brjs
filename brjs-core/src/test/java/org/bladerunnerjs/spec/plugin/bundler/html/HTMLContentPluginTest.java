@@ -192,7 +192,7 @@ public class HTMLContentPluginTest extends SpecTest
 		given(blade).containsResourceFileWithContents("html/view.html", "<div id='appns.bs.b1.id'>@bundlePath@/some/path</div>")
 			.and(brjs).hasDevVersion("dev")
 			.and(blade).hasClass("appns/bs/b1/Class1")
-			.and(workbench).indexPageRefersTo("appns/bs/b1/Class1");
+			.and(workbench).indexPageRequires("appns/bs/b1/Class1");
 		when(workbench).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsText("v/dev/some/path");
 	}

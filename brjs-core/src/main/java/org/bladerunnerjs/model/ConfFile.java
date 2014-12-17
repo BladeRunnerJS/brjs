@@ -15,6 +15,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	private final Class<CF> confClass;
 	private final MemoizedFile confFile;
 	private boolean autoWrite = true;
+	private CF previouslyGeneratedConf;
 	
 	private String defaultFileCharacterEncoding;
 	
@@ -27,7 +28,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		this.confClass = confClass;
 		this.confFile = confFile;
 		this.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
-		conf = new MemoizedValue<>("ConfFile.conf", node.root(), confFile, node.root().file("conf/brjs.conf"));
+		conf = new MemoizedValue<>("ConfFile.conf", node.root(), confFile);
 		
 		// needed to keep the pre-existing tests working
 		getConf();
@@ -44,9 +45,14 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	}
 	
 	protected CF getConf() throws ConfigException {
-		return conf.value(() -> {
+		// work around the issue where changing any file inside the same directory as the conf causes all changes made via the API to be lost since the FileVersion gets updated and we re-read the config file from disk
+		if (previouslyGeneratedConf != null && !autoWrite) {
+			return previouslyGeneratedConf;
+		}
+		previouslyGeneratedConf = conf.value(() -> {
 			return ConfFactory.createConfFile(node, confClass, confFile, defaultFileCharacterEncoding);
 		});
+		return previouslyGeneratedConf;
 	}
 	
 	public MemoizedFile getConfFile()
@@ -72,7 +78,10 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		getConf().verify();
 	}
 	
-	public void setAutoWrite(boolean autoWrite) {
+	public void setAutoWrite(boolean autoWrite) throws ConfigException {
+		if (autoWrite) {
+			write();
+		}
 		this.autoWrite = autoWrite;
 	}
 	

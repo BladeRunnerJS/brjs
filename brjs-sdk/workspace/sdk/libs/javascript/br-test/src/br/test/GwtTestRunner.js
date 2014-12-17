@@ -178,7 +178,10 @@ GwtTestRunner.initializeTest = function(sFixtureFactoryClass) {
 
 /** @private */
 GwtTestRunner.prototype.startTest = function() {
-	require("br/ServiceRegistry").clear();
+	var ServiceRegistry = require("br/ServiceRegistry");
+	if(ServiceRegistry.clear) {
+		ServiceRegistry.clear();
+	}
 
 	window.given = this.m_fDoGiven;
 	window.when = this.m_fDoWhen;

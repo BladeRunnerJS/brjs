@@ -16,16 +16,17 @@ import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.utility.EncodedFileUtil;
-import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class NodeVerifier<N extends Node> {
 	protected final VerifierChainer verifierChainer;
 	private final N node;
 	private final EncodedFileUtil fileUtil;
+	private SpecTest specTest;
 	
 	public NodeVerifier(SpecTest specTest, N node) {
 		this.node = node;
+		this.specTest = specTest;
 		fileUtil = new EncodedFileUtil(specTest.brjs, specTest.getActiveCharacterEncoding());
 		verifierChainer = new VerifierChainer(specTest);
 	}
@@ -116,7 +117,7 @@ public abstract class NodeVerifier<N extends Node> {
 	}
 	
 	public VerifierChainer jsStyleIs(String jsStyle) {
-		assertEquals(jsStyle, JsStyleUtility.getJsStyle(node.dir()));
+		assertEquals(jsStyle, specTest.brjs.jsStyleAccessor().getJsStyle(node.dir()));
 		
 		return verifierChainer;
 	}

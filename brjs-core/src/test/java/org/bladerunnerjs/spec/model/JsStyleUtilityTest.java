@@ -1,5 +1,8 @@
 package org.bladerunnerjs.spec.model;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Workbench;
@@ -53,4 +56,26 @@ public class JsStyleUtilityTest extends SpecTest {
 			.and(blade).jsStyleIs("namespaced-js")
 			.and(bladeWorkbench).jsStyleIs("common-js");
 	}
+	
+	@Test
+	public void styleCanBeSetAtRoot() throws Exception {
+		given(brjs).containsFileWithContents(".js-style", "namespaced-js");
+		then(brjs).jsStyleIs("namespaced-js");
+	}
+	
+	@Test
+	public void jsStyleUtilityDoesntRecurseOutsideOfBrjsRoot() throws Exception {
+		given(brjs).hasNotYetBeenCreated();
+		FileUtils.cleanDirectory(testSdkDirectory);
+		File oldTestSdkDirectory = testSdkDirectory;
+		testSdkDirectory = new File(oldTestSdkDirectory, "subdir");
+		new File(testSdkDirectory, "sdk").mkdirs();
+		
+		given(brjs).hasBeenCreated()
+			.and(oldTestSdkDirectory).containsFileWithContents(".js-style", "namespaced-js");
+		then(brjs).jsStyleIs("common-js");
+		
+		FileUtils.deleteQuietly(oldTestSdkDirectory);
+	}
+	
 }

@@ -72,10 +72,11 @@ public class AppDeploymentFileWatcher extends Thread
 
 	private void checkForNewApps(MemoizedFile watchDir)
 	{
-		if (!watchDir.isDirectory()) {
+		File underlyingFile = watchDir.getUnderlyingFile(); // get the underlying file so listFiles isnt cached
+		if (!underlyingFile.isDirectory()) {
 			return;
 		}
-		for (File dir : watchDir.getUnderlyingFile().listFiles()) // get the underlying file so listFiles isnt cached
+		for (File dir : underlyingFile.listFiles())
 		{
 			if (isAppDirWithDeployFile(watchDir, dir)) 
 			{

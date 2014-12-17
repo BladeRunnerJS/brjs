@@ -1,17 +1,25 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.aliasing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.plugin.plugins.require.AliasCommonJsSourceModule;
 
 public class AliasingSerializer {
 	public static String createJson(BundleSet bundleSet) {
+		List<AliasDefinition> aliasDefinitions = getAliasDefinitions(bundleSet);
+		aliasDefinitions.addAll(bundleSet.getActiveAliases()); // TODO: delete this line once aliasing has been removed from the model
+		
 		StringBuilder jsonData = new StringBuilder();
 		boolean firstAlias = true;
 		
 		jsonData.append("{");
 		
-		for(AliasDefinition aliasDefinition : bundleSet.getActiveAliases())
+		for(AliasDefinition aliasDefinition : aliasDefinitions)
 		{
 			if(firstAlias)
 			{
@@ -47,5 +55,19 @@ public class AliasingSerializer {
 		jsonData.append("}");
 		
 		return jsonData.toString();
+	}
+
+	private static List<AliasDefinition> getAliasDefinitions(BundleSet bundleSet) {
+		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+		
+		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+			if(sourceModule instanceof AliasCommonJsSourceModule) {
+				AliasCommonJsSourceModule aliasSourceModule = (AliasCommonJsSourceModule) sourceModule;
+				
+				aliasDefinitions.add(aliasSourceModule.getAliasDefinition());
+			}
+		}
+		
+		return aliasDefinitions;
 	}
 }

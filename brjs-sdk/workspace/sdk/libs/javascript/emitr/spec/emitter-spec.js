@@ -454,4 +454,18 @@ describe('An Emitter', function(){
 
 		expect(called).toBe(4);
 	});
+
+	it('should trigger all listeners even if one throws an exception', function() {
+		var called = false;
+		emitter.on('ev', function() {
+			throw "error";
+		});
+		emitter.on('ev', function() {
+			called = true;
+		});
+
+		emitter.trigger('ev');
+
+		expect(called).toBe(true);
+	});
 });

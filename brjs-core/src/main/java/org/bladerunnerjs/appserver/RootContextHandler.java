@@ -24,7 +24,9 @@ public class RootContextHandler extends AbstractHandler
 			response.sendRedirect(redirectUrl);			
 		} else {
 			/* \n allowed since the error is wrapped in a <pre> tag */
-			response.sendError(404, APP_404_MESSAGE);
+			if (!response.isCommitted()) {
+				response.sendError(404, APP_404_MESSAGE);
+			}
 		}
 	}
 

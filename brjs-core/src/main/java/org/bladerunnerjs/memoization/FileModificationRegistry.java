@@ -1,23 +1,26 @@
 package org.bladerunnerjs.memoization;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
 
 
 @SuppressWarnings("unused")
 public class FileModificationRegistry
 {
-	private Map<String,FileVersion> lastModifiedMap = new HashMap<String,FileVersion>();
+	private Map<String,FileVersion> lastModifiedMap = new ConcurrentHashMap<>();
 	private File rootFile;
+	private IOFileFilter globalFileFilter;
 
-	public FileModificationRegistry(File rootFile) { 
+	public FileModificationRegistry(File rootFile, IOFileFilter globalFileFilter) {
 		this.rootFile = rootFile;
+		this.globalFileFilter = globalFileFilter;
 	}
 	
 	public long getFileVersion(File file) {
@@ -27,11 +30,12 @@ public class FileModificationRegistry
 	public FileVersion getFileVersionObject(File file) {
 		return getOrCreateVersionValue(file);
 	}
-
+	
 	public void incrementFileVersion(File file) {
-		while (file != null && !file.equals(rootFile)) {
-			getOrCreateVersionValue(file).incrememntValue();
-			file = file.getParentFile();
+		if (globalFileFilter.accept(file)) {
+			incrementAllFileVersions();
+		} else {
+			incrementFileAndParentVersion(file);
 		}
 	}
 	
@@ -42,23 +46,27 @@ public class FileModificationRegistry
 		
 		incrementFileVersion(file);
 		
-		List<String> incrementedPaths = new ArrayList<>();
-		
-		if (file.isDirectory()) {
-			for (File child : org.apache.commons.io.FileUtils.listFilesAndDirs(file, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-				incrementedPaths.add( file.getAbsolutePath() );
-				getOrCreateVersionValue(child).incrememntValue();
-			}
-		}
-		
 		String filePath = file.getAbsolutePath();
-		for (String path : lastModifiedMap.keySet()) {
-			if (filePath.startsWith(path) && !incrementedPaths.contains(filePath)) {
+		Set<String> lastModifiedMapKeySet = new HashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
+		for (String path : lastModifiedMapKeySet) {
+			if (filePath.startsWith(path)) {
 				lastModifiedMap.get(path).incrememntValue();
 			}
 		}
 	}
 	
+	public void incrementAllFileVersions() {
+		for (FileVersion version : lastModifiedMap.values()) {
+			version.incrememntValue();
+		}
+	}
+	
+	private void incrementFileAndParentVersion(File file) {
+		while (file != null && !file.equals(rootFile)) {
+			getOrCreateVersionValue(file).incrememntValue();
+			file = file.getParentFile();
+		}
+	}
 	
 	private FileVersion getOrCreateVersionValue(File file)
 	{

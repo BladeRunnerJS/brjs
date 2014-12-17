@@ -2,7 +2,7 @@ ValidSelectionValidatorTest = TestCase("ValidSelectionValidatorTest");
 
 ValidSelectionValidatorTest.prototype.setUp = function()
 {
-	this.oOptions = new br.presenter.node.OptionsNodeList(["a", "b"]);
+	this.oOptions = new br.presenter.node.OptionsNodeList(["a", "b", "fOoBaR"]);
 	this.oValidSelectionValidator = new br.presenter.validator.ValidSelectionValidator(this.oOptions);
 };
 
@@ -42,10 +42,44 @@ ValidSelectionValidatorTest.prototype.test_nonExistentOptionValuesFailValidation
 	assertFalse("1a", oValidationResult.isValid());
 };
 
+ValidSelectionValidatorTest.prototype.test_canCorrectlyValidateWhenValueIsUndefined = function()
+{
+	var oValidationResult = new br.presenter.validator.ValidationResult();
+	this.oValidSelectionValidator.validate(undefined, {}, oValidationResult);
+	assertFalse("1a", oValidationResult.isValid());
+};
+
 ValidSelectionValidatorTest.prototype.test_weCanAllowInvalidSelectionsToPassValidations = function()
 {
 	var oValidationResult = new br.presenter.validator.ValidationResult();
 	this.oValidSelectionValidator.allowInvalidSelections(true);
 	this.oValidSelectionValidator.validate("c", {}, oValidationResult);
 	assertTrue("1a", oValidationResult.isValid());
+};
+
+ValidSelectionValidatorTest.prototype.test_caseIsIgnoredWhenValidating = function()
+{
+	var oValidationResult = new br.presenter.validator.ValidationResult();
+	this.oValidSelectionValidator.validate("FOObar", {}, oValidationResult);
+	assertTrue(oValidationResult.isValid());
+};
+
+ValidSelectionValidatorTest.prototype.test_canValidateNumericOptions = function()
+{
+	var oNumericOptions = new br.presenter.node.OptionsNodeList([1, 2, 3]);
+	var oValidSelectionValidator = new br.presenter.validator.ValidSelectionValidator(oNumericOptions);
+	
+	var oValidationResult = new br.presenter.validator.ValidationResult();
+	oValidSelectionValidator.validate(1, {}, oValidationResult);
+	assertTrue(oValidationResult.isValid());
+};
+
+ValidSelectionValidatorTest.prototype.test_canValidateNumericOptionsWhenComparisonValueIsZero = function()
+{
+	var oNumericOptions = new br.presenter.node.OptionsNodeList([0, 1, 2]);
+	var oValidSelectionValidator = new br.presenter.validator.ValidSelectionValidator(oNumericOptions);
+	
+	var oValidationResult = new br.presenter.validator.ValidationResult();
+	oValidSelectionValidator.validate(0, {}, oValidationResult);
+	assertTrue(oValidationResult.isValid());
 };

@@ -260,8 +260,8 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem2(templateElem(mergeElem("id2"))));
 		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(bundleElem(
-				bundleResourceElem("rootElem2", rootElem2(templateElem(mergeElem("id2")))),
-				bundleResourceElem("rootElem", rootElem(templateElem(mergeElem("id1"))))
+				bundleResourceElem("rootElem", rootElem(templateElem(mergeElem("id1")))),
+				bundleResourceElem("rootElem2", rootElem2(templateElem(mergeElem("id2"))))
 			));
 	}
 	
@@ -386,7 +386,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(blade).containsResourceFileWithContents("xml/myconfig.xml", "@bundlePath@/some/path")
 			.and(brjs).hasDevVersion("dev")
 			.and(blade).hasClass("appns/bs/b1/Class1")
-			.and(workbench).indexPageRefersTo("appns/bs/b1/Class1");
+			.and(workbench).indexPageRequires("appns/bs/b1/Class1");
 		when(workbench).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText("v/dev/some/path"); 
 	}

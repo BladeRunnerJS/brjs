@@ -18,6 +18,7 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class Bladeset extends AbstractComponent implements NamedNode
 {
+	public static final String BLADES_DIRNAME = "blades";
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
 	private MemoizedFile[] scopeFiles;
@@ -35,7 +36,7 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	@Override
 	public MemoizedFile[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new MemoizedFile[] {dir(), app().libsDir(), app().libsDir(), root().sdkJsLibsDir().dir(), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
+			scopeFiles = new MemoizedFile[] {dir(), app().libsDir(), app().libsDir(), root().sdkJsLibsDir().dir()};
 		}
 		
 		return scopeFiles;

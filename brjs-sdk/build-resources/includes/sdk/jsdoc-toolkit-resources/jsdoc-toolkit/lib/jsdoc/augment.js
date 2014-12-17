@@ -70,9 +70,16 @@ function getMembers(longname, docs) {
     return members;
 }
 
+function addOverridesProperty(doclets, overrides) {
+    for (var i = 0, l = doclets.length; i < l; i++) {
+        doclets[i].overrides = overrides;
+    }
+}
+
 function getAdditions(doclets, docs, documented) {
     var doop = require('jsdoc/util/doop');
 
+    var additionIndexes;
     var additions = [];
     var doc;
     var parents;
@@ -87,6 +94,8 @@ function getAdditions(doclets, docs, documented) {
         doc = doclets[i];
         parents = doc.augments;
         if (parents && doc.kind === 'class') {
+            // reset the lookup table of added doclet indexes by longname
+            additionIndexes = {};
             for (var j = 0, jj = parents.length; j < jj; j++) {
                 members = getMembers(parents[j], docs);
                 for (var k = 0, kk = members.length; k < kk; k++) {
@@ -97,15 +106,42 @@ function getAdditions(doclets, docs, documented) {
                     }
                     member.inherited = true;
 
+                    // Remove the `overrides` property if present. (For classes A > B > C, if B#a
+                    // overrides A#a, and C#a inherits B#a, we don't want the doclet for C#a to say
+                    // that it overrides A#a.)
+                    if (member.overrides) {
+                        delete member.overrides;
+                    }
+
+                    // TODO: this will fail on longnames like: MyClass#"quoted#Longname"
+                    // and nested instance members like: MyClass#MyOtherClass#myMethod
                     member.memberof = doc.longname;
                     parts = member.longname.split('#');
                     parts[0] = doc.longname;
                     member.longname = parts.join('#');
 
-                    // add the ancestor's docs, unless the descendant both a) overrides the
-                    // ancestor and b) documents the override
+                    // Add the ancestor's docs, unless the descendant overrides the ancestor AND
+                    // documents the override.
                     if ( !hasOwnProp.call(documented, member.longname) ) {
-                        additions.push(member);
+                        // We add only one doclet per longname. If you inherit from two classes that
+                        // both use the same method name, you get docs for one method rather than
+                        // two. Last one wins; if you write `@extends Class1 @extends Class2`, and
+                        // both classes have the instance method `myMethod`, you get the `myMethod`
+                        // docs from Class2.
+                        if (typeof additionIndexes[member.longname] !== 'undefined') {
+                            // replace the existing doclet
+                            additions[additionIndexes[member.longname]] = member;
+                        }
+                        else {
+                            // add the doclet to the array, and track its index
+                            additions.push(member);
+                            additionIndexes[member.longname] = additions.length - 1;
+                        }
+                    }
+                    // If the descendant is documented and overrides an ancestor, indicate what the
+                    // descendant is overriding.
+                    else {
+                        addOverridesProperty(documented[member.longname], members[k].longname);
                     }
                 }
             }
@@ -125,12 +161,12 @@ exports.addInherited = function(docs) {
         var additions = getAdditions(doclets, docs, docs.index.documented);
 
         additions.forEach(function(doc) {
-            var name = doc.longname;
+            var longname = doc.longname;
 
-            if ( !hasOwnProp.call(index, name) ) {
-                index[name] = [];
+            if ( !hasOwnProp.call(index, longname) ) {
+                index[longname] = [];
             }
-            index[name].push(doc);
+            index[longname].push(doc);
             docs.push(doc);
         });
     });

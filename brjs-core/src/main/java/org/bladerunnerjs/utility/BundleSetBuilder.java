@@ -153,22 +153,18 @@ public class BundleSetBuilder {
 		try {
 			for(String aliasName : aliasNames) {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
+				addSourceModule(sourceModule);
 				
-				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
-				if (alias != null) {
-					SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
-					addSourceModule(sourceModule);
+				if(alias.getInterfaceName() != null) {
+					SourceModule aliasInterface = (SourceModule) bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
 					
-					if(alias.getInterfaceName() != null) {
-						SourceModule aliasInterface = (SourceModule) bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
-						
-						if(sourceModule != aliasInterface) {
-							addSourceModule(aliasInterface);
-						}
+					if(sourceModule != aliasInterface) {
+						addSourceModule(aliasInterface);
 					}
-					
-					aliases.add(alias);
 				}
+				
+				aliases.add(alias);
 			}
 		}
 		catch(AliasException | ContentFileProcessingException | RequirePathException e) {

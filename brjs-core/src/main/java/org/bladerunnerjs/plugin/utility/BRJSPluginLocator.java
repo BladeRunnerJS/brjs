@@ -10,6 +10,7 @@ import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.PluginLocator;
+import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
@@ -17,6 +18,7 @@ import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyMinifierPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyModelObserverPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyRequirePlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
 
 
@@ -29,6 +31,7 @@ public class BRJSPluginLocator implements PluginLocator
 	private List<TagHandlerPlugin> tagHandlerPlugins;
 	private List<AssetPlugin> assetPlugins;
 	private List<AssetLocationPlugin> assetLocationPlugins;
+	private List<RequirePlugin> requirePlugins;
 	
 	@Override
 	public void createPlugins(BRJS brjs) {
@@ -39,6 +42,7 @@ public class BRJSPluginLocator implements PluginLocator
 		tagHandlerPlugins = PluginLoader.createPluginsOfType(brjs, TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class);
 		assetPlugins = PluginLoader.createPluginsOfType(brjs, AssetPlugin.class, VirtualProxyAssetPlugin.class);
 		assetLocationPlugins = PluginLoader.createPluginsOfType(brjs, AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class);
+		requirePlugins = PluginLoader.createPluginsOfType(brjs, RequirePlugin.class, VirtualProxyRequirePlugin.class);
 	}
 
 	@Override
@@ -76,5 +80,10 @@ public class BRJSPluginLocator implements PluginLocator
 	@Override
 	public List<AssetLocationPlugin> getAssetLocationPlugins() {
 		return assetLocationPlugins;
+	}
+
+	@Override
+	public List<RequirePlugin> getRequirePlugins() {
+		return requirePlugins;
 	}
 }

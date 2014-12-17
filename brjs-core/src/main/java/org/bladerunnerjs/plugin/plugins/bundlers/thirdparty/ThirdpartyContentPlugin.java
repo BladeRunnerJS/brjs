@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
@@ -111,33 +112,22 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
-			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-				if(sourceModule instanceof ThirdpartySourceModule) {
-					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
-				}
+			if (requestMode == RequestMode.Prod) {
+				requestPaths.add(contentPathParser.createRequest("bundle-request"));
+			} else {
+				for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+					if(sourceModule instanceof ThirdpartySourceModule) {
+						requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
+					}
+				}				
 			}
 		}
 		catch(MalformedTokenException e) {
-			throw new ContentProcessingException(e);
-		}
-		
-		return requestPaths;
-	}
-
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException 
-	{
-		List<String> requestPaths = new ArrayList<>();
-		
-		try {
-			requestPaths.add(contentPathParser.createRequest("bundle-request"));
-		}
-		catch (MalformedTokenException e) {
 			throw new ContentProcessingException(e);
 		}
 		

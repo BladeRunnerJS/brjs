@@ -21,7 +21,7 @@ public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation im
 	}
 	
 	@Override
-	protected List<MemoizedFile> getCandidateFiles() {
+	public List<MemoizedFile> getCandidateFiles() {
 		return Collections.emptyList();
 	}
 	
