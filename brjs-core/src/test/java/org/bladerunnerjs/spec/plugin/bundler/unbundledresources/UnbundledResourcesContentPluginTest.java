@@ -169,15 +169,9 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	@Test
 	public void ifThereAreFilesInBladeWorkbenchUnbundledResourcesThenRequestsWillBeGenerated() throws Exception {
 		given(appAspect).indexPageHasContent("index page")
-<<<<<<< HEAD
 			.and(blade).hasBeenCreated()
-			.and(workbenchUnbundledResources).containsFiles("some-file", "some-dir/some-file");
-		then(workbench).prodAndDevRequestsForContentPluginsAre("unbundled-resources",
-=======
-			.and(blade).hasBeenPopulated()
 			.and(bladeWorkbenchUnbundledResources).containsFiles("some-file", "some-dir/some-file");
 		then(bladeWorkbench).prodAndDevRequestsForContentPluginsAre("unbundled-resources",
->>>>>>> develop
 				"/unbundled-resources/bladeset_bs/blade_b1/workbench/some-file", 
 				"unbundled-resources/bladeset_bs/blade_b1/workbench/some-file", 
 				"/unbundled-resources/bladeset_bs/blade_b1/workbench/some-dir/some-file",
@@ -200,13 +194,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void requestsCanBeMadeForAFileInBladeWorkbenchVersionedUnbundledResources() throws Exception
 	{
 		given(app).hasBeenCreated()
-<<<<<<< HEAD
 			.and(blade).hasBeenCreated()
-			.and(workbench).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
-=======
-			.and(blade).hasBeenPopulated()
 			.and(bladeWorkbench).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
->>>>>>> develop
 		when(appAspect).requestReceivedInDev("unbundled-resources/bladeset_bs/blade_b1/workbench/someFile.txt", response);
 		then(response).textEquals("some file contents");
 	}
@@ -225,13 +214,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void requestsCanBeMadeForAFileInBladeWorkbenchUnbundledResources() throws Exception
 	{
 		given(app).hasBeenCreated()
-<<<<<<< HEAD
 			.and(blade).hasBeenCreated()
-			.and(workbench).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
-=======
-			.and(blade).hasBeenPopulated()
 			.and(bladeWorkbench).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
->>>>>>> develop
 		when(appAspect).requestReceivedInDev("/unbundled-resources/bladeset_bs/blade_b1/workbench/someFile.txt", response);
 		then(response).textEquals("some file contents");
 	}
