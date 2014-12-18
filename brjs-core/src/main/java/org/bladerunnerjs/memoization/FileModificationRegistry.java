@@ -49,7 +49,7 @@ public class FileModificationRegistry
 		String filePath = file.getAbsolutePath();
 		Set<String> lastModifiedMapKeySet = new HashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
 		for (String path : lastModifiedMapKeySet) {
-			if (filePath.startsWith(path)) {
+			if (path.startsWith(filePath)) {
 				lastModifiedMap.get(path).incrememntValue();
 			}
 		}
