@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.NodeTesterFactory;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.TypedTestPack;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,15 +15,15 @@ import org.junit.Test;
 public class WorkbenchNavigationTest extends TestModelAccessor
 {
 	private BRJS brjs;
-	private NodeTesterFactory<Workbench> nodeTesterFactory;
-	private Workbench workbench;
+	private NodeTesterFactory<BladeWorkbench> nodeTesterFactory;
+	private BladeWorkbench workbench;
 	
 	@Before
 	public void setup() throws Exception
 	{
 		brjs = createModel(new File("src/test/resources/BRJSTest"));
 		workbench = brjs.app("a1").bladeset("bs1").blade("b1").workbench();
-		nodeTesterFactory = new NodeTesterFactory<>(workbench, Workbench.class);
+		nodeTesterFactory = new NodeTesterFactory<>(workbench, BladeWorkbench.class);
 	}
 	
 	@After

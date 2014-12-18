@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class ServedAppBundleTest extends SpecTest
 		Aspect aspect = app.defaultAspect();
 		Bladeset bs = app.bladeset("bs");
 		Blade b1 = bs.blade("b1");
-		Workbench workbench = b1.workbench();
+		BladeWorkbench workbench = b1.workbench();
 		
 		given(app).hasBeenPopulated("default")
 			.and(aspect).hasClass("appns/Class1")

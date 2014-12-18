@@ -265,9 +265,9 @@ public abstract class SpecTest extends TestModelAccessor
 	public BladesetVerifier then(Bladeset bladeset) { return new BladesetVerifier(this, bladeset); }
 	
 	// Workbench
-	public WorkbenchBuilder given(Workbench workbench) { return new WorkbenchBuilder(this, workbench); }
-	public WorkbenchCommander when(Workbench workbench) { return new WorkbenchCommander(this, workbench); }
-	public WorkbenchVerifier then(Workbench workbench) { return new WorkbenchVerifier(this, workbench); }
+	public WorkbenchBuilder given(Workbench<?> workbench) { return new WorkbenchBuilder(this, workbench); }
+	public WorkbenchCommander when(Workbench<?> workbench) { return new WorkbenchCommander(this, workbench); }
+	public WorkbenchVerifier then(Workbench<?> workbench) { return new WorkbenchVerifier(this, workbench); }
 	
 	// JsLib
 	public JsLibBuilder given(JsLib jsLib) { return new JsLibBuilder(this, jsLib); }
