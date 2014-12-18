@@ -34,7 +34,7 @@ public class ModelLoggingTest extends SpecTest
 	@Test /* 1A. we comment out a log.error() */
 	@ExpectedFailure("Test should have failed since we didnt log a message")
 	public void testFailsWhenWeMissAnErrorLogMessage() {
-		expectFailureTypeAndMessage(AssertionError.class, LogMessageStore.NO_MESSAGES_RECIEVED, "error" );
+		expectFailureTypeAndMessage(AssertionError.class, LogMessageStore.NO_MESSAGES_RECEIVED, "error" );
 		
 		given(logging).enabled();
 		logCommander.whenNoMessagesLogged();
@@ -44,7 +44,7 @@ public class ModelLoggingTest extends SpecTest
 	@Test /* 1B. we comment out a log.info() */
 	@ExpectedFailure("Test should have failed since we didnt log a message")
 	public void testFailsWhenWeMissAnInfoLogMessage() {
-		expectFailureTypeAndMessage(AssertionError.class, LogMessageStore.NO_MESSAGES_RECIEVED, "info" );
+		expectFailureTypeAndMessage(AssertionError.class, LogMessageStore.NO_MESSAGES_RECEIVED, "info" );
 		
 		given(logging).enabled();
 		logCommander.whenNoMessagesLogged();
@@ -54,7 +54,7 @@ public class ModelLoggingTest extends SpecTest
 	@Test /* 1C. we comment out a log.debug() */
 	@ExpectedFailure("Test should have failed since we didnt log a message")
 	public void testFailsWhenWeMissAnDebugLogMessage() {
-		expectFailureTypeAndMessageStartsWith(AssertionError.class, LogMessageStore.NO_MESSAGE_MATCHING_RECIEVED, "debug", LOG_MESSAGE_ONE_PARAM, PARAM1 );
+		expectFailureTypeAndMessageStartsWith(AssertionError.class, LogMessageStore.NO_MESSAGE_MATCHING_RECEIVED, "debug", LOG_MESSAGE_ONE_PARAM, PARAM1 );
 		
 		given(logging).enabled();
 		logCommander.whenNoMessagesLogged();

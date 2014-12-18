@@ -16,10 +16,10 @@ public class NamedNodeCommander extends NodeCommander<NamedNode> {
 		this.namedNode = namedNode;
 	}
 	
-	public CommanderChainer populate() throws Exception {
+	public CommanderChainer populate(String templateGroup) throws Exception {
 		call(new Command() {
 			public void call() throws Exception {
-				((BRJSNode) namedNode).populate();
+				((BRJSNode) namedNode).populate(templateGroup);
 			}
 		});
 		

@@ -32,7 +32,7 @@ public class ServedAppBundleTest extends SpecTest
 		Blade b1 = bs.blade("b1");
 		BladeWorkbench workbench = b1.workbench();
 		
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(b1).hasClass("appns/bs/b1/Class")

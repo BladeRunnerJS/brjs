@@ -13,6 +13,7 @@ import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.plugin.plugins.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -34,7 +35,8 @@ public class AppServerTest extends SpecTest
 	DirNode appJars;
 	ServerSocket socket;
 	Servlet helloWorldServlet;
-
+	TemplateGroup templates; 
+	
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsBundlerPlugins()
@@ -49,6 +51,7 @@ public class AppServerTest extends SpecTest
 			appServer = brjs.applicationServer(appServerPort);
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
+			templates = brjs.sdkTemplateGroup("default");
 			sysapp1 = brjs.systemApp("sysapp1");
 			sysapp2 = brjs.systemApp("sysapp2");
 			appJars = brjs.appJars();
@@ -100,8 +103,10 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreAutomaticallyHosted() throws Exception
 	{
-		given(appServer).started();
-		when(app1).populate()
+		given(appServer).started()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt");
+		when(app1).populate("default")
 			.and(app1).deployApp();
 		then(appServer).requestCanEventuallyBeMadeFor("/app1");
 	}	
@@ -109,7 +114,9 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void deployFileIsOnlyCreatedIfAppServerIsStarted() throws Exception
 	{
-		when(app1).populate()
+		given(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt");
+		when(app1).populate("default")
 			.and(app1).deployApp();
 		then(app1).doesNotHaveFile(".deploy");
 	}
@@ -117,8 +124,10 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreOnlyHostedOnAppDeployedEvent() throws Exception
 	{
-		given(appServer).started();
-		when(app1).populate()
+		given(appServer).started()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt");
+		when(app1).populate("default")
 			.and(brjs).eventFires(new NodeReadyEvent(), app1);
 		then(appServer).requestCannotBeMadeFor("/app1/default-aspect/index.html");
 	}
@@ -153,8 +162,10 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void systemAppIsAutomaticallyHostedOnDeploy() throws Exception
 	{
-		given(appServer).started();
-		when(sysapp1).populate()
+		given(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
+			.and(appServer).started();
+		when(sysapp1).populate("default")
 			.and(sysapp1).deployApp();
 		then(appServer).requestCanEventuallyBeMadeFor("/sysapp1");
 	}
@@ -177,7 +188,9 @@ public class AppServerTest extends SpecTest
 	public void otherServletsCanBeAddedWithRootMapping() throws Exception
 	{
 		given(brjs).usedForServletModel()
-			.and(app1).hasBeenPopulated()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
+			.and(app1).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "/servlet/hello/*");
 		then(appServer).requestForUrlReturns("/app1/servlet/hello", "Hello World!");
@@ -187,7 +200,9 @@ public class AppServerTest extends SpecTest
 	public void otherServletsCanBeAddedWithExtensionMapping() throws Exception
 	{
 		given(brjs).usedForServletModel()
-			.and(app1).hasBeenPopulated()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
+			.and(app1).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "*.mock");
 		then(appServer).requestForUrlReturns("/app1/hello.mock", "Hello World!");
@@ -197,6 +212,8 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstance() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
@@ -206,6 +223,8 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreHostedOnAppserverAfterServerRestartWhenCreateAppCommandUsedFromADifferentModelInstance() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
@@ -217,6 +236,8 @@ public class AppServerTest extends SpecTest
 	public void newAppsAreHostedViaADifferentModelOnAppserverAfterServerRestart() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()

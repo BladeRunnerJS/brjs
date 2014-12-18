@@ -67,6 +67,23 @@ public abstract class Workbench<N extends Node> extends AbstractBrowsableNode im
 	}
 	
 	@Override
+	public List<AssetContainer> scopeAssetContainers() {
+		List<AssetContainer> assetContainers = new ArrayList<>();
+		
+		for (JsLib jsLib : app().jsLibs())
+		{
+			assetContainers.add( jsLib );			
+		}
+		
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
+		
+		assetContainers.add(this);
+		
+		return assetContainers;
+	}
+	
+	@Override
 	public void runTests(TestType... testTypes)
 	{
 		TestRunner.runTests(testTypes);

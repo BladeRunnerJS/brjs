@@ -15,7 +15,7 @@ public class PluginValidatorTest extends SpecTest
 	{
 		given(brjs).hasContentPlugins(new MockContentPluginWithIncorrectRequestPrefix())
 			.and(brjs).hasBeenCreated()
-			.and( brjs.app("app") ).hasBeenPopulated();
+			.and( brjs.app("app") ).hasBeenPopulated("default");
 		then(exceptions).verifyException(IncorectContentPathPrefixException.class, 
 				MockContentPluginWithIncorrectRequestPrefix.class.getSimpleName(), "some/url/path");
 	}
@@ -25,7 +25,7 @@ public class PluginValidatorTest extends SpecTest
 	{
 		given(brjs).hasContentPlugins(new MockContentPluginWithIncorrectContentPaths())
 			.and(brjs).hasBeenCreated()
-			.and( brjs.app("app") ).hasBeenPopulated();
+			.and( brjs.app("app") ).hasBeenPopulated("default");
 		then(exceptions).verifyException(InvalidContentPathException.class, 
 				MockContentPluginWithIncorrectRequestPrefix.class.getSimpleName());
 	}

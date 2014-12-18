@@ -103,7 +103,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	@Test
 	public void ifThereAreFilesInBladesetUnbundledResourcesThenRequestsWillBeGenerated() throws Exception {
 		given(appAspect).indexPageHasContent("index page")
-			.and(bladeset).hasBeenPopulated()
+			.and(bladeset).hasBeenCreated()
 			.and(bladesetUnbundledResources).containsFile("some-file")
 			.and(bladesetUnbundledResources).containsFile("some-dir/some-file");
 		then(appAspect).prodAndDevRequestsForContentPluginsAre( "unbundled-resources",
@@ -117,7 +117,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void requestsCanBeMadeForAFileInBladesetVersionedUnbundledResources() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(bladeset).hasBeenPopulated()
+			.and(bladeset).hasBeenCreated()
 			.and(bladeset).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(appAspect).requestReceivedInDev("unbundled-resources/bladeset_bs/someFile.txt", response);
 		then(response).textEquals("some file contents");
@@ -127,7 +127,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void requestsCanBeMadeForAFileInBladesetUnbundledResources() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(bladeset).hasBeenPopulated()
+			.and(bladeset).hasBeenCreated()
 			.and(bladeset).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(appAspect).requestReceivedInDev("/unbundled-resources/bladeset_bs/someFile.txt", response);
 		then(response).textEquals("some file contents");
@@ -136,7 +136,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	@Test
 	public void ifThereAreFilesInBladeUnbundledResourcesThenRequestsWillBeGenerated() throws Exception {
 		given(appAspect).indexPageHasContent("index page")
-			.and(blade).hasBeenPopulated()
+			.and(blade).hasBeenCreated()
 			.and(bladeUnbundledResources).containsFile("some-file")
 			.and(bladeUnbundledResources).containsFile("some-dir/some-file");
 		then(appAspect).prodAndDevRequestsForContentPluginsAre( "unbundled-resources",
@@ -150,7 +150,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void requestsCanBeMadeForAFileInBladeVersionedUnbundledResources() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasBeenPopulated()
+			.and(blade).hasBeenCreated()
 			.and(blade).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(appAspect).requestReceivedInDev("unbundled-resources/bladeset_bs/blade_b1/someFile.txt", response);
 		then(response).textEquals("some file contents");
@@ -160,7 +160,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void requestsCanBeMadeForAFileInBladeUnbundledResources() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasBeenPopulated()
+			.and(blade).hasBeenCreated()
 			.and(blade).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(appAspect).requestReceivedInDev("/unbundled-resources/bladeset_bs/blade_b1/someFile.txt", response);
 		then(response).textEquals("some file contents");
@@ -169,7 +169,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	@Test
 	public void ifThereAreFilesInBladeWorkbenchUnbundledResourcesThenRequestsWillBeGenerated() throws Exception {
 		given(appAspect).indexPageHasContent("index page")
-			.and(blade).hasBeenPopulated()
+			.and(blade).hasBeenCreated()
 			.and(bladeWorkbenchUnbundledResources).containsFiles("some-file", "some-dir/some-file");
 		then(bladeWorkbench).prodAndDevRequestsForContentPluginsAre("unbundled-resources",
 				"/unbundled-resources/bladeset_bs/blade_b1/workbench/some-file", 
@@ -194,7 +194,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void requestsCanBeMadeForAFileInBladeWorkbenchVersionedUnbundledResources() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasBeenPopulated()
+			.and(blade).hasBeenCreated()
 			.and(bladeWorkbench).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(appAspect).requestReceivedInDev("unbundled-resources/bladeset_bs/blade_b1/workbench/someFile.txt", response);
 		then(response).textEquals("some file contents");
@@ -214,7 +214,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void requestsCanBeMadeForAFileInBladeWorkbenchUnbundledResources() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasBeenPopulated()
+			.and(blade).hasBeenCreated()
 			.and(bladeWorkbench).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(appAspect).requestReceivedInDev("/unbundled-resources/bladeset_bs/blade_b1/workbench/someFile.txt", response);
 		then(response).textEquals("some file contents");
@@ -298,7 +298,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void jspsCanBeUsedInUnbundledResources() throws Exception
 	{
 		try {
-    		given(app).hasBeenPopulated()
+    		given(app).hasBeenCreated()
         		.and(appAspect).containsFileWithContents("unbundled-resources/file.jsp", "2 + 2 = <%= 2 + 2 %>")
         		.and(brjs).hasDevVersion("1234")
         		.and(brjs.applicationServer(appServerPort)).started();
@@ -348,7 +348,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void unbundledResourcesCanBeUsedFromABladeWithinDefaultBladesets() throws Exception {
 		given(defaultAspect).hasBeenCreated()
 			.and(defaultBladeset).hasBeenCreated()
-			.and(bladeInDefaultBladeset).hasBeenPopulated()
+			.and(bladeInDefaultBladeset).hasBeenCreated()
     		.and(bladeInDefaultBladeset).containsFileWithContents("unbundled-resources/someFile.txt", "blade in default bladeset unbundled-resources file");
     	when(unbundledResourcesPlugin).getPossibleProdRequests(defaultAspect, requestsList)
     		.and(defaultAspect).requestReceivedInDev("unbundled-resources/bladeset_default/blade_b2/someFile.txt", response);

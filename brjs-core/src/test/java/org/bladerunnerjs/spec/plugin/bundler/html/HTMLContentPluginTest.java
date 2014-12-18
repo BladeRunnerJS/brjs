@@ -38,7 +38,7 @@ public class HTMLContentPluginTest extends SpecTest
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
-			workbenchTemplate = brjs.template("workbench");
+			workbenchTemplate = brjs.sdkTemplateGroup("default").template("workbench");
 			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 			

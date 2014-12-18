@@ -106,12 +106,12 @@ public class ExportApplicationCommandTest extends SpecTest {
 	@Test
 	public void maintainsJsStyleFileWhenAppIsExported() throws Exception {
 		given(app).hasBeenCreated()
-			.and(aspect).hasBeenPopulated()
+			.and(aspect).hasBeenCreated()
 			.and(aspect).classFileHasContent("appns.Class1", "default aspect src")
 			.and(aspect).containsFile("src/.js-style")
-			.and(bladeset).hasBeenPopulated()
+			.and(bladeset).hasBeenCreated()
 			.and(bladeset).containsFile("src/.js-style")
-			.and(blade).hasBeenPopulated()
+			.and(blade).hasBeenCreated()
 			.and(blade).containsFile("src/.js-style");
 		when(brjs).runCommand("export-app", "app1")
 			.and(brjs).zipFileIsExtractedTo("generated/exported-apps/app1.zip", "generated/exported-apps/app1");
@@ -123,7 +123,7 @@ public class ExportApplicationCommandTest extends SpecTest {
 	@Test
 	public void dotSvnDirsNotExported() throws Exception {
 		given(app).hasBeenCreated()
-			.and(aspect).hasBeenPopulated()
+			.and(aspect).hasBeenCreated()
 			.and(aspect).classFileHasContent("appns.Class1", "default aspect src")
 			.and(aspect).containsFile("src/.svn/some-file");
 		when(brjs).runCommand("export-app", "app1")

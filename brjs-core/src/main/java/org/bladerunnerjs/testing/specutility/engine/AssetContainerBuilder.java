@@ -168,7 +168,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer hasBeenPopulated() throws Exception
 	{
-		node.populate();
+		node.populate("default");
 		return builderChainer;
 	}
 	

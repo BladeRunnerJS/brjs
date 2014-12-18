@@ -10,6 +10,7 @@ import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.ObserverList;
@@ -69,8 +70,8 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
-		sdkJsLib.populate();
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
+		sdkJsLib.populate(templateGroup);
 	}
 	
 	@Override
@@ -128,8 +129,8 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public void populate(String libNamespace) throws InvalidNameException, ModelUpdateException {
-		sdkJsLib.populate(libNamespace);
+	public void populate(String libNamespace, String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
+		sdkJsLib.populate(libNamespace, templateGroup);
 	}
 	
 	@Override
