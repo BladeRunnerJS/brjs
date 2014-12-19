@@ -18,18 +18,21 @@ public class BRJSServletUtils
 		File servletContextFilePath = new File(servletContext.getRealPath("/"));
 		MemoizedFile servletContextMemoizedFile = brjs.getMemoizedFile(servletContextFilePath);
 		App app = brjs.locateAncestorNodeOfClass(servletContextMemoizedFile, App.class);
-		if (app == null) {
-			App brjsApp = brjs.app( servletContextFilePath.getName() );
-			if (brjsApp.dirExists() && brjsApp.dir().equals(servletContextFilePath)) {
-				app = brjsApp;
+		if (app != null) {
+			return app;
+		}
+		
+		App brjsApp = brjs.app( servletContextFilePath.getName() );
+		try {
+			if (brjsApp.dirExists() && (
+					brjsApp.dir().getAbsolutePath().equals(servletContextFilePath.getAbsolutePath()) || brjsApp.dir().getCanonicalPath().equals(servletContextFilePath.getCanonicalPath()) )) {
+				return brjsApp;
 			}
+		} catch (Exception ex) {
+			
 		}
 		
-		if (app == null) {
-			throw new ServletException("Unable to calculate app for the servlet context file path '" + servletContextFilePath + "'.");
-		}
-		
-		return app;
+		throw new ServletException("Unable to calculate app for the servlet context file path '" + servletContextFilePath + "'.");
 	}
 	
 }

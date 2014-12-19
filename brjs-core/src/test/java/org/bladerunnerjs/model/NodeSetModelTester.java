@@ -31,7 +31,7 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 	
 	public NodeSetModelTester<PN, CN> addChild(String childName, String childPath)
 	{
-		childPaths.put(childName, parentNode.dir().file(childPath).getCanonicalFile());
+		childPaths.put(childName, parentNode.dir().file(childPath));
 		
 		return this;
 	}

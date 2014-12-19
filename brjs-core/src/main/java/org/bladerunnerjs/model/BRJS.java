@@ -89,7 +89,7 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		super(brjsDir, loggerFactory);
 		this.appVersionGenerator = appVersionGenerator;
-		this.fileModificationRegistry = new FileModificationRegistry( this, ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
+		this.fileModificationRegistry = new FileModificationRegistry( ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		this.workingDir = new WorkingDirNode(this, getMemoizedFile(brjsDir));
 		
