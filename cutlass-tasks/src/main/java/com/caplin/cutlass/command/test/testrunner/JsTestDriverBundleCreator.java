@@ -71,7 +71,7 @@ public class JsTestDriverBundleCreator
 				Matcher m = JsCodeBlockStrippingDependenciesReader.SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(currentTestFile));
 				if (!m.find())
 				{
-					logger.warn("The CommonJsTest " + currentTestFile.getName() + " is not wrapped within an IIFE, which may cause unreliability in tests.");
+					logger.warn("The CommonJS test '" + currentTestFile.getName() + "' is not wrapped within an IIFE, which may cause unreliability in tests.");
 					break;
 				}
 			}

@@ -53,7 +53,7 @@ public class JsTestDriverBundleCreatorTest {
 		JsTestDriverBundleCreator.createRequiredBundles(brjs, memoizedConfigFile);
 		
 		// then
-		logMessageStore.verifyWarnLogMessage("The CommonJsTest AppTest.js is not wrapped within an IIFE, which may cause unreliability in tests.");
+		logMessageStore.verifyWarnLogMessage("The CommonJS test 'AppTest.js' is not wrapped within an IIFE, which may cause unreliability in tests.");
 	}
 	
 	@Test
