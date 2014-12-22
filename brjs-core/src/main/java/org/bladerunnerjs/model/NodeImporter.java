@@ -126,7 +126,7 @@ public class NodeImporter {
 			
 			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 			
-			Workbench workbench = blade.workbench();			
+			BladeWorkbench workbench = blade.workbench();			
 			updateRequirePrefix(workbench, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
 		}
 	}

@@ -16,7 +16,7 @@ import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -43,7 +43,7 @@ public class DependencyGraphReportBuilder {
 			new DependencyGraphReportBuilder(aspect.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(aspect), showAllDependencies).createReport();
 	}
 	
-	public static String createReport(Workbench workbench, boolean showAllDependencies) throws ModelOperationException {
+	public static String createReport(BladeWorkbench workbench, boolean showAllDependencies) throws ModelOperationException {
 		fixIncompleteAliases(workbench);
 		
 		return "Workbench dependencies found:\n" +

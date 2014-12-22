@@ -16,10 +16,16 @@ describe("story #11", function()
 			and("dash.service.noMoreRequests = true");
 	});
 
-	it("opens window at the correct url when invoking the lauch workbench button", function() {
+	it("opens window at the correct url when invoking the lauch workbench button for blade", function() {
 		given("test.continuesFrom = 'can display app details with bladesets'");
 		when("dash.model.appDetailScreen.bladesets[0].blades[0].popoutWorkbench.invoked => true");
 		then("dash.windowOpened = '/myapp/chart/curve/workbench/'");
+	});
+
+	it("opens window at the correct url when invoking the lauch workbench button for bladeset", function() {
+		given("test.continuesFrom = 'can display app details with bladesets'");
+		when("dash.model.appDetailScreen.bladesets[0].popoutWorkbench.invoked => true");
+		then("dash.windowOpened = '/myapp/chart/workbench/'");
 	});
 
 });

@@ -20,7 +20,7 @@ import org.bladerunnerjs.utility.TemplateUtility;
 
 public final class Blade extends AbstractComponent implements NamedNode
 {
-	private final NodeItem<Workbench> workbench = new NodeItem<>(this, Workbench.class, "workbench");
+	private final NodeItem<BladeWorkbench> workbench = new NodeItem<>(this, BladeWorkbench.class, "workbench");
 	private final String name;
 	private final List<AssetContainer> bladeAssetContainers;
 	
@@ -99,7 +99,7 @@ public final class Blade extends AbstractComponent implements NamedNode
 		return (Bladeset) parentNode();
 	}
 	
-	public Workbench workbench()
+	public BladeWorkbench workbench()
 	{
 		return workbench.item();
 	}

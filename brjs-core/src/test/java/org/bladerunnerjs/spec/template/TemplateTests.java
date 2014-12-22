@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -22,7 +22,7 @@ public class TemplateTests extends SpecTest
 	Aspect defaultAspect;
 	Bladeset bladeset;
 	Blade blade;
-	Workbench workbench;
+	BladeWorkbench workbench;
 	JsLib userLib, thirdpartyLib;
 	Blade bladeInDefaultBladeset;
 	Aspect anotherAspect;
@@ -114,7 +114,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset).hasFilesAndDirs(
 				Arrays.asList("src/BsClass.js", "themes/common/style.css"),
-				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes")
+				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes", "workbench")
 		).and(bladeset).fileContentsContains("resources/i18n/en.properties", "appns.bs.hello.world");
 	}
 	

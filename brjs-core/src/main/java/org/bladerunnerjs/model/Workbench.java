@@ -14,16 +14,19 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.TestRunner;
 
-
-public final class Workbench extends AbstractBrowsableNode implements TestableNode
+public abstract class Workbench<N extends Node> extends AbstractBrowsableNode implements TestableNode
 {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private final IndexPageSeedLocator seedLocator;
+	private final N parent;
 	
+	// TODO add type checking
+	@SuppressWarnings("unchecked")
 	public Workbench(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
 		super(rootNode, parent, dir);
+		this.parent = (N) parent;
 		seedLocator = new IndexPageSeedLocator(root());
 	}
 	
@@ -31,7 +34,6 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	public MemoizedFile[] memoizedScopeFiles() {
 		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(app().memoizedScopeFiles()));
 		scopeFiles.add(dir());
-		
 		return scopeFiles.toArray(new MemoizedFile[0]);
 	}
 
@@ -39,10 +41,9 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	{
 		return styleResources.item();
 	}
-		
-	public Blade parent()
-	{
-		return (Blade) parentNode();
+	
+	public N parent() {
+		return parent;
 	}
 	
 	@Override
@@ -66,23 +67,6 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	}
 	
 	@Override
-	public List<AssetContainer> scopeAssetContainers() {
-		List<AssetContainer> assetContainers = new ArrayList<>();
-		
-		for (JsLib jsLib : app().jsLibs())
-		{
-			assetContainers.add( jsLib );			
-		}
-		
-		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
-		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
-		
-		assetContainers.add(this);
-		
-		return assetContainers;
-	}
-	
-	@Override
 	public void runTests(TestType... testTypes)
 	{
 		TestRunner.runTests(testTypes);
@@ -100,5 +84,8 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 		return testTypes.item(typedTestPackName);
 	}
 	
-	
+	@Override
+	public String getTypeName() {
+		return getClass().getSimpleName();
+	}
 }
