@@ -97,7 +97,7 @@ public class TestRunnerController
 			}
 			catch (Exception ex)
 			{
-				throw new CommandOperationException("Error parsing test runner configuration file '" + configFile.getAbsolutePath() + "'.", ex);
+				throw new CommandOperationException("Error parsing test runner configuration file '" + configFile.getAbsolutePath() + "'", ex);
 			}
 
 			if (mode == RunMode.RUN_SERVER)
@@ -120,7 +120,7 @@ public class TestRunnerController
 				catch (Exception ex)
 				{
 					testRunner.showExceptionInConsole(ex);
-					throw new CommandOperationException("Error running tests.", ex);
+					throw new CommandArgumentsException("Error running tests", ex, testCommand);
 				}
 			}
 		}
