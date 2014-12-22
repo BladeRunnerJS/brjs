@@ -20,6 +20,7 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.command.test.TestCommand;
@@ -96,7 +97,12 @@ public class CommandRunner {
 			throw new CommandOperationException(e);
 		}
 		
-		brjs.populate();
+		try {
+			brjs.populate("default");
+		}
+		catch (TemplateInstallationException e) {
+			throw new CommandOperationException(e);
+		}
 		
 		injectLegacyCommands(brjs);
 		return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);

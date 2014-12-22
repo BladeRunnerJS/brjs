@@ -36,7 +36,7 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 		defaultBladeset = app.defaultBladeset();
 		bladeInDefaultBladeset = defaultBladeset.blade("b4");
 		defaultBladesetWorkbench = defaultBladeset.workbench();
-		workbenchTemplate = brjs.template("workbench");
+		workbenchTemplate = brjs.sdkTemplateGroup("default").template("workbench");
 		brjsLib = brjs.sdkLib("br");
 		
 		response = new StringBuffer();

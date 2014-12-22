@@ -15,6 +15,8 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.utility.TemplateUtility;
 import org.bladerunnerjs.utility.NameValidator;
 
 public class Bladeset extends AbstractComponent implements NamedNode
@@ -85,11 +87,12 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
-		super.populate();
-		testType("unit").defaultTestTech().populate();
-		workbench().populate();
+		super.populate(templateGroup);
+		
+		TemplateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(workbench(), templateGroup);
 	}
 	
 	@Override

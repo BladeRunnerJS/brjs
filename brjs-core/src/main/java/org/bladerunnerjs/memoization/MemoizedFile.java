@@ -304,6 +304,9 @@ public class MemoizedFile extends File implements Comparable<File>
 			populateNestedFilesAndDirs(dir, nestedFilesAndDirs);
 		}
 	}
-	
+
+	public boolean isEmpty() {
+		return filesAndDirs().isEmpty();
+	}
 	
 }

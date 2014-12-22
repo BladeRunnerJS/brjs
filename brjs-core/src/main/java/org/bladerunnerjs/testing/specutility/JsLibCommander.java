@@ -15,10 +15,10 @@ public class JsLibCommander extends NodeCommander<JsLib> {
 		this.jsLib = jsLib;
 	}
 	
-	public CommanderChainer populate(final String libraryNamespace) {
+	public CommanderChainer populate(final String libraryNamespace, final String templateGroup) {
 		call(new Command() {
 			public void call() throws Exception {
-				jsLib.populate(libraryNamespace);
+				jsLib.populate(libraryNamespace, templateGroup);
 			}
 		});
 		

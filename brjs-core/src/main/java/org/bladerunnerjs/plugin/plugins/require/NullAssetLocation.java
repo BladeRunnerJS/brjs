@@ -37,7 +37,7 @@ public class NullAssetLocation implements AssetLocation {
 	}
 
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException {
 		// do nothing
 	}
 

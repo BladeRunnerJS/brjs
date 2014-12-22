@@ -50,7 +50,7 @@ public class LoggerVerifier
 		return verifierChainer;
 	}
 	
-	public VerifierChainer verifyLogsRecievedIfCaptureEnabled()
+	public VerifierChainer verifyLogsReceivedIfCaptureEnabled()
 	{
 		if (logStore.isLoggingEnabled())
 		{

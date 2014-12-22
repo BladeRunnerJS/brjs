@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.NodeTesterFactory;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
@@ -79,15 +78,6 @@ public class BRJSNavigationTest extends TestModelAccessor
 	public void jsPatches()
 	{
 		nodeTesterFactory.createItemTester(DirNode.class, "jsPatches", "js-patches")
-			.assertModelIsOK();
-	}
-	
-	@Test
-	public void templates()
-	{
-		nodeTesterFactory.createSetTester(NamedDirNode.class, "templates", "template")
-			.addChild("t1", "sdk/templates/t1-template")
-			.addChild("t2", "sdk/templates/t2-template")
 			.assertModelIsOK();
 	}
 	

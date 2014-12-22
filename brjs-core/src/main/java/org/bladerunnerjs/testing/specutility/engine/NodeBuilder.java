@@ -35,8 +35,8 @@ public abstract class NodeBuilder<N extends Node> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenPopulated() throws Exception {
-		((BRJSNode) node).populate();
+	public BuilderChainer hasBeenPopulated(String templateGroup) throws Exception {
+		((BRJSNode) node).populate(templateGroup);
 		
 		return builderChainer;
 	}
@@ -64,6 +64,12 @@ public abstract class NodeBuilder<N extends Node> {
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		writeToFile(node.file(filePath), fileContents);
 		
+		return builderChainer;
+	}
+	
+	public BuilderChainer doesNotExist() throws Exception {
+		if (node.exists())
+			node.delete();		
 		return builderChainer;
 	}
 	

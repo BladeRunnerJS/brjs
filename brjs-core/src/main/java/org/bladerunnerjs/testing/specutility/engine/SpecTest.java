@@ -23,6 +23,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
@@ -177,7 +178,7 @@ public abstract class SpecTest extends TestModelAccessor
 	@After
 	public void verifyLogs() {
 		then(logging).verifyNoUnhandledMessages()
-			.and(logging).verifyLogsRecievedIfCaptureEnabled();
+			.and(logging).verifyLogsReceivedIfCaptureEnabled();
 	}
 	
 	@After
@@ -213,6 +214,9 @@ public abstract class SpecTest extends TestModelAccessor
 	public NamedNodeBuilder given(NamedNode namedDirNode) { return new NamedNodeBuilder(this, namedDirNode); }
 	public NamedNodeCommander when(NamedNode namedDirNode) { return new NamedNodeCommander(this, namedDirNode); }
 	public NamedNodeVerifier then(NamedNode namedDirNode) { return new NamedNodeVerifier(this, namedDirNode); }
+	
+	
+	public TemplateGroupBuilder given(TemplateGroup templateGroup) { return new TemplateGroupBuilder(this, templateGroup); }
 	
 	// Directory
 	public DirectoryVerifier then(MemoizedFile dir) { return new DirectoryVerifier(this, dir); }
