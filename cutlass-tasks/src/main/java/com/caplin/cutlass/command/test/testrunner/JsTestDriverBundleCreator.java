@@ -72,7 +72,6 @@ public class JsTestDriverBundleCreator
 				if (!m.find())
 				{
 					logger.warn("The CommonJS test '" + currentTestFile.getName() + "' is not wrapped within an IIFE, which may cause unreliability in tests.");
-					break;
 				}
 			}
 		}
