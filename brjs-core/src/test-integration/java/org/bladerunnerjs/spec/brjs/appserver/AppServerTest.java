@@ -254,6 +254,17 @@ public class AppServerTest extends SpecTest
 	}
 	
 	@Test
+	public void fileWatcherThreadDoesntThrowAnExceptionWhenAFileExistsInAppsDir() throws Exception
+	{
+		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
+			.and(templates).templateGroupCreated()
+			.and(brjs).containsFile("apps/file.txt")
+			.and(brjs.applicationServer(appServerPort)).started();
+		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
+		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
+	}
+	
+	@Test
 	public void errorCode500IsThrownIfBadFileIsRequired() throws Exception {
 		given(app1.defaultAspect()).indexPageRequires("appns/App")
 			.and(app1.defaultAspect()).classFileHasContent("appns/App", "require('badFile')")

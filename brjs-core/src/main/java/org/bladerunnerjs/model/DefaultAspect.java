@@ -35,7 +35,7 @@ public class DefaultAspect extends Aspect
 
 	public boolean exists()
 	{
-		return file("index.html").isFile();
+		return file("index.html").isFile() || file("index.jsp").isFile();
 	}
 
 	@Override

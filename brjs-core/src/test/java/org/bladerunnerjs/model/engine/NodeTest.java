@@ -163,7 +163,7 @@ public class NodeTest
 		File rootDir = FileUtils.createTemporaryDirectory( this.getClass(), "brjs-root-node" );
 		TestRootNode rootNode = new TestRootNode(new File(rootDir, "child-dir"));
 		
-		assertEquals(rootDir.getCanonicalPath(), rootNode.dir().getPath());
+		assertEquals(rootDir.getPath(), rootNode.dir().getPath());
 	}
 	
 	@Test
@@ -183,10 +183,10 @@ public class NodeTest
 		rootNode.registerNode(child);
 		
 		TestNode locateAncestorNodeOfClass1 = rootNode.locateAncestorNodeOfClass(grandchildDir, TestNode.class);
-		assertEquals(childDir.getCanonicalPath(), locateAncestorNodeOfClass1.dir().getPath());
+		assertEquals(childDir.getPath(), locateAncestorNodeOfClass1.dir().getPath());
 		
 		TestNode locateAncestorNodeOfClass2 = rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestNode.class);
-		assertEquals(childDir.getCanonicalPath(), locateAncestorNodeOfClass2.dir().getPath());
+		assertEquals(childDir.getPath(), locateAncestorNodeOfClass2.dir().getPath());
 
 	}
 	
@@ -454,7 +454,7 @@ public class NodeTest
 		
 		Node itemNode = rootNode.locateAncestorNodeOfClass(itemDir, TestItemNode.class);
 		
-		assertEquals(itemDir.getCanonicalPath(), rootNode.itemNode().dir().getPath());
+		assertEquals(itemDir.getPath(), rootNode.itemNode().dir().getPath());
 		assertSame(itemNode, rootNode.itemNode());
 	}
 	
@@ -467,7 +467,7 @@ public class NodeTest
 		rootDir.mkdir();
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
-		assertEquals(itemDir.getCanonicalPath(), rootNode.itemNode().dir().getPath());
+		assertEquals(itemDir.getPath(), rootNode.itemNode().dir().getPath());
 	}
 	
 	@Test
@@ -496,7 +496,7 @@ public class NodeTest
 		rootNode.registerNode(rootNode);
 		
 		Node singleItemNode = rootNode.locateAncestorNodeOfClass(itemDir, TestItemNode.class);
-		assertEquals(itemDir.getCanonicalPath(), singleItemNode.dir().getPath());
+		assertEquals(itemDir.getPath(), singleItemNode.dir().getPath());
 	}
 	
 	@Test
@@ -508,7 +508,7 @@ public class NodeTest
 		rootDir.mkdir();
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
-		assertEquals(primaryItemDir.getCanonicalPath(), rootNode.multiLocationItemNode().dir().getPath());
+		assertEquals(primaryItemDir.getPath(), rootNode.multiLocationItemNode().dir().getPath());
 	}
 	
 	@Test
@@ -521,7 +521,7 @@ public class NodeTest
 		
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
-		assertEquals(primaryItemDir.getCanonicalPath(), rootNode.multiLocationItemNode().dir().getPath());
+		assertEquals(primaryItemDir.getPath(), rootNode.multiLocationItemNode().dir().getPath());
 	}
 	
 	@Test
@@ -534,7 +534,7 @@ public class NodeTest
 		
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
-		assertEquals(secondaryItemDir.getCanonicalPath(), rootNode.multiLocationItemNode().dir().getPath());
+		assertEquals(secondaryItemDir.getPath(), rootNode.multiLocationItemNode().dir().getPath());
 	}
 	
 	@Test(expected=BladeRunnerDirectoryException.class)
@@ -578,7 +578,7 @@ public class NodeTest
 		rootNode.registerNode(rootNode);
 		Node itemNode = rootNode.locateAncestorNodeOfClass(primaryItemDir, TestMultiLocationItemNode.class);
 		
-		assertEquals(primaryItemDir.getCanonicalPath(), itemNode.dir().getPath());
+		assertEquals(primaryItemDir.getPath(), itemNode.dir().getPath());
 	}
 	
 	@Test
@@ -593,7 +593,7 @@ public class NodeTest
 		rootNode.registerNode(rootNode);
 		Node itemNode = rootNode.locateAncestorNodeOfClass(secondaryItemDir, TestMultiLocationItemNode.class);
 		
-		assertEquals(secondaryItemDir.getCanonicalPath(), itemNode.dir().getPath());
+		assertEquals(secondaryItemDir.getPath(), itemNode.dir().getPath());
 	}
 	
 	@Test
@@ -611,8 +611,8 @@ public class NodeTest
 		List<TestChildNode> childNodes = rootNode.multiLocationChildNodes();
 		
 		assertEquals(2, childNodes.size());
-		assertEquals(child1Dir.getCanonicalPath(), childNodes.get(0).dir().getPath());
-		assertEquals(child2Dir.getCanonicalPath(), childNodes.get(1).dir().getPath());
+		assertEquals(child1Dir.getPath(), childNodes.get(0).dir().getPath());
+		assertEquals(child2Dir.getPath(), childNodes.get(1).dir().getPath());
 	}
 	
 	@Test
@@ -635,10 +635,10 @@ public class NodeTest
 		List<TestChildNode> childNodes = rootNode.multiLocationChildNodes();
 		
 		assertEquals(4, childNodes.size());
-		assertEquals(child1Dir.getCanonicalPath(), childNodes.get(0).dir().getPath());
-		assertEquals(child2Dir.getCanonicalPath(), childNodes.get(1).dir().getPath());
-		assertEquals(childADir.getCanonicalPath(), childNodes.get(2).dir().getPath());
-		assertEquals(childBDir.getCanonicalPath(), childNodes.get(3).dir().getPath());
+		assertEquals(child1Dir.getPath(), childNodes.get(0).dir().getPath());
+		assertEquals(child2Dir.getPath(), childNodes.get(1).dir().getPath());
+		assertEquals(childADir.getPath(), childNodes.get(2).dir().getPath());
+		assertEquals(childBDir.getPath(), childNodes.get(3).dir().getPath());
 	}
 	
 	@Test
@@ -658,9 +658,9 @@ public class NodeTest
 		List<TestChildNode> childNodes = rootNode.multiLocationChildNodes();
 		
 		assertEquals(3, childNodes.size());
-		assertEquals(child1Dir.getCanonicalPath(), childNodes.get(0).dir().getPath());
-		assertEquals(child2Dir.getCanonicalPath(), childNodes.get(1).dir().getPath());
-		assertEquals(singleItemSetDir.getCanonicalPath(), childNodes.get(2).dir().getPath());
+		assertEquals(child1Dir.getPath(), childNodes.get(0).dir().getPath());
+		assertEquals(child2Dir.getPath(), childNodes.get(1).dir().getPath());
+		assertEquals(singleItemSetDir.getPath(), childNodes.get(2).dir().getPath());
 		assertSame(childNodes.get(2), rootNode.multiLocationChildNode("X"));
 	}
 	

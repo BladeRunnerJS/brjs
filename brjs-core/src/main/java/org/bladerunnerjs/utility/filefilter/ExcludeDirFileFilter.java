@@ -1,8 +1,6 @@
 package org.bladerunnerjs.utility.filefilter;
 
 import java.io.File;
-import java.io.IOException;
-
 import org.apache.commons.io.filefilter.IOFileFilter;
 
 public class ExcludeDirFileFilter implements IOFileFilter 
@@ -21,15 +19,11 @@ public class ExcludeDirFileFilter implements IOFileFilter
 	
 	public boolean accept(File fileOrDirectory)
 	{		
-		try {
-			String pathName = fileOrDirectory.getCanonicalPath().toLowerCase();
-			if (fileOrDirectory.isDirectory()) {
-				pathName += File.separator;
-			}
-			return ! pathName.contains(pathElement);
-		} catch (IOException e) {
-			return false;
+		String pathName = fileOrDirectory.getAbsolutePath().toLowerCase();
+		if (fileOrDirectory.isDirectory()) {
+			pathName += File.separator;
 		}
+		return ! pathName.contains(pathElement);
 	}
 
 	@Override

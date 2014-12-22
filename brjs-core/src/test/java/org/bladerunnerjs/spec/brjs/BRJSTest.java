@@ -83,27 +83,33 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
-	public void locateAncestoreNodeWorksWhenTheModelHasntBeenPrimed() throws Exception {
+	public void locateAncestorNodeWorksWhenTheModelHasntBeenPrimed() throws Exception {
 		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js");
 		// we can't check the actual node or talk about any nodes since brjs.app('myApp') etc would cause the node to be discovered and we need to keep an empty node tree
 		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade/src/Class.js"), App.class);
 	}
 	
 	@Test
-	public void locateAncestoreNodeWorksWhenTheModelHasntBeenPrimedAndTheFileRepresentsTheNodeType() throws Exception {
+	public void locateAncestorNodeWorksWhenTheModelHasntBeenPrimedAndTheFileRepresentsTheNodeType() throws Exception {
 		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js");
 		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade"), Blade.class);
 	}
 	
 	@Test // this is not a duplicate of the test above even though it may look like it, this test has been seen failing when the above was passing
-	public void locateAncestoreNodeWorksWhenTheModelHasntBeenPrimedAndTheFileRepresentsATestPack() throws Exception {
+	public void locateAncestorNodeWorksWhenTheModelHasntBeenPrimedAndTheFileRepresentsATestPack() throws Exception {
 		given(brjs.file("apps/app1/blades/myBlade/test-unit")).containsFile("file.txt");
 		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade/test-unit/file.txt"), TestPack.class);
 	}
 	
 	@Test // this is not a duplicate of the test above even though it may look like it, this test has been seen failing when the above was passing
-	public void locateAncestoreNodeWorksWhenTheModelHasntBeenPrimedAndTheFileRepresentsAnSdkNode() throws Exception {
-		given(brjs.file("libs/javascript/br/test-unit")).containsFile("file.txt");
-		then(brjs).ancestorNodeCanBeFound(brjs.file("libs/javascript/br/test-unit/file.txt"), TestPack.class);
+	public void locateAncestorNodeWorksWhenTheModelHasntBeenPrimedAndTheFileRepresentsAnSdkNode() throws Exception {
+		given(brjs.file("sdk/libs/javascript/br/test-unit")).containsFile("file.txt");
+		then(brjs).ancestorNodeCanBeFound(brjs.file("sdk/libs/javascript/br/test-unit/file.txt"), TestPack.class);
+	}
+	
+	@Test
+	public void locateAncestorNodeWorksReturnsNullIfTheNodeOfTheRequiredTypeCannotBeFound() throws Exception {
+		given(brjs).containsFile("apps/file.txt");
+		then(brjs).ancestorNodeCannotBeFound(brjs.file("apps/file.txt"), App.class);
 	}
 }
