@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class CssContentPluginTest extends SpecTest {
 	private JsLib nonConformantLib2;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer requestResponse = new StringBuffer();
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	private Blade blade;
 	private Bladeset bladeset;
 	private Bladeset defaultBladeset;

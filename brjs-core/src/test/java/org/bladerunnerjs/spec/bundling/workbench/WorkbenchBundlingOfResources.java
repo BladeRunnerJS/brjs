@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.SdkJsLib;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	private Blade blade;
 	private Blade blade2;
 	private StringBuffer response = new StringBuffer();
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	private NamedDirNode workbenchTemplate;
 	private SdkJsLib sdkLib;
 	

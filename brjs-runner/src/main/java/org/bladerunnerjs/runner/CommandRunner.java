@@ -2,7 +2,6 @@ package org.bladerunnerjs.runner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,39 +79,27 @@ public class CommandRunner {
 		AbstractRootNode.allowInvalidRootDirectories = false;
 		BRJS brjs = null;
 		
+		if (args.length < 1 || args[0] == null) throw new NoSdkArgumentException("No SDK base directory was provided");
+		
+		File sdkBaseDir = new File(args[0]);
+		args = ArrayUtils.subarray(args, 1, args.length);
+		
+		if (!sdkBaseDir.exists() || !sdkBaseDir.isDirectory()) throw new InvalidDirectoryException("'" + sdkBaseDir.getPath() + "' is not a directory");
+		sdkBaseDir = sdkBaseDir.getAbsoluteFile();
+		
+		args = processGlobalCommandFlags(args);
+		
 		try {
-			if (args.length < 1 || args[0] == null) throw new NoSdkArgumentException("No SDK base directory was provided");
-			
-			File sdkBaseDir = new File(args[0]);
-			args = ArrayUtils.subarray(args, 1, args.length);
-			
-			if (!sdkBaseDir.exists() || !sdkBaseDir.isDirectory()) throw new InvalidDirectoryException("'" + sdkBaseDir.getPath() + "' is not a directory");
-			sdkBaseDir = sdkBaseDir.getCanonicalFile();
-			
-			args = processGlobalCommandFlags(args);
-			
-			try {
-				brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
-			}
-			catch(InvalidSdkDirectoryException e) {
-				throw new CommandOperationException(e);
-			}
-			
-			brjs.populate();
-			
-			injectLegacyCommands(brjs);
-			return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
 		}
-		catch(IOException e) {
-			throw new RuntimeException(e);
+		catch(InvalidSdkDirectoryException e) {
+			throw new CommandOperationException(e);
 		}
-		finally {
-			AbstractRootNode.allowInvalidRootDirectories = true;
-			
-			if(brjs != null) {
-				brjs.close();
-			}
-		}
+		
+		brjs.populate();
+		
+		injectLegacyCommands(brjs);
+		return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
 	}
 	
 	private String[] processGlobalCommandFlags(String[] args) {

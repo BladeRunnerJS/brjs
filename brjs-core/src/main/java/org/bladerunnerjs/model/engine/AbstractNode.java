@@ -257,7 +257,7 @@ public abstract class AbstractNode implements Node
 				if(field.getType() == NodeList.class)
 				{
 					NodeList<Node> nodeList = (NodeList<Node>) field.get(this);
-					
+				
 					discoverAllChildren(nodeList.list());
 				}
 				else if(field.getType() == NodeItem.class)

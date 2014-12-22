@@ -71,7 +71,7 @@ public class BuildAppCommandTest extends SpecTest
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("build-app", "app");
 		then(brjs).hasDir("generated/built-apps/app")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getAbsolutePath());
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class BuildAppCommandTest extends SpecTest
 		given(app).hasBeenCreated().and(brjs).commandHasBeenRun("build-app", "app");
 		when(brjs).runCommand("build-app", "app");
 		then(brjs).hasDir("generated/built-apps/app")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath())
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getAbsolutePath())
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 
@@ -90,7 +90,7 @@ public class BuildAppCommandTest extends SpecTest
 		given(app).hasBeenCreated().and(brjs).commandHasBeenRun("build-app", "app", "-w");
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).hasFile("generated/built-apps/app.war")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath())
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getAbsolutePath())
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 
@@ -129,7 +129,7 @@ public class BuildAppCommandTest extends SpecTest
 		given(app).hasBeenCreated().and(brjs).hasDir("sdk/target");
 		when(brjs).runCommand("build-app", "app", "target");
 		then(brjs).hasDir("sdk/target")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target").getAbsolutePath());
 	}
 
 	@Test
@@ -141,7 +141,7 @@ public class BuildAppCommandTest extends SpecTest
 			.and(brjs).hasDir("sdk/target")
 			.and(brjs).commandHasBeenRun("build-app", "app", "target");
 		when(brjs).runCommand("build-app", "app", "target");
-		then(exceptions).verifyException(DirectoryNotEmptyCommandException.class, brjs.file("sdk/target").getCanonicalPath())
+		then(exceptions).verifyException(DirectoryNotEmptyCommandException.class, brjs.file("sdk/target").getAbsolutePath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 
@@ -151,7 +151,7 @@ public class BuildAppCommandTest extends SpecTest
 		given(app).hasBeenCreated().and(brjs).hasDir("sdk/target");
 		when(brjs).runCommand("build-app", "app", brjs.file("sdk/target").getAbsolutePath());
 		then(brjs).hasDir("sdk/target")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target").getAbsolutePath());
 	}
 
 	@Test
@@ -160,7 +160,7 @@ public class BuildAppCommandTest extends SpecTest
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app").and(brjs).hasFile("generated/built-apps/app.war")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getAbsolutePath());
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public class BuildAppCommandTest extends SpecTest
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")
-			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath());
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getAbsolutePath());
 	}
 
 	@Test
