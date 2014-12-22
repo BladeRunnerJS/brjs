@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
@@ -208,8 +207,8 @@ public class AppTest extends SpecTest {
 	@Test
 	public void correctUnversionedBundleRequestsAreCreated() throws Exception
 	{
-		assertEquals("/mock-content-plugin/some file", app.createBundleRequest(RequestMode.Prod, "/mock-content-plugin/some file", "dev"));
-		assertEquals("v/dev/mock-content-plugin/some file", app.createBundleRequest(RequestMode.Prod, "mock-content-plugin/some file", "dev"));
+		assertEquals("/mock-content-plugin/some file", app.requestHandler().createBundleRequest(app.defaultAspect(), "/mock-content-plugin/some file", "dev"));
+		assertEquals("v/dev/mock-content-plugin/some file", app.requestHandler().createBundleRequest(app.defaultAspect(), "mock-content-plugin/some file", "dev"));
 	}
 	
 }

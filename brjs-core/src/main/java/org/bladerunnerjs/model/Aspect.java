@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
+import org.bladerunnerjs.utility.AspectRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TemplateUtility;
 import org.bladerunnerjs.utility.TestRunner;
@@ -28,6 +29,7 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	private String name;
 	private MemoizedFile[] scopeFiles;
 	private IndexPageSeedLocator indexPageSeedLocator;
+	private AspectRequestHandler aspectRequestHandler;
 	
 	public Aspect(RootNode rootNode, Node parent, MemoizedFile dir) {
 		this(rootNode, parent, dir, StringUtils.substringBeforeLast(dir.getName(), "-aspect"));
@@ -39,6 +41,7 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 		this.name = name;
 		
 		indexPageSeedLocator = new IndexPageSeedLocator(root());
+		this.aspectRequestHandler = new AspectRequestHandler(this);
 	}
 	
 	@Override
@@ -146,5 +149,8 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 		return testTypes.item(typedTestPackName);
 	}
 	
+	public AspectRequestHandler requestHandler() {
+		return aspectRequestHandler;
+	}
 	
 }

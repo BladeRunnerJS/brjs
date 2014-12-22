@@ -71,7 +71,7 @@ public class AppCommander extends NodeCommander<App> {
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				ResponseContent contentOutput = app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+				ResponseContent contentOutput = app.requestHandler().handleLogicalRequest(requestPath, new StaticContentAccessor(app));
 				ByteArrayOutputStream pluginContent = new ByteArrayOutputStream();
 				contentOutput.write(pluginContent);
 				response.append( pluginContent );

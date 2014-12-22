@@ -21,12 +21,7 @@ import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TemplateUtility;
@@ -337,19 +332,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return file("libs");
 	}
 	
-	public boolean canHandleLogicalRequest(String requestPath) {
-		return appRequestHandler.canHandleLogicalRequest(requestPath);
-	}
-	
-	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException {
-		return appRequestHandler.handleLogicalRequest(requestPath, contentAccessor);
-	}
-	
-	public String createBundleRequest(RequestMode requestMode, String contentPath, String version) throws MalformedTokenException {
-		if (contentPath.startsWith("/")) {
-			return appRequestHandler.createRequest(AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
-		}
-		return appRequestHandler.createRequest(AppRequestHandler.BUNDLE_REQUEST, "", version, contentPath);
+	public AppRequestHandler requestHandler() {
+		return appRequestHandler;
 	}
 	
 	public void build(MemoizedFile targetDir) throws ModelOperationException {
@@ -359,7 +343,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void buildWar(MemoizedFile targetFile) throws ModelOperationException {
 		new WarAppBuilder().build(this, targetFile);
 	}
-	
 	
 	
 	private Bladeset defaultBladeset(boolean preferExplicitDefault)

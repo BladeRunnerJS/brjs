@@ -68,7 +68,7 @@ public class BRJSDevServletFilter implements Filter {
 			 *  - changing the model would mean that the build-app utils now need to understand the new redirection behavior 
 			 */
 			response.sendRedirect(request.getRequestURI()+"/");
-		} else if (!servletPath.equals("/brjs") && app.canHandleLogicalRequest(requestPath) && request.getAttribute(IGNORE_REQUEST_ATTRIBUTE) == null) {
+		} else if (!servletPath.equals("/brjs") && app.requestHandler().canHandleLogicalRequest(requestPath) && request.getAttribute(IGNORE_REQUEST_ATTRIBUTE) == null) {
 			request.getRequestDispatcher("/brjs/" + requestPath).forward(request, response);
 		}
 		else {
@@ -82,7 +82,7 @@ public class BRJSDevServletFilter implements Filter {
 			return false;
 		}
 		
-		boolean appCanHandleRequestWithAppendedSlash = app.canHandleLogicalRequest(requestPath+"/");
+		boolean appCanHandleRequestWithAppendedSlash = app.requestHandler().canHandleLogicalRequest(requestPath+"/");
 		if (Pattern.matches("^[a-zA-Z0-9_]+$", requestPath) && appCanHandleRequestWithAppendedSlash) {
 			return true; // /app/aspect was requested
 		}
