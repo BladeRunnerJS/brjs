@@ -10,14 +10,14 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.utility.TemplateUtility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TemplateUtilityTest extends TestModelAccessor
+public class TemplateUtilityTest
 {
 	private BRJS brjs;
 	private EncodedFileUtil fileUtil;
@@ -27,7 +27,7 @@ public class TemplateUtilityTest extends TestModelAccessor
 	{
 		File tempDir = FileUtils.createTemporaryDirectory( this.getClass() );
 		org.apache.commons.io.FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
-		brjs = createModel(tempDir);
+		brjs = BRJSTestModelFactory.createModel(tempDir);
 		fileUtil = new EncodedFileUtil(brjs, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 	}
 	

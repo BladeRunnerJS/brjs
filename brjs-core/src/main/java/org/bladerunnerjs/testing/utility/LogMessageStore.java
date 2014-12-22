@@ -194,7 +194,7 @@ public class LogMessageStore
 	{
 		verifyNoMoreMessageOnList("warn", warnMessages);
 	}
-
+	
 	public void verifyNoMoreInfoMessages()
 	{
 		verifyNoMoreMessageOnList("info", infoMessages);
