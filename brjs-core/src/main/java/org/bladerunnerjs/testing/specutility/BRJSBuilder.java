@@ -51,7 +51,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	//TODO: look at brjs is null - commands must be added before BRJS is created
 	
 	public BuilderChainer hasBeenPopulated() throws Exception {
-		brjs.populate();
+		brjs.populate("default");
 		
 		return builderChainer;
 	}
@@ -331,8 +331,12 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer usesProductionTemplates() throws IOException {
 		verifyBrjsIsSet();
-		File templateDir = new File("../brjs-sdk/build-resources/includes/sdk/templates");
-		FileUtils.copyDirectory(brjs, templateDir, brjs.template("template").dir().getParentFile());
+		
+		File sdkTemplateDir = new File("../brjs-sdk/build-resources/includes/sdk/templates/default"); 
+		FileUtils.copyDirectory(brjs, sdkTemplateDir, brjs.file("sdk/templates/default"));
+		
+		File j2eeify = new File("../brjs-sdk/build-resources/includes/sdk/j2eeify-app"); 
+		FileUtils.copyDirectory(brjs, j2eeify, brjs.file("sdk/j2eeify-app"));
 		
 		File jsdocResourcesDir = new File("../brjs-sdk/build-resources/includes/sdk/jsdoc-toolkit-resources");
 		File jsdocResourcesDest = brjs.sdkRoot().file("jsdoc-toolkit-resources");

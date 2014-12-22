@@ -26,7 +26,7 @@ public class BladeWorkbenchTest extends SpecTest {
 			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
-			workbenchTemplate = brjs.template("bladeworkbench");
+			workbenchTemplate = brjs.sdkTemplateGroup("default").template("bladeworkbench");
 			bladeset = app.bladeset("bladeset");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
@@ -42,10 +42,11 @@ public class BladeWorkbenchTest extends SpecTest {
 	
 	@Test
 	public void workbenchTemplateIsPopulatedAsExpected() throws Exception {
-		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
+		given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(workbenchTemplate).containsFolder("resources")
-			.and(workbenchTemplate).containsFolder("src");
-		when(blade).populate();
+			.and(workbenchTemplate).containsFolder("src")
+			.and(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'");
+		when(blade).populate("default");
 		then(workbench).hasDir("resources")
 			.and(workbench).hasDir("src")
 			.and(workbench).fileHasContents("index.html", "'<html>hello world</html>'");

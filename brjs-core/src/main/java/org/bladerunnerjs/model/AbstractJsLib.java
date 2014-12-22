@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.TestRunner;
@@ -90,14 +91,14 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
 		String libNamespace = getName().toLowerCase();
-		populate( libNamespace );
+		populate(libNamespace, templateGroup);
 	}
 	
 	@Override
-	public void populate(String libNamespace) throws InvalidNameException, ModelUpdateException
+	public void populate(String libNamespace, String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
 		if (!dir().exists()) { create(); }
 
@@ -107,7 +108,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 			RootAssetLocation rootAssetLocation = rootAssetLocation();
 			if(rootAssetLocation != null) {
 				rootAssetLocation.setRequirePrefix(libNamespace.replace('.', '/'));
-				rootAssetLocation.populate();
+				rootAssetLocation.populate(templateGroup);
 			}
 			incrementChildFileVersions();
 		}

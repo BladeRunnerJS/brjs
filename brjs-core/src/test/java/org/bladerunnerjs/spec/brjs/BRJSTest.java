@@ -19,7 +19,7 @@ public class BRJSTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-			brjsTemplate = brjs.template("brjs");
+			brjsTemplate = brjs.sdkTemplateGroup("default").template("brjs");
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
 	}
@@ -34,7 +34,7 @@ public class BRJSTest extends SpecTest {
 	@Test
 	public void observersArentNotifiedOfEventsThatArentBeneathThem() throws Exception {
 		given(observer).observing(app2);
-		when(app1).populate();
+		when(app1).create();
 		then(observer).noNotifications();
 	}
 	
@@ -112,5 +112,4 @@ public class BRJSTest extends SpecTest {
 		given(brjs).containsFile("apps/file.txt");
 		then(brjs).ancestorNodeCannotBeFound(brjs.file("apps/file.txt"), App.class);
 	}
-	
 }

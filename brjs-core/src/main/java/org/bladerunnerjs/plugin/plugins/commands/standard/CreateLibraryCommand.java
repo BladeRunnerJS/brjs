@@ -17,7 +17,9 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -42,6 +44,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 	private static final String NEW_LIBRARY_NAME = "new-library-name";
 	private static final String TARGET_APP_NAME = "target-app-name";
 	private static final String LIBRARY_TYPE = "type";
+	private static final String TEMPLATE_GROUP = "template-group";
 	
 	private BRJS brjs;
 	private Logger logger;
@@ -51,6 +54,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		argsParser.registerParameter(new UnflaggedOption(TARGET_APP_NAME).setRequired(true).setHelp("the application the new library will be created within"));
 		argsParser.registerParameter(new UnflaggedOption(NEW_LIBRARY_NAME).setRequired(true).setHelp("the name of the library that will be created"));
 		argsParser.registerParameter(new FlaggedOption(LIBRARY_TYPE).setShortFlag('t').setLongFlag("type").setDefault( SupportedLibraryType.br.toString() ));
+		argsParser.registerParameter(new FlaggedOption(TEMPLATE_GROUP).setShortFlag('T').setLongFlag("template").setDefault("default").setRequired(false).setHelp("the user-defined template that will be used"));
 	}
 	
 	@Override
@@ -77,6 +81,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		String appName = parsedArgs.getString(TARGET_APP_NAME);
 		String libraryName = parsedArgs.getString(NEW_LIBRARY_NAME);
 		String libraryType = parsedArgs.getString(LIBRARY_TYPE);
+		String templateGroup = parsedArgs.getString(TEMPLATE_GROUP);
 		
 		SupportedLibraryType createLibraryType;
         try {
@@ -93,27 +98,32 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		JsLib library = app.appJsLib(libraryName);
 		if (library.dirExists()) throw new NodeAlreadyExistsException(library, this);
 		
-		switch ( createLibraryType ) {
-			case br:
-				break;
-			case thirdparty:
-				createThirdpartyManifest(library);
-				break;
-		}
+		if (TemplateUtility.templateExists(brjs, library.rootAssetLocation(), templateGroup, this)) {
 		
-		try {
-			library.populate();
+			switch ( createLibraryType ) {
+				case br:
+					break;
+				case thirdparty:
+					createThirdpartyManifest(library);
+					break;
+			}
+			
+			try {
+				library.populate(templateGroup);
+			}
+			catch(InvalidNameException e) {
+				throw new CommandArgumentsException(e, this);
+			}
+			catch(ModelUpdateException e) {
+				throw new CommandOperationException("Cannot create library '" + library.dir().getPath() + "'", e);
+			}
+			catch(TemplateInstallationException e) {
+				throw new CommandArgumentsException(e, this);
+			}
+			logger.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
+			logger.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
+			
 		}
-		catch(InvalidNameException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		catch(ModelUpdateException e) {
-			throw new CommandOperationException("Cannot create library '" + library.dir().getPath() + "'", e);
-		}
-		
-		logger.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
-		logger.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
-		
 		return 0;
 	}
 

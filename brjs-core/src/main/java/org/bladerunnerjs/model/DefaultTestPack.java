@@ -19,7 +19,7 @@ public class DefaultTestPack extends TestPack
 	@Override
 	public void create() throws InvalidNameException, ModelUpdateException
 	{
-		super.createDefaultNode();
+		super.create();
 	}
 	
 	@Override

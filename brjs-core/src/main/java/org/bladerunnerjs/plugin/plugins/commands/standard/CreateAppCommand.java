@@ -12,12 +12,13 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TemplateUtility;
 
+import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
-
 
 public class CreateAppCommand extends ArgsParsingCommandPlugin
 {
@@ -33,6 +34,7 @@ public class CreateAppCommand extends ArgsParsingCommandPlugin
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("new-app-name").setRequired(true).setHelp("the name of the application that will be created"));
 		argsParser.registerParameter(new UnflaggedOption("require-prefix").setRequired(false).setHelp("the require prefix that all source code will be available within"));
+		argsParser.registerParameter(new FlaggedOption("template-group").setShortFlag('T').setLongFlag("template").setDefault("default").setRequired(false).setHelp("the user-defined template that will be used"));
 	}
 	
 	@Override
@@ -58,26 +60,32 @@ public class CreateAppCommand extends ArgsParsingCommandPlugin
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("new-app-name");
 		String requirePrefix = parsedArgs.getString("require-prefix");
+		String templateGroup = parsedArgs.getString("template-group");
+		
 		App app = brjs.app(appName);
 		
 		if(app.dirExists()) throw new NodeAlreadyExistsException(app, this);
 		
-		try {
-			NameValidator.assertValidDirectoryName(app);
-			requirePrefix = (requirePrefix == null) ? NameValidator.generateRequirePrefixFromApp(app) : requirePrefix;
-			
-			app.populate(requirePrefix);
-			logger.println(Messages.APP_CREATED_CONSOLE_MSG, appName);
-			logger.println(" " + app.dir().getPath());
-			
-			app.deploy();
-			logger.println(Messages.APP_DEPLOYED_CONSOLE_MSG, appName);
-		}
-		catch(InvalidNameException e) {
-			throw new CommandArgumentsException(e, this);
-		}
-		catch(ModelUpdateException | TemplateInstallationException e) {
-			throw new CommandOperationException("Cannot create application '" + app.dir().getPath() + "'", e);
+		if (TemplateUtility.templateExists(brjs, app, templateGroup, this)) {
+			try {
+				NameValidator.assertValidDirectoryName(app);
+				requirePrefix = (requirePrefix == null) ? NameValidator.generateRequirePrefixFromApp(app) : requirePrefix;
+				app.populate(requirePrefix, templateGroup);
+				logger.println(Messages.APP_CREATED_CONSOLE_MSG, appName);
+				logger.println(" " + app.dir().getPath());
+				
+				app.deploy();
+				logger.println(Messages.APP_DEPLOYED_CONSOLE_MSG, appName);
+			}
+			catch(InvalidNameException e) {
+				throw new CommandArgumentsException(e, this);
+			}
+			catch(ModelUpdateException e) {
+				throw new CommandOperationException("Cannot create application '" + app.dir().getPath() + "'", e);
+			}
+			catch(TemplateInstallationException e) {
+				throw new CommandOperationException(e.getMessage());
+			}
 		}
 		return 0;
 	}

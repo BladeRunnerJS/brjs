@@ -17,8 +17,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
-
 public class TemplateUtilityTest
 {
 	private BRJS brjs;
@@ -41,7 +39,7 @@ public class TemplateUtilityTest
 	@Test(expected=TemplateDirectoryAlreadyExistsException.class)
 	public void installingATemplateToAPreExistingDirectoryCausesAnException() throws Exception
 	{
-		TemplateUtility.installTemplate(brjs.app("pre-existing-app"), "app", new HashMap<String, String>());
+		TemplateUtility.installTemplate(brjs.app("pre-existing-app"), "default", "app", new HashMap<String, String>());
 	}
 	
 	@Test
@@ -50,7 +48,7 @@ public class TemplateUtilityTest
 		App app = brjs.app("app");
 		assertFalse("app dir does not exist", app.dirExists());
 		
-		TemplateUtility.installTemplate(brjs.app("app"), "app", new HashMap<String, String>());
+		TemplateUtility.installTemplate(brjs.app("app"), "default", "app", new HashMap<String, String>());
 		
 		assertTrue("app dir exists", app.dirExists());
 		
@@ -77,7 +75,7 @@ public class TemplateUtilityTest
 		Map<String, String> transformations = new HashMap<>();
 		
 		transformations.put("dir", "folder");
-		TemplateUtility.installTemplate(brjs.app("app"), "app", transformations);
+		TemplateUtility.installTemplate(brjs.app("app"),  "default", "app", transformations);
 		
 		assertTrue("app folder exists", app.dirExists());
 		
