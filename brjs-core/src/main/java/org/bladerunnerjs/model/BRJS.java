@@ -29,11 +29,13 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
+import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -58,7 +60,8 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript", null);
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
-	private final NodeList<NamedDirNode> templates = new NodeList<>(this, NamedDirNode.class, "sdk/templates", "-template$");
+	private final NodeList<TemplateGroup> confTemplateGroups = new NodeList<>(this, TemplateGroup.class, "conf/templates", null);
+	private final NodeList<TemplateGroup> sdkTemplateGroups = new NodeList<>(this, TemplateGroup.class, "sdk/templates", null);
 	private final NodeItem<DirNode> appJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/application");
 	private final NodeItem<DirNode> configuration = new NodeItem<>(this, DirNode.class, "conf");
 	private final NodeItem<DirNode> systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");
@@ -76,6 +79,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final AppVersionGenerator appVersionGenerator;
 	private final FileModificationRegistry fileModificationRegistry;
 	private final Thread fileWatcherThread;
+	private final JsStyleAccessor jsStyleAccessor = new JsStyleAccessor(this);
 	
 	private WorkingDirNode workingDir;
 	private BladerunnerConf bladerunnerConf;
@@ -87,7 +91,7 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		super(brjsDir, loggerFactory);
 		this.appVersionGenerator = appVersionGenerator;
-		this.fileModificationRegistry = new FileModificationRegistry( this, ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
+		this.fileModificationRegistry = new FileModificationRegistry( ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		this.workingDir = new WorkingDirNode(this, getMemoizedFile(brjsDir));
 		
@@ -146,10 +150,12 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
 		try {
-			super.populate();
-			bladerunnerConf().write();
+			super.populate(templateGroup);
+			if (!bladerunnerConf().fileExists()) {
+				bladerunnerConf().write();
+			}
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {
@@ -203,6 +209,10 @@ public class BRJS extends AbstractBRJSRootNode
 	@Override
 	public IO io() {
 		return io;
+	}
+	
+	public JsStyleAccessor jsStyleAccessor() {
+		return jsStyleAccessor;
 	}
 	
 	public List<App> apps()
@@ -269,14 +279,26 @@ public class BRJS extends AbstractBRJSRootNode
 		return jsPatches.item();
 	}
 	
-	public List<NamedDirNode> templates()
+	public List<TemplateGroup> confTemplateGroups()
 	{
-		return templates.list();
+		List<TemplateGroup> templates = new ArrayList<>(confTemplateGroups.list());
+		return templates;
 	}
 	
-	public NamedDirNode template(String templateName)
+	public TemplateGroup confTemplateGroup(String templateGroupName)
 	{
-		return templates.item(templateName);
+		return confTemplateGroups.item(templateGroupName);
+	}
+	
+	public List<TemplateGroup> sdkTemplateGroups()
+	{
+		List<TemplateGroup> templates = new ArrayList<>(sdkTemplateGroups.list());
+		return templates;
+	}
+	
+	public TemplateGroup sdkTemplateGroup(String templateGroupName)
+	{
+		return sdkTemplateGroups.item(templateGroupName);
 	}
 	
 	// TODO: delete this method -- the test results should live within a generated directory

@@ -56,4 +56,9 @@ public class DirectoryVerifier {
 		
 		return verifierChainer;
 	}
+
+	public VerifierChainer isEmpty() {
+		assertTrue("The directory is empty", dir.isEmpty());
+		return verifierChainer;
+	}
 }

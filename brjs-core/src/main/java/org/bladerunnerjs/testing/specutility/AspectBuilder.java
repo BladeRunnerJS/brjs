@@ -21,13 +21,6 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 		this.aspect = aspect;
 	}
 	
-	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception 
-	{
-		writeToFile(getIndexFile(), generateStringClassReferencesContent(classNames));	
-		
-		return builderChainer;
-	}
-
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
 		writeToFile(getResourceFile(resourceFileName), generateRootRefContentForClasses(classNames));
@@ -98,20 +91,7 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 	
 	
 	// Private
-	private String generateStringClassReferencesContent(String... classNames) 
-	{
-		String content = "";
-		
-		for(String className : classNames)
-		{
-			if(className.contains("/")) {
-				throw new RuntimeException("The '" + className + "' class name contains a slash. Did you mean to use indexPageRequires() instead?");
-			}
-			
-			content += className + "\n";
-		}
-		return content;
-	}
+	
 	
 	private String generateStringAliasReferencesContent(String... aliasReferences) 
 	{

@@ -56,7 +56,7 @@ public class SLF4JLogger implements Logger
 		}
 		catch (IllegalFormatException ex) /* IllegalFormatException is a runtime exception */
 		{
-			slf4jLogger.error("Attempted to log a message but recieved a " + ex.getClass().getCanonicalName() + ".\n"+
+			slf4jLogger.error("Attempted to log a message but received a " + ex.getClass().getCanonicalName() + ".\n"+
 					"Message: " + message + "\n"+
 					"Params: " + params);
 			throw ex;

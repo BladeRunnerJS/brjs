@@ -27,9 +27,9 @@ exports.setTutorials = function(root) {
     tutorials = root;
 };
 
-exports.globalName = 'global';
+exports.globalName = name.SCOPE.NAMES.GLOBAL;
 exports.fileExtension = '.html';
-exports.scopeToPunc = require('jsdoc/name').scopeToPunc;
+exports.scopeToPunc = name.scopeToPunc;
 
 function getNamespace(kind) {
     if (dictionary.isNamespace(kind)) {
@@ -41,6 +41,12 @@ function getNamespace(kind) {
 function makeUniqueFilename(filename, str) {
     var key = filename.toLowerCase();
     var nonUnique = true;
+
+    // don't allow filenames to begin with an underscore
+    if (!filename.length || filename[0] === '_') {
+      filename = 'X' + filename;
+      key = filename.toLowerCase();
+    }
 
     // append enough underscores to make the filename unique
     while (nonUnique) {
@@ -542,6 +548,10 @@ exports.getMembers = function(data) {
 exports.getAttribs = function(d) {
     var attribs = [];
 
+    if (!d) {
+        return attribs;
+    }
+
     if (d.virtual) {
         attribs.push('abstract');
     }
@@ -550,7 +560,7 @@ exports.getAttribs = function(d) {
         attribs.push(d.access);
     }
 
-    if (d.scope && d.scope !== 'instance' && d.scope !== 'global') {
+    if (d.scope && d.scope !== 'instance' && d.scope !== name.SCOPE.NAMES.GLOBAL) {
         if (d.kind === 'function' || d.kind === 'member' || d.kind === 'constant') {
             attribs.push(d.scope);
         }

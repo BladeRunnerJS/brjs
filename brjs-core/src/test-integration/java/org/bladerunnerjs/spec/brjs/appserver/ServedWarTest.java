@@ -1,5 +1,7 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 
 import javax.naming.Context;
@@ -14,6 +16,7 @@ import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.ServerUtility;
@@ -37,6 +40,7 @@ public class ServedWarTest extends SpecTest {
 	private Aspect loginAspect;
 	private Aspect rootAspect;
 	private Context mockJndiContext;
+	private TemplateGroup templates;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -53,8 +57,8 @@ public class ServedWarTest extends SpecTest {
 			aspect = app.aspect("default");
 			loginAspect = app.aspect("login");
 			rootAspect = app.defaultAspect();
-			mockJndiContext = TestContextFactory.getTestContext();
-			
+			templates = brjs.sdkTemplateGroup("default");
+			mockJndiContext = mock(Context.class);
 	}
 	
 	@Test
@@ -163,7 +167,9 @@ public class ServedWarTest extends SpecTest {
 	public void jndiTokensAreReplaced() throws Exception
 	{
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(app).hasBeenPopulated()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
+			.and(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
 			.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -177,7 +183,9 @@ public class ServedWarTest extends SpecTest {
 	public void correctContentLengthIsSetWhenJNDITokensAreReplaced() throws Exception
 	{
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(app).hasBeenPopulated()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
+			.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -192,7 +200,9 @@ public class ServedWarTest extends SpecTest {
 	public void correctContentLengthIsSetWhenJNDITokensAreReplacedAndADownstreamFilterCommitsTheResponseEarly() throws Exception
 	{
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(app).hasBeenPopulated()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
+			.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -211,7 +221,7 @@ public class ServedWarTest extends SpecTest {
 		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
 		
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
-    		.and(app).hasBeenPopulated()
+    		.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir());

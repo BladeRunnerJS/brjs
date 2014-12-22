@@ -65,12 +65,14 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void theCommandIsExecutedWhenAValidDirectoryIsProvided() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory")});
 	}
 	
 	@Test
 	public void builtInCommandsShowWarnLevelLogLinesByDefault() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
 		
@@ -82,6 +84,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void consoleLoggingIsAlwaysVisible() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
 		
@@ -91,6 +94,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void verboseLogLinesCanBeEnabled() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--info"});
 		
@@ -102,6 +106,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void debugLogLinesCanBeEnabled() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--debug"});
 		
@@ -113,6 +118,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void externalCommandsDontShowAnyLogsEvenWhenDebugLoggingIsUsed() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--debug"});
 		
@@ -123,6 +129,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabled() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "org.other, org.external", "--info"});
 		
@@ -134,6 +141,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabledViaWildcard() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "ALL", "--info"});
 		
@@ -145,6 +153,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void errorsAndWarningsForAllPackagesAreDisplayedEvenIfNotLoggingThatPackage() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--info"});
 		
@@ -157,6 +166,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void theClassResponsibleForEachLogLineCanBeDisplayed() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--show-pkg"});
 		
@@ -166,6 +176,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void nonLogArgumentsAreReceivedCorrectly() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "arg1", "arg2", "--info"});
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "argX", "--info", "--show-pkg"});
@@ -178,6 +189,7 @@ public class CommandRunnerTest {
 	@Test
 	public void warningIsPrintedIfTheServletJarIsOutdated() throws Exception
 	{
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		dirFile("valid-sdk-directory/sdk/libs/java").mkdirs();
 		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/sdk/libs/java/application/brjs-servlet-1.2.3.jar"), "some jar contents" );
@@ -193,6 +205,7 @@ public class CommandRunnerTest {
 	//if I do an incorrect command I get the properties outputted in the right order
 	@Test
 	public void theCommandIsExecutedWithIncorrectParametersExpectCorrectPropertiesOrder() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "multiple-args-command-test"});
 		

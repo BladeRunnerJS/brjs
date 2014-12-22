@@ -23,7 +23,7 @@ public class DefaultBladeset extends Bladeset
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException
 	{
 		file(BLADES_DIRNAME).mkdir();
 	}

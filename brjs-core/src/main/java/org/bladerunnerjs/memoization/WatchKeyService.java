@@ -10,6 +10,5 @@ public interface WatchKeyService
 {
 	public WatchKey waitForEvents() throws InterruptedException;
 	public Map<WatchKey,Path> createWatchKeysForDir(Path dirPath, boolean isNewlyDiscovered) throws IOException;
-	public void close() throws IOException;
-	
+	public void close() throws IOException;	
 }

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -26,7 +27,6 @@ public class MemoizedFile extends File implements Comparable<File>
 {
 	private static final long serialVersionUID = 7406703034536312889L;
 	private RootNode rootNode;
-	private MemoizedFile canonicalFile;
 	private File wrappedFile;
 	private String name;
 	private MemoizedFile parentFile;
@@ -49,7 +49,7 @@ public class MemoizedFile extends File implements Comparable<File>
 	MemoizedFile(RootNode rootNode, String file) {
 		super( file );
 		this.rootNode = rootNode;
-		wrappedFile = new File(file);
+		wrappedFile = new File( FilenameUtils.normalize(file) );
 			// ^^ use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
 		
 //		String className = this.getClass().getSimpleName();
@@ -150,23 +150,6 @@ public class MemoizedFile extends File implements Comparable<File>
 		return rootNode.getMemoizedFile( super.getAbsoluteFile() );
 	}
 	
-	public MemoizedFile getCanonicalFile()
-	{
-		if (canonicalFile == null) {
-			try {
-				canonicalFile = rootNode.getMemoizedFile(wrappedFile.getCanonicalFile());
-			} catch (IOException e) {
-				rootNode.logger(this.getClass()).warn("Unable to calculate canonical path for path '%s'.", getPath());
-				canonicalFile = rootNode.getMemoizedFile(super.getAbsoluteFile());
-			}
-		}
-		return canonicalFile;
-	}
-	
-	public String getCanonicalPath()
-	{
-		return getCanonicalFile().getAbsolutePath();
-	}
 	
 	public MemoizedFile getParentFile()
 	{
@@ -321,6 +304,9 @@ public class MemoizedFile extends File implements Comparable<File>
 			populateNestedFilesAndDirs(dir, nestedFilesAndDirs);
 		}
 	}
-	
+
+	public boolean isEmpty() {
+		return filesAndDirs().isEmpty();
+	}
 	
 }

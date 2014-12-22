@@ -652,14 +652,16 @@
 	 */
 	function missingAttributes(classdef, protocol) {
 		var result = [], obj = classdef.prototype, requirement = protocol.prototype;
-		for (var item in requirement) {
+		var item;
+		for (item in requirement) {
 			if (typeof obj[item] !== typeof requirement[item]) {
 				result.push(item);
 			}
 		}
 
-		for (var item in protocol) {
-			if (protocol.hasOwnProperty(item) &&  typeof classdef[item] !== typeof protocol[item]) {
+		for (item in protocol) {
+			var protocolItemType = typeof protocol[item];
+			if (protocol.hasOwnProperty(item) && protocolItemType === 'function' && typeof classdef[item] !== protocolItemType) {
 				// If we're in ie8, our internal variables won't be nonenumerable, so we include a check for that here.
 				if (internalUseNames.indexOf(item) < 0) {
 					result.push(item + ' (class method)');

@@ -42,6 +42,13 @@ ValidSelectionValidatorTest.prototype.test_nonExistentOptionValuesFailValidation
 	assertFalse("1a", oValidationResult.isValid());
 };
 
+ValidSelectionValidatorTest.prototype.test_canCorrectlyValidateWhenValueIsUndefined = function()
+{
+	var oValidationResult = new br.presenter.validator.ValidationResult();
+	this.oValidSelectionValidator.validate(undefined, {}, oValidationResult);
+	assertFalse("1a", oValidationResult.isValid());
+};
+
 ValidSelectionValidatorTest.prototype.test_weCanAllowInvalidSelectionsToPassValidations = function()
 {
 	var oValidationResult = new br.presenter.validator.ValidationResult();

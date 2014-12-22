@@ -24,6 +24,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -277,23 +278,24 @@ public class App extends AbstractBRJSNode implements NamedNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
-		super.populate();
-		defaultAspect().populate();
-		defaultBladeset().populate();
-	};
+		super.populate(templateGroup);
+		
+		TemplateUtility.populateOrCreate(defaultAspect(), templateGroup);
+		TemplateUtility.populateOrCreate(defaultBladeset(), templateGroup);
+	}
 	
-	public void populate(String requirePrefix) throws InvalidNameException, ModelUpdateException
+	public void populate(String requirePrefix, String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
 		NameValidator.assertValidRootPackageName(this, requirePrefix);
 		
 		try {
-			appConf().setAutoWrite(false);
-			appConf().setRequirePrefix(requirePrefix);
-			populate();
-			appConf().setAutoWrite(true);
-			appConf().write();
+			AppConf appConf = appConf();
+			appConf.setAutoWrite(false);
+			appConf.setRequirePrefix(requirePrefix);
+			populate(templateGroup);
+			appConf.setAutoWrite(true);
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {

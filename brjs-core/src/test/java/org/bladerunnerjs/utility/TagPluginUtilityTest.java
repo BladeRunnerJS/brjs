@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +10,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
@@ -25,7 +24,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
-public class TagPluginUtilityTest extends TestModelAccessor
+public class TagPluginUtilityTest
 {
 
 	@Rule
@@ -55,8 +54,8 @@ public class TagPluginUtilityTest extends TestModelAccessor
 		/* asset location support */
 		mockPluginLocator.assetLocationPlugins.add(new VirtualProxyAssetLocationPlugin(new BRJSConformantAssetLocationPlugin()));
 		
-		File tempDir = createTestSdkDirectory();
-		brjs = createModel(tempDir, mockPluginLocator);
+		File tempDir = BRJSTestModelFactory.createTestSdkDirectory();
+		brjs = BRJSTestModelFactory.createModel(tempDir, mockPluginLocator);
 		
 		app = brjs.app("app");
 			app.create();
@@ -221,19 +220,4 @@ public class TagPluginUtilityTest extends TestModelAccessor
 		 Map<String,Map<String,String>> actualResult = TagPluginUtility.getUsedTagsAndAttributes(input, bundleSet, opMode, new Locale(locale));
 		assertEquals(expectedResult, actualResult);
 	}
-	
-	private File createTestSdkDirectory() {
-		File sdkDir;
-		
-		try {
-			sdkDir = FileUtils.createTemporaryDirectory( this.getClass() );
-			new File(sdkDir, "sdk").mkdirs();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return sdkDir;
-	}
-	
 }

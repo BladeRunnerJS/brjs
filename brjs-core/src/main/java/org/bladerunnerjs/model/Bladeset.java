@@ -11,14 +11,19 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.utility.TemplateUtility;
 import org.bladerunnerjs.utility.NameValidator;
 
 public class Bladeset extends AbstractComponent implements NamedNode
 {
 	public static final String BLADES_DIRNAME = "blades";
+
+	private final NodeItem<BladesetWorkbench> workbench = new NodeItem<>(this, BladesetWorkbench.class, "workbench");
 	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
 	private MemoizedFile[] scopeFiles;
@@ -82,10 +87,12 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
-		super.populate();
-		testType("unit").defaultTestTech().populate();
+		super.populate(templateGroup);
+		
+		TemplateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(workbench(), templateGroup);
 	}
 	
 	@Override
@@ -112,5 +119,10 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	public Blade blade(String bladeName)
 	{
 		return blades.item(bladeName);
+	}
+	
+	public BladesetWorkbench workbench()
+	{
+		return workbench.item();
 	}
 }

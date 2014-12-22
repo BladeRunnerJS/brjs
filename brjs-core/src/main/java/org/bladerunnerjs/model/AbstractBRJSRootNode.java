@@ -8,6 +8,7 @@ import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 
 
 public abstract class AbstractBRJSRootNode extends AbstractRootNode implements BRJSNode {
@@ -22,8 +23,8 @@ public abstract class AbstractBRJSRootNode extends AbstractRootNode implements B
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
-		BRJSNodeHelper.populate(this);
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
+		BRJSNodeHelper.populate(this, templateGroup);
 	}
 	
 	@Override

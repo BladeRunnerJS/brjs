@@ -117,7 +117,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 				if(warExportFile.exists()) throw new DirectoryAlreadyExistsCommandException(warExportFile.getPath(), this);
 				app.buildWar(warExportFile);
 				brjs.getFileModificationRegistry().incrementFileVersion(warExportFile);
-				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getCanonicalPath());
+				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getAbsolutePath());
 			} else {
 				if (hasExplicitExportDirArg) {
 					if (appExportDir.listFiles().length > 0) throw new DirectoryNotEmptyCommandException(appExportDir.getPath(), this);								
@@ -126,7 +126,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 				}
 				app.build(appExportDir);
 				brjs.getFileModificationRegistry().incrementFileVersion(appExportDir);
-				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());
+				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getAbsolutePath());
 			}
 		}
 		catch (ModelOperationException e) {

@@ -8,12 +8,12 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NodeTesterFactory;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AppNavigationTest extends TestModelAccessor
+public class AppNavigationTest
 {
 	private BRJS brjs;
 	private App app;
@@ -24,7 +24,7 @@ public class AppNavigationTest extends TestModelAccessor
 	@Before
 	public void setup() throws Exception
 	{
-		brjs = createModel(new File("src/test/resources/BRJSTest"));
+		brjs = BRJSTestModelFactory.createModel(new File("src/test/resources/BRJSTest"));
 		app = brjs.app("a1");
 		nodeTesterFactory = new NodeTesterFactory<>(app, App.class);
 	}

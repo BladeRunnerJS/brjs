@@ -8,7 +8,9 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.TemplateGroup;
+import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,15 +18,15 @@ import org.junit.Test;
 
 public class TemplateTests extends SpecTest
 {
-	
 	App app;
 	Aspect defaultAspect;
 	Bladeset bladeset;
 	Blade blade;
-	Workbench workbench;
+	BladeWorkbench workbench;
 	JsLib userLib, thirdpartyLib;
 	Blade bladeInDefaultBladeset;
 	Aspect anotherAspect;
+	TemplateGroup templates; 
 	
 	@Before
 	public void initTestObjects() throws Exception {		
@@ -44,6 +46,7 @@ public class TemplateTests extends SpecTest
 		userLib = app.jsLib("userlib");
 		thirdpartyLib = app.jsLib("thirdpartyLib");
 		bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
+		templates = brjs.sdkTemplateGroup("default");
 	}
 	
 	
@@ -111,7 +114,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset).hasFilesAndDirs(
 				Arrays.asList("src/BsClass.js", "themes/common/style.css"),
-				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes")
+				Arrays.asList("resources", "resources/html", "src", "test-unit", "themes", "workbench")
 		).and(bladeset).fileContentsContains("resources/i18n/en.properties", "appns.bs.hello.world");
 	}
 	
@@ -207,4 +210,59 @@ public class TemplateTests extends SpecTest
 		);
 	}
 	
+	@Test
+	public void templateFromConfIsUsedIfTemplateDefinedBothInConfAndSdk() throws Exception {
+		given(templates.template("app")).containsFile("fileFromConf.txt")
+		   .and(brjs.sdkTemplateGroup("default").template("app")).containsFile("fileFromSdk.txt");
+		when(brjs).runCommand("create-app", "app");
+		then(app).hasFile("fileFromConf.txt");
+	}
+	
+	@Test
+	public void templateFromSdkIsUsedIfTemplateNotDefinedInConf() throws Exception {
+		given(templates.template("app")).doesNotExist()
+			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("fileFromSdk.txt");
+		when(brjs).runCommand("create-app", "app");
+		then(app).hasFile("fileFromSdk.txt");
+	}
+	
+	@Test
+	public void templateFromSdkIsUsedIfMainTemplateExistsInConfButImplicitlyCalledTemplatesOnlyExistInSdk() 
+			throws Exception {
+		given(templates.template("app")).containsFile("appFileFromConf.txt")
+			.and(templates.template("aspect")).doesNotExist()
+			.and(templates.template("aspect-test-unit-default")).doesNotExist()
+			.and(templates.template("aspect-test-acceptance-default")).doesNotExist()
+			.and(brjs.sdkTemplateGroup("default").template("aspect")).containsFile("aspectFileFromSdk.txt")
+			.and(brjs.sdkTemplateGroup("default").template("aspect-test-unit-default")).containsFile("aspectTestUnitFileFromSdk.txt")
+			.and(brjs.sdkTemplateGroup("default").template("aspect-test-acceptance-default")).containsFile("aspectTestAcceptanceFileFromSdk.txt");
+		when(brjs).runCommand("create-app", "app");
+		then(app).hasFilesAndDirs(Arrays.asList("app.conf", "appFileFromConf.txt", "aspectFileFromSdk.txt", 
+				"test-unit/aspectTestUnitFileFromSdk.txt", "test-acceptance/aspectTestAcceptanceFileFromSdk.txt"), 
+				Arrays.asList());
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTemplateDoesNotExistInEitherConfOrSdk() throws Exception {
+		given(templates.template("app")).doesNotExist();
+		when(brjs).runCommand("create-app", "app");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
+	
+	@Test
+	public void emptyFoldersAreCreatedIfImplicitlyCalledTemplatesDoNotExistInEitherConfOrSdk() throws Exception {
+		given(app).hasBeenCreated()
+			.and(templates.template("bladeset")).containsFile("bladesetFileFromConf.txt")
+			.and(templates.template("bladeset-test-unit-default")).doesNotExist();
+		when(brjs).runCommand("create-bladeset", "app", "bs");
+		then(bladeset).hasDir("test-unit")
+			.and(bladeset.file("test-unit")).isEmpty();
+	}
+	
+	@Test
+	public void exceptionIsThrownIfMainTemplateDoesNotExist() throws Exception {
+		given(templates.template("app")).doesNotExist();
+		when(brjs).runCommand("create-app", "app");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
+	}
 }

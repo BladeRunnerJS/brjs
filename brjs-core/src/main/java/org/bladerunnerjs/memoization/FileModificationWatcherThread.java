@@ -25,7 +25,7 @@ public class FileModificationWatcherThread extends Thread
 	private WatchKeyServiceFactory watchKeyServiceFactory;
 	private WatchKeyService watchKeyService;
 
-	private Map<WatchKey,Path> watchKeys;
+	private final Map<WatchKey,Path> watchKeys = new HashMap<>();
 
 	private Logger logger;
 
@@ -64,7 +64,6 @@ public class FileModificationWatcherThread extends Thread
 		watchKeyService = watchKeyServiceFactory.createWatchService();
 		logger = brjs.logger(this.getClass());
 		logger.debug("%s using %s as the file watcher service", this.getClass().getSimpleName(), watchKeyService.getClass().getSimpleName());
-		watchKeys = new HashMap<>();
 		watchKeys.putAll( watchKeyService.createWatchKeysForDir(directoryToWatch, false) );
 	}
 	
@@ -88,7 +87,10 @@ public class FileModificationWatcherThread extends Thread
 		watchKeys.clear();
 		try
 		{
-			watchKeyService.close();
+			if (watchKeyService != null)
+			{
+				watchKeyService.close();
+			}
 		}
 		catch (IOException ex)
 		{

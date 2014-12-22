@@ -7,11 +7,11 @@ public class WatchKeyServiceFactory
 {
 
 	public WatchKeyService createWatchService() throws IOException {
-		if (FileTreeWatchKeyService.isSupported()) {
-			return new FileTreeWatchKeyService();
+		if (WindowsFileTreeWatchKeyService.isSupported()) {
+			return new WindowsFileTreeWatchKeyService();
 		}
-		if (HighSensitivityWatchKeyService.isSupported()) {
-			return new HighSensitivityWatchKeyService();
+		if (MacHighSensitivityWatchKeyService.isSupported()) {
+			return new MacHighSensitivityWatchKeyService();
 		}
 		return new DefaultWatchKeyService();
 	}
