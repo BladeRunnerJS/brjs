@@ -92,7 +92,7 @@ br.presenter.node.PresentationNode.prototype.properties = function(sPropertyName
 br.presenter.node.PresentationNode.prototype.nodes = function(sNodeName, vProperties)
 {
 	sNodeName = (sNodeName && (sNodeName != "*")) ? sNodeName : null;
-	mProperties = this._convertToMap(vProperties);
+	var mProperties = this._convertToMap(vProperties);
 	var pNodes = [];
 	this._getNodes(sNodeName, mProperties, pNodes);
 	return new br.presenter.node.Nodes(pNodes);
