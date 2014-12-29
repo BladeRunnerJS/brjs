@@ -21,12 +21,22 @@
 
   // DL3KeyboardEvent
   var DL3KeyboardEvent = function(eventType, args) {
+    // chrome polyfill
+    if(args && args.key) {
+      args.keyIdentifier = args.key;
+    }
+
     args = normalizeArgs(args);
     var evt = document.createEvent('KeyboardEvent');
     var modifiers = modifiersList(args);
 
     evt.initKeyboardEvent(eventType, args.bubbles, args.cancelable, null,
       args.key, args.location, modifiers, args.repeat, args.locale);
+
+    // chrome polyfill
+    if(evt.keyIdentifier) {
+      evt.key = evt.keyIdentifier;
+    }
 
     return evt;
   };
@@ -59,8 +69,15 @@
   else if(document.implementation.hasFeature('KeyboardEvent', '3.0')) {
     KeyboardEvent = DL3KeyboardEvent;
   }
-  else {
+  else if(document.createEventObject) {
     KeyboardEvent = IE8KeyboardEvent;
+  }
+  else if(navigator.userAgent == 'PhantomJS') {
+	// seems to support DL3 keyboard events even though it doesn't claim to
+    KeyboardEvent = DL3KeyboardEvent;
+  }
+  else {
+    throw new Error('keyboard-event polyfill unable to shim browser.');
   }
 
   // Private Functions
