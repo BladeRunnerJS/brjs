@@ -36,7 +36,16 @@ public class BRJSVerifier extends NodeVerifier<BRJS> {
 
 	public VerifierChainer ancestorNodeCanBeFound(File file, Class<? extends Node> nodeClass)
 	{
-		assertNotNull( brjs.locateAncestorNodeOfClass(file, nodeClass) );
+		Node ancestorNodeOfClass = brjs.locateAncestorNodeOfClass(file, nodeClass);
+		assertNotNull( ancestorNodeOfClass );
+		assertTrue( nodeClass.isAssignableFrom(ancestorNodeOfClass.getClass()) );
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer ancestorNodeCannotBeFound(File file, Class<? extends Node> nodeClass)
+	{
+		assertNull( brjs.locateAncestorNodeOfClass(file, nodeClass) );
 		
 		return verifierChainer;
 	}

@@ -1,10 +1,10 @@
 package org.bladerunnerjs.memoization;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.io.FilenameUtils;
 import org.bladerunnerjs.model.engine.RootNode;
 
 
@@ -24,19 +24,11 @@ public class MemoizedFileAccessor
 		MemoizedFile memoizedFile;
 		if (file instanceof MemoizedFile) {
 			memoizedFile = (MemoizedFile) file;
-			if (!memoizedFileMap.containsKey(memoizedFile.getCanonicalPath())) {
-				memoizedFileMap.put( memoizedFile.getCanonicalPath(), memoizedFile );
+			if (!memoizedFileMap.containsKey(memoizedFile.getAbsolutePath())) {
+				memoizedFileMap.put( memoizedFile.getAbsolutePath(), memoizedFile );
 			}
 		} else {
-			String pathKey;
-			try
-			{
-				pathKey = file.getCanonicalPath();
-			}
-			catch (IOException e)
-			{
-				pathKey = file.getAbsolutePath();
-			}
+			String pathKey = FilenameUtils.normalize( file.getAbsolutePath() );
 			if (memoizedFileMap.containsKey(pathKey)) {
 				memoizedFile = memoizedFileMap.get(pathKey);
 			} else {

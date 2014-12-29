@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.testing.specutility.AppCommander;
 import org.bladerunnerjs.testing.specutility.AppConfCommander;
@@ -40,7 +40,7 @@ public class CommanderChainer {
 	public AspectCommander and(Aspect aspect) { return new AspectCommander(modelTest, aspect); }
 	public BladesetCommander and(Bladeset bladeset) { return new BladesetCommander(modelTest, bladeset); }
 	public BladeCommander and(Blade blade) { return new BladeCommander(modelTest, blade); }
-	public WorkbenchCommander and(Workbench workbench) { return new WorkbenchCommander(modelTest, workbench); }
+	public WorkbenchCommander and(BladeWorkbench workbench) { return new WorkbenchCommander(modelTest, workbench); }
 	public JsLibCommander and(JsLib jsLib) { return new JsLibCommander(modelTest, jsLib); }
 	public DirNodeCommander and(DirNode dirNode) { return new DirNodeCommander(modelTest, dirNode); }
 	public NamedDirNodeCommander and(NamedDirNode namedDirNode) { return new NamedDirNodeCommander(modelTest, namedDirNode); }

@@ -14,9 +14,12 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
+import org.bladerunnerjs.utility.AspectRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TemplateUtility;
 import org.bladerunnerjs.utility.TestRunner;
 
 
@@ -26,6 +29,7 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	private String name;
 	private MemoizedFile[] scopeFiles;
 	private IndexPageSeedLocator indexPageSeedLocator;
+	private AspectRequestHandler aspectRequestHandler;
 	
 	public Aspect(RootNode rootNode, Node parent, MemoizedFile dir) {
 		this(rootNode, parent, dir, StringUtils.substringBeforeLast(dir.getName(), "-aspect"));
@@ -37,6 +41,7 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 		this.name = name;
 		
 		indexPageSeedLocator = new IndexPageSeedLocator(root());
+		this.aspectRequestHandler = new AspectRequestHandler(this);
 	}
 	
 	@Override
@@ -82,11 +87,12 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
-		super.populate();
-		testType("unit").defaultTestTech().populate();
-		testType("acceptance").defaultTestTech().populate();
+		super.populate(templateGroup);
+		
+		TemplateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
 	}
 	
 	@Override
@@ -143,5 +149,8 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 		return testTypes.item(typedTestPackName);
 	}
 	
+	public AspectRequestHandler requestHandler() {
+		return aspectRequestHandler;
+	}
 	
 }

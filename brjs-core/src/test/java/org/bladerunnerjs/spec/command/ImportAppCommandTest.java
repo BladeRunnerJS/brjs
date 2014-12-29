@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
@@ -27,7 +27,7 @@ public class ImportAppCommandTest extends SpecTest {
 	Aspect importedAspect;
 	private Bladeset bladeset;
 	private Blade blade;
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	DirNode appJars;
 	
 	@Before

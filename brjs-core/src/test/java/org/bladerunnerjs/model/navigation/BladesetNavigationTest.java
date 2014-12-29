@@ -6,13 +6,13 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NodeTesterFactory;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BladesetNavigationTest extends TestModelAccessor
+public class BladesetNavigationTest
 {
 	private NodeTesterFactory<Bladeset> nodeTesterFactory;
 	private BRJS brjs;
@@ -21,7 +21,7 @@ public class BladesetNavigationTest extends TestModelAccessor
 	@Before
 	public void setup() throws Exception
 	{
-		brjs = createModel(new File("src/test/resources/BRJSTest"));
+		brjs = BRJSTestModelFactory.createModel(new File("src/test/resources/BRJSTest"));
 		bladeset = brjs.app("a1").bladeset("bs1");
 		nodeTesterFactory = new NodeTesterFactory<>(bladeset, Bladeset.class);
 	}

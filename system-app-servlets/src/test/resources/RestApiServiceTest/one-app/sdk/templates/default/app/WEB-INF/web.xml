@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	
+	<security-role>
+		<role-name>user</role-name>
+	</security-role>
+	
+	<!-- * uncomment this section to enable authentication *
+	<security-constraint>
+		<web-resource-collection>
+		<web-resource-name>Application</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Login Section</web-resource-name>
+			<url-pattern>/login/*</url-pattern>
+		</web-resource-collection>
+	</security-constraint>
+	-->
+	
+	<!-- mime mappings -->
+	<mime-mapping>
+		<extension>woff</extension>
+		<mime-type>application/x-font-woff</mime-type>
+	</mime-mapping>
+	
+	
+	
+	
+	
+	<!-- 
+		The following are filters needed by BRJS to operate properly.
+		BRJSDevServlet and BRJSDevServletFilter will be removed when apps are built for production.
+		BRJSServletFilter sets character encoding and infinite caching headers for static resources.
+	-->
+	
+	<filter>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.appserver.BRJSServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<url-pattern>/*</url-pattern> 
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	
+	<!-- start-env: dev -->
+	<servlet>
+		<servlet-name>BRJSDevServlet</servlet-name>
+		<servlet-class>org.bladerunnerjs.appserver.BRJSDevServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BRJSDevServlet</servlet-name>
+		<url-pattern>/brjs/*</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>BRJSDevServletFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.appserver.BRJSDevServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>BRJSDevServletFilter</filter-name> 
+		<url-pattern>/*</url-pattern> 
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	<!-- end-env -->
+	
+	
+</web-app>

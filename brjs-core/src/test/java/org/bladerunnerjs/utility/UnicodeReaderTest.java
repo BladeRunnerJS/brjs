@@ -16,7 +16,7 @@ public class UnicodeReaderTest
 {
 	private static final String resourceDir = "src/test/resources/UnicodeReaderTest";
 	private static final String testFileContents = "test-€";
-	
+
 	@Test
 	public void testUtf8FileWithoutBOMCanBeReadCorrectly() throws IOException
 	{

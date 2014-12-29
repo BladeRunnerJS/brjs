@@ -30,7 +30,7 @@ public class DashboardLoadingTest extends SpecTest
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		testSdkDirectory = new File("../brjs-sdk/workspace/sdk/").getCanonicalFile();
+		testSdkDirectory = new File("../brjs-sdk/workspace/sdk/").getAbsoluteFile();
 		given(brjs).hasBeenAuthenticallyCreated();
 		brjs.io().uninstallFileAccessChecker();
 		dashboard = brjs.systemApp("dashboard");

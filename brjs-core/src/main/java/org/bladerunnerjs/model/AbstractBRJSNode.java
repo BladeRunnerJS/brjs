@@ -7,6 +7,7 @@ import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 
 
 public abstract class AbstractBRJSNode extends AbstractNode implements BRJSNode {
@@ -20,13 +21,12 @@ public abstract class AbstractBRJSNode extends AbstractNode implements BRJSNode 
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
-		BRJSNodeHelper.populate(this);
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
+		BRJSNodeHelper.populate(this, templateGroup);
 	}
 	
 	@Override
 	public String getTemplateName() {
 		return BRJSNodeHelper.getTemplateName(this);
 	}
-	
 }

@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +85,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	@Override
 	public void clearRegisteredNode(Node node) {
-		String normalizedPath = node.dir().getCanonicalPath();
+		String normalizedPath = node.dir().getAbsolutePath();
 		List<Node> nodesForPath = nodeCache.get(normalizedPath);
 		nodesForPath.remove(node.getTypeName());
 	}
@@ -93,7 +93,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public List<Node> getRegisteredNodes(MemoizedFile childPath)
 	{
-		String normalizedPath = getMemoizedFile(childPath).getCanonicalPath();
+		String normalizedPath = childPath.getAbsolutePath();
 		if (!nodeCache.containsKey(normalizedPath)) {
 			nodeCache.put( normalizedPath, new LinkedList<>() );
 		}
@@ -170,7 +170,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			node = locateFirstCachedNode(file, nodeClass);
 		}
 		
-		return (N) node;
+		return (N) findFirstNodeOfClass(Arrays.asList(node), nodeClass);
 	}
 	
 	@Override
@@ -210,14 +210,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 			dir = dir.getParentFile();
 		}
 		
-		try
-		{
-			return (dir == null) ? dir : dir.getCanonicalFile();
-		}
-		catch (IOException e)
-		{
-			return dir;
-		}
+		return (dir == null) ? dir : dir.getAbsoluteFile();
 	}
 	
 	private Node locateFirstCachedNode(MemoizedFile file) {
@@ -248,7 +241,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	private Node findFirstNodeOfClass(List<Node> nodes, Class<? extends Node> nodeClass) {
 		for (Node n : nodes) {
-			if (nodeClass == null || nodeClass.isAssignableFrom(n.getClass())) {
+			if ( nodeClass == null || (n != null && nodeClass.isAssignableFrom(n.getClass())) ) {
 				return n;
 			}
 		}

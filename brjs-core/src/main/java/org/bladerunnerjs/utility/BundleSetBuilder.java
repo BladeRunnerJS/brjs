@@ -29,7 +29,6 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 import com.google.common.base.Joiner;
 
-
 public class BundleSetBuilder {
 	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";

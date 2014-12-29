@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,13 +46,16 @@ public class AppRequestHandler
 	private static final String BR_LOCALE_UTILITY_LIBNAME = "br-locale-utility";
 	private static final String BR_LOCALE_UTILITY_FILENAME = "LocaleUtility.js";
 	
-	public static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
-	public static final String INDEX_PAGE_REQUEST = "index-page-request";
-	public static final String UNVERSIONED_BUNDLE_REQUEST = "unversioned-bundle-request";
-	public static final String BUNDLE_REQUEST = "bundle-request";
-	public static final String WORKBENCH_LOCALE_FORWARDING_REQUEST = "workbench-locale-forwarding-request";
-	public static final String WORKBENCH_INDEX_PAGE_REQUEST = "workbench-index-page-request";
-	public static final String WORKBENCH_BUNDLE_REQUEST = "workbench-bundle-request";
+	private static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
+	private static final String INDEX_PAGE_REQUEST = "index-page-request";
+	private static final String UNVERSIONED_BUNDLE_REQUEST = "unversioned-bundle-request";
+	private static final String BUNDLE_REQUEST = "bundle-request";
+	private static final String WORKBENCH_LOCALE_FORWARDING_REQUEST = "workbench-locale-forwarding-request";
+	private static final String WORKBENCH_INDEX_PAGE_REQUEST = "workbench-index-page-request";
+	private static final String WORKBENCH_BUNDLE_REQUEST = "workbench-bundle-request";
+	private static final String WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST = "workbench-bladeset-locale-forwarding-request";
+	private static final String WORKBENCH_BLADESET_INDEX_PAGE_REQUEST = "workbench-bladeset-index-page-request";
+	private static final String WORKBENCH_BLADESET_BUNDLE_REQUEST = "workbench-bladeset-bundle-request";
 
 	private final App app;
 	private final MemoizedValue<ContentPathParser> contentPathParser;
@@ -107,12 +111,18 @@ public class AppRequestHandler
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
 				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
+				
+			case WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST:
+				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);	
 
 			case INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 
 			case WORKBENCH_INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+			
+			case WORKBENCH_BLADESET_INDEX_PAGE_REQUEST:
+				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
 				return app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), contentAccessor, devVersion);
@@ -122,14 +132,40 @@ public class AppRequestHandler
 
 			case WORKBENCH_BUNDLE_REQUEST:
 				return app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+			
+			case WORKBENCH_BLADESET_BUNDLE_REQUEST:
+				return app.bladeset(pathProperties.get("bladeset")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+				
 		}
 		
 		throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 	}
-
-	public String createRequest(String requestFormName, String... args) throws MalformedTokenException
+	
+	public String createRelativeBundleRequest(String contentPath, String version) throws MalformedTokenException
 	{
-		return getContentPathParser().createRequest(requestFormName, args);
+		if (contentPath.startsWith("/"))
+		{
+			return getContentPathParser().createRequest(UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
+		}
+		return getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
+	}
+
+	public String createBundleRequest(Aspect aspect, String contentPath, String version) throws MalformedTokenException
+	{
+		if (contentPath.startsWith("/")) {
+			return createRequest(aspect, AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, contentPath);
+		}
+		return createRequest(aspect, AppRequestHandler.BUNDLE_REQUEST, version, contentPath);
+	}
+	
+	public String createLocaleForwardingRequest(Aspect aspect) throws MalformedTokenException
+	{
+		return createRequest(aspect, LOCALE_FORWARDING_REQUEST);
+	}
+	
+	public String createIndexPageRequest(Aspect aspect, Locale locale) throws MalformedTokenException
+	{
+		return createRequest(aspect, INDEX_PAGE_REQUEST, locale.toString());
 	}
 	
 	public MemoizedFile getIndexPage(BrowsableNode browsableNode) {
@@ -242,7 +278,15 @@ public class AppRequestHandler
 			throw new ContentProcessingException(e);
 		}
 	}
-
+	
+	private String createRequest(Aspect aspect, String requestFormName, String... args) throws MalformedTokenException
+	{
+		String aspectRequestPrefix = (aspect.getName().equals(app.defaultAspect().getName())) ? "" : aspect.getName()+"/";
+		List<String> requestArgs = new LinkedList<>(Arrays.asList(args));
+		requestArgs.add(0, aspectRequestPrefix);
+		return getContentPathParser().createRequest(requestFormName, requestArgs.toArray(new String[0]));
+	}
+	
 	private ContentPathParser getContentPathParser()
 	{
 		return contentPathParser.value(() -> {
@@ -257,6 +301,9 @@ public class AppRequestHandler
 					.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
 					.and("<aspect><bladeset>/<blade>/workbench/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
 					.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
+					.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST)
+					.and("<aspect><bladeset>/workbench/<locale>/").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
+					.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
 					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
 					.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
 				.where("aspect").hasForm("((" + getAspectNames() + ")/)?")

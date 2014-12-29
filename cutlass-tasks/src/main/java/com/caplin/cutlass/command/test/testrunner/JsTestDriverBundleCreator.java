@@ -9,8 +9,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestPack;
@@ -19,6 +21,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.utility.FileUtils;
+import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -27,10 +30,12 @@ public class JsTestDriverBundleCreator
 {
 
 	public static final String BUNDLES_DIR_NAME = "bundles";
+	private static Logger logger;
 	
 	public static void createRequiredBundles(BRJS brjs, MemoizedFile jsTestDriverConf)
 			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
 	{
+		logger = brjs.logger(JsTestDriverBundleCreator.class);
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
 		FileUtils.deleteDirectoryFromBottomUp(bundlesDir);
 		FileUtils.deleteQuietly(brjs, bundlesDir);
@@ -49,6 +54,7 @@ public class JsTestDriverBundleCreator
 		
 		for (String resourceToLoad : getListOfResourcesToLoad(configMap))
 		{
+			System.out.println(resourceToLoad);
 			File requestedFile = new File(baseDirectory, resourceToLoad);
 			
 			if (fileIsInBundlesDirectory(requestedFile) && isNotWildcardFilename(requestedFile))
@@ -56,6 +62,17 @@ public class JsTestDriverBundleCreator
 				String bundlePath = StringUtils.substringAfterLast( requestedFile.getAbsolutePath(), BUNDLES_DIR_NAME+File.separator);
 				bundlePath = StringUtils.replace(bundlePath, "\\", "/");
 				bundlerHandler.createBundleFile(requestedFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
+			}
+		}
+		for (File currentTestFile : jsTestDriverConf.getParentFile().file("tests").listFiles())
+		{
+			if (currentTestFile.isFile())
+			{
+				Matcher m = JsCodeBlockStrippingDependenciesReader.SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(currentTestFile));
+				if (!m.find())
+				{
+					logger.warn("The CommonJS test '" + currentTestFile.getName() + "' is not wrapped within an IIFE, which may cause unreliability in tests.");
+				}
 			}
 		}
 	}
@@ -125,6 +142,5 @@ public class JsTestDriverBundleCreator
 			return collection;
 		}
 	}	
-	
 	
 }

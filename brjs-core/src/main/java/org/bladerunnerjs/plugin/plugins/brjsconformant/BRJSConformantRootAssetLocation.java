@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.TheAbstractAssetLocation;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 
 public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation implements RootAssetLocation {
 	public BRJSConformantRootAssetLocation(RootNode rootNode, AssetContainer assetContainer, MemoizedFile dir, AssetLocation parentAssetLocation) {
@@ -26,8 +27,8 @@ public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation im
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
-		BRJSNodeHelper.populate(this, true);
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
+		BRJSNodeHelper.populate(this, templateGroup, true);
 	}
 	
 	@Override
