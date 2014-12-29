@@ -54,9 +54,8 @@ br.presenter.view.knockout.TooltipPlugin._showToolTip = function(eElement, eCont
 
 	var containingElementPosition = jQuery(eContainingElement).offset();
 
-	var bodyMargin;
-	var bodyMarginTop = parseInt(bodyMargin = jQuery("body").css("margin-top"));
-	var bodyMarginLeft = parseInt(bodyMargin = jQuery("body").css("margin-left"));
+	var bodyMarginTop = parseInt(jQuery("body").css("margin-top"));
+	var bodyMarginLeft = parseInt(jQuery("body").css("margin-left"));
 	bodyMarginTop = isNaN(bodyMarginTop) ? 0 : bodyMarginTop;
 	bodyMarginLeft = isNaN(bodyMarginLeft) ? 0 : bodyMarginLeft;
 	
