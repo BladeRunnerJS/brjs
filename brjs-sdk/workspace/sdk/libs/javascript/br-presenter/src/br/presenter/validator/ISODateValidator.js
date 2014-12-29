@@ -25,7 +25,7 @@ br.Core.implement(br.presenter.validator.ISODateValidator, br.presenter.validato
  */
 br.presenter.validator.ISODateValidator.prototype.validate = function(value, mAttributes, validationResult) {
 	var isValid = false,
-		i18n = require("br/I18n");
+		i18n = require("br/I18n"),
 		validationMessage = i18n('ct.presenter.validator.invalidISODateFormat', { value: value });
 
 	if (typeof value === 'undefined' || value === null || value === '') {

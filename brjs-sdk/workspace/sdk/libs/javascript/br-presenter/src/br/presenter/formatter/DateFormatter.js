@@ -92,8 +92,8 @@ br.presenter.formatter.DateFormatter.prototype.parseDate = function(vDate, sDate
 		case "U":
 			return moment(vDate*1000).toDate();
 		default:
-			oMoment = moment(String(vDate), sDateFormat);
-			sValidationString = oMoment.format(sDateFormat);
+			var oMoment = moment(String(vDate), sDateFormat);
+			var sValidationString = oMoment.format(sDateFormat);
 			return (sValidationString == String(vDate)) ? oMoment.toDate() : null;
 	}
 };
