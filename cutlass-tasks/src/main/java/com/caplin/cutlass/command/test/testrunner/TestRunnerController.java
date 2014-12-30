@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.test.BrowserStartupException;
 import org.bladerunnerjs.plugin.CommandPlugin;
 
 import com.martiansoftware.jsap.FlaggedOption;
@@ -97,7 +98,7 @@ public class TestRunnerController
 			}
 			catch (Exception ex)
 			{
-				throw new CommandOperationException("Error parsing test runner configuration file '" + configFile.getAbsolutePath() + "'.", ex);
+				throw new CommandOperationException("Error parsing test runner configuration file '" + configFile.getAbsolutePath() + "'", ex);
 			}
 
 			if (mode == RunMode.RUN_SERVER)
@@ -116,6 +117,10 @@ public class TestRunnerController
 				try
 				{
 					success = testRunner.runTests( brjs.getMemoizedFile(new File(config.getString("dir"))), getTestTypeEnum(config.getString("testType")));
+				}
+				catch (BrowserStartupException ex) 
+				{
+					throw new CommandArgumentsException("Error running tests", ex, testCommand);
 				}
 				catch (Exception ex)
 				{
