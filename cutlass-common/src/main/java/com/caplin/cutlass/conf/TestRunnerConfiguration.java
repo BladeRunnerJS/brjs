@@ -68,12 +68,7 @@ public class TestRunnerConfiguration {
 	{
 		Map<String, String> paths = null;
 		try {
-			if (browserPaths != null) {
-				paths = browserPaths.get(getOperatingSystem());
-			}
-			else {
-				throw new NoBrowsersDefinedException(getRelativeDir().getAbsolutePath());
-			}
+			paths = browserPaths.get(getOperatingSystem());
 		}
 		catch (ClassCastException e) 
 		{

@@ -125,7 +125,7 @@ public class TestRunnerController
 				catch (Exception ex)
 				{
 					testRunner.showExceptionInConsole(ex);
-					throw new CommandArgumentsException("Error running tests", ex, testCommand);
+					throw new CommandOperationException("Error running tests.", ex);
 				}
 			}
 		}
