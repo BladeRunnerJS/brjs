@@ -9,6 +9,8 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 /**
  * Minifier plug-ins allow alternate minifier implementations to be made available for JavaScript &amp; CSS minification.
  * 
+ * <p><b>Note:</b> This interface is <i>beta</i>, and likely to change.</p>
+ * 
  * <p>Minifier plug-ins may or may not choose to support source-maps, with the following levels of support being possible:</p>
  * 
  * <dl>
@@ -23,8 +25,6 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
  *   <dd>Minifiers support source-map generation for the minified content while preserving any source-maps generated from instances of
  *   {@link ContentPlugin} that are capable of generating source-maps.</dd>
  * </dl>
- * 
- * <p><b>Note:</b> This interface is <i>beta</i>, and likely to change.</p>
  */
 public interface MinifierPlugin extends Plugin {
 	List<String> getSettingNames();
