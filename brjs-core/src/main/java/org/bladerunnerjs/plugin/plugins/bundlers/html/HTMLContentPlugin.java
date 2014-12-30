@@ -68,11 +68,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	public String getRequestPrefix() {
 		return "html";
 	}
-
-	@Override
-	public String getCompositeGroupName() {
-		return null;
-	}
 	
 	@Override
 	public ContentPathParser getContentPathParser()

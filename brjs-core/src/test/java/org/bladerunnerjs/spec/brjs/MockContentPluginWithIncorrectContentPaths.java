@@ -48,11 +48,6 @@ public class MockContentPluginWithIncorrectContentPaths extends AbstractContentP
 	public String getRequestPrefix() {
 		return "mock-content-plugin";
 	}
-
-	@Override
-	public String getCompositeGroupName() {
-		return null;
-	}
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {

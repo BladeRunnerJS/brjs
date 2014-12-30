@@ -80,12 +80,6 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	{
 		return UNBUNDLED_RESOURCES_DIRNAME;
 	}
-
-	@Override
-	public String getCompositeGroupName()
-	{
-		return null;
-	}
 	
 	@Override
 	public ContentPathParser getContentPathParser()

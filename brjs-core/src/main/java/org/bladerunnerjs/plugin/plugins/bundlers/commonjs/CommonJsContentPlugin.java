@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -26,7 +27,7 @@ import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-public class CommonJsContentPlugin extends AbstractContentPlugin
+public class CommonJsContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin
 {
 	private static final String SINGLE_MODULE_REQUEST = "single-module-request";
 	private static final String BUNDLE_REQUEST = "bundle-request";

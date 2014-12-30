@@ -50,11 +50,6 @@ public class MockContentPlugin extends AbstractContentPlugin
 	public String getRequestPrefix() {
 		return "mock-content-plugin";
 	}
-
-	@Override
-	public String getCompositeGroupName() {
-		return "some/mime";
-	}
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {

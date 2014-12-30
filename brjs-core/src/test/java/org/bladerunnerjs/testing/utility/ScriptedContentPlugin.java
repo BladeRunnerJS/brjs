@@ -42,11 +42,6 @@ public class ScriptedContentPlugin extends AbstractContentPlugin
 	public String getRequestPrefix() {
 		return "ScriptedContentPlugin";
 	}
-
-	@Override
-	public String getCompositeGroupName() {
-		return null;
-	}
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {

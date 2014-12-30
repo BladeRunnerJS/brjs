@@ -46,11 +46,6 @@ public class MockContentPluginWithIncorrectRequestPrefix extends AbstractContent
 	public String getRequestPrefix() {
 		return "mock-content-plugin";
 	}
-
-	@Override
-	public String getCompositeGroupName() {
-		return null;
-	}
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {

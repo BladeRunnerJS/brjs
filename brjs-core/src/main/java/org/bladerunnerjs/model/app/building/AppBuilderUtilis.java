@@ -20,6 +20,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.ResponseContent;
@@ -79,14 +80,13 @@ public class AppBuilderUtilis
 	
 	private static void outputContentPluginBundles(ContentPlugin contentPlugin, BundleSet bundleSet, Locale[] locales, File target, String version, Aspect aspect, UrlContentAccessor urlContentAccessor) throws ContentProcessingException, MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException
 	{
-		if (contentPlugin.getCompositeGroupName() == null) {
+		if (!contentPlugin.instanceOf(CompositeContentPlugin.class)) {
 			for (String contentPath : contentPlugin.getUsedContentPaths(bundleSet, RequestMode.Prod, locales)) {
 				writeContentFile(bundleSet, urlContentAccessor, target, version, aspect, contentPlugin, contentPath);
 			}
-		} else {
-			ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
-			bundleSet.getBundlableNode().root().logger(AppBuilderUtilis.class).info("The content plugin '%s' is part of a composite content plugin so no files will be generated. " + 
-					"If content bundles should be generated for this content plugin, you should set it's composite group name to null.", plugin.getClass().getSimpleName());
+		}
+		else {
+			bundleSet.getBundlableNode().root().logger(AppBuilderUtilis.class).info("The content plugin '%s' implements ComposisteContentPlugin so no files will be generated.", contentPlugin.getPluginClass().getSimpleName());
 		}
 	}
 

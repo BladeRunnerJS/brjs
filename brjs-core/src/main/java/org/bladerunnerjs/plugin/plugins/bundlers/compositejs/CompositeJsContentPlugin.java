@@ -48,11 +48,6 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	public String getRequestPrefix() {
 		return "js";
 	}
-
-	@Override
-	public String getCompositeGroupName() {
-		return null;
-	}
 	
 	@Override
 	public ContentPathParser getContentPathParser() {

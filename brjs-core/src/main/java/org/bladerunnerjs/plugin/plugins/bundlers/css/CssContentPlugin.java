@@ -60,11 +60,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public String getCompositeGroupName() {
-		return null;
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser() {
 		return contentPathParser;
 	}

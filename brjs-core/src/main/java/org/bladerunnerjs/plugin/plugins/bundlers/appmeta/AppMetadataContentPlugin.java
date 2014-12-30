@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -25,7 +26,7 @@ import org.bladerunnerjs.utility.AppMetadataUtility;
 import com.google.common.base.Joiner;
 
 
-public class AppMetadataContentPlugin extends AbstractContentPlugin
+public class AppMetadataContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin
 {
 
 	private static final String APP_META_REQUEST = "app-meta-request";

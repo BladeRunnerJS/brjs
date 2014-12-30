@@ -69,12 +69,6 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	{
 		return "i18n";
 	}
-
-	@Override
-	public String getCompositeGroupName()
-	{
-		return null;
-	}
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
