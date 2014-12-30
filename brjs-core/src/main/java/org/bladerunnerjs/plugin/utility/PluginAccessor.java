@@ -18,7 +18,6 @@ import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class PluginAccessor {
@@ -104,8 +103,7 @@ public class PluginAccessor {
 		
 		for (ContentPlugin contentPlugin : contentPlugins()) {
 			if(contentPlugin.instanceOf(CompositeContentPlugin.class)) {
-				ContentPlugin underlyingContentPlugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
-				CompositeContentPlugin compositeContentPlugin = (CompositeContentPlugin) underlyingContentPlugin;
+				CompositeContentPlugin compositeContentPlugin = (CompositeContentPlugin) contentPlugin.castTo(CompositeContentPlugin.class);
 				
 				if (groupName.equals(compositeContentPlugin.getCompositeGroupName())) {
 					contentProviders.add(contentPlugin);

@@ -11,10 +11,8 @@ import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
  */
 public abstract class AbstractPlugin implements Plugin {
 	@Override
-	public boolean equals(Object object) {
-		Plugin plugin = (object instanceof VirtualProxyPlugin) ? ((VirtualProxyPlugin) object).getUninitializedUnderlyingPlugin() : (Plugin) object;
-		
-		return this == plugin;
+	public boolean equals(Object otherPlugin) {
+		return (otherPlugin instanceof VirtualProxyPlugin) ? otherPlugin.equals(this) : (this == otherPlugin);
 	}
 	
 	@Override
@@ -23,13 +21,18 @@ public abstract class AbstractPlugin implements Plugin {
 	}
 	
 	@Override
-	public boolean instanceOf(Class<? extends Plugin> pluginCLass) {
-		return pluginCLass.isAssignableFrom(getClass());
+	public <P extends Plugin> boolean instanceOf(Class<P> pluginInterface) {
+		return pluginInterface.isAssignableFrom(getClass());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <P extends Plugin> P castTo(Class<P> pluginInterface) {
+		return (P) this;
 	}
 	
 	@Override
 	public Class<?> getPluginClass() {
 		return getClass();
 	}
-	
 }
