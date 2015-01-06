@@ -194,8 +194,8 @@ public class NodeImporter {
 		String newNamespace = newRequirePrefix.replace('/', '.');
 		
 		replaceMap.put("^" + oldNamespace, newNamespace);
-		replaceMap.put("([\\W_])"+Pattern.quote(oldNamespace), "$1" + newNamespace.replace("$", "\\$"));
-		replaceMap.put("([\\W_])"+Pattern.quote(oldRequirePrefix), "$1" + newRequirePrefix.replace("$", "\\$"));
+		replaceMap.put("([\\W_])"+Pattern.quote(oldNamespace), "$1" + newNamespace);
+		replaceMap.put("([\\W_])"+Pattern.quote(oldRequirePrefix), "$1" + newRequirePrefix);
 		
 		return replaceMap;
 	}
