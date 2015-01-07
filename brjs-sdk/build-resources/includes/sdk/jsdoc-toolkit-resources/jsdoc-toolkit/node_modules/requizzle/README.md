@@ -161,12 +161,15 @@ Fair enough.
 
 ## Changelog ##
 
++ 0.2.1 (December 2014): The `requirePaths` option no longer inserts an extra line break into the
+source file.
 + 0.2.0 (June 2014): The `requirePaths` option can now contain `before` and `after` properties.
 Paths in the `before` property will be searched first; paths in the `after` property will be
 searched last.
 + 0.1.1 (June 2014): If the `requirePaths` option is used, the module loader now searches the extra
 paths first rather than last.
 + 0.1.0 (June 2014): Initial release.
+
 
 ## Acknowledgements ##
 
