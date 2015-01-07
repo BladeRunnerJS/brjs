@@ -10,7 +10,7 @@
 br.presenter.validator.NumericValidator = function(sFailureMessage)
 {
 	this.sMessage = sFailureMessage;
-	this.m_oRegex = new RegExp(/^\d+$/);
+	this.m_oRegex = new RegExp(/^(-)?[\d]+(\.[\d]+)?$/);
 };
 
 br.Core.implement(br.presenter.validator.NumericValidator, br.presenter.validator.Validator);
@@ -25,10 +25,9 @@ br.presenter.validator.NumericValidator.prototype.validate = function(vValue, mA
 	{
 		var bIsValid = false;
 	}
-	
+
 	var oTranslator = require("br/I18n").getTranslator();
 	var sFailureMessage = oTranslator.tokenExists(this.sMessage) ? oTranslator.getMessage(this.sMessage,{sInput:vValue}) : this.sMessage;
-	
+
 	oValidationResult.setResult(bIsValid, sFailureMessage);
 };
-
