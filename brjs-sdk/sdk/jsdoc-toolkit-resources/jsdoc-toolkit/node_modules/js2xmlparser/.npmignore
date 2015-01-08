@@ -1,6 +1,9 @@
 .idea/
 node_modules
 
+# already tracked, but should be added to generated .npmignore
+.gitattributes
+
 #################
 ## Eclipse
 #################
