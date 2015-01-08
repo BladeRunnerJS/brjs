@@ -170,6 +170,8 @@ task test, dependsOn: testPhantomJS
 
 
 task createSdkJsDocs, dependsOn: assembleSdk, {
+	inputs.dir "sdk/libs/javascript"
+    outputs.dir "sdk/docs/js"
 	def jsDocTmpAppName = "jsdoc-tmp-app"
 	doFirst {
 		delete file("apps/${jsDocTmpAppName}")
