@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 import javax.naming.InvalidNameException;
 
@@ -16,6 +18,8 @@ import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
+import org.bladerunnerjs.model.events.NewInstallEvent;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -92,15 +96,10 @@ public class CommandRunner {
 		
 		try {
 			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
-		}
-		catch(InvalidSdkDirectoryException e) {
-			throw new CommandOperationException(e);
-		}
-		
-		try {
 			brjs.populate("default");
+			setBrjsAllowStats(brjs);
 		}
-		catch (TemplateInstallationException e) {
+		catch(TemplateInstallationException | InvalidSdkDirectoryException | ConfigException e) {
 			throw new CommandOperationException(e);
 		}
 		
@@ -108,6 +107,28 @@ public class CommandRunner {
 		return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
 	}
 	
+	private void setBrjsAllowStats(BRJS brjs) throws ConfigException
+	{
+		Scanner scanner = new Scanner(System.in);
+		if (brjs.bladerunnerConf().getAllowAnonymousStats() == null) {
+			System.out.println("Can we collect anonymous stats? (Y/n)");
+			try {
+				String userInput = scanner.next();
+
+				if(userInput.equalsIgnoreCase("n") || userInput.equalsIgnoreCase("no")) {
+					brjs.bladerunnerConf().setAllowAnonymousStats(false);
+				} else {
+					brjs.bladerunnerConf().setAllowAnonymousStats(true);
+				}
+				brjs.bladerunnerConf().write();
+			} catch (NoSuchElementException ex) {
+				brjs.bladerunnerConf().setAllowAnonymousStats(false);
+			}
+			brjs.notifyObservers(new NewInstallEvent(), brjs);
+		}
+		scanner.close();
+	}
+
 	private String[] processGlobalCommandFlags(String[] args) {
 		JSAPResult parsedArgs;
 		int i = 0;

@@ -1,16 +1,23 @@
 package org.bladerunnerjs.runner;
 
 import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
+import static org.mockito.Mockito.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
+import org.bladerunnerjs.model.events.NewInstallEvent;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.runner.CommandRunner;
 import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
@@ -29,6 +36,7 @@ public class CommandRunnerTest {
 	private File tempDir;
 	
 	private PrintStream oldSysOut;
+	private InputStream oldSysIn;
 	
 	@Before
 	public void setUp() throws IOException, InvalidSdkDirectoryException {
@@ -38,12 +46,14 @@ public class CommandRunnerTest {
 		tempDir = FileUtils.createTemporaryDirectory( getClass() );
 		ThreadSafeStaticBRJSAccessor.destroy();
 		oldSysOut = System.out;
+		oldSysIn = System.in;
 		System.setOut( new PrintStream(systemOutputStream) );
 	}
 	
 	@After
 	public void tearDown() {
 		System.setOut( oldSysOut );		
+		System.setIn( oldSysIn );
 	}
 	
 	
@@ -219,6 +229,35 @@ public class CommandRunnerTest {
 		assertContains("arg4", valuesInQuotes[3]);
 		assertContains("arg5", valuesInQuotes[4]);
 	}
+	
+	@Test
+	public void newInstallEventIsEmitted() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
+	
+		System.setIn(new ByteArrayInputStream("y\r\n".getBytes()));
+		commandRunner.run(new String[] {dir("valid-sdk-directory")});
+		verify(mockEventObserver).onEventEmitted(any(NewInstallEvent.class), eq(brjs));
+	}
+	
+	@Test
+	public void newInstallEventIsNotEmittedIfThereIsNoStdin_egBrjsIsExecutedInACIEnvironment() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(BundleSetCreatedEvent.class, mockEventObserver);
+	
+		commandRunner.run(new String[] {dir("valid-sdk-directory")});
+		verifyZeroInteractions(mockEventObserver);
+	}
+	
+	
+	
+	// -------------------------
 	
 	private File dirFile(String dirName) {
 		return new File(tempDir, dirName);
