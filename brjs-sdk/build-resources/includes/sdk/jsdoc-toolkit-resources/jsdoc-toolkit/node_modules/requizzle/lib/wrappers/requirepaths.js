@@ -41,7 +41,7 @@ function requirePaths(parentModule, opts) {
 exports.before = function before(targetPath, parentModule, opts) {
 	var resolvedPaths = requirePaths(parentModule, opts);
 	return 'module.paths = ' + JSON.stringify(resolvedPaths.before) + '.concat(module.paths)' +
-		'.concat(' + JSON.stringify(resolvedPaths.after) + ');\n';
+		'.concat(' + JSON.stringify(resolvedPaths.after) + '); ';
 };
 
 exports.after = function after(targetPath, parentModule, opts) {
