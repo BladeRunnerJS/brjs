@@ -338,14 +338,21 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		File j2eeify = new File("../brjs-sdk/build-resources/includes/sdk/j2eeify-app"); 
 		FileUtils.copyDirectory(brjs, j2eeify, brjs.file("sdk/j2eeify-app"));
 		
+		return builderChainer;
+	}
+
+	public BuilderChainer usesJsDocResources() throws IOException {
+		verifyBrjsIsSet();
+		
 		File jsdocResourcesDir = new File("../brjs-sdk/build-resources/includes/sdk/jsdoc-toolkit-resources");
 		File jsdocResourcesDest = brjs.sdkRoot().file("jsdoc-toolkit-resources");
+		
 		FileUtils.copyDirectory(brjs, jsdocResourcesDir, jsdocResourcesDest);
 		new File(jsdocResourcesDest, "jsdoc-toolkit/jsdoc").setExecutable(true);
 		
 		return builderChainer;
 	}
-
+	
 	public BuilderChainer hasProdVersion(String version)
 	{
 		specTest.appVersionGenerator.setProdVersion(version);
