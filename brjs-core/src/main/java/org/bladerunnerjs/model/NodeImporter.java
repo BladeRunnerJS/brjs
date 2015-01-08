@@ -99,10 +99,6 @@ public class NodeImporter {
 		Bladeset tempBrjsBladeset = tempBrjsApp.bladeset(targetBladeset.getName());
 		
 		FileUtils.copyDirectory(sourceBladesetDir, tempBrjsBladeset.dir());
-		File appConfFile = new File(tempBrjsBladeset.dir(), "app.conf");
-		if (FileUtils.directoryContains(tempBrjsBladeset.dir(), appConfFile)) {
-			FileUtils.deleteQuietly(tempBrjsBladeset.root(), appConfFile);
-		}
 		tempBrjsApp.appConf().write();
 		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
 		
