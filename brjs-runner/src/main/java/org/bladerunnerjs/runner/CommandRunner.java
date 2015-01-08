@@ -6,7 +6,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.naming.InvalidNameException;
@@ -39,6 +38,9 @@ import com.martiansoftware.jsap.Switch;
 public class CommandRunner {
 	private static final JSAP argsParser = new JSAP();
 	
+	private boolean stats = false;
+	private boolean noStats = false;
+	
 	static {
 		try {
 			argsParser.registerParameter(new Switch("info").setShortFlag('i').setLongFlag("info").setDefault("false").setHelp("info level logging"));
@@ -46,6 +48,8 @@ public class CommandRunner {
 			argsParser.registerParameter(new FlaggedOption("pkg").setLongFlag("pkg").setHelp("the comma delimited list of packages to show messages from, or '"+
 					ConsoleLogger.LOG_ALL_PACKAGES_PACKAGE_NAME+"' to show everything"));
 			argsParser.registerParameter(new Switch("show-pkg").setLongFlag("show-pkg").setDefault("false").setHelp("show which class each log line comes from"));
+			argsParser.registerParameter(new Switch("no-stats").setLongFlag("no-stats").setHelp("immediately configure BRJS to disable anonymous stats. takes precedence if --track is also set"));
+			argsParser.registerParameter(new Switch("stats").setLongFlag("stats").setHelp("immediately configure BRJS to enable anonymous stats"));
 		}
 		catch (JSAPException e) {
 			throw new RuntimeException(e);
@@ -109,24 +113,35 @@ public class CommandRunner {
 	
 	private void setBrjsAllowStats(BRJS brjs) throws ConfigException
 	{
-		Scanner scanner = new Scanner(System.in);
-		if (brjs.bladerunnerConf().getAllowAnonymousStats() == null) {
-			System.out.println("Can we collect anonymous stats? (Y/n)");
-			try {
-				String userInput = scanner.next();
-
-				if(userInput.equalsIgnoreCase("n") || userInput.equalsIgnoreCase("no")) {
-					brjs.bladerunnerConf().setAllowAnonymousStats(false);
-				} else {
-					brjs.bladerunnerConf().setAllowAnonymousStats(true);
-				}
-				brjs.bladerunnerConf().write();
-			} catch (NoSuchElementException ex) {
-				brjs.bladerunnerConf().setAllowAnonymousStats(false);
-			}
+		if (noStats) {
+			brjs.bladerunnerConf().setAllowAnonymousStats(false);
+		} else if (stats) {
+			brjs.bladerunnerConf().setAllowAnonymousStats(true);
 			brjs.notifyObservers(new NewInstallEvent(), brjs);
+		} else {
+		
+        	Scanner scanner = new Scanner(System.in);
+        	if (brjs.bladerunnerConf().getAllowAnonymousStats() == null) {
+        		System.out.println();
+        		System.out.println("We would like to collect data on the commands run and the size of applications used with BladeRunnerJS.");
+        		System.out.println("This data is completely anonymous, does not identify you as an individual or your company and does not include any source code.");
+        		System.out.println("Do you agree to the collection of this anonymous data? (Y/n)");
+        		try {
+        			String userInput = scanner.next();
+        			if (userInput.equalsIgnoreCase("n") || userInput.equalsIgnoreCase("no")) {
+        				brjs.bladerunnerConf().setAllowAnonymousStats(false);
+        			} else {
+        				brjs.bladerunnerConf().setAllowAnonymousStats(true);
+        				brjs.notifyObservers(new NewInstallEvent(), brjs);
+        			}
+        		} catch (Exception ex) {
+        			brjs.bladerunnerConf().setAllowAnonymousStats(false); // default to false
+        		}
+        		System.out.println();
+        		scanner.close();
+        	}
 		}
-		scanner.close();
+		brjs.bladerunnerConf().write();
 	}
 
 	private String[] processGlobalCommandFlags(String[] args) {
@@ -162,6 +177,9 @@ public class CommandRunner {
 		if(logClassNames) {
 			getLoggerStore().setLogClassNames(true);
 		}
+		
+		noStats = parsedArgs.getBoolean("no-stats");
+		stats = parsedArgs.getBoolean("stats");
 		
 		getLoggerStore().setWhitelistedPackages(whitelistedPackages);
 	}

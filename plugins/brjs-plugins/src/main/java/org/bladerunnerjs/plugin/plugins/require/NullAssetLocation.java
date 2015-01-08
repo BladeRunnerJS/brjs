@@ -192,6 +192,11 @@ public class NullAssetLocation implements AssetLocation {
 	}
 
 	@Override
+	public List<Asset> bundlableAssets() {
+		return Collections.emptyList();
+	}
+	
+	@Override
 	public List<Asset> bundlableAssets(AssetPlugin assetProducer) {
 		return Collections.emptyList();
 	}
