@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.BinaryResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
@@ -86,43 +87,45 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	{
 		return contentPathParser;
 	}
-
+	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException
 	{
 		try
 		{
-    		if (contentPath.formName.equals(UNBUNDLED_RESOURCES_REQUEST)
-    				|| contentPath.formName.equals(VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
+			ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+			
+    		if (parsedContentPath.formName.equals(UNBUNDLED_RESOURCES_REQUEST)
+    				|| parsedContentPath.formName.equals(VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
     		{
-    			return getFileContents(bundleSet, contentPath, contentAccessor, bundleSet.getBundlableNode());
+    			return getFileContents(bundleSet, parsedContentPath, contentAccessor, bundleSet.getBundlableNode());
     		}
-    		else if (contentPath.formName.equals(BLADESET_UNBUNDLED_RESOURCES_REQUEST)
-    				 || contentPath.formName.equals(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
+    		else if (parsedContentPath.formName.equals(BLADESET_UNBUNDLED_RESOURCES_REQUEST)
+    				 || parsedContentPath.formName.equals(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
     		{    			
-    			Bladeset bladeset = bundleSet.getBundlableNode().app().bladeset(contentPath.properties.get("bladeset"));
-    			return getFileContents(bundleSet, contentPath, contentAccessor, bladeset);
+    			Bladeset bladeset = bundleSet.getBundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset"));
+    			return getFileContents(bundleSet, parsedContentPath, contentAccessor, bladeset);
     		}
-    		else if (contentPath.formName.equals(BLADE_UNBUNDLED_RESOURCES_REQUEST)
-   				 || contentPath.formName.equals(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
+    		else if (parsedContentPath.formName.equals(BLADE_UNBUNDLED_RESOURCES_REQUEST)
+   				 || parsedContentPath.formName.equals(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
 	   		{    			
-	   			Blade blade = bundleSet.getBundlableNode().app().bladeset(contentPath.properties.get("bladeset")).blade(contentPath.properties.get("blade"));
-	   			return getFileContents(bundleSet, contentPath, contentAccessor, blade);
+	   			Blade blade = bundleSet.getBundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset")).blade(parsedContentPath.properties.get("blade"));
+	   			return getFileContents(bundleSet, parsedContentPath, contentAccessor, blade);
 	   		}
-    		else if (contentPath.formName.equals(BLADEWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
-      				 || contentPath.formName.equals(BLADEWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
+    		else if (parsedContentPath.formName.equals(BLADEWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
+      				 || parsedContentPath.formName.equals(BLADEWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
    	   		{    			
-   	   			Workbench<?> workbench = bundleSet.getBundlableNode().app().bladeset(contentPath.properties.get("bladeset")).blade(contentPath.properties.get("blade")).workbench();
-   	   			return getFileContents(bundleSet, contentPath, contentAccessor, workbench);
+   	   			Workbench<?> workbench = bundleSet.getBundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset")).blade(parsedContentPath.properties.get("blade")).workbench();
+   	   			return getFileContents(bundleSet, parsedContentPath, contentAccessor, workbench);
    	   		}
-    		else if (contentPath.formName.equals(BLADESETWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
-     				 || contentPath.formName.equals(BLADESETWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
+    		else if (parsedContentPath.formName.equals(BLADESETWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
+     				 || parsedContentPath.formName.equals(BLADESETWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
   	   		{    			
-  	   			Workbench<?> workbench = bundleSet.getBundlableNode().app().bladeset(contentPath.properties.get("bladeset")).workbench();
-  	   			return getFileContents(bundleSet, contentPath, contentAccessor, workbench);
+  	   			Workbench<?> workbench = bundleSet.getBundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset")).workbench();
+  	   			return getFileContents(bundleSet, parsedContentPath, contentAccessor, workbench);
   	   		}
 			else {
-				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+				throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 			}
 		}
 		catch (IOException e)

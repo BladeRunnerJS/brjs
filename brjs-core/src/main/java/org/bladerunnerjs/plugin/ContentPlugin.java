@@ -5,8 +5,8 @@ import java.util.List;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.utility.ContentPathParser;
 
 /**
@@ -65,7 +65,7 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * @param version TODO
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException;
+	ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths for the given bundle-set and locale.

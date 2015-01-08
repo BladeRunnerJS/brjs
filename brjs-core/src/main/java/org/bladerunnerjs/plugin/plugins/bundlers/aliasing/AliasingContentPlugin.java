@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.CompositeContentPlugin;
@@ -71,9 +72,11 @@ public class AliasingContentPlugin extends AbstractContentPlugin implements Comp
 	}
 	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException {
 		try {
-			if (contentPath.formName.equals("aliasing-request")) {
+			ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+			
+			if (parsedContentPath.formName.equals("aliasing-request")) {
 				boolean aliasRegistryLoaded = bundleSet.getSourceModules().contains(bundleSet.getBundlableNode().getLinkedAsset("br/AliasRegistry"));
 				
 				if(aliasRegistryLoaded) {
@@ -82,13 +85,13 @@ public class AliasingContentPlugin extends AbstractContentPlugin implements Comp
 				}
 			}
 			else {
-				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+				throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 			}
 		}
 		catch (RequirePathException e) {
 			// do nothing: if 'br/AliasRegistry' doesn't exist then we definitely need to configure it
 		}
+		
 		return new CharResponseContent(brjs, "");
 	}
-	
 }

@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.UrlContentAccessor;
@@ -135,11 +134,10 @@ public class AppBuilderUtilis
 	{
 		File bundleFile = new File(target, aspect.requestHandler().createBundleRequest(contentPath, version));
 		
-		ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
 		bundleFile.getParentFile().mkdirs();
 		bundleFile.createNewFile();
 		try (FileOutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
-			ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version); )
+			ResponseContent pluginContent = contentPlugin.handleRequest(contentPath, bundleSet, contentPluginUtility, version); )
 		{
 			pluginContent.write( bundleFileOutputStream );
 		}

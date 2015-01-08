@@ -76,14 +76,16 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
-		if (contentPath.formName.equals(DEV_BUNDLE_REQUEST) || contentPath.formName.equals(PROD_BUNDLE_REQUEST)) {
-			String minifierSetting = contentPath.properties.get("minifier-setting");
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException, MalformedRequestException {
+		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+		
+		if (parsedContentPath.formName.equals(DEV_BUNDLE_REQUEST) || parsedContentPath.formName.equals(PROD_BUNDLE_REQUEST)) {
+			String minifierSetting = parsedContentPath.properties.get("minifier-setting");
 			MinifierPlugin minifierPlugin = brjs.plugins().minifierPlugin(minifierSetting);
 			
-			RequestMode requestMode = (contentPath.formName.equals(PROD_BUNDLE_REQUEST)) ? RequestMode.Prod : RequestMode.Dev;
+			RequestMode requestMode = (parsedContentPath.formName.equals(PROD_BUNDLE_REQUEST)) ? RequestMode.Prod : RequestMode.Dev;
 			
-			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(requestMode, contentPath, bundleSet, contentAccessor, version);
+			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(requestMode, parsedContentPath, bundleSet, contentAccessor, version);
 			ResponseContent content = new CharResponseContent( bundleSet.getBundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
 			
 			closeInputSources(inputSources);
@@ -91,7 +93,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			return content;
 		}
 		else {
-			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 		}
 	}
 	
@@ -117,19 +119,12 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	private List<InputSource> getInputSourcesFromOtherBundlers(RequestMode requestMode, ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
-		try {
-			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
-				List<String> requestPaths = contentPlugin.getValidContentPaths(bundleSet, requestMode);
-				ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
-				
-				for(String requestPath : requestPaths) {
-					ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
-					inputSources.add( new InputSource(parsedContentPath, contentPlugin, bundleSet, contentAccessor, version) );
-				}
+		for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
+			List<String> requestPaths = contentPlugin.getValidContentPaths(bundleSet, requestMode);
+			
+			for(String requestPath : requestPaths) {
+				inputSources.add( new InputSource(requestPath, contentPlugin, bundleSet, contentAccessor, version) );
 			}
-		}
-		catch (MalformedRequestException e) {
-			throw new ContentProcessingException(e);
 		}
 		
 		return inputSources;

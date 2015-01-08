@@ -12,7 +12,7 @@ package org.bladerunnerjs.plugin;
  *   <li>{@link #getCompositeGroupName}</li>
  * </ul>
  */
-public interface CompositeContentPlugin extends ContentPlugin {
+public interface CompositeContentPlugin extends RoutableContentPlugin {
 	/**
 	 * Returns the group name of content plug-in, which allow composite content plug-ins that compose a number of related plug-ins.
 	 * 

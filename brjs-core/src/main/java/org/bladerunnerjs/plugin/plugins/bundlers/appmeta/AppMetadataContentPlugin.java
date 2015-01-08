@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.CompositeContentPlugin;
@@ -56,11 +57,13 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin implements C
 	{
 		return contentPathParser;
 	}
-
+	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException
 	{
-		if (contentPath.formName.equals(APP_META_REQUEST))
+		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+		
+		if (parsedContentPath.formName.equals(APP_META_REQUEST))
 		{
 			try
 			{
@@ -79,7 +82,7 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin implements C
 		}
 		else 
 		{
-			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 		}
 	}
 
