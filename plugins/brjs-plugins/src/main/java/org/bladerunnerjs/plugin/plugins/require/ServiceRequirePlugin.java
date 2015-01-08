@@ -12,6 +12,7 @@ import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.base.AbstractRequirePlugin;
 
 public class ServiceRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
+	// TODO: update to be a bundlableNodeSourceModules as has been done in AliasRequirePlugin
 	private final Map<String, ServiceCommonJsSourceModule> sourceModules = new HashMap<>();
 	private AssetLocation assetLocation;
 	

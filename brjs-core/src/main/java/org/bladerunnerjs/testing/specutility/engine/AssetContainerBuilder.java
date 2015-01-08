@@ -8,7 +8,6 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class AssetContainerBuilder<N extends AssetContainer> extends NodeBuilder<N>
@@ -140,7 +139,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer classDependsOnThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
+		String jsStyle = specTest.brjs.jsStyleAccessor().getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(SpecTest.NAMESPACED_JS_STYLE)) {
 			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + SpecTest.NAMESPACED_JS_STYLE + "'");
@@ -154,7 +153,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer classRequiresThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
+		String jsStyle = specTest.brjs.jsStyleAccessor().getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(SpecTest.COMMON_JS_STYLE)) {
 			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
@@ -167,7 +166,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer hasBeenPopulated() throws Exception
 	{
-		node.populate();
+		node.populate("default");
 		return builderChainer;
 	}
 	
@@ -188,7 +187,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	private BuilderChainer classDependsOn(String sourceClass, MemoizedFile sourceFile, String... referencedClasses) throws Exception
 	{
-		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
+		String jsStyle = specTest.brjs.jsStyleAccessor().getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(SpecTest.NAMESPACED_JS_STYLE)) {
 			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + SpecTest.NAMESPACED_JS_STYLE + "' for dir '"+sourceFile.getParentFile().getPath()+"'.");
@@ -214,7 +213,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	private BuilderChainer classRequires(String sourceClass, String dependencyClass, MemoizedFile sourceFile, boolean atUseTime) throws Exception
 	{
-		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
+		String jsStyle = specTest.brjs.jsStyleAccessor().getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(SpecTest.COMMON_JS_STYLE)) {
 			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to '"+SpecTest.COMMON_JS_STYLE+"' for dir '"+sourceFile.getParentFile().getPath()+"'");
@@ -242,7 +241,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	private String getClassBody(String className) {
 		File sourceFile = getSourceFile(className);
-		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
+		String jsStyle = specTest.brjs.jsStyleAccessor().getJsStyle(sourceFile.getParentFile());
 		String classBody;
 		
 		if(jsStyle.equals(SpecTest.COMMON_JS_STYLE)) {

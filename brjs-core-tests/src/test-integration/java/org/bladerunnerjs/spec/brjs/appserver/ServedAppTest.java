@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +25,7 @@ public class ServedAppTest extends SpecTest
 	Aspect aspect;
 	Aspect systemAspect;
 	Blade blade;
-	Workbench workbench;
+	BladeWorkbench workbench;
 	DirNode appJars;
 	ServerSocket socket;
 	StringBuffer response = new StringBuffer();
@@ -74,7 +74,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void jspSupportIsEnabled() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.jsp", "<%= 1 + 2 %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/en/", "3");
@@ -83,7 +83,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void indexPageCanBeAccessed() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/en/", "aspect index.html");
@@ -92,7 +92,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void localeForwarderPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app", "/app/");
 	}
@@ -100,7 +100,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void indexPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/en", "/app/en/");
@@ -109,7 +109,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void localeForwarderPageOfANonDefaultAspectCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
     		.and(anotherAspect).hasBeenPopulated()
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/another", "/app/another/");
@@ -118,7 +118,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void indexPageOfANonDefaultAspectCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(anotherAspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/another/en", "/app/another/en/");
@@ -127,7 +127,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void localeRequestsAreOnlyRedirectedIfTheyAreValidModelRequests() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
     		.and(anotherAspect).containsFileWithContents("index.html", "aspect index.html")
     		.and(appServer).started()
     		.and(appServer).appHasServlet(app, new HelloWorldServlet(), "/my_servlet/*");
@@ -137,7 +137,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void workbenchLocaleForwarderPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
     		.and(bladeset).hasBeenCreated()
     		.and(blade).hasBeenCreated()
     		.and(workbench).hasBeenCreated()
@@ -149,7 +149,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void workbenchIndexPageCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
     		.and(bladeset).hasBeenCreated()
     		.and(blade).hasBeenCreated()
     		.and(workbench).hasBeenCreated()
@@ -161,7 +161,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void requestsForInvalidModelPathsThatDoExistOnDiskReturn404() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
@@ -172,7 +172,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void jspIndexPageCanBeAccessed() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.jsp", "<%= \"aspect \" + \"index.jsp\" %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/en/", "aspect index.jsp");
@@ -181,14 +181,14 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void contentPluginsCanHandleRequests() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test
 	public void contentPluginsCanHandleRequestsWithinWorkbenches() throws Exception {
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/bs/b1/workbench/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
@@ -196,7 +196,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void webInfFolderDoesntHaveToBePresentToEnableBrjsFeatures() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
 			.and(aspect).doesNotContainFile("WEB-INF");
 		when(appServer).started();
@@ -207,7 +207,7 @@ public class ServedAppTest extends SpecTest
 	
 	@Test
 	public void indexPageCanBeAccessedWithAQueryString() throws Exception {
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(aspect).indexPageHasContent("index page")
 			.and(brjs).localeForwarderHasContents("locale-forwarder.js");
@@ -223,7 +223,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void longUrlsDontGetHandedToOtherServlets() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app, new HelloWorldServlet(), "/servlet/hello");
 		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/some/other/path/", MockContentPlugin.class.getCanonicalName())
@@ -233,7 +233,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void systemAppsCanBeServed() throws Exception
 	{
-		given(systemApp).hasBeenPopulated()
+		given(systemApp).hasBeenPopulated("default")
 			.and(systemAspect).containsFileWithContents("index.html", "System App")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/en/", "System App");
@@ -242,8 +242,8 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void systemAppsTakePriorityOverUserApps() throws Exception
 	{
-		given(app).hasBeenPopulated()
-			.and(systemApp).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
+			.and(systemApp).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "User App")
 			.and(systemAspect).containsFileWithContents("index.html", "System App")
 			.and(appServer).started();
@@ -253,7 +253,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void jspsAreParsed() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/unbundled-resources/file.jsp", "3");
@@ -262,7 +262,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void jspsCanHaveQueryStrings() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= request.getParameter(\"query\") + \" \" + request.getParameter(\"debug\")  %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/unbundled-resources/file.jsp?query=1337&debug=true", "1337 true");
@@ -271,7 +271,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void jspsCanSendRedirects() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("unbundled-resources/file.jsp", "<% response.sendRedirect(\"/\");  %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlHasResponseCode("/app/v/123/unbundled-resources/file.jsp", 302)
@@ -281,7 +281,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void jspsCanSend404() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 		.and(aspect).containsFileWithContents("unbundled-resources/file.jsp", "<% response.sendError(404);  %>")
 		.and(appServer).started();
 		then(appServer).requestForUrlHasResponseCode("/app/v/123/unbundled-resources/file.jsp", 404);
@@ -290,7 +290,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName());
 	}
@@ -298,7 +298,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void unbundledResourcesCanBeUnversioned() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("unbundled-resources/file.txt", "unbundled resources file content")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/unbundled-resources/file.txt", "unbundled resources file content");
@@ -317,7 +317,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void correctContentLengthHeaderIsSetWhenTagsAreReplaced() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>");
 		when(appServer).started();
 		then(appServer).requestForUrlReturns("/app/en/", "dev replacement")
@@ -327,7 +327,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void jndiTokensAreReplaced() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
 			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", ""
 					+ "<?xml version=\"1.0\"?>"
@@ -347,7 +347,7 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void correctContentLengthIsSetWhenJNDITokensAreReplaced() throws Exception
 	{
-		given(app).hasBeenPopulated()
+		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
 			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", ""
 					+ "<?xml version=\"1.0\"?>"

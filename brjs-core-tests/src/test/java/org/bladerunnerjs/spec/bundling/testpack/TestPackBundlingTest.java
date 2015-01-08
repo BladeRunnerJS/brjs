@@ -182,7 +182,7 @@ public class TestPackBundlingTest extends SpecTest
 	public void bundleCanBeGeneratedForTestsInsideADefaultAspectWhereABladeInTheDefaultBladesetIsAlsoUsed() throws Exception {
 		given(defaultAspect).hasClasses("App")
     		.and( defaultAspect.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/App")
-    		.and(bladeInDefaultBladeset).hasBeenPopulated();
+    		.and(bladeInDefaultBladeset).hasBeenCreated();
 		when( defaultAspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then( defaultAspect.testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.assetLocation("src").file("App.js"))
     		.and(response).containsCommonJsClasses("appns/App");
@@ -192,7 +192,7 @@ public class TestPackBundlingTest extends SpecTest
 	public void bundleCanBeGeneratedForTestsInsideADefaultAspectWhereABladeInTheDefaultBladesetIsAlsoUsedAndANewModelIsUsed() throws Exception {
 		given(defaultAspect).hasClasses("App")
     		.and( defaultAspect.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/App")
-    		.and(bladeInDefaultBladeset).hasBeenPopulated()
+    		.and(bladeInDefaultBladeset).hasBeenCreated()
     		.and(brjs).hasBeenAuthenticallyReCreated();
 			assertEquals( defaultAspect.dir(), brjs.app("app1").defaultAspect().dir()  ); // make sure we're using the same directory for each model
 		when( brjs.app("app1").defaultAspect().testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);

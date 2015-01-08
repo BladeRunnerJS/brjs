@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class BRJSUnitTest extends TestModelAccessor 
+public class BRJSUnitTest 
 {
 	private BRJS brjs;
 	
@@ -20,7 +20,7 @@ public class BRJSUnitTest extends TestModelAccessor
 		File rootDir = FileUtils.createTemporaryDirectory( this.getClass() );
 		new File(rootDir, "sdk").mkdir();
 		
-		brjs = createModel(rootDir);
+		brjs = BRJSTestModelFactory.createModel(rootDir);
 	}
 	
 	@After

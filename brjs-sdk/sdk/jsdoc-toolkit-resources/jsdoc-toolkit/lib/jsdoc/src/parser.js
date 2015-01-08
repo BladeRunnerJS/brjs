@@ -35,24 +35,7 @@ var PARSERS = exports.PARSERS = {
 };
 
 // TODO: docs
-// TODO: not currently used
-function makeGlobalDoclet(globalScope) {
-    var doclet = new jsdoc.doclet.Doclet('/** Auto-generated doclet for global scope */', {});
-
-    if (globalScope) {
-        // TODO: handle global aliases
-        Object.keys(globalScope.ownedVariables).forEach(function(variable) {
-            doclet.meta.vars = doclet.meta.vars || {};
-            doclet.meta.vars[variable] = null;
-        });
-    }
-
-    return doclet;
-}
-
-// TODO: docs
 exports.createParser = function(type) {
-
     var modulePath;
 
     if (!type) {
@@ -114,8 +97,8 @@ util.inherits(Parser, events.EventEmitter);
 Parser.prototype.clear = function() {
     this._resultBuffer = [];
     this.refs = {};
-    this.refs[jsdoc.src.astnode.GLOBAL_NODE_ID] = {};
-    this.refs[jsdoc.src.astnode.GLOBAL_NODE_ID].meta = {};
+    this.refs[jsdoc.name.LONGNAMES.GLOBAL] = {};
+    this.refs[jsdoc.name.LONGNAMES.GLOBAL].meta = {};
 };
 
 // TODO: update docs
@@ -252,7 +235,6 @@ Parser.prototype._parseSourceCode = function(sourceCode, sourceName) {
         if (ast) {
             this._walker.recurse(sourceName, ast, this._visitor);
         }
-
     }
 
     this.emit('fileComplete', e);
@@ -361,7 +343,7 @@ Parser.prototype.astnodeToMemberof = function(node) {
         }
 
         // do we know that it's a global?
-        doclet = this.refs[jsdoc.src.astnode.GLOBAL_NODE_ID];
+        doclet = this.refs[jsdoc.name.LONGNAMES.GLOBAL];
         if ( doclet && definedInScope(doclet, basename) ) {
             result = [doclet.meta.vars[basename], basename];
         }
@@ -392,8 +374,7 @@ Parser.prototype.resolveThis = function(node) {
     var result;
 
     // In general, if there's an enclosing scope, we use the enclosing scope to resolve `this`.
-    // For object properties, we use the node's parent (the object) instead. This is a consequence
-    // of the source-rewriting hackery that we use to support the `@lends` tag.
+    // For object properties, we use the node's parent (the object) instead.
     if (node.type !== Syntax.Property && node.enclosingScope) {
         doclet = this._getDoclet(node.enclosingScope.nodeId);
 
@@ -438,21 +419,48 @@ Parser.prototype.resolveThis = function(node) {
     return result;
 };
 
-// TODO: docs
 /**
- * Given 'var foo = { x: 1 }', find foo from x.
+ * Given an AST node representing an object property, find the doclets for the parent object or
+ * objects.
+ *
+ * If the object is part of a simple assignment (for example, `var foo = { x: 1 }`), this method
+ * returns a single doclet (in this case, the doclet for `foo`).
+ *
+ * If the object is part of a chained assignment (for example, `var foo = exports.FOO = { x: 1 }`,
+ * this method returns multiple doclets (in this case, the doclets for `foo` and `exports.FOO`).
+ *
+ * @param {Object} node - An AST node representing an object property.
+ * @return {Array.<jsdoc/doclet.Doclet>} An array of doclets for the parent object or objects, or
+ * an empty array if no doclets are found.
  */
-Parser.prototype.resolvePropertyParent = function(node) {
+Parser.prototype.resolvePropertyParents = function(node) {
+    var currentAncestor = node.parent;
+    var nextAncestor = currentAncestor ? currentAncestor.parent : null;
     var doclet;
+    var doclets = [];
 
-    if (node.parent) {
-        doclet = this._getDoclet(node.parent.nodeId);
+    while (currentAncestor) {
+        doclet = this._getDoclet(currentAncestor.nodeId);
+        if (doclet) {
+            doclets.push(doclet);
+        }
+
+        // if the next ancestor is an assignment expression (for example, `exports.FOO` in
+        // `var foo = exports.FOO = { x: 1 }`, keep walking upwards
+        if (nextAncestor && nextAncestor.type === Syntax.AssignmentExpression) {
+            nextAncestor = nextAncestor.parent;
+            currentAncestor = currentAncestor.parent;
+        }
+        // otherwise, we're done
+        else {
+            currentAncestor = null;
+        }
     }
 
-    return doclet;
+    return doclets;
 };
 
-// TODO docs
+// TODO: docs
 /**
  * Resolve what function a var is limited to.
  * @param {astnode} node
@@ -486,24 +494,25 @@ Parser.prototype.resolveVar = function(node, basename) {
 
 // TODO: docs
 Parser.prototype.resolveEnum = function(e) {
-    var doclet = this.resolvePropertyParent(e.code.node.parent);
+    var doclets = this.resolvePropertyParents(e.code.node.parent);
 
-    if (doclet && doclet.isEnum) {
-        if (!doclet.properties) {
-            doclet.properties = [];
+    doclets.forEach(function(doclet) {
+        if (doclet && doclet.isEnum) {
+            doclet.properties = doclet.properties || [];
+
+            // members of an enum inherit the enum's type
+            if (doclet.type && !e.doclet.type) {
+                // clone the type to prevent circular refs
+                e.doclet.type = jsdoc.util.doop(doclet.type);
+            }
+
+            delete e.doclet.undocumented;
+            e.doclet.defaultvalue = e.doclet.meta.code.value;
+
+            // add the doclet to the parent's properties
+            doclet.properties.push(e.doclet);
         }
-
-        // members of an enum inherit the enum's type
-        if (doclet.type && !e.doclet.type) {
-            e.doclet.type = doclet.type;
-        }
-
-        delete e.doclet.undocumented;
-        e.doclet.defaultvalue = e.doclet.meta.code.value;
-
-        // add a copy of the doclet to the parent's properties
-        doclet.properties.push( jsdoc.util.doop(e.doclet) );
-    }
+    });
 };
 
 // TODO: document other events

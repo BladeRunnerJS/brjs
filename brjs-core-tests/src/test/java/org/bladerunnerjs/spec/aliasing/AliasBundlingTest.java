@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class AliasBundlingTest extends SpecTest {
 	private AliasesFile aspectAliasesFile;
 	private AliasDefinitionsFile brLibAliasDefinitionsFile, bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	private AliasesFile worbenchAliasesFile;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;
@@ -445,5 +445,17 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsCommonJsClasses("br/DevScenarioClass")
 			.and(response).doesNotContainClasses("br/GroupProductionClass")
 			.and(response).containsText("'br.service':{'class':'br/DevScenarioClass'");
+	}
+	
+	@Test
+	public void aliasesRequestedForAWorkbenchArentCachedAndReusedForAnAspect() throws Exception {
+		given(brLib).hasClasses("br/AliasRegistry", "br/Class", "br/StubClass")
+			.and(aspectAliasesFile).hasAlias("the-alias", "br/Class")
+			.and(worbenchAliasesFile).hasAlias("the-alias", "br/StubClass")
+			.and(aspect).indexPageRefersTo("'the-alias'", "br.AliasRegistry")
+			.and(workbench).indexPageRefersTo("'the-alias'", "br.AliasRegistry")
+			.and(workbench).hasReceivedRequest("aliasing/bundle.js");
+		when(aspect).requestReceivedInDev("aliasing/bundle.js", response);
+		then(response).containsText("module.exports = {'the-alias':{'class':'br/Class','className':'br/Class'}};");
 	}
 }

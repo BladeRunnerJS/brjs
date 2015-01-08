@@ -34,11 +34,6 @@ dependencies {
 
 	testRunner project(path: ':brjs-logger')
 	testRunner project(path: ':brjs-logger-binding')
-	testRunner files('build-resources/JsTestDriver.conf')
-	
-//	phantomjs dependency('phantomjs_windows')
-//	phantomjs dependency('phantomjs_mac')
-//	phantomjs dependency('phantomjs_linux')
 	
 	browsers_dep dependency('chrome')
 	browsers_dep dependency('firefox')
@@ -78,11 +73,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	destinationDir projectDir
 	inputs.property "buildVersion", buildVersion
 	inputs.property "buildHostname", buildHostname
-	from ("build-resources")
-	{
-		into "conf"
-		include "*.conf"
-	}
 	from (configurations.system)
 	{
 		into "sdk/libs/java/system"
@@ -128,7 +118,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		into "sdk/libs/java/testRunner"
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
-	
+
 //	from (configurations.phantomjs.collect { zipTree(it) })
 //	{
 //		into "sdk/phantomjs"
@@ -151,6 +141,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
                             			"	DistType: \"bladerunnerjs\","+
                             			"	BuildHostname: \"${buildHostname}\""+
                             			"}"
+        file("sdk/libs/java/testRunner/JsTestDriver.conf").text = "timeout: 90"
 	}
 }
 
@@ -170,7 +161,7 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 
 // "libs/javascript" is relative to the sdk directory
 [ "Chrome", "Firefox", "IE", "PhantomJS" ].each {
-	def testJsTask = createTestTask "testJs${it}", "libs/javascript", "ALL", it.toLowerCase()	
+	def testJsTask = createTestTask "testJs${it}", "libs/javascript", "ALL", it.toLowerCase()
 	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase()
 	task "test${it}", dependsOn: [testJsTask, testSystemAppsTask]
 }
@@ -194,15 +185,11 @@ task createSdkJsDocs, dependsOn: assembleSdk, {
 			from "generated/app/${jsDocTmpAppName}/jsdoc/"
 			into "sdk/docs/js"
 		}
-		copy {
-			from "build-resources/"
-			into "sdk/docs/js"
-			include "hosted-docs.css"
-		}
 	}
 	doLast {
 		delete file("apps/${jsDocTmpAppName}")
-	} 
+		file("sdk/docs/js/hosted-docs.css").text = ".regeneratedDocsBtn, .subnav, #topnav { display: none !important; }"
+	}
 }
 
 
@@ -273,9 +260,10 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	include "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
 	exclude "**/.gitignore", "**/.p4ignore"
 	exclude "**/libs/**/tests/*", "**/libs/javascript/*/test-*/*", "**/libs/**/src-test/*"
-	exclude "**/system-applications/**/tests/*", "**/system-applications/*/test-*/*", "**/system-applications/**/src-test/*" 
+	exclude "**/system-applications/**/tests/*", "**/system-applications/*/test-*/*", "**/system-applications/**/src-test/*"
 	exclude "**/bundles/*"
 	exclude "**/libs/javascript/**node_modules/**", "**/*_NODIST/*"
+	exclude "**/empty.txt"
 }
 build.dependsOn distZip
 distZip.mustRunAfter test
@@ -319,8 +307,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"sdk/libs/javascript/*/resources/**",
 		"sdk/system-applications/*/*",
 		"sdk/system-applications/*/WEB-INF/lib/*",
-		"sdk/templates/*/*",
-		"sdk/templates/*/tests/*",
+		"sdk/templates/default/*/*",
+		"sdk/templates/default/*/tests/*",
         "sdk/docs/java/*",
 		"sdk/docs/java/**/*",
 		"sdk/docs/js/*",

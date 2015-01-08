@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class HTMLContentPluginTest extends SpecTest
 	private StringBuffer response = new StringBuffer();
 	private Bladeset bladeset;
 	private Blade blade;
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	private NamedDirNode workbenchTemplate;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;
@@ -38,7 +38,7 @@ public class HTMLContentPluginTest extends SpecTest
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
-			workbenchTemplate = brjs.template("workbench");
+			workbenchTemplate = brjs.sdkTemplateGroup("default").template("workbench");
 			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
 			
@@ -192,7 +192,7 @@ public class HTMLContentPluginTest extends SpecTest
 		given(blade).containsResourceFileWithContents("html/view.html", "<div id='appns.bs.b1.id'>@bundlePath@/some/path</div>")
 			.and(brjs).hasDevVersion("dev")
 			.and(blade).hasClass("appns/bs/b1/Class1")
-			.and(workbench).indexPageRefersTo("appns/bs/b1/Class1");
+			.and(workbench).indexPageRequires("appns/bs/b1/Class1");
 		when(workbench).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsText("v/dev/some/path");
 	}

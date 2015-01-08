@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
-import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class NodeCommander<N extends Node> extends ModelCommander {
@@ -30,8 +29,8 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 		return commanderChainer;
 	}
 	
-	public CommanderChainer populate() throws Exception {
-		call(() -> ((BRJSNode) node).populate());
+	public CommanderChainer populate(String templateGroup) throws Exception {
+		call(() -> ((BRJSNode) node).populate(templateGroup));
 		
 		return commanderChainer;
 	}
@@ -58,7 +57,7 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	}
 	
 	public CommanderChainer hasPackageStyle(String packagePath, String jsStyle) {
-		JsStyleUtility.setJsStyle( (BRJS) node.root(), node.file(packagePath), jsStyle);
+		((BRJS) node.root()).jsStyleAccessor().setJsStyle(node.file(packagePath), jsStyle);
 		return commanderChainer;
 	}
 	

@@ -18,7 +18,7 @@ public class AppConfCommander extends ModelCommander {
 		this.appConf = appConf;
 	}
 	
-	public AppConfCommander setAppNamespace(final String requirePrefix) throws Exception {
+	public AppConfCommander setRequirePrefix(final String requirePrefix) throws Exception {
 		call(new Command() {
 			public void call() throws Exception {
 				appConf.setRequirePrefix(requirePrefix);

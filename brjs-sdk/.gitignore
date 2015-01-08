@@ -15,9 +15,15 @@ sdk/libs/java
 sdk/version.txt
 sdk/phantomjs
 
+conf/JsTestDriver.conf
+conf/brjs.conf
+conf/phantomjs-runner.js
+conf/users.properties
+
 # TODO: delete these lines when no longer needed -- these lines are needed to work around 2 separate bugs in the Java git implementation (EGit) provided with Eclipse Kepler
 #   1. Egit doesn't currently support recursive wildcards (**) as used in the main brjs .gitignore
 #   2. Egit currently won't consider recursive matches defined before a blanket block pattern, followed by negated block patterns (!), so is ignoring matches in the main brjs .gitignore
 brjs-*.jar
 *.bundle
 bundle.js
+/build/

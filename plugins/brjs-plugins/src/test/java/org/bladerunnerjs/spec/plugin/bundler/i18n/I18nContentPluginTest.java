@@ -8,7 +8,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.SdkJsLib;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class I18nContentPluginTest extends SpecTest
 	private StringBuffer response = new StringBuffer();
 	private Bladeset bladeset;
 	private Blade blade;
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	private BladerunnerConf bladerunnerConf;
 	private SdkJsLib sdkLib;
 	private Bladeset defaultBladeset;

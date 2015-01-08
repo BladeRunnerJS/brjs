@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class CssRewriterTest extends SpecTest
 	private StringBuffer response;
 	private Bladeset bladeset;
 	private Blade blade;
-	private Workbench workbench;
+	private BladeWorkbench workbench;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -326,7 +326,7 @@ public class CssRewriterTest extends SpecTest
 	{
 		given(workbench).containsFileWithContents("resources/style.css", "background-image: url(images/flower.png);")
 			.and(blade).hasClass("bs/b1/Class1")
-			.and(workbench).indexPageHasContent("require('bs/b1/Class1');");
+			.and(workbench).indexPageRequires("bs/b1/Class1");
 		when(workbench).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1/workbench_resource/resources/images/flower.png);");
 	}

@@ -33,9 +33,9 @@ public class AppBuilder extends NodeBuilder<App> {
 		this.specTest = modelTest;
 	}
 	
-	public BuilderChainer hasBeenPopulated(String requirePrefix) throws Exception
+	public BuilderChainer hasBeenPopulated(String requirePrefix, String templateGroup) throws Exception
 	{
-		app.populate(requirePrefix);
+		app.populate(requirePrefix, templateGroup);
 		
 		return builderChainer;
 	}
@@ -93,7 +93,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	
 	public BuilderChainer hasReceivedRequest(String requestPath, StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException 
 	{
-		ResponseContent content = app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+		ResponseContent content = app.requestHandler().handleLogicalRequest(requestPath, new StaticContentAccessor(app));
 		if (response == null) {
 			return builderChainer;
 		}

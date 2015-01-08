@@ -7,11 +7,13 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.AppJsLib;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -23,7 +25,9 @@ public class CreateLibraryCommandTest extends SpecTest {
 	Aspect aspect;
 	JsLib lib;
 	JsLib badLib;
-	
+	TemplateGroup angularTemplates;
+	TemplateGroup defaultTemplates;
+	TemplateGroup myTemplateTemplates;
 	StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -38,6 +42,9 @@ public class CreateLibraryCommandTest extends SpecTest {
 			aspect = app.aspect("default");
 			lib = app.jsLib("lib");
 			badLib = app.jsLib("lib#$@/");
+			angularTemplates = brjs.sdkTemplateGroup("angular");
+			defaultTemplates = brjs.sdkTemplateGroup("default");
+			myTemplateTemplates = brjs.sdkTemplateGroup("myTemplate");
 	}
 	
 	@Test
@@ -91,6 +98,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 	@Test
 	public void theCorrectStructureIsCreatedWhenABRLibIsCreated() throws Exception {
 		given(app).hasBeenCreated();
+			//.and(defaultTemplates).templateGroupCreated();
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(lib).dirExists()
 			.and(lib).hasDir("src")
@@ -179,5 +187,47 @@ public class CreateLibraryCommandTest extends SpecTest {
 			.and(app).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void appIsCreatedWithTheSpecifiedTemplate() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(app).hasBeenCreated()
+			.and(angularTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt");
+		when(brjs).runCommand("create-library", "app", "lib", "--template", "angular");
+		then(app.appJsLib("lib")).dirExists()
+			.and(app.appJsLib("lib")).hasFile("fileForLibAngular.txt");
+	}
+	
+	@Test
+	public void appIsCreatedWithTheSpecifiedTemplateIfMoreTemplatesExist() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(app).hasBeenCreated()
+			.and(angularTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
+			.and(defaultTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
+			.and(myTemplateTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
+		when(brjs).runCommand("create-library", "app", "lib", "--template", "myTemplate");
+		then(app.appJsLib("lib")).dirExists()
+			.and(app.appJsLib("lib")).hasFile("fileForLibMyTemplate.txt");
+	}
+	
+	@Test
+	public void defaultTemplateIsUsedIfNoneSpecifiedAndMultipleTemplatesExist() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(app).hasBeenCreated()
+			.and(angularTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
+			.and(defaultTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
+			.and(myTemplateTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
+		when(brjs).runCommand("create-library", "app", "lib");
+		then(app.appJsLib("lib")).dirExists()
+			.and(app.appJsLib("lib")).hasFile("fileForLibDefault.txt");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfSpecifiedTemplateDoesNotExist() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(app).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib", "--template", "nonexistent");
+		then(exceptions).verifyException(TemplateNotFoundException.class);
 	}
 }

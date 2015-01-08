@@ -13,12 +13,14 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 
 public final class Blade extends AbstractComponent implements NamedNode
 {
-	private final NodeItem<Workbench> workbench = new NodeItem<>(this, Workbench.class, "workbench");
+	private final NodeItem<BladeWorkbench> workbench = new NodeItem<>(this, BladeWorkbench.class, "workbench");
 	private final String name;
 	private final List<AssetContainer> bladeAssetContainers;
 	
@@ -73,12 +75,13 @@ public final class Blade extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException
 	{
-		super.populate();
-		testType("unit").defaultTestTech().populate();
-		testType("acceptance").defaultTestTech().populate();
-		workbench().populate();
+		super.populate(templateGroup);
+		
+		TemplateUtility.populateOrCreate(testType("unit").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(testType("acceptance").defaultTestTech(), templateGroup);
+		TemplateUtility.populateOrCreate(workbench(), templateGroup);
 	}
 	
 	@Override
@@ -96,7 +99,7 @@ public final class Blade extends AbstractComponent implements NamedNode
 		return (Bladeset) parentNode();
 	}
 	
-	public Workbench workbench()
+	public BladeWorkbench workbench()
 	{
 		return workbench.item();
 	}

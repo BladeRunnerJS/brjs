@@ -23,7 +23,8 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.TemplateGroup;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -75,7 +76,6 @@ import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
-import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
@@ -83,7 +83,7 @@ import org.junit.Assert;
 import org.junit.Before;
 
 
-public abstract class SpecTest extends TestModelAccessor
+public abstract class SpecTest
 {
 	public static final String HTTP_REQUEST_PREFIX = "http://localhost";
 	
@@ -115,7 +115,7 @@ public abstract class SpecTest extends TestModelAccessor
 		logging = new LogMessageStore();
 		exceptions = new ArrayList<>();
 		observer = mock(EventObserver.class);
-		testSdkDirectory = createTestSdkDirectory();
+		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
 		pluginLocator = new MockPluginLocator();
 		webappTester = new WebappTester(testSdkDirectory);
 		appVersionGenerator = new MockAppVersionGenerator();
@@ -150,15 +150,15 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return super.createModel(testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
+		return BRJSTestModelFactory.createModel(testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
-		return super.createNonTestModel(testSdkDirectory, logging);
+		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging);
 	}
 	
 	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
-		return super.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
+		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
 	}
 	
 	public String getActiveCharacterEncoding() {
@@ -180,7 +180,7 @@ public abstract class SpecTest extends TestModelAccessor
 	@After
 	public void verifyLogs() {
 		then(logging).verifyNoUnhandledMessages()
-			.and(logging).verifyLogsRecievedIfCaptureEnabled();
+			.and(logging).verifyLogsReceivedIfCaptureEnabled();
 	}
 	
 	@After
@@ -216,6 +216,9 @@ public abstract class SpecTest extends TestModelAccessor
 	public NamedNodeBuilder given(NamedNode namedDirNode) { return new NamedNodeBuilder(this, namedDirNode); }
 	public NamedNodeCommander when(NamedNode namedDirNode) { return new NamedNodeCommander(this, namedDirNode); }
 	public NamedNodeVerifier then(NamedNode namedDirNode) { return new NamedNodeVerifier(this, namedDirNode); }
+	
+	
+	public TemplateGroupBuilder given(TemplateGroup templateGroup) { return new TemplateGroupBuilder(this, templateGroup); }
 	
 	// Directory
 	public DirectoryVerifier then(MemoizedFile dir) { return new DirectoryVerifier(this, dir); }
@@ -264,9 +267,9 @@ public abstract class SpecTest extends TestModelAccessor
 	public BladesetVerifier then(Bladeset bladeset) { return new BladesetVerifier(this, bladeset); }
 	
 	// Workbench
-	public WorkbenchBuilder given(Workbench workbench) { return new WorkbenchBuilder(this, workbench); }
-	public WorkbenchCommander when(Workbench workbench) { return new WorkbenchCommander(this, workbench); }
-	public WorkbenchVerifier then(Workbench workbench) { return new WorkbenchVerifier(this, workbench); }
+	public WorkbenchBuilder given(Workbench<?> workbench) { return new WorkbenchBuilder(this, workbench); }
+	public WorkbenchCommander when(Workbench<?> workbench) { return new WorkbenchCommander(this, workbench); }
+	public WorkbenchVerifier then(Workbench<?> workbench) { return new WorkbenchVerifier(this, workbench); }
 	
 	// JsLib
 	public JsLibBuilder given(JsLib jsLib) { return new JsLibBuilder(this, jsLib); }
@@ -314,21 +317,5 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	//TODO: we might find we need a better way to deal with multiple methods that want to return different verifiers based on a List
 	public RequestListVerifier thenRequests(List<String> requests) { return new RequestListVerifier(this, requests); }
-	
-	
-	
-	private File createTestSdkDirectory() {
-		File sdkDir;
-		
-		try {
-			sdkDir = FileUtils.createTemporaryDirectory( this.getClass() );
-			new File(sdkDir, "sdk").mkdirs();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return sdkDir;
-	}
 	
 }

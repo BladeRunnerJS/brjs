@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +70,12 @@ public class XmlBundleWriter
 				{
 					for(XmlSiblingReader siblingReader : siblingReaders)
 					{
-						siblingReader.close();
+						try {
+							siblingReader.close();
+						}
+						catch(XMLStreamException e) {
+							// do nothing: we want to close as many readers as possible
+						}
 					}
 				}
 			}
@@ -112,7 +118,7 @@ public class XmlBundleWriter
 	/* returns a map of xml root elements to a list of xml sibling readers */
 	private Map<String, List<XmlSiblingReader>> getResourceReaders(List<Asset> xmlAssets) throws  ContentProcessingException
 	{
-		Map<String, List<XmlSiblingReader>> resourceReaders = new HashMap<String, List<XmlSiblingReader>>();
+		Map<String, List<XmlSiblingReader>> resourceReaders = new LinkedHashMap<String, List<XmlSiblingReader>>();
 		System.setProperty("javax.xml.stream.XMLInputFactory", "com.sun.xml.stream.ZephyrParserFactory");
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		

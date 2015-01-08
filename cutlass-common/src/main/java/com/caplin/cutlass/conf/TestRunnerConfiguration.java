@@ -72,21 +72,14 @@ public class TestRunnerConfiguration {
 		}
 		catch (ClassCastException e) 
 		{
-			throw new NoBrowsersDefinedException(getRelativeDir().getCanonicalPath());
+			throw new NoBrowsersDefinedException(getRelativeDir().getAbsolutePath());
 		}
 		return paths;
 	}
 	
 	public File getJsTestDriverJarFile() {
 		File jarFile = new File(relativeDir, jsTestDriverJar);
-		try
-		{
-			return jarFile.getCanonicalFile();
-		}
-		catch (IOException e)
-		{
-			return jarFile;
-		}
+		return jarFile.getAbsoluteFile();
 	}
 	
 	public int getPortNumber() {

@@ -13,8 +13,8 @@ import com.google.common.base.Joiner;
 
 public class LogMessageStore
 {
-	public static final String NO_MESSAGES_RECIEVED = "no %s messages have been recieved (or logging has not been enabled for this test)";
-	public static final String NO_MESSAGE_MATCHING_RECIEVED = "no %s message matching the message '%s'";
+	public static final String NO_MESSAGES_RECEIVED = "no %s messages have been received (or logging has not been enabled for this test)";
+	public static final String NO_MESSAGE_MATCHING_RECEIVED = "no %s message matching the message '%s'";
 	public static final String MESSAGE_NOT_LOGGED = "%s message '%s' (params: %s) not logged";
 	public static final String UNEXPECTED_LOG_MESSAGES = "Unexpected %s log messages: [%s]";
 	
@@ -194,7 +194,7 @@ public class LogMessageStore
 	{
 		verifyNoMoreMessageOnList("warn", warnMessages);
 	}
-
+	
 	public void verifyNoMoreInfoMessages()
 	{
 		verifyNoMoreMessageOnList("info", infoMessages);
@@ -229,10 +229,10 @@ public class LogMessageStore
 		if (strictCheck)
 		{
 			foundMessage = (!messages.isEmpty()) ? messages.removeFirst() : null;
-			isNullFailMessage = NO_MESSAGES_RECIEVED;
+			isNullFailMessage = NO_MESSAGES_RECEIVED;
 		} else {
 			foundMessage = findFirstMessageMatching(messages, expectedMessage.message);
-			isNullFailMessage = NO_MESSAGE_MATCHING_RECIEVED;
+			isNullFailMessage = NO_MESSAGE_MATCHING_RECEIVED;
 		}
 		assertNotNull( String.format(isNullFailMessage, logLevel, expectedMessage.message) , foundMessage );
 		

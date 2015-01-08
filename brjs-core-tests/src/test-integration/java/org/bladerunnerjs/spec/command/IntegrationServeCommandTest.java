@@ -6,6 +6,7 @@ import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Me
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
@@ -17,7 +18,8 @@ import com.google.common.base.Predicate;
 public class IntegrationServeCommandTest extends SpecTest
 {
 	private ApplicationServer appServer;
-	
+	private TemplateGroup templates;
+
 	@Before
 	public void initTestObjects() throws Exception
 	{
@@ -27,6 +29,7 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).containsFolder("sdk/system-applications");
 		appServer = brjs.applicationServer(appServerPort);
 		brjs.bladerunnerConf().setJettyPort(appServerPort);
+		templates = brjs.sdkTemplateGroup("default");
 		brjs.appJars().create();
 	}
 	
@@ -80,7 +83,9 @@ public class IntegrationServeCommandTest extends SpecTest
 	{
 		given(brjs).hasBeenAuthenticallyReCreated()
 			.and(brjs).localeForwarderHasContents("")
-			.and(brjs.app("app1")).hasBeenPopulated();
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
+			.and(brjs.app("app1")).hasBeenPopulated("default");
 		when(brjs).runThreadedCommand("serve");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1");
 	}

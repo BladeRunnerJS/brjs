@@ -54,13 +54,7 @@ public class BRJSSecurityManager extends SecurityManager {
 	}
 	
 	private static boolean isAncestor(File file, File ancestor) {
-		File f = file;
-		
-		while (f != null) {
-			if (f.equals(ancestor)) return true; f = f.getParentFile();
-		}
-		
-		return false;
+		return file.getAbsolutePath().contains(ancestor.getAbsolutePath());
 	}
 	
 	public void checkRead(String file) {
