@@ -22,7 +22,6 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -30,15 +29,12 @@ import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.utility.ContentPathParser;
-import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 
 
 public class HTMLContentPlugin extends AbstractContentPlugin
 {
-	private ContentPathParser contentPathParser;
 	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 	private final List<String> requestPaths = new ArrayList<>();
 	
@@ -46,15 +42,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	private BRJS brjs;
 	
 	{
-		try {
-			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("html/bundle.html").as("bundle-request");
-			contentPathParser = contentPathParserBuilder.build();
-			requestPaths.add(contentPathParser.createRequest("bundle-request"));
-		}
-		catch(MalformedTokenException e) {
-			throw new RuntimeException(e);
-		}
+		requestPaths.add("html/bundle.html");
 	}
 
 	@Override
@@ -68,12 +56,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	public String getRequestPrefix() {
 		return "html";
 	}
-	
-	@Override
-	public ContentPathParser getContentPathParser()
-	{
-		return contentPathParser;
-	}
 
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
@@ -84,6 +66,10 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws MalformedRequestException, ContentProcessingException
 	{
+		if(!contentPath.equals(requestPaths.get(0))) {
+			throw new MalformedRequestException(contentPath, "Requests must be for exactly '" + requestPaths.get(0) + "'.");
+		}
+		
 		identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
 		

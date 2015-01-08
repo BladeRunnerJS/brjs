@@ -17,12 +17,13 @@ import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.MinifierPlugin;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class CompositeJsContentPlugin extends AbstractContentPlugin {
+public class CompositeJsContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin {
 	public static final String PROD_BUNDLE_REQUEST = "prod-bundle-request";
 	public static final String DEV_BUNDLE_REQUEST = "dev-bundle-request";
 	

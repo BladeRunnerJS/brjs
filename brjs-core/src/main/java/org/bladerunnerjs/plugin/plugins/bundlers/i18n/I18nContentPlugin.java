@@ -23,6 +23,7 @@ import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -32,7 +33,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-public class I18nContentPlugin extends AbstractContentPlugin
+public class I18nContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin
 {
 	public static final String LANGUAGE_BUNDLE = "language-bundle";
 	public static final String LANGUAGE_AND_LOCATION_BUNDLE = "language-and-location-bundle";

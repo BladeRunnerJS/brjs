@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.utility.ContentPathParser;
 
 public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements ContentPlugin {
 	private ContentPlugin contentPlugin;
@@ -33,12 +32,6 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	@Override
 	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
 		return contentPlugin.getPluginsThatMustAppearAfterThisPlugin();
-	}
-	
-	@Override
-	public ContentPathParser getContentPathParser() {
-		initializePlugin();
-		return contentPlugin.getContentPathParser();
 	}
 	
 	@Override

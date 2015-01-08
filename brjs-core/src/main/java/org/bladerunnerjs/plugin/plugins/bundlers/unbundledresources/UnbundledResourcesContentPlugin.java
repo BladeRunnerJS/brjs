@@ -26,12 +26,13 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.BinaryResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
+public class UnbundledResourcesContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin
 {
 
 	private static final String FILE_PATH_REQUEST_FORM = "file-path";

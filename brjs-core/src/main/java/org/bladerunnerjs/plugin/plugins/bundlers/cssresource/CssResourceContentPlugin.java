@@ -38,13 +38,14 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.BinaryResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.css.CssAssetPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.css.CssRewriter;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-public class CssResourceContentPlugin extends AbstractContentPlugin {	
+public class CssResourceContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin {	
 	public static final String ASPECT_THEME_REQUEST = "aspect-theme-request";
 	public static final String ASPECT_RESOURCE_REQUEST = "aspect-resource-request";
 	public static final String BLADESET_THEME_REQUEST = "bladeset-theme-request";

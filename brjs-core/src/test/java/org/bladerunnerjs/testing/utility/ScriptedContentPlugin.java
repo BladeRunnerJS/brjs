@@ -12,12 +12,13 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class ScriptedContentPlugin extends AbstractContentPlugin
+public class ScriptedContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private List<String> requestPaths = new ArrayList<>();

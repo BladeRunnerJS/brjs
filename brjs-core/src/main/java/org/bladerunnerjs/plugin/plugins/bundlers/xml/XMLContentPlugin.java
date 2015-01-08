@@ -14,36 +14,22 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.utility.ContentPathParser;
-import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.AppMetadataUtility;
-
 
 public class XMLContentPlugin extends AbstractContentPlugin
 {
-	
-	private ContentPathParser contentPathParser;
 	private BRJS brjs = null;
 	private AssetPlugin xmlAssetPlugin;
 	private final List<String> requestPaths = new ArrayList<>();
 	private XmlBundlerConfig xmlBundlerConfig;
 	
 	{
-		try {
-			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("xml/bundle.xml").as("bundle-request");
-			contentPathParser = contentPathParserBuilder.build();
-			requestPaths.add(contentPathParser.createRequest("bundle-request"));
-		}
-		catch(MalformedTokenException e) {
-			throw new RuntimeException(e);
-		}
+		requestPaths.add("xml/bundle.xml");
 	}
 
 	@Override
@@ -58,12 +44,6 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	public String getRequestPrefix() {
 		return "xml";
 	}
-	
-	@Override
-	public ContentPathParser getContentPathParser()
-	{
-		return contentPathParser;
-	}
 
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
@@ -74,6 +54,10 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws MalformedRequestException, ContentProcessingException
 	{
+		if(!contentPath.equals(requestPaths.get(0))) {
+			throw new MalformedRequestException(contentPath, "Requests must be for exactly '" + requestPaths.get(0) + "'.");
+		}
+		
 		XmlBundleWriter bundleWriter = new XmlBundleWriter(xmlBundlerConfig);
 		List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
 

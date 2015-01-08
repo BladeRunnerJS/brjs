@@ -25,12 +25,13 @@ import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class CssContentPlugin extends AbstractContentPlugin {
+public class CssContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin {
 	
 	private final ContentPathParser contentPathParser;
 	private AssetPlugin cssAssetPlugin;

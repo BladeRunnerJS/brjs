@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.utility.ContentPathParser;
 
 /**
  * <p>
@@ -49,17 +48,9 @@ public interface ContentPlugin extends OrderedPlugin {
 	String getRequestPrefix();
 	
 	/**
-	 * Returns the content-path parser that will be used to parse all requests for this plug-in.
-	 * 
-	 * <p>Although the parsing mechanism used by content plug-ins could be an internal implementation detail within each class, by exposing it we
-	 * make it possible to create requests for external content plug-ins that are less brittle to change.</p>
-	 */
-	ContentPathParser getContentPathParser();
-	
-	/**
 	 * Get a reader for the content generated for the given request.
 	 * 
-	 * @param contentPath The parsed content path created using the content path parser available from {@link #getContentPathParser}.
+	 * @param contentPath The content path the request is being made for.
 	 * @param bundleSet The bundle-set for the bundlable node to which this request is related to.
 	 * @param contentAccessor The output stream the content will be written to.
 	 * @param version TODO

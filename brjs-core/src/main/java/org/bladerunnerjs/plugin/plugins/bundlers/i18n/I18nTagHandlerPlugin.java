@@ -10,7 +10,9 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
 
 
 public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
@@ -34,11 +36,13 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
+			ContentPathParser i18nContentPathParser = i18nContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
 			String contentPath = "";
+			
 			if (locale.isCompleteLocale()) {
-				contentPath = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, locale.getLanguageCode(), locale.getCountryCode());
+				contentPath = i18nContentPathParser.createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, locale.getLanguageCode(), locale.getCountryCode());
 			} else {
-				contentPath = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale.getLanguageCode());				
+				contentPath = i18nContentPathParser.createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale.getLanguageCode());				
 			}
 			App app = bundleSet.getBundlableNode().app();
 			String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
