@@ -30,12 +30,19 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 	private static String KEENIO_APP_KEY = "7b8d1bd48df22db797f8b7b9ec61063cd0cd16de04db4bba62119f1d2ecbeff4bb0e66468c2c3948e70074cfe6ec93a429d65177193935f7cfad1ce11ec7023619ff03185aa1bc005520ece21fc942ce819afcf948556541e16ee131d32ca6cdf48ca5aa73834346adcc6e06fed163d6";
 	// only include 1 key here for atleast *some* security - since this is only a write key and its only for rough stats its not *too* much of an issue. OK well maybe it is //TODO: figure out how to add this in at compile time
 	
+	public BRJSUsageEventObserver() {
+		this.keenClient = new JavaKeenClientBuilder().build();
+		KeenClient.initialize(keenClient);
+	}
+	
+	BRJSUsageEventObserver(KeenClient keenClient) {
+		this.keenClient = keenClient;
+	}
+	
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
 		brjs.addObserver(this);
-		keenClient = new JavaKeenClientBuilder().build();
-		KeenClient.initialize(keenClient);
 		logger = brjs.logger(this.getClass()); 
 		KeenProject project = new KeenProject(KEENIO_PROJECT_ID, KEENIO_APP_KEY, KEENIO_APP_KEY);
 		keenClient.setDefaultProject(project);
@@ -106,7 +113,7 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 		
 		logger.debug("recording '%s' event with the payload: %s", eventType, eventData);
 		outstandingKeenEvents++;
-		KeenClient.client().addEventAsync(null, eventType, eventData, null, new KeenCallback()
+		keenClient.addEventAsync(null, eventType, eventData, null, new KeenCallback()
 		{
 			@Override
 			public void onSuccess()
