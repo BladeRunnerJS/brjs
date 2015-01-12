@@ -22,7 +22,8 @@ public class IntegrationJsDocCommandTest extends SpecTest {
 	public void initTestObjects() throws Exception {
 		given(brjs).hasCommandPlugins(new JsDocCommand())
 			.and(brjs).hasBeenCreated()
-			.and(brjs).usesProductionTemplates();
+			.and(brjs).usesProductionTemplates()
+			.and(brjs).usesJsDocResources();
 		app = brjs.app("app");
 		appLib = app.jsLib("lib");
 		jsdocOutputDir = app.storageDir("jsdoc");
