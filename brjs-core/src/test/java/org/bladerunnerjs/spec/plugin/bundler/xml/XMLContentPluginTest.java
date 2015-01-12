@@ -132,7 +132,15 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem2WithXmlProlog(mergeElem("id1")));
 		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsTextOnce("<?xml ");
-		System.err.println(response);
+	}
+	
+	@Test
+	public void xmlFilesAreJustConcatenatedIfNoBundleConfigExists_EvenIfItResultsInMultipleXmlPrologs() throws Exception {
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
+			.and(aspect).containsResourceFileWithContents("config.xml", rootElemWithXmlProlog(mergeElem("id1")))
+			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem2WithXmlProlog(mergeElem("id1")));
+		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsTextANumberOfTimes("<?xml ", 2);
 	}
 	
 	@Test
