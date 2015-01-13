@@ -92,6 +92,15 @@ br.presenter.testing.PresentationModelFixture.prototype.doWhen = function(sPrope
 	this._doGivenAndDoWhen(sProperty, vValue);
 };
 
+function _assertEquals(msg, expected, actual) {
+	if(expected instanceof Array) {
+		assertEquals(msg, expected, actual);
+	}
+	else {
+		assertSame(msg, expected, actual);
+	}
+}
+
 /**
  * This method enables the fixture to verify the values on the properties of the presentation 
  * model of a presenter component, including NodeLists. It is also possible to check the 
@@ -109,11 +118,11 @@ br.presenter.testing.PresentationModelFixture.prototype.doThen = function(sPrope
 
 	if(oItem instanceof br.presenter.property.Property)
 	{
-		assertEquals("'" + sProperty + "' should equal '" + vValue + "'", vValue, oItem.getFormattedValue());
+		_assertEquals("'" + sProperty + "' should equal '" + vValue + "'", vValue, oItem.getFormattedValue());
 	}
 	else if(oItem instanceof br.presenter.node.OptionsNodeList)
 	{
-		assertEquals("'" + sProperty + "' should equal '" + vValue + "'", vValue, oItem.getOptionLabels());
+		_assertEquals("'" + sProperty + "' should equal '" + vValue + "'", vValue, oItem.getOptionLabels());
 	}
 	else if(oItem instanceof br.presenter.node.NodeList)
 	{
@@ -129,7 +138,7 @@ br.presenter.testing.PresentationModelFixture.prototype.doThen = function(sPrope
 			var vExpected = vValue[nIndex];
 			var vActual = (oNode.value || oNode.label).getValue();
 			var sErrorMessage = sProperty + "' index " + nIndex + " : '" + vActual + "' should equal '" + vValue + "'";
-			assertEquals(sErrorMessage, vExpected, vActual);
+			_assertEquals(sErrorMessage, vExpected, vActual);
 		});
 	}
 	else if(oItem instanceof br.presenter.testing.PresentationModelFixture.MethodInvocation)
