@@ -5,7 +5,6 @@ apply plugin: com.caplin.gradle.plugins.CompileOnly
 dependencies {
 	compile dependency('commons-fileupload')
 	
-	compileOnly project(":cutlass-common")
 	compileOnly project(":cutlass-tasks")
 	compileOnly dependency('servlet-api')
 	
@@ -18,7 +17,6 @@ dependencies {
 	testCompile dependency('httpmime')
 	testCompile dependency('jetty-all-server')
 	
-	testRuntime project(":cutlass-common")
 	testRuntime project(":cutlass-tasks")
 	testRuntime project(path: ':brjs-logger-binding')
 }
