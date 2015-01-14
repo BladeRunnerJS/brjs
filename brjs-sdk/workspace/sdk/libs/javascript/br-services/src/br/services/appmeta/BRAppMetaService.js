@@ -22,7 +22,7 @@ BRAppMetaService.prototype.getVersion = function() {
 };
 
 BRAppMetaService.prototype.getVersionedBundlePath = function(bundlePath) {
-	return getBundlePath(window.$BRJS_VERSIONED_BUNDLE_PATH, bundlePath);
+	return getBundlePath('../' + window.$BRJS_VERSIONED_BUNDLE_PATH, bundlePath);
 };
 
 BRAppMetaService.prototype.getLocales = function() {

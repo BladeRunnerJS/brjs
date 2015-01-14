@@ -145,9 +145,9 @@ public class AppRequestHandler
 	{
 		if (contentPath.startsWith("/"))
 		{
-			return getContentPathParser().createRequest(UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
+			return "../" + getContentPathParser().createRequest(UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
 		}
-		return getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
+		return "../" + getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
 	}
 
 	public String createBundleRequest(Aspect aspect, String contentPath, String version) throws MalformedTokenException
