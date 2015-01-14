@@ -2,4 +2,5 @@ org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsTagHandlerPlugi
 org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nTagHandlerPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.appmeta.BaseTagHandlePlugin
+org.bladerunnerjs.plugin.plugins.bundlers.unbundledresources.UnbundledResourcesTagHandlerPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.inline.InlineTagHandlerPlugin
