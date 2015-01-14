@@ -337,24 +337,6 @@ GwtTestRunnerTest.prototype.test_stringsMustBeQuoted = function()
 	}, "");
 };
 
-GwtTestRunnerTest.prototype.test_whitespaceIsNotRequired = function()
-{
-	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
-	oTestRunner.startTest();
-	
-	this.getFixture(oTestRunner, "fixture").expects(exactly(5)).doGiven("prop", "value");
-	
-	oTestRunner.doGiven("fixture.prop = 'value'");
-	
-	oTestRunner.doGiven("fixture.prop='value'");
-	 
-	oTestRunner.doGiven("fixture.prop ='value'");
-
-	oTestRunner.doGiven("fixture.prop= 'value'");
-
-	oTestRunner.doGiven("fixture.prop  = 'value'");
-};
-
 GwtTestRunnerTest.prototype.test_normalFixturesCantBeUsedAsPropertyFixtures = function()
 {
 	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
