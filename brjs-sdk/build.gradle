@@ -47,7 +47,6 @@ dependencies {
 
 	browsers_dep dependency('chrome')
 	browsers_dep dependency('firefox')
-
 	browsers_webdriver dependency('firefox-webdriver')
 }
 
@@ -56,8 +55,8 @@ def browserRootDir = buildDir.path+"/browsers"
 def browserProfileDir = "${browserRootDir}/profile"
 task copyBrowsers(type: Sync) {
 	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
+//	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
 	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
-	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
 	from { configurations.phantomjs.collect { browser -> zipTree(browser) } }
 	eachFile {
 		it.path = it.path.replaceAll("-[0-9\\.]+/", "/") // strip the version string
