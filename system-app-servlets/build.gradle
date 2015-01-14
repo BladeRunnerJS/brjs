@@ -5,7 +5,7 @@ apply plugin: com.caplin.gradle.plugins.CompileOnly
 dependencies {
 	compile dependency('commons-fileupload')
 	
-	compileOnly project(":cutlass-tasks")
+	compileOnly project(":brjs-legacy")
 	compileOnly dependency('servlet-api')
 	
 	//TODO: this is wrong, once 'Bundle request api improvements #1099' has been merged in remove this
@@ -17,6 +17,6 @@ dependencies {
 	testCompile dependency('httpmime')
 	testCompile dependency('jetty-all-server')
 	
-	testRuntime project(":cutlass-tasks")
+	testRuntime project(":brjs-legacy")
 	testRuntime project(path: ':brjs-logger-binding')
 }

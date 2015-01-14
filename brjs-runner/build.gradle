@@ -5,7 +5,7 @@ apply plugin: com.caplin.gradle.plugins.CompileOnly
 dependencies {
 	compile project(":brjs-core")
 	compile project(":brjs-logger-binding")
-	compile project(":cutlass-tasks");
+	compile project(":brjs-legacy");
 	
 	testCompile dependency('mockito-core')
 }

@@ -15,7 +15,7 @@ configurations {
 }
 
 dependencies {
-	system project(path: ':cutlass-tasks')
+	system project(path: ':brjs-legacy')
 	system project(path: ':brjs-runner')
 	system project(path: ':brjs-logger')
 	system project(":brjs-logger-binding")
