@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -16,6 +17,7 @@ import org.junit.Test;
 
 public class BuildAppTest extends SpecTest {
 	private App app;
+	private AppConf appConf;
 	private Aspect defaultAspect;
 	private Aspect nonDefaultAspect;
 	private File targetDir;
@@ -28,6 +30,7 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
+			appConf = app.appConf();
 			defaultAspect = app.aspect("default");
 			nonDefaultAspect = app.aspect("aspect2");
 			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
@@ -35,19 +38,29 @@ public class BuildAppTest extends SpecTest {
 	}
 	
 	@Test
-	public void builtAppHasLocaleForwardingPage() throws Exception {
+	public void builtSingleLocaleAppHasAspectIndexPage() throws Exception {
 		given(defaultAspect).containsFile("index.html")
+			.and(brjs).localeForwarderHasContents("")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("index.html", "index.html");
+	}
+	
+	@Test
+	public void builtMultiLocaleAppHasLocaleForwardingPage() throws Exception {
+		given(appConf).supportsLocales("en", "de")
+			.and(defaultAspect).containsFile("index.html")
 			.and(brjs).localeForwarderHasContents("Locale Forwarder")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/index.html", "Locale Forwarder");
 	}
 	
 	@Test
-	public void builtAppHasAspectIndexPage() throws Exception {
-		given(defaultAspect).containsFile("index.html")
+	public void builtMultiLocaleAppHasAspectIndexPage() throws Exception {
+		given(appConf).supportsLocales("en", "de")
+			.and(defaultAspect).containsFile("index.html")
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFile("en/index.html");
+		then(targetDir).containsFileWithContents("en/index.html", "index.html");
 	}
 	
 	@Test
@@ -55,7 +68,7 @@ public class BuildAppTest extends SpecTest {
 		given(defaultAspect).containsFileWithContents("index.html", "<@js.bundle@/>")
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("/en/index.html", "/js/prod/combined/bundle.js");
+		then(targetDir).containsFileWithContents("/index.html", "/js/prod/combined/bundle.js");
 	}
 	
 	@Test
@@ -73,13 +86,14 @@ public class BuildAppTest extends SpecTest {
 		given(defaultAspect).containsFileWithContents("index.jsp", "<%= 1 + 2 %>\n<@js.bundle@/>")
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("/en/index.jsp", "<%= 1 + 2 %>")
-			.and(targetDir).containsFileWithContents("/en/index.jsp", "/js/prod/combined/bundle.js");
+		then(targetDir).containsFileWithContents("/index.jsp", "<%= 1 + 2 %>")
+			.and(targetDir).containsFileWithContents("/index.jsp", "/js/prod/combined/bundle.js");
 	}
 	
 	@Test
 	public void nonDefaultAspectsHaveTheSameIndexPagesButWithinANamedDirectory() throws Exception {
-		given(defaultAspect).containsFileWithContents("index.html", "<@js.bundle@/>")
+		given(appConf).supportsLocales("en", "de")
+			.and(defaultAspect).containsFileWithContents("index.html", "<@js.bundle@/>")
 			.and(nonDefaultAspect).containsFileWithContents("index.html", "<@i18n.bundle@/>")
 			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir);

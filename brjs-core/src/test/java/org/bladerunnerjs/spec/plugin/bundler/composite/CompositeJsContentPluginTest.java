@@ -146,7 +146,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			.and(defaultAspect).hasClass("appns/Class")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "v/1234/js/prod/combined/bundle.js")
+		then(targetDir).containsFileWithContents("index.html", "v/1234/js/prod/combined/bundle.js")
 			.and(targetDir).containsFile("v/1234/js/prod/combined/bundle.js")
 			.and(targetDir).doesNotContainFile("v/1234/js/prod/closure-whitespace/bundle.js");
 	}

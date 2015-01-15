@@ -65,8 +65,8 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 			.and(bladeset1Workbench).containsFiles("themes/common/style.css", "themes/common/style_en.css", "themes/common/style_en_GB.css");
 		when(bladeset1Workbench).pageLoaded(response, "en");
 		then(response).containsOrderedTextFragments(
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>");
+			"<link rel=\"stylesheet\" href=\"v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"v/dev/css/common_en/bundle.css\"/>");
 	}
 	
 	@Test

@@ -28,7 +28,7 @@
 				brjs.dashboard.app.DashboardApp.initializeLibrary();
 				
 				var oDashboardService = new brjs.dashboard.app.service.dashboard.DashboardProvider(
-					new brjs.dashboard.app.service.request.XHRFactory(), "../servlet/app-manager");
+					new brjs.dashboard.app.service.request.XHRFactory(), "servlet/app-manager");
 				var oPageUrlService = new brjs.dashboard.app.service.url.PageUrlProvider();
 				var oWindowOpenerService = new brjs.dashboard.app.service.window.WindowOpenerProvider();
 				var oBrowserDetector = new brjs.dashboard.app.service.browserdetector.BrowserDetector();

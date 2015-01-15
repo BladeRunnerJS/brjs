@@ -116,13 +116,13 @@ public class AppRequestHandler
 				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);	
 
 			case INDEX_PAGE_REQUEST:
-				return getIndexPageContent(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				return getIndexPageContent(app.aspect(aspectName), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 			
 			case WORKBENCH_BLADESET_INDEX_PAGE_REQUEST:
-				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
 				return app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), contentAccessor, devVersion);
@@ -140,14 +140,16 @@ public class AppRequestHandler
 		
 		throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 	}
-	
+
 	public String createRelativeBundleRequest(String contentPath, String version) throws MalformedTokenException
 	{
+		String pathPrefix = (app.isMultiLocaleApp()) ? "../" : "";
+		
 		if (contentPath.startsWith("/"))
 		{
-			return "../" + getContentPathParser().createRequest(UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
+			return pathPrefix + getContentPathParser().createRequest(UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
 		}
-		return "../" + getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
+		return pathPrefix + getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
 	}
 
 	public String createBundleRequest(Aspect aspect, String contentPath, String version) throws MalformedTokenException
@@ -165,7 +167,12 @@ public class AppRequestHandler
 	
 	public String createIndexPageRequest(Aspect aspect, Locale locale) throws MalformedTokenException
 	{
-		return createRequest(aspect, INDEX_PAGE_REQUEST, locale.toString());
+		if(!aspect.app().isMultiLocaleApp()) {
+			return createRequest(aspect, INDEX_PAGE_REQUEST);
+		}
+		else {
+			return createRequest(aspect, INDEX_PAGE_REQUEST, locale.toString());
+		}
 	}
 	
 	public MemoizedFile getIndexPage(BrowsableNode browsableNode) {
@@ -215,7 +222,7 @@ public class AppRequestHandler
 			return new CharResponseContent( browsableNode.root(), byteArrayOutputStream.toString() );
 		}
 		catch (IOException | ConfigException | ModelOperationException e) {
-			throw new ContentProcessingException(e, "Error when trying to write the index page for " + browsableNode.root().dir().getRelativePath(indexPage));
+			throw new ContentProcessingException(e, "Error when trying to write the index page for '" + browsableNode.root().dir().getRelativePath(indexPage) + "'");
 		}
 	}
 
@@ -291,31 +298,59 @@ public class AppRequestHandler
 	{
 		return contentPathParser.value(() -> {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder
-				/* NOTE: 
-				 * - <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
-				 * - ordering is important here, if two URLs share a similar format, the first type wins
-				 */
-				.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
-					.and("<aspect><locale>/").as(INDEX_PAGE_REQUEST)
-					.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
-					.and("<aspect><bladeset>/<blade>/workbench/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
-					.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
-					.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST)
-					.and("<aspect><bladeset>/workbench/<locale>/").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
-					.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
-					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
-					.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
-				.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
-					.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-					.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-					.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
-					.and("locale").hasForm(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT)
-					.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			
+			/* NOTE: 
+			 * - <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
+			 * - ordering is important here, if two URLs share a similar format, the first type wins
+			 */
+			if(!app.isMultiLocaleApp()) {
+				contentPathParserBuilder
+					.accepts("<aspect>").as(INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
+						.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
+						.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
+						.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
+					.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
+						.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
+						.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			}
+			else {
+				contentPathParserBuilder
+					.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
+						.and("<aspect><locale>/").as(INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
+						.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST)
+						.and("<aspect><bladeset>/workbench/<locale>/").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
+						.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
+						.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
+					.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
+						.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
+						.and("locale").hasForm(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT)
+						.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			}
 			
 			return contentPathParserBuilder.build();
 		});
+	}
+
+	private Locale appLocale(String locale) {
+		try {
+			return (locale != null) ? new Locale(locale) : app.appConf().getLocales()[0];
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private String getAspectNames()

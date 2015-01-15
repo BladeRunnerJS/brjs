@@ -15,6 +15,7 @@ import javax.servlet.ServletResponse;
 import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
@@ -30,6 +31,7 @@ import org.mockito.Mockito;
 
 public class ServedWarTest extends SpecTest {
 	private App app;
+	private AppConf appConf;
 	private Server warServer = new Server(ServerUtility.getTestPort());
 	private StringBuffer forwarderPageResponse = new StringBuffer();
 	private StringBuffer pageResponse = new StringBuffer();
@@ -54,6 +56,7 @@ public class ServedWarTest extends SpecTest {
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement"))
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
+			appConf = app.appConf();
 			aspect = app.aspect("default");
 			loginAspect = app.aspect("login");
 			rootAspect = app.defaultAspect();
@@ -67,6 +70,7 @@ public class ServedWarTest extends SpecTest {
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(aspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).hasProdVersion("1234")
+			.and(appConf).supportsLocales("en", "de")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
@@ -84,6 +88,7 @@ public class ServedWarTest extends SpecTest {
 			.and(rootAspect).containsFileWithContents("index.html", "Hello World!")
 			.and(rootAspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).hasProdVersion("1234")
+			.and(appConf).supportsLocales("en", "de")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
@@ -99,6 +104,7 @@ public class ServedWarTest extends SpecTest {
 	public void exportedWarIndexPageIsTheSameAsBrjsHosted() throws Exception {
 		given(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
+			.and(appConf).supportsLocales("en", "de")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
@@ -159,8 +165,8 @@ public class ServedWarTest extends SpecTest {
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
     		.and(warServer).hasWar("app1.war", "app")
     		.and(warServer).hasStarted();
-    	then(warServer).requestForUrlReturns("/app/en/", "prod replacement")
-    		.and(warServer).contentLengthForRequestIs("/app/en/", "prod replacement".getBytes().length);	
+    	then(warServer).requestForUrlReturns("/app/", "prod replacement")
+    		.and(warServer).contentLengthForRequestIs("/app/", "prod replacement".getBytes().length);	
 	}
 	
 	@Test
@@ -176,7 +182,7 @@ public class ServedWarTest extends SpecTest {
     		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
     		.and(warServer).hasStarted();
 			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
-		then(warServer).requestForUrlReturns("/app/en/", "some token replacement");
+		then(warServer).requestForUrlReturns("/app/", "some token replacement");
 	}
 	
 	@Test
@@ -192,8 +198,8 @@ public class ServedWarTest extends SpecTest {
     		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
     		.and(warServer).hasStarted();
 			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
-    	then(warServer).requestForUrlReturns("/app/en/", "some token replacement")
-    		.and(warServer).contentLengthForRequestIs("/app/en/", "some token replacement".getBytes().length);
+    	then(warServer).requestForUrlReturns("/app/", "some token replacement")
+    		.and(warServer).contentLengthForRequestIs("/app/", "some token replacement".getBytes().length);
 	}
 	
 	@Test
@@ -209,8 +215,8 @@ public class ServedWarTest extends SpecTest {
     		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)), new MockCommitResponseFilter())
     		.and(warServer).hasStarted();
 			Mockito.when(mockJndiContext.lookup("java:comp/env/SOME.TOKEN")).thenReturn("some token replacement");
-    	then(warServer).requestForUrlReturns("/app/en/", "some token replacement")
-    		.and(warServer).contentLengthForRequestIs("/app/en/", "some token replacement".getBytes().length);
+    	then(warServer).requestForUrlReturns("/app/", "some token replacement")
+    		.and(warServer).contentLengthForRequestIs("/app/", "some token replacement".getBytes().length);
 	}
 	
 	@Ignore //TODO: why cant we use real JNDI (a non mock naming context) in tests?

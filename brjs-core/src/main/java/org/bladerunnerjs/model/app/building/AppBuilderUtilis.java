@@ -106,13 +106,17 @@ public class AppBuilderUtilis
 
 	private static void writeLocaleForwardingFileForAspect(BundleSet bundleSet, File target, Aspect aspect, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException
 	{
-		File localeForwardingFile = new File(target, aspect.requestHandler().createLocaleForwardingRequest()+"index.html");
-		localeForwardingFile.getParentFile().mkdirs();
+		App app = bundleSet.getBundlableNode().app();
 		
-		try (OutputStream os = new FileOutputStream(localeForwardingFile);
-			ResponseContent content = aspect.requestHandler().getLocaleForwardingPageContent(bundleSet, urlContentAccessor, version); )
-		{
-			content.write(os);
+		if(app.isMultiLocaleApp()) {
+			File localeForwardingFile = new File(target, aspect.requestHandler().createLocaleForwardingRequest()+"index.html");
+			localeForwardingFile.getParentFile().mkdirs();
+			
+			try (OutputStream os = new FileOutputStream(localeForwardingFile);
+				ResponseContent content = aspect.requestHandler().getLocaleForwardingPageContent(bundleSet, urlContentAccessor, version); )
+			{
+				content.write(os);
+			}
 		}
 	}
 
