@@ -21,7 +21,7 @@ import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
+import org.bladerunnerjs.utility.RequirePathUtility;
 import com.Ostermiller.util.ConcatReader;
 import com.google.common.base.Joiner;
 
@@ -101,7 +101,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return RequirePathUtility.getPrimaryRequirePath(this);
 	}
 	
 	@Override

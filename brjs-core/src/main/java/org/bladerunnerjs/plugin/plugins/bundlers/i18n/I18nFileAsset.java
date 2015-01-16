@@ -16,7 +16,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
+import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class I18nFileAsset implements Asset
@@ -83,7 +83,7 @@ public class I18nFileAsset implements Asset
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return RequirePathUtility.getPrimaryRequirePath(this);
 	}
 
 	public Map<String,String> getLocaleProperties() throws IOException, RequirePathException, NamespaceException

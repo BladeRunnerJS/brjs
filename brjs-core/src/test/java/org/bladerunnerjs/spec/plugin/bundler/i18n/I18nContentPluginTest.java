@@ -222,7 +222,7 @@ public class I18nContentPluginTest extends SpecTest
 	public void bladePropertiesAreOverriddenByWorkbenchProperties() throws Exception 
 	{
 		given(app).hasBeenCreated()
-		.and(workbench).indexPageRequires("appns.bs.b1.Class")
+		.and(workbench).indexPageRequires("appns/bs/b1/Class")
 		.and(blade).hasClass("appns/bs/b1/Class")
 		.and(blade).containsResourceFileWithContents("en.properties", "appns.bs.b1.property=blade value")
 		.and(workbench).containsResourceFileWithContents("en.properties", "appns.bs.b1.property=workbench value");
