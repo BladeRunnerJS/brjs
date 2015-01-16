@@ -101,7 +101,7 @@ def os = org.bladerunnerjs.OSCalculator.getOS()
 Dependencies.putAll([
 	'chrome'					:	'browser:chrome-'+os+':36.0.1978.0@zip',
 	
-	'firefox'					:	'browser:firefox-'+os+':29.0@zip',
+	'firefox'					:	'browser:firefox-'+os+':35.0@zip',
 	'firefox-webdriver'			:	'browser:firefox-'+os+':12.0@zip',
 
  	'phantomjs'					:	'browser:phantomjs-'+os+':1.9.7@zip',
