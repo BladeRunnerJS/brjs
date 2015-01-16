@@ -124,3 +124,11 @@ LocaleUtility.getLocalizedPageUrl = function(pageUrl, locale) {
 
 	return protocol+"//"+host+url+locale+"/"+queryString+anchor;
 };
+
+function forwardToLocalePage() {
+	var localeCookie = LocaleUtility.getCookie(window.$BRJS_LOCALE_COOKIE_NAME);
+	var browserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales();
+	var appLocales = window.$BRJS_APP_LOCALES;
+	var activeLocale = LocaleUtility.getActiveLocale(localeCookie, browserAcceptedLocales, appLocales);
+	window.location = LocaleUtility.getLocalizedPageUrl(window.location.href, activeLocale);
+}

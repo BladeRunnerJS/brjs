@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.brjsconformant;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
@@ -23,7 +22,7 @@ public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation im
 	
 	@Override
 	public List<MemoizedFile> getCandidateFiles() {
-		return Collections.emptyList();
+		return rootNode.getMemoizedFile(dir()).files();
 	}
 	
 	@Override

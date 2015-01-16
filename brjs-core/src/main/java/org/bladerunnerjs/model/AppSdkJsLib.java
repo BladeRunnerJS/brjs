@@ -6,20 +6,31 @@ import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.aliasing.AliasException;
+import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
+import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.utility.ObserverList;
 
 public final class AppSdkJsLib implements JsLib {
 	private App app;
 	private JsLib sdkJsLib;
 	private MemoizedFile[] scopeFiles;
-	
+
 	public AppSdkJsLib(App app, SdkJsLib sdkJsLib) {
 		this.app = app;
 		this.sdkJsLib = sdkJsLib;
@@ -248,5 +259,50 @@ public final class AppSdkJsLib implements JsLib {
 	public void incrementChildFileVersions()
 	{
 		sdkJsLib.incrementChildFileVersions();
+	}
+	
+	@Override
+	public AliasesFile aliasesFile() {
+		return sdkJsLib.aliasesFile();
+	}
+
+	@Override
+	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
+		return sdkJsLib.getLinkedAsset(requirePath);
+	}
+
+	@Override
+	public List<AssetLocation> seedAssetLocations() {
+		return sdkJsLib.seedAssetLocations();
+	}
+
+	@Override
+	public List<LinkedAsset> seedAssets() {
+		return sdkJsLib.seedAssets();
+	}
+
+	@Override
+	public BundleSet getBundleSet() throws ModelOperationException {
+		return sdkJsLib.getBundleSet();
+	}
+
+	@Override
+	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
+		return sdkJsLib.getAlias(aliasName);
+	}
+
+	@Override
+	public List<AliasDefinitionsFile> aliasDefinitionFiles() {
+		return sdkJsLib.aliasDefinitionFiles();
+	}
+
+	@Override
+	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		return sdkJsLib.handleLogicalRequest(logicalRequestPath, contentAccessor, version);
+	}
+
+	@Override
+	public List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
+		return sdkJsLib.getLinkedAssets(assetLocation, requirePaths);
 	}
 }

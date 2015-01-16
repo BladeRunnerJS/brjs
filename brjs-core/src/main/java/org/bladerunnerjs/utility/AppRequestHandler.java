@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -22,10 +21,10 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -42,10 +41,6 @@ import com.google.common.base.Joiner;
 
 public class AppRequestHandler
 {
-
-	private static final String BR_LOCALE_UTILITY_LIBNAME = "br-locale-utility";
-	private static final String BR_LOCALE_UTILITY_FILENAME = "LocaleUtility.js";
-	
 	private static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
 	private static final String INDEX_PAGE_REQUEST = "index-page-request";
 	private static final String UNVERSIONED_BUNDLE_REQUEST = "unversioned-bundle-request";
@@ -240,10 +235,8 @@ public class AppRequestHandler
 	}
 
 	public ResponseContent getLocaleForwardingPageContent(BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
-		StringWriter localeForwardingPage = new StringWriter();
-		
-		SdkJsLib localeForwarderLib = app.root().sdkLib(BR_LOCALE_UTILITY_LIBNAME);
-		try (Reader localeForwarderReader = new FileReader( localeForwarderLib.file(BR_LOCALE_UTILITY_FILENAME) ) ) {
+		try {
+			StringWriter localeForwardingPage = new StringWriter();
 			
 			localeForwardingPage.write("<head>\n");
 			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
@@ -256,17 +249,16 @@ public class AppRequestHandler
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			responseContent.write(baos);
 			localeForwardingPage.write( baos.toString() );
-			
 			localeForwardingPage.write("\n");
-			IOUtils.copy(localeForwarderReader, localeForwardingPage);
-			localeForwardingPage.write("\n");			
-			localeForwardingPage.write("function forwardToLocalePage() {\n");
-			localeForwardingPage.write("	var localeCookie = LocaleUtility.getCookie(window.$BRJS_LOCALE_COOKIE_NAME);\n");
-			localeForwardingPage.write("	var browserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales();\n");
-			localeForwardingPage.write("	var appLocales = window.$BRJS_APP_LOCALES;\n");
-			localeForwardingPage.write("	var activeLocale = LocaleUtility.getActiveLocale( localeCookie, browserAcceptedLocales, appLocales );\n");
-			localeForwardingPage.write("	window.location = LocaleUtility.getLocalizedPageUrl( window.location.href, activeLocale );\n");
-			localeForwardingPage.write("}\n");
+			
+			BundleSet localeUtilityBundleSet = app.root().sdkLib("br-locale-utility").getBundleSet();
+			
+			for(SourceModule sourceModule : localeUtilityBundleSet.getSourceModules()) {
+				try(Reader sourceModuleReader = sourceModule.getReader()) {
+					IOUtils.copy(sourceModuleReader, localeForwardingPage);
+					localeForwardingPage.write("\n");
+				}
+			}
 			
 			localeForwardingPage.write("\n</script>\n");
 			localeForwardingPage.write("</head>\n");
@@ -274,7 +266,7 @@ public class AppRequestHandler
 			
 			return new CharResponseContent( app.root(), localeForwardingPage.toString() );
 		}
-		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException e) {
+		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException | ModelOperationException e) {
 			throw new ContentProcessingException(e);
 		}
 	}
