@@ -46,7 +46,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		assetLocationDirectories.add("src-test");
 		addThemeDirectories(assetLocationDirectories, assetContainer);
 		
-		File sourceDir = assetContainer.file("src");
+		MemoizedFile sourceDir = assetContainer.file("src");
 		if(sourceDir.exists()) {
 			for(MemoizedFile dir : brjs.getMemoizedFile(sourceDir).nestedDirs()) {
 				assetLocationDirectories.add(assetContainer.dir().getRelativePath(dir));
