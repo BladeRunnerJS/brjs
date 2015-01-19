@@ -13,7 +13,6 @@ import org.bladerunnerjs.model.LogLevelAccessor;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
-import org.bladerunnerjs.plugin.plugins.commands.core.HelpCommand;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class UserCommandRunner {
@@ -41,7 +40,9 @@ public class UserCommandRunner {
 				logger.println("--------");
 				logger.println("");
 			}
-			return doRunCommand(brjs, new String[] {new HelpCommand().getCommandName() });
+			if (!e.getCommandName().equals("help")) { // prevent an infinite loop if the help command doesnt exist
+				return doRunCommand(brjs, new String[] {"help"});				
+			}
 		}
 		catch (CommandArgumentsException e) {
 			logger.println("Problem:");

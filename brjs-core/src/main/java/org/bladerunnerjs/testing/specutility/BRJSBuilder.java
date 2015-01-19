@@ -332,10 +332,10 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer usesProductionTemplates() throws IOException {
 		verifyBrjsIsSet();
 		
-		File sdkTemplateDir = new File("../brjs-sdk/build-resources/includes/sdk/templates/default"); 
-		FileUtils.copyDirectory(brjs, sdkTemplateDir, brjs.file("sdk/templates/default"));
+		File templateDir = new File("../brjs-sdk/sdk/templates");
+		FileUtils.copyDirectory(brjs, templateDir, brjs.sdkTemplateGroup("default").dir().getParentFile());
 		
-		File j2eeify = new File("../brjs-sdk/build-resources/includes/sdk/j2eeify-app"); 
+		File j2eeify = new File("../brjs-sdk/sdk/j2eeify-app"); 
 		FileUtils.copyDirectory(brjs, j2eeify, brjs.file("sdk/j2eeify-app"));
 		
 		return builderChainer;
@@ -344,7 +344,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer usesJsDocResources() throws IOException {
 		verifyBrjsIsSet();
 		
-		File jsdocResourcesDir = new File("../brjs-sdk/build-resources/includes/sdk/jsdoc-toolkit-resources");
+		File jsdocResourcesDir = new File("../brjs-sdk/sdk/jsdoc-toolkit-resources");
 		File jsdocResourcesDest = brjs.sdkRoot().file("jsdoc-toolkit-resources");
 		
 		FileUtils.copyDirectory(brjs, jsdocResourcesDir, jsdocResourcesDest);

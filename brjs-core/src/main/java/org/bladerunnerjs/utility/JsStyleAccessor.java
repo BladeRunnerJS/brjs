@@ -7,11 +7,12 @@ import java.util.Map;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 public class JsStyleAccessor {
 	private final Map<String, MemoizedValue<String>> dirStyleCache = new HashMap<>();
 	private final BRJS brjs;
+	
+	public static final String DEFAULT_JS_STYLE = "common-js";
 	
 	public JsStyleAccessor(BRJS brjs) {
 		this.brjs = brjs;
@@ -31,7 +32,7 @@ public class JsStyleAccessor {
 			if(jsStyle == null){
 				File parent = dir.getParentFile();
 				if ( parent == null || parent.equals(brjs.dir().getUnderlyingFile().getParentFile()) ){
-					jsStyle = CommonJsSourceModule.JS_STYLE;
+					jsStyle = DEFAULT_JS_STYLE;
 				} else {
 					jsStyle = getJsStyle(parent);
 				}
