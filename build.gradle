@@ -46,8 +46,15 @@ allprojects {
 		buildHostname = projectBuildHostname
 	}
 
-	def projectContainingSharedLogic = (project.parent) ? project.parent : project
-	apply from: projectContainingSharedLogic.file('dependencies.gradle')
+	def projectContainingSharedLogic = project
+	while (projectContainingSharedLogic != null) {
+		def dependenciesFile = projectContainingSharedLogic.file('dependencies.gradle')
+		if (dependenciesFile.isFile()) {
+			apply from: dependenciesFile
+			break
+		}
+		projectContainingSharedLogic = projectContainingSharedLogic.parent
+	}
 
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
@@ -87,7 +94,9 @@ subprojects { p ->
 	afterEvaluate { project ->
 
 		if (project.plugins.hasPlugin(JavaPlugin)) {
-			if(project.name == 'brjs-core') {
+			if(project.name == 'brjs-core' 
+					|| project.name == 'brjs-core-tests'
+					|| project.name == 'brjs-plugins') {
 				sourceCompatibility = '1.8'
 				targetCompatibility = '1.8'
 			}
