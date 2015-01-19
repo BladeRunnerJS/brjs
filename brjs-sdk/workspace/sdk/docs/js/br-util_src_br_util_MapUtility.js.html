@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: br-util/src/br/util/MapUtility.js</title>
+
+    <!--[if lt IE 9]>
+        <script src="scripts/polyfills.js"></script>
+        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 10]>
+        <script src="scripts/placeholder.min.js"></script>
+    <![endif]-->
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/functions.js"> </script>
+    <script src="scripts/index-filter.js"> </script>
+
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/hosted-docs.css">
+    <link type="text/css" rel="stylesheet" href="styles/brjs.css">
+</head>
+
+<body onload="createAppLinks()">
+
+<header id="brjs-nav">
+    <div id="topnav">
+        <ul>
+            <li class="dashboard-link"><a href="/#"><b>BladeRunner</b>JS</a></li>
+            <li><a href="http://github.com/BladeRunnerJS/brjs/releases" target="_blank">Release Notes</a></li>
+            <li><a href="http://bladerunnerjs.org/" target="_blank">BladeRunnerJS.org</a></li>
+        </ul>
+    </div>
+    <br class="clearfloat">
+    <div class="subnav">
+        <ul>
+            <li><a href="/dashboard" class="subnav-extend-btn"></a></li>
+            <li><a id="appLink" class="subnav-btn">app</a></li>
+            <li><div class="subnav-selected" >docs</div></li>
+        </ul>
+    </div>
+</header>
+
+<div id="main">
+
+    <h1 class="page-title">Source: br-util/src/br/util/MapUtility.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+/**
+ * @module br/util/MapUtility
+ */
+
+var Errors = require('br/Errors');
+
+/**
+ * This is a static class that never needs to be instantiated.
+ * 
+ * @class
+ * @alias module:br/util/MapUtility
+ * 
+ * @classdesc
+ * Utility class providing common operations on maps.
+ * 
+ * &lt;p>In the context of this class, a &lt;code>Map&lt;/code> is considered to be anything that is an instance of
+ * &lt;code>Object&lt;/code>.&lt;/p>
+ */
+var MapUtility = {};
+
+/** @private */
+MapUtility.m_nToStringRecursionCount = 0;
+
+/** @private */
+MapUtility.m_pMapsProcessedByToString = [];
+
+/**
+ * Returns &lt;code>true&lt;/code> if the given map is empty (has no enumerable properties), and &lt;code>false&lt;/code> otherwise.
+ *
+ * @param {Object} srcMap The map that may or may not be empty.
+ * @returns {boolean}
+ */
+MapUtility.isEmpty = function(srcMap) {
+	for (var key in srcMap) {
+		if (srcMap.hasOwnProperty(key)) {
+			return false;
+		}
+	}
+
+	return true;
+};
+
+/**
+ * Returns the number of enumerable items within the given map.
+ *
+ * &lt;p>If you find yourself using this method you should consider whether a map is the correct data structure.&lt;/p>
+ *
+ * @param {Object} srcMap The map the size is required for.
+ * @returns {number} The number of items within the map.
+ */
+MapUtility.size = function(srcMap) {
+	var size = 0;
+
+	for (var key in srcMap) {
+		if (srcMap.hasOwnProperty(key)) {
+			size += 1;
+		}
+	}
+
+	return size;
+};
+
+/**
+ * Returns an array containing the values obtained by iterating the given map object.
+ *
+ * @param {Object} srcMap The map to iterate
+ * @returns {Array} an array of all the enumerable values in the map.
+ */
+MapUtility.valuesToArray = function(srcMap) {
+	var values = [];
+
+	for (var key in srcMap) {
+		if (srcMap.hasOwnProperty(key)) {
+			values.push(srcMap[key]);
+		}
+	}
+
+	return values;
+};
+
+/**
+ * Add the items within the given array to the map, using each item as a key pointing to the boolean value
+ *  &lt;code>true&lt;/code>. This will overwrite the value for a key that is already defined within the specified map.
+ *
+ * &lt;p>As an example, the array &lt;code>['foo', 'bar']&lt;/code> would be converted to the map
+ * &lt;code>{foo:true, bar:true}&lt;/code>.&lt;/p>
+ *
+ * &lt;p>This method is useful in that it allows a number of arrays to be condensed into a list of the unique values
+ *  within this set of arrays. Once all the arrays have been added, then the {@link #keysToArray} method may be used
+ *  to convert this list of unique entries back to an array.&lt;/p>
+ *
+ * @see #removeArrayFromMap
+ *
+ * @param {Object} tgtMap The map to add the items to. May not be null or undefined
+ * @param {Array} keys The array that contains the map keys to add. May not be null or undefined.
+ *
+ * @returns {Object} the passed map.
+ */
+MapUtility.addArrayToMap = function(tgtMap, keys) {
+	for (var i = 0, len = keys.length; i &lt; len; ++i) {
+		tgtMap[keys[i]] = true;
+	}
+
+	return tgtMap;
+};
+
+/**
+ * Remove all entries within the specified map, whose keys are contained within the given array.
+ * Keys included in the array that do not exist within the map will be ignored.
+ *
+ * @see #addArrayToMap
+ *
+ * @param {Object} tgtMap The map to remove the items from.
+ * @param {Array} keys The array of keys to remove from the map.
+ * @returns {Object} A map containing all name/value pairs that have been removed from the specified map.
+ */
+MapUtility.removeArrayFromMap = function(tgtMap, keys) {
+	var deleted = {},
+		key, value;
+
+	for(var i = 0, len = keys.length; i &lt; len; ++i) {
+		key = keys[i];
+		value = tgtMap[key];
+		if (delete tgtMap[key]) {
+			// if delete is successful then add the deleted value to the map of deleted entries
+			deleted[key] = value;
+		}
+	}
+	return deleted;
+};
+
+/**
+ * Returns a string representation of the map in the form:
+ *
+ * &lt;pre>
+ * map#1{ a: 1, b: 2, c: 3, ... }
+ * &lt;/pre>
+ *
+ * &lt;p>The values contained within the map will be returned as per the value of their &lt;code>toString()&lt;/code> method.
+ *  Another map will be displayed as &lt;code>[object Object]&lt;/code>, as will any object that does not explicitly implement
+ *  or inherit a &lt;code>toString()&lt;/code> method.&lt;/p>
+ *
+ * &lt;p>This method can be invoked multiple times from within the same callstack, such that if an object contained within
+ *  the map implements a &lt;code>toString()&lt;/code> method that calls it, there can be no infinite recursion. For example,
+ *  if the object contained a reference to another map, the output would be of the form:&lt;/p>
+ *
+ * &lt;pre>
+ * map#1{ obj: myObject&amp;lt;map#2{ x: 24, y: 25, z: 26 }&amp;gt; }
+ * &lt;/pre>
+ *
+ * &lt;p>Whilst if the object contains a circular reference back to the map, the output will be of the form:&lt;/p>
+ *
+ * &lt;pre>
+ * map#1{ obj: myObject&amp;lt;map#1&amp;lt;see-earlier-definition&amp;gt;&amp;gt; }
+ * &lt;/pre>
+ *
+ * &lt;i>Warning: The output from this method will become unreliable if the &lt;code>toString()&lt;/code> method of any of the
+ *  values contained within the specified map throw an exception, however it is strongly advised that
+ *  &lt;code>toString()&lt;/code> methods should never throw exceptions.&lt;/i>
+ *
+ * @param {Object} srcMap The map to be converted to a String.
+ *
+ * @returns {String} A string representation of the specified map.
+ */
+MapUtility.toString = function(srcMap) {
+	var serialized = '',
+		mapIdx = this._getMapIndex(srcMap);
+
+	// has this map been already been processed
+	if (mapIdx !== -1) {
+		serialized += 'map#'+ mapIdx + '{&lt;see-earlier-definition>}';
+	} else {
+		this.m_nToStringRecursionCount += 1;
+
+		this.m_pMapsProcessedByToString.push(srcMap);
+		mapIdx = this.m_pMapsProcessedByToString.length;
+
+		serialized += 'map#'+ mapIdx + '{';
+		var isFirst = true;
+		for (var key in srcMap) {
+			serialized += (isFirst ? '' : ',') + ' ' + key + ': ' + srcMap[key];
+			if (isFirst === true) {
+				isFirst = false;
+			}
+		}
+		serialized += ' }';
+
+		this.m_nToStringRecursionCount -= 1;
+
+		if (this.m_nToStringRecursionCount === 0) {
+			// toString() has completed, clear down all the temporary flags that were set on the maps
+			// that were processed by this method
+			for (var i = 0, len = this.m_pMapsProcessedByToString.length; i &lt; len; ++i) {
+				delete (this.m_pMapsProcessedByToString[i].constructor.toStringMapIndex);
+			}
+
+			// clear down the array
+			this.m_pMapsProcessedByToString = [];
+		}
+	}
+
+	return serialized;
+};
+
+/**
+ * Gets the index that was associated with the specified map when it was output by the {@link #toString} method
+ *  during the current callstack invocation, or returns a code indicating that the map has not been processed
+ *  previously.
+ *
+ * @private
+ * @param {Object} srcMap The map the index is required for.
+ * @returns {Number} The index of the map, or &lt;code>-1&lt;/code> if this map has not been processed before.
+ */
+MapUtility._getMapIndex = function(srcMap) {
+	var index = -1;
+	for (var i = 0, len = this.m_pMapsProcessedByToString.length; i &lt; len; ++i) {
+		if (this.m_pMapsProcessedByToString[i] === srcMap) {
+			// first map has the index 1
+			index = i + 1;
+			break;
+		}
+	}
+	return index;
+};
+
+/**
+ * Merges all of the maps specified in the array into a new map.
+ *
+ * &lt;p>The default behaviour of this method is to throw an exception if two maps contain the same key, however these
+ *  duplicates can be ignored by setting the optional &lt;code>overwriteDuplicateKeys&lt;/code> argument to
+ *  &lt;code>true&lt;/code>. In this case the value of the key within the merged map will be that of the last map to
+ *  contain the key. For example, merging &lt;code>[ { a: '1' }, { a: '2' } ]&lt;/code> would result in the map
+ *  &lt;code>{ a: '2' }&lt;/code>.&lt;/p>
+ *
+ * @param {Array} mergeMapArr An array of all the maps to be merged.
+ * @param {boolean} overwriteDuplicateKeys (Optional) Flag that can be set to force this method to ignore duplicate
+ *  keys and overwrite their values. If omitted this argument defaults to &lt;code>false&lt;/code>.
+ * @param {boolean} throwOnDuplicateKey (Optional) Defaults to &lt;code>true&lt;/code>. Indicates if an exception
+ *  should be thrown if a duplicate value is found and the method is not to overwrite duplicates. This should be
+ *  used if the original values should be preserved and not overwritten. If &lt;code>overwriteDuplicateKeys&lt;/code> is set
+ *  to &lt;code>true&lt;/code> then this parameter is ignored.
+ * @param {boolean} isDeepCopy (Optional) Defaults to &lt;code>false&lt;/code>, shallow copy. Identifies if map objects
+ *  should have deep copy applied to them.
+ *
+ * @returns {Object} A new map containing the merged key/value pairs from each of the specified maps.
+ *
+ * @throws {br.util.Error} if one or more of the contents of the maps to merge array is not a &lt;code>Map&lt;/code>, or
+ *  if any duplicate keys are found and the &lt;code>overwriteDuplicateKeys&lt;/code> argument is &lt;code>false&lt;/code>.
+ */
+MapUtility.mergeMaps = function(mergeMapArr, overwriteDuplicateKeys, throwOnDuplicateKey, isDeepCopy) {
+	throwOnDuplicateKey = (typeof throwOnDuplicateKey === 'undefined' ? true : throwOnDuplicateKey);
+	isDeepCopy = (typeof isDeepCopy === 'undefined' ? false : isDeepCopy);
+
+	var currMap,
+		merged = {};
+	for (var i = 0, len = mergeMapArr.length; i &lt; len; ++i) {
+		currMap = mergeMapArr[i];
+		if (typeof currMap !== 'object' || currMap === null) {
+			throw new Errors.InvalidParametersError('Failed to merge maps; one of the specified maps was of an invalid type');
+		}
+
+		for (var key in currMap) {
+			if (overwriteDuplicateKeys !== true &amp;&amp; typeof merged[key] !== 'undefined') {
+				if (throwOnDuplicateKey) {
+					throw new Errors.InvalidParametersError('Failed to merge maps due to a duplicate key \'' + key + '\': conflicting values \'' + merged[key] + '\'/\'' + currMap[key] + '\'');
+				}
+				// do not overwrite the value, keep the original and continue with next value
+				continue;
+			}
+
+			if (typeof merged[key] === 'object' &amp;&amp; typeof currMap[key] == 'object' &amp;&amp; isDeepCopy ) {
+				merged[key] = this.mergeMaps([currMap[key], merged[key]], throwOnDuplicateKey, throwOnDuplicateKey, true);
+			} else if (!merged[key] &amp;&amp; typeof currMap[key] == 'object' &amp;&amp; isDeepCopy ) {
+				merged[key] = this.copy(currMap[key], {}, true );
+			} else {
+				// shallow copy
+				merged[key] = currMap[key];
+			}
+		}
+	}
+	return merged;
+};
+
+/**
+ * Converts a map to its inverse, which has keys based on the original map's values, and vice-versa.
+ * @private
+ */
+MapUtility.invert = function(srcMap) {
+	var inverted = {};
+	for (var key in srcMap) {
+		inverted[srcMap[key]] = key;
+	}
+
+	return inverted;
+};
+
+// TODO: determine whether copy() and mergeMaps() be combined into a more useful method
+/**
+ * Creates a shallow copy of the supplied map. If the destination map is supplied, then it adds the map values onto
+ *  the destination map.
+ *
+ * @private
+ * @param {Object} srcMap
+ * @param {Object} tgtMap (optional)
+ * @param {Boolean} isDeepCopy indicates whether a deep copy will occur on the Map.
+ */
+MapUtility.copy = function(srcMap, tgtMap, isDeepCopy) {
+	tgtMap = tgtMap || {};
+	for (var key in srcMap) {
+		if (isDeepCopy &amp;&amp; typeof srcMap[key] === 'object') {
+			tgtMap[key] = this.deepClone(srcMap[key]);
+		} else {
+			tgtMap[key] = srcMap[key];
+		}
+	}
+	return tgtMap;
+};
+
+/**
+ * Creates a shallow clone of the supplied map. Map references are copied one level deep.
+ *
+ * @param {Object} srcMap The map to clone.
+ *
+ * @returns {Object} A shallow clone of the map.
+ */
+MapUtility.clone = function(srcMap) {
+	var clone = {};
+	for (var key in srcMap) {
+		clone[key] = srcMap[key];
+	}
+	return clone;
+};
+
+/**
+ * Creates a deep clone of the supplied map. Map references are copied to an arbitrary number of levels deep (note
+ *  that non-map objects are not handled correctly)
+ *
+ * @private
+ * @param {Object} srcMap The map to clone.
+ *
+ * @returns {Object} A deep clone of the map.
+ */
+MapUtility.deepClone = function(srcMap) {
+	var clone = {};
+	for (var key in srcMap) {
+		clone[key] = typeof srcMap[key] === 'object' ? this.deepClone(srcMap[key]) : srcMap[key];
+	}
+	return clone;
+};
+
+/**
+ * Helper method to check if parameter values passed in to methods are members of the enumerations they are meant to
+ *  be. BEWARE: The check is whether &lt;code>item&lt;/code> is a value on a member of the object, such as an entry in an
+ *  Array.
+ *
+ * @private
+ * @param item exact instance that must be equal(===) to one of the members.
+ * @param srcObj the object that will have its members checked.
+ */
+MapUtility.isMemberValueOf = function(item, srcObj) {
+	var isMember = false,
+		srcItem;
+
+	for (var key in srcObj) {
+		srcItem = srcObj[key];
+
+		if (item === srcItem) {
+			isMember = true;
+			break;
+		}
+	}
+
+	return isMember;
+};
+
+/**
+ * Returns true if the source map contains all the keys of the given map.
+ *
+ * @param {Object} tgtMap The map you are checking
+ * @param {Object} srcMap The map you are using the check against
+ * @returns {Boolean}
+ */
+MapUtility.hasAllKeys = function(tgtMap, srcMap) {
+	return Object.keys(srcMap).every(function(key) {
+		return typeof tgtMap[key] !== 'undefined';
+	});
+};
+
+module.exports = MapUtility;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+	<div id="filter-input-wrapper">
+        <div id="filter-input">
+        	<form onsubmit="return false;">
+		    	<input type="text" list="package-prefixes" placeholder="package filter" oninput="packageFilter.updateDisplayedItems(this.value)"
+		    	 onkeyup="packageFilter.onKeyUp(this, event)">
+		    	<button type="button" onclick="packageFilter.setFilter('')"></button>
+		    </form>
+	    </div>
+	</div>
+	<datalist id="package-prefixes"></datalist>
+
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module-br-locale-utility.html">br-locale-utility</a></li><li><a href="module-br_AliasRegistryClass.html">br/AliasRegistryClass</a></li><li><a href="module-br_component_Frame.html">br/component/Frame</a></li><li><a href="module-br_component_SimpleFrame.html">br/component/SimpleFrame</a></li><li><a href="module-br_component_testing_ComponentFixture.html">br/component/testing/ComponentFixture</a></li><li><a href="module-br_Errors.html">br/Errors</a></li><li><a href="module-br_EventHub.html">br/EventHub</a></li><li><a href="module-br_i18n_Translator.html">br/i18n/Translator</a></li><li><a href="module-br_knockout_KnockoutComponent.html">br/knockout/KnockoutComponent</a></li><li><a href="module-br_knockout_workbench_KnockoutJsTreeModelFactory.html">br/knockout/workbench/KnockoutJsTreeModelFactory</a></li><li><a href="module-br_knockout_workbench_KnockoutModelTree.html">br/knockout/workbench/KnockoutModelTree</a></li><li><a href="module-br_knockout_workbench_PresentationModelViewer.html">br/knockout/workbench/PresentationModelViewer</a></li><li><a href="module-br_presenter_component_PresenterComponent.html">br/presenter/component/PresenterComponent</a></li><li><a href="module-br_presenter_control_ControlAdaptorFactoryClass.html">br/presenter/control/ControlAdaptorFactoryClass</a></li><li><a href="module-br_presenter_control_datefield_JQueryDatePickerControl.html">br/presenter/control/datefield/JQueryDatePickerControl</a></li><li><a href="module-br_presenter_control_InvalidControlModelError.html">br/presenter/control/InvalidControlModelError</a></li><li><a href="module-br_presenter_control_selectionfield_JQueryAutoCompleteControl.html">br/presenter/control/selectionfield/JQueryAutoCompleteControl</a></li><li><a href="module-br_presenter_control_selectionfield_ToggleSwitchControl.html">br/presenter/control/selectionfield/ToggleSwitchControl</a></li><li><a href="module-br_presenter_control_tooltip_TooltipControl.html">br/presenter/control/tooltip/TooltipControl</a></li><li><a href="module-br_presenter_formatter_DateFormatter.html">br/presenter/formatter/DateFormatter</a></li><li><a href="module-br_presenter_formatter_DecimalFormatter.html">br/presenter/formatter/DecimalFormatter</a></li><li><a href="module-br_presenter_formatter_KeyValueFormatter.html">br/presenter/formatter/KeyValueFormatter</a></li><li><a href="module-br_presenter_formatter_LeadingZeroFormatter.html">br/presenter/formatter/LeadingZeroFormatter</a></li><li><a href="module-br_presenter_formatter_LocalisedAmountFormatter.html">br/presenter/formatter/LocalisedAmountFormatter</a></li><li><a href="module-br_presenter_formatter_LowerCaseFormatter.html">br/presenter/formatter/LowerCaseFormatter</a></li><li><a href="module-br_presenter_formatter_NullValueFormatter.html">br/presenter/formatter/NullValueFormatter</a></li><li><a href="module-br_presenter_formatter_PercentFormatter.html">br/presenter/formatter/PercentFormatter</a></li><li><a href="module-br_presenter_formatter_RegExpFormatter.html">br/presenter/formatter/RegExpFormatter</a></li><li><a href="module-br_presenter_formatter_RoundingFormatter.html">br/presenter/formatter/RoundingFormatter</a></li><li><a href="module-br_presenter_formatter_SignificantFiguresFormatter.html">br/presenter/formatter/SignificantFiguresFormatter</a></li><li><a href="module-br_presenter_formatter_ThousandsFormatter.html">br/presenter/formatter/ThousandsFormatter</a></li><li><a href="module-br_presenter_formatter_TrimFormatter.html">br/presenter/formatter/TrimFormatter</a></li><li><a href="module-br_presenter_formatter_TruncateDecimalFormatter.html">br/presenter/formatter/TruncateDecimalFormatter</a></li><li><a href="module-br_presenter_formatter_UpperCaseFormatter.html">br/presenter/formatter/UpperCaseFormatter</a></li><li><a href="module-br_presenter_node_AutoCompleteSelectionField.html">br/presenter/node/AutoCompleteSelectionField</a></li><li><a href="module-br_presenter_node_Button.html">br/presenter/node/Button</a></li><li><a href="module-br_presenter_node_CalendarDateField.html">br/presenter/node/CalendarDateField</a></li><li><a href="module-br_presenter_node_ComponentNode.html">br/presenter/node/ComponentNode</a></li><li><a href="module-br_presenter_node_DateField.html">br/presenter/node/DateField</a></li><li><a href="module-br_presenter_node_DisplayField.html">br/presenter/node/DisplayField</a></li><li><a href="module-br_presenter_node_Field.html">br/presenter/node/Field</a></li><li><a href="module-br_presenter_node_MappedNodeList.html">br/presenter/node/MappedNodeList</a></li><li><a href="module-br_presenter_node_MultiSelectionField.html">br/presenter/node/MultiSelectionField</a></li><li><a href="module-br_presenter_node_NodeList.html">br/presenter/node/NodeList</a></li><li><a href="module-br_presenter_node_Nodes.html">br/presenter/node/Nodes</a></li><li><a href="module-br_presenter_node_Option.html">br/presenter/node/Option</a></li><li><a href="module-br_presenter_node_OptionsNodeList.html">br/presenter/node/OptionsNodeList</a></li><li><a href="module-br_presenter_node_PresentationNode.html">br/presenter/node/PresentationNode</a></li><li><a href="module-br_presenter_node_SelectionField.html">br/presenter/node/SelectionField</a></li><li><a href="module-br_presenter_node_TemplateNode.html">br/presenter/node/TemplateNode</a></li><li><a href="module-br_presenter_node_ToolTipField.html">br/presenter/node/ToolTipField</a></li><li><a href="module-br_presenter_node_ToolTipNode.html">br/presenter/node/ToolTipNode</a></li><li><a href="module-br_presenter_parser_DateParser.html">br/presenter/parser/DateParser</a></li><li><a href="module-br_presenter_parser_LocalisedAmountParser.html">br/presenter/parser/LocalisedAmountParser</a></li><li><a href="module-br_presenter_parser_ThousandsParser.html">br/presenter/parser/ThousandsParser</a></li><li><a href="module-br_presenter_PresentationModel.html">br/presenter/PresentationModel</a></li><li><a href="module-br_presenter_property_Alias.html">br/presenter/property/Alias</a></li><li><a href="module-br_presenter_property_EditableProperty.html">br/presenter/property/EditableProperty</a></li><li><a href="module-br_presenter_property_ISODateProperty.html">br/presenter/property/ISODateProperty</a></li><li><a href="module-br_presenter_property_Properties.html">br/presenter/property/Properties</a></li><li><a href="module-br_presenter_property_Property.html">br/presenter/property/Property</a></li><li><a href="module-br_presenter_property_PropertyHelper.html">br/presenter/property/PropertyHelper</a></li><li><a href="module-br_presenter_property_Snapshot.html">br/presenter/property/Snapshot</a></li><li><a href="module-br_presenter_property_WritableProperty.html">br/presenter/property/WritableProperty</a></li><li><a href="module-br_presenter_testing_NodeListLengthProperty.html">br/presenter/testing/NodeListLengthProperty</a></li><li><a href="module-br_presenter_testing_PresentationModelFixture.html">br/presenter/testing/PresentationModelFixture</a></li><li><a href="module-br_presenter_testing_PresenterComponentFixture.html">br/presenter/testing/PresenterComponentFixture</a></li><li><a href="module-br_presenter_util_ErrorMonitor.html">br/presenter/util/ErrorMonitor</a></li><li><a href="module-br_presenter_util_ObjectGraphCrawler.html">br/presenter/util/ObjectGraphCrawler</a></li><li><a href="module-br_presenter_validator_CrossValidationPropertyBinder.html">br/presenter/validator/CrossValidationPropertyBinder</a></li><li><a href="module-br_presenter_validator_EmailValidator.html">br/presenter/validator/EmailValidator</a></li><li><a href="module-br_presenter_validator_NotEmptyValidator.html">br/presenter/validator/NotEmptyValidator</a></li><li><a href="module-br_presenter_validator_NumericValidator.html">br/presenter/validator/NumericValidator</a></li><li><a href="module-br_presenter_validator_ValidationResult.html">br/presenter/validator/ValidationResult</a></li><li><a href="module-br_presenter_workbench_ui_PresentationModelViewer.html">br/presenter/workbench/ui/PresentationModelViewer</a></li><li><a href="module-br_presenter_workbench_ui_PresenterJsTreeModelFactory.html">br/presenter/workbench/ui/PresenterJsTreeModelFactory</a></li><li><a href="module-br_presenter_workbench_ui_PresenterModelTree.html">br/presenter/workbench/ui/PresenterModelTree</a></li><li><a href="module-br_ServiceRegistryClass.html">br/ServiceRegistryClass</a></li><li><a href="module-br_services_bundlepath_BRAppMetaService.html">br/services/bundlepath/BRAppMetaService</a></li><li><a href="module-br_services_html_BRHtmlResourceService.html">br/services/html/BRHtmlResourceService</a></li><li><a href="module-br_services_html_JSTDHtmlResourceService.html">br/services/html/JSTDHtmlResourceService</a></li><li><a href="module-br_services_locale_BRLocaleService.html">br/services/locale/BRLocaleService</a></li><li><a href="module-br_services_xml_BRXmlResourceService.html">br/services/xml/BRXmlResourceService</a></li><li><a href="module-br_services_xml_JSTDXmlResourceService.html">br/services/xml/JSTDXmlResourceService</a></li><li><a href="module-br_test_AlertFixture.html">br/test/AlertFixture</a></li><li><a href="module-br_test_TimeFixture.html">br/test/TimeFixture</a></li><li><a href="module-br_test_Utils.html">br/test/Utils</a></li><li><a href="module-br_test_ViewFixture.html">br/test/ViewFixture</a></li><li><a href="module-br_test_viewhandler_BackgroundImage.html">br/test/viewhandler/BackgroundImage</a></li><li><a href="module-br_test_viewhandler_Blurred.html">br/test/viewhandler/Blurred</a></li><li><a href="module-br_test_viewhandler_BorderColor.html">br/test/viewhandler/BorderColor</a></li><li><a href="module-br_test_viewhandler_BorderWidth.html">br/test/viewhandler/BorderWidth</a></li><li><a href="module-br_test_viewhandler_BottomMarginWidth.html">br/test/viewhandler/BottomMarginWidth</a></li><li><a href="module-br_test_viewhandler_Checked.html">br/test/viewhandler/Checked</a></li><li><a href="module-br_test_viewhandler_ChildrenCount.html">br/test/viewhandler/ChildrenCount</a></li><li><a href="module-br_test_viewhandler_ClassName.html">br/test/viewhandler/ClassName</a></li><li><a href="module-br_test_viewhandler_Clicked.html">br/test/viewhandler/Clicked</a></li><li><a href="module-br_test_viewhandler_Color.html">br/test/viewhandler/Color</a></li><li><a href="module-br_test_viewhandler_DoesNotHaveClass.html">br/test/viewhandler/DoesNotHaveClass</a></li><li><a href="module-br_test_viewhandler_Enabled.html">br/test/viewhandler/Enabled</a></li><li><a href="module-br_test_viewhandler_Focused.html">br/test/viewhandler/Focused</a></li><li><a href="module-br_test_viewhandler_FocusIn.html">br/test/viewhandler/FocusIn</a></li><li><a href="module-br_test_viewhandler_FocusOut.html">br/test/viewhandler/FocusOut</a></li><li><a href="module-br_test_viewhandler_HasClass.html">br/test/viewhandler/HasClass</a></li><li><a href="module-br_test_viewhandler_Height.html">br/test/viewhandler/Height</a></li><li><a href="module-br_test_viewhandler_IsVisible.html">br/test/viewhandler/IsVisible</a></li><li><a href="module-br_test_viewhandler_LeftMarginWidth.html">br/test/viewhandler/LeftMarginWidth</a></li><li><a href="module-br_test_viewhandler_MouseDown.html">br/test/viewhandler/MouseDown</a></li><li><a href="module-br_test_viewhandler_MouseMove.html">br/test/viewhandler/MouseMove</a></li><li><a href="module-br_test_viewhandler_MouseOut.html">br/test/viewhandler/MouseOut</a></li><li><a href="module-br_test_viewhandler_MouseOver.html">br/test/viewhandler/MouseOver</a></li><li><a href="module-br_test_viewhandler_MouseUp.html">br/test/viewhandler/MouseUp</a></li><li><a href="module-br_test_viewhandler_OnKeyDown.html">br/test/viewhandler/OnKeyDown</a></li><li><a href="module-br_test_viewhandler_OnKeyUp.html">br/test/viewhandler/OnKeyUp</a></li><li><a href="module-br_test_viewhandler_Options.html">br/test/viewhandler/Options</a></li><li><a href="module-br_test_viewhandler_Readonly.html">br/test/viewhandler/Readonly</a></li><li><a href="module-br_test_viewhandler_RightClicked.html">br/test/viewhandler/RightClicked</a></li><li><a href="module-br_test_viewhandler_RightMarginWidth.html">br/test/viewhandler/RightMarginWidth</a></li><li><a href="module-br_test_viewhandler_ScrolledHorizontal.html">br/test/viewhandler/ScrolledHorizontal</a></li><li><a href="module-br_test_viewhandler_ScrolledVertical.html">br/test/viewhandler/ScrolledVertical</a></li><li><a href="module-br_test_viewhandler_Selected.html">br/test/viewhandler/Selected</a></li><li><a href="module-br_test_viewhandler_Text.html">br/test/viewhandler/Text</a></li><li><a href="module-br_test_viewhandler_Top.html">br/test/viewhandler/Top</a></li><li><a href="module-br_test_viewhandler_TopMarginWidth.html">br/test/viewhandler/TopMarginWidth</a></li><li><a href="module-br_test_viewhandler_TypedValue.html">br/test/viewhandler/TypedValue</a></li><li><a href="module-br_test_viewhandler_Value.html">br/test/viewhandler/Value</a></li><li><a href="module-br_test_viewhandler_Width.html">br/test/viewhandler/Width</a></li><li><a href="module-br_util_ArrayUtility.html">br/util/ArrayUtility</a></li><li><a href="module-br_util_ElementUtility.html">br/util/ElementUtility</a></li><li><a href="module-br_util_EventUtility.html">br/util/EventUtility</a></li><li><a href="module-br_util_ListenerFactory.html">br/util/ListenerFactory</a></li><li><a href="module-br_util_MapFactory.html">br/util/MapFactory</a></li><li><a href="module-br_util_MapUtility.html">br/util/MapUtility</a></li><li><a href="module-br_util_Number.html">br/util/Number</a></li><li><a href="module-br_util_Observable.html">br/util/Observable</a></li><li><a href="module-br_util_RegExp.html">br/util/RegExp</a></li><li><a href="module-br_util_StringUtility.html">br/util/StringUtility</a></li><li><a href="module-br_util_XmlParser.html">br/util/XmlParser</a></li><li><a href="module-br_workbench_tools_EventHubViewer.html">br/workbench/tools/EventHubViewer</a></li><li><a href="module-br_workbench_ui_Workbench.html">br/workbench/ui/Workbench</a></li><li><a href="module-br_workbench_ui_WorkbenchPanel.html">br/workbench/ui/WorkbenchPanel</a></li></ul><h3>Events</h3><ul><li><a href="module-br_component_Frame.html#event:attach">attach</a></li><li><a href="module-br_component_Frame.html#event:blur">blur</a></li><li><a href="module-br_component_Frame.html#event:close">close</a></li><li><a href="module-br_component_Frame.html#event:focus">focus</a></li><li><a href="module-br_component_Frame.html#event:hide">hide</a></li><li><a href="module-br_component_Frame.html#event:maximize">maximize</a></li><li><a href="module-br_component_Frame.html#event:minimize">minimize</a></li><li><a href="module-br_component_Frame.html#event:resize">resize</a></li><li><a href="module-br_component_Frame.html#event:restore">restore</a></li><li><a href="module-br_component_Frame.html#event:show">show</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-br_component_Component.html">br/component/Component</a></li><li><a href="module-br_component_Serializable.html">br/component/Serializable</a></li><li><a href="module-br_component_testing_ComponentModelFixture.html">br/component/testing/ComponentModelFixture</a></li><li><a href="module-br_presenter_control_ControlAdaptor.html">br/presenter/control/ControlAdaptor</a></li><li><a href="module-br_presenter_control_tooltip_TooltipHelper.html">br/presenter/control/tooltip/TooltipHelper</a></li><li><a href="module-br_presenter_formatter_Formatter.html">br/presenter/formatter/Formatter</a></li><li><a href="module-br_presenter_node_AutoCompleteProvider.html">br/presenter/node/AutoCompleteProvider</a></li><li><a href="module-br_presenter_node_NodeListListener.html">br/presenter/node/NodeListListener</a></li><li><a href="module-br_presenter_node_TemplateAware.html">br/presenter/node/TemplateAware</a></li><li><a href="module-br_presenter_parser_Parser.html">br/presenter/parser/Parser</a></li><li><a href="module-br_presenter_property_PropertyListener.html">br/presenter/property/PropertyListener</a></li><li><a href="module-br_presenter_SerializablePresentationModel.html">br/presenter/SerializablePresentationModel</a></li><li><a href="module-br_presenter_validator_CrossPropertyValidator.html">br/presenter/validator/CrossPropertyValidator</a></li><li><a href="module-br_presenter_validator_ValidationResultListener.html">br/presenter/validator/ValidationResultListener</a></li><li><a href="module-br_presenter_validator_Validator.html">br/presenter/validator/Validator</a></li><li><a href="module-br_services_AppMetaService.html">br/services/AppMetaService</a></li><li><a href="module-br_services_HtmlResourceService.html">br/services/HtmlResourceService</a></li><li><a href="module-br_services_LocaleService.html">br/services/LocaleService</a></li><li><a href="module-br_services_XmlResourceService.html">br/services/XmlResourceService</a></li><li><a href="module-br_test_Fixture.html">br/test/Fixture</a></li><li><a href="module-br_test_FixtureFactory.html">br/test/FixtureFactory</a></li><li><a href="module-br_test_FixtureRegistry.html">br/test/FixtureRegistry</a></li><li><a href="module-br_test_viewhandler_ViewFixtureHandler.html">br/test/viewhandler/ViewFixtureHandler</a></li><li><a href="module-br_workbench_ui_WorkbenchComponent.html">br/workbench/ui/WorkbenchComponent</a></li></ul><h3>Modules</h3><ul><li><a href="module-br-locale-utility.html">br-locale-utility</a></li><li><a href="module-br_AliasRegistry.html">br/AliasRegistry</a></li><li><a href="module-br_AliasRegistryClass.html">br/AliasRegistryClass</a></li><li><a href="module-br_component_Component.html">br/component/Component</a></li><li><a href="module-br_component_Frame.html">br/component/Frame</a></li><li><a href="module-br_component_Serializable.html">br/component/Serializable</a></li><li><a href="module-br_component_SimpleFrame.html">br/component/SimpleFrame</a></li><li><a href="module-br_component_testing_ComponentFixture.html">br/component/testing/ComponentFixture</a></li><li><a href="module-br_component_testing_ComponentModelFixture.html">br/component/testing/ComponentModelFixture</a></li><li><a href="module-br_Core.html">br/Core</a></li><li><a href="module-br_core_File.html">br/core/File</a></li><li><a href="module-br_core_Utility.html">br/core/Utility</a></li><li><a href="module-br_Errors.html">br/Errors</a></li><li><a href="module-br_EventHub.html">br/EventHub</a></li><li><a href="module-br_i18n.html">br/i18n</a></li><li><a href="module-br_i18n_I18N.html">br/i18n/I18N</a></li><li><a href="module-br_i18n_LocalisedDate.html">br/i18n/LocalisedDate</a></li><li><a href="module-br_i18n_LocalisedNumber.html">br/i18n/LocalisedNumber</a></li><li><a href="module-br_i18n_LocalisedTime.html">br/i18n/LocalisedTime</a></li><li><a href="module-br_i18n_Translator.html">br/i18n/Translator</a></li><li><a href="module-br_knockout_KnockoutComponent.html">br/knockout/KnockoutComponent</a></li><li><a href="module-br_knockout_workbench_KnockoutJsTreeModelFactory.html">br/knockout/workbench/KnockoutJsTreeModelFactory</a></li><li><a href="module-br_knockout_workbench_KnockoutModelTree.html">br/knockout/workbench/KnockoutModelTree</a></li><li><a href="module-br_knockout_workbench_PresentationModelViewer.html">br/knockout/workbench/PresentationModelViewer</a></li><li><a href="module-br_presenter_component_PresenterComponent.html">br/presenter/component/PresenterComponent</a></li><li><a href="module-br_presenter_control_ControlAdaptor.html">br/presenter/control/ControlAdaptor</a></li><li><a href="module-br_presenter_control_ControlAdaptorFactory.html">br/presenter/control/ControlAdaptorFactory</a></li><li><a href="module-br_presenter_control_ControlAdaptorFactoryClass.html">br/presenter/control/ControlAdaptorFactoryClass</a></li><li><a href="module-br_presenter_control_datefield_JQueryDatePickerControl.html">br/presenter/control/datefield/JQueryDatePickerControl</a></li><li><a href="module-br_presenter_control_InvalidControlModelError.html">br/presenter/control/InvalidControlModelError</a></li><li><a href="module-br_presenter_control_selectionfield_JQueryAutoCompleteControl.html">br/presenter/control/selectionfield/JQueryAutoCompleteControl</a></li><li><a href="module-br_presenter_control_selectionfield_ToggleSwitchControl.html">br/presenter/control/selectionfield/ToggleSwitchControl</a></li><li><a href="module-br_presenter_control_tooltip_DefaultTooltipHelper.html">br/presenter/control/tooltip/DefaultTooltipHelper</a></li><li><a href="module-br_presenter_control_tooltip_TooltipControl.html">br/presenter/control/tooltip/TooltipControl</a></li><li><a href="module-br_presenter_control_tooltip_TooltipHelper.html">br/presenter/control/tooltip/TooltipHelper</a></li><li><a href="module-br_presenter_formatter_DateFormatter.html">br/presenter/formatter/DateFormatter</a></li><li><a href="module-br_presenter_formatter_DecimalFormatter.html">br/presenter/formatter/DecimalFormatter</a></li><li><a href="module-br_presenter_formatter_Formatter.html">br/presenter/formatter/Formatter</a></li><li><a href="module-br_presenter_formatter_KeyValueFormatter.html">br/presenter/formatter/KeyValueFormatter</a></li><li><a href="module-br_presenter_formatter_LeadingZeroFormatter.html">br/presenter/formatter/LeadingZeroFormatter</a></li><li><a href="module-br_presenter_formatter_LocalisedAmountFormatter.html">br/presenter/formatter/LocalisedAmountFormatter</a></li><li><a href="module-br_presenter_formatter_LowerCaseFormatter.html">br/presenter/formatter/LowerCaseFormatter</a></li><li><a href="module-br_presenter_formatter_NullValueFormatter.html">br/presenter/formatter/NullValueFormatter</a></li><li><a href="module-br_presenter_formatter_PercentFormatter.html">br/presenter/formatter/PercentFormatter</a></li><li><a href="module-br_presenter_formatter_RegExpFormatter.html">br/presenter/formatter/RegExpFormatter</a></li><li><a href="module-br_presenter_formatter_RoundingFormatter.html">br/presenter/formatter/RoundingFormatter</a></li><li><a href="module-br_presenter_formatter_SignificantFiguresFormatter.html">br/presenter/formatter/SignificantFiguresFormatter</a></li><li><a href="module-br_presenter_formatter_ThousandsFormatter.html">br/presenter/formatter/ThousandsFormatter</a></li><li><a href="module-br_presenter_formatter_TrimFormatter.html">br/presenter/formatter/TrimFormatter</a></li><li><a href="module-br_presenter_formatter_TruncateDecimalFormatter.html">br/presenter/formatter/TruncateDecimalFormatter</a></li><li><a href="module-br_presenter_formatter_UpperCaseFormatter.html">br/presenter/formatter/UpperCaseFormatter</a></li><li><a href="module-br_presenter_node_AutoCompleteProvider.html">br/presenter/node/AutoCompleteProvider</a></li><li><a href="module-br_presenter_node_AutoCompleteSelectionField.html">br/presenter/node/AutoCompleteSelectionField</a></li><li><a href="module-br_presenter_node_Button.html">br/presenter/node/Button</a></li><li><a href="module-br_presenter_node_CalendarDateField.html">br/presenter/node/CalendarDateField</a></li><li><a href="module-br_presenter_node_ComponentNode.html">br/presenter/node/ComponentNode</a></li><li><a href="module-br_presenter_node_DateField.html">br/presenter/node/DateField</a></li><li><a href="module-br_presenter_node_DisplayField.html">br/presenter/node/DisplayField</a></li><li><a href="module-br_presenter_node_Field.html">br/presenter/node/Field</a></li><li><a href="module-br_presenter_node_FieldValuePropertyListener.html">br/presenter/node/FieldValuePropertyListener</a></li><li><a href="module-br_presenter_node_MappedNodeList.html">br/presenter/node/MappedNodeList</a></li><li><a href="module-br_presenter_node_MultiSelectionField.html">br/presenter/node/MultiSelectionField</a></li><li><a href="module-br_presenter_node_NodeList.html">br/presenter/node/NodeList</a></li><li><a href="module-br_presenter_node_NodeListListener.html">br/presenter/node/NodeListListener</a></li><li><a href="module-br_presenter_node_Nodes.html">br/presenter/node/Nodes</a></li><li><a href="module-br_presenter_node_Option.html">br/presenter/node/Option</a></li><li><a href="module-br_presenter_node_OptionsNodeList.html">br/presenter/node/OptionsNodeList</a></li><li><a href="module-br_presenter_node_PresentationNode.html">br/presenter/node/PresentationNode</a></li><li><a href="module-br_presenter_node_SelectionField.html">br/presenter/node/SelectionField</a></li><li><a href="module-br_presenter_node_TemplateAware.html">br/presenter/node/TemplateAware</a></li><li><a href="module-br_presenter_node_TemplateNode.html">br/presenter/node/TemplateNode</a></li><li><a href="module-br_presenter_node_ToolTipField.html">br/presenter/node/ToolTipField</a></li><li><a href="module-br_presenter_node_ToolTipNode.html">br/presenter/node/ToolTipNode</a></li><li><a href="module-br_presenter_parser_DateParser.html">br/presenter/parser/DateParser</a></li><li><a href="module-br_presenter_parser_LocalisedAmountParser.html">br/presenter/parser/LocalisedAmountParser</a></li><li><a href="module-br_presenter_parser_Parser.html">br/presenter/parser/Parser</a></li><li><a href="module-br_presenter_parser_ThousandsParser.html">br/presenter/parser/ThousandsParser</a></li><li><a href="module-br_presenter_PresentationModel.html">br/presenter/PresentationModel</a></li><li><a href="module-br_presenter_property_Alias.html">br/presenter/property/Alias</a></li><li><a href="module-br_presenter_property_EditableProperty.html">br/presenter/property/EditableProperty</a></li><li><a href="module-br_presenter_property_ISODateProperty.html">br/presenter/property/ISODateProperty</a></li><li><a href="module-br_presenter_property_Properties.html">br/presenter/property/Properties</a></li><li><a href="module-br_presenter_property_Property.html">br/presenter/property/Property</a></li><li><a href="module-br_presenter_property_PropertyHelper.html">br/presenter/property/PropertyHelper</a></li><li><a href="module-br_presenter_property_PropertyListener.html">br/presenter/property/PropertyListener</a></li><li><a href="module-br_presenter_property_Snapshot.html">br/presenter/property/Snapshot</a></li><li><a href="module-br_presenter_property_ValidationResultCollator.html">br/presenter/property/ValidationResultCollator</a></li><li><a href="module-br_presenter_property_WritableProperty.html">br/presenter/property/WritableProperty</a></li><li><a href="module-br_presenter_SerializablePresentationModel.html">br/presenter/SerializablePresentationModel</a></li><li><a href="module-br_presenter_testing_KnockoutInvocationCountPlugin.html">br/presenter/testing/KnockoutInvocationCountPlugin</a></li><li><a href="module-br_presenter_testing_NodeListLengthProperty.html">br/presenter/testing/NodeListLengthProperty</a></li><li><a href="module-br_presenter_testing_PresentationModelFixture.html">br/presenter/testing/PresentationModelFixture</a></li><li><a href="module-br_presenter_testing_PresenterComponentFixture.html">br/presenter/testing/PresenterComponentFixture</a></li><li><a href="module-br_presenter_util_ErrorMonitor.html">br/presenter/util/ErrorMonitor</a></li><li><a href="module-br_presenter_util_ObjectGraphCrawler.html">br/presenter/util/ObjectGraphCrawler</a></li><li><a href="module-br_presenter_validator_CrossPropertyValidator.html">br/presenter/validator/CrossPropertyValidator</a></li><li><a href="module-br_presenter_validator_CrossPropertyValidatorProxy.html">br/presenter/validator/CrossPropertyValidatorProxy</a></li><li><a href="module-br_presenter_validator_CrossValidationPropertyBinder.html">br/presenter/validator/CrossValidationPropertyBinder</a></li><li><a href="module-br_presenter_validator_CrossValidationPropertyListener.html">br/presenter/validator/CrossValidationPropertyListener</a></li><li><a href="module-br_presenter_validator_DateRangeCrossPropertyValidator.html">br/presenter/validator/DateRangeCrossPropertyValidator</a></li><li><a href="module-br_presenter_validator_EmailValidator.html">br/presenter/validator/EmailValidator</a></li><li><a href="module-br_presenter_validator_ISODateValidator.html">br/presenter/validator/ISODateValidator</a></li><li><a href="module-br_presenter_validator_NotEmptyValidator.html">br/presenter/validator/NotEmptyValidator</a></li><li><a href="module-br_presenter_validator_NumericValidator.html">br/presenter/validator/NumericValidator</a></li><li><a href="module-br_presenter_validator_ValidationResult.html">br/presenter/validator/ValidationResult</a></li><li><a href="module-br_presenter_validator_ValidationResultListener.html">br/presenter/validator/ValidationResultListener</a></li><li><a href="module-br_presenter_validator_Validator.html">br/presenter/validator/Validator</a></li><li><a href="module-br_presenter_validator_ValidMultiSelectionValidator.html">br/presenter/validator/ValidMultiSelectionValidator</a></li><li><a href="module-br_presenter_validator_ValidSelectionValidator.html">br/presenter/validator/ValidSelectionValidator</a></li><li><a href="module-br_presenter_view_knockout_ControlPlugin.html">br/presenter/view/knockout/ControlPlugin</a></li><li><a href="module-br_presenter_view_knockout_ControlPluginComponentLifecycleListener.html">br/presenter/view/knockout/ControlPluginComponentLifecycleListener</a></li><li><a href="module-br_presenter_view_knockout_ControlPluginNodeListListener.html">br/presenter/view/knockout/ControlPluginNodeListListener</a></li><li><a href="module-br_presenter_view_knockout_KnockoutNodeList.html">br/presenter/view/knockout/KnockoutNodeList</a></li><li><a href="module-br_presenter_view_knockout_KnockoutObservable.html">br/presenter/view/knockout/KnockoutObservable</a></li><li><a href="module-br_presenter_view_knockout_KnockoutProperty.html">br/presenter/view/knockout/KnockoutProperty</a></li><li><a href="module-br_presenter_view_knockout_KnockoutSubscription.html">br/presenter/view/knockout/KnockoutSubscription</a></li><li><a href="module-br_presenter_view_knockout_TooltipPlugin.html">br/presenter/view/knockout/TooltipPlugin</a></li><li><a href="module-br_presenter_workbench_model_TreeViewerPM.html">br/presenter/workbench/model/TreeViewerPM</a></li><li><a href="module-br_presenter_workbench_ui_PresentationModelViewer.html">br/presenter/workbench/ui/PresentationModelViewer</a></li><li><a href="module-br_presenter_workbench_ui_PresenterJsTreeModelFactory.html">br/presenter/workbench/ui/PresenterJsTreeModelFactory</a></li><li><a href="module-br_presenter_workbench_ui_PresenterModelTree.html">br/presenter/workbench/ui/PresenterModelTree</a></li><li><a href="module-br_presenter_workbench_ui_TreeSearcher.html">br/presenter/workbench/ui/TreeSearcher</a></li><li><a href="module-br_ServiceRegistry.html">br/ServiceRegistry</a></li><li><a href="module-br_ServiceRegistryClass.html">br/ServiceRegistryClass</a></li><li><a href="module-br_services_AppMetaService.html">br/services/AppMetaService</a></li><li><a href="module-br_services_bundlepath_BRAppMetaService.html">br/services/bundlepath/BRAppMetaService</a></li><li><a href="module-br_services_html_BRHtmlResourceService.html">br/services/html/BRHtmlResourceService</a></li><li><a href="module-br_services_html_JSTDHtmlResourceService.html">br/services/html/JSTDHtmlResourceService</a></li><li><a href="module-br_services_HtmlResourceService.html">br/services/HtmlResourceService</a></li><li><a href="module-br_services_locale_BRLocaleService.html">br/services/locale/BRLocaleService</a></li><li><a href="module-br_services_LocaleService.html">br/services/LocaleService</a></li><li><a href="module-br_services_xml_BRXmlResourceService.html">br/services/xml/BRXmlResourceService</a></li><li><a href="module-br_services_xml_JSTDXmlResourceService.html">br/services/xml/JSTDXmlResourceService</a></li><li><a href="module-br_services_XmlResourceService.html">br/services/XmlResourceService</a></li><li><a href="module-br_test_AlertFixture.html">br/test/AlertFixture</a></li><li><a href="module-br_test_Fixture.html">br/test/Fixture</a></li><li><a href="module-br_test_FixtureFactory.html">br/test/FixtureFactory</a></li><li><a href="module-br_test_FixtureRegistry.html">br/test/FixtureRegistry</a></li><li><a href="module-br_test_GwtFailureMessage.html">br/test/GwtFailureMessage</a></li><li><a href="module-br_test_GwtTestRunner.html">br/test/GwtTestRunner</a></li><li><a href="module-br_test_SubFixtureRegistry.html">br/test/SubFixtureRegistry</a></li><li><a href="module-br_test_TestFixture.html">br/test/TestFixture</a></li><li><a href="module-br_test_TimeFixture.html">br/test/TimeFixture</a></li><li><a href="module-br_test_TimeUtility.html">br/test/TimeUtility</a></li><li><a href="module-br_test_Utils.html">br/test/Utils</a></li><li><a href="module-br_test_ViewFixture.html">br/test/ViewFixture</a></li><li><a href="module-br_test_viewhandler_BackgroundImage.html">br/test/viewhandler/BackgroundImage</a></li><li><a href="module-br_test_viewhandler_BlurHandler.html">br/test/viewhandler/BlurHandler</a></li><li><a href="module-br_test_viewhandler_Blurred.html">br/test/viewhandler/Blurred</a></li><li><a href="module-br_test_viewhandler_BorderColor.html">br/test/viewhandler/BorderColor</a></li><li><a href="module-br_test_viewhandler_BorderWidth.html">br/test/viewhandler/BorderWidth</a></li><li><a href="module-br_test_viewhandler_BottomMarginWidth.html">br/test/viewhandler/BottomMarginWidth</a></li><li><a href="module-br_test_viewhandler_Checked.html">br/test/viewhandler/Checked</a></li><li><a href="module-br_test_viewhandler_ChildrenCount.html">br/test/viewhandler/ChildrenCount</a></li><li><a href="module-br_test_viewhandler_ClassName.html">br/test/viewhandler/ClassName</a></li><li><a href="module-br_test_viewhandler_Clicked.html">br/test/viewhandler/Clicked</a></li><li><a href="module-br_test_viewhandler_Color.html">br/test/viewhandler/Color</a></li><li><a href="module-br_test_viewhandler_DoesNotHaveClass.html">br/test/viewhandler/DoesNotHaveClass</a></li><li><a href="module-br_test_viewhandler_Enabled.html">br/test/viewhandler/Enabled</a></li><li><a href="module-br_test_viewhandler_Focused.html">br/test/viewhandler/Focused</a></li><li><a href="module-br_test_viewhandler_FocusIn.html">br/test/viewhandler/FocusIn</a></li><li><a href="module-br_test_viewhandler_FocusOut.html">br/test/viewhandler/FocusOut</a></li><li><a href="module-br_test_viewhandler_HasClass.html">br/test/viewhandler/HasClass</a></li><li><a href="module-br_test_viewhandler_Height.html">br/test/viewhandler/Height</a></li><li><a href="module-br_test_viewhandler_IsVisible.html">br/test/viewhandler/IsVisible</a></li><li><a href="module-br_test_viewhandler_LeftMarginWidth.html">br/test/viewhandler/LeftMarginWidth</a></li><li><a href="module-br_test_viewhandler_MouseDown.html">br/test/viewhandler/MouseDown</a></li><li><a href="module-br_test_viewhandler_MouseMove.html">br/test/viewhandler/MouseMove</a></li><li><a href="module-br_test_viewhandler_MouseOut.html">br/test/viewhandler/MouseOut</a></li><li><a href="module-br_test_viewhandler_MouseOver.html">br/test/viewhandler/MouseOver</a></li><li><a href="module-br_test_viewhandler_MouseUp.html">br/test/viewhandler/MouseUp</a></li><li><a href="module-br_test_viewhandler_OnKeyDown.html">br/test/viewhandler/OnKeyDown</a></li><li><a href="module-br_test_viewhandler_OnKeyUp.html">br/test/viewhandler/OnKeyUp</a></li><li><a href="module-br_test_viewhandler_Options.html">br/test/viewhandler/Options</a></li><li><a href="module-br_test_viewhandler_Readonly.html">br/test/viewhandler/Readonly</a></li><li><a href="module-br_test_viewhandler_RightClicked.html">br/test/viewhandler/RightClicked</a></li><li><a href="module-br_test_viewhandler_RightMarginWidth.html">br/test/viewhandler/RightMarginWidth</a></li><li><a href="module-br_test_viewhandler_ScrolledHorizontal.html">br/test/viewhandler/ScrolledHorizontal</a></li><li><a href="module-br_test_viewhandler_ScrolledVertical.html">br/test/viewhandler/ScrolledVertical</a></li><li><a href="module-br_test_viewhandler_Selected.html">br/test/viewhandler/Selected</a></li><li><a href="module-br_test_viewhandler_Text.html">br/test/viewhandler/Text</a></li><li><a href="module-br_test_viewhandler_Top.html">br/test/viewhandler/Top</a></li><li><a href="module-br_test_viewhandler_TopMarginWidth.html">br/test/viewhandler/TopMarginWidth</a></li><li><a href="module-br_test_viewhandler_TypedValue.html">br/test/viewhandler/TypedValue</a></li><li><a href="module-br_test_viewhandler_Value.html">br/test/viewhandler/Value</a></li><li><a href="module-br_test_viewhandler_ViewFixtureHandler.html">br/test/viewhandler/ViewFixtureHandler</a></li><li><a href="module-br_test_viewhandler_Width.html">br/test/viewhandler/Width</a></li><li><a href="module-br_UnknownClass.html">br/UnknownClass</a></li><li><a href="module-br_util_ArrayUtility.html">br/util/ArrayUtility</a></li><li><a href="module-br_util_ElementUtility.html">br/util/ElementUtility</a></li><li><a href="module-br_util_EventUtility.html">br/util/EventUtility</a></li><li><a href="module-br_util_ListenerFactory.html">br/util/ListenerFactory</a></li><li><a href="module-br_util_MapFactory.html">br/util/MapFactory</a></li><li><a href="module-br_util_MapUtility.html">br/util/MapUtility</a></li><li><a href="module-br_util_Number.html">br/util/Number</a></li><li><a href="module-br_util_Observable.html">br/util/Observable</a></li><li><a href="module-br_util_RegExp.html">br/util/RegExp</a></li><li><a href="module-br_util_StringUtility.html">br/util/StringUtility</a></li><li><a href="module-br_util_Utility.html">br/util/Utility</a></li><li><a href="module-br_util_XmlParser.html">br/util/XmlParser</a></li><li><a href="module-br_workbench_tools_EventHubViewer.html">br/workbench/tools/EventHubViewer</a></li><li><a href="module-br_workbench_ui_Workbench.html">br/workbench/ui/Workbench</a></li><li><a href="module-br_workbench_ui_WorkbenchComponent.html">br/workbench/ui/WorkbenchComponent</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Mon Jan 19 2015 12:01:32 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
