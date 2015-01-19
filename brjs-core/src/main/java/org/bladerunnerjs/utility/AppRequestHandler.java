@@ -236,11 +236,11 @@ public class AppRequestHandler
 
 	public ResponseContent getLocaleForwardingPageContent(BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		try {
-			StringWriter localeForwardingPage = new StringWriter();
+			StringWriter localeSwitchingPage = new StringWriter();
 			
-			localeForwardingPage.write("<head>\n");
-			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
-			localeForwardingPage.write("<script type='text/javascript'>\n");
+			localeSwitchingPage.write("<head>\n");
+			localeSwitchingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
+			localeSwitchingPage.write("<script type='text/javascript'>\n");
 			
 			ContentPlugin appVersionContentPlugin = app.root().plugins().contentPlugin("app-meta");
 			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.getContentPathParser();
@@ -248,23 +248,23 @@ public class AppRequestHandler
 			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPathParser.parse(appVersionContentPath), bundleSet, contentAccessor, appVersionContentPath);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			responseContent.write(baos);
-			localeForwardingPage.write( baos.toString() );
-			localeForwardingPage.write("\n");
+			localeSwitchingPage.write( baos.toString() );
+			localeSwitchingPage.write("\n");
 			
-			BundleSet localeUtilityBundleSet = app.root().sdkLib("br-locale-utility").getBundleSet();
+			BundleSet localeSwitcherBundleSet = app.root().sdkLib("br-locale-switcher").getBundleSet();
 			
-			for(SourceModule sourceModule : localeUtilityBundleSet.getSourceModules()) {
+			for(SourceModule sourceModule : localeSwitcherBundleSet.getSourceModules()) {
 				try(Reader sourceModuleReader = sourceModule.getReader()) {
-					IOUtils.copy(sourceModuleReader, localeForwardingPage);
-					localeForwardingPage.write("\n");
+					IOUtils.copy(sourceModuleReader, localeSwitchingPage);
+					localeSwitchingPage.write("\n");
 				}
 			}
 			
-			localeForwardingPage.write("\n</script>\n");
-			localeForwardingPage.write("</head>\n");
-			localeForwardingPage.write("<body onload='forwardToLocalePage()'></body>\n");
+			localeSwitchingPage.write("\n</script>\n");
+			localeSwitchingPage.write("</head>\n");
+			localeSwitchingPage.write("<body onload=\"require('br-locale-switcher').switch()\"></body>\n");
 			
-			return new CharResponseContent( app.root(), localeForwardingPage.toString() );
+			return new CharResponseContent( app.root(), localeSwitchingPage.toString() );
 		}
 		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException | ModelOperationException e) {
 			throw new ContentProcessingException(e);
