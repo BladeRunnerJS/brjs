@@ -83,3 +83,26 @@ TypedValueTest.prototype.test_canTypeEnterIntoATextBox = function()
 	this.m_oViewFixture.doThen("view.(textarea#anotherTextArea).value", "hello\nworld");
 };
 
+TypedValueTest.prototype.test_canObserveKeyEventsWhenUsingTypedValue = function()
+{
+	var typedChars = '';
+	var listener = function(event) {
+		typedChars += event.key;
+	};
+	
+	// TODO: understand why key events aren't bubbling in this test, even though the tests within the 'keyboard-event' library do show this works in Chrome
+//	var viewElement = this.m_oViewFixture.getViewElement();
+	var viewElement = this.m_oViewFixture.getViewElement().querySelector('input#empty-text'); // Note: we are listening here to keep Chrome happy
+	if(viewElement.addEventListener) {
+		viewElement.addEventListener("keypress", listener, false);
+	}
+	else {
+		viewElement.attachEvent("onkeypress", listener);
+	}
+	
+	this.m_oViewFixture.doGiven("view.(input#empty-text).value", "");
+	this.m_oViewFixture.doWhen("view.(input#empty-text).typedValue", "123");
+	this.m_oViewFixture.doThen("view.(input#empty-text).value", "123");
+	
+	assertEquals('123', typedChars);
+};
