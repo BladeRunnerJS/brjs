@@ -1,5 +1,6 @@
 package org.bladerunnerjs.appserver.filter;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +78,10 @@ public class TokenisingServletFilter implements Filter
 					out.write(filteredData);
 					response.flushBuffer();
 				}
+			}
+			catch(EOFException e) {
+				// the browser has closed it's connection early -- re-throw
+				throw e;
 			}
 			catch(Exception e)
 			{
