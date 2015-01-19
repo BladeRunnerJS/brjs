@@ -10,15 +10,17 @@ def preDir = {
 }
 
 def getProjectName(String dir) {
-	return dir.minus(rootDir.toString() + "/").replaceAll("/", ":")  
+	def normalisedDirPath = dir.replace("\\", "/")
+	def normalisedRootDirPath = rootDir.toString().replace("\\", "/")
+	def projectName = normalisedDirPath.minus(normalisedRootDirPath + "/").replaceAll("/", ":")
+	return projectName  
 }
 
 rootDir.traverse(  
 	type: DIRECTORIES,  
 	preDir: preDir) { dir->  
 	def dstr = dir.toString()  
-	if ((!skipDirs.matcher(dir.name)) &&  
-			new File(dstr + "/build.gradle").exists()) {  
+	if ( (!skipDirs.matcher(dir.name)) && new File(dstr + "/build.gradle").exists() ) {  
 		include getProjectName(dstr)  
   }  
 }
