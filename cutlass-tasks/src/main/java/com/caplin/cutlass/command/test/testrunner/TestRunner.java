@@ -58,10 +58,12 @@ public class TestRunner {
 	private static final int SERVER_POLL_TIME = 1000;
 	
 	private static Pattern pattern = Pattern.compile(".*Captured Browsers: \\((\\d+)\\).*", Pattern.DOTALL);
-	private static Runtime runTime = Runtime.getRuntime();
 	
-	private static final String XML_TEST_RESULTS_DIR = "test-results/xml";
-	private static final String HTML_TEST_RESULTS_DIR = "test-results/html";
+	private static final String XML_TEST_RESULTS_PATH = "test-results/xml";
+	private static final String HTML_TEST_RESULTS_PATH = "test-results/html";
+	
+	private final MemoizedFile XML_TEST_RESULTS_DIR;
+	private final MemoizedFile HTML_TEST_RESULTS_DIR;
 	
 	private List<Process> childProcesses = new ArrayList<Process>();
 	private List<ProcessLogger> childLoggers = new ArrayList<ProcessLogger>();
@@ -87,6 +89,9 @@ public class TestRunner {
 	public TestRunner(MemoizedFile configFile, MemoizedFile resultDir, List<String> browserNames, boolean testServerOnly, boolean noBrowserFlag, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
 		verbose = determineIfVerbose();
 		config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
+		
+		XML_TEST_RESULTS_DIR = brjs.file(XML_TEST_RESULTS_PATH);
+		HTML_TEST_RESULTS_DIR = brjs.file(HTML_TEST_RESULTS_PATH);
 		
 		this.jsTestDriverJar = config.getJsTestDriverJarFile();
 		this.portNumber = config.getPortNumber();
@@ -151,10 +156,9 @@ public class TestRunner {
 		try {
 			startServer();
 			
-			MemoizedFile testResultsDir = brjs.getMemoizedFile( new File("../"+XML_TEST_RESULTS_DIR) );
-			if (testResultsDir.exists())
+			if (XML_TEST_RESULTS_DIR.exists())
 			{
-				FileUtils.deleteDirectory(testResultsDir);
+				FileUtils.deleteDirectory(XML_TEST_RESULTS_DIR);
 			}
 			
 			runAllTestsInDirectory(directory, directory, testType, true);
@@ -230,10 +234,9 @@ public class TestRunner {
 		//This is here due to a bug in ant, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=384757#c13 for more details.
 		System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
 
-		File htmlReportsDir = new File("../"+HTML_TEST_RESULTS_DIR);
-		if (!htmlReportsDir.exists())
+		if (!HTML_TEST_RESULTS_DIR.exists())
 		{
-			htmlReportsDir.mkdirs();
+			HTML_TEST_RESULTS_DIR.mkdirs();
 		}	
 		Project project = new Project();
 		project.setName("tmpProject");
@@ -243,18 +246,18 @@ public class TestRunner {
 		project.addTarget(target);
 
 		FileSet fs = new FileSet();
-		fs.setDir(new File("../"+XML_TEST_RESULTS_DIR));
+		fs.setDir(XML_TEST_RESULTS_DIR);
 		fs.createInclude().setName("TEST-*.xml");
 		XMLResultAggregator aggregator = new XMLResultAggregator();
 		aggregator.setProject(project);
 		aggregator.addFileSet(fs);
-		aggregator.setTodir(new File("../"+XML_TEST_RESULTS_DIR));
+		aggregator.setTodir(XML_TEST_RESULTS_DIR);
 		
 		AggregateTransformer transformer = aggregator.createReport();
-		transformer.setTodir(new File("../"+HTML_TEST_RESULTS_DIR));		
+		transformer.setTodir(HTML_TEST_RESULTS_DIR);		
 		target.addTask(aggregator);
 		
-		logger.warn("Writing HTML reports to " + "../"+HTML_TEST_RESULTS_DIR + ".");
+		logger.warn("Writing HTML reports to " + HTML_TEST_RESULTS_DIR + ".");
 		project.executeTarget("junitreport");
 	}
 	
@@ -360,10 +363,9 @@ public class TestRunner {
 		logger.warn("Testing " + getTestPath(configFile) + " " + getTestTypeFromDirectoryName(configFile.getParentFile()) + ":");
 		
 		try {
-			File testResultsDir = new File("../"+XML_TEST_RESULTS_DIR);
-			if (!testResultsDir.exists())
+			if (!XML_TEST_RESULTS_DIR.exists())
 			{
-				testResultsDir.mkdirs();
+				XML_TEST_RESULTS_DIR.mkdirs();
 			}
 			JsTestDriverBundleCreator.createRequiredBundles(brjs, configFile);
 			String javaOpts = getJavaOpts();
@@ -382,10 +384,12 @@ public class TestRunner {
 			 */
 			
 			String classPath = getClassPath(jsTestDriverJar.getParentFile());
-			String[] args = CmdCreator.cmd(baseCmd, classPath, configFile.getPath(), "../"+XML_TEST_RESULTS_DIR,
+			String[] args = CmdCreator.cmd(brjs.file("sdk"), baseCmd, classPath, configFile.getPath(), XML_TEST_RESULTS_DIR,
 				verboseFlag(), browserTimeout(), "INFO");
 			logger.debug("Running command: " + CmdCreator.printCmd(args));
-			Process process = runTime.exec(args);
+			ProcessBuilder builder = new ProcessBuilder( args );
+			builder.directory( brjs.file("sdk") );
+			Process process =  builder.start();
 			childProcesses.add(process);
 			
 			ProcessLogger processLogger = new ProcessLogger(brjs, process, LogLevel.WARN, LogLevel.ERROR, null);
@@ -441,10 +445,12 @@ public class TestRunner {
 	private void startServerProcess() throws Exception {
 		logger.info("Starting server process...");
 		String classPath = getClassPath(jsTestDriverJar.getParentFile());
-		String[] args = CmdCreator.cmd("java$$-cp$$%s$$com.google.jstestdriver.JsTestDriver --config$$%s$$--port$$%s$$%s$$--browserTimeout$$%s$$--runnerMode$$%s",
+		String[] args = CmdCreator.cmd(brjs.file("sdk"), "java$$-cp$$%s$$com.google.jstestdriver.JsTestDriver --config$$%s$$--port$$%s$$%s$$--browserTimeout$$%s$$--runnerMode$$%s",
 			classPath, jsTestDriverJar.getAbsolutePath().replaceAll("\\.jar$", ".conf"), portNumber, verboseFlag(), browserTimeout(), "INFO" );
 		logger.debug("Running command: " + CmdCreator.printCmd(args));
-		Process process = runTime.exec(args);
+		ProcessBuilder builder = new ProcessBuilder( args );
+		builder.directory( brjs.file("sdk") );
+		Process process =  builder.start();
 		childLoggers.add(new ProcessLogger(brjs, process, LogLevel.INFO, LogLevel.ERROR, "server"));
 		childProcesses.add(process);
 		waitForServer(0);
@@ -454,11 +460,13 @@ public class TestRunner {
 		logger.debug("Starting browser processes...");
 		int browserNo = 1;
 		for(String browser : browsers) {
-			String[] args = CmdCreator.cmd("%s http://localhost:%s/capture?strict", browser, portNumber);
+			String[] args = CmdCreator.cmd(brjs.file("sdk"), "%s http://localhost:%s/capture?strict", browser, portNumber);
 			logger.debug("Running command: " + CmdCreator.printCmd(args));
 			try 
 			{
-				Process process = runTime.exec(args);
+				ProcessBuilder builder = new ProcessBuilder( args );
+				builder.directory( brjs.file("sdk") );
+				Process process =  builder.start();
 				childProcesses.add(process);
 				childLoggers.add(new ProcessLogger(brjs, process, LogLevel.DEBUG, LogLevel.INFO, "browser #" + browserNo++));
 			}
