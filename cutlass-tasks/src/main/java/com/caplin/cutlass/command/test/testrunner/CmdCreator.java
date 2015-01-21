@@ -3,8 +3,10 @@ package com.caplin.cutlass.command.test.testrunner;
 import java.io.File;
 import java.util.Formatter;
 
+import org.bladerunnerjs.model.BRJS;
+
 public class CmdCreator {
-	public static String[] cmd(String cmd, Object... parameters) {
+	public static String[] cmd(File sdkDir, String cmd, Object... parameters) {
 		StringBuilder stringBuilder = new StringBuilder();
 		Formatter formatter = new Formatter(stringBuilder);
 		formatter.format(cmd.replaceAll(" ", "\\$\\$"), parameters);
@@ -15,7 +17,7 @@ public class CmdCreator {
 			String cmdArg = cmdArgs[i];
 			
 			if(cmdArg.startsWith("../")) {
-				cmdArgs[i] = new File(cmdArg).getAbsolutePath();
+				cmdArgs[i] = new File(sdkDir, cmdArg).getAbsolutePath();
 			}
 		}
 		

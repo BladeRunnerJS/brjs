@@ -11,7 +11,6 @@ configurations {
 	javadocs
 
 	browsers_dep
-	phantomjs
 }
 
 dependencies {
@@ -121,14 +120,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		into "sdk/libs/java/testRunner"
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
-
-//	from (configurations.phantomjs.collect { zipTree(it) })
-//	{
-//		into "sdk/phantomjs"
-//		eachFile {
-//			it.path = it.path.replaceAll("-[a-z0-9]+\\.[a-z0-9]+\\.[a-z0-9]+-", "-") // strip the version string
-//		}
-//	}
 
 	doFirst {
 		delete file("sdk/libs/java")

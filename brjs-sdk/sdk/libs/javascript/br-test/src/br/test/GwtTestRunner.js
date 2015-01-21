@@ -385,7 +385,7 @@ GwtTestRunner.prototype._parseStatement = function(sStatement, nPhase) {
 	 * Parses Statements in the format <fixtureName>.<propertyName> <operator> <propertyValue>
 	 * uses '[\x21-\x7E]' rather than '.' to match any character so that newlines can be included too
 	 */
-	var pStatement = /(.+)(\=\>|\=)(.+)/i.exec(sStatement);
+	var pStatement = /(.+) (\=\>|\=) (.+)/i.exec(sStatement);
 
 	for (var i = 0; i < pStatement.length; i++) {
 		pStatement[i] = (pStatement[i].trim());
