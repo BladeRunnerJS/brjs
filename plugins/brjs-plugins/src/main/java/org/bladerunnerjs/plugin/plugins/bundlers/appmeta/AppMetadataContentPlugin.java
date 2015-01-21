@@ -11,8 +11,10 @@ import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -25,7 +27,7 @@ import org.bladerunnerjs.utility.AppMetadataUtility;
 import com.google.common.base.Joiner;
 
 
-public class AppMetadataContentPlugin extends AbstractContentPlugin
+public class AppMetadataContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin
 {
 
 	private static final String APP_META_REQUEST = "app-meta-request";
@@ -55,11 +57,13 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin
 	{
 		return contentPathParser;
 	}
-
+	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException
 	{
-		if (contentPath.formName.equals(APP_META_REQUEST))
+		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+		
+		if (parsedContentPath.formName.equals(APP_META_REQUEST))
 		{
 			try
 			{
@@ -78,7 +82,7 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin
 		}
 		else 
 		{
-			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 		}
 	}
 

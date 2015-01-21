@@ -15,6 +15,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
@@ -61,7 +62,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 		else {
 			String bundleRequestForm = (requestMode == RequestMode.Dev) ? "dev-bundle-request" : "prod-bundle-request";
-			contentPaths.add( compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting) );
+			contentPaths.add( compositeJsBundlerPlugin.castTo(RoutableContentPlugin.class).getContentPathParser().createRequest(bundleRequestForm, minifierSetting) );
 		}
 		return contentPaths;
 	}

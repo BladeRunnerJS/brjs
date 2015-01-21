@@ -20,8 +20,10 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -39,7 +41,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-public class NamespacedJsContentPlugin extends AbstractContentPlugin
+public class NamespacedJsContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin
 {
 
 	public static final String GLOBALIZE_EXTRA_CLASSES_REQUEST = "globalize-extra-classes-request";
@@ -132,17 +134,19 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws MalformedRequestException, ContentProcessingException
 	{
 		try
 		{
-			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
+			ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+			
+			if (parsedContentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
-				SourceModule jsModule =  (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
+				SourceModule jsModule =  (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
 				return new CharResponseContent(brjs, jsModule.getReader());
 			}
 
-			else if (contentPath.formName.equals(BUNDLE_REQUEST))
+			else if (parsedContentPath.formName.equals(BUNDLE_REQUEST))
 			{
 				List<Reader> readerList = new ArrayList<Reader>();
 				
@@ -174,7 +178,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				
 				return new CharResponseContent( brjs, readerList );
 			}
-			else if (contentPath.formName.equals(PACKAGE_DEFINITIONS_REQUEST))
+			else if (parsedContentPath.formName.equals(PACKAGE_DEFINITIONS_REQUEST))
 			{
 				// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
@@ -182,7 +186,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				Map<String, Map<String, ?>> packageStructure = createPackageStructureForNamespacedJsClasses(bundleSet, processedGlobalizedSourceModules);
 				return new CharResponseContent(brjs, getPackageStructureReader(packageStructure) );
 			}
-			else if (contentPath.formName.equals(GLOBALIZE_EXTRA_CLASSES_REQUEST))
+			else if (parsedContentPath.formName.equals(GLOBALIZE_EXTRA_CLASSES_REQUEST))
 			{
 				// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
@@ -190,7 +194,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			}
 			else
 			{
-				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+				throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 			}
 		}
 		catch ( IOException | RequirePathException e)

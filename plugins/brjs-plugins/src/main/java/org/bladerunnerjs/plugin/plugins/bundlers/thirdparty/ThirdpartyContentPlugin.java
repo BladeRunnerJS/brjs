@@ -14,8 +14,10 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -23,7 +25,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class ThirdpartyContentPlugin extends AbstractContentPlugin
+public class ThirdpartyContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
@@ -61,13 +63,14 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	{
 		return contentPathParser;
 	}
-
+	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws MalformedRequestException, ContentProcessingException
 	{
 		try {
+			ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
 			List<SourceModule> sourceModules = bundleSet.getSourceModules();
-			if (contentPath.formName.equals("bundle-request"))
+			if (parsedContentPath.formName.equals("bundle-request"))
 			{
 				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(sourceModules);
 				List<Reader> readerList = new ArrayList<Reader>();
@@ -83,9 +86,9 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 				}
 				return new CharResponseContent( brjs, readerList );
 			}
-			else if(contentPath.formName.equals("single-module-request")) {
+			else if(parsedContentPath.formName.equals("single-module-request")) {
 				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(sourceModules);
-				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
+				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
 				return new CharResponseContent(brjs, 
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
 					jsModule.getReader(),
@@ -94,7 +97,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 				);
 			}
 			else {
-				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+				throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 			}
 		}
 		catch(RequirePathException  | IOException ex) {

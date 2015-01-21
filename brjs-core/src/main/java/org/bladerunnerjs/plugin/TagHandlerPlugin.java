@@ -14,8 +14,8 @@ import org.bladerunnerjs.utility.ContentPathParser;
 /**
  * Tag handler plug-ins allow BladeRunnerJS tags within index pages (e.g. <code>&lt;@bundle.js/@&gt;</code>) to be replaced with arbitrary content.
  * 
- * <p>Tag handlers are often used to cause the browser to make requests to a {@link ContentPlugin}, using the
- * {@link ContentPlugin#getContentPathParser} and {@link ContentPathParser#createRequest} methods to help generate valid content paths. Similar to
+ * <p>Tag handlers are often used to cause the browser to make requests to a {@link ContentPlugin}, typically using the
+ * {@link RoutableContentPlugin#getContentPathParser} and {@link ContentPathParser#createRequest} methods to help generate valid content paths. Similar to
  * {@link ContentPlugin} instances, tag-handler plug-ins should be deterministic, in that they generate the same content each time they are run.</p>
  * 
  * <p>Although tag-handler plug-ins are designed to be usable both dynamically, and as part of a build (for flat-file export), a provision for generating different content in

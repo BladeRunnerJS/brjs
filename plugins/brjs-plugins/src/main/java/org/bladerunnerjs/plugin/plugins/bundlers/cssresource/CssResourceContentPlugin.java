@@ -33,17 +33,19 @@ import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.BinaryResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.css.CssAssetPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.css.CssRewriter;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-public class CssResourceContentPlugin extends AbstractContentPlugin {	
+public class CssResourceContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin {	
 	public static final String ASPECT_THEME_REQUEST = "aspect-theme-request";
 	public static final String ASPECT_RESOURCE_REQUEST = "aspect-resource-request";
 	public static final String BLADESET_THEME_REQUEST = "bladeset-theme-request";
@@ -89,11 +91,6 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	@Override
 	public String getRequestPrefix() {
 		return "cssresource";
-	}
-	
-	@Override
-	public String getCompositeGroupName() {
-		return null;
 	}
 	
 	@Override
@@ -205,16 +202,17 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException {
+		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
 		
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
-		String theme = contentPath.properties.get("theme");
-		String resourcePath = contentPath.properties.get("resourcePath");
+		String theme = parsedContentPath.properties.get("theme");
+		String resourcePath = parsedContentPath.properties.get("resourcePath");
 		MemoizedFile resourceFile = null;
 		
-		if (contentPath.formName.equals(ASPECT_THEME_REQUEST))
+		if (parsedContentPath.formName.equals(ASPECT_THEME_REQUEST))
 		{
-			String aspectName = contentPath.properties.get("aspect");
+			String aspectName = parsedContentPath.properties.get("aspect");
 			Aspect aspect =  bundlableNode.app().aspect(aspectName);
 			List<ResourcesAssetLocation> resourceAssetLocations = getResourceAssetLocations(aspect);
 			for (ResourcesAssetLocation location : resourceAssetLocations) {
@@ -223,62 +221,62 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 				}
 			}
 		}
-		else if (contentPath.formName.equals(ASPECT_RESOURCE_REQUEST))
+		else if (parsedContentPath.formName.equals(ASPECT_RESOURCE_REQUEST))
 		{
-			String aspectName = contentPath.properties.get("aspect");
+			String aspectName = parsedContentPath.properties.get("aspect");
 			Aspect aspect =  bundlableNode.app().aspect(aspectName);
 			resourceFile = aspect.file(resourcePath);
 		}
-		else if (contentPath.formName.equals(BLADESET_THEME_REQUEST))
+		else if (parsedContentPath.formName.equals(BLADESET_THEME_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
+			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
 			ThemedAssetLocation location = getThemedResourceLocation(bladeset, theme);
 			resourceFile = location.file(resourcePath);
 		}
-		else if (contentPath.formName.equals(BLADESET_RESOURCE_REQUEST))
+		else if (parsedContentPath.formName.equals(BLADESET_RESOURCE_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
+			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
 			resourceFile = bladeset.file(resourcePath);
 		}
-		else if (contentPath.formName.equals(BLADE_THEME_REQUEST))
+		else if (parsedContentPath.formName.equals(BLADE_THEME_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
-			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
+			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
+			Blade blade = bladeset.blade(parsedContentPath.properties.get("blade"));
 			ThemedAssetLocation location = getThemedResourceLocation(blade, theme);
 			resourceFile = location.file(resourcePath);
 		}
-		else if (contentPath.formName.equals(BLADE_RESOURCE_REQUEST))
+		else if (parsedContentPath.formName.equals(BLADE_RESOURCE_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
-			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
+			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
+			Blade blade = bladeset.blade(parsedContentPath.properties.get("blade"));
 			resourceFile = blade.file(resourcePath);
 		}
-		else if (contentPath.formName.equals(WORKBENCH_THEME_REQUEST))
+		else if (parsedContentPath.formName.equals(WORKBENCH_THEME_REQUEST))
 		{
 			//TODO: this needs implementing
 			// Workbenches dont have themes ?
 		}
-		else if (contentPath.formName.equals(BLADEWORKBENCH_RESOURCE_REQUEST))
+		else if (parsedContentPath.formName.equals(BLADEWORKBENCH_RESOURCE_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
-			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
+			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
+			Blade blade = bladeset.blade(parsedContentPath.properties.get("blade"));
 			BladeWorkbench workbench = blade.workbench();
 			resourceFile = workbench.file(resourcePath);
 		}
-		else if (contentPath.formName.equals(BLADESETWORKBENCH_RESOURCE_REQUEST))
+		else if (parsedContentPath.formName.equals(BLADESETWORKBENCH_RESOURCE_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
+			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
 			BladesetWorkbench workbench = bladeset.workbench();
 			resourceFile = workbench.file(resourcePath);
 		}
-		else if (contentPath.formName.equals(LIB_REQUEST))
+		else if (parsedContentPath.formName.equals(LIB_REQUEST))
 		{
-			JsLib jsLib = bundlableNode.app().jsLib(contentPath.properties.get("lib"));
+			JsLib jsLib = bundlableNode.app().jsLib(parsedContentPath.properties.get("lib"));
 			resourceFile = jsLib.file(resourcePath);
 		}
 		else
 		{
-			throw new ContentProcessingException("Cannot handle request with form name " + contentPath.formName);
+			throw new ContentProcessingException("Cannot handle request with form name " + parsedContentPath.formName);
 		}
 		
 		try
