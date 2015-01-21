@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: br-test/src/br/test/GwtTestRunner.js</title>
+
+    <!--[if lt IE 9]>
+        <script src="scripts/polyfills.js"></script>
+        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 10]>
+        <script src="scripts/placeholder.min.js"></script>
+    <![endif]-->
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/functions.js"> </script>
+    <script src="scripts/index-filter.js"> </script>
+
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/hosted-docs.css">
+    <link type="text/css" rel="stylesheet" href="styles/brjs.css">
+</head>
+
+<body onload="createAppLinks()">
+
+<header id="brjs-nav">
+    <div id="topnav">
+        <ul>
+            <li class="dashboard-link"><a href="/#"><b>BladeRunner</b>JS</a></li>
+            <li><a href="http://github.com/BladeRunnerJS/brjs/releases" target="_blank">Release Notes</a></li>
+            <li><a href="http://bladerunnerjs.org/" target="_blank">BladeRunnerJS.org</a></li>
+        </ul>
+    </div>
+    <br class="clearfloat">
+    <div class="subnav">
+        <ul>
+            <li><a href="/dashboard" class="subnav-extend-btn"></a></li>
+            <li><a id="appLink" class="subnav-btn">app</a></li>
+            <li><div class="subnav-selected" >docs</div></li>
+        </ul>
+    </div>
+</header>
+
+<div id="main">
+
+    <h1 class="page-title">Source: br-test/src/br/test/GwtTestRunner.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+/**
+ * @module br/test/GwtTestRunner
+ */
+
+require('jasmine');
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var TestFixture = require('br/test/TestFixture');
+var TimeFixture = require('br/test/TimeFixture');
+var TimeUtility = require('br/test/TimeUtility');
+var FixtureFactory = require('br/test/FixtureFactory');
+var FixtureRegistry = require('br/test/FixtureRegistry');
+
+/**
+ * @private
+ * @class
+ * @alias module:br/test/GwtTestRunner
+ * @implements module:br/test/FixtureRegistry
+ */
+function GwtTestRunner(sFixtureFactoryClass) {
+	var Utility = require('br/core/Utility');
+
+	this.m_pFixtures = [];
+
+	var fFixtureFactoryClass;
+	try {
+		fFixtureFactoryClass = Utility.locate(sFixtureFactoryClass);
+	} catch (e) {
+		throw new Errors.CustomError("InvalidFactoryError", "An error occured in br.test.GwtTestRunner when creating the fixture factory " +
+				"(" + sFixtureFactoryClass + "): " + e.message);
+	}
+
+	if (typeof fFixtureFactoryClass === 'undefined') {
+		throw new Errors.CustomError("InvalidFactoryError", "Fixture factory class '" + sFixtureFactoryClass + "' does not exist.");
+	}
+
+	try {
+		this.m_oFixtureFactory = new fFixtureFactoryClass();
+	} catch (e) {
+		throw new Errors.CustomError("InvalidFactoryError", "An error occured in br.test.GwtTestRunner when creating the fixture factory " +
+				"(" + sFixtureFactoryClass + "): " + e.message);
+	}
+
+	if (!br.fulfills(this.m_oFixtureFactory, FixtureFactory)) {
+		throw new Errors.CustomError("InvalidFactoryError", "The provided fixture factory (" + sFixtureFactoryClass +
+				") does not implement br.test.FixtureFactory");
+	}
+
+	this.m_oFixtureFactory.addFixtures(this);
+	this.addFixture("test", new TestFixture(this));
+	this.addFixture("time", new TimeFixture(TimeUtility));
+
+	this.m_fDoGiven = GwtTestRunner.createTestMethod(this, "doGiven"),
+	this.m_fDoWhen = GwtTestRunner.createTestMethod(this, "doWhen"),
+	this.m_fDoThen = GwtTestRunner.createTestMethod(this, "doThen"),
+	this.m_fDoAnd = GwtTestRunner.createTestMethod(this, "doAnd");
+	this.m_fStartingContinuesFrom = GwtTestRunner.createTestMethod(this, "startingContinuesFrom");
+	this.m_fFinishedContinuesFrom = GwtTestRunner.createTestMethod(this, "finishedContinuesFrom");
+};
+
+br.inherit(GwtTestRunner, FixtureRegistry);
+
+GwtTestRunner.m_mTests = {};
+GwtTestRunner.m_mSuites = {};
+GwtTestRunner.INIT_PHASE = 1;
+GwtTestRunner.GIVEN_PHASE = 2;
+GwtTestRunner.WHEN_PHASE = 3;
+GwtTestRunner.THEN_PHASE = 4;
+
+
+// *** Static Methods ***
+
+/**
+ * Static method that needs to be called before any Jasmine tests will execute.
+ */
+GwtTestRunner.initialize = function() {
+	if (!window.fixtures) {
+		window.fixtures = GwtTestRunner.createTestMethod(GwtTestRunner, "initializeTest");
+	}
+};
+
+/** @private */
+GwtTestRunner.createTestMethod = function(oTestRunner, sMethod) {
+	return function(sStatement) {
+		oTestRunner[sMethod](sStatement);
+	};
+};
+
+/** @private */
+GwtTestRunner.createProxyDescribeFunction = function(fOrigDescribeFunction, bIsXDescribe) {
+	return function(description, closure) {
+		var pInvalidChars = ["\\","/",":","*","?","&lt;",">"]
+		for (var i = 0; i &lt; pInvalidChars.length; i++) {
+			var cInvalidChar = pInvalidChars[i];
+			if (description.indexOf(cInvalidChar) > -1) {
+				throw new Errors.CustomError("InvalidSuiteError", "Invalid character '" + cInvalidChar + "' in test suite '"+ description + "'.");
+			}
+		}
+
+		if (GwtTestRunner.m_mSuites[description]) {
+			throw new Errors.CustomError("InvalidSuiteError", "The test suite '" + description + "' has already been defined.");
+		} else {
+			GwtTestRunner.m_mSuites[description] = closure;
+			var jasmineDescribeReturnValue = fOrigDescribeFunction.call(this, description, closure);
+
+			if (bIsXDescribe) {
+				var fOrigIt = it;
+				var fOrigFixtures = fixtures;
+				var fOrigGetEnv = jasmine.getEnv;
+
+				try {
+					it = GwtTestRunner.capturingItFunction;
+					fixtures = function() {};
+					jasmine.getEnv = function()
+					{
+						return {
+							currentSuite: {
+								getFullName: function() {
+									return description;
+								}
+							}
+						};
+					};
+
+					closure();
+				} finally {
+					it = fOrigIt;
+					fixtures = fOrigFixtures;
+					jasmine.getEnv = fOrigGetEnv;
+				}
+			}
+
+			return jasmineDescribeReturnValue;
+		}
+	};
+};
+
+/** @private */
+GwtTestRunner.createProxyItFunction = function(fOrigItFunction) {
+	return function(description, closure) {
+		var sSuiteFullName = jasmine.getEnv().currentSuite.getFullName();
+		var sSuiteNamespacedTestName = sSuiteFullName + "::" + description;
+
+		if (GwtTestRunner.m_mTests[sSuiteNamespacedTestName] &amp;&amp; !description.match("encountered a declaration exception")) {
+			throw new Errors.CustomError("DuplicateTestError", "The test '" + sSuiteNamespacedTestName + "' has already been defined.");
+		} else {
+			closure.suiteName = sSuiteFullName;
+			GwtTestRunner.m_mTests[sSuiteNamespacedTestName] = closure;
+			var jasmineItReturnValue = fOrigItFunction.call(this, description, closure);
+
+			return jasmineItReturnValue;
+		}
+	};
+};
+
+
+// *** FixtureRegistry Interface ***
+
+GwtTestRunner.prototype.addFixture = function(sScope, oFixture) {
+	var SubFixtureRegistry = require('br/test/SubFixtureRegistry');
+
+	this.m_pFixtures.push({scopeMatcher:new RegExp("^" + sScope + "(\\..+|$)"), scopeLength:sScope.length + 1, fixture:oFixture});
+	oFixture.addSubFixtures(new SubFixtureRegistry(this, sScope));
+};
+
+// *** Public Methods ***
+
+/** @private */
+GwtTestRunner.initializeTest = function(sFixtureFactoryClass) {
+	var oTestRunner = new GwtTestRunner(sFixtureFactoryClass);
+
+	beforeEach(this.createTestMethod(oTestRunner, "startTest"));
+	afterEach(this.createTestMethod(oTestRunner, "endTest"));
+};
+
+/** @private */
+GwtTestRunner.prototype.startTest = function() {
+	var ServiceRegistry = require("br/ServiceRegistry");
+	if(ServiceRegistry.clear) {
+		ServiceRegistry.clear();
+	}
+
+	window.given = this.m_fDoGiven;
+	window.when = this.m_fDoWhen;
+	window.then = this.m_fDoThen;
+	window.and = this.m_fDoAnd;
+	window.startingContinuesFrom = this.m_fStartingContinuesFrom;
+	window.finishedContinuesFrom = this.m_fFinishedContinuesFrom;
+
+	this.m_bTestFailed = false;
+	this.m_nTestPhase = GwtTestRunner.INIT_PHASE;
+
+	if (this.m_oFixtureFactory.setUp) {
+		try {
+			this.m_oFixtureFactory.setUp();
+		} catch (e) {
+			throw new Errors.CustomError("TestSetUpError", e.message,
+					"Error occured in GwtTestRunner.prototype.startTest() calling this.m_oFixtureFactory.setUp()");
+		}
+	}
+
+	for(var i = 0, l = this.m_pFixtures.length; i &lt; l; ++i) {
+		var oFixture = this.m_pFixtures[i].fixture;
+		try {
+			oFixture.setUp();
+		}
+		catch (e) {
+			throw new Errors.CustomError("TestSetUpError", e.message,
+					"Error occured in GwtTestRunner.prototype.startTest() calling oFixture.setUp()");
+		}
+	}
+};
+
+/** @private */
+GwtTestRunner.prototype.endTest = function() {
+	for(var i = 0, l = this.m_pFixtures.length; i &lt; l; ++i) {
+		var oFixture = this.m_pFixtures[i].fixture;
+		try {
+			oFixture.tearDown();
+		}
+		catch (e) {
+			throw new Errors.CustomError("TestTearDownError", e.message,
+					"Error occured in GwtTestRunner.prototype.endTest() calling oFixture.tearDown()");
+		}
+
+	}
+
+	if (document.body.hasChildNodes()) {
+		for (var i = 0, j = document.body.childNodes.length; i &lt; j; i++) {
+			document.body.removeChild(document.body.childNodes[0]);
+		}
+	}
+
+	if (!this.m_bTestFailed &amp;&amp; ((this.m_nTestPhase == GwtTestRunner.GIVEN_PHASE) ||
+		(this.m_nTestPhase == GwtTestRunner.WHEN_PHASE))) {
+		throw new Errors.CustomError("UnterminatedTestError", "Tests must finish with one or more 'THEN' statements");
+	}
+};
+
+/** @private */
+GwtTestRunner.prototype.startingContinuesFrom = function(description) {
+	this.m_nTestPhase = GwtTestRunner.INIT_PHASE;
+
+	var sSuiteNamespacedTestName;
+	if (description.match(/::/)) {
+		sSuiteNamespacedTestName = description;
+	} else {
+		var sSuiteFullName = (this.currentSuiteName) ? this.currentSuiteName : jasmine.getEnv().currentSpec.suite.getFullName();
+		sSuiteNamespacedTestName = sSuiteFullName + "::" + description;
+	}
+
+	var fTest = GwtTestRunner.m_mTests[sSuiteNamespacedTestName];
+
+	if (!fTest) {
+		throw new Errors.InvalidTestError("attempt to continue from a test that doesn't exist: '" + sSuiteNamespacedTestName + "'");
+	}
+
+	this.currentSuiteName = fTest.suiteName;
+	fTest();
+	this.currentSuiteName = null;
+};
+
+/** @private */
+GwtTestRunner.prototype.finishedContinuesFrom = function() {
+	this.m_nTestPhase = GwtTestRunner.GIVEN_PHASE;
+};
+
+/** @private */
+GwtTestRunner.prototype.doGiven = function(sStatement) {
+	try {
+		TimeUtility.captureTimerFunctions();
+
+		var oStatement = this._parseStatement(sStatement, GwtTestRunner.GIVEN_PHASE);
+		oStatement.fixture.doGiven(oStatement.propertyName, oStatement.propertyValue);
+
+		TimeUtility.nextStep();
+	} catch (e) {
+		this._handleError(e);
+	} finally {
+		TimeUtility.releaseTimerFunctions();
+	}
+};
+
+/** @private */
+GwtTestRunner.prototype.doWhen = function(sStatement) {
+	try {
+		TimeUtility.captureTimerFunctions();
+
+		var oStatement = this._parseStatement(sStatement, GwtTestRunner.WHEN_PHASE);
+		oStatement.fixture.doWhen(oStatement.propertyName, oStatement.propertyValue);
+
+		TimeUtility.nextStep();
+	} catch (e) {
+		this._handleError(e);
+	} finally {
+		TimeUtility.releaseTimerFunctions();
+	}
+};
+
+/** @private */
+GwtTestRunner.prototype.doThen = function(sStatement) {
+
+	try {
+		TimeUtility.captureTimerFunctions();
+
+		var oStatement = this._parseStatement(sStatement, GwtTestRunner.THEN_PHASE);
+		oStatement.fixture.doThen(oStatement.propertyName, oStatement.propertyValue);
+
+		TimeUtility.nextStep();
+	} catch (e) {
+		this._handleError(e);
+	} finally {
+		TimeUtility.releaseTimerFunctions();
+	}
+};
+
+/** @private */
+GwtTestRunner.prototype.doAnd = function(sStatement, oMessage) {
+	switch (this.m_nTestPhase) {
+		case GwtTestRunner.GIVEN_PHASE:
+			this.doGiven(sStatement);
+			break;
+
+		case GwtTestRunner.WHEN_PHASE:
+			this.doWhen(sStatement);
+			break;
+
+		case GwtTestRunner.THEN_PHASE:
+			this.doThen(sStatement, oMessage);
+			break;
+
+		default:
+			this._throwError("InvalidPhaseError", sStatement, "'AND' statements can not occur until a 'GIVEN', 'WHEN' or 'THEN' statement has been made.");
+	}
+};
+
+/** @private */
+GwtTestRunner.prototype._handleError = function(e) {
+	this.m_bTestFailed = true;
+
+	if (e.getMessage) {
+		fail(e.getMessage());
+	} else {
+		throw(e);
+	}
+};
+
+/** @private */
+GwtTestRunner.prototype._updatePhase = function(nPhase, sStatement) {
+	if (nPhase == GwtTestRunner.GIVEN_PHASE) {
+		if (this.m_nTestPhase == GwtTestRunner.INIT_PHASE) {
+			this.m_nTestPhase = GwtTestRunner.GIVEN_PHASE;
+		} else if (this.m_nTestPhase != GwtTestRunner.GIVEN_PHASE) {
+			this._throwError("InvalidPhaseError", sStatement, "'GIVEN' statements must occur before 'WHEN' and 'THEN' statements.");
+		}
+	} else if (nPhase == GwtTestRunner.WHEN_PHASE) {
+		if (this.m_nTestPhase == GwtTestRunner.GIVEN_PHASE) {
+			this.m_nTestPhase = GwtTestRunner.WHEN_PHASE;
+		} else if (this.m_nTestPhase != GwtTestRunner.WHEN_PHASE) {
+			this._throwError("InvalidPhaseError", sStatement, "'WHEN' statements must occur after 'GIVEN' statements, but before 'THEN' statements.");
+		}
+	} else if (nPhase == GwtTestRunner.THEN_PHASE) {
+		if ((this.m_nTestPhase == GwtTestRunner.GIVEN_PHASE) ||
+			(this.m_nTestPhase == GwtTestRunner.WHEN_PHASE)) {
+			this.m_nTestPhase = GwtTestRunner.THEN_PHASE;
+		} else if (this.m_nTestPhase != GwtTestRunner.THEN_PHASE) {
+			this._throwError("InvalidPhaseError", sStatement, "'THEN' statements must occur after 'GIVEN' and 'WHEN' statements.");
+		}
+	}
+};
+
+/** @private */
+GwtTestRunner.prototype._parseStatement = function(sStatement, nPhase) {
+
+	var newlinePlaceholder = "&lt;!--space--!>";
+
+	sStatement = sStatement.replace("\n",newlinePlaceholder);
+
+	this._updatePhase(nPhase, sStatement);
+
+	/**
+	 * Parses Statements in the format &lt;fixtureName>.&lt;propertyName> &lt;operator> &lt;propertyValue>
+	 * uses '[\x21-\x7E]' rather than '.' to match any character so that newlines can be included too
+	 */
+	var pStatement = /(.+)(\=\>|\=)(.+)/i.exec(sStatement);
+
+	for (var i = 0; i &lt; pStatement.length; i++) {
+		pStatement[i] = (pStatement[i].trim());
+	}
+
+	if (!pStatement || (pStatement.length != 4) || !pStatement[1] || !pStatement[2] || !pStatement[3]) {
+		this._throwError("IllegalStatementError", sStatement, "Statement should have the form &lt;fixtureName>.&lt;propertyName> &lt;operator> &lt;propertyValue>");
+	}
+
+	var oStatement = {
+		property:(pStatement[1].trim()),
+		operator:pStatement[2],
+		propertyValue:this._getTypedPropertyValue(pStatement[3].replace(newlinePlaceholder,"\n"))
+	};
+
+	if (nPhase === GwtTestRunner.WHEN_PHASE &amp;&amp; oStatement.operator != "=>") {
+		this._throwError("IllegalStatementError", sStatement, "'When Statements should use => as an Operator");
+	}
+
+	if (oStatement.propertyValue === null) {
+		this._throwError("InvalidPropertyValueError", sStatement, "'" + oStatement.propertyValue +
+				"' is not a valid type (only strings, numbers, booleans and undefined are supported)");
+	}
+
+	this._addFixtureToStatement(oStatement);
+	if (!oStatement.fixture) {
+		this._throwError("InvalidFixtureNameError", sStatement, "No Fixture has been specified matching '" + oStatement.propertyName + "'");
+	}
+
+	return oStatement;
+};
+
+/** @private */
+GwtTestRunner.prototype._addFixtureToStatement = function(oStatement) {
+	for(var i = 0, l = this.m_pFixtures.length; i &lt; l; ++i) {
+		var oNextFixture = this.m_pFixtures[i];
+
+		if (oStatement.property.match(oNextFixture.scopeMatcher)) {
+			var sFixtureProperty = oStatement.property.substr(oNextFixture.scopeLength);
+			var bCanHandleProperty = (sFixtureProperty.length > 0) ? oNextFixture.fixture.canHandleProperty(sFixtureProperty) :
+				oNextFixture.fixture.canHandleExactMatch();
+
+			if (bCanHandleProperty) {
+				oStatement.fixture = oNextFixture.fixture;
+				oStatement.propertyName = sFixtureProperty;
+				break;
+			}
+		}
+	}
+};
+
+/** @private */
+GwtTestRunner.prototype._getTypedPropertyValue = function(sValue) {
+	var vValue = null;
+
+	if (sValue == "true") {
+		vValue = true;
+	} else if (sValue == "false") {
+		vValue = false;
+	} else if (sValue == "undefined") {
+		vValue = undefined;
+	} else if (sValue.match(/^'[.\s\S]*'$/)) {
+		vValue = sValue.substr(1, sValue.length - 2);
+	} else if (!isNaN(sValue)) {
+		vValue = Number(sValue);
+	} else if (sValue.match(/^\[.*\]$/)) {
+		var pItems = sValue.substr(1, sValue.length - 2).split(/ *, */);
+
+		vValue = [];
+		for(var i = 0, l = pItems.length; i &lt; l; ++i) {
+			vValue[i] = this._getTypedPropertyValue(pItems[i]);
+		}
+	}
+
+	return vValue;
+};
+
+/** @private */
+GwtTestRunner.prototype._throwError = function(sType, sStatement, sMessage) {
+	throw new Errors.CustomError(sType, "Error handling statement '" + sStatement + "':\n\t" + sMessage);
+};
+
+// JASMINE OVERRIDES.
+if (window.jasmine) {
+	describe = GwtTestRunner.createProxyDescribeFunction(describe);
+	xdescribe = GwtTestRunner.createProxyDescribeFunction(xdescribe, true);
+
+	jasmine.Env.prototype.it = GwtTestRunner.createProxyItFunction(jasmine.Env.prototype.it);
+	jasmine.Env.prototype.xit = GwtTestRunner.createProxyItFunction(jasmine.Env.prototype.xit);
+
+	GwtTestRunner.capturingItFunction = GwtTestRunner.createProxyItFunction(function() {});
+}
+
+module.exports = GwtTestRunner;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+	<div id="filter-input-wrapper">
+        <div id="filter-input">
+        	<form onsubmit="return false;">
+		    	<input type="text" list="package-prefixes" placeholder="package filter" oninput="packageFilter.updateDisplayedItems(this.value)"
+		    	 onkeyup="packageFilter.onKeyUp(this, event)">
+		    	<button type="button" onclick="packageFilter.setFilter('')"></button>
+		    </form>
+	    </div>
+	</div>
+	<datalist id="package-prefixes"></datalist>
+
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module-br-locale-utility.html">br-locale-utility</a></li><li><a href="module-br_AliasRegistryClass.html">br/AliasRegistryClass</a></li><li><a href="module-br_component_Frame.html">br/component/Frame</a></li><li><a href="module-br_component_SimpleFrame.html">br/component/SimpleFrame</a></li><li><a href="module-br_component_testing_ComponentFixture.html">br/component/testing/ComponentFixture</a></li><li><a href="module-br_Errors.html">br/Errors</a></li><li><a href="module-br_EventHub.html">br/EventHub</a></li><li><a href="module-br_i18n_Translator.html">br/i18n/Translator</a></li><li><a href="module-br_knockout_KnockoutComponent.html">br/knockout/KnockoutComponent</a></li><li><a href="module-br_knockout_workbench_KnockoutJsTreeModelFactory.html">br/knockout/workbench/KnockoutJsTreeModelFactory</a></li><li><a href="module-br_knockout_workbench_KnockoutModelTree.html">br/knockout/workbench/KnockoutModelTree</a></li><li><a href="module-br_knockout_workbench_PresentationModelViewer.html">br/knockout/workbench/PresentationModelViewer</a></li><li><a href="module-br_presenter_component_PresenterComponent.html">br/presenter/component/PresenterComponent</a></li><li><a href="module-br_presenter_control_ControlAdaptorFactoryClass.html">br/presenter/control/ControlAdaptorFactoryClass</a></li><li><a href="module-br_presenter_control_datefield_JQueryDatePickerControl.html">br/presenter/control/datefield/JQueryDatePickerControl</a></li><li><a href="module-br_presenter_control_InvalidControlModelError.html">br/presenter/control/InvalidControlModelError</a></li><li><a href="module-br_presenter_control_selectionfield_JQueryAutoCompleteControl.html">br/presenter/control/selectionfield/JQueryAutoCompleteControl</a></li><li><a href="module-br_presenter_control_selectionfield_ToggleSwitchControl.html">br/presenter/control/selectionfield/ToggleSwitchControl</a></li><li><a href="module-br_presenter_control_tooltip_TooltipControl.html">br/presenter/control/tooltip/TooltipControl</a></li><li><a href="module-br_presenter_formatter_DateFormatter.html">br/presenter/formatter/DateFormatter</a></li><li><a href="module-br_presenter_formatter_DecimalFormatter.html">br/presenter/formatter/DecimalFormatter</a></li><li><a href="module-br_presenter_formatter_KeyValueFormatter.html">br/presenter/formatter/KeyValueFormatter</a></li><li><a href="module-br_presenter_formatter_LeadingZeroFormatter.html">br/presenter/formatter/LeadingZeroFormatter</a></li><li><a href="module-br_presenter_formatter_LocalisedAmountFormatter.html">br/presenter/formatter/LocalisedAmountFormatter</a></li><li><a href="module-br_presenter_formatter_LowerCaseFormatter.html">br/presenter/formatter/LowerCaseFormatter</a></li><li><a href="module-br_presenter_formatter_NullValueFormatter.html">br/presenter/formatter/NullValueFormatter</a></li><li><a href="module-br_presenter_formatter_PercentFormatter.html">br/presenter/formatter/PercentFormatter</a></li><li><a href="module-br_presenter_formatter_RegExpFormatter.html">br/presenter/formatter/RegExpFormatter</a></li><li><a href="module-br_presenter_formatter_RoundingFormatter.html">br/presenter/formatter/RoundingFormatter</a></li><li><a href="module-br_presenter_formatter_SignificantFiguresFormatter.html">br/presenter/formatter/SignificantFiguresFormatter</a></li><li><a href="module-br_presenter_formatter_ThousandsFormatter.html">br/presenter/formatter/ThousandsFormatter</a></li><li><a href="module-br_presenter_formatter_TrimFormatter.html">br/presenter/formatter/TrimFormatter</a></li><li><a href="module-br_presenter_formatter_TruncateDecimalFormatter.html">br/presenter/formatter/TruncateDecimalFormatter</a></li><li><a href="module-br_presenter_formatter_UpperCaseFormatter.html">br/presenter/formatter/UpperCaseFormatter</a></li><li><a href="module-br_presenter_node_AutoCompleteSelectionField.html">br/presenter/node/AutoCompleteSelectionField</a></li><li><a href="module-br_presenter_node_Button.html">br/presenter/node/Button</a></li><li><a href="module-br_presenter_node_CalendarDateField.html">br/presenter/node/CalendarDateField</a></li><li><a href="module-br_presenter_node_ComponentNode.html">br/presenter/node/ComponentNode</a></li><li><a href="module-br_presenter_node_DateField.html">br/presenter/node/DateField</a></li><li><a href="module-br_presenter_node_DisplayField.html">br/presenter/node/DisplayField</a></li><li><a href="module-br_presenter_node_Field.html">br/presenter/node/Field</a></li><li><a href="module-br_presenter_node_MappedNodeList.html">br/presenter/node/MappedNodeList</a></li><li><a href="module-br_presenter_node_MultiSelectionField.html">br/presenter/node/MultiSelectionField</a></li><li><a href="module-br_presenter_node_NodeList.html">br/presenter/node/NodeList</a></li><li><a href="module-br_presenter_node_Nodes.html">br/presenter/node/Nodes</a></li><li><a href="module-br_presenter_node_Option.html">br/presenter/node/Option</a></li><li><a href="module-br_presenter_node_OptionsNodeList.html">br/presenter/node/OptionsNodeList</a></li><li><a href="module-br_presenter_node_PresentationNode.html">br/presenter/node/PresentationNode</a></li><li><a href="module-br_presenter_node_SelectionField.html">br/presenter/node/SelectionField</a></li><li><a href="module-br_presenter_node_TemplateNode.html">br/presenter/node/TemplateNode</a></li><li><a href="module-br_presenter_node_ToolTipField.html">br/presenter/node/ToolTipField</a></li><li><a href="module-br_presenter_node_ToolTipNode.html">br/presenter/node/ToolTipNode</a></li><li><a href="module-br_presenter_parser_DateParser.html">br/presenter/parser/DateParser</a></li><li><a href="module-br_presenter_parser_LocalisedAmountParser.html">br/presenter/parser/LocalisedAmountParser</a></li><li><a href="module-br_presenter_parser_ThousandsParser.html">br/presenter/parser/ThousandsParser</a></li><li><a href="module-br_presenter_PresentationModel.html">br/presenter/PresentationModel</a></li><li><a href="module-br_presenter_property_Alias.html">br/presenter/property/Alias</a></li><li><a href="module-br_presenter_property_EditableProperty.html">br/presenter/property/EditableProperty</a></li><li><a href="module-br_presenter_property_ISODateProperty.html">br/presenter/property/ISODateProperty</a></li><li><a href="module-br_presenter_property_Properties.html">br/presenter/property/Properties</a></li><li><a href="module-br_presenter_property_Property.html">br/presenter/property/Property</a></li><li><a href="module-br_presenter_property_PropertyHelper.html">br/presenter/property/PropertyHelper</a></li><li><a href="module-br_presenter_property_Snapshot.html">br/presenter/property/Snapshot</a></li><li><a href="module-br_presenter_property_WritableProperty.html">br/presenter/property/WritableProperty</a></li><li><a href="module-br_presenter_testing_NodeListLengthProperty.html">br/presenter/testing/NodeListLengthProperty</a></li><li><a href="module-br_presenter_testing_PresentationModelFixture.html">br/presenter/testing/PresentationModelFixture</a></li><li><a href="module-br_presenter_testing_PresenterComponentFixture.html">br/presenter/testing/PresenterComponentFixture</a></li><li><a href="module-br_presenter_util_ErrorMonitor.html">br/presenter/util/ErrorMonitor</a></li><li><a href="module-br_presenter_util_ObjectGraphCrawler.html">br/presenter/util/ObjectGraphCrawler</a></li><li><a href="module-br_presenter_validator_CrossValidationPropertyBinder.html">br/presenter/validator/CrossValidationPropertyBinder</a></li><li><a href="module-br_presenter_validator_EmailValidator.html">br/presenter/validator/EmailValidator</a></li><li><a href="module-br_presenter_validator_NotEmptyValidator.html">br/presenter/validator/NotEmptyValidator</a></li><li><a href="module-br_presenter_validator_NumericValidator.html">br/presenter/validator/NumericValidator</a></li><li><a href="module-br_presenter_validator_ValidationResult.html">br/presenter/validator/ValidationResult</a></li><li><a href="module-br_presenter_workbench_ui_PresentationModelViewer.html">br/presenter/workbench/ui/PresentationModelViewer</a></li><li><a href="module-br_presenter_workbench_ui_PresenterJsTreeModelFactory.html">br/presenter/workbench/ui/PresenterJsTreeModelFactory</a></li><li><a href="module-br_presenter_workbench_ui_PresenterModelTree.html">br/presenter/workbench/ui/PresenterModelTree</a></li><li><a href="module-br_ServiceRegistryClass.html">br/ServiceRegistryClass</a></li><li><a href="module-br_services_bundlepath_BRAppMetaService.html">br/services/bundlepath/BRAppMetaService</a></li><li><a href="module-br_services_html_BRHtmlResourceService.html">br/services/html/BRHtmlResourceService</a></li><li><a href="module-br_services_html_JSTDHtmlResourceService.html">br/services/html/JSTDHtmlResourceService</a></li><li><a href="module-br_services_locale_BRLocaleService.html">br/services/locale/BRLocaleService</a></li><li><a href="module-br_services_xml_BRXmlResourceService.html">br/services/xml/BRXmlResourceService</a></li><li><a href="module-br_services_xml_JSTDXmlResourceService.html">br/services/xml/JSTDXmlResourceService</a></li><li><a href="module-br_test_AlertFixture.html">br/test/AlertFixture</a></li><li><a href="module-br_test_TimeFixture.html">br/test/TimeFixture</a></li><li><a href="module-br_test_Utils.html">br/test/Utils</a></li><li><a href="module-br_test_ViewFixture.html">br/test/ViewFixture</a></li><li><a href="module-br_test_viewhandler_BackgroundImage.html">br/test/viewhandler/BackgroundImage</a></li><li><a href="module-br_test_viewhandler_Blurred.html">br/test/viewhandler/Blurred</a></li><li><a href="module-br_test_viewhandler_BorderColor.html">br/test/viewhandler/BorderColor</a></li><li><a href="module-br_test_viewhandler_BorderWidth.html">br/test/viewhandler/BorderWidth</a></li><li><a href="module-br_test_viewhandler_BottomMarginWidth.html">br/test/viewhandler/BottomMarginWidth</a></li><li><a href="module-br_test_viewhandler_Checked.html">br/test/viewhandler/Checked</a></li><li><a href="module-br_test_viewhandler_ChildrenCount.html">br/test/viewhandler/ChildrenCount</a></li><li><a href="module-br_test_viewhandler_ClassName.html">br/test/viewhandler/ClassName</a></li><li><a href="module-br_test_viewhandler_Clicked.html">br/test/viewhandler/Clicked</a></li><li><a href="module-br_test_viewhandler_Color.html">br/test/viewhandler/Color</a></li><li><a href="module-br_test_viewhandler_DoesNotHaveClass.html">br/test/viewhandler/DoesNotHaveClass</a></li><li><a href="module-br_test_viewhandler_Enabled.html">br/test/viewhandler/Enabled</a></li><li><a href="module-br_test_viewhandler_Focused.html">br/test/viewhandler/Focused</a></li><li><a href="module-br_test_viewhandler_FocusIn.html">br/test/viewhandler/FocusIn</a></li><li><a href="module-br_test_viewhandler_FocusOut.html">br/test/viewhandler/FocusOut</a></li><li><a href="module-br_test_viewhandler_HasClass.html">br/test/viewhandler/HasClass</a></li><li><a href="module-br_test_viewhandler_Height.html">br/test/viewhandler/Height</a></li><li><a href="module-br_test_viewhandler_IsVisible.html">br/test/viewhandler/IsVisible</a></li><li><a href="module-br_test_viewhandler_LeftMarginWidth.html">br/test/viewhandler/LeftMarginWidth</a></li><li><a href="module-br_test_viewhandler_MouseDown.html">br/test/viewhandler/MouseDown</a></li><li><a href="module-br_test_viewhandler_MouseMove.html">br/test/viewhandler/MouseMove</a></li><li><a href="module-br_test_viewhandler_MouseOut.html">br/test/viewhandler/MouseOut</a></li><li><a href="module-br_test_viewhandler_MouseOver.html">br/test/viewhandler/MouseOver</a></li><li><a href="module-br_test_viewhandler_MouseUp.html">br/test/viewhandler/MouseUp</a></li><li><a href="module-br_test_viewhandler_OnKeyDown.html">br/test/viewhandler/OnKeyDown</a></li><li><a href="module-br_test_viewhandler_OnKeyUp.html">br/test/viewhandler/OnKeyUp</a></li><li><a href="module-br_test_viewhandler_Options.html">br/test/viewhandler/Options</a></li><li><a href="module-br_test_viewhandler_Readonly.html">br/test/viewhandler/Readonly</a></li><li><a href="module-br_test_viewhandler_RightClicked.html">br/test/viewhandler/RightClicked</a></li><li><a href="module-br_test_viewhandler_RightMarginWidth.html">br/test/viewhandler/RightMarginWidth</a></li><li><a href="module-br_test_viewhandler_ScrolledHorizontal.html">br/test/viewhandler/ScrolledHorizontal</a></li><li><a href="module-br_test_viewhandler_ScrolledVertical.html">br/test/viewhandler/ScrolledVertical</a></li><li><a href="module-br_test_viewhandler_Selected.html">br/test/viewhandler/Selected</a></li><li><a href="module-br_test_viewhandler_Text.html">br/test/viewhandler/Text</a></li><li><a href="module-br_test_viewhandler_Top.html">br/test/viewhandler/Top</a></li><li><a href="module-br_test_viewhandler_TopMarginWidth.html">br/test/viewhandler/TopMarginWidth</a></li><li><a href="module-br_test_viewhandler_TypedValue.html">br/test/viewhandler/TypedValue</a></li><li><a href="module-br_test_viewhandler_Value.html">br/test/viewhandler/Value</a></li><li><a href="module-br_test_viewhandler_Width.html">br/test/viewhandler/Width</a></li><li><a href="module-br_util_ArrayUtility.html">br/util/ArrayUtility</a></li><li><a href="module-br_util_ElementUtility.html">br/util/ElementUtility</a></li><li><a href="module-br_util_EventUtility.html">br/util/EventUtility</a></li><li><a href="module-br_util_ListenerFactory.html">br/util/ListenerFactory</a></li><li><a href="module-br_util_MapFactory.html">br/util/MapFactory</a></li><li><a href="module-br_util_MapUtility.html">br/util/MapUtility</a></li><li><a href="module-br_util_Number.html">br/util/Number</a></li><li><a href="module-br_util_Observable.html">br/util/Observable</a></li><li><a href="module-br_util_RegExp.html">br/util/RegExp</a></li><li><a href="module-br_util_StringUtility.html">br/util/StringUtility</a></li><li><a href="module-br_util_XmlParser.html">br/util/XmlParser</a></li><li><a href="module-br_workbench_tools_EventHubViewer.html">br/workbench/tools/EventHubViewer</a></li><li><a href="module-br_workbench_ui_Workbench.html">br/workbench/ui/Workbench</a></li><li><a href="module-br_workbench_ui_WorkbenchPanel.html">br/workbench/ui/WorkbenchPanel</a></li></ul><h3>Events</h3><ul><li><a href="module-br_component_Frame.html#event:attach">attach</a></li><li><a href="module-br_component_Frame.html#event:blur">blur</a></li><li><a href="module-br_component_Frame.html#event:close">close</a></li><li><a href="module-br_component_Frame.html#event:focus">focus</a></li><li><a href="module-br_component_Frame.html#event:hide">hide</a></li><li><a href="module-br_component_Frame.html#event:maximize">maximize</a></li><li><a href="module-br_component_Frame.html#event:minimize">minimize</a></li><li><a href="module-br_component_Frame.html#event:resize">resize</a></li><li><a href="module-br_component_Frame.html#event:restore">restore</a></li><li><a href="module-br_component_Frame.html#event:show">show</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-br_component_Component.html">br/component/Component</a></li><li><a href="module-br_component_Serializable.html">br/component/Serializable</a></li><li><a href="module-br_component_testing_ComponentModelFixture.html">br/component/testing/ComponentModelFixture</a></li><li><a href="module-br_presenter_control_ControlAdaptor.html">br/presenter/control/ControlAdaptor</a></li><li><a href="module-br_presenter_control_tooltip_TooltipHelper.html">br/presenter/control/tooltip/TooltipHelper</a></li><li><a href="module-br_presenter_formatter_Formatter.html">br/presenter/formatter/Formatter</a></li><li><a href="module-br_presenter_node_AutoCompleteProvider.html">br/presenter/node/AutoCompleteProvider</a></li><li><a href="module-br_presenter_node_NodeListListener.html">br/presenter/node/NodeListListener</a></li><li><a href="module-br_presenter_node_TemplateAware.html">br/presenter/node/TemplateAware</a></li><li><a href="module-br_presenter_parser_Parser.html">br/presenter/parser/Parser</a></li><li><a href="module-br_presenter_property_PropertyListener.html">br/presenter/property/PropertyListener</a></li><li><a href="module-br_presenter_SerializablePresentationModel.html">br/presenter/SerializablePresentationModel</a></li><li><a href="module-br_presenter_validator_CrossPropertyValidator.html">br/presenter/validator/CrossPropertyValidator</a></li><li><a href="module-br_presenter_validator_ValidationResultListener.html">br/presenter/validator/ValidationResultListener</a></li><li><a href="module-br_presenter_validator_Validator.html">br/presenter/validator/Validator</a></li><li><a href="module-br_services_AppMetaService.html">br/services/AppMetaService</a></li><li><a href="module-br_services_HtmlResourceService.html">br/services/HtmlResourceService</a></li><li><a href="module-br_services_LocaleService.html">br/services/LocaleService</a></li><li><a href="module-br_services_XmlResourceService.html">br/services/XmlResourceService</a></li><li><a href="module-br_test_Fixture.html">br/test/Fixture</a></li><li><a href="module-br_test_FixtureFactory.html">br/test/FixtureFactory</a></li><li><a href="module-br_test_FixtureRegistry.html">br/test/FixtureRegistry</a></li><li><a href="module-br_test_viewhandler_ViewFixtureHandler.html">br/test/viewhandler/ViewFixtureHandler</a></li><li><a href="module-br_workbench_ui_WorkbenchComponent.html">br/workbench/ui/WorkbenchComponent</a></li></ul><h3>Modules</h3><ul><li><a href="module-br-locale-utility.html">br-locale-utility</a></li><li><a href="module-br_AliasRegistry.html">br/AliasRegistry</a></li><li><a href="module-br_AliasRegistryClass.html">br/AliasRegistryClass</a></li><li><a href="module-br_component_Component.html">br/component/Component</a></li><li><a href="module-br_component_Frame.html">br/component/Frame</a></li><li><a href="module-br_component_Serializable.html">br/component/Serializable</a></li><li><a href="module-br_component_SimpleFrame.html">br/component/SimpleFrame</a></li><li><a href="module-br_component_testing_ComponentFixture.html">br/component/testing/ComponentFixture</a></li><li><a href="module-br_component_testing_ComponentModelFixture.html">br/component/testing/ComponentModelFixture</a></li><li><a href="module-br_Core.html">br/Core</a></li><li><a href="module-br_core_File.html">br/core/File</a></li><li><a href="module-br_core_Utility.html">br/core/Utility</a></li><li><a href="module-br_Errors.html">br/Errors</a></li><li><a href="module-br_EventHub.html">br/EventHub</a></li><li><a href="module-br_i18n.html">br/i18n</a></li><li><a href="module-br_i18n_I18N.html">br/i18n/I18N</a></li><li><a href="module-br_i18n_LocalisedDate.html">br/i18n/LocalisedDate</a></li><li><a href="module-br_i18n_LocalisedNumber.html">br/i18n/LocalisedNumber</a></li><li><a href="module-br_i18n_LocalisedTime.html">br/i18n/LocalisedTime</a></li><li><a href="module-br_i18n_Translator.html">br/i18n/Translator</a></li><li><a href="module-br_knockout_KnockoutComponent.html">br/knockout/KnockoutComponent</a></li><li><a href="module-br_knockout_workbench_KnockoutJsTreeModelFactory.html">br/knockout/workbench/KnockoutJsTreeModelFactory</a></li><li><a href="module-br_knockout_workbench_KnockoutModelTree.html">br/knockout/workbench/KnockoutModelTree</a></li><li><a href="module-br_knockout_workbench_PresentationModelViewer.html">br/knockout/workbench/PresentationModelViewer</a></li><li><a href="module-br_presenter_component_PresenterComponent.html">br/presenter/component/PresenterComponent</a></li><li><a href="module-br_presenter_control_ControlAdaptor.html">br/presenter/control/ControlAdaptor</a></li><li><a href="module-br_presenter_control_ControlAdaptorFactory.html">br/presenter/control/ControlAdaptorFactory</a></li><li><a href="module-br_presenter_control_ControlAdaptorFactoryClass.html">br/presenter/control/ControlAdaptorFactoryClass</a></li><li><a href="module-br_presenter_control_datefield_JQueryDatePickerControl.html">br/presenter/control/datefield/JQueryDatePickerControl</a></li><li><a href="module-br_presenter_control_InvalidControlModelError.html">br/presenter/control/InvalidControlModelError</a></li><li><a href="module-br_presenter_control_selectionfield_JQueryAutoCompleteControl.html">br/presenter/control/selectionfield/JQueryAutoCompleteControl</a></li><li><a href="module-br_presenter_control_selectionfield_ToggleSwitchControl.html">br/presenter/control/selectionfield/ToggleSwitchControl</a></li><li><a href="module-br_presenter_control_tooltip_DefaultTooltipHelper.html">br/presenter/control/tooltip/DefaultTooltipHelper</a></li><li><a href="module-br_presenter_control_tooltip_TooltipControl.html">br/presenter/control/tooltip/TooltipControl</a></li><li><a href="module-br_presenter_control_tooltip_TooltipHelper.html">br/presenter/control/tooltip/TooltipHelper</a></li><li><a href="module-br_presenter_formatter_DateFormatter.html">br/presenter/formatter/DateFormatter</a></li><li><a href="module-br_presenter_formatter_DecimalFormatter.html">br/presenter/formatter/DecimalFormatter</a></li><li><a href="module-br_presenter_formatter_Formatter.html">br/presenter/formatter/Formatter</a></li><li><a href="module-br_presenter_formatter_KeyValueFormatter.html">br/presenter/formatter/KeyValueFormatter</a></li><li><a href="module-br_presenter_formatter_LeadingZeroFormatter.html">br/presenter/formatter/LeadingZeroFormatter</a></li><li><a href="module-br_presenter_formatter_LocalisedAmountFormatter.html">br/presenter/formatter/LocalisedAmountFormatter</a></li><li><a href="module-br_presenter_formatter_LowerCaseFormatter.html">br/presenter/formatter/LowerCaseFormatter</a></li><li><a href="module-br_presenter_formatter_NullValueFormatter.html">br/presenter/formatter/NullValueFormatter</a></li><li><a href="module-br_presenter_formatter_PercentFormatter.html">br/presenter/formatter/PercentFormatter</a></li><li><a href="module-br_presenter_formatter_RegExpFormatter.html">br/presenter/formatter/RegExpFormatter</a></li><li><a href="module-br_presenter_formatter_RoundingFormatter.html">br/presenter/formatter/RoundingFormatter</a></li><li><a href="module-br_presenter_formatter_SignificantFiguresFormatter.html">br/presenter/formatter/SignificantFiguresFormatter</a></li><li><a href="module-br_presenter_formatter_ThousandsFormatter.html">br/presenter/formatter/ThousandsFormatter</a></li><li><a href="module-br_presenter_formatter_TrimFormatter.html">br/presenter/formatter/TrimFormatter</a></li><li><a href="module-br_presenter_formatter_TruncateDecimalFormatter.html">br/presenter/formatter/TruncateDecimalFormatter</a></li><li><a href="module-br_presenter_formatter_UpperCaseFormatter.html">br/presenter/formatter/UpperCaseFormatter</a></li><li><a href="module-br_presenter_node_AutoCompleteProvider.html">br/presenter/node/AutoCompleteProvider</a></li><li><a href="module-br_presenter_node_AutoCompleteSelectionField.html">br/presenter/node/AutoCompleteSelectionField</a></li><li><a href="module-br_presenter_node_Button.html">br/presenter/node/Button</a></li><li><a href="module-br_presenter_node_CalendarDateField.html">br/presenter/node/CalendarDateField</a></li><li><a href="module-br_presenter_node_ComponentNode.html">br/presenter/node/ComponentNode</a></li><li><a href="module-br_presenter_node_DateField.html">br/presenter/node/DateField</a></li><li><a href="module-br_presenter_node_DisplayField.html">br/presenter/node/DisplayField</a></li><li><a href="module-br_presenter_node_Field.html">br/presenter/node/Field</a></li><li><a href="module-br_presenter_node_FieldValuePropertyListener.html">br/presenter/node/FieldValuePropertyListener</a></li><li><a href="module-br_presenter_node_MappedNodeList.html">br/presenter/node/MappedNodeList</a></li><li><a href="module-br_presenter_node_MultiSelectionField.html">br/presenter/node/MultiSelectionField</a></li><li><a href="module-br_presenter_node_NodeList.html">br/presenter/node/NodeList</a></li><li><a href="module-br_presenter_node_NodeListListener.html">br/presenter/node/NodeListListener</a></li><li><a href="module-br_presenter_node_Nodes.html">br/presenter/node/Nodes</a></li><li><a href="module-br_presenter_node_Option.html">br/presenter/node/Option</a></li><li><a href="module-br_presenter_node_OptionsNodeList.html">br/presenter/node/OptionsNodeList</a></li><li><a href="module-br_presenter_node_PresentationNode.html">br/presenter/node/PresentationNode</a></li><li><a href="module-br_presenter_node_SelectionField.html">br/presenter/node/SelectionField</a></li><li><a href="module-br_presenter_node_TemplateAware.html">br/presenter/node/TemplateAware</a></li><li><a href="module-br_presenter_node_TemplateNode.html">br/presenter/node/TemplateNode</a></li><li><a href="module-br_presenter_node_ToolTipField.html">br/presenter/node/ToolTipField</a></li><li><a href="module-br_presenter_node_ToolTipNode.html">br/presenter/node/ToolTipNode</a></li><li><a href="module-br_presenter_parser_DateParser.html">br/presenter/parser/DateParser</a></li><li><a href="module-br_presenter_parser_LocalisedAmountParser.html">br/presenter/parser/LocalisedAmountParser</a></li><li><a href="module-br_presenter_parser_Parser.html">br/presenter/parser/Parser</a></li><li><a href="module-br_presenter_parser_ThousandsParser.html">br/presenter/parser/ThousandsParser</a></li><li><a href="module-br_presenter_PresentationModel.html">br/presenter/PresentationModel</a></li><li><a href="module-br_presenter_property_Alias.html">br/presenter/property/Alias</a></li><li><a href="module-br_presenter_property_EditableProperty.html">br/presenter/property/EditableProperty</a></li><li><a href="module-br_presenter_property_ISODateProperty.html">br/presenter/property/ISODateProperty</a></li><li><a href="module-br_presenter_property_Properties.html">br/presenter/property/Properties</a></li><li><a href="module-br_presenter_property_Property.html">br/presenter/property/Property</a></li><li><a href="module-br_presenter_property_PropertyHelper.html">br/presenter/property/PropertyHelper</a></li><li><a href="module-br_presenter_property_PropertyListener.html">br/presenter/property/PropertyListener</a></li><li><a href="module-br_presenter_property_Snapshot.html">br/presenter/property/Snapshot</a></li><li><a href="module-br_presenter_property_ValidationResultCollator.html">br/presenter/property/ValidationResultCollator</a></li><li><a href="module-br_presenter_property_WritableProperty.html">br/presenter/property/WritableProperty</a></li><li><a href="module-br_presenter_SerializablePresentationModel.html">br/presenter/SerializablePresentationModel</a></li><li><a href="module-br_presenter_testing_KnockoutInvocationCountPlugin.html">br/presenter/testing/KnockoutInvocationCountPlugin</a></li><li><a href="module-br_presenter_testing_NodeListLengthProperty.html">br/presenter/testing/NodeListLengthProperty</a></li><li><a href="module-br_presenter_testing_PresentationModelFixture.html">br/presenter/testing/PresentationModelFixture</a></li><li><a href="module-br_presenter_testing_PresenterComponentFixture.html">br/presenter/testing/PresenterComponentFixture</a></li><li><a href="module-br_presenter_util_ErrorMonitor.html">br/presenter/util/ErrorMonitor</a></li><li><a href="module-br_presenter_util_ObjectGraphCrawler.html">br/presenter/util/ObjectGraphCrawler</a></li><li><a href="module-br_presenter_validator_CrossPropertyValidator.html">br/presenter/validator/CrossPropertyValidator</a></li><li><a href="module-br_presenter_validator_CrossPropertyValidatorProxy.html">br/presenter/validator/CrossPropertyValidatorProxy</a></li><li><a href="module-br_presenter_validator_CrossValidationPropertyBinder.html">br/presenter/validator/CrossValidationPropertyBinder</a></li><li><a href="module-br_presenter_validator_CrossValidationPropertyListener.html">br/presenter/validator/CrossValidationPropertyListener</a></li><li><a href="module-br_presenter_validator_DateRangeCrossPropertyValidator.html">br/presenter/validator/DateRangeCrossPropertyValidator</a></li><li><a href="module-br_presenter_validator_EmailValidator.html">br/presenter/validator/EmailValidator</a></li><li><a href="module-br_presenter_validator_ISODateValidator.html">br/presenter/validator/ISODateValidator</a></li><li><a href="module-br_presenter_validator_NotEmptyValidator.html">br/presenter/validator/NotEmptyValidator</a></li><li><a href="module-br_presenter_validator_NumericValidator.html">br/presenter/validator/NumericValidator</a></li><li><a href="module-br_presenter_validator_ValidationResult.html">br/presenter/validator/ValidationResult</a></li><li><a href="module-br_presenter_validator_ValidationResultListener.html">br/presenter/validator/ValidationResultListener</a></li><li><a href="module-br_presenter_validator_Validator.html">br/presenter/validator/Validator</a></li><li><a href="module-br_presenter_validator_ValidMultiSelectionValidator.html">br/presenter/validator/ValidMultiSelectionValidator</a></li><li><a href="module-br_presenter_validator_ValidSelectionValidator.html">br/presenter/validator/ValidSelectionValidator</a></li><li><a href="module-br_presenter_view_knockout_ControlPlugin.html">br/presenter/view/knockout/ControlPlugin</a></li><li><a href="module-br_presenter_view_knockout_ControlPluginComponentLifecycleListener.html">br/presenter/view/knockout/ControlPluginComponentLifecycleListener</a></li><li><a href="module-br_presenter_view_knockout_ControlPluginNodeListListener.html">br/presenter/view/knockout/ControlPluginNodeListListener</a></li><li><a href="module-br_presenter_view_knockout_KnockoutNodeList.html">br/presenter/view/knockout/KnockoutNodeList</a></li><li><a href="module-br_presenter_view_knockout_KnockoutObservable.html">br/presenter/view/knockout/KnockoutObservable</a></li><li><a href="module-br_presenter_view_knockout_KnockoutProperty.html">br/presenter/view/knockout/KnockoutProperty</a></li><li><a href="module-br_presenter_view_knockout_KnockoutSubscription.html">br/presenter/view/knockout/KnockoutSubscription</a></li><li><a href="module-br_presenter_view_knockout_TooltipPlugin.html">br/presenter/view/knockout/TooltipPlugin</a></li><li><a href="module-br_presenter_workbench_model_TreeViewerPM.html">br/presenter/workbench/model/TreeViewerPM</a></li><li><a href="module-br_presenter_workbench_ui_PresentationModelViewer.html">br/presenter/workbench/ui/PresentationModelViewer</a></li><li><a href="module-br_presenter_workbench_ui_PresenterJsTreeModelFactory.html">br/presenter/workbench/ui/PresenterJsTreeModelFactory</a></li><li><a href="module-br_presenter_workbench_ui_PresenterModelTree.html">br/presenter/workbench/ui/PresenterModelTree</a></li><li><a href="module-br_presenter_workbench_ui_TreeSearcher.html">br/presenter/workbench/ui/TreeSearcher</a></li><li><a href="module-br_ServiceRegistry.html">br/ServiceRegistry</a></li><li><a href="module-br_ServiceRegistryClass.html">br/ServiceRegistryClass</a></li><li><a href="module-br_services_AppMetaService.html">br/services/AppMetaService</a></li><li><a href="module-br_services_bundlepath_BRAppMetaService.html">br/services/bundlepath/BRAppMetaService</a></li><li><a href="module-br_services_html_BRHtmlResourceService.html">br/services/html/BRHtmlResourceService</a></li><li><a href="module-br_services_html_JSTDHtmlResourceService.html">br/services/html/JSTDHtmlResourceService</a></li><li><a href="module-br_services_HtmlResourceService.html">br/services/HtmlResourceService</a></li><li><a href="module-br_services_locale_BRLocaleService.html">br/services/locale/BRLocaleService</a></li><li><a href="module-br_services_LocaleService.html">br/services/LocaleService</a></li><li><a href="module-br_services_xml_BRXmlResourceService.html">br/services/xml/BRXmlResourceService</a></li><li><a href="module-br_services_xml_JSTDXmlResourceService.html">br/services/xml/JSTDXmlResourceService</a></li><li><a href="module-br_services_XmlResourceService.html">br/services/XmlResourceService</a></li><li><a href="module-br_test_AlertFixture.html">br/test/AlertFixture</a></li><li><a href="module-br_test_Fixture.html">br/test/Fixture</a></li><li><a href="module-br_test_FixtureFactory.html">br/test/FixtureFactory</a></li><li><a href="module-br_test_FixtureRegistry.html">br/test/FixtureRegistry</a></li><li><a href="module-br_test_GwtFailureMessage.html">br/test/GwtFailureMessage</a></li><li><a href="module-br_test_GwtTestRunner.html">br/test/GwtTestRunner</a></li><li><a href="module-br_test_SubFixtureRegistry.html">br/test/SubFixtureRegistry</a></li><li><a href="module-br_test_TestFixture.html">br/test/TestFixture</a></li><li><a href="module-br_test_TimeFixture.html">br/test/TimeFixture</a></li><li><a href="module-br_test_TimeUtility.html">br/test/TimeUtility</a></li><li><a href="module-br_test_Utils.html">br/test/Utils</a></li><li><a href="module-br_test_ViewFixture.html">br/test/ViewFixture</a></li><li><a href="module-br_test_viewhandler_BackgroundImage.html">br/test/viewhandler/BackgroundImage</a></li><li><a href="module-br_test_viewhandler_BlurHandler.html">br/test/viewhandler/BlurHandler</a></li><li><a href="module-br_test_viewhandler_Blurred.html">br/test/viewhandler/Blurred</a></li><li><a href="module-br_test_viewhandler_BorderColor.html">br/test/viewhandler/BorderColor</a></li><li><a href="module-br_test_viewhandler_BorderWidth.html">br/test/viewhandler/BorderWidth</a></li><li><a href="module-br_test_viewhandler_BottomMarginWidth.html">br/test/viewhandler/BottomMarginWidth</a></li><li><a href="module-br_test_viewhandler_Checked.html">br/test/viewhandler/Checked</a></li><li><a href="module-br_test_viewhandler_ChildrenCount.html">br/test/viewhandler/ChildrenCount</a></li><li><a href="module-br_test_viewhandler_ClassName.html">br/test/viewhandler/ClassName</a></li><li><a href="module-br_test_viewhandler_Clicked.html">br/test/viewhandler/Clicked</a></li><li><a href="module-br_test_viewhandler_Color.html">br/test/viewhandler/Color</a></li><li><a href="module-br_test_viewhandler_DoesNotHaveClass.html">br/test/viewhandler/DoesNotHaveClass</a></li><li><a href="module-br_test_viewhandler_Enabled.html">br/test/viewhandler/Enabled</a></li><li><a href="module-br_test_viewhandler_Focused.html">br/test/viewhandler/Focused</a></li><li><a href="module-br_test_viewhandler_FocusIn.html">br/test/viewhandler/FocusIn</a></li><li><a href="module-br_test_viewhandler_FocusOut.html">br/test/viewhandler/FocusOut</a></li><li><a href="module-br_test_viewhandler_HasClass.html">br/test/viewhandler/HasClass</a></li><li><a href="module-br_test_viewhandler_Height.html">br/test/viewhandler/Height</a></li><li><a href="module-br_test_viewhandler_IsVisible.html">br/test/viewhandler/IsVisible</a></li><li><a href="module-br_test_viewhandler_LeftMarginWidth.html">br/test/viewhandler/LeftMarginWidth</a></li><li><a href="module-br_test_viewhandler_MouseDown.html">br/test/viewhandler/MouseDown</a></li><li><a href="module-br_test_viewhandler_MouseMove.html">br/test/viewhandler/MouseMove</a></li><li><a href="module-br_test_viewhandler_MouseOut.html">br/test/viewhandler/MouseOut</a></li><li><a href="module-br_test_viewhandler_MouseOver.html">br/test/viewhandler/MouseOver</a></li><li><a href="module-br_test_viewhandler_MouseUp.html">br/test/viewhandler/MouseUp</a></li><li><a href="module-br_test_viewhandler_OnKeyDown.html">br/test/viewhandler/OnKeyDown</a></li><li><a href="module-br_test_viewhandler_OnKeyUp.html">br/test/viewhandler/OnKeyUp</a></li><li><a href="module-br_test_viewhandler_Options.html">br/test/viewhandler/Options</a></li><li><a href="module-br_test_viewhandler_Readonly.html">br/test/viewhandler/Readonly</a></li><li><a href="module-br_test_viewhandler_RightClicked.html">br/test/viewhandler/RightClicked</a></li><li><a href="module-br_test_viewhandler_RightMarginWidth.html">br/test/viewhandler/RightMarginWidth</a></li><li><a href="module-br_test_viewhandler_ScrolledHorizontal.html">br/test/viewhandler/ScrolledHorizontal</a></li><li><a href="module-br_test_viewhandler_ScrolledVertical.html">br/test/viewhandler/ScrolledVertical</a></li><li><a href="module-br_test_viewhandler_Selected.html">br/test/viewhandler/Selected</a></li><li><a href="module-br_test_viewhandler_Text.html">br/test/viewhandler/Text</a></li><li><a href="module-br_test_viewhandler_Top.html">br/test/viewhandler/Top</a></li><li><a href="module-br_test_viewhandler_TopMarginWidth.html">br/test/viewhandler/TopMarginWidth</a></li><li><a href="module-br_test_viewhandler_TypedValue.html">br/test/viewhandler/TypedValue</a></li><li><a href="module-br_test_viewhandler_Value.html">br/test/viewhandler/Value</a></li><li><a href="module-br_test_viewhandler_ViewFixtureHandler.html">br/test/viewhandler/ViewFixtureHandler</a></li><li><a href="module-br_test_viewhandler_Width.html">br/test/viewhandler/Width</a></li><li><a href="module-br_UnknownClass.html">br/UnknownClass</a></li><li><a href="module-br_util_ArrayUtility.html">br/util/ArrayUtility</a></li><li><a href="module-br_util_ElementUtility.html">br/util/ElementUtility</a></li><li><a href="module-br_util_EventUtility.html">br/util/EventUtility</a></li><li><a href="module-br_util_ListenerFactory.html">br/util/ListenerFactory</a></li><li><a href="module-br_util_MapFactory.html">br/util/MapFactory</a></li><li><a href="module-br_util_MapUtility.html">br/util/MapUtility</a></li><li><a href="module-br_util_Number.html">br/util/Number</a></li><li><a href="module-br_util_Observable.html">br/util/Observable</a></li><li><a href="module-br_util_RegExp.html">br/util/RegExp</a></li><li><a href="module-br_util_StringUtility.html">br/util/StringUtility</a></li><li><a href="module-br_util_Utility.html">br/util/Utility</a></li><li><a href="module-br_util_XmlParser.html">br/util/XmlParser</a></li><li><a href="module-br_workbench_tools_EventHubViewer.html">br/workbench/tools/EventHubViewer</a></li><li><a href="module-br_workbench_ui_Workbench.html">br/workbench/ui/Workbench</a></li><li><a href="module-br_workbench_ui_WorkbenchComponent.html">br/workbench/ui/WorkbenchComponent</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Mon Jan 19 2015 12:01:32 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

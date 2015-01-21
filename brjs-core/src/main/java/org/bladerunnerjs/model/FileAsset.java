@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
+import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class FileAsset implements Asset {
@@ -62,6 +62,6 @@ public class FileAsset implements Asset {
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return RequirePathUtility.getPrimaryRequirePath(this);
 	}
 }
