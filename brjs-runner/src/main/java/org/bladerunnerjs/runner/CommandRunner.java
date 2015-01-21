@@ -123,7 +123,7 @@ public class CommandRunner {
         	Scanner scanner = new Scanner(System.in);
         	if (brjs.bladerunnerConf().getAllowAnonymousStats() == null) {
         		System.out.println();
-        		System.out.println("We would like to collect data on the commands run and the size of applications used with BladeRunnerJS.");
+        		System.out.println("To help us improve BladeRunnerJS we would like to collect data on the commands run and the size of applications used with the toolkit.");
         		System.out.println("This data is completely anonymous, does not identify you as an individual or your company and does not include any source code.");
         		System.out.println("Do you agree to the collection of this anonymous data? (Y/n)");
         		try {
