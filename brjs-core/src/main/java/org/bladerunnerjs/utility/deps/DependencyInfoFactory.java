@@ -10,6 +10,7 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
@@ -17,6 +18,7 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -113,6 +115,9 @@ public class DependencyInfoFactory {
 		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
 		for(LinkedAsset resourceAsset : assetLocation.linkedAssets()) {
 			dependencyInfo.resourceAssets.add(resourceAsset);
+			if (bundlableNode instanceof Workbench && assetLocation.assetContainer() instanceof Aspect) {
+				continue;
+			}
 			List<Asset>  assets = resourceAsset.getDependentAssets(bundlableNode);
 			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, extractSourceModules(assets));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
