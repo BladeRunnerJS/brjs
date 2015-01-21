@@ -54,7 +54,6 @@ public class JsTestDriverBundleCreator
 		
 		for (String resourceToLoad : getListOfResourcesToLoad(configMap))
 		{
-			System.out.println(resourceToLoad);
 			File requestedFile = new File(baseDirectory, resourceToLoad);
 			
 			if (fileIsInBundlesDirectory(requestedFile) && isNotWildcardFilename(requestedFile))

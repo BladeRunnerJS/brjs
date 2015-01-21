@@ -21,7 +21,6 @@ import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExists
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 
 
 public class TemplateUtility
@@ -98,8 +97,8 @@ public class TemplateUtility
 			
 			FileUtils.moveDirectoryContents(node.root(), tempDir, node.dir());
 			
-			if(!node.root().jsStyleAccessor().getJsStyle(node.dir()).equals(CommonJsSourceModule.JS_STYLE)) {
-				node.root().jsStyleAccessor().setJsStyle(node.dir(), CommonJsSourceModule.JS_STYLE);
+			if(!node.root().jsStyleAccessor().getJsStyle(node.dir()).equals(JsStyleAccessor.DEFAULT_JS_STYLE)) {
+				node.root().jsStyleAccessor().setJsStyle(node.dir(), JsStyleAccessor.DEFAULT_JS_STYLE);
 			}
 		}
 		catch(IOException e) {
