@@ -83,7 +83,7 @@ LocaleUtility.getFirstMatchingLocale = function(appSupportedLocales, userAccepte
 	return firstMatchingLocale;
 };
 
-LocaleUtility.getActiveLocale = function(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
+LocaleUtility.getActiveLocaleGiven = function(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
 	var activeLocale;
 
 	if(appSupportedLocales[userPreferredLocale]) {
@@ -106,21 +106,13 @@ LocaleUtility.getActiveLocale = function(userPreferredLocale, userAcceptedLocale
 	return activeLocale;
 };
 
-LocaleUtility.getWindowUrl = function() {
-	return window.location.pathname;
+LocaleUtility.getActiveLocale = function(appLocales, localeCookieName) {
+	var localeCookie = LocaleUtility.getCookie(localeCookieName);
+	var browserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales();
+
+	return LocaleUtility.getActiveLocaleGiven(localeCookie, browserAcceptedLocales, appLocales);
 };
 
-LocaleUtility.getLocalizedPageUrl = function(pageUrl, locale) {
-	var urlParser = document.createElement('a');
-	urlParser.href = pageUrl;
-
-	var protocol = urlParser.protocol;
-	var host = urlParser.host;
-	var url = urlParser.pathname;
-		url = (url.charAt(0) != "/") ? "/"+url : url; /* some IE versions don't prefix pathname with / */
-		url = ( !(/\/$/.test(url)) ) ? url+"/" : url; /* make sure the URL has a trailing / */
-	var anchor = urlParser.hash;
-	var queryString = urlParser.search;
-
-	return protocol+"//"+host+url+locale+"/"+queryString+anchor;
+LocaleUtility.getWindowUrl = function() {
+	return window.location.pathname;
 };
