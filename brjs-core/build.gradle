@@ -19,17 +19,6 @@ project.afterEvaluate {
 	compileTestJava.dependsOn compileRetrolambdaMain
 }
 
-sourceSets {
-	test {
-		java {
-			srcDirs = ["src/test/java", "src/test-integration/java"]
-		}
-		resources {
-			srcDirs = ["src/test/resources", "src/test-integration/resources"]
-		}
-	}
-}
-
 configurations {
 	javadocs
 	srcJar
@@ -73,7 +62,6 @@ dependencies {
 	compileOnly dependency('servlet-api')
 	
 	testRuntime project(path: ':brjs-logger-binding')
-	testRuntime dependency('jetty-jsp')
 }
 
 jar {
