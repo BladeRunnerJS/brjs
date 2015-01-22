@@ -1,5 +1,5 @@
 
-package com.caplin.gradle.tasks
+package org.bladerunnerjs.gradle.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.*

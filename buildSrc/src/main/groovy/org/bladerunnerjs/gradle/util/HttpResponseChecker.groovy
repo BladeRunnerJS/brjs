@@ -1,5 +1,5 @@
 
-package com.caplin.gradle.util
+package org.bladerunnerjs.gradle.util
 
 import org.apache.http.client.HttpClient
 import org.apache.http.HttpResponse

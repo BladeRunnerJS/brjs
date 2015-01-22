@@ -1,5 +1,5 @@
 
-package com.caplin.gradle.util
+package org.bladerunnerjs.gradle.util
 
 public class ProcessStreamGobbler extends Thread
 {

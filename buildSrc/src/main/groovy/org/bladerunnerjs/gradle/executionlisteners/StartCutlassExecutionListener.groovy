@@ -1,12 +1,12 @@
 
-package com.caplin.gradle.executionlisteners
+package org.bladerunnerjs.gradle.executionlisteners
 
 import org.gradle.api.GradleException
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
 
-import com.caplin.gradle.util.ProcessStreamGobbler
+import org.bladerunnerjs.gradle.util.ProcessStreamGobbler
 
 
 public class StartCutlassExecutionListener implements TaskExecutionListener

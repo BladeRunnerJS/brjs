@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: com.caplin.gradle.plugins.CompileOnly
+apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
 
 /* do not add any dependencies here, this should be a very small project that is used in prod */
 dependencies {

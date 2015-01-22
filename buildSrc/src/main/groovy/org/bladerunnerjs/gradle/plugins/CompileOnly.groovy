@@ -1,5 +1,5 @@
 
-package com.caplin.gradle.plugins
+package org.bladerunnerjs.gradle.plugins
 
 import org.gradle.api.Project
 import org.gradle.api.Plugin

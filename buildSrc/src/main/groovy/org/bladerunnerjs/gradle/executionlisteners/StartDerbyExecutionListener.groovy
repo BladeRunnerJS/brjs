@@ -1,4 +1,4 @@
-package com.caplin.gradle.executionlisteners
+package org.bladerunnerjs.gradle.executionlisteners
 
 import org.gradle.api.GradleException
 import org.gradle.api.Task

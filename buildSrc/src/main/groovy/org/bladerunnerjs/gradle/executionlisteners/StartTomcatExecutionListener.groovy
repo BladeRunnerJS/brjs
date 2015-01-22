@@ -1,6 +1,6 @@
-package com.caplin.gradle.executionlisteners
+package org.bladerunnerjs.gradle.executionlisteners
 
-import com.caplin.gradle.util.HttpResponseChecker
+import org.bladerunnerjs.gradle.util.HttpResponseChecker
 import org.gradle.api.GradleException
 import org.gradle.api.Task;
 import org.gradle.api.execution.TaskExecutionListener;
