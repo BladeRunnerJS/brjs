@@ -23,9 +23,9 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import com.caplin.cutlass.command.test.TestCommand;
-import com.caplin.cutlass.command.test.TestServerCommand;
-import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
+import org.bladerunnerjs.legacy.command.test.TestCommand;
+import org.bladerunnerjs.legacy.command.test.TestServerCommand;
+import org.bladerunnerjs.legacy.command.testIntegration.TestIntegrationCommand;
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;

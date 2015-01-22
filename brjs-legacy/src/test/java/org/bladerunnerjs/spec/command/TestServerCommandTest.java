@@ -2,6 +2,7 @@ package org.bladerunnerjs.spec.command;
 
 import java.io.File;
 
+import org.bladerunnerjs.legacy.command.test.TestServerCommand;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -10,8 +11,6 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.caplin.cutlass.command.test.TestServerCommand;
 
 
 public class TestServerCommandTest extends SpecTest
