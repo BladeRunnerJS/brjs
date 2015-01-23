@@ -3,7 +3,7 @@ package org.bladerunnerjs.testing.specutility.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.AppConf;
+import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.plugin.Locale;
 
 

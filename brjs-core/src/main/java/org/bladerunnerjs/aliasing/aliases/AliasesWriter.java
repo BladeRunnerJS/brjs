@@ -7,8 +7,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.bladerunnerjs.aliasing.AliasOverride;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.testing.specutility.XmlBuilderSerializer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 

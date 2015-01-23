@@ -1,9 +1,10 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.io.IOException;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 import org.bladerunnerjs.yaml.ConfFactory;

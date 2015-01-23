@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 
 
 public interface PluginLocator

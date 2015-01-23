@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
-import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;

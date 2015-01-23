@@ -3,8 +3,8 @@ package org.bladerunnerjs.testing.specutility;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.AssetContainerBuilder;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

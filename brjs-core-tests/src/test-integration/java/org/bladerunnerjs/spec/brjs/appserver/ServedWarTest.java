@@ -12,10 +12,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

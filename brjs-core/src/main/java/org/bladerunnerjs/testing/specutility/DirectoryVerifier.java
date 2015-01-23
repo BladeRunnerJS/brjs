@@ -6,8 +6,8 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 

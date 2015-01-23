@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;

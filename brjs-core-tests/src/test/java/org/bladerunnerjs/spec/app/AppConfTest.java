@@ -2,7 +2,7 @@ package org.bladerunnerjs.spec.app;
 
 import static org.bladerunnerjs.yaml.YamlAppConf.Messages.*;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;

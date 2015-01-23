@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.Collection;
 
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJSNode;
 

@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.Locale;

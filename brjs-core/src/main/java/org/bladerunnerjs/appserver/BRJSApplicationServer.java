@@ -5,10 +5,10 @@ import java.util.Map;
 
 import javax.servlet.Servlet;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;

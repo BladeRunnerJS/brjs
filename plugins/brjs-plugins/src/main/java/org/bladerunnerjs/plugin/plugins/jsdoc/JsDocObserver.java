@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.jsdoc;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.base.AbstractModelObserverPlugin;
 

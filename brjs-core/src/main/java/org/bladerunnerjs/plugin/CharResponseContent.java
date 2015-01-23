@@ -7,9 +7,9 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BladerunnerConf;
 
 import com.Ostermiller.util.ConcatReader;
 

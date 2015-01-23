@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.PluginLocator;

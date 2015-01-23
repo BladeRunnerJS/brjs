@@ -1,6 +1,6 @@
 package org.bladerunnerjs.spec.brjs;
 
-import static org.bladerunnerjs.model.BRJS.Messages.*;
+import static org.bladerunnerjs.api.BRJS.Messages.*;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bladerunnerjs.plugin.CommandPlugin;

@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin.utility;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.plugin.OrderedPlugin;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 

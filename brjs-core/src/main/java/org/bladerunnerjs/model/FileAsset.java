@@ -6,6 +6,8 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.plugin.plugins.commands.core.HelpCommand;
 import org.bladerunnerjs.plugin.plugins.commands.core.VersionCommand;

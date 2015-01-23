@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 
 
 /**

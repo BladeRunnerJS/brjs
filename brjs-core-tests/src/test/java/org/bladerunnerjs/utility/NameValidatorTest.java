@@ -2,7 +2,7 @@ package org.bladerunnerjs.utility;
 
 import static org.mockito.Mockito.*;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
 import org.bladerunnerjs.utility.NameValidator;
 import org.junit.Rule;

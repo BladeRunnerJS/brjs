@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;

@@ -3,9 +3,9 @@ package org.bladerunnerjs.spec.command;
 import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
 import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand.Messages.*;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.model.AppJsLib;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;

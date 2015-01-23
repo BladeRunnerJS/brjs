@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.model;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.model.BladesetWorkbench;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TemplateGroup;

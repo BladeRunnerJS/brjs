@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;

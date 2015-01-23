@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.AssetContainerBuilder;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

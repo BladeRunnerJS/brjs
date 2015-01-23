@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunResult;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunner;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfiguration;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.Before;
 import org.junit.Test;

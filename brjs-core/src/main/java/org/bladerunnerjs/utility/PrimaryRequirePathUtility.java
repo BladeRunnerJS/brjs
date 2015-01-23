@@ -2,7 +2,7 @@ package org.bladerunnerjs.utility;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.api.Asset;
 
 public class PrimaryRequirePathUtility {
 	public static String getPrimaryRequirePath(Asset asset) {

@@ -3,8 +3,8 @@ package org.bladerunnerjs.model.app.building;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.ZipUtility;
 

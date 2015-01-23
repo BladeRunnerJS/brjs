@@ -3,8 +3,8 @@ package org.bladerunnerjs.spec.brjs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;

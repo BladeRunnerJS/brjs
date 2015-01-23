@@ -2,11 +2,11 @@ package org.bladerunnerjs.plugin.plugins.bundlers.cssresource;
 
 import java.util.regex.Pattern;
 
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FileAsset;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 

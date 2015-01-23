@@ -6,7 +6,7 @@ import static org.bladerunnerjs.plugin.utility.PluginLoader.Messages.*;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.plugin.utilClasses.AnotherTestInterface;
 import org.bladerunnerjs.plugin.utilClasses.ClassImplementingNestedInterface;

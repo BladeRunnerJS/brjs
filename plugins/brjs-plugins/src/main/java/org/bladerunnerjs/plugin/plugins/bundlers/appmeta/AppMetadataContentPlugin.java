@@ -3,9 +3,9 @@ package org.bladerunnerjs.plugin.plugins.bundlers.appmeta;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;

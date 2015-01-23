@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +19,16 @@ import org.bladerunnerjs.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedFileAccessor;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+import org.bladerunnerjs.model.AbstractBRJSRootNode;
+import org.bladerunnerjs.model.AppVersionGenerator;
+import org.bladerunnerjs.model.BRJSGlobalFilesIOFileFilter;
+import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.model.IO;
+import org.bladerunnerjs.model.LogLevelAccessor;
+import org.bladerunnerjs.model.SdkJsLib;
+import org.bladerunnerjs.model.TemplateGroup;
+import org.bladerunnerjs.model.WorkingDirNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -87,7 +97,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private boolean closed = false;
 	private CharBufferPool pool = new CharBufferPool();
 	
-	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
 		this.appVersionGenerator = appVersionGenerator;

@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;

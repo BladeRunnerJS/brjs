@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunner.TestType;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfLocator;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;

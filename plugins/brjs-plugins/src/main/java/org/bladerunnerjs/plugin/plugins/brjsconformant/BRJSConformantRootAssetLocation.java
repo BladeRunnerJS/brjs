@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJSNodeHelper;
 import org.bladerunnerjs.model.RootAssetLocation;
 import org.bladerunnerjs.model.TheAbstractAssetLocation;

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.testing.specutility.engine.Command;

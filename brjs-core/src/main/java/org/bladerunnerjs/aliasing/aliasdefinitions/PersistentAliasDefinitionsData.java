@@ -1,9 +1,9 @@
 package org.bladerunnerjs.aliasing.aliasdefinitions;
 
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 

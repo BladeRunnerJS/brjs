@@ -2,8 +2,8 @@ package org.bladerunnerjs.utility;
 
 import java.util.Map;
 
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;

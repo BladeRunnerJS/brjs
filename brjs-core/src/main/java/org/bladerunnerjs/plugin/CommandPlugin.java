@@ -10,7 +10,7 @@ import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
  * 
  * <p>The main advantage to creating a command plug-in rather than providing an external command or script is that command plug-ins get access to the
  * BladeRunnerJS model. Commands can be invoked by users using the 'brjs' command, or can be invoked programmatically using the
- * {@link org.bladerunnerjs.model.BRJS#runCommand} method. An {@link ArgsParsingCommandPlugin} class is available for developers that would like help
+ * {@link org.bladerunnerjs.api.BRJS#runCommand} method. An {@link ArgsParsingCommandPlugin} class is available for developers that would like help
  * parsing the command parameters for their command.</p>
  * 
  * <p>The following methods are <i>identifier-methods</i>, and may be invoked before {@link Plugin#setBRJS Plugin.setBRJS()}

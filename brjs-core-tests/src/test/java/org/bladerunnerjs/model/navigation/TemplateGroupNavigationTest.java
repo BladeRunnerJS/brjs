@@ -2,7 +2,7 @@ package org.bladerunnerjs.model.navigation;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.NodeTesterFactory;
 import org.bladerunnerjs.model.TemplateGroup;

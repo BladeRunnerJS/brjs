@@ -5,7 +5,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.MinifierPlugin;

@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class StandardBundleSet implements BundleSet {

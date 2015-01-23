@@ -2,8 +2,8 @@ package org.bladerunnerjs.spec.jslib;
 
 import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;

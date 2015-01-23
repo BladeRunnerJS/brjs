@@ -1,9 +1,9 @@
 package org.bladerunnerjs.utility;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.engine.NamedNode;

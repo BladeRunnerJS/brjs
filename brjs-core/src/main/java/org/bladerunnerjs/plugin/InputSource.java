@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin;
 
 import java.io.Reader;
 
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;

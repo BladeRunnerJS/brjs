@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;

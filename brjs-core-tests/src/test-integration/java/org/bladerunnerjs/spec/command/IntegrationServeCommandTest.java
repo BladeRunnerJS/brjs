@@ -3,9 +3,9 @@ package org.bladerunnerjs.spec.command;
 import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
 import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Messages.*;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.appserver.ApplicationServer;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

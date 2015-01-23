@@ -6,11 +6,11 @@ import java.io.IOException;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.legacy.command.test.testrunner.JsTestDriverBundleCreator;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;

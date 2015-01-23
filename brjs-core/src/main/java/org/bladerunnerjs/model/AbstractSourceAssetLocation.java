@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.RootNode;

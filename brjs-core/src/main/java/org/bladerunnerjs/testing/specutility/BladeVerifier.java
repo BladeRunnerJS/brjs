@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.testing.specutility.engine.NodeVerifier;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;

@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 

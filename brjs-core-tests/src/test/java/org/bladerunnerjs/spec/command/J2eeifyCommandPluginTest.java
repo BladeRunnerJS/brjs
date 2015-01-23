@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.appserver.ApplicationServer;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.J2eeifyCommandPlugin;

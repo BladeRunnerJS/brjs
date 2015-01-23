@@ -3,9 +3,9 @@ package org.bladerunnerjs.plugin.plugins.require;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.RequirePlugin;

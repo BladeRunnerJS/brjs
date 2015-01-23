@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 

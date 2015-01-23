@@ -3,10 +3,10 @@ package org.bladerunnerjs.plugin.plugins.appdeployer;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;

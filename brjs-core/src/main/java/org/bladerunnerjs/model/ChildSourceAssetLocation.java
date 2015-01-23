@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model;
 
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.RootNode;
 

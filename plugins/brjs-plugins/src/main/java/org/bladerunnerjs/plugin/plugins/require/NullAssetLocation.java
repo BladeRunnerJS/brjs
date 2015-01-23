@@ -8,13 +8,13 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.RequirePathException;

@@ -1,10 +1,10 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class CommonJsAssetPlugin extends AbstractAssetPlugin {

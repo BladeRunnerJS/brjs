@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 

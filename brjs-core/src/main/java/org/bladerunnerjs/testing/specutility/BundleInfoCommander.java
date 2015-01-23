@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BundleSet;
 
 public class BundleInfoCommander {
 	@SuppressWarnings("unused")

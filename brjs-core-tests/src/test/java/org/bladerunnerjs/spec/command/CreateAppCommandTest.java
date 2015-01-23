@@ -1,9 +1,9 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.model.App.Messages.*;
+import static org.bladerunnerjs.api.App.Messages.*;
 import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand.Messages.*;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;

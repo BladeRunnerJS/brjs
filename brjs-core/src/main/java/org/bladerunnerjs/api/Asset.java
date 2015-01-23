@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.io.IOException;
 import java.io.Reader;

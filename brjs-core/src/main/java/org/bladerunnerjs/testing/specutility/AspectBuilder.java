@@ -2,9 +2,9 @@ package org.bladerunnerjs.testing.specutility;
 
 import java.io.File;
 
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.BundlableNodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

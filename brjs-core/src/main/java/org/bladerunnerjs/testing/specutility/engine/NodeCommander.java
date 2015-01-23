@@ -3,8 +3,7 @@ package org.bladerunnerjs.testing.specutility.engine;
 import java.io.File;
 import java.io.IOException;
 
-import org.bladerunnerjs.model.BRJS;
-
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;

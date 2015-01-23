@@ -7,9 +7,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.legacy.command.testIntegration.IntegrationTestFinder;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.Before;
 import org.junit.Test;

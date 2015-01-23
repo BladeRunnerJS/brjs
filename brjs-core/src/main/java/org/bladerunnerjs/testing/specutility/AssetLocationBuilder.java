@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 

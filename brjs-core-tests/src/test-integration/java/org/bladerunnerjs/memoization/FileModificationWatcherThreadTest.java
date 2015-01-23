@@ -10,8 +10,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.DefaultTestPack;
+import org.bladerunnerjs.model.SourceResources;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;

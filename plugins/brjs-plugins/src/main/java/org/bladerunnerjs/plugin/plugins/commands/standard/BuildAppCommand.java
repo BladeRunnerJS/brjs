@@ -4,10 +4,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;

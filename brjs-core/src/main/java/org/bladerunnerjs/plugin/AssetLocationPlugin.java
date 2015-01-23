@@ -3,8 +3,8 @@ package org.bladerunnerjs.plugin;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetLocation;
 
 /**
  * Asset location plug-ins allow new asset directory structures to be supported within the model.

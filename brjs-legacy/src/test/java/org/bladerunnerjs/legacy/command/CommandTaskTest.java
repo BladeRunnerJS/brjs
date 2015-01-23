@@ -7,9 +7,9 @@ import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.legacy.command.LegacyCommandPlugin;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.CommandPlugin;

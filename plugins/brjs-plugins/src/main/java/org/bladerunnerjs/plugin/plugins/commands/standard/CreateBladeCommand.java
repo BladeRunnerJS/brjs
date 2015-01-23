@@ -2,11 +2,11 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;

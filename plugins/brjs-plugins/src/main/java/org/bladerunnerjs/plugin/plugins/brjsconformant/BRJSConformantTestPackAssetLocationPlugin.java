@@ -6,16 +6,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ChildSourceAssetLocation;
 import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestSourceAssetLocation;
-import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 
 public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLocationPlugin {

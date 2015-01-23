@@ -1,8 +1,8 @@
 package org.bladerunnerjs.spec.jslib;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRLibYamlConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.io.input.ReaderInputStream;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.MinifierPlugin;

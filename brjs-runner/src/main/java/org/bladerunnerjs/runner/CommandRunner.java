@@ -10,10 +10,10 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logger.ConsoleLogger;
 import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.logger.LogLevel;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -22,10 +22,10 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.slf4j.impl.StaticLoggerBinder;
-
 import org.bladerunnerjs.legacy.command.test.TestCommand;
 import org.bladerunnerjs.legacy.command.test.TestServerCommand;
 import org.bladerunnerjs.legacy.command.testIntegration.TestIntegrationCommand;
+
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;

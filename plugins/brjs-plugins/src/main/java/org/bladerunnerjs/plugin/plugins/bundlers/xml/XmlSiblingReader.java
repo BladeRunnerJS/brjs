@@ -6,8 +6,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.exception.RequirePathException;
 
 public class XmlSiblingReader

@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.app;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.plugins.bundlers.appmeta.AppMetadataContentPlugin;

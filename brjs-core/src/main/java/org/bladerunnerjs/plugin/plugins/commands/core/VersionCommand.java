@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;

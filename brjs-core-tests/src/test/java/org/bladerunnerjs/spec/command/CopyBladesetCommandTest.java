@@ -1,8 +1,8 @@
 package org.bladerunnerjs.spec.command;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AppConf;
-import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;

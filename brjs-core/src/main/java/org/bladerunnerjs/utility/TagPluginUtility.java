@@ -18,9 +18,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;

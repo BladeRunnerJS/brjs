@@ -5,10 +5,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.apache.commons.io.filefilter.PrefixFileFilter;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LogLevelAccessor;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;

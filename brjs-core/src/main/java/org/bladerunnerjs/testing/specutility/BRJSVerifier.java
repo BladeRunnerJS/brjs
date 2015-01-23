@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.testing.specutility.engine.NodeVerifier;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

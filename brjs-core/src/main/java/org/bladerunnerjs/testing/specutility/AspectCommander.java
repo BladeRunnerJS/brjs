@@ -3,8 +3,8 @@ package org.bladerunnerjs.testing.specutility;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;

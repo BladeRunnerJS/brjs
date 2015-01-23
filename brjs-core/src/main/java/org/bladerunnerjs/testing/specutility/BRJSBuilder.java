@@ -7,9 +7,9 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;

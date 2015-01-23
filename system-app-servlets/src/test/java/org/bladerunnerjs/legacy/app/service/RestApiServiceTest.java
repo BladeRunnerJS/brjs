@@ -13,9 +13,9 @@ import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.legacy.app.service.RestApiService;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;

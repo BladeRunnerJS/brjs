@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 public enum TestType {
 	UT, AT, IT, PT

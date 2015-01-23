@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.ThirdpartyLibManifest;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 

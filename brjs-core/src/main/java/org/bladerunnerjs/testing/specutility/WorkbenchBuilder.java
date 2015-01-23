@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.api.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.BundlableNodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

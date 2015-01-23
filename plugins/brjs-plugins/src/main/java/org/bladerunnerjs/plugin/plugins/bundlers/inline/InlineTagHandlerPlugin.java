@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
+
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;

@@ -1,7 +1,8 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;

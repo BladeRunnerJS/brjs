@@ -2,7 +2,7 @@ package org.bladerunnerjs.model.exception.name;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
 
 /**
  * Thrown when the app namespace could not be determined and one must be supplied instead. 

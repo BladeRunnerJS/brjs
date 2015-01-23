@@ -2,6 +2,8 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.RootNode;
 

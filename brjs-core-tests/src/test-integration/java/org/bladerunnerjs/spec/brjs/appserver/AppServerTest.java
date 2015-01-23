@@ -8,10 +8,10 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.events.NodeReadyEvent;

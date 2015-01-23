@@ -10,9 +10,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
-import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;

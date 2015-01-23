@@ -8,12 +8,12 @@ import java.util.List;
 
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.legacy.command.LegacyCommandPlugin;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfLocator;
 import org.bladerunnerjs.legacy.testIntegration.WebDriverProvider;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;

@@ -2,14 +2,14 @@ package org.bladerunnerjs.spec.plugin.bundler.css;
 
 import java.io.File;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AppConf;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.BladerunnerConf;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtils;

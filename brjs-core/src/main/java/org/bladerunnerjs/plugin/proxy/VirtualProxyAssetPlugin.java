@@ -2,10 +2,10 @@ package org.bladerunnerjs.plugin.proxy;
 
 import java.util.List;
 
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements AssetPlugin {

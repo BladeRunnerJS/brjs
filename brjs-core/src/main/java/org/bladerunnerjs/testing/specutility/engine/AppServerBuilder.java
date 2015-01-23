@@ -5,9 +5,9 @@ import java.io.IOException;
 import javax.servlet.Servlet;
 
 import org.apache.http.client.ClientProtocolException;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.model.App;
 
 
 public class AppServerBuilder

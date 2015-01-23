@@ -1,10 +1,10 @@
 package org.bladerunnerjs.legacy.command.test.testrunner;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.legacy.command.test.testrunner.specutility.BundlerHandlerSpecTest;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.TestPack;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

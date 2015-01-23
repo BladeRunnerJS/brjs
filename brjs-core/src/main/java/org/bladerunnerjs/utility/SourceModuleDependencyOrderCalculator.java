@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 

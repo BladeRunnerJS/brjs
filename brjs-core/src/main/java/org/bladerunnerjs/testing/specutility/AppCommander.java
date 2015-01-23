@@ -5,8 +5,8 @@ import static org.junit.Assert.assertFalse;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;

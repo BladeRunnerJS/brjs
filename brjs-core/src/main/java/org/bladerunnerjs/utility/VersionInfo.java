@@ -3,8 +3,8 @@ package org.bladerunnerjs.utility;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 
 import com.google.gson.JsonObject;

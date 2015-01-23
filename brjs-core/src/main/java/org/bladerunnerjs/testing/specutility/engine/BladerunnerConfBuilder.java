@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
-import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.api.BladerunnerConf;
 
 public class BladerunnerConfBuilder {
 	private BladerunnerConf bladerunnerConf;

@@ -6,11 +6,11 @@ import java.io.IOException;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.ThirdpartyLibManifest;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;

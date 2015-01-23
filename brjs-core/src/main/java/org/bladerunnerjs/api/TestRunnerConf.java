@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.yaml.YamlTestRunnerConf;

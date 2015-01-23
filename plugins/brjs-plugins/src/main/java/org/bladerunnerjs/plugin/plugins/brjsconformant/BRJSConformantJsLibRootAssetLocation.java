@@ -1,9 +1,9 @@
 package org.bladerunnerjs.plugin.plugins.brjsconformant;
 
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 

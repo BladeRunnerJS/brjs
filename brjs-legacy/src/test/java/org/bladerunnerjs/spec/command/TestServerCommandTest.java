@@ -2,9 +2,9 @@ package org.bladerunnerjs.spec.command;
 
 import java.io.File;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.legacy.command.test.TestServerCommand;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

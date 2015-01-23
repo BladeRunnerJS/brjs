@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 

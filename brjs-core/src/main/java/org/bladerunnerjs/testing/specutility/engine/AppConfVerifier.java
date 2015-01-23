@@ -2,7 +2,7 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import static org.junit.Assert.*;
 
-import org.bladerunnerjs.model.AppConf;
+import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.model.exception.ConfigException;
 
 

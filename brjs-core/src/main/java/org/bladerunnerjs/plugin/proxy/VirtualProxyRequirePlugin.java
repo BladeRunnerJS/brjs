@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.proxy;
 
-import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.RequirePlugin;

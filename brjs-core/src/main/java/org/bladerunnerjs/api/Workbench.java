@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.AbstractBrowsableNode;
+import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;

@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;

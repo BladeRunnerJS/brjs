@@ -9,8 +9,8 @@ import java.util.Set;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class AliasDefinitionsFile {

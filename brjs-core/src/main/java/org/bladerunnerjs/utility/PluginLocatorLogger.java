@@ -2,7 +2,7 @@ package org.bladerunnerjs.utility;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS.Messages;
+import org.bladerunnerjs.api.BRJS.Messages;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 

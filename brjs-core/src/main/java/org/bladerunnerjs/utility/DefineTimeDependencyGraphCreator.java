@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class DefineTimeDependencyGraphCreator {

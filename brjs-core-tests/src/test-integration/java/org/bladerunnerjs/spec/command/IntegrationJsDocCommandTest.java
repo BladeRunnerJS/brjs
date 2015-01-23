@@ -4,8 +4,8 @@ import static org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand.Me
 
 import java.io.File;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

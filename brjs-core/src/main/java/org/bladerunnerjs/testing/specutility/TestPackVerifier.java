@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.TestAssetLocation;
-import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 

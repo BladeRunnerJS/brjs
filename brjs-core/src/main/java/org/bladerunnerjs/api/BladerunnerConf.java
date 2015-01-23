@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;

@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 import org.bladerunnerjs.utility.reader.CharBufferPool;

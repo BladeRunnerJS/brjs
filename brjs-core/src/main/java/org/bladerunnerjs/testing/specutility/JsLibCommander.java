@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeCommander;

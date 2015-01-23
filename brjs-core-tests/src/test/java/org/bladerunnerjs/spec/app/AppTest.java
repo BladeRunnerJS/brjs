@@ -2,10 +2,10 @@ package org.bladerunnerjs.spec.app;
 
 import static org.junit.Assert.assertEquals;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.events.AppDeployedEvent;

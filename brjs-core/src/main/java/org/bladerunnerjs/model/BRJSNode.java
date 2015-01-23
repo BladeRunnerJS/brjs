@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;

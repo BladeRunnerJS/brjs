@@ -3,9 +3,9 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 import java.io.File;
 import java.util.zip.ZipFile;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.NodeImporter;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;

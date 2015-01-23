@@ -6,10 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.UrlContentAccessor;

@@ -2,9 +2,9 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.IOException;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;

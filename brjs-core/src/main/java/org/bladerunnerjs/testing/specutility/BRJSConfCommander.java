@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.api.BladerunnerConf;
 
 public class BRJSConfCommander {
 	private final BladerunnerConf bladerunnerConf;

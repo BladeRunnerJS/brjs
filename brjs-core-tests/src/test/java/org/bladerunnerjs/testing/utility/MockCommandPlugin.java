@@ -2,7 +2,7 @@ package org.bladerunnerjs.testing.utility;
 
 import java.util.Arrays;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.plugin.CommandPlugin;

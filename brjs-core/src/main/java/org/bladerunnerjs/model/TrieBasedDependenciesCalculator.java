@@ -10,6 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;

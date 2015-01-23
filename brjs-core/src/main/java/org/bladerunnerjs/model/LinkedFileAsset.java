@@ -5,6 +5,10 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;

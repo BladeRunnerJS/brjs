@@ -3,11 +3,11 @@ package org.bladerunnerjs.spec.brjs.appserver;
 
 import java.net.ServerSocket;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.appserver.ApplicationServer;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

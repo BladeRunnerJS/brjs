@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;

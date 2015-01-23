@@ -2,6 +2,9 @@ package org.bladerunnerjs.model;
 
 import java.util.List;
 
+import org.bladerunnerjs.api.TestType;
+import org.bladerunnerjs.api.TestableNode;
+import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;

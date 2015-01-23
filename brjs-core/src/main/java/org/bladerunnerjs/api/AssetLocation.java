@@ -1,10 +1,12 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 

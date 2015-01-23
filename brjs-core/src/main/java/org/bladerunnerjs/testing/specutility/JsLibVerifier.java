@@ -2,8 +2,8 @@ package org.bladerunnerjs.testing.specutility;
 
 import static org.junit.Assert.*;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.NodeVerifier;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;

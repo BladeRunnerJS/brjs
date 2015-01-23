@@ -2,12 +2,12 @@ package org.bladerunnerjs.spec.template;
 
 import java.util.Arrays;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.exception.template.TemplateNotFoundException;

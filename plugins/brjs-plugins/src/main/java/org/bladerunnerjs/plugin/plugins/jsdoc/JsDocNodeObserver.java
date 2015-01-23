@@ -2,9 +2,9 @@ package org.bladerunnerjs.plugin.plugins.jsdoc;
 
 import java.io.IOException;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;

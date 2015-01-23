@@ -1,6 +1,6 @@
 package org.bladerunnerjs.utility;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;

@@ -14,10 +14,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.legacy.app.servlet.RestApiServlet;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ServerUtility;
 

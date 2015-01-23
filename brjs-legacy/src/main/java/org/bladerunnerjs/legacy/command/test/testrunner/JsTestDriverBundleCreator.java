@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;

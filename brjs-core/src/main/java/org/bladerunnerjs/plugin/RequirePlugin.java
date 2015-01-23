@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin;
 
-import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.RequirePathException;
 

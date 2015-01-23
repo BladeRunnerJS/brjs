@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;

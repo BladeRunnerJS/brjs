@@ -1,6 +1,6 @@
 package org.bladerunnerjs.utility;
 
-import org.bladerunnerjs.model.TestType;
+import org.bladerunnerjs.api.TestType;
 
 public class TestRunner {
 	public static void runTests(TestType[] testTypes) {

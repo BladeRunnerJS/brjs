@@ -5,7 +5,7 @@ import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.NamedNode;

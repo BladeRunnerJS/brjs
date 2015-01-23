@@ -8,8 +8,8 @@ import java.nio.file.WatchKey;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 

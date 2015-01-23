@@ -11,10 +11,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

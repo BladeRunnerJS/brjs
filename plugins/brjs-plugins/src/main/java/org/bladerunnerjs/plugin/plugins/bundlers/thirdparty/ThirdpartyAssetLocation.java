@@ -3,13 +3,13 @@ package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
-import org.bladerunnerjs.model.ThirdpartyLibManifest;
 import org.bladerunnerjs.model.exception.ConfigException;
 
 public final class ThirdpartyAssetLocation extends ResourcesAssetLocation {

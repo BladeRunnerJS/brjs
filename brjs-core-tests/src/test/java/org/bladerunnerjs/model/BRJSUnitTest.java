@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;

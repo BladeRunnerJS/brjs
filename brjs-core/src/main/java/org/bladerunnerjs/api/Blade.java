@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,9 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.model.AbstractComponent;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
