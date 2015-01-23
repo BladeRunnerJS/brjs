@@ -19,7 +19,9 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
 
 public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
@@ -200,13 +202,14 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	private boolean themeMatches(String contentPath, String themeName) throws MalformedRequestException {
-		String contentPathTheme = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("theme");
+		String contentPathTheme = cssContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser().parse(contentPath).properties.get("theme");
 		return contentPathTheme.equals(themeName);
 	}
 	
 	private boolean localeMatches(String contentPath, Locale locale) throws MalformedRequestException {
-		String contentPathLanguageCode = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("languageCode"); 
-		String contentPathCountryCode = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("countryCode");
+		ContentPathParser cssContentPathParser = cssContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
+		String contentPathLanguageCode = cssContentPathParser.parse(contentPath).properties.get("languageCode"); 
+		String contentPathCountryCode = cssContentPathParser.parse(contentPath).properties.get("countryCode");
 		Locale contentPathLocale = new Locale(contentPathLanguageCode, contentPathCountryCode);
 		return ( contentPathLocale.isEmptyLocale() || locale.isAbsoluteOrPartialMatch(contentPathLocale) );
 	}

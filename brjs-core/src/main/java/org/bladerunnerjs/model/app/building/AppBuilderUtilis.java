@@ -11,7 +11,6 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.UrlContentAccessor;
@@ -20,10 +19,10 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.WebXmlCompiler;
@@ -79,14 +78,13 @@ public class AppBuilderUtilis
 	
 	private static void outputContentPluginBundles(ContentPlugin contentPlugin, BundleSet bundleSet, Locale[] locales, File target, String version, Aspect aspect, UrlContentAccessor urlContentAccessor) throws ContentProcessingException, MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException
 	{
-		if (contentPlugin.getCompositeGroupName() == null) {
+		if (!contentPlugin.instanceOf(CompositeContentPlugin.class)) {
 			for (String contentPath : contentPlugin.getUsedContentPaths(bundleSet, RequestMode.Prod, locales)) {
 				writeContentFile(bundleSet, urlContentAccessor, target, version, aspect, contentPlugin, contentPath);
 			}
-		} else {
-			ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
-			bundleSet.getBundlableNode().root().logger(AppBuilderUtilis.class).info("The content plugin '%s' is part of a composite content plugin so no files will be generated. " + 
-					"If content bundles should be generated for this content plugin, you should set it's composite group name to null.", plugin.getClass().getSimpleName());
+		}
+		else {
+			bundleSet.getBundlableNode().root().logger(AppBuilderUtilis.class).info("The content plugin '%s' implements ComposisteContentPlugin so no files will be generated.", contentPlugin.getPluginClass().getSimpleName());
 		}
 	}
 
@@ -136,11 +134,10 @@ public class AppBuilderUtilis
 	{
 		File bundleFile = new File(target, aspect.requestHandler().createBundleRequest(contentPath, version));
 		
-		ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
 		bundleFile.getParentFile().mkdirs();
 		bundleFile.createNewFile();
 		try (FileOutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
-			ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version); )
+			ResponseContent pluginContent = contentPlugin.handleRequest(contentPath, bundleSet, contentPluginUtility, version); )
 		{
 			pluginContent.write( bundleFileOutputStream );
 		}

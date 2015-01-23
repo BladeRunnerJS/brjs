@@ -19,17 +19,19 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class CssContentPlugin extends AbstractContentPlugin {
+public class CssContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin {
 	
 	private final ContentPathParser contentPathParser;
 	private AssetPlugin cssAssetPlugin;
@@ -57,11 +59,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	@Override
 	public String getRequestPrefix() {
 		return "css";
-	}
-	
-	@Override
-	public String getCompositeGroupName() {
-		return null;
 	}
 	
 	@Override
@@ -104,11 +101,12 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException {
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws MalformedRequestException, ContentProcessingException {
+		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
 		
-		String theme = contentPath.properties.get("theme");
-		String languageCode = contentPath.properties.get("languageCode");
-		String countryCode = contentPath.properties.get("countryCode");
+		String theme = parsedContentPath.properties.get("theme");
+		String languageCode = parsedContentPath.properties.get("languageCode");
+		String countryCode = parsedContentPath.properties.get("countryCode");
 		Locale locale = new Locale(languageCode, countryCode);
 
 		List<Reader> readerList = new ArrayList<Reader>();

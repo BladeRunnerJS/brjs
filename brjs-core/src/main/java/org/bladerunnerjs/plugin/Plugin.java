@@ -39,10 +39,21 @@ public interface Plugin
 	 * <p>Plug-ins are not expected to implement this method themselves, and should instead extend one of the {@link org.bladerunnerjs.plugin.base.AbstractPlugin}
 	 * sub-classes (e.g. {@link org.bladerunnerjs.plugin.base.AbstractCommandPlugin}).</p>
 	 * 
-	 * @param otherPluginCLass The class which this object may, or may not be, an instance of.
-	 * @return <code>true</code>, if this object is an instance of the given class, and <code>false</code> otherwise.
+	 * @param pluginInterface The interface which this object may, or may not be, an instance of.
+	 * @return <code>true</code>, if this object is an instance of the given interface, and <code>false</code> otherwise.
 	 */
-	boolean instanceOf(Class<? extends Plugin> otherPluginCLass);
+	<P extends Plugin> boolean instanceOf(Class<P> pluginInterface);
+	
+	/**
+	 * An alternative to Java's class casting mechanism that is needed because BladeRunnerJS wraps plug-ins within <a href="https://en.wikipedia.org/wiki/Lazy_loading#Virtual_proxy">virtual proxy</a>
+	 * wrappers, preventing class casting from working.
+	 * 
+	 * <p>Plug-ins are not expected to implement this method themselves, and should instead extend one of the {@link org.bladerunnerjs.plugin.base.AbstractPlugin}
+	 * sub-classes (e.g. {@link org.bladerunnerjs.plugin.base.AbstractCommandPlugin}).</p>
+	 * 
+	 * @param pluginInterface The interface which this object may, or may not be, an instance of.
+	 */
+	<P extends Plugin> P castTo(Class<P> pluginInterface);
 	
 	/**
 	 * An alternative to Java's <code>Object.getClass()</code> method that is needed because BladeRunnerJS wraps plug-ins within <a href="https://en.wikipedia.org/wiki/Lazy_loading#Virtual_proxy">virtual proxy</a>

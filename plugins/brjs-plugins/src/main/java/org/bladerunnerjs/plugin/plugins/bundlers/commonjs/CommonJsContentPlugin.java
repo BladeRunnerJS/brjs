@@ -16,8 +16,10 @@ import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -26,7 +28,7 @@ import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-public class CommonJsContentPlugin extends AbstractContentPlugin
+public class CommonJsContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin
 {
 	private static final String SINGLE_MODULE_REQUEST = "single-module-request";
 	private static final String BUNDLE_REQUEST = "bundle-request";
@@ -110,17 +112,19 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws MalformedRequestException, ContentProcessingException
 	{
 		try
 		{
-			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
+			ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+			
+			if (parsedContentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
-				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
+				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
 				return new CharResponseContent(brjs, jsModule.getReader());
 				
 			}
-			else if (contentPath.formName.equals(BUNDLE_REQUEST))
+			else if (parsedContentPath.formName.equals(BUNDLE_REQUEST))
 			{
 				List<Reader> readerList = new ArrayList<Reader>();
 				for (SourceModule sourceModule : bundleSet.getSourceModules())
@@ -136,10 +140,10 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 			}
 			else
 			{
-				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+				throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 			}
 		}
-		catch (  IOException | RequirePathException e)
+		catch (IOException | RequirePathException e)
 		{
 			throw new ContentProcessingException(e);
 		}

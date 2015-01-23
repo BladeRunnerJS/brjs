@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.cssresource.CssResourceContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
@@ -27,7 +28,7 @@ public class TargetPathCreator
 	
 	public TargetPathCreator(BRJS brjs) {
 		this.brjs = brjs;
-		cssResourceContentPathParser = brjs.plugins().contentPlugin("cssresource").getContentPathParser();
+		cssResourceContentPathParser = brjs.plugins().contentPlugin("cssresource").castTo(RoutableContentPlugin.class).getContentPathParser();
 	}
 	
 	public String getRelativeBundleRequestForImage(MemoizedFile imageFile) throws ContentProcessingException

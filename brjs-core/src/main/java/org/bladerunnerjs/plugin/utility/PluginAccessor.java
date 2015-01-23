@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
@@ -96,13 +97,17 @@ public class PluginAccessor {
 	public List<ContentPlugin> contentPlugins() {
 		return contentPlugins;
 	}
-	
+
 	public List<ContentPlugin> contentPlugins(String groupName) {
 		List<ContentPlugin> contentProviders = new LinkedList<>();
 		
 		for (ContentPlugin contentPlugin : contentPlugins()) {
-			if (groupName.equals(contentPlugin.getCompositeGroupName())) {
-				contentProviders.add(contentPlugin);
+			if(contentPlugin.instanceOf(CompositeContentPlugin.class)) {
+				CompositeContentPlugin compositeContentPlugin = (CompositeContentPlugin) contentPlugin.castTo(CompositeContentPlugin.class);
+				
+				if (groupName.equals(compositeContentPlugin.getCompositeGroupName())) {
+					contentProviders.add(contentPlugin);
+				}
 			}
 		}
 		

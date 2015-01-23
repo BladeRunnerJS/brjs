@@ -36,6 +36,7 @@ import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 
 import com.google.common.base.Joiner;
 
@@ -250,9 +251,9 @@ public class AppRequestHandler
 			localeForwardingPage.write("<script type='text/javascript'>\n");
 			
 			ContentPlugin appVersionContentPlugin = app.root().plugins().contentPlugin("app-meta");
-			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.getContentPathParser();
+			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
 			String appVersionContentPath = appVersionContentPathParser.createRequest("app-meta-request");
-			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPathParser.parse(appVersionContentPath), bundleSet, contentAccessor, appVersionContentPath);
+			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPath, bundleSet, contentAccessor, appVersionContentPath);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			responseContent.write(baos);
 			localeForwardingPage.write( baos.toString() );

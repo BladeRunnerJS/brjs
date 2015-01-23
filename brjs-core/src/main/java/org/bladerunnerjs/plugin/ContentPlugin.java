@@ -5,9 +5,8 @@ import java.util.List;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.utility.ContentPathParser;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 /**
  * <p>
@@ -34,8 +33,9 @@ import org.bladerunnerjs.utility.ContentPathParser;
  * 
  * <ul>
  *   <li>{@link #getRequestPrefix}</li>
- *   <li>{@link #getCompositeGroupName}</li>
  * </ul>
+ * 
+ * @see CompositeContentPlugin
  */
 public interface ContentPlugin extends OrderedPlugin {
 	/**
@@ -48,34 +48,15 @@ public interface ContentPlugin extends OrderedPlugin {
 	String getRequestPrefix();
 	
 	/**
-	 * Returns the group name of content plug-in, which allow composite content plug-ins that compose a number of related plug-ins.
-	 * 
-	 * <p><b>Note:</b> Developers should not rely on any class initialization performed within {@link Plugin#setBRJS Plugin.setBRJS()} as this
-	 * method is an <i>identifier-method</i> which may be invoked before {@link Plugin#setBRJS Plugin.setBRJS()} has itself been
-	 * invoked.</p>
-	 * 
-	 * @return the group name if one exists, or <code>null</code> otherwise.
-	 */
-	String getCompositeGroupName();
-	
-	/**
-	 * Returns the content-path parser that will be used to parse all requests for this plug-in.
-	 * 
-	 * <p>Although the parsing mechanism used by content plug-ins could be an internal implementation detail within each class, by exposing it we
-	 * make it possible to create requests for external content plug-ins that are less brittle to change.</p>
-	 */
-	ContentPathParser getContentPathParser();
-	
-	/**
 	 * Get a reader for the content generated for the given request.
 	 * 
-	 * @param contentPath The parsed content path created using the content path parser available from {@link #getContentPathParser}.
+	 * @param contentPath The content path the request is being made for.
 	 * @param bundleSet The bundle-set for the bundlable node to which this request is related to.
 	 * @param contentAccessor The output stream the content will be written to.
 	 * @param version TODO
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException;
+	ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths for the given bundle-set and locale.

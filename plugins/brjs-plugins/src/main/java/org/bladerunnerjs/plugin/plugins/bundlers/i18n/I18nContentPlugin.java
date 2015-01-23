@@ -18,10 +18,12 @@ import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -31,7 +33,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-public class I18nContentPlugin extends AbstractContentPlugin
+public class I18nContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin
 {
 	public static final String LANGUAGE_BUNDLE = "language-bundle";
 	public static final String LANGUAGE_AND_LOCATION_BUNDLE = "language-and-location-bundle";
@@ -69,12 +71,6 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	{
 		return "i18n";
 	}
-
-	@Override
-	public String getCompositeGroupName()
-	{
-		return null;
-	}
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
@@ -86,22 +82,23 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	{
 		return contentPathParser;
 	}
-
+	
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException
 	{
-		Locale locale = new Locale(contentPath.properties.get(LANGUAGE_PROPERTY_NAME), contentPath.properties.get(COUNTRY_PROPERTY_NAME));
-		if (contentPath.formName.equals(LANGUAGE_BUNDLE)) 
+		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+		Locale locale = new Locale(parsedContentPath.properties.get(LANGUAGE_PROPERTY_NAME), parsedContentPath.properties.get(COUNTRY_PROPERTY_NAME));
+		if (parsedContentPath.formName.equals(LANGUAGE_BUNDLE)) 
 		{
 			return generateBundleForLocale(bundleSet, locale);
 		}
-		else if (contentPath.formName.equals(LANGUAGE_AND_LOCATION_BUNDLE)) 
+		else if (parsedContentPath.formName.equals(LANGUAGE_AND_LOCATION_BUNDLE)) 
 		{
 			return generateBundleForLocale(bundleSet, locale);
 		} 
 		else
 		{
-			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 		}
 	}
 
