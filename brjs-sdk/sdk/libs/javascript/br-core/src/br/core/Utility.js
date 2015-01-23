@@ -6,6 +6,12 @@
 
 var global = new Function("return this")();
 
+function parsePath(path, root, separator) {
+	return path.split(separator).reduce(function(accumulator, value) {
+			return accumulator != null ? accumulator[value] : undefined;
+		}, root);
+}
+
 /**
 * Navigates an object hierarchy with dotted notation.
 * @param {String} path
@@ -20,9 +26,20 @@ function locate(path, root) {
 		root = global;
 	}
 
-	return path.split(".").reduce(function(accumulator, value) {
-		return accumulator != null ? accumulator[value] : undefined;
-	}, root);
+	if (path.indexOf(".") > -1) {
+		return parsePath(path, root, ".");
+	}
+
+	if (path.indexOf("/") > -1) {
+		return parsePath(path, root, "/");
+	}
+
+	else {
+		if (parsePath(path, ".") == undefined) {
+			return parsePath(path, root, "/");
+		}
+	}
+
 };
 exports.locate = locate;
 
