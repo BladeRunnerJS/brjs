@@ -35,9 +35,11 @@ function locate(path, root) {
 	}
 
 	else {
-		if (parsePath(path, ".") == undefined) {
-			return parsePath(path, root, "/");
+		var parsedPath = parsePath(path, root, ".");
+		if (parsedPath == undefined) {
+			parsedPath = parsePath(path, root, "/");
 		}
+		return parsedPath;
 	}
 
 };
