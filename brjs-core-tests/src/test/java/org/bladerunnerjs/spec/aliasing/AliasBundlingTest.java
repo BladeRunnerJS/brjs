@@ -1,7 +1,5 @@
 package org.bladerunnerjs.spec.aliasing;
 
-import org.bladerunnerjs.aliasing.AliasNameIsTheSameAsTheClassException;
-import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
@@ -9,9 +7,11 @@ import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.aliasing.AliasNameIsTheSameAsTheClassException;
+import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 

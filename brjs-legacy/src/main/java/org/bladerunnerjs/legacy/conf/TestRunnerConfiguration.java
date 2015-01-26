@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.spec.exception.NoBrowsersDefinedException;
 import org.bladerunnerjs.utility.FileUtils;
 
 import com.esotericsoftware.yamlbeans.YamlException;

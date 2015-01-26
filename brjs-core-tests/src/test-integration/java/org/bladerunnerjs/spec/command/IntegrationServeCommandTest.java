@@ -5,10 +5,10 @@ import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Me
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.api.appserver.ApplicationServer;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.api.spec.exception.NoBrowsersDefinedException;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfiguration;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;

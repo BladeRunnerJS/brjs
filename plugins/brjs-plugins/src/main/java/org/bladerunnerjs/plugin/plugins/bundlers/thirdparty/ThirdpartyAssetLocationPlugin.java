@@ -10,8 +10,8 @@ import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;
+import org.bladerunnerjs.api.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 
 public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {

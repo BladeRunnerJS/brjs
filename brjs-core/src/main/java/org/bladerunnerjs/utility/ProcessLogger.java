@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.logger.LogLevel;
-import org.bladerunnerjs.logging.Logger;
 
 
 public class ProcessLogger {

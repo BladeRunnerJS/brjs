@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.events.NodeDiscoveredEvent;
+import org.bladerunnerjs.api.model.events.NodeReadyEvent;
+import org.bladerunnerjs.api.plugin.Event;
+import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.plugin.Event;
-import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
 
 

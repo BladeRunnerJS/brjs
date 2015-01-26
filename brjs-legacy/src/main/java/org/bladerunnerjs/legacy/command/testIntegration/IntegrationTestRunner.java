@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import org.bladerunnerjs.logging.Logger;
-
+import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 

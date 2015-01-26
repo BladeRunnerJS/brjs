@@ -8,9 +8,9 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	private final SourceModule sourceModule;

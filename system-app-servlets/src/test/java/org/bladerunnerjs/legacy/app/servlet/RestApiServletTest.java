@@ -21,10 +21,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.legacy.app.RestApiServletTestUtils;
 import org.bladerunnerjs.legacy.app.service.RestApiService;
 import org.bladerunnerjs.legacy.app.servlet.RestApiServlet;
-import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ServerUtility;
 

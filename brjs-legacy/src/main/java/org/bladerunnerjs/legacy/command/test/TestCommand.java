@@ -1,11 +1,11 @@
 package org.bladerunnerjs.legacy.command.test;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.legacy.command.LegacyCommandPlugin;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunnerController;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
 public class TestCommand extends AbstractPlugin implements LegacyCommandPlugin
 {

@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 
 public class BRJSServletUtils

@@ -2,7 +2,7 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 public interface NodeLocator
 {

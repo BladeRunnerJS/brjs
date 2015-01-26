@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.LinkedAsset;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedFileAsset;
 

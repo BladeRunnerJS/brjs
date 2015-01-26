@@ -8,14 +8,14 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.AbstractBundlableNode;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 
 

@@ -2,8 +2,8 @@ package org.bladerunnerjs.yaml;
 
 import java.io.IOException;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 
 
 public interface YamlConfFile {

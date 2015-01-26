@@ -1,8 +1,8 @@
 package org.bladerunnerjs.plugin.proxy;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.plugin.Plugin;
-import org.bladerunnerjs.plugin.exception.CircularPluginDependencyException;
+import org.bladerunnerjs.api.plugin.Plugin;
+import org.bladerunnerjs.api.plugin.exception.CircularPluginDependencyException;
 import org.bladerunnerjs.plugin.utility.PluginLocatorUtils;
 
 public class VirtualProxyPlugin implements Plugin {

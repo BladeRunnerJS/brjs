@@ -14,11 +14,11 @@ import javax.servlet.ServletResponse;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Server;

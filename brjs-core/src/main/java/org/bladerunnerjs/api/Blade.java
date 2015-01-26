@@ -7,7 +7,9 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.text.WordUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.model.AbstractComponent;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BladeWorkbench;
@@ -15,8 +17,6 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TemplateUtility;
 

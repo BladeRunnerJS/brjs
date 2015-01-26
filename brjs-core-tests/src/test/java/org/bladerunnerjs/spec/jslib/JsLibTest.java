@@ -4,11 +4,11 @@ import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantJsLibRootAssetLocation;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 

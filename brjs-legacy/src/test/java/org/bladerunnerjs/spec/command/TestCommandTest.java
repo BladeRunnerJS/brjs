@@ -4,10 +4,10 @@ import java.io.File;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.api.spec.exception.BrowserStartupException;
 import org.bladerunnerjs.legacy.command.test.TestCommand;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.test.BrowserStartupException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

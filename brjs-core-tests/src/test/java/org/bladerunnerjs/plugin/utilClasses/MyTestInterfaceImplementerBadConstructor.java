@@ -1,7 +1,7 @@
 package org.bladerunnerjs.plugin.utilClasses;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractPlugin;
 
 
 public class MyTestInterfaceImplementerBadConstructor extends AbstractPlugin implements MyTestInterface

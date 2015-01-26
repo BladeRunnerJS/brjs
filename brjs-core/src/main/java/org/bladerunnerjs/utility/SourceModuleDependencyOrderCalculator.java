@@ -9,9 +9,9 @@ import java.util.Set;
 
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.model.exception.CircularDependencyException;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.exception.CircularDependencyException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class SourceModuleDependencyOrderCalculator {
 	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules) throws ModelOperationException {

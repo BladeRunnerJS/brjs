@@ -2,8 +2,8 @@ package org.bladerunnerjs.api;
 
 import java.util.List;
 
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.exception.ModelOperationException;
 
 /**
  * A source file, typically JavaScript (.js) files that live in a 'src' directory.

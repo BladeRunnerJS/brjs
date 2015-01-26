@@ -2,9 +2,9 @@ package org.bladerunnerjs.api;
 
 import java.util.List;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.plugin.AssetPlugin;
 
 public interface BundleSet {
 	public BundlableNode getBundlableNode();

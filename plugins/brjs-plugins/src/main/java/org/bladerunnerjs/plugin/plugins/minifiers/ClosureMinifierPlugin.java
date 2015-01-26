@@ -14,11 +14,11 @@ import java.util.Vector;
 
 import org.apache.commons.io.input.ReaderInputStream;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.plugin.InputSource;
-import org.bladerunnerjs.plugin.MinifierPlugin;
-import org.bladerunnerjs.plugin.base.AbstractMinifierPlugin;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.plugin.InputSource;
+import org.bladerunnerjs.api.plugin.MinifierPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractMinifierPlugin;
 
 import com.Ostermiller.util.ConcatReader;
 import com.google.javascript.jscomp.CompilationLevel;

@@ -6,8 +6,8 @@ import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.legacy.command.testIntegration.TestCompiler;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
 
 public class TestCompilerTest
 {

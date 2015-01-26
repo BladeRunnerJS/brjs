@@ -3,12 +3,12 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 import java.io.IOException;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.appserver.ApplicationServer;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.appserver.ApplicationServer;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;

@@ -6,7 +6,7 @@ import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.JsLib;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;

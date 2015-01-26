@@ -1,6 +1,6 @@
 package org.bladerunnerjs.runner;
 
-import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
+import static org.bladerunnerjs.api.spec.utility.BRJSAssertions.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.runner.CommandRunner;
 import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;

@@ -2,7 +2,7 @@ package org.bladerunnerjs.legacy.conf;
 
 import java.io.FileNotFoundException;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 public class TestRunnerConfLocator

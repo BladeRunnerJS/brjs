@@ -5,8 +5,8 @@ import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.api.AssetLocation;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.model.LinkedFileAsset;
 
 public class XMLAsset extends LinkedFileAsset {

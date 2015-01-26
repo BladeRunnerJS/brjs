@@ -3,10 +3,10 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.FileAsset;
-import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class CssAssetPlugin extends AbstractAssetPlugin {
 	@Override

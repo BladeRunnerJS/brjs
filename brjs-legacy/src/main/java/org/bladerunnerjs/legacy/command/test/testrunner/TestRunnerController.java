@@ -7,15 +7,15 @@ import java.util.Arrays;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunner.TestType;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfLocator;
-import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.plugin.CommandPlugin;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;

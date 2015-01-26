@@ -3,17 +3,17 @@ package org.bladerunnerjs.plugin.plugins.require;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.aliasing.AliasException;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
+import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.api.plugin.RequirePlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractRequirePlugin;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
-import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.plugin.RequirePlugin;
-import org.bladerunnerjs.plugin.base.AbstractRequirePlugin;
 
 public class AliasRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
 	private final Map<BundlableNode, Map<String, AliasCommonJsSourceModule>> bundlableNodeSourceModules = new HashMap<>();

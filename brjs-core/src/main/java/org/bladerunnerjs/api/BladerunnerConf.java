@@ -1,8 +1,8 @@
 package org.bladerunnerjs.api;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.yaml.YamlBladerunnerConf;
 
 public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {

@@ -1,8 +1,8 @@
 package org.bladerunnerjs.plugin.plugins.jsdoc;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.plugin.base.AbstractModelObserverPlugin;
+import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractModelObserverPlugin;
 
 public class JsDocObserver extends AbstractModelObserverPlugin implements ModelObserverPlugin {
 	@Override

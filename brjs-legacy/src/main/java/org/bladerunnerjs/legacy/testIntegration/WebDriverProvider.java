@@ -9,10 +9,10 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfLocator;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfiguration;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 public class WebDriverProvider

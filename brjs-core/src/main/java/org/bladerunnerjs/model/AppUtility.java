@@ -1,8 +1,8 @@
 package org.bladerunnerjs.model;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.model.exception.DuplicateAssetContainerException;
-import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
+import org.bladerunnerjs.api.model.exception.DuplicateAssetContainerException;
+import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
 
 
 public class AppUtility

@@ -6,8 +6,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Test;
 

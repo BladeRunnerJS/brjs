@@ -1,7 +1,7 @@
 package org.bladerunnerjs.legacy.command.test.testrunner;
 
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunner.TestType;
-import org.bladerunnerjs.memoization.MemoizedFile;
 
 public class TestRunResult {
 

@@ -7,9 +7,9 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.logger.LogLevel;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.utility.ProcessLogger;
 
 public class CommandRunnerUtility {

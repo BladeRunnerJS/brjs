@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.eclipse.jetty.util.URIUtil;
 
 public class CssRewriter {

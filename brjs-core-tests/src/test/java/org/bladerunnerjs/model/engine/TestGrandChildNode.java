@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;

@@ -2,13 +2,13 @@ package org.bladerunnerjs.legacy.command.test.testrunner;
 
 import java.util.List;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class JsTestDriverBundleSet implements BundleSet {
 	private BundleSet bundleSet;

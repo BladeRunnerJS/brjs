@@ -5,7 +5,7 @@ import java.util.List;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Bladeset;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 public final class BladeResourcesAssetLocation extends ResourcesAssetLocation {
 	

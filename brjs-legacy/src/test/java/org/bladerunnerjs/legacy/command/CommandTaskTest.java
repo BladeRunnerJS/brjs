@@ -8,12 +8,12 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.plugin.CommandPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.legacy.command.LegacyCommandPlugin;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
 /* 
  * This class does not actually test the abstract CommandTask class.

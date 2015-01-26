@@ -3,10 +3,10 @@ package org.bladerunnerjs.spec.app;
 import static org.bladerunnerjs.yaml.YamlAppConf.Messages.*;
 
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.name.InvalidPackageNameException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

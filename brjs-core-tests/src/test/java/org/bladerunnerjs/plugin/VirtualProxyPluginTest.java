@@ -3,8 +3,8 @@ package org.bladerunnerjs.plugin;
 import static org.junit.Assert.*;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.plugin.Plugin;
-import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.api.plugin.Plugin;
+import org.bladerunnerjs.api.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
 import org.junit.Test;
 

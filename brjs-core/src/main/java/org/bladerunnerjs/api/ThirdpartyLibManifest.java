@@ -7,9 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.model.ThirdpartyLibYamlManifest;
-import org.bladerunnerjs.model.exception.ConfigException;
 
 public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 {

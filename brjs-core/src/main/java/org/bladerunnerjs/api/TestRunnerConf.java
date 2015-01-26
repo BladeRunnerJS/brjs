@@ -1,6 +1,6 @@
 package org.bladerunnerjs.api;
 
-import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.yaml.YamlTestRunnerConf;
 
 public class TestRunnerConf extends ConfFile<YamlTestRunnerConf> {

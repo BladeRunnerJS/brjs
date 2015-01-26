@@ -5,10 +5,10 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.api.aliasing.NamespaceException;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
 
 public class XmlSiblingReader
 {

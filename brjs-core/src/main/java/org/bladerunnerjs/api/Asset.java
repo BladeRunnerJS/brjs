@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 /**
  * Any file that lives within an App

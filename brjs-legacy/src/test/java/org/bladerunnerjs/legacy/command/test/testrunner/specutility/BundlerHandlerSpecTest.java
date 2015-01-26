@@ -5,9 +5,9 @@ import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.legacy.command.test.testrunner.BundlerHandler;
 import org.bladerunnerjs.legacy.command.test.testrunner.JsTestDriverBundleCreator;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 
 import static org.junit.Assert.*;
 

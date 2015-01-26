@@ -17,12 +17,12 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.aliasing.NamespaceException;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 
 public class XmlBundleWriter
 {

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BladerunnerConf;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.bladerunnerjs.testing.utility.ScriptedContentPlugin;
 import org.bladerunnerjs.testing.utility.ScriptedRequestGeneratingTagHandlerPlugin;

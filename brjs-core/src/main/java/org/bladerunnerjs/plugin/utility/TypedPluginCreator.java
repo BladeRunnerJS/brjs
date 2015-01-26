@@ -7,7 +7,7 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.api.logging.Logger;
 
 
 

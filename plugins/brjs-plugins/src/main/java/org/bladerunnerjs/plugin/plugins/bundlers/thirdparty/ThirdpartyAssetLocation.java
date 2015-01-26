@@ -7,10 +7,10 @@ import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
-import org.bladerunnerjs.model.exception.ConfigException;
 
 public final class ThirdpartyAssetLocation extends ResourcesAssetLocation {
 	private final ThirdpartyLibManifest manifest;

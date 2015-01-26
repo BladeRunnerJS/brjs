@@ -5,15 +5,15 @@ import java.net.ServerSocket;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.events.AppDeployedEvent;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.plugin.Event;
+import org.bladerunnerjs.api.plugin.EventObserver;
+import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractModelObserverPlugin;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.events.AppDeployedEvent;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.plugin.Event;
-import org.bladerunnerjs.plugin.EventObserver;
-import org.bladerunnerjs.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.plugin.base.AbstractModelObserverPlugin;
 
 
 public class AppDeploymentObserverPlugin extends AbstractModelObserverPlugin implements EventObserver, ModelObserverPlugin

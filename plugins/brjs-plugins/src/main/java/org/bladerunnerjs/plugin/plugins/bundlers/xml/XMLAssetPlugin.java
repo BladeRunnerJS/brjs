@@ -3,9 +3,9 @@ package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class XMLAssetPlugin extends AbstractAssetPlugin {
 	@Override

@@ -7,10 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.plugin.InputSource;
-import org.bladerunnerjs.plugin.MinifierPlugin;
-import org.bladerunnerjs.plugin.base.AbstractMinifierPlugin;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.plugin.InputSource;
+import org.bladerunnerjs.api.plugin.MinifierPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractMinifierPlugin;
 
 import com.Ostermiller.util.ConcatReader;
 

@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.legacy.command.testIntegration.IntegrationTestFinder;
-import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.Before;
 import org.junit.Test;

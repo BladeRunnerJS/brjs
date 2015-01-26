@@ -9,7 +9,8 @@ import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.JsLib;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BladeResourcesAssetLocation;
 import org.bladerunnerjs.model.ChildSourceAssetLocation;
@@ -17,7 +18,6 @@ import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
 import org.bladerunnerjs.model.DefaultBladeset;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
-import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 
 public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	private final List<String> seedAssetLocationDirectories = new ArrayList<>();

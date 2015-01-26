@@ -2,13 +2,13 @@ package org.bladerunnerjs.api;
 
 import java.util.List;
 
-import org.bladerunnerjs.aliasing.NamespaceException;
-import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.aliasing.NamespaceException;
+import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.plugin.AssetPlugin;
 
 /**
  * Represents the parent directory of any AssetFile, so in the example src/a/b/c/someFile.xml it would represent the src/a/b/c directory.

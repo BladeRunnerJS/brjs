@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.aliasing.NamespaceException;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 

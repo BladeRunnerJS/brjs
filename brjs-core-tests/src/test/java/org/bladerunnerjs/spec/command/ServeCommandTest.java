@@ -4,11 +4,11 @@ import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Me
 
 import java.io.IOException;
 
-import org.bladerunnerjs.appserver.ApplicationServer;
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.appserver.ApplicationServer;
+import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

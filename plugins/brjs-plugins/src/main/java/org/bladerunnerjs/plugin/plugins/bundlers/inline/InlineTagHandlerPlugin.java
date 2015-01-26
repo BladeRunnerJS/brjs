@@ -8,10 +8,10 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 public class InlineTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	

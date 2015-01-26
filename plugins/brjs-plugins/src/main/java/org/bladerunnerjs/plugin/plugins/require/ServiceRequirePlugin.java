@@ -6,10 +6,10 @@ import java.util.Map;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.plugin.RequirePlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractRequirePlugin;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.plugin.RequirePlugin;
-import org.bladerunnerjs.plugin.base.AbstractRequirePlugin;
 
 public class ServiceRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
 	// TODO: update to be a bundlableNodeSourceModules as has been done in AliasRequirePlugin

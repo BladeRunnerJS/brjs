@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.*;
 
