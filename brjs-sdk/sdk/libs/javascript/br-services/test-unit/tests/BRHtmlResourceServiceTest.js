@@ -4,6 +4,11 @@ var ServiceRegistry = require('br/ServiceRegistry');
 
 BRHtmlResourceServiceTest = TestCase("BRHtmlResourceServiceTest");
 
+// Check if the browser is IE8 (or less)
+if (window.attachEvent && !window.addEventListener) {
+	document.createElement('template');
+}
+
 BRHtmlResourceServiceTest.prototype.test_scriptTagsAreParsedByTheBrowser = function()
 {
 	var oService = ServiceRegistry.getService("br.html-service");
@@ -62,7 +67,7 @@ var assertTemplateContentsMatch = (function(){
 		
 		tempDiv.innerHTML = "";
 		tempDiv.appendChild(templateDocFrag);
-		assertEquals(expected, tempDiv.innerHTML.toLowerCase());
+		assertEquals(expected, tempDiv.innerHTML.toLowerCase().replace(/[\n\r]/g, ''));
 	}
 })();
 
