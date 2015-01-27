@@ -332,10 +332,16 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer usesProductionTemplates() throws IOException {
 		verifyBrjsIsSet();
 		
-		File templateDir = new File("../brjs-sdk/sdk/templates");
+		return usesProductionTemplates( locateBrjsSdk() );
+	}
+	
+	public BuilderChainer usesProductionTemplates(File brjsSdkDir) throws IOException {
+		verifyBrjsIsSet();
+		
+		File templateDir = new File(brjsSdkDir, "sdk/templates");
 		FileUtils.copyDirectory(brjs, templateDir, brjs.sdkTemplateGroup("default").dir().getParentFile());
 		
-		File j2eeify = new File("../brjs-sdk/sdk/j2eeify-app"); 
+		File j2eeify = new File(brjsSdkDir, "sdk/j2eeify-app"); 
 		FileUtils.copyDirectory(brjs, j2eeify, brjs.file("sdk/j2eeify-app"));
 		
 		return builderChainer;
@@ -344,7 +350,13 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer usesJsDocResources() throws IOException {
 		verifyBrjsIsSet();
 		
-		File jsdocResourcesDir = new File("../brjs-sdk/sdk/jsdoc-toolkit-resources");
+		return usesJsDocResources( locateBrjsSdk() );
+	}
+	
+	public BuilderChainer usesJsDocResources(File brjsSdkDir) throws IOException {
+		verifyBrjsIsSet();
+		
+		File jsdocResourcesDir = new File(brjsSdkDir, "sdk/jsdoc-toolkit-resources");
 		File jsdocResourcesDest = brjs.sdkRoot().file("jsdoc-toolkit-resources");
 		
 		FileUtils.copyDirectory(brjs, jsdocResourcesDir, jsdocResourcesDest);
@@ -393,4 +405,23 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	
+	private File locateBrjsSdk()
+	{
+		File thisDir = new File(".").getAbsoluteFile();
+		File brjsSdk;
+		
+		do {
+			brjsSdk = new File(thisDir, "brjs-sdk");
+			thisDir = thisDir.getParentFile();
+		} while (!brjsSdk.isDirectory() && thisDir != null);
+		
+		if (!brjsSdk.exists() || brjsSdk == null) {
+			throw new RuntimeException("Unable to find parent brjs-sdk directory");
+		}
+		return brjsSdk;
+	}
+	
 }
