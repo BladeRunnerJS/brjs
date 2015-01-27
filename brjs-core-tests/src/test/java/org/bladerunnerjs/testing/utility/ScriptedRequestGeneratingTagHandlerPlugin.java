@@ -51,7 +51,7 @@ public class ScriptedRequestGeneratingTagHandlerPlugin extends AbstractTagHandle
 	}
 	
 	@Override
-	public List<String> getDependentContentPluginRequestPrefixes()
+	public List<String> usedContentPluginRequestPrefixes()
 	{
 		return dependenctContentPlugins;
 	}

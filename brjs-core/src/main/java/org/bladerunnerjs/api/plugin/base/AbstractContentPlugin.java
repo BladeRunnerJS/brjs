@@ -85,7 +85,7 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 		Map<String,Map<String,String>> usedTagsAndAttributes = appRequestHandler.getTagsAndAttributesFromIndexPage(browsableNode, locale, urlContentAccessor, requestMode);		
 		
 		for (TagHandlerPlugin tagPlugin : browsableNode.app().root().plugins().tagHandlerPlugins()) {
-			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
+			for (String contentPluginPrefix : tagPlugin.usedContentPluginRequestPrefixes()) {
 				contentPluginProdRequestsMap.put(contentPluginPrefix, new ArrayList<String>());							
 			}
 		}
@@ -94,7 +94,7 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 			TagHandlerPlugin tagPlugin = browsableNode.root().plugins().tagHandlerPlugin(tag);
 			Map<String,String> tagAttributes = usedTagsAndAttributes.get(tag);
 			List<String> generatedRequests = tagPlugin.getGeneratedContentPaths(tagAttributes, bundleSet, requestMode, locale);
-			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
+			for (String contentPluginPrefix : tagPlugin.usedContentPluginRequestPrefixes()) {
 				contentPluginProdRequestsMap.get(contentPluginPrefix).addAll(generatedRequests);
 			}
 		}

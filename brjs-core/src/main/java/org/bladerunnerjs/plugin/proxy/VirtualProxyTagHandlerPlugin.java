@@ -32,10 +32,10 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 	}
 
 	@Override
-	public List<String> getDependentContentPluginRequestPrefixes()
+	public List<String> usedContentPluginRequestPrefixes()
 	{
 		initializePlugin();
-		return tagHandlerPlugin.getDependentContentPluginRequestPrefixes();
+		return tagHandlerPlugin.usedContentPluginRequestPrefixes();
 	}
 
 	@Override
