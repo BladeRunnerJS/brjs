@@ -21,11 +21,12 @@ public class TemplateUtilityTest
 {
 	private BRJS brjs;
 	private EncodedFileUtil fileUtil;
+	private File tempDir;
 	
 	@Before
 	public void setUp() throws Exception
 	{
-		File tempDir = FileUtils.createTemporaryDirectory( this.getClass() );
+		tempDir = FileUtils.createTemporaryDirectory( this.getClass() );
 		org.apache.commons.io.FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
 		brjs = BRJSTestModelFactory.createModel(tempDir);
 		fileUtil = new EncodedFileUtil(brjs, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
@@ -34,6 +35,7 @@ public class TemplateUtilityTest
 	@After
 	public void tearDown() {
 		brjs.close();
+		org.apache.commons.io.FileUtils.deleteQuietly(tempDir);
 	}
 	
 	@Test(expected=TemplateDirectoryAlreadyExistsException.class)
