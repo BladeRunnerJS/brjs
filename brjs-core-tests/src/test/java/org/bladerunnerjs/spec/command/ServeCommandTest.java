@@ -1,6 +1,6 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Messages.*;
+import static org.bladerunnerjs.plugin.commands.standard.ServeCommand.Messages.*;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
+import org.bladerunnerjs.plugin.commands.standard.ServeCommand;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

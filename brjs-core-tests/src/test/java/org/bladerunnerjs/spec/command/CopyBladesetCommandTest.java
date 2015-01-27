@@ -9,7 +9,7 @@ import org.bladerunnerjs.api.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CopyBladesetCommand;
+import org.bladerunnerjs.plugin.commands.standard.CopyBladesetCommand;
 import org.junit.Before;
 import org.junit.Test;
 

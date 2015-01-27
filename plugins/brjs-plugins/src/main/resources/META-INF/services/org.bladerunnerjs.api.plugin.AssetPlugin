@@ -1,0 +1,8 @@
+org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsAssetPlugin
+org.bladerunnerjs.plugin.bundlers.namespacedjs.NamespacedJsAssetPlugin
+org.bladerunnerjs.plugin.bundlers.thirdparty.ThirdpartyAssetPlugin
+org.bladerunnerjs.plugin.bundlers.html.HTMLAssetPlugin
+org.bladerunnerjs.plugin.bundlers.xml.XMLAssetPlugin
+org.bladerunnerjs.plugin.bundlers.i18n.I18nAssetPlugin
+org.bladerunnerjs.plugin.bundlers.css.CssAssetPlugin
+org.bladerunnerjs.plugin.bundlers.cssresource.CssResourceAssetPlugin

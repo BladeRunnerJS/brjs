@@ -18,7 +18,7 @@ import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
+import org.bladerunnerjs.plugin.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Server;

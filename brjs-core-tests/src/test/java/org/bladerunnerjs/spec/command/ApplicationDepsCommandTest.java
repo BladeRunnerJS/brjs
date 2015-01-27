@@ -10,7 +10,7 @@ import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
-import org.bladerunnerjs.plugin.plugins.commands.standard.ApplicationDepsCommand;
+import org.bladerunnerjs.plugin.commands.standard.ApplicationDepsCommand;
 import org.junit.Before;
 import org.junit.Test;
 

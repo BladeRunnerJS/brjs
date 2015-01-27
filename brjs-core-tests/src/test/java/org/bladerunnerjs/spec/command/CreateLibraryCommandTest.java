@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
-import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand.Messages.*;
+import static org.bladerunnerjs.plugin.commands.standard.CreateLibraryCommand.Messages.*;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
@@ -15,7 +15,7 @@ import org.bladerunnerjs.api.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.AppJsLib;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand;
+import org.bladerunnerjs.plugin.commands.standard.CreateLibraryCommand;
 import org.junit.Before;
 import org.junit.Test;
 

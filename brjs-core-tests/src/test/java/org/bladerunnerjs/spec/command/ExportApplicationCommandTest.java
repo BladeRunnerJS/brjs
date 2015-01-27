@@ -7,7 +7,7 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationCommand;
+import org.bladerunnerjs.plugin.commands.standard.ExportApplicationCommand;
 import org.junit.Before;
 import org.junit.Test;
 

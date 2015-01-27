@@ -12,8 +12,8 @@ import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameExceptio
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationCommand;
-import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
+import org.bladerunnerjs.plugin.commands.standard.ExportApplicationCommand;
+import org.bladerunnerjs.plugin.commands.standard.ImportAppCommand;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

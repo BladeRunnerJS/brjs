@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
-import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCommand.Messages.*;
+import static org.bladerunnerjs.plugin.commands.standard.CreateAspectCommand.Messages.*;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
@@ -13,7 +13,7 @@ import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.api.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCommand;
+import org.bladerunnerjs.plugin.commands.standard.CreateAspectCommand;
 import org.junit.Before;
 import org.junit.Test;
 

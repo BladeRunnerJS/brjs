@@ -5,7 +5,7 @@ import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.plugins.commands.standard.J2eeifyCommandPlugin;
+import org.bladerunnerjs.plugin.commands.standard.J2eeifyCommandPlugin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

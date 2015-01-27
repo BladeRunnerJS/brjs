@@ -1,6 +1,6 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand.Messages.*;
+import static org.bladerunnerjs.plugin.commands.standard.BuildAppCommand.Messages.*;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;

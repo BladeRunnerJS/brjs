@@ -12,7 +12,7 @@ import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.plugins.commands.standard.BundleDepsCommand;
+import org.bladerunnerjs.plugin.commands.standard.BundleDepsCommand;
 import org.junit.Before;
 import org.junit.Test;
 

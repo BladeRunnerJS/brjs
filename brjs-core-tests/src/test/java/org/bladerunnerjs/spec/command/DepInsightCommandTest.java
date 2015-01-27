@@ -9,7 +9,7 @@ import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.plugins.commands.standard.DepInsightCommand;
+import org.bladerunnerjs.plugin.commands.standard.DepInsightCommand;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

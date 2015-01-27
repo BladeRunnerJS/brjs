@@ -10,7 +10,7 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin.Messages;
+import org.bladerunnerjs.plugin.bundlers.css.CssTagHandlerPlugin.Messages;
 import org.junit.Before;
 import org.junit.Test;
 

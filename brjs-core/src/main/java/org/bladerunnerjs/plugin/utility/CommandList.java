@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.plugins.commands.core.HelpCommand;
-import org.bladerunnerjs.plugin.plugins.commands.core.VersionCommand;
+import org.bladerunnerjs.plugin.commands.core.HelpCommand;
+import org.bladerunnerjs.plugin.commands.core.VersionCommand;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;

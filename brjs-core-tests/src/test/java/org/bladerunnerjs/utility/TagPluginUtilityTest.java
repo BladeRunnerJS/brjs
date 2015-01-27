@@ -13,7 +13,7 @@ import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
+import org.bladerunnerjs.plugin.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.testing.utility.MockTagHandler;

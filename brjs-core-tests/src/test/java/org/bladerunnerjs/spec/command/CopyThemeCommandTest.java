@@ -1,6 +1,6 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.plugin.plugins.commands.standard.CopyThemeCommand.Messages.*;
+import static org.bladerunnerjs.plugin.commands.standard.CopyThemeCommand.Messages.*;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
@@ -9,7 +9,7 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CopyThemeCommand;
+import org.bladerunnerjs.plugin.commands.standard.CopyThemeCommand;
 import org.junit.Before;
 import org.junit.Test;
 

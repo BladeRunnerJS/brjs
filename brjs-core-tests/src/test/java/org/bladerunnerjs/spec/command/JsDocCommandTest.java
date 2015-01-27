@@ -7,7 +7,7 @@ import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
+import org.bladerunnerjs.plugin.commands.standard.JsDocCommand;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
