@@ -117,10 +117,18 @@ LocaleUtility.getLocalizedPageUrl = function(pageUrl, locale) {
 	var protocol = urlParser.protocol;
 	var host = urlParser.host;
 	var url = urlParser.pathname;
-		url = (url.charAt(0) != "/") ? "/"+url : url; /* some IE versions don't prefix pathname with / */
-		url = ( !(/\/$/.test(url)) ) ? url+"/" : url; /* make sure the URL has a trailing / */
 	var anchor = urlParser.hash;
 	var queryString = urlParser.search;
 
-	return protocol+"//"+host+url+locale+"/"+queryString+anchor;
+	var matchCordovaUrl = /(.*)(\/.*\.[a-zA-Z0-9]+\/)/g.exec(url);
+	
+	if (matchCordovaUrl !== null) {
+		return protocol + "//" + host + matchCordovaUrl[1] + "/" + locale+ matchCordovaUrl[2] + queryString + anchor;
+	}
+	
+	else {
+		url = (url.charAt(0) != "/") ? "/"+url : url; /* some IE versions don't prefix pathname with / */
+		url = ( !(/\/$/.test(url)) ) ? url+"/" : url; /* make sure the URL has a trailing / */
+		return protocol + "//" + host + url + locale + "/" + queryString + anchor;
+	}		
 };

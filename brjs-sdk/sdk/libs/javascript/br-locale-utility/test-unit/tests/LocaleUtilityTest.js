@@ -67,5 +67,9 @@
 	        expect(getLocalizedPageUrl("http://acme.com:1337/app/?query=1#anchor", "en_GB")).toBe("http://acme.com:1337/app/en_GB/?query=1#anchor");
 	    });
 
+	    it("appends the locale before the requested resource for Apache Cordova", function() {
+	        expect(getLocalizedPageUrl("http://acme.com:1337/app/www/index.html/", "en_GB")).toBe("http://acme.com:1337/app/www/en_GB/index.html/");
+	    });
+
 	});
 })();
