@@ -6,7 +6,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.logger.ConsoleLogger;
 
@@ -16,7 +16,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class HelpCommand extends ArgsParsingCommandPlugin
+public class HelpCommand extends JSAPArgsParsingCommandPlugin
 {
 	private BRJS brjs;
 	private Logger logger;

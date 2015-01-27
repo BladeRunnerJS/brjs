@@ -17,7 +17,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.utility.FileUtils;
 
@@ -27,7 +27,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class CopyThemeCommand extends ArgsParsingCommandPlugin
+public class CopyThemeCommand extends JSAPArgsParsingCommandPlugin
 {
 	public class Messages {
 		public static final String COPY_THEME_SUCCESS_CONSOLE_MSG = "Successfully copied theme '%s' into '%s'";

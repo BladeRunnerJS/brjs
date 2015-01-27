@@ -15,7 +15,7 @@ import org.bladerunnerjs.api.model.exception.command.DirectoryAlreadyExistsComma
 import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.FileUtils;
 
 import com.martiansoftware.jsap.JSAP;
@@ -24,7 +24,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class BuildAppCommand extends ArgsParsingCommandPlugin {
+public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 
 	public class Messages {
 		public static final String APP_BUILT_CONSOLE_MSG = "Built app '%s' available at '%s'";

@@ -11,7 +11,7 @@ import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.appserver.ApplicationServerUtils;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.TemplateUtility;
@@ -22,7 +22,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class J2eeifyCommandPlugin extends ArgsParsingCommandPlugin
+public class J2eeifyCommandPlugin extends JSAPArgsParsingCommandPlugin
 {
 	public class Messages {
 		public static final String APP_DOES_NOT_EXIST_EXCEPTION = "The app '%s' does not exist";

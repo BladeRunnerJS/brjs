@@ -14,13 +14,48 @@ import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 
-public abstract class ArgsParsingCommandPlugin extends AbstractCommandPlugin implements CommandPlugin {
+/**
+ * An abstract implementation of {@link CommandPlugin} which uses <a href="http://www.martiansoftware.com/jsap/">JSAP</a>
+ * to parse command arguments and provide helpful error messages.
+ * 
+ * The parser can be configured when @{link {@link #configureArgsParser(JSAP)} is called. 
+ * JSAP has a 'fluid' API where methods are chained together to configure a specific parameter. 
+ * 
+ * To register a parameter:
+ * <pre>
+ * {@code
+ * argsParser.registerParameter(new UnflaggedOption("my-option").setRequired(true).setHelp("a helpful message about this arg"));
+ * }
+ * </pre>
+ * 
+ * To set a 'port' flag which is used via the command arguments as either '-port XYZ' or '-p XYZ' use:
+ * <pre>
+ * {@code 
+ *  argsParser.registerParameter(new FlaggedOption("port").setShortFlag('p').setLongFlag("port").setRequired(false).setHelp("the port number"));
+ * }
+ * </pre>
+ * 
+ * Command arguments will be automatically parsed and provided when {@link #doCommand(JSAPResult)} is called. Argument values are accessed
+ * by name, for example:
+ * 
+ * <pre>
+ * {@code
+ * parsedArgs.getString("some-arg");
+ * parsedArgs.getBoolean("some-arg");
+ * }
+ * </pre>
+ * 
+ * @see <a href="http://www.martiansoftware.com/jsap/doc/">JSAP Manual</a>
+ * @see <a href="http://www.martiansoftware.com/jsap/doc/javadoc/">JSAP API docs</a>
+ *
+ */
+public abstract class JSAPArgsParsingCommandPlugin extends AbstractCommandPlugin implements CommandPlugin {
 	private final JSAP argsParser = new JSAP();
 	
 	protected abstract void configureArgsParser(JSAP argsParser) throws JSAPException;
 	protected abstract int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException;
 	
-	public ArgsParsingCommandPlugin() {
+	public JSAPArgsParsingCommandPlugin() {
 		try {
 			configureArgsParser(argsParser);
 		} catch (JSAPException e) {
