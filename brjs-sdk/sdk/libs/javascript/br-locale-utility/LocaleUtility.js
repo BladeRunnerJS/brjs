@@ -120,10 +120,10 @@ LocaleUtility.getLocalizedPageUrl = function(pageUrl, locale) {
 	var anchor = urlParser.hash;
 	var queryString = urlParser.search;
 
-	var matchCordovaUrl = /(.*)(\/.*\.[a-zA-Z0-9]+\/)/g.exec(url);
+	var matchUrlEndingInSlash = /(.*)(\/.*\.[a-zA-Z0-9]+\/)/g.exec(url);
 	
-	if (matchCordovaUrl !== null) {
-		return protocol + "//" + host + matchCordovaUrl[1] + "/" + locale+ matchCordovaUrl[2] + queryString + anchor;
+	if (matchUrlEndingInSlash !== null) {
+		return protocol + "//" + host + matchUrlEndingInSlash[1] + "/" + locale+ matchUrlEndingInSlash[2] + queryString + anchor;
 	}
 	
 	else {
