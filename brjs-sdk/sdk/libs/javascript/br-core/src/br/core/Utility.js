@@ -33,7 +33,6 @@ function locate(path, root) {
 	if (path.indexOf("/") > -1) {
 		return parsePath(path, root, "/");
 	}
-
 	else {
 		var parsedPath = parsePath(path, root, ".");
 		if (parsedPath == undefined) {
