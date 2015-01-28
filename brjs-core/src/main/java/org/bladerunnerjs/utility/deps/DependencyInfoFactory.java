@@ -115,9 +115,12 @@ public class DependencyInfoFactory {
 		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
 		for(LinkedAsset resourceAsset : assetLocation.linkedAssets()) {
 			dependencyInfo.resourceAssets.add(resourceAsset);
+			
+			// TODO: the need for this code shows that our interfaces are incorrectly abstracted, which we should fix at some point
 			if (bundlableNode instanceof Workbench && assetLocation.assetContainer() instanceof Aspect) {
 				continue;
 			}
+			
 			List<Asset>  assets = resourceAsset.getDependentAssets(bundlableNode);
 			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, extractSourceModules(assets));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
