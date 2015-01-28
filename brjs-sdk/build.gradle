@@ -98,8 +98,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
     		}
 		}
 	}
-	def allApps = file("sdk/system-applications").listFiles() + file("apps").listFiles()
-			allApps.each {
+	file("sdk/system-applications").listFiles().each {
 		if (it.isDirectory()) {
 			into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
 				from configurations.systemAppServlets
@@ -123,7 +122,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		delete file("sdk/phantomjs")
 		delete file("sdk/docs")
 		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
-		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
 		file("sdk/version.txt").text =  "{"+
