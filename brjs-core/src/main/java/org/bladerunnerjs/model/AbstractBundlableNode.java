@@ -35,8 +35,6 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		super(rootNode, parent, dir);
 	}
 	
-	protected abstract List<LinkedAsset> modelSeedAssets();
-	
 	@Override
 	public List<AssetLocation> seedAssetLocations() {
 		List<AssetLocation> seedAssetLocations = new ArrayList<>();
@@ -62,11 +60,10 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public List<LinkedAsset> seedAssets() {
-		List<LinkedAsset> seedFiles = new ArrayList<>(modelSeedAssets());
+		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
 		for(AssetLocation seedAssetLocation : seedAssetLocations()) {
 			seedFiles.addAll(seedAssetLocation.linkedAssets());
-//			seedFiles.addAll(seedAssetLocation.sourceModules()); // TODO: add extra coverage so this can be fixed without causing only js breakage
 		}
 		
 		return seedFiles;
