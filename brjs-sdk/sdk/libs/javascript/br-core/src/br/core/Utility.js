@@ -26,21 +26,19 @@ function locate(path, root) {
 		root = global;
 	}
 
-	if (path.indexOf(".") > -1) {
+	if (path.indexOf(".") > -1 && path.indexOf("/") == -1) {
 		return parsePath(path, root, ".");
 	}
 
-	if (path.indexOf("/") > -1) {
+	if (path.indexOf("/") > -1 && path.indexOf(".") == -1) {
 		return parsePath(path, root, "/");
 	}
-	else {
-		var parsedPath = parsePath(path, root, ".");
-		if (parsedPath == undefined) {
-			parsedPath = parsePath(path, root, "/");
-		}
-		return parsedPath;
-	}
 
+	var parsedPath = parsePath(path, root, ".");
+	if (parsedPath == undefined) {
+		parsedPath = parsePath(path, root, "/");
+	}
+	return parsedPath;
 };
 exports.locate = locate;
 
