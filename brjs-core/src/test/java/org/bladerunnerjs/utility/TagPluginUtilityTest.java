@@ -13,8 +13,6 @@ import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.plugin.brjsconformant.BRJSConformantAssetLocationPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.testing.utility.MockTagHandler;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
@@ -50,9 +48,6 @@ public class TagPluginUtilityTest
 		/* invalid valid tags */
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("1tag", "replaced tag!", "") ) );
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("-tag", "replaced tag!", "") ) );
-		
-		/* asset location support */
-		mockPluginLocator.assetLocationPlugins.add(new VirtualProxyAssetLocationPlugin(new BRJSConformantAssetLocationPlugin()));
 		
 		File tempDir = BRJSTestModelFactory.createTestSdkDirectory();
 		brjs = BRJSTestModelFactory.createModel(tempDir, mockPluginLocator);

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.utility;
+package org.bladerunnerjs.spec.plugin.bundler.xml;
 
 import static org.junit.Assert.assertEquals;
 

@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.brjs;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.plugin.commands.standard.CreateBladeCommand;
-import org.bladerunnerjs.testing.utility.ExplodingCommand;
+import org.bladerunnerjs.testing.utility_copy.ExplodingCommand;
 import org.junit.Before;
 import org.junit.Test;
 
