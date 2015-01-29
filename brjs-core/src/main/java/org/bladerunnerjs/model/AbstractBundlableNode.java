@@ -19,7 +19,7 @@ import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingExcept
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.engine.Node;
@@ -39,7 +39,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public List<AssetLocation> seedAssetLocations() {
 		List<AssetLocation> seedAssetLocations = new ArrayList<>();
 		
-		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
+		for(LegacyAssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
 			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
 				for(String seedAssetLocationName : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
 					AssetLocation seedAssetLocation = assetLocation(seedAssetLocationName);

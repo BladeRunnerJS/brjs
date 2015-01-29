@@ -13,6 +13,7 @@ public interface PluginLocator
 	List<ContentPlugin> getContentPlugins();
 	List<TagHandlerPlugin> getTagHandlerPlugins();
 	List<AssetPlugin> getAssetPlugins();
+	List<LegacyAssetLocationPlugin> getLegacyAssetLocationPlugins();
 	List<AssetLocationPlugin> getAssetLocationPlugins();
 	List<MinifierPlugin> getMinifierPlugins();
 	List<RequirePlugin> getRequirePlugins();

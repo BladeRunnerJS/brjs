@@ -15,7 +15,7 @@ import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
-import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
@@ -102,7 +102,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		return assetLocationsMap.value(() -> {
 			Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
 			
-			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
+			for(LegacyAssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
 				List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
 				
 				if(assetLocationDirectories.size() > 0) {
@@ -120,7 +120,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		});
 	}
 	
-	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, AssetLocationPlugin assetLocationPlugin ) {
+	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, LegacyAssetLocationPlugin assetLocationPlugin ) {
 		
 		if (!assetLocations.containsKey(locationPath)) {
 			AssetLocation newAssetLocation;

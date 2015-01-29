@@ -12,6 +12,7 @@ import org.bladerunnerjs.api.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
@@ -28,6 +29,7 @@ import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyLegacyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
@@ -187,6 +189,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.assetLocationPlugins);
 		
+		specTest.pluginLocator.legacyAssetLocationPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), LegacyAssetLocationPlugin.class, VirtualProxyLegacyAssetLocationPlugin.class) );
 		specTest.pluginLocator.assetLocationPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class) );
 		
 		return builderChainer;

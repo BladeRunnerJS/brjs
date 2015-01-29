@@ -1,51 +1,28 @@
 package org.bladerunnerjs.plugin.proxy;
 
 import java.util.List;
-import java.util.Map;
 
-import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 
+
 public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implements AssetLocationPlugin {
-	private AssetLocationPlugin assetLocationPlugin;
 	
+	private AssetLocationPlugin assetLocationPlugin;
+
 	public VirtualProxyAssetLocationPlugin(AssetLocationPlugin assetLocationPlugin) {
 		super(assetLocationPlugin);
 		this.assetLocationPlugin = assetLocationPlugin;
 	}
-	
+
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return assetLocationPlugin.getPluginsThatMustAppearBeforeThisPlugin();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return assetLocationPlugin.getPluginsThatMustAppearAfterThisPlugin();
-	}
-	
-	@Override
-	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	{
 		initializePlugin();
-		return assetLocationPlugin.getAssetLocationDirectories(assetContainer);
+		assetLocationPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
 	}
 	
-	@Override
-	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
-		initializePlugin();
-		return assetLocationPlugin.getSeedAssetLocationDirectories(assetContainer);
-	}
-	
-	@Override
-	public AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap) {
-		initializePlugin();
-		return assetLocationPlugin.createAssetLocation(assetContainer, dirPath, assetLocationsMap);
-	}
-	
-	@Override
-	public boolean allowFurtherProcessing() {
-		initializePlugin();
-		return assetLocationPlugin.allowFurtherProcessing();
-	}
 }

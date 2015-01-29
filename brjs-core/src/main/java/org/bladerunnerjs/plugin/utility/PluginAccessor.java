@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
@@ -27,7 +27,7 @@ public class PluginAccessor {
 	private final List<MinifierPlugin> minifierPlugins;
 	private final List<ModelObserverPlugin> modelObserverPlugins;
 	private final List<AssetPlugin> assetPlugins;
-	private final List<AssetLocationPlugin> assetLocationPlugins;
+	private final List<LegacyAssetLocationPlugin> assetLocationPlugins;
 	private final List<RequirePlugin> requirePlugins;
 	
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
@@ -37,7 +37,7 @@ public class PluginAccessor {
 		minifierPlugins = pluginLocator.getMinifierPlugins();
 		modelObserverPlugins = pluginLocator.getModelObserverPlugins();
 		assetPlugins = sort(pluginLocator.getAssetPlugins());
-		assetLocationPlugins = sort(pluginLocator.getAssetLocationPlugins());
+		assetLocationPlugins = sort(pluginLocator.getLegacyAssetLocationPlugins());
 		requirePlugins = pluginLocator.getRequirePlugins();
 	}
 
@@ -164,7 +164,7 @@ public class PluginAccessor {
 		return assetPlugins;
 	}
 	
-	public List<AssetLocationPlugin> assetLocationPlugins() {
+	public List<LegacyAssetLocationPlugin> assetLocationPlugins() {
 		return assetLocationPlugins;
 	}
 	
