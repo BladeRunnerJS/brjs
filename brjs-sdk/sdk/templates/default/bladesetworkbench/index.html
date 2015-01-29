@@ -53,14 +53,10 @@
 			var workbench = new Workbench(250, 310);
 			addEventHubLogger( workbench );
 
-			// ViewModel that is being created in the workbench
-			/*var myBladeTitleViewModel = require( 'myBladeRequirePrefix/myBladeTitleViewModel' );
-			var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
-
-			var model = new myBladeTitleViewModel();
-			var component = new KnockoutComponent( 'myBladeNamespace.view-template', model );
-
-			addComponent( component, workbench )
+			// Add Blade component to workbench
+			/*var myBladeTitleBlade = require( 'myBladeRequirePrefix/myBladeTitleBlade' );
+			
+			addComponent( new myBladeTitleBlade().getComponent(), workbench )
 			addModelViewer( model, workbench );*/
 		</script>
 		
