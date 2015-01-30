@@ -67,20 +67,6 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		return new ArrayList<>(assetLocationsMap().values());
 	}
 	
-	@Override
-	public RootAssetLocation rootAssetLocation() {
-		AssetLocation assetLocation = assetLocation(".");
-		return ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
-	}
-	
-	@Override
-	public List<String> getAssetLocationPaths()
-	{
-		List<String> assetLocationPaths = new ArrayList<String>();
-		assetLocationPaths.addAll( assetLocationsMap().keySet() );
-		return assetLocationPaths;
-	}
-	
 	private Map<String, LinkedAsset> linkedAssetsMap() {
 		return linkedAssetMap.value(() -> {
 			Map<String, LinkedAsset> linkedAssetsMap = new LinkedHashMap<>();

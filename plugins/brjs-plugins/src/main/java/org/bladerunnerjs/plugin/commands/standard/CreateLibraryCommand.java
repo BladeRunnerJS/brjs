@@ -7,6 +7,7 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;
@@ -19,6 +20,7 @@ import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
+import org.bladerunnerjs.model.RootAssetLocation;
 import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
@@ -98,7 +100,9 @@ public class CreateLibraryCommand extends JSAPArgsParsingCommandPlugin
 		JsLib library = app.appJsLib(libraryName);
 		if (library.dirExists()) throw new NodeAlreadyExistsException(library, this);
 		
-		if (TemplateUtility.templateExists(brjs, library.rootAssetLocation(), templateGroup, this)) {
+		AssetLocation assetLocation = library.assetLocation(".");
+		RootAssetLocation root = ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
+		if (TemplateUtility.templateExists(brjs, root, templateGroup, this)) {
 		
 			switch ( createLibraryType ) {
 				case br:

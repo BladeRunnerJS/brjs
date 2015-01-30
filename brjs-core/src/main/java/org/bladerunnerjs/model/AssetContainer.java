@@ -20,8 +20,6 @@ public interface AssetContainer extends BRJSNode {
 	LinkedAsset linkedAsset(String requirePath);
 	AssetLocation assetLocation(String locationPath);
 	List<AssetLocation> assetLocations();
-	RootAssetLocation rootAssetLocation();
-	List<String> getAssetLocationPaths();
 	/**
 	 * Returns all AssetContainers whose assets can be referred to by assets in this AssetContainer
 	 */

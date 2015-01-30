@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.TypedTestPack;
@@ -108,7 +109,8 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 		NameValidator.assertValidRootPackageName(this, libNamespace);
 		
 		try {
-			RootAssetLocation rootAssetLocation = rootAssetLocation();
+			AssetLocation assetLocation = assetLocation(".");
+			RootAssetLocation rootAssetLocation = ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
 			if(rootAssetLocation != null) {
 				rootAssetLocation.setRequirePrefix(libNamespace.replace('.', '/'));
 				rootAssetLocation.populate(templateGroup);
@@ -127,8 +129,9 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	
 	@Override
 	public String requirePrefix() {
-		RootAssetLocation rootAssetLocation = rootAssetLocation();
-		return (rootAssetLocation != null) ? rootAssetLocation.requirePrefix() : getName();
+		AssetLocation assetLocation = assetLocation(".");
+		RootAssetLocation root = ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
+		return (root != null) ? root.requirePrefix() : getName();
 	}
 	
 	@Override

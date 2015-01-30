@@ -31,7 +31,6 @@ import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.RootAssetLocation;
 import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.engine.Node;
@@ -131,17 +130,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public RootAssetLocation rootAssetLocation() {
-		return bundlableNode.rootAssetLocation();
-	}
-
-	@Override
 	public void create() throws InvalidNameException, ModelUpdateException {
 		bundlableNode.create();
-	}
-	
-	public List<String> getAssetLocationPaths() {
-		return bundlableNode.getAssetLocationPaths();
 	}
 
 	@Override

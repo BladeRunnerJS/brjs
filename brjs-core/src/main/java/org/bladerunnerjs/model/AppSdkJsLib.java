@@ -158,17 +158,6 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public RootAssetLocation rootAssetLocation() {
-		return sdkJsLib.rootAssetLocation();
-	}
-	
-	@Override
-	public List<String> getAssetLocationPaths()
-	{
-		return sdkJsLib.getAssetLocationPaths();
-	}
-	
-	@Override
 	public boolean containsFile(String filePath) {
 		return sdkJsLib.containsFile(filePath);
 	}
