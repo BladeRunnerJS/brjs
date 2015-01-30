@@ -17,7 +17,7 @@ public class WorkbenchBuilder extends BundlableNodeBuilder<Workbench<?>>
 	
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String className) throws Exception 
 	{
-		writeToFile(workbench.assetLocation("resources").file(resourceFileName), "<root refs='" + className + "'/>");
+		writeToFile(workbench.file("resources/"+resourceFileName), "<root refs='" + className + "'/>");
 		
 		return builderChainer;
 	}

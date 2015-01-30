@@ -36,7 +36,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			aspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
 			aliasesFile = aspect.aliasesFile();
-			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").aliasDefinitionsFile();
+			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").aliasDefinitionsFile("src");
 			brLib = brjs.sdkLib("br");
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
 	}

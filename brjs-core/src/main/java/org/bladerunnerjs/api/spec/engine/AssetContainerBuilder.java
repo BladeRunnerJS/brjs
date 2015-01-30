@@ -22,7 +22,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 	
 	public BuilderChainer containsResourceFile(String resourceFilePath) throws Exception {
-		writeToFile(node.assetLocation("resources").file(resourceFilePath), resourceFilePath + "\n");
+		writeToFile(node.file("resources/"+resourceFilePath), resourceFilePath + "\n");
 		
 		return builderChainer;
 	}
@@ -37,7 +37,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer containsResourceFileWithContents(String resourceFileName, String contents) throws Exception 
 	{
-		writeToFile(node.assetLocation("resources").file(resourceFileName), contents);
+		writeToFile(node.file("resources/"+resourceFileName), contents);
 		
 		return builderChainer;
 	}

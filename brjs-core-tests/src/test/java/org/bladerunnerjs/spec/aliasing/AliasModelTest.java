@@ -40,9 +40,9 @@ public class AliasModelTest extends SpecTest {
 			aspect = app.aspect("default");
 			aspectAliasesFile = aspect.aliasesFile();
 			bladeset = app.bladeset("bs");
-			bladesetAliasDefinitionsFile = bladeset.assetLocation("resources").aliasDefinitionsFile();
+			bladesetAliasDefinitionsFile = bladeset.aliasDefinitionsFile("resources");
 			blade = bladeset.blade("b1");
-			bladeAliasDefinitionsFile = blade.assetLocation("resources").aliasDefinitionsFile();
+			bladeAliasDefinitionsFile = blade.aliasDefinitionsFile("resources");
 	}
 	
 	@Test

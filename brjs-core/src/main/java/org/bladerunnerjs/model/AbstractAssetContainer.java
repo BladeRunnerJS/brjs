@@ -12,6 +12,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
@@ -153,5 +154,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			throw new RuntimeException(ex);
 		}	
 		cachedAssetLocations.put(locationPath, assetLocation);
+	}
+	
+	
+	
+	
+	public AliasDefinitionsFile aliasDefinitionsFile(String path) {
+		return assetLocation(path).aliasDefinitionsFile();
 	}
 }

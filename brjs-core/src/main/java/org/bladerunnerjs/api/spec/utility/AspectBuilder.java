@@ -78,11 +78,11 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 	
 	
 	public MemoizedFile getResourceFile(String resourceFileName) {
-		return aspect.assetLocation("resources").file(resourceFileName);
+		return aspect.file("resources/"+resourceFileName);
 	}
 	
 	public MemoizedFile getSrcResourceFile(String resourceFileName) {
-		return aspect.assetLocation("src").file(resourceFileName);
+		return aspect.file("src/"+resourceFileName);
 	}
 	
 	public MemoizedFile getIndexFile() {

@@ -272,4 +272,9 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	{
 		bundlableNode.incrementChildFileVersions();	
 	}
+	
+	
+	public AliasDefinitionsFile aliasDefinitionsFile(String path) {
+		return bundlableNode.aliasDefinitionsFile(path);
+	}
 }

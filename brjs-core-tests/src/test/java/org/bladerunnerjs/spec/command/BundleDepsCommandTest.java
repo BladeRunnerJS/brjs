@@ -41,7 +41,7 @@ public class BundleDepsCommandTest extends SpecTest {
 			defaultAspect = app.defaultAspect();
 			aliasesFile = aspect.aliasesFile();
 			blade = app.bladeset("bs").blade("b1");
-			bladeAliasDefinitionsFile = blade.assetLocation("src").aliasDefinitionsFile();
+			bladeAliasDefinitionsFile = blade.aliasDefinitionsFile("src");
 			bladeTestPack = blade.testType("unit").testTech("js-test-driver");
 			bladeTests = bladeTestPack.tests();
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");

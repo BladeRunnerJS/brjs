@@ -35,7 +35,7 @@ public class DepInsightCommandTest extends SpecTest {
 			aspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
 			aliasesFile = aspect.aliasesFile();
-			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").aliasDefinitionsFile();
+			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").aliasDefinitionsFile("src");
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
 	}
 	
