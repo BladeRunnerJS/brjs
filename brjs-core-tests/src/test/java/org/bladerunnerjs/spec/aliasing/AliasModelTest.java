@@ -314,8 +314,8 @@ public class AliasModelTest extends SpecTest {
 	@Test
 	public void nestedAliasDefinitionsFilesCanBeUsedInResourcesDirectories() throws Exception {
 		// TODO: think of a way of doing this in a more BDD way
-		write(blade, blade.assetLocation("resources").file("aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
-		write(blade, blade.assetLocation("resources").file("dir/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
+		write(blade, blade.file("resources/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
+		write(blade, blade.file("resources/dir/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
 		AliasDefinitionsFile nestedBladeAliasDefinitionsFile = blade.assetLocation("resources").aliasDefinitionsFiles().get(1);
 		
 		given(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias1", "Class1", "TheInterface")

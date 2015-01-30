@@ -83,7 +83,7 @@ public class RestApiServletEndToEndTests
 		createApp("newApp","appx");
 		
 		assertTrue( brjs.userApp("newApp").dirExists() );
-		assertTrue( brjs.userApp("newApp").aspect("default").assetLocation("src").file("appx").exists() );
+		assertTrue( brjs.userApp("newApp").aspect("default").file("src/appx").exists() );
 	}
 	
 	@Ignore // this test has been disabled since it is incompatible with the Java7FileModificationService

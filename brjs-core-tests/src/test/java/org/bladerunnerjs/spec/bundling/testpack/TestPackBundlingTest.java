@@ -63,7 +63,7 @@ public class TestPackBundlingTest extends SpecTest
 			.and(aspect).hasTestClass("appns.Class1")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
 		then(aspectUTs).bundledFilesEquals(
-				aspect.assetLocation("src-test").file("appns/Class1.js"));
+				aspect.file("src-test/appns/Class1.js"));
 	}
 	
 	@Test
@@ -75,7 +75,7 @@ public class TestPackBundlingTest extends SpecTest
 			.and(aspectUTs).classDependsOn("appns.aspectUT.Class1", "appns.Class1");
 		then(aspectUTs).bundledFilesEquals(
 				aspectUTs.testSource().file("appns/aspectUT/Class1.js"),
-				aspect.assetLocation("src-test").file("appns/Class1.js"));
+				aspect.file("src-test/appns/Class1.js"));
 	}
 	
 	@Test
@@ -83,7 +83,7 @@ public class TestPackBundlingTest extends SpecTest
 		given(aspect).hasCommonJsPackageStyle()
     		.and(aspect).hasClasses("appns/Class1")
     		.and(aspectUTs).testRequires("pkg/test.js", "appns/Class1");
-    	then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
+    	then(aspectUTs).bundledFilesEquals(aspect.file("src/appns/Class1.js"));
 	}
 	
 	@Test
@@ -127,7 +127,7 @@ public class TestPackBundlingTest extends SpecTest
 		given(aspect).hasClasses("appns/Class1")
     		.and(implicitDefaultAspectUTs).testRequires("test.js", "appns/Class1");
 		when( implicitDefaultAspectUTs ).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then(implicitDefaultAspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"))
+    	then(implicitDefaultAspectUTs).bundledFilesEquals(aspect.file("src/appns/Class1.js"))
     		.and(aspect).hasFile("test-unit/tests/test.js");
 	}
 	
@@ -136,7 +136,7 @@ public class TestPackBundlingTest extends SpecTest
 		given(sdkLib).hasClasses("lib/Class1")
 			.and( sdkLib.testType("unit").defaultTestTech() ).testRequires("test.js", "lib/Class1");
 		when( sdkLib.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then( sdkLib.testType("unit").defaultTestTech() ).bundledFilesEquals(sdkLib.assetLocation("src").file("lib/Class1.js"))
+		then( sdkLib.testType("unit").defaultTestTech() ).bundledFilesEquals(sdkLib.file("src/lib/Class1.js"))
 			.and(response).containsNamespacedJsClasses("Class1")
 			.and( sdkLib ).hasFile("test-unit/tests/test.js");
 	}
@@ -146,7 +146,7 @@ public class TestPackBundlingTest extends SpecTest
 		given(appLib).hasClasses("lib/Class1")
 			.and( appLib.testType("unit").defaultTestTech() ).testRequires("test.js", "lib/Class1");
 		when( appLib.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then( appLib.testType("unit").defaultTestTech() ).bundledFilesEquals(appLib.assetLocation("src").file("lib/Class1.js"))
+		then( appLib.testType("unit").defaultTestTech() ).bundledFilesEquals(appLib.file("src/lib/Class1.js"))
 			.and(response).containsNamespacedJsClasses("Class1")
 			.and( appLib ).hasFile("test-unit/tests/test.js");
 	}
@@ -165,7 +165,7 @@ public class TestPackBundlingTest extends SpecTest
 		given(bladeInDefaultBladeset).hasClasses("Class1")
     		.and( bladeInDefaultBladeset.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/b1/Class1");
 		when( bladeInDefaultBladeset.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then( bladeInDefaultBladeset.testType("unit").defaultTestTech() ).bundledFilesEquals(bladeInDefaultBladeset.assetLocation("src").file("Class1.js"))
+    	then( bladeInDefaultBladeset.testType("unit").defaultTestTech() ).bundledFilesEquals(bladeInDefaultBladeset.file("src/Class1.js"))
     		.and(response).containsCommonJsClasses("appns/b1/Class1");
 	}
 	
@@ -174,7 +174,7 @@ public class TestPackBundlingTest extends SpecTest
 		given(defaultAspect).hasClasses("App")
     		.and( defaultAspect.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/App");
 		when( defaultAspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then( defaultAspect.testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.assetLocation("src").file("App.js"))
+    	then( defaultAspect.testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.file("src/App.js"))
     		.and(response).containsCommonJsClasses("appns/App");
 	}
 	
@@ -184,7 +184,7 @@ public class TestPackBundlingTest extends SpecTest
     		.and( defaultAspect.testType("unit").defaultTestTech() ).testRequires("test.js", "appns/App")
     		.and(bladeInDefaultBladeset).hasBeenCreated();
 		when( defaultAspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then( defaultAspect.testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.assetLocation("src").file("App.js"))
+    	then( defaultAspect.testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.file("src/App.js"))
     		.and(response).containsCommonJsClasses("appns/App");
 	}
 	
@@ -196,7 +196,7 @@ public class TestPackBundlingTest extends SpecTest
     		.and(brjs).hasBeenAuthenticallyReCreated();
 			assertEquals( defaultAspect.dir(), brjs.app("app1").defaultAspect().dir()  ); // make sure we're using the same directory for each model
 		when( brjs.app("app1").defaultAspect().testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then( brjs.app("app1").defaultAspect().testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.assetLocation("src").file("App.js"))
+    	then( brjs.app("app1").defaultAspect().testType("unit").defaultTestTech() ).bundledFilesEquals(defaultAspect.file("src/App.js"))
     		.and(response).containsCommonJsClasses("appns/App");
 	}
 	

@@ -40,7 +40,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
-		then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
+		then(aspectUTs).bundledFilesEquals(aspect.file("src/appns/Class1.js"));
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspectATs).testRefersTo("pkg/test.js", "appns.Class1");
-		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
+		then(aspectATs).bundledFilesEquals(aspect.file("src/appns/Class1.js"));
 	}
 	
 	@Test
@@ -57,7 +57,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).hasDir("src/.svn")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
-		then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
+		then(aspectUTs).bundledFilesEquals(aspect.file("src/appns/Class1.js"));
 	}
 	
 	@Test
@@ -69,9 +69,9 @@ public class AspectTestPackBundlingTest extends SpecTest
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1", "appns.bs.Class1");
 		then(aspectUTs).bundledFilesEquals(
-				aspect.assetLocation("src").file("appns/Class1.js"),
-				bladeset.assetLocation("src").file("appns/bs/Class1.js"),
-				bladeset.assetLocation("src").file("appns/bs/Class2.js"));
+				aspect.file("src/appns/Class1.js"),
+				bladeset.file("src/appns/bs/Class1.js"),
+				bladeset.file("src/appns/bs/Class2.js"));
 	}
 	
 	@Test
@@ -83,9 +83,9 @@ public class AspectTestPackBundlingTest extends SpecTest
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1", "appns.bs.b1.Class1");
 		then(aspectUTs).bundledFilesEquals(
-				aspect.assetLocation("src").file("appns/Class1.js"),
-				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
-				blade.assetLocation("src").file("appns/bs/b1/Class2.js"));
+				aspect.file("src/appns/Class1.js"),
+				blade.file("src/appns/bs/b1/Class1.js"),
+				blade.file("src/appns/bs/b1/Class2.js"));
 	}
 	
 	@Test
