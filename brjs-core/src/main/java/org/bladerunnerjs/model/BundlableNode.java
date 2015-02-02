@@ -23,7 +23,6 @@ import org.bladerunnerjs.model.engine.Node;
 public interface BundlableNode extends Node, AssetContainer {
 	AliasesFile aliasesFile();
 	LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException;
-	List<AssetLocation> seedAssetLocations();
 	List<LinkedAsset> seedAssets();
 	
 	BundleSet getBundleSet() throws ModelOperationException;

@@ -50,8 +50,10 @@ public class BundleSetBuilder {
 		List<AssetLocation> resourceLocationList = new ArrayList<>();
 		
 		if (bundlableNode instanceof Workbench) {
-			for ( AssetLocation assetLocation : bundlableNode.app().aspect("default").seedAssetLocations() ) {
-				addUnscopedAssetLocation( assetLocation );				
+			// TODO: this should be done via the API and not guessed from the outside
+			AssetLocation defaultAspectResourcesAssetLocation = bundlableNode.app().aspect("default").assetLocation("resources");
+			if (defaultAspectResourcesAssetLocation != null) {
+				addUnscopedAssetLocation(defaultAspectResourcesAssetLocation);
 			}
 		}
 		

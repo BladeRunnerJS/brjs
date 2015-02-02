@@ -36,7 +36,9 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<AssetLocation> seedAssetLocations() {
+	public List<LinkedAsset> seedAssets() {
+		List<LinkedAsset> seedFiles = new ArrayList<>();
+		
 		List<AssetLocation> seedAssetLocations = new ArrayList<>();
 		
 		for(LegacyAssetLocationPlugin assetLocationPlugin : root().plugins().legacyAssetLocationPlugins()) {
@@ -55,14 +57,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 			}
 		}
 		
-		return seedAssetLocations;
-	}
-	
-	@Override
-	public List<LinkedAsset> seedAssets() {
-		List<LinkedAsset> seedFiles = new ArrayList<>();
-		
-		for(AssetLocation seedAssetLocation : seedAssetLocations()) {
+		for(AssetLocation seedAssetLocation : seedAssetLocations) {
 			seedFiles.addAll(seedAssetLocation.linkedAssets());
 		}
 		

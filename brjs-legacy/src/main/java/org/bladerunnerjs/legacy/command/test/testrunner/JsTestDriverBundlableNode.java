@@ -206,11 +206,6 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public List<AssetLocation> seedAssetLocations() {
-		return bundlableNode.seedAssetLocations();
-	}
-
-	@Override
 	public List<LinkedAsset> seedAssets() {
 		return bundlableNode.seedAssets();
 	}
