@@ -15,7 +15,7 @@ import org.bladerunnerjs.api.memoization.Getter;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.InvalidRequirePathException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 
 public class Assets {
@@ -31,7 +31,7 @@ public class Assets {
 		this.brjs = assetLocation.root();
 	}
 	
-	public Map<AssetPlugin, List<Asset>> pluginAssets() {
+	public Map<LegacyAssetPlugin, List<Asset>> pluginAssets() {
 		return getComputedValue().pluginAssets;
 	}
 
@@ -51,12 +51,12 @@ public class Assets {
 				
 				ComputedValue computedValue = new ComputedValue();
 				
-				for(AssetPlugin assetPlugin : brjs.plugins().assetPlugins()) {
+				for(LegacyAssetPlugin assetPlugin : brjs.plugins().legacyAssetPlugins()) {
 					computedValue.pluginAssets.put(assetPlugin, new ArrayList<>());
 				}
 				
 				for(MemoizedFile assetFile : assetLocation.getCandidateFiles()) {
-					for(AssetPlugin assetPlugin : assetLocation.root().plugins().assetPlugins()) {
+					for(LegacyAssetPlugin assetPlugin : assetLocation.root().plugins().legacyAssetPlugins()) {
 						if(assetPlugin.canHandleAsset(assetFile, assetLocation)) {
 							String assetFilePath = assetFile.getAbsolutePath();
 							
@@ -122,7 +122,7 @@ public class Assets {
 	
 	
 	class ComputedValue {
-		Map<AssetPlugin, List<Asset>> pluginAssets = new HashMap<>();
+		Map<LegacyAssetPlugin, List<Asset>> pluginAssets = new HashMap<>();
 		List<LinkedAsset> linkedAssets = new ArrayList<>();
 		List<SourceModule> sourceModules = new ArrayList<>();
 	}

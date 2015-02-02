@@ -6,7 +6,7 @@ import java.util.List;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.MinifierPlugin;
@@ -51,7 +51,7 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	}
 	
 	@Override
-	public List<AssetPlugin> getAssetPlugins() {
+	public List<LegacyAssetPlugin> getLegacyAssetPlugins() {
 		return Collections.emptyList();
 	}
 	

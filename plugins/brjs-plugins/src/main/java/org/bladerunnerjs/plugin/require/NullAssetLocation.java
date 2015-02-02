@@ -16,7 +16,7 @@ import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.Event;
 import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.model.AssetContainer;
@@ -192,7 +192,7 @@ public class NullAssetLocation implements AssetLocation {
 	}
 
 	@Override
-	public List<Asset> bundlableAssets(AssetPlugin assetProducer) {
+	public List<Asset> bundlableAssets(LegacyAssetPlugin assetProducer) {
 		return Collections.emptyList();
 	}
 

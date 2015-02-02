@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 
 
 /**
- * A specialization of {@link AbstractPlugin} for developers that need to implement {@link AssetPlugin}.
+ * A specialization of {@link AbstractPlugin} for developers that need to implement {@link LegacyAssetPlugin}.
  */
 public abstract class AbstractAssetLocationPlugin extends AbstractPlugin implements LegacyAssetLocationPlugin {
 	@Override

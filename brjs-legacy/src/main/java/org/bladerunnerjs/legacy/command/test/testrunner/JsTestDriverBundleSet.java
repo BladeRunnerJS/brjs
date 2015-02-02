@@ -7,7 +7,7 @@ import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.model.BundlableNode;
 
 public class JsTestDriverBundleSet implements BundleSet {
@@ -37,7 +37,7 @@ public class JsTestDriverBundleSet implements BundleSet {
 		return bundleSet.getResourceNodes();
 	}
 	
-	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
+	public List<Asset> getResourceFiles(LegacyAssetPlugin assetProducer) {
 		return bundleSet.getResourceFiles(assetProducer);
 	}
 }

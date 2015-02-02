@@ -10,7 +10,7 @@ import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 
 public class StandardBundleSet implements BundleSet {
 	private final List<SourceModule> sourceModules;
@@ -57,7 +57,7 @@ public class StandardBundleSet implements BundleSet {
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
+	public List<Asset> getResourceFiles(LegacyAssetPlugin assetProducer) {
 		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
 		
 		for(AssetLocation resourceNode : resourceLocations) {

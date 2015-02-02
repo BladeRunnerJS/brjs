@@ -3,7 +3,7 @@ package org.bladerunnerjs.api;
 import java.util.List;
 
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.model.BundlableNode;
 
 public interface BundleSet {
@@ -12,5 +12,5 @@ public interface BundleSet {
 	public List<SourceModule> getSourceModules();
 	public List<AliasDefinition> getActiveAliases();
 	public List<AssetLocation> getResourceNodes();
-	public List<Asset> getResourceFiles(AssetPlugin assetProducer);
+	public List<Asset> getResourceFiles(LegacyAssetPlugin assetProducer);
 }

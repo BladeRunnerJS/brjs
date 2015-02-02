@@ -22,7 +22,7 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
@@ -38,7 +38,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 	private final List<String> requestPaths = new ArrayList<>();
 	
-	private AssetPlugin htmlAssetPlugin;
+	private LegacyAssetPlugin htmlAssetPlugin;
 	private BRJS brjs;
 	
 	{
@@ -48,7 +48,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		htmlAssetPlugin = brjs.plugins().assetPlugin(HTMLAssetPlugin.class);
+		htmlAssetPlugin = brjs.plugins().legacyAssetPlugin(HTMLAssetPlugin.class);
 		this.brjs = brjs;
 	}
 	

@@ -3,13 +3,13 @@ package org.bladerunnerjs.api.plugin.base;
 import java.util.Collections;
 import java.util.List;
 
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 
 
 /**
- * A specialization of {@link AbstractPlugin} for developers that need to implement {@link AssetPlugin}.
+ * A specialization of {@link AbstractPlugin} for developers that need to implement {@link LegacyAssetPlugin}.
  */
-public abstract class AbstractAssetPlugin extends AbstractPlugin implements AssetPlugin {
+public abstract class AbstractAssetPlugin extends AbstractPlugin implements LegacyAssetPlugin {
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
 		return Collections.emptyList();

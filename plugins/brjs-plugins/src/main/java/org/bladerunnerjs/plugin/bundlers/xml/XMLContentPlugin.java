@@ -12,7 +12,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
@@ -24,7 +24,7 @@ import org.bladerunnerjs.utility.AppMetadataUtility;
 public class XMLContentPlugin extends AbstractContentPlugin
 {
 	private BRJS brjs = null;
-	private AssetPlugin xmlAssetPlugin;
+	private LegacyAssetPlugin xmlAssetPlugin;
 	private final List<String> requestPaths = new ArrayList<>();
 	private XmlBundlerConfig xmlBundlerConfig;
 	
@@ -36,7 +36,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs) 
 	{
 		this.brjs  = brjs;
-		xmlAssetPlugin = brjs.plugins().assetPlugin(XMLAssetPlugin.class);
+		xmlAssetPlugin = brjs.plugins().legacyAssetPlugin(XMLAssetPlugin.class);
 		xmlBundlerConfig = new XmlBundlerConfig(brjs);
 	}
 

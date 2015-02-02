@@ -6,7 +6,7 @@ import org.bladerunnerjs.api.aliasing.NamespaceException;
 import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJSNode;
 
@@ -23,7 +23,7 @@ public interface AssetLocation extends BRJSNode {
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<AliasDefinitionsFile> aliasDefinitionsFiles();
 	List<LinkedAsset> linkedAssets();
-	List<Asset> bundlableAssets(AssetPlugin assetProducer);
+	List<Asset> bundlableAssets(LegacyAssetPlugin assetProducer);
 	List<SourceModule> sourceModules();
 	String canonicaliseRequirePath(String requirePath) throws RequirePathException;
 	String jsStyle();

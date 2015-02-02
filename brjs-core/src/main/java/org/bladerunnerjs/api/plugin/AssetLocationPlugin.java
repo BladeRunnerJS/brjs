@@ -9,6 +9,5 @@ import org.bladerunnerjs.model.AssetContainer;
 
 public interface AssetLocationPlugin extends Plugin
 {
-	void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix,
-		    List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator);
+	void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator);
 }

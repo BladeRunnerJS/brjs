@@ -13,7 +13,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.*;
 import org.bladerunnerjs.api.model.exception.modelupdate.*;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.model.engine.*;
 import org.bladerunnerjs.plugin.utility.*;
 import org.bladerunnerjs.utility.*;
@@ -104,7 +104,7 @@ public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implemen
 	}
 	
 	@Override
-	public List<Asset> bundlableAssets(AssetPlugin assetPlugin) {
+	public List<Asset> bundlableAssets(LegacyAssetPlugin assetPlugin) {
 		return assets().pluginAssets().get(assetPlugin);
 	}
 	

@@ -6,8 +6,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
@@ -26,9 +27,10 @@ public class PluginAccessor {
 	private final List<TagHandlerPlugin> tagHandlerPlugins;
 	private final List<MinifierPlugin> minifierPlugins;
 	private final List<ModelObserverPlugin> modelObserverPlugins;
-	private final List<AssetPlugin> assetPlugins;
-	private final List<LegacyAssetLocationPlugin> assetLocationPlugins;
+	private final List<LegacyAssetPlugin> legacyAssetPlugins;
+	private final List<LegacyAssetLocationPlugin> legacyAssetLocationPlugins;
 	private final List<RequirePlugin> requirePlugins;
+	private final List<AssetLocationPlugin> assetLocationPlugins;
 	
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
@@ -36,9 +38,11 @@ public class PluginAccessor {
 		tagHandlerPlugins = pluginLocator.getTagHandlerPlugins();
 		minifierPlugins = pluginLocator.getMinifierPlugins();
 		modelObserverPlugins = pluginLocator.getModelObserverPlugins();
-		assetPlugins = sort(pluginLocator.getAssetPlugins());
-		assetLocationPlugins = sort(pluginLocator.getLegacyAssetLocationPlugins());
 		requirePlugins = pluginLocator.getRequirePlugins();
+		assetLocationPlugins = pluginLocator.getAssetLocationPlugins();
+		
+		legacyAssetPlugins = sort(pluginLocator.getLegacyAssetPlugins());
+		legacyAssetLocationPlugins = sort(pluginLocator.getLegacyAssetLocationPlugins());
 	}
 
 	public List<Plugin> allPlugins() {
@@ -49,9 +53,11 @@ public class PluginAccessor {
 		plugins.addAll(tagHandlerPlugins());
 		plugins.addAll(minifierPlugins());
 		plugins.addAll(modelObserverPlugins());
-		plugins.addAll(assetPlugins());
 		plugins.addAll(assetLocationPlugins());
 		plugins.addAll(requirePlugins());
+		
+		plugins.addAll(legacyAssetPlugins());
+		plugins.addAll(legacyAssetLocationPlugins());
 		
 		return plugins;
 	}
@@ -160,25 +166,34 @@ public class PluginAccessor {
 		modelObserverPlugins.add(modelObserver);
 	}
 	
-	public List<AssetPlugin> assetPlugins() {
-		return assetPlugins;
-	}
-	
-	public List<LegacyAssetLocationPlugin> assetLocationPlugins() {
+	public List<AssetLocationPlugin> assetLocationPlugins() {
 		return assetLocationPlugins;
 	}
 	
-	public AssetPlugin assetPlugin(Class<?> pluginClass ) {
-		AssetPlugin result = null;
-		List<AssetPlugin> assetProducers = assetPlugins();
-		for(AssetPlugin producer: assetProducers){
-			Class<?> possiblePluginClass = producer.getPluginClass();
-			if(possiblePluginClass.equals(pluginClass)){
-				result =  producer;
-				break;
+	public AssetLocationPlugin AssetLocationPlugin(Class<?> pluginClass ) {
+		for(AssetLocationPlugin plugin: assetLocationPlugins()){
+			if(plugin.getPluginClass().equals(pluginClass)){
+				return plugin;
 			}
 		}
-		return result;
+		return null;
+	}
+	
+	public List<LegacyAssetPlugin> legacyAssetPlugins() {
+		return legacyAssetPlugins;
+	}
+	
+	public List<LegacyAssetLocationPlugin> legacyAssetLocationPlugins() {
+		return legacyAssetLocationPlugins;
+	}
+	
+	public LegacyAssetPlugin legacyAssetPlugin(Class<?> pluginClass ) {
+		for(LegacyAssetPlugin producer: legacyAssetPlugins()){
+			if(producer.getPluginClass().equals(pluginClass)){
+				return producer;
+			}
+		}
+		return null;
 	}
 	
 	public List<RequirePlugin> requirePlugins() {

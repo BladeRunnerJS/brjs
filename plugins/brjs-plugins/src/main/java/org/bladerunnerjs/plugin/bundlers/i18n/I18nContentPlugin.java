@@ -16,7 +16,7 @@ import org.bladerunnerjs.api.aliasing.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
@@ -39,7 +39,7 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	public static final String LANGUAGE_AND_LOCATION_BUNDLE = "language-and-location-bundle";
 	private static final String LANGUAGE_PROPERTY_NAME = "language";
 	private static final String COUNTRY_PROPERTY_NAME = "country";
-	private AssetPlugin i18nAssetPlugin = null;
+	private LegacyAssetPlugin i18nAssetPlugin = null;
 	
 	private ContentPathParser contentPathParser;
 	
@@ -58,7 +58,7 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		i18nAssetPlugin = brjs.plugins().assetPlugin(I18nAssetPlugin.class);
+		i18nAssetPlugin = brjs.plugins().legacyAssetPlugin(I18nAssetPlugin.class);
 	}
 
 	@Override

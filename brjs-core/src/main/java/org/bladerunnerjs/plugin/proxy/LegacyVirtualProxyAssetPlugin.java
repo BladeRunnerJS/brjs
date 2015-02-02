@@ -5,13 +5,13 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 
-public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements AssetPlugin {
-	private AssetPlugin assetPlugin;
+public class LegacyVirtualProxyAssetPlugin extends VirtualProxyPlugin implements LegacyAssetPlugin {
+	private LegacyAssetPlugin assetPlugin;
 	
-	public VirtualProxyAssetPlugin(AssetPlugin assetPlugin) {
+	public LegacyVirtualProxyAssetPlugin(LegacyAssetPlugin assetPlugin) {
 		super(assetPlugin);
 		this.assetPlugin = assetPlugin;
 	}

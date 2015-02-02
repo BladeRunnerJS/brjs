@@ -135,7 +135,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 			validContentPaths.removeAll(foundContentPaths);			
 		}
 		
-		for (Asset cssAsset : bundleSet.getResourceFiles(brjs.plugins().assetPlugin(CssAssetPlugin.class))) {
+		for (Asset cssAsset : bundleSet.getResourceFiles(brjs.plugins().legacyAssetPlugin(CssAssetPlugin.class))) {
 			filterUsedContentPaths(cssAsset, validContentPaths, usedContentPaths, true);
 			if (validContentPaths.isEmpty()) {
 				break;

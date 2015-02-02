@@ -17,7 +17,7 @@ import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
@@ -34,7 +34,7 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 public class CssContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin {
 	
 	private final ContentPathParser contentPathParser;
-	private AssetPlugin cssAssetPlugin;
+	private LegacyAssetPlugin cssAssetPlugin;
 	private BRJS brjs;
 	
 	{
@@ -53,7 +53,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
-		cssAssetPlugin = brjs.plugins().assetPlugin(CssAssetPlugin.class);
+		cssAssetPlugin = brjs.plugins().legacyAssetPlugin(CssAssetPlugin.class);
 	}
 	
 	@Override
@@ -137,7 +137,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 	}
 	
 	// protected so the CT CSS plugin that uses a different CSS ordering can override it
-	protected List<Asset> getCssAssets(BundleSet bundleSet, AssetPlugin cssAssetPlugin){
+	protected List<Asset> getCssAssets(BundleSet bundleSet, LegacyAssetPlugin cssAssetPlugin){
 		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
 		return cssAssets;
 	}
