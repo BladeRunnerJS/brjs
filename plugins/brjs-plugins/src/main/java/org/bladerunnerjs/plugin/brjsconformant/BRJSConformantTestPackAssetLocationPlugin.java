@@ -10,7 +10,7 @@ import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.plugin.base.AbstractAssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractLegacyAssetLocationPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.ChildSourceAssetLocation;
 import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestSourceAssetLocation;
 
-public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLocationPlugin {
+public class BRJSConformantTestPackAssetLocationPlugin extends AbstractLegacyAssetLocationPlugin {
 	private BRJS brjs;
 	
 	@Override

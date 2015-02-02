@@ -10,11 +10,11 @@ import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;
-import org.bladerunnerjs.api.plugin.base.AbstractAssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractLegacyAssetLocationPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.plugin.brjsconformant.BRJSConformantAssetLocationPlugin;
 
-public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
+public class ThirdpartyAssetLocationPlugin extends AbstractLegacyAssetLocationPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
