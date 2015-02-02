@@ -9,22 +9,33 @@ buildscript {
 	}
 }
 
-	apply plugin: 'java'
-	apply plugin: 'eclipse'
-	apply plugin: 'retrolambda'
-	apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'retrolambda'
+apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
 
-    retrolambda {
-    	javaVersion JavaVersion.VERSION_1_7
-    }
-    project.afterEvaluate {
-    	compileTestJava.dependsOn compileRetrolambdaMain
-    }
+retrolambda {
+	javaVersion JavaVersion.VERSION_1_7
+}
+project.afterEvaluate {
+	compileTestJava.dependsOn compileRetrolambdaMain
+}
 
-    dependencies {
-    	retrolambdaConfig dependency('retrolambda')
+dependencies {
+	retrolambdaConfig dependency('retrolambda')
+
+	compile project(path: ":brjs-core")
 	
-    	compile project(path: ":brjs-core")
-    	
-    	testRuntime dependency('jetty-jsp')
-    }
+	testRuntime dependency('jetty-jsp')
+}
+
+sourceSets {
+	test {
+		java {
+			srcDirs = ["src/test/java", "src/test-integration/java"]
+		}
+		resources {
+			srcDirs = ["src/test/resources", "src/test-integration/resources"]
+		}
+	}
+}
