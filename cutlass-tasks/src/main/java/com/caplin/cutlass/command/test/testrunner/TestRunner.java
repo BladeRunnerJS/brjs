@@ -1,7 +1,9 @@
 package com.caplin.cutlass.command.test.testrunner;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -190,7 +192,7 @@ public class TestRunner {
 		return isVerbose;
 	}
 	
-	private void displayTimeInfo()
+	private void displayTimeInfo() throws FileNotFoundException, IOException
 	{
 		long duration = execEndTime-execStartTime;
 		logger.warn("\n");
@@ -227,7 +229,7 @@ public class TestRunner {
 		logger.warn("\n");
 	}
 	
-	private void convertResultsToHTML()
+	private void convertResultsToHTML() throws FileNotFoundException, IOException
 	{
 		logger.info("\n");
 		
@@ -258,7 +260,25 @@ public class TestRunner {
 		target.addTask(aggregator);
 		
 		logger.warn("Writing HTML reports to " + HTML_TEST_RESULTS_DIR + ".");
+		
+		normaliseXML();
+		
 		project.executeTarget("junitreport");
+	}
+
+	private void normaliseXML() throws IOException, FileNotFoundException {
+		MemoizedFile[] xmlTestResultFiles = XML_TEST_RESULTS_DIR.listFiles();
+		if (xmlTestResultFiles != null) {
+			for (MemoizedFile xmlTestResultFile : xmlTestResultFiles) {
+				String xmlTestResultFileContent = IOUtils.toString(new FileInputStream(xmlTestResultFile));
+				String newTestSuite = xmlTestResultFile.getName().replace("TEST-", "");
+				newTestSuite = newTestSuite.replace(".xml", "");
+				xmlTestResultFileContent = xmlTestResultFileContent.replaceAll("(.*testsuite name=\")(\\S*)(\".*)", "$1" + newTestSuite + "$3");
+				FileOutputStream xmlFileStream = new FileOutputStream(xmlTestResultFile, false);
+				xmlFileStream.write(xmlTestResultFileContent.getBytes());
+				xmlFileStream.close();
+			}
+		}
 	}
 	
 	private boolean getSuccess() {
