@@ -4,6 +4,11 @@ var ServiceRegistry = require('br/ServiceRegistry');
 
 BRHtmlResourceServiceTest = TestCase("BRHtmlResourceServiceTest");
 
+// Check if the browser is IE8 (or less)
+if (window.attachEvent && !window.addEventListener) {
+	document.createElement('template');
+}
+
 BRHtmlResourceServiceTest.prototype.test_scriptTagsAreParsedByTheBrowser = function()
 {
 	var oService = ServiceRegistry.getService("br.html-service");
@@ -18,7 +23,7 @@ BRHtmlResourceServiceTest.prototype.test_templatesInBundle = function()
 	assertEquals(oService.getHTMLTemplate("br.services.template2").innerHTML.toLowerCase(), "some html2");
 };
 
-/* Failing in IE8 resulting in red build. See #678
+// Failing in IE8 resulting in red build. See #678
 BRHtmlResourceServiceTest.prototype.test_templatesInTemplateTagBundle = function()
 {
 	assertTemplateContentsMatch("br.services.template3", "some html3");
@@ -26,7 +31,7 @@ BRHtmlResourceServiceTest.prototype.test_templatesInTemplateTagBundle = function
 	assertTemplateContentsMatch("br.services.template5", "<div>some html5</div><div>some html51</div>");
 	assertTemplateContentsMatch("br.services.template6", "<div>some html6<div>some html61</div></div>");
 };
-*/
+
 
 BRHtmlResourceServiceTest.prototype.test_loadHTMLFilesDoesNotExist = function()
 {
@@ -62,8 +67,8 @@ var assertTemplateContentsMatch = (function(){
 		
 		tempDiv.innerHTML = "";
 		tempDiv.appendChild(templateDocFrag);
-		assertEquals(expected, tempDiv.innerHTML.toLowerCase());
-	}
+		assertEquals(expected, tempDiv.innerHTML.toLowerCase().replace(/[\n\r]/g, ''));
+	};
 })();
 
 BRHtmlResourceServiceTest.getService = function(sUrl)
