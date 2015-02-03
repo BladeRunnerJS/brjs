@@ -68,7 +68,7 @@ var assertTemplateContentsMatch = (function(){
 		tempDiv.innerHTML = "";
 		tempDiv.appendChild(templateDocFrag);
 		assertEquals(expected, tempDiv.innerHTML.toLowerCase().replace(/[\n\r]/g, ''));
-	}
+	};
 })();
 
 BRHtmlResourceServiceTest.getService = function(sUrl)

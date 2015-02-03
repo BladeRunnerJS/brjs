@@ -46,13 +46,13 @@ br.implement(BRHtmlResourceService, HtmlResourceService);
 BRHtmlResourceService.prototype.getHTMLTemplate = function (templateId) {
 	var template = null;
 	if (this.templates[templateId]) {
-		template = this.templates[templateId]
+		template = this.templates[templateId];
 	}
 	else {
 		template = getTemplate(document.getElementById(templateId));
 		this.templates[templateId] = template;
 	}
-	if (template != null) {
+	if (template !== null) {
 		return template.cloneNode(true);
 	}
 	return null;
@@ -79,7 +79,7 @@ BRHtmlResourceService.prototype._loadHtml = function () {
 * Gets the template by removing the template tag if needed.
 */
 function getTemplate(template) {
-	if (template != null && template.tagName.toLowerCase() === "template") {
+	if (template !== null && template.tagName.toLowerCase() === "template") {
 		// Template being a non fully supported tag yet, check if we can use content, else use a dummy div to get the
 		// inner content.
 		if (template.content) {
@@ -103,16 +103,18 @@ function getTemplate(template) {
 }
 
 function sanitizeHtml(html) {
+	function replacer(str, p1) {
+		return '<div' + p1;
+	}
+
 	// IE and old Firefox's don't allow assigning text with script tag in it to innerHTML.
 	if (html.match(/<script(.*)type=\"text\/html\"/)) {
-	 	function replacer(str, p1) {
-	 		return '<div' + p1;
-	 	};
+	 	
 	 	// TODO: Log the fact there is a script tag in the template and that it should be replaced with a div.
 	 	html = html.replace(/<script(.*)type=\"text\/html\"/g, replacer).replace(/<\/script>/g, '</div>');
 	}
 
 	return html;
-};
+}
 
 module.exports = BRHtmlResourceService;
