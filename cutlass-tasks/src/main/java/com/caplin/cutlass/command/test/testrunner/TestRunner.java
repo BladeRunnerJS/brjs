@@ -261,24 +261,24 @@ public class TestRunner {
 		
 		logger.warn("Writing HTML reports to " + HTML_TEST_RESULTS_DIR + ".");
 		
-		normaliseXML();
+		MemoizedFile[] xmlTestResultFiles = XML_TEST_RESULTS_DIR.listFiles();
+		if (xmlTestResultFiles != null) {
+			for (MemoizedFile xmlTestResultFile : xmlTestResultFiles) {
+				normaliseXML(xmlTestResultFile);
+			}
+		}
 		
 		project.executeTarget("junitreport");
 	}
 
-	private void normaliseXML() throws IOException, FileNotFoundException {
-		MemoizedFile[] xmlTestResultFiles = XML_TEST_RESULTS_DIR.listFiles();
-		if (xmlTestResultFiles != null) {
-			for (MemoizedFile xmlTestResultFile : xmlTestResultFiles) {
-				String xmlTestResultFileContent = IOUtils.toString(new FileInputStream(xmlTestResultFile));
-				String newTestSuite = xmlTestResultFile.getName().replace("TEST-", "");
-				newTestSuite = newTestSuite.replace(".xml", "");
-				xmlTestResultFileContent = xmlTestResultFileContent.replaceAll("(.*testsuite name=\")(\\S*)(\".*)", "$1" + newTestSuite + "$3");
-				FileOutputStream xmlFileStream = new FileOutputStream(xmlTestResultFile, false);
-				xmlFileStream.write(xmlTestResultFileContent.getBytes());
-				xmlFileStream.close();
-			}
-		}
+	public static void normaliseXML(MemoizedFile xmlTestResultFile) throws IOException, FileNotFoundException {
+		String xmlTestResultFileContent = IOUtils.toString(new FileInputStream(xmlTestResultFile));
+		String newTestSuite = xmlTestResultFile.getName().replace("TEST-", "");
+		newTestSuite = newTestSuite.replace(".xml", "");
+		xmlTestResultFileContent = xmlTestResultFileContent.replaceAll("(.*testsuite name=\")(\\S*)(\".*)", "$1" + newTestSuite + "$3");
+		FileOutputStream xmlFileStream = new FileOutputStream(xmlTestResultFile, false);
+		xmlFileStream.write(xmlTestResultFileContent.getBytes());
+		xmlFileStream.close();
 	}
 	
 	private boolean getSuccess() {

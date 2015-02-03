@@ -3,10 +3,12 @@ package com.caplin.cutlass.command.test.testrunner;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
@@ -42,6 +44,25 @@ public class TestRunnerTest {
 		config = TestRunnerConfiguration.getConfiguration(configFile, browserList("ff5"));
 		config.setOperatingSystem("OS1");
 		TestRunner.disableLogging = true;
+	}
+	
+	@Test
+	public void normaliseXML() throws Exception {
+		File xmlFile = new File(".build/test-results/xml/TEST-Mozillaa50_(Windows_NT_61a_WOW64a_Tridenta70a_rva110)_like_Gecko__Windows.locale-forwarder.xml");
+		xmlFile.getParentFile().mkdirs(); 
+		xmlFile.createNewFile();
+		MemoizedFile xmlMemoizedFile = brjs.getMemoizedFile(xmlFile);
+		FileOutputStream xmlFileStream = new FileOutputStream(xmlMemoizedFile, false);
+		String fileContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><testsuite name=\"Mozilla/50_(Windows_NT_61;_WOW64;_Trident/70;_rv:110)_like_Gecko__Windows.locale-forwarder\" errors=\"0\" failures=\"0\" tests=\"9\" time=\"0.007\">"
+				+ "\n<testcase classname=\"Mozilla/50_(Windows_NT_61;_WOW64;_Trident/70;_rv:110)_like_Gecko__Windows.locale-forwarder\" name=\" uses the first matching user locale if no cookie is set.&#10;        \" time=\"0.005\"/>"
+				+ "</testsuite>";
+		xmlFileStream.write(fileContent.getBytes());
+		xmlFileStream.close();
+		TestRunner.normaliseXML(xmlMemoizedFile);
+		String expectedContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><testsuite name=\"Mozillaa50_(Windows_NT_61a_WOW64a_Tridenta70a_rva110)_like_Gecko__Windows.locale-forwarder\" errors=\"0\" failures=\"0\" tests=\"9\" time=\"0.007\">"
+				+ "\n<testcase classname=\"Mozilla/50_(Windows_NT_61;_WOW64;_Trident/70;_rv:110)_like_Gecko__Windows.locale-forwarder\" name=\" uses the first matching user locale if no cookie is set.&#10;        \" time=\"0.005\"/>"
+				+ "</testsuite>";
+		assertEquals(expectedContent, FileUtils.readFileToString(xmlMemoizedFile));
 	}
 	
 	@Test
