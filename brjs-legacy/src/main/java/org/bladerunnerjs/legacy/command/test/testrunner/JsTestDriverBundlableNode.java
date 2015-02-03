@@ -262,4 +262,16 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public AliasDefinitionsFile aliasDefinitionsFile(String path) {
 		return bundlableNode.aliasDefinitionsFile(path);
 	}
+
+	@Override
+	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
+	{
+		return bundlableNode.canonicaliseRequirePath(requirePath);
+	}
+
+	@Override
+	public List<Asset> getLinkedAssets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException
+	{
+		return bundlableNode.getLinkedAssets(assetContainer, requirePaths);
+	}
 }

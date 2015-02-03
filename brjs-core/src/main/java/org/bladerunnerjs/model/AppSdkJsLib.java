@@ -15,6 +15,7 @@ import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.api.plugin.Event;
@@ -251,5 +252,11 @@ public final class AppSdkJsLib implements JsLib {
 	
 	public AliasDefinitionsFile aliasDefinitionsFile(String path) {
 		return sdkJsLib.aliasDefinitionsFile(path);
+	}
+
+	@Override
+	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
+	{
+		return sdkJsLib.canonicaliseRequirePath(requirePath);
 	}
 }

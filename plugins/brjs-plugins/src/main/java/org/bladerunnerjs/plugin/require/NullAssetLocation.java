@@ -202,11 +202,6 @@ public class NullAssetLocation implements AssetLocation {
 	}
 
 	@Override
-	public String canonicaliseRequirePath(String requirePath) throws RequirePathException {
-		return requirePath;
-	}
-
-	@Override
 	public String jsStyle() {
 		return null;
 	}

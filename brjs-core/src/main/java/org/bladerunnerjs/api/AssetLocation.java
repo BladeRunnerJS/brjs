@@ -25,7 +25,6 @@ public interface AssetLocation extends BRJSNode {
 	List<LinkedAsset> linkedAssets();
 	List<Asset> bundlableAssets(LegacyAssetPlugin assetProducer);
 	List<SourceModule> sourceModules();
-	String canonicaliseRequirePath(String requirePath) throws RequirePathException;
 	String jsStyle();
 	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException;
 	List<MemoizedFile> getCandidateFiles();

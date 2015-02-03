@@ -15,7 +15,9 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.utility.JsStyleAccessor;
 
 /**
  * Provides similar methods to {@link File} and wraps a {@link File} object. Several of the methods' return values are 'memoized'
@@ -307,6 +309,12 @@ public class MemoizedFile extends File implements Comparable<File>
 
 	public boolean isEmpty() {
 		return filesAndDirs().isEmpty();
+	}
+
+	public Object jsStyle()
+	{
+		MemoizedFile jsStyleDir = (isFile()) ? parentFile : this;
+		return new JsStyleAccessor((BRJS)rootNode).getJsStyle(jsStyleDir);
 	}
 	
 }

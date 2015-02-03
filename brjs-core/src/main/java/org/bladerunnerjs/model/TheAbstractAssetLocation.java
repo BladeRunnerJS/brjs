@@ -143,46 +143,4 @@ public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implemen
 		return assets;
 	}
 	
-	@Override
-	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
-	{
-		String requirePrefix = requirePrefix();
-		
-		List<String> requirePrefixParts = new LinkedList<String>( Arrays.asList(requirePrefix.split("/")) );
-		List<String> requirePathParts = new LinkedList<String>( Arrays.asList(requirePath.split("/")) );
-		
-		if(!requirePath.contains("../") && !requirePath.contains("./")) {
-			return requirePath;
-		}
-		
-		Iterator<String> requirePathPartsIterator = requirePathParts.iterator();
-		while(requirePathPartsIterator.hasNext()) {
-			String pathPart = requirePathPartsIterator.next();
-			
-			switch (pathPart) {
-				case ".":
-					requirePathPartsIterator.remove();
-					break;
-				
-				case "..":
-					requirePathPartsIterator.remove();
-					if (requirePrefixParts.size() > 0)
-					{
-						requirePrefixParts.remove( requirePrefixParts.size()-1 );						
-					}
-					else
-					{
-						String msg = String.format("Unable to continue up to parent require path, no more parents remaining. Require path of container was '%s', relative require path was '%s'", requirePrefix, requirePath);
-						throw new UnresolvableRelativeRequirePathException(msg);
-					}
-					break;
-				
-				default:
-					break;
-			}
-		}
-		
-		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
-	}
-	
 }

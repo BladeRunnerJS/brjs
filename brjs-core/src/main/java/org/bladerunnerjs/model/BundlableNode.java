@@ -31,4 +31,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	
 	ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 	List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
+	List<Asset> getLinkedAssets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException;
 }
