@@ -6,13 +6,8 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 
-public class AssetDiscoveryInitiator
+public interface AssetDiscoveryInitiator
 {
-	public void registerAsset(Asset asset) {
-		
-	}
-	
-	void discoverFurtherAssets(MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies) {
-		
-	}
+	public void registerAsset(Asset asset);
+	public void discoverFurtherAssets(MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies);
 }

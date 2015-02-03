@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AssetLocation;
@@ -22,6 +23,7 @@ import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRelativeRequirePathException;
+import org.bladerunnerjs.api.plugin.DefaultAssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -120,6 +122,18 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private Map<String, LinkedAsset> linkedAssetsMap() {
 		return linkedAssetMap.value(() -> {
 			Map<String, LinkedAsset> linkedAssetsMap = new LinkedHashMap<>();
+			
+			// ------ START NEW API CODE ------ //
+			
+			DefaultAssetDiscoveryInitiator assetDiscoveryInitiator = new DefaultAssetDiscoveryInitiator(this);
+			for (SourceModule sourceModule : assetDiscoveryInitiator.discoveredSourceModules()) {
+				linkedAssetsMap.put(sourceModule.getPrimaryRequirePath(), sourceModule);
+			}
+			for (LinkedAsset asset : assetDiscoveryInitiator.discoveredLinkedAssets()) {
+				linkedAssetsMap.put(asset.getPrimaryRequirePath(), asset);
+			}
+			
+			// ------- END NEW API CODE ------- //
 			
 			for (AssetLocation assetLocation : assetLocations())
 			{

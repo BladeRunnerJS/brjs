@@ -28,7 +28,7 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractLegacyAss
 	
 	@Override
 	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return Arrays.asList(BRJSConformantAssetLocationPlugin.class.getCanonicalName());
+		return Arrays.asList(BRJSConformantLegacyAssetLocationPlugin.class.getCanonicalName());
 	}
 	
 	@Override

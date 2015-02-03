@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.util.*;
 
-import org.apache.commons.lang3.*;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.LinkedAsset;
