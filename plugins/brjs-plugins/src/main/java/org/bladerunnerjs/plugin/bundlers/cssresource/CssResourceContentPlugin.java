@@ -179,7 +179,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 	private String getCssAssetFileContents(Asset cssAsset) throws ContentProcessingException {
 		try
 		{
-			return new CssRewriter(cssAsset).getRewrittenFileContents();
+			return new CssRewriter(brjs, cssAsset).getRewrittenFileContents();
 		}
 		catch (ContentProcessingException | IOException ex)
 		{

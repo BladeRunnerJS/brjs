@@ -115,7 +115,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 			String assetThemeName = getThemeName(cssAsset.assetLocation());
 			
 			if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(locale.getLocaleFilePattern(".*_", ".css"))) {
-				CssRewriter processor = new CssRewriter(cssAsset);
+				CssRewriter processor = new CssRewriter(brjs, cssAsset);
 				
 				try {
 					String css = processor.getRewrittenFileContents();

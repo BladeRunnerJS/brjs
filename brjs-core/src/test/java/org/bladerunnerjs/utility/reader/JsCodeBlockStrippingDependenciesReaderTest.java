@@ -465,9 +465,8 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	}
 	
 	private void stripCodeBlocksAndAssertEquals(String input, String expectedInsideCodeBlocksOutput, String expectedOutsideCodeBlocksOutput) throws IOException {
-		CharBufferPool pool = new CharBufferPool();
-		stripCodeBlocksAndAssertEquals("Got an incorrect value for outside code block filtering", input, expectedInsideCodeBlocksOutput, new JsCodeBlockStrippingDependenciesReader(new StringReader(input), pool));
-		stripCodeBlocksAndAssertEquals("Got an incorrect value for inside code block filtering", input, expectedOutsideCodeBlocksOutput, new JsCodeBlockStrippingDependenciesReader(new StringReader(input), pool, new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0)));
+		stripCodeBlocksAndAssertEquals("Got an incorrect value for outside code block filtering", input, expectedInsideCodeBlocksOutput, new JsCodeBlockStrippingDependenciesReader(new StringReader(input)));
+		stripCodeBlocksAndAssertEquals("Got an incorrect value for inside code block filtering", input, expectedOutsideCodeBlocksOutput, new JsCodeBlockStrippingDependenciesReader(new StringReader(input), new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0)));
 	}
 	
 	private void stripCodeBlocksAndAssertEquals(String failMessage, String input, String expectedOutput, Reader reader) throws IOException {

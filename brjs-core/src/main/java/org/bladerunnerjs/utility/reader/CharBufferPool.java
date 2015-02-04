@@ -4,9 +4,13 @@ import java.util.Stack;
 
 public class CharBufferPool {
 	
-	private Stack<char[]> pool = new Stack<char[]>();
+	private static Stack<char[]> pool = new Stack<char[]>();
 	
-	public  synchronized char[] getBuffer(){
+	/* 
+	 * I know we hate static state but passing this around from class to class makes for some horrendous interfaces. 
+	 * Given this is a utility to prevent us using more memory than absolutely necessary this seems like the lesser of two evils. 
+	 */
+	public static synchronized char[] getBuffer(){
 		char[] result = null;
 		if(pool.isEmpty()){
 			result = new char[4096];
@@ -16,7 +20,9 @@ public class CharBufferPool {
 		return result;
 	}
 	
-	public synchronized void returnBuffer(char[] buffer){
+	public static synchronized void returnBuffer(char[] buffer){
 		pool.push(buffer);
 	}
 }
+
+

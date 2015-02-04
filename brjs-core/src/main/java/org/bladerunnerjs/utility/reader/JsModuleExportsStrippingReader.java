@@ -17,7 +17,6 @@ public class JsModuleExportsStrippingReader extends Reader {
 	public static final Pattern MODULE_EXPORTS_REGEX_PATTERN = Pattern.compile(MODULE_EXPORTS_REGEX, Pattern.DOTALL);
 
 	private final Reader sourceReader;
-	private final CharBufferPool pool;
 	
 	private final TailBuffer tailBuffer = new TailBuffer(MODULE_EXPORTS_REGEX.length() + 10); // + 10 to allow for extra spaces in the definition
 	
@@ -27,14 +26,13 @@ public class JsModuleExportsStrippingReader extends Reader {
 	private int lastCharPos = 0;
 	private boolean stripPostModuleExports;
 	
-	public JsModuleExportsStrippingReader(Reader sourceReader, CharBufferPool pool) {
-		this(sourceReader, pool, true);
+	public JsModuleExportsStrippingReader(Reader sourceReader) {
+		this(sourceReader, true);
 	}
 	
-	public JsModuleExportsStrippingReader(Reader sourceReader, CharBufferPool pool, boolean stripPostModuleExports) {
+	public JsModuleExportsStrippingReader(Reader sourceReader, boolean stripPostModuleExports) {
 		super();
 		this.sourceReader = sourceReader;
-		this.pool = pool;
 		this.stripPostModuleExports = stripPostModuleExports;
 	}
 	
@@ -47,7 +45,7 @@ public class JsModuleExportsStrippingReader extends Reader {
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
-		char[] sourceBuffer = pool.getBuffer();
+		char[] sourceBuffer = CharBufferPool.getBuffer();
 		
 		while(currentOffset < maxOffset) {
 			if (nextCharPos == lastCharPos) {
@@ -73,7 +71,7 @@ public class JsModuleExportsStrippingReader extends Reader {
 			}
 		}
 		
-		pool.returnBuffer(sourceBuffer);
+		CharBufferPool.returnBuffer(sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}

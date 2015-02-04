@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.eclipse.jetty.util.URIUtil;
@@ -27,9 +28,9 @@ public class CssRewriter {
 	private final Asset cssAsset;
 	private final TargetPathCreator targetPathCreator;
 	
-	public CssRewriter(Asset cssAsset) {
+	public CssRewriter(BRJS brjs, Asset cssAsset) {
 		this.cssAsset = cssAsset;
-		targetPathCreator = new TargetPathCreator(cssAsset.assetLocation().root());
+		targetPathCreator = new TargetPathCreator(brjs);
 	}
 	
 	public String getRewrittenFileContents() throws IOException, ContentProcessingException {

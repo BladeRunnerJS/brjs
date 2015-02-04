@@ -20,13 +20,11 @@ public class JsStringStrippingReader extends Reader
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private StringStripperState state = StringStripperState.WITHIN_SOURCE;
-	private CharBufferPool pool;
 	
-	public JsStringStrippingReader(Reader sourceReader, CharBufferPool pool)
+	public JsStringStrippingReader(Reader sourceReader)
 	{
 		super();
 		this.sourceReader = sourceReader;
-		this.pool = pool;
 	}
 	
 	@Override
@@ -38,7 +36,7 @@ public class JsStringStrippingReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
-		char[] sourceBuffer = pool.getBuffer();
+		char[] sourceBuffer = CharBufferPool.getBuffer();
 		
 		while(currentOffset < maxOffset) {
 			if(nextCharPos == lastCharPos) {
@@ -84,7 +82,7 @@ public class JsStringStrippingReader extends Reader
 			}
 		}
 		
-		pool.returnBuffer(sourceBuffer);
+		CharBufferPool.returnBuffer(sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}

@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin.bundlers.commonjs;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.bladerunnerjs.utility.reader.CharBufferPool;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.reader.JsModuleExportsStrippingReader;
@@ -15,11 +15,10 @@ public class CommonJsPreExportDefineTimeDependenciesReader extends Reader
 	private Reader preExportDefineTimeDependencesReader;
 
 	public CommonJsPreExportDefineTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
-		CharBufferPool pool = sourceModule.assetLocation().root().getCharBufferPool();
 		Reader sourceReader = sourceModule.getUnalteredContentReader();
-		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false, pool);
-		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader, pool);
-		preExportDefineTimeDependencesReader = new JsModuleExportsStrippingReader(codeBlockStrippingReader, pool, true);
+		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false);
+		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader);
+		preExportDefineTimeDependencesReader = new JsModuleExportsStrippingReader(codeBlockStrippingReader, true);
 	}
 	
 	@Override

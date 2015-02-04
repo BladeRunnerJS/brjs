@@ -38,23 +38,21 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private int depthCount = 0;
-	private CharBufferPool pool;
 	private Predicate<Integer> matcherPredicate;
 	private Predicate<String> foundModuleExportsPredicate;
 	
 	
-	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, CharBufferPool pool) {
-		this(sourceReader, pool, new LessThanPredicate(1), DEFAULT_FOUND_MOBULE_EXPORTS_PREDICATE);
+	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader) {
+		this(sourceReader, new LessThanPredicate(1), DEFAULT_FOUND_MOBULE_EXPORTS_PREDICATE);
 	}
 	
-	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, CharBufferPool pool, Predicate<Integer> matcherPredicate) {
-		this(sourceReader, pool, matcherPredicate, DEFAULT_FOUND_MOBULE_EXPORTS_PREDICATE);
+	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, Predicate<Integer> matcherPredicate) {
+		this(sourceReader, matcherPredicate, DEFAULT_FOUND_MOBULE_EXPORTS_PREDICATE);
 	}
 	
-	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, CharBufferPool pool, Predicate<Integer> matcherPredicate, Predicate<String> foundModuleExportsPredicate) {
+	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, Predicate<Integer> matcherPredicate, Predicate<String> foundModuleExportsPredicate) {
 		super();
 		this.sourceReader = sourceReader;
-		this.pool = pool;
 		this.matcherPredicate = matcherPredicate;
 		this.foundModuleExportsPredicate = foundModuleExportsPredicate;
 	}
@@ -68,7 +66,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
-		char[] sourceBuffer = pool.getBuffer();
+		char[] sourceBuffer = CharBufferPool.getBuffer();
 		
 		while(currentOffset < maxOffset) {
 			if (nextCharPos == lastCharPos) {
@@ -105,7 +103,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			}
 		}
 		
-		pool.returnBuffer(sourceBuffer);
+		CharBufferPool.returnBuffer(sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}

@@ -107,13 +107,11 @@ public class JsModuleExportsStrippingReaderTest {
 	}
 	
 	private void stripAfterModuleExportsAndAssertEquals(String input, String expectedOutput) throws IOException {
-		CharBufferPool pool = new CharBufferPool();
-		stripModuleExportsAndAssertEquals( input, expectedOutput, new JsModuleExportsStrippingReader(new StringReader(input), pool) );
+		stripModuleExportsAndAssertEquals( input, expectedOutput, new JsModuleExportsStrippingReader(new StringReader(input)) );
 	}
 	
-	private void stripBeforeModuleExportsAndAssertEquals(String input, String expectedOutput) throws IOException {
-		CharBufferPool pool = new CharBufferPool(); 
-		stripModuleExportsAndAssertEquals( input, expectedOutput, new JsModuleExportsStrippingReader(new StringReader(input), pool, false) );
+	private void stripBeforeModuleExportsAndAssertEquals(String input, String expectedOutput) throws IOException { 
+		stripModuleExportsAndAssertEquals( input, expectedOutput, new JsModuleExportsStrippingReader(new StringReader(input), false) );
 	}
 	
 	private void stripModuleExportsAndAssertEquals(String input, String expectedOutput, Reader reader) throws IOException {

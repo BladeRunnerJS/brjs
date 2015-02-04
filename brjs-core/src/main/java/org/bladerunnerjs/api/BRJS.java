@@ -49,7 +49,6 @@ import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
-import org.bladerunnerjs.utility.reader.CharBufferPool;
 
 
 public class BRJS extends AbstractBRJSRootNode
@@ -95,7 +94,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private boolean closed = false;
-	private CharBufferPool pool = new CharBufferPool();
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
@@ -136,10 +134,6 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
-	}
-	
-	public CharBufferPool getCharBufferPool(){
-		return pool;
 	}
 	
 	@Override

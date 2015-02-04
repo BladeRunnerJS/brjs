@@ -176,7 +176,7 @@ public class JsStringStrippingReaderTest
 	
 	private void stripStringsAndAssertEquals(String input, String expectedOutput) throws IOException
 	{
-		try(Reader reader = new JsStringStrippingReader(new StringReader(input), new CharBufferPool());
+		try(Reader reader = new JsStringStrippingReader(new StringReader(input));
 			    StringWriter stringWriter = new StringWriter())
 			{
 				IOUtils.copy(reader, stringWriter);

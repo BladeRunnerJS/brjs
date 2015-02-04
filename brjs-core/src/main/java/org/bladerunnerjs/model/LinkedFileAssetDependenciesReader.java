@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
-import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.reader.XmlCommentStrippingDependenciesReader;
 
@@ -17,9 +17,8 @@ public class LinkedFileAssetDependenciesReader extends Reader
 
 	public LinkedFileAssetDependenciesReader(Asset asset) throws IOException
 	{
-		CharBufferPool pool = asset.assetLocation().root().getCharBufferPool();
-		Reader jsCommentStrippingReader = new JsCommentStrippingReader(asset.getReader(), false, pool);
-		linkedFileAssetDependenciesReader = new XmlCommentStrippingDependenciesReader(jsCommentStrippingReader, pool);
+		Reader jsCommentStrippingReader = new JsCommentStrippingReader(asset.getReader(), false);
+		linkedFileAssetDependenciesReader = new XmlCommentStrippingDependenciesReader(jsCommentStrippingReader);
 	}
 	
 	@Override
