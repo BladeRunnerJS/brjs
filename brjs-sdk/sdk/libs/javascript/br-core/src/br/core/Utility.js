@@ -8,8 +8,11 @@ var global = new Function("return this")();
 
 function parsePath(path, root, separator) {
 	return path.split(separator).reduce(function(accumulator, value) {
-			return accumulator != null ? accumulator[value] : undefined;
-		}, root);
+		if (typeof accumulator !== 'undefined' && accumulator !== null) {
+			return accumulator[value];
+		}
+		return undefined;
+	}, root);
 }
 
 /**
@@ -35,11 +38,11 @@ function locate(path, root) {
 	}
 
 	var parsedPath = parsePath(path, root, ".");
-	if (parsedPath == undefined) {
+	if (typeof parsedPath === 'undefined') {
 		parsedPath = parsePath(path, root, "/");
 	}
 	return parsedPath;
-};
+}
 exports.locate = locate;
 
 /**
