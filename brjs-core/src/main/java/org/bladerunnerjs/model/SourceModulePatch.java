@@ -19,14 +19,14 @@ public class SourceModulePatch
 	
 	private MemoizedFile patchFile;
 	private BRJS brjs;
-	private AssetLocation assetLocation;
+	private AssetContainer assetContainer;
 	private String requirePath;
 	
 	//TODO: this only supports patching files with a .js extension
-	private SourceModulePatch(AssetLocation assetLocation, String requirePath)
+	private SourceModulePatch(AssetContainer assetContainer, String requirePath)
 	{
-		brjs = assetLocation.root();
-		this.assetLocation = assetLocation;
+		brjs = assetContainer.root();
+		this.assetContainer = assetContainer;
 		this.requirePath = requirePath;
 		
 		String patchPath = requirePath.replace(".", "/") + ".js";
@@ -39,14 +39,14 @@ public class SourceModulePatch
 	}
 	
 	public boolean patchAvailable() {
-		return patchFile.isFile() && assetLocation.assetContainer() instanceof JsLib;
+		return patchFile.isFile() && assetContainer instanceof JsLib;
 	}
 	
 	public Reader getReader()
 	{
 		Reader reader;
 		
-		if ( !(assetLocation.assetContainer() instanceof JsLib) )
+		if ( !(assetContainer instanceof JsLib) )
 		{
 			reader = new StringReader("");
 		}
@@ -75,6 +75,10 @@ public class SourceModulePatch
 	}
 	
 	public static SourceModulePatch getPatchForRequirePath(AssetLocation assetLocation, String requirePath) {
-		return new SourceModulePatch(assetLocation, requirePath);
+		return new SourceModulePatch(assetLocation.assetContainer(), requirePath);
 	}
+
+    public static SourceModulePatch getPatchForRequirePath(AssetContainer assetContainer, String requirePath) {
+    	return new SourceModulePatch(assetContainer, requirePath);
+    }
 }

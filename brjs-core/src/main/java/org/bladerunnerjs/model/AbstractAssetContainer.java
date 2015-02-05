@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
@@ -23,7 +23,7 @@ import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRelativeRequirePathException;
-import org.bladerunnerjs.api.plugin.DefaultAssetDiscoveryInitiator;
+import org.bladerunnerjs.api.plugin.AssetContainerAssets;
 import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -32,6 +32,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private final MemoizedValue<Map<String, LinkedAsset>> linkedAssetMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
 	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
 	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
+	private final AssetContainerAssets assetDiscoveryInitiator = new AssetContainerAssets(this);
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
@@ -125,12 +126,10 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			
 			// ------ START NEW API CODE ------ //
 			
-			DefaultAssetDiscoveryInitiator assetDiscoveryInitiator = new DefaultAssetDiscoveryInitiator(this);
-			for (SourceModule sourceModule : assetDiscoveryInitiator.discoveredSourceModules()) {
-				linkedAssetsMap.put(sourceModule.getPrimaryRequirePath(), sourceModule);
-			}
-			for (LinkedAsset asset : assetDiscoveryInitiator.discoveredLinkedAssets()) {
-				linkedAssetsMap.put(asset.getPrimaryRequirePath(), asset);
+			for (Asset asset : assetDiscoveryInitiator.discoverAssets()) {
+				if (asset instanceof LinkedAsset) {
+					linkedAssetsMap.put(asset.getPrimaryRequirePath(), (LinkedAsset)asset);
+				}
 			}
 			
 			// ------- END NEW API CODE ------- //

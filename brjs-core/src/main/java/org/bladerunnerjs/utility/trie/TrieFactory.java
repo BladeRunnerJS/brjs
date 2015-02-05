@@ -14,6 +14,7 @@ import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.DirectoryLinkedAsset;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
@@ -58,6 +59,10 @@ public class TrieFactory {
 						}
 						
 						for(LinkedAsset asset : assetContainer.linkedAssets()) {
+							if (asset instanceof DirectoryLinkedAsset) {
+								continue;
+							}
+							
 							List<String> requirePaths = asset.getRequirePaths();
 							
 							for(String requirePath : requirePaths) {

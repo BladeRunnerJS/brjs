@@ -1,0 +1,2 @@
+org.bladerunnerjs.plugin.brjsconformant.BRJSConformantAssetLocationPlugin
+org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsAssetLocationPlugin
