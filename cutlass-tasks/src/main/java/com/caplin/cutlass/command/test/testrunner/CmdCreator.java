@@ -3,7 +3,6 @@ package com.caplin.cutlass.command.test.testrunner;
 import java.io.File;
 import java.util.Formatter;
 
-import org.bladerunnerjs.model.BRJS;
 
 public class CmdCreator {
 	public static String[] cmd(File sdkDir, String cmd, Object... parameters) {
