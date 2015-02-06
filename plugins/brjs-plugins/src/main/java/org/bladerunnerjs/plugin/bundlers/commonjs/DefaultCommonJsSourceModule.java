@@ -155,7 +155,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	@Override
 	public AssetLocation assetLocation()
 	{
-		return null;
+		return assetContainer.assetLocation( assetContainer.dir().getRelativePath(dir()) );
 	}
 	
 	@Override

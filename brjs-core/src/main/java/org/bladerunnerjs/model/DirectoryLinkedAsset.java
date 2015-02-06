@@ -43,7 +43,7 @@ public class DirectoryLinkedAsset implements LinkedAsset
 	@Override
 	public AssetLocation assetLocation()
 	{
-		return null;
+		return assetContainer.assetLocation( assetContainer.dir().getRelativePath(dir()) );
 	}
 
 	@Override
