@@ -7,7 +7,6 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetFileInstantationException;
 
 
 public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implements AssetLocationPlugin {

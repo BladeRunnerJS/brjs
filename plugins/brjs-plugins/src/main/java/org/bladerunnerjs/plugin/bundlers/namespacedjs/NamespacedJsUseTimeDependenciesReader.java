@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;

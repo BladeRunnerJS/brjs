@@ -5,7 +5,6 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetFileInstantationException;
 
 
 public interface AssetLocationPlugin extends Plugin

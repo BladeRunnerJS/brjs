@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.bundlers.commonjs;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 

@@ -7,11 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.LinkedAsset;
-import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetFileInstantationException;
 
 
 public class AssetContainerAssets implements AssetDiscoveryInitiator
@@ -19,8 +16,7 @@ public class AssetContainerAssets implements AssetDiscoveryInitiator
 
 	private final List<AssetLocationPlugin> assetLocationPlugins;
 	
-//	private Map<String,Asset> assets = new HashMap<>();
-	private List<Asset> assets = new ArrayList<>();
+	private Map<String,Asset> assets = new HashMap<>();
 	
 	private AssetContainer assetContainer;
 	private boolean furtherDiscoveryRequired;
@@ -36,19 +32,29 @@ public class AssetContainerAssets implements AssetDiscoveryInitiator
 	@Override
 	public void registerAsset(Asset asset)
 	{
-//		String assetPrimaryRequirePath = asset.getPrimaryRequirePath();
-//		if (assets.containsKey(assetPrimaryRequirePath) ) {
-//			throw new RuntimeException("Asset with require path '"+assetPrimaryRequirePath+"' already registered");
-//		}
-//		assets.put(assetPrimaryRequirePath, asset);
-		assets.add(asset);
-//		furtherDiscoveryRequired = true;
+		String assetPrimaryRequirePath = asset.getPrimaryRequirePath();
+		if (assets.containsKey(assetPrimaryRequirePath) ) {
+			throw new RuntimeException("An asset for the require path '"+assetPrimaryRequirePath+"' has already been registered.");
+		}
+		assets.put(assetPrimaryRequirePath, asset);
+		furtherDiscoveryRequired = true;
 	}
 
 	@Override
+	public boolean hasRegisteredAsset(String requirePath)
+	{
+		return assets.containsKey(requirePath);
+	}
+	
+	@Override
+	public Asset getRegisteredAsset(String requirePath)
+	{
+		return assets.get(requirePath);
+	}
+	
+	@Override
 	public void discoverFurtherAssets(MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies)
 	{
-		
 		for (AssetLocationPlugin assetLocationPlugin : assetLocationPlugins) {
 			assetLocationPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, this);
 		}
@@ -64,8 +70,7 @@ public class AssetContainerAssets implements AssetDiscoveryInitiator
 			discoverFurtherAssets(assetContainer.dir(), assetContainer.requirePrefix(), implicitDependencies);
 		}
 			
-//		return assets.values();
-		return assets;
+		return assets.values();
 	}
 	
 }

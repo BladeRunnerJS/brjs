@@ -12,7 +12,6 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 

@@ -10,7 +10,6 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetFileInstantationException;
 
 
 public class CommonJsAssetLocationPlugin extends AbstractAssetLocationPlugin

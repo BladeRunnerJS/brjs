@@ -25,11 +25,8 @@ import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModulePatch;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
@@ -52,7 +49,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		this.assetFile = assetFile;
 		this.assetContainer = assetContainer;
 		
-		primaryRequirePath = requirePrefix + StringUtils.substringBeforeLast(assetFile.getName(), ".js");
+		primaryRequirePath = requirePrefix + "/" + StringUtils.substringBeforeLast(assetFile.getName(), ".js");
 		requirePaths.add(primaryRequirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
