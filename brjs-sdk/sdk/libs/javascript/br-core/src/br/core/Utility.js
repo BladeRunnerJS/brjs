@@ -16,7 +16,7 @@ function parsePath(path, root, separator) {
 }
 
 /**
-* Navigates an object hierarchy with dotted notation.
+* Navigates an object hierarchy with dotted or slash notation.
 * @param {String} path
 * @param {String} root
 */
