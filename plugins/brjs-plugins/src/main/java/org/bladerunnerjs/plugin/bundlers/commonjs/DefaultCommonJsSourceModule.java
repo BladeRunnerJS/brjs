@@ -59,6 +59,10 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependendAssets = new ArrayList<>();
+		
+		String parentRequirePath = StringUtils.substringBeforeLast(getPrimaryRequirePath(), "/");
+		assetContainer.linkedAsset(parentRequirePath);
+		
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );

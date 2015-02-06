@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 
@@ -22,16 +22,16 @@ public class DirectoryLinkedAsset implements LinkedAsset
 	private MemoizedFile dir;
 	private String primaryRequirePath;
 	private List<String> requirePaths = new ArrayList<>();
-	private List<Asset> dependentAssets;
+	private MemoizedValue<List<Asset>> dependentAssets;
 
-	public DirectoryLinkedAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, LinkedAsset parentAsset) {
+	public DirectoryLinkedAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix) {
 		this.assetContainer = assetContainer;
 		this.dir = dir;		
 		
 		primaryRequirePath = requirePrefix;
 		requirePaths.add(primaryRequirePath);
 		
-		dependentAssets = parentAsset == null ? Collections.emptyList() : Arrays.asList(parentAsset);
+		dependentAssets = new MemoizedValue<>(getAssetPath()+ " dependent assets", assetContainer.root(), assetContainer.dir());
 	}
 	
 	@Override
@@ -79,7 +79,20 @@ public class DirectoryLinkedAsset implements LinkedAsset
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return dependentAssets;
+		return dependentAssets.value(() -> {
+			List<Asset> dependentAssets = new ArrayList<>();
+			for (Asset assetContainerAsset : assetContainer.linkedAssets()) {
+				String thisRequirePath = getPrimaryRequirePath();
+				String assetContainerAssetRequirePath = assetContainerAsset.getPrimaryRequirePath();
+				String[] thisRequirePathChunks = thisRequirePath.split("/");
+				String[] assetContainerAssetRequirePathChunks = assetContainerAssetRequirePath.split("/");
+				if ( thisRequirePath.startsWith(assetContainerAssetRequirePath) && (thisRequirePathChunks.length+1)==assetContainerAssetRequirePathChunks.length ) {
+					dependentAssets.add(assetContainerAsset);
+				}
+			}
+			
+			return dependentAssets;
+		});
 	}
 
 	@Override

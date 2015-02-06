@@ -28,20 +28,19 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		if (assetContainer.dir() == dir) {
 			createAssetsForRootDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
 		} else {
-			Asset parentLinkedAsset = assetDiscoveryInitiator.getRegisteredAsset(requirePrefix);
 			if (assetContainer.file("src") == dir) {
-				createAssetsForSrcDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, parentLinkedAsset);
+				createAssetsForSrcDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
 			} else {
-    			createAssetsForChildDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, parentLinkedAsset);
+    			createAssetsForChildDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
 			}
 		}
 	}
 
-	private void createAssetsForChildDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parentLinkedAsset)
+	private void createAssetsForChildDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		for (MemoizedFile childDir : dir.dirs()) {
 			String childDirRequirePath = assetContainer.dir().getRelativePath(dir);
-			LinkedAsset child = new DirectoryLinkedAsset(assetContainer, childDir, childDirRequirePath, (LinkedAsset) parentLinkedAsset); // TODO: this cast is BAAAD
+			LinkedAsset child = new DirectoryLinkedAsset(assetContainer, childDir, childDirRequirePath);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(childDirRequirePath)) {
     			assetDiscoveryInitiator.registerAsset(child);				
     			assetDiscoveryInitiator.discoverFurtherAssets(childDir, child.getPrimaryRequirePath(), implicitDependencies);
@@ -49,7 +48,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		}
 	}
 
-	private void createAssetsForSrcDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parentLinkedAsset)
+	private void createAssetsForSrcDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		String rootRequirePrefix = StringUtils.substringBefore(assetContainer.requirePrefix(), "/");
 		MemoizedFile srcPackageRoot = dir;
@@ -57,7 +56,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 			srcPackageRoot = dir.file(assetContainer.requirePrefix());
 			assetDiscoveryInitiator.discoverFurtherAssets(srcPackageRoot, requirePrefix, implicitDependencies);
 		}
-		createAssetsForChildDirs(assetContainer, srcPackageRoot, requirePrefix, implicitDependencies, assetDiscoveryInitiator, parentLinkedAsset);
+		createAssetsForChildDirs(assetContainer, srcPackageRoot, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
 	}
 
 	private void createAssetsForRootDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
@@ -65,7 +64,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		if (assetDiscoveryInitiator.hasRegisteredAsset(requirePrefix)) {
 			return;
 		}
-		LinkedAsset rootAsset = new DirectoryLinkedAsset(assetContainer, assetContainer.dir(), requirePrefix, null); 
+		LinkedAsset rootAsset = new DirectoryLinkedAsset(assetContainer, assetContainer.dir(), requirePrefix); 
 		assetDiscoveryInitiator.registerAsset(rootAsset);
 		List<String> childPaths = Arrays.asList("src", "src-test", "themes", "resources");
 		for (String childPath : childPaths) {
@@ -77,37 +76,6 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-	}
-
-	
-//	static String calculateChildRequirePrefix(AssetContainer assetContainer, MemoizedFile childDir)
-//	{
-//		String assetContainerRequirePrefix = assetContainer.requirePrefix();
-//		
-//		if (childDir.getParentFile() == assetContainer.dir()) {
-//			return assetContainerRequirePrefix;
-//		}
-//		
-//		String childPathRelativeToAssetContainer = assetContainer.dir().getRelativePath(childDir);
-//		String requirePathRelativeToAssetContainer = StringUtils.substringAfter(childPathRelativeToAssetContainer, "/");
-//		String appRequirePrefix = assetContainer.app().getRequirePrefix();
-//		
-//		String expectedRequirePrefix = StringUtils.substring( assetContainerRequirePrefix, 0, requirePathRelativeToAssetContainer.length() );
-//		if (requirePathRelativeToAssetContainer.startsWith(appRequirePrefix) && !requirePathRelativeToAssetContainer.startsWith(expectedRequirePrefix)) {
-//			InvalidRequirePathException wrappedRequirePathException = new InvalidRequirePathException(
-//					"The source module directory at '"+assetContainer.root().dir().getRelativePath(childDir)+"' is in an invalid location. "+
-//					"It's require path starts with the app's require prefix ('"+appRequirePrefix+"') which suggests it's require path is intended to be '"+assetContainerRequirePrefix+"/...' "+
-//					"The require path defined by the directory is '"+requirePathRelativeToAssetContainer+"'. Either it's package structure should be '"+assetContainerRequirePrefix+"/*' or "+
-//					"remove the folders '"+requirePathRelativeToAssetContainer+"' to allow the require prefix to be calculated automatically.");
-//			throw new RuntimeException(wrappedRequirePathException);
-//		}		
-//		
-//		if (requirePathRelativeToAssetContainer.startsWith(appRequirePrefix)) {
-//			requirePathRelativeToAssetContainer = StringUtils.substringAfter(requirePathRelativeToAssetContainer, assetContainerRequirePrefix).replaceFirst("/", "");
-//		}
-//		
-//		return assetContainerRequirePrefix+"/"+requirePathRelativeToAssetContainer;
-//	}	
-	
+	}	
 	
 }
