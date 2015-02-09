@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -18,11 +19,10 @@ import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.AssetLocationUtility;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
@@ -31,19 +31,21 @@ import com.Ostermiller.util.ConcatReader;
 public class ThirdpartySourceModule implements SourceModule
 {
 
-	private ThirdpartyAssetLocation assetLocation;
 	private ThirdpartyLibManifest manifest;
 	private String assetPath;
 	private SourceModulePatch patch;
 	private String defaultFileCharacterEncoding;
+	private AssetContainer assetContainer;
+	private String primaryRequirePath;
 	
-	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
+	public ThirdpartySourceModule(AssetContainer assetContainer) {
 		try {
-			this.assetLocation = assetLocation;
-			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(assetLocation.dir());
-			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
-			manifest = assetLocation.getManifest();
+			this.assetContainer = assetContainer;
+			assetPath = assetContainer.app().dir().getRelativePath(assetContainer.dir());
+			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			primaryRequirePath = assetContainer.dir().getName();
+			patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
+			manifest = new ThirdpartyLibManifest(assetContainer);
 		}
 		catch (ConfigException e) {
 			throw new RuntimeException(e);
@@ -96,18 +98,18 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public AssetLocation assetLocation()
 	{
-		return assetLocation;
+		return null;
 	}
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
+		return Collections.emptyList();
 	}
 	
 	@Override
 	public MemoizedFile dir()
 	{
-		return assetLocation.dir();
+		return assetContainer.dir();
 	}
 	
 	@Override
@@ -139,7 +141,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public String getPrimaryRequirePath()
 	{
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return primaryRequirePath;
 	}
 	
 	public String getGlobalisedName() {
@@ -201,10 +203,7 @@ public class ThirdpartySourceModule implements SourceModule
 	
 	@Override
 	public List<String> getRequirePaths() {
-		List<String> requirePaths = new ArrayList<String>();
-		requirePaths.add(assetLocation.dir().getName());
-		
-		return requirePaths;
+		return Arrays.asList(primaryRequirePath);
 	}
 	
 }

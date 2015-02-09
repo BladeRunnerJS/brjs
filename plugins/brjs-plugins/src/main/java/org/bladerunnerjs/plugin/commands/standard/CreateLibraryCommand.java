@@ -139,7 +139,7 @@ public class CreateLibraryCommand extends JSAPArgsParsingCommandPlugin
 			File manifestFile = library.file(ThirdpartyLibManifest.LIBRARY_MANIFEST_FILENAME); //TODO: it should be easier to create the manifest
 			manifestFile.getParentFile().mkdirs();
 			manifestFile.createNewFile();
-			manifest = new ThirdpartyLibManifest( library.assetLocation(".") );
+			manifest = new ThirdpartyLibManifest( library );
 			manifest.write();
 		}
 		catch (ConfigException | IOException e)
