@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
@@ -31,7 +31,7 @@ public class PluginAccessor {
 	private final List<LegacyAssetPlugin> legacyAssetPlugins;
 	private final List<LegacyAssetLocationPlugin> legacyAssetLocationPlugins;
 	private final List<RequirePlugin> requirePlugins;
-	private final List<AssetLocationPlugin> assetLocationPlugins;
+	private final List<AssetPlugin> assetPlugins;
 	
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
@@ -40,7 +40,7 @@ public class PluginAccessor {
 		minifierPlugins = sort(pluginLocator.getMinifierPlugins());
 		modelObserverPlugins = sort(pluginLocator.getModelObserverPlugins());
 		requirePlugins = sort(pluginLocator.getRequirePlugins());
-		assetLocationPlugins = sort(pluginLocator.getAssetLocationPlugins());
+		assetPlugins = sort(pluginLocator.assetPlugins());
 		
 		legacyAssetPlugins = sort(pluginLocator.getLegacyAssetPlugins());
 		legacyAssetLocationPlugins = sort(pluginLocator.getLegacyAssetLocationPlugins());
@@ -54,7 +54,7 @@ public class PluginAccessor {
 		plugins.addAll(tagHandlerPlugins());
 		plugins.addAll(minifierPlugins());
 		plugins.addAll(modelObserverPlugins());
-		plugins.addAll(assetLocationPlugins());
+		plugins.addAll(assetPlugins());
 		plugins.addAll(requirePlugins());
 		
 		plugins.addAll(legacyAssetPlugins());
@@ -167,12 +167,12 @@ public class PluginAccessor {
 		modelObserverPlugins.add(modelObserver);
 	}
 	
-	public List<AssetLocationPlugin> assetLocationPlugins() {
-		return assetLocationPlugins;
+	public List<AssetPlugin> assetPlugins() {
+		return assetPlugins;
 	}
 	
-	public AssetLocationPlugin AssetLocationPlugin(Class<?> pluginClass ) {
-		for(AssetLocationPlugin plugin: assetLocationPlugins()){
+	public AssetPlugin AssetLocationPlugin(Class<?> pluginClass ) {
+		for(AssetPlugin plugin: assetPlugins()){
 			if(plugin.getPluginClass().equals(pluginClass)){
 				return plugin;
 			}

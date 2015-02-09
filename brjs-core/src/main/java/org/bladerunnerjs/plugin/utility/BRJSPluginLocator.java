@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin.utility;
 import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
@@ -33,7 +33,7 @@ public class BRJSPluginLocator implements PluginLocator
 	private List<TagHandlerPlugin> tagHandlerPlugins;
 	private List<LegacyAssetPlugin> legacyAssetPlugins;
 	private List<LegacyAssetLocationPlugin> legacyAssetLocationPlugins;
-	private List<AssetLocationPlugin> assetLocationPlugins;
+	private List<AssetPlugin> assetPlugins;
 	private List<RequirePlugin> requirePlugins;
 	
 	@Override
@@ -43,7 +43,7 @@ public class BRJSPluginLocator implements PluginLocator
 		minifierPlugins = PluginLoader.createPluginsOfType(brjs, MinifierPlugin.class, VirtualProxyMinifierPlugin.class);
 		contentPlugins = PluginLoader.createPluginsOfType(brjs, ContentPlugin.class, VirtualProxyContentPlugin.class);
 		tagHandlerPlugins = PluginLoader.createPluginsOfType(brjs, TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class);
-		assetLocationPlugins = PluginLoader.createPluginsOfType(brjs, AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class);
+		assetPlugins = PluginLoader.createPluginsOfType(brjs, AssetPlugin.class, VirtualProxyAssetLocationPlugin.class);
 		requirePlugins = PluginLoader.createPluginsOfType(brjs, RequirePlugin.class, VirtualProxyRequirePlugin.class);
 		
 		legacyAssetPlugins = PluginLoader.createPluginsOfType(brjs, LegacyAssetPlugin.class, LegacyVirtualProxyAssetPlugin.class);
@@ -88,8 +88,8 @@ public class BRJSPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<AssetLocationPlugin> getAssetLocationPlugins() {
-		return assetLocationPlugins;
+	public List<AssetPlugin> assetPlugins() {
+		return assetPlugins;
 	}
 
 	@Override

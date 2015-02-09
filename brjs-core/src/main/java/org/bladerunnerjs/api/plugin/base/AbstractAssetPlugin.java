@@ -1,10 +1,8 @@
 package org.bladerunnerjs.api.plugin.base;
 
-import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
 
 
-/**
- * A specialization of {@link AbstractPlugin} for developers that need to implement {@link LegacyAssetPlugin}.
- */
-public abstract class AbstractAssetPlugin extends AbstractPlugin implements LegacyAssetPlugin {
+public abstract class AbstractAssetPlugin extends AbstractPlugin implements AssetPlugin {
+
 }

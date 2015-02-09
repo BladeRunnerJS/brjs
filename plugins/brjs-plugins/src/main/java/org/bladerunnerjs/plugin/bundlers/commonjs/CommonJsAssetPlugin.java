@@ -8,11 +8,11 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
-import org.bladerunnerjs.api.plugin.base.AbstractAssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 
 
-public class CommonJsAssetLocationPlugin extends AbstractAssetLocationPlugin
+public class CommonJsAssetPlugin extends AbstractAssetPlugin
 {
 	
 	@Override

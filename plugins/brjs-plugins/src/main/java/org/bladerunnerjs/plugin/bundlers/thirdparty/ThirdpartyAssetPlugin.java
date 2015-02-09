@@ -8,10 +8,10 @@ import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
-import org.bladerunnerjs.api.plugin.base.AbstractAssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 
-public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
+public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public int priority()

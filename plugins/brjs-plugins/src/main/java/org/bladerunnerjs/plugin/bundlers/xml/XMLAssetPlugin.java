@@ -4,10 +4,10 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractLegacyAssetPlugin;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 
-public class XMLAssetPlugin extends AbstractAssetPlugin {
+public class XMLAssetPlugin extends AbstractLegacyAssetPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 		// do nothing

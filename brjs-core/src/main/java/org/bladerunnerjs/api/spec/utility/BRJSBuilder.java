@@ -11,7 +11,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
@@ -106,7 +106,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		
 		for(LegacyAssetPlugin assetPlugin : assetPlugins)
 		{
-			specTest.pluginLocator.assetPlugins.add( new LegacyVirtualProxyAssetPlugin(assetPlugin) );
+			specTest.pluginLocator.legacyAssetPlugins.add( new LegacyVirtualProxyAssetPlugin(assetPlugin) );
 		}
 		
 		return builderChainer;
@@ -178,19 +178,19 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsAssetPlugins() {
 		verifyBrjsIsNotSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.assetPlugins);
+		verifyPluginsUnitialized(specTest.pluginLocator.legacyAssetPlugins);
 		
-		specTest.pluginLocator.assetPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), LegacyAssetPlugin.class, LegacyVirtualProxyAssetPlugin.class) );
+		specTest.pluginLocator.legacyAssetPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), LegacyAssetPlugin.class, LegacyVirtualProxyAssetPlugin.class) );
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer automaticallyFindsAssetLocationPlugins() {
 		verifyBrjsIsNotSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.assetLocationPlugins);
+		verifyPluginsUnitialized(specTest.pluginLocator.assetPlugins);
 		
 		specTest.pluginLocator.legacyAssetLocationPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), LegacyAssetLocationPlugin.class, VirtualProxyLegacyAssetLocationPlugin.class) );
-		specTest.pluginLocator.assetLocationPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class) );
+		specTest.pluginLocator.assetPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetLocationPlugin.class) );
 		
 		return builderChainer;
 	}

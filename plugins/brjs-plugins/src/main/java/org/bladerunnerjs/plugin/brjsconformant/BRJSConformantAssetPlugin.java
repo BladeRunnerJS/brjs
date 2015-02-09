@@ -10,13 +10,13 @@ import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
-import org.bladerunnerjs.api.plugin.base.AbstractAssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.DefaultBladeset;
 import org.bladerunnerjs.model.DirectoryLinkedAsset;
 
 
-public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlugin
+public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 {
 
 	@Override

@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.AssetContainer;
 public class AssetContainerAssets
 {
 	private final MemoizedValue<AssetDiscoveryResult> assetDiscoveryResult;
-	private final List<AssetLocationPlugin> assetLocationPlugins;
+	private final List<AssetPlugin> assetPlugins;
 	private AssetContainer assetContainer;
 	
 	private List<Asset> implicitDependencies = new ArrayList<>();
@@ -23,7 +23,7 @@ public class AssetContainerAssets
 	public AssetContainerAssets(AssetContainer assetContainer)
 	{
 		this.assetContainer = assetContainer;
-		assetLocationPlugins = assetContainer.root().plugins().assetLocationPlugins();
+		assetPlugins = assetContainer.root().plugins().assetPlugins();
 		assetDiscoveryResult = new MemoizedValue<>("AssetContainerAssets.assetDiscoveryResult", assetContainer);
 	}
 	
@@ -99,8 +99,8 @@ public class AssetContainerAssets
 		@Override
 		public void discoverFurtherAssets(MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies)
 		{
-			for (AssetLocationPlugin assetLocationPlugin : assetLocationPlugins) {
-				assetLocationPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, this);
+			for (AssetPlugin assetPlugin : assetPlugins) {
+				assetPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, this);
 			}
 		}
 		

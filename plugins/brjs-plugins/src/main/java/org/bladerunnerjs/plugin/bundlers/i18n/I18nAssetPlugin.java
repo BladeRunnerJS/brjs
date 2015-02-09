@@ -5,11 +5,11 @@ import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.Locale;
-import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractLegacyAssetPlugin;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 
 
-public class I18nAssetPlugin extends AbstractAssetPlugin
+public class I18nAssetPlugin extends AbstractLegacyAssetPlugin
 {
 	
 	@Override

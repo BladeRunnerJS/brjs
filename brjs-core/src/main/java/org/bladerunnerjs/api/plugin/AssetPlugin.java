@@ -7,7 +7,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 
 
-public interface AssetLocationPlugin extends Plugin
+public interface AssetPlugin extends Plugin
 {
 	/**
 	 * Get the priority for this plugin. Lower priorities correspond to earlier execution.
