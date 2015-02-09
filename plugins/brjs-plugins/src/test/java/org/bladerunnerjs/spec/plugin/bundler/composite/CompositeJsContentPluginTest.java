@@ -103,7 +103,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 					"appns.namespaced.Class\n"+
 					"require('appLib');\n"+
-					"require('appns.node.Class');\n" );
+					"require('appns/node/Class');\n" );
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragmentsAnyNumberOfTimes(
 				"// br-bootstrap", 

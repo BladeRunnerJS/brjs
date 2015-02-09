@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetLocationPlugin;
@@ -39,7 +41,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	private void createAssetsForChildDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		for (MemoizedFile childDir : dir.dirs()) {
-			String childDirRequirePath = assetContainer.dir().getRelativePath(dir);
+			String childDirRequirePath = StringUtils.substringAfter(assetContainer.dir().getRelativePath(childDir), "/"); // strip of the preceding 'src' or 'src-test' etc
 			LinkedAsset child = new DirectoryLinkedAsset(assetContainer, childDir, childDirRequirePath);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(childDirRequirePath)) {
     			assetDiscoveryInitiator.registerAsset(child);				
@@ -66,7 +68,14 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		}
 		LinkedAsset rootAsset = new DirectoryLinkedAsset(assetContainer, assetContainer.dir(), requirePrefix); 
 		assetDiscoveryInitiator.registerAsset(rootAsset);
-		List<String> childPaths = Arrays.asList("src", "src-test", "themes", "resources");
+		List<String> childPaths;
+		
+		if (assetContainer instanceof TestPack) {
+			childPaths = Arrays.asList("tests", "src-test", "themes", "resources");
+		} else {
+			childPaths = Arrays.asList("src", "src-test", "themes", "resources");
+		}
+		
 		for (String childPath : childPaths) {
 			MemoizedFile childDir = dir.file(childPath);
 			assetDiscoveryInitiator.discoverFurtherAssets(childDir, requirePrefix, implicitDependencies);
