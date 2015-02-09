@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.brjsconformant;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
@@ -46,13 +47,30 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	private void createAssetsForChildDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		for (MemoizedFile childDir : dir.dirs()) {
-			String childDirRequirePath = StringUtils.substringAfter(assetContainer.dir().getRelativePath(childDir), "/"); // strip of the preceding 'src' or 'src-test' etc
+			String relativePathFromAssetContainer = assetContainer.dir().getRelativePath(childDir);
+			if (relativePathFromAssetContainer.startsWith("themes") && relativePathFromAssetContainer.split("/").length < 3) {
+					assetDiscoveryInitiator.discoverFurtherAssets(childDir, requirePrefix, implicitDependencies);
+					return;			
+			}
+			String childDirRequirePath = calculateChildDirRequirePath(relativePathFromAssetContainer);
 			LinkedAsset child = new DirectoryLinkedAsset(assetContainer, childDir, childDirRequirePath);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(childDirRequirePath)) {
-    			assetDiscoveryInitiator.registerAsset(child);				
-    			assetDiscoveryInitiator.discoverFurtherAssets(childDir, child.getPrimaryRequirePath(), implicitDependencies);
+				assetDiscoveryInitiator.registerAsset(child);				
+				assetDiscoveryInitiator.discoverFurtherAssets(childDir, child.getPrimaryRequirePath(), implicitDependencies);
 			}
 		}
+	}
+
+	private String calculateChildDirRequirePath(String relativePathFromAssetContainer)
+	{
+		if (relativePathFromAssetContainer.startsWith("themes")) {
+			String[] relativePathFromAssetContainerSplit = relativePathFromAssetContainer.split("/");
+    		String themeName = relativePathFromAssetContainerSplit[0];
+    		String themeDirRequirePrefix = StringUtils.join( ArrayUtils.subarray(relativePathFromAssetContainerSplit, 2, relativePathFromAssetContainerSplit.length), "/");
+    		return "theme!"+themeName+":"+themeDirRequirePrefix;
+        } else {
+        	return StringUtils.substringAfter(relativePathFromAssetContainer, "/");
+        }
 	}
 
 	private void createAssetsForSrcDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
