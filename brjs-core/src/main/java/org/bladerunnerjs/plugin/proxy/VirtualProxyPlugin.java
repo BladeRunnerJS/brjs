@@ -72,4 +72,10 @@ public class VirtualProxyPlugin implements Plugin {
 	{
 		return plugin.hashCode();
 	}
+
+	@Override
+	public int priority()
+	{
+		return plugin.priority();
+	}
 }

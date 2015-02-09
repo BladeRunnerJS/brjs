@@ -16,13 +16,8 @@ public class VirtualProxyLegacyAssetLocationPlugin extends VirtualProxyPlugin im
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return assetLocationPlugin.getPluginsThatMustAppearBeforeThisPlugin();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return assetLocationPlugin.getPluginsThatMustAppearAfterThisPlugin();
+	public int priority() {
+		return assetLocationPlugin.priority();
 	}
 	
 	@Override

@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.AssetFileInstantationException;
 /**
  * Asset plug-ins allow new implementations of {@link SourceModule}, {@link LinkedAsset} &amp; {@link Asset} to be supported within the model.
  */
-public interface LegacyAssetPlugin extends OrderedPlugin {
+public interface LegacyAssetPlugin extends Plugin {
 	boolean canHandleAsset(MemoizedFile assetFile, AssetLocation assetLocation);
 	Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException;
 }

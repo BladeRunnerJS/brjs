@@ -1,6 +1,8 @@
 package org.bladerunnerjs.plugin.utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,7 +16,6 @@ import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.MinifierPlugin;
 import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.api.plugin.OrderedPlugin;
 import org.bladerunnerjs.api.plugin.Plugin;
 import org.bladerunnerjs.api.plugin.PluginLocator;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
@@ -35,11 +36,11 @@ public class PluginAccessor {
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
 		contentPlugins = sort(pluginLocator.getContentPlugins());
-		tagHandlerPlugins = pluginLocator.getTagHandlerPlugins();
-		minifierPlugins = pluginLocator.getMinifierPlugins();
-		modelObserverPlugins = pluginLocator.getModelObserverPlugins();
-		requirePlugins = pluginLocator.getRequirePlugins();
-		assetLocationPlugins = pluginLocator.getAssetLocationPlugins();
+		tagHandlerPlugins = sort(pluginLocator.getTagHandlerPlugins());
+		minifierPlugins = sort(pluginLocator.getMinifierPlugins());
+		modelObserverPlugins = sort(pluginLocator.getModelObserverPlugins());
+		requirePlugins = sort(pluginLocator.getRequirePlugins());
+		assetLocationPlugins = sort(pluginLocator.getAssetLocationPlugins());
 		
 		legacyAssetPlugins = sort(pluginLocator.getLegacyAssetPlugins());
 		legacyAssetLocationPlugins = sort(pluginLocator.getLegacyAssetLocationPlugins());
@@ -209,13 +210,17 @@ public class PluginAccessor {
 		return null;
 	}
 	
-	private <P extends OrderedPlugin> List<P> sort(List<P> plugins) {
-		try {
-			return PluginSorter.sort(plugins);
-		}
-		catch (PluginOrderingException | NonExistentPluginException e) {
-			throw new RuntimeException(e);
-		}
+	
+	private <P extends Plugin> List<P> sort(List<P> plugins) {
+		Collections.sort(plugins, new Comparator<Plugin>()
+		{
+			@Override
+			public int compare(Plugin p1, Plugin p2)
+			{
+				return Integer.compare(p1.priority(), p2.priority());
+			}
+		});
+		return plugins;
 	}
 	
 }

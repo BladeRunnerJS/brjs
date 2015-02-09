@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.brjsconformant;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +26,8 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractLegacyAss
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return Arrays.asList(BRJSConformantLegacyAssetLocationPlugin.class.getCanonicalName());
+	public int priority() {
+		return 5;
 	}
 	
 	@Override

@@ -30,7 +30,9 @@ public class CommonJsAssetLocationPlugin extends AbstractAssetLocationPlugin
 		FileFilter jsFileFilter = new SuffixFileFilter(".js");
 		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {
 			DefaultCommonJsSourceModule asset = new DefaultCommonJsSourceModule(assetContainer, requirePrefix, jsFile);
-			assetDiscoveryInitiator.registerAsset( asset );
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
+				assetDiscoveryInitiator.registerAsset( asset );
+			}
 		}
 	}
 

@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.bundlers.i18n;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.plugin.bundlers.thirdparty.ThirdpartyContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -60,6 +58,12 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	{
 		i18nAssetPlugin = brjs.plugins().legacyAssetPlugin(I18nAssetPlugin.class);
 	}
+	
+	@Override
+	public int priority()
+	{
+		return 0;
+	}
 
 	@Override
 	public void close()
@@ -70,11 +74,6 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	public String getRequestPrefix()
 	{
 		return "i18n";
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList(ThirdpartyContentPlugin.class.getCanonicalName());
 	}
 	
 	@Override

@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
@@ -18,7 +17,6 @@ import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.plugin.bundlers.thirdparty.ThirdpartyContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -47,11 +45,6 @@ public class AliasingContentPlugin extends AbstractContentPlugin implements Comp
 	@Override
 	public String getRequestPrefix() {
 		return "aliasing";
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList(ThirdpartyContentPlugin.class.getCanonicalName());
 	}
 	
 	@Override

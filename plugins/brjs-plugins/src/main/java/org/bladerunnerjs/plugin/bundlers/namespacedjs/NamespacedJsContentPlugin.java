@@ -27,7 +27,6 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsContentPlugin;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -92,8 +91,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList(CommonJsContentPlugin.class.getCanonicalName());
+	public int priority() {
+		return 5;
 	}
 	
 	@Override

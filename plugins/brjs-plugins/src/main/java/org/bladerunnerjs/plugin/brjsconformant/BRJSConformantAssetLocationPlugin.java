@@ -20,6 +20,12 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 {
 
 	@Override
+	public int priority()
+	{
+		return 100;
+	}
+	
+	@Override
 	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		if (assetContainer instanceof DefaultBladeset) {

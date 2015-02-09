@@ -1,7 +1,5 @@
 package org.bladerunnerjs.plugin.proxy;
 
-import java.util.List;
-
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -16,12 +14,9 @@ public class LegacyVirtualProxyAssetPlugin extends VirtualProxyPlugin implements
 		this.assetPlugin = assetPlugin;
 	}
 	
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return assetPlugin.getPluginsThatMustAppearBeforeThisPlugin();
-	}
-	
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return assetPlugin.getPluginsThatMustAppearAfterThisPlugin();
+	@Override
+	public int priority() {
+		return assetPlugin.priority();
 	}
 	
 	@Override

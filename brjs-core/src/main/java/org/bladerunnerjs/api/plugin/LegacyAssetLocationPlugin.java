@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.AssetContainer;
  * Asset-location plug-ins can indirectly control what source modules and assets will be found by controlling the asset-locations that
  * are found, and can control how assets are bundled by controlling the relationship between source modules and asset-locations.</p>
  */
-public interface LegacyAssetLocationPlugin extends OrderedPlugin {
+public interface LegacyAssetLocationPlugin extends Plugin {
 	List<String> getAssetLocationDirectories(AssetContainer assetContainer);
 	List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer);
 	AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap);

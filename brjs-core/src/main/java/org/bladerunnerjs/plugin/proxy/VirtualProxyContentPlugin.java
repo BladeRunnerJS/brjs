@@ -25,13 +25,8 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return contentPlugin.getPluginsThatMustAppearBeforeThisPlugin();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return contentPlugin.getPluginsThatMustAppearAfterThisPlugin();
+	public int priority() {
+		return contentPlugin.priority();
 	}
 	
 	@Override

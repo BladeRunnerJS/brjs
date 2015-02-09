@@ -66,6 +66,12 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 	}
 	
 	@Override
+	public int priority()
+	{
+		return -1;
+	}
+	
+	@Override
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws MalformedRequestException, ContentProcessingException
 	{
 		try {

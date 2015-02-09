@@ -59,6 +59,7 @@ public class AssetContainerAssets
 		private boolean furtherDiscoveryRequired = true;
 		
 		private AssetDiscoveryResult() {
+			//TODO: do we need the loop?
 			while (furtherDiscoveryRequired) {
 				furtherDiscoveryRequired = false;
 				discoverFurtherAssets(assetContainer.dir(), assetContainer.requirePrefix(), implicitDependencies);
