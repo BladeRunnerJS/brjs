@@ -33,6 +33,12 @@ public class AliasingContentPlugin extends AbstractContentPlugin implements Comp
 	}
 	
 	@Override
+	public int priority()
+	{
+		return -1;
+	}
+	
+	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
 	}

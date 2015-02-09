@@ -71,7 +71,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
@@ -92,7 +92,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	
 	@Override
 	public int priority() {
-		return 5;
+		return 20;
 	}
 	
 	@Override

@@ -68,7 +68,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 	@Override
 	public int priority()
 	{
-		return -1;
+		return -10;
 	}
 	
 	@Override
