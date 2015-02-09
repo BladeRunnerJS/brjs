@@ -61,6 +61,12 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 			seedFiles.addAll(seedAssetLocation.linkedAssets());
 		}
 		
+		for (Asset asset : assetDiscoveryInitiator.seedAssets()) {
+			if (asset instanceof LinkedAsset) {
+				seedFiles.add((LinkedAsset) asset);
+			}
+		}
+		
 		return seedFiles;
 	}
 	

@@ -32,7 +32,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private final MemoizedValue<Map<String, LinkedAsset>> linkedAssetMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
 	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
 	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
-	private final AssetContainerAssets assetDiscoveryInitiator = new AssetContainerAssets(this);
+	
+	protected final AssetContainerAssets assetDiscoveryInitiator = new AssetContainerAssets(this);
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
@@ -121,18 +122,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	
 	private Map<String, LinkedAsset> linkedAssetsMap() {
-		return linkedAssetMap.value(() -> {
+		Map<String,LinkedAsset> discoveredAssets = linkedAssetMap.value(() -> {
 			Map<String, LinkedAsset> linkedAssetsMap = new LinkedHashMap<>();
-			
-			// ------ START NEW API CODE ------ //
-			
-			for (Asset asset : assetDiscoveryInitiator.discoverAssets()) {
-				if (asset instanceof LinkedAsset) {
-					linkedAssetsMap.put(asset.getPrimaryRequirePath(), (LinkedAsset)asset);
-				}
-			}
-			
-			// ------- END NEW API CODE ------- //
 			
 			for (AssetLocation assetLocation : assetLocations())
 			{
@@ -146,6 +137,14 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			
 			return linkedAssetsMap;
 		});
+		
+		for (Asset asset : assetDiscoveryInitiator.assets()) {
+			if (asset instanceof LinkedAsset) {
+				discoveredAssets.put(asset.getPrimaryRequirePath(), (LinkedAsset)asset);
+			}
+		}
+		
+		return discoveredAssets;
 	}
 	
 	private Map<String, AssetLocation> assetLocationsMap() {
