@@ -19,10 +19,10 @@ var LocaleUtility = window.LocaleUtility = {};
 LocaleUtility.getBrowserAcceptedLocales = function() {
 	var userAcceptedLocales;
 
-	if(navigator.languages) {
+	if (navigator.languages) {
 		userAcceptedLocales = navigator.languages;
 	}
-	else if(navigator.language) {
+	else if (navigator.language) {
 		userAcceptedLocales = [navigator.language];
 	}
 	else {
@@ -120,15 +120,16 @@ LocaleUtility.getLocalizedPageUrl = function(pageUrl, locale) {
 	var anchor = urlParser.hash;
 	var queryString = urlParser.search;
 
-	var matchUrlEndingInSlash = /(.*)(\/.*\.[a-zA-Z0-9]+\/)/g.exec(url);
-	
-	if (matchUrlEndingInSlash !== null) {
-		return protocol + "//" + host + matchUrlEndingInSlash[1] + "/" + locale+ matchUrlEndingInSlash[2] + queryString + anchor;
+	url = (url.charAt(0) != "/") ? "/" + url : url; /* some IE versions don't prefix pathname with / */
+	url = ( !(/\/$/.test(url)) ) ? url + "/" : url; /* make sure the URL has a trailing / */
+
+	if (url.slice(-6) === ".html/") {
+		var splitUrl = url.split("/");
+		splitUrl.pop(); /* Remove trailing "/" */
+		splitUrl.splice(-1, 0, locale); /* Splice in locale */
+
+		return protocol + "//" + host + splitUrl.join("/") + queryString + anchor;
 	}
-	
-	else {
-		url = (url.charAt(0) != "/") ? "/"+url : url; /* some IE versions don't prefix pathname with / */
-		url = ( !(/\/$/.test(url)) ) ? url+"/" : url; /* make sure the URL has a trailing / */
-		return protocol + "//" + host + url + locale + "/" + queryString + anchor;
-	}		
+
+	return protocol + "//" + host + url + locale + "/" + queryString + anchor;
 };
