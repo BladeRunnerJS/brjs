@@ -111,25 +111,29 @@ LocaleUtility.getWindowUrl = function() {
 };
 
 LocaleUtility.getLocalizedPageUrl = function(pageUrl, locale) {
+
 	var urlParser = document.createElement('a');
 	urlParser.href = pageUrl;
 
 	var protocol = urlParser.protocol;
 	var host = urlParser.host;
-	var url = urlParser.pathname;
-	var anchor = urlParser.hash;
-	var queryString = urlParser.search;
+	var path = urlParser.pathname;
+	var query = urlParser.search;
+	var hash = urlParser.hash;
 
-	url = (url.charAt(0) != "/") ? "/" + url : url; /* some IE versions don't prefix pathname with / */
-	url = ( !(/\/$/.test(url)) ) ? url + "/" : url; /* make sure the URL has a trailing / */
+	var normalizedPath = path.replace(/\/$/, '').replace(/^\/?(.*)/, '/$1');
 
-	if (url.slice(-6) === ".html/") {
-		var splitUrl = url.split("/");
-		splitUrl.pop(); /* Remove trailing "/" */
-		splitUrl.splice(-1, 0, locale); /* Splice in locale */
+	if (normalizedPath.indexOf('.html') !== -1) {
 
-		return protocol + "//" + host + splitUrl.join("/") + queryString + anchor;
+		normalizedPath = normalizedPath.split('/');
+		normalizedPath.splice(-1, 0, locale);
+		normalizedPath = normalizedPath.join('/');
+
+	} else {
+
+		normalizedPath = normalizedPath + '/' + locale + '/';
+
 	}
 
-	return protocol + "//" + host + url + locale + "/" + queryString + anchor;
+	return protocol + '//' + host + normalizedPath + query + hash;
 };
