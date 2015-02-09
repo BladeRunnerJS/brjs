@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.JsLib;
@@ -89,6 +90,12 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 			BundleSetCreatedEvent bundleSetCreatedEvent = (BundleSetCreatedEvent) event;
 			
 			BundleSet bundleset = bundleSetCreatedEvent.getBundleSet();
+			App bundlesetApp = bundleset.getBundlableNode().app();
+			String appName = bundlesetApp.getName();
+			if (bundleset.getBundlableNode().root().systemApp(appName) == bundlesetApp) {
+				return;
+			}
+			
 			eventData.put("total_count", bundleset.getResourceFiles().size());
 			eventData.put("execution_duration", bundleSetCreatedEvent.getCreationDuration());
 			eventData.put("bundlable_node_type", bundleset.getBundlableNode().getClass().getSimpleName());

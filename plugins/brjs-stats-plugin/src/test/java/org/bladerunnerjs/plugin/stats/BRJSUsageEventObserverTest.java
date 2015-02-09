@@ -9,8 +9,6 @@ import io.keen.client.java.KeenProject;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
-import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.model.events.NewInstallEvent;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -24,6 +22,8 @@ public class BRJSUsageEventObserverTest extends SpecTest
 	private App app;
 	private Aspect aspect;
 	private BRJSUsageEventObserver usageObserver;
+	private App sysApp;
+	private Aspect sysAppAspect;
 
 	@Before
 	public void initTestObjects() throws Exception
@@ -35,6 +35,8 @@ public class BRJSUsageEventObserverTest extends SpecTest
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.defaultAspect();
+			sysApp = brjs.systemApp("sysapp");
+			sysAppAspect = sysApp.defaultAspect();
 			brjs.bladerunnerConf().setAllowAnonymousStats(true);
 			brjs.bladerunnerConf().write();
 	}	
@@ -46,6 +48,15 @@ public class BRJSUsageEventObserverTest extends SpecTest
 			.and(aspect).hasBeenCreated();
 		when(aspect).bundleSetGenerated();
 		verify(mockKeenClient).addEventAsync( (KeenProject)eq(null), eq("bundlesets"), anyMapOf(String.class, Object.class), anyMapOf(String.class, Object.class), any(KeenCallback.class) );
+	}
+	
+	@Test
+	public void bundlesetsKeenIOEventIsNotTriggeredForSystemApps() throws Exception
+	{
+		given(sysApp).hasBeenCreated()
+			.and(sysAppAspect).hasBeenCreated();
+		when(sysAppAspect).bundleSetGenerated();
+		verify(mockKeenClient, never()).addEventAsync( (KeenProject)eq(null), any(String.class), anyMapOf(String.class, Object.class), anyMapOf(String.class, Object.class), any(KeenCallback.class) );
 	}
 	
 	@Test
