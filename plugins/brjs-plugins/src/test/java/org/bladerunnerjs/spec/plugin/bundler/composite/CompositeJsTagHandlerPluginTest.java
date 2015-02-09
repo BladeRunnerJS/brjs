@@ -93,7 +93,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 				"appns.namespaced.Class\n"+
 				"require('appLib');\n"+
-				"require('appns.node.Class');\n" );
+				"require('appns/node/Class');\n" );
 	when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 	then(pageResponse).containsOrderedTextFragments(
 			"thirdparty/br-bootstrap/bundle.js", 
@@ -117,7 +117,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 					"appns.namespaced.Class\n"+
 					"require('appLib');\n"+
-					"require('appns.node.Class');\n" );
+					"require('appns/node/Class');\n" );
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsOrderedTextFragments(
 				"thirdparty/br-bootstrap/bundle.js", 
