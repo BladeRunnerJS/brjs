@@ -169,9 +169,11 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeForwarderHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "window._brjsI18nProperties = [{\n"+
-        				"  \"appns.p1\": \"\\\"$£€\\\"\"\n"+
-        		"}];");
+		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };\n"
+				+ "window._brjsI18nProperties['en'] = {\n"
+				+ "  \"appns.p1\": \"\\\"$£€\\\"\"\n"
+				+ "};\n"
+				+ "window._brjsI18nUseLocale = 'en';");
 	}
 	
 	@Test
@@ -184,9 +186,11 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeForwarderHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "window._brjsI18nProperties = [{\n"+
-        				"  \"appns.p1\": \"\\\"$£\\\"\"\n"+
-        		"}];");
+		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };\n"
+				+ "window._brjsI18nProperties['en'] = {\n"
+				+ "  \"appns.p1\": \"\\\"$£\\\"\"\n"
+				+ "};\n" 
+				+ "window._brjsI18nUseLocale = 'en';");
 	}
 	
 	@Test

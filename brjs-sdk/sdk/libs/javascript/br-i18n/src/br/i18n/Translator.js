@@ -31,6 +31,7 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 function Translator(messageDefinitions, useLocale) {
 	/** @private */
 	this.messages = {};
+	/** @private */
 	this.messageDefinitions = messageDefinitions;
 
 	/** @private */
