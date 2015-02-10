@@ -1,7 +1,7 @@
 (function() {
 	describe("locale-forwarder", function() {
 
-		require("jasmine")
+		require("jasmine");
 
 		var getLocalizedPageUrl = require("br-locale-utility").getLocalizedPageUrl;
 		var getActiveLocale = require("br-locale-utility").getActiveLocale;
@@ -65,6 +65,10 @@
 
 	    it("keeps the query string and anchor in the correct order", function() {
 	        expect(getLocalizedPageUrl("http://acme.com:1337/app/?query=1#anchor", "en_GB")).toBe("http://acme.com:1337/app/en_GB/?query=1#anchor");
+	    });
+
+	    it("appends the locale before the requested resource for static files", function() {
+	        expect(getLocalizedPageUrl("http://acme.com:1337/app/www/index.html?test1#test2", "en_GB")).toBe("http://acme.com:1337/app/www/en_GB/index.html?test1#test2");
 	    });
 
 	});
