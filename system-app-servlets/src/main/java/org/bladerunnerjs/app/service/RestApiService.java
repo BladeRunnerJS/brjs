@@ -1,4 +1,4 @@
-package org.bladerunnerjs.legacy.app.service;
+package org.bladerunnerjs.app.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

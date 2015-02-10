@@ -1,4 +1,4 @@
-package org.bladerunnerjs.legacy.app.servlet;
+package org.bladerunnerjs.app.servlet;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,7 +36,7 @@ import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.legacy.app.service.RestApiService;
+import org.bladerunnerjs.app.service.RestApiService;
 import org.bladerunnerjs.utility.FileUtils;
 
 import com.google.gson.Gson;

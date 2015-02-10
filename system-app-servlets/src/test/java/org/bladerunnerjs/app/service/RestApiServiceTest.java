@@ -1,4 +1,4 @@
-package org.bladerunnerjs.legacy.app.service;
+package org.bladerunnerjs.app.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.legacy.app.service.RestApiService;
+import org.bladerunnerjs.app.service.RestApiService;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.utility.FileUtils;

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.legacy.app.servlet;
+package org.bladerunnerjs.app.servlet;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -22,9 +22,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.legacy.app.RestApiServletTestUtils;
-import org.bladerunnerjs.legacy.app.service.RestApiService;
-import org.bladerunnerjs.legacy.app.servlet.RestApiServlet;
+import org.bladerunnerjs.app.RestApiServletTestUtils;
+import org.bladerunnerjs.app.service.RestApiService;
+import org.bladerunnerjs.app.servlet.RestApiServlet;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ServerUtility;
 
