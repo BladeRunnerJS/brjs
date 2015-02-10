@@ -45,6 +45,15 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void resourceFilesInTheAspectThatReferenceAspectSrcDontCauseAnException() throws Exception {
+		given(aspect).hasClasses("appns/Class1")
+	 		.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
+	 		.and(workbench).indexPageHasContent("");
+	 	when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
+	 	then(logging).doesNotcontainConsoleText("default-aspect");
+	}
+	
+	@Test
 	public void exceptionIsThrownIfNoAppNameIsProvided() throws Exception {
 		when(brjs).runCommand("workbench-deps");
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'app-name' is required"))
