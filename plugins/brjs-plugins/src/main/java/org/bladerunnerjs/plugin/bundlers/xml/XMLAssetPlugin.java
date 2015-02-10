@@ -1,27 +1,44 @@
 package org.bladerunnerjs.plugin.bundlers.xml;
 
+import java.io.FileFilter;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.NotFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.plugin.base.AbstractLegacyAssetPlugin;
-import org.bladerunnerjs.model.AssetFileInstantationException;
+import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
+import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.LinkedFileAsset;
 
-public class XMLAssetPlugin extends AbstractLegacyAssetPlugin {
+public class XMLAssetPlugin extends AbstractAssetPlugin {
+	
 	@Override
 	public void setBRJS(BRJS brjs) {
 		// do nothing
 	}
-	
+
 	@Override
-	public boolean canHandleAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
-		String assetName = assetFile.getName();
-		// TODO: should the aliases xml filtering be moved into the model once getAssets() has been deleted?
-		return (assetName.endsWith(".xml") && !assetName.equals("aliases.xml")  && !assetName.equals("aliasDefinitions.xml"));
-	}
-	
-	@Override
-	public Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new XMLAsset(assetFile, assetLocation);
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	{
+		if (!requirePrefix.startsWith("xml!")) {
+			requirePrefix = "xml!"+requirePrefix;
+		}
+		
+		IOFileFilter noAliasesFileFilter = new NotFileFilter( new NameFileFilter( Arrays.asList("aliases.xml", "aliasDefinitions.xml") ) );
+		FileFilter htmlFileFilter = new AndFileFilter( (IOFileFilter) new SuffixFileFilter(".html"), noAliasesFileFilter );
+		
+		for (MemoizedFile htmlFile : dir.listFiles(htmlFileFilter)) {
+			Asset asset = new LinkedFileAsset(htmlFile, assetContainer, requirePrefix);
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
+				assetDiscoveryInitiator.registerAsset( asset );
+			}
+		}
 	}
 }
