@@ -29,7 +29,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final MemoizedValue<Map<String, LinkedAsset>> linkedAssetMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
+	private final MemoizedValue<Map<String, Asset>> assetsMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
 	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
 	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
 	
@@ -59,12 +59,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public Set<Asset> assets() {
-		return new LinkedHashSet<>(linkedAssetsMap().values());
+		return new LinkedHashSet<>(assetsMap().values());
 	}
 	
 	@Override
 	public Asset asset(String requirePath) {
-		return linkedAssetsMap().get(requirePath);
+		return assetsMap().get(requirePath);
 	}
 	
 	@Override
@@ -121,8 +121,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	
 	
-	private Map<String, LinkedAsset> linkedAssetsMap() {
-		Map<String,LinkedAsset> discoveredAssets = linkedAssetMap.value(() -> {
+	private Map<String, Asset> assetsMap() {
+		Map<String,Asset> discoveredAssets = assetsMap.value(() -> {
 			Map<String, LinkedAsset> linkedAssetsMap = new LinkedHashMap<>();
 			
 			for (AssetLocation assetLocation : assetLocations())
@@ -139,9 +139,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		});
 		
 		for (Asset asset : assetDiscoveryInitiator.assets()) {
-			if (asset instanceof LinkedAsset) {
-				discoveredAssets.put(asset.getPrimaryRequirePath(), (LinkedAsset)asset);
-			}
+			discoveredAssets.put(asset.getPrimaryRequirePath(), asset);
 		}
 		
 		return discoveredAssets;
