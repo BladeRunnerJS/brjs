@@ -14,15 +14,9 @@ import org.bladerunnerjs.utility.UnicodeReader;
 
 public class FileAsset implements Asset {
 	private MemoizedFile file;
-	private AssetLocation assetLocation;
 	private String defaultFileCharacterEncoding;
 	private String assetPath;
 	private String primaryRequirePath;
-	
-	public FileAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		this(assetFile, assetLocation.assetContainer(), "");
-		this.assetLocation = assetLocation;
-	}
 	
 	public FileAsset(MemoizedFile assetFile, AssetContainer assetContainer, String requirePrefix) {
 		try {
@@ -43,7 +37,7 @@ public class FileAsset implements Asset {
 	
 	@Override
 	public AssetLocation assetLocation() {
-		return assetLocation;
+		return null;
 	}
 	
 	@Override

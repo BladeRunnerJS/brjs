@@ -11,7 +11,6 @@ import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.LinkedFileAsset;
 
 
 public class I18nAssetPlugin extends AbstractAssetPlugin
@@ -32,7 +31,7 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 		FileFilter i18nFileFilter = new RegexFileFilter(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT+"\\.properties");
 		
 		for (MemoizedFile i18nFile : dir.listFiles(i18nFileFilter)) {
-			Asset asset = new LinkedFileAsset(i18nFile, assetContainer, requirePrefix);
+			Asset asset = new I18nFileAsset(i18nFile, assetContainer, requirePrefix);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
 				assetDiscoveryInitiator.registerAsset( asset );
 			}

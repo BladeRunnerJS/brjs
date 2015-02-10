@@ -15,7 +15,6 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.LinkedFileAsset;
 
 public class XMLAssetPlugin extends AbstractAssetPlugin {
 	
@@ -35,7 +34,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 		FileFilter htmlFileFilter = new AndFileFilter( (IOFileFilter) new SuffixFileFilter(".html"), noAliasesFileFilter );
 		
 		for (MemoizedFile htmlFile : dir.listFiles(htmlFileFilter)) {
-			Asset asset = new LinkedFileAsset(htmlFile, assetContainer, requirePrefix);
+			Asset asset = new XMLAsset(htmlFile, assetContainer, requirePrefix);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
 				assetDiscoveryInitiator.registerAsset( asset );
 			}

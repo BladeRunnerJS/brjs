@@ -4,19 +4,20 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.LinkedFileAsset;
 
 public class XMLAsset extends LinkedFileAsset {
 	private final MemoizedValue<List<String>> requirePaths;
 	
-	public XMLAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
-		super(assetFile, assetLocation);
-		requirePaths = new MemoizedValue<>("XMLAsset.requirePaths", assetLocation.root(), assetFile);
+	public XMLAsset(MemoizedFile htmlFile, AssetContainer assetContainer, String requirePrefix)
+	{
+		super(htmlFile, assetContainer,requirePrefix);
+		requirePaths = new MemoizedValue<>("XMLAsset.requirePaths", assetContainer.root(), htmlFile);
 	}
-	
+
 	@Override
 	public List<String> getRequirePaths() {
 		try {

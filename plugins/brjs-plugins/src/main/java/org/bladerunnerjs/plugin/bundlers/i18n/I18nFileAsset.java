@@ -15,7 +15,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.Locale;
-import org.bladerunnerjs.model.AssetFileInstantationException;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class I18nFileAsset implements Asset
@@ -25,25 +25,26 @@ public class I18nFileAsset implements Asset
 		public static final String PROPERTY_NAMESPACE_EXCEPTION = "i18n property '%s' in property file '%s' is invalid. It must start with the same namespace as it's container, '%s'.";
 	}
 	
-	private AssetLocation assetLocation;
 	private MemoizedFile assetFile;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 	private Locale locale;
 	
-	public I18nFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		try {
-			this.assetLocation = assetLocation;
-			this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
-			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(assetFile);
-			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			locale = Locale.createLocaleFromFilepath(getAssetName());
+	public I18nFileAsset(MemoizedFile i18nFile, AssetContainer assetContainer, String requirePrefix)
+	{
+		this.assetFile = i18nFile;
+		assetPath = assetContainer.app().dir().getRelativePath(assetFile);
+		try
+		{
+			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
+		catch (ConfigException ex)
+		{
+			throw new RuntimeException(ex);
 		}
+		locale = Locale.createLocaleFromFilepath(getAssetName());
 	}
-	
+
 	@Override
 	public Reader getReader() throws IOException
 	{
@@ -53,7 +54,7 @@ public class I18nFileAsset implements Asset
 	@Override
 	public AssetLocation assetLocation()
 	{
-		return assetLocation;
+		return null;
 	}
 	
 	@Override

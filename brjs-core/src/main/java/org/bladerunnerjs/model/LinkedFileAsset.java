@@ -29,10 +29,6 @@ public class LinkedFileAsset implements LinkedAsset {
 	private String primaryRequirePath;
 	private AssetContainer assetContainer;
 	
-	public LinkedFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
-		this(assetFile, assetLocation.assetContainer(), "");
-	}
-	
 	public LinkedFileAsset(MemoizedFile assetFile, AssetContainer assetContainer, String requirePrefix) {
 		try {
 			this.assetContainer = assetContainer;
