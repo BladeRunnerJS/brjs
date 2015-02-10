@@ -3,8 +3,8 @@ package org.bladerunnerjs.utility.trie;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
 import org.bladerunnerjs.api.aliasing.AliasOverride;
 import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
@@ -57,7 +57,7 @@ public class TrieFactory {
 							}
 						}
 						
-						for(LinkedAsset asset : assetContainer.linkedAssets()) {
+						for(Asset asset : assetContainer.assets()) {
 							
 							List<String> requirePaths = asset.getRequirePaths();
 							

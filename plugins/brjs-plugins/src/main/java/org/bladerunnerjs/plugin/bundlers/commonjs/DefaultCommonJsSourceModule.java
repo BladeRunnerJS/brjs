@@ -61,7 +61,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		List<Asset> dependendAssets = new ArrayList<>();
 		
 		String parentRequirePath = StringUtils.substringBeforeLast(getPrimaryRequirePath(), "/");
-		assetContainer.linkedAsset(parentRequirePath);
+		assetContainer.asset(parentRequirePath);
 		
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );

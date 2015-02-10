@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.model.AssetContainer;
 
@@ -26,9 +26,9 @@ public class AssetContainerVerifier {
 	
 	public void hasSourceModules(String... expectedSourceModules) throws Exception {
 		
-		Set<LinkedAsset> assets = assetContainer.linkedAssets();
+		Set<Asset> assets = assetContainer.assets();
 		Set<SourceModule> actualSourceModules = new LinkedHashSet<SourceModule>();
-		for(LinkedAsset asset : assets){
+		for(Asset asset : assets){
 			if(asset instanceof SourceModule){
 				actualSourceModules.add((SourceModule)asset);
 			}

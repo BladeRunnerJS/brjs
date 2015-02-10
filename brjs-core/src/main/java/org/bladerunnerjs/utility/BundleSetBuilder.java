@@ -233,7 +233,7 @@ public class BundleSetBuilder {
 	private void addBootstrapAndDependencies(List<SourceModule> bootstrappingSourceModules) throws ModelOperationException
 	{
 		JsLib boostrapLib = bundlableNode.app().jsLib(BOOTSTRAP_LIB_NAME);
-		for (Asset asset : boostrapLib.linkedAssets()) {
+		for (Asset asset : boostrapLib.assets()) {
 			if (asset instanceof SourceModule) {
 				addSourceModule( (SourceModule) asset );
 				addAllSourceModuleDependencies( (SourceModule) asset, bootstrappingSourceModules );						

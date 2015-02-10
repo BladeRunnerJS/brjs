@@ -81,7 +81,7 @@ public class DirectoryLinkedAsset implements LinkedAsset
 	{
 		return dependentAssets.value(() -> {
 			List<Asset> dependentAssets = new ArrayList<>();
-			for (Asset assetContainerAsset : assetContainer.linkedAssets()) {
+			for (Asset assetContainerAsset : assetContainer.assets()) {
 				String thisRequirePath = getPrimaryRequirePath();
 				String assetContainerAssetRequirePath = assetContainerAsset.getPrimaryRequirePath();
 				String[] thisRequirePathChunks = thisRequirePath.split("/");

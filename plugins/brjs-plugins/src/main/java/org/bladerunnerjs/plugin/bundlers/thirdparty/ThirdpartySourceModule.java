@@ -140,7 +140,7 @@ public class ThirdpartySourceModule implements SourceModule
 		for (MemoizedFile cssFile : cssFiles) {
 			String cssFileRelativePath = StringUtils.substringBeforeLast(assetContainer.dir().getRelativePath(cssFile),".");
 			String cssFileRequirePath = "css!"+assetContainer.requirePrefix()+"/"+cssFileRelativePath;
-			Asset cssAsset = assetContainer.linkedAsset(cssFileRequirePath);
+			Asset cssAsset = assetContainer.asset(cssFileRequirePath);
 			if (cssAsset == null) {
 				String appRelativePath = assetContainer.app().dir().getRelativePath(cssFile);
 				throw new ModelOperationException("Unable to find CSS asset located at '"+appRelativePath+"' with the require path '"+cssFileRequirePath+"'.");
@@ -198,7 +198,7 @@ public class ThirdpartySourceModule implements SourceModule
 				{
 					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
 				}
-				dependentLibs.addAll(dependentLib.linkedAssets());
+				dependentLibs.addAll(dependentLib.assets());
 			}
 		}
 		catch (ConfigException ex)

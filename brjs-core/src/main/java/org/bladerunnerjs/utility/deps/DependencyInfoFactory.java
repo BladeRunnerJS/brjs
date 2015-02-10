@@ -78,7 +78,7 @@ public class DependencyInfoFactory {
 				addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
 			}
 			
-			for(LinkedAsset asset : assetContainer.linkedAssets()) {
+			for(Asset asset : assetContainer.assets()) {
 				if(asset instanceof SourceModule){
 					addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, (SourceModule)asset);
 				}

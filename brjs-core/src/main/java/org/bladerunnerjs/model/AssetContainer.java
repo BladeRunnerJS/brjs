@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 
@@ -17,8 +17,9 @@ public interface AssetContainer extends BRJSNode {
 	App app();
 	String requirePrefix();
 	boolean isNamespaceEnforced();
-	Set<LinkedAsset> linkedAssets();
-	LinkedAsset linkedAsset(String requirePath);
+	Set<Asset> assets();
+	Asset asset(String requirePath);
+	
 	AssetLocation assetLocation(String locationPath);
 	List<AssetLocation> assetLocations();
 	

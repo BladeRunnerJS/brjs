@@ -75,7 +75,7 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 	}
 	
 	public VerifierChainer classHasPreExportDependencies(String requirePath, String... expectedRequirePaths) throws Exception {
-		SourceModule sourceModule = (SourceModule) aspect.linkedAsset(requirePath);
+		SourceModule sourceModule = (SourceModule) aspect.asset(requirePath);
 		List<String> actualRequirePaths = requirePaths(sourceModule.getPreExportDefineTimeDependentAssets(aspect));
 		
 		assertEquals(Joiner.on(", ").join(expectedRequirePaths), Joiner.on(", ").join(actualRequirePaths));
@@ -84,7 +84,7 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 	}
 	
 	public VerifierChainer classHasPostExportDependencies(String requirePath, String... expectedRequirePaths) throws Exception {
-		SourceModule sourceModule = (SourceModule) aspect.linkedAsset(requirePath);
+		SourceModule sourceModule = (SourceModule) aspect.asset(requirePath);
 		List<String> actualRequirePaths = requirePaths(sourceModule.getPostExportDefineTimeDependentAssets(aspect));
 		
 		assertEquals(Joiner.on(", ").join(expectedRequirePaths), Joiner.on(", ").join(actualRequirePaths));
@@ -93,7 +93,7 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 	}
 	
 	public VerifierChainer classHasUseTimeDependencies(String requirePath, String... expectedRequirePaths) throws Exception {
-		SourceModule sourceModule = (SourceModule) aspect.linkedAsset(requirePath);
+		SourceModule sourceModule = (SourceModule) aspect.asset(requirePath);
 		List<String> actualRequirePaths = requirePaths(sourceModule.getUseTimeDependentAssets(aspect));
 		
 		assertEquals(Joiner.on(", ").join(expectedRequirePaths), Joiner.on(", ").join(actualRequirePaths));

@@ -64,8 +64,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 	
 	@Override
-	public Set<LinkedAsset> linkedAssets() {
-		return bundlableNode.linkedAssets();
+	public Set<Asset> assets() {
+		return bundlableNode.assets();
 	}
 
 	@Override
@@ -74,8 +74,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public LinkedAsset linkedAsset(String requirePath) {
-		return bundlableNode.linkedAsset(requirePath);
+	public Asset asset(String requirePath) {
+		return bundlableNode.asset(requirePath);
 	}
 
 	@Override

@@ -58,12 +58,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public Set<LinkedAsset> linkedAssets() {
-		return new LinkedHashSet<LinkedAsset>(linkedAssetsMap().values());
+	public Set<Asset> assets() {
+		return new LinkedHashSet<>(linkedAssetsMap().values());
 	}
 	
 	@Override
-	public LinkedAsset linkedAsset(String requirePath) {
+	public Asset asset(String requirePath) {
 		return linkedAssetsMap().get(requirePath);
 	}
 	

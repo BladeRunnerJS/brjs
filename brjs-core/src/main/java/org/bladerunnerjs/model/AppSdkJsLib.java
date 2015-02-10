@@ -7,10 +7,10 @@ import java.util.Set;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
@@ -84,13 +84,13 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public Set<LinkedAsset> linkedAssets() {
-		return sdkJsLib.linkedAssets();
+	public Set<Asset> assets() {
+		return sdkJsLib.assets();
 	}
 	
 	@Override
-	public LinkedAsset linkedAsset(String requirePath) {
-		return sdkJsLib.linkedAsset(requirePath);
+	public Asset asset(String requirePath) {
+		return sdkJsLib.asset(requirePath);
 	}
 	
 	@Override
