@@ -1,7 +1,7 @@
 (function() {
 	I18nTest = TestCase("I18nTest");
 
-	I18nTest.prototype.test_theSecondLocaleInJsTestDriverIsLoadedAutomatically = function()	{
+	I18nTest.prototype.test_defaultsToFinalLocale = function()	{
 		var i18n = require( 'br/I18n' );
 		assertEquals( 'January', i18n('br.i18n.date.month.january') );
 	}
