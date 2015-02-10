@@ -2,10 +2,10 @@ package org.bladerunnerjs.model;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.api.App;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.LinkedAsset;
@@ -14,7 +14,6 @@ import org.bladerunnerjs.api.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 /**
@@ -22,20 +21,25 @@ import org.bladerunnerjs.utility.UnicodeReader;
  *
  */
 public class LinkedFileAsset implements LinkedAsset {
-	private App app;
+	
 	private MemoizedFile assetFile;
-	private AssetLocation assetLocation;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
+	private String primaryRequirePath;
+	private AssetContainer assetContainer;
 	
 	public LinkedFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
+		this(assetFile, assetLocation.assetContainer(), "");
+	}
+	
+	public LinkedFileAsset(MemoizedFile assetFile, AssetContainer assetContainer, String requirePrefix) {
 		try {
-			this.assetLocation = assetLocation;
-			app = assetLocation.assetContainer().app();
-			this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
-			assetPath = app.dir().getRelativePath(assetFile);
-			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			this.assetContainer = assetContainer;
+			this.assetFile = assetFile;
+			assetPath = assetContainer.app().dir().getRelativePath(assetFile);
+			primaryRequirePath = requirePrefix+StringUtils.substringBeforeLast(assetFile.getName(), ".");
+			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -50,7 +54,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			 return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
+			 return bundlableNode.getLinkedAssets(assetContainer, getDependencyCalculator().getRequirePaths());
 		}
 		catch (AmbiguousRequirePathException e) {			
 			e.setSourceRequirePath(getAssetPath());
@@ -85,23 +89,23 @@ public class LinkedFileAsset implements LinkedAsset {
 	@Override
 	public AssetLocation assetLocation()
 	{
-		return assetLocation;
+		return null;
 	}
 	
 	private TrieBasedDependenciesCalculator getDependencyCalculator() {
 		if (trieBasedDependenciesCalculator == null) {
-			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new LinkedFileAssetDependenciesReader.Factory(this), assetFile);
+			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(assetContainer, this, new LinkedFileAssetDependenciesReader.Factory(this), assetFile);
 		}
 		return trieBasedDependenciesCalculator;
 	}
 
 	@Override
 	public List<String> getRequirePaths() {
-		return Collections.emptyList();
+		return Arrays.asList(primaryRequirePath);
 	}
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return primaryRequirePath;
 	}
 }

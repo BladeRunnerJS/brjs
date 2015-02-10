@@ -12,7 +12,6 @@ import java.util.Map;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.memoization.Getter;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -28,25 +27,23 @@ import org.bladerunnerjs.utility.trie.TrieFactory;
 public class TrieBasedDependenciesCalculator
 {
 	private App app;
-	private AssetLocation assetLocation;
 	private Asset asset;
 	private final AssetReaderFactory readerFactory;
 	private final TrieFactory trieFactory;
 	
 	private MemoizedValue<ComputedValue> computedValue;
 	
-	public TrieBasedDependenciesCalculator(Asset asset, AssetReaderFactory readerFactory, MemoizedFile... readerFiles)
+	public TrieBasedDependenciesCalculator(AssetContainer assetContainer, Asset asset, AssetReaderFactory readerFactory, MemoizedFile... readerFiles)
 	{
 		this.asset = asset;
 		this.readerFactory = readerFactory;
-		assetLocation = asset.assetLocation();
-		app = assetLocation.assetContainer().app();
-		trieFactory = TrieFactory.getFactoryForAssetContainer(assetLocation.assetContainer());
+		app = assetContainer.app();
+		trieFactory = TrieFactory.getFactoryForAssetContainer(assetContainer);
 		
 		List<MemoizedFile> scopeFiles = new ArrayList<>();
 		scopeFiles.addAll(Arrays.asList(readerFiles));
-		scopeFiles.addAll(Arrays.asList(new MemoizedFile[] {assetLocation.root().file("js-patches"), BladerunnerConf.getConfigFilePath(assetLocation.root()), app.dir(), app.root().sdkJsLibsDir().dir()}));
-		computedValue = new MemoizedValue<>(asset.getAssetPath()+" - TrieBasedDependenciesCalculator.computedValue", assetLocation.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
+		scopeFiles.addAll(Arrays.asList(new MemoizedFile[] {assetContainer.root().file("js-patches"), BladerunnerConf.getConfigFilePath(assetContainer.root()), app.dir(), app.root().sdkJsLibsDir().dir()}));
+		computedValue = new MemoizedValue<>(asset.getAssetPath()+" - TrieBasedDependenciesCalculator.computedValue", assetContainer.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
 	}
 	
 	public List<String> getRequirePaths() throws ModelOperationException

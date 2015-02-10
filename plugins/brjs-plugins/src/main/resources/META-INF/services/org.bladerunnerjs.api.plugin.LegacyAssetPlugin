@@ -1,4 +1,3 @@
-org.bladerunnerjs.plugin.bundlers.namespacedjs.NamespacedJsAssetPlugin
 org.bladerunnerjs.plugin.bundlers.html.HTMLAssetPlugin
 org.bladerunnerjs.plugin.bundlers.xml.XMLAssetPlugin
 org.bladerunnerjs.plugin.bundlers.i18n.I18nAssetPlugin

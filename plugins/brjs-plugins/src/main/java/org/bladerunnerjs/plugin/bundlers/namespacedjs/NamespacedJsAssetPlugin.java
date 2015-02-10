@@ -1,25 +1,35 @@
 package org.bladerunnerjs.plugin.bundlers.namespacedjs;
 
+import java.io.FileFilter;
+import java.util.List;
+
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.plugin.base.AbstractLegacyAssetPlugin;
-import org.bladerunnerjs.model.AssetFileInstantationException;
+import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
+import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
+import org.bladerunnerjs.model.AssetContainer;
 
-public class NamespacedJsAssetPlugin extends AbstractLegacyAssetPlugin {
+public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
-	
+
 	@Override
-	public boolean canHandleAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
-		return (assetLocation.jsStyle().equals(NamespacedJsSourceModule.JS_STYLE) && assetFile.getName().endsWith(".js"));
-	}
-	
-	@Override
-	public Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new NamespacedJsSourceModule(assetFile, assetLocation);
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	{
+		if (assetContainer.dir() == dir || !dir.jsStyle().equals(NamespacedJsSourceModule.JS_STYLE)) {
+			return;
+		}
+		
+		FileFilter jsFileFilter = new SuffixFileFilter(".js");
+		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {
+			NamespacedJsSourceModule asset = new NamespacedJsSourceModule(assetContainer, requirePrefix, jsFile);
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
+				assetDiscoveryInitiator.registerAsset( asset );
+			}
+		}
 	}
 }
