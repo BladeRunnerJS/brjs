@@ -9,6 +9,6 @@ public class AppMetadataUtility
 	public static final String XML_BUNDLE_PATH_TOKEN = "@bundlePath@";
 	
 	public static String getRelativeVersionedBundlePath(App app, String version, String bundlePath) {
-		return ((app.isMultiLocaleApp()) ? "../" : "") + "v/"+version+bundlePath;
+		return "v/"+version+bundlePath;
 	}
 }

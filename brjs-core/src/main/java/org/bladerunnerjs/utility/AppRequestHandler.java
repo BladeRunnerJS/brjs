@@ -113,7 +113,7 @@ public class AppRequestHandler
 				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
 				
 			case WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);	
+				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
 
 			case INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.aspect(aspectName), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
@@ -143,13 +143,12 @@ public class AppRequestHandler
 
 	public String createRelativeBundleRequest(String contentPath, String version) throws MalformedTokenException
 	{
-		String pathPrefix = (app.isMultiLocaleApp()) ? "../" : "";
-		
-		if (contentPath.startsWith("/"))
-		{
-			return pathPrefix + getContentPathParser().createRequest(UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
+		if (contentPath.startsWith("/")) {
+			return getContentPathParser().createRequest(UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
 		}
-		return pathPrefix + getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
+		else {
+			return getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
+		}
 	}
 
 	public String createBundleRequest(Aspect aspect, String contentPath, String version) throws MalformedTokenException
@@ -157,7 +156,9 @@ public class AppRequestHandler
 		if (contentPath.startsWith("/")) {
 			return createRequest(aspect, AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, contentPath);
 		}
-		return createRequest(aspect, AppRequestHandler.BUNDLE_REQUEST, version, contentPath);
+		else {
+			return createRequest(aspect, AppRequestHandler.BUNDLE_REQUEST, version, contentPath);
+		}
 	}
 	
 	public String createLocaleForwardingRequest(Aspect aspect) throws MalformedTokenException
@@ -266,18 +267,10 @@ public class AppRequestHandler
 			
 			localeForwardingPage.write("\n");
 			IOUtils.copy(localeForwarderReader, localeForwardingPage);
-			localeForwardingPage.write("\n");			
-			localeForwardingPage.write("function forwardToLocalePage() {\n");
-			localeForwardingPage.write("	var localeCookie = LocaleUtility.getCookie(window.$BRJS_LOCALE_COOKIE_NAME);\n");
-			localeForwardingPage.write("	var browserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales();\n");
-			localeForwardingPage.write("	var appLocales = window.$BRJS_APP_LOCALES;\n");
-			localeForwardingPage.write("	var activeLocale = LocaleUtility.getActiveLocale( localeCookie, browserAcceptedLocales, appLocales );\n");
-			localeForwardingPage.write("	window.location = LocaleUtility.getLocalizedPageUrl( window.location.href, activeLocale );\n");
-			localeForwardingPage.write("}\n");
-			
-			localeForwardingPage.write("\n</script>\n");
+			localeForwardingPage.write("\n");
+			localeForwardingPage.write("LocaleUtility.switchToActiveLocale();\n");
+			localeForwardingPage.write("</script>\n");
 			localeForwardingPage.write("</head>\n");
-			localeForwardingPage.write("<body onload='forwardToLocalePage()'></body>\n");
 			
 			return new CharResponseContent( app.root(), localeForwardingPage.toString() );
 		}
@@ -299,7 +292,7 @@ public class AppRequestHandler
 		return contentPathParser.value(() -> {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			
-			/* NOTE: 
+			/* NOTE:
 			 * - <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
 			 * - ordering is important here, if two URLs share a similar format, the first type wins
 			 */

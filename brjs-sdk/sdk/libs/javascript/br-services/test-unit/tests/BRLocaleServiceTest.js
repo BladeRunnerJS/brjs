@@ -1,3 +1,4 @@
+// TODO: delete this class (preseve any tests that are useful)
 (function() {
 	BRLocaleServiceTest = TestCase("BRLocaleServiceTest");
 
@@ -6,7 +7,7 @@
 	//TODO: find a better way to test this instead of passing in functions
 
 	BRLocaleServiceTest.prototype.test_getActiveLocaleWhenCookieSet = function()
-	{	
+	{
 		var localeUtility = new MockLocaleUtility("de", ['en'], {'en' : true, 'de' : true});
 		var localeService = new BRLocaleService( localeUtility );
 		
@@ -30,7 +31,7 @@
 	};
 
 	BRLocaleServiceTest.prototype.test_getPageLocale = function()
-	{	
+	{
 		var localeUtility = new MockLocaleUtility(null, ['fr'], {'en' : true, 'de' : true}, "/someapp/en_GB/");
 		var localeService = new BRLocaleService( localeUtility );
 		
@@ -38,10 +39,10 @@
 	};
 
 	BRLocaleServiceTest.prototype.test_getAndSetLocaleCookie = function()
-	{	
+	{
 		//TODO: find a better way to do this
-		window.$BRJS_LOCALE_COOKIE_NAME = "locale.key."+new Date().getTime(); 
-		window.$BRJS_APP_LOCALES = {'en' : true, 'de' : true}; 
+		window.$BRJS_LOCALE_COOKIE_NAME = "locale.key."+new Date().getTime();
+		window.$BRJS_APP_LOCALES = {'en' : true, 'de' : true};
 		
 		var localeService = new BRLocaleService();
 		
@@ -58,16 +59,16 @@
 		var LocaleUtility = require("br-locale-utility");
 		this.setCookie = LocaleUtility.setCookie;
 		if (localeCookieValue) {
-			this.getCookie = function() { return localeCookieValue ; }	
+			this.getCookie = function() { return localeCookieValue ; }
 		} else {
 			this.getCookie = LocaleUtility.getCookie
 		}
-		if (browserLocales) {	
+		if (browserLocales) {
 			this.getBrowserAcceptedLocales = function() { return browserLocales ; }
 		} else {
 			this.getBrowserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales;
 		}
-		if (windowUrl) {	
+		if (windowUrl) {
 			this.getWindowUrl = function() { return windowUrl ; }
 		} else {
 			this.getWindowUrl = LocaleUtility.getWindowUrl;

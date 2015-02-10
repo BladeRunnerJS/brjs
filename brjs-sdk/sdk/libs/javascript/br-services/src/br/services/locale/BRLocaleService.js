@@ -1,8 +1,10 @@
+// TODO: delete this service
+
 "use strict";
 
 /**
-* @module br/services/locale/BRLocaleService
-*/
+ * @module br/services/locale/BRLocaleService
+ */
 
 var Errors = require('br/Errors');
 var br = require('br/Core');
