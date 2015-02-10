@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,13 +19,19 @@ public class FileAsset implements Asset {
 	private AssetLocation assetLocation;
 	private String defaultFileCharacterEncoding;
 	private String assetPath;
+	private String primaryRequirePath;
 	
-	public FileAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public FileAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+		this(assetFile, assetLocation.assetContainer(), "");
+		this.assetLocation = assetLocation;
+	}
+	
+	public FileAsset(MemoizedFile assetFile, AssetContainer assetContainer, String requirePrefix) {
 		try {
-			this.file = assetLocation.root().getMemoizedFile(assetFile);
-			this.assetLocation = assetLocation;
-			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(file);
+			this.file = assetFile;
+			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			assetPath = assetContainer.app().dir().getRelativePath(file);
+			primaryRequirePath = requirePrefix+"/"+assetFile.getName();
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -59,11 +66,11 @@ public class FileAsset implements Asset {
 
 	@Override
 	public List<String> getRequirePaths() {
-		return Collections.emptyList();
+		return Arrays.asList(primaryRequirePath);
 	}
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return primaryRequirePath;
 	}
 }

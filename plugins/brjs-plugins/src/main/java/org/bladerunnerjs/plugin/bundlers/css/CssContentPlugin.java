@@ -110,7 +110,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 		Locale locale = new Locale(languageCode, countryCode);
 
 		List<Reader> readerList = new ArrayList<Reader>();
-		List<Asset> cssAssets = getCssAssets(bundleSet, cssAssetPlugin);
+		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
 		for(Asset cssAsset : cssAssets) {
 			String assetThemeName = getThemeName(cssAsset.assetLocation());
 			
@@ -136,12 +136,9 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 		return false;
 	}
 	
-	// protected so the CT CSS plugin that uses a different CSS ordering can override it
-	protected List<Asset> getCssAssets(BundleSet bundleSet, LegacyAssetPlugin cssAssetPlugin){
-		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
-		return cssAssets;
+	protected void orderCssAssets(List<Asset> cssAssets) {
+		// do nothing, protected so the CT CSS plugin that uses a different CSS ordering can override it
 	}
-	
 	
 	private String getThemeName(AssetLocation cssAssetLocation) {
 		String themeName;
