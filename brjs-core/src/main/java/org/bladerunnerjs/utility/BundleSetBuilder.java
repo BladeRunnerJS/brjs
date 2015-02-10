@@ -33,6 +33,7 @@ public class BundleSetBuilder {
 	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
+	private final List<Asset> assets = new ArrayList<>();
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Map<String,AliasDefinition> activeAliases = new LinkedHashMap<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
@@ -78,7 +79,7 @@ public class BundleSetBuilder {
 		
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		
-		return new StandardBundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
+		return new StandardBundleSet(bundlableNode, assets, orderedSourceModules, activeAliasList, resourceLocationList);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
@@ -97,6 +98,7 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		
 		if(linkedAssets.add(linkedAsset)) {
+			assets.add(linkedAsset);
 			List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
 			
 			addAliases( getAliases(linkedAsset.getAliasNames()) );
@@ -116,9 +118,13 @@ public class BundleSetBuilder {
 			for(Asset asset : moduleDependencies) {
 				if(asset instanceof SourceModule){
 					addSourceModule((SourceModule)asset);
-				}else{
+				}else {
 					addAssetLocation(asset.assetLocation());
+					if (asset instanceof LinkedAsset) {
+						addLinkedAsset((LinkedAsset) asset);						
+					}
 				}
+				assets.add(asset);
 			}
 			
 			addAssetLocation(linkedAsset.assetLocation());

@@ -13,13 +13,15 @@ import org.bladerunnerjs.api.aliasing.AliasDefinition;
 import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 
 public class StandardBundleSet implements BundleSet {
+	private final List<Asset> assets;
 	private final List<SourceModule> sourceModules;
 	private final List<AliasDefinition> activeAliases;
 	private final List<AssetLocation> resourceLocations;
 	private BundlableNode bundlableNode;
 	
-	public StandardBundleSet(BundlableNode bundlableNode, List<SourceModule> sourceModules, List<AliasDefinition> activeAliases, List<AssetLocation> resources) {
+	public StandardBundleSet(BundlableNode bundlableNode, List<Asset> assets, List<SourceModule> sourceModules, List<AliasDefinition> activeAliases, List<AssetLocation> resources) {
 		this.bundlableNode = bundlableNode;
+		this.assets = assets;
 		this.sourceModules = sourceModules;
 		this.activeAliases = activeAliases;
 		this.resourceLocations = resources;
@@ -39,6 +41,11 @@ public class StandardBundleSet implements BundleSet {
 			}
 		}
 		return result;
+	}
+	
+	@Override
+	public List<Asset> getAssets() {
+		return assets;
 	}
 	
 	@Override

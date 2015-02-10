@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.BundlableNode;
 public interface BundleSet {
 	public BundlableNode getBundlableNode();
 	public List<String> getThemes();
+	public List<Asset> getAssets();
 	public List<SourceModule> getSourceModules();
 	public List<AliasDefinition> getActiveAliases();
 	public List<AssetLocation> getResourceNodes();

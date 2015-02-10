@@ -111,6 +111,14 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 
 		List<Reader> readerList = new ArrayList<Reader>();
 		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
+		for (Asset asset : bundleSet.getAssets()) {
+			if (asset.getPrimaryRequirePath() != null && asset.getPrimaryRequirePath().startsWith("css!")) {
+				cssAssets.add(asset);
+			}
+		}
+		
+		orderCssAssets(cssAssets);
+		
 		for(Asset cssAsset : cssAssets) {
 			String assetThemeName = getThemeName(cssAsset.assetLocation());
 			

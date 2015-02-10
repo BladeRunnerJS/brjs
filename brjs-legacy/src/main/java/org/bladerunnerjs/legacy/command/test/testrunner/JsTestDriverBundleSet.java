@@ -40,4 +40,8 @@ public class JsTestDriverBundleSet implements BundleSet {
 	public List<Asset> getResourceFiles(LegacyAssetPlugin assetProducer) {
 		return bundleSet.getResourceFiles(assetProducer);
 	}
+	
+	public List<Asset> getAssets() {
+		return bundleSet.getAssets();
+	}
 }
