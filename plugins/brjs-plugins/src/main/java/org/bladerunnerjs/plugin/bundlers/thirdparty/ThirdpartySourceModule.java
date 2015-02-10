@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.JsLib;
@@ -58,7 +59,6 @@ public class ThirdpartySourceModule implements SourceModule
 		List<Reader> fileReaders = new ArrayList<>();
 		List<Reader> jsFileReaders = new ArrayList<>();
 
-		
 		try {			
 			for(File file : manifest.getJsFiles()) {
 				jsFileReaders.add(new UnicodeReader(file, defaultFileCharacterEncoding));
@@ -129,6 +129,25 @@ public class ThirdpartySourceModule implements SourceModule
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		
+		List<MemoizedFile> cssFiles;
+		try {
+			cssFiles = manifest.getCssFiles();
+		} catch(ConfigException ex) {
+			throw new ModelOperationException(ex);
+		}
+		
+		for (MemoizedFile cssFile : cssFiles) {
+			String cssFileRelativePath = StringUtils.substringBeforeLast(assetContainer.dir().getRelativePath(cssFile),".");
+			String cssFileRequirePath = "css!"+assetContainer.requirePrefix()+"/"+cssFileRelativePath;
+			Asset cssAsset = assetContainer.linkedAsset(cssFileRequirePath);
+			if (cssAsset == null) {
+				String appRelativePath = assetContainer.app().dir().getRelativePath(cssFile);
+				throw new ModelOperationException("Unable to find CSS asset located at '"+appRelativePath+"' with the require path '"+cssFileRequirePath+"'.");
+			}
+			dependendAssets.add( cssAsset );
+		}
+		
 		return dependendAssets;
 	}
 
