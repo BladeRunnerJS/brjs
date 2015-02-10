@@ -12,7 +12,7 @@ import org.bladerunnerjs.api.aliasing.AliasDefinition;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
+import org.bladerunnerjs.utility.RequirePathUtility;
 
 public class AliasAsset implements LinkedAsset {
 	private final AliasDefinition alias;
@@ -63,6 +63,6 @@ public class AliasAsset implements LinkedAsset {
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return RequirePathUtility.getPrimaryRequirePath(this);
 	}
 }

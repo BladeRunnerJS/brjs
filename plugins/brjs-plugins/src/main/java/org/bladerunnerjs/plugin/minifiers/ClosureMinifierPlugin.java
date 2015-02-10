@@ -1,12 +1,15 @@
 package org.bladerunnerjs.plugin.minifiers;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.SequenceInputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,7 +92,14 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 		if (result.success)
 		{
 			logger.debug(Messages.OUTPUT_FROM_MINIFIER, errorStream.toString());
-			readers.add( new StringReader(compiler.toSource()) );
+			try
+			{
+				readers.add( new InputStreamReader( new ByteArrayInputStream(compiler.toSource().getBytes()), "UTF-8") );
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				throw new ContentProcessingException(e);
+			}
 		}
 		else
 		{
@@ -112,7 +122,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 		for (InputSource inputSource : inputSources)
 		{
 			Reader reader = inputSource.getContentPluginReader();
-			inputStreams.add( new ReaderInputStream(reader) );
+			inputStreams.add( new ReaderInputStream(reader, "UTF-8") );
 		}
 		return new SequenceInputStream( inputStreams.elements() );
 	}

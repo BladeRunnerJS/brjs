@@ -2,25 +2,31 @@
 	"use strict";
 
 	/** @private */
-	window.mergePackageBlock = function(context, packageBlock) {
-		for (var packageName in packageBlock) {
-			if(!context[packageName]) {
-				context[packageName] = packageBlock[packageName];
-			}
-			else {
-				mergePackageBlock(context[packageName], packageBlock[packageName]);
+	(function(){
+		var mergePackageBlock = function(context, packageBlock) {
+			for (var packageName in packageBlock) {
+				if(!context[packageName]) {
+					context[packageName] = packageBlock[packageName];
+				}
+				else {
+					mergePackageBlock(context[packageName], packageBlock[packageName]);
+				}
 			}
 		}
-	}
+		window.mergePackageBlock = mergePackageBlock;
+	})();
 
 	/** @private */
-	window.requireAll = function(require, requirePaths) {
-		for (var i = 0; i < requirePaths.length; i++) {
-			var requirePath = requirePaths[i];
-			var namespacePath = requirePath.replace(/\//gi, ".");
-			globaliseRequirePath(namespacePath, require(requirePath));
+	(function(){
+		var requireAll = function(require, requirePaths) {
+			for (var i = 0; i < requirePaths.length; i++) {
+				var requirePath = requirePaths[i];
+				var namespacePath = requirePath.replace(/\//gi, ".");
+				globaliseRequirePath(namespacePath, require(requirePath));
+			}
 		}
-	}
+		window.requireAll = requireAll;
+	})();
 
 	/* private stuff */
 
