@@ -29,7 +29,7 @@ module.exports = {
 			normalizedPath = normalizedPath.join('/');
 		}
 		else {
-			normalizedPath = normalizedPath + '/' + locale + '/';
+			normalizedPath = normalizedPath + '/' + locale;
 		}
 
 		return protocol + '//' + host + normalizedPath + query + hash;

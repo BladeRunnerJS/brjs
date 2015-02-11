@@ -316,12 +316,12 @@ public class AppRequestHandler
 			else {
 				contentPathParserBuilder
 					.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
-						.and("<aspect><locale>/").as(INDEX_PAGE_REQUEST)
+						.and("<aspect><locale>").as(INDEX_PAGE_REQUEST)
 						.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
-						.and("<aspect><bladeset>/<blade>/workbench/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/<locale>").as(WORKBENCH_INDEX_PAGE_REQUEST)
 						.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
 						.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST)
-						.and("<aspect><bladeset>/workbench/<locale>/").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/workbench/<locale>").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
 						.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
 						.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
 						.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
