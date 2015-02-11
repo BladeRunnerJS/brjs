@@ -533,7 +533,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(brjs).localeForwarderHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "v/1234/css/usedtheme/bundle.css")
+		then(targetDir).containsFileWithContents("index.html", "v/1234/css/usedtheme/bundle.css")
 			.and(targetDir).containsFile("v/1234/css/usedtheme/bundle.css")
 			.and(targetDir).doesNotContainFile("v/1234/css/unusedtheme/bundle.css");
 	}

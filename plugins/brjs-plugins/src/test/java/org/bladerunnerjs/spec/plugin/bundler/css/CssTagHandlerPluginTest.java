@@ -48,8 +48,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
-			"<link rel=\"stylesheet\" href=\"v/dev/css/common/bundle.css\"/>",
-			"<link rel=\"stylesheet\" href=\"v/dev/css/common_en/bundle.css\"/>");
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>");
 	}
 	
 	@Test
@@ -59,9 +59,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-			"<link rel=\"stylesheet\" href=\"v/dev/css/common/bundle.css\"/>",
-			"<link rel=\"stylesheet\" href=\"v/dev/css/common_en/bundle.css\"/>",
-			"<link rel=\"stylesheet\" href=\"v/dev/css/common_en_GB/bundle.css\"/>");
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en_GB/bundle.css\"/>");
 	}
 	
 	@Test
@@ -128,7 +128,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/> appns.bs.Class  appns.bs.b1.Class ");
 		when(aspect).indexPageLoadedInDev(response, "en");
-		then(response).containsTextOnce("<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>");		
+		then(response).containsTextOnce("<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>");
 	}
 	
 	@Test
@@ -139,8 +139,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsText("<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>")
-			.and(response).doesNotContainText("v/dev/css/theme1/bundle.css")	
-			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");	
+			.and(response).doesNotContainText("v/dev/css/theme1/bundle.css")
+			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");
 	}
 	
 	@Test
@@ -154,7 +154,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		then(response).containsOrderedTextFragments(
 			"<link rel=\"stylesheet\" href=\"v/dev/css/common/bundle.css\"/>",
 			"<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>")
-			.and(response).doesNotContainText("v/dev/css/theme1/bundle.css")	
+			.and(response).doesNotContainText("v/dev/css/theme1/bundle.css")
 			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");
 	}
 	
@@ -166,9 +166,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
     		.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\" alternateTheme=\"theme1,theme2\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
-				"<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>",	
-				"<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>",	
-				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>");	
+				"<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>",
+				"<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>",
+				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>");
 	}
 	
 	@Test
@@ -180,8 +180,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme1\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsText("<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>")
-			.and(response).doesNotContainText("v/dev/css/standard/bundle.css")	
-			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");	
+			.and(response).doesNotContainText("v/dev/css/standard/bundle.css")
+			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");
 	}
 	
 	@Test
@@ -192,7 +192,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme1\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsText("<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>")
-			.and(response).doesNotContainText("v/dev/css/common/bundle.css");	
+			.and(response).doesNotContainText("v/dev/css/common/bundle.css");
 	}
 
 	@Test
@@ -204,7 +204,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
 				"<link rel=\"stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>",
-				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>");	
+				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>");
 	}
 	
 	@Test
@@ -215,8 +215,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme2,theme3\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
-				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>",	
-				"<link rel=\"alternate stylesheet\" title=\"theme3\" href=\"v/dev/css/theme3/bundle.css\"/>");	
+				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>",
+				"<link rel=\"alternate stylesheet\" title=\"theme3\" href=\"v/dev/css/theme3/bundle.css\"/>");
 	}
 	
 	@Test
@@ -337,10 +337,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-				"title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
-				"title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
-				"title=\"red-light\" href=\"v/dev/css/red/bundle.css\"/>",
-				"title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
+				"title=\"red-dark\" href=\"../v/dev/css/red/bundle.css\"/>",
+				"title=\"red-dark\" href=\"../v/dev/css/red-dark/bundle.css\"/>",
+				"title=\"red-light\" href=\"../v/dev/css/red/bundle.css\"/>",
+				"title=\"red-light\" href=\"../v/dev/css/red-light/bundle.css\"/>");
 	}
 	
 	@Test
@@ -395,9 +395,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
             .and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
         when(aspect).indexPageLoadedInDev(response, "en_GB");
         then(response).containsOrderedTextFragments(
-                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
-                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
-                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red/bundle.css\"/>",
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red-dark/bundle.css\"/>",
+                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"../v/dev/css/red-light/bundle.css\"/>");
 	}
 	
 	@Test
@@ -409,10 +409,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
             .and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
         when(aspect).indexPageLoadedInDev(response, "en_GB");
         then(response).containsOrderedTextFragments(
-                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
-                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
-                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red/bundle.css\"/>",
-        		"<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red/bundle.css\"/>",
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red-dark/bundle.css\"/>",
+                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"../v/dev/css/red/bundle.css\"/>",
+        		"<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"../v/dev/css/red-light/bundle.css\"/>");
 	}
 	
 	@Test
@@ -425,11 +425,11 @@ public class CssTagHandlerPluginTest extends SpecTest {
             .and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"blue\" @/>");
         when(aspect).indexPageLoadedInDev(response, "en_GB");
         then(response).containsOrderedTextFragments(
-        		"<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
-            	"<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
-        		"<link rel=\"alternate stylesheet\" title=\"blue\" href=\"v/dev/css/blue/bundle.css\"/>")
-            .and(response).containsTextOnce("v/dev/css/red/bundle.css")
-            .and(response).containsTextOnce("v/dev/css/blue/bundle.css");
+        		"<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red/bundle.css\"/>",
+            	"<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red-dark/bundle.css\"/>",
+        		"<link rel=\"alternate stylesheet\" title=\"blue\" href=\"../v/dev/css/blue/bundle.css\"/>")
+            .and(response).containsTextOnce("../v/dev/css/red/bundle.css")
+            .and(response).containsTextOnce("../v/dev/css/blue/bundle.css");
 	}
 	
 	@Test
@@ -450,9 +450,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant/bundle.css\"/>",
-    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en/bundle.css\"/>",
-    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en_GB/bundle.css\"/>");
+    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"../v/dev/css/theme-variant/bundle.css\"/>",
+    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"../v/dev/css/theme-variant_en/bundle.css\"/>",
+    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"../v/dev/css/theme-variant_en_GB/bundle.css\"/>");
 	}
 	
 }

@@ -36,7 +36,7 @@ public class CommanderChainer {
 	public NamedNodeCommander and(NamedNode namedDirNode) { return new NamedNodeCommander(modelTest, namedDirNode); }
 	public BRJSCommander and(BRJS brjs) { return new BRJSCommander(modelTest, brjs); }
 	public AppCommander and(App app) { return new AppCommander(modelTest, app); }
-	public AppConfCommander when(AppConf appConf) { return new AppConfCommander(modelTest, appConf); }
+	public AppConfCommander and(AppConf appConf) { return new AppConfCommander(modelTest, appConf); }
 	public AspectCommander and(Aspect aspect) { return new AspectCommander(modelTest, aspect); }
 	public BladesetCommander and(Bladeset bladeset) { return new BladesetCommander(modelTest, bladeset); }
 	public BladeCommander and(Blade blade) { return new BladeCommander(modelTest, blade); }

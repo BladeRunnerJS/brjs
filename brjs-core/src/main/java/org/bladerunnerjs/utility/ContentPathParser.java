@@ -40,7 +40,7 @@ public class ContentPathParser
 		String requestForm = requestForms.get(requestFormName);
 		List<String> tokens = requestFormTokens.get(requestFormName);
 		if (tokens == null) {
-			throw new IllegalArgumentException("request form name, "+requestFormName+", hasn't been registed");
+			throw new IllegalArgumentException("request form name '" + requestFormName + "' hasn't been registered");
 		}
 		if(args.length != tokens.size()) throw new IllegalArgumentException("wrong number of arguments provided");
 		

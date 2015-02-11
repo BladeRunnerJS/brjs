@@ -247,12 +247,24 @@ public class BuildAppCommandTest extends SpecTest
 	}
 	
 	@Test
-	public void defaultAspectsAreBuiltCorrectly() throws Exception
+	public void defaultAspectsAreBuiltCorrectlyForSingleLocaleApps() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(brjs).localeForwarderHasContents("")
 			.and(app.defaultAspect()).hasBeenCreated()
 			.and(app.appConf()).supportsLocales("en_GB")
+			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).fileContentsContains("generated/built-apps/app/index.html", "DEFAULT ASPECT INDEX PAGE");
+	}
+	
+	@Test
+	public void defaultAspectsAreBuiltCorrectlyForMultiLocaleApps() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(brjs).localeForwarderHasContents("")
+			.and(app.defaultAspect()).hasBeenCreated()
+			.and(app.appConf()).supportsLocales("en", "en_GB")
 			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
 		when(brjs).runCommand("build-app", "app");
 		then(brjs).fileContentsContains("generated/built-apps/app/en_GB/index.html", "DEFAULT ASPECT INDEX PAGE");

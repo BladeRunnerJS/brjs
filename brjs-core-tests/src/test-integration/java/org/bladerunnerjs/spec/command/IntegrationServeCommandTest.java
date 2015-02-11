@@ -85,7 +85,8 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).localeForwarderHasContents("")
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
-			.and(brjs.app("app1")).hasBeenPopulated("default");
+			.and(brjs.app("app1")).hasBeenPopulated("default")
+			.and(brjs.app("app1").appConf()).supportsLocales("en", "de");
 		when(brjs).runThreadedCommand("serve");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1");
 	}
