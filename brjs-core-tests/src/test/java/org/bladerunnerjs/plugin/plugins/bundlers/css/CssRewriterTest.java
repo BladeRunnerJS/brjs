@@ -324,11 +324,11 @@ public class CssRewriterTest extends SpecTest
 	@Test
 	public void imagesInBladeWorkbenchResourcesAreRewritten() throws Exception
 	{
-		given(workbench).containsFileWithContents("resources/style.css", "background-image: url(images/flower.png);")
-			.and(blade).hasClass("bs/b1/Class1")
-			.and(workbench).indexPageRequires("bs/b1/Class1");
+		given(blade).hasClass("appns/bs/b1/Class1")
+			.and(blade).containsFileWithContents("src/appns/bs/b1/style.css", "background-image: url(images/flower.png);")
+			.and(workbench).indexPageRequires("appns/bs/b1/Class1");
 		when(workbench).requestReceivedInDev("css/common/bundle.css", response);
-		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1/workbench_resource/resources/images/flower.png);");
+		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1_resource/src/appns/bs/b1/images/flower.png);");
 	}
 	
 	@Test

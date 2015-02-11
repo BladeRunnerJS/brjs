@@ -109,7 +109,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		given(sdkJquery).containsFileWithContents("thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: jquery")
 			.and(sdkJquery).containsFileWithContents("jquery.js", "jquery-content")
 			.and(userLib).classFileHasContent("userLib.Class1", "require('jquery');")
-			.and(aspect).indexPageHasContent("require('userLib.Class1');");
+			.and(aspect).indexPageHasContent("require('userLib/Class1');");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("jquery", "userLib/Class1");
 	}
@@ -118,7 +118,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 	public void userLibraryCanDependOnSdkCommonJsLib() throws Exception {
 		given(sdkCommonJsLib).classFileHasContent("sdkCommonJsLib.Class1", "function empty() {};")
 			.and(userLib).classFileHasContent("userLib.Class1", "require('sdkCommonJsLib/Class1');")
-			.and(aspect).indexPageHasContent("require('userLib.Class1');");
+			.and(aspect).indexPageHasContent("require('userLib/Class1');");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("sdkCommonJsLib/Class1", "userLib/Class1");
 	}

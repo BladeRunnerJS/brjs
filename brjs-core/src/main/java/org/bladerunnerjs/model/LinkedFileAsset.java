@@ -3,7 +3,10 @@ package org.bladerunnerjs.model;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
@@ -14,6 +17,7 @@ import org.bladerunnerjs.api.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 /**
@@ -49,8 +53,9 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
+		List<Asset> assetList;
 		try {
-			 return bundlableNode.getLinkedAssets(assetContainer, getDependencyCalculator().getRequirePaths());
+			assetList = bundlableNode.getLinkedAssets(assetContainer, getDependencyCalculator().getRequirePaths());
 		}
 		catch (AmbiguousRequirePathException e) {			
 			e.setSourceRequirePath(getAssetPath());
@@ -59,6 +64,21 @@ public class LinkedFileAsset implements LinkedAsset {
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+		Set<String> dependencies = new HashSet<String>();
+		List<String> aliases = new ArrayList<>();
+		try {
+			RequirePathUtility.addRequirePathsFromReader(getReader(), dependencies, aliases);
+		} catch (IOException e) {
+			//TODO
+			e.printStackTrace();
+		}
+		List<String> dependenciesList = new ArrayList<String>(dependencies);
+		try {
+			assetList.addAll(bundlableNode.getLinkedAssets(assetContainer, dependenciesList));
+		} catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
+		return assetList;
 	}
 	
 	@Override

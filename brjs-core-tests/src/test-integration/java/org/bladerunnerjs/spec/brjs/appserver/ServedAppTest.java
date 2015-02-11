@@ -39,6 +39,8 @@ public class ServedAppTest extends SpecTest
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsAssetLocationPlugins()
 			.and(brjs).automaticallyFindsContentPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
+			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement"))
 			.and(brjs).hasBeenCreated()

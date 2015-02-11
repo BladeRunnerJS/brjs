@@ -3,16 +3,12 @@ package org.bladerunnerjs.plugin.bundlers.commonjs;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
@@ -27,13 +23,12 @@ import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModulePatch;
+import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
 
 public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
-	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias|getAlias|getService)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
-	
 	private MemoizedFile assetFile;
 	
 	private SourceModulePatch patch;
@@ -173,17 +168,17 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 				try {
 					try(Reader reader = new CommonJsPreExportDefineTimeDependenciesReader(sourceModule)) 
 					{
-						addRequirePathsFromReader(reader, computedValue.preExportDefineTimeRequirePaths, computedValue.aliases);
+						RequirePathUtility.addRequirePathsFromReader(reader, computedValue.preExportDefineTimeRequirePaths, computedValue.aliases);
 					}
 					
 					try(Reader reader = new CommonJsPostExportDefineTimeDependenciesReader(sourceModule)) 
 					{
-						addRequirePathsFromReader(reader, computedValue.postExportDefineTimeRequirePaths, computedValue.aliases);
+						RequirePathUtility.addRequirePathsFromReader(reader, computedValue.postExportDefineTimeRequirePaths, computedValue.aliases);
 					}
 
 					try(Reader reader = new CommonJsUseTimeDependenciesReader(sourceModule)) 
 					{
-						addRequirePathsFromReader(reader, computedValue.useTimeRequirePaths, computedValue.aliases);
+						RequirePathUtility.addRequirePathsFromReader(reader, computedValue.useTimeRequirePaths, computedValue.aliases);
 					}
 				}
 				catch(IOException e) {
@@ -193,29 +188,6 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 				return computedValue;
 			}
 		});
-	}
-	
-	private void addRequirePathsFromReader(Reader reader, Set<String> dependencies, List<String> aliases) throws IOException {
-		StringWriter stringWriter = new StringWriter();
-		IOUtils.copy(reader, stringWriter);
-		
-		Matcher m = matcherPattern.matcher(stringWriter.toString());
-		while (m.find()) {
-			String methodArgument = m.group(2);
-			
-			if (m.group(1).startsWith("require")) {
-				String requirePath = methodArgument;
-				dependencies.add(requirePath);
-			}
-			else if (m.group(1).startsWith("getService")){
-				String serviceAliasName = methodArgument;
-				dependencies.add("service!" + serviceAliasName);
-			}
-			else {
-				String aliasName = methodArgument;
-				aliases.add(aliasName);
-			}
-		}
 	}
 
 	private List<Asset> getSourceModulesForRequirePaths(BundlableNode bundlableNode, Set<String> requirePaths) throws ModelOperationException {

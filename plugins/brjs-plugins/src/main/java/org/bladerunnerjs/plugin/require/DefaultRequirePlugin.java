@@ -42,7 +42,6 @@ public class DefaultRequirePlugin extends AbstractRequirePlugin implements Requi
 		if(asset == null) {
 			throw new UnresolvableRequirePathException(requirePathSuffix);
 		}
-		
 		return asset;
 	}
 }

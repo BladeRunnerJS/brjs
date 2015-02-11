@@ -274,15 +274,14 @@ public class AppServerTest extends SpecTest
 	
 	@Test
 	public void errorCode400IsThrownIfTheRequestIsMalformed() throws Exception {
-		given(app1.defaultAspect()).indexPageRequires("appns/App")
+		given(app1.defaultAspect()).indexPageHasContent("")
 			.and(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/js/malformed-request", "Error 400");
 	}
 	
 	@Test
 	public void errorCode404IsThrownIfResourceIsNotFound() throws Exception {
-		given(app1.defaultAspect()).indexPageRequires("appns/App")
-			.and(appServer).started();
+		given(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/no-such-content-plugin", "Error 404");
 	}
 }
