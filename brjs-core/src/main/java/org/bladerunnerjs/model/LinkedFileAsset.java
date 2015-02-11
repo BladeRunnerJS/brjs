@@ -2,15 +2,18 @@ package org.bladerunnerjs.model;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
+import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 /**
@@ -45,8 +48,9 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
+		List<Asset> assetList;
 		try {
-			 return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
+			assetList = bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (AmbiguousRequirePathException e) {			
 			e.setSourceRequirePath(getAssetPath());
@@ -55,6 +59,21 @@ public class LinkedFileAsset implements LinkedAsset {
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+		Set<String> dependencies = new HashSet<String>();
+		List<String> aliases = new ArrayList<>();
+		try {
+			RequirePathUtility.addRequirePathsFromReader(getReader(), dependencies, aliases);
+		} catch (IOException e) {
+			//TODO
+			e.printStackTrace();
+		}
+		List<String> dependenciesList = new ArrayList<String>(dependencies);
+		try {
+			assetList.addAll(bundlableNode.getLinkedAssets(assetLocation, dependenciesList));
+		} catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
+		return assetList;
 	}
 	
 	@Override
@@ -98,6 +117,6 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return RequirePathUtility.getPrimaryRequirePath(this);
 	}
 }

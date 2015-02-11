@@ -51,7 +51,7 @@ public class BundleSetBuilder {
 		
 		if (bundlableNode instanceof Workbench) {
 			for ( AssetLocation assetLocation : bundlableNode.app().aspect("default").seedAssetLocations() ) {
-				addUnscopedAssetLocation( assetLocation );				
+				addUnscopedAssetLocation( assetLocation );
 			}
 		}
 		

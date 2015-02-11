@@ -1,6 +1,6 @@
 (function() {
 	describe("locale-forwarder", function() {
-		require("jasmine")
+		require("jasmine");
 
 		var getActiveLocaleGiven = require("br-locale-utility").getActiveLocaleGiven;
 

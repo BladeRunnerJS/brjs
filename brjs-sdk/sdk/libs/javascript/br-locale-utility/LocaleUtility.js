@@ -19,10 +19,10 @@ var LocaleUtility = window.LocaleUtility = {};
 LocaleUtility.getBrowserAcceptedLocales = function() {
 	var userAcceptedLocales;
 
-	if(navigator.languages) {
+	if (navigator.languages) {
 		userAcceptedLocales = navigator.languages;
 	}
-	else if(navigator.language) {
+	else if (navigator.language) {
 		userAcceptedLocales = [navigator.language];
 	}
 	else {
