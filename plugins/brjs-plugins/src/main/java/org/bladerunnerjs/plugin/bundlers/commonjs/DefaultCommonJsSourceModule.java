@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.memoization.Getter;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
@@ -147,17 +145,6 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		return assetContainer.app().dir().getRelativePath(assetFile);
 	}
 	
-	@Override
-	public AssetLocation assetLocation()
-	{
-		return assetContainer.assetLocation( assetContainer.dir().getRelativePath(dir()) );
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return Collections.emptyList();
-	}
-	
 	private ComputedValue getComputedValue() throws ModelOperationException {
 		DefaultCommonJsSourceModule sourceModule = this;
 		return computedValue.value(new Getter<ModelOperationException>() {
@@ -192,7 +179,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 
 	private List<Asset> getSourceModulesForRequirePaths(BundlableNode bundlableNode, Set<String> requirePaths) throws ModelOperationException {
 		try {
-			return bundlableNode.getLinkedAssets( assetContainer, new ArrayList<>(requirePaths) );
+			return bundlableNode.assets( assetContainer, new ArrayList<>(requirePaths) );
 		}
 		catch (AmbiguousRequirePathException e) {
 			e.setSourceRequirePath(getPrimaryRequirePath());

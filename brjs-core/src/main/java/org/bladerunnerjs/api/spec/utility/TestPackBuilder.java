@@ -22,7 +22,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 
 	public BuilderChainer testRefersTo(String testFilePath, String... classNames) throws IOException
 	{
-		File testFile = testPack.tests().file(testFilePath);
+		File testFile = testPack.file("tests/"+testFilePath);
 		String jsStyle = specTest.brjs.jsStyleAccessor().getJsStyle(testFile.getParentFile());
 		
 		if(!jsStyle.equals(SpecTest.NAMESPACED_JS_STYLE)) {
@@ -42,14 +42,14 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 	
 	public BuilderChainer testFileHasContent(String testFilePath, String content) throws IOException
 	{
-		File testFile = testPack.tests().file(testFilePath);
+		File testFile = testPack.file("tests/"+testFilePath);
 		writeToFile(testFile, content);
 		return builderChainer;
 	}
 	
 	public BuilderChainer testRequires(String testFilePath, String className) throws IOException
 	{
-		File testFile = testPack.tests().file(testFilePath);
+		File testFile = testPack.file("tests/"+testFilePath);
 		String jsStyle = specTest.brjs.jsStyleAccessor().getJsStyle(testFile.getParentFile());
 		
 		if(!jsStyle.equals(SpecTest.COMMON_JS_STYLE)) {
@@ -63,7 +63,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 	
 	@Override
 	public MemoizedFile getSourceFile(String sourceClass) {
-		return testPack.testSource().file(sourceClass.replaceAll("\\.", "/") + ".js");
+		return testPack.file("src-test/"+sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 
 }

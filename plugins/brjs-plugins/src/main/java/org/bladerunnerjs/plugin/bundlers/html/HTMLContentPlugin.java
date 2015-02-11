@@ -22,7 +22,6 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
@@ -38,7 +37,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 	private final List<String> requestPaths = new ArrayList<>();
 	
-	private LegacyAssetPlugin htmlAssetPlugin;
 	private BRJS brjs;
 	
 	{
@@ -48,7 +46,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		htmlAssetPlugin = brjs.plugins().legacyAssetPlugin(HTMLAssetPlugin.class);
 		this.brjs = brjs;
 	}
 	
@@ -60,7 +57,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return (bundleSet.getResourceFiles(htmlAssetPlugin).isEmpty()) ? Collections.emptyList() : requestPaths;
+		return (bundleSet.getAssetsWithRequirePrefix("html!").isEmpty()) ? Collections.emptyList() : requestPaths;
 	}
 
 	@Override
@@ -71,7 +68,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		}
 		
 		identifiers = new TreeMap<String, Asset>();
-		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
+		List<Asset> htmlAssets = bundleSet.getAssetsWithRequirePrefix("html!");
 		
 		List<Reader> readerList = new ArrayList<Reader>();
 		for(Asset htmlAsset : htmlAssets){
@@ -104,8 +101,8 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		
 		if(identifier == null)
 		{
-			String idMessage = (htmlAsset.assetLocation().assetContainer().isNamespaceEnforced()) ?
-				"a namespaced ID of '" + NamespaceUtility.convertToNamespace(htmlAsset.assetLocation().requirePrefix()) + ".*'" : "an ID";
+			String idMessage = (htmlAsset.assetContainer().isNamespaceEnforced()) ?
+				"a namespaced ID of '" +htmlAsset.getPrimaryRequirePath()+ ".*'" : "an ID";
 			
 			throw new NamespaceException( "HTML template found without an identifier: '" +
 					startTag.toString() + "'.  Root element should have " + idMessage + ".");

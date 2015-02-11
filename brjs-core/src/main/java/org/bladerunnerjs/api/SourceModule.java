@@ -35,6 +35,4 @@ public interface SourceModule extends LinkedAsset {
 	 * @param bundlableNode The bundlable node for which a bundle-set is being generated.
 	 */
 	List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
-	
-	List<AssetLocation> assetLocations();
 }

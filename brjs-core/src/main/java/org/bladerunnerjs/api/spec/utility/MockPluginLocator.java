@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
-import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
-import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.MinifierPlugin;
@@ -28,8 +26,6 @@ public class MockPluginLocator implements PluginLocator
 	public List<MinifierPlugin> minifiers = new ArrayList<>();
 	public List<ContentPlugin> contentPlugins = new ArrayList<>();
 	public List<TagHandlerPlugin> tagHandlers = new ArrayList<>();
-	public List<LegacyAssetPlugin> legacyAssetPlugins = new ArrayList<>();
-	public List<LegacyAssetLocationPlugin> legacyAssetLocationPlugins = new ArrayList<>();
 	public List<AssetPlugin> assetPlugins = new ArrayList<>();
 	public List<RequirePlugin> requirePlugins = new ArrayList<>();
 	
@@ -39,8 +35,6 @@ public class MockPluginLocator implements PluginLocator
 		setBRJSForPlugins(brjs, minifiers);
 		setBRJSForPlugins(brjs, contentPlugins);
 		setBRJSForPlugins(brjs, tagHandlers);
-		setBRJSForPlugins(brjs, legacyAssetPlugins);
-		setBRJSForPlugins(brjs, legacyAssetLocationPlugins);
 		setBRJSForPlugins(brjs, assetPlugins);
 		setBRJSForPlugins(brjs, requirePlugins);
 	}
@@ -70,16 +64,6 @@ public class MockPluginLocator implements PluginLocator
 	@Override
 	public List<TagHandlerPlugin> getTagHandlerPlugins() {
 		return tagHandlers;
-	}
-	
-	@Override
-	public List<LegacyAssetPlugin> getLegacyAssetPlugins() {
-		return legacyAssetPlugins;
-	}
-	
-	@Override
-	public List<LegacyAssetLocationPlugin> getLegacyAssetLocationPlugins() {
-		return legacyAssetLocationPlugins;
 	}
 	
 	@Override

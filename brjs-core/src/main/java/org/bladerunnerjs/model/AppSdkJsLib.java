@@ -8,7 +8,6 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestType;
@@ -114,11 +113,6 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public AssetLocation assetLocation(String locationPath) {
-		return sdkJsLib.assetLocation(locationPath);
-	}
-	
-	@Override
 	public MemoizedFile dir() {
 		return sdkJsLib.dir();
 	}
@@ -151,11 +145,6 @@ public final class AppSdkJsLib implements JsLib {
 	public boolean exists()
 	{
 		return sdkJsLib.exists();
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return sdkJsLib.assetLocations();
 	}
 	
 	@Override
@@ -248,8 +237,6 @@ public final class AppSdkJsLib implements JsLib {
 		sdkJsLib.incrementChildFileVersions();
 	}
 	
-	
-	
 	public AliasDefinitionsFile aliasDefinitionsFile(String path) {
 		return sdkJsLib.aliasDefinitionsFile(path);
 	}
@@ -258,5 +245,11 @@ public final class AppSdkJsLib implements JsLib {
 	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
 	{
 		return sdkJsLib.canonicaliseRequirePath(requirePath);
+	}
+
+	@Override
+	public Asset assetByLocation(String relativePath)
+	{
+		return sdkJsLib.assetByLocation(relativePath);
 	}
 }

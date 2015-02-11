@@ -9,8 +9,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
-import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
-import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
@@ -28,8 +26,6 @@ public class PluginAccessor {
 	private final List<TagHandlerPlugin> tagHandlerPlugins;
 	private final List<MinifierPlugin> minifierPlugins;
 	private final List<ModelObserverPlugin> modelObserverPlugins;
-	private final List<LegacyAssetPlugin> legacyAssetPlugins;
-	private final List<LegacyAssetLocationPlugin> legacyAssetLocationPlugins;
 	private final List<RequirePlugin> requirePlugins;
 	private final List<AssetPlugin> assetPlugins;
 	
@@ -41,9 +37,6 @@ public class PluginAccessor {
 		modelObserverPlugins = sort(pluginLocator.getModelObserverPlugins());
 		requirePlugins = sort(pluginLocator.getRequirePlugins());
 		assetPlugins = sort(pluginLocator.assetPlugins());
-		
-		legacyAssetPlugins = sort(pluginLocator.getLegacyAssetPlugins());
-		legacyAssetLocationPlugins = sort(pluginLocator.getLegacyAssetLocationPlugins());
 	}
 
 	public List<Plugin> allPlugins() {
@@ -56,9 +49,6 @@ public class PluginAccessor {
 		plugins.addAll(modelObserverPlugins());
 		plugins.addAll(assetPlugins());
 		plugins.addAll(requirePlugins());
-		
-		plugins.addAll(legacyAssetPlugins());
-		plugins.addAll(legacyAssetLocationPlugins());
 		
 		return plugins;
 	}
@@ -175,23 +165,6 @@ public class PluginAccessor {
 		for(AssetPlugin plugin: assetPlugins()){
 			if(plugin.getPluginClass().equals(pluginClass)){
 				return plugin;
-			}
-		}
-		return null;
-	}
-	
-	public List<LegacyAssetPlugin> legacyAssetPlugins() {
-		return legacyAssetPlugins;
-	}
-	
-	public List<LegacyAssetLocationPlugin> legacyAssetLocationPlugins() {
-		return legacyAssetLocationPlugins;
-	}
-	
-	public LegacyAssetPlugin legacyAssetPlugin(Class<?> pluginClass ) {
-		for(LegacyAssetPlugin producer: legacyAssetPlugins()){
-			if(producer.getPluginClass().equals(pluginClass)){
-				return producer;
 			}
 		}
 		return null;

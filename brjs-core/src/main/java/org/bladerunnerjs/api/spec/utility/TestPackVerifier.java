@@ -11,7 +11,6 @@ import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.engine.VerifierChainer;
-import org.bladerunnerjs.model.TestAssetLocation;
 
 import com.google.common.base.Joiner;
 
@@ -36,9 +35,7 @@ public class TestPackVerifier extends AssetContainerVerifier
 		
 		for (SourceModule sourceModule : sourceModules)
 		{
-			if(!(sourceModule.assetLocation() instanceof TestAssetLocation)) {
-				bundleSetFiles.add( sourceModule.dir().file(sourceModule.getAssetName()) );
-			}
+			bundleSetFiles.add( sourceModule.dir().file(sourceModule.getAssetName()) );
 		}
 		
 		for (MemoizedFile expectedFile : expectedFiles)

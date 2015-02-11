@@ -9,17 +9,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.api.Asset;
 
 public class RequirePathUtility {
 	
 	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias|getAlias|getService)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
-
-	public static String getPrimaryRequirePath(Asset asset) {
-		List<String> requirePaths = asset.getRequirePaths();
-		
-		return (requirePaths.size() > 0) ? requirePaths.get(0) : null;
-	}
 	
 	public static void addRequirePathsFromReader(Reader reader, Set<String> dependencies, List<String> aliases) throws IOException {
 		StringWriter stringWriter = new StringWriter();

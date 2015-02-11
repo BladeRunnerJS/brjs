@@ -6,7 +6,6 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
@@ -22,11 +21,6 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		return new StringReader("");
-	}
-	
-	@Override
-	public AssetLocation assetLocation() {
-		return sourceModule.assetLocation();
 	}
 	
 	@Override
@@ -86,10 +80,5 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
 		return sourceModule.getAliasNames();
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return sourceModule.assetLocations();
 	}
 }

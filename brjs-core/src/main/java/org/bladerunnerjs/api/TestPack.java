@@ -12,7 +12,6 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.AbstractBundlableNode;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -46,15 +45,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public List<LinkedAsset> seedAssets() 
 	{		
-		List<LinkedAsset> seedFiles = new ArrayList<>();
-		
-		for(AssetLocation assetLocation : assetLocations()) {
-			if(assetLocation instanceof TestAssetLocation) {
-				seedFiles.addAll(assetLocation.sourceModules());
-			}
-		}
-		
-		return seedFiles;
+		return assetDiscoveryInitiator.seedAssets();
 	}
 	
 	@Override
@@ -122,16 +113,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		}
 		
 		return aliasesFile;
-	}
-	
-	public AssetLocation testSource()
-	{
-		return assetLocation("src-test");
-	}
-	
-	public AssetLocation tests()
-	{
-		return assetLocation("tests");
 	}
 	
 }

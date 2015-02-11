@@ -25,8 +25,7 @@ public class CssResourceAssetPlugin extends AbstractAssetPlugin {
 	{
 		FileFilter assetFileFilter = new SuffixFileFilter( Arrays.asList(".jpg",".jpeg",".bmp",".png",".gif",".svg",".ico",".cur",".eot",".ttf",".woff") );
 		for (MemoizedFile assetFile : dir.listFiles(assetFileFilter)) {
-			String assetExtension = StringUtils.substringAfterLast(assetFile.getName(), ".");
-			Asset asset = new FileAsset(assetFile, assetContainer, assetExtension+"!"+requirePrefix);
+			Asset asset = new FileAsset(assetFile, assetContainer, "css_resource"+"!"+requirePrefix);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
 				assetDiscoveryInitiator.registerAsset( asset );
 			}

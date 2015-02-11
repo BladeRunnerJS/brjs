@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
@@ -30,6 +29,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	List<AliasDefinitionsFile> aliasDefinitionFiles();
 	
 	ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
-	List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
-	List<Asset> getLinkedAssets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException;
+	List<Asset> assets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException;
 }

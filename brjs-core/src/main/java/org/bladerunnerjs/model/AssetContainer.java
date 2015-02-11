@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 
@@ -19,9 +18,7 @@ public interface AssetContainer extends BRJSNode {
 	boolean isNamespaceEnforced();
 	Set<Asset> assets();
 	Asset asset(String requirePath);
-	
-	AssetLocation assetLocation(String locationPath);
-	List<AssetLocation> assetLocations();
+	Asset assetByLocation(String relativePath);
 	
 	String canonicaliseRequirePath(String requirePath) throws RequirePathException;
 	

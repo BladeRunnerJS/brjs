@@ -9,15 +9,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
@@ -26,7 +25,6 @@ import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -34,7 +32,6 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 public class CssContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin {
 	
 	private final ContentPathParser contentPathParser;
-	private LegacyAssetPlugin cssAssetPlugin;
 	private BRJS brjs;
 	
 	{
@@ -53,7 +50,6 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
-		cssAssetPlugin = brjs.plugins().legacyAssetPlugin(CssAssetPlugin.class);
 	}
 	
 	@Override
@@ -73,9 +69,9 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 		try {
 			List<Locale> supportedLocales = Arrays.asList(bundleSet.getBundlableNode().app().appConf().getLocales());
 			
-			for(Asset cssAsset : bundleSet.getResourceFiles(cssAssetPlugin)) {
-				AssetLocation cssAssetLocation = cssAsset.assetLocation();
-				String themeName = (cssAssetLocation instanceof ThemedAssetLocation) ? ((ThemedAssetLocation) cssAssetLocation).getThemeName() : "common";
+			for(Asset cssAsset : getCssAssets(bundleSet)) {
+				
+				String themeName = getThemeName(cssAsset);
 				
 				Locale assetLocale = Locale.createLocaleFromFilepath(".*_", cssAsset.getAssetName());
 				
@@ -110,17 +106,9 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 		Locale locale = new Locale(languageCode, countryCode);
 
 		List<Reader> readerList = new ArrayList<Reader>();
-		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
-		for (Asset asset : bundleSet.getAssets()) {
-			if (asset.getPrimaryRequirePath() != null && asset.getPrimaryRequirePath().startsWith("css!")) {
-				cssAssets.add(asset);
-			}
-		}
 		
-		orderCssAssets(cssAssets);
-		
-		for(Asset cssAsset : cssAssets) {
-			String assetThemeName = getThemeName(cssAsset.assetLocation());
+		for(Asset cssAsset : getCssAssets(bundleSet)) {
+			String assetThemeName = getThemeName(cssAsset);
 			
 			if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(locale.getLocaleFilePattern(".*_", ".css"))) {
 				CssRewriter processor = new CssRewriter(brjs, cssAsset);
@@ -148,16 +136,19 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 		// do nothing, protected so the CT CSS plugin that uses a different CSS ordering can override it
 	}
 	
-	private String getThemeName(AssetLocation cssAssetLocation) {
-		String themeName;
-		
-		if(cssAssetLocation instanceof ThemedAssetLocation) {
-			themeName = ((ThemedAssetLocation) cssAssetLocation).getThemeName();
-		}else {
-			themeName = "common";
+	private List<Asset> getCssAssets(BundleSet bundleSet) {
+		List<Asset> cssAssets = bundleSet.getAssetsWithRequirePrefix("css!", "theme!");
+		orderCssAssets(cssAssets);
+		return cssAssets;
+	}
+	
+	private String getThemeName(Asset cssAsset) {
+		String cssAssetRequirePath = cssAsset.getPrimaryRequirePath();
+		if (cssAssetRequirePath.startsWith("theme!")) {
+			return StringUtils.substringAfter( StringUtils.substringBefore(cssAssetRequirePath, ":"), "css!");
+		} else {
+			return "common";
 		}
-		
-		return themeName;
 	}
 	
 }

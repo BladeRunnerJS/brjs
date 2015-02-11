@@ -9,11 +9,11 @@ import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 
 
-public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implements AssetPlugin {
+public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements AssetPlugin {
 	
 	private AssetPlugin assetLocationPlugin;
 
-	public VirtualProxyAssetLocationPlugin(AssetPlugin assetLocationPlugin) {
+	public VirtualProxyAssetPlugin(AssetPlugin assetLocationPlugin) {
 		super(assetLocationPlugin);
 		this.assetLocationPlugin = assetLocationPlugin;
 	}

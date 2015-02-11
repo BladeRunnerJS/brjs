@@ -26,7 +26,7 @@ public class CopyBladesetCommandTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasCommandPlugins(new CopyBladesetCommand())
-			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			sourceApp = brjs.app("app");
 			sourceBladeset = sourceApp.bladeset("bs");

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
@@ -37,7 +36,6 @@ public class BundleSetBuilder {
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Map<String,AliasDefinition> activeAliases = new LinkedHashMap<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
-	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
 	
@@ -48,7 +46,6 @@ public class BundleSetBuilder {
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
 		List<AliasDefinition> activeAliasList = new ArrayList<>();
-		List<AssetLocation> resourceLocationList = new ArrayList<>();
 		
 		if (bundlableNode instanceof Workbench) {
 			// TODO: this should be done via the API and not guessed from the outside
@@ -137,7 +134,7 @@ public class BundleSetBuilder {
 			return;
 		}
 		if (assetLocations.add(assetLocation)) {
-			for(LinkedAsset resourceSeedFile : assetLocation.linkedAssets()) {
+			for(LinkedAsset resourceSeedFile : assetLocation.assets()) {
 				addLinkedAsset(resourceSeedFile);
 			}
 			

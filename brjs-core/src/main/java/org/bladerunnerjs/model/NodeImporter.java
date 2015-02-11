@@ -16,7 +16,6 @@ import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
@@ -26,14 +25,10 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
-import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
-import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
 import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyLegacyAssetLocationPlugin;
-import org.bladerunnerjs.plugin.proxy.LegacyVirtualProxyAssetPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleAccessor;
@@ -123,9 +118,7 @@ public class NodeImporter {
 		File tempSdkDir = FileUtils.createTemporaryDirectory(NodeImporter.class);
 		new File(tempSdkDir, "sdk").mkdir();
 		MockPluginLocator pluginLocator = new MockPluginLocator();
-		pluginLocator.legacyAssetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), LegacyAssetLocationPlugin.class, VirtualProxyLegacyAssetLocationPlugin.class));
-		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetLocationPlugin.class));
-		pluginLocator.legacyAssetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), LegacyAssetPlugin.class, LegacyVirtualProxyAssetPlugin.class));
+		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
 		
 		BRJS brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
 		

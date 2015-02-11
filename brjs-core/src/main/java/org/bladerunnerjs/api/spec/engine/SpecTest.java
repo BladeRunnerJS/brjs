@@ -12,7 +12,6 @@ import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.BladerunnerConf;
@@ -33,7 +32,6 @@ import org.bladerunnerjs.api.spec.utility.AppVerifier;
 import org.bladerunnerjs.api.spec.utility.AspectBuilder;
 import org.bladerunnerjs.api.spec.utility.AspectCommander;
 import org.bladerunnerjs.api.spec.utility.AspectVerifier;
-import org.bladerunnerjs.api.spec.utility.AssetLocationBuilder;
 import org.bladerunnerjs.api.spec.utility.BRJSBuilder;
 import org.bladerunnerjs.api.spec.utility.BRJSCommander;
 import org.bladerunnerjs.api.spec.utility.BRJSVerifier;
@@ -275,9 +273,6 @@ public abstract class SpecTest
 	public JsLibBuilder given(JsLib jsLib) { return new JsLibBuilder(this, jsLib); }
 	public JsLibCommander when(JsLib jsLib) { return new JsLibCommander(this, jsLib); }
 	public JsLibVerifier then(JsLib jsLib) { return new JsLibVerifier(this, jsLib); }
-	
-	// AssetLocation
-	public AssetLocationBuilder given(AssetLocation assetLocation) { return new AssetLocationBuilder(this, assetLocation); }
 	
 	// DirNode
 	public DirNodeBuilder given(DirNode dirNode) { return new DirNodeBuilder(this, dirNode); }

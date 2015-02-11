@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.model.AssetContainer;
 
 /**
  * Any file that lives within an App
@@ -12,10 +13,10 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
  */
 public interface Asset {
 	Reader getReader() throws IOException;
-	AssetLocation assetLocation();
 	MemoizedFile dir();
 	String getAssetName();
 	String getAssetPath();
 	List<String> getRequirePaths();
 	String getPrimaryRequirePath();
+	AssetContainer assetContainer();
 }

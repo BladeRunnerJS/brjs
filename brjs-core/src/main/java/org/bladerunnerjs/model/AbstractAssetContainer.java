@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -14,7 +15,6 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
@@ -24,14 +24,10 @@ import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRelativeRequirePathException;
 import org.bladerunnerjs.api.plugin.AssetContainerAssets;
-import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final MemoizedValue<Map<String, Asset>> assetsMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
-	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
-	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
 	
 	protected final AssetContainerAssets assetDiscoveryInitiator = new AssetContainerAssets(this);
 	
@@ -59,22 +55,17 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public Set<Asset> assets() {
-		return new LinkedHashSet<>(assetsMap().values());
+		return assetDiscoveryInitiator.assets(); 
 	}
 	
 	@Override
 	public Asset asset(String requirePath) {
-		return assetsMap().get(requirePath);
+		return assetDiscoveryInitiator.assetsMap().get(requirePath);
 	}
 	
 	@Override
-	public AssetLocation assetLocation(String locationPath) {
-		return assetLocationsMap().get(locationPath);
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return new ArrayList<>(assetLocationsMap().values());
+	public Asset assetByLocation(String relativePath) {
+		return assetDiscoveryInitiator.assetsByPathMap().get(relativePath);
 	}
 	
 	@Override
@@ -119,93 +110,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
 	}	
 	
-	
-	
-	private Map<String, Asset> assetsMap() {
-		Map<String,Asset> discoveredAssets = assetsMap.value(() -> {
-			Map<String, LinkedAsset> linkedAssetsMap = new LinkedHashMap<>();
-			
-			for (AssetLocation assetLocation : assetLocations())
-			{
-				for(SourceModule sourceModule : assetLocation.sourceModules()) {
-					linkedAssetsMap.put(sourceModule.getPrimaryRequirePath(), sourceModule);
-				}
-				for(LinkedAsset asset : assetLocation.linkedAssets()) {
-					linkedAssetsMap.put(asset.getPrimaryRequirePath(), asset);
-				}
-			}
-			
-			return linkedAssetsMap;
-		});
-		
-		for (Asset asset : assetDiscoveryInitiator.assets()) {
-			discoveredAssets.put(asset.getPrimaryRequirePath(), asset);
-		}
-		
-		return discoveredAssets;
-	}
-	
-	private Map<String, AssetLocation> assetLocationsMap() {
-		return assetLocationsMap.value(() -> {
-			Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
-			
-			for(LegacyAssetLocationPlugin assetLocationPlugin : root().plugins().legacyAssetLocationPlugins()) {
-				List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
-				
-				if(assetLocationDirectories.size() > 0) {
-					for(String locationPath : assetLocationDirectories) {
-						createAssetLocation(locationPath, assetLocations, assetLocationPlugin);
-					}
-					
-					if(!assetLocationPlugin.allowFurtherProcessing()) {
-						break;
-					}
-				}
-			}
-			
-			return assetLocations;
-		});
-	}
-	
-	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, LegacyAssetLocationPlugin assetLocationPlugin ) {
-		
-		if (!assetLocations.containsKey(locationPath)) {
-			AssetLocation newAssetLocation;
-			if (!cachedAssetLocations.containsKey(locationPath)) {
-				newAssetLocation = assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations);
-				initAndCacheAssetLocation(locationPath, newAssetLocation);
-			} else {
-				AssetLocation oldAssetLocation = cachedAssetLocations.get(locationPath);
-				newAssetLocation = assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations);
-				if (newAssetLocation.getClass() != oldAssetLocation.getClass()) {
-					rootNode.clearRegisteredNode(oldAssetLocation);
-					initAndCacheAssetLocation(locationPath, newAssetLocation);
-				} else {
-					newAssetLocation = oldAssetLocation;
-				}
-			}
-			
-			assetLocations.put(locationPath, newAssetLocation);
-		}
-	}
-	
-	private void initAndCacheAssetLocation(String locationPath, AssetLocation assetLocation)
-	{
-		try
-		{
-			rootNode.registerNode(assetLocation);
-		}
-		catch (NodeAlreadyRegisteredException ex)
-		{
-			throw new RuntimeException(ex);
-		}	
-		cachedAssetLocations.put(locationPath, assetLocation);
-	}
-	
-	
-	
-	
 	public AliasDefinitionsFile aliasDefinitionsFile(String path) {
 		return assetLocation(path).aliasDefinitionsFile();
 	}
+	
 }

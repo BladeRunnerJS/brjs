@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
 import org.bladerunnerjs.api.aliasing.AliasOverride;
 import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;

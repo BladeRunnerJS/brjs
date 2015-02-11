@@ -113,7 +113,7 @@ public class DependencyInfoFactory {
 	
 	private static void addAssetLocationDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
-		for(LinkedAsset resourceAsset : assetLocation.linkedAssets()) {
+		for(LinkedAsset resourceAsset : assetLocation.assets()) {
 			dependencyInfo.resourceAssets.add(resourceAsset);
 			
 			// TODO: the need for this code shows that our interfaces are incorrectly abstracted, which we should fix at some point
@@ -136,7 +136,7 @@ public class DependencyInfoFactory {
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
 		
 		for(AssetLocation assetLocation : sourceModule.assetLocations()) {
-			for(LinkedAsset assetLocationLinkedAsset : assetLocation.linkedAssets()) {
+			for(LinkedAsset assetLocationLinkedAsset : assetLocation.assets()) {
 				if((assetLocationLinkedAsset.getDependentAssets(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
 					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
 				}

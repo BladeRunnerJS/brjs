@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +16,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
@@ -37,8 +37,6 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ResourcesAssetLocation;
-import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.plugin.bundlers.css.CssAssetPlugin;
 import org.bladerunnerjs.plugin.bundlers.css.CssRewriter;
@@ -135,15 +133,21 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 			validContentPaths.removeAll(foundContentPaths);			
 		}
 		
-		for (Asset cssAsset : bundleSet.getResourceFiles(brjs.plugins().legacyAssetPlugin(CssAssetPlugin.class))) {
-			filterUsedContentPaths(cssAsset, validContentPaths, usedContentPaths, true);
-			if (validContentPaths.isEmpty()) {
-				break;
+		
+		Set<Asset> assetsToDetirmineUsedPaths = new HashSet<>();
+		
+		for (Asset cssAsset : bundleSet.getAssets()) {
+			String requirePath = cssAsset.getPrimaryRequirePath();
+			if (requirePath.startsWith("css!") || requirePath.startsWith("css!")) {
+				assetsToDetirmineUsedPaths.add(cssAsset);
 			}
 		}
 		
-		for (Asset seedAsset : bundleSet.getBundlableNode().seedAssets()) {
-			filterUsedContentPaths(seedAsset, validContentPaths, usedContentPaths, false);
+		assetsToDetirmineUsedPaths.addAll(bundleSet.getBundlableNode().seedAssets());
+		
+				
+		for (Asset asset : assetsToDetirmineUsedPaths) {
+			filterUsedContentPaths(asset, validContentPaths, usedContentPaths, false);
 			if (validContentPaths.isEmpty()) {
 				break;
 			}
@@ -185,20 +189,6 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		{
 			throw new ContentProcessingException(ex);
 		}
-	}
-	
-	private ThemedAssetLocation getThemedResourceLocation(AssetContainer container, String themeName){
-		
-		ThemedAssetLocation result = null;
-		for(AssetLocation location: container.assetLocations()){
-			if (location instanceof ThemedAssetLocation){
-				String locationThemeName = ((ThemedAssetLocation)location).getThemeName();
-				if(locationThemeName.equals(themeName)){
-					result = ((ThemedAssetLocation)location);
-				}
-			}
-		}
-		return result;
 	}
 	
 	@Override

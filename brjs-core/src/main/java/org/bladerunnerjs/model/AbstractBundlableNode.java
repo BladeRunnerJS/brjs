@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
@@ -19,7 +18,6 @@ import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingExcept
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.engine.Node;
@@ -37,37 +35,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public List<LinkedAsset> seedAssets() {
-		List<LinkedAsset> seedFiles = new ArrayList<>();
-		
-		List<AssetLocation> seedAssetLocations = new ArrayList<>();
-		
-		for(LegacyAssetLocationPlugin assetLocationPlugin : root().plugins().legacyAssetLocationPlugins()) {
-			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
-				for(String seedAssetLocationName : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
-					AssetLocation seedAssetLocation = assetLocation(seedAssetLocationName);
-					
-					if (seedAssetLocation != null) {
-						seedAssetLocations.add(seedAssetLocation);
-					}
-				}
-				
-				if(!assetLocationPlugin.allowFurtherProcessing()) {
-					break;
-				}
-			}
-		}
-		
-		for(AssetLocation seedAssetLocation : seedAssetLocations) {
-			seedFiles.addAll(seedAssetLocation.linkedAssets());
-		}
-		
-		for (Asset asset : assetDiscoveryInitiator.seedAssets()) {
-			if (asset instanceof LinkedAsset) {
-				seedFiles.add((LinkedAsset) asset);
-			}
-		}
-		
-		return seedFiles;
+		return assetDiscoveryInitiator.seedAssets();
 	}
 	
 	@Override
@@ -136,12 +104,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
-		return getLinkedAssets(assetLocation.assetContainer(), requirePaths);
-	}
-	
-	@Override
-	public List<Asset> getLinkedAssets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException {
+	public List<Asset> assets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException {
 		List<Asset> assets = new ArrayList<Asset>();
 		
 		for(String requirePath : requirePaths) {				

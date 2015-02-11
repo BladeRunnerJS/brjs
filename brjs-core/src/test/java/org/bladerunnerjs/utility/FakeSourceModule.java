@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
@@ -47,12 +46,6 @@ public class FakeSourceModule implements SourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		return new StringReader(identifier);
-	}
-
-	@Override
-	public AssetLocation assetLocation() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -106,11 +99,6 @@ public class FakeSourceModule implements SourceModule {
 
 	@Override
 	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<AssetLocation> assetLocations() {
 		return Collections.emptyList();
 	}
 }

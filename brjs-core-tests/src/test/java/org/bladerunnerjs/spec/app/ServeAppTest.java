@@ -21,7 +21,7 @@ public class ServeAppTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationPlugins()
+		given(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsContentPlugins()
 			.and(brjs).automaticallyFindsRequirePlugins()

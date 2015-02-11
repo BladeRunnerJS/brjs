@@ -62,7 +62,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			.and(bladesetUTs).testRefersTo("pkg/test.js", "appns.bs.Util");
 		then(bladesetUTs).bundledFilesEquals(
 			bladeset.file("src/appns/bs/Class1.js"),
-			bladesetUTs.testSource().file("appns/bs/Util.js"));
+			bladesetUTs.file("src-test/appns/bs/Util.js"));
 	}
 	
 	@Test

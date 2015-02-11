@@ -1,12 +1,15 @@
 package org.bladerunnerjs.api.plugin;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetContainer;
@@ -27,12 +30,20 @@ public class AssetContainerAssets
 		assetDiscoveryResult = new MemoizedValue<>("AssetContainerAssets.assetDiscoveryResult", assetContainer);
 	}
 	
-	public Collection<Asset> assets() {
-		return assetDiscoveryResult().assets.values();
+	public Set<Asset> assets() {
+		return new HashSet<Asset>( assetDiscoveryResult().assets.values() );
 	}
 	
-	public Collection<Asset> seedAssets() {
-		return assetDiscoveryResult().seedAssets.values();
+	public Map<String,Asset> assetsMap() {
+		return new HashMap<>( assetDiscoveryResult().assets );
+	}
+	
+	public Map<String,Asset> assetsByPathMap() {
+		return new HashMap<>( assetDiscoveryResult().assetsByPath );
+	}
+	
+	public List<LinkedAsset> seedAssets() {
+		return new ArrayList<>( assetDiscoveryResult().seedAssets );
 	}
 	
 	public boolean hasRegisteredAsset(String requirePath)
@@ -55,7 +66,8 @@ public class AssetContainerAssets
 	private class AssetDiscoveryResult implements AssetDiscoveryInitiator {
 		
 		private final Map<String,Asset> assets = new HashMap<>();
-		private final Map<String,Asset> seedAssets = new HashMap<>();
+		private final Map<String,Asset> assetsByPath = new HashMap<>();
+		private final List<LinkedAsset> seedAssets = new ArrayList<>();
 		private boolean furtherDiscoveryRequired = true;
 		
 		private AssetDiscoveryResult() {
@@ -67,10 +79,10 @@ public class AssetContainerAssets
 		}
 		
 		@Override
-		public void registerSeedAsset(Asset asset)
+		public void registerSeedAsset(LinkedAsset asset)
 		{
 			registerAsset(asset);
-			seedAssets.put(asset.getPrimaryRequirePath(), asset);
+			seedAssets.add(asset);
 		}
 		
 		@Override
@@ -81,6 +93,11 @@ public class AssetContainerAssets
 				throw new RuntimeException("An asset for the require path '"+assetPrimaryRequirePath+"' has already been registered.");
 			}
 			assets.put(assetPrimaryRequirePath, asset);
+			String assetPathRelativeToContainer = StringUtils.substringAfter(asset.getAssetPath(), assetContainer.root().dir().getRelativePath(assetContainer.dir()));
+			if (assetPathRelativeToContainer.equals("")) {
+				assetPathRelativeToContainer = ".";
+			}
+			assetsByPath.put(assetPathRelativeToContainer, asset);
 			furtherDiscoveryRequired = true;
 		}
 

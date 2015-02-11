@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.AmbiguousRequirePathException;
@@ -55,7 +54,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		List<Asset> assetList;
 		try {
-			assetList = bundlableNode.getLinkedAssets(assetContainer, getDependencyCalculator().getRequirePaths());
+			assetList = bundlableNode.assets(assetContainer, getDependencyCalculator().getRequirePaths());
 		}
 		catch (AmbiguousRequirePathException e) {			
 			e.setSourceRequirePath(getAssetPath());
@@ -74,7 +73,7 @@ public class LinkedFileAsset implements LinkedAsset {
 		}
 		List<String> dependenciesList = new ArrayList<String>(dependencies);
 		try {
-			assetList.addAll(bundlableNode.getLinkedAssets(assetContainer, dependenciesList));
+			assetList.addAll(bundlableNode.assets(assetContainer, dependenciesList));
 		} catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
@@ -102,12 +101,6 @@ public class LinkedFileAsset implements LinkedAsset {
 		return assetPath;
 	}
 	
-	@Override
-	public AssetLocation assetLocation()
-	{
-		return null;
-	}
-	
 	private TrieBasedDependenciesCalculator getDependencyCalculator() {
 		if (trieBasedDependenciesCalculator == null) {
 			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(assetContainer, this, new LinkedFileAssetDependenciesReader.Factory(this), assetFile);
@@ -123,5 +116,12 @@ public class LinkedFileAsset implements LinkedAsset {
 	@Override
 	public String getPrimaryRequirePath() {
 		return primaryRequirePath;
+	}	
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
 	}
+
 }

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.plugin.brjsconformant;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -9,27 +9,37 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.RootDirectoryLinkedAsset;
 
 
-public class DirectoryLinkedAsset implements LinkedAsset
+public class JSLibRootDirectoryLinkedAsset implements RootDirectoryLinkedAsset
 {
 
 	private AssetContainer assetContainer;
 	private MemoizedFile dir;
-	private String primaryRequirePath;
 	private MemoizedValue<List<Asset>> dependentAssets;
+	private BRLibConf libManifest;
 
-	public DirectoryLinkedAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix) {
+	public JSLibRootDirectoryLinkedAsset(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
-		this.dir = dir;		
-		
-		primaryRequirePath = requirePrefix+"/"+dir.getName();
+		this.dir = assetContainer.dir();
 		
 		dependentAssets = new MemoizedValue<>(getAssetPath()+ " dependent assets", assetContainer.root(), assetContainer.dir());
+		
+		try {
+			libManifest = new BRLibConf((JsLib) assetContainer);
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -59,13 +69,18 @@ public class DirectoryLinkedAsset implements LinkedAsset
 	@Override
 	public List<String> getRequirePaths()
 	{
-		return Arrays.asList(primaryRequirePath);
+		return Arrays.asList( getPrimaryRequirePath() );
 	}
 
 	@Override
 	public String getPrimaryRequirePath()
 	{
-		return primaryRequirePath;
+		try {
+			return (libManifest.manifestExists()) ? libManifest.getRequirePrefix() : ((JsLib) assetContainer).getName();
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -92,11 +107,11 @@ public class DirectoryLinkedAsset implements LinkedAsset
 	{
 		return Collections.emptyList();
 	}
-
+	
 	@Override
-	public AssetContainer assetContainer()
-	{
-		return assetContainer;
+	public void setRequirePrefix(String requirePrefix) throws ConfigException {
+		libManifest.setRequirePrefix(requirePrefix);
+		libManifest.write();
 	}
 
 }

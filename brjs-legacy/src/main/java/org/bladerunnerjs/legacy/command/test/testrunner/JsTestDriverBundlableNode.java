@@ -99,18 +99,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public AssetLocation assetLocation(String locationPath) {
-		return bundlableNode.assetLocation(locationPath);
-	}
-
-	@Override
 	public MemoizedFile[] memoizedScopeFiles() {
 		return bundlableNode.memoizedScopeFiles();
-	}
-
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return bundlableNode.assetLocations();
 	}
 
 	@Override
@@ -229,11 +219,6 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		return bundlableNode.handleLogicalRequest(logicalRequestPath, contentAccessor, version);
 	}
-
-	@Override
-	public List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
-		return bundlableNode.getLinkedAssets(assetLocation, requirePaths);
-	}
 	
 	@Override
 	public BRJS root() {
@@ -270,8 +255,14 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public List<Asset> getLinkedAssets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException
+	public List<Asset> assets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException
 	{
-		return bundlableNode.getLinkedAssets(assetContainer, requirePaths);
+		return bundlableNode.assets(assetContainer, requirePaths);
+	}
+
+	@Override
+	public Asset assetByLocation(String relativePath)
+	{
+		return bundlableNode.assetByLocation(relativePath);
 	}
 }

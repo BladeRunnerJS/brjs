@@ -12,8 +12,6 @@ import org.bladerunnerjs.api.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
-import org.bladerunnerjs.api.plugin.LegacyAssetLocationPlugin;
-import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.MinifierPlugin;
@@ -28,9 +26,7 @@ import org.bladerunnerjs.api.spec.logging.MockLogLevelAccessor;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyLegacyAssetLocationPlugin;
-import org.bladerunnerjs.plugin.proxy.LegacyVirtualProxyAssetPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyMinifierPlugin;
@@ -100,13 +96,13 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasAssetPlugins(LegacyAssetPlugin... assetPlugins)
+	public BuilderChainer hasAssetPlugins(AssetPlugin... assetPlugins)
 	{
 		verifyBrjsIsNotSet();
 		
-		for(LegacyAssetPlugin assetPlugin : assetPlugins)
+		for(AssetPlugin assetPlugin : assetPlugins)
 		{
-			specTest.pluginLocator.legacyAssetPlugins.add( new LegacyVirtualProxyAssetPlugin(assetPlugin) );
+			specTest.pluginLocator.assetPlugins.add( new VirtualProxyAssetPlugin(assetPlugin) );
 		}
 		
 		return builderChainer;
@@ -178,19 +174,9 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsAssetPlugins() {
 		verifyBrjsIsNotSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.legacyAssetPlugins);
-		
-		specTest.pluginLocator.legacyAssetPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), LegacyAssetPlugin.class, LegacyVirtualProxyAssetPlugin.class) );
-		
-		return builderChainer;
-	}
-	
-	public BuilderChainer automaticallyFindsAssetLocationPlugins() {
-		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.assetPlugins);
 		
-		specTest.pluginLocator.legacyAssetLocationPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), LegacyAssetLocationPlugin.class, VirtualProxyLegacyAssetLocationPlugin.class) );
-		specTest.pluginLocator.assetPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetLocationPlugin.class) );
+		specTest.pluginLocator.assetPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class) );
 		
 		return builderChainer;
 	}
@@ -200,7 +186,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlerPlugins();
 		automaticallyFindsAssetPlugins();
-		automaticallyFindsAssetLocationPlugins();
+		automaticallyFindsAssetPlugins();
 		automaticallyFindsRequirePlugins();
 		
 		return builderChainer;
@@ -230,7 +216,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlerPlugins();
 		automaticallyFindsAssetPlugins();
-		automaticallyFindsAssetLocationPlugins();
+		automaticallyFindsAssetPlugins();
 		automaticallyFindsCommandPlugins();
 		automaticallyFindsModelObservers();
 		automaticallyFindsRequirePlugins();

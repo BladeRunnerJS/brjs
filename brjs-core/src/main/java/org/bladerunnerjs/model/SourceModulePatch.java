@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -72,10 +71,6 @@ public class SourceModulePatch
 		}
 		
 		return reader;
-	}
-	
-	public static SourceModulePatch getPatchForRequirePath(AssetLocation assetLocation, String requirePath) {
-		return new SourceModulePatch(assetLocation.assetContainer(), requirePath);
 	}
 
     public static SourceModulePatch getPatchForRequirePath(AssetContainer assetContainer, String requirePath) {

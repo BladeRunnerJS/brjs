@@ -34,7 +34,7 @@ public class ImportAppCommandTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasCommandPlugins(new ImportAppCommand(), new ExportApplicationCommand())
-			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");

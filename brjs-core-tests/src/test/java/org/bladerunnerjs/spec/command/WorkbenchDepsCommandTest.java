@@ -30,7 +30,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasCommandPlugins(new WorkbenchDepsCommand())
-			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasBeenCreated();

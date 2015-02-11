@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.TypedTestPack;
@@ -109,11 +109,10 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 		NameValidator.assertValidRootPackageName(this, libNamespace);
 		
 		try {
-			AssetLocation assetLocation = assetLocation(".");
-			RootAssetLocation rootAssetLocation = ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
-			if(rootAssetLocation != null) {
-				rootAssetLocation.setRequirePrefix(libNamespace.replace('.', '/'));
-				rootAssetLocation.populate(templateGroup);
+			Asset rootAsset = assetByLocation(".");
+			if (rootAsset != null && rootAsset instanceof RootDirectoryLinkedAsset) {
+				((RootDirectoryLinkedAsset) rootAsset).setRequirePrefix(libNamespace.replace('.', '/'));
+				// how do we populate the root?
 			}
 			incrementChildFileVersions();
 		}
@@ -129,9 +128,11 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	
 	@Override
 	public String requirePrefix() {
-		AssetLocation assetLocation = assetLocation(".");
-		RootAssetLocation root = ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
-		return (root != null) ? root.requirePrefix() : getName();
+		Asset rootAsset = assetByLocation(".");
+		if (rootAsset != null && rootAsset instanceof RootDirectoryLinkedAsset) {
+			return rootAsset.getPrimaryRequirePath();
+		}
+		return dir().getName();
 	}
 	
 	@Override

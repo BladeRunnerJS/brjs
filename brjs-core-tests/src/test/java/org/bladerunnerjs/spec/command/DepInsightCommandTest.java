@@ -27,7 +27,7 @@ public class DepInsightCommandTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasCommandPlugins(new DepInsightCommand())
-			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasBeenCreated();

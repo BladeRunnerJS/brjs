@@ -12,8 +12,6 @@ public interface PluginLocator
 	List<ModelObserverPlugin> getModelObserverPlugins();
 	List<ContentPlugin> getContentPlugins();
 	List<TagHandlerPlugin> getTagHandlerPlugins();
-	List<LegacyAssetPlugin> getLegacyAssetPlugins();
-	List<LegacyAssetLocationPlugin> getLegacyAssetLocationPlugins();
 	List<AssetPlugin> assetPlugins();
 	List<MinifierPlugin> getMinifierPlugins();
 	List<RequirePlugin> getRequirePlugins();

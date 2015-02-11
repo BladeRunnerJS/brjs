@@ -3,7 +3,6 @@ package org.bladerunnerjs.spec.command;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
@@ -32,7 +31,7 @@ public class BundleDepsCommandTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasCommandPlugins(new BundleDepsCommand())
-			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasBeenCreated();

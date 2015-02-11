@@ -176,7 +176,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	protected MemoizedFile getTestSourceFile(String sourceClass)
 	{
-		return node.assetLocation("src-test").file(sourceClass.replaceAll("\\.", "/") + ".js");		
+		return node.file("src-test/"+sourceClass.replaceAll("\\.", "/") + ".js");		
 	}
 	
 	

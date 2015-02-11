@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
@@ -43,33 +42,6 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 	
 	public VerifierChainer hasSourceModules(String... sourceModules) throws Exception {
 		assetContainerVerifier.hasSourceModules(sourceModules);
-		
-		return verifierChainer;
-	}
-	
-	public VerifierChainer hasAssetLocations(String... assetLocations) throws Exception {
-		assetContainerVerifier.hasAssetLocations(assetLocations);
-		
-		return verifierChainer;
-	}
-	
-	public VerifierChainer sourceModuleHasAssetLocation(String sourceModulePath, String assetLocationPath) throws Exception {
-		SourceModule sourceModule = (SourceModule)aspect.getLinkedAsset(sourceModulePath);
-		AssetLocation assetLocation = aspect.assetLocation(assetLocationPath);
-		
-		assertEquals("Source module '" + sourceModulePath + "' did not have the asset location '" + assetLocationPath + "'.", assetLocation.dir().getPath(), sourceModule.assetLocation().dir().getPath());
-		
-		return verifierChainer;
-	}
-	
-	public VerifierChainer assetLocationHasNoDependencies(String assetLocation) {
-		assetContainerVerifier.assetLocationHasNoDependencies(assetLocation);
-		
-		return verifierChainer;
-	}
-	
-	public VerifierChainer assetLocationHasDependencies(String assetLocation, String... assetLocationDependencies) {
-		assetContainerVerifier.assetLocationHasDependencies(assetLocation, assetLocationDependencies);
 		
 		return verifierChainer;
 	}

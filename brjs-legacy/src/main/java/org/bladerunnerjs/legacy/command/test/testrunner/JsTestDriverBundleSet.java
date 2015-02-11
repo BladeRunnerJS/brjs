@@ -3,11 +3,9 @@ package org.bladerunnerjs.legacy.command.test.testrunner;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.plugin.LegacyAssetPlugin;
 import org.bladerunnerjs.model.BundlableNode;
 
 public class JsTestDriverBundleSet implements BundleSet {
@@ -21,10 +19,6 @@ public class JsTestDriverBundleSet implements BundleSet {
 		return new JsTestDriverBundlableNode(bundleSet.getBundlableNode());
 	}
 	
-	public List<String> getThemes() {
-		return bundleSet.getThemes();
-	}
-	
 	public List<SourceModule> getSourceModules() {
 		return bundleSet.getSourceModules();
 	}
@@ -33,15 +27,13 @@ public class JsTestDriverBundleSet implements BundleSet {
 		return bundleSet.getActiveAliases();
 	}
 	
-	public List<AssetLocation> getResourceNodes() {
-		return bundleSet.getResourceNodes();
-	}
-	
-	public List<Asset> getResourceFiles(LegacyAssetPlugin assetProducer) {
-		return bundleSet.getResourceFiles(assetProducer);
-	}
-	
 	public List<Asset> getAssets() {
 		return bundleSet.getAssets();
+	}
+
+	@Override
+	public List<Asset> getAssetsWithRequirePrefix(String... prefixes)
+	{
+		return bundleSet.getAssetsWithRequirePrefix(prefixes);
 	}
 }

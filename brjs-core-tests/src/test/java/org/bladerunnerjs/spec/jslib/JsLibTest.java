@@ -8,7 +8,6 @@ import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.plugin.brjsconformant.BRJSConformantJsLibRootAssetLocation;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ public class JsLibTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationPlugins()
+		given(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			lib = app.jsLib("lib1");

@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -47,9 +48,8 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	private void createAssetsForChildDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		for (MemoizedFile childDir : dir.dirs()) {
-			String childDirRequirePath = requirePrefix+"/"+childDir.getName();
-			LinkedAsset child = new DirectoryLinkedAsset(assetContainer, childDir, childDirRequirePath);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(childDirRequirePath)) {
+			LinkedAsset child = new DirectoryLinkedAsset(assetContainer, childDir, requirePrefix);
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(requirePrefix)) {
 				assetDiscoveryInitiator.registerAsset(child);				
 				assetDiscoveryInitiator.discoverFurtherAssets(childDir, child.getPrimaryRequirePath(), implicitDependencies);
 			}
@@ -80,7 +80,12 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		if (assetDiscoveryInitiator.hasRegisteredAsset(requirePrefix)) {
 			return;
 		}
-		LinkedAsset rootAsset = new DirectoryLinkedAsset(assetContainer, assetContainer.dir(), requirePrefix); 
+		LinkedAsset rootAsset;
+		if (assetContainer instanceof JsLib) {
+			rootAsset = new JSLibRootDirectoryLinkedAsset(assetContainer);
+		} else {
+			rootAsset = new DirectoryLinkedAsset(assetContainer, assetContainer.dir(), requirePrefix); 
+		}
 		assetDiscoveryInitiator.registerAsset(rootAsset);
 		
 		for (MemoizedFile childDir : getPossibleChildDirs(assetContainer)) {

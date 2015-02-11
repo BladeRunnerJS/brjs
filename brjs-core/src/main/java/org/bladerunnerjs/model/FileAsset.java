@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -17,10 +16,12 @@ public class FileAsset implements Asset {
 	private String defaultFileCharacterEncoding;
 	private String assetPath;
 	private String primaryRequirePath;
+	private AssetContainer assetContainer;
 	
 	public FileAsset(MemoizedFile assetFile, AssetContainer assetContainer, String requirePrefix) {
 		try {
 			this.file = assetFile;
+			this.assetContainer = assetContainer;
 			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			assetPath = assetContainer.app().dir().getRelativePath(file);
 			primaryRequirePath = requirePrefix+"/"+StringUtils.substringBeforeLast(assetFile.getName(),".");
@@ -33,11 +34,6 @@ public class FileAsset implements Asset {
 	@Override
 	public Reader getReader() throws IOException {
 		return new UnicodeReader(file, defaultFileCharacterEncoding);
-	}
-	
-	@Override
-	public AssetLocation assetLocation() {
-		return null;
 	}
 	
 	@Override
@@ -65,4 +61,11 @@ public class FileAsset implements Asset {
 	public String getPrimaryRequirePath() {
 		return primaryRequirePath;
 	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
+	}
+
 }
