@@ -62,12 +62,22 @@ public class BladeWorkbenchBundlingTest extends SpecTest {
 	@Test
 	public void workbenchBundlesBladeJSClassFilesWhenReferenced() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).hasClasses("appns.Class1")
+			.and(aspect).hasClass("appns.Class1")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("appns.bs.b1.Class1")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void workbenchMayNotReferenceAJsFromTheDefaultAspect() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.Class1")
+			.and(workbench).indexPageRefersTo("appns.Class1");
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).doesNotContainText("appns.Class1")
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	
