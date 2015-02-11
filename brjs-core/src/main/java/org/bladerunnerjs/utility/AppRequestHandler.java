@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -22,10 +21,10 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -42,10 +41,6 @@ import com.google.common.base.Joiner;
 
 public class AppRequestHandler
 {
-
-	private static final String BR_LOCALE_UTILITY_LIBNAME = "br-locale-utility";
-	private static final String BR_LOCALE_UTILITY_FILENAME = "LocaleUtility.js";
-	
 	private static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
 	private static final String INDEX_PAGE_REQUEST = "index-page-request";
 	private static final String UNVERSIONED_BUNDLE_REQUEST = "unversioned-bundle-request";
@@ -248,14 +243,12 @@ public class AppRequestHandler
 	}
 
 	public ResponseContent getLocaleForwardingPageContent(BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
-		StringWriter localeForwardingPage = new StringWriter();
-		
-		SdkJsLib localeForwarderLib = app.root().sdkLib(BR_LOCALE_UTILITY_LIBNAME);
-		try (Reader localeForwarderReader = new FileReader( localeForwarderLib.file(BR_LOCALE_UTILITY_FILENAME) ) ) {
+		try {
+			StringWriter localeSwitchingPage = new StringWriter();
 			
-			localeForwardingPage.write("<head>\n");
-			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
-			localeForwardingPage.write("<script type='text/javascript'>\n");
+			localeSwitchingPage.write("<head>\n");
+			localeSwitchingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
+			localeSwitchingPage.write("<script type='text/javascript'>\n");
 			
 			ContentPlugin appVersionContentPlugin = app.root().plugins().contentPlugin("app-meta");
 			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.getContentPathParser();
@@ -263,18 +256,26 @@ public class AppRequestHandler
 			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPathParser.parse(appVersionContentPath), bundleSet, contentAccessor, appVersionContentPath);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			responseContent.write(baos);
-			localeForwardingPage.write( baos.toString() );
+			localeSwitchingPage.write( baos.toString() );
+			localeSwitchingPage.write("\n");
 			
-			localeForwardingPage.write("\n");
-			IOUtils.copy(localeForwarderReader, localeForwardingPage);
-			localeForwardingPage.write("\n");
-			localeForwardingPage.write("LocaleUtility.switchToActiveLocale();\n");
-			localeForwardingPage.write("</script>\n");
-			localeForwardingPage.write("</head>\n");
+			BundleSet localeSwitcherBundleSet = app.root().sdkLib("br/services/locale/Switcher").getBundleSet();
 			
-			return new CharResponseContent( app.root(), localeForwardingPage.toString() );
+			for(SourceModule sourceModule : localeSwitcherBundleSet.getSourceModules()) {
+				try(Reader sourceModuleReader = sourceModule.getReader()) {
+					IOUtils.copy(sourceModuleReader, localeSwitchingPage);
+					localeSwitchingPage.write("\n");
+				}
+			}
+			
+			localeSwitchingPage.write("\n");
+			localeSwitchingPage.write("require('br/services/locale/Switcher').switchToActiveLocale();\n");
+			localeSwitchingPage.write("</script>\n");
+			localeSwitchingPage.write("</head>\n");
+			
+			return new CharResponseContent( app.root(), localeSwitchingPage.toString() );
 		}
-		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException e) {
+		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException | ModelOperationException e) {
 			throw new ContentProcessingException(e);
 		}
 	}

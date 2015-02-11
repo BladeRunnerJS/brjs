@@ -55,7 +55,7 @@ BRLocaleService.prototype.getLocale = function() {
 	var localeCookieValue = this.localeUtility.getCookie( localeCookieName );
 	var browserLocales = this.localeUtility.getBrowserAcceptedLocales();
 	var appLocales = this.appMetaService.getLocales();
-	return LocaleUtility.getActiveLocale( localeCookieValue, browserLocales, appLocales );
+	return LocaleUtility.getActiveLocaleGiven( localeCookieValue, browserLocales, appLocales );
 };
 
 /**
