@@ -11,9 +11,9 @@
  * There are two standard implementations provided with BladeRunnerJS:
  *
  * <ul>
- *  <li>{br/services/BRLocaleForwardingSwitcher}: Causes the browser to load the locale specific page using a URL that
- *   includes the locale.</li>
- *  <li>{br/services/BRLocaleLoadingSwitcher}: Causes the browser to replace the contents of the locale switching
+ *  <li>{br/services/locale/BRLocaleForwardingSwitcher}: Causes the browser to load the locale specific page using a URL
+ *   that includes the locale.</li>
+ *  <li>{br/services/locale/BRLocaleLoadingSwitcher}: Causes the browser to replace the contents of the locale switching
  *   page with the contents of the locale specific page.</li>
  * </ul>
  */

@@ -259,7 +259,7 @@ public class AppRequestHandler
 			localeSwitchingPage.write( baos.toString() );
 			localeSwitchingPage.write("\n");
 			
-			BundleSet localeSwitcherBundleSet = app.root().sdkLib("br/services/locale/Switcher").getBundleSet();
+			BundleSet localeSwitcherBundleSet = app.root().sdkLib("br-locale").getBundleSet();
 			
 			for(SourceModule sourceModule : localeSwitcherBundleSet.getSourceModules()) {
 				try(Reader sourceModuleReader = sourceModule.getReader()) {
@@ -268,8 +268,15 @@ public class AppRequestHandler
 				}
 			}
 			
+			// TODO: get rid of this hack once AliasingContentPlugin has been replaced by an AliasingRequirePlugin, and AliasRegistry can openly require 'alias!data'
+			// instead of privately requiring '$alias-data'
+			// TODO: if you switch here, you also need to update the 'aliasDefinitions.xml' too
+			String aliasData = "{'br.locale-switcher':{'class':'br/services/locale/BRLocaleLoadingSwitcher','className':'br.services.locale.BRLocaleLoadingSwitcher'},'br.locale-provider':{'class':'br/services/locale/BRLocaleProvider','className':'br.services.locale.BRLocaleProvider'},'br.app-meta-service':{'class':'br/services/appmeta/BRAppMetaService','className':'br.services.appmeta.BRAppMetaService'}}";
+//			String aliasData = "{'br.locale-switcher':{'class':'br/services/locale/BRLocaleForwardingSwitcher','className':'br.services.locale.BRLocaleForwardingSwitcher'},'br.locale-provider':{'class':'br/services/locale/BRLocaleProvider','className':'br.services.locale.BRLocaleProvider'},'br.app-meta-service':{'class':'br/services/appmeta/BRAppMetaService','className':'br.services.appmeta.BRAppMetaService'}}";
+			localeSwitchingPage.write("define('$alias-data', function(require, exports, module) {\n\tmodule.exports = " + aliasData + ";\n});\n");
+			
 			localeSwitchingPage.write("\n");
-			localeSwitchingPage.write("require('br/services/locale/Switcher').switchToActiveLocale();\n");
+			localeSwitchingPage.write("require('br-locale/switcher').switchToActiveLocale();\n");
 			localeSwitchingPage.write("</script>\n");
 			localeSwitchingPage.write("</head>\n");
 			
