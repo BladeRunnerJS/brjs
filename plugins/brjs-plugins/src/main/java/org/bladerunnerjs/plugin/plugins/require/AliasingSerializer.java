@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.aliasing;
+package org.bladerunnerjs.plugin.plugins.require;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.plugin.plugins.require.AliasCommonJsSourceModule;
 
 public class AliasingSerializer {
 	public static String createJson(BundleSet bundleSet) {
