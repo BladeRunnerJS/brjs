@@ -369,8 +369,8 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 
 	public BuilderChainer localeForwarderHasContents(String string) throws IOException, InvalidNameException, ModelUpdateException
 	{
-		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
-		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), string);
+		SdkJsLib localeSwitcherLib = brjs.sdkLib("br-locale-switcher");
+		FileUtils.write(localeSwitcherLib.file("switcher.js"), string);
 		
 		return builderChainer;
 	}

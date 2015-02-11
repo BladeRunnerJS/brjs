@@ -19,7 +19,7 @@ import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.TestRunner;
 
-public abstract class AbstractJsLib extends AbstractAssetContainer implements JsLib
+public abstract class AbstractJsLib extends AbstractBundlableNode implements JsLib
 {
 	private String name;
 	private Node parent;
@@ -39,6 +39,18 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	{
 		// TODO: can we avoid having to have a null name for a NamedNode that is available as a single item through the model
 		this(rootNode, parent, dir, null);
+	}
+	
+	@Override
+	public List<LinkedAsset> modelSeedAssets() 
+	{
+		List<LinkedAsset> seedFiles = new ArrayList<>();
+		
+		for(AssetLocation assetLocation : assetLocations()) {
+			seedFiles.addAll(assetLocation.sourceModules());
+		}
+		
+		return seedFiles;
 	}
 	
 	@Override

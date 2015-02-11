@@ -28,7 +28,7 @@ LocaleUtility.getBrowserAcceptedLocales = function() {
 	else {
 		var parts = navigator.userLanguage.split('-');
 		var locale = (parts.length == 1) ? parts[0] : parts[0] + '-' + parts[1].toUpperCase()
-		
+
 		userAcceptedLocales = [locale];
 	}
 
@@ -83,7 +83,7 @@ LocaleUtility.getFirstMatchingLocale = function(appSupportedLocales, userAccepte
 	return firstMatchingLocale;
 };
 
-LocaleUtility.getActiveLocale = function(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
+LocaleUtility.getActiveLocaleGiven = function(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
 	var activeLocale;
 
 	if(appSupportedLocales[userPreferredLocale]) {
@@ -106,34 +106,13 @@ LocaleUtility.getActiveLocale = function(userPreferredLocale, userAcceptedLocale
 	return activeLocale;
 };
 
-LocaleUtility.getWindowUrl = function() {
-	return window.location.pathname;
+LocaleUtility.getActiveLocale = function(appLocales, localeCookieName) {
+	var localeCookie = LocaleUtility.getCookie(localeCookieName);
+	var browserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales();
+
+	return LocaleUtility.getActiveLocaleGiven(localeCookie, browserAcceptedLocales, appLocales);
 };
 
-LocaleUtility.getLocalizedPageUrl = function(pageUrl, locale) {
-
-	var urlParser = document.createElement('a');
-	urlParser.href = pageUrl;
-
-	var protocol = urlParser.protocol;
-	var host = urlParser.host;
-	var path = urlParser.pathname;
-	var query = urlParser.search;
-	var hash = urlParser.hash;
-
-	var normalizedPath = path.replace(/\/$/, '').replace(/^\/?(.*)/, '/$1');
-
-	if (normalizedPath.indexOf('.html') !== -1) {
-
-		normalizedPath = normalizedPath.split('/');
-		normalizedPath.splice(-1, 0, locale);
-		normalizedPath = normalizedPath.join('/');
-
-	} else {
-
-		normalizedPath = normalizedPath + '/' + locale + '/';
-
-	}
-
-	return protocol + '//' + host + normalizedPath + query + hash;
+LocaleUtility.getWindowUrl = function() {
+	return window.location.pathname;
 };
