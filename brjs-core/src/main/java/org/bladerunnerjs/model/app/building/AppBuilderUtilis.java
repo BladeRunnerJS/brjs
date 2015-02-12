@@ -95,6 +95,7 @@ public class AppBuilderUtilis
 	{
 		String indexPageSuffix = (aspect.file("index.jsp").exists()) ? ".jsp" : ".html";
 		File localeIndexPageFile = new File(targetDir, aspect.requestHandler().createIndexPageRequest(locale) + indexPageSuffix);
+		localeIndexPageFile.getParentFile().mkdirs();
 		
 		try (OutputStream os = new FileOutputStream(localeIndexPageFile);
 			ResponseContent content = aspect.requestHandler().getIndexPageContent(locale, version, urlContentAccessor, RequestMode.Prod); )

@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
@@ -22,7 +21,6 @@ public class ServedAppTest extends SpecTest
 {
 	ApplicationServer appServer;
 	App app;
-	private AppConf appConf;
 	App systemApp;
 	Aspect aspect;
 	Aspect systemAspect;
@@ -53,7 +51,6 @@ public class ServedAppTest extends SpecTest
 			.and(brjs).hasDevVersion("123");
 			appServer = brjs.applicationServer(appServerPort);
 			app = brjs.userApp("app");
-			appConf = app.appConf();
 			systemApp = brjs.systemApp("app");
 			aspect = app.defaultAspect();
 			appWithDefaultAspect = brjs.app("anotherApp");
@@ -112,32 +109,12 @@ public class ServedAppTest extends SpecTest
 	}
 	
 	@Test
-	public void indexPageCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
-	{
-		given(app).hasBeenPopulated("default")
-			.and(appConf).supportsLocales("en", "de")
-			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
-			.and(appServer).started();
-		then(appServer).requestIs302Redirected("/app/en", "/app/en/");
-	}
-	
-	@Test
 	public void localeForwarderPageOfANonDefaultAspectCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
 		given(app).hasBeenPopulated("default")
     		.and(anotherAspect).hasBeenPopulated()
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/another", "/app/another/");
-	}
-	
-	@Test
-	public void indexPageOfANonDefaultAspectCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
-	{
-		given(app).hasBeenPopulated("default")
-			.and(appConf).supportsLocales("en", "de")
-			.and(anotherAspect).containsFileWithContents("index.html", "aspect index.html")
-			.and(appServer).started();
-		then(appServer).requestIs302Redirected("/app/another/en", "/app/another/en/");
 	}
 	
 	@Test
@@ -175,26 +152,13 @@ public class ServedAppTest extends SpecTest
 	}
 	
 	@Test
-	public void workbenchIndexPageCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
-	{
-		given(app).hasBeenPopulated("default")
-			.and(appConf).supportsLocales("en", "de")
-    		.and(bladeset).hasBeenCreated()
-    		.and(blade).hasBeenCreated()
-    		.and(workbench).hasBeenCreated()
-    		.and(brjs).localeForwarderHasContents("locale forwarder")
-    		.and(appServer).started();
-    	then(appServer).requestIs302Redirected("/app/bs/b1/workbench/en", "/app/bs/b1/workbench/en/");
-	}
-	
-	@Test
 	public void requestsForInvalidModelPathsThatDoExistOnDiskReturn404() throws Exception
 	{
 		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
-		/* The correct URL is /app/en/index.html but /app/default-aspect/index.html is a valid path on disk. 
+		/* The correct URL is /app/en but /app/default-aspect/index.html is a valid path on disk. 
 		 	All requests should go through the model so verify the invalid model request returns a 404 and is not served from disk. */
 	}
 	
@@ -341,7 +305,7 @@ public class ServedAppTest extends SpecTest
 			.and(defaultAspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(brjs).localeForwarderHasContents("locale forwarder")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/anotherApp/en/", "aspect index.html");
+		then(appServer).requestForUrlReturns("/anotherApp/en", "aspect index.html");
 	}
 	
 	@Test

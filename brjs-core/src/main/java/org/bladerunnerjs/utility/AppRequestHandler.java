@@ -164,7 +164,7 @@ public class AppRequestHandler
 	public String createIndexPageRequest(Aspect aspect, Locale locale) throws MalformedTokenException
 	{
 		if(!aspect.app().isMultiLocaleApp()) {
-			return createRequest(aspect, INDEX_PAGE_REQUEST);
+			return createRequest(aspect, INDEX_PAGE_REQUEST) + "index";
 		}
 		else {
 			return createRequest(aspect, INDEX_PAGE_REQUEST, locale.toString());

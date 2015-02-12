@@ -60,7 +60,7 @@ public class ServeAppTest extends SpecTest {
 		given(appConf).supportsLocales("en", "de")
 			.and(defaultAspect).indexPageHasContent("index page")
     		.and(brjs).localeForwarderHasContents("locale forwarding page");
-    	when(app).requestReceived("zz/", response);
+    	when(app).requestReceived("zz", response);
     	then(exceptions).verifyException(ResourceNotFoundException.class, "zz");
 	}
 	
@@ -69,7 +69,7 @@ public class ServeAppTest extends SpecTest {
 		given(appConf).supportsLocales("en", "de")
 			.and(defaultAspect).indexPageHasContent("index page")
 			.and(brjs).localeForwarderHasContents("");
-		when(app).requestReceived("en/", response);
+		when(app).requestReceived("en", response);
 		then(response).textEquals("index page");
 	}
 	
@@ -95,7 +95,7 @@ public class ServeAppTest extends SpecTest {
 		given(appConf).supportsLocales("en", "en_GB")
 			.and(defaultAspect).indexPageHasContent("<@localeToken @/>")
 			.and(brjs).localeForwarderHasContents("");
-		when(app).requestReceived("en_GB/", response);
+		when(app).requestReceived("en_GB", response);
 		then(response).textEquals("- en_GB");
 	}
 	
@@ -112,7 +112,7 @@ public class ServeAppTest extends SpecTest {
 		given(appConf).supportsLocales("en", "en_GB")
 			.and(workbench).indexPageHasContent("workbench index page")
 			.and(brjs).localeForwarderHasContents("");
-		when(app).requestReceived("bs/b1/workbench/en/", response);
+		when(app).requestReceived("bs/b1/workbench/en", response);
 		then(response).textEquals("workbench index page");
 	}
 	

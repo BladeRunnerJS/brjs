@@ -60,7 +60,7 @@ public class BuildAppTest extends SpecTest {
 			.and(defaultAspect).containsFile("index.html")
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "index.html");
+		then(targetDir).containsFileWithContents("en.html", "index.html");
 	}
 	
 	@Test
@@ -77,8 +77,8 @@ public class BuildAppTest extends SpecTest {
 			.and(defaultAspect).containsFileWithContents("index.html", "<@i18n.bundle@/>")
 			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("/en/index.html", "/i18n/en.js")
-			.and(targetDir).containsFileWithContents("/de/index.html", "/i18n/de.js");
+		then(targetDir).containsFileWithContents("/en.html", "/i18n/en.js")
+			.and(targetDir).containsFileWithContents("/de.html", "/i18n/de.js");
 	}
 	
 	@Test
@@ -98,9 +98,9 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/index.html", "locale-forwarder.js")
-			.and(targetDir).containsFileWithContents("/en/index.html", "/js/prod/combined/bundle.js")
+			.and(targetDir).containsFileWithContents("/en.html", "/js/prod/combined/bundle.js")
 			.and(targetDir).containsFileWithContents("/aspect2/index.html", "locale-forwarder.js")
-			.and(targetDir).containsFileWithContents("/aspect2/en/index.html", "/i18n/en.js");
+			.and(targetDir).containsFileWithContents("/aspect2/en.html", "/i18n/en.js");
 	}
 	
 	@Test
