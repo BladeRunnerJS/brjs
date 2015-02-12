@@ -82,7 +82,7 @@ public class IntegrationServeCommandTest extends SpecTest
 	public void serverWillServeAppsOnceStarted() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyReCreated()
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(brjs.app("app1")).hasBeenPopulated("default")
@@ -96,7 +96,7 @@ public class IntegrationServeCommandTest extends SpecTest
 	{
 		brjs = null;
 		given(brjs).hasBeenAuthenticallyReCreated()
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).usedForServletModel();
 		App app = brjs.app("app1");
 		Aspect aspect = app.defaultAspect();

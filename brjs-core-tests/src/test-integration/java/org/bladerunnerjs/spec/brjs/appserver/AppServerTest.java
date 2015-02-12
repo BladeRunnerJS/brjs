@@ -48,7 +48,7 @@ public class AppServerTest extends SpecTest
 			.and(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
-			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
 			brjs.bladerunnerConf().setJettyPort(appServerPort);

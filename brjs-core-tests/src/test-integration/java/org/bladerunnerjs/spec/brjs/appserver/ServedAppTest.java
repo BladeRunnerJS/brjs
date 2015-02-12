@@ -134,7 +134,7 @@ public class ServedAppTest extends SpecTest
     		.and(bladeset).hasBeenCreated()
     		.and(blade).hasBeenCreated()
     		.and(workbench).hasBeenCreated()
-			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(brjs).localeSwitcherHasContents("locale forwarder")
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/bs/b1/workbench", "/app/bs/b1/workbench/");
 	}
@@ -146,7 +146,7 @@ public class ServedAppTest extends SpecTest
     		.and(bladeset).hasBeenCreated()
     		.and(blade).hasBeenCreated()
     		.and(workbench).hasBeenCreated()
-    		.and(brjs).localeForwarderHasContents("locale forwarder")
+    		.and(brjs).localeSwitcherHasContents("locale forwarder")
     		.and(appServer).started();
     	then(appServer).requestIs302Redirected("/app/bs/b1/workbench", "/app/bs/b1/workbench/");
 	}
@@ -203,7 +203,7 @@ public class ServedAppTest extends SpecTest
 		given(app).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(aspect).indexPageHasContent("index page")
-			.and(brjs).localeForwarderHasContents("locale-forwarder.js");
+			.and(brjs).localeSwitcherHasContents("locale-forwarder.js");
 		when(appServer).requestIsMadeFor("/app/?query=1", response);
 		then(response).textEquals("index page");
 	}
@@ -303,7 +303,7 @@ public class ServedAppTest extends SpecTest
 		given(appWithDefaultAspect).hasBeenCreated()
 			.and(appWithDefaultAspect.appConf()).supportsLocales("en", "de")
 			.and(defaultAspect).containsFileWithContents("index.html", "aspect index.html")
-			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(brjs).localeSwitcherHasContents("locale forwarder")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/anotherApp/en", "aspect index.html");
 	}

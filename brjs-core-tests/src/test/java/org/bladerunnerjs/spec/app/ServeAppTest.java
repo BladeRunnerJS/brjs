@@ -41,7 +41,7 @@ public class ServeAppTest extends SpecTest {
 	@Test
 	public void indexPageCanBeAccessedForSingleLocaleApps() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
-			.and(brjs).localeForwarderHasContents("");
+			.and(brjs).localeSwitcherHasContents("");
 		when(app).requestReceived("", response);
 		then(response).textEquals("index page");
 	}
@@ -50,7 +50,7 @@ public class ServeAppTest extends SpecTest {
 	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecifiedForMultiLocaleApps() throws Exception {
 		given(appConf).supportsLocales("en", "de")
 			.and(defaultAspect).indexPageHasContent("index page")
-			.and(brjs).localeForwarderHasContents("locale forwarding page");
+			.and(brjs).localeSwitcherHasContents("locale forwarding page");
 		when(app).requestReceived("", response);
 		then(response).containsText("locale forwarding page");
 	}
@@ -59,7 +59,7 @@ public class ServeAppTest extends SpecTest {
 	public void exceptionIsThrownIfAnInvalidLocaleIsRequestedForMultiLocaleApps() throws Exception {
 		given(appConf).supportsLocales("en", "de")
 			.and(defaultAspect).indexPageHasContent("index page")
-    		.and(brjs).localeForwarderHasContents("locale forwarding page");
+    		.and(brjs).localeSwitcherHasContents("locale forwarding page");
     	when(app).requestReceived("zz", response);
     	then(exceptions).verifyException(ResourceNotFoundException.class, "zz");
 	}
@@ -68,7 +68,7 @@ public class ServeAppTest extends SpecTest {
 	public void indexPageCanBeAccessedForMultiLocaleApps() throws Exception {
 		given(appConf).supportsLocales("en", "de")
 			.and(defaultAspect).indexPageHasContent("index page")
-			.and(brjs).localeForwarderHasContents("");
+			.and(brjs).localeSwitcherHasContents("");
 		when(app).requestReceived("en", response);
 		then(response).textEquals("index page");
 	}
@@ -76,7 +76,7 @@ public class ServeAppTest extends SpecTest {
 	@Test
 	public void tagsWithinIndexPagesAreProcessed() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@tagToken @/>")
-			.and(brjs).localeForwarderHasContents("");
+			.and(brjs).localeSwitcherHasContents("");
 		when(app).requestReceived("", response);
 		then(response).textEquals("dev replacement");
 	}
@@ -85,7 +85,7 @@ public class ServeAppTest extends SpecTest {
 	public void localesCanBeUsedInTagHandlersInSingleLocaleApps() throws Exception {
 		given(appConf).supportsLocales("en_GB")
 			.and(defaultAspect).indexPageHasContent("<@localeToken @/>")
-			.and(brjs).localeForwarderHasContents("");
+			.and(brjs).localeSwitcherHasContents("");
 		when(app).requestReceived("", response);
 		then(response).textEquals("- en_GB");
 	}
@@ -94,7 +94,7 @@ public class ServeAppTest extends SpecTest {
 	public void localesCanBeUsedInTagHandlersInMultiLocaleApps() throws Exception {
 		given(appConf).supportsLocales("en", "en_GB")
 			.and(defaultAspect).indexPageHasContent("<@localeToken @/>")
-			.and(brjs).localeForwarderHasContents("");
+			.and(brjs).localeSwitcherHasContents("");
 		when(app).requestReceived("en_GB", response);
 		then(response).textEquals("- en_GB");
 	}
@@ -102,7 +102,7 @@ public class ServeAppTest extends SpecTest {
 	@Test
 	public void workbenchPageCanBeAccessedInSingleLocaleApps() throws Exception {
 		given(workbench).indexPageHasContent("workbench index page")
-			.and(brjs).localeForwarderHasContents("");
+			.and(brjs).localeSwitcherHasContents("");
 		when(app).requestReceived("bs/b1/workbench/", response);
 		then(response).textEquals("workbench index page");
 	}
@@ -111,7 +111,7 @@ public class ServeAppTest extends SpecTest {
 	public void workbenchPageCanBeAccessedInMultiLocaleApps() throws Exception {
 		given(appConf).supportsLocales("en", "en_GB")
 			.and(workbench).indexPageHasContent("workbench index page")
-			.and(brjs).localeForwarderHasContents("");
+			.and(brjs).localeSwitcherHasContents("");
 		when(app).requestReceived("bs/b1/workbench/en", response);
 		then(response).textEquals("workbench index page");
 	}

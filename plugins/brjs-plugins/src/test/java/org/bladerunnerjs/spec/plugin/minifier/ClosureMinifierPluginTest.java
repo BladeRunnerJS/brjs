@@ -150,7 +150,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='closure-whitespace'@/>\n"+"require('appns/Class');")
 			.and(aspect).classFileHasContent("Class", "{ prop=\"$£€ø\" }")
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/v/1234/js/prod/closure-whitespace/bundle.js", "{prop=\"$\\u00a3\\u20ac\\u00f8\"}");

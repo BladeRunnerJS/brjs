@@ -66,7 +66,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void exportedWarCanBeDeployedOnAnAppServer() throws Exception {
-		given(brjs).localeForwarderHasContents("Locale Forwarder")
+		given(brjs).localeSwitcherHasContents("Locale Forwarder")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(aspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).hasProdVersion("1234")
@@ -84,7 +84,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void exportedWarCanBeDeployedOnAnAppServerWithRootAspect() throws Exception {
-		given(brjs).localeForwarderHasContents("Locale Forwarder")
+		given(brjs).localeSwitcherHasContents("Locale Forwarder")
 			.and(rootAspect).containsFileWithContents("index.html", "Hello World!")
 			.and(rootAspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).hasProdVersion("1234")
@@ -102,7 +102,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void exportedWarIndexPageIsTheSameAsBrjsHosted() throws Exception {
-		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(appConf).supportsLocales("en", "de")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -115,7 +115,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
-		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(aspect).indexPageHasContent("<@js.bundle @/>\n"+"require('appns/Class');")
 			.and(aspect).hasClass("appns/Class")
 			.and(brjs).hasProdVersion("APP.VERSION")
@@ -131,7 +131,7 @@ public class ServedWarTest extends SpecTest {
 	@Test
 	public void exportedWarCssBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(aspect).containsResourceFileWithContents("style.css", "body { color: red; }")
-			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(aspect).indexPageHasContent("<@css.bundle @/>\n")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -144,7 +144,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void warCommandDoesntExportFilesFromAnotherAspect() throws Exception {
-		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(loginAspect).containsFileWithContents("index.html", "Hello World!")
 			.and(loginAspect).containsFileWithContents("themes/noir/style.css", ".style { background:url('images/file.gif'); }")
 			.and(loginAspect).containsFileWithContents("themes/noir/images/file.gif", "** SOME GIF STUFF... **")
@@ -159,7 +159,7 @@ public class ServedWarTest extends SpecTest {
 	@Test
 	public void correctContentLengthHeaderIsSetWhenTagsAreReplaced() throws Exception
 	{
-		given(brjs).localeForwarderHasContents("Locale Forwarder")
+		given(brjs).localeSwitcherHasContents("Locale Forwarder")
     		.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
     		.and(brjs).hasProdVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -172,7 +172,7 @@ public class ServedWarTest extends SpecTest {
 	@Test
 	public void jndiTokensAreReplaced() throws Exception
 	{
-		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app).hasBeenPopulated("default")
@@ -188,7 +188,7 @@ public class ServedWarTest extends SpecTest {
 	@Test
 	public void correctContentLengthIsSetWhenJNDITokensAreReplaced() throws Exception
 	{
-		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app).hasBeenPopulated("default")
@@ -205,7 +205,7 @@ public class ServedWarTest extends SpecTest {
 	@Test
 	public void correctContentLengthIsSetWhenJNDITokensAreReplacedAndADownstreamFilterCommitsTheResponseEarly() throws Exception
 	{
-		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app).hasBeenPopulated("default")
@@ -226,7 +226,7 @@ public class ServedWarTest extends SpecTest {
 		System.setProperty("java.naming.factory.initial", "org.eclipse.jetty.jndi.InitialContextFactory");
 		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
 		
-		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
     		.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
     		.and(brjs).hasProdVersion("1234")

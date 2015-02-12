@@ -521,7 +521,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void onlyCssBundlesUsedFromATagHandlerAreReturnedAsUsedContentPaths() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
 			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("css", "css/usedtheme/bundle.css");
 	}
@@ -530,7 +530,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void onlyCssBundlesUsedFromATagHandlerArePresentInTheBuiltArtifact() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
 			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("index.html", "v/1234/css/usedtheme/bundle.css")
