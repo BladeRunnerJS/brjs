@@ -21,7 +21,7 @@ module.exports = {
 		var path = urlParser.pathname;
 		var query = urlParser.search;
 		var hash = urlParser.hash;
-		var normalizedPath = path.replace(/\/$/, '').replace(/^\/?(.*)/, '/$1');
+		var normalizedPath = path.replace(/^\/?(.*)/, '/$1').replace(/\/$/, '');
 
 		if (normalizedPath.indexOf('.html') !== -1) {
 			normalizedPath = normalizedPath.split('/');

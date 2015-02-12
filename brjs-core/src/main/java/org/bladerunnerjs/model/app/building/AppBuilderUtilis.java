@@ -93,9 +93,8 @@ public class AppBuilderUtilis
 
 	private static void outputAspectIndexPage(Aspect aspect, Locale locale, BundleSet bundleSet, File targetDir, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException, ResourceNotFoundException
 	{
-		String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
-		File localeIndexPageFile = new File(targetDir, aspect.requestHandler().createIndexPageRequest(locale) + indexPageName);
-		localeIndexPageFile.getParentFile().mkdirs();
+		String indexPageSuffix = (aspect.file("index.jsp").exists()) ? ".jsp" : ".html";
+		File localeIndexPageFile = new File(targetDir, aspect.requestHandler().createIndexPageRequest(locale) + indexPageSuffix);
 		
 		try (OutputStream os = new FileOutputStream(localeIndexPageFile);
 			ResponseContent content = aspect.requestHandler().getIndexPageContent(locale, version, urlContentAccessor, RequestMode.Prod); )
