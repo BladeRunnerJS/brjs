@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.engine.NamedNode;
+import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CopyBladesetCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
@@ -284,6 +285,7 @@ public class RestApiService
 		System.setOut( new MultiOutputPrintStream(System.out, new PrintStream(commandOutput)) );
 		
 		try {
+			brjs.notifyObservers(new CommandExecutedEvent(command.getCommandName()), brjs);
 			command.doCommand(args);
 		} finally {
 			System.setOut(oldSysOut);

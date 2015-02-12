@@ -373,7 +373,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public int runCommand(String... args) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
 	{
-		return CommandRunner.run(commandList, args);
+		return CommandRunner.run(this, commandList, args);
 	}
 	
 	public int runUserCommand(LogLevelAccessor logLevelAccessor, String... args) throws CommandOperationException

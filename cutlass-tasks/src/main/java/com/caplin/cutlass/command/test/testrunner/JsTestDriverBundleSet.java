@@ -37,6 +37,10 @@ public class JsTestDriverBundleSet implements BundleSet {
 		return bundleSet.getResourceNodes();
 	}
 	
+	public List<Asset> getResourceFiles() {
+		return bundleSet.getResourceFiles();
+	}
+	
 	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
 		return bundleSet.getResourceFiles(assetProducer);
 	}
