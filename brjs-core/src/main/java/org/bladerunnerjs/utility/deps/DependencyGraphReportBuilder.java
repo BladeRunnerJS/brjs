@@ -6,20 +6,21 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasException;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasAsset;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasOverride;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 
 public class DependencyGraphReportBuilder {
 	private final List<LinkedAsset> linkedAssets;

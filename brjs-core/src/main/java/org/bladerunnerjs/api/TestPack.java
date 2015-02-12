@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.AbstractBundlableNode;
@@ -20,7 +19,6 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class TestPack extends AbstractBundlableNode implements NamedNode
 {
-	private AliasesFile aliasesFile;
 	private String name;
 	
 	public TestPack(RootNode rootNode, Node parent, MemoizedFile dir)
@@ -104,15 +102,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	public AssetContainer testScope() {
 		return (AssetContainer) parentNode().parentNode();
-	}
-	
-	public AliasesFile aliasesFile()
-	{
-		if(aliasesFile == null) {
-			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml", this);
-		}
-		
-		return aliasesFile;
 	}
 	
 }

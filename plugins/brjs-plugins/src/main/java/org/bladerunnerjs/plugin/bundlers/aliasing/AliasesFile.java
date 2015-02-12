@@ -1,13 +1,7 @@
-package org.bladerunnerjs.aliasing.aliases;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.util.List;
 
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasException;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
-import org.bladerunnerjs.api.aliasing.AmbiguousAliasException;
-import org.bladerunnerjs.api.aliasing.UnresolvableAliasException;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.BundlableNode;

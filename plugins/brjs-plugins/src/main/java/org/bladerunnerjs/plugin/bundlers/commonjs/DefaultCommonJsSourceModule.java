@@ -200,5 +200,11 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		public Set<String> useTimeRequirePaths = new HashSet<>();
 		public List<String> aliases = new ArrayList<>();
 	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
+	}
 	
 }

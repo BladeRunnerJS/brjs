@@ -3,18 +3,13 @@ package org.bladerunnerjs.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasException;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
@@ -25,9 +20,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
-	private AliasesFile aliasesFile;
 	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
-	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
@@ -37,16 +30,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public List<LinkedAsset> seedAssets() {
 		return assetDiscoveryInitiator.seedAssets();
 	}
-	
-	@Override
-	public AliasesFile aliasesFile() {
-		if(aliasesFile == null) {
-			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml", this);
-		}
 		
-		return aliasesFile;
-	}
-	
 	@Override
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
 		RequirePlugin requirePlugin;
@@ -67,29 +51,9 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
-		return aliasesFile().getAlias(aliasName);
-	}
-	
-	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
 		return bundleSet.value(() -> {
 			return BundleSetCreator.createBundleSet(this);
-		});
-	}
-	
-	@Override
-	public List<AliasDefinitionsFile> aliasDefinitionFiles() {
-		return aliasDefinitionFilesList.value(() -> {
-			List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
-			
-			for(AssetContainer assetContainer : scopeAssetContainers()) {
-				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-					aliasDefinitionFiles.addAll( assetLocation.aliasDefinitionsFiles() );
-				}
-			}
-			
-			return aliasDefinitionFiles;
 		});
 	}
 	

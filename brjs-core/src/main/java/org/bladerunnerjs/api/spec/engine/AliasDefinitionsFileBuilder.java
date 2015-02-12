@@ -2,10 +2,10 @@ package org.bladerunnerjs.api.spec.engine;
 
 import java.io.IOException;
 
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasOverride;
 
 public class AliasDefinitionsFileBuilder {
 	private AliasDefinitionsFile aliasDefinitionsFile;

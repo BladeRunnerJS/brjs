@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasAsset;
 
 public class DependencyInfo {
 	public Map<LinkedAsset, Set<LinkedAsset>> map = new LinkedHashMap<>();

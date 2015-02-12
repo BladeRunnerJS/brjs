@@ -1,4 +1,4 @@
-package org.bladerunnerjs.api.aliasing;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 public class AliasException extends Exception {
 	private static final long serialVersionUID = 1L;

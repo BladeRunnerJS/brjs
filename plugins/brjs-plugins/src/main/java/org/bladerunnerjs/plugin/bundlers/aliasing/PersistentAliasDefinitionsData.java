@@ -1,6 +1,5 @@
-package org.bladerunnerjs.aliasing.aliasdefinitions;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;

@@ -1,9 +1,7 @@
-package org.bladerunnerjs.aliasing.aliases;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.bladerunnerjs.api.aliasing.AliasOverride;
 
 public class AliasesData {
 	public List<AliasOverride> aliasOverrides = new ArrayList<>();

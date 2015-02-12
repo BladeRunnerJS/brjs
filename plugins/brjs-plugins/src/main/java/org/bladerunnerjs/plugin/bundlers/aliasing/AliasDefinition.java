@@ -1,4 +1,4 @@
-package org.bladerunnerjs.api.aliasing;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 public class AliasDefinition {
 	private final String name;

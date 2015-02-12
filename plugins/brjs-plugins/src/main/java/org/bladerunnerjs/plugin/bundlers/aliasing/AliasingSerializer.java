@@ -3,10 +3,8 @@ package org.bladerunnerjs.plugin.bundlers.aliasing;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
 import org.bladerunnerjs.plugin.require.AliasCommonJsSourceModule;
 
 public class AliasingSerializer {

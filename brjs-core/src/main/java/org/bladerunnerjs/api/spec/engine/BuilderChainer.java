@@ -2,7 +2,6 @@ package org.bladerunnerjs.api.spec.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
@@ -13,7 +12,6 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.Workbench;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.EventObserver;
@@ -65,7 +63,5 @@ public class BuilderChainer {
 	public NodeObserverBuilder and(EventObserver observer) { return new NodeObserverBuilder(specTest, observer); }
 	public AppServerBuilder and(ApplicationServer appServer) { return new AppServerBuilder(specTest, appServer); }
 	public JettyServerBuilder and(Server jettyServer) { return new JettyServerBuilder(specTest, jettyServer); }
-	public AliasesFileBuilder and(AliasesFile aliasesFile) { return new AliasesFileBuilder(specTest, aliasesFile); }
-	public AliasDefinitionsFileBuilder and(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(specTest, aliasDefinitionsFile); }
 	
 }

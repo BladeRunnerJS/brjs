@@ -1,4 +1,4 @@
-package org.bladerunnerjs.aliasing.aliases;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.io.IOException;
 
@@ -7,7 +7,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.spec.utility.XmlBuilderSerializer;
 import org.bladerunnerjs.utility.EncodedFileUtil;

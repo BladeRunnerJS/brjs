@@ -11,6 +11,7 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 
 public class FakeSourceModule implements SourceModule {
@@ -100,5 +101,11 @@ public class FakeSourceModule implements SourceModule {
 	@Override
 	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return Collections.emptyList();
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return null;
 	}
 }

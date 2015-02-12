@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.JsLib;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -112,6 +111,12 @@ public class JSLibRootDirectoryLinkedAsset implements RootDirectoryLinkedAsset
 	public void setRequirePrefix(String requirePrefix) throws ConfigException {
 		libManifest.setRequirePrefix(requirePrefix);
 		libManifest.write();
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
 	}
 
 }

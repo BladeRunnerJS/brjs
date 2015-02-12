@@ -1,4 +1,4 @@
-package org.bladerunnerjs.aliasing.aliases;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;

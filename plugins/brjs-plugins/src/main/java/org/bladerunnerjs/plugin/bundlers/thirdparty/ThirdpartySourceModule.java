@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;

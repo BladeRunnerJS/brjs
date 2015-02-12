@@ -1,12 +1,9 @@
-package org.bladerunnerjs.aliasing.aliasdefinitions;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
 
 public class AliasDefinitionsData {
 	public List<AliasDefinition> aliasDefinitions = new ArrayList<>();

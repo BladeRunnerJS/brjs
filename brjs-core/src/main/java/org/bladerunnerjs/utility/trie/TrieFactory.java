@@ -3,16 +3,12 @@ package org.bladerunnerjs.utility.trie;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.Getter;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
@@ -47,39 +43,33 @@ public class TrieFactory {
 				Trie<AssetReference> trie = new Trie<AssetReference>( '/', new Character[]{'.', '/'} );
 				
 				for (AssetContainer assetContainer : assetContainer.scopeAssetContainers()) {
-					try {
-						if(assetContainer instanceof BundlableNode) {
-							BundlableNode bundlableNode = (BundlableNode) assetContainer;
-							
-							for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
-								addToTrie(trie, aliasOverride.getName(), new AliasOverrideReference(aliasOverride), ALIAS_MATCHER_PATTERN);
-							}
-						}
-						
+					try {						
 						for(Asset asset : assetContainer.assets()) {
 							
 							List<String> requirePaths = asset.getRequirePaths();
 							
 							for(String requirePath : requirePaths) {
+								
+								boolean requirePathStartsWithAlias = requirePath.startsWith("alias!");
+								String requirePathAfterAlias = StringUtils.substringAfter(requirePath, "alias!");
+								
 								if (requirePath.contains("/")) {
 									addToTrie(trie, requirePath, new LinkedAssetReference(asset), SOURCE_MODULE_MATCHER_PATTERN);
+									if (requirePathStartsWithAlias) {
+										addToTrie(trie, requirePathAfterAlias, new LinkedAssetReference(asset), ALIAS_MATCHER_PATTERN);										
+									}
 								} else {
 									// the asset is one that can only be referred to via a string
 									addToTrie(trie, requirePath, new LinkedAssetReference(asset), QUOTED_SOURCE_MODULE_MATCHER_PATTERN);
+									if (requirePathStartsWithAlias) {
+										addToTrie(trie, requirePathAfterAlias, new LinkedAssetReference(asset), ALIAS_MATCHER_PATTERN);									
+									}
 								}
-							}
-						}
-						
-						for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-							for (AliasDefinitionsFile aliasDefinitionsFile : assetLocation.aliasDefinitionsFiles()) {
-    							for(AliasDefinition aliasDefintion :aliasDefinitionsFile.aliases()) {
-    								String aliasName = aliasDefintion.getName();
-    								addToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion), ALIAS_MATCHER_PATTERN);
-    							}
+								
 							}
 						}
 					}
-					catch (EmptyTrieKeyException | ContentFileProcessingException ex) {
+					catch (EmptyTrieKeyException ex) {
 						throw new ModelOperationException(ex);
 					}
 				}

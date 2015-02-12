@@ -6,19 +6,16 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
 
 public class StandardBundleSet implements BundleSet {
 	private final List<Asset> assets;
 	private final List<SourceModule> sourceModules;
-	private final List<AliasDefinition> activeAliases;
 	private BundlableNode bundlableNode;
 	
-	public StandardBundleSet(BundlableNode bundlableNode, List<Asset> assets, List<SourceModule> sourceModules, List<AliasDefinition> activeAliases) {
+	public StandardBundleSet(BundlableNode bundlableNode, List<Asset> assets, List<SourceModule> sourceModules) {
 		this.bundlableNode = bundlableNode;
 		this.assets = assets;
 		this.sourceModules = sourceModules;
-		this.activeAliases = activeAliases;
 	}
 	
 	@Override
@@ -34,11 +31,6 @@ public class StandardBundleSet implements BundleSet {
 	@Override
 	public List<SourceModule> getSourceModules() {
 		return sourceModules;
-	}
-	
-	@Override
-	public List<AliasDefinition> getActiveAliases() {
-		return activeAliases;
 	}
 
 	@Override

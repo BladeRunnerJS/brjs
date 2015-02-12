@@ -53,16 +53,6 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 		return commanderChainer;
 	}
 	
-	public CommanderChainer retrievesAlias(final String aliasName) throws Exception {
-		call(new Command() {
-			public void call() throws Exception {
-				aspect.aliasesFile().getAlias(aliasName);
-			}
-		});
-		
-		return commanderChainer;
-	}
-	
 	private void pageLoaded(StringBuffer pageResponse, Locale locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, RequirePathException {
 		StringWriter writer = new StringWriter();	
 		

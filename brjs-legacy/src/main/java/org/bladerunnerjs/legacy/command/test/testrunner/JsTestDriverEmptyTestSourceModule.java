@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 
 public class JsTestDriverEmptyTestSourceModule implements SourceModule {
@@ -80,5 +81,11 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
 		return sourceModule.getAliasNames();
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return sourceModule.assetContainer();
 	}
 }

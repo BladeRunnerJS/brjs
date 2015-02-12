@@ -8,7 +8,6 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
@@ -19,7 +18,6 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.Workbench;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
@@ -303,12 +301,6 @@ public abstract class SpecTest
 	
 	// Webapp Tester
 	public WebappTesterCommander when(WebappTester webappTester) { return new WebappTesterCommander(this, webappTester); } 
-
-	// AliasesFile
-	public AliasesFileBuilder given(AliasesFile aliasesFile) { return new AliasesFileBuilder(this, aliasesFile); }
-	
-	// AliasDefinitionsFile
-	public AliasDefinitionsFileBuilder given(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile); }
 	
 	//TODO: we might find we need a better way to deal with multiple methods that want to return different verifiers based on a List
 	public RequestListVerifier thenRequests(List<String> requests) { return new RequestListVerifier(this, requests); }

@@ -1,26 +1,15 @@
 package org.bladerunnerjs.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.LinkedAsset;
-import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.memoization.MemoizedValue;
-import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRelativeRequirePathException;
 import org.bladerunnerjs.api.plugin.AssetContainerAssets;
@@ -108,10 +97,6 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		}
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
-	}	
-	
-	public AliasDefinitionsFile aliasDefinitionsFile(String path) {
-		return assetLocation(path).aliasDefinitionsFile();
 	}
 	
 }

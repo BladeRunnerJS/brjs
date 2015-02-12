@@ -7,7 +7,6 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;
@@ -20,7 +19,6 @@ import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
-import org.bladerunnerjs.model.RootAssetLocation;
 import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;

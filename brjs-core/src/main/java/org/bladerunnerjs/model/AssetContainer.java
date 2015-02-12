@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 
 /**
@@ -26,7 +25,4 @@ public interface AssetContainer extends BRJSNode {
 	 * Returns all AssetContainers whose assets can be referred to by assets in this AssetContainer
 	 */
 	List<AssetContainer> scopeAssetContainers();
-	
-	//TODO: remove this, its only temporary to allow plugin API refactoring and removing aliases from the model
-	AliasDefinitionsFile aliasDefinitionsFile(String path);
 }

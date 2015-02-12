@@ -8,20 +8,20 @@ import java.util.Set;
 
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.Workbench;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasException;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasAsset;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasOverride;
 
 public class DependencyInfoFactory {
 	public static DependencyInfo buildForwardDependencyMap(BundlableNode bundlableNode) throws ModelOperationException {

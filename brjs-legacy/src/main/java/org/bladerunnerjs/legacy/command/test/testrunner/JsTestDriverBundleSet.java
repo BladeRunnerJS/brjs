@@ -5,7 +5,6 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.BundlableNode;
 
 public class JsTestDriverBundleSet implements BundleSet {
@@ -21,10 +20,6 @@ public class JsTestDriverBundleSet implements BundleSet {
 	
 	public List<SourceModule> getSourceModules() {
 		return bundleSet.getSourceModules();
-	}
-	
-	public List<AliasDefinition> getActiveAliases() {
-		return bundleSet.getActiveAliases();
 	}
 	
 	public List<Asset> getAssets() {

@@ -12,7 +12,6 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.TypedTestPack;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
@@ -235,10 +234,6 @@ public final class AppSdkJsLib implements JsLib {
 	public void incrementChildFileVersions()
 	{
 		sdkJsLib.incrementChildFileVersions();
-	}
-	
-	public AliasDefinitionsFile aliasDefinitionsFile(String path) {
-		return sdkJsLib.aliasDefinitionsFile(path);
 	}
 
 	@Override

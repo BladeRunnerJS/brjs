@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
@@ -18,7 +17,6 @@ import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
-import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.utility.FileUtils;
 
 import com.martiansoftware.jsap.JSAP;

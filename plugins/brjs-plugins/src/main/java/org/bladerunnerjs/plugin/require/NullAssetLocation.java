@@ -7,12 +7,9 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.NamespaceException;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
@@ -21,6 +18,8 @@ import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.plugin.bundlers.aliasing.NamespaceException;
 import org.bladerunnerjs.utility.ObserverList;
 
 public class NullAssetLocation implements AssetLocation {

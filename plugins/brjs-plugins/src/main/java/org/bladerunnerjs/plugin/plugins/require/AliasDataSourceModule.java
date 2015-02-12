@@ -8,21 +8,19 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 
 import com.Ostermiller.util.ConcatReader;
 
 public class AliasDataSourceModule implements CommonJsSourceModule {
-	private final AssetLocation assetLocation;
 	private final BundlableNode bundlableNode;
 	private final List<String> requirePaths = new ArrayList<>();
 
-	public AliasDataSourceModule(AssetLocation assetLocation, BundlableNode bundlableNode) {
-		this.assetLocation = assetLocation;
+	public AliasDataSourceModule(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
 		requirePaths.add("alias!$data");
 	}
@@ -57,13 +55,8 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public AssetLocation assetLocation() {
-		return assetLocation;
-	}
-
-	@Override
 	public MemoizedFile dir() {
-		return assetLocation.dir();
+		return bundlableNode.dir();
 	}
 
 	@Override
@@ -112,7 +105,8 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public List<AssetLocation> assetLocations() {
-		return Collections.emptyList();
+	public AssetContainer assetContainer()
+	{
+		return bundlableNode;
 	}
 }

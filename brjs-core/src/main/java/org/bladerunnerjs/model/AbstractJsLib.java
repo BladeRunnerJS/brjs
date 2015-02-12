@@ -20,7 +20,6 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.NameValidator;
-import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.TestRunner;
 
 public abstract class AbstractJsLib extends AbstractAssetContainer implements JsLib
@@ -64,7 +63,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
 		transformations.put("lib", StringUtils.capitalize(getName()));
-		transformations.put("libns", NamespaceUtility.convertToNamespace(requirePrefix()));
+		transformations.put("libns", requirePrefix().replace("/", "."));
 	}
 	
 	@Override

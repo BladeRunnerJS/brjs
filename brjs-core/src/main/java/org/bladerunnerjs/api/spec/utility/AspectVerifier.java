@@ -8,7 +8,6 @@ import java.util.List;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.engine.VerifierChainer;
 
@@ -23,21 +22,6 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 		super(modelTest, aspect);
 		this.aspect = aspect;
 		assetContainerVerifier = new AssetContainerVerifier(aspect);
-	}
-	
-	public VerifierChainer hasAlias(String aliasName, String classRef, String interfaceRef) throws Exception {
-		AliasDefinition alias = aspect.aliasesFile().getAlias(aliasName);
-		
-		assertEquals("Class not as expected for alias '" + aliasName + "'", classRef, alias.getClassName());
-		assertEquals("Interface not as expected for alias '" + aliasName + "'", interfaceRef, alias.getInterfaceName());
-		
-		return verifierChainer;
-	}
-	
-	public VerifierChainer hasAlias(String aliasName, String classRef) throws Exception {
-		hasAlias(aliasName, classRef, null);
-		
-		return verifierChainer;
 	}
 	
 	public VerifierChainer hasSourceModules(String... sourceModules) throws Exception {

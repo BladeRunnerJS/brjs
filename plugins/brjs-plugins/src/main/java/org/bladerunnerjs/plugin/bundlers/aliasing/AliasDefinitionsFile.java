@@ -1,4 +1,4 @@
-package org.bladerunnerjs.api.aliasing.aliasdefinitions;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,12 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsData;
-import org.bladerunnerjs.aliasing.aliasdefinitions.PersistentAliasDefinitionsData;
-import org.bladerunnerjs.api.AssetLocation;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
-import org.bladerunnerjs.api.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 

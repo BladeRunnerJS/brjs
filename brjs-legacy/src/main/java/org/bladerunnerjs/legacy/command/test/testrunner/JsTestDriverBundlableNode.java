@@ -6,17 +6,12 @@ import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasException;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
@@ -31,10 +26,13 @@ import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.bladerunnerjs.utility.ObserverList;
 
 public class JsTestDriverBundlableNode implements BundlableNode {
@@ -165,11 +163,6 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public AliasesFile aliasesFile() {
-		return bundlableNode.aliasesFile();
-	}
-
-	@Override
 	public void notifyObservers(Event event, Node notifyForNode) {
 		bundlableNode.notifyObservers(event, notifyForNode);
 	}
@@ -206,16 +199,6 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
-		return bundlableNode.getAlias(aliasName);
-	}
-
-	@Override
-	public List<AliasDefinitionsFile> aliasDefinitionFiles() {
-		return bundlableNode.aliasDefinitionFiles();
-	}
-
-	@Override
 	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		return bundlableNode.handleLogicalRequest(logicalRequestPath, contentAccessor, version);
 	}
@@ -241,11 +224,6 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public void incrementChildFileVersions()
 	{
 		bundlableNode.incrementChildFileVersions();	
-	}
-	
-	
-	public AliasDefinitionsFile aliasDefinitionsFile(String path) {
-		return bundlableNode.aliasDefinitionsFile(path);
 	}
 
 	@Override

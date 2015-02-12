@@ -17,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.api.aliasing.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
@@ -28,7 +27,7 @@ import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.utility.NamespaceUtility;
+import org.bladerunnerjs.plugin.bundlers.aliasing.NamespaceException;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 
 

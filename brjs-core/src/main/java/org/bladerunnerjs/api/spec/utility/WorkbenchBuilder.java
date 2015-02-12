@@ -22,13 +22,4 @@ public class WorkbenchBuilder extends BundlableNodeBuilder<Workbench<?>>
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception 
-	{
-		writeToFile(workbench.aliasesFile().getUnderlyingFile(),
-			"<aliases xmlns='http://schema.caplin.com/CaplinTrader/aliases'>" +
-			"	<alias name='" + aliasName + "' class='" + classRef + "'/>" +
-			"</aliases>");
-		
-		return builderChainer;
-	}
 }

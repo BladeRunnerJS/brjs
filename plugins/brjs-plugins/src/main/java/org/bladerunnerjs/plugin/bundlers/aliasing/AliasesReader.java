@@ -1,4 +1,4 @@
-package org.bladerunnerjs.aliasing.aliases;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -9,12 +9,6 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.bladerunnerjs.api.aliasing.AliasException;
-import org.bladerunnerjs.api.aliasing.AliasNameIsTheSameAsTheClassException;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
-import org.bladerunnerjs.api.aliasing.IncompleteAliasException;
-import org.bladerunnerjs.api.aliasing.SchemaConverter;
-import org.bladerunnerjs.api.aliasing.SchemaCreationException;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.UnicodeReader;

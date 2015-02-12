@@ -14,8 +14,6 @@ import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.Workbench;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasException;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
@@ -34,7 +32,6 @@ public class BundleSetBuilder {
 	
 	private final List<Asset> assets = new ArrayList<>();
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Map<String,AliasDefinition> activeAliases = new LinkedHashMap<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
@@ -45,7 +42,6 @@ public class BundleSetBuilder {
 	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
-		List<AliasDefinition> activeAliasList = new ArrayList<>();
 		
 		if (bundlableNode instanceof Workbench) {
 			// TODO: this should be done via the API and not guessed from the outside
@@ -62,13 +58,8 @@ public class BundleSetBuilder {
 		}
 		
 		try {
-			activeAliasList.addAll(activeAliases.values());
 			resourceLocationList.addAll(assetLocations);
 			orderAssetLocations(bundlableNode, resourceLocationList);
-			
-			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases.values())) {
-				addSourceModule((SourceModule)bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
-			}
 		}
 		catch(RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -76,7 +67,7 @@ public class BundleSetBuilder {
 		
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		
-		return new StandardBundleSet(bundlableNode, assets, orderedSourceModules, activeAliasList, resourceLocationList);
+		return new StandardBundleSet(bundlableNode, assets, orderedSourceModules, resourceLocationList);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
@@ -87,7 +78,6 @@ public class BundleSetBuilder {
 	
 	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
 		if (sourceModules.add(sourceModule)) {
-			addAliases( getAliases(sourceModule.getAliasNames()) );
 			addLinkedAsset(sourceModule);
 		}
 	}
@@ -97,8 +87,6 @@ public class BundleSetBuilder {
 		if(linkedAssets.add(linkedAsset)) {
 			assets.add(linkedAsset);
 			List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
-			
-			addAliases( getAliases(linkedAsset.getAliasNames()) );
 			
 			if(moduleDependencies.isEmpty()) {
 				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
@@ -151,33 +139,6 @@ public class BundleSetBuilder {
 				addAssetLocation(dependentAssetLocation);
 			}
 		}
-	}
-
-	private List<AliasDefinition> getAliases(List<String> aliasNames) throws ModelOperationException {
-		List<AliasDefinition> aliases = new ArrayList<>();
-		
-		try {
-			for(String aliasName : aliasNames) {
-				AliasDefinition alias = bundlableNode.getAlias(aliasName);
-				SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
-				addSourceModule(sourceModule);
-				
-				if(alias.getInterfaceName() != null) {
-					SourceModule aliasInterface = (SourceModule) bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
-					
-					if(sourceModule != aliasInterface) {
-						addSourceModule(aliasInterface);
-					}
-				}
-				
-				aliases.add(alias);
-			}
-		}
-		catch(AliasException | ContentFileProcessingException | RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
-		
-		return aliases;
 	}
 	
 	private String assetFilePaths(List<Asset> assets) {
@@ -246,15 +207,5 @@ public class BundleSetBuilder {
 			addUnscopedAssetLocation(assetLocation);					
 		}
 	}
-	
-	private void addAliases(List<AliasDefinition> aliases)
-	{
-		for (AliasDefinition alias : aliases) {
-			if (!activeAliases.containsKey(alias.getName())) {
-				activeAliases.put(alias.getName(), alias);
-			}
-		}
-	}
-	
 	
 }

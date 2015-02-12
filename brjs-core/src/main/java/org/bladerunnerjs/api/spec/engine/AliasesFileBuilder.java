@@ -3,9 +3,9 @@ package org.bladerunnerjs.api.spec.engine;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
-import org.bladerunnerjs.api.aliasing.AliasOverride;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasOverride;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 
 public class AliasesFileBuilder {
 	private AliasesFile aliasesFile;

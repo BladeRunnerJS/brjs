@@ -1,4 +1,4 @@
-package org.bladerunnerjs.utility.deps;
+package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -6,27 +6,23 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.LinkedAsset;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 
 public class AliasAsset implements LinkedAsset {
 	private final AliasDefinition alias;
+	private AssetContainer assetContainer;
 	
-	public AliasAsset(AliasDefinition alias) {
+	public AliasAsset(AssetContainer assetContainer, AliasDefinition alias) {
 		this.alias = alias;
+		this.assetContainer = assetContainer;
 	}
 	
 	@Override
 	public Reader getReader() throws IOException {
-		return null;
-	}
-	
-	@Override
-	public AssetLocation assetLocation() {
 		return null;
 	}
 	
@@ -63,5 +59,11 @@ public class AliasAsset implements LinkedAsset {
 	@Override
 	public String getPrimaryRequirePath() {
 		return null;
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
 	}
 }
