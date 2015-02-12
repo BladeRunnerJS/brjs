@@ -51,14 +51,15 @@ public class AliasRequirePlugin extends AbstractRequirePlugin implements Require
 		}
 		else {
 			
-			AliasDefinition aliasDefinition = getAlias(bundlableNode, requirePathSuffix);
-			
-			if(!sourceModules.containsKey(requirePathSuffix)) {
-				sourceModules.put(requirePathSuffix, new AliasCommonJsSourceModule(bundlableNode, aliasDefinition));
-			}
-			else {
-				((AliasCommonJsSourceModule) sourceModules.get(requirePathSuffix)).setAlias(aliasDefinition);
-			}
+			//TODO: fix me after mega commit
+//			AliasDefinition aliasDefinition = getAlias(bundlableNode, requirePathSuffix);
+//
+//			if(!sourceModules.containsKey(requirePathSuffix)) {
+//				sourceModules.put(requirePathSuffix, new AliasCommonJsSourceModule(bundlableNode, aliasDefinition));
+//			}
+//			else {
+//				((AliasCommonJsSourceModule) sourceModules.get(requirePathSuffix)).setAlias(aliasDefinition);
+//			}
 			
 			return sourceModules.get(requirePathSuffix);
 		}

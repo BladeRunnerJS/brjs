@@ -83,94 +83,96 @@ public class CopyThemeCommand extends JSAPArgsParsingCommandPlugin
 			matchLocation = appPath.subpath(1, pathCount).toString();
 		}
 		
-		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
-		
-		for(Aspect asp : app.aspects())
-		{ //asp, hue hue, pun intended
-			for(AssetLocation al : asp.assetLocations())
-			{
-				if(al.dirExists())
-				{
-					assetLocations.add(al);
-				}
-			}
-		}
-		
-		for(Bladeset bs : app.bladesets())
-		{		
-			for(AssetLocation al : bs.assetLocations())
-			{
-				if(al.dirExists())
-				{
-					assetLocations.add(al);
-				}
-			}
-		
-			for(Blade blade : bs.blades())
-			{
-				for(AssetLocation al : blade.assetLocations())
-				{
-					if(al.dirExists())
-					{
-						assetLocations.add(al);
-					}
-				}
-			}
-		}
-		
-		if(themeExists(assetLocations, origTheme, matchLocation))
-		{
-			for(AssetLocation al : assetLocations)
-			{
-				if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
-					copyTheme(al, origTheme, newTheme);
-				}
-			}
-		}
-		else
-		{
-			logger.warn(Messages.THEME_FOLDER_DOES_NOT_EXIST, origTheme);
-		}
+		//TODO: fix me after mega commit
+//		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
+//		
+//		for(Aspect asp : app.aspects())
+//		{ //asp, hue hue, pun intended
+//			for(AssetLocation al : asp.assetLocations())
+//			{
+//				if(al.dirExists())
+//				{
+//					assetLocations.add(al);
+//				}
+//			}
+//		}
+//		
+//		for(Bladeset bs : app.bladesets())
+//		{		
+//			for(AssetLocation al : bs.assetLocations())
+//			{
+//				if(al.dirExists())
+//				{
+//					assetLocations.add(al);
+//				}
+//			}
+//		
+//			for(Blade blade : bs.blades())
+//			{
+//				for(AssetLocation al : blade.assetLocations())
+//				{
+//					if(al.dirExists())
+//					{
+//						assetLocations.add(al);
+//					}
+//				}
+//			}
+//		}
+//		
+//		if(themeExists(assetLocations, origTheme, matchLocation))
+//		{
+//			for(AssetLocation al : assetLocations)
+//			{
+//				if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
+//					copyTheme(al, origTheme, newTheme);
+//				}
+//			}
+//		}
+//		else
+//		{
+//			logger.warn(Messages.THEME_FOLDER_DOES_NOT_EXIST, origTheme);
+//		}
 		
 		return 0;
 	}
 	
-	void copyTheme(AssetLocation location, String origTheme, String newTheme) throws CommandOperationException{
-		MemoizedFile srcDir = location.dir();
-		MemoizedFile dstDir = location.dir().getParentFile().file(newTheme);	 			 
-		 
-		if(dstDir.exists())
-		{
-			logger.warn(Messages.THEME_FOLDER_EXISTS, brjs.dir().getRelativePath(dstDir));
-			return;
-		}
-		 
-		try {
-			FileUtils.copyDirectory(srcDir, dstDir);
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, app.dir().getRelativePath(srcDir), app.dir().getRelativePath(dstDir));			
-	}
-	
-	private boolean themeExists(List<AssetLocation> assetLocations, String origTheme, String matchLocation) {
-		for(AssetLocation al : assetLocations) {
-			if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private boolean themeExistsWithinAssetLocation(AssetLocation location, String origTheme, String matchLocation) {
-		matchLocation = Paths.get(matchLocation).toString();
-		String pathToCompare = Paths.get(app.dir().getRelativePath(location.dir())).toString();
-		
-		return location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
-				&& pathToCompare.contains(matchLocation);
-	}
+	//TODO: fix me after mega commit
+//	void copyTheme(AssetLocation location, String origTheme, String newTheme) throws CommandOperationException{
+//		MemoizedFile srcDir = location.dir();
+//		MemoizedFile dstDir = location.dir().getParentFile().file(newTheme);	 			 
+//		 
+//		if(dstDir.exists())
+//		{
+//			logger.warn(Messages.THEME_FOLDER_EXISTS, brjs.dir().getRelativePath(dstDir));
+//			return;
+//		}
+//		 
+//		try {
+//			FileUtils.copyDirectory(srcDir, dstDir);
+//		} 
+//		catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, app.dir().getRelativePath(srcDir), app.dir().getRelativePath(dstDir));			
+//	}
+//	
+//	private boolean themeExists(List<AssetLocation> assetLocations, String origTheme, String matchLocation) {
+//		for(AssetLocation al : assetLocations) {
+//			if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
+//				return true;
+//			}
+//		}
+//		
+//		return false;
+//	}
+//	
+//	private boolean themeExistsWithinAssetLocation(AssetLocation location, String origTheme, String matchLocation) {
+//		matchLocation = Paths.get(matchLocation).toString();
+//		String pathToCompare = Paths.get(app.dir().getRelativePath(location.dir())).toString();
+//		
+//		return location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
+//				&& pathToCompare.contains(matchLocation);
+//	}
 	
 }

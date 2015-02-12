@@ -13,9 +13,9 @@ public class AliasesFile {
 	private final BundlableNode bundlableNode;
 	private final PersistentAliasesData persistentAliasesData;
 	
-	public AliasesFile(MemoizedFile parent, String child, BundlableNode bundlableNode) {
+	public AliasesFile(MemoizedFile file, BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
-		file = parent.file(child);
+		this.file = file;
 		persistentAliasesData = new PersistentAliasesData(bundlableNode.root(), file);
 	}
 	
@@ -97,18 +97,19 @@ public class AliasesFile {
 		String scenarioName = scenarioName();
 		List<String> groupNames = groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.aliasDefinitionFiles()) {
-			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
-
-			if (nextAliasDefinition != null)
-			{    			
-    			if (aliasDefinition != null && nextAliasDefinition != null) {
-    				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, scenarioName);
-    			}
-			
-				aliasDefinition = nextAliasDefinition;
-			}
-		}
+		//TODO: fix me after mega commit
+//		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.aliasDefinitionFiles()) {
+//			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
+//
+//			if (nextAliasDefinition != null)
+//			{    			
+//    			if (aliasDefinition != null && nextAliasDefinition != null) {
+//    				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, scenarioName);
+//    			}
+//			
+//				aliasDefinition = nextAliasDefinition;
+//			}
+//		}
 		
 		return aliasDefinition;
 	}
@@ -134,21 +135,22 @@ public class AliasesFile {
 		AliasOverride aliasOverride = null;
 		List<String> groupNames = groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.aliasDefinitionFiles()) {
-			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
-			
-			
-			
-			if(aliasOverride != null && nextAliasOverride != null) {
-				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, groupNames);
-			}
-			
-			if (nextAliasOverride != null)
-			{
-				aliasOverride = nextAliasOverride;
-			}
-
-		}
+		//TODO: fix me after mega commit
+//		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.aliasDefinitionFiles()) {
+//			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
+//			
+//			
+//			
+//			if(aliasOverride != null && nextAliasOverride != null) {
+//				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, groupNames);
+//			}
+//			
+//			if (nextAliasOverride != null)
+//			{
+//				aliasOverride = nextAliasOverride;
+//			}
+//
+//		}
 		
 		return aliasOverride;
 	}

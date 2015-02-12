@@ -46,4 +46,6 @@ public class CommanderChainer {
 	public NamedDirNodeCommander and(NamedDirNode namedDirNode) { return new NamedDirNodeCommander(modelTest, namedDirNode); }
 	public AppServerCommander and(ApplicationServer applicationServer) { return new AppServerCommander(modelTest, applicationServer); }
 	public JettyServerCommander and(Server jettyServer) { return new JettyServerCommander(modelTest, jettyServer); }
+	
+	public <C extends SpecTestCommander> C and(C commander) { return commander; }
 }

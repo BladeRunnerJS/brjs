@@ -1,5 +1,8 @@
 package org.bladerunnerjs.spec.command;
 
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasDefinitionsFile;
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasesFile;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
@@ -7,9 +10,9 @@ import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.bladerunnerjs.plugin.commands.standard.DepInsightCommand;
+import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
+import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,10 +21,10 @@ import org.junit.Test;
 public class DepInsightCommandTest extends SpecTest {
 	App app;
 	Aspect aspect;
-	AliasesFile aliasesFile;
-	AliasDefinitionsFile bladeAliasDefinitionsFile;
 	private Blade bladeInDefaultBladeset;
 	private Aspect defaultAspect;
+	private AliasesFileBuilder aspectAliasesFileBuilder;
+	private AliasDefinitionsFileBuilder bladeAliasDefinitionsFileBuilder;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -34,9 +37,10 @@ public class DepInsightCommandTest extends SpecTest {
 			app = brjs.app("app");
 			aspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
-			aliasesFile = aspect.aliasesFile();
-			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").aliasDefinitionsFile("src");
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
+			
+			aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
+			bladeAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(bladeInDefaultBladeset, "src"));
 	}
 	
 	@Test
@@ -248,7 +252,7 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void aliasedDependenciesAreCorrectlyDisplayed() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
-			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
+			.and(aspectAliasesFileBuilder).hasAlias("alias-ref", "appns.Class")
 			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class");
 		then(logging).containsConsoleText(
@@ -261,7 +265,7 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void weCanShowDependenciesForAnAliasToo() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
-			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
+			.and(aspectAliasesFileBuilder).hasAlias("alias-ref", "appns.Class")
 			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("dep-insight", "app", "alias-ref", "--alias");
 		then(logging).containsConsoleText(
@@ -274,7 +278,7 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void anAliasNameWithASpaceIsntMistakenlyRecognizedAsAnAspect() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias ref")
-			.and(aliasesFile).hasAlias("alias ref", "appns.Class")
+			.and(aspectAliasesFileBuilder).hasAlias("alias ref", "appns.Class")
 			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("dep-insight", "app", "alias ref", "--alias");
 		then(logging).containsConsoleText(
@@ -289,7 +293,7 @@ public class DepInsightCommandTest extends SpecTest {
 	public void dependenciesCanBeShownForAnIncompleteAlias() throws Exception {
 		given(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
 			.and(aspect).hasClasses("appns.TheClass", "appns.TheInterface")
-			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.TheInterface");
+			.and(bladeAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.alias-ref", null, "appns.TheInterface");
 		when(brjs).runCommand("dep-insight", "app", "appns.bs.b1.alias-ref", "--alias");
 		then(logging).containsConsoleText(
 			"Alias 'appns.bs.b1.alias-ref' dependencies found:",
@@ -302,7 +306,7 @@ public class DepInsightCommandTest extends SpecTest {
 	public void dependenciesCanBeShownForAnIncompleteAliasThatIsntUsedWithinTheApp() throws Exception {
 		given(brjs.sdkLib("br")).hasClass("br/UnknownClass")
 			.and(aspect).hasClass("appns/TheInterface")
-			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.TheInterface");
+			.and(bladeAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.alias-ref", null, "appns.TheInterface");
 		when(brjs).runCommand("dep-insight", "app", "appns.bs.b1.alias-ref", "--alias");
 		then(logging).containsConsoleText(
 			"Alias 'appns.bs.b1.alias-ref' dependencies found:",
@@ -315,12 +319,12 @@ public class DepInsightCommandTest extends SpecTest {
 		given(aspect).hasBeenCreated();
 		when(brjs).runCommand("dep-insight", "app", "alias-ref", "--alias");
 		then(logging).containsConsoleText(
-			"Alias 'alias-ref' has not been defined within '" + aliasesFile.getUnderlyingFile().getPath() + "' or any other files that it inherits from");
+			"Alias 'alias-ref' has not been defined within '" + aspectAliasesFileBuilder.getUnderlyingFilePath() + "' or any other files that it inherits from");
 	}
 	
 	@Test
 	public void requestingDependenciesForAnAliasThatPointsToANonExistentSourceModuleProvidesANiceMessage() throws Exception {
-		given(aliasesFile).hasAlias("alias-ref", "NonExistentClass");
+		given(aspectAliasesFileBuilder).hasAlias("alias-ref", "NonExistentClass");
 		when(brjs).runCommand("dep-insight", "app", "alias-ref", "--alias");
 		then(logging).containsConsoleText(
 			"Source file 'NonExistentClass' could not be found.");

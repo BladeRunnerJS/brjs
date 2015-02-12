@@ -1,5 +1,8 @@
 package org.bladerunnerjs.spec.command;
 
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasDefinitionsFile;
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasesFile;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
@@ -8,9 +11,9 @@ import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.bladerunnerjs.plugin.commands.standard.ApplicationDepsCommand;
+import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
+import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,11 +21,12 @@ import org.junit.Test;
 public class ApplicationDepsCommandTest extends SpecTest {
 	App app;
 	Aspect aspect;
-	AliasesFile aliasesFile;
-	AliasDefinitionsFile bladeAliasDefinitionsFile;
 	SdkJsLib brLib;
 	private Blade bladeInDefaultBladeset;
 	private Aspect defaultAspect;
+	private AliasesFileBuilder aspectAliasesFileBuilder;
+	private AliasDefinitionsFileBuilder bladeAliasDefinitionsFileBuilder;
+	private Blade blade;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -35,10 +39,12 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			app = brjs.app("app");
 			aspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
-			aliasesFile = aspect.aliasesFile();
-			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").aliasDefinitionsFile("src");
+			blade = app.bladeset("bs").blade("b1");
 			brLib = brjs.sdkLib("br");
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
+			
+			aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
+			bladeAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(blade, "src"));
 	}
 	
 	@Test
@@ -218,7 +224,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	@Test
 	public void aliasedDependenciesFromTheIndexPageAreCorrectlyDisplayed() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
-			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
+			.and(aspectAliasesFileBuilder).hasAlias("alias-ref", "appns.Class")
 			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
@@ -235,7 +241,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classDependsOnAlias("appns.Class1", "alias-ref")
-			.and(aliasesFile).hasAlias("alias-ref", "appns.Class2");
+			.and(aspectAliasesFileBuilder).hasAlias("alias-ref", "appns.Class2");
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
 			"Aspect 'default' dependencies found:",
@@ -249,7 +255,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	public void incompleteAliasedDependenciesAreCorrectlyDisplayed() throws Exception {
 		given(brLib).hasClass("br/UnknownClass")
 			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
-			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.Interface")
+			.and(bladeAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.alias-ref", null, "appns.Interface")
 			.and(aspect).hasClasses("appns/Class", "appns/Interface");
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
@@ -265,7 +271,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			.and(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/pkg/NestedClass")
 			.and(aspect).classRequires("appns/Class1", "./pkg/NestedClass")
 			.and(aspect).containsFileWithContents("src/appns/pkg/config.xml", "'alias-ref'")
-			.and(aliasesFile).hasAlias("alias-ref", "appns.Class2");
+			.and(aspectAliasesFileBuilder).hasAlias("alias-ref", "appns.Class2");
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
 			"Aspect 'default' dependencies found:",

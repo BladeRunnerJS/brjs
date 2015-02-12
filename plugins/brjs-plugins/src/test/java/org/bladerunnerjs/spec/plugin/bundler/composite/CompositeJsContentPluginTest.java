@@ -1,12 +1,14 @@
 package org.bladerunnerjs.spec.plugin.bundler.composite;
 
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasesFile;
+
 import java.io.File;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
+import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,10 +20,10 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	private JsLib thirdpartyLib;
 	private JsLib brLib;
 	private JsLib appLib;
-	private AliasesFile aspectAliasesFile;
 	private JsLib brbootstrap;
 	private Aspect defaultAspect;
 	private File targetDir;
+	private AliasesFileBuilder aspectAliasesFileBuilder;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -33,11 +35,12 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
 			thirdpartyLib = app.jsLib("thirdparty-lib");
-			aspectAliasesFile = aspect.aliasesFile();
 			brLib = app.jsLib("br");
 			brbootstrap = brjs.sdkLib("br-bootstrap");
 			appLib = app.jsLib("appLib");
 			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
+			
+			aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
 	}
 	
 	@Test
@@ -78,7 +81,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	public void theAliasBlobIsOutputAfterTheThirdpartyLibrariesButBeforeTheClasses() throws Exception {
 		given(aspect).classRequires("appns/Class1", "br/AliasRegistry")
 			.and(brLib).hasClass("br/AliasRegistry")
-			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
+			.and(aspectAliasesFileBuilder).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageRefersTo("\"the-alias\"")
 			.and(brbootstrap).containsFileWithContents("thirdparty-lib.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("bootstrap.js");

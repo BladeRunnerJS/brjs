@@ -1,13 +1,16 @@
-package org.bladerunnerjs.api.spec.engine;
+package org.bladerunnerjs.spec.aliasing;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.api.spec.engine.BuilderChainer;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.api.spec.engine.SpecTestBuilder;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasOverride;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 
-public class AliasesFileBuilder {
+public class AliasesFileBuilder implements SpecTestBuilder {
 	private AliasesFile aliasesFile;
 	private BuilderChainer builderChainer;
 	private SpecTest specTest;
@@ -48,5 +51,10 @@ public class AliasesFileBuilder {
 	public void writeAliasesFile() throws ContentFileProcessingException, IOException {
 		aliasesFile.write();
 		specTest.brjs.getFileModificationRegistry().incrementFileVersion(aliasesFile.getUnderlyingFile());
+	}
+
+	public String getUnderlyingFilePath()
+	{
+		return aliasesFile.getUnderlyingFile().getPath();
 	}
 }

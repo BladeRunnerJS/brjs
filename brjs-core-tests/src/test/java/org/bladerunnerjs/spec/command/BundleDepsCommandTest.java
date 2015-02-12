@@ -1,5 +1,9 @@
 package org.bladerunnerjs.spec.command;
 
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasDefinitionsFile;
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasesFile;
+import static org.junit.Assert.*;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
@@ -12,6 +16,8 @@ import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.bladerunnerjs.plugin.commands.standard.BundleDepsCommand;
+import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
+import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,11 +25,9 @@ import org.junit.Test;
 public class BundleDepsCommandTest extends SpecTest {
 	App app;
 	Aspect aspect;
-	AliasesFile aliasesFile;
-	AliasDefinitionsFile bladeAliasDefinitionsFile;
 	Blade blade;
 	TestPack bladeTestPack;
-	AssetLocation bladeTests;
+//	AssetLocation bladeTests;
 	private Aspect defaultAspect;
 	private Blade bladeInDefaultBladeset;
 	
@@ -38,11 +42,9 @@ public class BundleDepsCommandTest extends SpecTest {
 			app = brjs.app("app");
 			aspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
-			aliasesFile = aspect.aliasesFile();
 			blade = app.bladeset("bs").blade("b1");
-			bladeAliasDefinitionsFile = blade.aliasDefinitionsFile("src");
 			bladeTestPack = blade.testType("unit").testTech("js-test-driver");
-			bladeTests = bladeTestPack.tests();
+//			bladeTests = bladeTestPack.tests();
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
 	}
 	
@@ -99,15 +101,17 @@ public class BundleDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void bladeTestpendenciesCanBeShown() throws Exception {
-		given(bladeTests).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
-			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
-			.and(blade).classRequires("appns/bs/b1/Class1", "./Class2");
-		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver");
-		then(logging).containsConsoleText(
-			"Bundle 'apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
-			"    +--- 'bs-bladeset/blades/b1/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
-			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js' (static dep.)",
-			"    |    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js' (static dep.)");
+		//TODO: fix me after mega commit
+//		given(bladeTests).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
+//			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
+//			.and(blade).classRequires("appns/bs/b1/Class1", "./Class2");
+//		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver");
+//		then(logging).containsConsoleText(
+//			"Bundle 'apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
+//			"    +--- 'bs-bladeset/blades/b1/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
+//			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js' (static dep.)",
+//			"    |    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js' (static dep.)");
+		fail("FIX ME!");
 	}
 	
 	@Test

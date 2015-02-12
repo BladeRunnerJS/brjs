@@ -213,5 +213,11 @@ public class ThirdpartySourceModule implements SourceModule
 	public List<String> getRequirePaths() {
 		return Arrays.asList(primaryRequirePath);
 	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
+	}
 	
 }

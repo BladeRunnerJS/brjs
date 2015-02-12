@@ -207,11 +207,12 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 
 		for (SourceModule sourceModule : bundleSet.getSourceModules())
 		{
-			if ((sourceModule instanceof NamespacedJsSourceModule) && !(sourceModule.assetLocation() instanceof TestAssetLocation))
-			{
-				List<String> packageList = Arrays.asList(sourceModule.getPrimaryRequirePath().split("/"));
-				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
-			}
+			//TODO: fix me after mega commit
+//			if ((sourceModule instanceof NamespacedJsSourceModule) && !(sourceModule.assetLocation() instanceof TestAssetLocation))
+//			{
+//				List<String> packageList = Arrays.asList(sourceModule.getPrimaryRequirePath().split("/"));
+//				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
+//			}
 		}
 
 		for (SourceModule sourceModule : globalizedModules)
@@ -303,7 +304,9 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 		@Override
 		public boolean apply(SourceModule input)
 		{
-			return ( type.isAssignableFrom(input.getClass()) && !(input.assetLocation() instanceof TestAssetLocation) );
+			//TODO: fix me after mega commit
+//			return ( type.isAssignableFrom(input.getClass()) && !(input.assetLocation() instanceof TestAssetLocation) );
+			return true;
 		}
 	}
 }

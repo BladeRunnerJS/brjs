@@ -185,7 +185,7 @@ public abstract class SpecTest
 	}
 	
 	// BRJS
-	public SpecTestBuilder given() { return new SpecTestBuilder(this); }
+	public SpecTestEnvironmentBuilder given() { return new SpecTestEnvironmentBuilder(this); }
 	
 
 	// File
@@ -305,4 +305,9 @@ public abstract class SpecTest
 	//TODO: we might find we need a better way to deal with multiple methods that want to return different verifiers based on a List
 	public RequestListVerifier thenRequests(List<String> requests) { return new RequestListVerifier(this, requests); }
 	
+	
+	// Syntactic sugar methods that make SpecTest methods semi-pluggable
+	public <B extends SpecTestBuilder> B given(B builder) { return builder; }
+	public <C extends SpecTestCommander> C given(C commander) { return commander; }
+	public <V extends SpecTestVerifier> V given(V verifier) { return verifier; }
 }

@@ -12,7 +12,6 @@ import org.bladerunnerjs.plugin.require.AliasCommonJsSourceModule;
 public class AliasingSerializer {
 	public static String createJson(BundleSet bundleSet) {
 		List<AliasDefinition> aliasDefinitions = getAliasDefinitions(bundleSet);
-		aliasDefinitions.addAll(bundleSet.getActiveAliases()); // TODO: delete this line once aliasing has been removed from the model
 		
 		StringBuilder jsonData = new StringBuilder();
 		boolean firstAlias = true;

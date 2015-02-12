@@ -204,12 +204,13 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		{
 			String aspectName = parsedContentPath.properties.get("aspect");
 			Aspect aspect =  bundlableNode.app().aspect(aspectName);
-			List<ResourcesAssetLocation> resourceAssetLocations = getResourceAssetLocations(aspect);
-			for (ResourcesAssetLocation location : resourceAssetLocations) {
-				if (location.getThemeName().equals(theme)){
-					resourceFile = location.file(resourcePath);
-				}
-			}
+			//TODO: fix me after mega commit
+//			List<ResourcesAssetLocation> resourceAssetLocations = getResourceAssetLocations(aspect);
+//			for (ResourcesAssetLocation location : resourceAssetLocations) {
+//				if (location.getThemeName().equals(theme)){
+//					resourceFile = location.file(resourcePath);
+//				}
+//			}
 		}
 		else if (parsedContentPath.formName.equals(ASPECT_RESOURCE_REQUEST))
 		{
@@ -219,9 +220,10 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		}
 		else if (parsedContentPath.formName.equals(BLADESET_THEME_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
-			ThemedAssetLocation location = getThemedResourceLocation(bladeset, theme);
-			resourceFile = location.file(resourcePath);
+			//TODO: fix me after mega commit
+//			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
+//			ThemedAssetLocation location = getThemedResourceLocation(bladeset, theme);
+//			resourceFile = location.file(resourcePath);
 		}
 		else if (parsedContentPath.formName.equals(BLADESET_RESOURCE_REQUEST))
 		{
@@ -230,10 +232,11 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		}
 		else if (parsedContentPath.formName.equals(BLADE_THEME_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
-			Blade blade = bladeset.blade(parsedContentPath.properties.get("blade"));
-			ThemedAssetLocation location = getThemedResourceLocation(blade, theme);
-			resourceFile = location.file(resourcePath);
+			//TODO: fix me after mega commit
+//			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
+//			Blade blade = bladeset.blade(parsedContentPath.properties.get("blade"));
+//			ThemedAssetLocation location = getThemedResourceLocation(blade, theme);
+//			resourceFile = location.file(resourcePath);
 		}
 		else if (parsedContentPath.formName.equals(BLADE_RESOURCE_REQUEST))
 		{
@@ -352,57 +355,59 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 			return contentPaths;
 		}
 		
-		contentPaths.addAll(calculateContentPathsForThemesAndResources(assetContainer, themeRequestName, resourcesRequestName, requestArgs));
+		//TODO: fix me after mega commit
+//		contentPaths.addAll(calculateContentPathsForThemesAndResources(assetContainer, themeRequestName, resourcesRequestName, requestArgs));
 		
 		return contentPaths;
 	}
 	
-	private List<ResourcesAssetLocation> getResourceAssetLocations(AssetContainer container){
-		
-		List<ResourcesAssetLocation> result = new ArrayList<>();
-		for (AssetLocation location: container.assetLocations()){
-			if (location instanceof ResourcesAssetLocation) {
-				result.add( (ResourcesAssetLocation) location );
-			}
-		}
-		return result;
-	}
-	
-	private Set<String> calculateContentPathsForThemesAndResources(AssetContainer container, String themeRequestName, String resourcesRequestName, String... requestArgs) throws MalformedTokenException, ConfigException
-	{
-		Set<String> contentPaths = new LinkedHashSet<>();
-		for (ResourcesAssetLocation assetLocation : getResourceAssetLocations(container)){
-			MemoizedFile assetLocationDir = brjs.getMemoizedFile( assetLocation.dir() );
-			if (assetLocationDir.isDirectory()){
-				for (MemoizedFile file : assetLocationDir.nestedFiles()) {
-					if (!fileIgnoredByBrjsConfig(file)) {
-						createRequestForNestedDir(container, themeRequestName, resourcesRequestName, contentPaths, assetLocation, file, requestArgs);
-					}
-				}
-			}
-		}
-		
-		return contentPaths;
-	}
-
-	private void createRequestForNestedDir(AssetContainer container, String themeRequestName, String resourcesRequestName, Set<String> contentPaths, AssetLocation assetLocation, MemoizedFile file, String... requestArgs) throws MalformedTokenException
-	{
-		File assetLocationParentDir = assetLocation.dir().getParentFile();
-		//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'?
-		if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-			if (themeRequestName != null) {
-				ThemedAssetLocation themeAssetLocation = (ThemedAssetLocation) assetLocation;
-				String assetPath = assetLocation.dir().getRelativePath(file);
-				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themeAssetLocation.getThemeName(), assetPath } );
-				String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
-				contentPaths.add(request );
-			}
-		} else {
-			if (resourcesRequestName != null) {
-				String assetPath = container.dir().getRelativePath(file);
-				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
-				contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
-			}
-		}
-	}
+	//TODO: fix me after mega commit
+//	private List<ResourcesAssetLocation> getResourceAssetLocations(AssetContainer container){
+//		
+//		List<ResourcesAssetLocation> result = new ArrayList<>();
+//		for (AssetLocation location: container.assetLocations()){
+//			if (location instanceof ResourcesAssetLocation) {
+//				result.add( (ResourcesAssetLocation) location );
+//			}
+//		}
+//		return result;
+//	}
+//	
+//	private Set<String> calculateContentPathsForThemesAndResources(AssetContainer container, String themeRequestName, String resourcesRequestName, String... requestArgs) throws MalformedTokenException, ConfigException
+//	{
+//		Set<String> contentPaths = new LinkedHashSet<>();
+//		for (ResourcesAssetLocation assetLocation : getResourceAssetLocations(container)){
+//			MemoizedFile assetLocationDir = brjs.getMemoizedFile( assetLocation.dir() );
+//			if (assetLocationDir.isDirectory()){
+//				for (MemoizedFile file : assetLocationDir.nestedFiles()) {
+//					if (!fileIgnoredByBrjsConfig(file)) {
+//						createRequestForNestedDir(container, themeRequestName, resourcesRequestName, contentPaths, assetLocation, file, requestArgs);
+//					}
+//				}
+//			}
+//		}
+//		
+//		return contentPaths;
+//	}
+//
+//	private void createRequestForNestedDir(AssetContainer container, String themeRequestName, String resourcesRequestName, Set<String> contentPaths, AssetLocation assetLocation, MemoizedFile file, String... requestArgs) throws MalformedTokenException
+//	{
+//		File assetLocationParentDir = assetLocation.dir().getParentFile();
+//		//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'?
+//		if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
+//			if (themeRequestName != null) {
+//				ThemedAssetLocation themeAssetLocation = (ThemedAssetLocation) assetLocation;
+//				String assetPath = assetLocation.dir().getRelativePath(file);
+//				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themeAssetLocation.getThemeName(), assetPath } );
+//				String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
+//				contentPaths.add(request );
+//			}
+//		} else {
+//			if (resourcesRequestName != null) {
+//				String assetPath = container.dir().getRelativePath(file);
+//				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
+//				contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
+//			}
+//		}
+//	}
 }

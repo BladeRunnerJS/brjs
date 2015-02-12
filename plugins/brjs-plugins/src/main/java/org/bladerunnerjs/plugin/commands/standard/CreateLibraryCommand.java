@@ -98,34 +98,35 @@ public class CreateLibraryCommand extends JSAPArgsParsingCommandPlugin
 		JsLib library = app.appJsLib(libraryName);
 		if (library.dirExists()) throw new NodeAlreadyExistsException(library, this);
 		
-		AssetLocation assetLocation = library.assetLocation(".");
-		RootAssetLocation root = ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
-		if (TemplateUtility.templateExists(brjs, root, templateGroup, this)) {
-		
-			switch ( createLibraryType ) {
-				case br:
-					break;
-				case thirdparty:
-					createThirdpartyManifest(library);
-					break;
-			}
-			
-			try {
-				library.populate(templateGroup);
-			}
-			catch(InvalidNameException e) {
-				throw new CommandArgumentsException(e, this);
-			}
-			catch(ModelUpdateException e) {
-				throw new CommandOperationException("Cannot create library '" + library.dir().getPath() + "'", e);
-			}
-			catch(TemplateInstallationException e) {
-				throw new CommandArgumentsException(e, this);
-			}
-			logger.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
-			logger.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
-			
-		}
+		//TODO: fix me after mega commit
+//		AssetLocation assetLocation = library.assetLocation(".");
+//		RootAssetLocation root = ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
+//		if (TemplateUtility.templateExists(brjs, root, templateGroup, this)) {
+//		
+//			switch ( createLibraryType ) {
+//				case br:
+//					break;
+//				case thirdparty:
+//					createThirdpartyManifest(library);
+//					break;
+//			}
+//			
+//			try {
+//				library.populate(templateGroup);
+//			}
+//			catch(InvalidNameException e) {
+//				throw new CommandArgumentsException(e, this);
+//			}
+//			catch(ModelUpdateException e) {
+//				throw new CommandOperationException("Cannot create library '" + library.dir().getPath() + "'", e);
+//			}
+//			catch(TemplateInstallationException e) {
+//				throw new CommandArgumentsException(e, this);
+//			}
+//			logger.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
+//			logger.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
+//			
+//		}
 		return 0;
 	}
 

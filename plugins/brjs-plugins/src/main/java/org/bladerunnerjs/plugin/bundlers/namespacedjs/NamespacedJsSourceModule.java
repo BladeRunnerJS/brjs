@@ -117,7 +117,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			 return bundlableNode.getLinkedAssets(assetContainer, getPreExportDefineTimeDependencyCalculator().getRequirePaths());
+			 return bundlableNode.assets(assetContainer, getPreExportDefineTimeDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -127,8 +127,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			List<Asset> assets = bundlableNode.getLinkedAssets(assetContainer, getPostExportDefineTimeDependencyCalculator().getRequirePaths());
-			assets.addAll(bundlableNode.getLinkedAssets(assetContainer, getUseTimeDependencyCalculator().getRequirePaths()));
+			List<Asset> assets = bundlableNode.assets(assetContainer, getPostExportDefineTimeDependencyCalculator().getRequirePaths());
+			assets.addAll(bundlableNode.assets(assetContainer, getUseTimeDependencyCalculator().getRequirePaths()));
 			
 			return assets;
 		}
@@ -164,17 +164,6 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return linkedFileAsset.getAssetPath();
 	}
 	
-	@Override
-	public AssetLocation assetLocation()
-	{
-		return null;
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return Collections.emptyList();
-	}
-	
 	private TrieBasedDependenciesCalculator getPreExportDefineTimeDependencyCalculator() {
 		if (trieBasedPreExportDefineTimeDependenciesCalculator == null) {
 			trieBasedPreExportDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(assetContainer, this, new NamespacedJsPreExportDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
@@ -199,6 +188,12 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<String> getRequirePaths() {
 		return requirePaths;
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
 	}
 	
 }

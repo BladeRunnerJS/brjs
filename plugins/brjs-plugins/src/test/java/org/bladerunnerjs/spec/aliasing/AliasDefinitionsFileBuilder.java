@@ -1,13 +1,16 @@
-package org.bladerunnerjs.api.spec.engine;
+package org.bladerunnerjs.spec.aliasing;
 
 import java.io.IOException;
 
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.api.spec.engine.BuilderChainer;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.api.spec.engine.SpecTestBuilder;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasOverride;
 
-public class AliasDefinitionsFileBuilder {
+public class AliasDefinitionsFileBuilder implements SpecTestBuilder {
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private BuilderChainer builderChainer;
 	private SpecTest specTest;

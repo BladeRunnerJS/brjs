@@ -3,10 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
-<<<<<<< HEAD
-=======
-import java.util.Collections;
->>>>>>> 9dbe2775a343e6aa5c1d2a9a735579ba02a08aa7
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;

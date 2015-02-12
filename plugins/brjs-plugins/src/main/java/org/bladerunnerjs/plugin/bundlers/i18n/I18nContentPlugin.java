@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.bundlers.i18n;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,6 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	public static final String LANGUAGE_AND_LOCATION_BUNDLE = "language-and-location-bundle";
 	private static final String LANGUAGE_PROPERTY_NAME = "language";
 	private static final String COUNTRY_PROPERTY_NAME = "country";
-	private LegacyAssetPlugin i18nAssetPlugin = null;
 	
 	private ContentPathParser contentPathParser;
 	
@@ -55,7 +55,6 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		i18nAssetPlugin = brjs.plugins().legacyAssetPlugin(I18nAssetPlugin.class);
 	}
 	
 	@Override
@@ -167,7 +166,8 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 		List<I18nFileAsset> languageOnlyAssets = new ArrayList<I18nFileAsset>();
 		List<I18nFileAsset> languageAndLocationAssets = new ArrayList<I18nFileAsset>();
 		
-		List<Asset> propertyAssets = bundleSet.getResourceFiles(i18nAssetPlugin);
+		//TODO: fix me after mega commit
+		List<Asset> propertyAssets = Collections.emptyList();//bundleSet.getResourceFiles(i18nAssetPlugin);
 		
 		for (Asset asset : propertyAssets)
 		{

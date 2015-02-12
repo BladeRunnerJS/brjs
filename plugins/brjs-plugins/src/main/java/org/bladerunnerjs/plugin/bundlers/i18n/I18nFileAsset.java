@@ -28,9 +28,11 @@ public class I18nFileAsset implements Asset
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 	private Locale locale;
+	private AssetContainer assetContainer;
 	
 	public I18nFileAsset(MemoizedFile i18nFile, AssetContainer assetContainer, String requirePrefix)
 	{
+		this.assetContainer = assetContainer;
 		this.assetFile = i18nFile;
 		assetPath = assetContainer.app().dir().getRelativePath(assetFile);
 		try
@@ -48,12 +50,6 @@ public class I18nFileAsset implements Asset
 	public Reader getReader() throws IOException
 	{
 		return new UnicodeReader(assetFile, defaultFileCharacterEncoding);
-	}
-
-	@Override
-	public AssetLocation assetLocation()
-	{
-		return null;
 	}
 	
 	@Override
@@ -95,7 +91,8 @@ public class I18nFileAsset implements Asset
 			
 			for (String property : i18nProperties.stringPropertyNames())
 			{
-				assetLocation().assertIdentifierCorrectlyNamespaced(property);
+				//TODO: fix me after mega commit
+//				assetLocation().assertIdentifierCorrectlyNamespaced(property);
 				String value = i18nProperties.getProperty(property);
 				propertiesMap.put(property, value.replaceAll("\n", "\\\\n"));
 			}
@@ -106,6 +103,12 @@ public class I18nFileAsset implements Asset
 	
 	public Locale getLocale() {
 		return locale;
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
 	}
 
 }

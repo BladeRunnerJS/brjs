@@ -5,24 +5,25 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.AssetContainer;
 
 public class PersistentAliasDefinitionsData {
 	private final BRJS brjs;
-	private final AssetLocation assetLocation;
+	private final AssetContainer assetContainer;
 	private final MemoizedFile aliasesFile;
 	private final MemoizedValue<AliasDefinitionsData> aliasDefinitionsData;
 	
-	public PersistentAliasDefinitionsData(AssetLocation assetLocation, MemoizedFile aliasesFile) {
-		this.brjs = assetLocation.root();
-		this.assetLocation = assetLocation;
+	public PersistentAliasDefinitionsData(AssetContainer assetContainer, MemoizedFile aliasesFile) {
+		this.brjs = assetContainer.root();
+		this.assetContainer = assetContainer;
 		this.aliasesFile = aliasesFile;
-		aliasDefinitionsData = new MemoizedValue<>("PersistentAliasDefinitionsData.aliasDefinitionsData", brjs, aliasesFile, assetLocation.assetContainer().dir(),
-			assetLocation.root().file("conf/brjs.conf"), assetLocation.assetContainer().app().file("app.conf"));
+		aliasDefinitionsData = new MemoizedValue<>("PersistentAliasDefinitionsData.aliasDefinitionsData", brjs, aliasesFile, assetContainer.dir(),
+				brjs.file("conf/brjs.conf"), assetContainer.app().file("app.conf"));
 	}
 	
 	public AliasDefinitionsData getData() throws ContentFileProcessingException {
 		return aliasDefinitionsData.value(() -> {
-			return AliasDefinitionsReader.read(aliasesFile, assetLocation, getCharacterEncoding());
+			return AliasDefinitionsReader.read(aliasesFile, assetContainer, getCharacterEncoding());
 		});
 	}
 	

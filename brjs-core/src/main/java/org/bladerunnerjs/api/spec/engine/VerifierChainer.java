@@ -63,4 +63,6 @@ public class VerifierChainer {
 	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(specTest, specTest.brjs.getMemoizedFile(dir)); }
 	public StringVerifier and(StringBuffer stringBuffer) { return new StringVerifier(specTest, stringBuffer); }
 	public TestPackVerifier and(TestPack testPack) { return new TestPackVerifier(specTest, testPack); }
+	
+	public <V extends SpecTestVerifier> V and(V verifier) { return verifier; }
 }

@@ -17,11 +17,6 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasAsset;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasOverride;
 
 public class DependencyInfoFactory {
 	public static DependencyInfo buildForwardDependencyMap(BundlableNode bundlableNode) throws ModelOperationException {
@@ -59,9 +54,10 @@ public class DependencyInfoFactory {
 		
 		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
 		
-		for(AssetLocation assetLocation : bundleSet.getResourceNodes()) {
-			addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
-		}
+		//TODO: fix me after mega commit
+//		for(AssetLocation assetLocation : bundleSet.getResourceNodes()) {
+//			addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
+//		}
 		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, sourceModule);
@@ -76,9 +72,10 @@ public class DependencyInfoFactory {
 		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
 		
 		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
-			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-				addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
-			}
+			//TODO: fix me after mega commit
+//			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
+//				addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
+//			}
 			
 			for(Asset asset : assetContainer.assets()) {
 				if(asset instanceof SourceModule){
@@ -111,21 +108,22 @@ public class DependencyInfoFactory {
 		return results;
 	}
 	
-	private static void addAssetLocationDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
-		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
-		for(LinkedAsset resourceAsset : assetLocation.assets()) {
-			dependencyInfo.resourceAssets.add(resourceAsset);
-			
-			// TODO: the need for this code shows that our interfaces are incorrectly abstracted, which we should fix at some point
-			if (bundlableNode instanceof Workbench && assetLocation.assetContainer() instanceof Aspect) {
-				continue;
-			}
-			
-			List<Asset>  assets = resourceAsset.getDependentAssets(bundlableNode);
-			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, extractSourceModules(assets));
-			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
-		}
-	}
+	//TODO: fix me after mega commit
+//	private static void addAssetLocationDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
+//		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
+//		for(LinkedAsset resourceAsset : assetLocation.assets()) {
+//			dependencyInfo.resourceAssets.add(resourceAsset);
+//			
+//			// TODO: the need for this code shows that our interfaces are incorrectly abstracted, which we should fix at some point
+//			if (bundlableNode instanceof Workbench && assetLocation.assetContainer() instanceof Aspect) {
+//				continue;
+//			}
+//			
+//			List<Asset>  assets = resourceAsset.getDependentAssets(bundlableNode);
+//			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, extractSourceModules(assets));
+//			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
+//		}
+//	}
 	
 	private static void addSourceModuleDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, SourceModule sourceModule) throws ModelOperationException {
@@ -135,15 +133,16 @@ public class DependencyInfoFactory {
 		addDependencies(dependencyAdder, dependencyInfo, sourceModule, extractSourceModules(assets));
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
 		
-		for(AssetLocation assetLocation : sourceModule.assetLocations()) {
-			for(LinkedAsset assetLocationLinkedAsset : assetLocation.assets()) {
-				if((assetLocationLinkedAsset.getDependentAssets(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
-					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
-				}
-				
-				addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, assetLocationLinkedAsset);
-			}
-		}
+		//TODO: fix me after mega commit
+//		for(AssetLocation assetLocation : sourceModule.assetLocations()) {
+//			for(LinkedAsset assetLocationLinkedAsset : assetLocation.assets()) {
+//				if((assetLocationLinkedAsset.getDependentAssets(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
+//					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
+//				}
+//				
+//				addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, assetLocationLinkedAsset);
+//			}
+//		}
 	}
 	
 	private static void addOrderedDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencyInfo, SourceModule sourceModule, List<SourceModule> orderDependentSourceModules) throws ModelOperationException {
@@ -188,40 +187,43 @@ public class DependencyInfoFactory {
 	}
 	
 	private static void addOutboundAliasDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode) throws ModelOperationException {
-		try {
-			for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
-				addOutboundAliasDependency(dependencyAdder, dependencies, bundlableNode, bundlableNode.getAlias(aliasOverride.getName()));
-			}
-			
-			for(AliasDefinitionsFile aliasDefinitionFile : bundlableNode.aliasDefinitionFiles()) {
-				for(AliasDefinition aliasDefinition : aliasDefinitionFile.aliases()) {
-					AliasDefinition alias = bundlableNode.getAlias(aliasDefinition.getName());
-					addOutboundAliasDependency(dependencyAdder, dependencies, bundlableNode, alias);
-				}
-			}
-		}
-		catch(ContentFileProcessingException | RequirePathException | AliasException e) {
-			throw new ModelOperationException(e);
-		}
+		//TODO: fix me after mega commit
+//		try {
+//			for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
+//				addOutboundAliasDependency(dependencyAdder, dependencies, bundlableNode, bundlableNode.getAlias(aliasOverride.getName()));
+//			}
+//			
+//			for(AliasDefinitionsFile aliasDefinitionFile : bundlableNode.aliasDefinitionFiles()) {
+//				for(AliasDefinition aliasDefinition : aliasDefinitionFile.aliases()) {
+//					AliasDefinition alias = bundlableNode.getAlias(aliasDefinition.getName());
+//					addOutboundAliasDependency(dependencyAdder, dependencies, bundlableNode, alias);
+//				}
+//			}
+//		}
+//		catch(ContentFileProcessingException | RequirePathException | AliasException e) {
+//			throw new ModelOperationException(e);
+//		}
 	}
 	
-	private static void addOutboundAliasDependency(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, AliasDefinition alias) throws RequirePathException {
-		AliasAsset aliasAsset = new AliasAsset(alias);
-		dependencies.aliasAssets.put(alias.getName(), aliasAsset);
-		dependencyAdder.add(dependencies, aliasAsset, bundlableNode.getLinkedAsset(alias.getRequirePath()));
-	}
+	//TODO: fix me after mega commit
+//	private static void addOutboundAliasDependency(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, AliasDefinition alias) throws RequirePathException {
+//		AliasAsset aliasAsset = new AliasAsset(alias);
+//		dependencies.aliasAssets.put(alias.getName(), aliasAsset);
+//		dependencyAdder.add(dependencies, aliasAsset, bundlableNode.getLinkedAsset(alias.getRequirePath()));
+//	}
 	
 	private static void addInboundAliasDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {
-		try {
-			for(String aliasName : linkedAsset.getAliasNames()) {
-				AliasDefinition alias = bundlableNode.getAlias(aliasName);
-				AliasAsset aliasAsset = dependencies.aliasAssets.get(alias.getName());
-				dependencyAdder.add(dependencies, linkedAsset, aliasAsset);
-			}
-		}
-		catch(AliasException | ContentFileProcessingException e) {
-			throw new ModelOperationException(e);
-		}
+		//TODO: fix me after mega commit
+//		try {
+//			for(String aliasName : linkedAsset.getAliasNames()) {
+//				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+//				AliasAsset aliasAsset = dependencies.aliasAssets.get(alias.getName());
+//				dependencyAdder.add(dependencies, linkedAsset, aliasAsset);
+//			}
+//		}
+//		catch(AliasException | ContentFileProcessingException e) {
+//			throw new ModelOperationException(e);
+//		}
 	}
 	
 	private static interface DependencyAdder {

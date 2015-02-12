@@ -42,7 +42,7 @@ public class BuilderChainer {
 		this.specTest = specTest;
 	}
 	
-	public SpecTestBuilder and() { return new SpecTestBuilder(specTest); }
+	public SpecTestEnvironmentBuilder and() { return new SpecTestEnvironmentBuilder(specTest); }
 	public TestPackBuilder and(TestPack testPack) { return new TestPackBuilder(specTest, testPack); }
 	public NamedNodeBuilder and(NamedNode namedDirNode) { return new NamedNodeBuilder(specTest, namedDirNode); }
 	public BRJSBuilder and(BRJS brjs) { return new BRJSBuilder(specTest, brjs); }
@@ -63,5 +63,7 @@ public class BuilderChainer {
 	public NodeObserverBuilder and(EventObserver observer) { return new NodeObserverBuilder(specTest, observer); }
 	public AppServerBuilder and(ApplicationServer appServer) { return new AppServerBuilder(specTest, appServer); }
 	public JettyServerBuilder and(Server jettyServer) { return new JettyServerBuilder(specTest, jettyServer); }
+	
+	public <B extends SpecTestBuilder> B and(B builder) { return builder; }
 	
 }

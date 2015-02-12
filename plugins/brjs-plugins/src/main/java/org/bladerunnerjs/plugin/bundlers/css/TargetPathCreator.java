@@ -55,95 +55,96 @@ public class TargetPathCreator
 	
 	private String getTargetPath(MemoizedFile imageFile) throws ContentProcessingException
 	{
-
-		Node firstAncestorNode = brjs.locateFirstAncestorNode( brjs.getMemoizedFile(imageFile) );
-		AssetLocation assetLocation  = null;
-		AssetContainer assetContainer = null;
-		if (firstAncestorNode instanceof AssetLocation){
-			 assetLocation = (AssetLocation)firstAncestorNode;
-			 assetContainer = assetLocation.assetContainer();
-		} else {
-			assetContainer = (AssetContainer) firstAncestorNode;
-			assetLocation = assetContainer.assetLocation(".");
-		}
 		String targetPath = null;
 		
-		File assetLocationParentDir = assetLocation.dir().getParentFile();
-		try {
-			if(assetContainer instanceof Aspect) {
-				Aspect aspect = (Aspect) assetContainer;
-				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-					ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
-					String resourcePath = theme.dir().getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_THEME_REQUEST, ((Aspect) assetContainer).getName(), theme.dir().getName(), resourcePath);
-				} else {
-					String resourcePath = assetContainer.dir().getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_RESOURCE_REQUEST, aspect.getName(), resourcePath);
-				}
-			}
-			else if(assetContainer instanceof Bladeset) {
-				Bladeset bladeset = (Bladeset) assetContainer;
-				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-    				ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
-    				String resourcePath = theme.dir().getRelativePath(imageFile);
-    				
-    				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_THEME_REQUEST, bladeset.getName(), theme.dir().getName(), resourcePath);
-				} else {
-					String resourcePath = bladeset.dir().getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_RESOURCE_REQUEST, bladeset.getName(), resourcePath);
-				}
-			}
-			else if(assetContainer instanceof Blade) {
-				Blade blade = (Blade) assetContainer;
-				Bladeset bladeset = blade.parent();
-				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-    				ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
-    				String resourcePath = theme.dir().getRelativePath(imageFile);
-    				
-    				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_THEME_REQUEST, bladeset.getName(), blade.getName(), theme.dir().getName(), resourcePath);
-				} else {
-					String resourcePath = blade.dir().getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
-				}
-			}
-			else if(assetContainer instanceof BladeWorkbench) {
-				BladeWorkbench workbench = (BladeWorkbench) assetContainer;
-				Blade blade = workbench.parent();
-				Bladeset bladeset = blade.parent();
-				
-				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-					String resourcePath = assetLocation.file("resources").getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADEWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
-				} else {
-					String resourcePath = workbench.dir().getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADEWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
-				}
-			}
-			else if(assetContainer instanceof BladesetWorkbench) {
-				BladesetWorkbench workbench = (BladesetWorkbench) assetContainer;
-				Bladeset bladeset = workbench.parent();
-				
-				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-					String resourcePath = assetLocation.file("resources").getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESETWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), resourcePath);
-				} else {
-					String resourcePath = workbench.dir().getRelativePath(imageFile);
-					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESETWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), resourcePath);
-				}
-			}
-			else if(assetContainer instanceof JsLib) {
-				JsLib jsLib = (JsLib) assetContainer;
-				String resourcePath = jsLib.dir().getRelativePath(imageFile);
-				
-				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.LIB_REQUEST, jsLib.getName(), resourcePath);
-			}
-			else {
-				throw new ContentFileProcessingException(imageFile, "File does not exist in a known scope");
-			}
-		}
-		catch(MalformedTokenException e) {
-			throw new ContentProcessingException(e);
-		}
+		//TODO: fix me after mega commit
+//		Node firstAncestorNode = brjs.locateFirstAncestorNode( brjs.getMemoizedFile(imageFile) );
+//		AssetLocation assetLocation  = null;
+//		AssetContainer assetContainer = null;
+//		if (firstAncestorNode instanceof AssetLocation){
+//			 assetLocation = (AssetLocation)firstAncestorNode;
+//			 assetContainer = assetLocation.assetContainer();
+//		} else {
+//			assetContainer = (AssetContainer) firstAncestorNode;
+//			assetLocation = assetContainer.assetLocation(".");
+//		}
+//		
+//		File assetLocationParentDir = assetLocation.dir().getParentFile();
+//		try {
+//			if(assetContainer instanceof Aspect) {
+//				Aspect aspect = (Aspect) assetContainer;
+//				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
+//					ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
+//					String resourcePath = theme.dir().getRelativePath(imageFile);
+//					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_THEME_REQUEST, ((Aspect) assetContainer).getName(), theme.dir().getName(), resourcePath);
+//				} else {
+//					String resourcePath = assetContainer.dir().getRelativePath(imageFile);
+//					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_RESOURCE_REQUEST, aspect.getName(), resourcePath);
+//				}
+//			}
+//			else if(assetContainer instanceof Bladeset) {
+//				Bladeset bladeset = (Bladeset) assetContainer;
+//				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
+//    				ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
+//    				String resourcePath = theme.dir().getRelativePath(imageFile);
+//    				
+//    				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_THEME_REQUEST, bladeset.getName(), theme.dir().getName(), resourcePath);
+//				} else {
+//					String resourcePath = bladeset.dir().getRelativePath(imageFile);
+//					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_RESOURCE_REQUEST, bladeset.getName(), resourcePath);
+//				}
+//			}
+//			else if(assetContainer instanceof Blade) {
+//				Blade blade = (Blade) assetContainer;
+//				Bladeset bladeset = blade.parent();
+//				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
+//    				ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
+//    				String resourcePath = theme.dir().getRelativePath(imageFile);
+//    				
+//    				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_THEME_REQUEST, bladeset.getName(), blade.getName(), theme.dir().getName(), resourcePath);
+//				} else {
+//					String resourcePath = blade.dir().getRelativePath(imageFile);
+//					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
+//				}
+//			}
+//			else if(assetContainer instanceof BladeWorkbench) {
+//				BladeWorkbench workbench = (BladeWorkbench) assetContainer;
+//				Blade blade = workbench.parent();
+//				Bladeset bladeset = blade.parent();
+//				
+//				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
+//					String resourcePath = assetLocation.file("resources").getRelativePath(imageFile);
+//					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADEWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
+//				} else {
+//					String resourcePath = workbench.dir().getRelativePath(imageFile);
+//					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADEWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
+//				}
+//			}
+//			else if(assetContainer instanceof BladesetWorkbench) {
+//				BladesetWorkbench workbench = (BladesetWorkbench) assetContainer;
+//				Bladeset bladeset = workbench.parent();
+//				
+//				if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
+//					String resourcePath = assetLocation.file("resources").getRelativePath(imageFile);
+//					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESETWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), resourcePath);
+//				} else {
+//					String resourcePath = workbench.dir().getRelativePath(imageFile);
+//					targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESETWORKBENCH_RESOURCE_REQUEST, bladeset.getName(), resourcePath);
+//				}
+//			}
+//			else if(assetContainer instanceof JsLib) {
+//				JsLib jsLib = (JsLib) assetContainer;
+//				String resourcePath = jsLib.dir().getRelativePath(imageFile);
+//				
+//				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.LIB_REQUEST, jsLib.getName(), resourcePath);
+//			}
+//			else {
+//				throw new ContentFileProcessingException(imageFile, "File does not exist in a known scope");
+//			}
+//		}
+//		catch(MalformedTokenException e) {
+//			throw new ContentProcessingException(e);
+//		}
 		
 		return targetPath;
 	}

@@ -12,6 +12,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
 import org.bladerunnerjs.utility.stax.XmlStreamCursor;
@@ -35,7 +36,7 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	public static AliasDefinitionsData read(MemoizedFile aliasDefinitionsFile, AssetLocation assetLocation, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
+	public static AliasDefinitionsData read(MemoizedFile aliasDefinitionsFile, AssetContainer assetContainer, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
 		AliasDefinitionsData data = new AliasDefinitionsData();
 		data.aliasDefinitions = new ArrayList<>();
 		data.scenarioAliases = new HashMap<>();
@@ -50,11 +51,11 @@ public class AliasDefinitionsReader {
 					if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 						switch(streamReader.getLocalName()) {
 							case "alias":
-								processAlias(streamReader, data, aliasDefinitionsFile, assetLocation);
+								processAlias(streamReader, data, aliasDefinitionsFile, assetContainer);
 								break;
 							
 							case "group":
-								processGroup(streamReader, data, assetLocation);
+								processGroup(streamReader, data, assetContainer);
 								break;
 						}
 					}
@@ -75,7 +76,7 @@ public class AliasDefinitionsReader {
 		return data;
 	}
 	
-	private static void processAlias(XMLStreamReader2 streamReader, AliasDefinitionsData data, MemoizedFile aliasDefinitionsFile, AssetLocation assetLocation) throws XMLStreamException, NamespaceException, RequirePathException, AliasException {
+	private static void processAlias(XMLStreamReader2 streamReader, AliasDefinitionsData data, MemoizedFile aliasDefinitionsFile, AssetContainer assetContainer) throws XMLStreamException, NamespaceException, RequirePathException, AliasException {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "defaultClass");
 		String aliasInterface = streamReader.getAttributeValue(null, "interface");
@@ -84,7 +85,8 @@ public class AliasDefinitionsReader {
 			throw new AliasNameIsTheSameAsTheClassException(aliasDefinitionsFile, aliasName);
 		}
 		
-		assetLocation.assertIdentifierCorrectlyNamespaced(aliasName);
+		//TODO: fix me after mega commit
+//		assetContainer.assertIdentifierCorrectlyNamespaced(aliasName);
 		
 		data.aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
 		
@@ -102,10 +104,11 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	private static void processGroup(XMLStreamReader2 streamReader, AliasDefinitionsData data, AssetLocation assetLocation) throws XMLStreamException, NamespaceException, RequirePathException {
+	private static void processGroup(XMLStreamReader2 streamReader, AliasDefinitionsData data, AssetContainer assetContainer) throws XMLStreamException, NamespaceException, RequirePathException {
 		String groupName = streamReader.getAttributeValue(null, "name");
 		
-		assetLocation.assertIdentifierCorrectlyNamespaced(groupName);
+		//TODO: fix me after mega commit
+//		assetContainer.assertIdentifierCorrectlyNamespaced(groupName);
 		
 		XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
 		

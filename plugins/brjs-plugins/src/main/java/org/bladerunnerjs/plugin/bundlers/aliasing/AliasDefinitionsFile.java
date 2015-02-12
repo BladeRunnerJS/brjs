@@ -8,14 +8,15 @@ import java.util.Set;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.AssetContainer;
 
 public class AliasDefinitionsFile {
 	private final MemoizedFile aliasDefinitionsFile;
 	private final PersistentAliasDefinitionsData persistentAliasDefinitionsData;
 	
-	public AliasDefinitionsFile(AssetLocation assetLocation, MemoizedFile parent, String child) {
-		aliasDefinitionsFile = parent.file(child);
-		persistentAliasDefinitionsData = new PersistentAliasDefinitionsData(assetLocation, aliasDefinitionsFile);
+	public AliasDefinitionsFile(AssetContainer assetContainer, MemoizedFile file) {
+		aliasDefinitionsFile = file;
+		persistentAliasDefinitionsData = new PersistentAliasDefinitionsData(assetContainer, aliasDefinitionsFile);
 	}
 	
 	public MemoizedFile getUnderlyingFile() {

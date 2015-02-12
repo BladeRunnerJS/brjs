@@ -45,10 +45,11 @@ public class BundleSetBuilder {
 		
 		if (bundlableNode instanceof Workbench) {
 			// TODO: this should be done via the API and not guessed from the outside
-			AssetLocation defaultAspectResourcesAssetLocation = bundlableNode.app().aspect("default").assetLocation("resources");
-			if (defaultAspectResourcesAssetLocation != null) {
-				addUnscopedAssetLocation(defaultAspectResourcesAssetLocation);
-			}
+			//TODO: fix me after mega commit
+//			AssetLocation defaultAspectResourcesAssetLocation = bundlableNode.app().aspect("default").assetLocation("resources");
+//			if (defaultAspectResourcesAssetLocation != null) {
+//				addUnscopedAssetLocation(defaultAspectResourcesAssetLocation);
+//			}
 		}
 		
 		List<SourceModule> bootstrappingSourceModules = new ArrayList<SourceModule>();
@@ -57,17 +58,18 @@ public class BundleSetBuilder {
 			addBootstrapAndDependencies(bootstrappingSourceModules);
 		}
 		
-		try {
-			resourceLocationList.addAll(assetLocations);
-			orderAssetLocations(bundlableNode, resourceLocationList);
-		}
-		catch(RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
-		
+//		try {
+			//TODO: fix me after mega commit
+//			resourceLocationList.addAll(assetLocations);
+//			orderAssetLocations(bundlableNode, resourceLocationList);
+//		}
+//		catch(RequirePathException e) {
+//			throw new ModelOperationException(e);
+//		}
+//		
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		
-		return new StandardBundleSet(bundlableNode, assets, orderedSourceModules, resourceLocationList);
+		return new StandardBundleSet(bundlableNode, assets, orderedSourceModules);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
@@ -104,7 +106,6 @@ public class BundleSetBuilder {
 				if(asset instanceof SourceModule){
 					addSourceModule((SourceModule)asset);
 				}else {
-					addAssetLocation(asset.assetLocation());
 					if (asset instanceof LinkedAsset) {
 						addLinkedAsset((LinkedAsset) asset);						
 					}
@@ -112,34 +113,19 @@ public class BundleSetBuilder {
 				assets.add(asset);
 			}
 			
-			addAssetLocation(linkedAsset.assetLocation());
 		}
 		
 	}
 	
-	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
-		if (assetLocation == null) {
-			return;
-		}
-		if (assetLocations.add(assetLocation)) {
-			for(LinkedAsset resourceSeedFile : assetLocation.assets()) {
-				addLinkedAsset(resourceSeedFile);
-			}
-			
-			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
-				addAssetLocation(dependentAssetLocation);
-			}
-		}
-	}
-	
-	private void addUnscopedAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
-		if (assetLocation == null) { return; }
-		if (assetLocations.add(assetLocation)) {			
-			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
-				addAssetLocation(dependentAssetLocation);
-			}
-		}
-	}
+	//TODO: fix me after mega commit
+//	private void addUnscopedAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
+//		if (assetLocation == null) { return; }
+//		if (assetLocations.add(assetLocation)) {			
+//			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
+//				addAssetLocation(dependentAssetLocation);
+//			}
+//		}
+//	}
 	
 	private String assetFilePaths(List<Asset> assets) {
 		List<String> sourceFilePaths = new ArrayList<>();
@@ -176,24 +162,6 @@ public class BundleSetBuilder {
 		sourceModules.add(sourceModule);
 	}
 	
-	
-	private void orderAssetLocations(BundlableNode bundlableNode, List<AssetLocation> unorderedAssetLocations)
-	{
-		for (AssetContainer assetContainer : bundlableNode.scopeAssetContainers())
-		{
-			List<AssetLocation> assetLocationsForThisContainer = new ArrayList<>();
-			for (AssetLocation assetLocation : unorderedAssetLocations)
-			{
-				if (assetLocation.assetContainer() == assetContainer)
-				{
-					assetLocationsForThisContainer.add(assetLocation);
-				}
-			}
-			unorderedAssetLocations.removeAll(assetLocationsForThisContainer);
-			unorderedAssetLocations.addAll(assetLocationsForThisContainer);
-		}
-	}
-	
 	private void addBootstrapAndDependencies(List<SourceModule> bootstrappingSourceModules) throws ModelOperationException
 	{
 		JsLib boostrapLib = bundlableNode.app().jsLib(BOOTSTRAP_LIB_NAME);
@@ -202,9 +170,6 @@ public class BundleSetBuilder {
 				addSourceModule( (SourceModule) asset );
 				addAllSourceModuleDependencies( (SourceModule) asset, bootstrappingSourceModules );						
 			}
-		}
-		for (AssetLocation assetLocation : boostrapLib.assetLocations()) {
-			addUnscopedAssetLocation(assetLocation);					
 		}
 	}
 	

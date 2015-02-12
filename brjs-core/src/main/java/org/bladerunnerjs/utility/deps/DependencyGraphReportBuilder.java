@@ -15,12 +15,6 @@ import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingExcept
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasAsset;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasOverride;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 
 public class DependencyGraphReportBuilder {
 	private final List<LinkedAsset> linkedAssets;
@@ -83,41 +77,43 @@ public class DependencyGraphReportBuilder {
 	}
 	
 	public static String createReportForAlias(BrowsableNode browsableNode, String aliasName, boolean showAllDependencies) throws ModelOperationException {
-		try {
-			List<LinkedAsset> linkedAssets = new ArrayList<>();
-			
-			fixIncompleteAliases(browsableNode);
-			
-			AliasDefinition alias = browsableNode.getAlias(aliasName);
-			SourceModule sourceModule =  (SourceModule)browsableNode.getLinkedAsset(alias.getRequirePath());
-			linkedAssets.add(sourceModule);
-			
-			return "Alias '" + aliasName + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
-		}
-		catch(AliasException | RequirePathException e) {
-			return e.getMessage();
-		}
-		catch(ContentFileProcessingException e) {
-			throw new ModelOperationException(e);
-		}
+		//TODO: fix me after mega commit
+//		try {
+//			List<LinkedAsset> linkedAssets = new ArrayList<>();
+//			
+//			fixIncompleteAliases(browsableNode);
+//			
+//			AliasDefinition alias = browsableNode.getAlias(aliasName);
+//			SourceModule sourceModule =  (SourceModule)browsableNode.getLinkedAsset(alias.getRequirePath());
+//			linkedAssets.add(sourceModule);
+//			
+//			return "Alias '" + aliasName + "' dependencies found:\n" +
+//			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
+//		}
+//		catch(AliasException | RequirePathException e) {
+//			return e.getMessage();
+//		}
+//		catch(ContentFileProcessingException e) {
+//			throw new ModelOperationException(e);
+//		}
+		return "FIX ME!";
 	}
 	
 	private static void fixIncompleteAliases(BundlableNode bundlableNode) {
-		try {
-			AliasesFile aliasesFile = bundlableNode.aliasesFile();
-			
-			for(AliasDefinitionsFile aliasDefinitionFile : bundlableNode.aliasDefinitionFiles()) {
-				for(AliasDefinition aliasDefinition : aliasDefinitionFile.aliases()) {
-					if(!aliasesFile.hasAlias(aliasDefinition.getName()) && (aliasDefinition != null) && (aliasDefinition.getInterfaceName() != null)) {
-						aliasesFile.addAlias(new AliasOverride(aliasDefinition.getName(), aliasDefinition.getInterfaceName()));
-					}
-				}
-			}
-		}
-		catch(ContentFileProcessingException e) {
-			throw new RuntimeException(e);
-		}
+//		try {
+//			AliasesFile aliasesFile = bundlableNode.aliasesFile();
+//			
+//			for(AliasDefinitionsFile aliasDefinitionFile : bundlableNode.aliasDefinitionFiles()) {
+//				for(AliasDefinition aliasDefinition : aliasDefinitionFile.aliases()) {
+//					if(!aliasesFile.hasAlias(aliasDefinition.getName()) && (aliasDefinition != null) && (aliasDefinition.getInterfaceName() != null)) {
+//						aliasesFile.addAlias(new AliasOverride(aliasDefinition.getName(), aliasDefinition.getInterfaceName()));
+//					}
+//				}
+//			}
+//		}
+//		catch(ContentFileProcessingException e) {
+//			throw new RuntimeException(e);
+//		}
 	}
 	
 	private DependencyGraphReportBuilder(List<LinkedAsset> linkedAssets, DependencyInfo dependencyInfo, boolean showAllDependencies) throws ModelOperationException {
@@ -211,9 +207,10 @@ public class DependencyGraphReportBuilder {
 		else if(dependencyInfo.resourceAssets.contains(linkedAsset)) {
 			reportBuilder.append(" (implicit resource)");
 		}
-		else if(linkedAsset instanceof AliasAsset) {
-			reportBuilder.append(" (alias dep.)");
-		}
+		//TODO: fix me after mega commit
+//		else if(linkedAsset instanceof AliasAsset) {
+//			reportBuilder.append(" (alias dep.)");
+//		}
 		
 		if((showAllDependencies && alreadyProcessedDependency) || (!showAllDependencies && manyLinkedAssets.contains(linkedAsset))) {
 			reportBuilder.append(" (*)");

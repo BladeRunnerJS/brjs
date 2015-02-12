@@ -13,11 +13,9 @@ import org.bladerunnerjs.model.BundlableNode;
 public class ServiceRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
 	// TODO: update to be a bundlableNodeSourceModules as has been done in AliasRequirePlugin
 	private final Map<String, ServiceCommonJsSourceModule> sourceModules = new HashMap<>();
-	private AssetLocation assetLocation;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		assetLocation = new NullAssetLocation(brjs);
 	}
 
 	@Override
@@ -27,12 +25,12 @@ public class ServiceRequirePlugin extends AbstractRequirePlugin implements Requi
 
 	@Override
 	public Asset getAsset(BundlableNode bundlableNode, String requirePathSuffix) throws RequirePathException {
-		return getSourceModule(requirePathSuffix);
+		return getSourceModule(bundlableNode, requirePathSuffix);
 	}
 	
-	private ServiceCommonJsSourceModule getSourceModule(String requirePath) {
+	private ServiceCommonJsSourceModule getSourceModule(BundlableNode bundlableNode, String requirePath) {
 		if(!sourceModules.containsKey(requirePath)) {
-			sourceModules.put(requirePath, new ServiceCommonJsSourceModule(assetLocation, requirePath));
+			sourceModules.put(requirePath, new ServiceCommonJsSourceModule(bundlableNode, requirePath));
 		}
 		
 		return sourceModules.get(requirePath);

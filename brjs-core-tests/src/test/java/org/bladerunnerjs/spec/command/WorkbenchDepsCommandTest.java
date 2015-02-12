@@ -1,5 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasDefinitionsFile;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
@@ -12,6 +14,7 @@ import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
 import org.bladerunnerjs.plugin.commands.standard.WorkbenchDepsCommand;
+import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +28,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	JsLib brLib;
 	AliasDefinitionsFile brLibAliasDefinitionsFile;
 	private Blade bladeInDefaultBladeset;
+	private AliasDefinitionsFileBuilder brLibAliasDefinitionsFileBuilder;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -40,8 +44,9 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			blade = bladeset.blade("blade");
 			workbench = blade.workbench();
 			brLib = brjs.sdkLib("br");
-			brLibAliasDefinitionsFile = brLib.aliasDefinitionsFile("resources");
 			bladeInDefaultBladeset = app.defaultBladeset().blade("blade");
+			
+			brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
 	}
 	
 	@Test
@@ -172,7 +177,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	@Test
 	public void dependenciesAreShownForWorkbenchUsingAliasWhenAllArgumentsAreValid() throws Exception {
 		given(brLib).hasClasses("br/Class1", "br/Class2", "br/AliasInterfaceError")
-			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.alias", "br.Class2")
 			.and(blade).classFileHasContent("appns/bladeset/blade/Class1", "require('alias!br.alias')")
 			.and(workbench).indexPageRequires("appns/bladeset/blade/Class1");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
