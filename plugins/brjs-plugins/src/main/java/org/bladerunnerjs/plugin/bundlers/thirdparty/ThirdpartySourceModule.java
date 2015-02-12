@@ -95,17 +95,6 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public AssetLocation assetLocation()
-	{
-		return null;
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return Collections.emptyList();
-	}
-	
-	@Override
 	public MemoizedFile dir()
 	{
 		return assetContainer.dir();
@@ -139,6 +128,7 @@ public class ThirdpartySourceModule implements SourceModule
 		for (MemoizedFile cssFile : cssFiles) {
 			String cssFileRelativePath = StringUtils.substringBeforeLast(assetContainer.dir().getRelativePath(cssFile),".");
 			String cssFileRequirePath = "css!"+assetContainer.requirePrefix()+"/"+cssFileRelativePath;
+			
 			Asset cssAsset = assetContainer.asset(cssFileRequirePath);
 			if (cssAsset == null) {
 				String appRelativePath = assetContainer.app().dir().getRelativePath(cssFile);
