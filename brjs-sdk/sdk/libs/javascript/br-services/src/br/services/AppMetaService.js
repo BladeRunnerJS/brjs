@@ -42,13 +42,4 @@ AppMetaService.prototype.getLocales = function() {
 	throw new Errors.UnimplementedInterfaceError("AppMetaService.getLocales() has not been implemented.");
 };
 
-// TODO: delete this method
-/**
-* Returns the name of the cookie used to store the locale preference
-* @returns The cookie name
-*/
-AppMetaService.prototype.getLocaleCookieName = function() {
-	throw new Errors.UnimplementedInterfaceError("AppMetaService.getLocaleCookieName() has not been implemented.");
-};
-
 module.exports = AppMetaService;
