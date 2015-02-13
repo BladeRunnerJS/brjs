@@ -26,19 +26,41 @@ BRLocaleProvider.prototype.getActiveLocale = function() {
 	var browserAcceptedLocales = getBrowserAcceptedLocales();
 	var appLocales = window.$BRJS_APP_LOCALES;
 	
-	return getActiveLocale(localeCookie, browserAcceptedLocales, appLocales);
+	return this.getActiveLocaleGiven(localeCookie, browserAcceptedLocales, appLocales);
+};
+
+BRLocaleProvider.prototype.getActiveLocaleGiven = function(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
+	var activeLocale;
+
+	if(appSupportedLocales[userPreferredLocale]) {
+		activeLocale = userPreferredLocale;
+	}
+	else {
+		var firstMatchingLocale = getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales);
+
+		if(firstMatchingLocale) {
+			activeLocale = firstMatchingLocale;
+		}
+		else {
+			for(var appSupportedLocale in appSupportedLocales) {
+				activeLocale = appSupportedLocale;
+				break;
+			}
+		}
+	}
+
+	return activeLocale;
 };
 
 BRLocaleProvider.prototype.setActiveLocale = function(locale) {
-	var days = 365;
-	var pageUrl = this.localeUtility.getWindowUrl().replace(/^\/|\/$/g, '');
+	// TODO: why does the cookie involve a page location?
+	var pageUrl = location.href.replace(/^\/|\/$/g, '');
 	var lastSlashIndex = pageUrl.lastIndexOf("/");
 	var localePath = pageUrl.substring(0, lastSlashIndex);
 	if (localePath.charAt(0) != '/') {
 		localePath = "/"+localePath;
 	}
-	var localeCookieName = this.appMetaService.getLocaleCookieName();
-	this.localeUtility.setCookie( localeCookieName, locale, days, localePath );
+	setCookie( window.$BRJS_LOCALE_COOKIE_NAME, locale, 365, localePath );
 };
 
 function getBrowserAcceptedLocales() {
@@ -106,29 +128,6 @@ function getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales) {
 	}
 
 	return firstMatchingLocale;
-}
-
-function getActiveLocale(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
-	var activeLocale;
-
-	if(appSupportedLocales[userPreferredLocale]) {
-		activeLocale = userPreferredLocale;
-	}
-	else {
-		var firstMatchingLocale = getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales);
-
-		if(firstMatchingLocale) {
-			activeLocale = firstMatchingLocale;
-		}
-		else {
-			for(var appSupportedLocale in appSupportedLocales) {
-				activeLocale = appSupportedLocale;
-				break;
-			}
-		}
-	}
-
-	return activeLocale;
 }
 
 module.exports = BRLocaleProvider;
