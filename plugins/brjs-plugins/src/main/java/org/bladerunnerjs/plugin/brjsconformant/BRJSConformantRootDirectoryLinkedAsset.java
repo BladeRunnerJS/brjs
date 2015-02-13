@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -19,26 +20,19 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.RequirePrefixConfigurableLinkedAsset;
 
 
-public class JSLibRootDirectoryLinkedAsset implements RequirePrefixConfigurableLinkedAsset
+public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 {
 
 	private AssetContainer assetContainer;
 	private MemoizedFile dir;
+	private String primaryRequirePath;
 	private MemoizedValue<List<Asset>> dependentAssets;
-	private BRLibConf libManifest;
 
-	public JSLibRootDirectoryLinkedAsset(AssetContainer assetContainer) {
+	public BRJSConformantRootDirectoryLinkedAsset(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
-		this.dir = assetContainer.dir();
-		
+		this.dir = assetContainer.dir();		
+		primaryRequirePath = assetContainer.requirePrefix();
 		dependentAssets = new MemoizedValue<>(getAssetPath()+ " dependent assets", assetContainer.root(), assetContainer.dir());
-		
-		try {
-			libManifest = new BRLibConf((JsLib) assetContainer);
-		}
-		catch (ConfigException e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 	@Override
@@ -68,18 +62,13 @@ public class JSLibRootDirectoryLinkedAsset implements RequirePrefixConfigurableL
 	@Override
 	public List<String> getRequirePaths()
 	{
-		return Arrays.asList( getPrimaryRequirePath() );
+		return Arrays.asList(primaryRequirePath);
 	}
 
 	@Override
 	public String getPrimaryRequirePath()
 	{
-		try {
-			return (libManifest.manifestExists()) ? libManifest.getRequirePrefix() : ((JsLib) assetContainer).getName();
-		}
-		catch (ConfigException e) {
-			throw new RuntimeException(e);
-		}
+		return primaryRequirePath;
 	}
 
 	@Override
@@ -106,17 +95,10 @@ public class JSLibRootDirectoryLinkedAsset implements RequirePrefixConfigurableL
 	{
 		return Collections.emptyList();
 	}
-	
-	@Override
-	public void setRequirePrefix(String requirePrefix) throws ConfigException {
-		libManifest.setRequirePrefix(requirePrefix);
-		libManifest.write();
-	}
 
 	@Override
 	public AssetContainer assetContainer()
 	{
 		return assetContainer;
 	}
-
 }

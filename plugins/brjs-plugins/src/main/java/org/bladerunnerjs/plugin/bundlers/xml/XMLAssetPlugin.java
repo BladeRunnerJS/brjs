@@ -31,7 +31,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 		}
 		
 		IOFileFilter noAliasesFileFilter = new NotFileFilter( new NameFileFilter( Arrays.asList("aliases.xml", "aliasDefinitions.xml") ) );
-		FileFilter htmlFileFilter = new AndFileFilter( (IOFileFilter) new SuffixFileFilter(".html"), noAliasesFileFilter );
+		FileFilter htmlFileFilter = new AndFileFilter( (IOFileFilter) new SuffixFileFilter(".xml"), noAliasesFileFilter );
 		
 		for (MemoizedFile htmlFile : dir.listFiles(htmlFileFilter)) {
 			Asset asset = new XMLAsset(htmlFile, assetContainer, requirePrefix);

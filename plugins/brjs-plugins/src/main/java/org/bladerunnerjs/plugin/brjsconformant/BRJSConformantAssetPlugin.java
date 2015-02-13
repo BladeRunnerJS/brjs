@@ -84,7 +84,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		if (assetContainer instanceof JsLib) {
 			rootAsset = new JSLibRootDirectoryLinkedAsset(assetContainer);
 		} else {
-			rootAsset = new DirectoryLinkedAsset(assetContainer, assetContainer.dir(), requirePrefix); 
+			rootAsset = new BRJSConformantRootDirectoryLinkedAsset(assetContainer); 
 		}
 		assetDiscoveryInitiator.registerAsset(rootAsset);
 		

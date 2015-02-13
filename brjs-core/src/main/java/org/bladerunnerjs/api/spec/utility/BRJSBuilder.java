@@ -186,7 +186,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlerPlugins();
 		automaticallyFindsAssetPlugins();
-		automaticallyFindsAssetPlugins();
 		automaticallyFindsRequirePlugins();
 		
 		return builderChainer;

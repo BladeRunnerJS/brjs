@@ -42,7 +42,6 @@ public class MemoizedValue<T extends Object> {
 	@SuppressWarnings("unchecked")
 	public <E extends Exception> T value(Getter<E> getter) throws E {
 		if (valueNeedsToBeRecomputed()) {
-			
 			try (FileAccessLimitScope scope = rootNode.io().limitAccessToWithin(valueIdentifier, watchItems)) {
 				exceptionThrownOnLastCompute = false;
 				value = (T) getter.get();

@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +39,7 @@ public abstract class AbstractBrowsableNode extends AbstractBundlableNode implem
 	
 	@Override
 	public List<LinkedAsset> seedAssets() {
-		Set<LinkedAsset> seedAssets = new LinkedHashSet<>();
+		Set<LinkedAsset> seedAssets = new HashSet<>();
 		seedAssets.addAll( indexPageSeedLocator.seedAssets(this) );
 		seedAssets.addAll( super.seedAssets() );
 		return new ArrayList<>( seedAssets );

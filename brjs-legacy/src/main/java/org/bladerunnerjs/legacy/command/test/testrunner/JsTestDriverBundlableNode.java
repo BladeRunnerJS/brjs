@@ -171,9 +171,10 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
 		LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(requirePath);
 		
-		if((linkedAsset instanceof SourceModule) && (linkedAsset.assetLocation() instanceof TestAssetLocation)) {
-			linkedAsset = new JsTestDriverEmptyTestSourceModule((SourceModule) linkedAsset);
-		}
+		//TODO: fix me after mega commit
+//		if((linkedAsset instanceof SourceModule) && (linkedAsset.assetLocation() instanceof TestAssetLocation)) {
+//			linkedAsset = new JsTestDriverEmptyTestSourceModule((SourceModule) linkedAsset);
+//		}
 		
 		return linkedAsset;
 	}

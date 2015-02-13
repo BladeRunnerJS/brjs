@@ -33,8 +33,8 @@ public class IO {
 	private void executeFileAccessingStaticInitializers() {
 		try {
 			Class.forName("java.util.Currency");
-			Class.forName("org.bladerunnerjs.aliasing.aliases.AliasesReader");
-			Class.forName("org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsReader");
+			Class.forName("org.bladerunnerjs.plugin.bundlers.aliasing.AliasesReader");
+			Class.forName("org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsReader");
 		}
 		catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);

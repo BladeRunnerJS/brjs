@@ -1,6 +1,7 @@
 package org.bladerunnerjs.api.plugin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +18,7 @@ import org.bladerunnerjs.model.AssetContainer;
 
 public class AssetContainerAssets
 {
-	private final MemoizedValue<AssetDiscoveryResult> assetDiscoveryResult;
+	private final MemoizedValue<DefaultAssetDiscoveryInitiator> assetDiscoveryResult;
 	private final List<AssetPlugin> assetPlugins;
 	private AssetContainer assetContainer;
 	
@@ -56,21 +57,21 @@ public class AssetContainerAssets
 		return assetDiscoveryResult().assets.get(requirePath);
 	}
 	
-	private AssetDiscoveryResult assetDiscoveryResult() {
+	private DefaultAssetDiscoveryInitiator assetDiscoveryResult() {
 		return assetDiscoveryResult.value(() -> {
-			return new AssetDiscoveryResult();
+			return new DefaultAssetDiscoveryInitiator();
 		});
 	}
 	
 	
-	private class AssetDiscoveryResult implements AssetDiscoveryInitiator {
+	private class DefaultAssetDiscoveryInitiator implements AssetDiscoveryInitiator {
 		
 		private final Map<String,Asset> assets = new HashMap<>();
 		private final Map<String,Asset> assetsByPath = new HashMap<>();
 		private final List<LinkedAsset> seedAssets = new ArrayList<>();
 		private boolean furtherDiscoveryRequired = true;
 		
-		private AssetDiscoveryResult() {
+		private DefaultAssetDiscoveryInitiator() {
 			//TODO: do we need the loop?
 			while (furtherDiscoveryRequired) {
 				furtherDiscoveryRequired = false;

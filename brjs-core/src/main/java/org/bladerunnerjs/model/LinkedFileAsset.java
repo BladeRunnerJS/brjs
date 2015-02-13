@@ -37,7 +37,7 @@ public class LinkedFileAsset implements LinkedAsset {
 			this.assetContainer = assetContainer;
 			this.assetFile = assetFile;
 			assetPath = assetContainer.app().dir().getRelativePath(assetFile);
-			primaryRequirePath = requirePrefix+StringUtils.substringBeforeLast(assetFile.getName(), ".");
+			primaryRequirePath = requirePrefix+"/"+StringUtils.substringBeforeLast(assetFile.getName(), ".");
 			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {

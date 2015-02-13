@@ -109,8 +109,8 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 		
 		try {
 			Asset rootAsset = assetByLocation(".");
-			if (rootAsset != null && rootAsset instanceof RootDirectoryLinkedAsset) {
-				((RootDirectoryLinkedAsset) rootAsset).setRequirePrefix(libNamespace.replace('.', '/'));
+			if (rootAsset != null && rootAsset instanceof RequirePrefixConfigurableLinkedAsset) {
+				((RequirePrefixConfigurableLinkedAsset) rootAsset).setRequirePrefix(libNamespace.replace('.', '/'));
 				// how do we populate the root?
 			}
 			incrementChildFileVersions();
@@ -128,7 +128,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	@Override
 	public String requirePrefix() {
 		Asset rootAsset = assetByLocation(".");
-		if (rootAsset != null && rootAsset instanceof RootDirectoryLinkedAsset) {
+		if (rootAsset != null && rootAsset instanceof RequirePrefixConfigurableLinkedAsset) {
 			return rootAsset.getPrimaryRequirePath();
 		}
 		return dir().getName();
