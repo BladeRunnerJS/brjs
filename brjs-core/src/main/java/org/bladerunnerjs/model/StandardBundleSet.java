@@ -57,6 +57,20 @@ public class StandardBundleSet implements BundleSet {
 	}
 	
 	@Override
+	public List<Asset> getResourceFiles() {
+		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
+		
+		for(AssetLocation resourceNode : resourceLocations) {
+			resourceFiles.addAll(resourceNode.bundlableAssets());
+		}
+		
+		List<Asset> result = new ArrayList<Asset>();
+		result.addAll(resourceFiles);
+		
+		return result;
+	}
+	
+	@Override
 	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
 		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
 		

@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
@@ -115,6 +116,7 @@ public abstract class SpecTest
 		logging = new LogMessageStore();
 		exceptions = new ArrayList<>();
 		observer = mock(EventObserver.class);
+		if (testSdkDirectory != null) FileUtils.deleteQuietly(testSdkDirectory);
 		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
 		pluginLocator = new MockPluginLocator();
 		webappTester = new WebappTester(testSdkDirectory);

@@ -18,16 +18,18 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
+import org.bladerunnerjs.legacy.command.test.TestCommand;
+import org.bladerunnerjs.legacy.command.test.testrunner.TestRunnerController;
 import org.bladerunnerjs.model.engine.NamedNode;
+import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.plugin.commands.standard.CopyBladesetCommand;
 import org.bladerunnerjs.plugin.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.plugin.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.plugin.commands.standard.CreateBladesetCommand;
+import org.bladerunnerjs.plugin.commands.standard.ExportApplicationCommand;
 import org.bladerunnerjs.plugin.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.plugin.commands.standard.JsDocCommand;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.legacy.command.test.TestCommand;
-import org.bladerunnerjs.legacy.command.test.testrunner.TestRunnerController;
 
 public class RestApiService
 {
@@ -139,6 +141,7 @@ public class RestApiService
 			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
 		}
 		
+		notifyOfCommand(new ExportApplicationCommand());
 		app.buildWar( brjs.getMemoizedFile(destinationWar) );
 	}
 	
@@ -256,7 +259,7 @@ public class RestApiService
 		jsDocCommand.setBRJS(brjs);
 		String[] args = new String[]{appName, "-v"};
 		//TODO: should this be something that wraps stdOut?
-		jsDocCommand.doCommand(args);
+		doCommand(jsDocCommand, args);
 	}
 
 	/* helper methods */
@@ -283,6 +286,7 @@ public class RestApiService
 		System.setOut( new MultiOutputPrintStream(System.out, new PrintStream(commandOutput)) );
 		
 		try {
+			notifyOfCommand(command);
 			command.doCommand(args);
 		} finally {
 			System.setOut(oldSysOut);
@@ -297,6 +301,9 @@ public class RestApiService
 	}
 
 	
+	private void notifyOfCommand(CommandPlugin command) {
+		brjs.notifyObservers(new CommandExecutedEvent("dashboard:"+command.getCommandName()), brjs);
+	}
 	
 	private class MultiOutputPrintStream extends PrintStream {
 		private PrintStream secondary;

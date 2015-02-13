@@ -7,6 +7,7 @@ buildscript {
 	}
 }
 
+//TODO: work out why this doesnt work
 subprojects {
 //	apply plugin: 'java'
 //	apply plugin: 'eclipse'

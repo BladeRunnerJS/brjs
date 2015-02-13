@@ -23,6 +23,7 @@ public interface AssetLocation extends BRJSNode {
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<AliasDefinitionsFile> aliasDefinitionsFiles();
 	List<LinkedAsset> linkedAssets();
+	List<Asset> bundlableAssets();
 	List<Asset> bundlableAssets(AssetPlugin assetProducer);
 	List<SourceModule> sourceModules();
 	String canonicaliseRequirePath(String requirePath) throws RequirePathException;

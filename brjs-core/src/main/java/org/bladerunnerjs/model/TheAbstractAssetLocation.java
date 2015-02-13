@@ -104,6 +104,17 @@ public abstract class TheAbstractAssetLocation extends AbstractBRJSNode implemen
 	}
 	
 	@Override
+	public List<Asset> bundlableAssets() {
+		List<Asset> assets = new ArrayList<>();
+		for (List<Asset> assetList : assets().pluginAssets().values()) {
+			for (Asset a : assetList) {
+				assets.add(a);				
+			}
+		}
+		return assets;
+	}
+	
+	@Override
 	public List<Asset> bundlableAssets(AssetPlugin assetPlugin) {
 		return assets().pluginAssets().get(assetPlugin);
 	}

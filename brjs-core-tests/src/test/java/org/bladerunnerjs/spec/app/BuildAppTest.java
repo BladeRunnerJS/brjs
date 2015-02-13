@@ -11,6 +11,7 @@ import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.bladerunnerjs.testing.utility.ScriptedContentPlugin;
 import org.bladerunnerjs.testing.utility.ScriptedRequestGeneratingTagHandlerPlugin;
 import org.bladerunnerjs.utility.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +33,11 @@ public class BuildAppTest extends SpecTest {
 			nonDefaultAspect = app.aspect("aspect2");
 			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 			bladerunnerConf = brjs.bladerunnerConf();
+	}
+	
+	@After
+	public void deleteTempDir() {
+		org.apache.commons.io.FileUtils.deleteQuietly(targetDir);
 	}
 	
 	@Test
