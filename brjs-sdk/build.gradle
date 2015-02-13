@@ -14,6 +14,9 @@ configurations {
 }
 
 dependencies {
+	system project(path: ':brjs-core')
+	system project(":plugins:brjs-plugins")
+	system project(":plugins:brjs-stats-plugin")
 	system project(path: ':cutlass-tasks')
 	system project(path: ':brjs-runner')
 	system project(path: ':brjs-logger')
@@ -165,11 +168,11 @@ task createSdkJsDocs, dependsOn: assembleSdk, {
 	doFirst {
 		delete file("apps/${jsDocTmpAppName}")
 		exec {
-			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["create-app", jsDocTmpAppName]
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["create-app", jsDocTmpAppName, "--no-stats"]
 			workingDir file("sdk")
 		}
 		exec {
-			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["jsdoc", jsDocTmpAppName]
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["jsdoc", jsDocTmpAppName, "--no-stats"]
 			workingDir file("sdk")
 		}
 		copy {
