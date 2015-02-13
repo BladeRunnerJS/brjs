@@ -21,12 +21,20 @@ function BRLocaleProvider() {
 }
 topiarist.implement(BRLocaleProvider, LocaleProvider);
 
+BRLocaleProvider.prototype.setActiveLocale = function(locale) {
+	localStorage.set('locale', locale);
+};
+
 BRLocaleProvider.prototype.getActiveLocale = function() {
-	var localeCookie = getCookie(window.$BRJS_LOCALE_COOKIE_NAME);
+	var userPreferredLocale = localStorage.get('locale');
 	var browserAcceptedLocales = getBrowserAcceptedLocales();
 	var appLocales = window.$BRJS_APP_LOCALES;
 	
-	return this.getActiveLocaleGiven(localeCookie, browserAcceptedLocales, appLocales);
+	if(!userPreferredLocale) {
+		userPreferredLocale = getCookie(window.$BRJS_LOCALE_COOKIE_NAME);
+	}
+	
+	return this.getActiveLocaleGiven(userPreferredLocale, browserAcceptedLocales, appLocales);
 };
 
 BRLocaleProvider.prototype.getActiveLocaleGiven = function(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
@@ -50,17 +58,6 @@ BRLocaleProvider.prototype.getActiveLocaleGiven = function(userPreferredLocale, 
 	}
 
 	return activeLocale;
-};
-
-BRLocaleProvider.prototype.setActiveLocale = function(locale) {
-	// TODO: why does the cookie involve a page location?
-	var pageUrl = location.href.replace(/^\/|\/$/g, '');
-	var lastSlashIndex = pageUrl.lastIndexOf("/");
-	var localePath = pageUrl.substring(0, lastSlashIndex);
-	if (localePath.charAt(0) != '/') {
-		localePath = "/"+localePath;
-	}
-	setCookie( window.$BRJS_LOCALE_COOKIE_NAME, locale, 365, localePath );
 };
 
 function getBrowserAcceptedLocales() {
@@ -102,17 +99,6 @@ function getCookie(name) {
 		}
 	}
 	return null;
-}
-
-function setCookie(name, value, days, path) {
-	var expires = "";
-	if (days) {
-		var date = new Date();
-		var expiresDate = new Date( date.getTime()+(days*24*60*60*1000) );
-		expires = "; expires="+expiresDate.toGMTString();
-	}
-	path = (path) ? path : "/";
-	document.cookie = name+"="+value+expires+"; path="+path;
 }
 
 function getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales) {
