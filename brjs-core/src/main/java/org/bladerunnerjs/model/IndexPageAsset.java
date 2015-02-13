@@ -39,4 +39,9 @@ public class IndexPageAsset extends LinkedFileAsset {
 		}
 		return assetList;
 	}
+	
+	@Override
+	public Reader getReader() throws IOException {
+		return new JsCommentStrippingReader(super.getReader(), false, assetLocation().root().getCharBufferPool());
+	}
 }
