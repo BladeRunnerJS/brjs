@@ -340,6 +340,15 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		
 		return builderChainer;
 	}
+	
+	public BuilderChainer usesProductionJars() throws IOException {
+		verifyBrjsIsSet();
+		
+		File appJars = new File("../brjs-sdk/sdk/libs/java/application");
+		FileUtils.copyDirectory(brjs, appJars, brjs.file("sdk/libs/java/application"));
+		
+		return builderChainer;
+	}
 
 	public BuilderChainer usesJsDocResources() throws IOException {
 		verifyBrjsIsSet();

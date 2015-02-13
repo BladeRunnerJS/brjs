@@ -19,6 +19,7 @@ import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.J2eeifyCommandPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
@@ -50,7 +51,7 @@ public class ServedWarTest extends SpecTest {
 		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
 		System.setProperty("java.naming.factory.initial", "org.bladerunnerjs.appserver.filter.TestContextFactory");
 		
-		given(brjs).hasCommandPlugins(new BuildAppCommand())
+		given(brjs).hasCommandPlugins(new BuildAppCommand(), new J2eeifyCommandPlugin())
 			.and(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement"))
@@ -71,6 +72,9 @@ public class ServedWarTest extends SpecTest {
 			.and(aspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).hasProdVersion("1234")
 			.and(appConf).supportsLocales("en", "de")
+			.and(brjs).usesProductionTemplates()
+			.and(brjs).usesProductionJars()
+			.and(brjs).commandHasBeenRun("j2eeify", "app1")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
@@ -89,6 +93,9 @@ public class ServedWarTest extends SpecTest {
 			.and(rootAspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).hasProdVersion("1234")
 			.and(appConf).supportsLocales("en", "de")
+			.and(brjs).usesProductionTemplates()
+			.and(brjs).usesProductionJars()
+			.and(brjs).commandHasBeenRun("j2eeify", "app1")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
@@ -102,6 +109,23 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void exportedWarIndexPageIsTheSameAsBrjsHosted() throws Exception {
+		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
+			.and(aspect).containsFileWithContents("index.html", "Hello World!")
+			.and(appConf).supportsLocales("en", "de")
+			.and(brjs).usesProductionTemplates()
+			.and(brjs).usesProductionJars()
+			.and(brjs).commandHasBeenRun("j2eeify", "app1")
+			.and(app).hasBeenBuiltAsWar(brjs.dir())
+			.and(warServer).hasWar("app1.war", "app")
+			.and(warServer).hasStarted();
+		when(warServer).receivesRequestFor("/app/en", warResponse)
+			.and(app).requestReceived("en", brjsResponse);
+		then(warResponse).textEquals(brjsResponse);
+	}
+	
+	@Ignore
+	@Test
+	public void nonJ2eeifiedAppsHaveServletsAdded() throws Exception {
 		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(appConf).supportsLocales("en", "de")
