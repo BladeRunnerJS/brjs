@@ -48,8 +48,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>");
+			"<link rel=\"stylesheet\" href=\"v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"v/dev/css/common_en/bundle.css\"/>");
 	}
 	
 	@Test
@@ -59,9 +59,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>",
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en_GB/bundle.css\"/>");
+			"<link rel=\"stylesheet\" href=\"v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"v/dev/css/common_en/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"v/dev/css/common_en_GB/bundle.css\"/>");
 	}
 	
 	@Test
@@ -337,10 +337,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-				"title=\"red-dark\" href=\"../v/dev/css/red/bundle.css\"/>",
-				"title=\"red-dark\" href=\"../v/dev/css/red-dark/bundle.css\"/>",
-				"title=\"red-light\" href=\"../v/dev/css/red/bundle.css\"/>",
-				"title=\"red-light\" href=\"../v/dev/css/red-light/bundle.css\"/>");
+				"title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
+				"title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
+				"title=\"red-light\" href=\"v/dev/css/red/bundle.css\"/>",
+				"title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
 	}
 	
 	@Test
@@ -395,9 +395,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
             .and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
         when(aspect).indexPageLoadedInDev(response, "en_GB");
         then(response).containsOrderedTextFragments(
-                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red/bundle.css\"/>",
-                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red-dark/bundle.css\"/>",
-                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"../v/dev/css/red-light/bundle.css\"/>");
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
+                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
 	}
 	
 	@Test
@@ -409,10 +409,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
             .and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"red-light\" @/>");
         when(aspect).indexPageLoadedInDev(response, "en_GB");
         then(response).containsOrderedTextFragments(
-                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red/bundle.css\"/>",
-                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red-dark/bundle.css\"/>",
-                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"../v/dev/css/red/bundle.css\"/>",
-        		"<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"../v/dev/css/red-light/bundle.css\"/>");
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
+                "<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
+                "<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red/bundle.css\"/>",
+        		"<link rel=\"alternate stylesheet\" title=\"red-light\" href=\"v/dev/css/red-light/bundle.css\"/>");
 	}
 	
 	@Test
@@ -425,11 +425,11 @@ public class CssTagHandlerPluginTest extends SpecTest {
             .and(aspect).indexPageHasContent("<@css.bundle theme=\"red-dark\" alternateTheme=\"blue\" @/>");
         when(aspect).indexPageLoadedInDev(response, "en_GB");
         then(response).containsOrderedTextFragments(
-        		"<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red/bundle.css\"/>",
-            	"<link rel=\"stylesheet\" title=\"red-dark\" href=\"../v/dev/css/red-dark/bundle.css\"/>",
-        		"<link rel=\"alternate stylesheet\" title=\"blue\" href=\"../v/dev/css/blue/bundle.css\"/>")
-            .and(response).containsTextOnce("../v/dev/css/red/bundle.css")
-            .and(response).containsTextOnce("../v/dev/css/blue/bundle.css");
+        		"<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red/bundle.css\"/>",
+            	"<link rel=\"stylesheet\" title=\"red-dark\" href=\"v/dev/css/red-dark/bundle.css\"/>",
+        		"<link rel=\"alternate stylesheet\" title=\"blue\" href=\"v/dev/css/blue/bundle.css\"/>")
+            .and(response).containsTextOnce("v/dev/css/red/bundle.css")
+            .and(response).containsTextOnce("v/dev/css/blue/bundle.css");
 	}
 	
 	@Test
@@ -450,9 +450,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"../v/dev/css/theme-variant/bundle.css\"/>",
-    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"../v/dev/css/theme-variant_en/bundle.css\"/>",
-    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"../v/dev/css/theme-variant_en_GB/bundle.css\"/>");
+    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant/bundle.css\"/>",
+    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en/bundle.css\"/>",
+    			"<link rel=\"stylesheet\" title=\"theme-variant\" href=\"v/dev/css/theme-variant_en_GB/bundle.css\"/>");
 	}
 	
 }
