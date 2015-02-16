@@ -6,10 +6,13 @@ import java.util.List;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.plugin.bundlers.namespacedjs.NamespacedJsSourceModule;
+import org.bladerunnerjs.plugin.bundlers.namespacedjs.TestNamespacedJsSourceModule;
 
 
 public class CommonJsAssetPlugin extends AbstractAssetPlugin
@@ -28,15 +31,17 @@ public class CommonJsAssetPlugin extends AbstractAssetPlugin
 		}
 		
 		FileFilter jsFileFilter = new SuffixFileFilter(".js");
-		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {
-			DefaultCommonJsSourceModule asset = new DefaultCommonJsSourceModule(assetContainer, requirePrefix, jsFile);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
-				if (jsFile.isChildOf(assetContainer.file("tests"))) {
-					assetDiscoveryInitiator.registerSeedAsset( asset );
+		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {			
+			boolean isTestFile = jsFile.isChildOf(assetContainer.file("tests"));
+			SourceModule commonJsModule = (isTestFile) ? new TestCommonJsSourceModule(assetContainer, requirePrefix, jsFile) : new DefaultCommonJsSourceModule(assetContainer, requirePrefix, jsFile);
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(commonJsModule.getPrimaryRequirePath())) {				
+				if (isTestFile) {
+					assetDiscoveryInitiator.registerSeedAsset( commonJsModule );
 				} else {
-					assetDiscoveryInitiator.registerAsset( asset );					
+					assetDiscoveryInitiator.registerAsset( commonJsModule );					
 				}
 			}
+			
 		}
 	}
 

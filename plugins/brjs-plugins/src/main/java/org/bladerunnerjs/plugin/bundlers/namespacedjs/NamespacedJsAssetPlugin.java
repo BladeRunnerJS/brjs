@@ -26,12 +26,13 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 		
 		FileFilter jsFileFilter = new SuffixFileFilter(".js");
 		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {
-			NamespacedJsSourceModule asset = new NamespacedJsSourceModule(assetContainer, requirePrefix, jsFile);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {				
-				if (jsFile.isChildOf(assetContainer.file("tests"))) {
-					assetDiscoveryInitiator.registerSeedAsset( asset );
+			boolean isTestFile = jsFile.isChildOf(assetContainer.file("tests"));
+			NamespacedJsSourceModule namespacedModule = (isTestFile) ? new TestNamespacedJsSourceModule(assetContainer, requirePrefix, jsFile) : new NamespacedJsSourceModule(assetContainer, requirePrefix, jsFile);
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(namespacedModule.getPrimaryRequirePath())) {				
+				if (isTestFile) {
+					assetDiscoveryInitiator.registerSeedAsset( namespacedModule );
 				} else {
-					assetDiscoveryInitiator.registerAsset( asset );					
+					assetDiscoveryInitiator.registerAsset( namespacedModule );					
 				}
 			}
 		}

@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.TestAsset;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
@@ -304,7 +305,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 		@Override
 		public boolean apply(SourceModule input)
 		{
-			return ( type.isAssignableFrom(input.getClass()) && !(input.file().isChildOf(input.assetContainer().file("tests"))) );
+			return ( type.isAssignableFrom(input.getClass()) && !(input instanceof TestAsset) );
 		}
 	}
 }
