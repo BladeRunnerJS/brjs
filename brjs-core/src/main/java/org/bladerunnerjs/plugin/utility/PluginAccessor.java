@@ -190,7 +190,11 @@ public class PluginAccessor {
 			@Override
 			public int compare(Plugin p1, Plugin p2)
 			{
-				return Integer.compare(p1.priority(), p2.priority());
+				int priorityComparation = Integer.compare(p1.priority(), p2.priority());
+				if (priorityComparation == 0) {
+					return p1.getPluginClass().getCanonicalName().compareTo( p2.getPluginClass().getCanonicalName() );
+				}
+				return priorityComparation;
 			}
 		});
 		return plugins;

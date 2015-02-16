@@ -289,7 +289,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.commonjs.Class();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.commonjs.Class();");
 		when(aspect).requestReceivedInDev("namespaced-js/bundle.js", requestResponse);
-		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"namespaced\":{},\"commonjs\":{}}});");
+		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"commonjs\":{},\"namespaced\":{}}});");
 	}
 	
 	@Test
@@ -300,7 +300,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.commonjs.Class();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.commonjs.Class();");
 		when(aspect).requestReceivedInDev("namespaced-js/package-definitions.js", requestResponse);
-		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"namespaced\":{},\"commonjs\":{}}});");
+		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"commonjs\":{},\"namespaced\":{}}});");
 	}
 	
 	@Test
@@ -408,7 +408,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
     		.and(aspect).classDependsOn("appns.namespacedjs.Class1", "appns.commonjs.Class1")
     		.and(aspect).classRequires("appns/commonjs/Class1", "appns/commonjs/pkg/Class2");
 		when(aspect).requestReceivedInDev("namespaced-js/package-definitions.js", requestResponse);
-		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"namespacedjs\":{},\"commonjs\":{\"pkg\":{}}}});");
+		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"commonjs\":{\"pkg\":{}},\"namespacedjs\":{}}});");
 	}
 	
 	@Test

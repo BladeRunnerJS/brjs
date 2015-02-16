@@ -26,9 +26,13 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 		
 		FileFilter htmlFileFilter = new SuffixFileFilter(".html");
 		for (MemoizedFile htmlFile : dir.listFiles(htmlFileFilter)) {
-			Asset asset = new LinkedFileAsset(htmlFile, assetContainer, requirePrefix);
+			LinkedFileAsset asset = new LinkedFileAsset(htmlFile, assetContainer, requirePrefix);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
-				assetDiscoveryInitiator.registerAsset( asset );
+				if (dir.isChildOf(assetContainer.file("resources"))) {
+					assetDiscoveryInitiator.registerSeedAsset( asset );
+				} else {
+					assetDiscoveryInitiator.registerAsset( asset );
+				}
 			}
 		}
 

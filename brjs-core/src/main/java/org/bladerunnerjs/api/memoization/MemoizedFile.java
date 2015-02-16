@@ -316,5 +316,10 @@ public class MemoizedFile extends File implements Comparable<File>
 		MemoizedFile jsStyleDir = (isFile()) ? parentFile : this;
 		return new JsStyleAccessor((BRJS)rootNode).getJsStyle(jsStyleDir);
 	}
+
+	public boolean isChildOf(MemoizedFile file)
+	{
+		return getAbsolutePath().startsWith(file.getAbsolutePath());
+	}
 	
 }

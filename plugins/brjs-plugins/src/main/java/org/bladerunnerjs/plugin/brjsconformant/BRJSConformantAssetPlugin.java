@@ -49,7 +49,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	{
 		for (MemoizedFile childDir : dir.dirs()) {
 			LinkedAsset child = new DirectoryLinkedAsset(assetContainer, childDir, requirePrefix);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(requirePrefix)) {
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(child.getPrimaryRequirePath())) {
 				assetDiscoveryInitiator.registerAsset(child);				
 				assetDiscoveryInitiator.discoverFurtherAssets(childDir, child.getPrimaryRequirePath(), implicitDependencies);
 			}

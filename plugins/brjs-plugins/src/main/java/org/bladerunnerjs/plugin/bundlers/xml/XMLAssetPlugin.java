@@ -32,11 +32,14 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 		
 		IOFileFilter noAliasesFileFilter = new NotFileFilter( new NameFileFilter( Arrays.asList("aliases.xml", "aliasDefinitions.xml") ) );
 		FileFilter htmlFileFilter = new AndFileFilter( (IOFileFilter) new SuffixFileFilter(".xml"), noAliasesFileFilter );
-		
-		for (MemoizedFile htmlFile : dir.listFiles(htmlFileFilter)) {
-			Asset asset = new XMLAsset(htmlFile, assetContainer, requirePrefix);
+		for (MemoizedFile xmlFile : dir.listFiles(htmlFileFilter)) {
+			XMLAsset asset = new XMLAsset(xmlFile, assetContainer, requirePrefix);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
-				assetDiscoveryInitiator.registerAsset( asset );
+				if (dir.isChildOf(assetContainer.file("resources"))) {
+					assetDiscoveryInitiator.registerSeedAsset( asset );
+				} else {
+					assetDiscoveryInitiator.registerAsset( asset );
+				}
 			}
 		}
 	}

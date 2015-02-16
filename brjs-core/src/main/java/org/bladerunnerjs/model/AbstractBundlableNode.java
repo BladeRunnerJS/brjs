@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
@@ -21,9 +22,11 @@ import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
+	private RequirePlugin defaultRequirePlugin;
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
+		defaultRequirePlugin = root().plugins().requirePlugin("default");
 	}
 	
 	@Override
@@ -33,21 +36,35 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		
 	@Override
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
+		LinkedAsset linkedAsset;
+		RuntimeException noLinkedAssetException = null;
 		RequirePlugin requirePlugin;
+		String pluginName;
 		String requirePathSuffix;
 		
 		if(requirePath.contains("!")) {
-			String[] parts = requirePath.split("!");
-			String pluginName = parts[0];
-			requirePathSuffix = parts[1];
+			pluginName = StringUtils.substringBefore(requirePath, "!");
+			requirePathSuffix = StringUtils.substringAfter(requirePath, "!");
 			requirePlugin = root().plugins().requirePlugin(pluginName);
-		}
-		else {
-			requirePlugin = root().plugins().requirePlugin("default");
+		} else {
+			requirePlugin = defaultRequirePlugin;
+			pluginName = "default";
 			requirePathSuffix = requirePath;
 		}
 		
-		return (LinkedAsset) requirePlugin.getAsset(this, requirePathSuffix);
+		if (requirePlugin == null) {
+			linkedAsset = (LinkedAsset) defaultRequirePlugin.getAsset(this, requirePath);
+			noLinkedAssetException = new RuntimeException("Unable to find a require plugin for the prefix '"+pluginName+"' and there is no asset registered for the require path '"+requirePath+"'.");
+		} else {
+			linkedAsset = (LinkedAsset) requirePlugin.getAsset(this, requirePathSuffix);
+			noLinkedAssetException = new RuntimeException("There is no asset registered for the require path '"+requirePathSuffix+"'.");
+		}
+		
+		if (linkedAsset == null) {
+			throw noLinkedAssetException;
+		}
+		
+		return linkedAsset;
 	}
 	
 	@Override
