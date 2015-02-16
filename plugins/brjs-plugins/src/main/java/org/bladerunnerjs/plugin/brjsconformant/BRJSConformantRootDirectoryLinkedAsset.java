@@ -41,7 +41,7 @@ public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 	}
 
 	@Override
-	public MemoizedFile dir()
+	public MemoizedFile file()
 	{
 		return dir;
 	}

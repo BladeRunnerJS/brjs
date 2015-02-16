@@ -51,7 +51,7 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public MemoizedFile dir() {
+	public MemoizedFile file() {
 		return dir;
 	}
 

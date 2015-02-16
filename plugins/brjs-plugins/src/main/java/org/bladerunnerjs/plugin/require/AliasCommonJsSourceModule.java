@@ -58,7 +58,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public MemoizedFile dir() {
+	public MemoizedFile file() {
 		return assetContainer.dir();
 	}
 

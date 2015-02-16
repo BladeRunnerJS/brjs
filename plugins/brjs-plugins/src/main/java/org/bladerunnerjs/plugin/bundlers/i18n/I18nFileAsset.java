@@ -53,9 +53,9 @@ public class I18nFileAsset implements Asset
 	}
 	
 	@Override
-	public MemoizedFile dir()
+	public MemoizedFile file()
 	{
-		return assetFile.getParentFile();
+		return assetFile;
 	}
 	
 	@Override

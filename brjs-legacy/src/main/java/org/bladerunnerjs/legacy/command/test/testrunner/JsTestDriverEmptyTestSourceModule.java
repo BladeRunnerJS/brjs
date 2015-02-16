@@ -34,8 +34,8 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 		return sourceModule.isEncapsulatedModule();
 	}
 	
-	public MemoizedFile dir() {
-		return sourceModule.dir();
+	public MemoizedFile file() {
+		return sourceModule.file();
 	}
 	
 	@Override

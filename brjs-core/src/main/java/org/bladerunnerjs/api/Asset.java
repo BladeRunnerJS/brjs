@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.AssetContainer;
  */
 public interface Asset {
 	Reader getReader() throws IOException;
-	MemoizedFile dir();
+	MemoizedFile file();
 	String getAssetName();
 	String getAssetPath();
 	List<String> getRequirePaths();

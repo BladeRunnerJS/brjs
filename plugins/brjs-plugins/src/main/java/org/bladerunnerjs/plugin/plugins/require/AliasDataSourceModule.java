@@ -55,7 +55,7 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public MemoizedFile dir() {
+	public MemoizedFile file() {
 		return bundlableNode.dir();
 	}
 

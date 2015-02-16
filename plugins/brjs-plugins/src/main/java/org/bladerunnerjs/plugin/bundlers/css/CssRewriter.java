@@ -41,7 +41,7 @@ public class CssRewriter {
 				unprocessedCss = IOUtils.toString(fileReader);
 			}
 			
-			return rewriteCss(cssAsset.dir(), unprocessedCss);
+			return rewriteCss(cssAsset.file(), unprocessedCss);
 		}
 		catch (CssImageReferenceException cssImageReferenceException) {
 			cssImageReferenceException.setCssFileContainingImageReference(cssAsset.getAssetPath());

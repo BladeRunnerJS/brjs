@@ -131,8 +131,8 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	@Override
-	public MemoizedFile dir() {
-		return assetFile.getParentFile();
+	public MemoizedFile file() {
+		return assetFile;
 	}
 	
 	@Override

@@ -129,7 +129,7 @@ public class XmlBundleWriter
 				continue;
 			}
 			
-			MemoizedFile document = xmlAsset.dir().file(xmlAsset.getAssetName());
+			MemoizedFile document = xmlAsset.file();
 			try{
 				Reader bundlerFileReader = xmlAsset.getReader();
 				XmlSiblingReader siblingReader = new XmlSiblingReader(inputFactory.createXMLStreamReader(bundlerFileReader));

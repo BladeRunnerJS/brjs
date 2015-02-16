@@ -86,9 +86,9 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public MemoizedFile dir()
+	public MemoizedFile file()
 	{
-		return assetFile.getParentFile();
+		return assetFile;
 	}
 	
 	@Override

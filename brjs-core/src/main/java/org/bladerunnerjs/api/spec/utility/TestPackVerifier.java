@@ -35,7 +35,7 @@ public class TestPackVerifier extends AssetContainerVerifier
 		
 		for (SourceModule sourceModule : sourceModules)
 		{
-			bundleSetFiles.add( sourceModule.dir().file(sourceModule.getAssetName()) );
+			bundleSetFiles.add( sourceModule.file().file(sourceModule.getAssetName()) );
 		}
 		
 		for (MemoizedFile expectedFile : expectedFiles)

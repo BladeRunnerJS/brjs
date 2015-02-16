@@ -304,7 +304,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 		@Override
 		public boolean apply(SourceModule input)
 		{
-			return ( type.isAssignableFrom(input.getClass()) && !(input.dir().isChildOf(input.assetContainer().file("tests"))) );
+			return ( type.isAssignableFrom(input.getClass()) && !(input.file().isChildOf(input.assetContainer().file("tests"))) );
 		}
 	}
 }

@@ -50,7 +50,7 @@ public class FakeSourceModule implements SourceModule {
 	}
 
 	@Override
-	public MemoizedFile dir() {
+	public MemoizedFile file() {
 		// TODO Auto-generated method stub
 		return null;
 	}

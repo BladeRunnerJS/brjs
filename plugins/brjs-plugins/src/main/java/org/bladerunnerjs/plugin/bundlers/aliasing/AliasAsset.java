@@ -27,7 +27,7 @@ public class AliasAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public MemoizedFile dir() {
+	public MemoizedFile file() {
 		return null;
 	}
 	

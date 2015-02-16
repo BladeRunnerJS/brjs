@@ -149,9 +149,9 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public MemoizedFile dir()
+	public MemoizedFile file()
 	{
-		return linkedFileAsset.dir();
+		return linkedFileAsset.file();
 	}
 	
 	@Override

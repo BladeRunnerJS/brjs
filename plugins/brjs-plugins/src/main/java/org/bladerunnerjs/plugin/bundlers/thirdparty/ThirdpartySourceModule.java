@@ -95,7 +95,7 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public MemoizedFile dir()
+	public MemoizedFile file()
 	{
 		return assetContainer.dir();
 	}
@@ -153,7 +153,7 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	public String getGlobalisedName() {
-		return dir().getName().replace("-", "_");
+		return file().getName().replace("-", "_");
 	}
 	
 	@Override
@@ -185,7 +185,7 @@ public class ThirdpartySourceModule implements SourceModule
 				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
 				if (!dependentLib.dirExists())
 				{
-					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
+					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
 				}
 				dependentLibs.addAll(dependentLib.assets());
 			}
