@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.TypedTestPack;
@@ -31,11 +30,22 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private final MemoizedValue<Boolean> isNamespaceEnforcedValue = new MemoizedValue<Boolean>("AbstractJsLib.isNamespaceEnforcedValue", root(), file("no-namespace-enforcement"));
 	
+	//TODO: this is bad, it should be a plugin concern. Move this class into the plugins project and remove all BRLibConf code in this class
+	private BRLibConf brLibConf;
+	
 	public AbstractJsLib(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
 		this.parent = parent;
+		try
+		{
+			brLibConf = new BRLibConf(this);
+		}
+		catch (ConfigException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	public AbstractJsLib(RootNode rootNode, Node parent, MemoizedFile dir)
@@ -108,11 +118,11 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 		NameValidator.assertValidRootPackageName(this, libNamespace);
 		
 		try {
-			Asset rootAsset = assetByLocation(".");
-			if (rootAsset != null && rootAsset instanceof RequirePrefixConfigurableLinkedAsset) {
-				((RequirePrefixConfigurableLinkedAsset) rootAsset).setRequirePrefix(libNamespace.replace('.', '/'));
-				// how do we populate the root?
+			if (brLibConf.manifestExists()) {
+				brLibConf.setRequirePrefix( libNamespace.replace('.', '/') );
+				brLibConf.write();
 			}
+			// how do we populate the root?
 			incrementChildFileVersions();
 		}
 		catch (ConfigException e) {
@@ -127,9 +137,15 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	
 	@Override
 	public String requirePrefix() {
-		Asset rootAsset = assetByLocation(".");
-		if (rootAsset != null && rootAsset instanceof RequirePrefixConfigurableLinkedAsset) {
-			return rootAsset.getPrimaryRequirePath();
+		if (brLibConf.manifestExists()) {
+			try
+			{
+				return brLibConf.getRequirePrefix();
+			}
+			catch (ConfigException ex)
+			{
+				throw new RuntimeException(ex);
+			}
 		}
 		return dir().getName();
 	}

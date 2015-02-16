@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.brjsconformant;
+package org.bladerunnerjs.model;
 
 import org.bladerunnerjs.api.ConfFile;
 import org.bladerunnerjs.api.JsLib;

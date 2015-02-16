@@ -103,33 +103,6 @@ public class CommonJsContentPluginTest extends SpecTest {
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "randomStuff", "appns/Class" );
 	}
 	
-	@Test 
-	public void ambiguousRequirePathExceptionThrownFromIndexContainsFilePath() throws Exception{
-		given(aspect).indexPageRequires("appns/bs/b1/Class")
-			.and(aspect).hasClass("appns/bs/b1/Class")
-			.and(bladeset).hasBeenCreated() 
-			.and(blade).hasClass("appns/bs/b1/Class");
-		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
-		then(exceptions).verifyException(AmbiguousRequirePathException.class, 	"default-aspect/index.html",
-																					"bs-bladeset/blades/b1/src/appns/bs/b1/Class.js",
-																					"default-aspect/src/appns/bs/b1/Class.js",
-																					"appns/bs/b1/Class");
-	}
-	
-	@Test 
-	public void ambiguousRequirePathExceptionThrownFromSourceModuleContainsFilePath() throws Exception{
-		given(aspect).indexPageRequires("appns/Class")
-			.and(aspect).classRequires("appns/Class", "appns/bs/b1/Class")
-			.and(aspect).hasClass("appns/bs/b1/Class")
-			.and(bladeset).hasBeenCreated() 
-			.and(blade).hasClass("appns/bs/b1/Class");
-		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
-		then(exceptions).verifyException(AmbiguousRequirePathException.class, 	"appns/Class",
-																					"bs-bladeset/blades/b1/src/appns/bs/b1/Class.js",
-																					"default-aspect/src/appns/bs/b1/Class.js",
-																					"appns/bs/b1/Class");
-	}
-	
 	@Test
 	public void bladeClassesInDefaultBladesetCanBeBundled() throws Exception {
 		given(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
@@ -144,6 +117,6 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(defaultAspect).indexPageRequires("appns/AspectClass");
 		when(defaultAspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
 		then(requestResponse).containsCommonJsClasses("appns/AspectClass");
-	}
+	}	
 	
 }

@@ -17,7 +17,6 @@ import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.RequirePrefixConfigurableLinkedAsset;
 
 
 public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset

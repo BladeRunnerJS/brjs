@@ -80,12 +80,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		if (assetDiscoveryInitiator.hasRegisteredAsset(requirePrefix)) {
 			return;
 		}
-		LinkedAsset rootAsset;
-		if (assetContainer instanceof JsLib) {
-			rootAsset = new JSLibRootDirectoryLinkedAsset(assetContainer);
-		} else {
-			rootAsset = new BRJSConformantRootDirectoryLinkedAsset(assetContainer); 
-		}
+		LinkedAsset rootAsset = new BRJSConformantRootDirectoryLinkedAsset(assetContainer); 
 		assetDiscoveryInitiator.registerAsset(rootAsset);
 		
 		for (MemoizedFile childDir : getPossibleChildDirs(assetContainer)) {

@@ -1,9 +1,8 @@
-package org.bladerunnerjs.plugin.brjsconformant;
+package org.bladerunnerjs.model;
 
 import javax.validation.constraints.NotNull;
 
 import org.bladerunnerjs.api.model.exception.ConfigException;
-import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 
