@@ -27,8 +27,12 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 		FileFilter jsFileFilter = new SuffixFileFilter(".js");
 		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {
 			NamespacedJsSourceModule asset = new NamespacedJsSourceModule(assetContainer, requirePrefix, jsFile);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
-				assetDiscoveryInitiator.registerAsset( asset );
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {				
+				if (jsFile.isChildOf(assetContainer.file("tests"))) {
+					assetDiscoveryInitiator.registerSeedAsset( asset );
+				} else {
+					assetDiscoveryInitiator.registerAsset( asset );					
+				}
 			}
 		}
 	}

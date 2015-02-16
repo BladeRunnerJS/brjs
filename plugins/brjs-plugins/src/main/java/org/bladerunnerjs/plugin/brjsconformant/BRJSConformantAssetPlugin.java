@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -36,9 +35,9 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		
 		if (assetContainer.dir() == dir) {
 			createAssetsForRootDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
-		} else if (assetContainer.file("src") == dir) {
+		} else if (dir == assetContainer.file("src") || dir == assetContainer.file("src-test") || dir == assetContainer.file("tests") || (assetContainer instanceof TestPack && assetContainer.dir() == dir)) {
 			createAssetsForSrcDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
-		} else if (assetContainer.file("themes") == dir) {
+		} else if (dir == assetContainer.file("themes")) {
 			createAssetsForThemeDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
 		} else {
 			createAssetsForChildDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
