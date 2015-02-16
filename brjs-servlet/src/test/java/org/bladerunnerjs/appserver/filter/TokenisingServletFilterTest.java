@@ -27,7 +27,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.appserver.filter.TestContextFactory;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
@@ -66,7 +65,6 @@ public class TokenisingServletFilterTest
 		appServer.stop();
 	}
 
-	@Ignore
 	@Test
 	public void basicTestForDummyServlet() throws Exception
 	{
@@ -77,7 +75,6 @@ public class TokenisingServletFilterTest
 		assertEquals("text/plain", response.get("responseContentType"));
 	}
 
-	@Ignore
 	@Test
 	public void testTextWithNoTokenIsUnchanged() throws Exception
 	{
@@ -90,7 +87,6 @@ public class TokenisingServletFilterTest
 		assertEquals("text/plain", response.get("responseContentType"));
 	}
 
-	@Ignore
 	@Test
 	public void testServletResponseCanContainHtml() throws Exception
 	{
@@ -104,7 +100,6 @@ public class TokenisingServletFilterTest
 		assertEquals("text/html", response.get("responseContentType"));
 	}
 
-	@Ignore
 	@Test
 	public void testJndiIsLookupPerformedForToken() throws Exception
 	{
@@ -118,7 +113,6 @@ public class TokenisingServletFilterTest
 		assertEquals("text/plain", response.get("responseContentType"));
 	}
 
-	@Ignore
 	@Test
 	public void test500ResponseCodeIfTokenCannotBeReplaced() throws Exception
 	{
@@ -130,7 +124,6 @@ public class TokenisingServletFilterTest
 		assertEquals("500", response.get("responseCode"));
 	}
 
-	@Ignore
 	@Test
 	public void testTokenisingFilterOnlyProcessesXmlAndJsonFiles() throws Exception
 	{
@@ -142,7 +135,6 @@ public class TokenisingServletFilterTest
 		assertEquals("this token @A.TOKEN@ should not be processed", response.get("responseText"));
 	}
 
-	@Ignore
 	@Test
 	public void testFilterDoesNotChokeOnAStreamOnNonTextBits() throws Exception
 	{
