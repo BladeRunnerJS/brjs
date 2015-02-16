@@ -1,6 +1,8 @@
 package org.bladerunnerjs.plugin.bundlers.commonjs;
 
 import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -11,12 +13,11 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.plugin.bundlers.namespacedjs.NamespacedJsSourceModule;
-import org.bladerunnerjs.plugin.bundlers.namespacedjs.TestNamespacedJsSourceModule;
 
 
 public class CommonJsAssetPlugin extends AbstractAssetPlugin
 {
+	private FileFilter jsFileFilter = new SuffixFileFilter(".js"); 
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -24,16 +25,17 @@ public class CommonJsAssetPlugin extends AbstractAssetPlugin
 	}
 
 	@Override
-	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		if (assetContainer.dir() == dir || !dir.jsStyle().equals(CommonJsSourceModule.JS_STYLE)) {
-			return;
+			return Collections.emptyList();
 		}
 		
-		FileFilter jsFileFilter = new SuffixFileFilter(".js");
+		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {			
 			boolean isTestFile = jsFile.isChildOf(assetContainer.file("tests"));
 			SourceModule commonJsModule = (isTestFile) ? new TestCommonJsSourceModule(assetContainer, requirePrefix, jsFile) : new DefaultCommonJsSourceModule(assetContainer, requirePrefix, jsFile);
+			assets.add(commonJsModule);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(commonJsModule.getPrimaryRequirePath())) {				
 				if (isTestFile) {
 					assetDiscoveryInitiator.registerSeedAsset( commonJsModule );
@@ -41,8 +43,8 @@ public class CommonJsAssetPlugin extends AbstractAssetPlugin
 					assetDiscoveryInitiator.registerAsset( commonJsModule );					
 				}
 			}
-			
 		}
+		return assets;
 	}
 
 }

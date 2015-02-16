@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.brjsconformant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,35 +28,41 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	}
 	
 	@Override
-	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		if (assetContainer instanceof DefaultBladeset || !neccessaryChildDirsArePresent(assetContainer)) {
-			return;
+			return Collections.emptyList();
 		}
 		
+		List<Asset> assets = new ArrayList<>();
 		if (assetContainer.dir() == dir) {
-			createAssetsForRootDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
+			assets.addAll( createAssetsForRootDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator) );
 		} else if (dir == assetContainer.file("src") || dir == assetContainer.file("src-test") || dir == assetContainer.file("tests") || (assetContainer instanceof TestPack && assetContainer.dir() == dir)) {
-			createAssetsForSrcDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
+			assets.addAll( createAssetsForSrcDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator) );
 		} else if (dir == assetContainer.file("themes")) {
-			createAssetsForThemeDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
+			assets.addAll( createAssetsForThemeDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator) );
 		} else {
-			createAssetsForChildDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
+			assets.addAll( createAssetsForChildDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator) );
 		}
+		
+		return assets;
 	}
 
-	private void createAssetsForChildDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	private List<Asset> createAssetsForChildDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
+		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile childDir : dir.dirs()) {
 			LinkedAsset child = new DirectoryLinkedAsset(assetContainer, childDir, requirePrefix);
+			assets.add(child);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(child.getPrimaryRequirePath())) {
 				assetDiscoveryInitiator.registerAsset(child);				
 				assetDiscoveryInitiator.discoverFurtherAssets(childDir, child.getPrimaryRequirePath(), implicitDependencies);
 			}
 		}
+		return assets;
 	}
 
-	private void createAssetsForSrcDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	private List<Asset> createAssetsForSrcDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		String rootRequirePrefix = StringUtils.substringBefore(assetContainer.requirePrefix(), "/");
 		MemoizedFile srcPackageRoot = dir;
@@ -64,20 +71,22 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 			assetDiscoveryInitiator.discoverFurtherAssets(srcPackageRoot, requirePrefix, implicitDependencies);
 		}
 		createAssetsForChildDirs(assetContainer, srcPackageRoot, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
+		return Collections.emptyList();
 	}
 	
-	private void createAssetsForThemeDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	private List<Asset> createAssetsForThemeDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		for (MemoizedFile themeDir : dir.dirs()) {
 			String themeRequirePath = "theme!"+themeDir.getName()+":";
 			assetDiscoveryInitiator.discoverFurtherAssets(themeDir, themeRequirePath, implicitDependencies);			
 		}
+		return Collections.emptyList();
 	}
 
-	private void createAssetsForRootDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	private List<Asset> createAssetsForRootDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		if (assetDiscoveryInitiator.hasRegisteredAsset(requirePrefix)) {
-			return;
+			return Collections.emptyList();
 		}
 		LinkedAsset rootAsset = new BRJSConformantRootDirectoryLinkedAsset(assetContainer); 
 		assetDiscoveryInitiator.registerAsset(rootAsset);
@@ -85,6 +94,8 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		for (MemoizedFile childDir : getPossibleChildDirs(assetContainer)) {
 			assetDiscoveryInitiator.discoverFurtherAssets(childDir, requirePrefix, implicitDependencies);
 		}
+		
+		return Arrays.asList(rootAsset);
 	}
 	
 	private List<MemoizedFile> getPossibleChildDirs(AssetContainer assetContainer) {

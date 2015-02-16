@@ -11,7 +11,7 @@ public interface AssetDiscoveryInitiator
 {
 	public void registerSeedAsset(LinkedAsset asset);
 	public void registerAsset(Asset asset);
-	public Asset getRegisteredAsset(String requirePath);
-	public void discoverFurtherAssets(MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies);
 	boolean hasRegisteredAsset(String requirePath);
+	public Asset getRegisteredAsset(String requirePath);
+	public List<Asset> discoverFurtherAssets(MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies);
 }

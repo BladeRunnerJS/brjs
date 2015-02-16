@@ -1,7 +1,6 @@
 package org.bladerunnerjs.api.plugin;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -69,14 +68,9 @@ public class AssetContainerAssets
 		private final Map<String,Asset> assets = new HashMap<>();
 		private final Map<String,Asset> assetsByPath = new HashMap<>();
 		private final List<LinkedAsset> seedAssets = new ArrayList<>();
-		private boolean furtherDiscoveryRequired = true;
 		
 		private DefaultAssetDiscoveryInitiator() {
-			//TODO: do we need the loop?
-			while (furtherDiscoveryRequired) {
-				furtherDiscoveryRequired = false;
-				discoverFurtherAssets(assetContainer.dir(), assetContainer.requirePrefix(), implicitDependencies);
-			}
+			discoverFurtherAssets(assetContainer.dir(), assetContainer.requirePrefix(), implicitDependencies);
 		}
 		
 		@Override
@@ -99,7 +93,6 @@ public class AssetContainerAssets
 				assetPathRelativeToContainer = ".";
 			}
 			assetsByPath.put(assetPathRelativeToContainer, asset);
-			furtherDiscoveryRequired = true;
 		}
 
 		@Override
@@ -115,11 +108,13 @@ public class AssetContainerAssets
 		}
 		
 		@Override
-		public void discoverFurtherAssets(MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies)
+		public List<Asset> discoverFurtherAssets(MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies)
 		{
+			List<Asset> discoveredAssets = new ArrayList<>();
 			for (AssetPlugin assetPlugin : assetPlugins) {
-				assetPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, this);
+				discoveredAssets.addAll( assetPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, this) );
 			}
+			return discoveredAssets;
 		}
 		
 	}

@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin.bundlers.xml;
 
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,22 +19,25 @@ import org.bladerunnerjs.model.AssetContainer;
 
 public class XMLAssetPlugin extends AbstractAssetPlugin {
 	
+	IOFileFilter noAliasesFileFilter = new NotFileFilter( new NameFileFilter( Arrays.asList("aliases.xml", "aliasDefinitions.xml") ) );
+	FileFilter htmlFileFilter = new AndFileFilter( (IOFileFilter) new SuffixFileFilter(".xml"), noAliasesFileFilter );
+	
 	@Override
 	public void setBRJS(BRJS brjs) {
 		// do nothing
 	}
 
 	@Override
-	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		if (!requirePrefix.startsWith("xml!")) {
 			requirePrefix = "xml!"+requirePrefix;
 		}
 		
-		IOFileFilter noAliasesFileFilter = new NotFileFilter( new NameFileFilter( Arrays.asList("aliases.xml", "aliasDefinitions.xml") ) );
-		FileFilter htmlFileFilter = new AndFileFilter( (IOFileFilter) new SuffixFileFilter(".xml"), noAliasesFileFilter );
+		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile xmlFile : dir.listFiles(htmlFileFilter)) {
 			XMLAsset asset = new XMLAsset(xmlFile, assetContainer, requirePrefix);
+			assets.add(asset);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
 				if (dir.isChildOf(assetContainer.file("resources"))) {
 					assetDiscoveryInitiator.registerSeedAsset( asset );
@@ -42,5 +46,6 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 				}
 			}
 		}
+		return assets;
 	}
 }

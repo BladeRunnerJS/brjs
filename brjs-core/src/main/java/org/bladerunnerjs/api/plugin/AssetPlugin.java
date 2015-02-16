@@ -18,6 +18,6 @@ public interface AssetPlugin extends Plugin
 	 */
 	int priority();
 	
-	void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, 
+	List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, 
 			List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator);
 }
