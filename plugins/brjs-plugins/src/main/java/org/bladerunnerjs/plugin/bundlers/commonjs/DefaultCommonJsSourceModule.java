@@ -42,7 +42,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		this.assetFile = assetFile;
 		this.assetContainer = assetContainer;
 		
-		primaryRequirePath = requirePrefix + "/" + StringUtils.substringBeforeLast(assetFile.getName(), ".js");
+		primaryRequirePath = requirePrefix+"/"+assetFile.requirePathName();
 		requirePaths.add(primaryRequirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
@@ -65,12 +65,6 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	@Override
 	public List<String> getRequirePaths() {
 		return requirePaths;
-	}
-	
-	
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return getComputedValue().aliases;
 	}
 	
 	@Override

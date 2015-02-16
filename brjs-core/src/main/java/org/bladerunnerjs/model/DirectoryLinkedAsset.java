@@ -88,12 +88,6 @@ public class DirectoryLinkedAsset implements LinkedAsset
 	}
 
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException
-	{
-		return Collections.emptyList();
-	}
-
-	@Override
 	public AssetContainer assetContainer()
 	{
 		return assetContainer;

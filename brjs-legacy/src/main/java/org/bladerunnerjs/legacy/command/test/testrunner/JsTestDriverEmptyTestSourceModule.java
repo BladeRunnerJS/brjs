@@ -77,11 +77,6 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	public String getPrimaryRequirePath() {
 		return sourceModule.getPrimaryRequirePath();
 	}
-	
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return sourceModule.getAliasNames();
-	}
 
 	@Override
 	public AssetContainer assetContainer()

@@ -15,6 +15,7 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.JsStyleAccessor;
@@ -320,6 +321,10 @@ public class MemoizedFile extends File implements Comparable<File>
 	public boolean isChildOf(MemoizedFile file)
 	{
 		return getAbsolutePath().startsWith(file.getAbsolutePath());
+	}
+	
+	public String requirePathName() {
+		return StringUtils.substringBeforeLast(getName(), ".");
 	}
 	
 }

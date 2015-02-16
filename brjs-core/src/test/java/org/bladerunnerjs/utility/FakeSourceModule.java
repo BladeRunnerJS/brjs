@@ -40,11 +40,6 @@ public class FakeSourceModule implements SourceModule {
 	}
 
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public Reader getReader() throws IOException {
 		return new StringReader(identifier);
 	}

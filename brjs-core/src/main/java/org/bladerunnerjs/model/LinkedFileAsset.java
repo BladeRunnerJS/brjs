@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -37,7 +36,7 @@ public class LinkedFileAsset implements LinkedAsset {
 			this.assetContainer = assetContainer;
 			this.assetFile = assetFile;
 			assetPath = assetContainer.app().dir().getRelativePath(assetFile);
-			primaryRequirePath = requirePrefix+"/"+StringUtils.substringBeforeLast(assetFile.getName(), ".");
+			primaryRequirePath = requirePrefix+"/"+assetFile.requirePathName();
 			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
@@ -67,9 +66,8 @@ public class LinkedFileAsset implements LinkedAsset {
 		List<String> aliases = new ArrayList<>();
 		try {
 			RequirePathUtility.addRequirePathsFromReader(getReader(), dependencies, aliases);
-		} catch (IOException e) {
-			//TODO
-			e.printStackTrace();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 		List<String> dependenciesList = new ArrayList<String>(dependencies);
 		try {
@@ -78,11 +76,6 @@ public class LinkedFileAsset implements LinkedAsset {
 			throw new ModelOperationException(e);
 		}
 		return assetList;
-	}
-	
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return getDependencyCalculator().getAliases();
 	}
 	
 	@Override

@@ -47,11 +47,6 @@ public class AliasAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return null;
-	}
-	
-	@Override
 	public List<String> getRequirePaths() {
 		return Collections.emptyList();
 	}

@@ -141,12 +141,6 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException
-	{
-		return Collections.emptyList();
-	}
-
-	@Override
 	public String getPrimaryRequirePath()
 	{
 		return primaryRequirePath;

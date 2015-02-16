@@ -31,11 +31,6 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public Reader getReader() throws IOException {
 		return new ConcatReader(new Reader[] {
 			new StringReader(String.format(COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath())),

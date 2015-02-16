@@ -16,5 +16,4 @@ public interface LinkedAsset extends Asset {
 	 * @param bundlableNode TODO
 	 */
 	List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
-	List<String> getAliasNames() throws ModelOperationException;
 }

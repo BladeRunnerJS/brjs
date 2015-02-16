@@ -33,11 +33,6 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public Reader getReader() throws IOException {
 		return new StringReader(
 			"define('service!" + requirePath + "', function(require, exports, module) {\n" +

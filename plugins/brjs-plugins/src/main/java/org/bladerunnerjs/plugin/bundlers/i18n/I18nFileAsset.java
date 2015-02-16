@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin.bundlers.i18n;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +29,14 @@ public class I18nFileAsset implements Asset
 	private String defaultFileCharacterEncoding;
 	private Locale locale;
 	private AssetContainer assetContainer;
+	private String requirePath;
 	
 	public I18nFileAsset(MemoizedFile i18nFile, AssetContainer assetContainer, String requirePrefix)
 	{
 		this.assetContainer = assetContainer;
 		this.assetFile = i18nFile;
 		assetPath = assetContainer.app().dir().getRelativePath(assetFile);
+		requirePath = requirePrefix+"/"+i18nFile.requirePathName();
 		try
 		{
 			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
@@ -73,12 +75,12 @@ public class I18nFileAsset implements Asset
 	@Override
 	public List<String> getRequirePaths() {
 		// TODO: we should return the complete list of i18n tokens
-		return Collections.emptyList();
+		return Arrays.asList(requirePath);
 	}
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return null;
+		return requirePath;
 	}
 
 	public Map<String,String> getLocaleProperties() throws IOException, RequirePathException, NamespaceException

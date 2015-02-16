@@ -42,7 +42,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		this.assetFile = jsFile;
 		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetContainer, requirePrefix);
 		
-		primaryRequirePath = (requirePrefix+"/"+assetFile.getName()).replaceAll("\\.js$", "");
+		primaryRequirePath = requirePrefix+"/"+assetFile.requirePathName();
 		requirePaths.add(primaryRequirePath);
 
 		patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
@@ -57,14 +57,14 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return dependendAssets;
 	}
 	
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		List<String> aliases = new ArrayList<>(getPreExportDefineTimeDependencyCalculator().getAliases());
-		aliases.addAll(getPostExportDefineTimeDependencyCalculator().getAliases());
-		aliases.addAll(getUseTimeDependencyCalculator().getAliases());
-		
-		return aliases;
-	}
+//	@Override
+//	public List<String> getAliasNames() throws ModelOperationException {
+//		List<String> aliases = new ArrayList<>(getPreExportDefineTimeDependencyCalculator().getAliases());
+//		aliases.addAll(getPostExportDefineTimeDependencyCalculator().getAliases());
+//		aliases.addAll(getUseTimeDependencyCalculator().getAliases());
+//		
+//		return aliases;
+//	}
 	
 	@Override
 	public Reader getUnalteredContentReader() throws IOException {

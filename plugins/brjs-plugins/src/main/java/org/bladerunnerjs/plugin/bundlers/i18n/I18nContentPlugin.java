@@ -166,10 +166,7 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 		List<I18nFileAsset> languageOnlyAssets = new ArrayList<I18nFileAsset>();
 		List<I18nFileAsset> languageAndLocationAssets = new ArrayList<I18nFileAsset>();
 		
-		//TODO: fix me after mega commit
-		List<Asset> propertyAssets = Collections.emptyList();//bundleSet.getResourceFiles(i18nAssetPlugin);
-		
-		for (Asset asset : propertyAssets)
+		for (Asset asset : bundleSet.getAssetsWithRequirePrefix("i18n!"))
 		{
 			if (asset instanceof I18nFileAsset)
 			{
