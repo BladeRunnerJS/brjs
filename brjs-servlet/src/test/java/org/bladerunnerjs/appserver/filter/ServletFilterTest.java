@@ -1,6 +1,8 @@
 package org.bladerunnerjs.appserver.filter;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -17,8 +19,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
 import org.junit.Before;
 
@@ -26,15 +28,18 @@ import org.junit.Before;
 public class ServletFilterTest {
 	protected final int serverPort = new Random().nextInt(2000)+1000;
 	protected HttpClient httpclient;
+	protected File contextDir;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
 		httpclient = new DefaultHttpClient();
+		contextDir = Files.createTempDirectory("ServletFilterTest").toFile();
 	}
 	
 	@After
 	public void tearDown() {
 		httpclient.getConnectionManager().shutdown();
+		contextDir.deleteOnExit();
 	}
 	
 	protected Map<String, String> makeRequest(String url) throws ClientProtocolException, IOException
@@ -51,15 +56,17 @@ public class ServletFilterTest {
 	
 	protected Server createAppServer(Servlet servlet, Filter filter) throws Exception
 	{
-		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
-		System.setProperty("java.naming.factory.initial", "com.caplin.cutlass.test.TestContextFactory");
-
 		Server appServer = new Server(serverPort);
-		ServletContextHandler handler = new ServletContextHandler();
-		
-		handler.addServlet(new ServletHolder(servlet), "/*");
-		handler.addFilter(new FilterHolder(filter), "/*", null);
-		appServer.setHandler(handler);
+		WebAppContext webappContext = new WebAppContext();
+		webappContext.setConfigurationClasses(new String[] {"org.eclipse.jetty.webapp.WebInfConfiguration",
+			"org.eclipse.jetty.webapp.WebXmlConfiguration", "org.eclipse.jetty.webapp.MetaInfConfiguration",
+			"org.eclipse.jetty.webapp.FragmentConfiguration", "org.eclipse.jetty.plus.webapp.EnvConfiguration",
+			"org.eclipse.jetty.plus.webapp.PlusConfiguration", "org.eclipse.jetty.webapp.JettyWebXmlConfiguration"});
+		webappContext.setResourceBase(contextDir.getPath());
+		webappContext.setContextPath("/");
+		webappContext.addServlet(new ServletHolder(servlet), "/*");
+		webappContext.addFilter(new FilterHolder(filter), "/*", null);
+		appServer.setHandler(webappContext);
 		
 		return appServer;
 	}
