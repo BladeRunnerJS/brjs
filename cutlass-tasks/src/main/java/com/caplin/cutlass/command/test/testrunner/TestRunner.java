@@ -271,8 +271,8 @@ public class TestRunner {
 		project.executeTarget("junitreport");
 	}
 
-	/* XML needs to be normalised because the test suite name does not match the XML file name:
-	https://issues.apache.org/bugzilla/show_bug.cgi?id=57557 */
+	// XML needs to be normalised because the test suite name may not match the XML file name.
+	// Delete this method once <https://issues.apache.org/bugzilla/show_bug.cgi?id=57557> is fixed.
 	public static void normaliseXML(MemoizedFile xmlTestResultFile) throws IOException, FileNotFoundException {
 		String xmlTestResultFileContent = IOUtils.toString(new FileInputStream(xmlTestResultFile));
 		String newTestSuite = xmlTestResultFile.getName().replace("TEST-", "");
