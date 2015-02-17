@@ -72,7 +72,7 @@ Utils.getKeyCodeForChar = function(character) {
 * @static
 * @param {DOMElement} element The DOM Element the Event is fired from
 * @param {String} eventString The Event to be fired without 'on', e.g. 'keydown'
-* @param {String} key A character associated with typing events.
+* @param {String} key This parameter is deprecated. Pass in this value as <code>options.key</code>.
 * @param {Map} options A map of values, passed in to the <code>KeyboardEvent</code> constructor, associated with typing events.
 */
 Utils.fireKeyEvent = function(element, eventString, key, options) {
@@ -81,7 +81,7 @@ Utils.fireKeyEvent = function(element, eventString, key, options) {
 	options.bubbles = true;
 	
 	var evt = new KeyboardEvent(eventString, options);
-	if(element.dispatchEvent) {
+	if (element.dispatchEvent) {
 		element.dispatchEvent(evt);
 	}
 	else {
