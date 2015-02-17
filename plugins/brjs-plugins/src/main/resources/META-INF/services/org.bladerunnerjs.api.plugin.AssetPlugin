@@ -8,3 +8,5 @@ org.bladerunnerjs.plugin.bundlers.xml.XMLAssetPlugin
 org.bladerunnerjs.plugin.bundlers.i18n.I18nAssetPlugin
 org.bladerunnerjs.plugin.bundlers.css.CssAssetPlugin
 org.bladerunnerjs.plugin.bundlers.cssresource.CssResourceAssetPlugin
+
+org.bladerunnerjs.plugin.seedlocator.BrowsableNodeSeedLocator
