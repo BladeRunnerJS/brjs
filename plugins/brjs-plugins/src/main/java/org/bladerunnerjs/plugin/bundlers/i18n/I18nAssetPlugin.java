@@ -33,9 +33,9 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 		
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile i18nFile : dir.listFiles(i18nFileFilter)) {
-			Asset asset = new I18nFileAsset(i18nFile, assetContainer, requirePrefix);
-			assets.add(asset);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(I18nFileAsset.calculateRequirePath(requirePrefix, i18nFile))) {
+				Asset asset = new I18nFileAsset(i18nFile, assetContainer, requirePrefix);
+				assets.add(asset);
 				assetDiscoveryInitiator.registerAsset( asset );
 			}
 		}

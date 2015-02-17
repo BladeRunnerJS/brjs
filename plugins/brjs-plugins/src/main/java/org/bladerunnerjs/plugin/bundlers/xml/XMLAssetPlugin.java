@@ -20,7 +20,7 @@ import org.bladerunnerjs.model.AssetContainer;
 public class XMLAssetPlugin extends AbstractAssetPlugin {
 	
 	IOFileFilter noAliasesFileFilter = new NotFileFilter( new NameFileFilter( Arrays.asList("aliases.xml", "aliasDefinitions.xml") ) );
-	FileFilter htmlFileFilter = new AndFileFilter( (IOFileFilter) new SuffixFileFilter(".xml"), noAliasesFileFilter );
+	FileFilter xmlFileFilter = new AndFileFilter( (IOFileFilter) new SuffixFileFilter(".xml"), noAliasesFileFilter );
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
@@ -35,10 +35,10 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 		}
 		
 		List<Asset> assets = new ArrayList<>();
-		for (MemoizedFile xmlFile : dir.listFiles(htmlFileFilter)) {
-			XMLAsset asset = new XMLAsset(xmlFile, assetContainer, requirePrefix);
-			assets.add(asset);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
+		for (MemoizedFile xmlFile : dir.listFiles(xmlFileFilter)) {
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(XMLAsset.calculateRequirePath(requirePrefix, xmlFile))) {
+				XMLAsset asset = new XMLAsset(xmlFile, assetContainer, requirePrefix);
+				assets.add(asset);
 				if (dir.isChildOf(assetContainer.file("resources"))) {
 					assetDiscoveryInitiator.registerSeedAsset( asset );
 				} else {

@@ -5,7 +5,6 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -24,7 +23,7 @@ public class FileAsset implements Asset {
 			this.assetContainer = assetContainer;
 			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			assetPath = assetContainer.app().dir().getRelativePath(file);
-			primaryRequirePath = requirePrefix+"/"+StringUtils.substringBeforeLast(assetFile.getName(),".");
+			primaryRequirePath = calculateRequirePath(requirePrefix, assetFile);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -68,4 +67,9 @@ public class FileAsset implements Asset {
 		return assetContainer;
 	}
 
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
+	{
+		return requirePrefix+"/"+assetFile.requirePathName();
+	}
+	
 }

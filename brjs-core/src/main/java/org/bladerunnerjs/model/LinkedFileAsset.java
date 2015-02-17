@@ -36,7 +36,7 @@ public class LinkedFileAsset implements LinkedAsset {
 			this.assetContainer = assetContainer;
 			this.assetFile = assetFile;
 			assetPath = assetContainer.app().dir().getRelativePath(assetFile);
-			primaryRequirePath = requirePrefix+"/"+assetFile.requirePathName();
+			primaryRequirePath = calculateRequirePath(requirePrefix, assetFile);
 			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
@@ -115,6 +115,11 @@ public class LinkedFileAsset implements LinkedAsset {
 	public AssetContainer assetContainer()
 	{
 		return assetContainer;
+	}
+
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
+	{
+		return requirePrefix+"/"+assetFile.requirePathName();
 	}
 
 }

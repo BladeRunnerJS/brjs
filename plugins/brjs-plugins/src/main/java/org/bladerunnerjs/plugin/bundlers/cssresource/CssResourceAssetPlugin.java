@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -29,9 +28,9 @@ public class CssResourceAssetPlugin extends AbstractAssetPlugin {
 	{
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile assetFile : dir.listFiles(assetFileFilter)) {
-			Asset asset = new FileAsset(assetFile, assetContainer, "css_resource"+"!"+requirePrefix);
-			assets.add(asset);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(FileAsset.calculateRequirePath(requirePrefix, assetFile))) {
+				Asset asset = new FileAsset(assetFile, assetContainer, "css_resource"+"!"+requirePrefix);
+				assets.add(asset);
 				assetDiscoveryInitiator.registerAsset( asset );
 			}
 		}

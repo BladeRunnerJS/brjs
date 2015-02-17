@@ -42,7 +42,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		this.assetFile = jsFile;
 		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetContainer, requirePrefix);
 		
-		primaryRequirePath = requirePrefix+"/"+assetFile.requirePathName();
+		primaryRequirePath = calculateRequirePath(requirePrefix, jsFile);
 		requirePaths.add(primaryRequirePath);
 
 		patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
@@ -194,6 +194,10 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	public AssetContainer assetContainer()
 	{
 		return assetContainer;
+	}
+	
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile file) {
+		return requirePrefix+"/"+file.requirePathName();
 	}
 	
 }

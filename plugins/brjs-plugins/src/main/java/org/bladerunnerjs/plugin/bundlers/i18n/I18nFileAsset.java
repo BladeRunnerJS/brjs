@@ -36,7 +36,7 @@ public class I18nFileAsset implements Asset
 		this.assetContainer = assetContainer;
 		this.assetFile = i18nFile;
 		assetPath = assetContainer.app().dir().getRelativePath(assetFile);
-		requirePath = requirePrefix+"/"+i18nFile.requirePathName();
+		requirePath = calculateRequirePath(requirePrefix, i18nFile);
 		try
 		{
 			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
@@ -113,4 +113,9 @@ public class I18nFileAsset implements Asset
 		return assetContainer;
 	}
 
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
+	{
+		return requirePrefix+"/"+assetFile.requirePathName();
+	}
+	
 }

@@ -43,7 +43,7 @@ public class ThirdpartySourceModule implements SourceModule
 			this.assetContainer = assetContainer;
 			assetPath = assetContainer.app().dir().getRelativePath(assetContainer.dir());
 			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			primaryRequirePath = assetContainer.dir().getName();
+			primaryRequirePath = calculateRequirePath(assetContainer);
 			patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
 			manifest = new ThirdpartyLibManifest(assetContainer);
 		}
@@ -212,6 +212,10 @@ public class ThirdpartySourceModule implements SourceModule
 	public AssetContainer assetContainer()
 	{
 		return assetContainer;
+	}
+	
+	public static String calculateRequirePath(AssetContainer assetContainer) {
+		return assetContainer.dir().getName();
 	}
 	
 }

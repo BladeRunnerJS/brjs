@@ -31,9 +31,9 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {
 			boolean isTestFile = jsFile.isChildOf(assetContainer.file("tests"));
-			NamespacedJsSourceModule namespacedModule = (isTestFile) ? new TestNamespacedJsSourceModule(assetContainer, requirePrefix, jsFile) : new NamespacedJsSourceModule(assetContainer, requirePrefix, jsFile);
-			assets.add(namespacedModule);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(namespacedModule.getPrimaryRequirePath())) {				
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(NamespacedJsSourceModule.calculateRequirePath(requirePrefix, jsFile))) {				
+				NamespacedJsSourceModule namespacedModule = (isTestFile) ? new TestNamespacedJsSourceModule(assetContainer, requirePrefix, jsFile) : new NamespacedJsSourceModule(assetContainer, requirePrefix, jsFile);
+				assets.add(namespacedModule);
 				if (isTestFile) {
 					assetDiscoveryInitiator.registerSeedAsset( namespacedModule );
 				} else {

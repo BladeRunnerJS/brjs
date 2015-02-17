@@ -32,11 +32,11 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		if ((assetContainer instanceof JsLib) && (assetContainer.file( ThirdpartyLibManifest.LIBRARY_MANIFEST_FILENAME ).exists())) {
-			ThirdpartySourceModule asset = new ThirdpartySourceModule(assetContainer);
-			if (assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
+			if (assetDiscoveryInitiator.hasRegisteredAsset(ThirdpartySourceModule.calculateRequirePath(assetContainer))) {
 				return Collections.emptyList();
 			}
 			
+			ThirdpartySourceModule asset = new ThirdpartySourceModule(assetContainer);
 			assetDiscoveryInitiator.registerAsset(asset);
 			discoverCssAssets(assetContainer, dir, "css!"+assetContainer.requirePrefix(), assetDiscoveryInitiator);
 			return Arrays.asList(asset);

@@ -33,14 +33,15 @@ public class CommonJsAssetPlugin extends AbstractAssetPlugin
 		
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {			
-			boolean isTestFile = jsFile.isChildOf(assetContainer.file("tests"));
-			SourceModule commonJsModule = (isTestFile) ? new TestCommonJsSourceModule(assetContainer, requirePrefix, jsFile) : new DefaultCommonJsSourceModule(assetContainer, requirePrefix, jsFile);
-			assets.add(commonJsModule);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(commonJsModule.getPrimaryRequirePath())) {				
-				if (isTestFile) {
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(DefaultCommonJsSourceModule.calculateRequirePath(requirePrefix, jsFile))) {				
+				if (jsFile.isChildOf(assetContainer.file("tests"))) {
+					SourceModule commonJsModule = new TestCommonJsSourceModule(assetContainer, requirePrefix, jsFile);
+					assets.add(commonJsModule);
 					assetDiscoveryInitiator.registerSeedAsset( commonJsModule );
 				} else {
-					assetDiscoveryInitiator.registerAsset( commonJsModule );					
+					SourceModule commonJsModule = new DefaultCommonJsSourceModule(assetContainer, requirePrefix, jsFile);
+					assets.add(commonJsModule);
+					assetDiscoveryInitiator.registerAsset( commonJsModule );										
 				}
 			}
 		}

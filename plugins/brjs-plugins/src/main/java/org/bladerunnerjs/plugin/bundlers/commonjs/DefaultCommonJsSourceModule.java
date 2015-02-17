@@ -42,7 +42,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		this.assetFile = assetFile;
 		this.assetContainer = assetContainer;
 		
-		primaryRequirePath = requirePrefix+"/"+assetFile.requirePathName();
+		primaryRequirePath = calculateRequirePath(requirePrefix, assetFile);
 		requirePaths.add(primaryRequirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
@@ -199,6 +199,11 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	public AssetContainer assetContainer()
 	{
 		return assetContainer;
+	}
+	
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
+	{
+		return requirePrefix+"/"+assetFile.requirePathName();
 	}
 	
 }

@@ -30,9 +30,9 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 		
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile htmlFile : dir.listFiles(htmlFileFilter)) {
-			LinkedFileAsset asset = new LinkedFileAsset(htmlFile, assetContainer, requirePrefix);
-			assets.add(asset);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(LinkedFileAsset.calculateRequirePath(requirePrefix, htmlFile))) {
+				LinkedFileAsset asset = new LinkedFileAsset(htmlFile, assetContainer, requirePrefix);
+				assets.add(asset);
 				if (dir.isChildOf(assetContainer.file("resources"))) {
 					assetDiscoveryInitiator.registerSeedAsset( asset );
 				} else {

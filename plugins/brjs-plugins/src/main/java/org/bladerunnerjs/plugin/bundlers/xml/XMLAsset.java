@@ -31,4 +31,9 @@ public class XMLAsset extends LinkedFileAsset {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile xmlFile)
+	{
+		return LinkedFileAsset.calculateRequirePath(requirePrefix, xmlFile);
+	}
 }
