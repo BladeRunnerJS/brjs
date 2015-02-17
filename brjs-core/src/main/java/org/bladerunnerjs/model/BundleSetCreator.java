@@ -11,6 +11,7 @@ import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.engine.NamedNode;
+import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
 import org.bladerunnerjs.utility.BundleSetBuilder;
 
 import com.google.common.base.Joiner;
@@ -26,6 +27,8 @@ public class BundleSetCreator {
 	}
 	
 	public static BundleSet createBundleSet(BundlableNode bundlableNode) throws ModelOperationException {
+		long creationStartTime = System.currentTimeMillis();
+		
 		Logger logger = bundlableNode.root().logger(BundleSetCreator.class);
 		
 		BundleSetBuilder bundleSetBuilder = new BundleSetBuilder(bundlableNode);
@@ -43,7 +46,13 @@ public class BundleSetCreator {
 		
 		bundleSetBuilder.addSeedFiles(seedFiles);
 		
-		return bundleSetBuilder.createBundleSet();
+		BundleSet bundleSet = bundleSetBuilder.createBundleSet();
+		
+		long creationEndTime = System.currentTimeMillis();
+		long duration = creationEndTime - creationStartTime;
+		bundlableNode.notifyObservers(new BundleSetCreatedEvent(bundleSet, duration), bundlableNode);
+		
+		return bundleSet;
 	}
 	
 	private static String seedFilePaths(BundlableNode bundlableNode, List<? extends LinkedAsset> seedFiles) {

@@ -51,6 +51,8 @@ public class TestCompiler
 			catch (IOException ex)
 			{
 				throw new CommandOperationException("Error creating directory for compiled tests.", ex);
+			} finally {
+				org.apache.commons.io.FileUtils.deleteQuietly(compiledClassDir);
 			}
 			
 			// see http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.jdt.doc.isv/guide/jdt_api_compile.htm for command line args

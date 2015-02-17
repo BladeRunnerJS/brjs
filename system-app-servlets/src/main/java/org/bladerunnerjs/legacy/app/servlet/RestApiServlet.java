@@ -152,15 +152,19 @@ public class RestApiServlet extends HttpServlet
 			else if (EXPORT_APP_PATTERN.matcher(requestPath).matches())
 			{
 				File targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
-				File warTempFile = new File(targetDir, "x.war");
-				apiService.exportWar(appName, brjs.getMemoizedFile(warTempFile));
-				response.setContentType("application/octet-stream");
-				response.setHeader("Content-Disposition", "attachment; filename=\""+appName+".war\"");
-				
-				response.addHeader("Content-Length", Long.toString(warTempFile.length()));
-				
-				IOUtils.copy(new FileInputStream(warTempFile), response.getOutputStream());
-				response.flushBuffer();
+				try {
+    				File warTempFile = new File(targetDir, "x.war");
+    				apiService.exportWar(appName, brjs.getMemoizedFile(warTempFile));
+    				response.setContentType("application/octet-stream");
+    				response.setHeader("Content-Disposition", "attachment; filename=\""+appName+".war\"");
+    				
+    				response.addHeader("Content-Length", Long.toString(warTempFile.length()));
+    				
+    				IOUtils.copy(new FileInputStream(warTempFile), response.getOutputStream());
+    				response.flushBuffer();
+				} finally {
+					org.apache.commons.io.FileUtils.deleteQuietly(targetDir);
+				}
 				return;
 			}
 			else if (RELASE_NOTE_PATTERN.matcher(requestPath).matches())

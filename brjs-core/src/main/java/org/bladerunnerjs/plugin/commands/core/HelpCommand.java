@@ -81,6 +81,8 @@ public class HelpCommand extends JSAPArgsParsingCommandPlugin
 		logger.println("  --debug");
 		logger.println("  --pkg <log-packages> (the comma delimited list of packages to show messages from, or '"+ConsoleLogger.LOG_ALL_PACKAGES_PACKAGE_NAME+"' to show everything)");
 		logger.println("  --show-pkg (show which class each log line comes from)");
+		logger.println("  --no-stats (permenantly disable anonymous tracking)");
+		logger.println("  --stats (permenantly enable anonymous tracking)");
 	}
 
 	private void getHelpForSpecificCommand(String commandName) throws CommandArgumentsException

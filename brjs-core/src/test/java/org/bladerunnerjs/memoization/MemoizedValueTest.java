@@ -37,6 +37,7 @@ public class MemoizedValueTest {
 	@After
 	public void tearDown() {
 		brjs.close();
+		org.apache.commons.io.FileUtils.deleteQuietly(tempDir);
 	}
 	
 	@Test

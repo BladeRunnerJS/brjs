@@ -25,8 +25,9 @@ import org.bladerunnerjs.utility.UnicodeReader;
 public class LinkedFileAsset implements LinkedAsset {
 	
 	private MemoizedFile assetFile;
+
 	private String assetPath;
-	private String defaultFileCharacterEncoding;
+	protected String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	private String primaryRequirePath;
 	private AssetContainer assetContainer;
@@ -58,7 +59,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
-		List<Asset> assetList;
+		List<Asset> assetList = new ArrayList<>();
 		try {
 			assetList = bundlableNode.assets(assetContainer, getDependencyCalculator().getRequirePaths());
 		}
