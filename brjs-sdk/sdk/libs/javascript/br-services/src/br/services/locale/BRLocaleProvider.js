@@ -22,11 +22,11 @@ function BRLocaleProvider() {
 topiarist.implement(BRLocaleProvider, LocaleProvider);
 
 BRLocaleProvider.prototype.setActiveLocale = function(locale) {
-	localStorage.set('locale', locale);
+	localStorage.setItem('locale', locale);
 };
 
 BRLocaleProvider.prototype.getActiveLocale = function() {
-	var userPreferredLocale = localStorage.get('locale');
+	var userPreferredLocale = localStorage.getItem('locale');
 	var browserAcceptedLocales = getBrowserAcceptedLocales();
 	var appLocales = window.$BRJS_APP_LOCALES;
 	
