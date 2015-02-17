@@ -38,15 +38,23 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 
 	private AssetContainer assetContainer;
 
-	public DefaultCommonJsSourceModule(AssetContainer assetContainer, String requirePrefix, MemoizedFile assetFile) {
+	private List<Asset> implicitDependencies;
+
+	public DefaultCommonJsSourceModule(AssetContainer assetContainer, String requirePrefix, MemoizedFile assetFile, List<Asset> implicitDependencies) {
 		this.assetFile = assetFile;
 		this.assetContainer = assetContainer;
+		this.implicitDependencies = implicitDependencies;
 		
 		primaryRequirePath = calculateRequirePath(requirePrefix, assetFile);
 		requirePaths.add(primaryRequirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
 		computedValue = new MemoizedValue<>(getAssetPath()+" - computedValue", assetContainer.root(), assetFile, patch.getPatchFile());
+	}
+	
+	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		this.implicitDependencies.addAll(implicitDependencies);
 	}
 	
 	@Override
@@ -59,6 +67,8 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll(implicitDependencies);
+		
 		return dependendAssets;
 	}
 	

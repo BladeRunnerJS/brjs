@@ -37,8 +37,9 @@ public class ThirdpartySourceModule implements SourceModule
 	private String defaultFileCharacterEncoding;
 	private AssetContainer assetContainer;
 	private String primaryRequirePath;
+	private List<Asset> implicitDependencies;
 	
-	public ThirdpartySourceModule(AssetContainer assetContainer) {
+	public ThirdpartySourceModule(AssetContainer assetContainer, List<Asset> implicitDependencies) {
 		try {
 			this.assetContainer = assetContainer;
 			assetPath = assetContainer.app().dir().getRelativePath(assetContainer.dir());
@@ -46,10 +47,16 @@ public class ThirdpartySourceModule implements SourceModule
 			primaryRequirePath = calculateRequirePath(assetContainer);
 			patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
 			manifest = new ThirdpartyLibManifest(assetContainer);
+			this.implicitDependencies = implicitDependencies;
 		}
 		catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		this.implicitDependencies.addAll(implicitDependencies);
 	}
 	
 	@Override
@@ -136,6 +143,8 @@ public class ThirdpartySourceModule implements SourceModule
 			}
 			dependendAssets.add( cssAsset );
 		}
+		
+		dependendAssets.addAll(implicitDependencies);
 		
 		return dependendAssets;
 	}

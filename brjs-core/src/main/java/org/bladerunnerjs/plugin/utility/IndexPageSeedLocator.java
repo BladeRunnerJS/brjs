@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin.utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class IndexPageSeedLocator {
 				String indexFilePath = indexFile.getAbsolutePath();
 				
 				if(!cachedAssets.containsKey(indexFilePath)) {
-					cachedAssets.put(indexFilePath, new LinkedFileAsset(indexFile, viewableBundlableNode, viewableBundlableNode.requirePrefix()));
+					cachedAssets.put(indexFilePath, new LinkedFileAsset(indexFile, viewableBundlableNode, viewableBundlableNode.requirePrefix(), Collections.emptyList()));
 				}
 				
 				seedFiles.add(cachedAssets.get(indexFilePath));

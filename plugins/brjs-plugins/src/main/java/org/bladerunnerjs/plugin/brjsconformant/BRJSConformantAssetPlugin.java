@@ -121,8 +121,8 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		furtherAssetImplicitDependencies.add(parent);
 		
 		List<Asset> discoveredAssets = assetDiscoveryInitiator.discoverFurtherAssets(dir, requirePrefix, furtherAssetImplicitDependencies);
-		if (parent instanceof DirectoryLinkedAsset) {
-			((DirectoryLinkedAsset) parent).addImplicitDependencies(discoveredAssets);
+		if (parent instanceof LinkedAsset) {
+			((LinkedAsset) parent).addImplicitDependencies(discoveredAssets);
 		}
 		
 		for (MemoizedFile childDir : dir.dirs()) {

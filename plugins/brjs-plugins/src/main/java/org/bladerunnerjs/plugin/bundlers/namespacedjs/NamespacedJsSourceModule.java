@@ -34,18 +34,25 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private TrieBasedDependenciesCalculator trieBasedUseTimeDependenciesCalculator;
 	private TrieBasedDependenciesCalculator trieBasedPreExportDefineTimeDependenciesCalculator;
 	private TrieBasedDependenciesCalculator trieBasedPostExportDefineTimeDependenciesCalculator;
+	private List<Asset> implicitDependencies;
 	public static final String JS_STYLE = "namespaced-js";
 	
-	public NamespacedJsSourceModule(AssetContainer assetContainer, String requirePrefix, MemoizedFile jsFile)
+	public NamespacedJsSourceModule(AssetContainer assetContainer, String requirePrefix, MemoizedFile jsFile, List<Asset> implicitDependencies)
 	{
 		this.assetContainer = assetContainer;
 		this.assetFile = jsFile;
-		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetContainer, requirePrefix);
+		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetContainer, requirePrefix, implicitDependencies);
+		this.implicitDependencies = implicitDependencies;
 		
 		primaryRequirePath = calculateRequirePath(requirePrefix, jsFile);
 		requirePaths.add(primaryRequirePath);
 
 		patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
+	}
+	
+	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		this.implicitDependencies.addAll(implicitDependencies);
 	}
 
 	@Override
@@ -54,6 +61,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll(implicitDependencies);
 		return dependendAssets;
 	}
 	

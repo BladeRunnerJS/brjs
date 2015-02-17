@@ -32,6 +32,10 @@ public class FakeSourceModule implements SourceModule {
 	}
 	
 	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+	}
+	
+	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependentAssets = new ArrayList<>(preExportDependencies);
 		dependentAssets.addAll(postExportDependencies);

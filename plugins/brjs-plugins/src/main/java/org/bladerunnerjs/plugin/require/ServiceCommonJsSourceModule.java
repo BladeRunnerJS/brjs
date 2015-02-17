@@ -28,6 +28,10 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+	}
+	
+	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return getPreExportDefineTimeDependentAssets(bundlableNode);
 	}

@@ -37,7 +37,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile xmlFile : dir.listFiles(xmlFileFilter)) {
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(XMLAsset.calculateRequirePath(requirePrefix, xmlFile))) {
-				XMLAsset asset = new XMLAsset(xmlFile, assetContainer, requirePrefix);
+				XMLAsset asset = new XMLAsset(xmlFile, assetContainer, requirePrefix, implicitDependencies);
 				assets.add(asset);
 				if (dir.isChildOf(assetContainer.file("resources"))) {
 					assetDiscoveryInitiator.registerSeedAsset( asset );

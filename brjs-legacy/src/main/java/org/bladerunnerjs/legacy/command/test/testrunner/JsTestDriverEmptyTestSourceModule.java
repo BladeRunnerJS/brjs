@@ -20,6 +20,11 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	}
 	
 	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		sourceModule.addImplicitDependencies(implicitDependencies);
+	}
+	
+	@Override
 	public Reader getReader() throws IOException {
 		return new StringReader("");
 	}

@@ -32,6 +32,10 @@ public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 	}
 	
 	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+	}
+	
+	@Override
 	public Reader getReader() throws IOException
 	{
 		return new StringReader("");

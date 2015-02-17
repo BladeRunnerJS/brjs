@@ -30,6 +30,7 @@ public class DirectoryLinkedAsset implements LinkedAsset
 		primaryRequirePath = getRequirePath(requirePrefix, dir);
 	}
 	
+	@Override
 	public void addImplicitDependencies(List<Asset> implicitDependencies) {
 		this.implicitDependencies.addAll(implicitDependencies);
 	}

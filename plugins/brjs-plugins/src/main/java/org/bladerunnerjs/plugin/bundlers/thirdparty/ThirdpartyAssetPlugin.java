@@ -36,7 +36,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 				return Collections.emptyList();
 			}
 			
-			ThirdpartySourceModule asset = new ThirdpartySourceModule(assetContainer);
+			ThirdpartySourceModule asset = new ThirdpartySourceModule(assetContainer, implicitDependencies);
 			assetDiscoveryInitiator.registerAsset(asset);
 			discoverCssAssets(assetContainer, dir, "css!"+assetContainer.requirePrefix(), assetDiscoveryInitiator);
 			return Arrays.asList(asset);

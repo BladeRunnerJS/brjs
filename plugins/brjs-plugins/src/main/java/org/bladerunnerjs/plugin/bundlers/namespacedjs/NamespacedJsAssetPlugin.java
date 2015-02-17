@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
@@ -30,15 +31,17 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 		
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {
-			boolean isTestFile = jsFile.isChildOf(assetContainer.file("tests"));
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(NamespacedJsSourceModule.calculateRequirePath(requirePrefix, jsFile))) {				
-				NamespacedJsSourceModule namespacedModule = (isTestFile) ? new TestNamespacedJsSourceModule(assetContainer, requirePrefix, jsFile) : new NamespacedJsSourceModule(assetContainer, requirePrefix, jsFile);
-				assets.add(namespacedModule);
-				if (isTestFile) {
-					assetDiscoveryInitiator.registerSeedAsset( namespacedModule );
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(NamespacedJsSourceModule.calculateRequirePath(requirePrefix, jsFile))) {
+				if (jsFile.isChildOf(assetContainer.file("tests"))) {
+					SourceModule sourceModule = new TestNamespacedJsSourceModule(assetContainer, requirePrefix, jsFile, implicitDependencies);
+					assets.add(sourceModule);
+					assetDiscoveryInitiator.registerSeedAsset( sourceModule );
 				} else {
-					assetDiscoveryInitiator.registerAsset( namespacedModule );					
+					SourceModule sourceModule = new NamespacedJsSourceModule(assetContainer, requirePrefix, jsFile, implicitDependencies);
+					assets.add(sourceModule);
+					assetDiscoveryInitiator.registerAsset( sourceModule );										
 				}
+				
 			}
 		}
 		return assets;

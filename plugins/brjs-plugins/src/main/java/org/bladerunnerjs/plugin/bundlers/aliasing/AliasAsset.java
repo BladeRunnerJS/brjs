@@ -22,6 +22,10 @@ public class AliasAsset implements LinkedAsset {
 	}
 	
 	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+	}
+	
+	@Override
 	public Reader getReader() throws IOException {
 		return null;
 	}

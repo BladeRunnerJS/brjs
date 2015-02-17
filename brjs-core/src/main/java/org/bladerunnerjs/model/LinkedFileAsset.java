@@ -30,18 +30,25 @@ public class LinkedFileAsset implements LinkedAsset {
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	private String primaryRequirePath;
 	private AssetContainer assetContainer;
+	private List<Asset> implicitDependencies;
 	
-	public LinkedFileAsset(MemoizedFile assetFile, AssetContainer assetContainer, String requirePrefix) {
+	public LinkedFileAsset(MemoizedFile assetFile, AssetContainer assetContainer, String requirePrefix, List<Asset> implicitDependencies) {
 		try {
 			this.assetContainer = assetContainer;
 			this.assetFile = assetFile;
 			assetPath = assetContainer.app().dir().getRelativePath(assetFile);
 			primaryRequirePath = calculateRequirePath(requirePrefix, assetFile);
 			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			this.implicitDependencies = implicitDependencies;
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		this.implicitDependencies.addAll(implicitDependencies);
 	}
 	
 	@Override
@@ -75,6 +82,9 @@ public class LinkedFileAsset implements LinkedAsset {
 		} catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+		
+		assetList.addAll(implicitDependencies);
+		
 		return assetList;
 	}
 	

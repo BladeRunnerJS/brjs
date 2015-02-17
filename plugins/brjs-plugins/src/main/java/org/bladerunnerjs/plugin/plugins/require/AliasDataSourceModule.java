@@ -26,6 +26,10 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+	}
+	
+	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return Collections.emptyList();
 	}

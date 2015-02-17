@@ -35,11 +35,11 @@ public class CommonJsAssetPlugin extends AbstractAssetPlugin
 		for (MemoizedFile jsFile : dir.listFiles(jsFileFilter)) {			
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(DefaultCommonJsSourceModule.calculateRequirePath(requirePrefix, jsFile))) {				
 				if (jsFile.isChildOf(assetContainer.file("tests"))) {
-					SourceModule commonJsModule = new TestCommonJsSourceModule(assetContainer, requirePrefix, jsFile);
+					SourceModule commonJsModule = new TestCommonJsSourceModule(assetContainer, requirePrefix, jsFile, implicitDependencies);
 					assets.add(commonJsModule);
 					assetDiscoveryInitiator.registerSeedAsset( commonJsModule );
 				} else {
-					SourceModule commonJsModule = new DefaultCommonJsSourceModule(assetContainer, requirePrefix, jsFile);
+					SourceModule commonJsModule = new DefaultCommonJsSourceModule(assetContainer, requirePrefix, jsFile, implicitDependencies);
 					assets.add(commonJsModule);
 					assetDiscoveryInitiator.registerAsset( commonJsModule );										
 				}
