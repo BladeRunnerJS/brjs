@@ -77,6 +77,7 @@ Utils.getKeyCodeForChar = function(character) {
 */
 Utils.fireKeyEvent = function(element, eventString, key, options) {
 	options = options || {};
+	options.key = options.key || key;
 	options.bubbles = true;
 	
 	var evt = new KeyboardEvent(eventString, options);
