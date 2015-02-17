@@ -12,7 +12,7 @@ import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BrowsableNode;
-import org.bladerunnerjs.model.LinkedFileAsset;
+import org.bladerunnerjs.model.IndexPageAsset;
 
 
 public class BrowsableNodeSeedLocator extends AbstractAssetPlugin
@@ -43,7 +43,7 @@ public class BrowsableNodeSeedLocator extends AbstractAssetPlugin
 			}
 			
 			if (indexFile != null) {
-				LinkedAsset indexAsset = new LinkedFileAsset(indexFile, assetContainer, requirePrefix, implicitDependencies);
+				LinkedAsset indexAsset = new IndexPageAsset(indexFile, assetContainer, requirePrefix, implicitDependencies);
 				assetDiscoveryInitiator.registerSeedAsset(indexAsset);
 				return Arrays.asList(indexAsset);
 			}			

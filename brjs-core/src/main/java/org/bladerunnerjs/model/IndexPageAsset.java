@@ -7,13 +7,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 public class IndexPageAsset extends LinkedFileAsset {
 
-	public IndexPageAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
-		super(assetFile, assetLocation);
+	public IndexPageAsset(MemoizedFile assetFile, AssetContainer assetContainer, String requirePrefix, List<Asset> implicitDependencies) {
+		super(assetFile, assetContainer, requirePrefix, implicitDependencies);
 	}
 	
 	@Override
@@ -24,13 +28,12 @@ public class IndexPageAsset extends LinkedFileAsset {
 		List<String> aliases = new ArrayList<>();
 		try {
 			RequirePathUtility.addRequirePathsFromReader(getReader(), dependencies, aliases);
-		} catch (IOException e) {
-			//TODO
-			e.printStackTrace();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 		List<String> dependenciesList = new ArrayList<String>(dependencies);
 		try {
-			assetList.addAll(bundlableNode.getLinkedAssets(assetLocation, dependenciesList));
+			assetList.addAll(bundlableNode.assets(assetContainer(), dependenciesList));
 		} catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
@@ -39,6 +42,6 @@ public class IndexPageAsset extends LinkedFileAsset {
 	
 	@Override
 	public Reader getReader() throws IOException {
-		return new JsCommentStrippingReader(super.getReader(), false, assetLocation().root().getCharBufferPool());
+		return new JsCommentStrippingReader(super.getReader(), false);
 	}
 }
