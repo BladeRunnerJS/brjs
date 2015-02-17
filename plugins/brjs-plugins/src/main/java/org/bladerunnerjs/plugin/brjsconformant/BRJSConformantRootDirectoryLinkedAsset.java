@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
@@ -34,7 +35,12 @@ public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 	
 	@Override
 	public void addImplicitDependencies(List<Asset> implicitDependencies) {
-		this.implicitDependencies.addAll(implicitDependencies);
+		for (Asset asset : implicitDependencies) {
+			if (asset instanceof SourceModule) {
+				continue;
+			}
+			this.implicitDependencies.add(asset);
+		}
 	}
 	
 	@Override

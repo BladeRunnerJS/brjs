@@ -37,6 +37,12 @@ public class IndexPageAsset extends LinkedFileAsset {
 		} catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+		
+		Asset rootAsset = assetContainer().asset(assetContainer().requirePrefix());
+		if (rootAsset != null) {
+			assetList.add(rootAsset);			
+		}
+		
 		return assetList;
 	}
 	

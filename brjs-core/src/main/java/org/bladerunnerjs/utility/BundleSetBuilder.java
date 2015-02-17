@@ -45,7 +45,6 @@ public class BundleSetBuilder {
 		
 		if (bundlableNode instanceof Workbench) {
 			// TODO: this should be done via the API and not guessed from the outside
-			//TODO: fix me after mega commit
 //			AssetLocation defaultAspectResourcesAssetLocation = bundlableNode.app().aspect("default").assetLocation("resources");
 //			if (defaultAspectResourcesAssetLocation != null) {
 //				addUnscopedAssetLocation(defaultAspectResourcesAssetLocation);
@@ -58,15 +57,8 @@ public class BundleSetBuilder {
 			addBootstrapAndDependencies(bootstrappingSourceModules);
 		}
 		
-//		try {
-			//TODO: fix me after mega commit
-//			resourceLocationList.addAll(assetLocations);
-//			orderAssetLocations(bundlableNode, resourceLocationList);
-//		}
-//		catch(RequirePathException e) {
-//			throw new ModelOperationException(e);
-//		}
-//		
+//		//TODO: how do we order things like CSS assets?
+		
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		
 		return new StandardBundleSet(bundlableNode, assets, orderedSourceModules);
@@ -116,16 +108,6 @@ public class BundleSetBuilder {
 		}
 		
 	}
-	
-	//TODO: fix me after mega commit
-//	private void addUnscopedAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
-//		if (assetLocation == null) { return; }
-//		if (assetLocations.add(assetLocation)) {			
-//			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
-//				addAssetLocation(dependentAssetLocation);
-//			}
-//		}
-//	}
 	
 	private String assetFilePaths(List<Asset> assets) {
 		List<String> sourceFilePaths = new ArrayList<>();
