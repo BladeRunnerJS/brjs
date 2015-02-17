@@ -5,15 +5,12 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
-import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;

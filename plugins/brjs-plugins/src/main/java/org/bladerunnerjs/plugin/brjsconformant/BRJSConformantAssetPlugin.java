@@ -30,93 +30,130 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	@Override
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
-		if (assetContainer instanceof DefaultBladeset || !neccessaryChildDirsArePresent(assetContainer)) {
+		// only create assets if we're at the root of the asset container *and* its not a default bladeset
+		if (assetContainer instanceof DefaultBladeset || !neccessaryChildDirsArePresent(assetContainer) || assetContainer.dir() != dir) {
 			return Collections.emptyList();
 		}
 		
 		List<Asset> assets = new ArrayList<>();
-		if (assetContainer.dir() == dir) {
-			assets.addAll( createAssetsForRootDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator) );
-		} else if (dir == assetContainer.file("src") || dir == assetContainer.file("src-test") || dir == assetContainer.file("tests") || (assetContainer instanceof TestPack && assetContainer.dir() == dir)) {
-			assets.addAll( createAssetsForSrcDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator) );
-		} else if (dir == assetContainer.file("themes")) {
-			assets.addAll( createAssetsForThemeDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator) );
-		} else {
-			assets.addAll( createAssetsForChildDirs(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator) );
-		}
 		
-		return assets;
-	}
-
-	private List<Asset> createAssetsForChildDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
-	{
-		List<Asset> assets = new ArrayList<>();
-		for (MemoizedFile childDir : dir.dirs()) {
-			LinkedAsset child = new DirectoryLinkedAsset(assetContainer, childDir, requirePrefix);
-			assets.add(child);
-			if (!assetDiscoveryInitiator.hasRegisteredAsset(child.getPrimaryRequirePath())) {
-				assetDiscoveryInitiator.registerAsset(child);				
-				assetDiscoveryInitiator.discoverFurtherAssets(childDir, child.getPrimaryRequirePath(), implicitDependencies);
-			}
-		}
-		return assets;
-	}
-
-	private List<Asset> createAssetsForSrcDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
-	{
-		String rootRequirePrefix = StringUtils.substringBefore(assetContainer.requirePrefix(), "/");
-		MemoizedFile srcPackageRoot = dir;
-		if (dir.file(rootRequirePrefix).isDirectory()) {
-			srcPackageRoot = dir.file(assetContainer.requirePrefix());
-			assetDiscoveryInitiator.discoverFurtherAssets(srcPackageRoot, requirePrefix, implicitDependencies);
-		}
-		createAssetsForChildDirs(assetContainer, srcPackageRoot, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
-		return Collections.emptyList();
-	}
-	
-	private List<Asset> createAssetsForThemeDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
-	{
-		for (MemoizedFile themeDir : dir.dirs()) {
-			String themeRequirePath = "theme!"+themeDir.getName()+":";
-			assetDiscoveryInitiator.discoverFurtherAssets(themeDir, themeRequirePath, implicitDependencies);			
-		}
-		return Collections.emptyList();
-	}
-
-	private List<Asset> createAssetsForRootDirs(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
-	{
-		if (assetDiscoveryInitiator.hasRegisteredAsset(requirePrefix)) {
-			return Collections.emptyList();
-		}
 		LinkedAsset rootAsset = new BRJSConformantRootDirectoryLinkedAsset(assetContainer); 
 		assetDiscoveryInitiator.registerAsset(rootAsset);
+		assets.add(rootAsset);
 		
-		for (MemoizedFile childDir : getPossibleChildDirs(assetContainer)) {
-			assetDiscoveryInitiator.discoverFurtherAssets(childDir, requirePrefix, implicitDependencies);
+		for (MemoizedFile srcDir : getSrcDirs(assetContainer)) {
+			discoverFurtherAssetsForChild(assetContainer, srcDir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
+		}
+		
+		List<Asset> implicitResourcesDependencies = new ArrayList<>();
+		implicitResourcesDependencies.addAll(implicitDependencies);
+		implicitResourcesDependencies.add(rootAsset);
+		for (MemoizedFile resourceDir : getResourceDirs(assetContainer)) {
+			createAssetsForChildDir(assetContainer, resourceDir, requirePrefix, implicitResourcesDependencies, assetDiscoveryInitiator, rootAsset);
+		}
+		
+		for (MemoizedFile testDir : getTestDirs(assetContainer)) {
+			discoverFurtherAssetsForChild(assetContainer, testDir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
+		}
+		
+		for (MemoizedFile themeDir : getThemeDirs(assetContainer)) {
+			String themeRequirePrefix = "theme!"+themeDir.getName()+":"+requirePrefix;
+			createAssetsForChildDir(assetContainer, themeDir, themeRequirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
 		}
 		
 		return Arrays.asList(rootAsset);
 	}
-	
-	private List<MemoizedFile> getPossibleChildDirs(AssetContainer assetContainer) {
-		List<String> childPaths;
-		List<MemoizedFile> childDirs = new ArrayList<>();
+
+	private List<MemoizedFile> getSrcDirs(AssetContainer assetContainer)
+	{
+		String rootRequirePrefix = StringUtils.substringBefore(assetContainer.requirePrefix(), "/");
 		if (assetContainer instanceof TestPack) {
-			childPaths = Arrays.asList("tests", "src-test", "resources");
+			String srcTestDir = (assetContainer.file("src-test/"+rootRequirePrefix).isDirectory()) ? "src-test/"+assetContainer.requirePrefix() : "src-test";
+			return createFilesForFilePaths(assetContainer,  Arrays.asList(srcTestDir) );
 		} else {
-			childPaths = Arrays.asList("src", "src-test", "themes", "resources");
+			String srcDir = (assetContainer.file("src/"+rootRequirePrefix).isDirectory()) ? "src/"+assetContainer.requirePrefix() : "src";
+			String srcTestDir = (assetContainer.file("src-test/"+rootRequirePrefix).isDirectory()) ? "src-test/"+assetContainer.requirePrefix() : "src-test";
+			return createFilesForFilePaths(assetContainer, Arrays.asList(srcDir, srcTestDir) );
 		}
-		
-		for (String childPath : childPaths) {
-			childDirs.add( assetContainer.dir().file(childPath) );
-		}
-		
-		return childDirs;
 	}
 	
+	private List<MemoizedFile> getThemeDirs(AssetContainer assetContainer)
+	{
+		if (assetContainer instanceof TestPack) {
+			return Collections.emptyList();
+		}
+		List<MemoizedFile> themeDirs = new ArrayList<>();
+		for (MemoizedFile themeDir : assetContainer.file("themes").dirs()) {
+			themeDirs.add(themeDir);
+		}
+		return themeDirs;
+	}
+	
+	private List<MemoizedFile> getResourceDirs(AssetContainer assetContainer)
+	{
+		if (assetContainer instanceof TestPack) {
+			return Collections.emptyList();
+		} else {
+			return createFilesForFilePaths(assetContainer, Arrays.asList("resources") );
+		}
+	}
+	
+	private List<MemoizedFile> getTestDirs(AssetContainer assetContainer)
+	{
+		if (assetContainer instanceof TestPack) {
+			return createFilesForFilePaths(assetContainer, Arrays.asList("tests") );
+		} else {
+			return Collections.emptyList();
+		}
+	}
+
+	private void createAssetsForChildDir(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, 
+			AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parentAsset)
+	{
+		Asset child = getOrCreateAsset(assetContainer, dir, requirePrefix, assetDiscoveryInitiator);
+		discoverFurtherAssetsForChild(assetContainer, dir, child.getPrimaryRequirePath(), implicitDependencies, assetDiscoveryInitiator, child);
+	}
+	
+	private void discoverFurtherAssetsForChild(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parent)
+	{
+		List<Asset> furtherAssetImplicitDependencies = new ArrayList<>();
+		furtherAssetImplicitDependencies.addAll(implicitDependencies);
+		furtherAssetImplicitDependencies.add(parent);
+		
+		List<Asset> discoveredAssets = assetDiscoveryInitiator.discoverFurtherAssets(dir, requirePrefix, furtherAssetImplicitDependencies);
+		if (parent instanceof DirectoryLinkedAsset) {
+			((DirectoryLinkedAsset) parent).addImplicitDependencies(discoveredAssets);
+		}
+		
+		for (MemoizedFile childDir : dir.dirs()) {
+			createAssetsForChildDir(assetContainer, childDir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, parent );
+		}
+	}
+
+	public Asset getOrCreateAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator) {
+		if (!assetDiscoveryInitiator.hasRegisteredAsset(DirectoryLinkedAsset.getRequirePath(requirePrefix, dir))) {
+			Asset asset = new DirectoryLinkedAsset(assetContainer, dir, requirePrefix);
+			assetDiscoveryInitiator.registerAsset(asset);
+			return asset;
+		} else {
+			return assetDiscoveryInitiator.getRegisteredAsset( DirectoryLinkedAsset.getRequirePath(requirePrefix, dir) );
+		}
+	}
+	
+	private List<MemoizedFile> createFilesForFilePaths(AssetContainer assetContainer, List<String> filePaths) {
+		List<MemoizedFile> files = new ArrayList<>();
+		for (String filePath : filePaths) {
+			files.add( assetContainer.file(filePath) );
+		}
+		return files;
+	}
+
 	private boolean neccessaryChildDirsArePresent(AssetContainer assetContainer) {
-		for (MemoizedFile childDir : getPossibleChildDirs(assetContainer)) {
-			if (childDir.isDirectory()) {
+		List<MemoizedFile> expectedDirs = getSrcDirs(assetContainer);
+		expectedDirs.addAll(getResourceDirs(assetContainer));
+		expectedDirs.addAll(getTestDirs(assetContainer));
+		for (MemoizedFile dir : expectedDirs) {
+			if (dir.isDirectory()) {
 				return true;
 			}
 		}

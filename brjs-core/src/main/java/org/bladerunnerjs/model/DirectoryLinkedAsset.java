@@ -5,13 +5,13 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 
@@ -21,15 +21,17 @@ public class DirectoryLinkedAsset implements LinkedAsset
 	private AssetContainer assetContainer;
 	private MemoizedFile dir;
 	private String primaryRequirePath;
-	private MemoizedValue<List<Asset>> dependentAssets;
+	private Set<Asset> implicitDependencies = new HashSet<>();
 
 	public DirectoryLinkedAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix) {
 		this.assetContainer = assetContainer;
 		this.dir = dir;		
 		
-		primaryRequirePath = requirePrefix+"/"+dir.getName();
-		
-		dependentAssets = new MemoizedValue<>(getAssetPath()+ " dependent assets", assetContainer.root(), assetContainer.dir());
+		primaryRequirePath = getRequirePath(requirePrefix, dir);
+	}
+	
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		this.implicitDependencies.addAll(implicitDependencies);
 	}
 	
 	@Override
@@ -71,20 +73,9 @@ public class DirectoryLinkedAsset implements LinkedAsset
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return dependentAssets.value(() -> {
-			List<Asset> dependentAssets = new ArrayList<>();
-			for (Asset assetContainerAsset : assetContainer.assets()) {
-				String thisRequirePath = getPrimaryRequirePath();
-				String assetContainerAssetRequirePath = assetContainerAsset.getPrimaryRequirePath();
-				String[] thisRequirePathChunks = thisRequirePath.split("/");
-				String[] assetContainerAssetRequirePathChunks = assetContainerAssetRequirePath.split("/");
-				if ( thisRequirePath.startsWith(assetContainerAssetRequirePath) && (thisRequirePathChunks.length+1)==assetContainerAssetRequirePathChunks.length ) {
-					dependentAssets.add(assetContainerAsset);
-				}
-			}
-			
-			return dependentAssets;
-		});
+		List<Asset> assets = new ArrayList<>();
+		assets.addAll(implicitDependencies);
+		return assets;
 	}
 
 	@Override
@@ -93,4 +84,8 @@ public class DirectoryLinkedAsset implements LinkedAsset
 		return assetContainer;
 	}
 
+	public static String getRequirePath(String requirePrefix, MemoizedFile dir) {
+		return requirePrefix+"/"+dir.getName();
+	}
+	
 }
