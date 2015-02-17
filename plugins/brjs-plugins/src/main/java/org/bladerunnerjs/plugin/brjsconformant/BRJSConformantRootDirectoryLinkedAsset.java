@@ -23,6 +23,7 @@ public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 	private MemoizedFile dir;
 	private String primaryRequirePath;
 	private MemoizedValue<List<Asset>> dependentAssets;
+	List<Asset> implicitDependencies = new ArrayList<>();
 
 	public BRJSConformantRootDirectoryLinkedAsset(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
@@ -33,6 +34,7 @@ public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 	
 	@Override
 	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		this.implicitDependencies.addAll(implicitDependencies);
 	}
 	
 	@Override
@@ -74,7 +76,7 @@ public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return dependentAssets.value(() -> {
+		List<Asset> assets = dependentAssets.value(() -> {
 			List<Asset> dependentAssets = new ArrayList<>();
 			for (Asset assetContainerAsset : assetContainer.assets()) {
 				String thisRequirePath = getPrimaryRequirePath();
@@ -85,9 +87,10 @@ public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 					dependentAssets.add(assetContainerAsset);
 				}
 			}
-			
 			return dependentAssets;
 		});
+		assets.addAll(implicitDependencies);
+		return assets;
 	}
 
 	@Override

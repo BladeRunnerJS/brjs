@@ -49,7 +49,8 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		implicitResourcesDependencies.addAll(implicitDependencies);
 		implicitResourcesDependencies.add(rootAsset);
 		for (MemoizedFile resourceDir : getResourceDirs(assetContainer)) {
-			createAssetsForChildDir(assetContainer, resourceDir, requirePrefix, implicitResourcesDependencies, assetDiscoveryInitiator, rootAsset);
+			List<Asset> discoveredAssets = createAssetsForChildDir(assetContainer, resourceDir, requirePrefix, implicitResourcesDependencies, assetDiscoveryInitiator, rootAsset);
+			rootAsset.addImplicitDependencies(discoveredAssets);
 		}
 		
 		for (MemoizedFile testDir : getTestDirs(assetContainer)) {
@@ -58,7 +59,8 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		
 		for (MemoizedFile themeDir : getThemeDirs(assetContainer)) {
 			String themeRequirePrefix = "theme!"+themeDir.getName()+":"+requirePrefix;
-			createAssetsForChildDir(assetContainer, themeDir, themeRequirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
+			List<Asset> discoveredAssets = createAssetsForChildDir(assetContainer, themeDir, themeRequirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
+			rootAsset.addImplicitDependencies(discoveredAssets);
 		}
 		
 		return Arrays.asList(rootAsset);
@@ -107,14 +109,17 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		}
 	}
 
-	private void createAssetsForChildDir(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, 
+	private List<Asset> createAssetsForChildDir(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, 
 			AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parentAsset)
 	{
+		List<Asset> assets = new ArrayList<>();
 		Asset child = getOrCreateAsset(assetContainer, dir, requirePrefix, assetDiscoveryInitiator);
-		discoverFurtherAssetsForChild(assetContainer, dir, child.getPrimaryRequirePath(), implicitDependencies, assetDiscoveryInitiator, child);
+		assets.add(child);
+		assets.addAll( discoverFurtherAssetsForChild(assetContainer, dir, child.getPrimaryRequirePath(), implicitDependencies, assetDiscoveryInitiator, child) );
+		return assets;
 	}
 	
-	private void discoverFurtherAssetsForChild(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parent)
+	private List<Asset> discoverFurtherAssetsForChild(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parent)
 	{
 		List<Asset> furtherAssetImplicitDependencies = new ArrayList<>();
 		furtherAssetImplicitDependencies.addAll(implicitDependencies);
@@ -126,8 +131,9 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		}
 		
 		for (MemoizedFile childDir : dir.dirs()) {
-			createAssetsForChildDir(assetContainer, childDir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, parent );
+			discoveredAssets.addAll( createAssetsForChildDir(assetContainer, childDir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, parent) );
 		}
+		return discoveredAssets;
 	}
 
 	public Asset getOrCreateAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator) {
