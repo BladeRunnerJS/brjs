@@ -107,6 +107,7 @@ public class TemplateUtility
 		finally {
 			if (tempDir != null) {
 				FileUtils.deleteQuietly(node.root(), tempDir);
+				org.apache.commons.io.FileUtils.deleteQuietly(tempDir);
 			}
 		}
 	}

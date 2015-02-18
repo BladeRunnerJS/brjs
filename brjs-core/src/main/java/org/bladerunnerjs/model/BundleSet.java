@@ -11,5 +11,6 @@ public interface BundleSet {
 	public List<SourceModule> getSourceModules();
 	public List<AliasDefinition> getActiveAliases();
 	public List<AssetLocation> getResourceNodes();
+	public List<Asset> getResourceFiles();
 	public List<Asset> getResourceFiles(AssetPlugin assetProducer);
 }

@@ -34,6 +34,9 @@ public class TagPluginUtilityTest
 	BRJS brjs;
 	App app;
 	Aspect aspect;
+
+
+	private File testSdkDirectory;
 	
 	@Before
 	public void setup() throws Exception
@@ -54,8 +57,8 @@ public class TagPluginUtilityTest
 		/* asset location support */
 		mockPluginLocator.assetLocationPlugins.add(new VirtualProxyAssetLocationPlugin(new BRJSConformantAssetLocationPlugin()));
 		
-		File tempDir = BRJSTestModelFactory.createTestSdkDirectory();
-		brjs = BRJSTestModelFactory.createModel(tempDir, mockPluginLocator);
+		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
+		brjs = BRJSTestModelFactory.createModel(testSdkDirectory, mockPluginLocator);
 		
 		app = brjs.app("app");
 			app.create();
@@ -66,6 +69,7 @@ public class TagPluginUtilityTest
 	@After
 	public void tearDown() {
 		brjs.close();
+		org.apache.commons.io.FileUtils.deleteQuietly(testSdkDirectory);
 	}
 	
 	@Test

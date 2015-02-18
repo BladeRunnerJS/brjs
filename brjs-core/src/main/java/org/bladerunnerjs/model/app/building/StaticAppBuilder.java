@@ -19,11 +19,14 @@ public class StaticAppBuilder implements AppBuilder {
 		try
 		{
 			FileUtils.moveDirectoryContents(app.root(), exportDir, appBuildDir);
-			org.apache.commons.io.FileUtils.deleteQuietly(exportDir);
 		}
 		catch (IOException ex)
 		{
 			throw new ModelOperationException(ex);
+		}
+		finally 
+		{
+			org.apache.commons.io.FileUtils.deleteQuietly(exportDir);			
 		}
 	}
 	
