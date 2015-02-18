@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -16,7 +17,7 @@ import org.bladerunnerjs.plugin.RequirePlugin;
 import org.bladerunnerjs.plugin.base.AbstractRequirePlugin;
 
 public class AliasRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
-	private final Map<BundlableNode, Map<String, AliasCommonJsSourceModule>> bundlableNodeSourceModules = new HashMap<>();
+	private final Map<BundlableNode, Map<String, SourceModule>> bundlableNodeSourceModules = new HashMap<>();
 	private AssetLocation assetLocation;
 	
 	@Override
@@ -39,21 +40,29 @@ public class AliasRequirePlugin extends AbstractRequirePlugin implements Require
 		}
 	}
 	
-	private AliasCommonJsSourceModule getSourceModule(BundlableNode bundlableNode, String requirePathSuffix) throws ContentFileProcessingException, AliasException {
+	private SourceModule getSourceModule(BundlableNode bundlableNode, String requirePathSuffix) throws ContentFileProcessingException, AliasException {
 		if(!bundlableNodeSourceModules.containsKey(bundlableNode)) {
 			bundlableNodeSourceModules.put(bundlableNode, new HashMap<>());
+			bundlableNodeSourceModules.get(bundlableNode).put("$data", new AliasDataSourceModule(assetLocation, bundlableNode));
 		}
 		
-		Map<String, AliasCommonJsSourceModule> sourceModules = bundlableNodeSourceModules.get(bundlableNode);
-		AliasDefinition aliasDefinition = bundlableNode.getAlias(requirePathSuffix);
+		Map<String, SourceModule> sourceModules = bundlableNodeSourceModules.get(bundlableNode);
 		
-		if(!sourceModules.containsKey(requirePathSuffix)) {
-			sourceModules.put(requirePathSuffix, new AliasCommonJsSourceModule(assetLocation, aliasDefinition));
+		if(requirePathSuffix.equals("$data")) {
+			return sourceModules.get(requirePathSuffix);
 		}
 		else {
-			sourceModules.get(requirePathSuffix).setAlias(aliasDefinition);
+			
+			AliasDefinition aliasDefinition = bundlableNode.getAlias(requirePathSuffix);
+			
+			if(!sourceModules.containsKey(requirePathSuffix)) {
+				sourceModules.put(requirePathSuffix, new AliasCommonJsSourceModule(assetLocation, aliasDefinition));
+			}
+			else {
+				((AliasCommonJsSourceModule) sourceModules.get(requirePathSuffix)).setAlias(aliasDefinition);
+			}
+			
+			return sourceModules.get(requirePathSuffix);
 		}
-		
-		return sourceModules.get(requirePathSuffix);
 	}
 }
