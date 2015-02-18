@@ -74,7 +74,7 @@ public class XmlBundleWriter
 							siblingReader.close();
 						}
 						catch(XMLStreamException e) {
-							// do nothing: we want to close as many readers as possible
+							System.out.println("bingo!");
 						}
 					}
 				}
