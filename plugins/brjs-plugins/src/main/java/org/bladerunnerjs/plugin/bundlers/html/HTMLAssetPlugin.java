@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.bundlers.html;
 
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -24,6 +25,10 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
+		if (assetContainer.dir() == dir) {
+			return Collections.emptyList();
+		}
+		
 		if (!requirePrefix.startsWith("html!")) {
 			requirePrefix = "html!"+requirePrefix;
 		}

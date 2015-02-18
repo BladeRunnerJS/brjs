@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.bundlers.cssresource;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -26,6 +27,10 @@ public class CssResourceAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
+		if (assetContainer.dir() == dir) {
+			return Collections.emptyList();
+		}
+		
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile assetFile : dir.listFiles(assetFileFilter)) {
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(FileAsset.calculateRequirePath(requirePrefix, assetFile))) {

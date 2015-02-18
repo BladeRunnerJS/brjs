@@ -40,7 +40,7 @@ public class StandardBundleSet implements BundleSet {
 		for (Asset asset : assets) { 
 			for (String prefix : prefixes) {
 				if (asset.getPrimaryRequirePath().startsWith(prefix)) {
-					assetsWithRequirePath.addAll(assets);
+					assetsWithRequirePath.add(asset);
 					break;
 				}
 			}

@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.bundlers.xml;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.AndFileFilter;
@@ -30,6 +31,10 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
+		if (assetContainer.dir() == dir) {
+			return Collections.emptyList();
+		}
+		
 		if (!requirePrefix.startsWith("xml!")) {
 			requirePrefix = "xml!"+requirePrefix;
 		}

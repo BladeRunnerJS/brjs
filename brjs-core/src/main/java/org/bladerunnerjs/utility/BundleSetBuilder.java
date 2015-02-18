@@ -1,6 +1,7 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -30,7 +31,7 @@ public class BundleSetBuilder {
 	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
-	private final List<Asset> assets = new ArrayList<>();
+	private final Set<Asset> assets = new LinkedHashSet<>();
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final BundlableNode bundlableNode;
@@ -60,8 +61,9 @@ public class BundleSetBuilder {
 //		//TODO: how do we order things like CSS assets?
 		
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
+		List<Asset> assetList = Arrays.asList(assets.toArray(new Asset[0]));
 		
-		return new StandardBundleSet(bundlableNode, assets, orderedSourceModules);
+		return new StandardBundleSet(bundlableNode, assetList, orderedSourceModules);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {

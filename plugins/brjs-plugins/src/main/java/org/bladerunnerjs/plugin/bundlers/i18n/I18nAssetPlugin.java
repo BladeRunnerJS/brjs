@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.bundlers.i18n;
 
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
@@ -27,6 +28,10 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 	@Override
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
+		if (assetContainer.dir() == dir) {
+			return Collections.emptyList();
+		}
+		
 		if (!requirePrefix.startsWith("i18n!")) {
 			requirePrefix = "i18n!"+requirePrefix;
 		}
