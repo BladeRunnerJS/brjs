@@ -92,6 +92,7 @@ public class AssetContainerAssets
 			if (assetPathRelativeToContainer.equals("")) {
 				assetPathRelativeToContainer = ".";
 			}
+			//TODO: can we get rid of this?
 			assetsByPath.put(assetPathRelativeToContainer, asset);
 		}
 

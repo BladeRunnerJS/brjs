@@ -23,14 +23,12 @@ public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 	private AssetContainer assetContainer;
 	private MemoizedFile dir;
 	private String primaryRequirePath;
-	private MemoizedValue<List<Asset>> dependentAssets;
 	List<Asset> implicitDependencies = new ArrayList<>();
 
 	public BRJSConformantRootDirectoryLinkedAsset(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
 		this.dir = assetContainer.dir();		
 		primaryRequirePath = assetContainer.requirePrefix();
-		dependentAssets = new MemoizedValue<>(getAssetPath()+ " dependent assets", assetContainer.root(), assetContainer.dir());
 	}
 	
 	@Override
@@ -82,21 +80,7 @@ public class BRJSConformantRootDirectoryLinkedAsset implements LinkedAsset
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		List<Asset> assets = dependentAssets.value(() -> {
-			List<Asset> dependentAssets = new ArrayList<>();
-			for (Asset assetContainerAsset : assetContainer.assets()) {
-				String thisRequirePath = getPrimaryRequirePath();
-				String assetContainerAssetRequirePath = assetContainerAsset.getPrimaryRequirePath();
-				String[] thisRequirePathChunks = thisRequirePath.split("/");
-				String[] assetContainerAssetRequirePathChunks = assetContainerAssetRequirePath.split("/");
-				if ( thisRequirePath.startsWith(assetContainerAssetRequirePath) && (thisRequirePathChunks.length+1)==assetContainerAssetRequirePathChunks.length ) {
-					dependentAssets.add(assetContainerAsset);
-				}
-			}
-			return dependentAssets;
-		});
-		assets.addAll(implicitDependencies);
-		return assets;
+		return new ArrayList<>(implicitDependencies);
 	}
 
 	@Override
