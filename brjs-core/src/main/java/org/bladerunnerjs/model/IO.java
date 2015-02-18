@@ -37,7 +37,7 @@ public class IO {
 			Class.forName("org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsReader");
 		}
 		catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+			// do nothing since the classes might not be available
 		}
 	}
 }
