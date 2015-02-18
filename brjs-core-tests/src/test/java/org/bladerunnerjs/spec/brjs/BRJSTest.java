@@ -95,26 +95,26 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
-	public void locateAncestorNodeWorksWhenTheModelHasntBeenPrimed() throws Exception {
+	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulated() throws Exception {
 		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js");
 		// we can't check the actual node or talk about any nodes since brjs.app('myApp') etc would cause the node to be discovered and we need to keep an empty node tree
 		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade/src/Class.js"), App.class);
 	}
 	
 	@Test
-	public void locateAncestorNodeWorksWhenTheModelHasntBeenPrimedAndTheFileRepresentsTheNodeType() throws Exception {
+	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulatedAndTheFileRepresentsTheNodeType() throws Exception {
 		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js");
 		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade"), Blade.class);
 	}
 	
 	@Test // this is not a duplicate of the test above even though it may look like it, this test has been seen failing when the above was passing
-	public void locateAncestorNodeWorksWhenTheModelHasntBeenPrimedAndTheFileRepresentsATestPack() throws Exception {
+	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulatedAndTheFileRepresentsATestPack() throws Exception {
 		given(brjs.file("apps/app1/blades/myBlade/test-unit")).containsFile("file.txt");
 		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade/test-unit/file.txt"), TestPack.class);
 	}
 	
 	@Test // this is not a duplicate of the test above even though it may look like it, this test has been seen failing when the above was passing
-	public void locateAncestorNodeWorksWhenTheModelHasntBeenPrimedAndTheFileRepresentsAnSdkNode() throws Exception {
+	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulatedAndTheFileRepresentsAnSdkNode() throws Exception {
 		given(brjs.file("sdk/libs/javascript/br/test-unit")).containsFile("file.txt");
 		then(brjs).ancestorNodeCanBeFound(brjs.file("sdk/libs/javascript/br/test-unit/file.txt"), TestPack.class);
 	}
