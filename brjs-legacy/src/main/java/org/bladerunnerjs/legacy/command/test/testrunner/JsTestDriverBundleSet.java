@@ -18,17 +18,21 @@ public class JsTestDriverBundleSet implements BundleSet {
 		return new JsTestDriverBundlableNode(bundleSet.getBundlableNode());
 	}
 	
-	public List<SourceModule> getSourceModules() {
-		return bundleSet.getSourceModules();
+	@Override
+	public List<Asset> getAssets(String... prefixes)
+	{
+		return bundleSet.getAssets(prefixes);
 	}
 	
-	public List<Asset> getAssets() {
-		return bundleSet.getAssets();
+	@Override
+	public List<Asset> getAssets(List<String> prefixes, List<Class<? extends Asset>> assetTypes)
+	{
+		return bundleSet.getAssets(prefixes, assetTypes);
+	}
+	
+	@Override
+	public List<SourceModule> getSourceModules(String... prefixes) {
+		return bundleSet.getSourceModules();
 	}
 
-	@Override
-	public List<Asset> getAssetsWithRequirePrefix(String... prefixes)
-	{
-		return bundleSet.getAssetsWithRequirePrefix(prefixes);
-	}
 }

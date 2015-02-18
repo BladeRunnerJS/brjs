@@ -56,7 +56,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return (bundleSet.getAssetsWithRequirePrefix("html!").isEmpty()) ? Collections.emptyList() : requestPaths;
+		return (bundleSet.getAssets("html!").isEmpty()) ? Collections.emptyList() : requestPaths;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		}
 		
 		identifiers = new TreeMap<String, Asset>();
-		List<Asset> htmlAssets = bundleSet.getAssetsWithRequirePrefix("html!");
+		List<Asset> htmlAssets = bundleSet.getAssets("html!");
 		
 		List<Reader> readerList = new ArrayList<Reader>();
 		for(Asset htmlAsset : htmlAssets){

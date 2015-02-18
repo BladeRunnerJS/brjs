@@ -29,7 +29,7 @@ public class CssAssetPlugin extends AbstractAssetPlugin {
 			return Collections.emptyList();
 		}
 		
-		if (!requirePrefix.startsWith("css!")) {
+		if (!requirePrefix.contains("!")) {
 			requirePrefix = "css!"+requirePrefix;
 		}
 		

@@ -22,6 +22,7 @@ import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.model.FileAsset;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
@@ -137,7 +138,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 	}
 	
 	private List<Asset> getCssAssets(BundleSet bundleSet) {
-		List<Asset> cssAssets = bundleSet.getAssetsWithRequirePrefix("css!", "theme!");
+		List<Asset> cssAssets = bundleSet.getAssets( Arrays.asList("css!", "theme!"), Arrays.asList(FileAsset.class));
 		orderCssAssets(cssAssets);
 		return cssAssets;
 	}
@@ -145,7 +146,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 	private String getThemeName(Asset cssAsset) {
 		String cssAssetRequirePath = cssAsset.getPrimaryRequirePath();
 		if (cssAssetRequirePath.startsWith("theme!")) {
-			return StringUtils.substringAfter( StringUtils.substringBefore(cssAssetRequirePath, ":"), "css!");
+			return StringUtils.substringAfter( StringUtils.substringBefore(cssAssetRequirePath, ":"), "!");
 		} else {
 			return "common";
 		}

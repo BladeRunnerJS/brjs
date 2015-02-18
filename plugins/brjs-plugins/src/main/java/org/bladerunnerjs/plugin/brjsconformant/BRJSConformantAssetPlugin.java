@@ -158,6 +158,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		List<MemoizedFile> expectedDirs = getSrcDirs(assetContainer);
 		expectedDirs.addAll(getResourceDirs(assetContainer));
 		expectedDirs.addAll(getTestDirs(assetContainer));
+		expectedDirs.addAll(getThemeDirs((assetContainer)));
 		for (MemoizedFile dir : expectedDirs) {
 			if (dir.isDirectory()) {
 				return true;

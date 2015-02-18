@@ -45,7 +45,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return bundleSet.getAssetsWithRequirePrefix("xml!").isEmpty() ? Collections.emptyList() : requestPaths;
+		return bundleSet.getAssets("xml!").isEmpty() ? Collections.emptyList() : requestPaths;
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		}
 		
 		XmlBundleWriter bundleWriter = new XmlBundleWriter(xmlBundlerConfig);
-		List<Asset> xmlAssets = bundleSet.getAssetsWithRequirePrefix("xml!");
+		List<Asset> xmlAssets = bundleSet.getAssets("xml!");
 
 		try{
 			StringWriter bufferedOutput = new StringWriter();
