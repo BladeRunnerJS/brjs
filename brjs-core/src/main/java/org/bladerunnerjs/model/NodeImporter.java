@@ -121,7 +121,7 @@ public class NodeImporter {
     		MockPluginLocator pluginLocator = new MockPluginLocator();
     		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
     		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
-    		brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
+    		brjs = new BRJS(tempSdkDir, tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
 		} finally {
 			org.apache.commons.io.FileUtils.deleteQuietly(tempSdkDir);
 		}

@@ -34,7 +34,8 @@ public class BRJSDevServletFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		try {
 			servletContext = filterConfig.getServletContext();
-			ThreadSafeStaticBRJSAccessor.initializeModel( new File(servletContext.getRealPath("/")) );
+			File brjsDir = new File(servletContext.getRealPath("/"));
+			ThreadSafeStaticBRJSAccessor.initializeModel(brjsDir, brjsDir);
 			
 			try {
 				brjs = ThreadSafeStaticBRJSAccessor.aquireModel();

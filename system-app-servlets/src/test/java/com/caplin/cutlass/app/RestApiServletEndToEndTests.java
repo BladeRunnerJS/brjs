@@ -40,7 +40,7 @@ public class RestApiServletEndToEndTests
 	{
 		File sdkRoot = createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
 		
-		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot );
+		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot, sdkRoot );
 		
 		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
 		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), "");

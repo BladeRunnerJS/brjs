@@ -99,7 +99,7 @@ public class CommandRunner {
 		args = processGlobalCommandFlags(args);
 		
 		try {
-			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir, new File(""));
 			brjs.populate("default");
 			setBrjsAllowStats(brjs);
 		}

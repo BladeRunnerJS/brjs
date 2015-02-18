@@ -40,6 +40,12 @@ public class FileTestBuilder extends SpecTestBuilder {
 		return builderChainer;
 	}
 
+	public BuilderChainer containsFolder(String folderPath) throws Exception {
+		File folder = new File(file, folderPath);
+		folder.mkdir();
+		return builderChainer;
+	}
+	
 	public void isReadOnly()
 	{
 		file.setReadOnly();

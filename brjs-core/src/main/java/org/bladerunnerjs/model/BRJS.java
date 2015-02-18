@@ -79,22 +79,23 @@ public class BRJS extends AbstractBRJSRootNode
 	private final FileModificationRegistry fileModificationRegistry;
 	private final Thread fileWatcherThread;
 	private final JsStyleAccessor jsStyleAccessor = new JsStyleAccessor(this);
-	
-	private WorkingDirNode workingDir;
+
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private boolean closed = false;
 	private CharBufferPool pool = new CharBufferPool();
+
+	private File workingDir;
 	
-	BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+	BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
 		
 		this.appVersionGenerator = appVersionGenerator;
 		this.fileModificationRegistry = new FileModificationRegistry( ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
-		this.workingDir = new WorkingDirNode(this, getMemoizedFile(brjsDir));
-
+		this.workingDir = workingDir;
+		
 		associateAppsFolder(brjsDir);
 		
 		try
@@ -131,21 +132,18 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 
 	private void associateAppsFolder(File brjsDir) {
-		// replace with new file
-		String currentLocation = new File("").getAbsolutePath();
-		File brjsAppsParent = locateApps(currentLocation);
+		File brjsAppsParent = locateApps();
 			
 		if (brjsAppsParent != null) {
 			userApps = new NodeList<>(this, App.class, "brjs-apps", null, null, getMemoizedFile(brjsAppsParent));
-			//System.out.println(appsContainer + "/brjs-apps");
 		}
 		else {
 			userApps = new NodeList<>(this, App.class, "apps", null); 
 		}
 	}
 	
-	private File locateApps(String location) {
-		File currentFolder = new File(location);
+	private File locateApps() {
+		File currentFolder = workingDir;
 		while(currentFolder != null) {
 			File brjsApps = new File(currentFolder, "brjs-apps");
 			if (brjsApps.exists()) {
@@ -226,14 +224,6 @@ public class BRJS extends AbstractBRJSRootNode
 		if (bundlableNode == null) throw new InvalidBundlableNodeException( dir().getRelativePath( getMemoizedFile(file) ) );
 		
 		return bundlableNode;
-	}
-	
-	public WorkingDirNode workingDir() {
-		return workingDir;
-	}
-	
-	public void setWorkingDir(MemoizedFile workingDir) {
-		this.workingDir = new WorkingDirNode(this, workingDir);
 	}
 	
 	@Override

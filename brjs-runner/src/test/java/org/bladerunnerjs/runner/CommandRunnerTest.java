@@ -236,7 +236,7 @@ public class CommandRunnerTest {
 	public void newInstallEventIsEmittedIfYesIsAnsweredToStatsCollection() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	
@@ -251,7 +251,7 @@ public class CommandRunnerTest {
 	public void newInstallEventIsNotEmittedIfNoIsAnsweredToStatsCollection() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	
@@ -266,7 +266,7 @@ public class CommandRunnerTest {
 	public void newInstallEventIsNotEmittedIfThereIsNoStdin_egBrjsIsExecutedFromScripts() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(BundleSetCreatedEvent.class, mockEventObserver);
 	
@@ -280,7 +280,7 @@ public class CommandRunnerTest {
 	public void newInstallEventIsEmittedIfStatsFlagIsUsed() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	
@@ -294,7 +294,7 @@ public class CommandRunnerTest {
 	public void newInstallEventIsNotEmittedIfNoStatsFlagIsUsed() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	

@@ -29,7 +29,7 @@ public class MemoizedValueTest {
 		watchFile = new File(sdkDir, "watch-file");
 		
 		sdkDir.mkdir();
-		brjs = BRJSTestModelFactory.createModel(sdkDir, new MockPluginLocator(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator());
+		brjs = BRJSTestModelFactory.createModel(sdkDir, sdkDir, new MockPluginLocator(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator());
 	}
 
 	@After

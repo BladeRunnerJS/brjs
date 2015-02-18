@@ -1,5 +1,9 @@
 package org.bladerunnerjs.spec.brjs;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.NamedDirNode;
@@ -119,5 +123,28 @@ public class BRJSTest extends SpecTest {
 	public void locateAncestorNodeWorksReturnsNullIfTheNodeOfTheRequiredTypeCannotBeFound() throws Exception {
 		given(brjs).containsFile("apps/file.txt");
 		then(brjs).ancestorNodeCannotBeFound(brjs.file("apps/file.txt"), App.class);
+	}
+	
+	@Test
+	public void brjsAppsFolderIsTheAppsFolderIfParallelToAppsFolder() throws Exception {
+		given(testSdkDirectory).containsFolder("brjs-apps")
+			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
+		when(brjs.app("app1BrjsApps")).create();
+		then(brjs).hasDir("brjs-apps/app1BrjsApps");	
+		deleteCreatedBrjsAppsDirFromTemp(testSdkDirectory);
+	}
+	
+	@Test
+	public void brjsAppsFolderIsTheAppsFolderIfInAppsFolderAncestor() throws Exception {
+		given(testSdkDirectory.getParentFile()).containsFolder("brjs-apps")
+			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
+		when(brjs.app("app1BrjsApps")).create();
+		then(brjs.dir().getParentFile()).containsDir("brjs-apps/app1BrjsApps");	
+		deleteCreatedBrjsAppsDirFromTemp(testSdkDirectory.getParentFile());
+	}
+	
+	public void deleteCreatedBrjsAppsDirFromTemp(File parentDir) throws IOException {
+		File tempBrjsApps = new File (parentDir, "brjs-apps");
+		FileUtils.deleteDirectory(tempBrjsApps);
 	}
 }

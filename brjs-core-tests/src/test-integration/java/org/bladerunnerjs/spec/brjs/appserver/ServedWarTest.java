@@ -230,7 +230,7 @@ public class ServedWarTest extends SpecTest {
 		warServer = new Server(appServerPort);
         WebAppContext webapp = new WebAppContext();
         webapp.setContextPath("/");
-        webapp.setWar(brjs.workingDir().file("app1.war").getAbsolutePath());
+        webapp.setWar(brjs.file("app1.war").getAbsolutePath());
         warServer.setHandler(webapp);
         new EnvEntry(warServer, "SOME.TOKEN", "some token replacement", false);
  
