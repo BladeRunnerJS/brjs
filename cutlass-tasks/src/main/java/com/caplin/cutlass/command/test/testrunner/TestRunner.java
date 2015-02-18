@@ -277,7 +277,7 @@ public class TestRunner {
 		String xmlTestResultFileContent = IOUtils.toString(new FileInputStream(xmlTestResultFile));
 		String newTestSuite = xmlTestResultFile.getName().replace("TEST-", "");
 		newTestSuite = newTestSuite.replace(".xml", "");
-		xmlTestResultFileContent = xmlTestResultFileContent.replaceAll("(.*testsuite name=\")(\\S*)(\".*)", "$1" + newTestSuite + "$3");
+		xmlTestResultFileContent = xmlTestResultFileContent.replaceAll("(.*testsuite name=\")(.*)(\".*)", "$1" + newTestSuite + "$3");
 		FileOutputStream xmlFileStream = new FileOutputStream(xmlTestResultFile, false);
 		xmlFileStream.write(xmlTestResultFileContent.getBytes());
 		xmlFileStream.close();
