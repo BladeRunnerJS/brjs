@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,12 +19,14 @@ import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 
 public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	
-	private final AssetContainer assetContainer;
+	private final BundlableNode bundlableNode;
 	private AliasDefinition aliasDefinition;
+	private String requirePath;
 	
-	public AliasCommonJsSourceModule(AssetContainer assetLocation, AliasDefinition aliasDefinition) {
-		this.assetContainer = assetLocation;
+	public AliasCommonJsSourceModule(BundlableNode bundlableNode, AliasDefinition aliasDefinition) {
+		this.bundlableNode = bundlableNode;
 		this.aliasDefinition = aliasDefinition;
+		this.requirePath = calculateRequirePath(aliasDefinition);
 	}
 	
 	public AliasDefinition getAliasDefinition() {
@@ -58,30 +61,27 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public MemoizedFile file() {
-		return assetContainer.dir();
+		return bundlableNode.dir();
 	}
 
 	@Override
 	public String getAssetName() {
-		return getPrimaryRequirePath();
+		return aliasDefinition.getName();
 	}
 
 	@Override
 	public String getAssetPath() {
-		return getPrimaryRequirePath();
+		return "alias!"+getAssetName();
 	}
 
 	@Override
 	public List<String> getRequirePaths() {
-		List<String> requirePaths = new ArrayList<>();
-		requirePaths.add(getPrimaryRequirePath());
-		
-		return requirePaths;
+		return Arrays.asList(requirePath);
 	}
 
 	@Override
 	public String getPrimaryRequirePath() {
-		return "alias!" + aliasDefinition.getName();
+		return requirePath;
 	}
 
 	@Override
@@ -106,7 +106,9 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 				dependencies.add(bundlableNode.getLinkedAsset("br/Core"));
 				dependencies.add(bundlableNode.getLinkedAsset("br/AliasInterfaceError"));
 				dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
-				dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getInterfaceRequirePath()));
+				if (aliasDefinition.getInterfaceRequirePath() != null) {
+					dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getInterfaceRequirePath()));
+				}
 			}
 			
 			return dependencies;
@@ -149,6 +151,10 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	@Override
 	public AssetContainer assetContainer()
 	{
-		return assetContainer;
+		return bundlableNode;
+	}
+	
+	public static String calculateRequirePath(AliasDefinition alias) {
+		return "alias!"+alias.getName();
 	}
 }

@@ -1,8 +1,13 @@
 package org.bladerunnerjs.plugin.bundlers.aliasing;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 
@@ -15,7 +20,7 @@ public class AliasingUtility
 	public static AliasesFile aliasesFile(BundlableNode bundlableNode) {
 		AliasesFile aliasesFile = aliasFiles.get(bundlableNode);
 		if(aliasesFile == null) {
-			aliasesFile = new AliasesFile(bundlableNode.file("resources/aliases.xml"), bundlableNode);
+			aliasesFile = new AliasesFile(bundlableNode);
 			aliasFiles.put(bundlableNode, aliasesFile);
 		}
 		return aliasesFile;
@@ -29,10 +34,31 @@ public class AliasingUtility
 		
 		AliasDefinitionsFile aliasDefinitionsFile = assetContainerAliasDefinitionFiles.get(path);
 		if(aliasDefinitionsFile == null) {
-			aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, assetContainer.file(path+"/resources/aliases.xml"));
+			aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, assetContainer.file(path));
 			assetContainerAliasDefinitionFiles.put(path, aliasDefinitionsFile);
 		}
 		return aliasDefinitionsFile;
+	}
+	
+	public static List<AliasDefinitionsFile> aliasDefinitionFiles(BundlableNode bundlableNode) {
+		List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
+		
+		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
+			for ( MemoizedFile assetContainerAliasDir : Arrays.asList(assetContainer.file("src"), assetContainer.file("resources")) ) {
+				List<MemoizedFile> aliasDirs = new ArrayList<>();
+				aliasDirs.add(assetContainerAliasDir);
+				aliasDirs.addAll(assetContainerAliasDir.nestedDirs());
+				
+    			for (MemoizedFile aliasDefinitionsDir : aliasDirs) {
+    				AliasDefinitionsFile aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, aliasDefinitionsDir);
+    				if (aliasDefinitionsFile.getUnderlyingFile().isFile()) {
+    					aliasDefinitionFiles.add(aliasDefinitionsFile);
+    				}
+    			}
+			}
+		}
+		
+		return aliasDefinitionFiles;
 	}
 	
 }

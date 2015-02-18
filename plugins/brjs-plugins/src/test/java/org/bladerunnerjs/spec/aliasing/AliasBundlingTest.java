@@ -61,6 +61,9 @@ public class AliasBundlingTest extends SpecTest {
 			bladeAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(blade, "src"));
 			worbenchAliasesFileBuilder = new AliasesFileBuilder(this, worbenchAliasesFile);
 			brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
+			
+			
+			given(brLib).hasClasses("br/AliasRegistry", "br/ServiceRegistry", "br/Core", "br/UnknownClass", "br/AliasInterfaceError");
 	}
 	
 	// SDK AliasDefinitions
@@ -134,7 +137,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void incompleteServiceClassesReferencedByACommonJsSourceModuleCauseTheAliasToBeIncludedInTheBundle() throws Exception {
-		given(brLib).hasClasses("br/ServiceRegistry", "br/Core", "br/UnknownClass", "br/AliasInterfaceError", "br/Class2", "br/Interface")
+		given(brLib).hasClass("br/Interface")
 			.and(brLibAliasDefinitionsFileBuilder).hasIncompleteAlias("br.service", "br/Interface")
 			.and(aspect).hasCommonJsPackageStyle()
 			.and(aspect).classRequires("Class1", "service!br.service")
@@ -416,7 +419,6 @@ public class AliasBundlingTest extends SpecTest {
 		given(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/Class3")
 			.and(aspect).classRequires("appns/Class1", "alias!the-alias")
 			.and(aspect).classRequires("appns/Class2", "alias!the-alias")
-			.and(brLib).hasClass("br/AliasRegistry")
 			.and(aspectAliasesFileBuilder).hasAlias("the-alias", "appns.Class3")
 			.and(aspect).indexPageRequires("appns/Class1", "appns/Class2", "br/AliasRegistry"); 
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
@@ -445,8 +447,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test // Note: this test was written in an attempt to exactly replicate a bug we were seeing in the product
 	public void workbenchesThatRequestTheDevScenarioArentInsteadGivenANonDevNamedGroupInstead() throws Exception {
-		given(brLib).hasClasses("br/AliasRegistry", "br/ServiceRegistry", "br/Core", "br/UnknownClass", "br/AliasInterfaceError")
-			.and(brLib).hasClasses("br/Interface", "br/DevScenarioClass", "br/GroupProductionClass")
+		given(brLib).hasClasses("br/Interface", "br/DevScenarioClass", "br/GroupProductionClass")
 			.and(brLibAliasDefinitionsFileBuilder).hasIncompleteAlias("br.service", "br/Interface")
 			.and(brLibAliasDefinitionsFileBuilder).hasScenarioAlias("dev", "br.service", "br/DevScenarioClass")
 			.and(brLibAliasDefinitionsFileBuilder).hasGroupAlias("br.g1", "br.service", "br/GroupProductionClass")

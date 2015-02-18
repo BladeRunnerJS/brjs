@@ -28,7 +28,6 @@ public class BladeTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).automaticallyFindsAssetPlugins()
-			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			bladeset = app.bladeset("bs");

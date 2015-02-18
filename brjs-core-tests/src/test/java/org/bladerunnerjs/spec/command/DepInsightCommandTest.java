@@ -31,7 +31,6 @@ public class DepInsightCommandTest extends SpecTest {
 	{
 		given(brjs).hasCommandPlugins(new DepInsightCommand())
 			.and(brjs).automaticallyFindsAssetPlugins()
-			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");

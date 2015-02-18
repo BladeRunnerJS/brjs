@@ -1,5 +1,6 @@
 package org.bladerunnerjs.plugin.bundlers.aliasing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -13,9 +14,9 @@ public class AliasesFile {
 	private final BundlableNode bundlableNode;
 	private final PersistentAliasesData persistentAliasesData;
 	
-	public AliasesFile(MemoizedFile file, BundlableNode bundlableNode) {
+	public AliasesFile(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
-		this.file = file;
+		this.file = bundlableNode.file("resources/aliases.xml");
 		persistentAliasesData = new PersistentAliasesData(bundlableNode.root(), file);
 	}
 	
@@ -48,6 +49,20 @@ public class AliasesFile {
 		aliasOverrides.add(aliasOverride);
 		persistentAliasesData.getData().aliasOverrides = aliasOverrides;
 	}
+	
+	public List<AliasDefinition> getAliases() throws ContentFileProcessingException, AliasException {
+		List<AliasDefinition> aliases = new ArrayList<>();
+		for (AliasDefinitionsFile aliaseDefinitionsFile: AliasingUtility.aliasDefinitionFiles(bundlableNode) ) {
+			for (String aliasName : aliaseDefinitionsFile.aliasNames()) {
+				aliases.add(getAliasDefinition(aliasName));
+			}
+		}
+		for (AliasOverride aliasOverride : aliasOverrides()) {
+			aliases.add( getAlias(aliasOverride.getName() ));
+		}
+		return aliases;
+	}
+	
 	
 	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
 		AliasOverride aliasOverride = getLocalAliasOverride(aliasName);
@@ -97,19 +112,18 @@ public class AliasesFile {
 		String scenarioName = scenarioName();
 		List<String> groupNames = groupNames();
 		
-		//TODO: fix me after mega commit
-//		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.aliasDefinitionFiles()) {
-//			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
-//
-//			if (nextAliasDefinition != null)
-//			{    			
-//    			if (aliasDefinition != null && nextAliasDefinition != null) {
-//    				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, scenarioName);
-//    			}
-//			
-//				aliasDefinition = nextAliasDefinition;
-//			}
-//		}
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.aliasDefinitionFiles(bundlableNode)) {
+			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
+
+			if (nextAliasDefinition != null)
+			{    			
+    			if (aliasDefinition != null && nextAliasDefinition != null) {
+    				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, scenarioName);
+    			}
+			
+				aliasDefinition = nextAliasDefinition;
+			}
+		}
 		
 		return aliasDefinition;
 	}
@@ -135,22 +149,17 @@ public class AliasesFile {
 		AliasOverride aliasOverride = null;
 		List<String> groupNames = groupNames();
 		
-		//TODO: fix me after mega commit
-//		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.aliasDefinitionFiles()) {
-//			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
-//			
-//			
-//			
-//			if(aliasOverride != null && nextAliasOverride != null) {
-//				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, groupNames);
-//			}
-//			
-//			if (nextAliasOverride != null)
-//			{
-//				aliasOverride = nextAliasOverride;
-//			}
-//
-//		}
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.aliasDefinitionFiles(bundlableNode)) {
+			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
+			if(aliasOverride != null && nextAliasOverride != null) {
+				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, groupNames);
+			}
+			
+			if (nextAliasOverride != null)
+			{
+				aliasOverride = nextAliasOverride;
+			}
+		}
 		
 		return aliasOverride;
 	}

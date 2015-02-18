@@ -36,7 +36,6 @@ public class BundleDepsCommandTest extends SpecTest {
 	{
 		given(brjs).hasCommandPlugins(new BundleDepsCommand())
 			.and(brjs).automaticallyFindsAssetPlugins()
-			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");

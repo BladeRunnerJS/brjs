@@ -14,8 +14,8 @@ public class AliasDefinitionsFile {
 	private final MemoizedFile aliasDefinitionsFile;
 	private final PersistentAliasDefinitionsData persistentAliasDefinitionsData;
 	
-	public AliasDefinitionsFile(AssetContainer assetContainer, MemoizedFile file) {
-		aliasDefinitionsFile = file;
+	public AliasDefinitionsFile(AssetContainer assetContainer, MemoizedFile dir) {
+		aliasDefinitionsFile = dir.file("aliasDefinitions.xml");
 		persistentAliasDefinitionsData = new PersistentAliasDefinitionsData(assetContainer, aliasDefinitionsFile);
 	}
 	
