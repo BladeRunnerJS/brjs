@@ -21,17 +21,10 @@ module.exports = {
 		var path = urlParser.pathname;
 		var query = urlParser.search;
 		var hash = urlParser.hash;
-		var normalizedPath = path.replace(/^\/?(.*)/, '/$1').replace(/\/$/, '');
+		var fullyQualifiedPath = path.match(/\.html$/);
+		var normalizedPath = path.replace(/^\/?(.*?)(\/|\/index\.html)?$/, '/$1');
+		var localizedPath = normalizedPath + '/' + locale + ((fullyQualifiedPath) ? '.html' : '');
 
-		if (normalizedPath.indexOf('.html') !== -1) {
-			normalizedPath = normalizedPath.split('/');
-			normalizedPath.splice(-1, 0, locale);
-			normalizedPath = normalizedPath.join('/');
-		}
-		else {
-			normalizedPath = normalizedPath + '/' + locale;
-		}
-
-		return protocol + '//' + host + normalizedPath + query + hash;
+		return protocol + '//' + host + localizedPath + query + hash;
 	}
 };
