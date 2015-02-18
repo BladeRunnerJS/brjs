@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -55,10 +56,11 @@ public class BuilderChainer {
 	public AspectBuilder and(Aspect aspect) { return new AspectBuilder(specTest, aspect); }
 	public AssetContainerBuilder<Bladeset> and(Bladeset bladeset) { return new BladesetBuilder(specTest, bladeset); }
 	public AssetContainerBuilder<Blade> and(Blade blade) { return new BladeBuilder(specTest, blade); }
-	public WorkbenchBuilder and(Workbench workbench) { return new WorkbenchBuilder(specTest, workbench); }
+	public WorkbenchBuilder and(Workbench<?> workbench) { return new WorkbenchBuilder(specTest, workbench); }
 	public JsLibBuilder and(JsLib jsLib) { return new JsLibBuilder(specTest, jsLib); }
 	public DirNodeBuilder and(DirNode dirNode) { return new DirNodeBuilder(specTest, dirNode); }
 	public NamedDirNodeBuilder and(NamedDirNode namedDirNode) { return new NamedDirNodeBuilder(specTest, namedDirNode); }
+	public TemplateGroupBuilder and(TemplateGroup templateGroup) { return new TemplateGroupBuilder(specTest, templateGroup); }
 	public LoggerBuilder and(LogMessageStore logStore) { return new LoggerBuilder(specTest, logStore); }
 	public NodeObserverBuilder and(EventObserver observer) { return new NodeObserverBuilder(specTest, observer); }
 	public AppServerBuilder and(ApplicationServer appServer) { return new AppServerBuilder(specTest, appServer); }

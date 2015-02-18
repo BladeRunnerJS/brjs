@@ -1,0 +1,30 @@
+#!/bin/sh
+
+displayJavaInstallMessage() {
+	echo "$1"
+	echo "Please install Java 7 or Java 8 and ensure it's available on the path."
+	echo "You can find more information about how to do this at http://bladerunnerjs.org/docs/use/install/."
+	exit 1
+}
+
+if [ -z "`which java`" ]; then
+	displayJavaInstallMessage "Java is either not installed or not available on the path."
+fi
+
+JAVA_VERSION=`java -version 2>&1 | head -n 1 | sed -E "s/^.*\"([^\"]+).*$/\1/"`
+JAVA_VERSION_INT=`echo $JAVA_VERSION | sed -E "s/^([0-9]+)\.([0-9]+).*$/\1\2/"`
+
+if [ $JAVA_VERSION_INT -le 16 ]; then
+	displayJavaInstallMessage "Java $JAVA_VERSION is not new enough to run BladeRunnerJS."
+fi
+
+SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
+BRJS_CLASSPATH="$SCRIPT_DIR/libs/java/system/*:$SCRIPT_DIR/../conf/java/*"
+
+if [ "$(echo $(uname -s) | cut -c 1-6)" = "CYGWIN" ]; then
+	# Cygwin version
+	java $JAVA_OPTS -cp "`cygpath -wp $BRJS_CLASSPATH`" org.bladerunnerjs.runner.CommandRunner "`cygpath -wp $SCRIPT_DIR`" "$@"
+else
+	# UNIX & GitBash version
+	java $JAVA_OPTS -cp "$BRJS_CLASSPATH" org.bladerunnerjs.runner.CommandRunner "$SCRIPT_DIR" "$@"
+fi

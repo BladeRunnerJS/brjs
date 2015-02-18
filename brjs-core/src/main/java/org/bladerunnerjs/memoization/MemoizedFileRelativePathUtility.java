@@ -30,7 +30,7 @@ class MemoizedFileRelativePathUtility
      * @throws Exception for undocumented reasons
      *
      */
-	private static String getRelativePath(String fromFileCanonicalPath, String toFileCanonicalPath) {
+	static String getRelativePath(String fromFileCanonicalPath, String toFileCanonicalPath) {
 
         // build the path stack info to compare
         String[] fromPathStack = getPathStack(fromFileCanonicalPath);

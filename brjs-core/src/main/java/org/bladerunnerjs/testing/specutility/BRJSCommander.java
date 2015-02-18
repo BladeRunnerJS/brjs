@@ -28,7 +28,7 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 	public CommanderChainer populate() throws Exception {
 		call(new Command() {
 			public void call() throws Exception {
-				brjs.populate();
+				brjs.populate("default");
 			}
 		});
 		

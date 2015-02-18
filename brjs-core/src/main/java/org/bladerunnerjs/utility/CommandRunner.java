@@ -1,6 +1,8 @@
 package org.bladerunnerjs.utility;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
@@ -10,13 +12,15 @@ import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class CommandRunner
 {
-	public static int run(CommandList commandList, String args[]) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
+	public static int run(BRJS brjs, CommandList commandList, String args[]) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
 	{
 		String commandName = extractCommandFromArgs(args);
 		String[] commandArgs = extractCommandArgsFromArgs(args);
 		CommandPlugin commandPlugin = commandList.lookupCommand(commandName);
 		
 		if(commandPlugin == null) throw new NoSuchCommandException(commandName);
+		
+		brjs.notifyObservers(new CommandExecutedEvent("cli", commandName, commandArgs), brjs);
 		
 		return commandPlugin.doCommand(commandArgs);
 	}

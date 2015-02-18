@@ -84,9 +84,9 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		{
 			throw new CommandOperationException("Error creating directory for compiled tests.", ex);
 		}
-		if (classesRoot.exists()) 
-		{
+		finally {
 			FileUtils.deleteQuietly(brjs, classesRoot);
+			org.apache.commons.io.FileUtils.deleteQuietly(classesRoot);
 		}
 		
 		List<File> testContainerDirs = new IntegrationTestFinder().findTestContainerDirs(brjs, testRoot, ignoreWorkbenches(args));
@@ -144,11 +144,11 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		System.out.flush();
 	}
 	
-	private void validateArguments(String[] args) throws CommandOperationException
+	private void validateArguments(String[] args) throws CommandArgumentsException
 	{
 		if (args.length < 1)
 		{
-			throw new CommandOperationException("Invalid arguments provided.");
+			throw new CommandArgumentsException("Invalid arguments provided.", this);
 		}
 	}
 	

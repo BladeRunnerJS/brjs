@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
@@ -26,7 +26,7 @@ import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.utility.JsStyleUtility;
+import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.ZipUtility;
 import org.mockito.Mockito;
 
@@ -40,21 +40,25 @@ public class NodeImporter {
 		BRJS tempBrjs = createTemporaryBRJSModel();
 		
 		File temporaryUnzipDir = FileUtils.createTemporaryDirectory( NodeImporter.class, targetApp.getName() );
-		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
-		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
-		if (temporaryUnzipDirFiles.length != 1) {
-			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
+		try {
+    		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
+    		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
+    		if (temporaryUnzipDirFiles.length != 1) {
+    			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
+    		}
+    		
+    		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
+    		File unzippedAppDir = temporaryUnzipDirFiles[0];
+    		FileUtils.moveDirectory(tmpBrjsSourceApp, unzippedAppDir, tmpBrjsSourceApp.dir());
+    		
+    		File unzippedLibDir = tmpBrjsSourceApp.file("WEB-INF/lib");
+    		FileUtils.copyDirectory(targetApp, targetApp.root().appJars().dir(), unzippedLibDir);
+    		
+    		String sourceAppName = unzippedAppDir.getName();
+    		importApp(tempBrjs, sourceAppName, tmpBrjsSourceApp, targetApp, targetAppRequirePrefix);
+		} finally {
+			org.apache.commons.io.FileUtils.deleteQuietly(temporaryUnzipDir);
 		}
-		
-		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
-		File unzippedAppDir = temporaryUnzipDirFiles[0];
-		FileUtils.moveDirectory(tmpBrjsSourceApp, unzippedAppDir, tmpBrjsSourceApp.dir());
-		
-		File unzippedLibDir = tmpBrjsSourceApp.file("WEB-INF/lib");
-		FileUtils.copyDirectory(targetApp, targetApp.root().appJars().dir(), unzippedLibDir);
-		
-		String sourceAppName = unzippedAppDir.getName();
-		importApp(tempBrjs, sourceAppName, tmpBrjsSourceApp, targetApp, targetAppRequirePrefix);
 	}
 	
 	public static void importApp(BRJS tempBrjs, String oldAppName, App sourceApp, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
@@ -73,17 +77,22 @@ public class NodeImporter {
 		for(Bladeset bladeset : tempBrjsApp.bladesets()) {
 			renameBladeset(bladeset, sourceAppRequirePrefix, sourceAppRequirePrefix + "/" + bladeset.getName());
 		}
-		
+
 		File jettyEnv = tempBrjsApp.file("WEB-INF/jetty-env.xml");
 		if (jettyEnv.isFile()) {
 			String prefixAndSuffixRegex = "([ /;])";
-			Map<String,String> findReplaceMap = ImmutableMap.of( prefixAndSuffixRegex+oldAppName+prefixAndSuffixRegex, "$1"+targetApp.getName()+"$2" );
-			findAndReplaceInTextFile(tempBrjs, jettyEnv, findReplaceMap);
+			String jettyEnvContent = org.apache.commons.io.FileUtils.readFileToString(jettyEnv);
+			Matcher matcher = Pattern.compile(prefixAndSuffixRegex+oldAppName+prefixAndSuffixRegex).matcher(jettyEnvContent);
+			if (matcher.find()) {
+				findAndReplaceInTextFile(tempBrjs, jettyEnv, prefixAndSuffixRegex+oldAppName+prefixAndSuffixRegex, matcher.group(1)+targetApp.getName()+matcher.group(2));
+			}
+			else {
+				//do nothing - we are still keeping the old file content
+			}
 		}
 		
 		FileUtils.moveDirectory(tempBrjsApp.dir(), targetApp.dir());
 	}
-	
 	
 	public static void importBladeset(Bladeset sourceBladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix, Bladeset targetBladeset) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		MemoizedFile sourceBladesetDir = sourceBladeset.dir();
@@ -96,8 +105,8 @@ public class NodeImporter {
 		tempBrjsApp.appConf().setRequirePrefix(targetBladeset.app().getRequirePrefix());
 		
 		BRJS brjs = targetBladeset.root();
-		if(!JsStyleUtility.getJsStyle(brjs, sourceBladesetDir).equals(JsStyleUtility.getJsStyle(brjs, targetBladeset.dir()))) {
-			JsStyleUtility.setJsStyle(tempBrjsBladeset.root(), tempBrjsBladeset.dir(), JsStyleUtility.getJsStyle(brjs, sourceBladesetDir));
+		if(!brjs.jsStyleAccessor().getJsStyle(sourceBladesetDir).equals(brjs.jsStyleAccessor().getJsStyle(targetBladeset.dir()))) {
+			tempBrjsBladeset.root().jsStyleAccessor().setJsStyle(tempBrjsBladeset.dir(), brjs.jsStyleAccessor().getJsStyle(sourceBladesetDir));
 		}
 		
 		renameBladeset(tempBrjsBladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix);
@@ -105,14 +114,17 @@ public class NodeImporter {
 	}
 	
 	private static BRJS createTemporaryBRJSModel() throws InvalidSdkDirectoryException, IOException {
+		BRJS brjs;
 		File tempSdkDir = FileUtils.createTemporaryDirectory(NodeImporter.class);
-		new File(tempSdkDir, "sdk").mkdir();
-		MockPluginLocator pluginLocator = new MockPluginLocator();
-		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
-		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
-		
-		BRJS brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
-		
+		try {
+    		new File(tempSdkDir, "sdk").mkdir();
+    		MockPluginLocator pluginLocator = new MockPluginLocator();
+    		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
+    		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
+    		brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
+		} finally {
+			org.apache.commons.io.FileUtils.deleteQuietly(tempSdkDir);
+		}
 		return brjs;
 	}
 	
@@ -126,7 +138,7 @@ public class NodeImporter {
 			
 			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 			
-			Workbench workbench = blade.workbench();			
+			BladeWorkbench workbench = blade.workbench();			
 			updateRequirePrefix(workbench, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
 		}
 	}
@@ -162,7 +174,6 @@ public class NodeImporter {
 		}
 	}
 	
-	
 	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
 		IOFileFilter dontMatchWebInfDirFilter = new NotFileFilter( new NameFileFilter("WEB-INF") );
@@ -172,40 +183,46 @@ public class NodeImporter {
 	
 	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
-		HashMap<String, String> replaceMap = getReplaceMap(sourceRequirePrefix, targetRequirePrefix);
 		for (File f : files) {
-			findAndReplaceInTextFile(brjs, f, replaceMap);
+			findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
 		}
 	}
 	
-	private static void findAndReplaceInTextFile(BRJS brjs, File file, Map<String,String> findReplaceValues) throws IOException
+	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException
 	{
 		String content = org.apache.commons.io.FileUtils.readFileToString(file);
-		String updatedContent = findAndReplaceInText(content, findReplaceValues);
+		String updatedContent = findAndReplaceInText(content, oldRequirePrefix, newRequirePrefix);
 		
 		if(content != updatedContent) {
 			FileUtils.write(brjs, file, updatedContent);
 		}
 	}
 	
-	private static HashMap<String, String> getReplaceMap(String oldRequirePrefix, String newRequirePrefix) {
-		HashMap<String,String> replaceMap = new HashMap<String,String>();
-		String oldNamespace = oldRequirePrefix.replace('/', '.');
-		String newNamespace = newRequirePrefix.replace('/', '.');
-		
-		replaceMap.put("^" + oldNamespace, newNamespace);
-		replaceMap.put("([\\W_])"+Pattern.quote(oldNamespace), "$1" + newNamespace.replace("$", "\\$"));
-		replaceMap.put("([\\W_])"+Pattern.quote(oldRequirePrefix), "$1" + newRequirePrefix.replace("$", "\\$"));
-		
-		return replaceMap;
-	}
-	
-	private static String findAndReplaceInText(String content, Map<String,String> replaceMap) {
-		for (String find : replaceMap.keySet())
-		{
-			String replace = replaceMap.get(find);
-			content = content.replaceAll(find, replace);	
+	static String findAndReplaceInText(String content, String oldRequirePrefix, String newRequirePrefix) {
+		if (oldRequirePrefix.endsWith("default")) { 
+			oldRequirePrefix = oldRequirePrefix.substring(0, oldRequirePrefix.length() - "default".length() - 1);
 		}
-		return content;
+		String newNamespace = newRequirePrefix.replace('/', '.');
+		Matcher matcher = Pattern.compile("(^|[\\W_])" + oldRequirePrefix.replace("/", "[./]")).matcher(content);
+		StringBuffer newContent = new StringBuffer();
+		int startPos = 0;
+		
+		while(matcher.find(startPos)) { 
+			String matchedStr = matcher.group();
+			newContent.append(content.substring(startPos, matcher.start()));
+			if (matchedStr.contains("/")) {
+				newContent.append(matcher.group(1) + newRequirePrefix);
+			}
+			else if (content.substring(matcher.end()).startsWith("/")) {
+				newContent.append(matcher.group(1) + newRequirePrefix);
+			}
+			else {
+				newContent.append(matcher.group(1) + newNamespace);
+			}
+			startPos = matcher.end();
+		}
+		newContent.append(content.substring(startPos));
+		
+		return newContent.toString();
 	}
 }

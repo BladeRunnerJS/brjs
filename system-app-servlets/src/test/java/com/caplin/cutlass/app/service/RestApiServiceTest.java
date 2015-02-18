@@ -15,13 +15,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.utility.FileUtils;
 
 
-public class RestApiServiceTest extends TestModelAccessor
+public class RestApiServiceTest
 {
 
 	private static final String NO_APPS_PATH = "src/test/resources/RestApiServiceTest/no-apps"; 
@@ -347,7 +347,7 @@ public class RestApiServiceTest extends TestModelAccessor
 	
 	private void setupService(File sdkRoot) throws InvalidSdkDirectoryException
 	{
-		BRJS brjs = createModel(sdkRoot);
+		BRJS brjs = BRJSTestModelFactory.createModel(sdkRoot);
 		ThreadSafeStaticBRJSAccessor.destroy();
 		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		service = new RestApiService(brjs);

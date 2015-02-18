@@ -60,4 +60,13 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 		return brjs.conf().file("brjs.conf");
 	}
 	
+	public Boolean getAllowAnonymousStats() throws ConfigException {
+		return getConf().allowAnonymousStats;
+	}
+	
+	public void setAllowAnonymousStats(boolean allow) throws ConfigException {
+		getConf().allowAnonymousStats = allow;
+		verify();
+	}
+	
 }

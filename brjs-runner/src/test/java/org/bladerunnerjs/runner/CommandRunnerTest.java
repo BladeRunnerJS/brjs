@@ -1,16 +1,24 @@
 package org.bladerunnerjs.runner;
 
 import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
+import org.bladerunnerjs.model.events.NewInstallEvent;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.runner.CommandRunner;
 import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
@@ -29,6 +37,7 @@ public class CommandRunnerTest {
 	private File tempDir;
 	
 	private PrintStream oldSysOut;
+	private InputStream oldSysIn;
 	
 	@Before
 	public void setUp() throws IOException, InvalidSdkDirectoryException {
@@ -38,12 +47,15 @@ public class CommandRunnerTest {
 		tempDir = FileUtils.createTemporaryDirectory( getClass() );
 		ThreadSafeStaticBRJSAccessor.destroy();
 		oldSysOut = System.out;
+		oldSysIn = System.in;
+		System.setIn(new ByteArrayInputStream("".getBytes()));
 		System.setOut( new PrintStream(systemOutputStream) );
 	}
 	
 	@After
 	public void tearDown() {
 		System.setOut( oldSysOut );		
+		System.setIn( oldSysIn );
 	}
 	
 	
@@ -65,12 +77,14 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void theCommandIsExecutedWhenAValidDirectoryIsProvided() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory")});
 	}
 	
 	@Test
 	public void builtInCommandsShowWarnLevelLogLinesByDefault() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
 		
@@ -82,6 +96,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void consoleLoggingIsAlwaysVisible() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
 		
@@ -91,6 +106,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void verboseLogLinesCanBeEnabled() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--info"});
 		
@@ -102,6 +118,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void debugLogLinesCanBeEnabled() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--debug"});
 		
@@ -113,6 +130,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void externalCommandsDontShowAnyLogsEvenWhenDebugLoggingIsUsed() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--debug"});
 		
@@ -123,6 +141,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabled() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "org.other, org.external", "--info"});
 		
@@ -134,6 +153,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabledViaWildcard() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "ALL", "--info"});
 		
@@ -145,6 +165,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void errorsAndWarningsForAllPackagesAreDisplayedEvenIfNotLoggingThatPackage() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--info"});
 		
@@ -157,6 +178,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void theClassResponsibleForEachLogLineCanBeDisplayed() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--show-pkg"});
 		
@@ -166,6 +188,7 @@ public class CommandRunnerTest {
 	
 	@Test
 	public void nonLogArgumentsAreReceivedCorrectly() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "arg1", "arg2", "--info"});
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "argX", "--info", "--show-pkg"});
@@ -178,6 +201,7 @@ public class CommandRunnerTest {
 	@Test
 	public void warningIsPrintedIfTheServletJarIsOutdated() throws Exception
 	{
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		dirFile("valid-sdk-directory/sdk/libs/java").mkdirs();
 		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/sdk/libs/java/application/brjs-servlet-1.2.3.jar"), "some jar contents" );
@@ -193,6 +217,7 @@ public class CommandRunnerTest {
 	//if I do an incorrect command I get the properties outputted in the right order
 	@Test
 	public void theCommandIsExecutedWithIncorrectParametersExpectCorrectPropertiesOrder() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "multiple-args-command-test"});
 		
@@ -206,6 +231,82 @@ public class CommandRunnerTest {
 		assertContains("arg4", valuesInQuotes[3]);
 		assertContains("arg5", valuesInQuotes[4]);
 	}
+	
+	@Test
+	public void newInstallEventIsEmittedIfYesIsAnsweredToStatsCollection() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
+	
+		System.setIn(new ByteArrayInputStream("y\r\n".getBytes()));
+		commandRunner.run(new String[] {dir("valid-sdk-directory")});
+		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
+		assertEquals("allowAnonymousStats: true", brjsConfLine1);
+		verify(mockEventObserver).onEventEmitted(any(NewInstallEvent.class), eq(brjs));
+	}
+	
+	@Test
+	public void newInstallEventIsNotEmittedIfNoIsAnsweredToStatsCollection() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
+	
+		System.setIn(new ByteArrayInputStream("n\r\n".getBytes()));
+		commandRunner.run(new String[] {dir("valid-sdk-directory")});
+		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
+		assertEquals("allowAnonymousStats: false", brjsConfLine1);
+		verifyZeroInteractions(mockEventObserver);
+	}
+	
+	@Test
+	public void newInstallEventIsNotEmittedIfThereIsNoStdin_egBrjsIsExecutedFromScripts() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(BundleSetCreatedEvent.class, mockEventObserver);
+	
+		commandRunner.run(new String[] {dir("valid-sdk-directory")});
+		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
+		assertEquals("allowAnonymousStats: false", brjsConfLine1);
+		verifyZeroInteractions(mockEventObserver);
+	}
+		
+	@Test
+	public void newInstallEventIsEmittedIfStatsFlagIsUsed() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
+	
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "--stats"});
+		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
+		assertEquals("allowAnonymousStats: true", brjsConfLine1);
+		verify(mockEventObserver).onEventEmitted(any(NewInstallEvent.class), eq(brjs));
+	}
+	
+	@Test
+	public void newInstallEventIsNotEmittedIfNoStatsFlagIsUsed() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
+	
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "--no-stats"});
+		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
+		assertEquals("allowAnonymousStats: false", brjsConfLine1);
+		verifyZeroInteractions(mockEventObserver);
+	}
+	
+	
+	
+	// -------------------------
 	
 	private File dirFile(String dirName) {
 		return new File(tempDir, dirName);

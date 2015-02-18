@@ -9,12 +9,9 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class NodeBuilder<N extends Node> {
@@ -36,8 +33,8 @@ public abstract class NodeBuilder<N extends Node> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenPopulated() throws Exception {
-		((BRJSNode) node).populate();
+	public BuilderChainer hasBeenPopulated(String templateGroup) throws Exception {
+		((BRJSNode) node).populate(templateGroup);
 		
 		return builderChainer;
 	}
@@ -65,6 +62,12 @@ public abstract class NodeBuilder<N extends Node> {
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		writeToFile(node.file(filePath), fileContents);
 		
+		return builderChainer;
+	}
+	
+	public BuilderChainer doesNotExist() throws Exception {
+		if (node.exists())
+			node.delete();		
 		return builderChainer;
 	}
 	
@@ -104,12 +107,12 @@ public abstract class NodeBuilder<N extends Node> {
     			throw new RuntimeException("Package style should be set before any JS files have been created");
     		}
 		}
-		JsStyleUtility.setJsStyle(specTest.brjs, packageDir, jsStyle);
+		specTest.brjs.jsStyleAccessor().setJsStyle(packageDir, jsStyle);
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasNamespacedJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, NamespacedJsSourceModule.JS_STYLE);
+		return hasPackageStyle(packagePath, SpecTest.NAMESPACED_JS_STYLE);
 	}
 	
 	public BuilderChainer hasNamespacedJsPackageStyle() {
@@ -117,7 +120,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer hasCommonJsPackageStyle(String packagePath) {
-		return hasPackageStyle(packagePath, CommonJsSourceModule.JS_STYLE);
+		return hasPackageStyle(packagePath, SpecTest.COMMON_JS_STYLE);
 	}
 	
 	public BuilderChainer hasCommonJsPackageStyle() {

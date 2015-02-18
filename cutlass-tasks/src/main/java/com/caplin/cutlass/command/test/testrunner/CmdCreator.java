@@ -1,11 +1,11 @@
 package com.caplin.cutlass.command.test.testrunner;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Formatter;
 
+
 public class CmdCreator {
-	public static String[] cmd(String cmd, Object... parameters) {
+	public static String[] cmd(File sdkDir, String cmd, Object... parameters) {
 		StringBuilder stringBuilder = new StringBuilder();
 		Formatter formatter = new Formatter(stringBuilder);
 		formatter.format(cmd.replaceAll(" ", "\\$\\$"), parameters);
@@ -16,12 +16,7 @@ public class CmdCreator {
 			String cmdArg = cmdArgs[i];
 			
 			if(cmdArg.startsWith("../")) {
-				try {
-					cmdArgs[i] = new File(cmdArg).getCanonicalPath();
-				}
-				catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				cmdArgs[i] = new File(sdkDir, cmdArg).getAbsolutePath();
 			}
 		}
 		

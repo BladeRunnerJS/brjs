@@ -4,25 +4,21 @@
 # Note: DO NOT try to use a wildcard to ignore all of workspace. You can't unignore files whose parent directory is ignored.
 # see http://git-scm.com/docs/gitignore for info
 
-workspace/LICENSE
-workspace/README.txt
-workspace/apps
-workspace/conf
-workspace/generated
-workspace/js-patches
-workspace/licenses
-workspace/generated
-workspace/test-results
+apps/*
+!apps/apps.txt
+generated
+js-patches
+test-results
 
-workspace/sdk/jsdoc-toolkit-resources
-workspace/sdk/brjs
-workspace/sdk/brjs.cmd
-workspace/sdk/docs
-workspace/sdk/libs/java
-workspace/sdk/templates
-workspace/sdk/version.txt
-workspace/sdk/scripts
-workspace/sdk/phantomjs
+sdk/docs
+sdk/libs/java
+sdk/version.txt
+sdk/phantomjs
+
+conf/JsTestDriver.conf
+conf/brjs.conf
+conf/phantomjs-runner.js
+conf/users.properties
 
 # TODO: delete these lines when no longer needed -- these lines are needed to work around 2 separate bugs in the Java git implementation (EGit) provided with Eclipse Kepler
 #   1. Egit doesn't currently support recursive wildcards (**) as used in the main brjs .gitignore
@@ -30,3 +26,4 @@ workspace/sdk/phantomjs
 brjs-*.jar
 *.bundle
 bundle.js
+/build/

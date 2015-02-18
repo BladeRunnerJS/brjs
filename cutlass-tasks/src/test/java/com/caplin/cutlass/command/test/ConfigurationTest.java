@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.model.TestModelAccessor;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
 import org.junit.Before;
@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 
-public class ConfigurationTest extends TestModelAccessor {
+public class ConfigurationTest {
 	TestRunnerConfiguration config;
 	
 	private List<String> browserList(String browsers) {
@@ -28,7 +28,7 @@ public class ConfigurationTest extends TestModelAccessor {
 	public void beforeTest() throws Exception {
 		// we're cheekily using another tests sdk structure so the test can work
 		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/sdk");
-		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(sdkBaseDir));
+		ThreadSafeStaticBRJSAccessor.initializeModel(BRJSTestModelFactory.createModel(sdkBaseDir));
 				
 		config = TestRunnerConfiguration.getConfiguration(new File("src/test/resources/TestCommand/test-runner.conf"), browserList("browser1"));
 		config.setOperatingSystem("OS1");

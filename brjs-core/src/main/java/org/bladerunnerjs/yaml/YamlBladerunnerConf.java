@@ -34,6 +34,8 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	@NotNull
 	public boolean useNodeCommands;
 	
+	public Boolean allowAnonymousStats;
+	
 	@Override
 	public void initialize(BRJSNode node) {
 		jettyPort = getDefault(jettyPort, 7070);

@@ -18,11 +18,13 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.engine.NamedNode;
+import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CopyBladesetCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
 import org.bladerunnerjs.utility.FileUtils;
@@ -140,6 +142,7 @@ public class RestApiService
 			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
 		}
 		
+		notifyOfCommand(new ExportApplicationCommand());
 		app.buildWar( brjs.getMemoizedFile(destinationWar) );
 	}
 	
@@ -257,7 +260,7 @@ public class RestApiService
 		jsDocCommand.setBRJS(brjs);
 		String[] args = new String[]{appName, "-v"};
 		//TODO: should this be something that wraps stdOut?
-		jsDocCommand.doCommand(args);
+		doCommand(jsDocCommand, args);
 	}
 
 	/* helper methods */
@@ -284,6 +287,7 @@ public class RestApiService
 		System.setOut( new MultiOutputPrintStream(System.out, new PrintStream(commandOutput)) );
 		
 		try {
+			notifyOfCommand(command);
 			command.doCommand(args);
 		} finally {
 			System.setOut(oldSysOut);
@@ -298,6 +302,9 @@ public class RestApiService
 	}
 
 	
+	private void notifyOfCommand(CommandPlugin command) {
+		brjs.notifyObservers(new CommandExecutedEvent("dashboard", command.getCommandName()), brjs);
+	}
 	
 	private class MultiOutputPrintStream extends PrintStream {
 		private PrintStream secondary;

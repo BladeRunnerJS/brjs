@@ -5,12 +5,9 @@ import java.io.IOException;
 
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 import org.bladerunnerjs.testing.specutility.engine.AssetContainerBuilder;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public class TestPackBuilder extends AssetContainerBuilder<TestPack>
@@ -26,10 +23,10 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 	public BuilderChainer testRefersTo(String testFilePath, String... classNames) throws IOException
 	{
 		File testFile = testPack.tests().file(testFilePath);
-		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, testFile.getParentFile());
+		String jsStyle = specTest.brjs.jsStyleAccessor().getJsStyle(testFile.getParentFile());
 		
-		if(!jsStyle.equals(NamespacedJsSourceModule.JS_STYLE)) {
-			throw new RuntimeException("testRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsSourceModule.JS_STYLE + "'");
+		if(!jsStyle.equals(SpecTest.NAMESPACED_JS_STYLE)) {
+			throw new RuntimeException("testRefersTo() can only be used if packageOfStyle() has been set to '" + SpecTest.NAMESPACED_JS_STYLE + "'");
 		}
 		
 		String content = "";
@@ -53,10 +50,10 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 	public BuilderChainer testRequires(String testFilePath, String className) throws IOException
 	{
 		File testFile = testPack.tests().file(testFilePath);
-		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, testFile.getParentFile());
+		String jsStyle = specTest.brjs.jsStyleAccessor().getJsStyle(testFile.getParentFile());
 		
-		if(!jsStyle.equals(CommonJsSourceModule.JS_STYLE)) {
-			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + CommonJsSourceModule.JS_STYLE + "'");
+		if(!jsStyle.equals(SpecTest.COMMON_JS_STYLE)) {
+			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + SpecTest.COMMON_JS_STYLE + "'");
 		}
 		
 		writeToFile(testFile, "require('"+className+"');");

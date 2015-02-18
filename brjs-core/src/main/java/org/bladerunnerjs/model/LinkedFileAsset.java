@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
+import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 /**
@@ -19,10 +19,10 @@ import org.bladerunnerjs.utility.UnicodeReader;
  */
 public class LinkedFileAsset implements LinkedAsset {
 	private App app;
-	private MemoizedFile assetFile;
-	private AssetLocation assetLocation;
+	protected MemoizedFile assetFile;
+	protected AssetLocation assetLocation;
 	private String assetPath;
-	private String defaultFileCharacterEncoding;
+	protected String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	
 	public LinkedFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
@@ -98,6 +98,6 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return RequirePathUtility.getPrimaryRequirePath(this);
 	}
 }
