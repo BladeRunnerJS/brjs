@@ -5,17 +5,17 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
+import org.bladerunnerjs.plugin.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
-import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.MockTagHandler;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
@@ -34,6 +34,9 @@ public class TagPluginUtilityTest
 	BRJS brjs;
 	App app;
 	Aspect aspect;
+
+
+	private File testSdkDirectory;
 	
 	@Before
 	public void setup() throws Exception
@@ -54,8 +57,8 @@ public class TagPluginUtilityTest
 		/* asset location support */
 		mockPluginLocator.assetLocationPlugins.add(new VirtualProxyAssetLocationPlugin(new BRJSConformantAssetLocationPlugin()));
 		
-		File tempDir = BRJSTestModelFactory.createTestSdkDirectory();
-		brjs = BRJSTestModelFactory.createModel(tempDir, mockPluginLocator);
+		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
+		brjs = BRJSTestModelFactory.createModel(testSdkDirectory, mockPluginLocator);
 		
 		app = brjs.app("app");
 			app.create();
@@ -66,6 +69,7 @@ public class TagPluginUtilityTest
 	@After
 	public void tearDown() {
 		brjs.close();
+		org.apache.commons.io.FileUtils.deleteQuietly(testSdkDirectory);
 	}
 	
 	@Test

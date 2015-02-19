@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.Plugin;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.plugin.Plugin;
 
 
 public class PluginLocatorUtils

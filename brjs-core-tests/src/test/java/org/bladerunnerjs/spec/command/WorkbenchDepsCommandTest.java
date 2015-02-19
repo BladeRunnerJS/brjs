@@ -1,17 +1,17 @@
 package org.bladerunnerjs.spec.command;
 
-import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.plugin.plugins.commands.standard.WorkbenchDepsCommand;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.plugin.commands.standard.WorkbenchDepsCommand;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,6 +42,15 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			brLib = brjs.sdkLib("br");
 			brLibAliasDefinitionsFile = brLib.assetLocation("resources").aliasDefinitionsFile();
 			bladeInDefaultBladeset = app.defaultBladeset().blade("blade");
+	}
+	
+	@Test
+	public void resourceFilesInTheAspectThatReferenceAspectSrcDontCauseAnException() throws Exception {
+		given(aspect).hasClasses("appns/Class1")
+	 		.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
+	 		.and(workbench).indexPageHasContent("");
+	 	when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
+	 	then(logging).doesNotcontainConsoleText("default-aspect");
 	}
 	
 	@Test

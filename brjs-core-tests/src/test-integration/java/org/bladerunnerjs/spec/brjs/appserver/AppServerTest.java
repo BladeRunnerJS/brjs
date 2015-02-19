@@ -8,15 +8,15 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
-import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.appserver.ApplicationServer;
+import org.bladerunnerjs.api.model.events.NodeReadyEvent;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.plugin.plugins.appdeployer.AppDeploymentObserverPlugin;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.plugin.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -274,15 +274,14 @@ public class AppServerTest extends SpecTest
 	
 	@Test
 	public void errorCode400IsThrownIfTheRequestIsMalformed() throws Exception {
-		given(app1.defaultAspect()).indexPageRequires("appns/App")
+		given(app1.defaultAspect()).indexPageHasContent("")
 			.and(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/js/malformed-request", "Error 400");
 	}
 	
 	@Test
 	public void errorCode404IsThrownIfResourceIsNotFound() throws Exception {
-		given(app1.defaultAspect()).indexPageRequires("appns/App")
-			.and(appServer).started();
+		given(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/no-such-content-plugin", "Error 404");
 	}
 }

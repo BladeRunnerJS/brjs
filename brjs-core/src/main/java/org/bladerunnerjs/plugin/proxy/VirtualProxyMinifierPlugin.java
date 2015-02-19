@@ -3,9 +3,9 @@ package org.bladerunnerjs.plugin.proxy;
 import java.io.Reader;
 import java.util.List;
 
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.plugin.InputSource;
-import org.bladerunnerjs.plugin.MinifierPlugin;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.plugin.InputSource;
+import org.bladerunnerjs.api.plugin.MinifierPlugin;
 
 public class VirtualProxyMinifierPlugin extends VirtualProxyPlugin implements MinifierPlugin {
 	private MinifierPlugin minifierPlugin;

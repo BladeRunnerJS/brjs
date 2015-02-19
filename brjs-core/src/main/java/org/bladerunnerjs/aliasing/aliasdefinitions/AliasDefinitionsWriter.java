@@ -7,11 +7,11 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.aliasing.AliasOverride;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.testing.specutility.XmlBuilderSerializer;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.aliasing.AliasOverride;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.spec.utility.XmlBuilderSerializer;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.jamesmurty.utils.XMLBuilder;

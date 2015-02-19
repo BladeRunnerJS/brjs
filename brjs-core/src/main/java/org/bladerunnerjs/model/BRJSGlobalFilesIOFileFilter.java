@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.bladerunnerjs.api.BRJS;
 
 
 public class BRJSGlobalFilesIOFileFilter implements IOFileFilter

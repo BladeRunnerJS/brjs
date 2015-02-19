@@ -1,12 +1,12 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -324,11 +324,11 @@ public class CssRewriterTest extends SpecTest
 	@Test
 	public void imagesInBladeWorkbenchResourcesAreRewritten() throws Exception
 	{
-		given(workbench).containsFileWithContents("resources/style.css", "background-image: url(images/flower.png);")
-			.and(blade).hasClass("bs/b1/Class1")
-			.and(workbench).indexPageRequires("bs/b1/Class1");
+		given(blade).hasClass("appns/bs/b1/Class1")
+			.and(blade).containsFileWithContents("src/appns/bs/b1/style.css", "background-image: url(images/flower.png);")
+			.and(workbench).indexPageRequires("appns/bs/b1/Class1");
 		when(workbench).requestReceivedInDev("css/common/bundle.css", response);
-		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1/workbench_resource/resources/images/flower.png);");
+		then(response).containsText("background-image: url(../../cssresource/bladeset_bs/blade_b1_resource/src/appns/bs/b1/images/flower.png);");
 	}
 	
 	@Test

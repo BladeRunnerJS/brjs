@@ -1,15 +1,15 @@
 package org.bladerunnerjs.spec.plugin.bundler.i18n;
 
-import org.bladerunnerjs.aliasing.NamespaceException;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AppConf;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.BladerunnerConf;
-import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.aliasing.NamespaceException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -222,7 +222,7 @@ public class I18nContentPluginTest extends SpecTest
 	public void bladePropertiesAreOverriddenByWorkbenchProperties() throws Exception 
 	{
 		given(app).hasBeenCreated()
-		.and(workbench).indexPageRequires("appns.bs.b1.Class")
+		.and(workbench).indexPageRequires("appns/bs/b1/Class")
 		.and(blade).hasClass("appns/bs/b1/Class")
 		.and(blade).containsResourceFileWithContents("en.properties", "appns.bs.b1.property=blade value")
 		.and(workbench).containsResourceFileWithContents("en.properties", "appns.bs.b1.property=workbench value");

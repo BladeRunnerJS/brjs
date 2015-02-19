@@ -1,8 +1,8 @@
 package org.bladerunnerjs.spec.brjs;
 
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.testing.utility.ExplodingCommand;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class UserCommandTest extends SpecTest {
 			"  Bang!",
 			"",
 			"Stack Trace:",
-			"org.bladerunnerjs.model.exception.command.CommandOperationException: Bang!")
+			"org.bladerunnerjs.api.model.exception.command.CommandOperationException: Bang!")
 			.and(exceptions).verifyException(CommandOperationException.class);
 	}
 	

@@ -5,8 +5,8 @@ import java.nio.charset.Charset;
 import javax.validation.constraints.*;
 
 import org.apache.bval.constraints.NotEmpty;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 
 
@@ -33,6 +33,8 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	
 	@NotNull
 	public boolean useNodeCommands;
+	
+	public Boolean allowAnonymousStats;
 	
 	@Override
 	public void initialize(BRJSNode node) {

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.model.UrlContentAccessor;
 
 

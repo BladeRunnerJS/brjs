@@ -5,15 +5,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.apache.commons.io.filefilter.PrefixFileFilter;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.LogLevelAccessor;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
-import org.bladerunnerjs.plugin.utility.command.CommandList;
+import org.bladerunnerjs.plugin.utility.CommandList;
 
 public class UserCommandRunner {
 	

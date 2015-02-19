@@ -5,12 +5,16 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.AmbiguousRequirePathException;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 /**
@@ -19,10 +23,10 @@ import org.bladerunnerjs.utility.UnicodeReader;
  */
 public class LinkedFileAsset implements LinkedAsset {
 	private App app;
-	private MemoizedFile assetFile;
-	private AssetLocation assetLocation;
+	protected MemoizedFile assetFile;
+	protected AssetLocation assetLocation;
 	private String assetPath;
-	private String defaultFileCharacterEncoding;
+	protected String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	
 	public LinkedFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
@@ -98,6 +102,6 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+		return RequirePathUtility.getPrimaryRequirePath(this);
 	}
 }

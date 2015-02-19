@@ -3,9 +3,9 @@ package org.bladerunnerjs.plugin.proxy;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.plugin.AssetLocationPlugin;
 
 public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implements AssetLocationPlugin {
 	private AssetLocationPlugin assetLocationPlugin;

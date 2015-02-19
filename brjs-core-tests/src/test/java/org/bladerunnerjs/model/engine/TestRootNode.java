@@ -4,15 +4,15 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.memoization.FileModificationRegistry;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.memoization.MemoizedFileAccessor;
+import org.bladerunnerjs.api.logging.LoggerFactory;
+import org.bladerunnerjs.api.memoization.FileModificationRegistry;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFileAccessor;
+import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 
 
 public final class TestRootNode extends AbstractRootNode

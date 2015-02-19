@@ -14,17 +14,25 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.TypedTestPack;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
+import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
+import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
-import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
-import org.bladerunnerjs.testing.utility.MockPluginLocator;
-import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.ZipUtility;
@@ -40,21 +48,25 @@ public class NodeImporter {
 		BRJS tempBrjs = createTemporaryBRJSModel();
 		
 		File temporaryUnzipDir = FileUtils.createTemporaryDirectory( NodeImporter.class, targetApp.getName() );
-		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
-		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
-		if (temporaryUnzipDirFiles.length != 1) {
-			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
+		try {
+    		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
+    		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
+    		if (temporaryUnzipDirFiles.length != 1) {
+    			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
+    		}
+    		
+    		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
+    		File unzippedAppDir = temporaryUnzipDirFiles[0];
+    		FileUtils.moveDirectory(tmpBrjsSourceApp, unzippedAppDir, tmpBrjsSourceApp.dir());
+    		
+    		File unzippedLibDir = tmpBrjsSourceApp.file("WEB-INF/lib");
+    		FileUtils.copyDirectory(targetApp, targetApp.root().appJars().dir(), unzippedLibDir);
+    		
+    		String sourceAppName = unzippedAppDir.getName();
+    		importApp(tempBrjs, sourceAppName, tmpBrjsSourceApp, targetApp, targetAppRequirePrefix);
+		} finally {
+			org.apache.commons.io.FileUtils.deleteQuietly(temporaryUnzipDir);
 		}
-		
-		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
-		File unzippedAppDir = temporaryUnzipDirFiles[0];
-		FileUtils.moveDirectory(tmpBrjsSourceApp, unzippedAppDir, tmpBrjsSourceApp.dir());
-		
-		File unzippedLibDir = tmpBrjsSourceApp.file("WEB-INF/lib");
-		FileUtils.copyDirectory(targetApp, targetApp.root().appJars().dir(), unzippedLibDir);
-		
-		String sourceAppName = unzippedAppDir.getName();
-		importApp(tempBrjs, sourceAppName, tmpBrjsSourceApp, targetApp, targetAppRequirePrefix);
 	}
 	
 	public static void importApp(BRJS tempBrjs, String oldAppName, App sourceApp, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
@@ -110,14 +122,17 @@ public class NodeImporter {
 	}
 	
 	private static BRJS createTemporaryBRJSModel() throws InvalidSdkDirectoryException, IOException {
+		BRJS brjs;
 		File tempSdkDir = FileUtils.createTemporaryDirectory(NodeImporter.class);
-		new File(tempSdkDir, "sdk").mkdir();
-		MockPluginLocator pluginLocator = new MockPluginLocator();
-		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
-		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
-		
-		BRJS brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
-		
+		try {
+    		new File(tempSdkDir, "sdk").mkdir();
+    		MockPluginLocator pluginLocator = new MockPluginLocator();
+    		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
+    		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
+    		brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
+		} finally {
+			org.apache.commons.io.FileUtils.deleteQuietly(tempSdkDir);
+		}
 		return brjs;
 	}
 	

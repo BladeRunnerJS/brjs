@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public final class ChildSourceAssetLocation extends AbstractChildSourceAssetLocation {

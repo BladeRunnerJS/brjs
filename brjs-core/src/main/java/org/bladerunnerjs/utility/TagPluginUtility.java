@@ -18,12 +18,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,7 +52,7 @@ public class TagPluginUtility {
 			{
 				TagHandlerPlugin tagHandler = getTagHandlerForTag(tagHandlerPlugins, tagMatch.tag);
 				String replacement = getTagReplacement(bundleSet, requestMode, locale, version, tagHandler, tagMatch.attributes);
-				matcher.appendReplacement(result, replacement);
+				matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
 			}
 			@Override
 			public void handleUnprocessableTagMatch(Matcher matcher, String tagContent)

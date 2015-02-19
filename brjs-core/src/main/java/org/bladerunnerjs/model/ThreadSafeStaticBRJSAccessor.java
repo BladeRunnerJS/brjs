@@ -3,8 +3,9 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.logging.SLF4JLoggerFactory;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 
 /**
