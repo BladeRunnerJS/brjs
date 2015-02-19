@@ -1,13 +1,13 @@
 package org.bladerunnerjs.model;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.bladerunnerjs.testing.specutility.LoggerVerifier;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.testing.specutility.logging.ExpectedFailure;
-import org.bladerunnerjs.testing.specutility.logging.ExpectedTestFailureWatcher;
-import org.bladerunnerjs.testing.specutility.logging.ModelLoggingCommander;
-import org.bladerunnerjs.testing.utility.LogMessage;
-import org.bladerunnerjs.testing.utility.LogMessageStore;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.api.spec.logging.ExpectedFailure;
+import org.bladerunnerjs.api.spec.logging.ExpectedTestFailureWatcher;
+import org.bladerunnerjs.api.spec.logging.ModelLoggingCommander;
+import org.bladerunnerjs.api.spec.utility.LogMessage;
+import org.bladerunnerjs.api.spec.utility.LogMessageStore;
+import org.bladerunnerjs.api.spec.utility.LoggerVerifier;
 import org.junit.ComparisonFailure;
 import org.junit.Rule;
 import org.junit.Test;

@@ -5,12 +5,14 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.memoization.Getter;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
+import org.bladerunnerjs.api.spec.utility.LogMessageStore;
+import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
+import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
+import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.testing.utility.LogMessageStore;
-import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
-import org.bladerunnerjs.testing.utility.MockPluginLocator;
-import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +23,7 @@ public class MemoizedValueTest {
 	private File sdkDir;
 	private File watchFile;
 	private BRJS brjs;
+	private LogMessageStore loggerMessageStore;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -29,7 +32,10 @@ public class MemoizedValueTest {
 		watchFile = new File(sdkDir, "watch-file");
 		
 		sdkDir.mkdir();
-		brjs = BRJSTestModelFactory.createModel(sdkDir, new MockPluginLocator(), new TestLoggerFactory(new LogMessageStore()), new MockAppVersionGenerator());
+		loggerMessageStore = new LogMessageStore();
+		loggerMessageStore.storeLogsIfEnabled();
+		loggerMessageStore.enableStoringLogs();
+		brjs = BRJSTestModelFactory.createModel(sdkDir, new MockPluginLocator(), new TestLoggerFactory(loggerMessageStore), new MockAppVersionGenerator());
 	}
 
 	@After
@@ -75,6 +81,30 @@ public class MemoizedValueTest {
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 		assertEquals(1, (int) memoizedValue.value(incrementingGetter));
 	}
+	
+	@Test
+	public void aMessageIsLoggedWhenValueIsRecalculated() {
+		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("THE_ID", brjs, watchFile);
+		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
+
+		memoizedValue.value(incrementingGetter);
+		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);
+		memoizedValue.value(incrementingGetter);
+		
+		loggerMessageStore.verifyDebugLogMessage(MemoizedValue.RECALCULATING_VALUE_MSG, "MemoizedFile_"+tempDir.getAbsolutePath()+".exists");
+		loggerMessageStore.verifyDebugLogMessage(MemoizedValue.RECALCULATING_VALUE_MSG, "THE_ID");
+	}
+	
+	@Test
+	public void aMessageIsLoggedWhenTheMemoizedValueIsUsed() {
+		MemoizedValue<Integer> memoizedValue = new MemoizedValue<>("THE_ID", brjs, watchFile);
+		Getter<RuntimeException> incrementingGetter = new IncrementingGetter();
+
+		memoizedValue.value(incrementingGetter);
+		memoizedValue.value(incrementingGetter);
+		loggerMessageStore.verifyDebugLogMessage(MemoizedValue.USING_MEMOIZED_VALUE_MSG, "THE_ID");
+	}
+	
 	
 	private class IncrementingGetter implements Getter<RuntimeException> {
 		int count = 0;

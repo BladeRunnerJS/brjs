@@ -1,0 +1,3 @@
+org.bladerunnerjs.plugin.require.DefaultRequirePlugin
+org.bladerunnerjs.plugin.require.AliasRequirePlugin
+org.bladerunnerjs.plugin.require.ServiceRequirePlugin

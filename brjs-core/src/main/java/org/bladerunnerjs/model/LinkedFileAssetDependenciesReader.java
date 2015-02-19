@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;

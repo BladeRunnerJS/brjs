@@ -3,6 +3,9 @@ package org.bladerunnerjs.logging;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.logging.LoggerFactory;
+
 
 public class SLF4JLoggerFactory implements LoggerFactory
 {

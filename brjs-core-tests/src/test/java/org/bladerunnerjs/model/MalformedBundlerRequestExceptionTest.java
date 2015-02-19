@@ -3,8 +3,7 @@ package org.bladerunnerjs.model;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 
 public class MalformedBundlerRequestExceptionTest {
 
