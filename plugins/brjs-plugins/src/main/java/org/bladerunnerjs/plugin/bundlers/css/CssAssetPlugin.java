@@ -35,7 +35,6 @@ public class CssAssetPlugin extends AbstractAssetPlugin {
 		
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile cssFile : dir.listFiles(cssFileFilter)) {
-			
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(FileAsset.calculateRequirePath(requirePrefix, cssFile))) {
 				Asset asset = new FileAsset(cssFile, assetContainer, requirePrefix);
 				assets.add(asset);

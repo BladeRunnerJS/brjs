@@ -15,6 +15,7 @@ import org.bladerunnerjs.api.model.exception.UnresolvableRelativeRequirePathExce
 import org.bladerunnerjs.api.plugin.AssetContainerAssets;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	
@@ -92,6 +93,15 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		}
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
+	}
+	
+	@Override
+	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException {
+		String namespace = requirePrefix().replace("/", ".")+".";
+		
+		if(isNamespaceEnforced() && !identifier.startsWith(namespace)) {
+			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + "*' was expected.");
+		}
 	}
 	
 }

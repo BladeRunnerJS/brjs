@@ -11,10 +11,10 @@ import java.util.Properties;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.plugin.bundlers.aliasing.NamespaceException;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class I18nFileAsset implements Asset
@@ -93,8 +93,7 @@ public class I18nFileAsset implements Asset
 			
 			for (String property : i18nProperties.stringPropertyNames())
 			{
-				//TODO: fix me after mega commit
-//				assetLocation().assertIdentifierCorrectlyNamespaced(property);
+				assetContainer.assertIdentifierCorrectlyNamespaced(property);
 				String value = i18nProperties.getProperty(property);
 				propertiesMap.put(property, value.replaceAll("\n", "\\\\n"));
 			}

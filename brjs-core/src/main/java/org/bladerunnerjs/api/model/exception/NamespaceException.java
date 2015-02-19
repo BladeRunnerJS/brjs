@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.bundlers.aliasing;
+package org.bladerunnerjs.api.model.exception;
 
 public class NamespaceException extends Exception {
 	private static final long serialVersionUID = 1L;

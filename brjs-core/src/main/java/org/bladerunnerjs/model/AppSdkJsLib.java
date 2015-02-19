@@ -13,6 +13,7 @@ import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
@@ -240,5 +241,11 @@ public final class AppSdkJsLib implements JsLib {
 	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
 	{
 		return sdkJsLib.canonicaliseRequirePath(requirePath);
+	}
+	
+	@Override
+	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException
+	{
+		sdkJsLib.assertIdentifierCorrectlyNamespaced(identifier);
 	}
 }

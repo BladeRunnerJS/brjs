@@ -41,8 +41,11 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 			
 			ThirdpartySourceModule asset = new ThirdpartySourceModule(assetContainer, implicitDependencies);
 			assetDiscoveryInitiator.registerAsset(asset);
-			asset.addImplicitDependencies( discoverCssAssets(assetContainer, dir, "css!"+assetContainer.requirePrefix(), assetDiscoveryInitiator) );
 			asset.addImplicitDependencies( createDirectoryAssets(assetContainer, dir, assetContainer.requirePrefix(), assetDiscoveryInitiator) );
+
+			// create CSS assets so they can be implicit dependencies based on the manifest file
+			discoverCssAssets(assetContainer, dir, "css!"+assetContainer.requirePrefix(), assetDiscoveryInitiator);
+			
 			return Arrays.asList(asset);
 		}
 		return Collections.emptyList();

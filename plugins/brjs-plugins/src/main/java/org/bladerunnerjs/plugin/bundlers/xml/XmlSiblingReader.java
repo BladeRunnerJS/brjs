@@ -7,8 +7,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.plugin.bundlers.aliasing.NamespaceException;
 
 public class XmlSiblingReader
 {
@@ -164,8 +164,7 @@ public class XmlSiblingReader
 			parent.assertIdentifierCorrectlyNamespaced(identifier);
 		}
 		else if (identifier != null) {
-			//TODO: fix me after mega commit
-//			xmlAsset.assetLocation().assertIdentifierCorrectlyNamespaced(identifier);
+			xmlAsset.assetContainer().assertIdentifierCorrectlyNamespaced(identifier);
 		}
 	}
 	

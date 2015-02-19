@@ -300,7 +300,7 @@ public class CssContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void allCssFilesInNonConformantLibrariesAppearIfAildcardIsExplicitlySpecified() throws Exception {
+	public void allCssFilesInNonConformantLibraryRootDirectoriesAppearIfAildcardIsExplicitlySpecified() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"*.css\"\n"+"exports: lib")
