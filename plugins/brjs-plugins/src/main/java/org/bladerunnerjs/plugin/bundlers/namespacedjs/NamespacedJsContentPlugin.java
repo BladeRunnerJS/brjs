@@ -208,12 +208,11 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 
 		for (SourceModule sourceModule : bundleSet.getSourceModules())
 		{
-			//TODO: fix me after mega commit
-//			if ((sourceModule instanceof NamespacedJsSourceModule) && !(sourceModule.assetLocation() instanceof TestAssetLocation))
-//			{
-//				List<String> packageList = Arrays.asList(sourceModule.getPrimaryRequirePath().split("/"));
-//				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
-//			}
+			if ((sourceModule instanceof NamespacedJsSourceModule) && !(sourceModule instanceof TestAsset))
+			{
+				List<String> packageList = Arrays.asList(sourceModule.getPrimaryRequirePath().split("/"));
+				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
+			}
 		}
 
 		for (SourceModule sourceModule : globalizedModules)

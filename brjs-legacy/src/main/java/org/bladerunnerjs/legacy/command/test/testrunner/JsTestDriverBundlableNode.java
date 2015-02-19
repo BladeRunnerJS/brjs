@@ -12,11 +12,11 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.TestAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
@@ -29,10 +29,6 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.bladerunnerjs.utility.ObserverList;
 
 public class JsTestDriverBundlableNode implements BundlableNode {
@@ -171,10 +167,9 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
 		LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(requirePath);
 		
-		//TODO: fix me after mega commit
-//		if((linkedAsset instanceof SourceModule) && (linkedAsset.assetLocation() instanceof TestAssetLocation)) {
-//			linkedAsset = new JsTestDriverEmptyTestSourceModule((SourceModule) linkedAsset);
-//		}
+		if (linkedAsset instanceof TestAsset) {
+			linkedAsset = new JsTestDriverEmptyTestSourceModule((SourceModule) linkedAsset);
+		}
 		
 		return linkedAsset;
 	}
