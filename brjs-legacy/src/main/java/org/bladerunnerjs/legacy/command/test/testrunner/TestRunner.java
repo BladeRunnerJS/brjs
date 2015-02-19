@@ -1,7 +1,9 @@
 package org.bladerunnerjs.legacy.command.test.testrunner;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -188,7 +190,7 @@ public class TestRunner {
 		return isVerbose;
 	}
 	
-	private void displayTimeInfo()
+	private void displayTimeInfo() throws FileNotFoundException, IOException
 	{
 		long duration = execEndTime-execStartTime;
 		logger.warn("\n");
@@ -197,7 +199,7 @@ public class TestRunner {
 			printReport();
 		}
 		logger.info("- Time Taken: " + duration/1000 + "secs");		
-		if (generateReports)
+		if (generateReports && getTestResultList().size() > 0)
 		{
 			convertResultsToHTML();
 		}
@@ -225,7 +227,7 @@ public class TestRunner {
 		logger.warn("\n");
 	}
 	
-	private void convertResultsToHTML()
+	private void convertResultsToHTML() throws FileNotFoundException, IOException
 	{
 		logger.info("\n");
 		
@@ -256,7 +258,27 @@ public class TestRunner {
 		target.addTask(aggregator);
 		
 		logger.warn("Writing HTML reports to " + HTML_TEST_RESULTS_DIR + ".");
+		
+		MemoizedFile[] xmlTestResultFiles = XML_TEST_RESULTS_DIR.listFiles();
+		if (xmlTestResultFiles != null) {
+			for (MemoizedFile xmlTestResultFile : xmlTestResultFiles) {
+				normaliseXML(xmlTestResultFile);
+			}
+		}
+		
 		project.executeTarget("junitreport");
+	}
+
+	// XML needs to be normalised because the test suite name may not match the XML file name.
+	// Delete this method once <https://issues.apache.org/bugzilla/show_bug.cgi?id=57557> is fixed.
+	public static void normaliseXML(MemoizedFile xmlTestResultFile) throws IOException, FileNotFoundException {
+		String xmlTestResultFileContent = IOUtils.toString(new FileInputStream(xmlTestResultFile));
+		String newTestSuite = xmlTestResultFile.getName().replace("TEST-", "");
+		newTestSuite = newTestSuite.replace(".xml", "");
+		xmlTestResultFileContent = xmlTestResultFileContent.replaceAll("(.*testsuite name=\")([^\"]*)(\".*)", "$1" + newTestSuite + "$3");
+		FileOutputStream xmlFileStream = new FileOutputStream(xmlTestResultFile, false);
+		xmlFileStream.write(xmlTestResultFileContent.getBytes());
+		xmlFileStream.close();
 	}
 	
 	private boolean getSuccess() {
