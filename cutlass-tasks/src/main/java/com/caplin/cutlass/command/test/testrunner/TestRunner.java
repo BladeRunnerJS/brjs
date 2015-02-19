@@ -201,7 +201,7 @@ public class TestRunner {
 			printReport();
 		}
 		logger.info("- Time Taken: " + duration/1000 + "secs");		
-		if (generateReports)
+		if (generateReports && getTestResultList().size() > 0)
 		{
 			convertResultsToHTML();
 		}
