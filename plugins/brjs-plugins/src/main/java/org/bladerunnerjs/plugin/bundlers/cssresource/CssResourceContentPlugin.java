@@ -1,11 +1,9 @@
 package org.bladerunnerjs.plugin.bundlers.cssresource;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
@@ -21,6 +20,7 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
@@ -34,11 +34,11 @@ import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BladesetWorkbench;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.DirectoryLinkedAsset;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.plugin.bundlers.css.CssAssetPlugin;
 import org.bladerunnerjs.plugin.bundlers.css.CssRewriter;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -134,20 +134,11 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		}
 		
 		
-		Set<Asset> assetsToDetirmineUsedPaths = new HashSet<>();
-		
-		for (Asset cssAsset : bundleSet.getAssets()) {
-			String requirePath = cssAsset.getPrimaryRequirePath();
-			if (requirePath.startsWith("css!") || requirePath.startsWith("css!")) {
-				assetsToDetirmineUsedPaths.add(cssAsset);
-			}
-		}
-		
+		List<Asset> assetsToDetirmineUsedPaths = bundleSet.getAssets("css!", "theme!");
 		assetsToDetirmineUsedPaths.addAll(bundleSet.getBundlableNode().seedAssets());
 		
-				
 		for (Asset asset : assetsToDetirmineUsedPaths) {
-			filterUsedContentPaths(asset, validContentPaths, usedContentPaths, false);
+			filterUsedContentPaths(asset, validContentPaths, usedContentPaths);
 			if (validContentPaths.isEmpty()) {
 				break;
 			}
@@ -156,9 +147,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		return usedContentPaths;
 	}
 
-	private void filterUsedContentPaths(Asset asset, List<String> validContentPaths, List<String> usedContentPaths, boolean rewriteUrls) throws ContentProcessingException {
+	private void filterUsedContentPaths(Asset asset, List<String> validContentPaths, List<String> usedContentPaths) throws ContentProcessingException {
 		List<String> foundContentPaths = new ArrayList<>();
-		String assetContents = (rewriteUrls) ? getCssAssetFileContents(asset) : readAssetToString(asset);
+		String assetContents = getCssAssetFileContents(asset);
 		for (String contentPath : validContentPaths) {
 			if (assetContents.contains(contentPath)) {
 				foundContentPaths.add(contentPath);
@@ -166,18 +157,6 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		}
 		usedContentPaths.addAll(foundContentPaths);
 		validContentPaths.removeAll(foundContentPaths);
-	}
-	
-	private String readAssetToString(Asset seedAsset) throws ContentProcessingException
-	{
-		try
-		{
-			return IOUtils.toString(seedAsset.getReader());
-		}
-		catch (IOException ex)
-		{
-			throw new ContentProcessingException(ex);
-		}
 	}
 	
 	private String getCssAssetFileContents(Asset cssAsset) throws ContentProcessingException {
@@ -204,13 +183,8 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		{
 			String aspectName = parsedContentPath.properties.get("aspect");
 			Aspect aspect =  bundlableNode.app().aspect(aspectName);
-			//TODO: fix me after mega commit
-//			List<ResourcesAssetLocation> resourceAssetLocations = getResourceAssetLocations(aspect);
-//			for (ResourcesAssetLocation location : resourceAssetLocations) {
-//				if (location.getThemeName().equals(theme)){
-//					resourceFile = location.file(resourcePath);
-//				}
-//			}
+			MemoizedFile themeDir = getThemeDir(aspect, theme);
+			resourceFile = themeDir.file(resourcePath);
 		}
 		else if (parsedContentPath.formName.equals(ASPECT_RESOURCE_REQUEST))
 		{
@@ -220,10 +194,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		}
 		else if (parsedContentPath.formName.equals(BLADESET_THEME_REQUEST))
 		{
-			//TODO: fix me after mega commit
-//			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
-//			ThemedAssetLocation location = getThemedResourceLocation(bladeset, theme);
-//			resourceFile = location.file(resourcePath);
+			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
+			MemoizedFile themeDir = getThemeDir(bladeset, theme);
+			resourceFile = themeDir.file(resourcePath);
 		}
 		else if (parsedContentPath.formName.equals(BLADESET_RESOURCE_REQUEST))
 		{
@@ -232,11 +205,10 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		}
 		else if (parsedContentPath.formName.equals(BLADE_THEME_REQUEST))
 		{
-			//TODO: fix me after mega commit
-//			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
-//			Blade blade = bladeset.blade(parsedContentPath.properties.get("blade"));
-//			ThemedAssetLocation location = getThemedResourceLocation(blade, theme);
-//			resourceFile = location.file(resourcePath);
+			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
+			Blade blade = bladeset.blade(parsedContentPath.properties.get("blade"));
+			MemoizedFile themeDir = getThemeDir(blade, theme);
+			resourceFile = themeDir.file(resourcePath);
 		}
 		else if (parsedContentPath.formName.equals(BLADE_RESOURCE_REQUEST))
 		{
@@ -246,8 +218,11 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		}
 		else if (parsedContentPath.formName.equals(WORKBENCH_THEME_REQUEST))
 		{
-			//TODO: this needs implementing
-			// Workbenches dont have themes ?
+			Bladeset bladeset = bundlableNode.app().bladeset(parsedContentPath.properties.get("bladeset"));
+			Blade blade = bladeset.blade(parsedContentPath.properties.get("blade"));
+			BladeWorkbench workbench = blade.workbench();
+			MemoizedFile themeDir = getThemeDir(workbench, theme);
+			resourceFile = themeDir.file(resourcePath);
 		}
 		else if (parsedContentPath.formName.equals(BLADEWORKBENCH_RESOURCE_REQUEST))
 		{
@@ -355,59 +330,58 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 			return contentPaths;
 		}
 		
-		//TODO: fix me after mega commit
-//		contentPaths.addAll(calculateContentPathsForThemesAndResources(assetContainer, themeRequestName, resourcesRequestName, requestArgs));
+		contentPaths.addAll(calculateContentPathsForThemesAndResources(assetContainer, themeRequestName, resourcesRequestName, requestArgs));
 		
 		return contentPaths;
 	}
 	
-	//TODO: fix me after mega commit
-//	private List<ResourcesAssetLocation> getResourceAssetLocations(AssetContainer container){
-//		
-//		List<ResourcesAssetLocation> result = new ArrayList<>();
-//		for (AssetLocation location: container.assetLocations()){
-//			if (location instanceof ResourcesAssetLocation) {
-//				result.add( (ResourcesAssetLocation) location );
-//			}
-//		}
-//		return result;
-//	}
-//	
-//	private Set<String> calculateContentPathsForThemesAndResources(AssetContainer container, String themeRequestName, String resourcesRequestName, String... requestArgs) throws MalformedTokenException, ConfigException
-//	{
-//		Set<String> contentPaths = new LinkedHashSet<>();
-//		for (ResourcesAssetLocation assetLocation : getResourceAssetLocations(container)){
-//			MemoizedFile assetLocationDir = brjs.getMemoizedFile( assetLocation.dir() );
-//			if (assetLocationDir.isDirectory()){
-//				for (MemoizedFile file : assetLocationDir.nestedFiles()) {
-//					if (!fileIgnoredByBrjsConfig(file)) {
-//						createRequestForNestedDir(container, themeRequestName, resourcesRequestName, contentPaths, assetLocation, file, requestArgs);
-//					}
-//				}
-//			}
-//		}
-//		
-//		return contentPaths;
-//	}
-//
-//	private void createRequestForNestedDir(AssetContainer container, String themeRequestName, String resourcesRequestName, Set<String> contentPaths, AssetLocation assetLocation, MemoizedFile file, String... requestArgs) throws MalformedTokenException
-//	{
-//		File assetLocationParentDir = assetLocation.dir().getParentFile();
-//		//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'?
-//		if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-//			if (themeRequestName != null) {
-//				ThemedAssetLocation themeAssetLocation = (ThemedAssetLocation) assetLocation;
-//				String assetPath = assetLocation.dir().getRelativePath(file);
-//				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themeAssetLocation.getThemeName(), assetPath } );
-//				String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
-//				contentPaths.add(request );
-//			}
-//		} else {
-//			if (resourcesRequestName != null) {
-//				String assetPath = container.dir().getRelativePath(file);
-//				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
-//				contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
-//			}
-//		}
-//	}
+	
+	private Set<String> calculateContentPathsForThemesAndResources(AssetContainer container, String themeRequestName, String resourcesRequestName, String... requestArgs) throws MalformedTokenException, ConfigException
+	{
+		Set<String> themeContentPaths = new LinkedHashSet<>();
+		Set<String> resourceContentPaths = new LinkedHashSet<>();
+		for (Asset dirAsset : getDirectoryAssets(container)) {
+			for (MemoizedFile assetFile : dirAsset.file().files()) {
+				if (fileIgnoredByBrjsConfig(assetFile)) {
+					continue;
+				} else {
+					appendContentPath(themeContentPaths, resourceContentPaths, dirAsset, assetFile, container, themeRequestName, resourcesRequestName, requestArgs);
+				}
+			}
+		}
+		Set<String> contentPaths = new LinkedHashSet<>();
+		contentPaths.addAll(resourceContentPaths);
+		contentPaths.addAll(themeContentPaths);
+		return contentPaths;
+	}
+	
+	private void appendContentPath(Set<String> themeContentPaths, Set<String> resourceContentPaths, Asset dirAsset, MemoizedFile assetFile, 
+			AssetContainer container, String themeRequestName, String resourcesRequestName, String[] requestArgs) throws MalformedTokenException
+	{
+		String dirAssetRequestPath = dirAsset.getPrimaryRequirePath();
+		if (dirAssetRequestPath.contains("theme!")) {
+			String themeName = StringUtils.substringBefore( StringUtils.substringAfter(dirAssetRequestPath, "!"), ":" );
+			String assetPath = getThemeDir(container, themeName).getRelativePath(assetFile);
+			String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themeName, assetPath } );
+			themeContentPaths.add( contentPathParser.createRequest(themeRequestName, createRequestArgs) );				
+		} else {
+			String assetPath = container.dir().getRelativePath(assetFile);
+			String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
+			resourceContentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );				
+		}
+	}
+
+	private List<LinkedAsset> getDirectoryAssets(AssetContainer container) {
+		List<LinkedAsset> directoryAssets = new ArrayList<>();
+		for (Asset asset : container.assets()) {
+			if (asset instanceof DirectoryLinkedAsset) {
+				directoryAssets.add( (DirectoryLinkedAsset) asset );
+			}
+		}
+		return directoryAssets;
+	}
+	
+	private MemoizedFile getThemeDir(AssetContainer assetContainer, String themeName) {
+		return assetContainer.file("themes/"+themeName);
+	}
 }

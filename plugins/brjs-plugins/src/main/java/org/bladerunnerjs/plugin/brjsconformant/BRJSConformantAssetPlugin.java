@@ -15,7 +15,7 @@ import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.DefaultBladeset;
-import org.bladerunnerjs.model.DirectoryLinkedAsset;
+import org.bladerunnerjs.model.DirectoryAsset;
 
 
 public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
@@ -31,7 +31,8 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
 		// only create assets if we're at the root of the asset container *and* its not a default bladeset
-		if (assetContainer instanceof DefaultBladeset || !neccessaryChildDirsArePresent(assetContainer) || assetContainer.dir() != dir) {
+		if (assetContainer instanceof DefaultBladeset || !neccessaryChildDirsArePresent(assetContainer) 
+				|| assetContainer.dir() != dir || assetDiscoveryInitiator.hasRegisteredAsset(BRJSConformantRootDirectoryLinkedAsset.calculateRequirePath(assetContainer))) {
 			return Collections.emptyList();
 		}
 		
@@ -137,12 +138,12 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	}
 
 	public Asset getOrCreateAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator) {
-		if (!assetDiscoveryInitiator.hasRegisteredAsset(DirectoryLinkedAsset.getRequirePath(requirePrefix, dir))) {
-			Asset asset = new DirectoryLinkedAsset(assetContainer, dir, requirePrefix);
+		if (!assetDiscoveryInitiator.hasRegisteredAsset(DirectoryAsset.getRequirePath(requirePrefix, dir))) {
+			Asset asset = new DirectoryAsset(assetContainer, dir, requirePrefix);
 			assetDiscoveryInitiator.registerAsset(asset);
 			return asset;
 		} else {
-			return assetDiscoveryInitiator.getRegisteredAsset( DirectoryLinkedAsset.getRequirePath(requirePrefix, dir) );
+			return assetDiscoveryInitiator.getRegisteredAsset( DirectoryAsset.getRequirePath(requirePrefix, dir) );
 		}
 	}
 	

@@ -218,6 +218,16 @@ public class MemoizedFile extends File implements Comparable<File>
 		return nestedFilesAndDirs;
 	}
 	
+	public List<MemoizedFile> nestedFilesAndDirs(IOFileFilter fileFilter) {
+		List<MemoizedFile> returnedFilesAndDirsCopy = new ArrayList<>();
+		for (MemoizedFile file : nestedFilesAndDirs()) {
+			if (fileFilter.accept(file.wrappedFile)) {
+				returnedFilesAndDirsCopy.add(file);
+			}
+		}
+		return returnedFilesAndDirsCopy;
+	}
+	
 	public List<MemoizedFile> nestedFiles() {
 		List<MemoizedFile> nestedFiles = new ArrayList<>();
 		for(MemoizedFile file : nestedFilesAndDirs()) {

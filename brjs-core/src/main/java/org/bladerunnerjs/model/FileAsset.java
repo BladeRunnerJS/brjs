@@ -38,7 +38,7 @@ public class FileAsset implements Asset {
 	@Override
 	public MemoizedFile file()
 	{
-		return file.getParentFile();
+		return file;
 	}
 	
 	@Override

@@ -1,43 +1,37 @@
-package org.bladerunnerjs.plugin.brjsconformant;
+package org.bladerunnerjs.model;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.DirectoryLinkedAsset;
 
 
-public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAsset
+public class DirectoryAsset implements DirectoryLinkedAsset
 {
 
 	private AssetContainer assetContainer;
 	private MemoizedFile dir;
 	private String primaryRequirePath;
-	List<Asset> implicitDependencies = new ArrayList<>();
+	private Set<Asset> implicitDependencies = new HashSet<>();
 
-	public BRJSConformantRootDirectoryLinkedAsset(AssetContainer assetContainer) {
+	public DirectoryAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix) {
 		this.assetContainer = assetContainer;
-		this.dir = assetContainer.dir();		
-		primaryRequirePath = calculateRequirePath(assetContainer);
+		this.dir = dir;		
+		
+		primaryRequirePath = getRequirePath(requirePrefix, dir);
 	}
 	
 	@Override
 	public void addImplicitDependencies(List<Asset> implicitDependencies) {
-		for (Asset asset : implicitDependencies) {
-			if (asset instanceof SourceModule) {
-				continue;
-			}
-			this.implicitDependencies.add(asset);
-		}
+		this.implicitDependencies.addAll(implicitDependencies);
 	}
 	
 	@Override
@@ -79,7 +73,9 @@ public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAs
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return new ArrayList<>(implicitDependencies);
+		List<Asset> assets = new ArrayList<>();
+		assets.addAll(implicitDependencies);
+		return assets;
 	}
 
 	@Override
@@ -87,8 +83,9 @@ public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAs
 	{
 		return assetContainer;
 	}
-	
-	public static String calculateRequirePath(AssetContainer assetContainer) {
-		return assetContainer.requirePrefix();
+
+	public static String getRequirePath(String requirePrefix, MemoizedFile dir) {
+		return requirePrefix+"/"+dir.getName();
 	}
+	
 }

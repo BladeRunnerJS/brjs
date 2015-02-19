@@ -21,6 +21,7 @@ import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.DirectoryLinkedAsset;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -28,7 +29,7 @@ import org.bladerunnerjs.utility.UnicodeReader;
 import com.Ostermiller.util.ConcatReader;
 
 
-public class ThirdpartySourceModule implements SourceModule
+public class ThirdpartySourceModule implements SourceModule, DirectoryLinkedAsset
 {
 
 	private ThirdpartyLibManifest manifest;

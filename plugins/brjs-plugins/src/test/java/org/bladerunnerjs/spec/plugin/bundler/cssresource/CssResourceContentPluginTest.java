@@ -224,8 +224,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	/* WORKBENCH LEVEL ASSETS */
-	//JT:TODO workbenches dont have themes
-	@Test @Ignore
+	@Test
 	public void assetsInABladeWorkbenchThemeCanBeRequested() throws Exception
 	{
 		given(app).hasBeenCreated()
@@ -362,6 +361,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageRequires(sdkJsLib)
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
 		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
 	}
@@ -402,7 +402,8 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(aspect).hasBeenCreated()
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 			.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
-		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+		then(aspect).devRequestsForContentPluginsAre("cssresource", 
+				"cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt, cssresource/lib_sdkLib/thirdparty-lib.manifest");
 	}
 	
 	@Test
@@ -421,6 +422,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
 		.and(aspect).hasBeenCreated()
+		.and(aspect).indexPageRequires(sdkJsLib)
 		.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 		.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
 		then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
