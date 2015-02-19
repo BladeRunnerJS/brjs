@@ -47,7 +47,7 @@ public class TestRunnerTest {
 	}
 	
 	@Test
-	public void normaliseXML() throws Exception {
+	public void normaliseXMLSoTestsuiteNameCorrespondsToFileName() throws Exception {
 		File xmlFile = new File(".build/test-results/xml/TEST-Mozillaa50_(Windows_NT_61a_WOW64a_Tridenta70a_rva110)_like_Gecko__Windows.locale-forwarder.xml");
 		xmlFile.getParentFile().mkdirs(); 
 		xmlFile.createNewFile();
