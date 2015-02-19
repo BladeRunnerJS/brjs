@@ -40,7 +40,7 @@ public class BundleSetBuilder {
 		
 		if (bundlableNode instanceof Workbench) {
 			Asset rootAsset = bundlableNode.app().defaultAspect().asset(bundlableNode.app().getRequirePrefix());
-			if (rootAsset != null && rootAsset instanceof LinkedAsset) {
+			if (rootAsset instanceof LinkedAsset) {
 				addUnscopedAsset( (LinkedAsset)rootAsset );
 			}
 		}

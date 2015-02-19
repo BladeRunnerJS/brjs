@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.Workbench;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
@@ -31,7 +35,18 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public List<LinkedAsset> seedAssets() {
-		return assetDiscoveryInitiator.seedAssets();
+		List<LinkedAsset> seedAssets = new ArrayList<>();
+		for (AssetContainer scopeAssetContainer : scopeAssetContainers()) {
+			if (scopeAssetContainer instanceof Aspect || scopeAssetContainer instanceof Bladeset 
+						|| scopeAssetContainer instanceof Blade || scopeAssetContainer instanceof Workbench<?>) {
+				Asset assetContainerRootAsset = scopeAssetContainer.asset(scopeAssetContainer.requirePrefix());
+				if (assetContainerRootAsset instanceof LinkedAsset) {
+					seedAssets.add( (LinkedAsset) assetContainerRootAsset );
+				}
+			}
+		}
+		seedAssets.addAll( assetDiscoveryInitiator.seedAssets() );
+		return seedAssets;
 	}
 		
 	@Override
