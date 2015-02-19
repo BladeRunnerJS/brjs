@@ -2,10 +2,10 @@ package org.bladerunnerjs.model;
 
 import java.util.Map;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 
 public final class DirNode extends AbstractBRJSNode

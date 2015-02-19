@@ -1,10 +1,10 @@
 package org.bladerunnerjs.runner;
 
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;

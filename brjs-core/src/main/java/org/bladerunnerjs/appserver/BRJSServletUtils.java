@@ -5,9 +5,9 @@ import java.io.File;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 
 public class BRJSServletUtils

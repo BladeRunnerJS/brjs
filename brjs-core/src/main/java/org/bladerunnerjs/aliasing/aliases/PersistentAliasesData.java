@@ -1,10 +1,10 @@
 package org.bladerunnerjs.aliasing.aliases;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 
 public class PersistentAliasesData {
 	private final BRJS brjs;

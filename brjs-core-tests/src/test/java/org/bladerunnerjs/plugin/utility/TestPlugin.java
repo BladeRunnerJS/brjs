@@ -3,9 +3,9 @@ package org.bladerunnerjs.plugin.utility;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.OrderedPlugin;
-import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.plugin.OrderedPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractPlugin;
 
 public class TestPlugin extends AbstractPlugin implements OrderedPlugin {
 	protected List<String> pluginsThatMustAppearBeforeThisPlugin = new ArrayList<>();

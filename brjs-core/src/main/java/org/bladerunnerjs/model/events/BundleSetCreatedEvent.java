@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.events;
 
-import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.plugin.Event;
 
 
 public class BundleSetCreatedEvent implements Event

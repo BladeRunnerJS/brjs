@@ -8,10 +8,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.utility.TemplateUtility;
 import org.junit.After;
 import org.junit.Before;

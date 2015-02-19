@@ -4,7 +4,7 @@ import java.util.Set;
 
 import javax.validation.*;
 
-import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.yaml.YamlConfFile;
 
 

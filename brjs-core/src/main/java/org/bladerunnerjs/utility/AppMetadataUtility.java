@@ -1,6 +1,6 @@
 package org.bladerunnerjs.utility;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
 
 
 public class AppMetadataUtility

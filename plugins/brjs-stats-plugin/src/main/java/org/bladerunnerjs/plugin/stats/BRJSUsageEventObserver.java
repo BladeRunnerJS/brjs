@@ -8,18 +8,18 @@ import io.keen.client.java.KeenProject;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.plugin.Event;
+import org.bladerunnerjs.api.plugin.EventObserver;
+import org.bladerunnerjs.api.plugin.base.AbstractModelObserverPlugin;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
 import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.model.events.NewInstallEvent;
-import org.bladerunnerjs.plugin.Event;
-import org.bladerunnerjs.plugin.EventObserver;
-import org.bladerunnerjs.plugin.base.AbstractModelObserverPlugin;
 
 
 public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implements EventObserver
@@ -103,7 +103,7 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 		else if (event instanceof CommandExecutedEvent) {
 			eventType = "commands";
 			CommandExecutedEvent commandExecutedEvent = (CommandExecutedEvent) event;
-			eventData.put("command_name", commandExecutedEvent.getCommand());
+			eventData.put("command_name", commandExecutedEvent.getCommandId());
         }
 		else if (event instanceof NewInstallEvent) {        	
 			eventType = "installs";
