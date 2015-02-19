@@ -3,6 +3,8 @@ package org.bladerunnerjs.api.plugin;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,11 +33,11 @@ public class AssetContainerAssets
 	}
 	
 	public Set<Asset> assets() {
-		return new HashSet<Asset>( assetDiscoveryResult().assets.values() );
+		return new LinkedHashSet<Asset>( assetDiscoveryResult().assets.values() );
 	}
 	
 	public Map<String,Asset> assetsMap() {
-		return new HashMap<>( assetDiscoveryResult().assets );
+		return new LinkedHashMap<>( assetDiscoveryResult().assets );
 	}
 	
 	public List<LinkedAsset> seedAssets() {
@@ -61,7 +63,7 @@ public class AssetContainerAssets
 	
 	private class DefaultAssetDiscoveryInitiator implements AssetDiscoveryInitiator {
 		
-		private final Map<String,Asset> assets = new HashMap<>();
+		private final Map<String,Asset> assets = new LinkedHashMap<>();
 		private final List<LinkedAsset> seedAssets = new ArrayList<>();
 		
 		private DefaultAssetDiscoveryInitiator() {

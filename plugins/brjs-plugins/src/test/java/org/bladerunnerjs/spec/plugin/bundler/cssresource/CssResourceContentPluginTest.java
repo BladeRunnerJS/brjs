@@ -402,7 +402,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 			.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
 		then(aspect).devRequestsForContentPluginsAre("cssresource", 
-				"cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt, cssresource/lib_sdkLib/thirdparty-lib.manifest");
+				"cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
 	}
 	
 	@Test
@@ -424,7 +424,8 @@ public class CssResourceContentPluginTest extends SpecTest {
 		.and(aspect).indexPageRequires(sdkJsLib)
 		.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 		.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
-		then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+		then(aspect).prodRequestsForContentPluginsAre("cssresource", 
+				"cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
 	}
 	
 	@Test
