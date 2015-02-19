@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin.bundler.js;
 
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.plugin.bundlers.compositejs.MinifierSetting;
@@ -17,7 +17,7 @@ public class MinifierSettingTest {
 	@Before
 	public void setup()
 	{
-		settings =  new HashMap<String, String>();
+		settings =  new LinkedHashMap<String, String>();
 	}
 	
 	@Test

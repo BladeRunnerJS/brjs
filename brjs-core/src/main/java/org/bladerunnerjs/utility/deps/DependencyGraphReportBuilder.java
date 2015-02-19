@@ -2,6 +2,7 @@ package org.bladerunnerjs.utility.deps;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +12,6 @@ import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BladeWorkbench;
@@ -121,13 +121,13 @@ public class DependencyGraphReportBuilder {
 		this.dependencyInfo = dependencyInfo;
 		this.showAllDependencies = showAllDependencies;
 		
-		manyLinkedAssets = determineManyLinkedAssets(new HashSet<LinkedAsset>());
+		manyLinkedAssets = determineManyLinkedAssets(new LinkedHashSet<LinkedAsset>());
 		reportBuilder = new StringBuilder();
 		hasOmittedDependencies = new MutableBoolean(false);
 	}
 	
 	private String createReport() throws ModelOperationException {
-		HashSet<LinkedAsset> processedAssets = new HashSet<>();
+		HashSet<LinkedAsset> processedAssets = new LinkedHashSet<>();
 		for(LinkedAsset linkedAsset : linkedAssets) {
 			addDependency(linkedAsset, null, processedAssets, 1);
 		}
@@ -143,7 +143,7 @@ public class DependencyGraphReportBuilder {
 	}
 	
 	private Set<LinkedAsset> determineManyLinkedAssets(HashSet<LinkedAsset> processedAssets) {
-		Set<LinkedAsset> manyLinkedAssets = new HashSet<>();
+		Set<LinkedAsset> manyLinkedAssets = new LinkedHashSet<>();
 		for(LinkedAsset linkedAsset : linkedAssets) {
 			buildManyLinkedAssets(linkedAsset, processedAssets, manyLinkedAssets);
 		}

@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -152,7 +152,7 @@ public class TokenisingServletFilterTest
 
 	private Map<String, String> makeRequest(String url) throws ClientProtocolException, IOException
 	{
-		Map<String, String> responseMap = new HashMap<String, String>();
+		Map<String, String> responseMap = new LinkedHashMap<String, String>();
 		HttpGet httpget = new HttpGet(url);
 		HttpResponse response = httpclient.execute(httpget);
 		responseMap.put("responseCode", Integer.toString(response.getStatusLine().getStatusCode()));

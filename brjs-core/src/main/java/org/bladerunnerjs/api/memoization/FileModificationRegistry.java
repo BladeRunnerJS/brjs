@@ -2,7 +2,7 @@ package org.bladerunnerjs.api.memoization;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +47,7 @@ public class FileModificationRegistry
 		incrementFileVersion(file);
 		
 		String filePath = file.getAbsolutePath();
-		Set<String> lastModifiedMapKeySet = new HashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
+		Set<String> lastModifiedMapKeySet = new LinkedHashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
 		for (String path : lastModifiedMapKeySet) {
 			if (path.startsWith(filePath)) {
 				lastModifiedMap.get(path).incrememntValue();

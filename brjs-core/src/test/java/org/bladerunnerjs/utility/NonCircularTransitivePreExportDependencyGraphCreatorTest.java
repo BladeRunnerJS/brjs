@@ -3,7 +3,7 @@ package org.bladerunnerjs.utility;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.bladerunnerjs.api.SourceModule;
@@ -17,7 +17,7 @@ public class NonCircularTransitivePreExportDependencyGraphCreatorTest {
 	private FakeSourceModule d = new FakeSourceModule("d");
 	
 	private DependencyGraph dependencyGraph(SourceModule... sourceModuleArray) throws Exception {
-		Set<SourceModule> sourceModules = new HashSet<>(Arrays.asList(sourceModuleArray));
+		Set<SourceModule> sourceModules = new LinkedHashSet<>(Arrays.asList(sourceModuleArray));
 		return new DependencyGraph(NonCircularTransitivePreExportDependencyGraphCreator.createGraph(
 			DefineTimeDependencyGraphCreator.createGraph(null, sourceModules, true), DefineTimeDependencyGraphCreator.createGraph(null, sourceModules, false)));
 		

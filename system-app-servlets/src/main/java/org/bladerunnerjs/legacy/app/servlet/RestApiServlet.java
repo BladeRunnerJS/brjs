@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -251,7 +250,7 @@ public class RestApiServlet extends HttpServlet
 					}
 					else if (command.equals(IMPORT_BLADES_COMMAND))
 					{
-						Map<String,Map<String,List<String>>> bladesetsMap = new HashMap<String,Map<String,List<String>>>();
+						Map<String,Map<String,List<String>>> bladesetsMap = new LinkedHashMap<String,Map<String,List<String>>>();
 						
 						JsonObject bladesetsJson = requestJson.get(BLADESETS_PARAM).getAsJsonObject();							
 						
@@ -262,7 +261,7 @@ public class RestApiServlet extends HttpServlet
 							
 							String thisBladesetName = nextEntry.getKey();
 							JsonObject thisBladesetJson = nextEntry.getValue().getAsJsonObject();
-							Map<String,List<String>> newBladesetMap = new HashMap<String,List<String>>();
+							Map<String,List<String>> newBladesetMap = new LinkedHashMap<String,List<String>>();
 							
 							String newBladesetName = thisBladesetJson.get(IMPORT_BLADESETS_NEWBLADESET_NAME_KEY).getAsString();							
 							newBladesetMap.put(RestApiService.IMPORT_BLADESETS_NEWBLADESET_NAME_KEY, Arrays.asList(newBladesetName));

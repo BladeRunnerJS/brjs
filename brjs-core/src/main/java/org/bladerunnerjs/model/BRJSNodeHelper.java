@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -22,7 +22,7 @@ public class BRJSNodeHelper {
 	}
 	
 	public static void populate(BRJSNode node, String templateGroup, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {
-		populate(node, templateGroup, new HashMap<String,String>(), allowNonEmptyDirectories);
+		populate(node, templateGroup, new LinkedHashMap<String,String>(), allowNonEmptyDirectories);
 	}
 	
 	public static void populate(BRJSNode node, String templateGroup, Map<String, String> overrideTransformations, boolean allowNonEmptyDirectories) throws InvalidNameException, ModelUpdateException, TemplateInstallationException {

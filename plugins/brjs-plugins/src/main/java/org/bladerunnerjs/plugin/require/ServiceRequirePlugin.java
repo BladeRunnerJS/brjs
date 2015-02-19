@@ -1,6 +1,6 @@
 package org.bladerunnerjs.plugin.require;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.api.Asset;
@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.BundlableNode;
 
 public class ServiceRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
 	// TODO: update to be a bundlableNodeSourceModules as has been done in AliasRequirePlugin
-	private final Map<String, ServiceCommonJsSourceModule> sourceModules = new HashMap<>();
+	private final Map<String, ServiceCommonJsSourceModule> sourceModules = new LinkedHashMap<>();
 	
 	@Override
 	public void setBRJS(BRJS brjs) {

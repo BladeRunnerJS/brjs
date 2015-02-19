@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -199,9 +199,9 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	private class ComputedValue {
-		public Set<String> preExportDefineTimeRequirePaths = new HashSet<>();
-		public Set<String> postExportDefineTimeRequirePaths = new HashSet<>();
-		public Set<String> useTimeRequirePaths = new HashSet<>();
+		public Set<String> preExportDefineTimeRequirePaths = new LinkedHashSet<>();
+		public Set<String> postExportDefineTimeRequirePaths = new LinkedHashSet<>();
+		public Set<String> useTimeRequirePaths = new LinkedHashSet<>();
 		public List<String> aliases = new ArrayList<>();
 	}
 

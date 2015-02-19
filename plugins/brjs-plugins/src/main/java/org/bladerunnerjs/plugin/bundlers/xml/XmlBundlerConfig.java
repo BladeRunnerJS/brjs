@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -55,7 +55,7 @@ public class XmlBundlerConfig {
 		return computedConfigValue.value(new Getter<ContentProcessingException>() {
 			@Override
 			public Object get() throws ContentProcessingException {
-        		Map<String, XmlResourceConfig> result = new HashMap<String, XmlResourceConfig>();
+        		Map<String, XmlResourceConfig> result = new LinkedHashMap<String, XmlResourceConfig>();
         		try 
         		{
         			InputStream is = new FileInputStream(configFile);
@@ -72,7 +72,7 @@ public class XmlBundlerConfig {
 			final InputStream configInputStream)
 			throws ParserConfigurationException, SAXException, IOException {
 		
-		Map<String, XmlResourceConfig> result = new HashMap<String, XmlResourceConfig>();
+		Map<String, XmlResourceConfig> result = new LinkedHashMap<String, XmlResourceConfig>();
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 

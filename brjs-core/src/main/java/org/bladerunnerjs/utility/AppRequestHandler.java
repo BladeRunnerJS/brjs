@@ -9,7 +9,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -181,7 +181,7 @@ public class AppRequestHandler
 			}
 			
 			if (!indexPage.isFile()) {
-				return new HashMap<>();
+				return new LinkedHashMap<>();
 			}
 			
 			String pathRelativeToApp = app.dir().getRelativePath(indexPage);

@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -187,8 +187,8 @@ public class RestApiServiceTest
 		service.createApp("my-new-app", "appx");
 		assertTrue( new File(temporarySdk.getParentFile(), "apps/my-new-app").exists() );
 		
-		Map<String,Map<String,List<String>>> bladesets = new HashMap<String,Map<String,List<String>>>();
-		Map<String,List<String>> newBladeset = new HashMap<String,List<String>>();
+		Map<String,Map<String,List<String>>> bladesets = new LinkedHashMap<String,Map<String,List<String>>>();
+		Map<String,List<String>> newBladeset = new LinkedHashMap<String,List<String>>();
 		newBladeset.put("newBladesetName", Arrays.asList("a"));
 		newBladeset.put("blades", Arrays.asList("a-blade","another-blade"));
 		bladesets.put("a", newBladeset);
@@ -208,8 +208,8 @@ public class RestApiServiceTest
 		service.createApp("my-new-app", "appx");
 		assertTrue( new File(temporarySdk.getParentFile(), "apps/my-new-app").exists() );
 		
-		Map<String,Map<String,List<String>>> bladesets = new HashMap<String,Map<String,List<String>>>();
-		Map<String,List<String>> newBladeset = new HashMap<String,List<String>>();
+		Map<String,Map<String,List<String>>> bladesets = new LinkedHashMap<String,Map<String,List<String>>>();
+		Map<String,List<String>> newBladeset = new LinkedHashMap<String,List<String>>();
 		newBladeset.put("newBladesetName", Arrays.asList("a"));
 		newBladeset.put("blades", Arrays.asList("a-blade"));
 		bladesets.put("a", newBladeset);
@@ -229,8 +229,8 @@ public class RestApiServiceTest
 		service.createApp("my-new-app", "appx");
 		assertTrue( new File(temporarySdk.getParentFile(), "apps/my-new-app").exists() );
 		
-		Map<String,Map<String,List<String>>> bladesets = new HashMap<String,Map<String,List<String>>>();
-		Map<String,List<String>> newBladeset = new HashMap<String,List<String>>();
+		Map<String,Map<String,List<String>>> bladesets = new LinkedHashMap<String,Map<String,List<String>>>();
+		Map<String,List<String>> newBladeset = new LinkedHashMap<String,List<String>>();
 		newBladeset.put("newBladesetName", Arrays.asList("newa"));
 		newBladeset.put("blades", Arrays.asList("a-blade","another-blade"));
 		bladesets.put("a", newBladeset);

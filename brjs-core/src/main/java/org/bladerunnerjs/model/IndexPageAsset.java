@@ -3,7 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class IndexPageAsset extends LinkedFileAsset {
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		List<Asset> assetList = super.getDependentAssets(bundlableNode);
 		
-		Set<String> dependencies = new HashSet<String>();
+		Set<String> dependencies = new LinkedHashSet<String>();
 		List<String> aliases = new ArrayList<>();
 		try {
 			RequirePathUtility.addRequirePathsFromReader(getReader(), dependencies, aliases);

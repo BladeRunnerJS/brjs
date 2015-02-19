@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,7 @@ public class SourceModuleDependencyOrderCalculator {
 		Map<SourceModule, List<SourceModule>> sourceModuleDependencies = NonCircularTransitivePreExportDependencyGraphCreator.createGraph(
 			DefineTimeDependencyGraphCreator.createGraph(bundlableNode, unorderedSourceModules, true), DefineTimeDependencyGraphCreator.createGraph(bundlableNode, unorderedSourceModules, false));
 		Set<SourceModule> orderedSourceModules = new LinkedHashSet<>();
-		Set<SourceModule> metDependencies = new HashSet<>();		
+		Set<SourceModule> metDependencies = new LinkedHashSet<>();		
 		
 		for (SourceModule bootstrapModule : bootstrappingSourceModules) {
 			orderedSourceModules.add(bootstrapModule);

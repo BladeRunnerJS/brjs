@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
@@ -9,7 +9,7 @@ import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 public class IO {
-	private final Map<FileAccessLimitScope, File[]> activeScopes = new HashMap<>();
+	private final Map<FileAccessLimitScope, File[]> activeScopes = new LinkedHashMap<>();
 	private final SecurityManager securityManager;
 	private final IOFileFilter classFileAndJarFileFilter = new SuffixFileFilter( new String[] { ".class", ".jar" } );
 	

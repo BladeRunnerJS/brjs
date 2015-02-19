@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,7 +208,7 @@ public class XmlBundleWriter
 	private Map<String, String> getNamespaceDeclarations(List<XmlSiblingReader> readers, String elementName)
 	{
 
-		Map<String, String> namespaceDeclarations = new HashMap<String, String>();
+		Map<String, String> namespaceDeclarations = new LinkedHashMap<String, String>();
 		
 		for (XmlSiblingReader reader : readers)
 		{
@@ -239,7 +238,7 @@ public class XmlBundleWriter
 
 	private String getNextElement(final List<XmlSiblingReader> readers, final XmlResourceConfig resourceConfig) throws XMLStreamException, ContentProcessingException
 	{
-		Map<String, Boolean> availableElements = new HashMap<String, Boolean>();
+		Map<String, Boolean> availableElements = new LinkedHashMap<String, Boolean>();
 		String nextElement = null;
 
 		for (XmlSiblingReader reader : readers)
@@ -291,7 +290,7 @@ public class XmlBundleWriter
 	private void mergeElements(final List<XmlSiblingReader> readers, XMLStreamWriter writer, final XmlResourceConfig resourceConfig, final String elementName) 
 			throws  ContentProcessingException
 	{
-		Map<String, File> processedIdentifers = new HashMap<String, File>();
+		Map<String, File> processedIdentifers = new LinkedHashMap<String, File>();
 		String identifierAttribute = resourceConfig.getMergeElementIdentifier(elementName);
 
 		for (XmlSiblingReader reader : readers)

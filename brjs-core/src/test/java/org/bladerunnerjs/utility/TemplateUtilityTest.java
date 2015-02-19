@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.api.App;
@@ -41,7 +41,7 @@ public class TemplateUtilityTest
 	@Test(expected=TemplateDirectoryAlreadyExistsException.class)
 	public void installingATemplateToAPreExistingDirectoryCausesAnException() throws Exception
 	{
-		TemplateUtility.installTemplate(brjs.app("pre-existing-app"), "default", "app", new HashMap<String, String>());
+		TemplateUtility.installTemplate(brjs.app("pre-existing-app"), "default", "app", new LinkedHashMap<String, String>());
 	}
 	
 	@Test
@@ -50,7 +50,7 @@ public class TemplateUtilityTest
 		App app = brjs.app("app");
 		assertFalse("app dir does not exist", app.dirExists());
 		
-		TemplateUtility.installTemplate(brjs.app("app"), "default", "app", new HashMap<String, String>());
+		TemplateUtility.installTemplate(brjs.app("app"), "default", "app", new LinkedHashMap<String, String>());
 		
 		assertTrue("app dir exists", app.dirExists());
 		
@@ -74,7 +74,7 @@ public class TemplateUtilityTest
 	public void fileNamesAndContentsCanBeModifiedWhenInstallingTemplate() throws Exception
 	{
 		App app = brjs.app("app");
-		Map<String, String> transformations = new HashMap<>();
+		Map<String, String> transformations = new LinkedHashMap<>();
 		
 		transformations.put("dir", "folder");
 		TemplateUtility.installTemplate(brjs.app("app"),  "default", "app", transformations);

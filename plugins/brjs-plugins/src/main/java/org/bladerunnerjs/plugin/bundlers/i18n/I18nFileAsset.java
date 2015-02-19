@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin.bundlers.i18n;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -85,7 +85,7 @@ public class I18nFileAsset implements Asset
 
 	public Map<String,String> getLocaleProperties() throws IOException, RequirePathException, NamespaceException
 	{
-		Map<String, String> propertiesMap = new HashMap<String,String>();
+		Map<String, String> propertiesMap = new LinkedHashMap<String,String>();
 		Properties i18nProperties = new Properties();
 		
 		try(Reader propertiesReader = new UnicodeReader(assetFile, defaultFileCharacterEncoding)) {

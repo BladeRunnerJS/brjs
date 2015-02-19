@@ -3,7 +3,7 @@ package org.bladerunnerjs.legacy.app.servlet;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -167,12 +167,12 @@ public class RestApiServletTest
 	@Test
 	public void testImportBlades() throws Exception
 	{
-		Map<String,Map<String,List<String>>> bladesets = new HashMap<String,Map<String,List<String>>>();
-		Map<String,List<String>> someBladeset = new HashMap<String,List<String>>();
+		Map<String,Map<String,List<String>>> bladesets = new LinkedHashMap<String,Map<String,List<String>>>();
+		Map<String,List<String>> someBladeset = new LinkedHashMap<String,List<String>>();
 		someBladeset.put("newBladesetName", Arrays.asList("someBladeset"));
 		someBladeset.put("blades", Arrays.asList("blade1","blade2","blade9"));
 		bladesets.put("someBladeset", someBladeset);
-		Map<String,List<String>> anotherBladeset = new HashMap<String,List<String>>();
+		Map<String,List<String>> anotherBladeset = new LinkedHashMap<String,List<String>>();
 		anotherBladeset.put("newBladesetName", Arrays.asList("anotherBladeset"));
 		anotherBladeset.put("blades", Arrays.asList("someBlade","anotherBlade"));
 		bladesets.put("anotherBladeset", anotherBladeset);

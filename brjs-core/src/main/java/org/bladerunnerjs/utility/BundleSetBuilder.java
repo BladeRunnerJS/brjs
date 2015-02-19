@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +27,7 @@ public class BundleSetBuilder {
 	
 	private final Set<Asset> assets = new LinkedHashSet<>();
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
+	private final Set<LinkedAsset> linkedAssets = new LinkedHashSet<LinkedAsset>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
 	
@@ -53,7 +52,7 @@ public class BundleSetBuilder {
 		}
 		
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
-		List<Asset> assetList = orderAssets(assets);
+		List<Asset> assetList = orderAssetsByAssetContainer(assets);
 		
 		return new StandardBundleSet(bundlableNode, assetList, orderedSourceModules);
 	}
@@ -161,7 +160,7 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private List<Asset> orderAssets(Set<Asset> assets) {
+	private List<Asset> orderAssetsByAssetContainer(Set<Asset> assets) {
 		List<Asset> orderedAssets = new ArrayList<>();
 		List<Asset> unorderedAssets = new ArrayList<>(assets);
 		for (AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {

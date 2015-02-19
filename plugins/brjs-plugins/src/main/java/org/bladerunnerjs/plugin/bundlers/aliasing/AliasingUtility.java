@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin.bundlers.aliasing;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +14,8 @@ import org.bladerunnerjs.model.BundlableNode;
 public class AliasingUtility
 {
 	
-	private static Map<BundlableNode,AliasesFile> aliasFiles = new HashMap<>();
-	private static Map<AssetContainer,Map<String,AliasDefinitionsFile>> aliasDefinitionFiles = new HashMap<>();
+	private static Map<BundlableNode,AliasesFile> aliasFiles = new LinkedHashMap<>();
+	private static Map<AssetContainer,Map<String,AliasDefinitionsFile>> aliasDefinitionFiles = new LinkedHashMap<>();
 	
 	public static AliasesFile aliasesFile(BundlableNode bundlableNode) {
 		AliasesFile aliasesFile = aliasFiles.get(bundlableNode);
@@ -28,7 +28,7 @@ public class AliasingUtility
 	
 	public static AliasDefinitionsFile aliasDefinitionsFile(AssetContainer assetContainer, String path) {
 		if (!aliasDefinitionFiles.containsKey(assetContainer)) {
-			aliasDefinitionFiles.put(assetContainer, new HashMap<String,AliasDefinitionsFile>());
+			aliasDefinitionFiles.put(assetContainer, new LinkedHashMap<String,AliasDefinitionsFile>());
 		}
 		Map<String,AliasDefinitionsFile> assetContainerAliasDefinitionFiles = aliasDefinitionFiles.get(assetContainer);
 		

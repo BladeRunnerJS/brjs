@@ -3,7 +3,7 @@ package org.bladerunnerjs.legacy.testIntegration;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public class WebDriverProvider
 	
 	public static WebDriver getDriver(String testSpecifiedBrowser) throws Exception
 	{
-		return getDriver(testSpecifiedBrowser, new HashMap<String, String>());
+		return getDriver(testSpecifiedBrowser, new LinkedHashMap<String, String>());
 	}
 	
 	public static WebDriver getDriver(String testSpecifiedBrowser, Map<String, String> driverOptions) throws Exception

@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility.deps;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -148,7 +147,7 @@ public class DependencyInfoFactory {
 	private static void addOrderedDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencyInfo, SourceModule sourceModule, List<SourceModule> orderDependentSourceModules) throws ModelOperationException {
 		for(SourceModule dependentSourceModule : orderDependentSourceModules) {
 			if(!dependencyInfo.staticDeps.containsKey(sourceModule)) {
-				dependencyInfo.staticDeps.put(sourceModule, new HashSet<LinkedAsset>());
+				dependencyInfo.staticDeps.put(sourceModule, new LinkedHashSet<LinkedAsset>());
 			}
 			
 			dependencyInfo.staticDeps.get(sourceModule).add(dependentSourceModule);

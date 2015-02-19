@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin.bundlers.aliasing;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
@@ -40,8 +40,8 @@ public class AliasDefinitionsReader {
 	public static AliasDefinitionsData read(MemoizedFile aliasDefinitionsFile, AssetContainer assetContainer, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
 		AliasDefinitionsData data = new AliasDefinitionsData();
 		data.aliasDefinitions = new ArrayList<>();
-		data.scenarioAliases = new HashMap<>();
-		data.groupAliases = new HashMap<>();
+		data.scenarioAliases = new LinkedHashMap<>();
+		data.groupAliases = new LinkedHashMap<>();
 		
 		if(aliasDefinitionsFile.exists()) {
 			try(Reader fileReader = new UnicodeReader(aliasDefinitionsFile, defaultFileCharacterEncoding)) {

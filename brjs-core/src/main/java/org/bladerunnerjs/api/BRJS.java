@@ -3,7 +3,7 @@ package org.bladerunnerjs.api;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +79,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
 	private final MemoizedFileAccessor memoizedFileAccessor;
-	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
+	private final Map<Integer, ApplicationServer> appServers = new LinkedHashMap<Integer, ApplicationServer>();
 	private final PluginAccessor pluginAccessor;
 	private final IOFileFilter globalFilesFilter = new BRJSGlobalFilesIOFileFilter(this);
 	private final IO io = new IO( globalFilesFilter );
@@ -221,7 +221,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> apps()
 	{
-		Map<String,App> apps = new HashMap<>();
+		Map<String,App> apps = new LinkedHashMap<>();
 		
 		for (App app : systemApps()) {
 			apps.put(app.getName(), app);

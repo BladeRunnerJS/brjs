@@ -1,14 +1,14 @@
 package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AliasDefinitionsData {
 	public List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-	public Map<String, Map<String, AliasOverride>> scenarioAliases = new HashMap<>();
-	public Map<String, List<AliasOverride>> groupAliases = new HashMap<>();
+	public Map<String, Map<String, AliasOverride>> scenarioAliases = new LinkedHashMap<>();
+	public Map<String, List<AliasOverride>> groupAliases = new LinkedHashMap<>();
 	
 	public AliasDefinitionsData() {
 		// do nothing
@@ -26,7 +26,7 @@ public class AliasDefinitionsData {
 	
 	public Map<String, AliasOverride> getScenarioAliases(String aliasName) {
 		if(!scenarioAliases.containsKey(aliasName)) {
-			scenarioAliases.put(aliasName, new HashMap<String, AliasOverride>());
+			scenarioAliases.put(aliasName, new LinkedHashMap<String, AliasOverride>());
 		}
 		
 		return scenarioAliases.get(aliasName);

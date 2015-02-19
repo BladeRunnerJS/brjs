@@ -1,7 +1,7 @@
 package org.bladerunnerjs.plugin.commands.standard;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -63,7 +63,7 @@ public class J2eeifyCommandPlugin extends JSAPArgsParsingCommandPlugin
 		
 		if(!app.dirExists()) throw new CommandArgumentsException( String.format(Messages.APP_DOES_NOT_EXIST_EXCEPTION, appName), this );
 		
-		Map<String, String> transformations = new HashMap<>();
+		Map<String, String> transformations = new LinkedHashMap<>();
 		transformations.put("app-name", app.getName());
 		try
 		{

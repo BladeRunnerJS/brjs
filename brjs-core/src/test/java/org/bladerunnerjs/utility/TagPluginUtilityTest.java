@@ -2,7 +2,7 @@ package org.bladerunnerjs.utility;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.api.App;
@@ -185,7 +185,7 @@ public class TagPluginUtilityTest
 	@Test
 	public void correctFilterMapIsReturnedIsNoTagIsFound() throws Exception
 	{		
-		Map<String,Map<String,String>> expecetedResult = new HashMap<>();
+		Map<String,Map<String,String>> expecetedResult = new LinkedHashMap<>();
 		filterAndAssertMapReturned( "I don't contain any tags...", expecetedResult, aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
@@ -193,16 +193,16 @@ public class TagPluginUtilityTest
 	@Test
 	public void correctFilterMapIsReturnedWhenATagIsFound() throws Exception
 	{
-		Map<String,Map<String,String>> expecetedResult = new HashMap<>();
-		expecetedResult.put("tag",new HashMap<>());
+		Map<String,Map<String,String>> expecetedResult = new LinkedHashMap<>();
+		expecetedResult.put("tag",new LinkedHashMap<>());
 		filterAndAssertMapReturned( "this is a <@tag@/>", expecetedResult, aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void correctFilterMapIsReturnedWhenATagIsFoundWithAttributes() throws Exception
 	{
-		Map<String,Map<String,String>> expecetedResult = new HashMap<>();
-		expecetedResult.put("tag",new HashMap<>());
+		Map<String,Map<String,String>> expecetedResult = new LinkedHashMap<>();
+		expecetedResult.put("tag",new LinkedHashMap<>());
 		expecetedResult.get("tag").put("key", "value");
 		filterAndAssertMapReturned( "this is a <@tag key=\"value\"@/>", expecetedResult, aspect.getBundleSet(), RequestMode.Dev, "");
 	}
