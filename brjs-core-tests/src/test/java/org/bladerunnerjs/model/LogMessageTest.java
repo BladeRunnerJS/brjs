@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model;
 
-import org.bladerunnerjs.testing.utility.LogMessage;
+import org.bladerunnerjs.api.spec.utility.LogMessage;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,7 +1,7 @@
 package org.bladerunnerjs.utility.trie;
 
-import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.LinkedAsset;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.LinkedAsset;
 
 public class LinkedAssetReference implements AssetReference {
 	

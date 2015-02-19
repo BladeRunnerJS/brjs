@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'retrolambda'
-apply plugin: com.caplin.gradle.plugins.CompileOnly
+apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
 
 buildscript {
 	repositories {

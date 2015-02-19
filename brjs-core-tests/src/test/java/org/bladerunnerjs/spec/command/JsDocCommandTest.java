@@ -2,12 +2,12 @@ package org.bladerunnerjs.spec.command;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
+import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.commands.standard.JsDocCommand;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

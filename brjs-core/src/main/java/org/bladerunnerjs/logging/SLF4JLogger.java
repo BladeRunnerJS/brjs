@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.IllegalFormatException;
 
+import org.bladerunnerjs.api.logging.Logger;
+
 public class SLF4JLogger implements Logger
 {
 	private final org.slf4j.Logger slf4jLogger;

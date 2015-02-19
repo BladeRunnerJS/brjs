@@ -1,16 +1,17 @@
 package org.bladerunnerjs.spec.plugin.minifier;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.utility.FileUtils;
+
 import java.io.File;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.BladerunnerConf;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class ClosureMinifierPluginTest extends SpecTest
 {

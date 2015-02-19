@@ -2,15 +2,14 @@ package org.bladerunnerjs.plugin.stats;
 
 
 import static org.mockito.Mockito.*;
-
 import io.keen.client.java.KeenCallback;
 import io.keen.client.java.KeenClient;
 import io.keen.client.java.KeenProject;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.events.NewInstallEvent;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 

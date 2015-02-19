@@ -3,6 +3,8 @@ package org.bladerunnerjs.model;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.bladerunnerjs.api.SourceModule;
+
 
 public interface AugmentedContentSourceModule extends SourceModule
 {
