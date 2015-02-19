@@ -2,11 +2,8 @@ package org.bladerunnerjs.model;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
@@ -26,10 +23,10 @@ import org.bladerunnerjs.utility.UnicodeReader;
  */
 public class LinkedFileAsset implements LinkedAsset {
 	private App app;
-	private MemoizedFile assetFile;
-	private AssetLocation assetLocation;
+	protected MemoizedFile assetFile;
+	protected AssetLocation assetLocation;
 	private String assetPath;
-	private String defaultFileCharacterEncoding;
+	protected String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	
 	public LinkedFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
@@ -52,9 +49,8 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
-		List<Asset> assetList;
 		try {
-			assetList = bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
+			 return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (AmbiguousRequirePathException e) {			
 			e.setSourceRequirePath(getAssetPath());
@@ -63,21 +59,6 @@ public class LinkedFileAsset implements LinkedAsset {
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
-		Set<String> dependencies = new HashSet<String>();
-		List<String> aliases = new ArrayList<>();
-		try {
-			RequirePathUtility.addRequirePathsFromReader(getReader(), dependencies, aliases);
-		} catch (IOException e) {
-			//TODO
-			e.printStackTrace();
-		}
-		List<String> dependenciesList = new ArrayList<String>(dependencies);
-		try {
-			assetList.addAll(bundlableNode.getLinkedAssets(assetLocation, dependenciesList));
-		} catch (RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
-		return assetList;
 	}
 	
 	@Override

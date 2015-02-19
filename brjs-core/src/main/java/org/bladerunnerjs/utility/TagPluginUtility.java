@@ -52,7 +52,7 @@ public class TagPluginUtility {
 			{
 				TagHandlerPlugin tagHandler = getTagHandlerForTag(tagHandlerPlugins, tagMatch.tag);
 				String replacement = getTagReplacement(bundleSet, requestMode, locale, version, tagHandler, tagMatch.attributes);
-				matcher.appendReplacement(result, replacement);
+				matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
 			}
 			@Override
 			public void handleUnprocessableTagMatch(Matcher matcher, String tagContent)

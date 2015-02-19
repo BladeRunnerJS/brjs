@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
+import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +51,7 @@ public class FileModificationWatcherThreadTest
 	private File nestedDir;
 	private WatchKey nestedDirWatchKey;
 	private WatchKeyServiceFactory mockWatchServiceFactory;
+	private Logger mockLogger;
 	
 	@Before
 	public void setup() throws IOException, InterruptedException {
@@ -67,15 +69,19 @@ public class FileModificationWatcherThreadTest
 		rootWatchDir = new MemoizedFile(mockBrjs, FileUtils.createTemporaryDirectory( this.getClass() ).getAbsolutePath() );
 		when(mockBrjs.dir()).thenReturn(rootWatchDir);
 		when(mockBrjs.getFileModificationRegistry()).thenReturn(mockModificationRegistry);
-		when(mockBrjs.logger(any(Class.class))).thenReturn(mock(Logger.class));
+		mockLogger = mock(Logger.class);
+		when(mockBrjs.logger(any(Class.class))).thenReturn(mockLogger);
 		
 		mockWatchKeyService = mock(DefaultWatchKeyService.class);
 		mockWatchServiceFactory = mock(WatchKeyServiceFactory.class);
 		when(mockWatchServiceFactory.createWatchService()).thenReturn(mockWatchKeyService);
 		
 		rootWatchDirWatchKey = mock(WatchKey.class);
+		when(rootWatchDirWatchKey.reset()).thenReturn(true);
 		dirInRootWatchKey = mock(WatchKey.class);
+		when(dirInRootWatchKey.reset()).thenReturn(true);
 		nestedDirWatchKey = mock(WatchKey.class);
+		when(nestedDirWatchKey.reset()).thenReturn(true);
 		
 		fileInRoot = new File(rootWatchDir, "some-file.txt");
 		dirInRoot = new File(rootWatchDir, "some-dir");
@@ -110,6 +116,29 @@ public class FileModificationWatcherThreadTest
 		verify(mockWatchKeyService, times(1)).waitForEvents();
 		assertEquals(1, fileChanges.size());
 		assertEquals(fileInRoot, fileChanges.get(0));
+	}
+	
+	@Test
+	public void messageIsLoggedWhenFileChangesAreDetected() throws Exception
+	{
+		allowMockWatchKeyForDir( rootWatchDir, rootWatchDirWatchKey );
+		
+		createAndInitWatcher();
+		verify(mockLogger).debug(FileModificationWatcherThread.USING_WATCH_SERVICE_MSG, FileModificationWatcherThread.class.getSimpleName(), mockWatchKeyService.getClass().getSimpleName());
+		
+		queueWatchServiceEventKeys(rootWatchDirWatchKey);
+				
+		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockCreateFileEvent(fileInRoot));
+		checkForUpdates(1);
+		verify(mockLogger).debug(FileModificationWatcherThread.FILE_CHANGED_MSG, ENTRY_CREATE, fileInRoot.getPath());
+		
+		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileChangeEvent(fileInRoot));
+		checkForUpdates(1);
+		verify(mockLogger).debug(FileModificationWatcherThread.FILE_CHANGED_MSG, ENTRY_MODIFY, fileInRoot.getPath());
+		
+		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileDeleteEvent(fileInRoot));
+		checkForUpdates(1);
+		verify(mockLogger).debug(FileModificationWatcherThread.FILE_CHANGED_MSG, ENTRY_DELETE, fileInRoot.getPath());
 	}
 
 	@Test
@@ -297,22 +326,35 @@ public class FileModificationWatcherThreadTest
 	
 	private WatchEvent<Path> mockCreateFileEvent(File file) throws IOException
 	{
-		@SuppressWarnings("unchecked")
-		WatchEvent<Path> createNewFileWatchEvent = mock(WatchEvent.class);
-		when(createNewFileWatchEvent.kind()).thenReturn(ENTRY_CREATE);
-		when(createNewFileWatchEvent.context()).thenReturn(file.toPath());
 		file.createNewFile();
-		return createNewFileWatchEvent;
+		return createMockEvent(file, ENTRY_CREATE);
+	}
+	
+	private WatchEvent<Path> mockFileChangeEvent(File file) throws IOException
+	{
+		file.setLastModified(System.currentTimeMillis());
+		return createMockEvent(file, ENTRY_MODIFY);
+	}
+	
+	private WatchEvent<Path> mockFileDeleteEvent(File file) throws IOException
+	{
+		org.apache.commons.io.FileUtils.deleteQuietly(file);
+		return createMockEvent(file, ENTRY_DELETE);
 	}
 	
 	private WatchEvent<Path> mockMkdirEvent(File dir)
 	{
-		@SuppressWarnings("unchecked")
-		WatchEvent<Path> mkdirWatchEvent = mock(WatchEvent.class);
-		when(mkdirWatchEvent.kind()).thenReturn(ENTRY_CREATE);
-		when(mkdirWatchEvent.context()).thenReturn(dir.toPath());
 		dir.mkdir();		
-		return mkdirWatchEvent;
+		return createMockEvent(dir, ENTRY_CREATE);
+	}
+	
+	private WatchEvent<Path> createMockEvent(File dir, Kind<Path> kind)
+	{
+		@SuppressWarnings("unchecked")
+		WatchEvent<Path> watchEvent = mock(WatchEvent.class);
+		when(watchEvent.kind()).thenReturn(kind);
+		when(watchEvent.context()).thenReturn(dir.toPath());
+		return watchEvent;
 	}
 	
 	private void allowMockWatchKeyForDir(File watchDir, WatchKey watchKey) throws IOException

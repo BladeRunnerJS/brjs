@@ -302,7 +302,7 @@ public class RestApiService
 
 	
 	private void notifyOfCommand(CommandPlugin command) {
-		brjs.notifyObservers(new CommandExecutedEvent("dashboard:"+command.getCommandName()), brjs);
+		brjs.notifyObservers(new CommandExecutedEvent("dashboard", command.getCommandName()), brjs);
 	}
 	
 	private class MultiOutputPrintStream extends PrintStream {

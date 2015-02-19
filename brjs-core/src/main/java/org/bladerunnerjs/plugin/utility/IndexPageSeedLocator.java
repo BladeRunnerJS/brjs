@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.model.IndexPageAsset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.LinkedFileAsset;
 
 public class IndexPageSeedLocator {
 	private final Map<String, LinkedAsset> cachedAssets = new HashMap<>();
@@ -29,7 +29,7 @@ public class IndexPageSeedLocator {
 				String indexFilePath = indexFile.getAbsolutePath();
 				
 				if(!cachedAssets.containsKey(indexFilePath)) {
-					cachedAssets.put(indexFilePath, new LinkedFileAsset(indexFile, viewableBundlableNode.assetLocation("resources")));
+					cachedAssets.put(indexFilePath, new IndexPageAsset(indexFile, viewableBundlableNode.assetLocation("resources")));
 				}
 				
 				seedFiles.add(cachedAssets.get(indexFilePath));

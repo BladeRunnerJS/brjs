@@ -103,7 +103,7 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 		else if (event instanceof CommandExecutedEvent) {
 			eventType = "commands";
 			CommandExecutedEvent commandExecutedEvent = (CommandExecutedEvent) event;
-			eventData.put("command_name", commandExecutedEvent.getCommand());
+			eventData.put("command_name", commandExecutedEvent.getCommandId());
         }
 		else if (event instanceof NewInstallEvent) {        	
 			eventType = "installs";

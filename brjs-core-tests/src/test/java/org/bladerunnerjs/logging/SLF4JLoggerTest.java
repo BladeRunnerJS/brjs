@@ -1,9 +1,10 @@
-package org.bladerunnerjs.core.log;
+package org.bladerunnerjs.logging;
 
 import static org.mockito.Mockito.*;
 
 import java.util.UnknownFormatConversionException;
 
+import org.bladerunnerjs.logging.LoggerTimeAccessor;
 import org.bladerunnerjs.logging.SLF4JLogger;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,11 +22,14 @@ public class SLF4JLoggerTest
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
+	private LoggerTimeAccessor timeAccessor;
+
 	@Before
 	public void setup()
 	{
 		slf4jLogger = mock(org.slf4j.Logger.class);
-		logger = new SLF4JLogger(slf4jLogger, "TEST");
+		timeAccessor = mock(LoggerTimeAccessor.class);
+		logger = new SLF4JLogger(slf4jLogger, "TEST", timeAccessor);
 	}
 
 	@Test
@@ -33,7 +37,7 @@ public class SLF4JLoggerTest
 	{
 		when(slf4jLogger.isDebugEnabled()).thenReturn(true);
 		logger.debug("%s", "some text");
-		verify(slf4jLogger).isDebugEnabled();
+		verify(slf4jLogger, atLeastOnce()).isDebugEnabled();
 		verify(slf4jLogger).debug("some text");
 	}
 
@@ -79,5 +83,23 @@ public class SLF4JLoggerTest
 		when(slf4jLogger.isDebugEnabled()).thenReturn(true);
 		logger.debug("%");
 		verify(slf4jLogger).debug("%");
+	}
+	
+	@Test
+	public void allLogLevelsContainTheTimestampIfDebugIsActive() throws Exception
+	{
+		when(slf4jLogger.isDebugEnabled()).thenReturn(true);
+		when(slf4jLogger.isInfoEnabled()).thenReturn(true);
+		when(slf4jLogger.isWarnEnabled()).thenReturn(true);
+		when(slf4jLogger.isErrorEnabled()).thenReturn(true);
+		when(timeAccessor.getTimestamp()).thenReturn("1234");
+		logger.debug("debug log");
+		logger.info("info log");
+		logger.warn("warn log");
+		logger.error("error log");
+		verify(slf4jLogger).debug("1234 - debug log");
+		verify(slf4jLogger).info("1234 - info log");
+		verify(slf4jLogger).warn("1234 - warn log");
+		verify(slf4jLogger).error("1234 - error log");
 	}
 }
