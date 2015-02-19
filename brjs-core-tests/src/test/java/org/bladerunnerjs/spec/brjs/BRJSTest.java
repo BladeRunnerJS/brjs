@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +20,7 @@ public class BRJSTest extends SpecTest {
 	private NamedDirNode brjsTemplate;
 	private App app1;
 	private App app2;
+	private File tempBrjsApps = null;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -131,7 +133,7 @@ public class BRJSTest extends SpecTest {
 			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
 		when(brjs.app("app1BrjsApps")).create();
 		then(brjs).hasDir("brjs-apps/app1BrjsApps");	
-		deleteCreatedBrjsAppsDirFromTemp(testSdkDirectory);
+		tempBrjsApps = new File(testSdkDirectory, "brjs-apps");
 	}
 	
 	@Test
@@ -140,11 +142,21 @@ public class BRJSTest extends SpecTest {
 			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
 		when(brjs.app("app1BrjsApps")).create();
 		then(brjs.dir().getParentFile()).containsDir("brjs-apps/app1BrjsApps");	
-		deleteCreatedBrjsAppsDirFromTemp(testSdkDirectory.getParentFile());
+		tempBrjsApps = new File(testSdkDirectory.getParentFile(), "brjs-apps");
 	}
 	
-	public void deleteCreatedBrjsAppsDirFromTemp(File parentDir) throws IOException {
-		File tempBrjsApps = new File (parentDir, "brjs-apps");
-		FileUtils.deleteDirectory(tempBrjsApps);
+	@Test
+	public void brjsAppsFolderIsInADifferentDirectoryThanTheParentOfBrjs() throws Exception {
+		File tempDir = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
+		given(tempDir).containsFolder("brjs-apps")
+			.and(brjs).hasBeenCreatedWithWorkingDir(tempDir);
+		when(brjs.app("app1BrjsApps")).create();
+		then(tempDir).containsDir("brjs-apps/app1BrjsApps");
+		tempBrjsApps = tempDir;
+	}
+	
+	@After
+	public void deleteCreatedBrjsAppsDirFromTemp() throws IOException {
+		if (tempBrjsApps != null) FileUtils.deleteDirectory(tempBrjsApps);
 	}
 }
