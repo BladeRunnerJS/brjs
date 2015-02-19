@@ -233,10 +233,4 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	{
 		return bundlableNode.assets(assetContainer, requirePaths);
 	}
-
-	@Override
-	public Asset assetByLocation(String relativePath)
-	{
-		return bundlableNode.assetByLocation(relativePath);
-	}
 }

@@ -38,10 +38,6 @@ public class AssetContainerAssets
 		return new HashMap<>( assetDiscoveryResult().assets );
 	}
 	
-	public Map<String,Asset> assetsByPathMap() {
-		return new HashMap<>( assetDiscoveryResult().assetsByPath );
-	}
-	
 	public List<LinkedAsset> seedAssets() {
 		return new ArrayList<>( assetDiscoveryResult().seedAssets );
 	}
@@ -66,7 +62,6 @@ public class AssetContainerAssets
 	private class DefaultAssetDiscoveryInitiator implements AssetDiscoveryInitiator {
 		
 		private final Map<String,Asset> assets = new HashMap<>();
-		private final Map<String,Asset> assetsByPath = new HashMap<>();
 		private final List<LinkedAsset> seedAssets = new ArrayList<>();
 		
 		private DefaultAssetDiscoveryInitiator() {
@@ -88,12 +83,6 @@ public class AssetContainerAssets
 				throw new RuntimeException("An asset for the require path '"+assetPrimaryRequirePath+"' has already been registered.");
 			}
 			assets.put(assetPrimaryRequirePath, asset);
-			String assetPathRelativeToContainer = StringUtils.substringAfter(asset.getAssetPath(), assetContainer.root().dir().getRelativePath(assetContainer.dir()));
-			if (assetPathRelativeToContainer.equals("")) {
-				assetPathRelativeToContainer = ".";
-			}
-			//TODO: can we get rid of this?
-			assetsByPath.put(assetPathRelativeToContainer, asset);
 		}
 
 		@Override

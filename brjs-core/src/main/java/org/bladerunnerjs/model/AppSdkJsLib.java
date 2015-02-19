@@ -241,10 +241,4 @@ public final class AppSdkJsLib implements JsLib {
 	{
 		return sdkJsLib.canonicaliseRequirePath(requirePath);
 	}
-
-	@Override
-	public Asset assetByLocation(String relativePath)
-	{
-		return sdkJsLib.assetByLocation(relativePath);
-	}
 }

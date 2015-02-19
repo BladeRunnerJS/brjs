@@ -53,11 +53,6 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public Asset assetByLocation(String relativePath) {
-		return assetDiscoveryInitiator.assetsByPathMap().get(relativePath);
-	}
-	
-	@Override
 	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
 	{
 		String requirePrefix = requirePrefix();
