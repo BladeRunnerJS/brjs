@@ -60,7 +60,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		
 		for (MemoizedFile themeDir : getThemeDirs(assetContainer)) {
 			String themeRequirePrefix = "theme!"+themeDir.getName()+":"+requirePrefix;
-			List<Asset> discoveredAssets = discoverFurtherAssetsForChild(assetContainer, themeDir, themeRequirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
+			List<Asset> discoveredAssets = createAssetsForChildDir(assetContainer, themeDir, themeRequirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
 			rootAsset.addImplicitDependencies(discoveredAssets);
 		}
 		

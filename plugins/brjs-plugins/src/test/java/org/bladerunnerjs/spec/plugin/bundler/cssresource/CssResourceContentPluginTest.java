@@ -18,7 +18,6 @@ import org.bladerunnerjs.model.BladesetWorkbench;
 import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CssResourceContentPluginTest extends SpecTest {
