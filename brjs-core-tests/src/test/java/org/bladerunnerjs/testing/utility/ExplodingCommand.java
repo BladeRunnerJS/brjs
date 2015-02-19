@@ -1,10 +1,10 @@
 package org.bladerunnerjs.testing.utility;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.base.AbstractCommandPlugin;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.plugin.CommandPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractCommandPlugin;
 
 public class ExplodingCommand extends AbstractCommandPlugin implements CommandPlugin {
 	@Override

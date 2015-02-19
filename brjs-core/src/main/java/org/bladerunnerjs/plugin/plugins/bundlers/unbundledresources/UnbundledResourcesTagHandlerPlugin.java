@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 public class UnbundledResourcesTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override

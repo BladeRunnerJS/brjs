@@ -6,8 +6,8 @@ import java.util.Collection;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 
 public class FileUtils {	

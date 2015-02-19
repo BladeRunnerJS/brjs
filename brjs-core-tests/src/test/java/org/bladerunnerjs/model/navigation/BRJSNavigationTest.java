@@ -4,15 +4,15 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.spec.utility.LogMessageStore;
+import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NodeTesterFactory;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.testing.utility.LogMessageStore;
-import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

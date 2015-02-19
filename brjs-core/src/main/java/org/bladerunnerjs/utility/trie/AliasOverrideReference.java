@@ -1,6 +1,6 @@
 package org.bladerunnerjs.utility.trie;
 
-import org.bladerunnerjs.aliasing.AliasOverride;
+import org.bladerunnerjs.api.aliasing.AliasOverride;
 
 public class AliasOverrideReference implements AliasReference {
 	

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.api.SourceModule;
 
 import com.google.common.base.Joiner;
 

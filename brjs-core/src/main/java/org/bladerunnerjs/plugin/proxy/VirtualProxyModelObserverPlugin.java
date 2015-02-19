@@ -1,7 +1,7 @@
 package org.bladerunnerjs.plugin.proxy;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
 
 
 public class VirtualProxyModelObserverPlugin extends VirtualProxyPlugin implements ModelObserverPlugin
