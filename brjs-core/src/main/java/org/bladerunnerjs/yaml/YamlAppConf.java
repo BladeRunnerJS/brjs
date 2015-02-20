@@ -3,11 +3,11 @@ package org.bladerunnerjs.yaml;
 import javax.validation.constraints.NotNull;
 
 import org.apache.bval.constraints.NotEmpty;
-import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.name.InvalidPackageNameException;
+import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 import org.bladerunnerjs.utility.NameValidator;
 

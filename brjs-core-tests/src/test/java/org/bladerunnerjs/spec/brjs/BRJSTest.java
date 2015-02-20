@@ -1,16 +1,16 @@
 package org.bladerunnerjs.spec.brjs;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.events.CommandExecutedEvent;
-import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

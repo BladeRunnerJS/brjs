@@ -1,6 +1,6 @@
 package org.external;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.runner.LogTestCommand;
 
 public class ExternalLogTestCommand extends LogTestCommand {

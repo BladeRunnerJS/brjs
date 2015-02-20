@@ -2,15 +2,14 @@ package org.bladerunnerjs.plugin.proxy;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.plugin.ContentPlugin;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.utility.ContentPathParser;
 
 public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements ContentPlugin {
 	private ContentPlugin contentPlugin;
@@ -26,11 +25,6 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public String getCompositeGroupName() {
-		return contentPlugin.getCompositeGroupName();
-	}
-	
-	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
 		return contentPlugin.getPluginsThatMustAppearBeforeThisPlugin();
 	}
@@ -41,13 +35,7 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public ContentPathParser getContentPathParser() {
-		initializePlugin();
-		return contentPlugin.getContentPathParser();
-	}
-	
-	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException {
 		initializePlugin();
 		return contentPlugin.handleRequest(contentPath, bundleSet, contentAccessor, version);
 	}

@@ -1,0 +1,11 @@
+org.bladerunnerjs.plugin.bundlers.compositejs.CompositeJsContentPlugin
+org.bladerunnerjs.plugin.bundlers.thirdparty.ThirdpartyContentPlugin
+org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsContentPlugin
+org.bladerunnerjs.plugin.bundlers.namespacedjs.NamespacedJsContentPlugin
+org.bladerunnerjs.plugin.bundlers.html.HTMLContentPlugin
+org.bladerunnerjs.plugin.bundlers.xml.XMLContentPlugin
+org.bladerunnerjs.plugin.bundlers.i18n.I18nContentPlugin
+org.bladerunnerjs.plugin.bundlers.css.CssContentPlugin
+org.bladerunnerjs.plugin.bundlers.cssresource.CssResourceContentPlugin
+org.bladerunnerjs.plugin.bundlers.unbundledresources.UnbundledResourcesContentPlugin
+org.bladerunnerjs.plugin.bundlers.appmeta.AppMetadataContentPlugin

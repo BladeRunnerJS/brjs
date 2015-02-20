@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.plugin.OrderedPlugin;
+import org.bladerunnerjs.api.plugin.OrderedPlugin;
 
 public class PluginSorter {
 	public static <P extends OrderedPlugin> List<P> sort(List<P> plugins) throws PluginOrderingException, NonExistentPluginException {

@@ -405,11 +405,6 @@ GwtTestRunner.prototype._parseStatement = function(sStatement, nPhase) {
 		this._throwError("IllegalStatementError", sStatement, "'When Statements should use => as an Operator");
 	}
 
-	if (oStatement.propertyValue === null) {
-		this._throwError("InvalidPropertyValueError", sStatement, "'" + oStatement.propertyValue +
-				"' is not a valid type (only strings, numbers, booleans and undefined are supported)");
-	}
-
 	this._addFixtureToStatement(oStatement);
 	if (!oStatement.fixture) {
 		this._throwError("InvalidFixtureNameError", sStatement, "No Fixture has been specified matching '" + oStatement.propertyName + "'");

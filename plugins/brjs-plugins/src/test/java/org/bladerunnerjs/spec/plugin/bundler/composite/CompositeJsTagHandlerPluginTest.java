@@ -1,12 +1,12 @@
 package org.bladerunnerjs.spec.plugin.bundler.composite;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,7 +45,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/dev/aliasing/bundle.js", "v/dev/app-meta/version.js", "v/dev/common-js/module/appns/Class1.js");
+		then(pageResponse).containsRequests("v/dev/app-meta/version.js", "v/dev/common-js/module/appns/Class1.js");
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/dev/aliasing/bundle.js", "v/dev/app-meta/version.js");
+		then(pageResponse).containsRequests("v/dev/app-meta/version.js");
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/prod/thirdparty/bundle.js", "v/prod/aliasing/bundle.js", "v/prod/app-meta/version.js", "v/prod/common-js/bundle.js");
+		then(pageResponse).containsRequests("v/prod/thirdparty/bundle.js", "v/prod/app-meta/version.js", "v/prod/common-js/bundle.js");
 	}
 	
 	@Test
@@ -98,7 +98,6 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	then(pageResponse).containsOrderedTextFragments(
 			"thirdparty/br-bootstrap/bundle.js", 
 			"thirdparty/appLib/bundle.js",
-			"aliasing/bundle.js",
 			"common-js/module/appns/node/Class.js",
 			"namespaced-js/package-definitions.js", 
 			"namespaced-js/module/appns/namespaced/Class.js"); 
@@ -145,7 +144,6 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		when(workbench).pageLoaded(pageResponse, "en_GB");
 		then(pageResponse).containsOrderedTextFragments(
 				"<script type='text/javascript' src='v/dev/thirdparty/thirdpartyLib/bundle.js'></script>", 
-				"<script type='text/javascript' src='v/dev/aliasing/bundle.js'></script>",
 				"<script type='text/javascript' src='v/dev/namespaced-js/package-definitions.js'></script>",
 				"<script type='text/javascript' src='v/dev/namespaced-js/module/appns/bs/b1/Class1.js'></script>",
 				"appns.bs.b1.Class1",

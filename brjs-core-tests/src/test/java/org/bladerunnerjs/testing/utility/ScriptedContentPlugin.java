@@ -3,21 +3,22 @@ package org.bladerunnerjs.testing.utility;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.plugin.CharResponseContent;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.plugin.CharResponseContent;
-import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class ScriptedContentPlugin extends AbstractContentPlugin
+public class ScriptedContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private List<String> requestPaths = new ArrayList<>();
@@ -42,11 +43,6 @@ public class ScriptedContentPlugin extends AbstractContentPlugin
 	public String getRequestPrefix() {
 		return "ScriptedContentPlugin";
 	}
-
-	@Override
-	public String getCompositeGroupName() {
-		return null;
-	}
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
@@ -65,7 +61,7 @@ public class ScriptedContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException
 	{
 		return new CharResponseContent( bundleSet.getBundlableNode().root(), this.getClass().getCanonicalName() );
 	}

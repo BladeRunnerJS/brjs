@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 public class NonCircularTransitivePreExportDependencyGraphCreator {
 	public static Map<SourceModule, List<SourceModule>> createGraph(Map<SourceModule, List<SourceModule>> preExportDependencyGraph, Map<SourceModule, List<SourceModule>> postExportDependencyGraph) throws ModelOperationException {

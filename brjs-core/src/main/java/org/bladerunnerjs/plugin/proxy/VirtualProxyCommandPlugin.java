@@ -1,8 +1,8 @@
 package org.bladerunnerjs.plugin.proxy;
 
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.plugin.CommandPlugin;
 
 public class VirtualProxyCommandPlugin extends VirtualProxyPlugin implements CommandPlugin {
 	private CommandPlugin commandPlugin;

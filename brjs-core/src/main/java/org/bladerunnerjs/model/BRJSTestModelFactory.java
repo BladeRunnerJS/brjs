@@ -3,15 +3,16 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 
-import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.plugin.PluginLocator;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.logging.LoggerFactory;
+import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.api.plugin.PluginLocator;
+import org.bladerunnerjs.api.spec.utility.LogMessageStore;
+import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
+import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
+import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
+import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
-import org.bladerunnerjs.testing.utility.LogMessageStore;
-import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
-import org.bladerunnerjs.testing.utility.MockPluginLocator;
-import org.bladerunnerjs.testing.utility.StubLoggerFactory;
-import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.FileUtils;
 
 
