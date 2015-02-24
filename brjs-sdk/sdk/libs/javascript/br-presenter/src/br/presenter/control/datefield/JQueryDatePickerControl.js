@@ -5,6 +5,7 @@
 br.Core.thirdparty("jquery");
 
 var MapUtility = require('br/util/MapUtility');
+var EventUtility = require('br/util/EventUtility');
 
 /**
  * @class
@@ -39,6 +40,9 @@ br.presenter.control.datefield.JQueryDatePickerControl = function()
 
 	/** @private */
 	this.m_eElement = null;
+
+	/** @private */
+	this.m_aListeners = [];
 };
 
 br.Core.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.presenter.control.ControlAdaptor);
@@ -89,6 +93,9 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.destroy = funct
 	this.m_oPresentationNode.removeChildListeners();
 
 	this.m_oPresentationNode = null;
+	this.m_aListeners.forEach(function(listener) {
+		EventUtility.removeEventListener(listener);
+	});
 };
 
 /**
@@ -107,6 +114,10 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.onViewReady = f
 	}
 
 	this._generateCalendarHtml();
+
+	if (this.m_mOptions.stopPropagation) {
+		this._stopPropagation();
+	}
 
 	this._setVisible();
 	this._setValue();
@@ -161,4 +172,16 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._generateCalend
 	}, this.m_mOptions], true);
 
 	this.m_oJQueryNode.datepicker(oOptions);
+};
+
+/**
+ * @private
+ */
+br.presenter.control.datefield.JQueryDatePickerControl.prototype._stopPropagation = function() 
+{
+	setTimeout(function() {
+		var eElement = this.m_oJQueryNode.data('datepicker').dpDiv[0];
+		this.m_aListeners.push(EventUtility.addEventListener(eElement, 'click', EventUtility.stopPropagation));
+		this.m_aListeners.push(EventUtility.addEventListener(eElement, 'mouseup', EventUtility.stopPropagation));
+	}.bind(this), 0);
 };
