@@ -2,7 +2,7 @@
  * @module br/presenter/control/datefield/JQueryDatePickerControl
  */
 
-br.Core.thirdparty("jquery");
+br.Core.thirdparty('jquery');
 
 var MapUtility = require('br/util/MapUtility');
 var EventUtility = require('br/util/EventUtility');
@@ -74,12 +74,12 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.setOptions = fu
 br.presenter.control.datefield.JQueryDatePickerControl.prototype.setPresentationNode = function(oPresentationNode)
 {
 	if(!(oPresentationNode instanceof br.presenter.node.DateField)) {
-		throw new br.presenter.control.InvalidControlModelError("JQueryDatePickerControl", "DateField");
+		throw new br.presenter.control.InvalidControlModelError('JQueryDatePickerControl', 'DateField');
 	}
 
 	this.m_oPresentationNode = oPresentationNode;
-	this.m_oPresentationNode.enabled.addChangeListener(this, "_setDisabled");
-	this.m_oPresentationNode.visible.addChangeListener(this, "_setVisible");
+	this.m_oPresentationNode.enabled.addChangeListener(this, '_setDisabled');
+	this.m_oPresentationNode.visible.addChangeListener(this, '_setVisible');
 	this.m_oPresentationNode.value.addChangeListener(this, '_setValue');
 };
 
@@ -140,7 +140,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._setDisabled = 
 br.presenter.control.datefield.JQueryDatePickerControl.prototype._setVisible = function()
 {
 	var bVisible = this.m_oPresentationNode.visible.getValue();
-	this.m_oJQueryNode[0].parentNode.style.display = (bVisible) ? "block" : "none";
+	this.m_oJQueryNode[0].parentNode.style.display = (bVisible) ? 'block' : 'none';
 };
 
 /**
@@ -159,7 +159,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._generateCalend
 	var oThis = this;
 	var oOptions = MapUtility.mergeMaps([{
 		showOn: 'button',
-		dateFormat: "yy-mm-dd",
+		dateFormat: 'yy-mm-dd',
 		disabled: !this.m_oPresentationNode.enabled.getValue(),
 		onSelect: function(dateText)
 		{
