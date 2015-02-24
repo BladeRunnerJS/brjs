@@ -4,6 +4,8 @@
 
 br.Core.thirdparty("jquery");
 
+var MapUtility = require('br/util/MapUtility');
+
 /**
  * @class
  * @alias module:br/presenter/control/datefield/JQueryDatePickerControl
@@ -105,7 +107,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.onViewReady = f
 	}
 
 	this._generateCalendarHtml();
-	this.m_oJQueryNode.datepicker("option", this.m_mOptions);
+
 	this._setVisible();
 	this._setValue();
 };
@@ -144,9 +146,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._setValue = fun
 br.presenter.control.datefield.JQueryDatePickerControl.prototype._generateCalendarHtml = function()
 {
 	var oThis = this;
-
-	this.m_oJQueryNode.datepicker(
-	{
+	var oOptions = MapUtility.mergeMaps([{
 		showOn: 'button',
 		dateFormat: "yy-mm-dd",
 		disabled: !this.m_oPresentationNode.enabled.getValue(),
@@ -156,7 +156,9 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._generateCalend
 		},
 		beforeShow:function()
 		{
-			oThis.m_oJQueryNode.datepicker("setDate", oThis.m_oPresentationNode.value.getValue());
+			oThis._setValue();
 		}
-	});
+	}, this.m_mOptions], true);
+
+	this.m_oJQueryNode.datepicker(oOptions);
 };
