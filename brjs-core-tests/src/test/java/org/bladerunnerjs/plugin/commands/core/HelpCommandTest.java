@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.command;
+package org.bladerunnerjs.plugin.commands.core;
 
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
