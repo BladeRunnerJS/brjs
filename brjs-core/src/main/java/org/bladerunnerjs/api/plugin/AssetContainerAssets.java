@@ -78,11 +78,14 @@ public class AssetContainerAssets
 		@Override
 		public void registerAsset(Asset asset)
 		{
-			String assetPrimaryRequirePath = asset.getPrimaryRequirePath();
-			if (assets.containsKey(assetPrimaryRequirePath) ) {
-				throw new RuntimeException("An asset for the require path '"+assetPrimaryRequirePath+"' has already been registered.");
+			for (String requirePath : asset.getRequirePaths()) {
+				if (assets.containsKey(requirePath) ) {
+					throw new RuntimeException(
+							String.format("Require paths for the asset '%s' cannot be registered. An asset for the require path '%s' has already been registered.", asset.getAssetPath(), requirePath)
+					);
+				}
+				assets.put(requirePath, asset);				
 			}
-			assets.put(assetPrimaryRequirePath, asset);
 		}
 
 		@Override

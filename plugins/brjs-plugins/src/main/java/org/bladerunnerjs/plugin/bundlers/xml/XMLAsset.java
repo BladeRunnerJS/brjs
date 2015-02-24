@@ -22,11 +22,13 @@ public class XMLAsset extends LinkedFileAsset {
 	@Override
 	public List<String> getRequirePaths() {
 		try {
-			return requirePaths.value(() -> {
+			List<String> calculatedRequirePaths = requirePaths.value(() -> {
 				Reader reader = getReader();
 				XMLIdExtractor extractor = new XMLIdExtractor();
 				return extractor.getXMLIds(reader);
 			});
+			calculatedRequirePaths.add(getPrimaryRequirePath());
+			return calculatedRequirePaths;
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);
