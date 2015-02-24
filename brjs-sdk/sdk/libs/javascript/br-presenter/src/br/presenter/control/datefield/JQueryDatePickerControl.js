@@ -34,6 +34,9 @@ br.presenter.control.datefield.JQueryDatePickerControl = function()
 
 	/** @private */
 	this.m_mOptions = {};
+
+	/** @private */
+	this.m_eElement = null;
 };
 
 br.Core.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.presenter.control.ControlAdaptor);
@@ -46,14 +49,7 @@ br.Core.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.prese
  */
 br.presenter.control.datefield.JQueryDatePickerControl.prototype.setElement = function(eElement)
 {
-	if(eElement.type && eElement.type === 'hidden') {
-		// if the passed element is a hidden input box use that to bind to it
-		this.m_oJQueryNode = jQuery(eElement);
-	} else {
-		// otherwise use it as a container
-		this.m_oJQueryNode = jQuery('<input type="hidden" />');
-		this.m_oJQueryNode.appendTo(eElement);
-	}
+	this.m_eElement = eElement;
 };
 
 /**
@@ -76,8 +72,9 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.setPresentation
 	}
 
 	this.m_oPresentationNode = oPresentationNode;
-	this.m_oPresentationNode.enabled.addChangeListener(this, "_setDisabled", true);
+	this.m_oPresentationNode.enabled.addChangeListener(this, "_setDisabled");
 	this.m_oPresentationNode.visible.addChangeListener(this, "_setVisible");
+	this.m_oPresentationNode.value.addChangeListener(this, '_setValue');
 };
 
 /**
@@ -98,9 +95,19 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.destroy = funct
  */
 br.presenter.control.datefield.JQueryDatePickerControl.prototype.onViewReady = function()
 {
+	if(this.m_mOptions.inline || this.m_eElement.type && this.m_eElement.type === 'hidden') {
+		// if the passed element is a hidden input box use that to bind to it
+		this.m_oJQueryNode = jQuery(this.m_eElement);
+	} else {
+		// otherwise use it as a container
+		this.m_oJQueryNode = jQuery('<input type="hidden" />');
+		this.m_oJQueryNode.appendTo(this.m_eElement);
+	}
+
 	this._generateCalendarHtml();
 	this.m_oJQueryNode.datepicker("option", this.m_mOptions);
 	this._setVisible();
+	this._setValue();
 };
 
 
@@ -111,8 +118,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.onViewReady = f
  */
 br.presenter.control.datefield.JQueryDatePickerControl.prototype._setDisabled = function()
 {
-	var sAction = this.m_oPresentationNode.enabled.getValue() ? "enable" : "disable";
-	this.m_oJQueryNode.datepicker(sAction);
+	this.m_oJQueryNode.datepicker('option', 'disabled', !this.m_oPresentationNode.enabled.getValue());
 };
 
 /**
@@ -127,6 +133,14 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._setVisible = f
 /**
  * @private
  */
+br.presenter.control.datefield.JQueryDatePickerControl.prototype._setValue = function()
+{
+	this.m_oJQueryNode.datepicker('setDate', this.m_oPresentationNode.value.getValue());
+};
+
+/**
+ * @private
+ */
 br.presenter.control.datefield.JQueryDatePickerControl.prototype._generateCalendarHtml = function()
 {
 	var oThis = this;
@@ -135,7 +149,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._generateCalend
 	{
 		showOn: 'button',
 		dateFormat: "yy-mm-dd",
-
+		disabled: !this.m_oPresentationNode.enabled.getValue(),
 		onSelect: function(dateText)
 		{
 			oThis.m_oPresentationNode.value.setValue(dateText);
