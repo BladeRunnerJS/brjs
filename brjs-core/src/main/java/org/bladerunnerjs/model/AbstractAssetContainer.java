@@ -95,13 +95,4 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
 	}
 	
-	@Override
-	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException {
-		String namespace = requirePrefix().replace("/", ".")+".";
-		
-		if(isNamespaceEnforced() && !identifier.startsWith(namespace)) {
-			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + "*' was expected.");
-		}
-	}
-	
 }

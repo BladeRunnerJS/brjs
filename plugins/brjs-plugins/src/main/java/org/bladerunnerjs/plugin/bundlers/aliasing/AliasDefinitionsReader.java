@@ -13,6 +13,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
@@ -86,7 +87,7 @@ public class AliasDefinitionsReader {
 			throw new AliasNameIsTheSameAsTheClassException(aliasDefinitionsFile, aliasName);
 		}
 		
-		assetContainer.assertIdentifierCorrectlyNamespaced(aliasName);
+		RequirePathUtility.assertIdentifierCorrectlyNamespaced(assetContainer, aliasName);
 		
 		data.aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
 		
@@ -107,7 +108,7 @@ public class AliasDefinitionsReader {
 	private static void processGroup(XMLStreamReader2 streamReader, AliasDefinitionsData data, AssetContainer assetContainer) throws XMLStreamException, NamespaceException, RequirePathException {
 		String groupName = streamReader.getAttributeValue(null, "name");
 		
-		assetContainer.assertIdentifierCorrectlyNamespaced(groupName);
+		RequirePathUtility.assertIdentifierCorrectlyNamespaced(assetContainer, groupName);
 		
 		XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
 		

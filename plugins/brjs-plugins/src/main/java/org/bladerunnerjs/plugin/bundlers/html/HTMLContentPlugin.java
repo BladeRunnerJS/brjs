@@ -26,6 +26,8 @@ import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.utility.AppMetadataUtility;
@@ -97,17 +99,18 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	{
 		StartTag startTag = getStartTag(htmlAsset);
 		String identifier = startTag.getAttributeValue("id");
+		AssetContainer assetContainer = htmlAsset.assetContainer();
 		
 		if(identifier == null)
 		{
-			String idMessage = (htmlAsset.assetContainer().isNamespaceEnforced()) ?
-				"a namespaced ID of '" +htmlAsset.getPrimaryRequirePath()+ ".*'" : "an ID";
+			String idMessage = (assetContainer.isNamespaceEnforced()) ?
+				"a namespaced ID of '" +RequirePathUtility.calculateNamespace(assetContainer)+ ".*'" : "an ID";
 			
 			throw new NamespaceException( "HTML template found without an identifier: '" +
 					startTag.toString() + "'.  Root element should have " + idMessage + ".");
 		}
 		
-		htmlAsset.assetContainer().assertIdentifierCorrectlyNamespaced(identifier);
+		RequirePathUtility.assertIdentifierCorrectlyNamespaced(htmlAsset, identifier);
 		
 		Asset assetWithDuplicateId = identifiers.get(identifier);
 		if(assetWithDuplicateId == null){

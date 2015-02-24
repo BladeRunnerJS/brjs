@@ -234,10 +234,4 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	{
 		return bundlableNode.assets(assetContainer, requirePaths);
 	}
-	
-	@Override
-	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException
-	{
-		bundlableNode.assertIdentifierCorrectlyNamespaced(identifier);
-	}
 }

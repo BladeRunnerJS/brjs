@@ -14,6 +14,7 @@ import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.utility.UnicodeReader;
 
@@ -93,7 +94,7 @@ public class I18nFileAsset implements Asset
 			
 			for (String property : i18nProperties.stringPropertyNames())
 			{
-				assetContainer.assertIdentifierCorrectlyNamespaced(property);
+				RequirePathUtility.assertIdentifierCorrectlyNamespaced(assetContainer, property);
 				String value = i18nProperties.getProperty(property);
 				propertiesMap.put(property, value.replaceAll("\n", "\\\\n"));
 			}

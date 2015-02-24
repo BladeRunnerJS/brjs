@@ -242,10 +242,4 @@ public final class AppSdkJsLib implements JsLib {
 	{
 		return sdkJsLib.canonicaliseRequirePath(requirePath);
 	}
-	
-	@Override
-	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException
-	{
-		sdkJsLib.assertIdentifierCorrectlyNamespaced(identifier);
-	}
 }

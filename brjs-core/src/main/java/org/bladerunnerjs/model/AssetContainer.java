@@ -20,7 +20,6 @@ public interface AssetContainer extends BRJSNode {
 	Asset asset(String requirePath);
 	
 	String canonicaliseRequirePath(String requirePath) throws RequirePathException;
-	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException;
 	
 	/**
 	 * Returns all AssetContainers whose assets can be referred to by assets in this AssetContainer
