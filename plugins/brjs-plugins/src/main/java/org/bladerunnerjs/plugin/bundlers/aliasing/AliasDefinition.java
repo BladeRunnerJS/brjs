@@ -30,6 +30,9 @@ public class AliasDefinition {
 	
 	public String getRequirePath() {
 		// TODO: we need to make require paths a first class concept in aliasing
+		if (className == null) {
+			return "br/UnknownClass";
+		}
 		return className.replaceAll("\\.", "/");
 	}
 	

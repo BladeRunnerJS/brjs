@@ -68,7 +68,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	private List<Asset> createDirectoryAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator) {
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile assetDir : dir.nestedDirs()) {
-			DirectoryLinkedAsset dirAsset = new DirectoryAsset(assetContainer, assetDir, requirePrefix);
+			DirectoryLinkedAsset dirAsset = new DirectoryAsset(assetContainer, assetDir, requirePrefix, Arrays.asList());
 			assetDiscoveryInitiator.registerAsset(dirAsset);
 			assets.add(dirAsset);
 		}

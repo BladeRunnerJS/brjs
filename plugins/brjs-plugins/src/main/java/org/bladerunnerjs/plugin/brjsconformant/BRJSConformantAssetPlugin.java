@@ -114,7 +114,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 			AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parentAsset)
 	{
 		List<Asset> assets = new ArrayList<>();
-		Asset child = getOrCreateAsset(assetContainer, dir, requirePrefix, assetDiscoveryInitiator);
+		Asset child = getOrCreateAsset(assetContainer, dir, requirePrefix, assetDiscoveryInitiator, implicitDependencies, parentAsset);
 		assets.add(child);
 		assets.addAll( discoverFurtherAssetsForChild(assetContainer, dir, child.getPrimaryRequirePath(), implicitDependencies, assetDiscoveryInitiator, child) );
 		return assets;
@@ -137,9 +137,12 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		return discoveredAssets;
 	}
 
-	public Asset getOrCreateAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator) {
+	public Asset getOrCreateAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> implicitDependencies, Asset parent) {
 		if (!assetDiscoveryInitiator.hasRegisteredAsset(DirectoryAsset.getRequirePath(requirePrefix, dir))) {
-			Asset asset = new DirectoryAsset(assetContainer, dir, requirePrefix);
+			List<Asset> furtherAssetImplicitDependencies = new ArrayList<>();
+			furtherAssetImplicitDependencies.addAll(implicitDependencies);
+			furtherAssetImplicitDependencies.add(parent);
+			Asset asset = new DirectoryAsset(assetContainer, dir, requirePrefix, furtherAssetImplicitDependencies);
 			assetDiscoveryInitiator.registerAsset(asset);
 			return asset;
 		} else {

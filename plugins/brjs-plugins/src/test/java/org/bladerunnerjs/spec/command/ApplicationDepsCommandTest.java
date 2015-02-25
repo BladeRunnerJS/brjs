@@ -216,7 +216,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/pkg1/pkg2/NestedClass.js' (static dep.)",
-			"    +--- 'default-aspect/src/appns/pkg/config.xml'",
+			"    +--- 'default-aspect/src/appns/pkg1/config.xml'",
 			"    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
 	
@@ -258,10 +258,13 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			.and(aspect).hasClasses("appns/Class", "appns/Interface");
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
-			"Aspect 'default' dependencies found:",
-			"    +--- 'default-aspect/index.html' (seed file)",
-			"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
-			"    |    |    \\--- '../../libs/javascript/br/src/br/UnknownClass.js'");
+				"Aspect 'default' dependencies found:",
+				"    +--- '../../libs/javascript/br/src/br/Core.js'",
+				"    +--- '../../libs/javascript/br/src/br/AliasInterfaceError.js'",
+				"    +--- '../../libs/javascript/br/src/br/UnknownClass.js'",
+				"    +--- 'default-aspect/index.html' (seed file)",
+				"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
+				"    |    |    \\--- 'default-aspect/src/appns/Interface.js' (static dep.)");
 	}
 	
 	@Test

@@ -22,9 +22,10 @@ public class DirectoryAsset implements DirectoryLinkedAsset
 	private String primaryRequirePath;
 	private Set<Asset> implicitDependencies = new LinkedHashSet<>();
 
-	public DirectoryAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix) {
+	public DirectoryAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies) {
 		this.assetContainer = assetContainer;
-		this.dir = dir;		
+		this.dir = dir;
+		this.implicitDependencies.addAll(implicitDependencies);
 		
 		primaryRequirePath = getRequirePath(requirePrefix, dir);
 	}
