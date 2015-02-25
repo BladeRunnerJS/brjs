@@ -159,25 +159,22 @@ public class NodeImporter {
 	}
 	
 	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
-		//TODO: fix me after mega commit
-//		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
-//			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-//				if(assetLocation.dir().exists()) {
-//					if(assetLocation.file(sourceRequirePrefix).exists()) {
-//						FileUtils.moveDirectory(assetLocation.file(sourceRequirePrefix), assetLocation.file(targetRequirePrefix));
-//						if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && assetLocation.file(sourceAppRequirePrefix).exists()) {
-//							FileUtils.deleteDirectory( assetLocation.file(sourceAppRequirePrefix) );
-//						}
-//					}
-//					
-//				}
-//			}
-//			for(AssetLocation assetLocation : assetContainer.assetLocations()) { // do this in a seperate loop since the asset locations will change when they are renamed
-//				if(assetLocation.dir().exists()) {
-//					findAndReplaceInAllTextFiles(assetLocation.root(), assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
-//				}
-//			}
-//		}
+		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
+			for (String updatePrefixForLocation : Arrays.asList("src", "src-test", "tests", "resources")) {
+				MemoizedFile sourceRequirePrefixDir = assetContainer.file(updatePrefixForLocation+"/"+sourceRequirePrefix);
+				MemoizedFile targetRequirePrefixDir = assetContainer.file(updatePrefixForLocation+"/"+targetRequirePrefix);
+				if (sourceRequirePrefixDir.isDirectory()) {
+					FileUtils.moveDirectory(sourceRequirePrefixDir, targetRequirePrefixDir);
+					MemoizedFile sourceAppRequirePrefixDir = assetContainer.file(updatePrefixForLocation+"/"+sourceAppRequirePrefix);
+					if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && sourceAppRequirePrefixDir.exists()) {
+						FileUtils.deleteDirectory(sourceAppRequirePrefixDir);
+					}
+				}
+				if (targetRequirePrefixDir.isDirectory()) {
+					findAndReplaceInAllTextFiles(assetContainer.root(), targetRequirePrefixDir, sourceRequirePrefix, targetRequirePrefix);
+				}
+			}
+		}
 	}
 	
 	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
