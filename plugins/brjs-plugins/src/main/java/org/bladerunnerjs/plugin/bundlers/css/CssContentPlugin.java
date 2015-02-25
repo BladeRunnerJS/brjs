@@ -119,7 +119,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 				
 				try {
 					String css = processor.getRewrittenFileContents();
-					readerList.add(new StringReader(css));
+					readerList.add(new StringReader("/*** " + cssAsset.getAssetPath() + " ***/\n\n" + css));
 				} catch (IOException e) {
 					throw new ContentProcessingException(e);
 				}
