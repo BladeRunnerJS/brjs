@@ -5,7 +5,6 @@ import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
-import org.bladerunnerjs.api.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
@@ -16,8 +15,6 @@ public class CommonJsContentPluginTest extends SpecTest {
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
 	private JsLib sdkJsLib;
-	private Bladeset bladeset;
-	private Blade blade;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;
 	private Aspect defaultAspect;
@@ -31,8 +28,6 @@ public class CommonJsContentPluginTest extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
-			bladeset = app.bladeset("bs");
-			blade = bladeset.blade("b1");
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");

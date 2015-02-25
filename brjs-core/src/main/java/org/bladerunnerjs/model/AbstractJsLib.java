@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.NameValidator;
-import org.bladerunnerjs.utility.TemplateUtility;
 import org.bladerunnerjs.utility.TestRunner;
 
 public abstract class AbstractJsLib extends AbstractAssetContainer implements JsLib

@@ -6,7 +6,6 @@ import java.util.Set;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.api.model.exception.NamespaceException;
 
 /**
  * Represents a location that can contain assets (src or resources) such as an Aspect, Blade or Workbench.

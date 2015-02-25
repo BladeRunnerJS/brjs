@@ -15,7 +15,6 @@ import org.bladerunnerjs.api.model.exception.UnresolvableRelativeRequirePathExce
 import org.bladerunnerjs.api.plugin.AssetContainerAssets;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.api.model.exception.NamespaceException;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	

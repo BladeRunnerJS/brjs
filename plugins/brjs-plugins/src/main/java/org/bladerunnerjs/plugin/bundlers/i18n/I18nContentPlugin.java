@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.bundlers.i18n;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
