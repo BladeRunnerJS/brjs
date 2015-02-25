@@ -129,7 +129,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 				brLibConf.setRequirePrefix( libNamespace.replace('.', '/') );
 				brLibConf.write();
 			}
-			BRJSNodeHelper.populate(this, templateGroup);
+			BRJSNodeHelper.populate(this, templateGroup, true);
 			incrementChildFileVersions();
 		}
 		catch (ConfigException e) {
