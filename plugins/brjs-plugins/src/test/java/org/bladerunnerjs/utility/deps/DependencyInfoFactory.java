@@ -102,6 +102,9 @@ public class DependencyInfoFactory {
 			List<SourceModule> orderDependentSourceModules = extractSourceModules( sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode) );
 			addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, orderDependentSourceModules);
 		}
+		if (bundlableNode instanceof Workbench<?> && asset.file().isChildOf(asset.assetContainer().file("resources"))) {
+			return;
+		}
 		List<Asset>  assets = asset.getDependentAssets(bundlableNode);
 		addDependencies(dependencyAdder, dependencyInfo, asset, extractSourceModules(assets));
 	}

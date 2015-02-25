@@ -72,10 +72,10 @@ public class DepInsightCommand extends JSAPArgsParsingCommandPlugin
 			if(isRequirePrefix) {
 				logger.println(DependencyGraphReportBuilder.createReportForRequirePrefix(aspect, requirePathOrAlias, showAllDependencies));
 			}
-			else if(isAlias) {
-//				logger.println(DependencyGraphReportBuilder.createReportForAlias(aspect, requirePathOrAlias, showAllDependencies));
-			}
 			else {
+				if (isAlias && !requirePathOrAlias.contains("!")) {
+					requirePathOrAlias = "alias!"+requirePathOrAlias;
+				}
 				logger.println(DependencyGraphReportBuilder.createReport(aspect, requirePathOrAlias, showAllDependencies));
 			}
 		}

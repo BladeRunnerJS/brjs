@@ -100,15 +100,16 @@ public class BundleDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void bladeTestDependenciesCanBeShown() throws Exception {
-		given(blade.file("test-unit/tests")).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
+		given(blade.testType("unit").file("js-test-driver/tests")).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
 			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(blade).classRequires("appns/bs/b1/Class1", "./Class2");
 		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver");
 		then(logging).containsConsoleText(
-			"Bundle 'apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
-			"    +--- 'bs-bladeset/blades/b1/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
-			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js' (static dep.)",
-			"    |    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js' (static dep.)");
+				"Bundle 'apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
+				"    +--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'",
+				"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js' (static dep.)",
+				"    +--- 'bs-bladeset/blades/b1/test-unit/js-test-driver/tests/MyTest.js' (seed file)");
+
 	}
 	
 	@Test
