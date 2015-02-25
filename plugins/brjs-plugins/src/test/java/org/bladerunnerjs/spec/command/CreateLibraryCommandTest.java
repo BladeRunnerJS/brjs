@@ -98,7 +98,6 @@ public class CreateLibraryCommandTest extends SpecTest {
 	@Test
 	public void theCorrectStructureIsCreatedWhenABRLibIsCreated() throws Exception {
 		given(app).hasBeenCreated();
-			//.and(defaultTemplates).templateGroupCreated();
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(lib).dirExists()
 			.and(lib).hasDir("src")
@@ -193,7 +192,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void appIsCreatedWithTheSpecifiedTemplate() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated()
-			.and(angularTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt");
+			.and(angularTemplates.template("br-lib")).containsFile("fileForLibAngular.txt");
 		when(brjs).runCommand("create-library", "app", "lib", "--template", "angular");
 		then(app.appJsLib("lib")).dirExists()
 			.and(app.appJsLib("lib")).hasFile("fileForLibAngular.txt");
@@ -203,9 +202,9 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void appIsCreatedWithTheSpecifiedTemplateIfMoreTemplatesExist() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated()
-			.and(angularTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
-			.and(defaultTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
-			.and(myTemplateTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
+			.and(angularTemplates.template("br-lib")).containsFile("fileForLibAngular.txt")
+			.and(defaultTemplates.template("br-lib")).containsFile("fileForLibDefault.txt")
+			.and(myTemplateTemplates.template("br-lib")).containsFile("fileForLibMyTemplate.txt");
 		when(brjs).runCommand("create-library", "app", "lib", "--template", "myTemplate");
 		then(app.appJsLib("lib")).dirExists()
 			.and(app.appJsLib("lib")).hasFile("fileForLibMyTemplate.txt");
@@ -215,9 +214,9 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void defaultTemplateIsUsedIfNoneSpecifiedAndMultipleTemplatesExist() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated()
-			.and(angularTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibAngular.txt")
-			.and(defaultTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibDefault.txt")
-			.and(myTemplateTemplates.template("brjsconformantjslibrootassetlocation")).containsFile("fileForLibMyTemplate.txt");
+			.and(angularTemplates.template("br-lib")).containsFile("fileForLibAngular.txt")
+			.and(defaultTemplates.template("br-lib")).containsFile("fileForLibDefault.txt")
+			.and(myTemplateTemplates.template("br-lib")).containsFile("fileForLibMyTemplate.txt");
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(app.appJsLib("lib")).dirExists()
 			.and(app.appJsLib("lib")).hasFile("fileForLibDefault.txt");

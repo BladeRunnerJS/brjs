@@ -14,7 +14,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	private final MemoizedValue<CF> conf;
 	private final BRJSNode node;
 	private final Class<CF> confClass;
-	private final MemoizedFile confFile;
+	protected final MemoizedFile confFile;
 	private boolean autoWrite = true;
 	private CF previouslyGeneratedConf;
 	

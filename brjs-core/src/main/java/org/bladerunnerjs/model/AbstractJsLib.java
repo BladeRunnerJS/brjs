@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestType;
+import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
@@ -19,6 +21,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TemplateUtility;
 import org.bladerunnerjs.utility.TestRunner;
 
 public abstract class AbstractJsLib extends AbstractAssetContainer implements JsLib
@@ -32,6 +35,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	
 	//TODO: this is bad, it should be a plugin concern. Move this class into the plugins project and remove all BRLibConf code in this class
 	private BRLibConf brLibConf;
+	private ThirdpartyLibManifest thirdpartyManifest;
 	
 	public AbstractJsLib(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
@@ -41,6 +45,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 		try
 		{
 			brLibConf = new BRLibConf(this);
+			thirdpartyManifest = new ThirdpartyLibManifest(this);
 		}
 		catch (ConfigException ex)
 		{
@@ -118,11 +123,13 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 		NameValidator.assertValidRootPackageName(this, libNamespace);
 		
 		try {
-			if (brLibConf.manifestExists()) {
+			if (thirdpartyManifest.exists()) {
+				thirdpartyManifest.write();				
+			} else {
 				brLibConf.setRequirePrefix( libNamespace.replace('.', '/') );
 				brLibConf.write();
 			}
-			// how do we populate the root?
+			BRJSNodeHelper.populate(this, templateGroup);
 			incrementChildFileVersions();
 		}
 		catch (ConfigException e) {
@@ -161,7 +168,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	@Override
 	public String getTemplateName()
 	{
-		return "jslib";
+		return (thirdpartyManifest.exists()) ? "thirdparty-lib" : "br-lib";
 	}
 	
 	@Override

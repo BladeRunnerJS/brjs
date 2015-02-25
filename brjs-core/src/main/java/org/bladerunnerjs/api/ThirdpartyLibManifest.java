@@ -48,6 +48,10 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 		return getConf().commonjsDefinition;
 	}
 	
+	public boolean exists() {
+		return confFile.isFile();
+	}
+	
 	
 	private List<String> getJs() throws ConfigException
 	{
