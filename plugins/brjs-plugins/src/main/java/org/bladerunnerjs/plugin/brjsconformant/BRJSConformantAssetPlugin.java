@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -37,13 +38,17 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		}
 		
 		List<Asset> assets = new ArrayList<>();
-		
+		 
 		LinkedAsset rootAsset = new BRJSConformantRootDirectoryLinkedAsset(assetContainer); 
 		assetDiscoveryInitiator.registerAsset(rootAsset);
 		assets.add(rootAsset);
 		
 		for (MemoizedFile srcDir : getSrcDirs(assetContainer)) {
-			discoverFurtherAssetsForChild(assetContainer, srcDir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
+			if ((assetContainer instanceof TestPack || assetContainer instanceof JsLib) && !assetContainer.isNamespaceEnforced()) {
+				discoverFurtherAssetsForChild(assetContainer, srcDir, "", implicitDependencies, assetDiscoveryInitiator, rootAsset);				
+			} else {
+				discoverFurtherAssetsForChild(assetContainer, srcDir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);								
+			}
 		}
 		
 		List<Asset> implicitResourcesDependencies = new ArrayList<>();

@@ -86,6 +86,9 @@ public class DirectoryAsset implements DirectoryLinkedAsset
 	}
 
 	public static String getRequirePath(String requirePrefix, MemoizedFile dir) {
+		if (requirePrefix == "") {
+			return dir.getName();
+		}
 		return requirePrefix+"/"+dir.getName();
 	}
 	

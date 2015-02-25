@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.TestAsset;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
@@ -28,14 +29,17 @@ public class TestPackVerifier extends AssetContainerVerifier
 		this.verifierChainer = new VerifierChainer(specTest);
 	}
 
-	public VerifierChainer bundledFilesEquals(MemoizedFile... expectedFiles) throws Exception
+	public VerifierChainer srcOnlyBundledFilesEquals(MemoizedFile... expectedFiles) throws Exception
 	{
 		List<MemoizedFile> bundleSetFiles = new ArrayList<>();
 		List<SourceModule> sourceModules = testPack.getBundleSet().getSourceModules();
 		
 		for (SourceModule sourceModule : sourceModules)
 		{
-			bundleSetFiles.add( sourceModule.file().file(sourceModule.getAssetName()) );
+			if (sourceModule instanceof TestAsset) {
+				continue;
+			}
+			bundleSetFiles.add( sourceModule.file() );				
 		}
 		
 		for (MemoizedFile expectedFile : expectedFiles)
