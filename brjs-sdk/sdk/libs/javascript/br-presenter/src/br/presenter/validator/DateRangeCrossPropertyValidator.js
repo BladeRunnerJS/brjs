@@ -2,21 +2,23 @@
  * @module br/presenter/validator/DateRangeCrossPropertyValidator
  */
 
+var CrossPropertyValidator = require('br/presenter/validator/CrossPropertyValidator');
+
 /**
  * @private
  * @class
  * @alias module:br/presenter/validator/DateRangeCrossPropertyValidator
  */
-br.presenter.validator.DateRangeCrossPropertyValidator = function()
+function DateRangeCrossPropertyValidator()
 {
 	// nothing
-};
-br.Core.implement(br.presenter.validator.DateRangeCrossPropertyValidator, br.presenter.validator.CrossPropertyValidator);
+}
+br.Core.implement(DateRangeCrossPropertyValidator, CrossPropertyValidator);
 
 /**
  * @private
  */
-br.presenter.validator.DateRangeCrossPropertyValidator.prototype.validate = function(mProperties, oValidationResult)
+DateRangeCrossPropertyValidator.prototype.validate = function(mProperties, oValidationResult)
 {
 	var bIsValid = true;
 	var sValidationMessage = "";
@@ -48,3 +50,5 @@ br.presenter.validator.DateRangeCrossPropertyValidator.prototype.validate = func
 	}
 	oValidationResult.setResult(bIsValid, sValidationMessage);
 };
+
+module.exports = DateRangeCrossPropertyValidator;
