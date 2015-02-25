@@ -2,16 +2,19 @@
  * @module br/presenter/validator/CrossPropertyValidatorProxy
  */
 
+var Validator = require('br/validation/Validator');
+var CrossValidationPropertyListener = require('br/presenter/validator/CrossValidationPropertyListener');
+
 /**
  * @private
  * @class
  * @alias module:br/presenter/validator/CrossPropertyValidatorProxy
- * @implements module:br/presenter/validator/Validator
- * 
+ * @implements module:br/validation/Validator
+ *
  * @classdesc
  * This class is to be used via the {@link module:br/presenter/validator/CrossValidationPropertyBinder}.
  *
- * <p>This proxy class implements the {@link module:br/presenter/validator/Validator} interface so that it can be added as a validator
+ * <p>This proxy class implements the {@link module:br/validation/Validator} interface so that it can be added as a validator
  * of {@link module:br/presenter/property/EditableProperty} instances. It then handles the routing pf validation calls
  * to the instance of {@link module:br/presenter/validator/CrossPropertyValidator} that it is constructed with. If there
  * are instances of non-editable properties, this proxy listens to changes on them and triggers re-validation when they happen.</p>
@@ -22,11 +25,11 @@
  * @param {Object} mProperties A name-to-property mapping of all the properties that <code>oCrossPropertyValidator</code> expects.
  * @param {module:br/presenter/validator/CrossPropertyValidator} oCrossPropertyValidator The validator to proxy validations to.
  */
-br.presenter.validator.CrossPropertyValidatorProxy = function(mProperties, oCrossPropertyValidator)
+function CrossPropertyValidatorProxy(mProperties, oCrossPropertyValidator)
 {
 	/** @private */
 	this.m_mAllProperties = mProperties;
-	
+
 	/** @private */
 	this.m_mEditableProperties = {}; // populated below
 
@@ -38,7 +41,7 @@ br.presenter.validator.CrossPropertyValidatorProxy = function(mProperties, oCros
 
 	/** @private */
 	this.m_mCrossValidationPropertyListeners = {};
-	
+
 	for (var sPropId in this.m_mAllProperties)
 	{
 		var oProperty = this.m_mAllProperties[sPropId];
@@ -47,12 +50,12 @@ br.presenter.validator.CrossPropertyValidatorProxy = function(mProperties, oCros
 			this.m_mEditableProperties[sPropId] = oProperty;
 			oProperty.addValidator(this, {"sPropertyId": sPropId});
 		}
-		var oListener = new br.presenter.validator.CrossValidationPropertyListener(this, sPropId);
+		var oListener = new CrossValidationPropertyListener(this, sPropId);
 		oProperty.addListener(oListener);
 		this.m_mCrossValidationPropertyListeners[sPropId] = oListener;
 	}
-};
-br.Core.implement(br.presenter.validator.CrossPropertyValidatorProxy, br.presenter.validator.Validator);
+}
+br.Core.implement(CrossPropertyValidatorProxy, Validator);
 
 /**
  * @private
@@ -60,7 +63,7 @@ br.Core.implement(br.presenter.validator.CrossPropertyValidatorProxy, br.present
  * @param mAttributes
  * @param oValidationResult passed to the Cross Validator
  */
-br.presenter.validator.CrossPropertyValidatorProxy.prototype.validate = function(vValue, mAttributes, oValidationResult) {
+CrossPropertyValidatorProxy.prototype.validate = function(vValue, mAttributes, oValidationResult) {
 	var Utility = require('br/core/Utility');
 
 	if(!Utility.isEmpty(this.m_mAllProperties))
@@ -79,7 +82,7 @@ br.presenter.validator.CrossPropertyValidatorProxy.prototype.validate = function
 	}
 };
 
-br.presenter.validator.CrossPropertyValidatorProxy.prototype._propagateValidation = function(sPropertyToSkip)
+CrossPropertyValidatorProxy.prototype._propagateValidation = function(sPropertyToSkip)
 {
 	this.m_bPropagateValidation = false;
 	for (var sPropId in this.m_mEditableProperties)
@@ -93,7 +96,7 @@ br.presenter.validator.CrossPropertyValidatorProxy.prototype._propagateValidatio
 	this.m_bPropagateValidation = true;
 };
 
-br.presenter.validator.CrossPropertyValidatorProxy.prototype.destroy = function()
+CrossPropertyValidatorProxy.prototype.destroy = function()
 {
 	this.m_mAllProperties = {};
 	this.m_mEditableProperties = {};
@@ -110,7 +113,9 @@ br.presenter.validator.CrossPropertyValidatorProxy.prototype.destroy = function(
  * @private
  * @param sPropId ID of the property that just changed
  */
-br.presenter.validator.CrossPropertyValidatorProxy.prototype._$onPropertyChanged = function(sPropId)
+CrossPropertyValidatorProxy.prototype._$onPropertyChanged = function(sPropId)
 {
 	this._propagateValidation(sPropId); // force-validate all editable properties
 };
+
+module.exports = CrossPropertyValidatorProxy;
