@@ -21,7 +21,7 @@ public class BrowsableNodeSeedLocator extends AbstractAssetPlugin
 	@Override
 	public int priority()
 	{
-		return 150;
+		return 0;
 	}
 	
 	@Override

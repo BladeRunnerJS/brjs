@@ -11,5 +11,4 @@ public class DependencyInfo {
 	public Map<LinkedAsset, Set<LinkedAsset>> map = new LinkedHashMap<>();
 	public Map<LinkedAsset, Set<LinkedAsset>> staticDeps = new LinkedHashMap<>();
 	public Set<LinkedAsset> seedAssets = new LinkedHashSet<>();
-	public Set<LinkedAsset> resourceAssets = new LinkedHashSet<>();
 }

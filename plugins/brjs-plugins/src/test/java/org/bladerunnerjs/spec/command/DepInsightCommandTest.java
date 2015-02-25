@@ -150,7 +150,7 @@ public class DepInsightCommandTest extends SpecTest {
 		then(logging).containsConsoleText(
 			"Source module 'appns/Class2' dependencies found:",
 			"    +--- 'default-aspect/src/appns/Class2.js'",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js'");
+			"    +--- 'default-aspect/src/appns/Class1.js'");
 	}
 	
 	@Test
@@ -186,10 +186,10 @@ public class DepInsightCommandTest extends SpecTest {
 		when(brjs).runCommand("dep-insight", "app", "appns/Class3");
 		then(logging).containsConsoleText(
 			"Source module 'appns/Class3' dependencies found:",
-			"    +--- 'default-aspect/src/appns/Class3.js' (*)",
-			"    |    \\--- 'default-aspect/src/appns/Class2.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    |    \\--- 'default-aspect/index.html' (seed file)",
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    +--- 'default-aspect/src/appns/Class1.js'",
+			"    |    \\--- 'default-aspect/src/appns/Class3.js' (*)",
+			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
 			"",
 			"    (*) - subsequent instances not shown (use -A or --all to show)");
 	}
@@ -224,7 +224,7 @@ public class DepInsightCommandTest extends SpecTest {
 		then(logging).containsConsoleText(
 			"Source module 'appns/Class2' dependencies found:",
 			"    +--- 'default-aspect/src/appns/Class2.js'",
-			"    |    \\--- 'default-aspect/src/appns/pkg/config.xml' (implicit resource)",
+			"    |    \\--- 'default-aspect/src/appns/pkg/config.xml'",
 			"    |    |    \\--- 'default-aspect/src/appns/pkg/InnerClass.js'",
 			"    |    |    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    |    |    \\--- 'default-aspect/index.html' (seed file)");
@@ -256,9 +256,9 @@ public class DepInsightCommandTest extends SpecTest {
 		when(brjs).runCommand("dep-insight", "app", "appns/Class");
 		then(logging).containsConsoleText(
 			"Source module 'appns/Class' dependencies found:",
-			"    +--- 'default-aspect/src/appns/Class.js'",
-			"    |    \\--- 'alias!alias-ref' (alias dep.)",
-			"    |    |    \\--- 'default-aspect/index.html' (seed file)");
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    +--- 'alias!alias-ref' (alias dep.)",
+			"    +--- 'default-aspect/src/appns/Class.js'");
 	}
 	
 	@Test
@@ -347,8 +347,8 @@ public class DepInsightCommandTest extends SpecTest {
 		when(brjs).runCommand("dep-insight", "app", "appns/b1/Class1");
 		then(logging).containsConsoleText(
 			"Source module 'appns/b1/Class1' dependencies found:",
-			"    +--- 'blades/b1/src/appns/b1/Class1.js'",
-			"    |    \\--- 'default-aspect/index.html'");
+				"    +--- 'default-aspect/index.html' (seed file)",
+				"    +--- 'blades/b1/src/appns/b1/Class1.js'");
 	}
 
 	@Test
@@ -358,8 +358,8 @@ public class DepInsightCommandTest extends SpecTest {
 		when(brjs).runCommand("dep-insight", "app", "appns/Class1");
 		then(logging).containsConsoleText(
 			"Source module 'appns/Class1' dependencies found:",
-			"    +--- 'src/appns/Class1.js'",
-			"    |    \\--- 'index.html'");
+			"    +--- 'index.html' (seed file)",
+			"    +--- 'src/appns/Class1.js'");
 	}
 	
 }

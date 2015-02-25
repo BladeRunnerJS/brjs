@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.model.BundlableNode;
 
@@ -33,6 +34,18 @@ public class JsTestDriverBundleSet implements BundleSet {
 	@Override
 	public List<SourceModule> getSourceModules(String... prefixes) {
 		return bundleSet.getSourceModules();
+	}
+
+	@Override
+	public List<LinkedAsset> seedAssets()
+	{
+		return bundleSet.seedAssets();
+	}
+
+	@Override
+	public List<LinkedAsset> getLinkedAssets()
+	{
+		return bundleSet.getLinkedAssets();
 	}
 
 }

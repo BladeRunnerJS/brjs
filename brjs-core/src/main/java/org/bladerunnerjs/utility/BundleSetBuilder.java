@@ -25,6 +25,7 @@ public class BundleSetBuilder {
 	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
+	private final List<LinkedAsset> seedAssets = new ArrayList<>();
 	private final Set<Asset> assets = new LinkedHashSet<>();
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Set<LinkedAsset> linkedAssets = new LinkedHashSet<LinkedAsset>();
@@ -54,10 +55,11 @@ public class BundleSetBuilder {
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		List<Asset> assetList = orderAssetsByAssetContainer(assets);
 		
-		return new StandardBundleSet(bundlableNode, assetList, orderedSourceModules);
+		return new StandardBundleSet(bundlableNode, seedAssets, assetList, orderedSourceModules);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
+		seedAssets.addAll(seedFiles);
 		for(LinkedAsset seedFile : seedFiles) {
 			addLinkedAsset(seedFile);
 		}

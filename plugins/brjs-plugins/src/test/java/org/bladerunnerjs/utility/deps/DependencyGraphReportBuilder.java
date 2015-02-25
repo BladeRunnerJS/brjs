@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
@@ -15,6 +16,7 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.model.DirectoryLinkedAsset;
 
 public class DependencyGraphReportBuilder {
 	private final List<LinkedAsset> linkedAssets;
@@ -23,38 +25,31 @@ public class DependencyGraphReportBuilder {
 	private final Set<LinkedAsset> manyLinkedAssets;
 	private final StringBuilder reportBuilder;
 	private final MutableBoolean hasOmittedDependencies;
+	private BundleSet bundleSet;
 	
 	public static String createReport(BundlableNode bundlableNode, boolean showAllDependencies) throws ModelOperationException {
-		fixIncompleteAliases(bundlableNode);
-		
 		return "Bundle '" + bundlableNode.root().dir().getRelativePath(bundlableNode.dir()) + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(bundlableNode.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(bundlableNode), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(bundlableNode.getBundleSet(), bundlableNode.getBundleSet().seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(bundlableNode), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(Aspect aspect, boolean showAllDependencies) throws ModelOperationException {
-		fixIncompleteAliases(aspect);
-		
 		return "Aspect '" + aspect.getName() + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(aspect.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(aspect), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(aspect.getBundleSet(), aspect.getBundleSet().seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(aspect), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(BladeWorkbench workbench, boolean showAllDependencies) throws ModelOperationException {
-		fixIncompleteAliases(workbench);
-		
 		return "Workbench dependencies found:\n" +
-			new DependencyGraphReportBuilder(workbench.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(workbench), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(workbench.getBundleSet(), workbench.getBundleSet().seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(workbench), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(BrowsableNode browsableNode, String requirePath, boolean showAllDependencies) throws ModelOperationException {
 		try {
-			fixIncompleteAliases(browsableNode);
-			
 			SourceModule sourceModule =  (SourceModule)browsableNode.getLinkedAsset(requirePath);
 			List<LinkedAsset> linkedAssets = new ArrayList<>();
 			linkedAssets.add(sourceModule);
 			
 			return "Source module '" + sourceModule.getPrimaryRequirePath() + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(browsableNode.getBundleSet(), linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
 		}
 		catch(RequirePathException e) {
 			return e.getMessage();
@@ -64,8 +59,6 @@ public class DependencyGraphReportBuilder {
 	public static String createReportForRequirePrefix(BrowsableNode browsableNode, String requirePathPrefix, boolean showAllDependencies) throws ModelOperationException {
 		List<LinkedAsset> linkedAssets = new ArrayList<>();
 		
-		fixIncompleteAliases(browsableNode);
-		
 		for(SourceModule sourceModule : browsableNode.getBundleSet().getSourceModules()) {
 			if(sourceModule.getPrimaryRequirePath().startsWith(requirePathPrefix)) {
 				linkedAssets.add(sourceModule);
@@ -73,50 +66,11 @@ public class DependencyGraphReportBuilder {
 		}
 		
 		return "Require path prefix '" + requirePathPrefix + "' dependencies found:\n" +
-		new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, null), showAllDependencies).createReport();
+		new DependencyGraphReportBuilder(browsableNode.getBundleSet(), linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, null), showAllDependencies).createReport();
 	}
 	
-	public static String createReportForAlias(BrowsableNode browsableNode, String aliasName, boolean showAllDependencies) throws ModelOperationException {
-		//TODO: fix me after mega commit
-//		try {
-//			List<LinkedAsset> linkedAssets = new ArrayList<>();
-//			
-//			fixIncompleteAliases(browsableNode);
-//			
-//			AliasDefinition alias = browsableNode.getAlias(aliasName);
-//			SourceModule sourceModule =  (SourceModule)browsableNode.getLinkedAsset(alias.getRequirePath());
-//			linkedAssets.add(sourceModule);
-//			
-//			return "Alias '" + aliasName + "' dependencies found:\n" +
-//			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
-//		}
-//		catch(AliasException | RequirePathException e) {
-//			return e.getMessage();
-//		}
-//		catch(ContentFileProcessingException e) {
-//			throw new ModelOperationException(e);
-//		}
-		return "FIX ME!";
-	}
-	
-	private static void fixIncompleteAliases(BundlableNode bundlableNode) {
-//		try {
-//			AliasesFile aliasesFile = bundlableNode.aliasesFile();
-//			
-//			for(AliasDefinitionsFile aliasDefinitionFile : bundlableNode.aliasDefinitionFiles()) {
-//				for(AliasDefinition aliasDefinition : aliasDefinitionFile.aliases()) {
-//					if(!aliasesFile.hasAlias(aliasDefinition.getName()) && (aliasDefinition != null) && (aliasDefinition.getInterfaceName() != null)) {
-//						aliasesFile.addAlias(new AliasOverride(aliasDefinition.getName(), aliasDefinition.getInterfaceName()));
-//					}
-//				}
-//			}
-//		}
-//		catch(ContentFileProcessingException e) {
-//			throw new RuntimeException(e);
-//		}
-	}
-	
-	private DependencyGraphReportBuilder(List<LinkedAsset> linkedAssets, DependencyInfo dependencyInfo, boolean showAllDependencies) throws ModelOperationException {
+	private DependencyGraphReportBuilder(BundleSet bundleSet, List<LinkedAsset> linkedAssets, DependencyInfo dependencyInfo, boolean showAllDependencies) throws ModelOperationException {
+		this.bundleSet = bundleSet;
 		this.linkedAssets = linkedAssets;
 		this.dependencyInfo = dependencyInfo;
 		this.showAllDependencies = showAllDependencies;
@@ -128,7 +82,7 @@ public class DependencyGraphReportBuilder {
 	
 	private String createReport() throws ModelOperationException {
 		HashSet<LinkedAsset> processedAssets = new LinkedHashSet<>();
-		for(LinkedAsset linkedAsset : linkedAssets) {
+		for(LinkedAsset linkedAsset : bundleSet.getLinkedAssets()) {
 			addDependency(linkedAsset, null, processedAssets, 1);
 		}
 		
@@ -180,6 +134,13 @@ public class DependencyGraphReportBuilder {
 	}
 	
 	private void appendAssetPath(LinkedAsset linkedAsset, LinkedAsset referringAsset, int indentLevel, boolean alreadyProcessedDependency) {
+		
+		
+		if (linkedAsset instanceof DirectoryLinkedAsset) {
+			return;
+		}
+		
+		
 		reportBuilder.append("    ");
 		
 		if(indentLevel == 1) {
@@ -204,13 +165,12 @@ public class DependencyGraphReportBuilder {
 		else if((dependencyInfo.staticDeps.get(referringAsset) != null) && dependencyInfo.staticDeps.get(referringAsset).contains(linkedAsset)) {
 			reportBuilder.append(" (static dep.)");
 		}
-		else if(dependencyInfo.resourceAssets.contains(linkedAsset)) {
-			reportBuilder.append(" (implicit resource)");
+		else if(linkedAsset.getPrimaryRequirePath().startsWith("alias!")) {
+			reportBuilder.append(" (alias dep.)");
 		}
-		//TODO: fix me after mega commit
-//		else if(linkedAsset instanceof AliasAsset) {
-//			reportBuilder.append(" (alias dep.)");
-//		}
+		else if(linkedAsset.getPrimaryRequirePath().startsWith("service!")) {
+			reportBuilder.append(" (service dep.)");
+		}
 		
 		if((showAllDependencies && alreadyProcessedDependency) || (!showAllDependencies && manyLinkedAssets.contains(linkedAsset))) {
 			reportBuilder.append(" (*)");

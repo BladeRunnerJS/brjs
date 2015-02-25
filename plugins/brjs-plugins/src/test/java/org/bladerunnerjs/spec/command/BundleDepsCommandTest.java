@@ -99,18 +99,16 @@ public class BundleDepsCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void bladeTestpendenciesCanBeShown() throws Exception {
-		//TODO: fix me after mega commit
-//		given(bladeTests).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
-//			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
-//			.and(blade).classRequires("appns/bs/b1/Class1", "./Class2");
-//		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver");
-//		then(logging).containsConsoleText(
-//			"Bundle 'apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
-//			"    +--- 'bs-bladeset/blades/b1/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
-//			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js' (static dep.)",
-//			"    |    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js' (static dep.)");
-		fail("FIX ME!");
+	public void bladeTestDependenciesCanBeShown() throws Exception {
+		given(blade.file("test-unit/tests")).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
+			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
+			.and(blade).classRequires("appns/bs/b1/Class1", "./Class2");
+		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver");
+		then(logging).containsConsoleText(
+			"Bundle 'apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
+			"    +--- 'bs-bladeset/blades/b1/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
+			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js' (static dep.)",
+			"    |    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js' (static dep.)");
 	}
 	
 	@Test
@@ -120,8 +118,8 @@ public class BundleDepsCommandTest extends SpecTest {
     	when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect/");
     	then(logging).containsConsoleText(
     		"Bundle 'apps/app/default-aspect' dependencies found:",
-    		"    +--- 'default-aspect/index.html' (seed file)",
-    		"    |    \\--- 'bs-bladeset/blades/b1/src/Class1.js'");
+			"    +--- 'bs-bladeset/blades/b1/src/Class1.js'",
+    		"    +--- 'default-aspect/index.html' (seed file)");
 	}
 	
 	@Test
@@ -131,8 +129,8 @@ public class BundleDepsCommandTest extends SpecTest {
 		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect/");
 		then(logging).containsConsoleText(
 			"Bundle 'apps/app/default-aspect' dependencies found:",
-			"    +--- 'default-aspect/index.html' (seed file)",
-			"    |    \\--- 'blades/b1/src/appns/b1/Class1.js'");
+			"    +--- 'blades/b1/src/appns/b1/Class1.js'",
+			"    +--- 'default-aspect/index.html' (seed file)");
 	}
 	
 	@Test

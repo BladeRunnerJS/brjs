@@ -131,7 +131,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
 			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (static dep.)",
-			"    |    |    |    \\--- 'default-aspect/resources/config.xml' (seed file) (*)",
+			"    +--- 'default-aspect/resources/config.xml' (seed file)",
 			"",
 			"    (*) - subsequent instances not shown (use -A or --all to show)");
 	}
@@ -148,10 +148,10 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (static dep.)",
-			"    |    |    |    \\--- 'default-aspect/resources/config.xml' (seed file)",
-			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
-			"    |    |    \\--- 'default-aspect/resources/config.xml' (seed file) (*)",
-			"    +--- 'default-aspect/resources/config.xml' (seed file) (*)",
+		    "    +--- 'default-aspect/src/appns/Class1.js' (*)", // this might not look right but source files are dependencies of their parent asset if that 'location' is used
+		    "    +--- 'default-aspect/src/appns/Class2.js' (*)", //    - e.g. the Aspect is used so it depends on classes in the root of the Aspect
+			"    +--- 'default-aspect/resources/config.xml' (seed file)",
+			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
 			"",
 			"    (*) - dependencies omitted (listed previously)");
 	}
@@ -200,8 +200,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js' (static dep.)",
-			"    |    |    |    \\--- 'default-aspect/src/appns/pkg/config.xml' (implicit resource)",
-			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
+			"    +--- 'default-aspect/src/appns/pkg/config.xml'",
+			"    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
 	
 	@Test
@@ -216,8 +216,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/pkg1/pkg2/NestedClass.js' (static dep.)",
-			"    |    |    |    \\--- 'default-aspect/src/appns/pkg1/config.xml' (implicit resource)",
-			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
+			"    +--- 'default-aspect/src/appns/pkg/config.xml'",
+			"    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
 	
 	@Test
@@ -252,7 +252,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void incompleteAliasedDependenciesAreCorrectlyDisplayed() throws Exception {
-		given(brLib).hasClass("br/UnknownClass")
+		given(brLib).hasClasses("br/UnknownClass", "br/Core", "br/AliasInterfaceError")
 			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
 			.and(bladeAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.alias-ref", null, "appns.Interface")
 			.and(aspect).hasClasses("appns/Class", "appns/Interface");
@@ -277,9 +277,9 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js' (static dep.)",
-			"    |    |    |    \\--- 'default-aspect/src/appns/pkg/config.xml' (implicit resource)",
-			"    |    |    |    |    \\--- 'alias!alias-ref' (alias dep.)",
-			"    |    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
+			"    +--- 'default-aspect/src/appns/pkg/config.xml'",
+			"    |    \\--- 'alias!alias-ref' (alias dep.)",
+			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (static dep.)");
 	}
 	
 	@Test
@@ -289,8 +289,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
     	when(brjs).runCommand("app-deps", "app");
     	then(logging).containsConsoleText(
     		"Aspect 'default' dependencies found:",
-    		"    +--- 'default-aspect/index.html' (seed file)",
-    		"    |    \\--- 'bs-bladeset/blades/b1/src/Class1.js'");
+			"    +--- 'bs-bladeset/blades/b1/src/Class1.js'",
+    		"    +--- 'default-aspect/index.html' (seed file)");
 	}
 	
 	@Test
@@ -300,8 +300,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
 			"Aspect 'default' dependencies found:",
-			"    +--- 'default-aspect/index.html' (seed file)",
-			"    |    \\--- 'blades/b1/src/appns/b1/Class1.js'");
+			"    +--- 'blades/b1/src/appns/b1/Class1.js'",
+			"    +--- 'default-aspect/index.html' (seed file)");
 	}
 	
 	@Test
