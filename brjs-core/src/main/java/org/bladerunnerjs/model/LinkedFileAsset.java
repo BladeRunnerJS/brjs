@@ -61,7 +61,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		List<Asset> assetList = new ArrayList<>();
 		try {
-			assetList = bundlableNode.assets(assetContainer, getDependencyCalculator().getRequirePaths());
+			assetList = bundlableNode.assets(this, getDependencyCalculator().getRequirePaths());
 		}
 		catch (AmbiguousRequirePathException e) {			
 			e.setSourceRequirePath(getAssetPath());
@@ -79,7 +79,7 @@ public class LinkedFileAsset implements LinkedAsset {
 		}
 		List<String> dependenciesList = new ArrayList<String>(dependencies);
 		try {
-			assetList.addAll(bundlableNode.assets(assetContainer, dependenciesList));
+			assetList.addAll(bundlableNode.assets(this, dependenciesList));
 		} catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}

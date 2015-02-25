@@ -33,7 +33,7 @@ public class IndexPageAsset extends LinkedFileAsset {
 		}
 		List<String> dependenciesList = new ArrayList<String>(dependencies);
 		try {
-			assetList.addAll(bundlableNode.assets(assetContainer(), dependenciesList));
+			assetList.addAll(bundlableNode.assets(this, dependenciesList));
 		} catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}

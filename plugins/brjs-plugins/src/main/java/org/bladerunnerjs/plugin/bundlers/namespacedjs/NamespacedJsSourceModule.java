@@ -125,7 +125,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			 return bundlableNode.assets(assetContainer, getPreExportDefineTimeDependencyCalculator().getRequirePaths());
+			 return bundlableNode.assets(this, getPreExportDefineTimeDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -135,8 +135,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			List<Asset> assets = bundlableNode.assets(assetContainer, getPostExportDefineTimeDependencyCalculator().getRequirePaths());
-			assets.addAll(bundlableNode.assets(assetContainer, getUseTimeDependencyCalculator().getRequirePaths()));
+			List<Asset> assets = bundlableNode.assets(this, getPostExportDefineTimeDependencyCalculator().getRequirePaths());
+			assets.addAll(bundlableNode.assets(this, getUseTimeDependencyCalculator().getRequirePaths()));
 			
 			return assets;
 		}

@@ -21,5 +21,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	BundleSet getBundleSet() throws ModelOperationException;
 	
 	ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
-	List<Asset> assets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException;
+	List<Asset> assets(Asset asset, List<String> requirePaths) throws RequirePathException;
 }

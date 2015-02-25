@@ -244,14 +244,17 @@ public class DepInsightCommandTest extends SpecTest {
 			.and(aspect).classRequiresAtUseTime("appns/pkg2/ClassC", "../pkg1/ClassB");
 		when(brjs).runCommand("dep-insight", "app", "appns/pkg1", "--prefix", "--all");
 		then(logging).containsConsoleText(
-			"Require path prefix 'appns/pkg1' dependencies found:",
-			"    +--- 'default-aspect/src/appns/pkg1/ClassA.js'",
-			"    |    \\--- 'default-aspect/index.html' (seed file)",
-			"    +--- 'default-aspect/src/appns/pkg1/ClassB.js'",
-			"    |    \\--- 'default-aspect/src/appns/pkg2/ClassC.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/pkg1/ClassA.js' (*)",
-			"",
-			"    (*) - dependencies omitted (listed previously)");
+				"Require path prefix 'appns/pkg1' dependencies found:",
+				"    +--- 'default-aspect/index.html' (seed file)",
+				"    +--- 'default-aspect/src/appns/pkg1/ClassA.js'",
+				"    |    \\--- 'default-aspect/index.html' (seed file) (*)",
+				"    +--- 'default-aspect/src/appns/pkg2/ClassC.js'",
+				"    |    \\--- 'default-aspect/src/appns/pkg1/ClassA.js' (*)",
+				"    +--- 'default-aspect/src/appns/pkg1/ClassB.js'",
+				"    |    \\--- 'default-aspect/src/appns/pkg2/ClassC.js' (*)",
+				"    +--- 'default-aspect/src/appns/pkg1/UnbundledClass.js'",
+				"",
+				"    (*) - dependencies omitted (listed previously)");
 	}
 	
 	@Test
@@ -309,14 +312,12 @@ public class DepInsightCommandTest extends SpecTest {
 	
 	@Test
 	public void dependenciesCanBeShownForAnIncompleteAliasThatIsntUsedWithinTheApp() throws Exception {
-		given(brjs.sdkLib("br")).hasClass("br/UnknownClass")
+		given(brjs.sdkLib("br")).hasClasses("br/UnknownClass", "br/Core", "br/AliasInterfaceError")
 			.and(aspect).hasClass("appns/TheInterface")
-			.and(bladeAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.alias-ref", null, "appns.TheInterface");
-		when(brjs).runCommand("dep-insight", "app", "appns.bs.b1.alias-ref", "--alias");
+			.and(bladeAliasDefinitionsFileBuilder).hasAlias("appns.b1.alias-ref", null, "appns.TheInterface");
+		when(brjs).runCommand("dep-insight", "app", "appns.b1.alias-ref", "--alias");
 		then(logging).containsConsoleText(
-			"Alias 'appns.bs.b1.alias-ref' dependencies found:",
-			"    +--- '../../libs/javascript/br/src/br/UnknownClass.js'",
-			"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)");
+			"Source module 'alias!appns.b1.alias-ref' dependencies found:");
 	}
 	
 	@Test

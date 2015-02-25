@@ -183,7 +183,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 
 	private List<Asset> getSourceModulesForRequirePaths(BundlableNode bundlableNode, Set<String> requirePaths) throws ModelOperationException {
 		try {
-			return bundlableNode.assets( assetContainer, new ArrayList<>(requirePaths) );
+			return bundlableNode.assets( this, new ArrayList<>(requirePaths) );
 		}
 		catch (AmbiguousRequirePathException e) {
 			e.setSourceRequirePath(getPrimaryRequirePath());

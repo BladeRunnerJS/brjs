@@ -238,8 +238,8 @@ public final class AppSdkJsLib implements JsLib {
 	}
 
 	@Override
-	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
+	public String canonicaliseRequirePath(Asset asset, String requirePath) throws RequirePathException
 	{
-		return sdkJsLib.canonicaliseRequirePath(requirePath);
+		return sdkJsLib.canonicaliseRequirePath(asset, requirePath);
 	}
 }

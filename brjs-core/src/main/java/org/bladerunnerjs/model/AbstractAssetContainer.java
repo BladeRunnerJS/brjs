@@ -54,9 +54,9 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
+	public String canonicaliseRequirePath(Asset asset, String requirePath) throws RequirePathException
 	{
-		String requirePrefix = requirePrefix();
+		String requirePrefix = StringUtils.substringBeforeLast(asset.getPrimaryRequirePath(), "/");
 		
 		List<String> requirePrefixParts = new LinkedList<String>( Arrays.asList(requirePrefix.split("/")) );
 		List<String> requirePathParts = new LinkedList<String>( Arrays.asList(requirePath.split("/")) );

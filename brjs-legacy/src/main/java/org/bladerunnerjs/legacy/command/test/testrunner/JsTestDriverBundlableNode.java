@@ -224,14 +224,14 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
+	public String canonicaliseRequirePath(Asset asset, String requirePath) throws RequirePathException
 	{
-		return bundlableNode.canonicaliseRequirePath(requirePath);
+		return bundlableNode.canonicaliseRequirePath(asset, requirePath);
 	}
 
 	@Override
-	public List<Asset> assets(AssetContainer assetContainer, List<String> requirePaths) throws RequirePathException
+	public List<Asset> assets(Asset asset, List<String> requirePaths) throws RequirePathException
 	{
-		return bundlableNode.assets(assetContainer, requirePaths);
+		return bundlableNode.assets(asset, requirePaths);
 	}
 }
