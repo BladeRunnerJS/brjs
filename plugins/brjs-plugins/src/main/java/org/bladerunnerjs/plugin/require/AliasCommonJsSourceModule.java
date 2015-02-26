@@ -103,8 +103,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 				dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
 			}
 			else {
-				dependencies.add(bundlableNode.getLinkedAsset("br/Core"));
-				dependencies.add(bundlableNode.getLinkedAsset("br/AliasInterfaceError"));
+				dependencies.add(bundlableNode.getLinkedAsset("br/AliasRegistry"));
 				dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
 				if (aliasDefinition.getInterfaceRequirePath() != null) {
 					dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getInterfaceRequirePath()));
@@ -139,15 +138,9 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	
 	private String interfaceModule() {
 		return
-			"	var br = require('br/Core');\n" +
-			"	var AliasInterfaceError = require('br/AliasInterfaceError');\n" +
-			"	var classRef = require('" + aliasDefinition.getRequirePath() + "');\n" +
-			"	var interfaceRef = require('" + aliasDefinition.getInterfaceRequirePath() + "');\n" +
-			"	if(!br.classIsA(classRef, interfaceRef)) throw new AliasInterfaceError('" + aliasDefinition.getName() + "', '" + aliasDefinition.getRequirePath() + "', '" + aliasDefinition.getInterfaceRequirePath() + "');\n" +
-			"\n" +
-			"	module.exports = classRef;\n";
+			"	module.exports = require('br/AliasRegistry').getClass('"+aliasDefinition.getName()+"');\n";
 	}
-
+	
 	@Override
 	public AssetContainer assetContainer()
 	{

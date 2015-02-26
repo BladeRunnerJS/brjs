@@ -252,15 +252,14 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void incompleteAliasedDependenciesAreCorrectlyDisplayed() throws Exception {
-		given(brLib).hasClasses("br/UnknownClass", "br/Core", "br/AliasInterfaceError")
+		given(brLib).hasClasses("br/UnknownClass", "br/AliasRegistry")
 			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
 			.and(bladeAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.alias-ref", null, "appns.Interface")
 			.and(aspect).hasClasses("appns/Class", "appns/Interface");
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
 				"Aspect 'default' dependencies found:",
-				"    +--- '../../libs/javascript/br/src/br/Core.js'",
-				"    +--- '../../libs/javascript/br/src/br/AliasInterfaceError.js'",
+				"    +--- '../../libs/javascript/br/src/br/AliasRegistry.js'",
 				"    +--- '../../libs/javascript/br/src/br/UnknownClass.js'",
 				"    +--- 'default-aspect/index.html' (seed file)",
 				"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
