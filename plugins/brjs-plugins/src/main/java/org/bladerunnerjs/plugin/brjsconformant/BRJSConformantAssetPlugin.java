@@ -12,6 +12,7 @@ import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
@@ -74,13 +75,12 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 
 	private List<MemoizedFile> getSrcDirs(AssetContainer assetContainer)
 	{
-		String rootRequirePrefix = StringUtils.substringBefore(assetContainer.requirePrefix(), "/");
 		if (assetContainer instanceof TestPack) {
-			String srcTestDir = (assetContainer.file("src-test/"+rootRequirePrefix).isDirectory() && useImpliedRequirePrefix(assetContainer)) ? "src-test/"+assetContainer.requirePrefix() : "src-test";
+			String srcTestDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src-test");
 			return createFilesForFilePaths(assetContainer,  Arrays.asList(srcTestDir) );
 		} else {
-			String srcDir = (assetContainer.file("src/"+rootRequirePrefix).isDirectory() && useImpliedRequirePrefix(assetContainer)) ? "src/"+assetContainer.requirePrefix() : "src";
-			String srcTestDir = (assetContainer.file("src-test/"+rootRequirePrefix).isDirectory() && useImpliedRequirePrefix(assetContainer)) ? "src-test/"+assetContainer.requirePrefix() : "src-test";
+			String srcDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src");
+			String srcTestDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src-test");
 			return createFilesForFilePaths(assetContainer, Arrays.asList(srcDir, srcTestDir) );
 		}
 	}
@@ -90,6 +90,37 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 			return assetContainer.isNamespaceEnforced();
 		}
 		return true;
+	}
+	
+	private String calculateImplicitOrExplicitRequirePrefixDirectory(AssetContainer assetContainer, String dirName) {
+		MemoizedFile brjsDir = assetContainer.root().dir();
+		String rootPath = dirName;
+
+		String rootRequirePrefix = StringUtils.substringBefore(assetContainer.requirePrefix(), "/");
+		MemoizedFile rootRequirePrefixDir = assetContainer.file(dirName+"/"+rootRequirePrefix);
+		
+		String nestedRequirePrefixPath = dirName+"/"+assetContainer.requirePrefix();
+		MemoizedFile nestedRequirePrefixDir = assetContainer.file(nestedRequirePrefixPath);
+		
+		MemoizedFile rootPathDir = assetContainer.file(rootPath);
+		boolean explicitRequirePrefixDirsExist = nestedRequirePrefixDir.isDirectory();
+		
+		if (rootRequirePrefixDir.exists() && !explicitRequirePrefixDirsExist) {
+			InvalidRequirePathException wrappedRequirePathException = new InvalidRequirePathException(
+					String.format("The location '%s' contains a directory with the same name as the root require prefix ('%s') which suggests it's require prefix is explicitly defined"
+							+ " but no folder exists that corresponds to the require prefix for this location ('%s'). Either move all source files and package folders into the directory '%s'"
+							+ " to use an explicit directory structure or move all files and package folders into '%s' to allow the require prefix to be calculated automatically.",
+							brjsDir.getRelativePath(assetContainer.file(dirName)),
+							rootRequirePrefix,
+							assetContainer.requirePrefix(),
+							brjsDir.getRelativePath(nestedRequirePrefixDir),
+							brjsDir.getRelativePath(rootPathDir)
+					));
+			throw new RuntimeException(wrappedRequirePathException);
+
+		}
+		
+		return (explicitRequirePrefixDirsExist && useImpliedRequirePrefix(assetContainer)) ? nestedRequirePrefixPath : rootPath;
 	}
 	
 	private List<MemoizedFile> getThemeDirs(AssetContainer assetContainer)
