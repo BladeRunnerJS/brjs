@@ -5,7 +5,7 @@
 	
 	<servlet>
 		<servlet-name>RestAPIServlet</servlet-name>
-		<servlet-class>com.caplin.cutlass.app.servlet.RestApiServlet</servlet-class>
+		<servlet-class>org.bladerunnerjs.app.servlet.RestApiServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>

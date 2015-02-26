@@ -16,6 +16,7 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.model.AssetContainer;
+
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class I18nFileAsset implements Asset

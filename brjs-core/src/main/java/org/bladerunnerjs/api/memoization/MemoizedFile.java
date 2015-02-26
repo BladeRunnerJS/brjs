@@ -34,19 +34,10 @@ public class MemoizedFile extends File implements Comparable<File>
 	private String name;
 	private MemoizedFile parentFile;
 	
-//	private MemoizedValue<Boolean> isFile;
-//	private MemoizedValue<Boolean> isDirectory;
-//	private MemoizedValue<Boolean> exists;
-//	private MemoizedValue<List<MemoizedFile>> filesAndDirs;
-	
-	private FileModifiedChecker isFile;
-	private boolean isFileValue;
-	private FileModifiedChecker isDirectory;
-	private boolean isDirectoryValue;
-	private FileModifiedChecker exists;
-	private boolean existsValue;
-	private FileModifiedChecker filesAndDirs;
-	private List<MemoizedFile> filesAndDirsValue;
+	private MemoizedValue<Boolean> isFile;
+	private MemoizedValue<Boolean> isDirectory;
+	private MemoizedValue<Boolean> exists;
+	private MemoizedValue<List<MemoizedFile>> filesAndDirs;
 	
 	
 	MemoizedFile(RootNode rootNode, String file) {
@@ -55,16 +46,11 @@ public class MemoizedFile extends File implements Comparable<File>
 		wrappedFile = new File( FilenameUtils.normalize(file) );
 			// ^^ use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
 		
-//		String className = this.getClass().getSimpleName();
-//		isFile = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".isFile", rootNode, this);
-//		isDirectory = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".isDirectory", rootNode, this);
-//		exists = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".exists", rootNode, this);
-//		filesAndDirs = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".filesAndDirs", rootNode, this);
-		FileModificationRegistry fileModificationRegistry = rootNode.getFileModificationRegistry();
-		isFile = new FileModifiedChecker(fileModificationRegistry, rootNode, wrappedFile);
-		isDirectory = new FileModifiedChecker(fileModificationRegistry, rootNode, wrappedFile);
-		exists = new FileModifiedChecker(fileModificationRegistry, rootNode, wrappedFile);
-		filesAndDirs = new FileModifiedChecker(fileModificationRegistry, rootNode, wrappedFile);
+		String className = this.getClass().getSimpleName();
+		isFile = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".isFile", rootNode, this);
+		isDirectory = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".isDirectory", rootNode, this);
+		exists = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".exists", rootNode, this);
+		filesAndDirs = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".filesAndDirs", rootNode, this);
 	}	
 	
 	// ---- Methods Using Memoized Values ----
@@ -82,67 +68,39 @@ public class MemoizedFile extends File implements Comparable<File>
 	}
 	
 	public boolean exists() {
-//		return exists.value(() -> {
-//			return wrappedFile.exists();
-//		});
-		if (exists.hasChangedSinceLastCheck()) {
-			existsValue = wrappedFile.exists();
-		}
-		return existsValue;
+		return exists.value(() -> {
+			return wrappedFile.exists();
+		});
 	}
 	
 	public boolean isDirectory() {
-//		return isDirectory.value(() -> {
-//			return wrappedFile.isDirectory();
-//		});
-		if (isDirectory.hasChangedSinceLastCheck()) {
-			isDirectoryValue = wrappedFile.isDirectory();
-		}
-		return isDirectoryValue;
+		return isDirectory.value(() -> {
+			return wrappedFile.isDirectory();
+		});
 	}
 	
 	public boolean isFile() {
-//		return isFile.value(() -> {
-//			return wrappedFile.isFile();
-//		});
-		if (isFile.hasChangedSinceLastCheck()) {
-			isFileValue = wrappedFile.isFile();
-		}
-		return isFileValue;
+		return isFile.value(() -> {
+			return wrappedFile.isFile();
+		});
 	}
 	
 	public List<MemoizedFile> filesAndDirs() {		
-//		List<MemoizedFile> filesAndDirsList = filesAndDirs.value(() -> {
-//			if (!wrappedFile.isDirectory()) {
-//				return Collections.emptyList();
-//			}
-//			List<File> listedFiles = Arrays.asList(wrappedFile.listFiles());
-//			Collections.sort(listedFiles);
-//			List<MemoizedFile> memoizedFileList = new ArrayList<>();
-//			for (File file : listedFiles) {
-//				memoizedFileList.add( rootNode.getMemoizedFile(file) );
-//			}
-//			return memoizedFileList;
-//		});
-//		
-//		List<MemoizedFile> wrappedFilesAndDirs = new ArrayList<>();
-//		wrappedFilesAndDirs.addAll( filesAndDirsList ); // return a copy so multiple callers dont have the same object by reference
-//		return wrappedFilesAndDirs;
-		
-		if (!wrappedFile.isDirectory()) {
-			return Collections.emptyList();
-		}
-		
-		if (filesAndDirs.hasChangedSinceLastCheck()) {
-			filesAndDirsValue = new ArrayList<>();
+		List<MemoizedFile> filesAndDirsList = filesAndDirs.value(() -> {
+			if (!wrappedFile.isDirectory()) {
+				return Collections.emptyList();
+			}
 			List<File> listedFiles = Arrays.asList(wrappedFile.listFiles());
 			Collections.sort(listedFiles);
+			List<MemoizedFile> memoizedFileList = new ArrayList<>();
 			for (File file : listedFiles) {
-				filesAndDirsValue.add( rootNode.getMemoizedFile(file) );
+				memoizedFileList.add( rootNode.getMemoizedFile(file) );
 			}
-		}
+			return memoizedFileList;
+		});
+		
 		List<MemoizedFile> wrappedFilesAndDirs = new ArrayList<>();
-		wrappedFilesAndDirs.addAll( filesAndDirsValue ); // return a copy so multiple callers dont have the same object by reference
+		wrappedFilesAndDirs.addAll( filesAndDirsList ); // return a copy so multiple callers dont have the same object by reference
 		return wrappedFilesAndDirs;
 		
 	}

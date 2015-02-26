@@ -20,7 +20,7 @@ public class CommandRunner
 		
 		if(commandPlugin == null) throw new NoSuchCommandException(commandName);
 		
-		brjs.notifyObservers(new CommandExecutedEvent(commandName, commandArgs), brjs);
+		brjs.notifyObservers(new CommandExecutedEvent("cli", commandName, commandArgs), brjs);
 		
 		return commandPlugin.doCommand(commandArgs);
 	}

@@ -15,7 +15,7 @@ import org.bladerunnerjs.api.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.utility.RequirePathUtility;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 /**

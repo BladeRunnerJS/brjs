@@ -16,7 +16,7 @@
  * 
  */
 
-package org.bladerunnerjs.legacy.servlet;
+package org.bladerunnerjs.servlet;
 
 import java.io.Closeable;
 import java.io.File;

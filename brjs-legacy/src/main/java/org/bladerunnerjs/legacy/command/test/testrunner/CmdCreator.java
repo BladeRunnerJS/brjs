@@ -3,7 +3,6 @@ package org.bladerunnerjs.legacy.command.test.testrunner;
 import java.io.File;
 import java.util.Formatter;
 
-
 public class CmdCreator {
 	public static String[] cmd(File sdkDir, String cmd, Object... parameters) {
 		StringBuilder stringBuilder = new StringBuilder();

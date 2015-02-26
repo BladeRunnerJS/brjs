@@ -11,7 +11,7 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.utility.RequirePathUtility;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 public class IndexPageAsset extends LinkedFileAsset {

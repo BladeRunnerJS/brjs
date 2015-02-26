@@ -8,9 +8,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
+
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
+
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.legacy.app.service;
+package org.bladerunnerjs.app.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -18,6 +18,8 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
+import org.bladerunnerjs.legacy.command.test.TestCommand;
+import org.bladerunnerjs.legacy.command.test.testrunner.TestRunnerController;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.plugin.commands.standard.CopyBladesetCommand;
@@ -28,8 +30,6 @@ import org.bladerunnerjs.plugin.commands.standard.ExportApplicationCommand;
 import org.bladerunnerjs.plugin.commands.standard.ImportAppCommand;
 import org.bladerunnerjs.plugin.commands.standard.JsDocCommand;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.legacy.command.test.TestCommand;
-import org.bladerunnerjs.legacy.command.test.testrunner.TestRunnerController;
 
 public class RestApiService
 {
@@ -302,7 +302,7 @@ public class RestApiService
 
 	
 	private void notifyOfCommand(CommandPlugin command) {
-		brjs.notifyObservers(new CommandExecutedEvent("dashboard:"+command.getCommandName()), brjs);
+		brjs.notifyObservers(new CommandExecutedEvent("dashboard", command.getCommandName()), brjs);
 	}
 	
 	private class MultiOutputPrintStream extends PrintStream {

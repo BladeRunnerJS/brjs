@@ -1,4 +1,4 @@
-package org.bladerunnerjs.legacy.app;
+package org.bladerunnerjs.app;
 
 import java.io.BufferedReader;
 import java.io.File;

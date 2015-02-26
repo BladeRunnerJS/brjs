@@ -1,4 +1,4 @@
-package org.bladerunnerjs.legacy.app;
+package org.bladerunnerjs.app;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.legacy.app.servlet.RestApiServlet;
+import org.bladerunnerjs.app.servlet.RestApiServlet;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.utility.FileUtils;

@@ -18,7 +18,11 @@ import static java.nio.file.StandardWatchEventKinds.*;
 
 public class FileModificationWatcherThread extends Thread
 {
+	public static final String USING_WATCH_SERVICE_MSG = "%s using %s as the file watcher service";
 	public static final String THREAD_IDENTIFIER = FileModificationWatcherThread.class.getSimpleName();
+	public static final String FILE_CHANGED_MSG = THREAD_IDENTIFIER+" detected a '%s' event for '%s'. Incrementing the file version.";
+	public static final String CANT_RESET_PATH_MSG = "A watch key could not be reset for the path '%s' but the directory or file still exists. "+
+			"You might need to reset the process for file changes to be detected.";
 	
 	private Path directoryToWatch;
 	private FileModificationRegistry fileModificationRegistry;
@@ -65,7 +69,7 @@ public class FileModificationWatcherThread extends Thread
 		// create the watch service in the init method so we get a 'too many open files' exception
 		watchKeyService = watchKeyServiceFactory.createWatchService();
 		logger = brjs.logger(this.getClass());
-		logger.debug("%s using %s as the file watcher service", this.getClass().getSimpleName(), watchKeyService.getClass().getSimpleName());
+		logger.debug(USING_WATCH_SERVICE_MSG, this.getClass().getSimpleName(), watchKeyService.getClass().getSimpleName());
 		watchKeys.putAll( watchKeyService.createWatchKeysForDir(directoryToWatch, false) );
 	}
 	
@@ -121,6 +125,7 @@ public class FileModificationWatcherThread extends Thread
             	watchKeys.putAll( watchKeyService.createWatchKeysForDir(child, true) );
             }
             
+			logger.debug(FILE_CHANGED_MSG, kind, childFile.getPath());
             fileModificationRegistry.incrementFileVersion(childFile);
             
             boolean isWatchKeyReset = watchKey.reset();
@@ -129,8 +134,7 @@ public class FileModificationWatcherThread extends Thread
             		watchKey.cancel();
             		watchKeys.remove(watchPath);            		
             	} else {
-            		logger.debug("A watch key could not be reset for the path '%s' but the directory or file still exists. "+
-            				"You might need to reset the process for file changes to be detected.", watchPath);
+            		logger.debug(CANT_RESET_PATH_MSG, watchPath);
             	}
 			}
 		}
