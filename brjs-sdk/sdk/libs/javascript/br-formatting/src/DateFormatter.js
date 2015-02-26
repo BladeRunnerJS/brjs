@@ -85,7 +85,7 @@ br.formatting.DateFormatter.prototype.parseDate = function(vDate, sDateFormat, b
 				oMoment.endOf(sDateFormat === 'YYYY' ? 'year' : 'month');
 			}
 			var sValidationString = oMoment.format(sDateFormat);
-			return (sValidationString == String(vDate)) ? oMoment.toDate() : null;
+			return (sValidationString.toLowerCase() == String(vDate).toLowerCase()) ? oMoment.toDate() : null;
 	}
 };
 
