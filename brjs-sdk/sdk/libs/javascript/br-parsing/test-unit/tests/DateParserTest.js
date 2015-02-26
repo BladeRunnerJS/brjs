@@ -1,10 +1,11 @@
 (function() {
 	require("jsunitextensions");
+	var DateParser = require('br/parsing/DateParser');
 
 	DateParserTest = TestCase("DateParserTest");
 
 	DateParserTest.prototype.setUp = function() {
-		this.oParser = new br.parsing.DateParser();
+		this.oParser = new DateParser();
 		this.oDate = new Date(2010, 10, 12, 13, 14, 15, 16);
 		this.oDateAtMidnight = new Date(2010, 10, 12);
 

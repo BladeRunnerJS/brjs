@@ -2,6 +2,11 @@
  * @module br/parsing/DateParser
  */
 
+var topiarist = require('topiarist');
+var Parser = require('br/parsing/Parser');
+var DateFormatter = require('br/formatting/DateFormatter');
+var RegExpUtil = require('br/util/RegExp');
+
 /**
  * @class
  * @alias module:br/parsing/DateParser
@@ -13,11 +18,11 @@
  * <p><code>DateParser</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "08-Sep-2000":</p>
  * 
- * <pre>br.parsing.DateParser.parse("09/08/2000", {american:"true", outputFormat:"d-M-Y"})</pre>
+ * <pre>DateParser.parse("09/08/2000", {american:"true", outputFormat:"d-M-Y"})</pre>
  * 
  * See {@link module:br/formatting/DateFormatter} for the complementary formatter.
  */
-br.parsing.DateParser = function()
+DateParser = function()
 {
 	this.m_pAmericanFormats = ["MM-DD-YYYY", "MM-DD-YY", "MMM-DD-YYYY", "MMM-DD-YY", "MM-DD"];
 	this.m_pEuropeanFormats = ["DD-MM-YYYY", "DD-MMM-YYYY", "DD-MM", "DD-MM-YY", "DDMMYY", "DDMMYYYY"];
@@ -26,9 +31,9 @@ br.parsing.DateParser = function()
 		"YYYYMMDDHHmm", "YYYYMMDD"
 	];
 	this.m_sSeparatorsDefault = "\\/.-";
-	this.m_oDateFormatter = new br.formatting.DateFormatter();
-};
-br.Core.implement(br.parsing.DateParser, br.parsing.Parser);
+	this.m_oDateFormatter = new DateFormatter();
+}
+topiarist.implement(DateParser, Parser);
 
 /**
  * Matches a date string and converts it to a specified output format.
@@ -50,7 +55,7 @@ br.Core.implement(br.parsing.DateParser, br.parsing.Parser);
  * @return {string} the date, expressed in the output format
  * @type String
  */
-br.parsing.DateParser.prototype.parse = function(vValue, mAttributes) {
+DateParser.prototype.parse = function(vValue, mAttributes) {
 	if (vValue) {
 		var vDate = this._standardizeDateSeparators(vValue, mAttributes);
 		var pInputFormats = this._getAdmissibleInputFormats(mAttributes);
@@ -63,7 +68,7 @@ br.parsing.DateParser.prototype.parse = function(vValue, mAttributes) {
 /**
  * @private
  */
-br.parsing.DateParser.prototype._matchDate = function(vDate, pInputFormats, sOutputFormat, bEndOfUnit) {
+DateParser.prototype._matchDate = function(vDate, pInputFormats, sOutputFormat, bEndOfUnit) {
 	for (var i = 0, n = pInputFormats.length; i < n; ++i) {
 		var sInputFormat = pInputFormats[i];
 		var oDate = this.m_oDateFormatter.parseDate(vDate, sInputFormat, bEndOfUnit);
@@ -76,9 +81,9 @@ br.parsing.DateParser.prototype._matchDate = function(vDate, pInputFormats, sOut
 /**
  * @private
  */
-br.parsing.DateParser.prototype._standardizeDateSeparators = function(vDate, mAttributes) {
+DateParser.prototype._standardizeDateSeparators = function(vDate, mAttributes) {
 	if (vDate.constructor === String) {
-		var sRegExp = "[" + br.util.RegExp.escape(mAttributes["separators"] || this.m_sSeparatorsDefault) + "]";
+		var sRegExp = "[" + RegExpUtil.escape(mAttributes["separators"] || this.m_sSeparatorsDefault) + "]";
 		var oNonStandardSeparatorRegExp = new RegExp(sRegExp, "g");
 		vDate = vDate.replace(oNonStandardSeparatorRegExp, "-");
 	}
@@ -88,20 +93,22 @@ br.parsing.DateParser.prototype._standardizeDateSeparators = function(vDate, mAt
 /**
  * @private
  */
-br.parsing.DateParser.prototype._getAdmissibleInputFormats = function(mAttributes) {
+DateParser.prototype._getAdmissibleInputFormats = function(mAttributes) {
 	return mAttributes.inputFormats ? mAttributes.inputFormats.split(",") : this._getDefaultInputFormats(mAttributes);
 };
 
 /**
  * @private
  */
-br.parsing.DateParser.prototype._getDefaultInputFormats = function(mAttributes) {
+DateParser.prototype._getDefaultInputFormats = function(mAttributes) {
 	return this.m_pCommonFormats.concat((mAttributes["american"] == "true") ? this.m_pAmericanFormats : this.m_pEuropeanFormats);
 };
 
 /**
  * @private
  */
-br.parsing.DateParser.prototype.toString = function() {
-	return "br.parsing.DateParser";
+DateParser.prototype.toString = function() {
+	return "DateParser";
 };
+
+module.exports = DateParser;

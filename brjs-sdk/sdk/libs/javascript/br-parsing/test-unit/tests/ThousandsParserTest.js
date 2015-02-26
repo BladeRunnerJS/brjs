@@ -1,8 +1,10 @@
 (function() {
+	var ThousandsParser = require('br/parsing/ThousandsParser');
+	
 	ThousandsParserTest = TestCase("ThousandsParserTest");
 
 	ThousandsParserTest.prototype.setUp = function() {
-		this.oParser = new br.parsing.ThousandsParser();
+		this.oParser = new ThousandsParser();
 
 		this.subrealm = realm.subrealm();
 		this.subrealm.install();
@@ -38,7 +40,7 @@
 			}));
 		});
 
-		this.oParser = new br.parsing.ThousandsParser();
+		this.oParser = new ThousandsParser();
 
 		assertEquals("12345887.224", this.oParser.parse("12.345.887!224", {}));
 	};
@@ -69,7 +71,7 @@
 	};
 
 	ThousandsParserTest.prototype.test_TestThousandsParserToString = function() {
-		assertEquals("br.parsing.ThousandsParser", this.oParser.toString());
+		assertEquals("br/parsing/ThousandsParser", this.oParser.toString());
 	};
 
 	ThousandsParserTest.prototype.test_toString = function() {
