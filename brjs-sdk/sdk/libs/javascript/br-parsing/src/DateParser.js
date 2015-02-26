@@ -65,6 +65,10 @@ DateParser.prototype.parse = function(vValue, mAttributes) {
 	return vValue;
 };
 
+DateParser.prototype.isSingleUseParser = function() {
+  return false;
+};
+
 /**
  * @private
  */

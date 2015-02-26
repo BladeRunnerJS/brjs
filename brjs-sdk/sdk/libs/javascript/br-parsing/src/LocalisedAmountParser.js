@@ -91,6 +91,10 @@ LocalisedAmountParser.prototype.parse = function(sValue, mAttributes)
 	return nResult;
 };
 
+LocalisedAmountParser.prototype.isSingleUseParser = function() {
+	return false;
+};
+
 LocalisedAmountParser.prototype._getShortcutMultiplier = function(sShortcutSymbol)
 {
 	var sToken = "br.parsing.number.formatting.multiplier." + sShortcutSymbol.toLowerCase();

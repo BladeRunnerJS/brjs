@@ -73,6 +73,10 @@ ThousandsParser.prototype.parse = function(vValue, mAttributes) {
 	}
 };
 
+ThousandsParser.prototype.isSingleUseParser = function() {
+	return false;
+};
+
 /**
  * @private
  */
