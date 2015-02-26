@@ -94,7 +94,7 @@ br.formatting.DateFormatter.prototype.parseDate = function(vDate, sDateFormat)
 		default:
 			var oMoment = moment(String(vDate), sDateFormat);
 			var sValidationString = oMoment.format(sDateFormat);
-			return (sValidationString == String(vDate)) ? oMoment.toDate() : null;
+			return (sValidationString.toLowerCase() == String(vDate).toLowerCase()) ? oMoment.toDate() : null;
 	}
 };
 
