@@ -2,6 +2,9 @@
  * @module br/parsing/LocalisedAmountParser
  */
 
+var topiarist = require('topiarist');
+var Parser = require('br/parsing/Parser');
+
 /**
  * @class
  * @alias module:br/parsing/LocalisedAmountParser
@@ -13,14 +16,14 @@
  * <p><code>LocalisedAmountParser</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "4900000":</p>
  * 
- * <pre>br.parsing.LocalisedAmountParser.parse("4.9MM", {})</pre>
+ * <pre>LocalisedAmountParser.parse("4.9MM", {})</pre>
  * 
  * See {@link module:br/formatting/AmountFormatter} for the complementary formatter.
  */
-br.parsing.LocalisedAmountParser = function() {
-};
+LocalisedAmountParser = function() {
+}
 
-br.Core.implement(br.parsing.LocalisedAmountParser, br.parsing.Parser);
+topiarist.implement(LocalisedAmountParser, Parser);
 
 /**
  * Parses an amount containing a thousands, millions or billions token into a number.
@@ -47,7 +50,7 @@ br.Core.implement(br.parsing.LocalisedAmountParser, br.parsing.Parser);
  * @return  the numeric amount, or null if the value was not recognized.
  * @type  String
  */
-br.parsing.LocalisedAmountParser.prototype.parse = function(sValue, mAttributes) 
+LocalisedAmountParser.prototype.parse = function(sValue, mAttributes) 
 {
 	if(typeof sValue != "string")
 	{
@@ -88,7 +91,7 @@ br.parsing.LocalisedAmountParser.prototype.parse = function(sValue, mAttributes)
 	return nResult;
 };
 
-br.parsing.LocalisedAmountParser.prototype._getShortcutMultiplier = function(sShortcutSymbol)
+LocalisedAmountParser.prototype._getShortcutMultiplier = function(sShortcutSymbol)
 {
 	var sToken = "br.parsing.number.formatting.multiplier." + sShortcutSymbol.toLowerCase();
 	var oTranslator = require("br/I18n").getTranslator();
@@ -107,6 +110,8 @@ br.parsing.LocalisedAmountParser.prototype._getShortcutMultiplier = function(sSh
 /**
  * @private
  */
-br.parsing.LocalisedAmountParser.prototype.toString = function() {
-	return "br.parsing.LocalisedAmountParser";
+LocalisedAmountParser.prototype.toString = function() {
+	return "br/parsing/LocalisedAmountParser";
 };
+
+module.exports = LocalisedAmountParser;

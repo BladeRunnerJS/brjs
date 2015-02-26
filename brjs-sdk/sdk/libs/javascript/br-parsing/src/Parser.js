@@ -40,4 +40,4 @@ Parser.prototype.isSingleUseParser = function() {
 	return false;
 };
 
-br.parsing.Parser = Parser;
+module.exports = Parser;
