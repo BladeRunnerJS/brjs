@@ -11,10 +11,10 @@ import java.util.TreeMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.PropertiesException;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
-import org.bladerunnerjs.model.exception.PropertiesException;
 
 
 

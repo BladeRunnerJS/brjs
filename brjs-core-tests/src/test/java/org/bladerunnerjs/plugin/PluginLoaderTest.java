@@ -6,15 +6,15 @@ import static org.bladerunnerjs.plugin.utility.PluginLoader.Messages.*;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.spec.utility.LogMessageStore;
+import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.plugin.utilClasses.AnotherTestInterface;
 import org.bladerunnerjs.plugin.utilClasses.ClassImplementingNestedInterface;
 import org.bladerunnerjs.plugin.utilClasses.MyTestInterface;
 import org.bladerunnerjs.plugin.utilClasses.MyTestInterfaceImplementer;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
-import org.bladerunnerjs.testing.utility.LogMessageStore;
-import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.junit.Before;
 import org.junit.Test;
 

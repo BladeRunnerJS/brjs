@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.BRJSNode;
 
 import static org.junit.Assert.*;

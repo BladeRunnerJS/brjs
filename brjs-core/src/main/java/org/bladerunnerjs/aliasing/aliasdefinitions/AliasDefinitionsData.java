@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.aliasing.AliasOverride;
+import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.aliasing.AliasOverride;
 
 public class AliasDefinitionsData {
 	public List<AliasDefinition> aliasDefinitions = new ArrayList<>();

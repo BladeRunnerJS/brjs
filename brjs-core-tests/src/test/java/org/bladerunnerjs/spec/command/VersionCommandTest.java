@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.Asset;
 
 
 public class AssetFileInstantationException extends Exception

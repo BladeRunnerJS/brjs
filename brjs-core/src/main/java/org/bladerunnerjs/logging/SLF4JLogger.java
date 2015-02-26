@@ -1,16 +1,27 @@
 package org.bladerunnerjs.logging;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.IllegalFormatException;
+
+import org.bladerunnerjs.api.logging.Logger;
 
 public class SLF4JLogger implements Logger
 {
 	private final org.slf4j.Logger slf4jLogger;
 	private final String name;
+	private LoggerTimeAccessor timeAccessor;
 
 	public SLF4JLogger(org.slf4j.Logger slf4jLogger, String name)
 	{
+		this(slf4jLogger, name, null);
+	}
+	
+	SLF4JLogger(org.slf4j.Logger slf4jLogger, String name, LoggerTimeAccessor timeAccessor)
+	{
 		this.slf4jLogger = slf4jLogger;
 		this.name = name;
+		this.timeAccessor = (timeAccessor != null) ? timeAccessor : new DefaultTimeAccessor();;
 	}
 	
 	@Override
@@ -51,8 +62,10 @@ public class SLF4JLogger implements Logger
 	
 	private String getFormattedString(String message, Object... params)
 	{
+		String timestamp = timeAccessor.getTimestamp();
+		String timestampPrefix = (slf4jLogger.isDebugEnabled() && timestamp != null) ? timestamp+" - " : ""; 
 		try {
-			return (params.length == 0) ? message : String.format(message, params);
+			return timestampPrefix + ((params.length == 0) ? message : String.format(message, params));
 		}
 		catch (IllegalFormatException ex) /* IllegalFormatException is a runtime exception */
 		{
@@ -81,4 +94,13 @@ public class SLF4JLogger implements Logger
 		println(message, params);
 	}
 
+	
+	private class DefaultTimeAccessor implements LoggerTimeAccessor {
+		@Override
+		public String getTimestamp()
+		{
+			return new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+		}
+	}
+	
 }

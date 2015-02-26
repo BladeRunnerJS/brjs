@@ -8,15 +8,15 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
-import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.appserver.ApplicationServer;
+import org.bladerunnerjs.api.model.events.NodeReadyEvent;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.plugin.plugins.appdeployer.AppDeploymentObserverPlugin;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.plugin.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;

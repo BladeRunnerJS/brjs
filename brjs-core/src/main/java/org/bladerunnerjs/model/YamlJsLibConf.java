@@ -3,8 +3,8 @@ package org.bladerunnerjs.model;
 import javax.validation.constraints.NotNull;
 
 import org.apache.bval.constraints.NotEmpty;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;

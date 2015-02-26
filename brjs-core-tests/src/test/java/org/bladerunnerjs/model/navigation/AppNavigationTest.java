@@ -2,11 +2,11 @@ package org.bladerunnerjs.model.navigation;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.model.NodeTesterFactory;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.After;

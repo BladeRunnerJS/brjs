@@ -1,6 +1,6 @@
 package org.bladerunnerjs.utility;
 
-import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.api.logging.Logger;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;

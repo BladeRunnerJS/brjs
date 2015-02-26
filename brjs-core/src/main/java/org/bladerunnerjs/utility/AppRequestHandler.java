@@ -15,27 +15,28 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.api.plugin.CharResponseContent;
+import org.bladerunnerjs.api.plugin.ContentPlugin;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.model.BrowsableNode;
-import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.SdkJsLib;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.plugin.CharResponseContent;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.Locale;
 
 import com.google.common.base.Joiner;
 
@@ -250,9 +251,9 @@ public class AppRequestHandler
 			localeForwardingPage.write("<script type='text/javascript'>\n");
 			
 			ContentPlugin appVersionContentPlugin = app.root().plugins().contentPlugin("app-meta");
-			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.getContentPathParser();
+			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
 			String appVersionContentPath = appVersionContentPathParser.createRequest("app-meta-request");
-			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPathParser.parse(appVersionContentPath), bundleSet, contentAccessor, appVersionContentPath);
+			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPath, bundleSet, contentAccessor, appVersionContentPath);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			responseContent.write(baos);
 			localeForwardingPage.write( baos.toString() );

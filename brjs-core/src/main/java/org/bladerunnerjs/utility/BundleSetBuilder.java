@@ -8,24 +8,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.aliasing.AliasException;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.Workbench;
+import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.aliasing.AliasException;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.BundleSetCreator;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
 import org.bladerunnerjs.model.StandardBundleSet;
-import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 import com.google.common.base.Joiner;
 

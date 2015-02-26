@@ -1,9 +1,9 @@
 package org.bladerunnerjs.plugin.proxy;
 
-import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.plugin.RequirePlugin;
 
 public class VirtualProxyRequirePlugin extends VirtualProxyPlugin implements RequirePlugin {
 	private final RequirePlugin requirePlugin;

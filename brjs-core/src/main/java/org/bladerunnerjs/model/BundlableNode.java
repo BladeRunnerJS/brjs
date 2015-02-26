@@ -2,18 +2,22 @@ package org.bladerunnerjs.model;
 
 import java.util.List;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.aliasing.AliasException;
-import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.aliasing.AliasException;
+import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.plugin.ResponseContent;
 
 
 public interface BundlableNode extends Node, AssetContainer {

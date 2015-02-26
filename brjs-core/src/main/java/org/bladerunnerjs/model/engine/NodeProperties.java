@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model.engine;
 
-import org.bladerunnerjs.model.exception.PropertiesException;
+import org.bladerunnerjs.api.model.exception.PropertiesException;
 
 
 public interface NodeProperties

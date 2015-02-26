@@ -1,8 +1,8 @@
 package org.bladerunnerjs.utility;
 
+import org.bladerunnerjs.api.plugin.Event;
+import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.plugin.Event;
-import org.bladerunnerjs.plugin.EventObserver;
 
 
 public class EventObserverEntry

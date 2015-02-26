@@ -2,12 +2,12 @@ package org.bladerunnerjs.model.navigation;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.spec.utility.LogMessageStore;
+import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.NodeTesterFactory;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.testing.utility.LogMessageStore;
-import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

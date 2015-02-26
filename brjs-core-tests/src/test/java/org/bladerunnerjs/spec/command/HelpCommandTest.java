@@ -1,9 +1,9 @@
 package org.bladerunnerjs.spec.command;
 
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.plugins.commands.core.HelpCommand;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.commands.core.HelpCommand;
 import org.bladerunnerjs.testing.utility.MockCommandPlugin;
 import org.junit.Before;
 import org.junit.Ignore;

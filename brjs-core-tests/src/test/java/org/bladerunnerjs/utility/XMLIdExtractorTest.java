@@ -7,7 +7,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.plugin.plugins.bundlers.xml.XMLIdExtractor;
+import org.bladerunnerjs.plugin.bundlers.xml.XMLIdExtractor;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
