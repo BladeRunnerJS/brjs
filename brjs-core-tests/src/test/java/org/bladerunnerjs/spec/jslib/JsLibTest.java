@@ -8,7 +8,6 @@ import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.plugin.brjsconformant.BRJSConformantRootDirectoryLinkedAsset;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ public class JsLibTest extends SpecTest {
 			app = brjs.app("app");
 			lib = app.jsLib("lib1");
 			badLib = app.jsLib("%$&@");
-			libTemplate = brjs.sdkTemplateGroup("default").template(BRJSConformantRootDirectoryLinkedAsset.class.getSimpleName().toLowerCase());
+			libTemplate = brjs.sdkTemplateGroup("default").template("br-lib");
 	}
 	
 	@Test

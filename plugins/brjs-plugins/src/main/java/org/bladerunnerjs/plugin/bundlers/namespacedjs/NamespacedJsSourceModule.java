@@ -65,15 +65,6 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return dependendAssets;
 	}
 	
-//	@Override
-//	public List<String> getAliasNames() throws ModelOperationException {
-//		List<String> aliases = new ArrayList<>(getPreExportDefineTimeDependencyCalculator().getAliases());
-//		aliases.addAll(getPostExportDefineTimeDependencyCalculator().getAliases());
-//		aliases.addAll(getUseTimeDependencyCalculator().getAliases());
-//		
-//		return aliases;
-//	}
-	
 	@Override
 	public Reader getUnalteredContentReader() throws IOException {
 		if (patch.patchAvailable()){

@@ -16,7 +16,6 @@ import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.DirectoryAsset;
-import org.bladerunnerjs.model.DirectoryLinkedAsset;
 import org.bladerunnerjs.model.FileAsset;
 
 public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
@@ -34,10 +33,8 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
 	{
-		if ((assetContainer instanceof JsLib) && (assetContainer.file( ThirdpartyLibManifest.LIBRARY_MANIFEST_FILENAME ).exists())) {
-			if (assetDiscoveryInitiator.hasRegisteredAsset(ThirdpartySourceModule.calculateRequirePath(assetContainer))) {
-				return Collections.emptyList();
-			}
+		if ( assetContainer instanceof JsLib && assetContainer.file( ThirdpartyLibManifest.LIBRARY_MANIFEST_FILENAME ).exists()
+				&& !assetDiscoveryInitiator.hasRegisteredAsset(ThirdpartySourceModule.calculateRequirePath(assetContainer)) ) {
 			
 			ThirdpartySourceModule asset = new ThirdpartySourceModule(assetContainer, implicitDependencies);
 			assetDiscoveryInitiator.registerAsset(asset);
@@ -55,8 +52,14 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 		List<Asset> assets = new ArrayList<>();
 		FileFilter cssFileFilter = new SuffixFileFilter(".css");
 		for (MemoizedFile cssFile : dir.listFiles(cssFileFilter)) {
-			FileAsset cssAsset = new FileAsset(cssFile, assetContainer, requirePrefix);
-			assetDiscoveryInitiator.registerAsset(cssAsset);
+			Asset cssAsset;
+			String assetRequirePath = FileAsset.calculateRequirePath(requirePrefix, cssFile);
+			if ( !assetDiscoveryInitiator.hasRegisteredAsset(assetRequirePath) ) {
+				cssAsset = new FileAsset(cssFile, assetContainer, requirePrefix);
+				assetDiscoveryInitiator.registerAsset(cssAsset);
+			} else {
+				cssAsset = assetDiscoveryInitiator.getRegisteredAsset(assetRequirePath);
+			}
 			assets.add(cssAsset);
 		}
 		for (MemoizedFile childDir : dir.dirs()) {
@@ -68,8 +71,14 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	private List<Asset> createDirectoryAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator) {
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile assetDir : dir.nestedDirs()) {
-			DirectoryLinkedAsset dirAsset = new DirectoryAsset(assetContainer, assetDir, requirePrefix, Arrays.asList());
-			assetDiscoveryInitiator.registerAsset(dirAsset);
+			Asset dirAsset;
+			String assetDirRequirePath = DirectoryAsset.getRequirePath(requirePrefix, assetDir);
+			if ( !assetDiscoveryInitiator.hasRegisteredAsset(assetDirRequirePath) ) {
+				dirAsset = new DirectoryAsset(assetContainer, assetDir, requirePrefix, Arrays.asList());
+				assetDiscoveryInitiator.registerAsset(dirAsset);
+			} else {
+				dirAsset = assetDiscoveryInitiator.getRegisteredAsset(assetDirRequirePath);
+			}
 			assets.add(dirAsset);
 		}
 		return assets;

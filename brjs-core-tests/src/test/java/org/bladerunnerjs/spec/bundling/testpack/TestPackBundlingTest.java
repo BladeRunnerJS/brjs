@@ -152,7 +152,7 @@ public class TestPackBundlingTest extends SpecTest
 	}
 	
 	@Test
-	public void impliedRequirePrefixIsNotUsedInLibrarySrcTestDirectoryIfNoNamespaceEnforcement_HACK_FlagIsUsed() throws Exception {
+	public void impliedRequirePrefixIsNotUsedInLibrarySrcTestDirectoryIf_NoNamespaceEnforcement_HACK_FlagIsUsed() throws Exception {
 		given(sdkLib).containsFile("no-namespace-enforcement")
 			.and(sdkLibUTs).hasTestClass("pkg1/pkg2/pkg3/SomeClass")
 			.and(sdkLibUTs).testRequires("SomeTest.js", "pkg1/pkg2/pkg3/SomeClass");

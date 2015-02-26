@@ -101,7 +101,6 @@ public class BundleSetBuilder {
 			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
 		}
 		else {
-			
 			logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), assetFilePaths(moduleDependencies));
 		}
 		return moduleDependencies;

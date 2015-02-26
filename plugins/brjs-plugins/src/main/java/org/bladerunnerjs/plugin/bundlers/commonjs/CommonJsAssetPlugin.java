@@ -41,7 +41,7 @@ public class CommonJsAssetPlugin extends AbstractAssetPlugin
 				} else {
 					SourceModule commonJsModule = new DefaultCommonJsSourceModule(assetContainer, requirePrefix, jsFile, implicitDependencies);
 					assets.add(commonJsModule);
-					assetDiscoveryInitiator.registerAsset( commonJsModule );										
+					assetDiscoveryInitiator.registerAsset( commonJsModule );
 				}
 			}
 		}

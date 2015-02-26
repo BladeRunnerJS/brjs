@@ -44,10 +44,10 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		assets.add(rootAsset);
 		
 		for (MemoizedFile srcDir : getSrcDirs(assetContainer)) {
-			if ((assetContainer instanceof TestPack || assetContainer instanceof JsLib) && !assetContainer.isNamespaceEnforced()) {
-				discoverFurtherAssetsForChild(assetContainer, srcDir, "", implicitDependencies, assetDiscoveryInitiator, rootAsset);				
-			} else {
+			if (useImpliedRequirePrefix(assetContainer)) {
 				discoverFurtherAssetsForChild(assetContainer, srcDir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);								
+			} else {
+				discoverFurtherAssetsForChild(assetContainer, srcDir, "", implicitDependencies, assetDiscoveryInitiator, rootAsset);				
 			}
 		}
 		
@@ -60,7 +60,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		}
 		
 		for (MemoizedFile testDir : getTestDirs(assetContainer)) {
-			discoverFurtherAssetsForChild(assetContainer, testDir, requirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
+			discoverFurtherAssetsForChild(assetContainer, testDir, "test/"+requirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
 		}
 		
 		for (MemoizedFile themeDir : getThemeDirs(assetContainer)) {
@@ -76,13 +76,20 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	{
 		String rootRequirePrefix = StringUtils.substringBefore(assetContainer.requirePrefix(), "/");
 		if (assetContainer instanceof TestPack) {
-			String srcTestDir = (assetContainer.file("src-test/"+rootRequirePrefix).isDirectory()) ? "src-test/"+assetContainer.requirePrefix() : "src-test";
+			String srcTestDir = (assetContainer.file("src-test/"+rootRequirePrefix).isDirectory() && useImpliedRequirePrefix(assetContainer)) ? "src-test/"+assetContainer.requirePrefix() : "src-test";
 			return createFilesForFilePaths(assetContainer,  Arrays.asList(srcTestDir) );
 		} else {
-			String srcDir = (assetContainer.file("src/"+rootRequirePrefix).isDirectory()) ? "src/"+assetContainer.requirePrefix() : "src";
-			String srcTestDir = (assetContainer.file("src-test/"+rootRequirePrefix).isDirectory()) ? "src-test/"+assetContainer.requirePrefix() : "src-test";
+			String srcDir = (assetContainer.file("src/"+rootRequirePrefix).isDirectory() && useImpliedRequirePrefix(assetContainer)) ? "src/"+assetContainer.requirePrefix() : "src";
+			String srcTestDir = (assetContainer.file("src-test/"+rootRequirePrefix).isDirectory() && useImpliedRequirePrefix(assetContainer)) ? "src-test/"+assetContainer.requirePrefix() : "src-test";
 			return createFilesForFilePaths(assetContainer, Arrays.asList(srcDir, srcTestDir) );
 		}
+	}
+	
+	private boolean useImpliedRequirePrefix(AssetContainer assetContainer) {
+		if (assetContainer instanceof JsLib || assetContainer instanceof TestPack) { 
+			return assetContainer.isNamespaceEnforced();
+		}
+		return true;
 	}
 	
 	private List<MemoizedFile> getThemeDirs(AssetContainer assetContainer)
@@ -99,11 +106,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	
 	private List<MemoizedFile> getResourceDirs(AssetContainer assetContainer)
 	{
-		if (assetContainer instanceof TestPack) {
-			return Collections.emptyList();
-		} else {
-			return createFilesForFilePaths(assetContainer, Arrays.asList("resources") );
-		}
+		return createFilesForFilePaths(assetContainer, Arrays.asList("resources") );
 	}
 	
 	private List<MemoizedFile> getTestDirs(AssetContainer assetContainer)
