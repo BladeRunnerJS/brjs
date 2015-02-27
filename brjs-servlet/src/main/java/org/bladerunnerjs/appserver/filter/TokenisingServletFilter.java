@@ -4,6 +4,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
 import javax.servlet.Filter;
@@ -24,7 +25,7 @@ public class TokenisingServletFilter implements Filter
 {
 	private StreamTokeniser streamTokeniser = new StreamTokeniser();
 	private JndiTokenFinder tokenFinder;
-	private final List<String> validExtensions = Arrays.asList(".xml", ".json", ".html", ".htm", ".jsp", "/");
+	private final Pattern validUrl = Pattern.compile("^.*(/|/[a-z]{2}|/[a-z]{2}_[A-Z]{2}|\\.(xml|json|html|htm|jsp))$");
 	private String contextPath;
 
 	public TokenisingServletFilter() throws ServletException
@@ -98,13 +99,7 @@ public class TokenisingServletFilter implements Filter
 	{
 		HttpServletRequest theRequest = (HttpServletRequest) request;
 		String requestUrl = theRequest.getRequestURL().toString();
-		for (String extension : validExtensions)
-		{
-			if (requestUrl.endsWith(extension))
-			{
-				return true;
-			}
-		}
-		return false;
+		
+		return validUrl.matcher(requestUrl).matches();
 	}
 }
