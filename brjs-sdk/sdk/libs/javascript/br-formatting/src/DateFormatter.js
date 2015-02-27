@@ -67,7 +67,7 @@ br.formatting.DateFormatter.prototype.format = function(vValue, mAttributes) {
 /**
  * @private
  */
-br.formatting.DateFormatter.prototype.parseDate = function(vDate, sDateFormat)
+br.formatting.DateFormatter.prototype.parseDate = function(vDate, sDateFormat, bEndOfUnit)
 {
 	if (!vDate)
 	{
@@ -93,6 +93,9 @@ br.formatting.DateFormatter.prototype.parseDate = function(vDate, sDateFormat)
 			return moment(vDate*1000).toDate();
 		default:
 			var oMoment = moment(String(vDate), sDateFormat);
+			if (bEndOfUnit === true && sDateFormat.toLowerCase().indexOf('d') === -1) {
+				oMoment.endOf(sDateFormat === 'YYYY' ? 'year' : 'month');
+			}
 			var sValidationString = oMoment.format(sDateFormat);
 			return (sValidationString == String(vDate)) ? oMoment.toDate() : null;
 	}
