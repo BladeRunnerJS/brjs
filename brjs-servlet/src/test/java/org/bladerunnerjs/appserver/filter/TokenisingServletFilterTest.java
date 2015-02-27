@@ -109,6 +109,43 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertEquals("200", response.get("responseCode"));
 		assertEquals("this token @A.TOKEN@ should not be processed", response.get("responseText"));
 	}
+	
+	@Test
+	public void tokenReplacementWorksForIndexPages() throws Exception
+	{
+		dummyServlet.setResponseText("@A.TOKEN@");
+		when(mockJndiContext.lookup("java:comp/env/A.TOKEN")).thenReturn("token replacement");
+
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/");
+		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
+		assertEquals("200", response.get("responseCode"));
+		assertEquals("token replacement", response.get("responseText"));
+		assertEquals("text/plain", response.get("responseContentType"));
+	}
+	
+	@Test
+	public void tokenReplacementWorksForLocalizedIndexPages() throws Exception
+	{
+		dummyServlet.setResponseText("@A.TOKEN@");
+		when(mockJndiContext.lookup("java:comp/env/A.TOKEN")).thenReturn("token replacement");
+
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/en_GB");
+		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
+		assertEquals("200", response.get("responseCode"));
+		assertEquals("token replacement", response.get("responseText"));
+		assertEquals("text/plain", response.get("responseContentType"));
+	}
+	
+	@Test
+	public void tokenReplacementDoesntHappenForThingsThatLooksLikeLocalizedIndexPages() throws Exception
+	{
+		dummyServlet.setResponseText("this token @A.TOKEN@ should not be processed");
+
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/en_gb");
+		verify(mockJndiContext, never()).lookup("java:comp/env/A.TOKEN");
+		assertEquals("200", response.get("responseCode"));
+		assertEquals("this token @A.TOKEN@ should not be processed", response.get("responseText"));
+	}
 
 	@Test
 	public void testFilterDoesNotChokeOnAStreamOnNonTextBits() throws Exception
