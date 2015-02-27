@@ -67,7 +67,7 @@ br.parsing.DateParser.prototype.parse = function(vValue, mAttributes) {
 		var vDate = this._standardizeDateSeparators(vValue, mAttributes);
 		var pInputFormats = this._getAdmissibleInputFormats(mAttributes);
 		var sOutputFormat = mAttributes.outputFormat;
-		vValue = this._matchDate(vDate, pInputFormats, sOutputFormat);
+		vValue = this._matchDate(vDate, pInputFormats, sOutputFormat, mAttributes.endOfUnit);
 	}
 	return vValue;
 };
@@ -75,10 +75,10 @@ br.parsing.DateParser.prototype.parse = function(vValue, mAttributes) {
 /**
  * @private
  */
-br.parsing.DateParser.prototype._matchDate = function(vDate, pInputFormats, sOutputFormat) {
+br.parsing.DateParser.prototype._matchDate = function(vDate, pInputFormats, sOutputFormat, bEndOfUnit) {
 	for (var i = 0, n = pInputFormats.length; i < n; ++i) {
 		var sInputFormat = pInputFormats[i];
-		var oDate = this.m_oDateFormatter.parseDate(vDate, sInputFormat);
+		var oDate = this.m_oDateFormatter.parseDate(vDate, sInputFormat, bEndOfUnit);
 		if (oDate) {
 			return this.m_oDateFormatter.formatDate(oDate, sOutputFormat);
 		}
