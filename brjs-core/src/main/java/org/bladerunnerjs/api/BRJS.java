@@ -38,7 +38,6 @@ import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.LogLevelAccessor;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.WorkingDirNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -106,7 +105,7 @@ public class BRJS extends AbstractBRJSRootNode
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		this.workingDir = workingDir;
 		
-		associateAppsFolder(brjsDir);
+		userApps = associateAppsFolder(brjsDir);
 		
 		try
 		{
@@ -140,30 +139,21 @@ public class BRJS extends AbstractBRJSRootNode
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 	}
-
-	private void associateAppsFolder(File brjsDir) {
-		File brjsAppsParent = locateApps();
-			
-		if (brjsAppsParent != null) {
-			userApps = new NodeList<>(this, App.class, "brjs-apps", null, null, getMemoizedFile(brjsAppsParent));
-		}
-		else {
-			userApps = new NodeList<>(this, App.class, "apps", null); 
-		}
-	}
 	
-	private File locateApps() {
+	private NodeList<App> associateAppsFolder(File brjsDir) {
 		File currentFolder = workingDir;
 		while(currentFolder != null) {
-			File brjsApps = new File(currentFolder, "brjs-apps");
-			if (brjsApps.exists()) {
-				return currentFolder;
+			if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
+				return new NodeList<>(this, App.class, "apps", null, null, getMemoizedFile(currentFolder));
+			}
+			if (new File(currentFolder, "brjs-apps").exists()) {
+				return new NodeList<>(this, App.class, "brjs-apps", null, null, getMemoizedFile(currentFolder));
 			}
 			else {
 				currentFolder = currentFolder.getParentFile();
 			}
 		}
-		return null;
+		return new NodeList<>(this, App.class, "brjs-apps", null);
 	}
 	
 	public CharBufferPool getCharBufferPool(){

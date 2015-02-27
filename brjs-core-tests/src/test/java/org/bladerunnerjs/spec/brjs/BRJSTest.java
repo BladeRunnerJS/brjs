@@ -98,21 +98,21 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulated() throws Exception {
-		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js");
+		given(brjs.file("brjs-apps/app1/blades/myBlade/src")).containsFile("Class.js");
 		// we can't check the actual node or talk about any nodes since brjs.app('myApp') etc would cause the node to be discovered and we need to keep an empty node tree
-		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade/src/Class.js"), App.class);
+		then(brjs).ancestorNodeCanBeFound(brjs.file("brjs-apps/app1/blades/myBlade/src/Class.js"), App.class);
 	}
 	
 	@Test
 	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulatedAndTheFileRepresentsTheNodeType() throws Exception {
-		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js");
-		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade"), Blade.class);
+		given(brjs.file("brjs-apps/app1/blades/myBlade/src")).containsFile("Class.js");
+		then(brjs).ancestorNodeCanBeFound(brjs.file("brjs-apps/app1/blades/myBlade"), Blade.class);
 	}
 	
 	@Test // this is not a duplicate of the test above even though it may look like it, this test has been seen failing when the above was passing
 	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulatedAndTheFileRepresentsATestPack() throws Exception {
-		given(brjs.file("apps/app1/blades/myBlade/test-unit")).containsFile("file.txt");
-		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade/test-unit/file.txt"), TestPack.class);
+		given(brjs.file("brjs-apps/app1/blades/myBlade/test-unit")).containsFile("file.txt");
+		then(brjs).ancestorNodeCanBeFound(brjs.file("brjs-apps/app1/blades/myBlade/test-unit/file.txt"), TestPack.class);
 	}
 	
 	@Test // this is not a duplicate of the test above even though it may look like it, this test has been seen failing when the above was passing
@@ -128,21 +128,12 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
-	public void brjsAppsFolderIsTheAppsFolderIfParallelToAppsFolder() throws Exception {
-		given(testSdkDirectory).containsFolder("brjs-apps")
+	public void appsFolderIsTheActiveAppsFolderIfParallelToBrjsAppsFolder() throws Exception {
+		given(testSdkDirectory).containsFolder("apps")
 			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
 		when(brjs.app("app1BrjsApps")).create();
-		then(brjs).hasDir("brjs-apps/app1BrjsApps");	
-		tempBrjsApps = new File(testSdkDirectory, "brjs-apps");
-	}
-	
-	@Test
-	public void brjsAppsFolderIsTheAppsFolderIfInAppsFolderAncestor() throws Exception {
-		given(testSdkDirectory.getParentFile()).containsFolder("brjs-apps")
-			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
-		when(brjs.app("app1BrjsApps")).create();
-		then(brjs.dir().getParentFile()).containsDir("brjs-apps/app1BrjsApps");	
-		tempBrjsApps = new File(testSdkDirectory.getParentFile(), "brjs-apps");
+		then(brjs).hasDir("apps/app1BrjsApps");	
+		tempBrjsApps = new File(testSdkDirectory, "apps/app1BrjsApps");
 	}
 	
 	@Test

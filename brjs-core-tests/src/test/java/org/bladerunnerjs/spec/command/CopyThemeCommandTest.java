@@ -104,7 +104,7 @@ public class CopyThemeCommandTest extends SpecTest {
 			.and(blade11).containsFile("themes/red/style.css")
 			.and(blade11).containsFolder("themes/blue");
 		when(brjs).runCommand("copy-theme", "app", "red", "blue");
-		then(logging).warnMessageReceived(THEME_FOLDER_EXISTS, "apps/app/bladeset1-bladeset/blades/blade11/themes/blue");
+		then(logging).warnMessageReceived(THEME_FOLDER_EXISTS, "brjs-apps/app/bladeset1-bladeset/blades/blade11/themes/blue");
 	}
 	
 	@Test

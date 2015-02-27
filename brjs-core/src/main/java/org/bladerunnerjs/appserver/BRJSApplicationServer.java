@@ -76,7 +76,7 @@ public class BRJSApplicationServer implements ApplicationServer
 		ApplicationServerUtils.addRootContext(brjs, contexts);
 		contextMap = ApplicationServerUtils.addAppContexts(brjs, contexts);
 		
-		MemoizedFile appsDir = brjs.getMemoizedFile(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
+		MemoizedFile appsDir = brjs.getMemoizedFile(brjs.dir(), "brjs-apps"); //TODO: this needs to change to current working dir once we have a global install
 		MemoizedFile sysAppsDir = brjs.systemApp("no-such-app").dir().getParentFile();
 		fileWatcher = new AppDeploymentFileWatcher(brjs, this, fileWatcherInterval, appsDir, sysAppsDir);
 		

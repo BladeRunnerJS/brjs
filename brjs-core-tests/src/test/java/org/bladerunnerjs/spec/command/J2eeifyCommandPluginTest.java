@@ -85,7 +85,7 @@ public class J2eeifyCommandPluginTest extends SpecTest {
 	@Test
 	public void messageIsPrintedOnSucces() throws Exception {
 		when(brjs).runCommand("j2eeify", "app");
-		then(logging).containsFormattedConsoleMessage(J2eeifyCommandPlugin.Messages.SUCCESSFULLY_J2EEIFIED_APP_MESSAGE, "app", "apps/app/WEB-INF");
+		then(logging).containsFormattedConsoleMessage(J2eeifyCommandPlugin.Messages.SUCCESSFULLY_J2EEIFIED_APP_MESSAGE, "app", "brjs-apps/app/WEB-INF");
 	}
 	
 	@Test @Ignore // TODO: investigate why this only fails in Travis...
