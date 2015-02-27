@@ -31,34 +31,22 @@ br.Core.implement(br.formatting.DateFormatter, br.formatting.Formatter);
 /**
  * Formats a date by converting it from a specified input format to a new output format.
  *
- * <p>
- * Attribute Options:
- * </p>
- * <p>
- * <table>
- * <tr>
- * <th>Option</th>
- * <th>Description</th>
- * </tr>
- * <tr>
- * <td>inputFormat</td><td>  format of the input date, expressed with <a href="http://momentjs.com/docs/#/parsing/string-format/">Moment.js format tokens</a> (defaults to DD-MM-YYYY HH:mm:ss).</td></tr>
- * <tr><td>outputFormat</td><td>format of the output date, expressed with <a href="http://momentjs.com/docs/#/displaying/format/">Moment.js format tokens</a> (defaults to DD-MM-YYYY HH:mm:ss).</td></tr>
- * <tr><td>adjustForTimezone</td><td> boolean value representing whether the formatter should adjust the date according to the client's timezone</td></tr>
- * </table>
- *
- * @param {Variant} vValue  the input date (String or Date type).
- * @param {Map} mAttributes  the map of attributes.
+ * @param {string|Date} vValue the input date
+ * @param {object} mAttributes the map of attributes.
+ * @param {string} [mAttributes.inputFormat='DD-MM-YYYY HH:mm:ss'] format of the input date, expressed with {@link http://momentjs.com/docs/#/parsing/string-format/|Moment.js format tokens}
+ * @param {string} [mAttributes.outputFormat='DD-MM-YYYY HH:mm:ss'] format of the output date, expressed with {@link http://momentjs.com/docs/#/parsing/string-format/|Moment.js format tokens}
+ * @param {boolean} [mAttributes.adjustForTimezone=false] whether the formatter should adjust the date according to the client's timezone
  * @return  the output date.
  * @type String
  */
 br.formatting.DateFormatter.prototype.format = function(vValue, mAttributes) {
 	if (vValue) {
 		var sInputFormat = mAttributes["inputFormat"];
-		var bAdjustForTimezone = mAttributes["adjustForTimezone"] == "true" ? true : false;
+		var bAdjustForTimezone = mAttributes["adjustForTimezone"];
 		var oDate = this.parseDate(vValue, sInputFormat);
 		if (oDate) {
 			var sOutputFormat = mAttributes["outputFormat"];
-			vValue = this.formatDate(oDate, sOutputFormat, bAdjustForTimezone);
+			vValue = this.formatDate(oDate, sOutputFormat, mAttributes.adjustForTimezone);
 		}
 	}
 	return vValue;
