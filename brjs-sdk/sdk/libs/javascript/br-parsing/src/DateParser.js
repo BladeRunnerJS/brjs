@@ -40,26 +40,14 @@ br.Core.implement(br.parsing.DateParser, br.parsing.Parser);
  * European: d-m-Y, d-m-Y, d-M-Y, d-M-Y, d-m<br/>
  * <p/>
  *
- * <p>
- * Attribute Options:
- * </p>
- * <p>
- * <table>
- * <tr>
- * <th>Option</th>
- * <th>Description</th>
- * </tr>
- * <tr>
- *
- * <td>american</td><td>  if true, dates are assumed to be in American format, i.e. month before date (defaults to false)</td></tr>
- * <tr><td>separators</td><td>  a set of admissible separator characters (defaults to "/.-")</td></tr>
- * <tr><td>inputFormats</td><td>  a comma separated list of admissible input formats</td></tr>
- * <tr><td>outputFormat</td><td>  the output date format</td></tr>
- * </table>
- *
- * @param {Variant} vValue  the date to parse (String).
- * @param {Map} mAttributes  the map of attributes.
- * @return  the date, expressed in the output format
+ * @param {string|Date} vValue the date to parse.
+ * @param {object} mAttributes the map of attributes.
+ * @param {boolean} [mAttributes.american=false] if true, dates are assumed to be in American format, i.e. month before date
+ * @param {string} [mAttributes.separators='/.-'] a set of admissible separator characters
+ * @param {string} mAttributes.inputFormats a comma separated list of admissible input formats
+ * @param {string} mAttributes.outputFormat the output date format
+ * @param {boolean} [mAttributes.endOfUnit=false] if true, parse ambiguous dates to the end of the month or year
+ * @return {string} the date, expressed in the output format
  * @type String
  */
 br.parsing.DateParser.prototype.parse = function(vValue, mAttributes) {
