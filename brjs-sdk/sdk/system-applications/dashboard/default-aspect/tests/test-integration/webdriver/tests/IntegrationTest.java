@@ -14,7 +14,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import com.caplin.cutlass.testIntegration.WebDriverProvider;
+import org.bladerunnerjs.legacy.testIntegration.WebDriverProvider;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class IntegrationTest
