@@ -476,4 +476,40 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsText("module.exports = require('br/Class');");
 	}
 	
+	@Test
+	public void servicesRetrievedViaGetServiceAreBundled() throws Exception {
+		given(brLib).hasClasses("br/ServiceRegistry")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspectAliasesFileBuilder).hasAlias("some.service", "appns.ServiceClass")
+			.and(aspect).hasClass("appns.ServiceClass")
+			.and(aspect).classDependsOn("appns.App", "ServiceRegistry.getService('some.service')")
+			.and(aspect).indexPageRefersTo("appns.App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('alias!some.service'");
+	}
+	
+	@Test
+	public void aliasDataIsIncludedInTheBundleWhenAliasesAreUsed() throws Exception {
+		given(brLib).hasClasses("br/ServiceRegistry")
+    		.and(aspect).hasNamespacedJsPackageStyle()
+    		.and(aspectAliasesFileBuilder).hasAlias("some.service", "appns.ServiceClass")
+    		.and(aspect).hasClass("appns.ServiceClass")
+    		.and(aspect).classDependsOn("appns.App", "ServiceRegistry.getService('some.service')")
+    		.and(aspect).indexPageRefersTo("appns.App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('alias!$data'");
+	}
+	
+	@Test
+	public void aliasDataIsIncludedInTheBundleWhenServicesAreUsed() throws Exception {
+		given(brLib).hasClasses("br/ServiceRegistry")
+		.and(aspect).hasNamespacedJsPackageStyle()
+		.and(aspectAliasesFileBuilder).hasAlias("some.service", "appns.ServiceClass")
+		.and(aspect).hasClass("appns.ServiceClass")
+		.and(aspect).classDependsOn("appns.App", "AliasRegistry.getClass('some.service')")
+		.and(aspect).indexPageRefersTo("appns.App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('alias!$data'");
+	}
+	
 }

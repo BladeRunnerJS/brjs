@@ -26,20 +26,25 @@ public class AliasAssetPlugin extends AbstractAssetPlugin
 		if (assetContainer instanceof BundlableNode && assetContainer.dir() == dir) {
 			BundlableNode bundlableNode = (BundlableNode) assetContainer;
 			
-			AliasesFile aliasesFile = new AliasesFile(bundlableNode);
-			for (AliasDefinition aliasDefinition : getAliases(aliasesFile)) {
-				if (!assetDiscoveryInitiator.hasRegisteredAsset(AliasCommonJsSourceModule.calculateRequirePath(aliasDefinition))) {
-					Asset aliasAsset = new AliasCommonJsSourceModule(bundlableNode, aliasDefinition);
-					assetDiscoveryInitiator.registerAsset(aliasAsset);
-					aliasAssets.add(aliasAsset);
-				}
-			}
+			List<Asset> implicitDependenciesWithAliasData = new ArrayList<>();
+			implicitDependenciesWithAliasData.addAll(implicitDependencies);
 			
 			Asset aliasDataAsset = new AliasDataSourceModule(bundlableNode);
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(aliasDataAsset.getPrimaryRequirePath())) {
 				assetDiscoveryInitiator.registerAsset(aliasDataAsset);
 				aliasAssets.add(aliasDataAsset);
+				implicitDependenciesWithAliasData.add(aliasDataAsset);
 			}
+			
+			AliasesFile aliasesFile = new AliasesFile(bundlableNode);
+			for (AliasDefinition aliasDefinition : getAliases(aliasesFile)) {
+				if (!assetDiscoveryInitiator.hasRegisteredAsset(AliasCommonJsSourceModule.calculateRequirePath(aliasDefinition))) {
+					Asset aliasAsset = new AliasCommonJsSourceModule(bundlableNode, aliasDefinition, implicitDependenciesWithAliasData);
+					assetDiscoveryInitiator.registerAsset(aliasAsset);
+					aliasAssets.add(aliasAsset);
+				}
+			}
+			
 		}
 		
 		return aliasAssets;

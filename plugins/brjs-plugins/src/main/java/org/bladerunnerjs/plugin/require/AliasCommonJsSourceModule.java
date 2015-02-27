@@ -22,10 +22,12 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	private final BundlableNode bundlableNode;
 	private AliasDefinition aliasDefinition;
 	private String requirePath;
+	private List<Asset> implicitDependencies;
 	
-	public AliasCommonJsSourceModule(BundlableNode bundlableNode, AliasDefinition aliasDefinition) {
+	public AliasCommonJsSourceModule(BundlableNode bundlableNode, AliasDefinition aliasDefinition, List<Asset> implicitDependencies) {
 		this.bundlableNode = bundlableNode;
 		this.aliasDefinition = aliasDefinition;
+		this.implicitDependencies = implicitDependencies;
 		this.requirePath = calculateRequirePath(aliasDefinition);
 	}
 	
@@ -109,6 +111,8 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 					dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getInterfaceRequirePath()));
 				}
 			}
+			
+			dependencies.addAll(implicitDependencies);
 			
 			return dependencies;
 		}
