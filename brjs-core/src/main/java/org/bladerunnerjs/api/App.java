@@ -163,6 +163,15 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return (BRJS) parentNode();
 	}
 	
+	public boolean isMultiLocaleApp() {
+		try {
+			return appConf().getLocales().length > 1;
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public AppConf appConf() throws ConfigException {
 		if(appConf == null) {
 			appConf = new AppConf(this);

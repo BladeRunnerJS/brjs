@@ -485,7 +485,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	public void cssResourcesWithCommonExtensionsAreIncludedInContentPathsEvenIfTheyArentUsed() throws Exception {
 		given(defaultAspect).indexPageHasContent("")
 			.and(defaultAspect).containsFiles("themes/common/unusedFile.png")
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default/theme_common/unusedFile.png");
 	}
@@ -495,7 +495,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		given(defaultAspect).indexPageHasContent("")
 			.and(defaultAspect).containsFiles("themes/common/usedFile.ext", "resources/css/usedFile.ext", "resources/css/unusedFile.ext", "resources/some-dir/unusedFile.ext")
 			.and(defaultAspect).containsFileWithContents("themes/common/style.css", ".style { background:url('usedFile.ext'); background:url('../../resources/css/usedFile.ext');")
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default_resource/resources/css/usedFile.ext", "cssresource/aspect_default/theme_common/usedFile.ext");
 	}
@@ -504,7 +504,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	public void cssResourcesUsedInIndexPagesShouldBeIncludedInFilteredContentPaths() throws Exception {
 		given(defaultAspect).indexPageHasContent(".style { background:url('v/1234/cssresource/aspect_default_resource/resources/css/usedFile.ext') }")
 			.and(defaultAspect).containsFiles("themes/common/usedFile.ext", "resources/css/usedFile.ext", "resources/css/unusedFile.ext", "resources/some-dir/unusedFile.ext")
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default_resource/resources/css/usedFile.ext");
 	}
@@ -514,7 +514,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		given(defaultAspect).indexPageHasContent("")
 			.and(defaultAspect).containsFiles("themes/common/usedFile.ext", "resources/css/usedFile.ext", "resources/css/unusedFile.ext", "resources/some-dir/unusedFile.ext")
     		.and(defaultAspect).containsFileWithContents("themes/common/style.css", ".style { background:url('usedFile.ext'); background:url('../../resources/css/usedFile.ext');")
-    		.and(brjs).localeForwarderHasContents("")
+    		.and(brjs).localeSwitcherHasContents("")
     		.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFile("v/1234/cssresource/aspect_default_resource/resources/css/usedFile.ext")
