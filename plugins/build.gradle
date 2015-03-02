@@ -7,11 +7,12 @@ buildscript {
 	}
 }
 
+//TODO: work out why this doesnt work
 subprojects {
 //	apply plugin: 'java'
 //	apply plugin: 'eclipse'
 //	apply plugin: 'retrolambda'
-//	apply plugin: com.caplin.gradle.plugins.CompileOnly
+//	apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
 //
 //    retrolambda {
 //    	javaVersion JavaVersion.VERSION_1_7

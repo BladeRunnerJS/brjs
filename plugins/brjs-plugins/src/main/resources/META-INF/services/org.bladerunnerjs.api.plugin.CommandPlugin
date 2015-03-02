@@ -1,0 +1,17 @@
+org.bladerunnerjs.plugin.commands.standard.CreateLibraryCommand
+org.bladerunnerjs.plugin.commands.standard.CopyThemeCommand
+org.bladerunnerjs.plugin.commands.standard.CreateAppCommand
+org.bladerunnerjs.plugin.commands.standard.CreateAspectCommand
+org.bladerunnerjs.plugin.commands.standard.CreateBladesetCommand
+org.bladerunnerjs.plugin.commands.standard.CreateBladeCommand
+org.bladerunnerjs.plugin.commands.standard.BuildAppCommand
+org.bladerunnerjs.plugin.commands.standard.ExportApplicationCommand
+org.bladerunnerjs.plugin.commands.standard.JsDocCommand
+org.bladerunnerjs.plugin.commands.standard.ServeCommand
+org.bladerunnerjs.plugin.commands.standard.BundleDepsCommand
+org.bladerunnerjs.plugin.commands.standard.ApplicationDepsCommand
+org.bladerunnerjs.plugin.commands.standard.WorkbenchDepsCommand
+org.bladerunnerjs.plugin.commands.standard.DepInsightCommand
+org.bladerunnerjs.plugin.commands.standard.CopyBladesetCommand
+org.bladerunnerjs.plugin.commands.standard.ImportAppCommand
+org.bladerunnerjs.plugin.commands.standard.J2eeifyCommandPlugin

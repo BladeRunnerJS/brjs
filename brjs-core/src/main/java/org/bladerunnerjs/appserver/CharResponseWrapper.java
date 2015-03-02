@@ -13,7 +13,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.api.BladerunnerConf;
 
 public class CharResponseWrapper extends HttpServletResponseWrapper
 {

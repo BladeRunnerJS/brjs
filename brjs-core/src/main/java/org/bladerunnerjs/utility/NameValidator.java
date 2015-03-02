@@ -1,12 +1,12 @@
 package org.bladerunnerjs.utility;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.api.model.exception.name.InvalidPackageNameException;
+import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameException;
+import org.bladerunnerjs.api.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
-import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
 
 public class NameValidator
 {

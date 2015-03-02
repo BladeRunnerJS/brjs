@@ -3,9 +3,9 @@ package org.bladerunnerjs.yaml;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.esotericsoftware.yamlbeans.YamlReader;

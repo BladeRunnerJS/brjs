@@ -5,12 +5,12 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.TagHandlerPlugin;
 
 public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements TagHandlerPlugin {
 	private TagHandlerPlugin tagHandlerPlugin;

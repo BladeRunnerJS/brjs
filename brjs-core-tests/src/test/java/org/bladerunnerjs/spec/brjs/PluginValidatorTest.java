@@ -1,8 +1,8 @@
 package org.bladerunnerjs.spec.brjs;
 
-import org.bladerunnerjs.model.exception.IncorectContentPathPrefixException;
-import org.bladerunnerjs.model.exception.InvalidContentPathException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.model.exception.IncorectContentPathPrefixException;
+import org.bladerunnerjs.api.model.exception.InvalidContentPathException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Ignore;
 import org.junit.Test;
 

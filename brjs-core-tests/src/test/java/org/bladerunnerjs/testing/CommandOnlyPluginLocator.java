@@ -3,16 +3,16 @@ package org.bladerunnerjs.testing;
 import java.util.Collections;
 import java.util.List;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.MinifierPlugin;
-import org.bladerunnerjs.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.plugin.PluginLocator;
-import org.bladerunnerjs.plugin.RequirePlugin;
-import org.bladerunnerjs.plugin.TagHandlerPlugin;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.CommandPlugin;
+import org.bladerunnerjs.api.plugin.ContentPlugin;
+import org.bladerunnerjs.api.plugin.MinifierPlugin;
+import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.api.plugin.PluginLocator;
+import org.bladerunnerjs.api.plugin.RequirePlugin;
+import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 

@@ -13,6 +13,8 @@
 		assertEquals(testObject.hi, locate("hi", testObject));
 		assertEquals(testObject.hi.jim, locate("hi.jim", testObject));
 		assertEquals(testObject.hi.jim.console, locate("hi.jim.console", testObject));
+		assertEquals(testObject.hi.jim, locate("hi/jim", testObject));
+		assertEquals(testObject.hi.jim.console, locate("hi/jim/console", testObject));
 
 		// less happy path
 		assertEquals(undefined, locate("nothing", testObject));
@@ -21,6 +23,11 @@
 		assertEquals(undefined, locate("hi.jim.console.nothing", testObject));
 		assertEquals(undefined, locate("nothing.jim.console", testObject));
 		assertEquals(undefined, locate("hi.nothing.console", testObject));
+		assertEquals(undefined, locate("hi/nothing", testObject));
+		assertEquals(undefined, locate("hi/jim/nothing", testObject));
+		assertEquals(undefined, locate("hi/jim/console/nothing", testObject));
+		assertEquals(undefined, locate("nothing/jim/console", testObject));
+		assertEquals(undefined, locate("hi/nothing/console", testObject));
 
 		// unhappy path
 		assertException(function() {
@@ -32,6 +39,7 @@
 		
 		// works with arrays
 		assertEquals(testObject.hi.jim.console, locate("1.hi.jim.console", [null, testObject]));
+		assertEquals(testObject.hi.jim.console, locate("1/hi/jim/console", [null, testObject]));
 	};
 	
 	UtilityTest["test isEmpty"] = function() {

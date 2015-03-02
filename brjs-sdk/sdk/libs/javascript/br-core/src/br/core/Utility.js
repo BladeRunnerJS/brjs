@@ -6,8 +6,17 @@
 
 var global = new Function("return this")();
 
+function parsePath(path, root, separator) {
+	return path.split(separator).reduce(function(accumulator, value) {
+		if (typeof accumulator !== 'undefined' && accumulator !== null) {
+			return accumulator[value];
+		}
+		return undefined;
+	}, root);
+}
+
 /**
-* Navigates an object hierarchy with dotted notation.
+* Navigates an object hierarchy with dotted or slash notation.
 * @param {String} path
 * @param {String} root
 */
@@ -20,10 +29,20 @@ function locate(path, root) {
 		root = global;
 	}
 
-	return path.split(".").reduce(function(accumulator, value) {
-		return accumulator != null ? accumulator[value] : undefined;
-	}, root);
-};
+	if (path.indexOf(".") > -1 && path.indexOf("/") == -1) {
+		return parsePath(path, root, ".");
+	}
+
+	if (path.indexOf("/") > -1 && path.indexOf(".") == -1) {
+		return parsePath(path, root, "/");
+	}
+
+	var parsedPath = parsePath(path, root, ".");
+	if (typeof parsedPath === 'undefined') {
+		parsedPath = parsePath(path, root, "/");
+	}
+	return parsedPath;
+}
 exports.locate = locate;
 
 /**

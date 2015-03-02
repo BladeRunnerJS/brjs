@@ -1,12 +1,12 @@
 package org.bladerunnerjs.spec.bundling.aspect;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.exception.InvalidRequirePathException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.model.exception.InvalidRequirePathException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -109,7 +109,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		given(sdkJquery).containsFileWithContents("thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: jquery")
 			.and(sdkJquery).containsFileWithContents("jquery.js", "jquery-content")
 			.and(userLib).classFileHasContent("userLib.Class1", "require('jquery');")
-			.and(aspect).indexPageHasContent("require('userLib.Class1');");
+			.and(aspect).indexPageHasContent("require('userLib/Class1');");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("jquery", "userLib/Class1");
 	}
@@ -118,7 +118,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 	public void userLibraryCanDependOnSdkCommonJsLib() throws Exception {
 		given(sdkCommonJsLib).classFileHasContent("sdkCommonJsLib.Class1", "function empty() {};")
 			.and(userLib).classFileHasContent("userLib.Class1", "require('sdkCommonJsLib/Class1');")
-			.and(aspect).indexPageHasContent("require('userLib.Class1');");
+			.and(aspect).indexPageHasContent("require('userLib/Class1');");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("sdkCommonJsLib/Class1", "userLib/Class1");
 	}

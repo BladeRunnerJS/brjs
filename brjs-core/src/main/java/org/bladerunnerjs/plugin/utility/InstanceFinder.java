@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin.utility;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.api.SourceModule;
 
 public class InstanceFinder {
 	public static boolean containsInstance(List<SourceModule> sourceModules, Class<? extends SourceModule> sourceModuleClass) {

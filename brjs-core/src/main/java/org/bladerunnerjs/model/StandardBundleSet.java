@@ -5,8 +5,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
 
 public class StandardBundleSet implements BundleSet {
 	private final List<SourceModule> sourceModules;
@@ -50,6 +54,20 @@ public class StandardBundleSet implements BundleSet {
 	@Override
 	public List<AssetLocation> getResourceNodes() {
 		return resourceLocations;
+	}
+	
+	@Override
+	public List<Asset> getResourceFiles() {
+		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
+		
+		for(AssetLocation resourceNode : resourceLocations) {
+			resourceFiles.addAll(resourceNode.bundlableAssets());
+		}
+		
+		List<Asset> result = new ArrayList<Asset>();
+		result.addAll(resourceFiles);
+		
+		return result;
 	}
 	
 	@Override

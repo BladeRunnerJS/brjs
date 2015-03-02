@@ -2,15 +2,15 @@ package org.bladerunnerjs.aliasing.aliases;
 
 import java.util.List;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.aliasing.AliasException;
-import org.bladerunnerjs.aliasing.AliasOverride;
-import org.bladerunnerjs.aliasing.AmbiguousAliasException;
-import org.bladerunnerjs.aliasing.UnresolvableAliasException;
-import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.aliasing.AliasException;
+import org.bladerunnerjs.api.aliasing.AliasOverride;
+import org.bladerunnerjs.api.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.api.aliasing.UnresolvableAliasException;
+import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class AliasesFile {
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";

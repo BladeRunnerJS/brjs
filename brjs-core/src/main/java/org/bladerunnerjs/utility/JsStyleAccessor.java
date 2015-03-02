@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
 
 public class JsStyleAccessor {
 	private final Map<String, MemoizedValue<String>> dirStyleCache = new HashMap<>();

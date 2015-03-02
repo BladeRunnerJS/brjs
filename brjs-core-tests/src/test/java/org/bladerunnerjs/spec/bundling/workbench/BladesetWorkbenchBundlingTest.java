@@ -1,17 +1,19 @@
 package org.bladerunnerjs.spec.bundling.workbench;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.BladesetWorkbench;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
 public class BladesetWorkbenchBundlingTest extends SpecTest {
 	private App app;
+	private Aspect aspect;
 	private Bladeset bladeset1, bladeset2, defaultBladeset;
 	private Blade blade1, blade2, blade3, bladeInDefaultBladeset;
 	private BladesetWorkbench bladeset1Workbench, defaultBladesetWorkbench;
@@ -27,6 +29,7 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 
 		app = brjs.app("app1");
+		aspect = app.aspect("default");
 		bladeset1 = app.bladeset("bs1");
 		bladeset2 = app.bladeset("bs2");
 		blade1 = bladeset1.blade("b1");
@@ -44,6 +47,16 @@ public class BladesetWorkbenchBundlingTest extends SpecTest {
 		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
 			.and(workbenchTemplate).containsFolder("resources")
 			.and(workbenchTemplate).containsFolder("src");
+	}
+	
+	@Test
+	public void workbenchMayNotReferenceAJsFromTheDefaultAspect() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.Class1")
+			.and(bladeset1Workbench).indexPageRefersTo("appns.Class1");
+		when(bladeset1Workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).doesNotContainText("appns.Class1")
+			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	
 	@Test

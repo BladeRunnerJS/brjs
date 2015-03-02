@@ -1,17 +1,17 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand.Messages.*;
+import static org.bladerunnerjs.plugin.commands.standard.BuildAppCommand.Messages.*;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
-import org.bladerunnerjs.model.exception.command.DirectoryNotEmptyCommandException;
-import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistCommandException;
+import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandException;
+import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 

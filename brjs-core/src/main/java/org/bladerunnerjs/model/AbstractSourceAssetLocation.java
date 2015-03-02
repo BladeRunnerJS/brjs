@@ -6,8 +6,9 @@ import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLocation {

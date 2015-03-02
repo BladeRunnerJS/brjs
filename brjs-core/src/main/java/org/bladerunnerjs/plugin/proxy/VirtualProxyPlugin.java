@@ -1,8 +1,8 @@
 package org.bladerunnerjs.plugin.proxy;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.Plugin;
-import org.bladerunnerjs.plugin.exception.CircularPluginDependencyException;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.plugin.Plugin;
+import org.bladerunnerjs.api.plugin.exception.CircularPluginDependencyException;
 import org.bladerunnerjs.plugin.utility.PluginLocatorUtils;
 
 public class VirtualProxyPlugin implements Plugin {
@@ -42,9 +42,16 @@ public class VirtualProxyPlugin implements Plugin {
 	}
 	
 	@Override
-	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+	public <P extends Plugin> boolean instanceOf(Class<P> otherPluginCLass)
 	{
 		return otherPluginCLass.isAssignableFrom(plugin.getClass());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <P extends Plugin> P castTo(Class<P> pluginInterface) {
+		initializePlugin();
+		return (P) plugin;
 	}
 	
 	@Override
@@ -65,15 +72,4 @@ public class VirtualProxyPlugin implements Plugin {
 	{
 		return plugin.hashCode();
 	}
-	
-	public Plugin getUnderlyingPlugin() {
-		initializePlugin();
-		
-		return plugin;
-	}
-	
-	public Plugin getUninitializedUnderlyingPlugin() {
-		return plugin;
-	}
-	
 }

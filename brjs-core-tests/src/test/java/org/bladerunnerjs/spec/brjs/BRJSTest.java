@@ -1,11 +1,12 @@
 package org.bladerunnerjs.spec.brjs;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +37,13 @@ public class BRJSTest extends SpecTest {
 		given(observer).observing(app2);
 		when(app1).create();
 		then(observer).noNotifications();
+	}
+	
+	@Test
+	public void commandExecutedEventIsEmitted() throws Exception {
+		given(observer).observing(brjs);
+		when(brjs).runCommand("help");
+		then(observer).notified(CommandExecutedEvent.class, brjs);
 	}
 	
 	@Test

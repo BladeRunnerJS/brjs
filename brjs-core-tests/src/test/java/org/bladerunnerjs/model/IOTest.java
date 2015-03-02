@@ -36,6 +36,7 @@ public class IOTest {
 	@After
 	public void tearDown() {
 		io.uninstallFileAccessChecker();
+		org.apache.commons.io.FileUtils.deleteQuietly(tempDir);
 	}
 	
 	@Test

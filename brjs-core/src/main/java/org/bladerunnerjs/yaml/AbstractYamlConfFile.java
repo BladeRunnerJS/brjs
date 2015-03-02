@@ -8,9 +8,9 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.esotericsoftware.yamlbeans.YamlWriter;

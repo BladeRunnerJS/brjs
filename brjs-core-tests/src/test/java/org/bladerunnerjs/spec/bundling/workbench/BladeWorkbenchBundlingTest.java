@@ -1,13 +1,13 @@
 package org.bladerunnerjs.spec.bundling.workbench;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -62,12 +62,22 @@ public class BladeWorkbenchBundlingTest extends SpecTest {
 	@Test
 	public void workbenchBundlesBladeJSClassFilesWhenReferenced() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).hasClasses("appns.Class1")
+			.and(aspect).hasClass("appns.Class1")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("appns.bs.b1.Class1")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void workbenchMayNotReferenceAJsFromTheDefaultAspect() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.Class1")
+			.and(workbench).indexPageRefersTo("appns.Class1");
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).doesNotContainText("appns.Class1")
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	

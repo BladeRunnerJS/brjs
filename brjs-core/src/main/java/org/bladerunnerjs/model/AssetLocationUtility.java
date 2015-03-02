@@ -3,6 +3,8 @@ package org.bladerunnerjs.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.api.AssetLocation;
+
 
 public class AssetLocationUtility
 {
