@@ -60,6 +60,7 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "Making plugins available via model.";
 		public static final String PLUGIN_FOUND_MSG = "Found plugin '%s'.";
 		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
+		public static final String BOTH_APPS_AND_BRJS_APPS_EXIST = "'%s' and '%s' have been found as possible locations for your BRJS apps. '%s' has been enabled as the active working directory.";
 	}
 	
 	private NodeList<App> userApps;
@@ -82,7 +83,8 @@ public class BRJS extends AbstractBRJSRootNode
 	private final PluginAccessor pluginAccessor;
 	private final IOFileFilter globalFilesFilter = new BRJSGlobalFilesIOFileFilter(this);
 	private final IO io = new IO( globalFilesFilter );
-	private final Logger logger;
+	private final Logger logger = loggerFactory.getLogger(BRJS.class);
+	
 	private final CommandList commandList;
 	private final AppVersionGenerator appVersionGenerator;
 	private final FileModificationRegistry fileModificationRegistry;
@@ -105,7 +107,7 @@ public class BRJS extends AbstractBRJSRootNode
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		this.workingDir = workingDir;
 		
-		userApps = associateAppsFolder(brjsDir);
+		userApps = findAppsFolder(brjsDir);
 		
 		try
 		{
@@ -125,8 +127,6 @@ public class BRJS extends AbstractBRJSRootNode
 			throw new RuntimeException(ex);
 		}
 		
-		logger = loggerFactory.getLogger(BRJS.class);
-		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
 		pluginLocator.createPlugins(this);
 		PluginLocatorLogger.logPlugins(logger, pluginLocator);
@@ -140,9 +140,16 @@ public class BRJS extends AbstractBRJSRootNode
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 	}
 	
-	private NodeList<App> associateAppsFolder(File brjsDir) {
+	private NodeList<App> findAppsFolder(File brjsDir) {
 		File currentFolder = workingDir;
 		while(currentFolder != null) {
+			if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists() 
+					&& new File(currentFolder, "brjs-apps").exists()) {
+				String brjsAppsPath = brjsDir.getAbsolutePath() + File.separator + "brjs-apps";
+				String appsPath = brjsDir.getAbsolutePath() + File.separator + "apps";
+				logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, brjsAppsPath, appsPath, brjsAppsPath);
+				return new NodeList<>(this, App.class, "brjs-apps", null, null, getMemoizedFile(currentFolder));
+			}
 			if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
 				return new NodeList<>(this, App.class, "apps", null, null, getMemoizedFile(currentFolder));
 			}

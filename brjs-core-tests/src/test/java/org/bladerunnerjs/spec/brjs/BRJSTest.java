@@ -5,6 +5,8 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import static org.bladerunnerjs.api.BRJS.Messages.*;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -26,9 +28,14 @@ public class BRJSTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-			brjsTemplate = brjs.sdkTemplateGroup("default").template("brjs");
-			app1 = brjs.app("app1");
-			app2 = brjs.app("app2");
+		brjsTemplate = brjs.sdkTemplateGroup("default").template("brjs");
+		app1 = brjs.app("app1");
+		app2 = brjs.app("app2");
+	}
+	
+	@After
+	public void deleteCreatedBrjsAppsDirFromTemp() throws IOException {
+		if (tempBrjsApps != null) FileUtils.deleteQuietly(tempBrjsApps);
 	}
 	
 	@Test
@@ -146,8 +153,17 @@ public class BRJSTest extends SpecTest {
 		tempBrjsApps = tempDir;
 	}
 	
-	@After
-	public void deleteCreatedBrjsAppsDirFromTemp() throws IOException {
-		if (tempBrjsApps != null) FileUtils.deleteDirectory(tempBrjsApps);
+	@Test
+	public void warningMessageIsLoggedWhenBothAppsAndBrjsAppsFoldersExist() throws Exception {
+		given(logging).echoEnabled();
+		given(testSdkDirectory).containsFolder("apps")
+			.and(testSdkDirectory).containsFolder("brjs-apps")
+			.and(logging).enabled();
+		when(brjs).hasBeenCreated();
+		then(logging).warnMessageReceived(BOTH_APPS_AND_BRJS_APPS_EXIST, testSdkDirectory.getAbsolutePath() + File.separator + "brjs-apps",
+				testSdkDirectory.getAbsolutePath() + File.separator + "apps", testSdkDirectory.getAbsolutePath() + File.separator + "brjs-apps")
+			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
 }
