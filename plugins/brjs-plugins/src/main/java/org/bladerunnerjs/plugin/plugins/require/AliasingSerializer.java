@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.bladerunnerjs.plugin.require.AliasCommonJsSourceModule;
 
@@ -59,10 +61,25 @@ public class AliasingSerializer {
 	private static List<AliasDefinition> getAliasDefinitions(BundleSet bundleSet) {
 		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 		
+		AliasesFile aliasesFile = new AliasesFile(bundleSet.getBundlableNode());
+		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			if(sourceModule instanceof AliasCommonJsSourceModule) {
 				AliasCommonJsSourceModule aliasSourceModule = (AliasCommonJsSourceModule) sourceModule;
-				aliasDefinitions.add(aliasSourceModule.getAliasDefinition());
+				AliasDefinition aliasDefinition = aliasSourceModule.getAliasDefinition();
+				try
+				{
+					aliasDefinition = aliasesFile.getAlias(aliasDefinition.getName());
+				}
+				catch (AliasException e)
+				{
+					// use the alias definition we had already
+				}
+				catch (ContentFileProcessingException ex)
+				{
+					throw new RuntimeException(ex);
+				}
+				aliasDefinitions.add(aliasDefinition);
 			}
 		}
 		

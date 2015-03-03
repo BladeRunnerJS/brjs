@@ -82,7 +82,7 @@ public class AliasesFile {
 		String scenarioName = scenarioName();
 		List<String> groupNames = groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.aliasDefinitionFiles(bundlableNode)) {
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
 			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
 
 			if (nextAliasDefinition != null)

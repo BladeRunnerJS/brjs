@@ -58,4 +58,12 @@ public class AliasingUtility
 		return aliasDefinitionFiles;
 	}
 	
+	public static List<AliasDefinitionsFile> scopeAliasDefinitionFiles(BundlableNode bundlableNode) {
+		List<AliasDefinitionsFile> scopeAliasDefinitions = new ArrayList<>();
+		for (AssetContainer scopeAssetContainer : bundlableNode.scopeAssetContainers()) {
+			scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
+		}
+		return scopeAliasDefinitions;
+	}
+	
 }

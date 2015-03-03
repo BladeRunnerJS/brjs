@@ -12,11 +12,16 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
+
+import com.Ostermiller.util.ConcatReader;
 
 public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	
@@ -51,15 +56,16 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public Reader getReader() throws IOException {
-		return new StringReader(
-			"define('alias!" + aliasDefinition.getName() + "', function(require, exports, module) {\n" +
-			getModuleContent() +
-			"});\n");
+		return new ConcatReader(new Reader[] {
+			new StringReader("define('alias!" + aliasDefinition.getName() + "', function(require, exports, module) {\n"),
+			getUnalteredContentReader(),
+			new StringReader("});\n")
+		});
 	}
 	
 	@Override
 	public Reader getUnalteredContentReader() throws IOException {
-		return new StringReader(getModuleContent());
+		return new StringReader("	module.exports = require('br/AliasRegistry').getClass('"+aliasDefinition.getName()+"');\n");
 	}
 
 	@Override
@@ -102,14 +108,29 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 		try {
 			List<Asset> dependencies = new ArrayList<>();
 			
+			AliasesFile aliasesFile = new AliasesFile(bundlableNode);
+			AliasDefinition resolvedAliasDefinition = aliasDefinition;
+			try
+			{
+				resolvedAliasDefinition = aliasesFile.getAlias(aliasDefinition.getName());
+			}
+			catch (AliasException e)
+			{
+				// use the alias definition we had already
+			}
+			catch (ContentFileProcessingException ex)
+			{
+				throw new RuntimeException(ex);
+			}
+			
 			if(aliasDefinition.getInterfaceRequirePath() == null) {
-				dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
+				dependencies.add(bundlableNode.getLinkedAsset(resolvedAliasDefinition.getRequirePath()));
 			}
 			else {
 				dependencies.add(bundlableNode.getLinkedAsset("br/AliasRegistry"));
-				dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
+				dependencies.add(bundlableNode.getLinkedAsset(resolvedAliasDefinition.getRequirePath()));
 				if (aliasDefinition.getInterfaceRequirePath() != null) {
-					dependencies.add(bundlableNode.getLinkedAsset(aliasDefinition.getInterfaceRequirePath()));
+					dependencies.add(bundlableNode.getLinkedAsset(resolvedAliasDefinition.getInterfaceRequirePath()));
 				}
 			}
 			
@@ -134,20 +155,6 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	@Override
 	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return Collections.emptyList();
-	}
-	
-	private String getModuleContent() {
-		return ((aliasDefinition.getInterfaceRequirePath() == null) ? nonInterfaceModule() : interfaceModule());
-	}
-	
-	private String nonInterfaceModule() {
-		return
-			"	module.exports = require('" + aliasDefinition.getRequirePath() + "');\n";
-	}
-	
-	private String interfaceModule() {
-		return
-			"	module.exports = require('br/AliasRegistry').getClass('"+aliasDefinition.getName()+"');\n";
 	}
 	
 	@Override
