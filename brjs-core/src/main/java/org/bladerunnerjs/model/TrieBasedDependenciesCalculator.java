@@ -78,7 +78,8 @@ public class TrieBasedDependenciesCalculator
 				try(Reader reader = readerFactory.createReader()) {
 					Trie<AssetReference> trie = trieFactory.createTrie();
 					
-					for(Object match : trie.getMatches(reader)) {
+					List<AssetReference> trieMatches = trie.getMatches(reader);
+					for(Object match : trieMatches) {
 						if (match instanceof LinkedAssetReference){
 							LinkedAssetReference reference = (LinkedAssetReference)match;
 							if(!asset.getAssetPath().equals(reference.getAssetPath())) {

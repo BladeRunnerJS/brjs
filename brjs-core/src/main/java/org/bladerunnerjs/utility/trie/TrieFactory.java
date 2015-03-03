@@ -42,30 +42,25 @@ public class TrieFactory {
 			public Object get() throws RuntimeException, ModelOperationException {
 				Trie<AssetReference> trie = new Trie<AssetReference>( '/', new Character[]{'.', '/'} );
 				
-				for (AssetContainer assetContainer : assetContainer.scopeAssetContainers()) {
+				for (AssetContainer scopeAssetContainer : assetContainer.scopeAssetContainers()) {
 					try {						
-						for(Asset asset : assetContainer.assets()) {
+						for(Asset asset : scopeAssetContainer.assets()) {
 							
 							List<String> requirePaths = asset.getRequirePaths();
 							
-							for(String requirePath : requirePaths) {
-								
-								boolean requirePathStartsWithAlias = requirePath.startsWith("alias!");
-								String requirePathAfterAlias = StringUtils.substringAfter(requirePath, "alias!");
-								
+							for(String requirePath : requirePaths) {								
 								if (requirePath.contains("/")) {
 									addToTrie(trie, requirePath, new LinkedAssetReference(asset), SOURCE_MODULE_MATCHER_PATTERN);
-									if (requirePathStartsWithAlias) {
-										addToTrie(trie, requirePathAfterAlias, new LinkedAssetReference(asset), ALIAS_MATCHER_PATTERN);										
-									}
 								} else {
 									// the asset is one that can only be referred to via a string
 									addToTrie(trie, requirePath, new LinkedAssetReference(asset), QUOTED_SOURCE_MODULE_MATCHER_PATTERN);
-									if (requirePathStartsWithAlias) {
-										addToTrie(trie, requirePathAfterAlias, new LinkedAssetReference(asset), ALIAS_MATCHER_PATTERN);									
-									}
 								}
 								
+								boolean requirePathStartsWithAlias = requirePath.startsWith("alias!");
+								String requirePathAfterAlias = StringUtils.substringAfter(requirePath, "alias!");
+								if (requirePathStartsWithAlias) {
+									addToTrie(trie, requirePathAfterAlias, new LinkedAssetReference(asset), ALIAS_MATCHER_PATTERN);										
+								}
 							}
 						}
 					}

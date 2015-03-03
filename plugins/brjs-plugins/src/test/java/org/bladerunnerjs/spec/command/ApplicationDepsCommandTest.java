@@ -261,9 +261,10 @@ public class ApplicationDepsCommandTest extends SpecTest {
 				"Aspect 'default' dependencies found:",
 				"    +--- '../../libs/javascript/br/src/br/AliasRegistry.js'",
 				"    +--- '../../libs/javascript/br/src/br/UnknownClass.js'",
-				"    +--- 'default-aspect/index.html' (seed file)",
-				"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
-				"    |    |    \\--- 'default-aspect/src/appns/Interface.js' (static dep.)");
+			    "    +--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
+			    "    |    \\--- 'default-aspect/src/appns/Interface.js' (static dep.)",
+				"    |    \\--- 'alias!$data' (static dep.)",
+				"    +--- 'default-aspect/index.html' (seed file)");
 	}
 	
 	@Test

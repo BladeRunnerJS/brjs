@@ -39,21 +39,19 @@ public class AliasingUtility
 		return aliasDefinitionsFile;
 	}
 	
-	public static List<AliasDefinitionsFile> aliasDefinitionFiles(BundlableNode bundlableNode) {
+	public static List<AliasDefinitionsFile> aliasDefinitionFiles(AssetContainer assetContainer) {
 		List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
 		
-		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
-			for ( MemoizedFile assetContainerAliasDir : Arrays.asList(assetContainer.file("src"), assetContainer.file("resources")) ) {
-				List<MemoizedFile> aliasDirs = new ArrayList<>();
-				aliasDirs.add(assetContainerAliasDir);
-				aliasDirs.addAll(assetContainerAliasDir.nestedDirs());
-				
-    			for (MemoizedFile aliasDefinitionsDir : aliasDirs) {
-    				AliasDefinitionsFile aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, aliasDefinitionsDir);
-    				if (aliasDefinitionsFile.getUnderlyingFile().isFile()) {
-    					aliasDefinitionFiles.add(aliasDefinitionsFile);
-    				}
-    			}
+		for ( MemoizedFile assetContainerAliasDir : Arrays.asList(assetContainer.file("src"), assetContainer.file("resources")) ) {
+			List<MemoizedFile> aliasDirs = new ArrayList<>();
+			aliasDirs.add(assetContainerAliasDir);
+			aliasDirs.addAll(assetContainerAliasDir.nestedDirs());
+			
+			for (MemoizedFile aliasDefinitionsDir : aliasDirs) {
+				AliasDefinitionsFile aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, aliasDefinitionsDir);
+				if (aliasDefinitionsFile.getUnderlyingFile().isFile()) {
+					aliasDefinitionFiles.add(aliasDefinitionsFile);
+				}
 			}
 		}
 		

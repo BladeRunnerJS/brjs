@@ -62,7 +62,6 @@ public class AliasingSerializer {
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			if(sourceModule instanceof AliasCommonJsSourceModule) {
 				AliasCommonJsSourceModule aliasSourceModule = (AliasCommonJsSourceModule) sourceModule;
-				
 				aliasDefinitions.add(aliasSourceModule.getAliasDefinition());
 			}
 		}

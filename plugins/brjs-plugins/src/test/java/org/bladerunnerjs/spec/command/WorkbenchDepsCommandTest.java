@@ -184,11 +184,12 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
 		then(logging).containsConsoleText(
 				"Workbench dependencies found:",
-				"    +--- '../../libs/javascript/br/src/br/Class2.js'",
+				"    +--- 'alias!br.alias' (alias dep.)",
+				"    |    \\--- '../../libs/javascript/br/src/br/Class2.js' (static dep.)",
+				"    |    \\--- 'alias!$data' (static dep.)",
 				"    +--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
-				"    |    \\--- 'alias!br.alias' (static dep.)",
-			    "    |    |    \\--- 'alias!$data' (static dep.)",
 				"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)");
+
 
 	}
 	

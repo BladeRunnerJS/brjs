@@ -16,16 +16,17 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
+import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 
 public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	
-	private final BundlableNode bundlableNode;
+	private final AssetContainer assetContainer;
 	private AliasDefinition aliasDefinition;
 	private String requirePath;
 	private List<Asset> implicitDependencies;
 	
-	public AliasCommonJsSourceModule(BundlableNode bundlableNode, AliasDefinition aliasDefinition, List<Asset> implicitDependencies) {
-		this.bundlableNode = bundlableNode;
+	public AliasCommonJsSourceModule(AssetContainer assetContainer, AliasDefinition aliasDefinition, List<Asset> implicitDependencies) {
+		this.assetContainer = assetContainer;
 		this.aliasDefinition = aliasDefinition;
 		this.implicitDependencies = implicitDependencies;
 		this.requirePath = calculateRequirePath(aliasDefinition);
@@ -63,7 +64,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public MemoizedFile file() {
-		return bundlableNode.dir();
+		return assetContainer.dir();
 	}
 
 	@Override
@@ -112,6 +113,10 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 				}
 			}
 			
+			Asset aliasData = bundlableNode.getLinkedAsset(AliasDataSourceModule.PRIMARY_REQUIRE_PATH);
+			if (aliasData != null) {
+				dependencies.add(aliasData);
+			}
 			dependencies.addAll(implicitDependencies);
 			
 			return dependencies;
@@ -148,7 +153,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	@Override
 	public AssetContainer assetContainer()
 	{
-		return bundlableNode;
+		return assetContainer;
 	}
 	
 	public static String calculateRequirePath(AliasDefinition alias) {

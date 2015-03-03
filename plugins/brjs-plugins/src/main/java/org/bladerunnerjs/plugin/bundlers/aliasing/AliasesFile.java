@@ -50,20 +50,6 @@ public class AliasesFile {
 		persistentAliasesData.getData().aliasOverrides = aliasOverrides;
 	}
 	
-	public List<AliasDefinition> getAliases() throws ContentFileProcessingException, AliasException {
-		List<AliasDefinition> aliases = new ArrayList<>();
-		for (AliasDefinitionsFile aliaseDefinitionsFile: AliasingUtility.aliasDefinitionFiles(bundlableNode) ) {
-			for (String aliasName : aliaseDefinitionsFile.aliasNames()) {
-				aliases.add(getAliasDefinition(aliasName));
-			}
-		}
-		for (AliasOverride aliasOverride : aliasOverrides()) {
-			aliases.add( getAlias(aliasOverride.getName() ));
-		}
-		return aliases;
-	}
-	
-	
 	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
 		AliasOverride aliasOverride = getLocalAliasOverride(aliasName);
 		AliasDefinition aliasDefinition = getAliasDefinition(aliasName);
@@ -91,23 +77,7 @@ public class AliasesFile {
 		return aliasDefinition;
 	}
 	
-	public boolean hasAlias(String aliasName) throws ContentFileProcessingException {
-		boolean hasAlias = true;
-		
-		try {
-			getAlias(aliasName);
-		}
-		catch (AliasException e) {
-			hasAlias = false;
-		}
-		catch (ContentFileProcessingException e) {
-			throw e;
-		}
-		
-		return hasAlias;
-	}
-	
-	public AliasDefinition getAliasDefinition(String aliasName) throws ContentFileProcessingException, AliasException {
+	private AliasDefinition getAliasDefinition(String aliasName) throws ContentFileProcessingException, AliasException {
 		AliasDefinition aliasDefinition = null;
 		String scenarioName = scenarioName();
 		List<String> groupNames = groupNames();

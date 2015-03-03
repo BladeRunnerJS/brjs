@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,7 +60,11 @@ public class AliasDefinitionsFile {
 	}
 	
 	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws ContentFileProcessingException {
-		return persistentAliasDefinitionsData.getData().scenarioAliases.get(alias.getName());
+		Map<String, AliasOverride> scenarioAliases = persistentAliasDefinitionsData.getData().scenarioAliases.get(alias.getName());
+		if (scenarioAliases == null) {
+			return Collections.emptyMap();
+		}
+		return scenarioAliases;
 	}
 	
 	public void addGroupAliasOverride(String groupName, AliasOverride groupAlias) throws ContentFileProcessingException {

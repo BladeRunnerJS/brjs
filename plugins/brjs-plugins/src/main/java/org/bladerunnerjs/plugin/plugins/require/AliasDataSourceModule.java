@@ -4,15 +4,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
-
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 
@@ -20,11 +19,10 @@ import com.Ostermiller.util.ConcatReader;
 
 public class AliasDataSourceModule implements CommonJsSourceModule {
 	private final BundlableNode bundlableNode;
-	private final List<String> requirePaths = new ArrayList<>();
+	public static final String PRIMARY_REQUIRE_PATH = "alias!$data";
 
 	public AliasDataSourceModule(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
-		requirePaths.add("alias!$data");
 	}
 
 	@Override
@@ -72,12 +70,12 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public List<String> getRequirePaths() {
-		return requirePaths;
+		return Arrays.asList(PRIMARY_REQUIRE_PATH);
 	}
 
 	@Override
 	public String getPrimaryRequirePath() {
-		return "alias!$data";
+		return PRIMARY_REQUIRE_PATH;
 	}
 
 	@Override
