@@ -91,8 +91,8 @@ public class AppBuilderUtilis
 
 	private static void outputAspectIndexPage(Aspect aspect, Locale locale, BundleSet bundleSet, File targetDir, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException, ResourceNotFoundException
 	{
-		String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
-		File localeIndexPageFile = new File(targetDir, aspect.requestHandler().createIndexPageRequest(locale) + indexPageName);
+		String indexPageSuffix = (aspect.file("index.jsp").exists()) ? ".jsp" : ".html";
+		File localeIndexPageFile = new File(targetDir, aspect.requestHandler().createIndexPageRequest(locale) + indexPageSuffix);
 		localeIndexPageFile.getParentFile().mkdirs();
 		
 		try (OutputStream os = new FileOutputStream(localeIndexPageFile);
@@ -104,13 +104,17 @@ public class AppBuilderUtilis
 
 	private static void writeLocaleForwardingFileForAspect(BundleSet bundleSet, File target, Aspect aspect, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException
 	{
-		File localeForwardingFile = new File(target, aspect.requestHandler().createLocaleForwardingRequest()+"index.html");
-		localeForwardingFile.getParentFile().mkdirs();
+		App app = bundleSet.getBundlableNode().app();
 		
-		try (OutputStream os = new FileOutputStream(localeForwardingFile);
-			ResponseContent content = aspect.requestHandler().getLocaleForwardingPageContent(bundleSet, urlContentAccessor, version); )
-		{
-			content.write(os);
+		if(app.isMultiLocaleApp()) {
+			File localeForwardingFile = new File(target, aspect.requestHandler().createLocaleForwardingRequest()+"index.html");
+			localeForwardingFile.getParentFile().mkdirs();
+			
+			try (OutputStream os = new FileOutputStream(localeForwardingFile);
+				ResponseContent content = aspect.requestHandler().getLocaleForwardingPageContent(bundleSet, urlContentAccessor, version); )
+			{
+				content.write(os);
+			}
 		}
 	}
 

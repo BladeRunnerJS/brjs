@@ -91,7 +91,7 @@ public class J2eeifyCommandPluginTest extends SpecTest {
 	@Test @Ignore // TODO: investigate why this only fails in Travis...
 	public void applicationServerStillStartsAfterWebInfIsCopiedIn() throws Exception {
 		given(app.defaultAspect()).indexPageHasContent("APP INDEX PAGE")
-			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(brjs).localeSwitcherHasContents("locale forwarder")
 			.and(appServer).started()
 			.and(appServer).requestForUrlContains("/app/en/", "APP INDEX PAGE")
 			.and(appServer).stopped()

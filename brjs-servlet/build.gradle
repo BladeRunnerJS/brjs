@@ -9,4 +9,5 @@ dependencies {
 	testCompile dependency("jetty-all-server")
 	testCompile dependency("junit")
 	testCompile dependency("mockito-core")
+	testCompile dependency("commons-io")
 }

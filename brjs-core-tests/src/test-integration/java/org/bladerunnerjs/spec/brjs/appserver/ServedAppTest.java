@@ -79,7 +79,7 @@ public class ServedAppTest extends SpecTest
 		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.jsp", "<%= 1 + 2 %>")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "3");
+		then(appServer).requestForUrlReturns("/app/", "3");
 	}
 	
 	@Test
@@ -88,7 +88,7 @@ public class ServedAppTest extends SpecTest
 		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "aspect index.html");
+		then(appServer).requestForUrlReturns("/app/", "aspect index.html");
 	}
 	
 	@Test
@@ -105,7 +105,7 @@ public class ServedAppTest extends SpecTest
 		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
-		then(appServer).requestIs302Redirected("/app/en", "/app/en/");
+		then(appServer).requestIs302Redirected("/app", "/app/");
 	}
 	
 	@Test
@@ -115,15 +115,6 @@ public class ServedAppTest extends SpecTest
     		.and(anotherAspect).hasBeenPopulated()
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/another", "/app/another/");
-	}
-	
-	@Test
-	public void indexPageOfANonDefaultAspectCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
-	{
-		given(app).hasBeenPopulated("default")
-			.and(anotherAspect).containsFileWithContents("index.html", "aspect index.html")
-			.and(appServer).started();
-		then(appServer).requestIs302Redirected("/app/another/en", "/app/another/en/");
 	}
 	
 	@Test
@@ -143,21 +134,21 @@ public class ServedAppTest extends SpecTest
     		.and(bladeset).hasBeenCreated()
     		.and(blade).hasBeenCreated()
     		.and(workbench).hasBeenCreated()
-			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(brjs).localeSwitcherHasContents("locale forwarder")
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/bs/b1/workbench", "/app/bs/b1/workbench/");
 	}
 	
 	@Test
-	public void workbenchIndexPageCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
+	public void workbenchIndexPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
 		given(app).hasBeenPopulated("default")
     		.and(bladeset).hasBeenCreated()
     		.and(blade).hasBeenCreated()
     		.and(workbench).hasBeenCreated()
-    		.and(brjs).localeForwarderHasContents("locale forwarder")
+    		.and(brjs).localeSwitcherHasContents("locale forwarder")
     		.and(appServer).started();
-    	then(appServer).requestIs302Redirected("/app/bs/b1/workbench/en", "/app/bs/b1/workbench/en/");
+    	then(appServer).requestIs302Redirected("/app/bs/b1/workbench", "/app/bs/b1/workbench/");
 	}
 	
 	@Test
@@ -167,7 +158,7 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
-		/* The correct URL is /app/en/index.html but /app/default-aspect/index.html is a valid path on disk. 
+		/* The correct URL is /app/en but /app/default-aspect/index.html is a valid path on disk. 
 		 	All requests should go through the model so verify the invalid model request returns a 404 and is not served from disk. */
 	}
 	
@@ -177,7 +168,7 @@ public class ServedAppTest extends SpecTest
 		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.jsp", "<%= \"aspect \" + \"index.jsp\" %>")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "aspect index.jsp");
+		then(appServer).requestForUrlReturns("/app/", "aspect index.jsp");
 	}
 	
 	@Test
@@ -203,7 +194,7 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).doesNotContainFile("WEB-INF");
 		when(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName())
-			.and(appServer).requestForUrlReturns("/app/en/", "dev replacement")
+			.and(appServer).requestForUrlReturns("/app/", "dev replacement")
 			.and(app).doesNotHaveDir("WEB-INF");
 	}
 	
@@ -212,8 +203,8 @@ public class ServedAppTest extends SpecTest
 		given(app).hasBeenPopulated("default")
 			.and(appServer).started()
 			.and(aspect).indexPageHasContent("index page")
-			.and(brjs).localeForwarderHasContents("locale-forwarder.js");
-		when(appServer).requestIsMadeFor("/app/en/?query=1", response);
+			.and(brjs).localeSwitcherHasContents("locale-forwarder.js");
+		when(appServer).requestIsMadeFor("/app/?query=1", response);
 		then(response).textEquals("index page");
 	}
 	
@@ -238,7 +229,7 @@ public class ServedAppTest extends SpecTest
 		given(systemApp).hasBeenPopulated("default")
 			.and(systemAspect).containsFileWithContents("index.html", "System App")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "System App");
+		then(appServer).requestForUrlReturns("/app/", "System App");
 	}
 	
 	@Test
@@ -249,7 +240,7 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).containsFileWithContents("index.html", "User App")
 			.and(systemAspect).containsFileWithContents("index.html", "System App")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "System App");
+		then(appServer).requestForUrlReturns("/app/", "System App");
 	}
 	
 	@Test
@@ -310,10 +301,11 @@ public class ServedAppTest extends SpecTest
 	public void optionalAspectCanBeUsedAsDefaultAspect() throws Exception
 	{
 		given(appWithDefaultAspect).hasBeenCreated()
+			.and(appWithDefaultAspect.appConf()).supportsLocales("en", "de")
 			.and(defaultAspect).containsFileWithContents("index.html", "aspect index.html")
-			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(brjs).localeSwitcherHasContents("locale forwarder")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/anotherApp/en/", "aspect index.html");
+		then(appServer).requestForUrlReturns("/anotherApp/en", "aspect index.html");
 	}
 	
 	@Test
@@ -322,8 +314,8 @@ public class ServedAppTest extends SpecTest
 		given(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>");
 		when(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "dev replacement")
-			.and(appServer).contentLengthForRequestIs("/app/en/", "dev replacement".getBytes().length);
+		then(appServer).requestForUrlReturns("/app/", "dev replacement")
+			.and(appServer).contentLengthForRequestIs("/app/", "dev replacement".getBytes().length);
 	}
 	
 	@Test
@@ -343,7 +335,7 @@ public class ServedAppTest extends SpecTest
 					+ "	</New>"
 					+ "</Configure>");
 		when(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "some token replacement");
+		then(appServer).requestForUrlReturns("/app/", "some token replacement");
 	}
 	
 	@Test
@@ -363,8 +355,8 @@ public class ServedAppTest extends SpecTest
 					+ "	</New>"
 					+ "</Configure>");
 		when(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "some token replacement")
-			.and(appServer).contentLengthForRequestIs("/app/en/", "some token replacement".getBytes().length);
+		then(appServer).requestForUrlReturns("/app/", "some token replacement")
+			.and(appServer).contentLengthForRequestIs("/app/", "some token replacement".getBytes().length);
 	}
 	
 }
