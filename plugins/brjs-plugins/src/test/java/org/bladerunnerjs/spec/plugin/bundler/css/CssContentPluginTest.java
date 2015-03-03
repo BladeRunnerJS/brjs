@@ -233,10 +233,10 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "js: foo.js\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("foo.js")
-			.and(nonConformantLib).containsFileWithContents("style1.css", "style-1")
-			.and(nonConformantLib).containsFileWithContents("style2.css", "style-2");
+			.and(nonConformantLib).containsFileWithContents("style1.css", "@style1")
+			.and(nonConformantLib).containsFileWithContents("style2.css", "@style2");
 		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsLines("style-1", "style-2");
+		then(requestResponse).containsOrderedTextFragments("@style1", "@style2");
 	}
 	
 	@Test
@@ -295,8 +295,8 @@ public class CssContentPluginTest extends SpecTest {
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
 		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css")
-			.and(requestResponse).doesNotContainText("dir/style3.css");
+		then(requestResponse).containsOrderedTextFragments("/style1.css", "/style2.css")
+			.and(requestResponse).doesNotContainText("/dir/style3.css");
 	}
 	
 	@Test
@@ -308,8 +308,8 @@ public class CssContentPluginTest extends SpecTest {
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
 		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css")
-			.and(requestResponse).doesNotContainText("dir/style3.css");
+		then(requestResponse).containsOrderedTextFragments("/style1.css", "/style2.css")
+			.and(requestResponse).doesNotContainText("/dir/style3.css");
 	}
 	
 	@Test
@@ -321,7 +321,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
 		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css", "dir/style3.css");
+		then(requestResponse).containsOrderedTextFragments("/style1.css", "/style2.css", "/dir/style3.css");
 	}
 	
 	@Test
@@ -521,7 +521,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void onlyCssBundlesUsedFromATagHandlerAreReturnedAsUsedContentPaths() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
 			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("css", "css/usedtheme/bundle.css");
 	}
@@ -530,10 +530,10 @@ public class CssContentPluginTest extends SpecTest {
 	public void onlyCssBundlesUsedFromATagHandlerArePresentInTheBuiltArtifact() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
 			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "v/1234/css/usedtheme/bundle.css")
+		then(targetDir).containsFileWithContents("index.html", "v/1234/css/usedtheme/bundle.css")
 			.and(targetDir).containsFile("v/1234/css/usedtheme/bundle.css")
 			.and(targetDir).doesNotContainFile("v/1234/css/unusedtheme/bundle.css");
 	}

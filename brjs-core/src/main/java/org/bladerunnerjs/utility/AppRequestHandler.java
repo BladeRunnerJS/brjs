@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -19,6 +18,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -36,17 +36,12 @@ import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.SdkJsLib;
 
 import com.google.common.base.Joiner;
 
 
 public class AppRequestHandler
 {
-
-	private static final String BR_LOCALE_UTILITY_LIBNAME = "br-locale-utility";
-	private static final String BR_LOCALE_UTILITY_FILENAME = "LocaleUtility.js";
-	
 	private static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
 	private static final String INDEX_PAGE_REQUEST = "index-page-request";
 	private static final String UNVERSIONED_BUNDLE_REQUEST = "unversioned-bundle-request";
@@ -114,16 +109,16 @@ public class AppRequestHandler
 				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
 				
 			case WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);	
+				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
 
 			case INDEX_PAGE_REQUEST:
-				return getIndexPageContent(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				return getIndexPageContent(app.aspect(aspectName), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 			
 			case WORKBENCH_BLADESET_INDEX_PAGE_REQUEST:
-				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), new Locale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
 				return app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), contentAccessor, devVersion);
@@ -141,14 +136,15 @@ public class AppRequestHandler
 		
 		throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 	}
-	
+
 	public String createRelativeBundleRequest(String contentPath, String version) throws MalformedTokenException
 	{
-		if (contentPath.startsWith("/"))
-		{
+		if (contentPath.startsWith("/")) {
 			return getContentPathParser().createRequest(UNVERSIONED_BUNDLE_REQUEST, "", contentPath);
 		}
-		return getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
+		else {
+			return getContentPathParser().createRequest(BUNDLE_REQUEST, "", version, contentPath);
+		}
 	}
 
 	public String createBundleRequest(Aspect aspect, String contentPath, String version) throws MalformedTokenException
@@ -156,7 +152,9 @@ public class AppRequestHandler
 		if (contentPath.startsWith("/")) {
 			return createRequest(aspect, AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, contentPath);
 		}
-		return createRequest(aspect, AppRequestHandler.BUNDLE_REQUEST, version, contentPath);
+		else {
+			return createRequest(aspect, AppRequestHandler.BUNDLE_REQUEST, version, contentPath);
+		}
 	}
 	
 	public String createLocaleForwardingRequest(Aspect aspect) throws MalformedTokenException
@@ -166,7 +164,12 @@ public class AppRequestHandler
 	
 	public String createIndexPageRequest(Aspect aspect, Locale locale) throws MalformedTokenException
 	{
-		return createRequest(aspect, INDEX_PAGE_REQUEST, locale.toString());
+		if(!aspect.app().isMultiLocaleApp()) {
+			return createRequest(aspect, INDEX_PAGE_REQUEST) + "index";
+		}
+		else {
+			return createRequest(aspect, INDEX_PAGE_REQUEST, locale.toString());
+		}
 	}
 	
 	public MemoizedFile getIndexPage(BrowsableNode browsableNode) {
@@ -216,7 +219,7 @@ public class AppRequestHandler
 			return new CharResponseContent( browsableNode.root(), byteArrayOutputStream.toString() );
 		}
 		catch (IOException | ConfigException | ModelOperationException e) {
-			throw new ContentProcessingException(e, "Error when trying to write the index page for " + browsableNode.root().dir().getRelativePath(indexPage));
+			throw new ContentProcessingException(e, "Error when trying to write the index page for '" + browsableNode.root().dir().getRelativePath(indexPage) + "'");
 		}
 	}
 
@@ -241,14 +244,12 @@ public class AppRequestHandler
 	}
 
 	public ResponseContent getLocaleForwardingPageContent(BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
-		StringWriter localeForwardingPage = new StringWriter();
-		
-		SdkJsLib localeForwarderLib = app.root().sdkLib(BR_LOCALE_UTILITY_LIBNAME);
-		try (Reader localeForwarderReader = new FileReader( localeForwarderLib.file(BR_LOCALE_UTILITY_FILENAME) ) ) {
+		try {
+			StringWriter localeSwitchingPage = new StringWriter();
 			
-			localeForwardingPage.write("<head>\n");
-			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
-			localeForwardingPage.write("<script type='text/javascript'>\n");
+			localeSwitchingPage.write("<head>\n");
+			localeSwitchingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
+			localeSwitchingPage.write("<script type='text/javascript'>\n");
 			
 			ContentPlugin appVersionContentPlugin = app.root().plugins().contentPlugin("app-meta");
 			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
@@ -256,26 +257,26 @@ public class AppRequestHandler
 			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPath, bundleSet, contentAccessor, appVersionContentPath);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			responseContent.write(baos);
-			localeForwardingPage.write( baos.toString() );
+			localeSwitchingPage.write( baos.toString() );
+			localeSwitchingPage.write("\n");
 			
-			localeForwardingPage.write("\n");
-			IOUtils.copy(localeForwarderReader, localeForwardingPage);
-			localeForwardingPage.write("\n");			
-			localeForwardingPage.write("function forwardToLocalePage() {\n");
-			localeForwardingPage.write("	var localeCookie = LocaleUtility.getCookie(window.$BRJS_LOCALE_COOKIE_NAME);\n");
-			localeForwardingPage.write("	var browserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales();\n");
-			localeForwardingPage.write("	var appLocales = window.$BRJS_APP_LOCALES;\n");
-			localeForwardingPage.write("	var activeLocale = LocaleUtility.getActiveLocale( localeCookie, browserAcceptedLocales, appLocales );\n");
-			localeForwardingPage.write("	window.location = LocaleUtility.getLocalizedPageUrl( window.location.href, activeLocale );\n");
-			localeForwardingPage.write("}\n");
+			BundleSet localeSwitcherBundleSet = app.root().sdkLib("br-locale").getBundleSet();
 			
-			localeForwardingPage.write("\n</script>\n");
-			localeForwardingPage.write("</head>\n");
-			localeForwardingPage.write("<body onload='forwardToLocalePage()'></body>\n");
+			for(SourceModule sourceModule : localeSwitcherBundleSet.getSourceModules()) {
+				try(Reader sourceModuleReader = sourceModule.getReader()) {
+					IOUtils.copy(sourceModuleReader, localeSwitchingPage);
+					localeSwitchingPage.write("\n");
+				}
+			}
 			
-			return new CharResponseContent( app.root(), localeForwardingPage.toString() );
+			localeSwitchingPage.write("\n");
+			localeSwitchingPage.write("require('br-locale/switcher').switchToActiveLocale();\n");
+			localeSwitchingPage.write("</script>\n");
+			localeSwitchingPage.write("</head>\n");
+			
+			return new CharResponseContent( app.root(), localeSwitchingPage.toString() );
 		}
-		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException e) {
+		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException | ModelOperationException e) {
 			throw new ContentProcessingException(e);
 		}
 	}
@@ -292,31 +293,59 @@ public class AppRequestHandler
 	{
 		return contentPathParser.value(() -> {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder
-				/* NOTE: 
-				 * - <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
-				 * - ordering is important here, if two URLs share a similar format, the first type wins
-				 */
-				.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
-					.and("<aspect><locale>/").as(INDEX_PAGE_REQUEST)
-					.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
-					.and("<aspect><bladeset>/<blade>/workbench/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
-					.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
-					.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST)
-					.and("<aspect><bladeset>/workbench/<locale>/").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
-					.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
-					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
-					.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
-				.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
-					.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-					.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-					.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
-					.and("locale").hasForm(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT)
-					.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			
+			/* NOTE:
+			 * - <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
+			 * - ordering is important here, if two URLs share a similar format, the first type wins
+			 */
+			if(!app.isMultiLocaleApp()) {
+				contentPathParserBuilder
+					.accepts("<aspect>").as(INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
+						.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
+						.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
+						.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
+					.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
+						.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
+						.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			}
+			else {
+				contentPathParserBuilder
+					.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
+						.and("<aspect><locale>").as(INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/<locale>").as(WORKBENCH_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
+						.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST)
+						.and("<aspect><bladeset>/workbench/<locale>").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
+						.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
+						.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
+						.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
+					.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
+						.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+						.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
+						.and("locale").hasForm(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT)
+						.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			}
 			
 			return contentPathParserBuilder.build();
 		});
+	}
+
+	private Locale appLocale(String locale) {
+		try {
+			return (locale != null) ? new Locale(locale) : app.appConf().getLocales()[0];
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private String getAspectNames()

@@ -99,7 +99,8 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 	
 	@Override
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws MalformedRequestException, ContentProcessingException {
-		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+		// Using getContentPathParser as CT have there own content parser
+		ParsedContentPath parsedContentPath = getContentPathParser().parse(contentPath);
 		
 		String theme = parsedContentPath.properties.get("theme");
 		String languageCode = parsedContentPath.properties.get("languageCode");
@@ -116,7 +117,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 				
 				try {
 					String css = processor.getRewrittenFileContents();
-					readerList.add(new StringReader(css));
+					readerList.add(new StringReader("/*** " + cssAsset.getAssetPath() + " ***/\n\n" + css));
 				} catch (IOException e) {
 					throw new ContentProcessingException(e);
 				}

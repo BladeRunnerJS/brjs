@@ -6,16 +6,19 @@ import java.util.List;
 import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.spec.engine.Command;
+import org.bladerunnerjs.api.spec.engine.CommanderChainer;
 import org.bladerunnerjs.api.spec.engine.ModelCommander;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 
 
 public class AppConfCommander extends ModelCommander {
 	private final AppConf appConf;
+	private CommanderChainer commanderChainer;
 	
 	public AppConfCommander(SpecTest modelTest, AppConf appConf) {
 		super(modelTest);
 		this.appConf = appConf;
+		commanderChainer = new CommanderChainer(modelTest);
 	}
 	
 	public AppConfCommander setRequirePrefix(final String requirePrefix) throws Exception {
@@ -29,11 +32,11 @@ public class AppConfCommander extends ModelCommander {
 		return this;
 	}
 	
-	public AppConfCommander setLocales(final String locales) throws Exception {
+	public CommanderChainer localesUpdatedTo(final String... locales) throws Exception {
 		call(new Command() {
 			public void call() throws Exception {
 				List<Locale> createdLocales = new ArrayList<Locale>();
-				for (String locale : locales.split(",")) {
+				for (String locale : locales) {
 					createdLocales.add( new Locale(locale) );
 				}
 				appConf.setLocales( createdLocales.toArray(new Locale[0]) );
@@ -41,7 +44,7 @@ public class AppConfCommander extends ModelCommander {
 			}
 		});
 		
-		return this;
+		return commanderChainer;
 	}
 	
 	public void write() throws Exception {

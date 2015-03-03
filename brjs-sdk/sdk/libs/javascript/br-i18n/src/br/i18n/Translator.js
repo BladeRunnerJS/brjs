@@ -28,21 +28,27 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 * [br/i18n/I18N]{@link module:br/i18n/I18N} accessor class.
 * For example <code>require("br/i18n").i18n("some.i18n.key")</code>.</p>
 */
-function Translator(messages) {
-	var unproccessedMessages = messages;
-
+function Translator(messageDefinitions, useLocale) {
 	/** @private */
 	this.messages = {};
-
-	for (var message in unproccessedMessages) {
-		this.messages[message.toLowerCase()] = unproccessedMessages[message];
-	}
+	/** @private */
+	this.messageDefinitions = messageDefinitions;
 
 	/** @private */
 	this.localizationPrefs = {};
 	/** @private */
 	this.testMode = false;
+	this.setLocale(useLocale);
 };
+
+Translator.prototype.setLocale = function(locale) {
+	var unproccessedMessages = this.messageDefinitions[locale];
+	this.messages = {};
+
+	for (var message in unproccessedMessages) {
+		this.messages[message.toLowerCase()] = unproccessedMessages[message];
+	}
+}
 
 /**
 * Translate is used to convert raw localization tokens in the form

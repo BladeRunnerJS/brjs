@@ -131,7 +131,7 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 			addI18nProperties(propertiesMap, locale, (I18nFileAsset) asset);
 		}
 
-		return getReaderForProperties(bundleSet.getBundlableNode().root(), propertiesMap);
+		return getReaderForProperties(bundleSet.getBundlableNode().root(), locale, propertiesMap);
 	}
 
 	private void addI18nProperties(Map<String,String> propertiesMap, Locale locale, I18nFileAsset i18nFile) throws ContentProcessingException
@@ -148,7 +148,7 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 		}
 	}
 	
-	private ResponseContent getReaderForProperties(BRJS brjs, Map<String, String> propertiesMap) throws ContentProcessingException
+	private ResponseContent getReaderForProperties(BRJS brjs, Locale locale, Map<String, String> propertiesMap) throws ContentProcessingException
 	{
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String jsonProperties = gson.toJson(propertiesMap);
@@ -157,7 +157,10 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 		 * Since thats actually what we want we undo the double escaping here. 
 		 */
 		jsonProperties = jsonProperties.replace("\\\\n", "\\n").replace("\\\\r", "\\r");
-		return new CharResponseContent( brjs, "window._brjsI18nProperties = [" + jsonProperties + "];" );
+		
+		return new CharResponseContent( brjs, "if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };\n"
+				+ "window._brjsI18nProperties['" + locale + "'] = " + jsonProperties + ";\n"
+						+ "window._brjsI18nUseLocale = '" + locale + "';");
 	}
 	
 	private List<I18nFileAsset> getI18nAssetFiles(BundleSet bundleSet)
