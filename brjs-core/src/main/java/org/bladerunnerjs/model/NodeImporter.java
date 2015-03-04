@@ -83,9 +83,11 @@ public class NodeImporter {
 		}
 		
 		for(Bladeset bladeset : tempBrjsApp.bladesets()) {
-			String sourceBladesetRequirePrefix = sourceAppRequirePrefix + "/" + bladeset.getName();
+			String sourceBladesetRequirePrefix;
 			if (bladeset == bladeset.app().defaultBladeset() && !bladeset.dir().getName().endsWith("-bladeset")) {
 				sourceBladesetRequirePrefix = sourceAppRequirePrefix;				
+			} else {
+				sourceBladesetRequirePrefix = sourceAppRequirePrefix + "/" + bladeset.getName();
 			}
 			renameBladeset(bladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix);
 		}
