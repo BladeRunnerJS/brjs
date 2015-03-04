@@ -42,7 +42,11 @@ public class FileTestBuilder extends SpecTestBuilder {
 
 	public BuilderChainer containsFolder(String folderPath) throws Exception {
 		File folder = new File(file, folderPath);
-		folder.mkdir();
+		if (folderPath.contains("/") && file.isDirectory()) {
+			folder.mkdirs();			
+		} else {
+			folder.mkdirs();
+		}
 		return builderChainer;
 	}
 	

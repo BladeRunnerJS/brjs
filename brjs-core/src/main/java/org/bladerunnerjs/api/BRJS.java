@@ -105,9 +105,7 @@ public class BRJS extends AbstractBRJSRootNode
 		this.appVersionGenerator = appVersionGenerator;
 		this.fileModificationRegistry = new FileModificationRegistry( ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
-		this.workingDir = workingDir;
-		
-		userApps = findAppsFolder(brjsDir);
+		userApps = createAppsNodeList(brjsDir, workingDir);
 		
 		try
 		{
@@ -140,25 +138,21 @@ public class BRJS extends AbstractBRJSRootNode
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 	}
 	
-	private NodeList<App> findAppsFolder(File brjsDir) {
+	private NodeList<App> createAppsNodeList(File brjsDir, File workingDir) {
 		File currentFolder = workingDir;
 		while(currentFolder != null) {
-			if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists() 
-					&& new File(currentFolder, "brjs-apps").exists()) {
-				String brjsAppsPath = brjsDir.getAbsolutePath().trim() + "brjs-apps";
-				String appsPath = brjsDir.getAbsolutePath().trim() + "apps";
-				logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, brjsAppsPath, appsPath, brjsAppsPath);
-				return new NodeList<>(this, App.class, "brjs-apps", null, null, getMemoizedFile(currentFolder));
-			}
 			if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
+				if (new File(currentFolder, "brjs-apps").exists()) {
+					String brjsAppsPath = brjsDir.getAbsolutePath()+"/brjs-apps";
+					String appsPath = brjsDir.getAbsolutePath()+"/apps";
+					logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, brjsAppsPath, appsPath, brjsAppsPath);
+				}
 				return new NodeList<>(this, App.class, "apps", null, null, getMemoizedFile(currentFolder));
-			}
-			if (new File(currentFolder, "brjs-apps").exists()) {
+			} else if (new File(currentFolder, "brjs-apps").exists()) {
 				return new NodeList<>(this, App.class, "brjs-apps", null, null, getMemoizedFile(currentFolder));
 			}
-			else {
-				currentFolder = currentFolder.getParentFile();
-			}
+			
+			currentFolder = currentFolder.getParentFile();
 		}
 		return new NodeList<>(this, App.class, "brjs-apps", null);
 	}
