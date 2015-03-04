@@ -15,16 +15,13 @@ br.Core.thirdparty("momentjs");
  * <code>DateFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following examples which evaluate to "09-Sep-2001 01:46:40" and "2001Sep09" respectively:
  * <p/>
- * <code>br.formatting.DateFormatter.format(1e12, {inputFormat:"U"})</code><br/>
- * <code>br.formatting.DateFormatter.format(1e12, {inputFormat:"U", outputFormat:"YMd"})</code>
+ * <code>new br.formatting.DateFormatter().format(1e12, {inputFormat:"U"})</code><br/>
+ * <code>new br.formatting.DateFormatter().format(1e12, {inputFormat:"U", outputFormat:"YMd"})</code>
  * <p/>
  *
  * See {@link module:br/presenter/parser/DateParser} for the complementary parser.
  */
-br.formatting.DateFormatter = function()
-{
-	this.m_sFormatDefault = "DD-MM-YYYY HH:mm:ss";
-};
+br.formatting.DateFormatter = function() {};
 
 br.Core.implement(br.formatting.DateFormatter, br.formatting.Formatter);
 
@@ -41,12 +38,9 @@ br.Core.implement(br.formatting.DateFormatter, br.formatting.Formatter);
  */
 br.formatting.DateFormatter.prototype.format = function(vValue, mAttributes) {
 	if (vValue) {
-		var sInputFormat = mAttributes["inputFormat"];
-		var bAdjustForTimezone = mAttributes["adjustForTimezone"];
-		var oDate = this.parseDate(vValue, sInputFormat);
+		var oDate = br.parsing.DateParser.parseDate(vValue, mAttributes.inputFormat);
 		if (oDate) {
-			var sOutputFormat = mAttributes["outputFormat"];
-			vValue = this.formatDate(oDate, sOutputFormat, mAttributes.adjustForTimezone);
+			vValue = this.formatDate(oDate, mAttributes.outputFormat, mAttributes);
 		}
 	}
 	return vValue;
@@ -54,51 +48,25 @@ br.formatting.DateFormatter.prototype.format = function(vValue, mAttributes) {
 
 /**
  * @private
+ * @deprecated
  */
-br.formatting.DateFormatter.prototype.parseDate = function(vDate, sDateFormat, bEndOfUnit)
-{
-	if (!vDate)
-	{
-		return null;
-	}
-	if (vDate instanceof Date)
-	{
-		sDateFormat = "javascript";
-	}
-	else if (!sDateFormat)
-	{
-		sDateFormat = this.getDateFormat(sDateFormat);
-	}
-
-	switch (sDateFormat) {
-		case "java":
-			var oDate = new Date();
-			oDate.setTime(Number(vDate));
-			return oDate;
-		case "javascript":
-			return vDate;
-		case "U":
-			return moment(vDate*1000).toDate();
-		default:
-			var oMoment = moment(String(vDate), sDateFormat);
-			if (bEndOfUnit === true && sDateFormat.toLowerCase().indexOf('d') === -1) {
-				oMoment.endOf(sDateFormat === 'YYYY' ? 'year' : 'month');
-			}
-			var sValidationString = oMoment.format(sDateFormat);
-			return (sValidationString == String(vDate)) ? oMoment.toDate() : null;
-	}
+br.formatting.DateFormatter.prototype.parseDate = function(vDate, sDateFormat) {
+	return br.parsing.DateParser.parseDate(vDate, sDateFormat);
 };
 
 /**
  * @private
  */
-br.formatting.DateFormatter.prototype.formatDate = function(oDate, sDateFormat, bAdjustForTimezone) {
-	if(bAdjustForTimezone)
+br.formatting.DateFormatter.prototype.formatDate = function(oDate, sDateFormat, mAttributes) {
+	var oTranslator = require("br/I18n").getTranslator();
+	if(mAttributes && mAttributes.adjustForTimezone)
 	{
-
 		oDate = this._adjustDateForTimezone(oDate);
 	}
-	sDateFormat = this.getDateFormat(sDateFormat);
+	if (!sDateFormat)
+	{
+		sDateFormat = "DD-MM-YYYY HH:mm:ss";
+	}
 	switch (sDateFormat) {
 		case "java":
 			return String(oDate.getTime());
@@ -107,10 +75,8 @@ br.formatting.DateFormatter.prototype.formatDate = function(oDate, sDateFormat, 
 		case "ISO":
 			return oDate.toISOString();
 		case "localize":
-			var oTranslator = require("br/I18n").getTranslator();
 			return oTranslator.formatDate(oDate);
 		default:
-			var oTranslator = require("br/I18n").getTranslator();
 			return oTranslator.formatDate(oDate, sDateFormat);
 	}
 };
@@ -126,13 +92,6 @@ br.formatting.DateFormatter.prototype._adjustDateForTimezone = function(oDate) {
 	oDateClone.setMinutes(oDate.getMinutes() + timezoneOffsetInMinutes);
 
 	return oDateClone;
-};
-
-/**
- * @private
- */
-br.formatting.DateFormatter.prototype.getDateFormat = function(sDateFormat) {
-	return sDateFormat || this.m_sFormatDefault;
 };
 
 /**
