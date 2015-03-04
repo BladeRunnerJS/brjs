@@ -83,7 +83,11 @@ public class NodeImporter {
 		}
 		
 		for(Bladeset bladeset : tempBrjsApp.bladesets()) {
-			renameBladeset(bladeset, sourceAppRequirePrefix, sourceAppRequirePrefix + "/" + bladeset.getName());
+			String sourceBladesetRequirePrefix = sourceAppRequirePrefix + "/" + bladeset.getName();
+			if (bladeset == bladeset.app().defaultBladeset() && !bladeset.dir().getName().endsWith("-bladeset")) {
+				sourceBladesetRequirePrefix = sourceAppRequirePrefix;				
+			}
+			renameBladeset(bladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix);
 		}
 
 		File jettyEnv = tempBrjsApp.file("WEB-INF/jetty-env.xml");
@@ -207,11 +211,9 @@ public class NodeImporter {
 	}
 	
 	static String findAndReplaceInText(String content, String oldRequirePrefix, String newRequirePrefix) {
-		if (oldRequirePrefix.endsWith("default")) { 
-			oldRequirePrefix = oldRequirePrefix.substring(0, oldRequirePrefix.length() - "default".length() - 1);
-		}
 		String newNamespace = newRequirePrefix.replace('/', '.');
-		Matcher matcher = Pattern.compile("(^|[\\W_])" + oldRequirePrefix.replace("/", "[./]")).matcher(content);
+		String oldNamespace = oldRequirePrefix.replace("/", "[./]");
+		Matcher matcher = Pattern.compile("(^|[\\W_])" + oldNamespace).matcher(content);
 		StringBuffer newContent = new StringBuffer();
 		int startPos = 0;
 		
