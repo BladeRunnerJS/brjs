@@ -247,17 +247,4 @@ public class ImportAppCommandTest extends SpecTest {
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedApp).fileContentsContains("WEB-INF/web.xml", "/app/some-url");
 	}
-
-	@Test
-	public void oldAppNameIsReplacedInABladesetlessBladeAliasesXml() throws Exception {
-		given(app).hasBeenCreated()
-			.and(app.defaultBladeset().blade("myblade")).containsFileWithContents("resources/aliases.xml", 
-				"<alias name=\"bar.user-prompt-service\" class=\"appns.myblade.MyUserPromptService\"/>")
-			.and(brjs).commandHasBeenRun("export-app", "app")
-			.and(appJars).containsFile("brjs-lib1.jar");
-		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
-		then(importedApp.defaultBladeset().blade("myblade")).fileContentsContains("resources/aliases.xml", 
-				"<alias name=\"bar.user-prompt-service\" class=\"importedns.myblade.MyUserPromptService\"/>");
-	}
-	
 }
