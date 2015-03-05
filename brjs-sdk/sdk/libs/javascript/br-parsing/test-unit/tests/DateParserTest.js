@@ -139,6 +139,34 @@
 		this.assertParse("java", this.getMillisecondsSinceEpoch(this.oDateAtMidnight), "2010.11.12");
 	};
 
+	DateParserTest.prototype.test_parseAmbiguousInputToEndOfYear = function() {
+		var mAttributes = {
+			inputFormats: "YYYY",
+			outputFormat: "YYYYMMDD",
+			endOfUnit: true
+		};
+		this._assertParse("2015", "20151231", mAttributes);
+	};
+
+	DateParserTest.prototype.test_parseAmbiguousInputToEndOfMonth = function() {
+		var mAttributes = {
+			inputFormats: "MMM YYYY",
+			outputFormat: "YYYYMMDD",
+			endOfUnit: true
+		};
+		this._assertParse("Jan 2015", "20150131", mAttributes);
+	};
+
+	DateParserTest.prototype.test_parseUnambiguousDateWithEndOfUnitFlagDoesNotParseToEndOfUnit = function() {
+		var mAttributes = {
+			inputFormats: "DDMMYYYY",
+			outputFormat: "YYYYMMDD",
+			endOfUnit: true
+		};
+		this._assertParse("01012015", "20150101", mAttributes);
+	};
+
+
 	/*
 	* AMERICAN
 	*/
