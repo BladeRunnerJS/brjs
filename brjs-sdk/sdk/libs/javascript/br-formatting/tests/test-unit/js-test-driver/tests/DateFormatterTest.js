@@ -124,6 +124,11 @@
 		this.assertFormat("java", this.getMillisecondsSinceEpoch(this.oDateAtMidnight), 20101112, "YYYYMMDD");
 	};
 
+	DateFormatterTest.prototype.test_formatMMMM = function() {
+		this.assertFormat("MMMM", "January", "January", "MMMM");
+		this.assertFormat("MMMM", "January", "january", "MMMM");
+	};
+
 	DateFormatterTest.prototype.test_adjustForTimeZoneSetsCorrectDate = function() {
 		this.fixTimeZone(-60);
 		this.assertFormatWithTimezone("YYYY-MM-DD HH:mm:ss", "2010-11-12 14:14:15", this.oDate, "javascript");
