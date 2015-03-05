@@ -29,15 +29,11 @@ BRAppMetaService.prototype.getLocales = function() {
 	return window.$BRJS_APP_LOCALES;
 };
 
-BRAppMetaService.prototype.getLocaleCookieName = function() {
-	return window.$BRJS_LOCALE_COOKIE_NAME
-};
-
 function getBundlePath(prefix, bundlePath) {
 	if (bundlePath != undefined) {
 		/* make sure there are no leading or trailing /s that might mess up the generated path */
 		prefix = prefix.replace(/^\/|\/$/g, '');
-		if (bundlePath.substring(0, 1) == '/') { 
+		if (bundlePath.substring(0, 1) == '/') {
 			bundlePath = bundlePath.substring(1);
 		}
 		return prefix + "/" + bundlePath

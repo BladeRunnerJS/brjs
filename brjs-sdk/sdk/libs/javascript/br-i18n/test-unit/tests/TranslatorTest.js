@@ -18,56 +18,63 @@
 		});
 		
 		this.messages = {
-			"caplin.test.key": "key 1 value.",
-			"other.key": "value 2",
-			"template.key": "this key has a [template.key.first] value and a [template.key.second] value"
-		};
+			'locale' : {
+				"caplin.test.key": "key 1 value.",
+				"other.key": "value 2",
+				"template.key": "this key has a [template.key.first] value and a [template.key.second] value"
+		}};
 
 		this.moreMessages = {
-			"23412.test.key": "numeric key value",
-			"caplin.test.key": "key 1 value.",
-			"other.key": "value 2",
-			"utf8.key": "ΕΥΣΕΒΙΟΥ ΚΑΙΣΑΡΕΙΑΣ"
-		};
+			'locale' : {
+				"23412.test.key": "numeric key value",
+				"caplin.test.key": "key 1 value.",
+				"other.key": "value 2",
+				"utf8.key": "ΕΥΣΕΒΙΟΥ ΚΑΙΣΑΡΕΙΑΣ"
+		}};
 
 		this.i18nTimeDateNumberMessages = {
-			"br.i18n.date.format": "d-m-Y",
-			"br.i18n.date.format.long": "D, d M, Y, h:i:s A",
-			"br.i18n.date.month.january": "Leden",
-			"br.i18n.date.month.short.april": "Dub",
-			"br.i18n.date.month.short.december": "Pros",
-			"br.i18n.time.format.separator": ":",
-			"br.i18n.decimal.radix.character": ".",
-			"br.i18n.number.grouping.separator": ","
-		};
+			'locale' : {
+				"br.i18n.date.format": "d-m-Y",
+				"br.i18n.date.format.long": "D, d M, Y, h:i:s A",
+				"br.i18n.date.month.january": "Leden",
+				"br.i18n.date.month.short.april": "Dub",
+				"br.i18n.date.month.short.december": "Pros",
+				"br.i18n.time.format.separator": ":",
+				"br.i18n.decimal.radix.character": ".",
+				"br.i18n.number.grouping.separator": ","
+		}};
 
 		this.invalidXmlCharMessages = {
-			"entity.string": "the & quick < brown > fox ' jumps \" over & the << && lazy >&\"\"\"&& dog. \' "
-		};
+			'locale' : {
+				"entity.string": "the & quick < brown > fox ' jumps \" over & the << && lazy >&\"\"\"&& dog. \' "
+		}};
 
 		this.miscForeignMessages = {
-			"english.hello": "hello, world",
-			"chinese.hello": "你好，世界",
-			"japanese.hello": "こんにちは、世界",
-			"korean.hello": "안녕하세요, 세상",
-			"arabic.hello": "مرحبا، العالم",
-			"hebrew.hello": "שלום, בעולם"
-		};
+			'locale' : {
+				"english.hello": "hello, world",
+				"chinese.hello": "你好，世界",
+				"japanese.hello": "こんにちは、世界",
+				"korean.hello": "안녕하세요, 세상",
+				"arabic.hello": "مرحبا، العالم",
+				"hebrew.hello": "שלום, בעולם"
+		}};
 
 		this.longXmlMessages = {
-			"currency.aed.issuer": "United Arab Emirates",
-			"currency.aed.name": "Dirhams",
-			"currency.afn.issuer": "Afghanistan",
-			"currency.afn.name": "Afghanis",
-			"currency.all.issuer": "Albania",
-			"currency.all.name": "Leke",
-			"currency.amd.issuer": "Armenia",
-			"currency.amd.name": "Drams"
-		};
+			'locale' : {
+				"currency.aed.issuer": "United Arab Emirates",
+				"currency.aed.name": "Dirhams",
+				"currency.afn.issuer": "Afghanistan",
+				"currency.afn.name": "Afghanis",
+				"currency.all.issuer": "Albania",
+				"currency.all.name": "Leke",
+				"currency.amd.issuer": "Armenia",
+				"currency.amd.name": "Drams"
+		}};
 		
 		this.camelCaseTokens = {
-			"token.CamelcasetokeN": "a Translation"
-		};
+			'locale' : {
+				"token.CamelcasetokeN": "a Translation"
+		}};
 	};
 
 	TranslatorTest.prototype.tearDown = function()
@@ -83,7 +90,7 @@
 		var expected = "<blah att=\"the &amp; quick &lt; brown &gt; fox &apos; jumps &quot; over &amp; the &lt;&lt; &amp;&amp; lazy &gt;&amp;&quot;&quot;&quot;&amp;&amp; dog. &apos; \">somethingelse</blah>";
 
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.invalidXmlCharMessages);
+		var translator = new Translator(this.invalidXmlCharMessages, 'locale');
 
 		var result = translator.translate(text);
 
@@ -96,7 +103,7 @@
 		var expected = "United Arab Emirates Dirhams Afghanistan Afghanis";
 
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.longXmlMessages);
+		var translator = new Translator(this.longXmlMessages, 'locale');
 
 		var result = translator.translate(text);
 		assertEquals(expected, result);
@@ -108,7 +115,7 @@
 		var expected = "<test name='key 1 value.'>values</test><blah>value 2</blah>";
 
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.messages);
+		var translator = new Translator(this.messages, 'locale');
 
 		var result = translator.translate(text, "text");
 
@@ -131,7 +138,7 @@
 		var expected = "<test name='??? caplin.missing.key ???'>values</test><blah>value 2</blah>";
 
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.messages);
+		var translator = new Translator(this.messages, 'locale');
 
 		var result = translator.translate(text, "text");
 
@@ -151,7 +158,7 @@
 			"something else !!\"£ΕΥΣΕΒΙΟΥ ΚΑΙΣΑΡΕΙΑΣ^^\n";
 
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.moreMessages);
+		var translator = new Translator(this.moreMessages, 'locale');
 
 		var result = translator.translate(text, "text");
 
@@ -160,7 +167,7 @@
 
 	TranslatorTest.prototype.test_simpleTokenTest = function() {
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.messages);
+		var translator = new Translator(this.messages, 'locale');
 
 		var result = translator.getMessage("template.key", {"template.key.first":"foo", "template.key.second":"bar"});
 		var expected = "this key has a foo value and a bar value";
@@ -178,9 +185,9 @@
 
 	function _assertGetMessageReturnsCorrectValue(sTest, mTokens, sExpected)
 	{
-		var mMessages = { "test.key": sTest };
+		var mMessages = { 'locale' : { "test.key": sTest } };
 		var Translator = require('br/i18n/Translator');
-		var oTranslator = new Translator(mMessages);
+		var oTranslator = new Translator(mMessages, 'locale');
 		var sResult = oTranslator.getMessage("test.key", mTokens);
 		assertEquals(sExpected, sResult);
 	}
@@ -294,20 +301,20 @@
 
 	TranslatorTest.prototype.test_utfForeignScriptTest = function() {
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.miscForeignMessages);
-		var text = "English: @{english.hello}\n" +
+		var translator = new Translator(this.miscForeignMessages, 'locale');
+		var text = "locale : { English: @{english.hello}\n" +
 			"Chinese: @{chinese.hello}\n" +
 			"Japanese: @{japanese.hello}\n" +
 			"Korean: @{korean.hello}\n" +
 			"Arabic: @{arabic.hello}\n" +
-			"Hebrew: @{hebrew.hello}\n";
+			"Hebrew: @{hebrew.hello}\n }";
 
-		var expected = "English: hello, world\n" +
+		var expected = "locale : { English: hello, world\n" +
 			"Chinese: 你好，世界\n" +
 			"Japanese: こんにちは、世界\n" +
 			"Korean: 안녕하세요, 세상\n" +
 			"Arabic: مرحبا، العالم\n" +
-			"Hebrew: שלום, בעולם\n";
+			"Hebrew: שלום, בעולם\n }";
 		var result = translator.translate(text, "text");
 
 		assertEquals(expected, result);
@@ -315,7 +322,7 @@
 
 	TranslatorTest.prototype.test_correctTranslationWithCamelCaseTokens = function() {
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.camelCaseTokens);
+		var translator = new Translator(this.camelCaseTokens, 'locale');
 
 		var token = "token.CamelcasetokeN";
 
@@ -327,7 +334,7 @@
 
 	TranslatorTest.prototype.test_tokenExistsWithCamelCaseTokens = function() {
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.camelCaseTokens);
+		var translator = new Translator(this.camelCaseTokens, 'locale');
 
 		var token = "token.cameLcaseTOKEN";
 
@@ -336,7 +343,7 @@
 
 	TranslatorTest.prototype.test_parseNumberWorks = function() {
 		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.i18nTimeDateNumberMessages);
+		var translator = new Translator(this.i18nTimeDateNumberMessages, 'locale');
 
 		assertEquals(translator.parseNumber('not-a-number'), null);
 		assertEquals(translator.parseNumber('1000'), 1000);

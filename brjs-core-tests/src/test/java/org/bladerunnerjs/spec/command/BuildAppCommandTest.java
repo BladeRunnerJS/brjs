@@ -137,7 +137,7 @@ public class BuildAppCommandTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(app.defaultAspect()).indexPageHasContent("index page")
-			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(brjs).hasDir("sdk/target")
 			.and(brjs).commandHasBeenRun("build-app", "app", "target");
 		when(brjs).runCommand("build-app", "app", "target");
@@ -170,7 +170,7 @@ public class BuildAppCommandTest extends SpecTest
 			.and(brjs.appJars()).containsFile("some-jar.jar")
 			.and(brjs).commandHasBeenRun("create-app", "app")
 			.and(defaultAspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
-			.and(brjs).localeForwarderHasContents("locale-forwarder.js");
+			.and(brjs).localeSwitcherHasContents("locale-forwarder.js");
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")
@@ -247,15 +247,27 @@ public class BuildAppCommandTest extends SpecTest
 	}
 	
 	@Test
-	public void defaultAspectsAreBuiltCorrectly() throws Exception
+	public void defaultAspectsAreBuiltCorrectlyForSingleLocaleApps() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(app.defaultAspect()).hasBeenCreated()
 			.and(app.appConf()).supportsLocales("en_GB")
 			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
 		when(brjs).runCommand("build-app", "app");
-		then(brjs).fileContentsContains("generated/built-apps/app/en_GB/index.html", "DEFAULT ASPECT INDEX PAGE");
+		then(brjs).fileContentsContains("generated/built-apps/app/index.html", "DEFAULT ASPECT INDEX PAGE");
+	}
+	
+	@Test
+	public void defaultAspectsAreBuiltCorrectlyForMultiLocaleApps() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(brjs).localeSwitcherHasContents("")
+			.and(app.defaultAspect()).hasBeenCreated()
+			.and(app.appConf()).supportsLocales("en", "en_GB")
+			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).fileContentsContains("generated/built-apps/app/en_GB.html", "DEFAULT ASPECT INDEX PAGE");
 	}
 	
 }
