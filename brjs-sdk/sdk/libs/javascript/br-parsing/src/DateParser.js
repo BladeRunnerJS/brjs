@@ -18,12 +18,11 @@ var RegExpUtil = require('br/util/RegExp');
  * <p><code>DateParser</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "08-Sep-2000":</p>
  * 
- * <pre>DateParser.parse("09/08/2000", {american:"true", outputFormat:"d-M-Y"})</pre>
+ * <pre>new DateParser().parse("09/08/2000", {american:"true", outputFormat:"d-M-Y"})</pre>
  * 
  * See {@link module:br/formatting/DateFormatter} for the complementary formatter.
  */
-DateParser = function()
-{
+function DateParser() {
 	this.m_pAmericanFormats = ["MM-DD-YYYY", "MM-DD-YY", "MMM-DD-YYYY", "MMM-DD-YY", "MM-DD"];
 	this.m_pEuropeanFormats = ["DD-MM-YYYY", "DD-MMM-YYYY", "DD-MM", "DD-MM-YY", "DDMMYY", "DDMMYYYY"];
 	this.m_pCommonFormats = [
@@ -45,34 +44,21 @@ topiarist.implement(DateParser, Parser);
  * European: d-m-Y, d-m-Y, d-M-Y, d-M-Y, d-m<br/>
  * <p/>
  *
- * <p>
- * Attribute Options:
- * </p>
- * <p>
- * <table>
- * <tr>
- * <th>Option</th>
- * <th>Description</th>
- * </tr>
- * <tr>
- *
- * <td>american</td><td>  if true, dates are assumed to be in American format, i.e. month before date (defaults to false)</td></tr>
- * <tr><td>separators</td><td>  a set of admissible separator characters (defaults to "/.-")</td></tr>
- * <tr><td>inputFormats</td><td>  a comma separated list of admissible input formats</td></tr>
- * <tr><td>outputFormat</td><td>  the output date format</td></tr>
- * </table>
- *
- * @param {Variant} vValue  the date to parse (String).
- * @param {Map} mAttributes  the map of attributes.
- * @return  the date, expressed in the output format
+ * @param {string|Date} vValue the date to parse.
+ * @param {object} mAttributes the map of attributes.
+ * @param {boolean} [mAttributes.american=false] if true, dates are assumed to be in American format, i.e. month before date
+ * @param {string} [mAttributes.separators='/.-'] a set of admissible separator characters
+ * @param {string} mAttributes.inputFormats a comma separated list of admissible input formats
+ * @param {string} mAttributes.outputFormat the output date format
+ * @param {boolean} [mAttributes.endOfUnit=false] if true, parse ambiguous dates to the end of the month or year
+ * @return {string} the date, expressed in the output format
  * @type String
  */
 DateParser.prototype.parse = function(vValue, mAttributes) {
 	if (vValue) {
 		var vDate = this._standardizeDateSeparators(vValue, mAttributes);
 		var pInputFormats = this._getAdmissibleInputFormats(mAttributes);
-		var sOutputFormat = mAttributes.outputFormat;
-		vValue = this._matchDate(vDate, pInputFormats, sOutputFormat);
+		vValue = this._matchDate(vDate, pInputFormats, mAttributes.outputFormat, mAttributes);
 	}
 	return vValue;
 };
@@ -82,12 +68,52 @@ DateParser.prototype.isSingleUseParser = function() {
 };
 
 /**
+ * @static
+ * @param {string|Date} vDate The date to parse
+ * @param {string} sDateFormat The input format
+ * @param {object} [mAttributes] A map of options
+ * @param {boolean} [mAttributes.endOfUnit=false] Whether to parse ambiguous dates to the end of a month or year
+ * @returns {Date}
+ */
+DateParser.parseDate = function(vDate, sDateFormat, mAttributes) {
+	if (!vDate)
+	{
+		return null;
+	}
+	if (vDate instanceof Date)
+	{
+		sDateFormat = "javascript";
+	}
+	else if (!sDateFormat)
+	{
+		sDateFormat = "DD-MM-YYYY HH:mm:ss";
+	}
+
+	switch (sDateFormat) {
+		case "java":
+			var oDate = new Date();
+			oDate.setTime(Number(vDate));
+			return oDate;
+		case "javascript":
+			return vDate;
+		case "U":
+			return moment(vDate*1000).toDate();
+		default:
+			var oMoment = moment(String(vDate), sDateFormat);
+			if (mAttributes && mAttributes.endOfUnit === true && sDateFormat.toLowerCase().indexOf('d') === -1) {
+				oMoment.endOf(sDateFormat === 'YYYY' ? 'year' : 'month');
+			}
+			var sValidationString = oMoment.format(sDateFormat);
+			return (sValidationString.toLowerCase() == String(vDate).toLowerCase()) ? oMoment.toDate() : null;
+	}
+};
+
+/**
  * @private
  */
-DateParser.prototype._matchDate = function(vDate, pInputFormats, sOutputFormat) {
+DateParser.prototype._matchDate = function(vDate, pInputFormats, sOutputFormat, mAttributes) {
 	for (var i = 0, n = pInputFormats.length; i < n; ++i) {
-		var sInputFormat = pInputFormats[i];
-		var oDate = this.m_oDateFormatter.parseDate(vDate, sInputFormat);
+		var oDate = br.parsing.DateParser.parseDate(vDate, pInputFormats[i], mAttributes);
 		if (oDate) {
 			return this.m_oDateFormatter.formatDate(oDate, sOutputFormat);
 		}
@@ -99,7 +125,7 @@ DateParser.prototype._matchDate = function(vDate, pInputFormats, sOutputFormat) 
  */
 DateParser.prototype._standardizeDateSeparators = function(vDate, mAttributes) {
 	if (vDate.constructor === String) {
-		var sRegExp = "[" + RegExpUtil.escape(mAttributes["separators"] || this.m_sSeparatorsDefault) + "]";
+		var sRegExp = "[" + RegExpUtil.escape(mAttributes.separators || this.m_sSeparatorsDefault) + "]";
 		var oNonStandardSeparatorRegExp = new RegExp(sRegExp, "g");
 		vDate = vDate.replace(oNonStandardSeparatorRegExp, "-");
 	}
@@ -117,7 +143,7 @@ DateParser.prototype._getAdmissibleInputFormats = function(mAttributes) {
  * @private
  */
 DateParser.prototype._getDefaultInputFormats = function(mAttributes) {
-	return this.m_pCommonFormats.concat((mAttributes["american"] == "true") ? this.m_pAmericanFormats : this.m_pEuropeanFormats);
+	return this.m_pCommonFormats.concat((mAttributes.american == "true") ? this.m_pAmericanFormats : this.m_pEuropeanFormats);
 };
 
 /**
