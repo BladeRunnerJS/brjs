@@ -31,6 +31,7 @@ public class BuildAppCommandTest extends SpecTest
 	{
 		given(brjs).automaticallyFindsCommandPlugins()
 			.and(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
 		defaultAspect = app.defaultAspect();

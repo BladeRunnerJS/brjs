@@ -10,3 +10,4 @@ org.bladerunnerjs.plugin.bundlers.css.CssAssetPlugin
 org.bladerunnerjs.plugin.bundlers.aliasing.AliasAndServiceAssetPlugin
 
 org.bladerunnerjs.plugin.seedlocator.BrowsableNodeSeedLocator
+org.bladerunnerjs.plugin.seedlocator.BrLocaleLibSeedLocator

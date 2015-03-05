@@ -75,6 +75,17 @@ public class AssetContainerAssets
 		}
 		
 		@Override
+		public void promoteRegisteredAssetToSeed(LinkedAsset asset)
+		{
+			if (!assets.containsKey(asset.getPrimaryRequirePath())) {
+				throw new RuntimeException(
+						String.format("No asset with the require path '%s' has been previously registered.", asset.getPrimaryRequirePath())
+				); 
+			}
+			seedAssets.add(asset);
+		}
+		
+		@Override
 		public void registerAsset(Asset asset)
 		{
 			for (String requirePath : asset.getRequirePaths()) {
@@ -87,6 +98,15 @@ public class AssetContainerAssets
 			}
 		}
 
+		@Override
+		public boolean hasSeedAsset(String requirePath)
+		{
+			if (!hasRegisteredAsset(requirePath)) {
+				return false;
+			}
+			return seedAssets.contains( getRegisteredAsset(requirePath) );
+		}
+		
 		@Override
 		public boolean hasRegisteredAsset(String requirePath)
 		{

@@ -226,7 +226,7 @@ public class AppRequestHandler
 	private String getAspectName(String requestPath, Map<String, String> contentPathProperties) throws MalformedRequestException
 	{
 		String aspectName = contentPathProperties.get("aspect");
-
+		
 		if (aspectName.equals("default/"))
 		{
 			throw new MalformedRequestException(requestPath, "The '/default' prefix should be omitted for the default aspect.");
@@ -251,24 +251,15 @@ public class AppRequestHandler
 			localeSwitchingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			localeSwitchingPage.write("<script type='text/javascript'>\n");
 			
-			ContentPlugin appVersionContentPlugin = app.root().plugins().contentPlugin("app-meta");
-			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
-			String appVersionContentPath = appVersionContentPathParser.createRequest("app-meta-request");
-			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPath, bundleSet, contentAccessor, appVersionContentPath);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			responseContent.write(baos);
-			localeSwitchingPage.write( baos.toString() );
-			localeSwitchingPage.write("\n");
+			ContentPlugin compositeJsContentPlugin = app.root().plugins().contentPlugin("js");
+			ContentPathParser compositeJsContentPathParser = compositeJsContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
+			String jsBundleContentPath = compositeJsContentPathParser.createRequest("dev-bundle-request", "combined");
+			ResponseContent brLocaleBundleResponse = compositeJsContentPlugin.handleRequest(jsBundleContentPath, app.jsLib("br-locale").getBundleSet(), contentAccessor, version);
 			
-			BundleSet localeSwitcherBundleSet = app.root().sdkLib("br-locale").getBundleSet();
+			ByteArrayOutputStream brLocaleBundleContent = new ByteArrayOutputStream();
+			brLocaleBundleResponse.write( brLocaleBundleContent );
 			
-			for(SourceModule sourceModule : localeSwitcherBundleSet.getSourceModules()) {
-				try(Reader sourceModuleReader = sourceModule.getReader()) {
-					IOUtils.copy(sourceModuleReader, localeSwitchingPage);
-					localeSwitchingPage.write("\n");
-				}
-			}
-			
+			localeSwitchingPage.write( brLocaleBundleContent.toString() );
 			localeSwitchingPage.write("\n");
 			localeSwitchingPage.write("require('br-locale/switcher').switchToActiveLocale();\n");
 			localeSwitchingPage.write("</script>\n");

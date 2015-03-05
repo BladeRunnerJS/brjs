@@ -24,6 +24,7 @@ public class ServeAppTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).automaticallyFindsAssetPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).automaticallyFindsContentPlugins()
 			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
