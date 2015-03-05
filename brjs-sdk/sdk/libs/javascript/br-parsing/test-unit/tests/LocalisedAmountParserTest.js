@@ -1,9 +1,11 @@
 (function() {
+	var LocalisedAmountParser = require('br/parsing/LocalisedAmountParser');
+	
 	LocalisedAmountParserTest = TestCase("LocalisedAmountParserTest");
 
 	LocalisedAmountParserTest.prototype.setUp = function() {
 		this.mAttributes = { "billions" : "B", "millions" : "M", "thousands" : "K"};
-		this.oParser = new br.parsing.LocalisedAmountParser();
+		this.oParser = new LocalisedAmountParser();
 	};
 
 	LocalisedAmountParserTest.prototype.test_testParseK = function() {
@@ -44,7 +46,7 @@
 
 
 	LocalisedAmountParserTest.prototype.test_testParseI18nDecimal = function() {
-		this.oParser = new br.parsing.LocalisedAmountParser();
+		this.oParser = new LocalisedAmountParser();
 
 		var sValue = "1.25l";
 		assertEquals(62.5, this.oParser.parse(sValue, this.mAttributes));
