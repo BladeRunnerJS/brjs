@@ -2,6 +2,9 @@
  * @module br/parsing/ThousandsParser
  */
 
+var topiarist = require('topiarist');
+var Parser = require('br/parsing/Parser');
+
 /**
  * @class
  * @alias module:br/parsing/ThousandsParser
@@ -14,17 +17,17 @@
  * <p><code>ThousandsParser</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "8987551787.0":</p>
  * 
- * <pre>br.parsing.ThousandsParser.parse("8,987,551,787.0", {})</pre>
+ * <pre>ThousandsParser.parse("8,987,551,787.0", {})</pre>
  * 
  * <p>The number grouping separator will change per locale. The english separator defaults to "," as in the 
  * example above, see the i18n property br.i18n.number.grouping.separator in other locales for their separators.</p>
  * 
  * See {@link module:br/formatting/ThousandsFormatter} for the complementary formatter.
  */
-br.parsing.ThousandsParser = function() {
-};
+ThousandsParser = function() {
+}
 
-br.Core.implement(br.parsing.ThousandsParser, br.parsing.Parser);
+topiarist.implement(ThousandsParser, Parser);
 
 /**
  * Parses an amount, strips any thousands separators and changes the local radix (decimal point) char
@@ -48,7 +51,7 @@ br.Core.implement(br.parsing.ThousandsParser, br.parsing.Parser);
  * @return  the amount, with any number grouping separators removed
  * @type  String
  */
-br.parsing.ThousandsParser.prototype.parse = function(vValue, mAttributes) {
+ThousandsParser.prototype.parse = function(vValue, mAttributes) {
 	//if the value is already a number in js format, then we don't need to parse it
 	if(this._isNumeric(vValue)) {
 		return vValue;
@@ -70,14 +73,19 @@ br.parsing.ThousandsParser.prototype.parse = function(vValue, mAttributes) {
 	}
 };
 
+ThousandsParser.prototype.isSingleUseParser = function() {
+	return false;
+};
+
 /**
  * @private
  */
-br.parsing.ThousandsParser.prototype.toString = function() {
-	return "br.parsing.ThousandsParser";
+ThousandsParser.prototype.toString = function() {
+	return "br/parsing/ThousandsParser";
 };
 
-br.parsing.ThousandsParser.prototype._isNumeric = function(value) {
+ThousandsParser.prototype._isNumeric = function(value) {
 	return !isNaN(parseFloat(value)) && isFinite(value);
 }
 
+module.exports = ThousandsParser;
