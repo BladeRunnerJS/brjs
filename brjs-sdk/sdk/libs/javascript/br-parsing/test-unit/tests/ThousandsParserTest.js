@@ -37,7 +37,7 @@
 					"br.i18n.number.grouping.separator":".",
 					"br.i18n.decimal.radix.character":"!"
 				}
-			}));
+			}, 'locale'));
 		});
 
 		this.oParser = new br.parsing.ThousandsParser();

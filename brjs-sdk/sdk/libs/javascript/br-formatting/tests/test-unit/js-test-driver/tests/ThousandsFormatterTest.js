@@ -99,7 +99,7 @@
 					"br.i18n.number.grouping.separator":".",
 					"br.i18n.decimal.radix.character":","
 				}
-			}));
+			}, 'locale'));
 		});
 
 		this.oFormatter = new br.presenter.formatter.ThousandsFormatter();
