@@ -128,7 +128,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/> appns.bs.Class  appns.bs.b1.Class ");
 		when(aspect).indexPageLoadedInDev(response, "en");
-		then(response).containsTextOnce("<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>");		
+		then(response).containsTextOnce("<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>");
 	}
 	
 	@Test
@@ -139,8 +139,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsText("<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>")
-			.and(response).doesNotContainText("v/dev/css/theme1/bundle.css")	
-			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");	
+			.and(response).doesNotContainText("v/dev/css/theme1/bundle.css")
+			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");
 	}
 	
 	@Test
@@ -154,7 +154,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		then(response).containsOrderedTextFragments(
 			"<link rel=\"stylesheet\" href=\"v/dev/css/common/bundle.css\"/>",
 			"<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>")
-			.and(response).doesNotContainText("v/dev/css/theme1/bundle.css")	
+			.and(response).doesNotContainText("v/dev/css/theme1/bundle.css")
 			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");
 	}
 	
@@ -166,9 +166,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
     		.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\" alternateTheme=\"theme1,theme2\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
-				"<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>",	
-				"<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>",	
-				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>");	
+				"<link rel=\"stylesheet\" title=\"standard\" href=\"v/dev/css/standard/bundle.css\"/>",
+				"<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>",
+				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>");
 	}
 	
 	@Test
@@ -180,8 +180,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme1\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsText("<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>")
-			.and(response).doesNotContainText("v/dev/css/standard/bundle.css")	
-			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");	
+			.and(response).doesNotContainText("v/dev/css/standard/bundle.css")
+			.and(response).doesNotContainText("v/dev/css/theme2/bundle.css");
 	}
 	
 	@Test
@@ -192,7 +192,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme1\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsText("<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>")
-			.and(response).doesNotContainText("v/dev/css/common/bundle.css");	
+			.and(response).doesNotContainText("v/dev/css/common/bundle.css");
 	}
 
 	@Test
@@ -204,7 +204,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
 				"<link rel=\"stylesheet\" title=\"theme1\" href=\"v/dev/css/theme1/bundle.css\"/>",
-				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>");	
+				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>");
 	}
 	
 	@Test
@@ -215,8 +215,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme2,theme3\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
-				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>",	
-				"<link rel=\"alternate stylesheet\" title=\"theme3\" href=\"v/dev/css/theme3/bundle.css\"/>");	
+				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"v/dev/css/theme2/bundle.css\"/>",
+				"<link rel=\"alternate stylesheet\" title=\"theme3\" href=\"v/dev/css/theme3/bundle.css\"/>");
 	}
 	
 	@Test

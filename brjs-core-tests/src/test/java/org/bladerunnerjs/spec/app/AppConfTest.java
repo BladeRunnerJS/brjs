@@ -69,7 +69,7 @@ public class AppConfTest extends SpecTest {
 	public void updateLocaleInAppConf() throws Exception {
 		given(templates).templateGroupCreated()
 			.and(app).hasBeenPopulated("appx", "default");
-		when(app).appConf().setLocales("de").write();
+		when(app).appConf().localesUpdatedTo("de");
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: de\nrequirePrefix: appx");
 	}
 	@Test
