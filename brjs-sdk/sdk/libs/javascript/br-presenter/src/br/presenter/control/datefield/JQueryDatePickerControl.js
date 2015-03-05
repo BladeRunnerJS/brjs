@@ -2,7 +2,9 @@
  * @module br/presenter/control/datefield/JQueryDatePickerControl
  */
 
-br.Core.thirdparty("jquery");
+br.Core.thirdparty('jquery');
+
+var MapUtility = require('br/util/MapUtility');
 
 /**
  * @class
@@ -34,6 +36,9 @@ br.presenter.control.datefield.JQueryDatePickerControl = function()
 
 	/** @private */
 	this.m_mOptions = {};
+
+	/** @private */
+	this.m_eElement = null;
 };
 
 br.Core.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.presenter.control.ControlAdaptor);
@@ -46,14 +51,7 @@ br.Core.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.prese
  */
 br.presenter.control.datefield.JQueryDatePickerControl.prototype.setElement = function(eElement)
 {
-	if(eElement.type && eElement.type === 'hidden') {
-		// if the passed element is a hidden input box use that to bind to it
-		this.m_oJQueryNode = jQuery(eElement);
-	} else {
-		// otherwise use it as a container
-		this.m_oJQueryNode = jQuery('<input type="hidden" />');
-		this.m_oJQueryNode.appendTo(eElement);
-	}
+	this.m_eElement = eElement;
 };
 
 /**
@@ -72,12 +70,13 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.setOptions = fu
 br.presenter.control.datefield.JQueryDatePickerControl.prototype.setPresentationNode = function(oPresentationNode)
 {
 	if(!(oPresentationNode instanceof br.presenter.node.DateField)) {
-		throw new br.presenter.control.InvalidControlModelError("JQueryDatePickerControl", "DateField");
+		throw new br.presenter.control.InvalidControlModelError('JQueryDatePickerControl', 'DateField');
 	}
 
 	this.m_oPresentationNode = oPresentationNode;
-	this.m_oPresentationNode.enabled.addChangeListener(this, "_setDisabled", true);
-	this.m_oPresentationNode.visible.addChangeListener(this, "_setVisible");
+	this.m_oPresentationNode.enabled.addChangeListener(this, '_setDisabled');
+	this.m_oPresentationNode.visible.addChangeListener(this, '_setVisible');
+	this.m_oPresentationNode.value.addChangeListener(this, '_setValue');
 };
 
 /**
@@ -98,9 +97,19 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.destroy = funct
  */
 br.presenter.control.datefield.JQueryDatePickerControl.prototype.onViewReady = function()
 {
+	if(this.m_mOptions.inline || this.m_eElement.type && this.m_eElement.type === 'hidden') {
+		// if the passed element is a hidden input box use that to bind to it
+		this.m_oJQueryNode = jQuery(this.m_eElement);
+	} else {
+		// otherwise use it as a container
+		this.m_oJQueryNode = jQuery('<input type="hidden" />');
+		this.m_oJQueryNode.appendTo(this.m_eElement);
+	}
+
 	this._generateCalendarHtml();
-	this.m_oJQueryNode.datepicker("option", this.m_mOptions);
+
 	this._setVisible();
+	this._setValue();
 };
 
 
@@ -111,8 +120,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.onViewReady = f
  */
 br.presenter.control.datefield.JQueryDatePickerControl.prototype._setDisabled = function()
 {
-	var sAction = this.m_oPresentationNode.enabled.getValue() ? "enable" : "disable";
-	this.m_oJQueryNode.datepicker(sAction);
+	this.m_oJQueryNode.datepicker('option', 'disabled', !this.m_oPresentationNode.enabled.getValue());
 };
 
 /**
@@ -121,7 +129,15 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._setDisabled = 
 br.presenter.control.datefield.JQueryDatePickerControl.prototype._setVisible = function()
 {
 	var bVisible = this.m_oPresentationNode.visible.getValue();
-	this.m_oJQueryNode[0].parentNode.style.display = (bVisible) ? "block" : "none";
+	this.m_oJQueryNode[0].parentNode.style.display = (bVisible) ? 'block' : 'none';
+};
+
+/**
+ * @private
+ */
+br.presenter.control.datefield.JQueryDatePickerControl.prototype._setValue = function()
+{
+	this.m_oJQueryNode.datepicker('setDate', this.m_oPresentationNode.value.getValue());
 };
 
 /**
@@ -130,19 +146,19 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._setVisible = f
 br.presenter.control.datefield.JQueryDatePickerControl.prototype._generateCalendarHtml = function()
 {
 	var oThis = this;
-
-	this.m_oJQueryNode.datepicker(
-	{
+	var oOptions = MapUtility.mergeMaps([{
 		showOn: 'button',
-		dateFormat: "yy-mm-dd",
-
+		dateFormat: 'yy-mm-dd',
+		disabled: !this.m_oPresentationNode.enabled.getValue(),
 		onSelect: function(dateText)
 		{
 			oThis.m_oPresentationNode.value.setValue(dateText);
 		},
 		beforeShow:function()
 		{
-			oThis.m_oJQueryNode.datepicker("setDate", oThis.m_oPresentationNode.value.getValue());
+			oThis._setValue();
 		}
-	});
+	}, this.m_mOptions], true);
+
+	this.m_oJQueryNode.datepicker(oOptions);
 };
