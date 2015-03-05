@@ -41,8 +41,8 @@ public class RestApiServletEndToEndTests
 		
 		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot );
 		
-		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
-		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), "");
+		SdkJsLib localeSwitcherLib = brjs.sdkLib("br-locale-switcher");
+		FileUtils.write(localeSwitcherLib.file("switcher.js"), "");
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), brjs.getMemoizedFile(sdkRoot));
 		server.start();

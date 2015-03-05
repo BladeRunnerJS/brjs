@@ -68,6 +68,10 @@ I18N.create = function(translator) {
 		return translator;
 	};
 
+	i18n.setLocale = function(locale) {
+		translator.setLocale(locale);
+	};
+
 	return i18n;
 };
 

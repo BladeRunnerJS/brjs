@@ -50,6 +50,9 @@ public class JettyServerBuilder {
 	}
 	
 	public BuilderChainer hasStarted() throws Exception {
+		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
+		System.setProperty("java.naming.factory.initial", "org.eclipse.jetty.jndi.InitialContextFactory");
+		
 		jettyServer.start();
 		jettyServer.setStopAtShutdown(true);
 		
