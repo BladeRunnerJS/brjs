@@ -3,6 +3,7 @@
  */
 
 var Errors = require('br/Errors');
+var brCore = require("br/Core");
 
 /**
  * @class
@@ -24,4 +25,4 @@ ValidationResultListener.prototype.onValidationResultReceived = function(oValida
 	throw new Errors.UnimplementedInterfaceError("ValidationResultListener.onValidationResultReceived() has not been implemented.");
 };
 
-br.validation.ValidationResultListener = ValidationResultListener;
+module.exports = ValidationResultListener;
