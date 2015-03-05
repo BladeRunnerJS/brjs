@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.plugins.require;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

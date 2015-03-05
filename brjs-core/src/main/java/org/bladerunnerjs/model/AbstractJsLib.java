@@ -8,7 +8,6 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.JsLib;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.api.TypedTestPack;

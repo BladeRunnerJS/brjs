@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.bundlers.aliasing;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
