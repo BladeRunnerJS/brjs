@@ -2,35 +2,38 @@
  * @module br/presenter/validator/ValidMultiSelectionValidator
  */
 
+var Validator = require('br/validation/Validator');
+var Errors = require('br/Errors');
+
 /**
  * @private
  * @class
  * @alias module:br/presenter/validator/ValidMultiSelectionValidator
- * @implements module:br/presenter/validator/Validator
- * 
+ * @implements module:br/validation/Validator
+ *
  * @param {module:br/presenter/node/OptionsNodeList} oOptions The list of valid options.
  */
-br.presenter.validator.ValidMultiSelectionValidator = function(oOptions)
+function ValidMultiSelectionValidator(oOptions)
 {
 	if (!oOptions || !(oOptions instanceof br.presenter.node.OptionsNodeList))
 	{
-		throw new br.Errors.InvalidParametersError("You must provide an instance of OptionsNodeList");
+		throw new Errors.InvalidParametersError("You must provide an instance of OptionsNodeList");
 	}
 	this.m_oOptions = oOptions;
 	this.m_bAllowInvalidSelections = false;
-};
-br.Core.implement(br.presenter.validator.ValidMultiSelectionValidator, br.presenter.validator.Validator);
+}
+br.Core.implement(ValidMultiSelectionValidator, Validator);
 
-br.presenter.validator.ValidMultiSelectionValidator.prototype.allowInvalidSelections = function(bAllowInvalidSelections)
+ValidMultiSelectionValidator.prototype.allowInvalidSelections = function(bAllowInvalidSelections)
 {
 	this.m_bAllowInvalidSelections = bAllowInvalidSelections;
 };
 
 /**
  * @private
- * @see br.presenter.validator.Validator#validate
+ * @see br.validation.Validator#validate
  */
-br.presenter.validator.ValidMultiSelectionValidator.prototype.validate = function(pValues, mAttributes, oValidationResult)
+ValidMultiSelectionValidator.prototype.validate = function(pValues, mAttributes, oValidationResult)
 {
 	var bIsValid = true;
 	var sValidationMessage = "";
@@ -60,7 +63,7 @@ br.presenter.validator.ValidMultiSelectionValidator.prototype.validate = functio
  * @private
  * @param oOptions
  */
-br.presenter.validator.ValidMultiSelectionValidator.prototype._getOptionsAsMap = function(oOptions)
+ValidMultiSelectionValidator.prototype._getOptionsAsMap = function(oOptions)
 {
 	var oResult = {};
 	var pOptions = oOptions.getOptions();
@@ -71,4 +74,4 @@ br.presenter.validator.ValidMultiSelectionValidator.prototype._getOptionsAsMap =
 	return oResult;
 };
 
-
+module.exports = ValidMultiSelectionValidator;
