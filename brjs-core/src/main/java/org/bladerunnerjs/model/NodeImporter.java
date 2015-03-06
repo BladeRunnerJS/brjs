@@ -165,10 +165,12 @@ public class NodeImporter {
 	}
 	
 	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
+		BRJS brjs = assetContainer.root();
 		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
 			for (String updatePrefixForLocation : Arrays.asList("src", "src-test", "tests", "resources")) {
-				MemoizedFile sourceRequirePrefixDir = assetContainer.file(updatePrefixForLocation+"/"+sourceRequirePrefix);
-				MemoizedFile targetRequirePrefixDir = assetContainer.file(updatePrefixForLocation+"/"+targetRequirePrefix);
+				MemoizedFile updateRequirePrefixForLocationDir = assetContainer.file(updatePrefixForLocation);
+				MemoizedFile sourceRequirePrefixDir = updateRequirePrefixForLocationDir.file(sourceRequirePrefix);
+				MemoizedFile targetRequirePrefixDir = updateRequirePrefixForLocationDir.file(targetRequirePrefix);
 				if (sourceRequirePrefixDir.isDirectory()) {
 					FileUtils.moveDirectory(sourceRequirePrefixDir, targetRequirePrefixDir);
 					MemoizedFile sourceAppRequirePrefixDir = assetContainer.file(updatePrefixForLocation+"/"+sourceAppRequirePrefix);
@@ -176,8 +178,8 @@ public class NodeImporter {
 						FileUtils.deleteDirectory(sourceAppRequirePrefixDir);
 					}
 				}
-				if (targetRequirePrefixDir.isDirectory()) {
-					findAndReplaceInAllTextFiles(assetContainer.root(), targetRequirePrefixDir, sourceRequirePrefix, targetRequirePrefix);
+				if (updateRequirePrefixForLocationDir.isDirectory()) {
+					findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
 				}
 			}
 		}
