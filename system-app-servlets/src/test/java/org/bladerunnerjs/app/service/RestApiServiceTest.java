@@ -346,6 +346,17 @@ public class RestApiServiceTest
 		assertTrue(indexFile.exists());
 	}
 	
+	@Test
+	public void testGetSdkVersion() throws Exception {
+		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
+		setupService(temporarySdk);
+		App app1 = ThreadSafeStaticBRJSAccessor.root.userApp("app1");
+		app1.create();
+		assertTrue( service.getSdkVersion().contains("\"Version\"") );
+		assertTrue( service.getSdkVersion().contains("\"BuildDate\"") );
+	}
+	
+	
 	private void setupService(File sdkRoot) throws InvalidSdkDirectoryException
 	{
 		BRJS brjs = BRJSTestModelFactory.createModel(sdkRoot);
