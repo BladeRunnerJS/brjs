@@ -52,7 +52,7 @@ public class NodeImporter {
     		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
     		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
     		if (temporaryUnzipDirFiles.length != 1) {
-    			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
+    			throw new IOException("Expected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
     		}
     		
     		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
