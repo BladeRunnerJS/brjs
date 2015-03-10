@@ -192,7 +192,7 @@ public class ThirdpartySourceModule implements SourceModule, DirectoryLinkedAsse
 				{
 					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
 				}
-				dependentLibs.addAll(dependentLib.assets());
+				dependentLibs.add(dependentLib.asset(dependentLib.requirePrefix()));
 			}
 		}
 		catch (ConfigException ex)
