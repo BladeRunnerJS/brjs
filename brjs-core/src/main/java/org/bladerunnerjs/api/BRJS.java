@@ -97,6 +97,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private boolean closed = false;
 	private CharBufferPool pool = new CharBufferPool();
 	private MemoizedFile appsFolder;
+	private MemoizedFile sdkFolder;
 
 	public BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
@@ -106,6 +107,7 @@ public class BRJS extends AbstractBRJSRootNode
 		this.fileModificationRegistry = new FileModificationRegistry( ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		appsFolder = findAppsFolder(brjsDir, workingDir);
+		sdkFolder = dir().file("sdk");
 		userApps = new NodeList<>(this, App.class, appsFolder.getName(), null, null, appsFolder.getParentFile());
 		
 		try
@@ -137,6 +139,14 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
+	}
+	
+	public MemoizedFile appsFolder() {
+		return appsFolder;
+	}
+	
+	public MemoizedFile sdkFolder() {
+		return sdkFolder;
 	}
 	
 	private MemoizedFile findAppsFolder(File brjsDir, File workingDir) {

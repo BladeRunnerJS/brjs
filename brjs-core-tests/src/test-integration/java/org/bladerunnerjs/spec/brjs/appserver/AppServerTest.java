@@ -238,6 +238,20 @@ public class AppServerTest extends SpecTest
 	}
 	
 	@Test
+	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstanceAndOnlyAppsDirectoryExists() throws Exception
+	{
+		given(brjs).doesNotContainFolder("brjs-apps")
+			.and(brjs).containsFolder("apps")
+			.and(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread(); 
+			/*and*/ secondBrjsProcess = createNonTestModel();
+			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
+			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
+			.and(brjs.applicationServer(appServerPort)).started();
+		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
+		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/");
+	}
+	
+	@Test
 	public void newAppsAreHostedOnAppserverAfterServerRestartWhenCreateAppCommandUsedFromADifferentModelInstance() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
