@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.bundlers.aliasing;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
@@ -31,11 +30,6 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 				BundlableNode bundlableNode = (BundlableNode) assetContainer;
 				createAliasDataSourceModule(assetDiscoveryInitiator, aliasAssets, bundlableNode);
 				addBundlableNodeAliases(implicitDependencies, assetDiscoveryInitiator, aliasAssets, bundlableNode);
-//				for (AssetContainer scopeAssetContainer : assetContainer.scopeAssetContainers()) {
-//					for (MemoizedFile childDir : getAliasDefinitionsLocations(scopeAssetContainer.dir())) {
-//						addScenarioAliases(implicitDependencies, assetDiscoveryInitiator, aliasAssets, bundlableNode, scopeAssetContainer, childDir);
-//					}					
-//				}
 			}
 			
 			for (MemoizedFile childDir : getAliasDefinitionsLocations(dir)) {
@@ -45,8 +39,6 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 		
 		return aliasAssets;
 	}
-
-
 
 	private void addAssetContainerAliases(AssetContainer assetContainer, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, MemoizedFile childDir)
 	{
@@ -74,23 +66,6 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 		}
 	}
 
-	private void addScenarioAliases(List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode, AssetContainer assetContainer, MemoizedFile childDir)
-	{
-		AliasesFile aliasesFile = new AliasesFile(bundlableNode);
-		AliasDefinitionsFile aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, childDir);
-		if (aliasDefinitionsFile.getUnderlyingFile().exists()) {
-			for (AliasDefinition aliasDefinition : getScenarioAliases(aliasesFile, aliasDefinitionsFile)) {
-				if (!assetDiscoveryInitiator.hasRegisteredAsset(AliasCommonJsSourceModule.calculateRequirePath(aliasDefinition))) {
-					Asset aliasAsset = new AliasCommonJsSourceModule(assetContainer, aliasDefinition, implicitDependencies);
-					assetDiscoveryInitiator.registerAsset(aliasAsset);
-					aliasAssets.add(aliasAsset);
-				}
-			}
-		}
-	}
-	
-
-
 	private void createAliasDataSourceModule(AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode)
 	{
 		Asset aliasDataAsset = new AliasDataSourceModule(bundlableNode);
@@ -99,8 +74,6 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 			aliasAssets.add(aliasDataAsset);
 		}
 	}
-	
-
 
 	private List<MemoizedFile> getAliasDefinitionsLocations(MemoizedFile dir) {
 		List<MemoizedFile> aliasDefinitionsDirs = new ArrayList<>();
@@ -122,51 +95,6 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 			}
 		}
 		return false;
-	}
-
-	private List<AliasDefinition> getScenarioAliases(AliasesFile aliasesFile, AliasDefinitionsFile aliasDefinitionsFile) {
-		try {
-			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-			
-			for (AliasDefinition aliasDefinition : aliasDefinitionsFile.aliases()) {
-				Map<String, AliasOverride> scenarioAliases = aliasDefinitionsFile.scenarioAliases(aliasDefinition);
-				if (scenarioAliases.isEmpty()) {
-					continue;
-				}
-				
-				AliasOverride scenarioAlias = scenarioAliases.get(aliasesFile.scenarioName());
-				AliasDefinition scenarioAliasDefinition;
-				if (scenarioAlias == null) {
-					scenarioAliasDefinition = aliasDefinition; 					
-				} else {
-					scenarioAliasDefinition = new AliasDefinition(scenarioAlias.getName(), scenarioAlias.getClassName(), aliasDefinition.getInterfaceName()); 
-				}
-				aliasDefinitions.add( scenarioAliasDefinition );
-			}
-			
-			return aliasDefinitions;
-		}
-		catch (ContentFileProcessingException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-	
-	private List<AliasDefinition> getNonScenarioAliases(AliasDefinitionsFile aliasDefinitionsFile)
-	{
-		try {
-			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-			
-			for (AliasDefinition aliasDefinition : aliasDefinitionsFile.aliases()) {
-				if (aliasDefinitionsFile.scenarioAliases(aliasDefinition).isEmpty()) {
-					aliasDefinitions.add(aliasDefinition);
-				}
-			}
-			
-			return aliasDefinitions;
-		}
-		catch (ContentFileProcessingException ex) {
-			throw new RuntimeException(ex);
-		}
 	}
 	
 	private List<AliasDefinition> getAliases(AliasDefinitionsFile aliasDefinitionsFile) 
