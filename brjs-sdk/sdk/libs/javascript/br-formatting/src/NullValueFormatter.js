@@ -2,6 +2,9 @@
  * @module br/formatting/NullValueFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+
 /**
  * @class
  * @alias module:br/formatting/NullValueFormatter
@@ -15,12 +18,11 @@
  *
  * <pre>br.formatting.NullValueFormatter.format("", {nullValue:"N/A"})</pre>
  */
-br.formatting.NullValueFormatter = function()
-{
+function NullValueFormatter() {
 	this.m_sNullValueDefault = "\u00a0";
-};
+}
 
-br.Core.implement(br.formatting.NullValueFormatter, br.formatting.Formatter);
+topiarist.implement(NullValueFormatter, Formatter);
 
 /**
  * Substitutes replacement text when the string is void (null, undefined, or the empty string).
@@ -43,13 +45,15 @@ br.Core.implement(br.formatting.NullValueFormatter, br.formatting.Formatter);
  * @return  the replacement string in the case of a void, otherwise the unchanged string.
  * @type  String
  */
-br.formatting.NullValueFormatter.prototype.format = function(vValue, mAttributes) {
+NullValueFormatter.prototype.format = function(vValue, mAttributes) {
 	return (vValue == undefined || vValue == null ||  vValue == "") ? mAttributes["nullValue"] == null ? this.m_sNullValueDefault : mAttributes["nullValue"] : vValue;
 };
 
 /**
  * @private
  */
-br.formatting.NullValueFormatter.prototype.toString = function() {
+NullValueFormatter.prototype.toString = function() {
 	return "br.formatting.NullValueFormatter";
 };
+
+module.exports = NullValueFormatter;

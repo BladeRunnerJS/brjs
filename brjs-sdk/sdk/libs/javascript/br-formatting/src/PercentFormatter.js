@@ -2,6 +2,11 @@
  * @module br/formatting/PercentFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var NumberUtil = require('br/util/Number');
+var RoundingFormatter = require('br/formatting/RoundingFormatter');
+
 /**
  * @class
  * @alias module:br/formatting/PercentFormatter
@@ -15,11 +20,11 @@
  *
  * <pre>br.formatting.PercentFormatter.format(0.618, {dp:1})</pre>
  */
-br.formatting.PercentFormatter = function() {
-	this.roundingFormatter = new br.formatting.RoundingFormatter();
-};
+function PercentFormatter() {
+	this.roundingFormatter = new RoundingFormatter();
+}
 
-br.Core.implement(br.formatting.PercentFormatter, br.formatting.Formatter);
+topiarist.implement(PercentFormatter, Formatter);
 
 /**
  * Converts a decimal number to a percentage.
@@ -29,8 +34,8 @@ br.Core.implement(br.formatting.PercentFormatter, br.formatting.Formatter);
  * @return  the number specified as a percentage.
  * @type  String
  */
-br.formatting.PercentFormatter.prototype.format = function(vValue, mAttributes) {
-	if (br.util.Number.isNumber(vValue)) {
+PercentFormatter.prototype.format = function(vValue, mAttributes) {
+	if (NumberUtil.isNumber(vValue)) {
 		vValue = this.roundingFormatter.format(vValue * 100, mAttributes) + "%";
 	}
 	return vValue;
@@ -39,6 +44,8 @@ br.formatting.PercentFormatter.prototype.format = function(vValue, mAttributes) 
 /**
  * @private
  */
-br.formatting.PercentFormatter.prototype.toString = function() {
+PercentFormatter.prototype.toString = function() {
 	return "br.formatting.PercentFormatter";
 };
+
+module.exports = PercentFormatter;

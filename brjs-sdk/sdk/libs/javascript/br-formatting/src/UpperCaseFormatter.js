@@ -2,6 +2,9 @@
  * @module br/formatting/UpperCaseFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+
 /**
  * @class
  * @alias module:br/formatting/UpperCaseFormatter
@@ -15,10 +18,9 @@
  *
  * <pre>br.formatting.UpperCaseFormatter.format("Hello, World!", {})</pre>
  */
-br.formatting.UpperCaseFormatter = function() {
-};
+function UpperCaseFormatter() {}
 
-br.Core.implement(br.formatting.UpperCaseFormatter, br.formatting.Formatter);
+topiarist.implement(UpperCaseFormatter, Formatter);
 
 /**
  * Converts a string to lower case.
@@ -28,13 +30,15 @@ br.Core.implement(br.formatting.UpperCaseFormatter, br.formatting.Formatter);
  * @return  the string, converted to upper case.
  * @type  String
  */
-br.formatting.UpperCaseFormatter.prototype.format = function(vValue, mAttributes) {
+UpperCaseFormatter.prototype.format = function(vValue, mAttributes) {
 	return typeof(vValue) == "string" ? vValue.toUpperCase() : vValue
 };
 
 /**
  * @private
  */
-br.formatting.UpperCaseFormatter.prototype.toString = function() {
+UpperCaseFormatter.prototype.toString = function() {
 	return "br.formatting.UpperCaseFormatter";
 };
+
+module.exports = UpperCaseFormatter;

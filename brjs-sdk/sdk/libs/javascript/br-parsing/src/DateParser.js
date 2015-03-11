@@ -6,6 +6,7 @@ var topiarist = require('topiarist');
 var Parser = require('br/parsing/Parser');
 var DateFormatter = require('br/formatting/DateFormatter');
 var RegExpUtil = require('br/util/RegExp');
+var DateParsingUtil = require('br/parsing/DateParsingUtil');
 
 /**
  * @class
@@ -64,48 +65,7 @@ DateParser.prototype.parse = function(vValue, mAttributes) {
 };
 
 DateParser.prototype.isSingleUseParser = function() {
-  return false;
-};
-
-/**
- * @static
- * @param {string|Date} vDate The date to parse
- * @param {string} sDateFormat The input format
- * @param {object} [mAttributes] A map of options
- * @param {boolean} [mAttributes.endOfUnit=false] Whether to parse ambiguous dates to the end of a month or year
- * @returns {Date}
- */
-DateParser.parseDate = function(vDate, sDateFormat, mAttributes) {
-	if (!vDate)
-	{
-		return null;
-	}
-	if (vDate instanceof Date)
-	{
-		sDateFormat = "javascript";
-	}
-	else if (!sDateFormat)
-	{
-		sDateFormat = "DD-MM-YYYY HH:mm:ss";
-	}
-
-	switch (sDateFormat) {
-		case "java":
-			var oDate = new Date();
-			oDate.setTime(Number(vDate));
-			return oDate;
-		case "javascript":
-			return vDate;
-		case "U":
-			return moment(vDate*1000).toDate();
-		default:
-			var oMoment = moment(String(vDate), sDateFormat);
-			if (mAttributes && mAttributes.endOfUnit === true && sDateFormat.toLowerCase().indexOf('d') === -1) {
-				oMoment.endOf(sDateFormat === 'YYYY' ? 'year' : 'month');
-			}
-			var sValidationString = oMoment.format(sDateFormat);
-			return (sValidationString.toLowerCase() == String(vDate).toLowerCase()) ? oMoment.toDate() : null;
-	}
+	return false;
 };
 
 /**
@@ -113,7 +73,7 @@ DateParser.parseDate = function(vDate, sDateFormat, mAttributes) {
  */
 DateParser.prototype._matchDate = function(vDate, pInputFormats, sOutputFormat, mAttributes) {
 	for (var i = 0, n = pInputFormats.length; i < n; ++i) {
-		var oDate = br.parsing.DateParser.parseDate(vDate, pInputFormats[i], mAttributes);
+		var oDate = DateParsingUtil.parse(vDate, pInputFormats[i], mAttributes);
 		if (oDate) {
 			return this.m_oDateFormatter.formatDate(oDate, sOutputFormat);
 		}

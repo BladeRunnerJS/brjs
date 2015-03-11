@@ -28,4 +28,4 @@ Formatter.prototype.format = function(vValue, mAttributes) {
 	throw new Errors.UnimplementedInterfaceError("Formatter.format() has not been implemented.");
 };
 
-br.formatting.Formatter = Formatter;
+module.exports = Formatter;

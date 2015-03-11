@@ -2,7 +2,10 @@
  * @module br/formatting/DateFormatter
  */
 
-br.Core.thirdparty("momentjs");
+var moment = require('momentjs');
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var DateParsingUtil = require('br/parsing/DateParsingUtil');
 
 /**
  * @class
@@ -21,9 +24,9 @@ br.Core.thirdparty("momentjs");
  *
  * See {@link module:br/presenter/parser/DateParser} for the complementary parser.
  */
-br.formatting.DateFormatter = function() {};
+function DateFormatter() {}
 
-br.Core.implement(br.formatting.DateFormatter, br.formatting.Formatter);
+topiarist.implement(DateFormatter, Formatter);
 
 /**
  * Formats a date by converting it from a specified input format to a new output format.
@@ -36,9 +39,9 @@ br.Core.implement(br.formatting.DateFormatter, br.formatting.Formatter);
  * @return  the output date.
  * @type String
  */
-br.formatting.DateFormatter.prototype.format = function(vValue, mAttributes) {
+DateFormatter.prototype.format = function(vValue, mAttributes) {
 	if (vValue) {
-		var oDate = br.parsing.DateParser.parseDate(vValue, mAttributes.inputFormat);
+		var oDate = DateParsingUtil.parse(vValue, mAttributes.inputFormat);
 		if (oDate) {
 			vValue = this.formatDate(oDate, mAttributes.outputFormat, mAttributes);
 		}
@@ -50,14 +53,14 @@ br.formatting.DateFormatter.prototype.format = function(vValue, mAttributes) {
  * @private
  * @deprecated
  */
-br.formatting.DateFormatter.prototype.parseDate = function(vDate, sDateFormat) {
-	return br.parsing.DateParser.parseDate(vDate, sDateFormat);
+DateFormatter.prototype.parseDate = function(vDate, sDateFormat) {
+	return DateParsingUtil.parse(vDate, sDateFormat);
 };
 
 /**
  * @private
  */
-br.formatting.DateFormatter.prototype.formatDate = function(oDate, sDateFormat, mAttributes) {
+DateFormatter.prototype.formatDate = function(oDate, sDateFormat, mAttributes) {
 	var oTranslator = require("br/I18n").getTranslator();
 	if(mAttributes && mAttributes.adjustForTimezone)
 	{
@@ -84,7 +87,7 @@ br.formatting.DateFormatter.prototype.formatDate = function(oDate, sDateFormat, 
 /**
  * @private
  */
-br.formatting.DateFormatter.prototype._adjustDateForTimezone = function(oDate) {
+DateFormatter.prototype._adjustDateForTimezone = function(oDate) {
 	var oDateClone = new Date(oDate.getTime()),
 		d = new Date(),
 		timezoneOffsetInMinutes = -(d.getTimezoneOffset());
@@ -97,6 +100,8 @@ br.formatting.DateFormatter.prototype._adjustDateForTimezone = function(oDate) {
 /**
  * @private
  */
-br.formatting.DateFormatter.prototype.toString = function() {
+DateFormatter.prototype.toString = function() {
 	return "br.formatting.DateFormatter";
 };
+
+module.exports = DateFormatter;

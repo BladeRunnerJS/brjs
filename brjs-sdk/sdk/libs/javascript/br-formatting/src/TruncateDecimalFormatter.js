@@ -2,6 +2,10 @@
  * @module br/formatting/TruncateDecimalFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var NumberUtil = require('br/util/Number');
+
 /**
  * @class
  * @alias module:br/formatting/TruncateDecimalFormatter
@@ -15,10 +19,9 @@
  *
  * <pre>br.formatting.TruncateDecimalFormatter.format(3.14159, {dp:3})</pre>
  */
-br.formatting.TruncateDecimalFormatter = function() {
-};
+function TruncateDecimalFormatter() {}
 
-br.Core.implement(br.formatting.TruncateDecimalFormatter, br.formatting.Formatter);
+topiarist.implement(TruncateDecimalFormatter, Formatter);
 
 /**
  * Truncates the value to the specified number of decimal places.  If the value has already fewer
@@ -42,11 +45,11 @@ br.Core.implement(br.formatting.TruncateDecimalFormatter, br.formatting.Formatte
  * @return  the number formatted to the specified precision.
  * @type  String
  */
-br.formatting.TruncateDecimalFormatter.prototype.format = function(vValue, mAttributes) {
-	if (br.util.Number.isNumber(vValue)) {
+TruncateDecimalFormatter.prototype.format = function(vValue, mAttributes) {
+	if (NumberUtil.isNumber(vValue)) {
 		var sValue = String(vValue);
 		var sUnFormattedValue = this._removeExponent(sValue);
-		var sFormattedValue = br.util.Number.toFixed(vValue, mAttributes["dp"]);
+		var sFormattedValue = NumberUtil.toFixed(vValue, mAttributes["dp"]);
 		vValue = this._getShorter(sFormattedValue, sUnFormattedValue);
 	}
 	return vValue;
@@ -55,20 +58,22 @@ br.formatting.TruncateDecimalFormatter.prototype.format = function(vValue, mAttr
 /**
  * @private
  */
-br.formatting.TruncateDecimalFormatter.prototype._removeExponent = function(s) {
+TruncateDecimalFormatter.prototype._removeExponent = function(s) {
 	return s.indexOf("e") >= 0 ? String(Number(s)) : s;
 };
 
 /**
  * @private
  */
-br.formatting.TruncateDecimalFormatter.prototype._getShorter = function(s1, s2) {
+TruncateDecimalFormatter.prototype._getShorter = function(s1, s2) {
 	return s1.length < s2.length ? s1 : s2;
 };
 
 /**
  * @private
  */
-br.formatting.TruncateDecimalFormatter.prototype.toString = function() {
+TruncateDecimalFormatter.prototype.toString = function() {
 	return "br.formatting.TruncateDecimalFormatter";
 };
+
+module.exports = TruncateDecimalFormatter;
