@@ -2,9 +2,11 @@ package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.api.BundlableNode;
@@ -63,6 +65,45 @@ public class AliasingUtility
 			scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
 		}
 		return scopeAliasDefinitions;
+	}
+
+	public static List<AliasDefinition> aliases(BundlableNode bundlableNode)
+	{
+		try {
+			AliasesFile aliasesFile = aliasesFile(bundlableNode);
+			if (!aliasesFile.getUnderlyingFile().isFile()) {
+				return Collections.emptyList();
+			}
+			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+			for (AliasOverride aliasOverride : aliasesFile.aliasOverrides()) {
+				aliasDefinitions.add( aliasesFile.getAlias(aliasOverride.getName()) );
+			}
+			return aliasDefinitions;
+		}
+		catch (ContentFileProcessingException | AliasException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	
+	public static List<AliasDefinition> aliases(AssetContainer assetContainer, MemoizedFile childDir)
+	{
+		return aliases(assetContainer, assetContainer.dir().getRelativePath(childDir));
+	}
+	
+	
+	public static List<AliasDefinition> aliases(AssetContainer assetContainer, String path)
+	{
+		try {
+			AliasDefinitionsFile aliasDefinitionsFile = aliasDefinitionsFile(assetContainer, path);
+			if (!aliasDefinitionsFile.getUnderlyingFile().isFile()) {
+				return Collections.emptyList();
+			}
+			return aliasDefinitionsFile.aliases();
+		}
+		catch (ContentFileProcessingException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 	
 }
