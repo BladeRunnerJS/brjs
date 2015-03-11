@@ -9,6 +9,7 @@ var RegExpUtil = require('br/util/RegExp');
 var DateParsingUtil = require('br/parsing/DateParsingUtil');
 
 /**
+ * @deprecated The functionality provided by this parser can be achieved more reliably with {@link module:br/parsing/LocalisedDateParser}
  * @class
  * @alias module:br/parsing/DateParser
  * @implements module:br/parsing/Parser

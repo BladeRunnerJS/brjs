@@ -8,6 +8,7 @@ var Formatter = require('br/formatting/Formatter');
 var DateParsingUtil = require('br/parsing/DateParsingUtil');
 
 /**
+ * @deprecated The functionality provided by this formatter can be achieved more reliably with {@link module:br/formatting/LocalisedDateFormatter}
  * @class
  * @alias module:br/formatting/DateFormatter
  * @implements module:br/formatting/Formatter
