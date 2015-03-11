@@ -1,6 +1,9 @@
 package org.bladerunnerjs.utility.reader;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -9,6 +12,8 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.model.engine.NodeProperties;
 import org.junit.Test;
 
 public class XmlCommentStrippingDependenciesReaderTest
@@ -190,7 +195,12 @@ public class XmlCommentStrippingDependenciesReaderTest
 	
 	private String stripComments(String input) throws IOException
 	{
-		try(Reader reader = new XmlCommentStrippingDependenciesReader(new StringReader(input)); StringWriter stringWriter = new StringWriter())
+		NodeProperties mockNodeProperties = mock(NodeProperties.class);
+		BRJS brjs = mock(BRJS.class);
+		when(brjs.nodeProperties(anyString())).thenReturn(mockNodeProperties);
+		when(mockNodeProperties.getTransientProperty(anyString())).thenReturn(new CharBufferPool());
+		
+		try(Reader reader = new XmlCommentStrippingDependenciesReader(brjs, new StringReader(input)); StringWriter stringWriter = new StringWriter())
 		{
 			IOUtils.copy(reader, stringWriter);
 			return stringWriter.toString();

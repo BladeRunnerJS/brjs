@@ -16,8 +16,8 @@ public class LinkedFileAssetDependenciesReader extends Reader
 
 	public LinkedFileAssetDependenciesReader(Asset asset) throws IOException
 	{
-		Reader jsCommentStrippingReader = new JsCommentStrippingReader(asset.getReader(), false);
-		linkedFileAssetDependenciesReader = new XmlCommentStrippingDependenciesReader(jsCommentStrippingReader);
+		Reader jsCommentStrippingReader = new JsCommentStrippingReader(asset.assetContainer().root(), asset.getReader(), false);
+		linkedFileAssetDependenciesReader = new XmlCommentStrippingDependenciesReader(asset.assetContainer().root(), jsCommentStrippingReader);
 	}
 	
 	@Override

@@ -16,9 +16,9 @@ public class NamespacedJsPreExportDefineTimeDependenciesReader extends Reader {
 	
 	public NamespacedJsPreExportDefineTimeDependenciesReader(AugmentedContentSourceModule sourceModule) throws IOException
 	{
-		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.getUnalteredContentReader(), false);
-		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader);
-		namespacedJsPreExportDefineTimeDependenciesReader = new JsModuleExportsStrippingReader(codeBlockStrippingReader, true);
+		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.assetContainer().root(), sourceModule.getUnalteredContentReader(), false);
+		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(sourceModule.assetContainer().root(), commentStrippingReader);
+		namespacedJsPreExportDefineTimeDependenciesReader = new JsModuleExportsStrippingReader(sourceModule.assetContainer().root(), codeBlockStrippingReader, true);
 	}
 	
 	@Override

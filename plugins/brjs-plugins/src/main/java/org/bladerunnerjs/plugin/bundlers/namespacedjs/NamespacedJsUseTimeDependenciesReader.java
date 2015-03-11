@@ -28,8 +28,8 @@ public class NamespacedJsUseTimeDependenciesReader extends Reader {
 			sourceReader = asset.getReader();
 		}
 		
-		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false);
-		namespacedJsUseTimeDependenciesReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader, insideCodeBlockPredicate);
+		Reader commentStrippingReader = new JsCommentStrippingReader(asset.assetContainer().root(), sourceReader, false);
+		namespacedJsUseTimeDependenciesReader = new JsCodeBlockStrippingDependenciesReader(asset.assetContainer().root(), commentStrippingReader, insideCodeBlockPredicate);
 	}
 	
 	@Override

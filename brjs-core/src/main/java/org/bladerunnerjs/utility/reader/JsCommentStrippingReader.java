@@ -3,6 +3,8 @@ package org.bladerunnerjs.utility.reader;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.bladerunnerjs.api.BRJS;
+
 /*
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
  * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
@@ -28,10 +30,12 @@ public class JsCommentStrippingReader extends Reader
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private CommentStripperState state;
+	private BRJS brjs;
 	
-	public JsCommentStrippingReader(Reader sourceReader, boolean preserveJsdoc)
+	public JsCommentStrippingReader(BRJS brjs, Reader sourceReader, boolean preserveJsdoc)
 	{
 		super();
+		this.brjs = brjs;
 		this.sourceReader = sourceReader;
 		this.preserveJsdoc = preserveJsdoc;
 		state = CommentStripperState.WITHIN_SOURCE;
@@ -46,7 +50,7 @@ public class JsCommentStrippingReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters - (MAX_SINGLE_WRITE - 1);
 		char previousChar, nextChar = '\0';
-		char[] sourceBuffer = CharBufferPool.getBuffer();
+		char[] sourceBuffer = CharBufferPool.getBuffer(brjs);
 		
 		while(currentOffset < maxOffset) {
 			if(nextCharPos == lastCharPos) {
@@ -178,7 +182,7 @@ public class JsCommentStrippingReader extends Reader
 			}
 		}
 		
-		CharBufferPool.returnBuffer(sourceBuffer);
+		CharBufferPool.returnBuffer(brjs, sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}

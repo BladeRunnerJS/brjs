@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.utility.TailBuffer;
 
 import com.google.common.base.Predicate;
@@ -40,18 +41,20 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	private int depthCount = 0;
 	private Predicate<Integer> matcherPredicate;
 	private Predicate<String> foundModuleExportsPredicate;
+	private BRJS brjs;
 	
 	
-	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader) {
-		this(sourceReader, new LessThanPredicate(1), DEFAULT_FOUND_MOBULE_EXPORTS_PREDICATE);
+	public JsCodeBlockStrippingDependenciesReader(BRJS brjs, Reader sourceReader) {
+		this(brjs, sourceReader, new LessThanPredicate(1), DEFAULT_FOUND_MOBULE_EXPORTS_PREDICATE);
 	}
 	
-	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, Predicate<Integer> matcherPredicate) {
-		this(sourceReader, matcherPredicate, DEFAULT_FOUND_MOBULE_EXPORTS_PREDICATE);
+	public JsCodeBlockStrippingDependenciesReader(BRJS brjs, Reader sourceReader, Predicate<Integer> matcherPredicate) {
+		this(brjs, sourceReader, matcherPredicate, DEFAULT_FOUND_MOBULE_EXPORTS_PREDICATE);
 	}
 	
-	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader, Predicate<Integer> matcherPredicate, Predicate<String> foundModuleExportsPredicate) {
+	public JsCodeBlockStrippingDependenciesReader(BRJS brjs, Reader sourceReader, Predicate<Integer> matcherPredicate, Predicate<String> foundModuleExportsPredicate) {
 		super();
+		this.brjs = brjs;
 		this.sourceReader = sourceReader;
 		this.matcherPredicate = matcherPredicate;
 		this.foundModuleExportsPredicate = foundModuleExportsPredicate;
@@ -66,7 +69,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
-		char[] sourceBuffer = CharBufferPool.getBuffer();
+		char[] sourceBuffer = CharBufferPool.getBuffer(brjs);
 		
 		while(currentOffset < maxOffset) {
 			if (nextCharPos == lastCharPos) {
@@ -103,7 +106,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			}
 		}
 		
-		CharBufferPool.returnBuffer(sourceBuffer);
+		CharBufferPool.returnBuffer(brjs, sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}

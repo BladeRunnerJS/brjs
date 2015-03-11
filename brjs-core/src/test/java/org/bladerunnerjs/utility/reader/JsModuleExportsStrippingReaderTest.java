@@ -1,6 +1,9 @@
 package org.bladerunnerjs.utility.reader;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -9,6 +12,8 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.model.engine.NodeProperties;
 import org.junit.Test;
 
 public class JsModuleExportsStrippingReaderTest {
@@ -107,11 +112,19 @@ public class JsModuleExportsStrippingReaderTest {
 	}
 	
 	private void stripAfterModuleExportsAndAssertEquals(String input, String expectedOutput) throws IOException {
-		stripModuleExportsAndAssertEquals( input, expectedOutput, new JsModuleExportsStrippingReader(new StringReader(input)) );
+		stripModuleExportsAndAssertEquals( input, expectedOutput, new JsModuleExportsStrippingReader(mockBRJSAndNodeProperties(), new StringReader(input)) );
 	}
 	
 	private void stripBeforeModuleExportsAndAssertEquals(String input, String expectedOutput) throws IOException { 
-		stripModuleExportsAndAssertEquals( input, expectedOutput, new JsModuleExportsStrippingReader(new StringReader(input), false) );
+		stripModuleExportsAndAssertEquals( input, expectedOutput, new JsModuleExportsStrippingReader(mockBRJSAndNodeProperties(), new StringReader(input), false) );
+	}
+	
+	private BRJS mockBRJSAndNodeProperties() {
+		NodeProperties mockNodeProperties = mock(NodeProperties.class);
+		BRJS brjs = mock(BRJS.class);
+		when(brjs.nodeProperties(anyString())).thenReturn(mockNodeProperties);
+		when(mockNodeProperties.getTransientProperty(anyString())).thenReturn(new CharBufferPool());
+		return brjs;
 	}
 	
 	private void stripModuleExportsAndAssertEquals(String input, String expectedOutput, Reader reader) throws IOException {

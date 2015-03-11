@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.utility.TailBuffer;
 
 /*
@@ -25,13 +26,15 @@ public class JsModuleExportsStrippingReader extends Reader {
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private boolean stripPostModuleExports;
+	private BRJS brjs;
 	
-	public JsModuleExportsStrippingReader(Reader sourceReader) {
-		this(sourceReader, true);
+	public JsModuleExportsStrippingReader(BRJS brjs, Reader sourceReader) {
+		this(brjs, sourceReader, true);
 	}
 	
-	public JsModuleExportsStrippingReader(Reader sourceReader, boolean stripPostModuleExports) {
+	public JsModuleExportsStrippingReader(BRJS brjs, Reader sourceReader, boolean stripPostModuleExports) {
 		super();
+		this.brjs = brjs;
 		this.sourceReader = sourceReader;
 		this.stripPostModuleExports = stripPostModuleExports;
 	}
@@ -45,7 +48,7 @@ public class JsModuleExportsStrippingReader extends Reader {
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
-		char[] sourceBuffer = CharBufferPool.getBuffer();
+		char[] sourceBuffer = CharBufferPool.getBuffer(brjs);
 		
 		while(currentOffset < maxOffset) {
 			if (nextCharPos == lastCharPos) {
@@ -71,7 +74,7 @@ public class JsModuleExportsStrippingReader extends Reader {
 			}
 		}
 		
-		CharBufferPool.returnBuffer(sourceBuffer);
+		CharBufferPool.returnBuffer(brjs, sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}

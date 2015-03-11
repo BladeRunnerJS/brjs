@@ -18,8 +18,8 @@ public class CommonJsUseTimeDependenciesReader extends Reader
 		Predicate<Integer> insideCodeBlockPredicate = new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0);
 		
 		Reader sourceReader = sourceModule.getUnalteredContentReader();
-		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false);
-		useTimeDependencesReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader, insideCodeBlockPredicate);
+		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.assetContainer().root(), sourceReader, false);
+		useTimeDependencesReader = new JsCodeBlockStrippingDependenciesReader(sourceModule.assetContainer().root(), commentStrippingReader, insideCodeBlockPredicate);
 	}
 	
 	@Override

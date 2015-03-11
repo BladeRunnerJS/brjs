@@ -15,9 +15,9 @@ public class CommonJsPreExportDefineTimeDependenciesReader extends Reader
 
 	public CommonJsPreExportDefineTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
 		Reader sourceReader = sourceModule.getUnalteredContentReader();
-		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false);
-		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader);
-		preExportDefineTimeDependencesReader = new JsModuleExportsStrippingReader(codeBlockStrippingReader, true);
+		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.assetContainer().root(), sourceReader, false);
+		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(sourceModule.assetContainer().root(), commentStrippingReader);
+		preExportDefineTimeDependencesReader = new JsModuleExportsStrippingReader(sourceModule.assetContainer().root(), codeBlockStrippingReader, true);
 	}
 	
 	@Override

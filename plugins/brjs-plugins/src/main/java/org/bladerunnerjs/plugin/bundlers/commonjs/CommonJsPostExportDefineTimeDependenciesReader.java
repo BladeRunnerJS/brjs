@@ -15,9 +15,9 @@ public class CommonJsPostExportDefineTimeDependenciesReader extends Reader
 
 	public CommonJsPostExportDefineTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
 		Reader sourceReader = sourceModule.getUnalteredContentReader();
-		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false);
-		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader);
-		postExportDefineTimeDependencesReader = new JsModuleExportsStrippingReader(codeBlockStrippingReader, false);
+		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.assetContainer().root(), sourceReader, false);
+		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(sourceModule.assetContainer().root(), commentStrippingReader);
+		postExportDefineTimeDependencesReader = new JsModuleExportsStrippingReader(sourceModule.assetContainer().root(), codeBlockStrippingReader, false);
 	}
 	
 	@Override

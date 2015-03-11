@@ -48,6 +48,6 @@ public class IndexPageAsset extends LinkedFileAsset {
 	
 	@Override
 	public Reader getReader() throws IOException {
-		return new JsCommentStrippingReader(super.getReader(), false);
+		return new JsCommentStrippingReader(assetContainer().root(), super.getReader(), false);
 	}
 }
