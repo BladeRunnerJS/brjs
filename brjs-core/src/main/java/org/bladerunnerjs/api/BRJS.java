@@ -96,6 +96,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private TestRunnerConf testRunnerConf;
 	private boolean closed = false;
 	private CharBufferPool pool = new CharBufferPool();
+	private MemoizedFile appsFolder;
 
 	public BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
@@ -104,7 +105,8 @@ public class BRJS extends AbstractBRJSRootNode
 		this.appVersionGenerator = appVersionGenerator;
 		this.fileModificationRegistry = new FileModificationRegistry( ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
-		userApps = createAppsNodeList(brjsDir, workingDir);
+		appsFolder = findAppsFolder(brjsDir, workingDir);
+		userApps = new NodeList<>(this, App.class, appsFolder.getName(), null, null, appsFolder.getParentFile());
 		
 		try
 		{
@@ -137,21 +139,21 @@ public class BRJS extends AbstractBRJSRootNode
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 	}
 	
-	private NodeList<App> createAppsNodeList(File brjsDir, File workingDir) {
+	private MemoizedFile findAppsFolder(File brjsDir, File workingDir) {
 		File currentFolder = workingDir;
 		while(currentFolder != null) {
 			if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
 				if (new File(currentFolder, "brjs-apps").exists()) {
 					logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, "brjs-apps", brjsDir.getAbsolutePath(), "brjs-apps", "apps", brjsDir.getAbsolutePath()+"/apps", brjsDir.getAbsolutePath()+"/brjs-apps"); 
 				}
-				return new NodeList<>(this, App.class, "apps", null, null, getMemoizedFile(currentFolder));
+				return getMemoizedFile(currentFolder).file("apps");
 			} else if (new File(currentFolder, "brjs-apps").exists()) {
-				return new NodeList<>(this, App.class, "brjs-apps", null, null, getMemoizedFile(currentFolder));
+				return getMemoizedFile(currentFolder).file("brjs-apps");
 			}
 			
 			currentFolder = currentFolder.getParentFile();
 		}
-		return new NodeList<>(this, App.class, "brjs-apps", null);
+		return dir().file("brjs-apps");
 	}
 	
 	public CharBufferPool getCharBufferPool(){
