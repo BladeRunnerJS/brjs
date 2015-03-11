@@ -2,6 +2,8 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +24,8 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.TypedTestPack;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
@@ -30,6 +34,7 @@ import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
 import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
+import org.bladerunnerjs.logging.SLF4JLogger;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
@@ -40,6 +45,7 @@ import org.mockito.Mockito;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.sf.jmimemagic.*;
 
 @SuppressWarnings("unused")
 public class NodeImporter {
@@ -198,8 +204,24 @@ public class NodeImporter {
 	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
 		for (File f : files) {
-			findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
+			if (f.length() != 0) {
+				if (checkFileMimeType(f).startsWith("text")) {
+					findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
+				}
+			}
 		}
+	}
+
+	private static String checkFileMimeType(File file) throws IOException {
+		byte[] data = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+		MagicMatch match = null;
+		try {
+			match = Magic.getMagicMatch(data);
+		} catch (MagicParseException | MagicMatchNotFoundException
+				| MagicException e) {
+			throw new IOException(e);
+		}
+		return match.getMimeType();
 	}
 	
 	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException

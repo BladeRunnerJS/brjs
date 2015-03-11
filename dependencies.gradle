@@ -93,6 +93,8 @@ Dependencies.putAll([
 	
 	'saxon-dom'					:	'net.sf.saxon:saxon-dom:8.7',
 	
+	'jmimemagic'                :   'net.sf.jmimemagic:jmimemagic:0.1.3',
+	
 	'curl-win32'				:	'util:curl-win32:7.33.0'
 ]);
 
