@@ -2,41 +2,40 @@ package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.api.BundlableNode;
 
 public class AliasingUtility
 {
 	
-	private static Map<BundlableNode,AliasesFile> aliasFiles = new LinkedHashMap<>();
-	private static Map<AssetContainer,Map<String,AliasDefinitionsFile>> aliasDefinitionFiles = new LinkedHashMap<>();
-	
 	public static AliasesFile aliasesFile(BundlableNode bundlableNode) {
-		AliasesFile aliasesFile = aliasFiles.get(bundlableNode);
-		if(aliasesFile == null) {
-			aliasesFile = new AliasesFile(bundlableNode);
-			aliasFiles.put(bundlableNode, aliasesFile);
+		NodeProperties nodeProperties = bundlableNode.nodeProperties(AliasingUtility.class.getSimpleName());
+		String aliasesPropertyName = AliasesFile.class.getSimpleName();
+		Object aliasesProperty = nodeProperties.getTransientProperty(aliasesPropertyName);
+		if (aliasesProperty instanceof AliasesFile) {
+			return (AliasesFile) aliasesProperty;
+		} else {
+			AliasesFile aliasesFile = new AliasesFile(bundlableNode);
+			nodeProperties.setTransientProperty(aliasesPropertyName, aliasesFile);
+			return aliasesFile;
 		}
-		return aliasesFile;
 	}
 	
 	public static AliasDefinitionsFile aliasDefinitionsFile(AssetContainer assetContainer, String path) {
-		if (!aliasDefinitionFiles.containsKey(assetContainer)) {
-			aliasDefinitionFiles.put(assetContainer, new LinkedHashMap<String,AliasDefinitionsFile>());
+		NodeProperties nodeProperties = assetContainer.nodeProperties(AliasingUtility.class.getSimpleName());
+		String aliasDefintionsPropertyName = AliasDefinitionsFile.class.getSimpleName()+"_"+path;
+		Object aliasDefinitionsProperty = nodeProperties.getTransientProperty(aliasDefintionsPropertyName);
+		if (aliasDefinitionsProperty instanceof AliasDefinitionsFile) {
+			return (AliasDefinitionsFile) aliasDefinitionsProperty;
+		} else {
+			AliasDefinitionsFile aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, assetContainer.file(path));
+			nodeProperties.setTransientProperty(aliasDefintionsPropertyName, aliasDefinitionsFile);
+			return aliasDefinitionsFile;
 		}
-		Map<String,AliasDefinitionsFile> assetContainerAliasDefinitionFiles = aliasDefinitionFiles.get(assetContainer);
-		
-		AliasDefinitionsFile aliasDefinitionsFile = assetContainerAliasDefinitionFiles.get(path);
-		if(aliasDefinitionsFile == null) {
-			aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, assetContainer.file(path));
-			assetContainerAliasDefinitionFiles.put(path, aliasDefinitionsFile);
-		}
-		return aliasDefinitionsFile;
 	}
 	
 	public static List<AliasDefinitionsFile> aliasDefinitionFiles(AssetContainer assetContainer) {

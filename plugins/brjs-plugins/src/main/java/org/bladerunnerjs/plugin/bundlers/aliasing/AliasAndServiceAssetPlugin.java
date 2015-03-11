@@ -56,7 +56,7 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 	
 	private void addBundlableNodeAliases(List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode)
 	{
-		AliasesFile aliasesFile = new AliasesFile(bundlableNode);
+		AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundlableNode);
 		for (AliasDefinition aliasDefinition : getAliases(aliasesFile)) {
 			if (!scopeAssetContainersHaveAlias(bundlableNode, aliasDefinition)) {
 				Asset aliasAsset = new AliasCommonJsSourceModule(bundlableNode, aliasDefinition, implicitDependencies);

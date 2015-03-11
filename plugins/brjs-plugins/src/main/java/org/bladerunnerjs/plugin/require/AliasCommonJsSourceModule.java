@@ -18,6 +18,7 @@ import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 
@@ -108,7 +109,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 		try {
 			List<Asset> dependencies = new ArrayList<>();
 			
-			AliasesFile aliasesFile = new AliasesFile(bundlableNode);
+			AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundlableNode);
 			AliasDefinition resolvedAliasDefinition = aliasDefinition;
 			try
 			{

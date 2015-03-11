@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingExcept
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility;
 import org.bladerunnerjs.plugin.require.AliasCommonJsSourceModule;
 
 public class AliasingSerializer {
@@ -61,7 +62,7 @@ public class AliasingSerializer {
 	private static List<AliasDefinition> getAliasDefinitions(BundleSet bundleSet) {
 		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 		
-		AliasesFile aliasesFile = new AliasesFile(bundleSet.getBundlableNode());
+		AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundleSet.getBundlableNode());
 		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			if(sourceModule instanceof AliasCommonJsSourceModule) {
