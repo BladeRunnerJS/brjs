@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.StringLengthComparator;

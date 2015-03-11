@@ -8,7 +8,7 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasNameIsTheSameAsTheClassException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.junit.Before;

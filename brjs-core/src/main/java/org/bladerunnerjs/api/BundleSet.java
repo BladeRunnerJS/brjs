@@ -2,8 +2,6 @@ package org.bladerunnerjs.api;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.BundlableNode;
-
 public interface BundleSet {
 	public BundlableNode getBundlableNode();
 	public List<LinkedAsset> seedAssets();

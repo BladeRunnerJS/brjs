@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BrowsableNode;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
@@ -13,8 +15,6 @@ import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
-import org.bladerunnerjs.model.BrowsableNode;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.UrlContentAccessor;

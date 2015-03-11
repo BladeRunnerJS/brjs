@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.BRLibConf;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;

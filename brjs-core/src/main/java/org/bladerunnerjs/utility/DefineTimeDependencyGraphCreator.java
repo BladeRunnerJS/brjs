@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.BundlableNode;
 
 public class DefineTimeDependencyGraphCreator {
 	public static Map<SourceModule, List<SourceModule>> createGraph(BundlableNode bundlableNode, Set<SourceModule> sourceModules, boolean isPreExport) throws ModelOperationException {

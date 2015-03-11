@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 

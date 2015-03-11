@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 
 public class AliasesFile {
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";

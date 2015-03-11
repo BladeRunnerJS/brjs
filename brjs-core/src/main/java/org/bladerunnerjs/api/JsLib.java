@@ -4,7 +4,6 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 
 public interface JsLib extends BundlableNode, NamedNode, TestableNode {

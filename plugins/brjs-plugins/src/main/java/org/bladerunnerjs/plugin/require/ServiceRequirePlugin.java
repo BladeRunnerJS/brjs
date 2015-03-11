@@ -8,7 +8,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractRequirePlugin;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 
 public class ServiceRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
 	// TODO: update to be a bundlableNodeSourceModules as has been done in AliasRequirePlugin

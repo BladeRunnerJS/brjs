@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJSNode;
 
 import static org.junit.Assert.*;
 

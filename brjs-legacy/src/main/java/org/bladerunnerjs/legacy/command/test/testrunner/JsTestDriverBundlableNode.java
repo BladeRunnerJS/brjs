@@ -25,7 +25,7 @@ import org.bladerunnerjs.api.plugin.Event;
 import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;

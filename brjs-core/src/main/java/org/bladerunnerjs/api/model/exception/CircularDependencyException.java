@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.model.BundlableNode;
 
 import com.google.common.base.Joiner;
 

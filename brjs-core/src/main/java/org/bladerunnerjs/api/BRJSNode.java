@@ -1,10 +1,9 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.model.engine.Node;

@@ -12,7 +12,7 @@ import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingExcept
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 import org.bladerunnerjs.plugin.require.AliasCommonJsSourceModule;
 

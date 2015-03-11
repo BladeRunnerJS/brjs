@@ -10,7 +10,7 @@ import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.utility.deps.DependencyGraphReportBuilder;
 
 import com.martiansoftware.jsap.JSAP;

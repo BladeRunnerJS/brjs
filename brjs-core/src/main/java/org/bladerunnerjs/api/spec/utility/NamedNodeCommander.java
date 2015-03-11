@@ -1,10 +1,10 @@
 package org.bladerunnerjs.api.spec.utility;
 
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.spec.engine.Command;
 import org.bladerunnerjs.api.spec.engine.CommanderChainer;
 import org.bladerunnerjs.api.spec.engine.NodeCommander;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 
 

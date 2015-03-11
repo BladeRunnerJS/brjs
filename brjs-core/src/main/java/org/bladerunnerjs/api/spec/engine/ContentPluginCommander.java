@@ -2,10 +2,10 @@ package org.bladerunnerjs.api.spec.engine;
 
 import java.util.List;
 
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.RequestMode;
 
 

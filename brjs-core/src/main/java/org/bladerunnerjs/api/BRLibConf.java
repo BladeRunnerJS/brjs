@@ -1,8 +1,7 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
-import org.bladerunnerjs.api.ConfFile;
-import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.model.BRLibYamlConf;
 
 public class BRLibConf extends ConfFile<BRLibYamlConf> {
 	

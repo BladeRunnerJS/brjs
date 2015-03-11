@@ -4,10 +4,10 @@ import java.io.File;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.model.NodeTesterFactory;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
-import org.bladerunnerjs.model.BladeWorkbench;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

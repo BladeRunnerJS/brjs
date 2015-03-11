@@ -8,6 +8,7 @@ import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.Workbench;

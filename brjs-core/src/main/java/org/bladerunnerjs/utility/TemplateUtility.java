@@ -13,6 +13,7 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
@@ -20,7 +21,6 @@ import org.bladerunnerjs.api.model.exception.template.TemplateDirectoryAlreadyEx
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.api.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
-import org.bladerunnerjs.model.BRJSNode;
 
 
 public class TemplateUtility

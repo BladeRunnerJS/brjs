@@ -13,9 +13,9 @@ import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.model.BrowsableNode;
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.api.BrowsableNode;
+import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.model.DirectoryLinkedAsset;
 
 public class DependencyGraphReportBuilder {

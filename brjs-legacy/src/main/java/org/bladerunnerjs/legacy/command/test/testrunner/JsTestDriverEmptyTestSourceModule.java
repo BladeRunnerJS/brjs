@@ -10,7 +10,7 @@ import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 
 public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	private final SourceModule sourceModule;

@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.Collection;
 
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJSNode;
 
 public class NodeModelTester
 {

@@ -1,9 +1,10 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.util.Map;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.AbstractBRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 

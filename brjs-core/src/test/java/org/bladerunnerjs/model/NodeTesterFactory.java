@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model;
 
-import org.bladerunnerjs.model.BRJSNode;
+import org.bladerunnerjs.api.BRJSNode;
 
 public class NodeTesterFactory<PN extends BRJSNode>
 {

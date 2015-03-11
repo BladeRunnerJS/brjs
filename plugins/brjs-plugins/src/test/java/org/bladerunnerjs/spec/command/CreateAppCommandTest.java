@@ -12,7 +12,7 @@ import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameExceptio
 import org.bladerunnerjs.api.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
 import org.bladerunnerjs.api.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.commands.standard.CreateAppCommand;
 import org.junit.Before;

@@ -20,7 +20,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.DirectoryLinkedAsset;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
@@ -14,7 +15,6 @@ import org.bladerunnerjs.api.Workbench;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSetCreator;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
 import org.bladerunnerjs.model.StandardBundleSet;

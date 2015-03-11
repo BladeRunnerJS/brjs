@@ -11,7 +11,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BrowsableNode;
+import org.bladerunnerjs.api.BrowsableNode;
 import org.bladerunnerjs.model.IndexPageAsset;
 
 

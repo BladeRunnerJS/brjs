@@ -1,16 +1,15 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.api;
 
 import java.util.List;
 
-import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.engine.Node;
 
 

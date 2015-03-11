@@ -12,8 +12,8 @@ import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BladesetWorkbench;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.api.BladesetWorkbench;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.plugin.bundlers.cssresource.CssResourceContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 

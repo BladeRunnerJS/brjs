@@ -6,11 +6,11 @@ import java.io.File;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.spec.utility.LogMessageStore;
 import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.NodeTesterFactory;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.After;

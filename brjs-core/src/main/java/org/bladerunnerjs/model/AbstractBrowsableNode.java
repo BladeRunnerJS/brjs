@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.bladerunnerjs.api.BrowsableNode;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.plugin.Locale;

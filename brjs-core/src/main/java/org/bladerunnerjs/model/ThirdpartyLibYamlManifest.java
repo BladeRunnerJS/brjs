@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model;
 
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;

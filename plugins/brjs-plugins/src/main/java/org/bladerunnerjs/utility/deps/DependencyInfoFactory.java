@@ -12,7 +12,7 @@ import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.Workbench;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 
 public class DependencyInfoFactory {
 	public static DependencyInfo buildForwardDependencyMap(BundlableNode bundlableNode) throws ModelOperationException {

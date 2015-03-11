@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model;
 
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;

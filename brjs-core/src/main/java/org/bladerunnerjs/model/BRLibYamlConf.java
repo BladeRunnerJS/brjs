@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import javax.validation.constraints.NotNull;
 
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
