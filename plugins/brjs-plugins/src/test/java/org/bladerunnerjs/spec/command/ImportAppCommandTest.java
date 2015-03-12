@@ -4,6 +4,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.BladesetWorkbench;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.NodeAlreadyExistsException;
@@ -14,6 +15,7 @@ import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.plugin.commands.standard.ExportApplicationCommand;
 import org.bladerunnerjs.plugin.commands.standard.ImportAppCommand;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,6 +31,7 @@ public class ImportAppCommandTest extends SpecTest {
 	private Blade blade;
 	private BladeWorkbench workbench;
 	DirNode appJars;
+	private BladesetWorkbench bladesetWorkbench;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -39,11 +42,24 @@ public class ImportAppCommandTest extends SpecTest {
 			app = brjs.app("app");
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
+			bladesetWorkbench = bladeset.workbench();
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
 			importedApp = brjs.app("imported-app");
 			importedAspect = importedApp.aspect("default");
 			appJars = brjs.appJars();
+	}
+	
+	@After
+	public void tearDown() {
+		try
+		{
+			brjs.applicationServer(appServerPort).stop();
+		}
+		catch (Exception e)
+		{
+			// ignore the exception
+		}
 	}
 	
 	@Test
@@ -258,6 +274,20 @@ public class ImportAppCommandTest extends SpecTest {
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedApp.defaultBladeset().blade("myblade")).fileContentsContains("resources/aliases.xml", 
 				"<alias name=\"bar.user-prompt-service\" class=\"importedns.myblade.MyUserPromptService\"/>");
+	}
+	
+	@Test // This test attempts to reproduce a bug we were seeing in the product - https://github.com/BladeRunnerJS/brjs/issues/1238
+	public void bladesetWorkbenchCanBeLoadedWithoutClassCastExceptionAfterImportInANewBRJSProcess() throws Exception {
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenCreated()
+			.and(bladesetWorkbench).containsFileWithContents("resources/css/style.css", "url('./file.png')")
+			.and(bladesetWorkbench).containsFileWithContents("resources/file.png", "my cool image")
+			.and(bladesetWorkbench).indexPageHasContent("")
+			.and(brjs.appJars()).hasBeenCreated()
+			.and(brjs).hasBeenAuthenticallyReCreated();
+		when(brjs.applicationServer(appServerPort)).started();
+		then(brjs.applicationServer(appServerPort)).requestForUrlContains(
+				"/app/bs/workbench/v/dev/css/common/bundle.css", "../../cssresource/bladeset_bs/workbench_resource/resources/css/file.png");
 	}
 	
 }
