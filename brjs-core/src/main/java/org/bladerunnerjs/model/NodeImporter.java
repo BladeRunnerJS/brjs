@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.zip.ZipFile;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
@@ -20,6 +22,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -78,6 +81,7 @@ public class NodeImporter {
 		for(Aspect aspect : tempBrjsApp.aspects()) {
 			updateRequirePrefix(aspect, sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
 			renameTestLocations(aspect.testTypes(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
+			updateRequirePrefixInRootFiles(aspect, sourceAppRequirePrefix);
 		}
 		
 		for(Bladeset bladeset : tempBrjsApp.bladesets()) {
@@ -144,6 +148,7 @@ public class NodeImporter {
 		updateRequirePrefix(bladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		renameTestLocations(bladeset.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
+		updateRequirePrefixInRootFiles(bladeset.workbench(), sourceAppRequirePrefix);
 		
 		for(Blade blade : bladeset.blades()) {
 			updateRequirePrefix(blade, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
@@ -151,7 +156,8 @@ public class NodeImporter {
 			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 			
 			BladeWorkbench workbench = blade.workbench();			
-			updateRequirePrefix(workbench, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
+			updateRequirePrefix(workbench, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+			updateRequirePrefixInRootFiles(workbench, sourceAppRequirePrefix);
 		}
 	}
 	
@@ -183,6 +189,14 @@ public class NodeImporter {
 					findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
 				}
 			}
+		}
+	}
+	
+	private static void updateRequirePrefixInRootFiles(BundlableNode browsableNode, String sourceAppRequirePrefix) throws IOException {
+		File[] rootHtmlFiles = browsableNode.dir().getUnderlyingFile().listFiles( (FileFilter)new SuffixFileFilter(".html"));
+		if (rootHtmlFiles != null) {
+			findAndReplaceInTextFiles(browsableNode.root(), Arrays.asList(rootHtmlFiles), 
+					sourceAppRequirePrefix, browsableNode.requirePrefix());
 		}
 	}
 	
