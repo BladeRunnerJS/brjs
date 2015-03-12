@@ -129,6 +129,15 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).doesNotHaveDir("bs-bladeset/blades/b1/src/appns")
 			.and(importedApp).doesNotHaveDir("default-aspect/src/appns");
 	}
+	@Ignore
+	@Test
+	public void FilesAtRootLevelAreRenameSpacedCorrectlyAfterImportApp() throws Exception {
+		given(aspect).containsFileWithContents("index.html", "require( 'appns/App' );")
+		.and(brjs).commandHasBeenRun("export-app", "app")
+		.and(appJars).containsFile("brjs-lib1.jar");
+	when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+	then(importedApp).fileHasContents("default-aspect/index.html", "require( 'importedns/App' );");
+	}
 	
 	@Test
 	public void importingAnAppDoesntChangeTheAppItWasExportedFrom() throws Exception {
