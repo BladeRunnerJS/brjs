@@ -8,7 +8,6 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
@@ -42,22 +41,18 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 
 	private void addAssetContainerAliases(AssetContainer assetContainer, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, MemoizedFile childDir)
 	{
-		AliasDefinitionsFile aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, childDir);
-		if (aliasDefinitionsFile.getUnderlyingFile().exists()) {
-			for (AliasDefinition aliasDefinition : getAliases(aliasDefinitionsFile)) {
-				if (!assetDiscoveryInitiator.hasRegisteredAsset(AliasCommonJsSourceModule.calculateRequirePath(aliasDefinition))) {
-					Asset aliasAsset = new AliasCommonJsSourceModule(assetContainer, aliasDefinition, implicitDependencies);
-					assetDiscoveryInitiator.registerAsset(aliasAsset);
-					aliasAssets.add(aliasAsset);
-				}
+		for (AliasDefinition aliasDefinition : AliasingUtility.aliases(assetContainer, childDir)) {
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(AliasCommonJsSourceModule.calculateRequirePath(aliasDefinition))) {
+				Asset aliasAsset = new AliasCommonJsSourceModule(assetContainer, aliasDefinition, implicitDependencies);
+				assetDiscoveryInitiator.registerAsset(aliasAsset);
+				aliasAssets.add(aliasAsset);
 			}
 		}
 	}
 	
 	private void addBundlableNodeAliases(List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode)
 	{
-		AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundlableNode);
-		for (AliasDefinition aliasDefinition : getAliases(aliasesFile)) {
+		for (AliasDefinition aliasDefinition : AliasingUtility.aliases(bundlableNode)) {
 			if (!scopeAssetContainersHaveAlias(bundlableNode, aliasDefinition)) {
 				Asset aliasAsset = new AliasCommonJsSourceModule(bundlableNode, aliasDefinition, implicitDependencies);
 				assetDiscoveryInitiator.registerAsset(aliasAsset);
@@ -95,29 +90,6 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 			}
 		}
 		return false;
-	}
-	
-	private List<AliasDefinition> getAliases(AliasDefinitionsFile aliasDefinitionsFile) 
-	{
-		try {
-			return aliasDefinitionsFile.aliases();
-		}
-		catch (ContentFileProcessingException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
-	private List<AliasDefinition> getAliases(AliasesFile aliasesFile) {
-		try {
-			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-			for (AliasOverride aliasOverride : aliasesFile.aliasOverrides()) {
-				aliasDefinitions.add( aliasesFile.getAlias(aliasOverride.getName()) );
-			}
-			return aliasDefinitions;
-		}
-		catch (ContentFileProcessingException | AliasException ex) {
-			throw new RuntimeException(ex);
-		}
 	}
 
 	@Override

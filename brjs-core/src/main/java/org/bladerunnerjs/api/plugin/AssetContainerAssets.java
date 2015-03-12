@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.LinkedAsset;
-import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetContainer;
 
@@ -17,15 +16,12 @@ import org.bladerunnerjs.model.AssetContainer;
 public class AssetContainerAssets
 {
 	private final MemoizedValue<DefaultAssetDiscoveryInitiator> assetDiscoveryResult;
-	private final List<AssetPlugin> assetPlugins;
+
 	private AssetContainer assetContainer;
-	
-	private List<Asset> implicitDependencies = new ArrayList<>();
 	
 	public AssetContainerAssets(AssetContainer assetContainer)
 	{
 		this.assetContainer = assetContainer;
-		assetPlugins = assetContainer.root().plugins().assetPlugins();
 		assetDiscoveryResult = new MemoizedValue<>("AssetContainerAssets.assetDiscoveryResult", assetContainer);
 	}
 	
@@ -53,82 +49,8 @@ public class AssetContainerAssets
 	
 	private DefaultAssetDiscoveryInitiator assetDiscoveryResult() {
 		return assetDiscoveryResult.value(() -> {
-			return new DefaultAssetDiscoveryInitiator();
+			return new DefaultAssetDiscoveryInitiator(assetContainer);
 		});
-	}
-	
-	
-	private class DefaultAssetDiscoveryInitiator implements AssetDiscoveryInitiator {
-		
-		private final Map<String,Asset> assets = new LinkedHashMap<>();
-		private final List<LinkedAsset> seedAssets = new ArrayList<>();
-		
-		private DefaultAssetDiscoveryInitiator() {
-			discoverFurtherAssets(assetContainer.dir(), assetContainer.requirePrefix(), implicitDependencies);
-		}
-		
-		@Override
-		public void registerSeedAsset(LinkedAsset asset)
-		{
-			registerAsset(asset);
-			seedAssets.add(asset);
-		}
-		
-		@Override
-		public void promoteRegisteredAssetToSeed(LinkedAsset asset)
-		{
-			if (!assets.containsKey(asset.getPrimaryRequirePath())) {
-				throw new RuntimeException(
-						String.format("No asset with the require path '%s' has been previously registered.", asset.getPrimaryRequirePath())
-				); 
-			}
-			seedAssets.add(asset);
-		}
-		
-		@Override
-		public void registerAsset(Asset asset)
-		{
-			for (String requirePath : asset.getRequirePaths()) {
-				if (assets.containsKey(requirePath) ) {
-					throw new RuntimeException(
-							String.format("Require paths for the asset '%s' cannot be registered. An asset for the require path '%s' has already been registered.", asset.getAssetPath(), requirePath)
-					);
-				}
-				assets.put(requirePath, asset);				
-			}
-		}
-
-		@Override
-		public boolean hasSeedAsset(String requirePath)
-		{
-			if (!hasRegisteredAsset(requirePath)) {
-				return false;
-			}
-			return seedAssets.contains( getRegisteredAsset(requirePath) );
-		}
-		
-		@Override
-		public boolean hasRegisteredAsset(String requirePath)
-		{
-			return assets.containsKey(requirePath);
-		}
-		
-		@Override
-		public Asset getRegisteredAsset(String requirePath)
-		{
-			return assets.get(requirePath);
-		}
-		
-		@Override
-		public List<Asset> discoverFurtherAssets(MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies)
-		{
-			List<Asset> discoveredAssets = new ArrayList<>();
-			for (AssetPlugin assetPlugin : assetPlugins) {
-				discoveredAssets.addAll( assetPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, this) );
-			}
-			return discoveredAssets;
-		}
-		
 	}
 	
 }
