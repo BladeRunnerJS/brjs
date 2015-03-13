@@ -3,7 +3,6 @@
 	require('jsunitextensions');
 
 	var LocalisedDateParser = require('br/parsing/LocalisedDateParser');
-	var moment = require('momentjs');
 	var parser;
 
 	var testCase = {
@@ -36,24 +35,33 @@
 		},
 
 		'test parsing to US localised format': function() {
-			moment.lang('en');
 			var result = parser.parse('20150125', {
 				inputFormats: ['YYYYMMDD'],
-				outputFormat: 'L'
+				outputFormat: 'L',
+				outputLocale: 'en'
 			});
 
 			assertEquals('01/25/2015', result);
 		},
 
-		'test parsing to a locale other than the global one': function() {
-			moment.lang('en');
+		'test parsing to a UK localised format': function() {
 			var result = parser.parse('20150125', {
 				inputFormats: ['YYYYMMDD'],
 				outputFormat: 'L',
-				locale: 'en-gb'
+				outputLocale: 'en-gb'
 			});
 
 			assertEquals('25/01/2015', result);
+		},
+
+		'test parsing from a localised format': function() {
+			var result = parser.parse('25/01/2015', {
+				inputFormats: ['L'],
+				outputFormat: 'YYYYMMDD',
+				inputLocale: 'en-gb'
+			});
+
+			assertEquals('20150125', result);
 		},
 
 		'test parsing with multiple input formats': function() {

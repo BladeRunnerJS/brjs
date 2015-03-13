@@ -3,7 +3,6 @@
 	require('jsunitextensions');
 
 	var LocalisedDateFormatter = require('br/formatting/LocalisedDateFormatter');
-	var moment = require('momentjs');
 	var formatter;
 
 	var testCase = {
@@ -32,21 +31,20 @@
 		},
 
 		'test english localised format': function() {
-			moment.lang('en');
 			var result = formatter.format('20150125', {
 				inputFormat: 'YYYYMMDD',
-				outputFormat: 'L'
+				outputFormat: 'L',
+				outputLocale: 'en'
 			});
 
 			assertEquals('01/25/2015', result);
 		},
 
-		'test formatting to a locale other than the global one': function() {
-			moment.lang('en');
+		'test format to UK localised date format': function() {
 			var result = formatter.format('20150125', {
 				inputFormat: 'YYYYMMDD',
 				outputFormat: 'L',
-				locale: 'en-gb'
+				outputLocale: 'en-gb'
 			});
 
 			assertEquals('25/01/2015', result);

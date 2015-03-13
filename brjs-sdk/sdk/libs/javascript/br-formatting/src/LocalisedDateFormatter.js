@@ -4,7 +4,7 @@
 
 var topiarist = require('topiarist');
 var Formatter = require('br/formatting/Formatter');
-var LocalisedDateParser = require('br/parsing/LocalisedDateParser');
+var LocalisedDateParsingUtil = require('br/parsing/LocalisedDateParsingUtil');
 
 /**
  * @class
@@ -12,7 +12,8 @@ var LocalisedDateParser = require('br/parsing/LocalisedDateParser');
  * @implements module:br/formatting/Formatter
  *
  * @classdesc
- * Formats a date value by converting it from a specified input format to a new output format.
+ * Formats a date value by converting it from a specified input format to a new output format. This supersedes
+ * {@link br/formatting/DateFormatter}, which although it does provide localisation, is not completely reliable.
  *
  * <p><code>LocalisedDateFormatter</code> is typically used with Presenter, but can be invoked programmatically.
  * It can make use of {@link http://momentjs.com/docs/#localized-formats|Moment.js localized formats} for input and output.</p>
@@ -23,7 +24,9 @@ var LocalisedDateParser = require('br/parsing/LocalisedDateParser');
  *
  * See {@link module:br/parsing/LocalisedDateParser} for the complementary parser.
  */
-function LocalisedDateFormatter() {}
+function LocalisedDateFormatter() {
+	this.localisedDateParsingUtil = new LocalisedDateParsingUtil();
+}
 topiarist.implement(LocalisedDateFormatter, Formatter);
 
 /**
@@ -33,16 +36,14 @@ topiarist.implement(LocalisedDateFormatter, Formatter);
  * @param {object} attributes Map of configuration options
  * @param {string} attributes.inputFormat Format of the input date, expressed with {@link http://momentjs.com/docs/#/parsing/string-format/|Moment.js format tokens}
  * @param {string} [attributes.outputFormat='L'] Format of the output date, expressed with {@link http://momentjs.com/docs/#/parsing/string-format/|Moment.js format tokens}
- * @param {string} [attributes.locale] Locale override for the output
+ * @param {string} [attributes.inputLocale] Locale override for the input
+ * @param {string} [attributes.outputLocale] Locale override for the output
  * @returns {string} The date, expressed in the output format
  */
 LocalisedDateFormatter.prototype.format = function(date, attributes) {
-	var parseAttributes = {
-		inputFormats: [attributes.inputFormat],
-		outputFormat: attributes.outputFormat || 'L',
-		locale: attributes.locale
-	};
-	return LocalisedDateParser.prototype.parse(date, parseAttributes);
+	attributes.inputFormats = [attributes.inputFormat];
+	attributes.outputFormat = attributes.outputFormat || 'L';
+	return this.localisedDateParsingUtil.parse(date, attributes);
 };
 
 module.exports = LocalisedDateFormatter;
