@@ -268,6 +268,6 @@ public abstract class SpecTest
 	
 	// Syntactic sugar methods that make SpecTest methods semi-pluggable
 	public <B extends SpecTestBuilder> B given(B builder) { return builder; }
-	public <C extends SpecTestCommander> C given(C commander) { return commander; }
-	public <V extends SpecTestVerifier> V given(V verifier) { return verifier; }
+	public <C extends SpecTestCommander> C when(C commander) { return commander; }
+	public <V extends SpecTestVerifier> V then(V verifier) { return verifier; }
 }

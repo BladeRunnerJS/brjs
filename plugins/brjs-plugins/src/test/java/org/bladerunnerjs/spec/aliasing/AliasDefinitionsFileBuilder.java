@@ -61,4 +61,9 @@ public class AliasDefinitionsFileBuilder implements SpecTestBuilder {
 		specTest.brjs.getFileModificationRegistry().incrementFileVersion(aliasDefinitionsFile.getUnderlyingFile());
 	}
 	
+	public String getUnderlyingFilePath()
+	{
+		return aliasDefinitionsFile.getUnderlyingFile().getPath();
+	}
+	
 }
