@@ -26,12 +26,13 @@ import org.junit.Before;
 
 @SuppressWarnings("deprecation")
 public class ServletFilterTest {
-	protected final int serverPort = new Random().nextInt(2000)+1000;
+	protected int serverPort;
 	protected HttpClient httpclient;
 	protected File contextDir;
 	
 	@Before
 	public void setUp() throws IOException {
+		serverPort = new Random().nextInt(2000)+1000;
 		httpclient = new DefaultHttpClient();
 		contextDir = Files.createTempDirectory("ServletFilterTest").toFile();
 	}
