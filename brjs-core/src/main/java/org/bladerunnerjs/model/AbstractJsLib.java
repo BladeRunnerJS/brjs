@@ -23,7 +23,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
-public abstract class AbstractJsLib extends AbstractBundlableNode implements JsLib
+public abstract class AbstractJsLib extends AbstractAssetContainer implements JsLib
 {
 	private String name;
 	private Node parent;

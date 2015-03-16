@@ -9,22 +9,15 @@ import javax.naming.InvalidNameException;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.JsLib;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.TestType;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.api.plugin.Event;
 import org.bladerunnerjs.api.plugin.EventObserver;
-import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.utility.ObserverList;
@@ -247,31 +240,5 @@ public final class AppSdkJsLib implements JsLib {
 	public String canonicaliseRequirePath(Asset asset, String requirePath) throws RequirePathException
 	{
 		return sdkJsLib.canonicaliseRequirePath(asset, requirePath);
-	}
-
-	@Override
-	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
-		return sdkJsLib.getLinkedAsset(requirePath);
-	}
-
-	@Override
-	public List<LinkedAsset> seedAssets() {
-		return sdkJsLib.seedAssets();
-	}
-
-	@Override
-	public BundleSet getBundleSet() throws ModelOperationException {
-		return sdkJsLib.getBundleSet();
-	}
-
-	@Override
-	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		return sdkJsLib.handleLogicalRequest(logicalRequestPath, contentAccessor, version);
-	}
-
-	@Override
-	public List<Asset> assets(Asset asset, List<String> requirePaths) throws RequirePathException
-	{
-		return sdkJsLib.assets(asset, requirePaths);
 	}
 }

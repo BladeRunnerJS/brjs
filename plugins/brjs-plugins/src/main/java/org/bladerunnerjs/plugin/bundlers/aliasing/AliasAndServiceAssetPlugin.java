@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
@@ -25,7 +24,7 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 		List<Asset> aliasAssets = new ArrayList<>();
 		
 		if (assetContainer.dir() == dir) {
-			if (assetContainer instanceof BundlableNode && !(assetContainer instanceof JsLib)) {
+			if (assetContainer instanceof BundlableNode) {
 				BundlableNode bundlableNode = (BundlableNode) assetContainer;
 				createAliasDataSourceModule(assetDiscoveryInitiator, aliasAssets, bundlableNode);
 				addBundlableNodeAliases(implicitDependencies, assetDiscoveryInitiator, aliasAssets, bundlableNode);
