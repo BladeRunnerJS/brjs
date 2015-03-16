@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.BladeWorkbench;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasNameIsTheSameAsTheClassException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.junit.Before;
@@ -41,6 +42,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	private AliasesFileBuilder worbenchAliasesFileBuilder;
 	private JsLib sdkLib;
 	private AliasDefinitionsFileBuilder sdkLibAliasDefinitionsFileBuilder;
+	private SdkJsLib brLocaleLib;
 
 	@Before
 	public void initTestObjects() throws Exception
@@ -61,6 +63,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 		otherBrLib = brjs.sdkLib("otherBrLib");
 		defaultBladeset = app.defaultBladeset();
 		bladeInDefaultBladeset = defaultBladeset.blade("b1");
+		brLocaleLib = brjs.sdkLib("br-locale");
 
 		aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
 		aspectResourcesAliaseDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(aspect, "resources"));
@@ -149,7 +152,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	@Test
 	public void incompleteServiceClassesReferencedByACommonJsSourceModuleCauseTheAliasToBeIncludedInTheBundle() throws Exception
 	{
-		given(brLib).hasClass("br/Interface")
+		given(brLib).hasClasses("br/Interface", "br/ServiceRegistry")
             .and(brLibAliasDefinitionsFileBuilder).hasIncompleteAlias("br.service", "br/Interface")
             .and(aspect).hasCommonJsPackageStyle()
             .and(aspect).classRequires("Class1", "service!br.service")
@@ -164,7 +167,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	// test exception isnt thrown for services - services can be defined and configure at run time, which differs from aliases
 	public void anExceptionIsntThrownIfAServiceClassesReferencedByACommonJsSourceModuleDoesntExist() throws Exception
 	{
-		given(brLib).hasClasses("br/Class1", "br/Class2")
+		given(brLib).hasClasses("br/Class1", "br/Class2", "br/ServiceRegistry")
             .and(aspect).hasCommonJsPackageStyle()
             .and(aspect).classRequires("Class1", "service!br.service")
             .and(aspect).indexPageRefersTo("appns.Class1");
@@ -629,5 +632,36 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(response).containsText("define('alias!lib.service'")
             .and(response).containsText("otherBrLib.ServiceUser();");
 	}
+	
+	public void theCorrectAliasIsBundledWhenTheAliasRequiresTheAliasInterface() throws Exception {
+		given(brLib).hasClasses("br/AliasClass", "br/AliasInterface", "'br/ServiceRegistry")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.the-alias", "br/AliasClass", "br/AliasInterface")
+    		.and(aspect).indexPageRequires("alias!br.the-alias")
+    		.and(aspect).classRequires("appns/AliasOverride", "br/AliasInterface")
+    		.and(aspectAliasesFileBuilder).hasAlias("br.the-alias", "appns/AliasOverride");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('appns/AliasOverride")
+			.and(response).containsText("define('br/AliasInterface")
+			.and(response).doesNotContainText("define('br/AliasClass");
+	}
 
+	@Test @Ignore
+	public void theLocaleSwitcherAliasCanBeOverridden() throws Exception {
+		brLib = brjs.sdkLib("br");
+		brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
+		given(brLocaleLib).classFileHasContent("switcher", "require('service!br.locale-switcher').switch();")
+			.and(brLib).hasClasses("br/services/LocaleSwitcher")
+			.and(brLib).classFileHasContent("br/ServiceRegistry", "require('./AliasRegistry');")
+			.and(brLib).classFileHasContent("br/AliasRegistry", "require('alias!$data');")
+			.and(brLib).classFileHasContent("br/services/BRLocaleLoadingSwitcher", "require('br/services/LocaleSwitcher');")
+			.and(brLib).classFileHasContent("br/services/BRLocaleForwardingSwitcher", "require('br/services/LocaleSwitcher');")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.locale-switcher", "br/services/BRLocaleLoadingSwitcher", "br/services/LocaleSwitcher")
+    		.and(aspectAliasesFileBuilder).hasAlias("br.locale-switcher", "br/services/BRLocaleForwardingSwitcher")
+    		.and(appConf).supportsLocales("en", "de");
+		when(app).requestReceived("", response);
+		then(response).containsText("define('br/services/BRLocaleForwardingSwitcher")
+			.and(response).containsText("'br.locale-switcher':{'class':'br/services/BRLocaleForwardingSwitcher'")
+			.and(response).doesNotContainText("define('br/services/BRLocaleLoadingSwitcher");
+	}
+	
 }
