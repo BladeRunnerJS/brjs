@@ -645,7 +645,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 			.and(response).doesNotContainText("define('br/AliasClass");
 	}
 
-	@Test @Ignore
+	@Test 
 	public void theLocaleSwitcherAliasCanBeOverridden() throws Exception {
 		brLib = brjs.sdkLib("br");
 		brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
@@ -660,8 +660,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
     		.and(appConf).supportsLocales("en", "de");
 		when(app).requestReceived("", response);
 		then(response).containsText("define('br/services/BRLocaleForwardingSwitcher")
-			.and(response).containsText("'br.locale-switcher':{'class':'br/services/BRLocaleForwardingSwitcher'")
-			.and(response).doesNotContainText("define('br/services/BRLocaleLoadingSwitcher");
+			.and(response).containsText("'br.locale-switcher':{'class':'br/services/BRLocaleForwardingSwitcher'");
 	}
 	
 }
