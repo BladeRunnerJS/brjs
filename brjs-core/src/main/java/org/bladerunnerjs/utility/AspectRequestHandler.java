@@ -3,7 +3,6 @@ package org.bladerunnerjs.utility;
 import java.util.Map;
 
 import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
@@ -54,9 +53,9 @@ public class AspectRequestHandler
 		return appRequestHandler.getIndexPageContent(aspect, locale, version, contentAccessor, requestMode);
 	}
 
-	public ResponseContent getLocaleForwardingPageContent(BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
+	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
 	{
-		return appRequestHandler.getLocaleForwardingPageContent(bundleSet, contentAccessor, version);
+		return appRequestHandler.getLocaleForwardingPageContent(aspect, contentAccessor, version);
 	}
 	
 }

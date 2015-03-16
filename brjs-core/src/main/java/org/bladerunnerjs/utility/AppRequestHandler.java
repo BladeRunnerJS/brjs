@@ -16,7 +16,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.BrowsableNode;
-import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -103,10 +103,10 @@ public class AppRequestHandler
 		{
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
+				return getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, devVersion);
 				
 			case WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
+				return getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, devVersion);
 
 			case INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.aspect(aspectName), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
@@ -240,7 +240,7 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public ResponseContent getLocaleForwardingPageContent(BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		try {
 			StringWriter localeSwitchingPage = new StringWriter();
 			
@@ -251,7 +251,8 @@ public class AppRequestHandler
 			ContentPlugin compositeJsContentPlugin = app.root().plugins().contentPlugin("js");
 			ContentPathParser compositeJsContentPathParser = compositeJsContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
 			String jsBundleContentPath = compositeJsContentPathParser.createRequest("dev-bundle-request", "combined");
-			ResponseContent brLocaleBundleResponse = compositeJsContentPlugin.handleRequest(jsBundleContentPath, app.jsLib("br-locale").getBundleSet(), contentAccessor, version);
+			BundlableNode localeForwarderAspectWrapper = new LocaleForwarderAspectWrapper(aspect);
+			ResponseContent brLocaleBundleResponse = compositeJsContentPlugin.handleRequest(jsBundleContentPath, localeForwarderAspectWrapper.getBundleSet(), contentAccessor, version);
 			
 			ByteArrayOutputStream brLocaleBundleContent = new ByteArrayOutputStream();
 			brLocaleBundleResponse.write( brLocaleBundleContent );
