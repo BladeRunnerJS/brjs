@@ -106,9 +106,9 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
+		List<Asset> dependencies = new ArrayList<>();
+		
 		try {
-			List<Asset> dependencies = new ArrayList<>();
-			
 			AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundlableNode);
 			AliasDefinition resolvedAliasDefinition = aliasDefinition;
 			try

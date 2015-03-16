@@ -91,8 +91,15 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependencies = new ArrayList<>();
 		
-		try {
+		try
+		{
 			dependencies.add(bundlableNode.getLinkedAsset("br/ServiceRegistry"));
+		}
+		catch (RequirePathException ex)
+		{
+			throw new ModelOperationException(ex);
+		}
+		try {
 			dependencies.add(bundlableNode.getLinkedAsset("alias!" + requirePath));
 		}
 		catch(RequirePathException e) {
