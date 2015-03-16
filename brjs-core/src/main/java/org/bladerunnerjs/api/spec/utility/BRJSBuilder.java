@@ -259,6 +259,17 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer hasBeenCreatedWithWorkingDir(File workingDir) throws Exception {
+		brjs = specTest.createModelWithWorkingDir(workingDir);
+		brjs.io().installFileAccessChecker();
+		specTest.brjs = brjs;
+		this.node = brjs;
+		
+		super.hasBeenCreated();
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer hasBeenAuthenticallyCreated() throws Exception
 	{
 		brjs = specTest.createNonTestModel();

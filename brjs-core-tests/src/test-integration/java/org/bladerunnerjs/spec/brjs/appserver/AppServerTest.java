@@ -49,7 +49,7 @@ public class AppServerTest extends SpecTest
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).localeSwitcherHasContents("locale-forwarder.js")
-			.and(brjs).containsFolder("apps")
+			.and(brjs).containsFolder("brjs-apps")
 			.and(brjs).containsFolder("sdk/system-applications");
 			brjs.bladerunnerConf().setJettyPort(appServerPort);
 			brjs.bladerunnerConf().write();
@@ -238,6 +238,20 @@ public class AppServerTest extends SpecTest
 	}
 	
 	@Test
+	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstanceAndOnlyAppsDirectoryExists() throws Exception
+	{
+		given(brjs).doesNotContainFolder("brjs-apps")
+			.and(brjs).containsFolder("apps")
+			.and(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread(); 
+			/*and*/ secondBrjsProcess = createNonTestModel();
+			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
+			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
+			.and(brjs.applicationServer(appServerPort)).started();
+		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
+		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/");
+	}
+	
+	@Test
 	public void newAppsAreHostedOnAppserverAfterServerRestartWhenCreateAppCommandUsedFromADifferentModelInstance() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
@@ -278,7 +292,7 @@ public class AppServerTest extends SpecTest
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
 			.and(templates).templateGroupCreated()
-			.and(brjs).containsFile("apps/file.txt")
+			.and(brjs).containsFile("brjs-apps/file.txt")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(app1Conf).localesUpdatedTo("en", "de");

@@ -39,7 +39,8 @@ public class BRJSDevServlet extends HttpServlet {
 		servletContext = config.getServletContext();
 		
 		try {
-			ThreadSafeStaticBRJSAccessor.initializeModel( new File(servletContext.getRealPath("/")) );
+			File brjsDir = new File(servletContext.getRealPath("/"));
+			ThreadSafeStaticBRJSAccessor.initializeModel(brjsDir, brjsDir);
 		}
 		catch (InvalidSdkDirectoryException e) {
 			throw new ServletException(e);

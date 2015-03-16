@@ -40,6 +40,10 @@ public class DirectoryVerifier {
 		return verifierChainer;
 	}
 	
+	public VerifierChainer doesNotContainDir(String filePath) {
+		return doesNotContainFile(filePath);
+	}
+	
 	public VerifierChainer containsFileWithContents(String filePath, String contents) throws Exception {
 		File file = new File(dir, filePath);
 		assertTrue("file " + file.getPath() + " didn't exist.", file.exists());

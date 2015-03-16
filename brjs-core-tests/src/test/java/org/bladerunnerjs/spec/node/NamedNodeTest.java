@@ -240,7 +240,7 @@ public class NamedNodeTest extends SpecTest {
 	public void nodesAreNotNotifiedOfCeatedWhenANodeIsDiscovered() throws Exception
 	{
 		given(observer).observing(brjs);
-		when(super.testSdkDirectory).containsFile("apps/myApp/appContent.txt")
+		when(super.testSdkDirectory).containsFile("brjs-apps/myApp/appContent.txt")
 			.and(brjs.userApp("myApp"));
 		then(observer).notified(NodeDiscoveredEvent.class, brjs.userApp("myApp"))
 			.and(observer).notified(NodeReadyEvent.class, brjs.userApp("myApp"))

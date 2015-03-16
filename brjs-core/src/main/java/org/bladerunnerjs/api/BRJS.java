@@ -38,7 +38,6 @@ import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.LogLevelAccessor;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.WorkingDirNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -51,7 +50,6 @@ import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.reader.CharBufferPool;
 
-
 public class BRJS extends AbstractBRJSRootNode
 {
 	public static final String PRODUCT_NAME = "BladeRunnerJS";
@@ -62,9 +60,11 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "Making plugins available via model.";
 		public static final String PLUGIN_FOUND_MSG = "Found plugin '%s'.";
 		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
+		public static final String BOTH_APPS_AND_BRJS_APPS_EXIST = "BRJS now uses a folder named '%s' for the location of your apps but the directory '%s' contains both '%s' and '%s' folders."+
+		" '%s' will be used for the location of apps but this legacy behaviour may be removed so you should move all existing apps into the '%s' directory.";
 	}
 	
-	private final NodeList<App> userApps = new NodeList<>(this, App.class, "apps", null);
+	private NodeList<App> userApps;
 	private final NodeItem<DirNode> sdkRoot = new NodeItem<>(this, DirNode.class, "sdk");
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
 	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
@@ -84,26 +84,31 @@ public class BRJS extends AbstractBRJSRootNode
 	private final PluginAccessor pluginAccessor;
 	private final IOFileFilter globalFilesFilter = new BRJSGlobalFilesIOFileFilter(this);
 	private final IO io = new IO( globalFilesFilter );
-	private final Logger logger;
+	private final Logger logger = loggerFactory.getLogger(BRJS.class);
+	
 	private final CommandList commandList;
 	private final AppVersionGenerator appVersionGenerator;
 	private final FileModificationRegistry fileModificationRegistry;
 	private final Thread fileWatcherThread;
 	private final JsStyleAccessor jsStyleAccessor = new JsStyleAccessor(this);
-	
-	private WorkingDirNode workingDir;
+
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private boolean closed = false;
 	private CharBufferPool pool = new CharBufferPool();
-	
-	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+	private MemoizedFile appsFolder;
+	private MemoizedFile sdkFolder;
+
+	public BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
+		
 		this.appVersionGenerator = appVersionGenerator;
 		this.fileModificationRegistry = new FileModificationRegistry( ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
-		this.workingDir = new WorkingDirNode(this, getMemoizedFile(brjsDir));
+		appsFolder = findAppsFolder(brjsDir, workingDir);
+		sdkFolder = dir().file("sdk");
+		userApps = new NodeList<>(this, App.class, appsFolder.getName(), null, null, appsFolder.getParentFile());
 		
 		try
 		{
@@ -123,8 +128,6 @@ public class BRJS extends AbstractBRJSRootNode
 			throw new RuntimeException(ex);
 		}
 		
-		logger = loggerFactory.getLogger(BRJS.class);
-		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
 		pluginLocator.createPlugins(this);
 		PluginLocatorLogger.logPlugins(logger, pluginLocator);
@@ -136,6 +139,31 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
+	}
+	
+	public MemoizedFile appsFolder() {
+		return appsFolder;
+	}
+	
+	public MemoizedFile sdkFolder() {
+		return sdkFolder;
+	}
+	
+	private MemoizedFile findAppsFolder(File brjsDir, File workingDir) {
+		File currentFolder = workingDir;
+		while(currentFolder != null) {
+			if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
+				if (new File(currentFolder, "brjs-apps").exists()) {
+					logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, "brjs-apps", brjsDir.getAbsolutePath(), "brjs-apps", "apps", brjsDir.getAbsolutePath()+"/apps", brjsDir.getAbsolutePath()+"/brjs-apps"); 
+				}
+				return getMemoizedFile(currentFolder).file("apps");
+			} else if (new File(currentFolder, "brjs-apps").exists()) {
+				return getMemoizedFile(currentFolder).file("brjs-apps");
+			}
+			
+			currentFolder = currentFolder.getParentFile();
+		}
+		return dir().file("brjs-apps");
 	}
 	
 	public CharBufferPool getCharBufferPool(){
@@ -206,14 +234,6 @@ public class BRJS extends AbstractBRJSRootNode
 		if (bundlableNode == null) throw new InvalidBundlableNodeException( dir().getRelativePath( getMemoizedFile(file) ) );
 		
 		return bundlableNode;
-	}
-	
-	public WorkingDirNode workingDir() {
-		return workingDir;
-	}
-	
-	public void setWorkingDir(MemoizedFile workingDir) {
-		this.workingDir = new WorkingDirNode(this, workingDir);
 	}
 	
 	@Override

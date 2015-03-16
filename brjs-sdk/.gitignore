@@ -5,7 +5,8 @@
 # see http://git-scm.com/docs/gitignore for info
 
 apps/*
-!apps/apps.txt
+brjs-apps/*
+!brjs-apps/apps.txt
 generated
 js-patches
 test-results

@@ -102,7 +102,7 @@ public class RestApiServlet extends HttpServlet
 			context = config.getServletContext();
 			
 			File contextDir = new File( context.getRealPath("/") );
-			brjs = ThreadSafeStaticBRJSAccessor.initializeModel( contextDir );
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel( contextDir, contextDir );
 			
 			if (apiService == null) { apiService = new RestApiService(brjs); };
 			logger = brjs.logger(this.getClass());

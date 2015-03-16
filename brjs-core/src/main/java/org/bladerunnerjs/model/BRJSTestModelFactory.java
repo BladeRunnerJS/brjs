@@ -19,30 +19,30 @@ import org.bladerunnerjs.utility.FileUtils;
 public class BRJSTestModelFactory
 {
 
-	public static BRJS createModel(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+	public static BRJS createModel(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		pluginLocator = (pluginLocator != null) ? pluginLocator : new MockPluginLocator();
 		loggerFactory = (loggerFactory != null) ? loggerFactory : new StubLoggerFactory();
 		appVersionGenerator = (appVersionGenerator != null) ? appVersionGenerator : new MockAppVersionGenerator();				
 		
-		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, appVersionGenerator);
+		BRJS brjs = new BRJS(brjsDir, workingDir, pluginLocator, loggerFactory, appVersionGenerator);
 		
 		return brjs;
 	}
 	
 	public static BRJS createModel(File brjsDir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{
-		return createModel(brjsDir, null, loggerFactory, null);
+		return createModel(brjsDir, brjsDir, null, loggerFactory, null);
 	}
 	
 	public static BRJS createModel(File brjsDir, PluginLocator pluginLocator) throws InvalidSdkDirectoryException
 	{
-		return createModel(brjsDir, pluginLocator, null, null);
+		return createModel(brjsDir, brjsDir, pluginLocator, null, null);
 	}
 	
 	public static BRJS createModel(File brjsDir) throws InvalidSdkDirectoryException
 	{
-		return createModel(brjsDir, null, null, null);
+		return createModel(brjsDir, brjsDir, null, null, null);
 	}
 	
 	public static BRJS createNonTestModel(File brjsDir, LogMessageStore logStore) throws InvalidSdkDirectoryException
@@ -55,7 +55,7 @@ public class BRJSTestModelFactory
 	{
 		PluginLocator pluginLocator = new BRJSPluginLocator();
 		AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
-		BRJS brjs = new BRJS(brjsDir, pluginLocator, loggerFactory, appVersionGenerator);
+		BRJS brjs = new BRJS(brjsDir, brjsDir, pluginLocator, loggerFactory, appVersionGenerator);
 		
 		return brjs;
 	}
