@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		
+		<title>Workbench</title>
+
+		<@css.bundle theme="standard" alternateTheme="alternate" @/>
+
+	</head>
+	<body>
+
+		<@i18n.bundle @/>
+		<@js.bundle @/>
+
+		<div class="app">
+			<p>This is your bladeset workbench. You can use this workbench for performing integration tests involving multiple blades.</p>
+			<div class="br-logo">
+			</div>
+		</div>
+		
+		<!--
+		This is a location to configure blades as required. For example, you may use a ServiceRegistry here to register
+		a dummy service to facilitate the development of the blades contained within your bladeset. Furthermore, you
+		may send messages between blades through a Event Hub, which you may view in your EventHubViewer. A
+		KnockoutComponent panel is also available, which will enable you to view the model corresponding to the
+		specified blade.
+		Below you may find an example on how these configurations will work for a single blade, given it has been
+		created within your current bladeset.-->
+		<script type="text/javascript">
+			var ServiceRegistry = require( 'br/ServiceRegistry' );
+
+			function addEventHubLogger( workbench ) {
+				var eventHub = ServiceRegistry.getService( 'br.event-hub' );
+				var EventHubViewer = require( 'br/workbench/tools/EventHubViewer' );
+				var eventHubViewer = new EventHubViewer( eventHub );
+				workbench.addToLeftWing( eventHubViewer, "EventHub Logging", false );
+			}
+
+			function addModelViewer( model, workbench ) {
+				var KnockoutJsTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
+				var PresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
+				var presentationModelViewer = new PresentationModelViewer(KnockoutJsTreeModelFactory.createTreeModelFromKnockoutViewModel(model));
+				workbench.addToRightWing(presentationModelViewer, "Visualise Knockout View Model", false);
+			}
+
+			function addComponent( component, workbench  ) {
+				workbench.displayComponent( component, 200, 100 );
+			}
+
+			var Workbench = require( 'br/workbench/ui/Workbench' );
+			var workbench = new Workbench(250, 310);
+			addEventHubLogger( workbench );
+
+			// ViewModel that is being created in the workbench
+			/*var myBladeTitleViewModel = require( 'myBladeRequirePrefix/myBladeTitleViewModel' );
+			var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
+
+			var model = new myBladeTitleViewModel();
+			var component = new KnockoutComponent( 'myBladeNamespace.view-template', model );
+
+			addComponent( component, workbench )
+			addModelViewer( model, workbench );*/
+		</script>
+		
+	</body>
+</html>

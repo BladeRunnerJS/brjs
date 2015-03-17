@@ -1,0 +1,16 @@
+.itbladeset-itblade-blade {
+    padding:10px;
+    border:solid 1px black;
+    max-width: 350px;
+}
+.itbladeset-itblade-blade h1 {
+    border-bottom:solid 1px #ccc;
+    margin-bottom:3px;
+}
+.itbladeset-itblade-blade p {
+    line-height: 1.2;
+    padding: 4px 0;
+}
+.itbladeset-itblade-blade button {
+    margin-top: 5px;
+}
