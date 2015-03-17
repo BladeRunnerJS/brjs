@@ -110,19 +110,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 		
 		try {
 			AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundlableNode);
-			AliasDefinition resolvedAliasDefinition = aliasDefinition;
-			try
-			{
-				resolvedAliasDefinition = aliasesFile.getAlias(aliasDefinition.getName());
-			}
-			catch (AliasException e)
-			{
-				// use the alias definition we had already
-			}
-			catch (ContentFileProcessingException ex)
-			{
-				throw new RuntimeException(ex);
-			}
+			AliasDefinition resolvedAliasDefinition = aliasesFile.getAlias(aliasDefinition.getName());
 			
 			dependencies.add(bundlableNode.getLinkedAsset("br/AliasRegistry"));
 			dependencies.add(bundlableNode.getLinkedAsset(resolvedAliasDefinition.getRequirePath()));
@@ -138,7 +126,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 			
 			return dependencies;
 		}
-		catch(RequirePathException e) {
+		catch(ContentFileProcessingException | RequirePathException | AliasException e) {
 			throw new ModelOperationException(e);
 		}
 	}

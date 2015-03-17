@@ -83,7 +83,7 @@ public class AliasesFile {
 		
 		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
 			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
-
+			
 			if (nextAliasDefinition != null)
 			{    			
     			if (aliasDefinition != null && nextAliasDefinition != null) {
@@ -118,7 +118,7 @@ public class AliasesFile {
 		AliasOverride aliasOverride = null;
 		List<String> groupNames = groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.aliasDefinitionFiles(bundlableNode)) {
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
 			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
 			if(aliasOverride != null && nextAliasOverride != null) {
 				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, groupNames);
