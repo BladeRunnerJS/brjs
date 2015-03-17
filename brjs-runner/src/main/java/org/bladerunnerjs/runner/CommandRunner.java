@@ -2,6 +2,7 @@ package org.bladerunnerjs.runner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,7 +85,7 @@ public class CommandRunner {
 		return byteStreamOutputStream.toString().trim();
 	}
 	
-	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
+	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
 		AbstractRootNode.allowInvalidRootDirectories = false;
 		BRJS brjs = null;
 		
@@ -99,7 +100,7 @@ public class CommandRunner {
 		args = processGlobalCommandFlags(args);
 		
 		try {
-			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir, new File(".").getCanonicalFile());
 			brjs.populate("default");
 			setBrjsAllowStats(brjs);
 		}

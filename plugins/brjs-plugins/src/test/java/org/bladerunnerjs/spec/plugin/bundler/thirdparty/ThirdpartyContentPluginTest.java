@@ -174,7 +174,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: doesnt-exist.js\n"+"exports: lib");
 		when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
-		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "apps/app1/libs/thirdparty-lib/thirdparty-lib.manifest");
+		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "brjs-apps/app1/libs/thirdparty-lib/thirdparty-lib.manifest");
 	}
 	
 	@Test

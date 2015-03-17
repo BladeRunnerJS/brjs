@@ -45,6 +45,7 @@ dependencies {
 	compile dependency('utils')
 	compile dependency('jericho-html')
 	compile dependency('xalan')
+	compile dependency('jmimemagic')
 	
 	/* woodstox deps */
 	compile dependency('woodstox-core-asl')

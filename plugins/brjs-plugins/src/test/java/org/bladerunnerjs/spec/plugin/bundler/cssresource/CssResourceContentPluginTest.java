@@ -468,7 +468,7 @@ public class CssResourceContentPluginTest extends SpecTest {
     	when(defaultAspect).requestReceivedInProd("cssresource/aspect_default_resource/resources/.git", response);
     	then(aspect).prodRequestsForContentPluginsAre("cssresource", "")
     		.and(aspect).devRequestsForContentPluginsAre("cssresource", "")
-    		.and(exceptions).verifyException(FileNotFoundException.class, "apps/app1/resources/.git");
+    		.and(exceptions).verifyException(FileNotFoundException.class, "brjs-apps/app1/resources/.git");
 	}
 	
 	@Test

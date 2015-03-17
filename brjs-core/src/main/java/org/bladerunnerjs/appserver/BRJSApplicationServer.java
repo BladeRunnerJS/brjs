@@ -9,7 +9,6 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -76,9 +75,7 @@ public class BRJSApplicationServer implements ApplicationServer
 		ApplicationServerUtils.addRootContext(brjs, contexts);
 		contextMap = ApplicationServerUtils.addAppContexts(brjs, contexts);
 		
-		MemoizedFile appsDir = brjs.getMemoizedFile(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
-		MemoizedFile sysAppsDir = brjs.systemApp("no-such-app").dir().getParentFile();
-		fileWatcher = new AppDeploymentFileWatcher(brjs, this, fileWatcherInterval, appsDir, sysAppsDir);
+		fileWatcher = new AppDeploymentFileWatcher(brjs, this, fileWatcherInterval, brjs.appsFolder(), brjs.sdkFolder().file("system-applications"));
 		
 		fileWatcher.start();
 		server.start();

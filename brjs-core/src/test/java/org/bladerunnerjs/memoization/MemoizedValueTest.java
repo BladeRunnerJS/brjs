@@ -35,7 +35,7 @@ public class MemoizedValueTest {
 		loggerMessageStore = new LogMessageStore();
 		loggerMessageStore.storeLogsIfEnabled();
 		loggerMessageStore.enableStoringLogs();
-		brjs = BRJSTestModelFactory.createModel(sdkDir, new MockPluginLocator(), new TestLoggerFactory(loggerMessageStore), new MockAppVersionGenerator());
+		brjs = BRJSTestModelFactory.createModel(sdkDir, sdkDir, new MockPluginLocator(), new TestLoggerFactory(loggerMessageStore), new MockAppVersionGenerator());
 	}
 
 	@After

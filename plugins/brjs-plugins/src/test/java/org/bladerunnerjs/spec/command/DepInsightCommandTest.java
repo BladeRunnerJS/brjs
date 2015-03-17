@@ -257,7 +257,6 @@ public class DepInsightCommandTest extends SpecTest {
 				"    |    \\--- 'default-aspect/src/appns/pkg1/ClassA.js' (*)",
 				"    +--- 'default-aspect/src/appns/pkg1/ClassB.js'",
 				"    |    \\--- 'default-aspect/src/appns/pkg2/ClassC.js' (*)",
-				"    +--- 'default-aspect/src/appns/pkg1/UnbundledClass.js'",
 				"",
 				"    (*) - dependencies omitted (listed previously)");
 	}

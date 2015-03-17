@@ -98,7 +98,7 @@ public class AspectTest extends SpecTest {
 			.and(app).containsFile("index.html")
     		.and(app).containsFile("default-aspect/index.html");
 		when(app).aspectsListed();
-		then(exceptions).verifyException(DuplicateAssetContainerException.class, "default Aspect", "apps/app1", "apps/app1/default-aspect");
+		then(exceptions).verifyException(DuplicateAssetContainerException.class, "default Aspect", "brjs-apps/app1", "brjs-apps/app1/default-aspect");
 	}
 	
 	@Test

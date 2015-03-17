@@ -106,7 +106,12 @@ public abstract class SpecTest
 	
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return BRJSTestModelFactory.createModel(testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
+		return BRJSTestModelFactory.createModel(testSdkDirectory, testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
+	}
+	
+	public BRJS createModelWithWorkingDir(File workingDir) throws InvalidSdkDirectoryException 
+	{	
+		return BRJSTestModelFactory.createModel(testSdkDirectory, workingDir, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {

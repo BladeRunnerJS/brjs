@@ -17,17 +17,23 @@ public class NodeList<N extends Node> {
 	private final Map<String, N> namedNodes = new TreeMap<>();
 	private final List<NamedNodeLocator> namedNodeLocators = new ArrayList<>();
 	private MemoizedValue<List<N>> list;
+	private MemoizedFile nodeDir;
 	
 	public NodeList(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter)
 	{
-		this(node, nodeClass, subDirPath, dirNameFilter, null);
+		this(node, nodeClass, subDirPath, dirNameFilter, null, null);
 	}
 	
 	public NodeList(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter, String dirNameExcludeFilter)
 	{
+		this(node, nodeClass, subDirPath, dirNameFilter, dirNameExcludeFilter, null);
+	}
+	
+	public NodeList(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter, String dirNameExcludeFilter, MemoizedFile dir) {
 		this.node = node;
 		this.nodeClass = nodeClass;
 		namedNodeLocators.add(new DirectoryContentsNamedNodeLocator(node.root(), subDirPath, dirNameFilter, dirNameExcludeFilter));
+		this.nodeDir = dir;
 	}
 	
 	public void addAlternateLocation(String subDirPath, String dirNameFilter)
@@ -71,7 +77,7 @@ public class NodeList<N extends Node> {
 	
 	public List<N> list() {
 		if(list == null) {
-			list = new MemoizedValue<>("NodeList.list "+node.toString(), node.root(), node.dir());
+			list = new MemoizedValue<>("NodeList.list "+node.toString(), node.root(), getNodeDir());
 		}
 		
 		return list.value(() -> {
@@ -91,13 +97,13 @@ public class NodeList<N extends Node> {
 		
 		for(NamedNodeLocator namedNodeLocator : namedNodeLocators)
 		{
-			List<String> logicalNodeNames = namedNodeLocator.getLogicalNodeNames(node.dir());
+			List<String> logicalNodeNames = namedNodeLocator.getLogicalNodeNames(getNodeDir());
 			
 			for(String logicalNodeName : logicalNodeNames)
 			{
 				if(combinedLogicalNodeNames.contains(logicalNodeName))
 				{
-					throw new BladeRunnerDirectoryException("There are two directories that both have the logical name '" + logicalNodeName + "' within the directory '" + node.dir().getPath() + "'");
+					throw new BladeRunnerDirectoryException("There are two directories that both have the logical name '" + logicalNodeName + "' within the directory '" + getNodeDir().getPath() + "'");
 				}
 				
 				combinedLogicalNodeNames.add(logicalNodeName);
@@ -115,7 +121,7 @@ public class NodeList<N extends Node> {
 		
 		for(String dirName : possibleDirNames)
 		{
-			MemoizedFile nextDir = node.root().getMemoizedFile(node.dir(), dirName);
+			MemoizedFile nextDir = node.root().getMemoizedFile(getNodeDir(), dirName);
 			
 			if(nextDir.exists())
 			{
@@ -125,7 +131,7 @@ public class NodeList<N extends Node> {
 		}
 		
 		if(childDir == null) {
-			childDir = node.root().getMemoizedFile(node.dir(), possibleDirNames.get(0));
+			childDir = node.root().getMemoizedFile(getNodeDir(), possibleDirNames.get(0));
 		}
 		
 		return childDir;
@@ -144,5 +150,12 @@ public class NodeList<N extends Node> {
 		}
 		
 		return possibleDirNames;
+	}
+	
+	private MemoizedFile getNodeDir() {
+		if (nodeDir == null) {
+			nodeDir = node.dir();
+		}
+		return nodeDir;			
 	}
 }

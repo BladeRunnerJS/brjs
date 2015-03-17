@@ -39,7 +39,7 @@ public class RestApiServletEndToEndTests
 	{
 		File sdkRoot = createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
 		
-		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot );
+		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot, sdkRoot );
 		
 		SdkJsLib localeSwitcherLib = brjs.sdkLib("br-locale-switcher");
 		FileUtils.write(localeSwitcherLib.file("switcher.js"), "");

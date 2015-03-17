@@ -27,7 +27,7 @@ public class JettyServerBuilder {
 	}
 	
 	public BuilderChainer hasWar(String warPath, String appName) {
-		return hasWar(specTest.brjs.workingDir().file(warPath), appName);
+		return hasWar(specTest.brjs.file(warPath), appName);
 	}
 	
 	public BuilderChainer hasWar(File warPath, String appName) {
@@ -37,7 +37,7 @@ public class JettyServerBuilder {
 	}
 	
 	public BuilderChainer hasWarWithFilters(String warPath, String appName, Filter... filters) throws NamingException {
-		return hasWarWithFilters(specTest.brjs.workingDir().file(warPath), appName, filters);
+		return hasWarWithFilters(specTest.brjs.file(warPath), appName, filters);
 	}
 	
 	public BuilderChainer hasWarWithFilters(File warPath, String appName, Filter... filters) throws NamingException {

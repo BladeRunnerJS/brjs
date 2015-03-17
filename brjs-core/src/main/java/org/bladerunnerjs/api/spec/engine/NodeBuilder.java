@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.FileUtils;
 
+import static org.junit.Assert.*;
 
 public abstract class NodeBuilder<N extends Node> {
 	protected BuilderChainer builderChainer;
@@ -42,6 +43,12 @@ public abstract class NodeBuilder<N extends Node> {
 	public BuilderChainer containsFolder(String directoryName) throws Exception {
 		FileUtils.forceMkdir( node.file(directoryName) );
 		
+		return builderChainer;
+	}
+	
+	public BuilderChainer doesNotContainFolder(String directoryName) throws Exception {
+		FileUtils.deleteQuietly( node.file(directoryName) );
+		assertFalse(node.file(directoryName).exists());
 		return builderChainer;
 	}
 	

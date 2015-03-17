@@ -29,7 +29,7 @@ class CheckDirectoryStructure extends DefaultTask
 		bannedPaths.each { bannedPath ->
 			def fileTreeFiles = project.fileTree(dir:checkRoot, include:bannedPath).getFiles()
 			if (fileTreeFiles.size() > 0) {
-				throw new GradleException("Unexpected files for ${bannedPath}, using root directory ${checkRoot.path}.") 
+				throw new GradleException("Unexpected files for ${bannedPath}, using root directory ${checkRoot.path}. Found files were ${fileTreeFiles}.") 
 			}
 		}
 		emptyOutputFile.createNewFile()

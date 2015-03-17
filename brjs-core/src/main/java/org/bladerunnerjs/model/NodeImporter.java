@@ -3,6 +3,8 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +27,8 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.TypedTestPack;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
@@ -41,6 +45,7 @@ import org.mockito.Mockito;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.sf.jmimemagic.*;
 
 @SuppressWarnings("unused")
 public class NodeImporter {
@@ -53,7 +58,7 @@ public class NodeImporter {
     		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
     		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
     		if (temporaryUnzipDirFiles.length != 1) {
-    			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
+    			throw new IOException("Expected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
     		}
     		
     		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
@@ -137,7 +142,7 @@ public class NodeImporter {
     		new File(tempSdkDir, "sdk").mkdir();
     		MockPluginLocator pluginLocator = new MockPluginLocator();
     		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
-    		brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
+    		brjs = new BRJS(tempSdkDir, tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
 		} finally {
 			org.apache.commons.io.FileUtils.deleteQuietly(tempSdkDir);
 		}
@@ -210,8 +215,24 @@ public class NodeImporter {
 	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
 		for (File f : files) {
-			findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
+			if (f.length() != 0) {
+				if (checkFileMimeType(f).startsWith("text")) {
+					findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
+				}
+			}
 		}
+	}
+
+	private static String checkFileMimeType(File file) throws IOException {
+		byte[] data = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+		MagicMatch match = null;
+		try {
+			match = Magic.getMagicMatch(data);
+		} catch (MagicParseException | MagicMatchNotFoundException
+				| MagicException e) {
+			throw new IOException(e);
+		}
+		return match.getMimeType();
 	}
 	
 	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException

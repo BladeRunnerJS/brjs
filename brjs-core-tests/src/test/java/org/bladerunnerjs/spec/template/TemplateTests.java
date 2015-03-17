@@ -58,7 +58,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).populate();
 		then(brjs).hasFilesAndDirs(
 				Arrays.asList("conf/test-runner.conf", "conf/users.properties"),
-				Arrays.asList("apps", "conf", "sdk")
+				Arrays.asList("brjs-apps", "conf", "sdk")
 		);
 	}
 

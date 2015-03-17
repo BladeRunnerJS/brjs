@@ -114,7 +114,7 @@ public class BladesetTest extends SpecTest {
 			.and(app).hasDir("default-bladeset/blades/myBlade")
     		.and(app).hasDir("blades/myBlade");
 		when(app).bladesetsListed();
-		then(exceptions).verifyException(DuplicateAssetContainerException.class, "default Bladeset", "apps/app", "apps/app/default-bladeset");
+		then(exceptions).verifyException(DuplicateAssetContainerException.class, "default Bladeset", "brjs-apps/app", "brjs-apps/app/default-bladeset");
 	}
 	
 }

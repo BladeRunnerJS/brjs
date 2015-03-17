@@ -2,6 +2,9 @@
  * @module br/formatting/LowerCaseFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+
 /**
  * @class
  * @alias module:br/formatting/LowerCaseFormatter
@@ -15,10 +18,9 @@
  *
  * <pre>br.formatting.LowerCaseFormatter.format("Hello, World!", {})</pre>
  */
-br.formatting.LowerCaseFormatter = function() {
-};
+function LowerCaseFormatter() {}
 
-br.Core.implement(br.formatting.LowerCaseFormatter, br.formatting.Formatter);
+topiarist.implement(LowerCaseFormatter, Formatter);
 
 /**
  * Converts a string to lower case.
@@ -28,13 +30,15 @@ br.Core.implement(br.formatting.LowerCaseFormatter, br.formatting.Formatter);
  * @return  the string, converted to lower case.
  * @type  String
  */
-br.formatting.LowerCaseFormatter.prototype.format = function(vValue, mAttributes) {
+LowerCaseFormatter.prototype.format = function(vValue, mAttributes) {
 	return typeof(vValue) == "string" ? vValue.toLowerCase() : vValue
 };
 
 /**
  * @private
  */
-br.formatting.LowerCaseFormatter.prototype.toString = function() {
+LowerCaseFormatter.prototype.toString = function() {
 	return "br.formatting.LowerCaseFormatter";
 };
+
+module.exports = LowerCaseFormatter;
