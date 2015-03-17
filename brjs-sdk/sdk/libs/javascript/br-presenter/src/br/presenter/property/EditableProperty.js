@@ -124,6 +124,23 @@ br.presenter.property.EditableProperty.prototype.addValidator = function(oValida
 };
 
 /**
+* Removes {@link module:br/presenter/validator/Validator} from validators array.
+*
+* @param {Object} mValidatorInfo - The validator information returned by addValidator()
+* @returns {boolean} - true if any validator was removed
+*/
+br.presenter.property.EditableProperty.prototype.removeValidator = function(mValidatorInfo) {
+	var removed = false;
+
+	if(mValidatorInfo.id in this.m_mValidators) {
+		delete this.m_mValidators[mValidatorInfo.id];
+		removed = true;
+	}
+
+	return removed;
+};
+
+/**
  * @private
  * @see br.presenter.property.Property#addListener
  */

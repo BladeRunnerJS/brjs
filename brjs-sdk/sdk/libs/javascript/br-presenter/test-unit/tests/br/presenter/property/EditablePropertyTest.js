@@ -356,6 +356,28 @@ EditablePropertyTest.prototype.test_multipleSynchronousValidatorsAreHandledCorre
 	oEditableProperty.setUserEnteredValue("z");
 };
 
+EditablePropertyTest.prototype.test_removingAValidatorStopsValidationErrors = function()
+{
+	var oValidator = this._getTestValidator();
+	var oMockListener = mock(br.presenter.property.PropertyListener);
+	var mValidatorInfo = {};
+	var oEditableProperty = new br.presenter.property.EditableProperty().addValidator(oValidator, {failText:"fail"},
+		mValidatorInfo).addListener(oMockListener.proxy());
+
+	oMockListener.expects(once()).onPropertyUpdated();
+	oMockListener.expects(once()).onPropertyChanged();
+	oMockListener.expects(once()).onValidationError("fail", "sync");
+	oMockListener.expects(once()).onValidationComplete();
+	oEditableProperty.setUserEnteredValue("fail");
+	Mock4JS.verifyAllMocks();
+
+	oMockListener.expects(once()).onPropertyUpdated();
+	oMockListener.expects(once()).onValidationSuccess();
+	oMockListener.expects(once()).onValidationComplete();
+	oEditableProperty.removeValidator(mValidatorInfo);
+	oEditableProperty.setUserEnteredValue("fail");
+};
+
 EditablePropertyTest.prototype.test_onValidationErrorOnlyEverFiresOnce = function()
 {
 	var oValidator = this._getTestValidator();
