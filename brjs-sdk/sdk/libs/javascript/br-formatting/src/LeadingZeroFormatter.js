@@ -2,6 +2,10 @@
  * @module br/formatting/LeadingZeroFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var NumberUtil = require('br/util/Number');
+
 /**
  * @class
  * @alias module:br/formatting/LeadingZeroFormatter
@@ -15,10 +19,9 @@
  * <p/>
  * <code>br.formatting.LeadingZeroFormatter.format(89, {length:4})</code>
  */
-br.formatting.LeadingZeroFormatter = function() {
-};
+function LeadingZeroFormatter() {}
 
-br.Core.implement(br.formatting.LeadingZeroFormatter, br.formatting.Formatter);
+topiarist.implement(LeadingZeroFormatter, Formatter);
 
 /**
  * Pads the integer part of a number with as many leading zeros needed to reach the specified size.
@@ -41,13 +44,15 @@ br.Core.implement(br.formatting.LeadingZeroFormatter, br.formatting.Formatter);
  * @return  the number, padded to the required length with leading zeros.
  * @type  String
  */
-br.formatting.LeadingZeroFormatter.prototype.format = function(vValue, mAttributes){
-	return br.util.Number.pad(vValue, mAttributes["length"]);
-}
+LeadingZeroFormatter.prototype.format = function(vValue, mAttributes){
+	return NumberUtil.pad(vValue, mAttributes.length);
+};
 
 /**
  * @private
  */
-br.formatting.LeadingZeroFormatter.prototype.toString = function() {
+LeadingZeroFormatter.prototype.toString = function() {
 	return "br.formatting.LeadingZeroFormatter";
 };
+
+module.exports = LeadingZeroFormatter;

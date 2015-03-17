@@ -2,6 +2,9 @@
  * @module br/formatting/LocalisedAmountFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+
 /**
  * @class
  * @alias module:br/formatting/LocalisedAmountFormatter
@@ -20,12 +23,9 @@
  * <code>br.formatting.LocalisedAmountFormatter.format(1234567890, {})</code>
  * <code>br.formatting.LocalisedAmountFormatter.format(1234567890, {dp: 4})</code>
  */
-br.formatting.LocalisedAmountFormatter = function()
-{
+function LocalisedAmountFormatter() {}
 
-};
-
-br.Core.implement(br.formatting.LocalisedAmountFormatter, br.formatting.Formatter);
+topiarist.implement(LocalisedAmountFormatter, Formatter);
 
 /**
  * Formats a number into an localised string representation.
@@ -38,7 +38,7 @@ br.Core.implement(br.formatting.LocalisedAmountFormatter, br.formatting.Formatte
  * @return  the tokenized amount.
  * @type  String
  */
-br.formatting.LocalisedAmountFormatter.prototype.format = function(vValue, mAttributes) {
+LocalisedAmountFormatter.prototype.format = function(vValue, mAttributes) {
 
 	//the field may want to display a message like "please enter " so
 	if (typeof vValue == "string") {
@@ -66,6 +66,8 @@ br.formatting.LocalisedAmountFormatter.prototype.format = function(vValue, mAttr
 /**
  * @private
  */
-br.formatting.LocalisedAmountFormatter.prototype.toString = function() {
+LocalisedAmountFormatter.prototype.toString = function() {
 	return "br.formatting.LocalisedAmountFormatter";
 };
+
+module.exports = LocalisedAmountFormatter;

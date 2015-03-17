@@ -2,6 +2,10 @@
  * @module br/formatting/TrimFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var RegExpFormatter = require('br/formatting/RegExpFormatter');
+
 /**
  * @class
  * @alias module:br/formatting/TrimFormatter
@@ -10,11 +14,11 @@
  * @classdesc
  * Trims whitespace from boths ends of the string.
  */
-br.formatting.TrimFormatter = function() {
-	this.regExpFormatter = new br.formatting.RegExpFormatter();
-};
+function TrimFormatter() {
+	this.regExpFormatter = new RegExpFormatter();
+}
 
-br.Core.implement(br.formatting.TrimFormatter, br.formatting.Formatter);
+topiarist.implement(TrimFormatter, Formatter);
 
 /**
  * Trims whitespace from boths ends of the string.
@@ -29,7 +33,7 @@ br.Core.implement(br.formatting.TrimFormatter, br.formatting.Formatter);
  * @return  the trimmed string.
  * @type  String
  */
-br.formatting.TrimFormatter.prototype.format = function(vValue, mAttributes) {
+TrimFormatter.prototype.format = function(vValue, mAttributes) {
 	var mRegExpAttributes = {
 		match: "(^(\\s|\\u00A0)+|(\\s|\\u00A0)+$)",
 		flags: "g",
@@ -41,6 +45,8 @@ br.formatting.TrimFormatter.prototype.format = function(vValue, mAttributes) {
 /**
  * @private
  */
-br.formatting.TrimFormatter.prototype.toString = function() {
+TrimFormatter.prototype.toString = function() {
 	return "br.formatting.TrimFormatter";
 };
+
+module.exports = TrimFormatter;

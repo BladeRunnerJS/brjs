@@ -2,6 +2,10 @@
  * @module br/formatting/ThousandsFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var NullValueFormatter = require('br/formatting/NullValueFormatter');
+
 /**
  * @class
  * @alias module:br/formatting/ThousandsFormatter
@@ -20,11 +24,11 @@
  *   <li><code>separator</code> - the character to use as a thousands separator</li>
  * </ul>
  */
-br.formatting.ThousandsFormatter = function() {
-	this.nullValueFormatter = new br.formatting.NullValueFormatter();
-};
+function ThousandsFormatter() {
+	this.nullValueFormatter = new NullValueFormatter();
+}
 
-br.Core.implement(br.formatting.ThousandsFormatter, br.formatting.Formatter);
+topiarist.implement(ThousandsFormatter, Formatter);
 
 /**
  * Adds a separator character for each 'thousand' position in a number. eg 1000000 becomes 1,000,000
@@ -34,7 +38,7 @@ br.Core.implement(br.formatting.ThousandsFormatter, br.formatting.Formatter);
  * @return The formatted value
  * @type String
  */
-br.formatting.ThousandsFormatter.prototype.format = function(vValue, mAttributes) {
+ThousandsFormatter.prototype.format = function(vValue, mAttributes) {
 	vValue = vValue === 0 ? 0 : this.nullValueFormatter.format(vValue, mAttributes);
 	try
 	{
@@ -57,12 +61,12 @@ br.formatting.ThousandsFormatter.prototype.format = function(vValue, mAttributes
  * @return The number value or null if one cannot be found
  * @private
  */
-br.formatting.ThousandsFormatter.prototype._stripSuffix = function(sValue) {
+ThousandsFormatter.prototype._stripSuffix = function(sValue) {
 	var sMatch = sValue.match(/(\d+(,?\d)?)+(\.\d+)?/);
 	return sMatch != null ? sMatch[0] : sValue;
 };
 
-br.formatting.ThousandsFormatter.prototype._stripComma = function(sValue) {
+ThousandsFormatter.prototype._stripComma = function(sValue) {
 	return sValue.replace(/,/g, "");
 };
 
@@ -72,6 +76,8 @@ br.formatting.ThousandsFormatter.prototype._stripComma = function(sValue) {
  * @return  The string representation
  * @type String
  */
-br.formatting.ThousandsFormatter.prototype.toString = function() {
+ThousandsFormatter.prototype.toString = function() {
 	return "br.formatting.ThousandsFormatter";
 };
+
+module.exports = ThousandsFormatter;

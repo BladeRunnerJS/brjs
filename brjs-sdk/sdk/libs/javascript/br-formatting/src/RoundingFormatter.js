@@ -2,6 +2,10 @@
  * @module br/formatting/RoundingFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var NumberUtil = require('br/util/Number');
+
 /**
  * @class
  * @alias module:br/formatting/RoundingFormatter
@@ -15,10 +19,9 @@
  *
  * <pre>br.formatting.RoundingFormatter.format(3.14159, {dp:3})</pre>
  */
-br.formatting.RoundingFormatter = function() {
-};
+function RoundingFormatter() {}
 
-br.Core.implement(br.formatting.RoundingFormatter, br.formatting.Formatter);
+topiarist.implement(RoundingFormatter, Formatter);
 
 /**
  * Formats the number to the specified precision.
@@ -43,11 +46,11 @@ br.Core.implement(br.formatting.RoundingFormatter, br.formatting.Formatter);
  * @return  the number, formatted to the specified precision.
  * @type  String
  */
-br.formatting.RoundingFormatter.prototype.format = function(vValue, mAttributes) {
-	if (br.util.Number.isNumber(vValue)) {
-		vValue = br.util.Number.toPrecision(vValue, mAttributes["sf"]);
-		vValue = br.util.Number.toFixed(vValue, mAttributes["dp"]);
-		vValue = br.util.Number.toRounded(vValue, mAttributes["rounding"]);
+RoundingFormatter.prototype.format = function(vValue, mAttributes) {
+	if (NumberUtil.isNumber(vValue)) {
+		vValue = NumberUtil.toPrecision(vValue, mAttributes["sf"]);
+		vValue = NumberUtil.toFixed(vValue, mAttributes["dp"]);
+		vValue = NumberUtil.toRounded(vValue, mAttributes["rounding"]);
 	}
 	return vValue;
 };
@@ -55,6 +58,8 @@ br.formatting.RoundingFormatter.prototype.format = function(vValue, mAttributes)
 /**
  * @private
  */
-br.formatting.RoundingFormatter.prototype.toString = function() {
+RoundingFormatter.prototype.toString = function() {
 	return "br.formatting.RoundingFormatter";
 };
+
+module.exports = RoundingFormatter;
