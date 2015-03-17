@@ -30,7 +30,10 @@ br.presenter.property.EditableProperty = function(vValue)
 	this.m_pParsers = [];
 	
 	/** @private */
-	this.m_pValidators = [];
+	this.m_mValidators = {};
+	
+	/** @private */
+	this.m_nValidatorId = 1;
 	
 	/** @private */
 	this.m_oValidationResultCollator = null;
@@ -100,16 +103,22 @@ br.presenter.property.EditableProperty.prototype.addParser = function(oParser, m
  * 
  * @param {module:br/presenter/validator/Validator} oValidator the {@link module:br/presenter/validator/Validator} being added.
  * @param {Object} mConfig (optional) Any additional configuration for the validator.
+ * @param {Object} mValidatorInfo (optional) Information about the validator gets written here.
  * @type br.presenter.property.EditableProperty
  */
-br.presenter.property.EditableProperty.prototype.addValidator = function(oValidator, mConfig)
+br.presenter.property.EditableProperty.prototype.addValidator = function(oValidator, mConfig, mValidatorInfo)
 {
 	if(!br.Core.fulfills(oValidator, br.presenter.validator.Validator))
 	{
 		throw new br.Errors.InvalidParametersError("oValidator was not an instance of Validator");
 	}
 
-	this.m_pValidators.push({validator:oValidator, config:mConfig});
+	var nValidatorId = this.m_nValidatorId++;
+	this.m_mValidators[nValidatorId] = {validator:oValidator, config:mConfig};
+	
+	if(mValidatorInfo) {
+		mValidatorInfo.id = nValidatorId;
+	}
 
 	return this;
 };
@@ -257,20 +266,21 @@ br.presenter.property.EditableProperty.prototype.forceValidation = function()
 	}
 	
 	// No validators means any value is valid so send success
-	if (this.m_pValidators.length === 0)
+	if (Object.keys(this.m_mValidators).length === 0)
 	{
 		var oValidationResult = new br.presenter.validator.ValidationResult(this);
 		oValidationResult.setResult(true, "");
 	}
 	else
 	{
-		this.m_oValidationResultCollator = new br.presenter.property.ValidationResultCollator(this, this.m_pValidators.length);
+		this.m_oValidationResultCollator = new br.presenter.property.ValidationResultCollator(this, Object.keys(this.m_mValidators).length);
 		
 		// shoot off validate commands for each validator with their own ValidationResult object
-		for(var i = 0, max = this.m_pValidators.length; i < max; ++i)
+		var i = 0;
+		for(var key in this.m_mValidators)
 		{
-			var oValidationResult = this.m_oValidationResultCollator.createValidationResult(i);
-			var oValidator = this.m_pValidators[i];
+			var oValidationResult = this.m_oValidationResultCollator.createValidationResult(i++);
+			var oValidator = this.m_mValidators[key];
 			oValidator.validator.validate(vValue, oValidator.config, oValidationResult);
 
 			// Handle early failure of *synchronous* validators
@@ -297,9 +307,9 @@ br.presenter.property.EditableProperty.prototype.hasValidationError = function()
  * @private
  */
 br.presenter.property.EditableProperty.prototype._hasValidationError = function(vValue)
-{ 
-	for (var i = 0, l = this.m_pValidators.length; i < l; ++i) { 
-		var oValidator = this.m_pValidators[i]; 
+{
+	for(var key in this.m_mValidators) {
+		var oValidator = this.m_mValidators[key];
 		var oValidationResult = new br.presenter.validator.ValidationResult(); 
 		oValidator.validator.validate(vValue, oValidator.config, oValidationResult); 
 		if (!oValidationResult.isValid()) return true; 
