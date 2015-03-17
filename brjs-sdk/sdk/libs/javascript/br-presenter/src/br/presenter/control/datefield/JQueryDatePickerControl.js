@@ -137,7 +137,9 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._setVisible = f
  */
 br.presenter.control.datefield.JQueryDatePickerControl.prototype._setValue = function()
 {
-	this.m_oJQueryNode.datepicker('setDate', this.m_oPresentationNode.value.getValue());
+	if (this.m_oPresentationNode.value.hasValidationError() === false) {
+		this.m_oJQueryNode.datepicker('setDate', this.m_oPresentationNode.value.getValue());
+	}
 };
 
 /**

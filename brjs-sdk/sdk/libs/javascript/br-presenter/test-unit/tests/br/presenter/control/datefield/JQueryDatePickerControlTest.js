@@ -63,7 +63,7 @@ JQueryDatePickerControlTest.prototype.test_datePickerInitialisesWithCorrectDate 
 {
 	var oDateField = new br.presenter.node.DateField();
 	// 11th Feb 2015 in yy-mm-dd, the control's default format
-	oDateField.value.setValue('15-02-11');
+	oDateField.value.setValue('2015-02-11');
 
 	this.m_oControlAdaptor.setPresentationNode(oDateField);
 	this.m_oControlAdaptor.onViewReady();
@@ -77,13 +77,13 @@ JQueryDatePickerControlTest.prototype.test_datePickerDateUpdatesWhenPropertyChan
 {
 	var oDateField = new br.presenter.node.DateField();
 	// 11th Feb 2015 in yy-mm-dd, the control's default format
-	oDateField.value.setValue('15-02-11');
+	oDateField.value.setValue('2015-02-11');
 
 	this.m_oControlAdaptor.setPresentationNode(oDateField);
 	this.m_oControlAdaptor.onViewReady();
 
 	// 23rd March 2016 in yy-mm-dd, the control's default format
-	oDateField.value.setValue('16-03-23');
+	oDateField.value.setValue('2016-03-23');
 
 	assertEquals(2016, this.m_oControlAdaptor.m_oJQueryNode.datepicker('getDate').getFullYear());
 	assertEquals(2, this.m_oControlAdaptor.m_oJQueryNode.datepicker('getDate').getMonth()); // January is 0
@@ -113,4 +113,20 @@ JQueryDatePickerControlTest.prototype.test_datePickerIsDisabledWhenEnabledProper
 
 	oDateField.enabled.setValue(true);
 	assertFalse(this.m_oControlAdaptor.m_oJQueryNode.datepicker('isDisabled'));
+};
+
+JQueryDatePickerControlTest.prototype.test_datePickerRetainsLastValidValueWhenInvalidInputSupplied = function()
+{
+	var oDateField = new br.presenter.node.DateField();
+	// 11th Feb 2015 in yy-mm-dd, the control's default format
+	oDateField.value.setValue('2015-02-11');
+
+	this.m_oControlAdaptor.setPresentationNode(oDateField);
+	this.m_oControlAdaptor.onViewReady();
+
+	oDateField.value.setValue('invalid');
+
+	assertEquals(2015, this.m_oControlAdaptor.m_oJQueryNode.datepicker('getDate').getFullYear());
+	assertEquals(1, this.m_oControlAdaptor.m_oJQueryNode.datepicker('getDate').getMonth()); // January is 0
+	assertEquals(11, this.m_oControlAdaptor.m_oJQueryNode.datepicker('getDate').getDate());
 };
