@@ -677,9 +677,26 @@ public class AliasAndServiceBundlingTest extends SpecTest
     		.and(appConf).supportsLocales("en", "de");
 		when(app).requestReceived("", response);
 		then(response).containsText("define('br/services/BRLocaleForwardingSwitcher")
+			.and(response).doesNotContainText("define('br/services/BRLocaleLoadingSwitcher")
 			.and(response).containsText("'br.locale-switcher':{'class':'br/services/BRLocaleForwardingSwitcher'");
 	}
 	
+	
+	public void classesForAnOverriddenAliasValueAreNotIncludedIfTheyAreNotUsed() throws Exception {
+		given(brLib).hasClasses("br/AliasClassDependency", "br/AliasInterface")
+			.and(brLib).classFileHasContent("br/AliasClass", "require('br/AliasDependency'); require('br/AliasInterface');")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.the-alias", "br/AliasClass", "br/AliasInterface")
+    		.and(aspect).indexPageRequires("alias!br.the-alias")
+    		.and(aspect).hasClass("AliasOverrideDepedency")
+    		.and(brLib).classFileHasContent("br/AliasOverride", "require('br/AliasOverrideDepedency'); require('br/AliasInterface');")
+    		.and(aspectAliasesFileBuilder).hasAlias("br.the-alias", "appns/AliasOverride");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('appns/AliasOverride")
+			.and(response).containsText("define('br/AliasInterface")
+			.and(response).containsText("define('br/AliasOverrideDepedency")
+			.and(response).doesNotContainText("define('br/AliasClass")
+			.and(response).doesNotContainText("define('br/AliasDependency");
+	}
 	
 	
 	

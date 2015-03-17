@@ -10,6 +10,7 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.InvalidRequirePathException;
@@ -166,8 +167,15 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		furtherAssetImplicitDependencies.add(parent);
 		
 		List<Asset> discoveredAssets = assetDiscoveryInitiator.discoverFurtherAssets(dir, requirePrefix, furtherAssetImplicitDependencies);
+		List<Asset> dependentAssets = new ArrayList<>();
 		if (parent instanceof LinkedAsset) {
-			((LinkedAsset) parent).addImplicitDependencies(discoveredAssets);
+			for (Asset dependentAsset : discoveredAssets) {
+				if (dependentAsset instanceof SourceModule) {
+					continue;
+				}
+				dependentAssets.add(dependentAsset);
+			}
+			((LinkedAsset) parent).addImplicitDependencies(dependentAssets);
 		}
 		
 		for (MemoizedFile childDir : dir.dirs()) {
