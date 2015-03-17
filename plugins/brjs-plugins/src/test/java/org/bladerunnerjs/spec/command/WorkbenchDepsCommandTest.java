@@ -46,6 +46,10 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			bladeInDefaultBladeset = app.defaultBladeset().blade("blade");
 			
 			brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
+			
+		JsLib servicesLib = brjs.sdkLib("ServicesLib");
+		given(servicesLib).containsFileWithContents("br-lib.conf", "requirePrefix: br")
+			.and(servicesLib).hasClasses("br/AliasRegistry", "br/ServiceRegistry");
 	}
 	
 	@Test
@@ -185,6 +189,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 		then(logging).containsConsoleText(
 				"Workbench dependencies found:",
 				"    +--- 'alias!br.alias' (alias dep.)",
+				"    |    \\--- '../../libs/javascript/ServicesLib/src/br/AliasRegistry.js' (static dep.)",
 				"    |    \\--- '../../libs/javascript/br/src/br/Class2.js' (static dep.)",
 				"    |    \\--- 'alias!$data' (static dep.)",
 				"    +--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",

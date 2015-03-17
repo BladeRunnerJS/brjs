@@ -6,6 +6,7 @@ import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliases
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
@@ -41,6 +42,10 @@ public class DepInsightCommandTest extends SpecTest {
 			
 			aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
 			bladeAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(bladeInDefaultBladeset, "src"));
+			
+			JsLib servicesLib = brjs.sdkLib("ServicesLib");
+			given(servicesLib).containsFileWithContents("br-lib.conf", "requirePrefix: br")
+				.and(servicesLib).hasClasses("br/AliasRegistry", "br/ServiceRegistry");
 	}
 	
 	@Test
@@ -264,10 +269,11 @@ public class DepInsightCommandTest extends SpecTest {
 			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class");
 		then(logging).containsConsoleText(
-			"Source module 'appns/Class' dependencies found:",
-			"    +--- 'default-aspect/index.html' (seed file)",
-			"    +--- 'alias!alias-ref' (alias dep.)",
-			"    +--- 'default-aspect/src/appns/Class.js'");
+			"    +--- '../../libs/javascript/ServicesLib/src/br/AliasRegistry.js'",
+			"    |    \\--- 'alias!alias-ref' (alias dep.)",
+			"    |    |    \\--- 'default-aspect/index.html' (seed file)",
+			"    +--- 'default-aspect/src/appns/Class.js'",
+			"    +--- 'alias!$data' (alias dep.)");
 	}
 	
 	@Test
@@ -278,9 +284,11 @@ public class DepInsightCommandTest extends SpecTest {
 		when(brjs).runCommand("dep-insight", "app", "alias-ref", "--alias");
 		then(logging).containsConsoleText(
 				"Source module 'alias!alias-ref' dependencies found:",
-				"    +--- 'default-aspect/index.html' (seed file)",
-				"    +--- 'alias!alias-ref' (alias dep.)",
-				"    +--- 'default-aspect/src/appns/Class.js'");
+				"    +--- '../../libs/javascript/ServicesLib/src/br/AliasRegistry.js'",
+			    "    |    \\--- 'alias!alias-ref' (alias dep.)",
+			    "    |    |    \\--- 'default-aspect/index.html' (seed file)",
+				"    +--- 'default-aspect/src/appns/Class.js'",
+				"    +--- 'alias!$data' (alias dep.)");
 	}
 	
 	@Test
@@ -291,9 +299,11 @@ public class DepInsightCommandTest extends SpecTest {
 		when(brjs).runCommand("dep-insight", "app", "alias ref", "--alias");
 		then(logging).containsConsoleText(
 				"Source module 'alias!alias ref' dependencies found:",
-				"    +--- 'default-aspect/index.html' (seed file)",
-				"    +--- 'alias!alias ref' (alias dep.)",
-				"    +--- 'default-aspect/src/appns/Class.js'");
+				"    +--- '../../libs/javascript/ServicesLib/src/br/AliasRegistry.js'",
+			    "    |    \\--- 'alias!alias ref' (alias dep.)",
+				"    |    |    \\--- 'default-aspect/index.html' (seed file)",
+				"    +--- 'default-aspect/src/appns/Class.js'",
+				"    +--- 'alias!$data' (alias dep.)");
 	}
 	
 	@Ignore
@@ -312,7 +322,7 @@ public class DepInsightCommandTest extends SpecTest {
 	
 	@Test
 	public void dependenciesCanBeShownForAnIncompleteAliasThatIsntUsedWithinTheApp() throws Exception {
-		given(brjs.sdkLib("br")).hasClasses("br/UnknownClass", "br/AliasRegistry")
+		given(brjs.sdkLib("br")).hasClasses("br/UnknownClass")
 			.and(aspect).hasClass("appns/TheInterface")
 			.and(bladeAliasDefinitionsFileBuilder).hasAlias("appns.b1.alias-ref", null, "appns.TheInterface");
 		when(brjs).runCommand("dep-insight", "app", "appns.b1.alias-ref", "--alias");

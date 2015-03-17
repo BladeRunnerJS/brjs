@@ -6,6 +6,7 @@ import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliases
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
@@ -44,6 +45,10 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			
 			aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
 			bladeAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(blade, "src"));
+			
+			JsLib servicesLib = brjs.sdkLib("ServicesLib");
+			given(servicesLib).containsFileWithContents("br-lib.conf", "requirePrefix: br")
+				.and(servicesLib).hasClasses("br/AliasRegistry", "br/ServiceRegistry");
 	}
 	
 	@Test
@@ -228,6 +233,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
 			"Aspect 'default' dependencies found:",
+			"    +--- '../../libs/javascript/ServicesLib/src/br/AliasRegistry.js'",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'alias!alias-ref' (alias dep.)",
 			"    |    |    \\--- 'default-aspect/src/appns/Class.js'");
@@ -244,6 +250,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
 			"Aspect 'default' dependencies found:",
+			"    +--- '../../libs/javascript/ServicesLib/src/br/AliasRegistry.js'",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'alias!alias-ref' (alias dep.)",
@@ -252,14 +259,14 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void incompleteAliasedDependenciesAreCorrectlyDisplayed() throws Exception {
-		given(brLib).hasClasses("br/UnknownClass", "br/AliasRegistry")
+		given(brLib).hasClasses("br/UnknownClass")
 			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
 			.and(bladeAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.alias-ref", null, "appns.Interface")
 			.and(aspect).hasClasses("appns/Class", "appns/Interface");
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
 				"Aspect 'default' dependencies found:",
-				"    +--- '../../libs/javascript/br/src/br/AliasRegistry.js'",
+				"    +--- '../../libs/javascript/ServicesLib/src/br/AliasRegistry.js'",
 				"    +--- '../../libs/javascript/br/src/br/UnknownClass.js'",
 			    "    +--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
 			    "    |    \\--- 'default-aspect/src/appns/Interface.js' (static dep.)",
@@ -277,6 +284,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		when(brjs).runCommand("app-deps", "app");
 		then(logging).containsConsoleText(
 			"Aspect 'default' dependencies found:",
+			"    +--- '../../libs/javascript/ServicesLib/src/br/AliasRegistry.js'",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js' (static dep.)",
