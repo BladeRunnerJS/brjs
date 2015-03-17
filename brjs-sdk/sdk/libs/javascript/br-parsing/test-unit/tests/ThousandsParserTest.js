@@ -13,7 +13,6 @@
 	ThousandsParserTest.prototype.tearDown = function()
 	{
 		this.subrealm.uninstall();
-		globalizeSourceModules();
 	};
 
 	ThousandsParserTest.prototype.test_Int = function() {

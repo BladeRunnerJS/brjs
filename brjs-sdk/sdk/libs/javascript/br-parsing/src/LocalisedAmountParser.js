@@ -20,8 +20,7 @@ var Parser = require('br/parsing/Parser');
  * 
  * See {@link module:br/formatting/AmountFormatter} for the complementary formatter.
  */
-LocalisedAmountParser = function() {
-}
+function LocalisedAmountParser() {}
 
 topiarist.implement(LocalisedAmountParser, Parser);
 

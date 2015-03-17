@@ -2,6 +2,10 @@
  * @module br/formatting/DecimalFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var NumberUtil = require('br/util/Number');
+
 /**
  * @class
  * @alias module:br/formatting/DecimalFormatter
@@ -19,10 +23,9 @@
  * <p/>
  * <code>br.formatting.DecimalFormatter.format(3.14159, {dp:3})</code>
  */
-br.formatting.DecimalFormatter = function() {
-};
+function DecimalFormatter() {}
 
-br.Core.implement(br.formatting.DecimalFormatter, br.formatting.Formatter);
+topiarist.implement(DecimalFormatter, Formatter);
 
 /**
  * Formats the value to the specified number of decimal places.
@@ -46,13 +49,15 @@ br.Core.implement(br.formatting.DecimalFormatter, br.formatting.Formatter);
  * @return  the number, formatted to the specified precision.
  * @type  String
  */
-br.formatting.DecimalFormatter.prototype.format = function(vValue, mAttributes) {
-	return br.util.Number.isNumber(vValue) ? br.util.Number.toFixed(vValue, mAttributes["dp"]) : vValue;
+DecimalFormatter.prototype.format = function(vValue, mAttributes) {
+	return NumberUtil.isNumber(vValue) ? NumberUtil.toFixed(vValue, mAttributes["dp"]) : vValue;
 };
 
 /**
  * @private
  */
-br.formatting.DecimalFormatter.prototype.toString = function() {
+DecimalFormatter.prototype.toString = function() {
 	return "br.formatting.DecimalFormatter";
 };
+
+module.exports = DecimalFormatter;

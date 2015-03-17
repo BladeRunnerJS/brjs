@@ -24,8 +24,7 @@ var Parser = require('br/parsing/Parser');
  * 
  * See {@link module:br/formatting/ThousandsFormatter} for the complementary formatter.
  */
-ThousandsParser = function() {
-}
+function ThousandsParser() {}
 
 topiarist.implement(ThousandsParser, Parser);
 
