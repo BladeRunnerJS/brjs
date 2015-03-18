@@ -2,6 +2,7 @@
 
 var ItbladeViewModel = require('itapp/itbladeset/itblade/ItbladeViewModel');
 var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
+var TestingClass = require('itapp/itbladeset/itblade/TestingClass');
 
 var App = function() {
     var element = document.getElementById("hello-world");
@@ -9,6 +10,7 @@ var App = function() {
 
 	this.addItBladeToView();
 	console.log(this.playWithAliases());
+	console.log(this.playWithLibs());
 };
 
 App.prototype.addItBladeToView = function() {
@@ -21,6 +23,11 @@ App.prototype.playWithAliases = function() {
 	var AliasedClass = require('alias!itapp.itbladeset.itblade.NewName');
 	var obj = new AliasedClass();
 	return obj.foo();
+};
+
+App.prototype.playWithLibs = function() {
+	var testClass = new TestingClass();
+	return testClass.use3rdPartyLib();
 };
 
 module.exports = App;
