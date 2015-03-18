@@ -1,0 +1,3 @@
+<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+    <alias name="itapp.itbladeset.itblade.NewName" defaultClass="itapp.itbladeset.itblade.TestingClass" />
+</aliasDefinitions>
