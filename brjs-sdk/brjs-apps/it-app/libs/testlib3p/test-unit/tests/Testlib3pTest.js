@@ -3,7 +3,7 @@
 	
 	var ExampleClassTest = TestCase("ExampleClassTest");
 	
-	var Testlib3p = require("testlib3p/Testlib3p");
+	var Testlib3p = require("testlib3p");
 	
 	ExampleClassTest.prototype.testHelloWorldUtil = function()
 	{
