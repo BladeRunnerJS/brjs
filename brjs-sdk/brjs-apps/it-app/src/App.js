@@ -3,6 +3,8 @@
 var ItbladeViewModel = require('itapp/itbladeset/itblade/ItbladeViewModel');
 var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
 var TestingClass = require('itapp/itbladeset/itblade/TestingClass');
+var CommonJsLib = require('commonjslib/CommonJsLib');
+var Testlib3p = require('testlib3p');
 require('namedspacedjslib/NamedspacedJsLib');
 
 var App = function() {
@@ -27,8 +29,13 @@ App.prototype.playWithAliases = function() {
 };
 
 App.prototype.playWithLibs = function() {
-	var testClass = new TestingClass();
-	return namedspacedjslib.NamedspacedJsLib.hello() + "\n" + testClass.use3rdPartyLib();
+	var helloTests = [Testlib3p.hello, CommonJsLib.hello, namedspacedjslib.NamedspacedJsLib.hello];
+	var libsOutput = "";
+	for(var i = 0 ; i < helloTests.length ; i++) {
+		libsOutput += helloTests[i]() + '\n';
+	}
+
+	return libsOutput;
 };
 
 module.exports = App;

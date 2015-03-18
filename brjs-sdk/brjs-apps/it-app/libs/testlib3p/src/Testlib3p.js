@@ -2,7 +2,7 @@
 
 var Testlib3p = {};
 
-Testlib3p.helloWorldUtil = function() {
+Testlib3p.hello = function() {
 	return "Hello from 3rd Party lib!";
 };
 
