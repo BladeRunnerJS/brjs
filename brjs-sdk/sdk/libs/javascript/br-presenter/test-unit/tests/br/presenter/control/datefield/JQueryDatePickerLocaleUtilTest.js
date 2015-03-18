@@ -7,9 +7,10 @@
 	var capturedDefaults;
 	var translation = 'stock translation';
 
-	var JQueryDatePickerLocales;
+	var jQuery;
+	var JQueryDatePickerLocaleUtil;
 
-	var testCaseName = 'JQueryDatePickerLocalesTest';
+	var testCaseName = 'JQueryDatePickerLocaleUtilTest';
 	var testCase = {
 		'setUp': function() {
 			JsHamcrest.Integration.JsTestDriver();
@@ -35,7 +36,8 @@
 				};
 			});
 
-			JQueryDatePickerLocales = require('br/presenter/control/datefield/JQueryDatePickerLocales');
+			jQuery = require('jquery');
+			JQueryDatePickerLocaleUtil = require('br/presenter/control/datefield/JQueryDatePickerLocaleUtil');
 		},
 
 		'tearDown': function() {
@@ -44,8 +46,8 @@
 			globalizeSourceModules();
 		},
 
-		'test given setLocalePropertiesToI18n is called, jQuery.datepicker.setDefaults() is called': function() {
-			JQueryDatePickerLocales.setLocalePropertiesToI18n();
+		'test that JQueryDatePickerLocaleUtil.getDefaultLocales() provides valid defaults for date picker': function() {
+			jQuery.datepicker.setDefaults(JQueryDatePickerLocaleUtil.getDefaultLocales());
 
 			assertEquals('closeText should equal translation', translation, capturedDefaults.closeText);
 			assertEquals('prevText should equal translation', translation, capturedDefaults.prevText);

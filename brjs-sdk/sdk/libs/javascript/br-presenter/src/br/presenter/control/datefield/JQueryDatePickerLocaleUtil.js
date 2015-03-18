@@ -1,27 +1,25 @@
 'use strict';
 
 /**
- * @module br/presenter/control/datefield/JQueryDatePickerLocales
+ * @module br/presenter/control/datefield/JQueryDatePickerLocaleUtil
  */
 
-var jQuery = require('jquery');
 var i18n = require('br/I18n');
 
 /**
  * @class
- * @alias module:br/presenter/control/datefield/JQueryDatePickerLocales
+ * @alias module:br/presenter/control/datefield/JQueryDatePickerLocaleUtil
  *
  * @classdesc utility class that sets the jQuery datepicker locale-specific properties to i18n properties.
  *
  */
-var JQueryDatePickerLocales = {};
+var JQueryDatePickerLocaleUtil = {};
 
 /**
- * @description Instead of using different jQuery datepicker locales, we use the default locale, setting local
- *  properties to i18n keys, so that the user can internationalize their app using i18n keys,
- *  just like everything else in BRJS.
+ * @description Instead of using different jQuery datepicker locales, this method allows the default locale to be used,
+ * instead setting locale properties to i18n keys so that the user can internationalize their app using BRJS i18n keys.
  */
-JQueryDatePickerLocales.setLocalePropertiesToI18n = function() {
+JQueryDatePickerLocaleUtil.getDefaultLocales = function() {
 	var defaults = {
 		closeText: i18n('br.presenter.datepicker.closeText'),
 		prevText: i18n('br.presenter.datepicker.prevText'),
@@ -100,7 +98,7 @@ JQueryDatePickerLocales.setLocalePropertiesToI18n = function() {
 		defaults.yearSuffix = i18nYearSuffix;
 	}
 
-	jQuery.datepicker.setDefaults(defaults);
+	return defaults;
 };
 
-br.presenter.control.datefield.JQueryDatePickerLocales = JQueryDatePickerLocales;
+br.presenter.control.datefield.JQueryDatePickerLocaleUtil = JQueryDatePickerLocaleUtil;
