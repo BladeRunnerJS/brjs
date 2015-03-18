@@ -24,6 +24,9 @@
 		<@js.bundle dev-minifier="none" prod-minifier="combined"@/>
 		<script>
 			( function() {
+				var jndiToken = "@TEST.JNDI.TOKEN@";
+				console.log(jndiToken);
+
 				var App = require( 'itapp/App' );
 				var app = new App();
 			} )();
