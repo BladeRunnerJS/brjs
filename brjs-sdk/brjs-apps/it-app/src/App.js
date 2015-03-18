@@ -3,6 +3,7 @@
 var ItbladeViewModel = require('itapp/itbladeset/itblade/ItbladeViewModel');
 var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
 var TestingClass = require('itapp/itbladeset/itblade/TestingClass');
+require('namedspacedjslib/NamedspacedJsLib');
 
 var App = function() {
     var element = document.getElementById("hello-world");
@@ -27,7 +28,7 @@ App.prototype.playWithAliases = function() {
 
 App.prototype.playWithLibs = function() {
 	var testClass = new TestingClass();
-	return testClass.use3rdPartyLib();
+	return namedspacedjslib.NamedspacedJsLib.hello() + "\n" + testClass.use3rdPartyLib();
 };
 
 module.exports = App;
