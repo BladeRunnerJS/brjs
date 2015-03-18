@@ -7,12 +7,9 @@ var TestingClass = function() {
 
 br.implement(TestingClass, TestingInterface);
 
-TestingClass.prototype.foo = function() {
-	return "bar";
-};
 
-TestingClass.prototype.implementMe = function() {
-	return "I have been implemented";
+TestingClass.prototype.implementMe = function(message) {
+	return "TestingClass: I have implemented TestingInterface";
 };
 
 module.exports = TestingClass;

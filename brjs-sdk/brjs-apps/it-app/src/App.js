@@ -25,7 +25,7 @@ App.prototype.addItBladeToView = function() {
 App.prototype.playWithAliases = function() {
 	var AliasedClass = require('alias!itapp.itbladeset.itblade.NewName');
 	var obj = new AliasedClass();
-	return obj.foo();
+	return obj.implementMe();
 };
 
 App.prototype.playWithLibs = function() {

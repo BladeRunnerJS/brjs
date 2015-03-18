@@ -3,7 +3,7 @@
 namedspacedjslib.NamedspacedJsLib = {};
 
 namedspacedjslib.NamedspacedJsLib.hello = function() {
-	return "Hello from namespaced Js Lib";
+	return "Hello from a namespaced-js lib!";
 };
 
 
