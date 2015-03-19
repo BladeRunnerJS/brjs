@@ -24,6 +24,7 @@ import org.bladerunnerjs.api.spec.engine.BuilderChainer;
 import org.bladerunnerjs.api.spec.engine.NodeBuilder;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.logging.MockLogLevelAccessor;
+import org.bladerunnerjs.memoization.PollingFileModificationObserverThread;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
@@ -284,6 +285,15 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	{
 		hasBeenAuthenticallyCreated();
 		specTest.fileWatcherThread = new WatchingFileModificationObserverThread(brjs, new WatchKeyServiceFactory());
+		specTest.fileWatcherThread.start();
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithFilePollingThread() throws Exception
+	{
+		hasBeenAuthenticallyCreated();
+		specTest.fileWatcherThread = new PollingFileModificationObserverThread(brjs);
 		specTest.fileWatcherThread.start();
 		
 		return builderChainer;
