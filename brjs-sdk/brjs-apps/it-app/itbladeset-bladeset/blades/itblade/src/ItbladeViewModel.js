@@ -1,18 +1,10 @@
 'use strict';
 
 var ko = require( 'ko' );
-var i18n = require( 'br/I18n' );
 
 function ItbladeViewModel() {
 	this.eventHub = require('service!br.event-hub');
-	this.welcomeMessage = ko.observable('itblade is used for testing BRJS fundamental features');
-	this.messagei18n = ko.observable( i18n( 'itapp.itbladeset.itblade.messagei18n' ) );
+	this.bladeMessage = ko.observable('Hello from the Itblade View Model');
 }
-
-
-ItbladeViewModel.prototype.buttonClicked = function() {
-	var channel = this.eventHub.channel('itblade-channel');
-	channel.trigger( 'hello-event', { some: 'Hello World!' } );
-};
 
 module.exports = ItbladeViewModel;

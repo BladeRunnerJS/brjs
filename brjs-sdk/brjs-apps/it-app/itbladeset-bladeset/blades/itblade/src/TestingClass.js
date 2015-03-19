@@ -9,7 +9,7 @@ br.implement(TestingClass, TestingInterface);
 
 
 TestingClass.prototype.implementMe = function(message) {
-	return "TestingClass: I have implemented TestingInterface";
+	return "Hello from an aliased class";
 };
 
 module.exports = TestingClass;
