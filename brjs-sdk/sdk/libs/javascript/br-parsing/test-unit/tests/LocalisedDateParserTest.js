@@ -101,6 +101,14 @@
 			});
 
 			assertEquals('20150105', result);
+		},
+
+		'test parsing does not make loose matches': function() {
+			var result = parser.parse('18 Mar 2015', {
+				inputFormats: ['YYYY']
+			});
+
+			assertUndefined(result);
 		}
 
 	};
