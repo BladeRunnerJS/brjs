@@ -222,8 +222,8 @@ public class AppServerTest extends SpecTest
 	{
 		given(brjs).doesNotContainFolder("brjs-apps")
 			.and(brjs).containsFolder("apps")
-			.and(brjs).hasBeenAuthenticallyCreated(); 
-			/*and*/ secondBrjsProcess = createNonTestModel();
+			.and(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread(); 
+			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel();
 			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
 			.and(brjs.applicationServer(appServerPort)).started();
