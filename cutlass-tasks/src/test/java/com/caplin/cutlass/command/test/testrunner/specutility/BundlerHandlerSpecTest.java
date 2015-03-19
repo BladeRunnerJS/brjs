@@ -35,12 +35,14 @@ public class BundlerHandlerSpecTest extends SpecTest
 			this.testPack = testPack;
 		}
 
-		public void runWithPaths(String requestPath) throws Exception
+		public void runWithPaths(String... requestPaths) throws Exception
 		{
-			File bundleFile = testPack.file(requestPath);
-			String bundlePath = StringUtils.substringAfterLast(bundleFile.getAbsolutePath(), JsTestDriverBundleCreator.BUNDLES_DIR_NAME + File.separator);
-			bundlePath = StringUtils.replace(bundlePath, "\\", "/");
-			new BundlerHandler(testPack).createBundleFile(bundleFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
+			for (String requestPath : requestPaths) {
+    			File bundleFile = testPack.file(requestPath);
+    			String bundlePath = StringUtils.substringAfterLast(bundleFile.getAbsolutePath(), JsTestDriverBundleCreator.BUNDLES_DIR_NAME + File.separator);
+    			bundlePath = StringUtils.replace(bundlePath, "\\", "/");
+    			new BundlerHandler(testPack).createBundleFile(bundleFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
+			}
 		}
 	}
 

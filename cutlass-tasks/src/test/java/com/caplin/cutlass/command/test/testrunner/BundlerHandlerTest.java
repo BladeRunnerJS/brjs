@@ -221,4 +221,58 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 					"// some aspect src code" );
 	}
 	
+	@Test
+	public void weCanUseUTF8() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£€")
+			.and(aspect.testType("UT").testTech("tech")).testFileHasContent("TestClass.js", "require('appns/Class1')");
+		whenJstdTests( aspect.testType("UT").testTech("tech") ).runWithPaths( "bundles/bundle.js" );
+		thenJstdTests( aspect.testType("UT").testTech("tech") ).testBundleContainsText(
+					"bundles/bundle.js",
+					"// $£€" );
+	}
+	
+	@Test
+	public void weCanUseLatin1() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("ISO-8859-1")
+    		.and().activeEncodingIs("ISO-8859-1")
+    		.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£")
+    		.and(aspect.testType("UT").testTech("tech")).testFileHasContent("TestClass.js", "require('appns/Class1')");
+    	whenJstdTests( aspect.testType("UT").testTech("tech") ).runWithPaths( "bundles/bundle.js" );
+    	thenJstdTests( aspect.testType("UT").testTech("tech") ).testBundleContainsText(
+    				"bundles/bundle.js",
+    				"// $£" );
+	}
+	
+	@Test
+	public void weCanUseUnicodeFilesWithABomMarkerEvenWhenThisIsNotTheDefaultEncoding() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("ISO-8859-1")
+    		.and().activeEncodingIs("UTF-16")
+    		.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£€")
+    		.and(aspect.testType("UT").testTech("tech")).testFileHasContent("TestClass.js", "require('appns/Class1')");
+    	whenJstdTests( aspect.testType("UT").testTech("tech") ).runWithPaths( "bundles/bundle.js" );
+    	thenJstdTests( aspect.testType("UT").testTech("tech") ).testBundleContainsText(
+    				"bundles/bundle.js",
+    				"// $£€" );
+	}
+	
+	@Test
+	public void allPossibleBundlePathAliasesAreValidModelRequests() throws Exception
+	{
+		whenJstdTests(aspectTestPack).runWithPaths( 
+				"bundles/js.bundle",
+				"bundles/css.bundle",
+				"bundles/i18n.bundle",
+				"bundles/en_i18n.bundle",
+				"bundles/xml.bundle",
+				"bundles/html.bundle",
+				"bundles/bundle.js",
+				"bundles/bundle.css",
+				"bundles/bundle.i18n",
+				"bundles/bundle.xml",
+				"bundles/bundle.html");
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
 }

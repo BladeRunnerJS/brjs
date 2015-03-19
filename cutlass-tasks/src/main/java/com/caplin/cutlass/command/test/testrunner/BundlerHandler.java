@@ -40,8 +40,8 @@ public class BundlerHandler
 		logicalBundlerHandlerPaths.put("bundle.js", "js/dev/combined/bundle.js");
 		logicalBundlerHandlerPaths.put("bundle.css", "css/common/bundle.css");
 		logicalBundlerHandlerPaths.put("bundle.i18n", "i18n/en_GB.js");
-		logicalBundlerHandlerPaths.put("bundle.xml", "bundle.xml");
-		logicalBundlerHandlerPaths.put("bundle.html", "bundle.html");
+		logicalBundlerHandlerPaths.put("bundle.xml", "xml/bundle.xml");
+		logicalBundlerHandlerPaths.put("bundle.html", "html/bundle.html");
 		
 		this.bundlableNode = bundlableNode;
 	}
