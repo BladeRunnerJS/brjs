@@ -14,9 +14,9 @@ import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
-import org.bladerunnerjs.api.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedFileAccessor;
+import org.bladerunnerjs.api.memoization.WatchingFileModificationObserverThread;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.InvalidBundlableNodeException;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
@@ -121,7 +121,7 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		try
 		{
-			fileWatcherThread = new FileModificationWatcherThread( this, new WatchKeyServiceFactory() );
+			fileWatcherThread = new WatchingFileModificationObserverThread( this, new WatchKeyServiceFactory() );
 		}
 		catch (IOException ex)
 		{
