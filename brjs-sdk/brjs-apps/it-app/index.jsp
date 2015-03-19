@@ -2,7 +2,6 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-
 		<title>IT Application</title>
         <% String theme = request.getParameter("theme") == null ? "common" : request.getParameter("theme"); %>
 		<@css.bundle theme="<%=theme%>" alternateTheme="alternate" @/>

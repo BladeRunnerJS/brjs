@@ -19,6 +19,7 @@ var App = function() {
 	this.functionalityTest("common-js", CommonJsLib.hello);
 	this.functionalityTest("third-party-lib", Testlib3p.hello);
 	this.functionalityTest("jndi", this.testJNDI);
+	this.functionalityTest("xml-bundle", this.testBundledXml);
 };
 
 App.prototype.functionalityTest = function(testMessage, fun, context) {
@@ -48,6 +49,10 @@ App.prototype.playWithAliases = function() {
 	var AliasedClass = require('alias!itapp.itbladeset.itblade.NewName');
 	var obj = new AliasedClass();
 	return obj.implementMe();
+};
+
+App.prototype.testBundledXml = function () {
+	return require('service!br.xml-service').getXmlDocument("bundledXml")[0].children[0].innerHTML;
 };
 
 
