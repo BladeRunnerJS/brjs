@@ -20,3 +20,8 @@ body {
 	margin-left:auto;
 	margin-right:auto;
 }
+
+.image-background {
+	background-image: url('images/backgroundImage.png');
+	height: 90px;
+}

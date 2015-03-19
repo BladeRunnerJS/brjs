@@ -13,6 +13,7 @@
 			<div class="br-logo">
 				<img src="<@unbundled-resources@/>/br-logo.png" />
 			</div>
+            <div class="image-background"></div>
 			<div id="Itblade"></div>
 		</div>
         <table id="outputTable" class="centre" border="1">
