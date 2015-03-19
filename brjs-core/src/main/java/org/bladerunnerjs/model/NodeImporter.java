@@ -2,6 +2,8 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -14,11 +16,13 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+
 import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
+
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
@@ -32,6 +36,7 @@ import org.mockito.Mockito;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.sf.jmimemagic.*;
 
 @SuppressWarnings("unused")
 public class NodeImporter {
@@ -44,7 +49,7 @@ public class NodeImporter {
     		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
     		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
     		if (temporaryUnzipDirFiles.length != 1) {
-    			throw new IOException("Exepected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
+    			throw new IOException("Expected to find 1 folder inside the provided zip, there was " + temporaryUnzipDirFiles.length);
     		}
     		
     		App tmpBrjsSourceApp = tempBrjs.app( targetApp.getName() );
@@ -190,8 +195,24 @@ public class NodeImporter {
 	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
 	{
 		for (File f : files) {
-			findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
+			if (f.length() != 0) {
+				if (checkFileMimeType(f).startsWith("text")) {
+					findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
+				}
+			}
 		}
+	}
+
+	private static String checkFileMimeType(File file) throws IOException {
+		byte[] data = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+		MagicMatch match = null;
+		try {
+			match = Magic.getMagicMatch(data);
+		} catch (MagicParseException | MagicMatchNotFoundException
+				| MagicException e) {
+			throw new IOException(e);
+		}
+		return match.getMimeType();
 	}
 	
 	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException

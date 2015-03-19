@@ -2,6 +2,9 @@
  * @module br/formatting/KeyValueFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+
 /**
  * @class
  * @alias module:br/formatting/KeyValueFormatter
@@ -14,10 +17,9 @@
  * The <code>mAttributes</code> argument should have the map holding the mappings in it's
  * <code>map</code> key.
  */
-br.formatting.KeyValueFormatter = function() {
-};
+function KeyValueFormatter() {}
 
-br.Core.implement(br.formatting.KeyValueFormatter, br.formatting.Formatter);
+topiarist.implement(KeyValueFormatter, Formatter);
 
 /**
  * Substitutes a value with a mapped value if the a mapped value exists otherwise it returns the
@@ -27,7 +29,7 @@ br.Core.implement(br.formatting.KeyValueFormatter, br.formatting.Formatter);
  * @param {Map} mAttributes the object which holds a map of key-value pairs in its "map" element.
  * @return  the found value for the passed key or the the key if the value was not found.
  */
-br.formatting.KeyValueFormatter.prototype.format = function(vValue, mAttributes) {
+KeyValueFormatter.prototype.format = function(vValue, mAttributes) {
 	var mKeyValues = mAttributes.map;
 	return mKeyValues[vValue] || vValue;
 };
@@ -35,6 +37,8 @@ br.formatting.KeyValueFormatter.prototype.format = function(vValue, mAttributes)
 /**
  * @private
  */
-br.formatting.KeyValueFormatter.prototype.toString = function() {
+KeyValueFormatter.prototype.toString = function() {
 	return "br.formatting.KeyValueFormatter";
 };
+
+module.exports = KeyValueFormatter;

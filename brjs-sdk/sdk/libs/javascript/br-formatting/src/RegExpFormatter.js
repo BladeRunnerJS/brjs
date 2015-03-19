@@ -2,6 +2,10 @@
  * @module br/formatting/RegExpFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var RegExpUtil = require('br/util/RegExp');
+
 /**
  * @class
  * @alias module:br/formatting/RegExpFormatter
@@ -18,12 +22,11 @@
  * br.formatting.RegExpFormatter.format("Buy.USD", { match:"(\\.", replace:" " })
  * </pre>
  */
-br.formatting.RegExpFormatter = function()
-{
+function RegExpFormatter() {
 	this.m_oRegExps = {};
-};
+}
 
-br.Core.implement(br.formatting.RegExpFormatter, br.formatting.Formatter);
+topiarist.implement(RegExpFormatter, Formatter);
 
 /**
  * Transforms a string using a standard JavaScript regular expression.
@@ -51,7 +54,7 @@ br.Core.implement(br.formatting.RegExpFormatter, br.formatting.Formatter);
  * @return  the string, converted by the regular expression.
  * @type  String
  */
-br.formatting.RegExpFormatter.prototype.format = function(vValue, mAttributes) {
+RegExpFormatter.prototype.format = function(vValue, mAttributes) {
 	if (typeof(vValue) == "string") {
 		var oSearch = this.getRegExp(mAttributes["match"], mAttributes["flags"]);
 		var sReplace = mAttributes["replace"] != null ? mAttributes["replace"] : "$&";
@@ -63,11 +66,11 @@ br.formatting.RegExpFormatter.prototype.format = function(vValue, mAttributes) {
 /**
  * @private
  */
-br.formatting.RegExpFormatter.prototype.getRegExp = function(sMatch, sFlags) {
+RegExpFormatter.prototype.getRegExp = function(sMatch, sFlags) {
 	if (this.m_oRegExps[sMatch] == null) {
 		this.m_oRegExps[sMatch] = {};
 		if (this.m_oRegExps[sMatch][sFlags] == null) {
-			this.m_oRegExps[sMatch][sFlags] = new RegExp(br.util.RegExp.escape(sMatch), sFlags);
+			this.m_oRegExps[sMatch][sFlags] = new RegExp(RegExpUtil.escape(sMatch), sFlags);
 		}
 	}
 	return this.m_oRegExps[sMatch][sFlags];
@@ -76,6 +79,8 @@ br.formatting.RegExpFormatter.prototype.getRegExp = function(sMatch, sFlags) {
 /**
  * @private
  */
-br.formatting.RegExpFormatter.prototype.toString = function() {
+RegExpFormatter.prototype.toString = function() {
 	return "br.formatting.RegExpFormatter";
 };
+
+module.exports = RegExpFormatter;

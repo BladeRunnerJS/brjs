@@ -2,6 +2,10 @@
  * @module br/formatting/SignificantFiguresFormatter
  */
 
+var topiarist = require('topiarist');
+var Formatter = require('br/formatting/Formatter');
+var NumberUtil = require('br/util/Number');
+
 /**
  * @class
  * @alias module:br/formatting/SignificantFiguresFormatter
@@ -15,10 +19,9 @@
  *
  * <pre>br.formatting.SignificantFiguresFormatter.format(3.14159, {sf:4})</pre>
  */
-br.formatting.SignificantFiguresFormatter = function() {
-};
+function SignificantFiguresFormatter() {}
 
-br.Core.implement(br.formatting.SignificantFiguresFormatter, br.formatting.Formatter);
+topiarist.implement(SignificantFiguresFormatter, Formatter);
 
 /**
  * Formats a number to the specified number of significant figures.
@@ -41,13 +44,15 @@ br.Core.implement(br.formatting.SignificantFiguresFormatter, br.formatting.Forma
  * @return  the number, formatted to the specified precision.
  * @type  String
  */
-br.formatting.SignificantFiguresFormatter.prototype.format = function(vValue, mAttributes) {
-	return br.util.Number.isNumber(vValue) ? String(br.util.Number.toPrecision(vValue, mAttributes["sf"])) : vValue;
+SignificantFiguresFormatter.prototype.format = function(vValue, mAttributes) {
+	return NumberUtil.isNumber(vValue) ? String(NumberUtil.toPrecision(vValue, mAttributes["sf"])) : vValue;
 };
 
 /**
  * @private
  */
-br.formatting.SignificantFiguresFormatter.prototype.toString = function() {
+SignificantFiguresFormatter.prototype.toString = function() {
 	return "br.formatting.SignificantFiguresFormatter";
 };
+
+module.exports = SignificantFiguresFormatter;

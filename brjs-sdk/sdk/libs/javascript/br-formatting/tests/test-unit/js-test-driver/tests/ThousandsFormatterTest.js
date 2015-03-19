@@ -1,6 +1,6 @@
 (function() {
 	ThousandsFormatterTest = TestCase("ThousandsFormatterTest");
-
+	require('jsunitextensions');
 	var ThousandsFormatter = require('br/presenter/formatter/ThousandsFormatter');
 
 	ThousandsFormatterTest.prototype.setUp = function()
@@ -14,7 +14,6 @@
 	ThousandsFormatterTest.prototype.tearDown = function()
 	{
 		this.subrealm.uninstall();
-		globalizeSourceModules();
 	};
 
 	ThousandsFormatterTest.prototype.test_nonDecimals = function()
@@ -100,7 +99,7 @@
 			}));
 		});
 
-		this.oFormatter = new br.presenter.formatter.ThousandsFormatter();
+		this.oFormatter = new ThousandsFormatter();
 
 		assertEquals("1,000", this.oFormatter.format("1.000", {}));
 		assertEquals("10,00", this.oFormatter.format("10.00", {}));
