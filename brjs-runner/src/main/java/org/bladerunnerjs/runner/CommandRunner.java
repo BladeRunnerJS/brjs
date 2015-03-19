@@ -84,8 +84,7 @@ public class CommandRunner {
 		
 		return byteStreamOutputStream.toString().trim();
 	}
-	
-	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
+	public int run(File workingDir, String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
 		AbstractRootNode.allowInvalidRootDirectories = false;
 		BRJS brjs = null;
 		
@@ -100,7 +99,7 @@ public class CommandRunner {
 		args = processGlobalCommandFlags(args);
 		
 		try {
-			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir, new File(".").getCanonicalFile());
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir, workingDir.getAbsoluteFile());
 			brjs.populate("default");
 			setBrjsAllowStats(brjs);
 		}
@@ -110,6 +109,10 @@ public class CommandRunner {
 		
 		injectLegacyCommands(brjs);
 		return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
+	}
+	
+	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
+		return run(new File("."), args);
 	}
 	
 	private void setBrjsAllowStats(BRJS brjs) throws ConfigException
