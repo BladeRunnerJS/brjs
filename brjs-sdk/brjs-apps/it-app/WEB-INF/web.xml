@@ -37,6 +37,45 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
+
+    <!--secure session-->
+    <session-config>
+        <session-timeout>10000</session-timeout>
+    </session-config>
+
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Application</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Login Section</web-resource-name>
+            <url-pattern>/login/*</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
+    <!--Use Login aspect-->
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>BladeRunnerLoginRealm</realm-name>
+        <form-login-config>
+            <form-login-page>/login/</form-login-page>
+            <form-error-page>/login/</form-error-page>
+        </form-login-config>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </login-config>
 	<!-- end-env -->
 	<!--
 		End of brjs config.
