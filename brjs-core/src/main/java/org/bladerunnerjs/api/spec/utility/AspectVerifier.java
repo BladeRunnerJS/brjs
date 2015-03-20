@@ -121,7 +121,7 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 	}
 
 	public VerifierChainer devResponseContains(String requestPath, String expectedContent, StringBuffer response) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		ResponseContent responseContent = aspect.handleLogicalRequest(requestPath, new StaticContentAccessor(aspect.app()), aspect.root().getAppVersionGenerator().getDevVersion());
+		ResponseContent responseContent = aspect.handleLogicalRequest(requestPath, new StaticContentAccessor(aspect.app()), aspect.root().getAppVersionGenerator().getDevVersion());        		
 		ByteArrayOutputStream pluginContent = new ByteArrayOutputStream();
 		responseContent.write(pluginContent);
 		if (!pluginContent.toString().contains(expectedContent)) {
