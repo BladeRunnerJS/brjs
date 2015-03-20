@@ -2,16 +2,25 @@ package org.bladerunnerjs.api.spec.utility;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.aliasing.AliasDefinition;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.engine.VerifierChainer;
+import org.bladerunnerjs.model.StaticContentAccessor;
+import org.junit.ComparisonFailure;
 
 import com.google.common.base.Joiner;
 
@@ -110,5 +119,35 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 		}
 		
 		return requirePaths;
+	}
+
+	public VerifierChainer devResponseContains(String requestPath, String expectedContent, StringBuffer response) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		ResponseContent responseContent = aspect.handleLogicalRequest(requestPath, new StaticContentAccessor(aspect.app()), aspect.root().getAppVersionGenerator().getDevVersion());        		
+		ByteArrayOutputStream pluginContent = new ByteArrayOutputStream();
+		responseContent.write(pluginContent);
+		if (!pluginContent.toString().contains(expectedContent)) {
+			assertEquals(expectedContent, pluginContent.toString());
+		}
+		response.append(pluginContent.toString(BladerunnerConf.OUTPUT_ENCODING));
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer devResponseEventuallyContains(String requestPath, String content, StringBuffer response) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, InterruptedException {
+		ComparisonFailure failure = null;
+		for(int i = 0; i < 50 ; i++) {
+			try {
+				devResponseContains(requestPath, content, response);
+				return verifierChainer;
+			}
+			catch (ComparisonFailure e) {
+				failure = e;
+			}
+			Thread.sleep(250);
+		}
+		if (failure == null) {
+			fail("Didn't get expected response");
+		}
+		throw failure;
 	}
 }

@@ -63,7 +63,9 @@ public class FileModificationRegistry
 	
 	private void incrementFileAndParentVersion(File file) {
 		while (file != null && !file.equals(rootFile)) {
+			long previous = getOrCreateVersionValue(file).getValue();
 			getOrCreateVersionValue(file).incrememntValue();
+			long newValue = getOrCreateVersionValue(file).getValue();
 			file = file.getParentFile();
 		}
 	}
