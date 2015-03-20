@@ -1,4 +1,6 @@
 <aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
     <alias name="itapp.itbladeset.itblade.NewName"
            interface="itapp.itbladeset.itblade.TestingInterface" defaultClass="itapp.itbladeset.itblade.TestingClass" />
+    <alias name="itapp.itbladeset.itblade.ImplementFail"
+           interface="itapp.itbladeset.itblade.TestingInterface" defaultClass="itapp.itbladeset.itblade.ImplementFailClass" />
 </aliasDefinitions>

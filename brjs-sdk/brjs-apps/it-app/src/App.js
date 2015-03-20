@@ -15,6 +15,7 @@ var App = function() {
 	this.addItBladeToView();
 	this.functionalityTest("i18n", this.testI18n);
 	this.functionalityTest("aliasing", this.playWithAliases);
+	this.functionalityTest("aliasing-implement-fail", this.aliasFail);
 	this.functionalityTest("namespaced-js", namedspacedjslib.NamedspacedJsLib.hello);
 	this.functionalityTest("common-js", CommonJsLib.hello);
 	this.functionalityTest("third-party-lib", Testlib3p.hello);
@@ -51,9 +52,20 @@ App.prototype.playWithAliases = function() {
 	return obj.implementMe();
 };
 
+App.prototype.aliasFail = function() {
+	try {
+		require('alias!itapp.itbladeset.itblade.ImplementFail');
+	}
+	catch (err) {
+		if(err.name === "AliasInterfaceError") {
+			return "Aliasing successfully prevented";
+		}
+	}
+	return "Aliasing did not throw an AliasInterfaceError";
+};
+
 App.prototype.testBundledXml = function () {
 	return require('service!br.xml-service').getXmlDocument("bundledXml")[0].children[0].innerHTML;
 };
-
 
 module.exports = App;
