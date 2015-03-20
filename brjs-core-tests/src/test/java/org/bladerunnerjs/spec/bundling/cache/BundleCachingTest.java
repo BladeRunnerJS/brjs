@@ -233,4 +233,20 @@ public class BundleCachingTest extends SpecTest
     		.and(secondResponse).doesNotContainText("lib.Lib = require(");
 	}
 	
+	@Test
+	public void fileWatcherWatchesFolderBrjsAppsAtTheSameLevelAsSdk() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread();
+			app = brjs.app("app1");
+			aspect = app.defaultAspect();
+			given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageHasContent("require('appns/App')")
+			.and(aspect).classFileHasContent("App", "// App.js")
+			.and(aspect).hasReceivedRequest("js/dev/combined/bundle.js");
+		when(aspect).indexPageRefersToWithoutNotifyingFileRegistry("require('appns/AppClass')")
+			.and(aspect).fileHasContentsWithoutNotifyingFileRegistry("src/AppClass.js", "// AppClass.js");
+		then(aspect).devResponseEventuallyContains("js/dev/combined/bundle.js", "AppClass.js", response)
+			.and(response).doesNotContainText("App.js");
+	}
+	
 }
