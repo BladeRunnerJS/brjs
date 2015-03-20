@@ -9,7 +9,7 @@ public class FileModifiedChecker
 {
 	private FileModificationRegistry fileModificationRegistry;
 	private File file;
-	private long lastModifiedTime = -1;
+	private long lastFileVersion = -1;
 	private FileVersion fileVersion;
 
 	public FileModifiedChecker(FileModificationRegistry fileModificationRegistry, RootNode rootNode, File file) {
@@ -21,10 +21,10 @@ public class FileModifiedChecker
 		if (fileVersion == null) {
 			fileVersion = fileModificationRegistry.getFileVersionObject(file);
 		}
-		long newLastModified = fileVersion.getValue();		
+		long newFileVersion = fileVersion.getValue();		
 		
-		boolean hasChangedSinceLastCheck = (newLastModified > lastModifiedTime);
-		lastModifiedTime = newLastModified;
+		boolean hasChangedSinceLastCheck = (newFileVersion > lastFileVersion);
+		lastFileVersion = newFileVersion;
 		
 		return hasChangedSinceLastCheck;
 	}
