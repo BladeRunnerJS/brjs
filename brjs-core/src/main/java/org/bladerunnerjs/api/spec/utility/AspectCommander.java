@@ -3,6 +3,7 @@ package org.bladerunnerjs.api.spec.utility;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -14,7 +15,6 @@ import org.bladerunnerjs.api.spec.engine.Command;
 import org.bladerunnerjs.api.spec.engine.CommanderChainer;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
 
@@ -153,9 +153,12 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 
 	public CommanderChainer indexPageRefersToWithoutNotifyingFileRegistry(String content) throws IOException
 	{
-		new EncodedFileUtil(aspect.root(), specTest.getActiveCharacterEncoding()).write( aspect.file("index.html"), content, false);
+		return fileHasContentsWithoutNotifyingFileRegistry("index.html", content);
+	}
 
+	public CommanderChainer fileHasContentsWithoutNotifyingFileRegistry(String filePath, String content) throws IOException {
+		// do not use EncodedFileUtil or any MemoizedFile utilities as they increment the file versions implicitly
+		FileUtils.write(aspect.file(filePath).getUnderlyingFile(), content);
 		return commanderChainer;
 	}
-	
 }

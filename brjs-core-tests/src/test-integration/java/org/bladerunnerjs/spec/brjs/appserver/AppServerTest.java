@@ -10,6 +10,7 @@ import javax.servlet.Servlet;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.model.events.NodeReadyEvent;
@@ -41,10 +42,13 @@ public class AppServerTest extends SpecTest
 	ServerSocket socket;
 	Servlet helloWorldServlet;
 	TemplateGroup templates;
+	Aspect aspect;
+	StringBuffer response = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
@@ -56,6 +60,7 @@ public class AppServerTest extends SpecTest
 			appServer = brjs.applicationServer(appServerPort);
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
+			aspect = app1.defaultAspect();
 			app1Conf = app1.appConf();
 			app2Conf = app2.appConf();
 			templates = brjs.sdkTemplateGroup("default");
@@ -338,5 +343,21 @@ public class AppServerTest extends SpecTest
 	public void errorCode404IsThrownIfResourceIsNotFound() throws Exception {
 		given(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/no-such-content-plugin", "Error 404");
+	}
+	
+	@Test
+	public void fileWatcherWatchesFolderBrjsAppsAtTheSameLevelAsSdk() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread();
+			app1 = brjs.app("app1");
+			aspect = app1.defaultAspect();
+			given(app1).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageHasContent("require('appns/App')")
+			.and(aspect).classFileHasContent("App", "// App.js")
+			.and(aspect).hasReceivedRequest("js/dev/combined/bundle.js");
+		when(aspect).indexPageRefersToWithoutNotifyingFileRegistry("require('appns/AppClass')")
+			.and(aspect).fileHasContentsWithoutNotifyingFileRegistry("src/AppClass.js", "// AppClass.js");
+		then(aspect).devResponseEventuallyContains("js/dev/combined/bundle.js", "AppClass.js", response)
+			.and(response).doesNotContainText("App.js");
 	}
 }
