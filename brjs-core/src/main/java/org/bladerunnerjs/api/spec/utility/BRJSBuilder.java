@@ -250,6 +250,9 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	@Override
 	public BuilderChainer hasBeenCreated() throws Exception
 	{
+		if (brjs != null) {
+			brjs.close();
+		}
 		brjs = specTest.createModel();
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
@@ -273,6 +276,9 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasBeenAuthenticallyCreated() throws Exception
 	{
+		if (brjs != null) {
+			brjs.close();
+		}
 		brjs = specTest.createNonTestModel();
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
@@ -301,9 +307,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasBeenAuthenticallyReCreated() throws Exception
 	{
-		if (brjs != null) {
-			brjs.close();
-		}
 		return hasBeenAuthenticallyCreated();
 	}
 

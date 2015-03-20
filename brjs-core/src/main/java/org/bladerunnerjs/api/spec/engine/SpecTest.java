@@ -82,6 +82,9 @@ import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
 
 public abstract class SpecTest
@@ -106,6 +109,26 @@ public abstract class SpecTest
 	public WebappTester webappTester;
 	public MockAppVersionGenerator appVersionGenerator;
 	public Thread fileWatcherThread;
+	
+	public int modelsCreated = 0;
+	
+	@Rule
+	public TestWatcher watchman= new TestWatcher() {
+		@Override
+		protected void failed(Throwable e, Description description) {
+			if (modelsCreated > 1) {
+				System.err.println(
+					"BRJS has either been re-created or a second model is being used in the test " + description.getDisplayName() + ".\n"+
+					"Not clearing down previous isntances can lead to unreliability. Check that:\n\n"+
+					"- The previous instance(s) of BRJS are closed before they are re-created.\n"+
+					"- Any variables defined using the old 'brjs' variable are redefined within the test.\n"+
+						"\tFor example: if an app field is defined in @Before using \"app = brjs.app('myApp')\" and BRJS is re-created in the test,\n"+
+						"\tthe app variable should be redefined by adding \"app = brjs.app('myApp')\" at the top of the test.\n"
+				);
+			}
+		}
+	};
+	
 	
 	@Before
 	public void resetTestObjects()
@@ -152,20 +175,19 @@ public abstract class SpecTest
 	
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
+		modelsCreated++;
 		return BRJSTestModelFactory.createModel(testSdkDirectory, testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createModelWithWorkingDir(File workingDir) throws InvalidSdkDirectoryException 
 	{	
+		modelsCreated++;
 		return BRJSTestModelFactory.createModel(testSdkDirectory, workingDir, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
+		modelsCreated++;
 		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging);
-	}
-	
-	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
-		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
 	}
 	
 	public String getActiveCharacterEncoding() {
