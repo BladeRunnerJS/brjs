@@ -284,6 +284,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	{
 		hasBeenAuthenticallyCreated();
 		specTest.fileWatcherThread = new FileModificationWatcherThread(brjs, new WatchKeyServiceFactory());
+		brjs.io().uninstallFileAccessChecker();
 		specTest.fileWatcherThread.start();
 		
 		return builderChainer;
