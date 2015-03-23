@@ -20,7 +20,6 @@ import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.engine.VerifierChainer;
 import org.bladerunnerjs.model.StaticContentAccessor;
-import org.junit.ComparisonFailure;
 
 import com.google.common.base.Joiner;
 
@@ -133,21 +132,25 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 		return verifierChainer;
 	}
 	
-	public VerifierChainer devResponseEventuallyContains(String requestPath, String content, StringBuffer response) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, InterruptedException {
-		ComparisonFailure failure = null;
-		for(int i = 0; i < 50 ; i++) {
+	public VerifierChainer devResponseEventuallyContains(String requestPath, String content, StringBuffer response) {
+		Throwable failure = null;
+		for (int i = 0; i < 50 ; i++) {
 			try {
 				devResponseContains(requestPath, content, response);
 				return verifierChainer;
 			}
-			catch (ComparisonFailure e) {
+			catch (Throwable e) {
 				failure = e;
+				try {
+					Thread.sleep(250);
+				} catch (Exception ex) {
+					// ignore
+				}
 			}
-			Thread.sleep(250);
 		}
 		if (failure == null) {
 			fail("Didn't get expected response");
 		}
-		throw failure;
+		throw new RuntimeException(failure);
 	}
 }
