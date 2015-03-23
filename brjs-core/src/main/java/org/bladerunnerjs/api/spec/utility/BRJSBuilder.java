@@ -287,6 +287,19 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithWorkingDir(File workingDir) throws Exception
+	{
+		if (brjs != null) {
+			brjs.close();
+		}
+		brjs = specTest.createNonTestModel(workingDir);
+		brjs.io().installFileAccessChecker();
+		specTest.brjs = brjs;
+		this.node = brjs;
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
