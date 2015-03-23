@@ -303,9 +303,9 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
+		brjs.io().uninstallFileAccessChecker();
 		specTest.fileWatcherThread = new WatchingFileModificationObserverThread(brjs, new WatchKeyServiceFactory());
 		specTest.fileWatcherThread.start();
-		brjs.io().uninstallFileAccessChecker();
 		
 		return builderChainer;
 	}
@@ -313,9 +313,9 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenAuthenticallyCreatedWithFilePollingThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
+		brjs.io().uninstallFileAccessChecker();
 		specTest.fileWatcherThread = new PollingFileModificationObserverThread(brjs);
 		specTest.fileWatcherThread.start();
-		brjs.io().uninstallFileAccessChecker();
 		
 		return builderChainer;
 	}
