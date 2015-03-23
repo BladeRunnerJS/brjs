@@ -25,8 +25,24 @@ public class BundleCachingIntegrationTest extends SpecTest
 	}
 	
 	@Test
-	public void fileWatcherWatchesFolderBrjsAppsAtTheSameLevelAsSdk() throws Exception {
+	public void fileWatcherWatchesFolderBrjsAppsAtTheSameLevelAsSdk() throws Throwable {
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread();
+			app = brjs.app("app1");
+			aspect = app.defaultAspect();
+			given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageHasContent("require('appns/App')")
+			.and(aspect).classFileHasContent("App", "// App.js")
+			.and(aspect).hasReceivedRequest("js/dev/combined/bundle.js");
+		when(aspect).indexPageRefersToWithoutNotifyingFileRegistry("require('appns/AppClass')")
+			.and(aspect).fileHasContentsWithoutNotifyingFileRegistry("src/AppClass.js", "// AppClass.js");
+		then(aspect).devResponseEventuallyContains("js/dev/combined/bundle.js", "AppClass.js", response)
+			.and(response).doesNotContainText("App.js");
+	}
+	
+	@Test
+	public void fileWatcherPollsFolderBrjsAppsAtTheSameLevelAsSdk() throws Throwable {
+		given(brjs).hasBeenAuthenticallyCreatedWithFilePollingThread();
 			app = brjs.app("app1");
 			aspect = app.defaultAspect();
 			given(app).hasBeenCreated()
