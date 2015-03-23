@@ -8,6 +8,7 @@ import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 
 
@@ -15,17 +16,21 @@ public class PollingFileModificationObserverThread extends Thread
 {
 
 	public static final String THREAD_IDENTIFIER = PollingFileModificationObserverThread.class.getSimpleName();
+	public static final String FILE_CHANGED_MSG = THREAD_IDENTIFIER+" detected a '%s' event for '%s'. Incrementing the file version.";
 	
 	private File directoryToWatch;
 	private FileModificationRegistry fileModificationRegistry;
 	private FileAlterationListener fileModificationRegistryAlterationListener = new FileModificationRegistryAlterationListener();
 	private FileAlterationMonitor monitor;
 	
+	private Logger logger;
+	
 	public PollingFileModificationObserverThread(BRJS brjs) throws IOException
 	{
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().getUnderlyingFile();
 		monitor = new FileAlterationMonitor(1000);
+		logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -58,21 +63,27 @@ public class PollingFileModificationObserverThread extends Thread
 	public class FileModificationRegistryAlterationListener extends FileAlterationListenerAdaptor implements FileAlterationListener
 	{
     	public void onDirectoryCreate(final File directory) {
+    		logger.debug(FILE_CHANGED_MSG, "NEW_DIRECTORY", directory.getPath());
     		fileModificationRegistry.incrementChildFileVersions(directory);
     	}
     	public void onDirectoryChange(final File directory) {
+    		logger.debug(FILE_CHANGED_MSG, "CHANGE_DIRECTORY", directory.getPath());
     		fileModificationRegistry.incrementChildFileVersions(directory);
 		}
     	public void onDirectoryDelete(final File directory) {
+    		logger.debug(FILE_CHANGED_MSG, "DELETE_DIRECTORY", directory.getPath());
     		fileModificationRegistry.incrementChildFileVersions(directory);
     	}
     	public void onFileCreate(final File file) {
+    		logger.debug(FILE_CHANGED_MSG, "CREATE_FILE", file.getPath());
     		fileModificationRegistry.incrementChildFileVersions(file);
     	}
     	public void onFileChange(final File file) {
+    		logger.debug(FILE_CHANGED_MSG, "CHANGE_FILE", file.getPath());
     		fileModificationRegistry.incrementChildFileVersions(file);
     	}
     	public void onFileDelete(final File file) {
+    		logger.debug(FILE_CHANGED_MSG, "DELETE_FILE", file.getPath());
     		fileModificationRegistry.incrementChildFileVersions(file);
     	}
 	}
