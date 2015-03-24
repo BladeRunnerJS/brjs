@@ -68,6 +68,7 @@ public class FileModificationWatcherThreadTest
 		mockBrjs = mock(BRJS.class);
 		rootWatchDir = new MemoizedFile(mockBrjs, FileUtils.createTemporaryDirectory( this.getClass() ).getAbsolutePath() );
 		when(mockBrjs.dir()).thenReturn(rootWatchDir);
+		when(mockBrjs.appsFolder()).thenReturn(rootWatchDir);
 		when(mockBrjs.getFileModificationRegistry()).thenReturn(mockModificationRegistry);
 		mockLogger = mock(Logger.class);
 		when(mockBrjs.logger(any(Class.class))).thenReturn(mockLogger);

@@ -195,6 +195,11 @@ public abstract class SpecTest
 		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, workingDir, logging);
 	}
 	
+	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
+		modelsCreated++;
+		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
+	}
+	
 	public String getActiveCharacterEncoding() {
 		return activeCharacterEncoding;
 	}

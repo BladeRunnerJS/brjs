@@ -142,7 +142,7 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 			catch (Throwable e) {
 				failure = e;
 				try {
-					Thread.sleep(250);
+					Thread.sleep(2000);
 				} catch (Exception ex) {
 					// ignore
 				}
