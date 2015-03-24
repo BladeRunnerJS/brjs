@@ -10,6 +10,7 @@ import javax.servlet.Servlet;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.model.events.NodeReadyEvent;
@@ -41,10 +42,13 @@ public class AppServerTest extends SpecTest
 	ServerSocket socket;
 	Servlet helloWorldServlet;
 	TemplateGroup templates;
+	Aspect aspect;
+	StringBuffer response = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
@@ -56,6 +60,7 @@ public class AppServerTest extends SpecTest
 			appServer = brjs.applicationServer(appServerPort);
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
+			aspect = app1.defaultAspect();
 			app1Conf = app1.appConf();
 			app2Conf = app2.appConf();
 			templates = brjs.sdkTemplateGroup("default");
@@ -319,4 +324,5 @@ public class AppServerTest extends SpecTest
 		given(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/no-such-content-plugin", "Error 404");
 	}
+	
 }
