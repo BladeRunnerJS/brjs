@@ -21,13 +21,13 @@
 			assertEquals('25012015', result);
 		},
 
-		'test formatting failure': function() {
-			var result = formatter.format('', {
+		'test formatting failure should return original string': function() {
+			var result = formatter.format('abc', {
 				inputFormat: 'YYYYMMDD',
 				outputFormat: 'DDMMYYYY'
 			});
 
-			assertUndefined(result);
+			assertEquals('abc', result);
 		},
 
 		'test english localised format': function() {
