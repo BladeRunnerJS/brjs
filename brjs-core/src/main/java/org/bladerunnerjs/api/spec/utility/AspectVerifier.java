@@ -134,7 +134,7 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 	
 	public VerifierChainer devResponseEventuallyContains(String requestPath, String content, StringBuffer response) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, InterruptedException {
 		Throwable failure = null;
-		for(int i = 0; i < 120 ; i++) { //120 8 250 = 30000 = 30s
+		for(int i = 0; i < 5 ; i++) { 
 			try {
 				devResponseContains(requestPath, content, response);
 				return verifierChainer;
@@ -142,7 +142,7 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 			catch (Throwable e) {
 				failure = e;
 				try {
-					Thread.sleep(250);
+					Thread.sleep(2000);
 				} catch (Exception ex) {
 					// ignore
 				}

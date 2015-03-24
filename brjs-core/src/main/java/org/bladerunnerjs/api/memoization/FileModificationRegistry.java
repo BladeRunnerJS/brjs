@@ -1,8 +1,11 @@
 package org.bladerunnerjs.api.memoization;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,11 +18,11 @@ import org.bladerunnerjs.model.engine.RootNode;
 public class FileModificationRegistry
 {
 	private Map<String,FileVersion> lastModifiedMap = new ConcurrentHashMap<>();
-	private File rootFile;
+	private List<File> rootFiles;
 	private IOFileFilter globalFileFilter;
 
-	public FileModificationRegistry(File rootFile, IOFileFilter globalFileFilter) {
-		this.rootFile = rootFile;
+	public FileModificationRegistry(IOFileFilter globalFileFilter, File... rootFiles) {
+		this.rootFiles = Arrays.asList(rootFiles);
 		this.globalFileFilter = globalFileFilter;
 	}
 	
@@ -62,7 +65,8 @@ public class FileModificationRegistry
 	}
 	
 	private void incrementFileAndParentVersion(File file) {
-		while (file != null && !file.equals(rootFile)) {
+		while (file != null && !rootFiles.contains(file)) {
+			// TODO: remove prev and newvalue
 			long previous = getOrCreateVersionValue(file).getValue();
 			getOrCreateVersionValue(file).incrememntValue();
 			long newValue = getOrCreateVersionValue(file).getValue();

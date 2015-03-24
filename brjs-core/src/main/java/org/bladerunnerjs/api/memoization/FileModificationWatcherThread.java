@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.api.BRJS;
@@ -24,7 +26,7 @@ public class FileModificationWatcherThread extends Thread
 	public static final String CANT_RESET_PATH_MSG = "A watch key could not be reset for the path '%s' but the directory or file still exists. "+
 			"You might need to reset the process for file changes to be detected.";
 	
-	private Path directoryToWatch;
+	private List<Path> directoriesToWatch;
 	private FileModificationRegistry fileModificationRegistry;
 
 	private BRJS brjs;
@@ -40,7 +42,11 @@ public class FileModificationWatcherThread extends Thread
 	{
 		this.watchKeyServiceFactory = watchKeyServiceFactory;
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
-		directoryToWatch = brjs.dir().toPath();
+		directoriesToWatch = new ArrayList<Path>();
+		directoriesToWatch.add(brjs.dir().toPath());
+		if (!brjs.appsFolder().getAbsolutePath().startsWith(brjs.dir().getAbsolutePath())) {
+			directoriesToWatch.add(brjs.appsFolder().toPath());
+		}
 		this.brjs = brjs;
 	}
 	
@@ -70,7 +76,10 @@ public class FileModificationWatcherThread extends Thread
 		watchKeyService = watchKeyServiceFactory.createWatchService();
 		logger = brjs.logger(this.getClass());
 		logger.debug(USING_WATCH_SERVICE_MSG, this.getClass().getSimpleName(), watchKeyService.getClass().getSimpleName());
-		watchKeys.putAll( watchKeyService.createWatchKeysForDir(directoryToWatch, false) );
+		for (Path path : directoriesToWatch) {
+			watchKeys.putAll( watchKeyService.createWatchKeysForDir(path, false) );
+		}
+		
 	}
 	
 	void checkForUpdates() throws IOException, InterruptedException
@@ -126,8 +135,8 @@ public class FileModificationWatcherThread extends Thread
             }
             
 			logger.debug(FILE_CHANGED_MSG, kind, childFile.getPath());
+
             fileModificationRegistry.incrementFileVersion(childFile);
-            
             boolean isWatchKeyReset = watchKey.reset();
             if( !isWatchKeyReset ) {
             	if (!childFile.exists()) {

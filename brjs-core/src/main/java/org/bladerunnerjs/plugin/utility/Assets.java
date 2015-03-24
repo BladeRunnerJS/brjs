@@ -26,9 +26,9 @@ public class Assets {
 	private Map<String,Asset> cachedAssets = new HashMap<>();
 	
 	public Assets(AssetLocation assetLocation) {
-		computedValue = new MemoizedValue<>(assetLocation.dir()+" - AssetLocation.assets", assetLocation.root(), assetLocation.root().dir());
 		this.assetLocation = assetLocation;
 		this.brjs = assetLocation.root();
+		computedValue = new MemoizedValue<>(assetLocation.dir()+" - AssetLocation.assets", assetLocation.root(), assetLocation.root().dir(), brjs.appsFolder());
 	}
 	
 	public Map<AssetPlugin, List<Asset>> pluginAssets() {

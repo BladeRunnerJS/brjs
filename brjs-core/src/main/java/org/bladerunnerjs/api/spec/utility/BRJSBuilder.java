@@ -280,16 +280,30 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
-	{
-		hasBeenAuthenticallyCreated();
-		specTest.fileWatcherThread = new FileModificationWatcherThread(brjs, new WatchKeyServiceFactory());
-		brjs.io().uninstallFileAccessChecker();
-		specTest.fileWatcherThread.start();
+	public BuilderChainer hasBeenAuthenticallyCreatedWithWorkingDir(File workingDir) throws InvalidSdkDirectoryException {
+		brjs = specTest.createNonTestModel(workingDir);
+		brjs.io().installFileAccessChecker();
+		specTest.brjs = brjs;
+		this.node = brjs;
 		
 		return builderChainer;
 	}
 	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
+	{
+		hasBeenAuthenticallyCreated();
+		attachFileWatcherThread();
+		
+		return builderChainer;
+	}
+
+	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThreadAndWorkingDir(File workingDir) throws Exception {
+		hasBeenAuthenticallyCreatedWithWorkingDir(workingDir);
+		attachFileWatcherThread();
+		
+		return builderChainer;
+	}
+
 	public BuilderChainer hasBeenAuthenticallyReCreated() throws Exception
 	{
 		if (brjs != null) {
@@ -418,8 +432,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		}
 	}
 	
-	
-	
 	private File locateBrjsSdk()
 	{
 		File thisDir = new File(".").getAbsoluteFile();
@@ -434,6 +446,12 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 			throw new RuntimeException("Unable to find parent brjs-sdk directory");
 		}
 		return brjsSdk;
+	}
+
+	private void attachFileWatcherThread() throws IOException {
+		brjs.io().uninstallFileAccessChecker();
+		specTest.fileWatcherThread = new FileModificationWatcherThread(brjs, new WatchKeyServiceFactory());
+		specTest.fileWatcherThread.start();
 	}
 	
 }

@@ -23,6 +23,7 @@ public class FileModifiedChecker
 		}
 		long newLastModified = fileVersion.getValue();		
 		boolean hasChangedSinceLastCheck = (newLastModified > lastModifiedTime);
+		
 		lastModifiedTime = newLastModified;
 		
 		return hasChangedSinceLastCheck;
