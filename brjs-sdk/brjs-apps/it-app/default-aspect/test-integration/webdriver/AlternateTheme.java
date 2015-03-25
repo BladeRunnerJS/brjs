@@ -7,8 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import testlib.ItApp;
 
-public class AlternateTheme
-{
+public class AlternateTheme {
     private static WebDriver driver;
     private static String baseUrl = "http://localhost:7070/it-app";
     private static ItApp itapp;
@@ -21,6 +20,7 @@ public class AlternateTheme
         driver.get(themedURL);
         itapp = new ItApp(driver, themedURL);
     }
+
     @AfterClass
     public static void after() {
         WebDriverProvider.closeDriver(driver);

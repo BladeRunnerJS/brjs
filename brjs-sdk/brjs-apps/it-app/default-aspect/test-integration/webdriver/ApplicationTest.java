@@ -18,6 +18,7 @@ public class ApplicationTest {
         itapp = new ItApp(driver, baseUrl);
         itapp.parseOutputTable();
     }
+
     @AfterClass
     public static void after() {
         WebDriverProvider.closeDriver(driver);
