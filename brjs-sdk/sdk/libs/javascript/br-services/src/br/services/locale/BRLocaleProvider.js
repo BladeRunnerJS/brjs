@@ -64,7 +64,7 @@ function getBrowserAcceptedLocales() {
 	var userAcceptedLocales;
 
 	if (navigator.languages) {
-		userAcceptedLocales = navigator.languages;
+		userAcceptedLocales = navigator.languages.slice(0);
 	}
 	else if (navigator.language) {
 		userAcceptedLocales = [navigator.language];
