@@ -1,23 +1,14 @@
-import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.WebDriver;
 import org.bladerunnerjs.legacy.testIntegration.WebDriverProvider;
 import org.junit.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class ApplicationTest {
 
@@ -32,7 +23,6 @@ public class ApplicationTest {
         driver.get(baseUrl);
         itapp = new ItApp(driver, baseUrl);
         itapp.parseOutputTable();
-        itapp.parseImageData();
     }
     @AfterClass
     public static void after() {
@@ -81,35 +71,28 @@ public class ApplicationTest {
 
     @Test
     public void unbundledImageIsDisplayedCorrectly() throws Exception {
-        Assert.assertEquals(2477, itapp.getUnbundledImageSize());
+        Assert.assertEquals(40000L, itapp.computeSizeUnbundledImage());
     }
 
     @Test
     public void cssBackgroundImageIsDisplayedCorrectly() throws Exception {
-        Assert.assertEquals(7175, itapp.getBackgroundImageSize());
+        Assert.assertEquals(46265L, itapp.computeSizeCSSBackgroundImage());
     }
 }
 
 class ItApp {
     private HashMap<String, String> outputTable;
     private WebDriver driver;
-    private String baseURL;
-
-    private int sizeOfCSSBackgroundImage = -1;
-    private int sizeOfUnbundledImage = -1;
 
     public ItApp(WebDriver wd, String baseURL) throws Exception {
         this.outputTable = new HashMap<>();
         this.driver = wd;
-        this.baseURL = baseURL;
 
-
-
-        URLConnection con = new URL(baseURL+";jsessionid=1nocri2exl1te13sm8ginkn7iu").openConnection();
-        con.setRequestProperty("Cookie", "JSESSIONID=1nocri2exl1te13sm8ginkn7iu");
+        URLConnection con = new URL(baseURL+";jsessionid=4ujetr900i6azguu3fr82krx").openConnection();
+        con.setRequestProperty("Cookie", "JSESSIONID=4ujetr900i6azguu3fr82krx;");
         con.connect();
         con = new URL(baseURL + "/login/j_security_check?isLoginPage=login-page&j_username=user&j_password=password").openConnection();
-        con.setRequestProperty("Cookie", "JSESSIONID=1nocri2exl1te13sm8ginkn7iu");
+        con.setRequestProperty("Cookie", "JSESSIONID=4ujetr900i6azguu3fr82krx;");
         con.connect();
     }
 
@@ -130,9 +113,21 @@ class ItApp {
         }
     }
 
-    public void parseImageData() {
-        String unbundledImageURL = null;
-        String backgroundImageURL = null;
+    public long computeSizeCSSBackgroundImage()
+    {
+        WebElement imageBackgroundDiv = this.driver.findElement(By.className("image-background"));
+        String backgroundImageStyle =  imageBackgroundDiv.getCssValue("background-image");
+        String backgroundImageURL = "";
+        if(backgroundImageStyle.matches("url\\(\".*v/dev/cssresource/aspect_default/theme_common/images/backgroundImage.png\"\\)"))
+        {
+            backgroundImageURL = backgroundImageStyle.substring(5, backgroundImageStyle.length() - 2);
+        }
+        return computeSizeOfImageUsingJS(backgroundImageURL);
+    }
+
+    public long computeSizeUnbundledImage()
+    {
+        String unbundledImageURL = "";
         List<WebElement> imgs = this.driver.findElements(By.tagName("img"));
         for(WebElement we : imgs)
         {
@@ -142,37 +137,19 @@ class ItApp {
                 unbundledImageURL = srcAttribute;
             }
         }
-        WebElement imageBackgroundDiv = this.driver.findElement(By.className("image-background"));
-        String backgroundImageStyle =  imageBackgroundDiv.getCssValue("background-image");
-        if(backgroundImageStyle.matches("url\\(\".*v/dev/cssresource/aspect_default/theme_common/images/backgroundImage.png\"\\)"))
-        {
-            backgroundImageURL = backgroundImageStyle.substring(5, backgroundImageStyle.length() - 2);
-        }
-        this.sizeOfUnbundledImage = computeSizeOfURL(unbundledImageURL);
-        this.sizeOfCSSBackgroundImage = computeSizeOfURL(backgroundImageURL);
+        return  computeSizeOfImageUsingJS(unbundledImageURL);
     }
 
-    private int computeSizeOfURL(String urlString)
+    private long computeSizeOfImageUsingJS(String imagesrc)
     {
-        try {
-            URLConnection con = new URL(urlString).openConnection();
-            con.setRequestProperty("Cookie", "JSESSIONID=1nocri2exl1te13sm8ginkn7iu");
-            return IOUtils.toByteArray(con.getInputStream()).length;
-        } catch (IOException e) {
-            return -1;
-        }
+        String javaScript = "var img = new Image();" +
+                "img.src = \"" + imagesrc + "\";" +
+                "return img.naturalWidth * img.naturalHeight;";
+        return (long) ((JavascriptExecutor)this.driver).executeScript(javaScript);
     }
 
     public String getTableValue(String key)
     {
         return outputTable.get(key);
-    }
-
-    public int getBackgroundImageSize() {
-        return sizeOfCSSBackgroundImage;
-    }
-
-    public int getUnbundledImageSize() {
-        return sizeOfUnbundledImage;
     }
 }
