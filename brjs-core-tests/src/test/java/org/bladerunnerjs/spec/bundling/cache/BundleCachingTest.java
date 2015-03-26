@@ -231,6 +231,6 @@ public class BundleCachingTest extends SpecTest
     		.and(initialResponse).containsText("lib.Lib =")
     		.and(secondResponse).doesNotContainText("mergePackageBlock")
     		.and(secondResponse).doesNotContainText("lib.Lib = require(");
-	}
+	}	
 	
 }

@@ -36,6 +36,8 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	
 	public Boolean allowAnonymousStats;
 	
+	public String fileObserver;
+	
 	@Override
 	public void initialize(BRJSNode node) {
 		jettyPort = getDefault(jettyPort, 7070);
@@ -43,6 +45,7 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 		loginRealm = getDefault(loginRealm, "BladeRunnerLoginRealm");
 		ignoredPaths = getDefault(ignoredPaths, ".svn, .git");
 		useNodeCommands = getDefault(useNodeCommands, false);
+		fileObserver = getDefault(fileObserver, "watching");
 	}
 	
 	@Override

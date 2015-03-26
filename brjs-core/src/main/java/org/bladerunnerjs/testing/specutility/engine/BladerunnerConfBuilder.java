@@ -24,4 +24,12 @@ public class BladerunnerConfBuilder {
 		
 		return builderChainer;
 	}
+
+	public BuilderChainer hasFileObserverValue(String value) throws Exception
+	{
+		bladerunnerConf.setFileObserverValue(value);
+		bladerunnerConf.write();
+		
+		return builderChainer;
+	}
 }

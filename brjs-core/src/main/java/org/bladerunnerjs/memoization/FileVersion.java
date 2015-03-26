@@ -9,7 +9,7 @@ public class FileVersion
 		return value;
 	}
 	
-	void incrememntValue() {
+	void incrementValue() {
 		value++;
 	}
 	
