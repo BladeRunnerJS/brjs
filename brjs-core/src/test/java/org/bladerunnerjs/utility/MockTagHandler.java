@@ -1,4 +1,4 @@
-package org.bladerunnerjs.testing.utility_copy;
+package org.bladerunnerjs.utility;
 
 import java.io.IOException;
 import java.io.PrintWriter;

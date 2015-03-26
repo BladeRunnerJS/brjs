@@ -8,7 +8,7 @@ import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.plugin.bundlers.appmeta.AppMetadataContentPlugin;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
-import org.bladerunnerjs.testing.utility_copy.MockContentPlugin;
+import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.junit.Before;
 import org.junit.Test;
 
