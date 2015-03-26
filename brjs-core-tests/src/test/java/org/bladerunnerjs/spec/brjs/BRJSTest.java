@@ -5,6 +5,7 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+
 import static org.bladerunnerjs.api.BRJS.Messages.*;
 
 import java.io.File;
@@ -42,7 +43,7 @@ public class BRJSTest extends SpecTest {
 	public void theBrjsConfIsWrittenOnPopulate() throws Exception {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nfileObserver: watching\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test

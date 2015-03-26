@@ -1,26 +1,20 @@
-package org.bladerunnerjs.api.memoization;
+package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
-import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.api.memoization.FileModificationRegistry;
-import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.memoization.DefaultWatchKeyService;
-import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -32,7 +26,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static java.nio.file.StandardWatchEventKinds.*;
 
-public class FileModificationWatcherThreadTest
+public class WatchingFileModificationObserverThreadTest
 {	
 	private static final int MAX_UPDATE_CHECKS = 120; // 120 x 500ms (wait 1 minute before failing)
 	private static final int THREAD_SLEEP_INTEVAL = 500;
@@ -51,7 +45,6 @@ public class FileModificationWatcherThreadTest
 	private File nestedDir;
 	private WatchKey nestedDirWatchKey;
 	private WatchKeyServiceFactory mockWatchServiceFactory;
-	private Logger mockLogger;
 	
 	@Before
 	public void setup() throws IOException, InterruptedException {
@@ -69,19 +62,15 @@ public class FileModificationWatcherThreadTest
 		rootWatchDir = new MemoizedFile(mockBrjs, FileUtils.createTemporaryDirectory( this.getClass() ).getAbsolutePath() );
 		when(mockBrjs.dir()).thenReturn(rootWatchDir);
 		when(mockBrjs.getFileModificationRegistry()).thenReturn(mockModificationRegistry);
-		mockLogger = mock(Logger.class);
-		when(mockBrjs.logger(any(Class.class))).thenReturn(mockLogger);
+		when(mockBrjs.logger(any(Class.class))).thenReturn(mock(Logger.class));
 		
 		mockWatchKeyService = mock(DefaultWatchKeyService.class);
 		mockWatchServiceFactory = mock(WatchKeyServiceFactory.class);
 		when(mockWatchServiceFactory.createWatchService()).thenReturn(mockWatchKeyService);
 		
 		rootWatchDirWatchKey = mock(WatchKey.class);
-		when(rootWatchDirWatchKey.reset()).thenReturn(true);
 		dirInRootWatchKey = mock(WatchKey.class);
-		when(dirInRootWatchKey.reset()).thenReturn(true);
 		nestedDirWatchKey = mock(WatchKey.class);
-		when(nestedDirWatchKey.reset()).thenReturn(true);
 		
 		fileInRoot = new File(rootWatchDir, "some-file.txt");
 		dirInRoot = new File(rootWatchDir, "some-dir");
@@ -116,29 +105,6 @@ public class FileModificationWatcherThreadTest
 		verify(mockWatchKeyService, times(1)).waitForEvents();
 		assertEquals(1, fileChanges.size());
 		assertEquals(fileInRoot, fileChanges.get(0));
-	}
-	
-	@Test
-	public void messageIsLoggedWhenFileChangesAreDetected() throws Exception
-	{
-		allowMockWatchKeyForDir( rootWatchDir, rootWatchDirWatchKey );
-		
-		createAndInitWatcher();
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.USING_WATCH_SERVICE_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), mockWatchKeyService.getClass().getSimpleName());
-		
-		queueWatchServiceEventKeys(rootWatchDirWatchKey);
-				
-		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockCreateFileEvent(fileInRoot));
-		checkForUpdates(1);
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.FILE_CHANGED_MSG, ENTRY_CREATE, fileInRoot.getPath());
-		
-		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileChangeEvent(fileInRoot));
-		checkForUpdates(1);
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.FILE_CHANGED_MSG, ENTRY_MODIFY, fileInRoot.getPath());
-		
-		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileDeleteEvent(fileInRoot));
-		checkForUpdates(1);
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.FILE_CHANGED_MSG, ENTRY_DELETE, fileInRoot.getPath());
 	}
 
 	@Test
@@ -237,15 +203,7 @@ public class FileModificationWatcherThreadTest
 		verifyNoMoreInteractions(mockWatchKeyService);
 	}
 	
-	
-	
-	
-	/*
-	 * #### The following 2 tests are Ignored because they are unreliable on Travis and Linux ####
-	 * TODO: investigate the unreliability
-	 */
-	
-	@Test @Ignore // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
+	@Test // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
 	public void usingTheRealWatchServiceDetectsFileChanges() throws Exception {
 		modificationWatcherThread = new WatchingFileModificationObserverThread(mockBrjs, new WatchKeyServiceFactory());
 		
@@ -258,7 +216,7 @@ public class FileModificationWatcherThreadTest
 		}
 	}
 	
-	@Test @Ignore // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
+	@Test // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
 	public void usingTheRealWatchServiceDetectsFileNestedChanges() throws Exception {
 		modificationWatcherThread = new WatchingFileModificationObserverThread(mockBrjs, new WatchKeyServiceFactory());
 		
@@ -326,35 +284,22 @@ public class FileModificationWatcherThreadTest
 	
 	private WatchEvent<Path> mockCreateFileEvent(File file) throws IOException
 	{
+		@SuppressWarnings("unchecked")
+		WatchEvent<Path> createNewFileWatchEvent = mock(WatchEvent.class);
+		when(createNewFileWatchEvent.kind()).thenReturn(ENTRY_CREATE);
+		when(createNewFileWatchEvent.context()).thenReturn(file.toPath());
 		file.createNewFile();
-		return createMockEvent(file, ENTRY_CREATE);
-	}
-	
-	private WatchEvent<Path> mockFileChangeEvent(File file) throws IOException
-	{
-		file.setLastModified(System.currentTimeMillis());
-		return createMockEvent(file, ENTRY_MODIFY);
-	}
-	
-	private WatchEvent<Path> mockFileDeleteEvent(File file) throws IOException
-	{
-		org.apache.commons.io.FileUtils.deleteQuietly(file);
-		return createMockEvent(file, ENTRY_DELETE);
+		return createNewFileWatchEvent;
 	}
 	
 	private WatchEvent<Path> mockMkdirEvent(File dir)
 	{
-		dir.mkdir();		
-		return createMockEvent(dir, ENTRY_CREATE);
-	}
-	
-	private WatchEvent<Path> createMockEvent(File dir, Kind<Path> kind)
-	{
 		@SuppressWarnings("unchecked")
-		WatchEvent<Path> watchEvent = mock(WatchEvent.class);
-		when(watchEvent.kind()).thenReturn(kind);
-		when(watchEvent.context()).thenReturn(dir.toPath());
-		return watchEvent;
+		WatchEvent<Path> mkdirWatchEvent = mock(WatchEvent.class);
+		when(mkdirWatchEvent.kind()).thenReturn(ENTRY_CREATE);
+		when(mkdirWatchEvent.context()).thenReturn(dir.toPath());
+		dir.mkdir();		
+		return mkdirWatchEvent;
 	}
 	
 	private void allowMockWatchKeyForDir(File watchDir, WatchKey watchKey) throws IOException
