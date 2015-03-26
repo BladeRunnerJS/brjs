@@ -2,6 +2,8 @@ package org.bladerunnerjs.testing.specutility;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,13 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.StaticContentAccessor;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 
@@ -110,5 +118,39 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 		}
 		
 		return requirePaths;
+	}
+
+	public VerifierChainer devResponseContains(String requestPath, String expectedContent, StringBuffer response) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		ResponseContent responseContent = aspect.handleLogicalRequest(requestPath, new StaticContentAccessor(aspect.app()), aspect.root().getAppVersionGenerator().getDevVersion());
+		ByteArrayOutputStream pluginContent = new ByteArrayOutputStream();
+		responseContent.write(pluginContent);
+		if (!pluginContent.toString().contains(expectedContent)) {
+			assertEquals(expectedContent, pluginContent.toString());
+		}
+		response.append(pluginContent.toString(BladerunnerConf.OUTPUT_ENCODING));
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer devResponseEventuallyContains(String requestPath, String content, StringBuffer response) {
+		Throwable failure = null;
+		for (int i = 0; i < 50 ; i++) {
+			try {
+				devResponseContains(requestPath, content, response);
+				return verifierChainer;
+			}
+			catch (Throwable e) {
+				failure = e;
+				try {
+					Thread.sleep(250);
+				} catch (Exception ex) {
+					// ignore
+				}
+			}
+		}
+		if (failure == null) {
+			fail("Didn't get expected response");
+		}
+		throw new RuntimeException(failure);
 	}
 }

@@ -14,7 +14,7 @@ import org.bladerunnerjs.testing.specutility.engine.BundlableNodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.EncodedFileUtil;
+
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
 
@@ -153,9 +153,12 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 
 	public CommanderChainer indexPageRefersToWithoutNotifyingFileRegistry(String content) throws IOException
 	{
-		new EncodedFileUtil(aspect.root(), specTest.getActiveCharacterEncoding()).write( aspect.file("index.html"), content, false);
+		return fileHasContentsWithoutNotifyingFileRegistry("index.html", content);
+	}
 
+	public CommanderChainer fileHasContentsWithoutNotifyingFileRegistry(String filePath, String content) throws IOException {
+		// do not use EncodedFileUtil or any MemoizedFile utilities as they increment the file versions implicitly
+		org.apache.commons.io.FileUtils.write(aspect.file(filePath).getUnderlyingFile(), content);
 		return commanderChainer;
 	}
-	
 }

@@ -2,6 +2,7 @@ package org.bladerunnerjs.spec.brjs;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Blade;
+
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.events.CommandExecutedEvent;
@@ -29,7 +30,7 @@ public class BRJSTest extends SpecTest {
 	public void theBrjsConfIsWrittenOnPopulate() throws Exception {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nfileObserver: watching\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test

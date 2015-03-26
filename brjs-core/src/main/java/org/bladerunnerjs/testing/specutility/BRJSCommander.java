@@ -142,4 +142,17 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		
 		ZipUtility.unzip(zipFile, unzippedContentFolder);		
 	}
+
+	public CommanderChainer hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread() throws Exception
+	{
+		call(new ValueCommand<Void>() {
+			@Override
+			public Void call() throws Exception {
+				new BRJSBuilder(specTest, brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
+				return null;
+			}
+		});
+		
+		return commanderChainer;
+	}
 }
