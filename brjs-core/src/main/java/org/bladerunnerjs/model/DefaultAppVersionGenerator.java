@@ -11,8 +11,8 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 	@Override
 	public String getProdVersion()
 	{
-		if (prodVersion != null) {
-			return prodVersion;
+		if (prodVersion != null && !prodVersion.isEmpty()) {
+			return prodVersion+"."+String.valueOf( new Date().getTime() );
 		}
 		return String.valueOf( new Date().getTime() );
 	}
@@ -20,7 +20,7 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 	@Override
 	public String getDevVersion()
 	{
-		if (devVersion != null) {
+		if (devVersion != null && !devVersion.isEmpty()) {
 			return devVersion;
 		}
 		return "dev";
