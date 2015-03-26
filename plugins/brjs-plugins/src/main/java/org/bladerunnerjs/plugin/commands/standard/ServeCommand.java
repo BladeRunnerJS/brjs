@@ -66,6 +66,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException
 	{
 		argsParser.registerParameter(new FlaggedOption("port").setShortFlag('p').setLongFlag("port").setRequired(false).setHelp("the port number to run the BRJS application (overrides config)"));
+		argsParser.registerParameter(new FlaggedOption("version").setShortFlag('v').setLongFlag("version").setRequired(false).setDefault("dev").setHelp("the version number for the app"));
 	}
 
 	@Override
@@ -77,6 +78,9 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 			{
 				appServer = getApplicationServer(parsedArgs);
 			}
+			
+			brjs.getAppVersionGenerator().setDevVersion( parsedArgs.getString("version") );
+			
 			
 			appServer.start();
 			brjs.getFileWatcherThread().start();

@@ -27,11 +27,13 @@ public class MockAppVersionGenerator implements AppVersionGenerator
 		return "("+devVersion+"|"+prodVersion+")";
 	}
 
+	@Override
 	public void setProdVersion(String version)
 	{
 		prodVersion = version;
 	}
 	
+	@Override
 	public void setDevVersion(String version)
 	{
 		devVersion = version;

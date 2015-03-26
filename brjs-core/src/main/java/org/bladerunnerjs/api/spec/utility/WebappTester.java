@@ -229,6 +229,7 @@ public class WebappTester
 	
 	public WebappTester responseContains(String response)
 	{
+		System.err.println(this.response);
 		assertThat(this.response, containsString(response));
 		return this;
 	}
