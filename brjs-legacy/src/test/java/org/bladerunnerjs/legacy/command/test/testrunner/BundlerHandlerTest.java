@@ -256,5 +256,22 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
     				"// $£€" );
 	}
 	
+	@Test
+	public void allPossibleBundlePathAliasesAreValidModelRequests() throws Exception
+	{
+		whenJstdTests(aspectTestPack).runWithPaths( 
+				"bundles/js.bundle",
+				"bundles/css.bundle",
+				"bundles/i18n.bundle",
+				"bundles/en_i18n.bundle",
+				"bundles/xml.bundle",
+				"bundles/html.bundle",
+				"bundles/bundle.js",
+				"bundles/bundle.css",
+				"bundles/bundle.i18n",
+				"bundles/bundle.xml",
+				"bundles/bundle.html");
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
 	
 }

@@ -34,9 +34,9 @@ LocalisedDateParsingUtil.prototype.parse = function(date, attributes) {
 
 	var parseSuccessful = attributes.inputFormats.some(function(format) {
 		var lowerCaseFormat = format.toLowerCase();
-		parsedDate = moment(date, format, inputLocale);
+		parsedDate = moment(date, format, inputLocale, true);
 
-		if (attributes.endOfUnit === true && lowerCaseFormat.indexOf('d') === -1) {
+		if (attributes.endOfUnit === true && lowerCaseFormat.indexOf('d') === -1 && lowerCaseFormat.indexOf('l') === -1) {
 			parsedDate.endOf(lowerCaseFormat.indexOf('m') === -1 ? 'year' : 'month');
 		}
 

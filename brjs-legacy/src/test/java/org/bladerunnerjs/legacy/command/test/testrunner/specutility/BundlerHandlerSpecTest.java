@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.legacy.command.test.testrunner.BundlerHandler;
@@ -35,12 +36,14 @@ public class BundlerHandlerSpecTest extends SpecTest
 			this.testPack = testPack;
 		}
 
-		public void runWithPaths(String requestPath) throws Exception
+		public void runWithPaths(String... requestPaths) throws Exception
 		{
-			File bundleFile = testPack.file(requestPath);
-			String bundlePath = StringUtils.substringAfterLast(bundleFile.getAbsolutePath(), JsTestDriverBundleCreator.BUNDLES_DIR_NAME + File.separator);
-			bundlePath = StringUtils.replace(bundlePath, "\\", "/");
-			new BundlerHandler(testPack).createBundleFile(bundleFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
+			for (String requestPath : requestPaths) {
+    			File bundleFile = testPack.file(requestPath);
+    			String bundlePath = StringUtils.substringAfterLast(bundleFile.getAbsolutePath(), JsTestDriverBundleCreator.BUNDLES_DIR_NAME + File.separator);
+    			bundlePath = StringUtils.replace(bundlePath, "\\", "/");
+    			new BundlerHandler(testPack).createBundleFile(bundleFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
+			}
 		}
 	}
 
@@ -57,7 +60,7 @@ public class BundlerHandlerSpecTest extends SpecTest
 		public void testBundleContainsText(String bundleFilePath, String expectedContents) throws IOException
 		{
 			File bundleFile = testPack.file(bundleFilePath);
-			String bundleFileContents = org.apache.commons.io.FileUtils.readFileToString(bundleFile);
+			String bundleFileContents = org.apache.commons.io.FileUtils.readFileToString(bundleFile, BladerunnerConf.OUTPUT_ENCODING);
 			if (!bundleFileContents.contains(expectedContents))
 			{
 				assertEquals("bundle file didnt contain expected text", expectedContents, bundleFileContents);
@@ -67,7 +70,7 @@ public class BundlerHandlerSpecTest extends SpecTest
 		public void testBundleDoesNotContainText(String bundleFilePath, String doesNotContainContents) throws IOException
 		{
 			File bundleFile = testPack.file(bundleFilePath);
-			String bundleFileContents = org.apache.commons.io.FileUtils.readFileToString(bundleFile);
+			String bundleFileContents = org.apache.commons.io.FileUtils.readFileToString(bundleFile, BladerunnerConf.OUTPUT_ENCODING);
 			if (bundleFileContents.contains(doesNotContainContents))
 			{
 				assertEquals("bundle file didnt contain expected text", doesNotContainContents, bundleFileContents);
