@@ -17,6 +17,7 @@ public class PollingFileModificationObserverThread extends Thread
 
 	public static final String THREAD_IDENTIFIER = PollingFileModificationObserverThread.class.getSimpleName();
 	public static final String FILE_CHANGED_MSG = THREAD_IDENTIFIER+" detected a '%s' event for '%s'. Incrementing the file version.";
+	public static final String THREAD_INIT_MESSAGE = "%s configured with a polling interval of '%s'.";
 	
 	private File directoryToWatch;
 	private FileModificationRegistry fileModificationRegistry;
@@ -25,12 +26,13 @@ public class PollingFileModificationObserverThread extends Thread
 	
 	private Logger logger;
 	
-	public PollingFileModificationObserverThread(BRJS brjs) throws IOException
+	public PollingFileModificationObserverThread(BRJS brjs, int interval) throws IOException
 	{
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
 		directoryToWatch = brjs.dir().getUnderlyingFile();
-		monitor = new FileAlterationMonitor(1000);
+		monitor = new FileAlterationMonitor(interval);
 		logger = brjs.logger(this.getClass());
+		logger.debug(THREAD_INIT_MESSAGE, this.getClass().getSimpleName(), interval);
 	}
 	
 	@Override

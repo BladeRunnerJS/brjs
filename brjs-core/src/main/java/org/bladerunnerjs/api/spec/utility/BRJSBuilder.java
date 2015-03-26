@@ -314,7 +314,17 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	{
 		hasBeenAuthenticallyCreated();
 		brjs.io().uninstallFileAccessChecker();
-		specTest.fileWatcherThread = new PollingFileModificationObserverThread(brjs);
+		specTest.fileWatcherThread = new PollingFileModificationObserverThread(brjs, 500);
+		specTest.fileWatcherThread.start();
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread() throws Exception
+	{
+		hasBeenAuthenticallyCreated();
+		brjs.io().uninstallFileAccessChecker();
+		specTest.fileWatcherThread = brjs.getFileWatcherThread();
 		specTest.fileWatcherThread.start();
 		
 		return builderChainer;

@@ -1,7 +1,6 @@
 package org.bladerunnerjs.api;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedFileAccessor;
-import org.bladerunnerjs.api.memoization.WatchingFileModificationObserverThread;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.InvalidBundlableNodeException;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
@@ -28,7 +26,6 @@ import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.api.plugin.PluginLocator;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import org.bladerunnerjs.model.AbstractBRJSRootNode;
 import org.bladerunnerjs.model.AppVersionGenerator;
 import org.bladerunnerjs.model.BRJSGlobalFilesIOFileFilter;
@@ -45,6 +42,7 @@ import org.bladerunnerjs.plugin.utility.CommandList;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.JsStyleAccessor;
+import org.bladerunnerjs.utility.ObserverThreadFactory;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -62,6 +60,7 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 		public static final String BOTH_APPS_AND_BRJS_APPS_EXIST = "BRJS now uses a folder named '%s' for the location of your apps but the directory '%s' contains both '%s' and '%s' folders."+
 		" '%s' will be used for the location of apps but this legacy behaviour may be removed so you should move all existing apps into the '%s' directory.";
+		public static final String FILE_WATCHER_MESSAGE = "Using '%s' as the BRJS file watcher";
 	}
 	
 	private NodeList<App> userApps;
@@ -121,9 +120,10 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		try
 		{
-			fileWatcherThread = new WatchingFileModificationObserverThread( this, new WatchKeyServiceFactory() );
+			fileWatcherThread = new ObserverThreadFactory(this).getObserverThread();
+			logger.debug(Messages.FILE_WATCHER_MESSAGE, fileWatcherThread.getClass().getSimpleName());
 		}
-		catch (IOException ex)
+		catch (Exception ex)
 		{
 			throw new RuntimeException(ex);
 		}
@@ -213,7 +213,9 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 	}
 	
-	public void close() {closed  = true;
+	public void close() {
+		getFileWatcherThread().interrupt();
+		closed  = true;
 	}
 	
 	public BundlableNode locateFirstBundlableAncestorNode(File file) throws InvalidBundlableNodeException
