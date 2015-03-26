@@ -38,12 +38,15 @@ topiarist.implement(LocalisedDateFormatter, Formatter);
  * @param {string} [attributes.outputFormat='L'] Format of the output date, expressed with {@link http://momentjs.com/docs/#/parsing/string-format/|Moment.js format tokens}
  * @param {string} [attributes.inputLocale] Locale override for the input
  * @param {string} [attributes.outputLocale] Locale override for the output
- * @returns {string} The date, expressed in the output format
+ * @returns {string} The date expressed in the output format, or the input value if it could not be parsed in the input format
  */
 LocalisedDateFormatter.prototype.format = function(date, attributes) {
 	attributes.inputFormats = [attributes.inputFormat];
 	attributes.outputFormat = attributes.outputFormat || 'L';
-	return this.localisedDateParsingUtil.parse(date, attributes);
+
+	var result = this.localisedDateParsingUtil.parse(date, attributes);
+
+	return typeof result === 'undefined' ? date : result;
 };
 
 module.exports = LocalisedDateFormatter;

@@ -32,8 +32,12 @@ public class BundleCachingIntegrationTest extends SpecTest
 		if (brjs != null) {
 			brjs.applicationServer(appServerPort).stop();
 		}
-		brjs.getFileWatcherThread().interrupt();
-		brjs.getFileWatcherThread().stop();
+		try {
+			brjs.getFileWatcherThread().interrupt();
+			brjs.getFileWatcherThread().stop();
+		} catch (Exception ex) {
+			// ignore
+		}
 	}
 	
 	@Test @Ignore //TODO: this test is unreliable - fix it

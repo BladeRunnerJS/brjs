@@ -1,6 +1,7 @@
 package org.bladerunnerjs.api;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +89,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final CommandList commandList;
 	private final AppVersionGenerator appVersionGenerator;
 	private final FileModificationRegistry fileModificationRegistry;
-	private final Thread fileWatcherThread;
+	private Thread fileWatcherThread;
 	private final JsStyleAccessor jsStyleAccessor = new JsStyleAccessor(this);
 
 	private BladerunnerConf bladerunnerConf;
@@ -116,16 +117,6 @@ public class BRJS extends AbstractBRJSRootNode
 		catch (NodeAlreadyRegisteredException e)
 		{
 			throw new RuntimeException(e);
-		}
-		
-		try
-		{
-			fileWatcherThread = new ObserverThreadFactory(this).getObserverThread();
-			logger.debug(Messages.FILE_WATCHER_MESSAGE, fileWatcherThread.getClass().getSimpleName());
-		}
-		catch (Exception ex)
-		{
-			throw new RuntimeException(ex);
 		}
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
@@ -214,7 +205,9 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public void close() {
-		getFileWatcherThread().interrupt();
+		if (fileWatcherThread != null) {
+			fileWatcherThread.interrupt();
+		}
 		closed  = true;
 	}
 	
@@ -462,7 +455,17 @@ public class BRJS extends AbstractBRJSRootNode
 		return getMemoizedFile( new File(dir, name) );
 	}
 	
-	public Thread getFileWatcherThread() {
+	public Thread getFileWatcherThread() throws ConfigException, IOException {
+		if (fileWatcherThread == null) {
+			try
+			{
+				fileWatcherThread = new ObserverThreadFactory(this).getObserverThread();
+				logger.debug(Messages.FILE_WATCHER_MESSAGE, fileWatcherThread.getClass().getSimpleName());
+			}
+			catch (ConfigException ex) {
+				throw ex;
+			}
+		}
 		return fileWatcherThread;
 	}
 	
