@@ -404,3 +404,35 @@ MapUtilityTest.prototype.test_hasAllKeys_emptyArguments = function()
 
 	assertTrue(MapUtility.hasAllKeys(mSource, mMap));
 };
+
+MapUtilityTest.prototype.test_deepCloneReturnsANewObject = function() {
+	var srcMap = {};
+	var clonedMap = MapUtility.deepClone(srcMap);
+
+	assertNotSame(srcMap, clonedMap);
+};
+
+MapUtilityTest.prototype.test_deepCloneClonesAMap = function() {
+	var srcMap = {
+		foo: 1,
+		bar: 'baz'
+	};
+	var clonedMap = MapUtility.deepClone(srcMap);
+
+	assertEquals(1, clonedMap.foo);
+	assertEquals('baz', clonedMap.bar);
+};
+
+MapUtilityTest.prototype.test_deepCloneClonesANestedMap = function() {
+	var srcMap = {
+		foo: 1,
+		bar: {
+			baz: 42
+		}
+	};
+	var clonedMap = MapUtility.deepClone(srcMap);
+
+	assertNotSame(srcMap.bar, clonedMap.bar);
+	assertEquals(1, clonedMap.foo);
+	assertEquals(42, clonedMap.bar.baz);
+};
