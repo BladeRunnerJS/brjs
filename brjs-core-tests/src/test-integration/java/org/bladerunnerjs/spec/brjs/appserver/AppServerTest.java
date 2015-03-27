@@ -236,7 +236,7 @@ public class AppServerTest extends SpecTest
 	{
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(this.getClass());
 		given(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(secondaryTempFolder); 
-			/*and*/ secondBrjsProcess = createNonTestModel(secondaryTempFolder);
+			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel();
 			given(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
