@@ -334,8 +334,7 @@ MapUtility.clone = function(srcMap) {
 };
 
 /**
- * Creates a deep clone of the supplied map. Map references are copied to an arbitrary number of levels deep (note
- *  that non-map objects are not handled correctly)
+ * Creates a deep clone of the supplied map. Map references are copied to an arbitrary number of levels deep.
  *
  * @private
  * @param {Object} srcMap The map to clone.
@@ -343,9 +342,21 @@ MapUtility.clone = function(srcMap) {
  * @returns {Object} A deep clone of the map.
  */
 MapUtility.deepClone = function(srcMap) {
+	if (typeof srcMap !== 'object') {
+		return srcMap;
+	}
+
 	var clone = {};
 	for (var key in srcMap) {
-		clone[key] = typeof srcMap[key] === 'object' ? this.deepClone(srcMap[key]) : srcMap[key];
+		if (Array.isArray(srcMap[key])) {
+			clone[key] = srcMap[key].map(function(item) {
+				return this.deepClone(item);
+			}, this);
+		} else if (typeof srcMap[key] === 'object'){
+			clone[key] = this.deepClone(srcMap[key]);
+		} else {
+			clone[key] = srcMap[key];
+		}
 	}
 	return clone;
 };
