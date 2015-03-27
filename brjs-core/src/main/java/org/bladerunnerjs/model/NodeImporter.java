@@ -216,21 +216,29 @@ public class NodeImporter {
 	{
 		for (File f : files) {
 			if (f.length() != 0) {
-				if (checkFileMimeType(f).startsWith("text")) {
-					findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
+				try {
+					if (checkFileMimeType(f).startsWith("text")) {
+						findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
+					}
+				}
+				catch (MagicMatchNotFoundException e) {
+					continue;
 				}
 			}
 		}
 	}
 
-	private static String checkFileMimeType(File file) throws IOException {
+	private static String checkFileMimeType(File file) throws IOException, MagicMatchNotFoundException {
 		byte[] data = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
 		MagicMatch match = null;
 		try {
 			match = Magic.getMagicMatch(data);
-		} catch (MagicParseException | MagicMatchNotFoundException
-				| MagicException e) {
+		} 
+		catch (MagicParseException | MagicException e) {
 			throw new IOException(e);
+		}
+		catch (MagicMatchNotFoundException e) {
+			throw e;
 		}
 		return match.getMimeType();
 	}

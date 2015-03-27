@@ -50,20 +50,20 @@ public class FileModificationRegistry
 		Set<String> lastModifiedMapKeySet = new LinkedHashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
 		for (String path : lastModifiedMapKeySet) {
 			if (path.startsWith(filePath)) {
-				lastModifiedMap.get(path).incrememntValue();
+				lastModifiedMap.get(path).incrementValue();
 			}
 		}
 	}
 	
 	public void incrementAllFileVersions() {
 		for (FileVersion version : lastModifiedMap.values()) {
-			version.incrememntValue();
+			version.incrementValue();
 		}
 	}
 	
 	private void incrementFileAndParentVersion(File file) {
 		while (file != null && !file.equals(rootFile)) {
-			getOrCreateVersionValue(file).incrememntValue();
+			getOrCreateVersionValue(file).incrementValue();
 			file = file.getParentFile();
 		}
 	}

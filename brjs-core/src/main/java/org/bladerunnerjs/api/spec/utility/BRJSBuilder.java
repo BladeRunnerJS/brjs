@@ -8,7 +8,7 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.memoization.FileModificationWatcherThread;
+import org.bladerunnerjs.api.memoization.WatchingFileModificationObserverThread;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
@@ -23,6 +23,7 @@ import org.bladerunnerjs.api.spec.engine.BuilderChainer;
 import org.bladerunnerjs.api.spec.engine.NodeBuilder;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.logging.MockLogLevelAccessor;
+import org.bladerunnerjs.memoization.PollingFileModificationObserverThread;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
@@ -236,6 +237,9 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	@Override
 	public BuilderChainer hasBeenCreated() throws Exception
 	{
+		if (brjs != null) {
+			brjs.close();
+		}
 		brjs = specTest.createModel();
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
@@ -259,7 +263,23 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasBeenAuthenticallyCreated() throws Exception
 	{
+		if (brjs != null) {
+			brjs.close();
+		}
 		brjs = specTest.createNonTestModel();
+		brjs.io().installFileAccessChecker();
+		specTest.brjs = brjs;
+		this.node = brjs;
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithWorkingDir(File workingDir) throws Exception
+	{
+		if (brjs != null) {
+			brjs.close();
+		}
+		brjs = specTest.createNonTestModel(workingDir);
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
@@ -270,7 +290,28 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
-		specTest.fileWatcherThread = new FileModificationWatcherThread(brjs, new WatchKeyServiceFactory());
+		brjs.io().uninstallFileAccessChecker();
+		specTest.fileWatcherThread = new WatchingFileModificationObserverThread(brjs, new WatchKeyServiceFactory());
+		specTest.fileWatcherThread.start();
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithFilePollingThread() throws Exception
+	{
+		hasBeenAuthenticallyCreated();
+		brjs.io().uninstallFileAccessChecker();
+		specTest.fileWatcherThread = new PollingFileModificationObserverThread(brjs, 500);
+		specTest.fileWatcherThread.start();
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread() throws Exception
+	{
+		hasBeenAuthenticallyCreated();
+		brjs.io().uninstallFileAccessChecker();
+		specTest.fileWatcherThread = brjs.getFileWatcherThread();
 		specTest.fileWatcherThread.start();
 		
 		return builderChainer;
@@ -278,9 +319,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasBeenAuthenticallyReCreated() throws Exception
 	{
-		if (brjs != null) {
-			brjs.close();
-		}
 		return hasBeenAuthenticallyCreated();
 	}
 

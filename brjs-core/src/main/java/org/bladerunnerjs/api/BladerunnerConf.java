@@ -69,4 +69,13 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 		verify();
 	}
 	
+	public String getFileObserverValue() throws ConfigException {
+		return getConf().fileObserver;
+	}
+	
+	public void setFileObserverValue(String value) throws ConfigException {
+		getConf().fileObserver = value;
+		verify();
+	}
+	
 }

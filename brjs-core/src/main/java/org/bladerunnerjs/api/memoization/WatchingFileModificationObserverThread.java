@@ -16,10 +16,10 @@ import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import static java.nio.file.StandardWatchEventKinds.*;
 
 
-public class FileModificationWatcherThread extends Thread
+public class WatchingFileModificationObserverThread extends Thread
 {
 	public static final String USING_WATCH_SERVICE_MSG = "%s using %s as the file watcher service";
-	public static final String THREAD_IDENTIFIER = FileModificationWatcherThread.class.getSimpleName();
+	public static final String THREAD_IDENTIFIER = WatchingFileModificationObserverThread.class.getSimpleName();
 	public static final String FILE_CHANGED_MSG = THREAD_IDENTIFIER+" detected a '%s' event for '%s'. Incrementing the file version.";
 	public static final String CANT_RESET_PATH_MSG = "A watch key could not be reset for the path '%s' but the directory or file still exists. "+
 			"You might need to reset the process for file changes to be detected.";
@@ -36,7 +36,7 @@ public class FileModificationWatcherThread extends Thread
 	private Logger logger;
 
 	
-	public FileModificationWatcherThread(BRJS brjs, WatchKeyServiceFactory watchKeyServiceFactory) throws IOException
+	public WatchingFileModificationObserverThread(BRJS brjs, WatchKeyServiceFactory watchKeyServiceFactory) throws IOException
 	{
 		this.watchKeyServiceFactory = watchKeyServiceFactory;
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();

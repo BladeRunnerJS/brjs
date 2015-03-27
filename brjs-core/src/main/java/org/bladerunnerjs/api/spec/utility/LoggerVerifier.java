@@ -120,4 +120,12 @@ public class LoggerVerifier
 		
 		return verifierChainer;
 	}
+
+	public VerifierChainer otherMessagesIgnored()
+	{
+		logStore.clearLogs();
+		
+		return verifierChainer;
+		
+	}
 }

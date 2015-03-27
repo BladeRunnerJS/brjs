@@ -35,7 +35,9 @@ public class DefaultWatchKeyService implements WatchKeyService
 		File dir = dirPath.toFile();
 		Collection<File> subDirs = FileUtils.listFilesAndDirs(dir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File subDir : subDirs) {
-			watchKeys.put(createWatchKeyForDir(subDir.toPath()), subDir.toPath());
+			if (subDir.isDirectory()) {
+				watchKeys.put(createWatchKeyForDir(subDir.toPath()), subDir.toPath());
+			}
 		}
 		
 		return watchKeys;

@@ -14,7 +14,6 @@ import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
-import org.bladerunnerjs.api.memoization.FileModificationWatcherThread;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedFileAccessor;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -28,7 +27,6 @@ import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.api.plugin.PluginLocator;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import org.bladerunnerjs.model.AbstractBRJSRootNode;
 import org.bladerunnerjs.model.AppVersionGenerator;
 import org.bladerunnerjs.model.BRJSGlobalFilesIOFileFilter;
@@ -43,6 +41,7 @@ import org.bladerunnerjs.plugin.utility.CommandList;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.JsStyleAccessor;
+import org.bladerunnerjs.utility.ObserverThreadFactory;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -59,6 +58,7 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 		public static final String BOTH_APPS_AND_BRJS_APPS_EXIST = "BRJS now uses a folder named '%s' for the location of your apps but the directory '%s' contains both '%s' and '%s' folders."+
 		" '%s' will be used for the location of apps but this legacy behaviour may be removed so you should move all existing apps into the '%s' directory.";
+		public static final String FILE_WATCHER_MESSAGE = "Using '%s' as the BRJS file watcher";
 	}
 	
 	private NodeList<App> userApps;
@@ -86,7 +86,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final CommandList commandList;
 	private final AppVersionGenerator appVersionGenerator;
 	private final FileModificationRegistry fileModificationRegistry;
-	private final Thread fileWatcherThread;
+	private Thread fileWatcherThread;
 	private final JsStyleAccessor jsStyleAccessor = new JsStyleAccessor(this);
 
 	private BladerunnerConf bladerunnerConf;
@@ -114,15 +114,6 @@ public class BRJS extends AbstractBRJSRootNode
 		catch (NodeAlreadyRegisteredException e)
 		{
 			throw new RuntimeException(e);
-		}
-		
-		try
-		{
-			fileWatcherThread = new FileModificationWatcherThread( this, new WatchKeyServiceFactory() );
-		}
-		catch (IOException ex)
-		{
-			throw new RuntimeException(ex);
 		}
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
@@ -189,7 +180,11 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 	}
 	
-	public void close() {closed  = true;
+	public void close() {
+		if (fileWatcherThread != null) {
+			fileWatcherThread.interrupt();
+		}
+		closed  = true;
 	}
 	
 	public BundlableNode locateFirstBundlableAncestorNode(File file) throws InvalidBundlableNodeException
@@ -436,7 +431,17 @@ public class BRJS extends AbstractBRJSRootNode
 		return getMemoizedFile( new File(dir, name) );
 	}
 	
-	public Thread getFileWatcherThread() {
+	public Thread getFileWatcherThread() throws ConfigException, IOException {
+		if (fileWatcherThread == null) {
+			try
+			{
+				fileWatcherThread = new ObserverThreadFactory(this).getObserverThread();
+				logger.debug(Messages.FILE_WATCHER_MESSAGE, fileWatcherThread.getClass().getSimpleName());
+			}
+			catch (ConfigException ex) {
+				throw ex;
+			}
+		}
 		return fileWatcherThread;
 	}
 	
