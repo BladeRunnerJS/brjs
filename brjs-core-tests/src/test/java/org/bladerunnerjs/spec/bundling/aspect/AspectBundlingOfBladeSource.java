@@ -5,6 +5,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
@@ -30,7 +31,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
-		
+			
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
@@ -39,6 +40,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			defaultBladeset = app.defaultBladeset();
 			blade1InDefaultBladeset = defaultBladeset.blade("b1");
 			blade2InDefaultBladeset = defaultBladeset.blade("b2");
+			
 	}
 	
 	@Test
@@ -166,6 +168,16 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(blade).classRequires("appns/bs/b1/Class1", "appns/NonExistentClass");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/NonExistentClass")
+			.whereTopLevelExceptionIs(ContentProcessingException.class);
+	}
+	
+	@Test
+	public void exceptionIsThrownIfBladeClassRequestsAResourceFromDefaultAspect() throws Exception {
+		given(aspect).hasClass("appns/App")
+			.and(blade).classRequires("appns/bs/b1/Class1", "appns/App")
+			.and(blade.workbench()).indexPageRequires("appns/bs/b1/Class1");
+		when(blade.workbench()).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfScopeRequirePathException.class, "appns/App")
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	

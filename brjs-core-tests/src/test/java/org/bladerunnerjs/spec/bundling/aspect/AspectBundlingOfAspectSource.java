@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.model.exception.CircularDependencyException;
+import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRelativeRequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
@@ -72,7 +73,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).classRequires("appns/Class1", "appns/Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/Class2");
+		then(exceptions).verifyException(OutOfScopeRequirePathException.class, "appns/Class2");
 	}
 	
 	@Test
