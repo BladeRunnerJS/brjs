@@ -11,14 +11,14 @@ SelectionFieldTest.prototype.getTestValidator = function()
 	var fValidator = function()
 	{
 	};
-	
+
 	br.Core.extend(fValidator, br.presenter.validator.Validator);
 	fValidator.prototype.validate = function(sText, mAttributes, oValidationResult)
 	{
 		var bIsValid = (sText == "goodvalue");
 		oValidationResult.setResult(bIsValid, "must be 'goodvalue'");
 	};
-	
+
 	return new fValidator();
 };
 
@@ -36,7 +36,7 @@ SelectionFieldTest.prototype.test_defaultValueCanBePassedInViaConstructor = func
 	assertEquals("1a", "", oSelectionField.label.getValue());
 	assertEquals("1b", "option1", oSelectionField.value.getValue());
 	assertFalse("1c", oSelectionField.hasError.getValue());
-	
+
 	oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"], "option2");
 	assertEquals("2a", "", oSelectionField.label.getValue());
 	assertEquals("2b", "option2", oSelectionField.value.getValue());
@@ -80,7 +80,7 @@ SelectionFieldTest.prototype.test_anErrorIsDisplayedIfTheDefaultValueIsNotOneOfT
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"], "no-such-option");
 	assertEquals("1a", "", oSelectionField.label.getValue());
-	
+
 	assertEquals("1b", "no-such-option", oSelectionField.value.getValue());
 	assertTrue("1c", oSelectionField.hasError.getValue());
 };
@@ -120,7 +120,7 @@ SelectionFieldTest.prototype.test_theValueCanBeChangedToOneOfTheAvailableOptions
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"]);
 	assertEquals("1a", "option1", oSelectionField.value.getValue());
-	
+
 	oSelectionField.value.setUserEnteredValue("option2");
 	assertEquals("2a", "option2", oSelectionField.value.getValue());
 	assertFalse("2b", oSelectionField.hasError.getValue());
@@ -130,7 +130,7 @@ SelectionFieldTest.prototype.test_anErrorIsDisplayedIfTheValueIsChangedToANonExi
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"]);
 	assertEquals("1a", "option1", oSelectionField.value.getValue());
-	
+
 	oSelectionField.value.setUserEnteredValue("no-such-option");
 	assertEquals("2a", "no-such-option", oSelectionField.value.getValue());
 	assertTrue("2b", oSelectionField.hasError.getValue());
@@ -141,7 +141,7 @@ SelectionFieldTest.prototype.test_aNonExistentOptionCanBeSelectedWithoutErroring
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"]);
 	oSelectionField.allowInvalidSelections(true);
 	assertEquals("1a", "option1", oSelectionField.value.getValue());
-	
+
 	oSelectionField.value.setUserEnteredValue("no-such-option");
 	assertEquals("2a", "no-such-option", oSelectionField.value.getValue());
 	assertFalse("2b", oSelectionField.hasError.getValue());
@@ -151,7 +151,7 @@ SelectionFieldTest.prototype.test_theOptionsCanBeSuccesfullyChangedIfTheyStillIn
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"]);
 	assertEquals("1a", "option1", oSelectionField.value.getValue());
-	
+
 	oSelectionField.options.setOptions(["option0", "option1", "option2", "option3"]);
 	assertEquals("2a", "option1", oSelectionField.value.getValue());
 	assertFalse("2b", oSelectionField.hasError.getValue());
@@ -161,7 +161,7 @@ SelectionFieldTest.prototype.test_changingTheOptionsCausesAnErrorIfTheOptionsNoL
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"]);
 	assertEquals("1a", "option1", oSelectionField.value.getValue());
-	
+
 	oSelectionField.options.setOptions(["optionX", "optionY", "optionZ"]);
 	assertEquals("2a", "option1", oSelectionField.value.getValue());
 	assertTrue("2b", oSelectionField.hasError.getValue());
@@ -172,7 +172,7 @@ SelectionFieldTest.prototype.test_changingTheOptionsCanCauseAnErrorToBeFixedIfTh
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"], "no-such-option");
 	assertEquals("1a", "no-such-option", oSelectionField.value.getValue());
 	assertTrue("1b", oSelectionField.hasError.getValue());
-	
+
 	oSelectionField.options.setOptions(["no-such-option"]);
 	assertEquals("2a", "no-such-option", oSelectionField.value.getValue());
 	assertFalse("2b", oSelectionField.hasError.getValue());
@@ -182,14 +182,14 @@ SelectionFieldTest.prototype.test_whenConfiguredTheValueRevertsToDefaultIfTheCur
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2", "option3"]);
 	oSelectionField.automaticallyUpdateValueWhenOptionsChange(true);
-	
+
 	oSelectionField.value.setUserEnteredValue("option3");
 	assertEquals("1a", "option3", oSelectionField.value.getValue());
-	
+
 	oSelectionField.options.setOptions(["option1", "option2"]);
 	assertEquals("2a", "option1", oSelectionField.value.getValue());
 	assertFalse("2b", oSelectionField.hasError.getValue());
-	
+
 	oSelectionField.options.setOptions(["option1", "option2", "option3"]);
 	assertEquals("3a", "option1", oSelectionField.value.getValue());
 };
@@ -198,14 +198,14 @@ SelectionFieldTest.prototype.test_whenConfiguredTheValueRevertsToASpecifiedDefau
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2", "option3"], "option2");
 	oSelectionField.automaticallyUpdateValueWhenOptionsChange(true);
-	
+
 	oSelectionField.value.setUserEnteredValue("option3");
 	assertEquals("1a", "option3", oSelectionField.value.getValue());
-	
+
 	oSelectionField.options.setOptions(["option1", "option2"]);
 	assertEquals("2a", "option2", oSelectionField.value.getValue());
 	assertFalse("2b", oSelectionField.hasError.getValue());
-	
+
 	oSelectionField.options.setOptions(["option1", "option2", "option3"]);
 	assertEquals("3a", "option2", oSelectionField.value.getValue());
 };
@@ -214,14 +214,14 @@ SelectionFieldTest.prototype.test_whenConfiguredTheValueRevertsToTheFirstOptionI
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2", "option3", "option4"], "option3");
 	oSelectionField.automaticallyUpdateValueWhenOptionsChange(true);
-	
+
 	oSelectionField.value.setUserEnteredValue("option4");
 	assertEquals("1a", "option4", oSelectionField.value.getValue());
-	
+
 	oSelectionField.options.setOptions(["option1", "option2"]);
 	assertEquals("2a", "option1", oSelectionField.value.getValue());
 	assertFalse("2b", oSelectionField.hasError.getValue());
-	
+
 	oSelectionField.options.setOptions(["option1", "option2", "option3", "option4"]);
 	assertEquals("3a", "option1", oSelectionField.value.getValue());
 };
@@ -230,12 +230,26 @@ SelectionFieldTest.prototype.test_evenWhenConfiguredTheValueDoesntChangeIfTheUpd
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"]);
 	oSelectionField.automaticallyUpdateValueWhenOptionsChange(true);
-	
+
 	oSelectionField.value.setUserEnteredValue("option2");
 	assertEquals("1a", "option2", oSelectionField.value.getValue());
-	
+
 	oSelectionField.options.setOptions([]);
 	assertEquals("2a", "option2", oSelectionField.value.getValue());
+};
+
+SelectionFieldTest.prototype.test_whenConfiguredTheValueDefaultsToDefaultOrEmptyIfCurrentValueIsNoLongerAnOption = function()
+{
+	var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"], "option1");
+	oSelectionField.automaticallyUpdateValueWhenOptionsChange(true);
+	oSelectionField.allowEmptySelection(true);
+	oSelectionField.value.setUserEnteredValue("option2");
+
+	oSelectionField.options.setOptions(["option1", "option3"]);
+	assertEquals("1a", "option1", oSelectionField.value.getValue());
+
+	oSelectionField.options.setOptions(["option2", "option3"]);
+	assertEquals("2a", "", oSelectionField.value.getValue());
 };
 
 SelectionFieldTest.prototype.test_thatTheEntireDerivationChainPropagatesCorrectly = function()
@@ -243,13 +257,13 @@ SelectionFieldTest.prototype.test_thatTheEntireDerivationChainPropagatesCorrectl
 	var oSelectionField = new br.presenter.node.SelectionField(["goodvalue", "badvalue"]);
 	oSelectionField.automaticallyUpdateValueWhenOptionsChange(true);
 	oSelectionField.value.addValidator(this.getTestValidator());
-	
+
 	assertEquals("1a", "goodvalue", oSelectionField.value.getValue());
 	assertFalse("1b", oSelectionField.hasError.getValue());
 	assertEquals("1c", "", oSelectionField.failureMessage.getValue());
-	
+
 	oSelectionField.options.setOptions(["badvalue"]);
-	
+
 	assertEquals("2a", "badvalue", oSelectionField.value.getValue());
 	assertTrue("2b", oSelectionField.hasError.getValue());
 	assertEquals("2c", "must be 'goodvalue'", oSelectionField.failureMessage.getValue());
