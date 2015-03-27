@@ -20,7 +20,7 @@ LocaleUtility.getBrowserAcceptedLocales = function() {
 	var userAcceptedLocales;
 
 	if (navigator.languages) {
-		userAcceptedLocales = navigator.languages;
+		userAcceptedLocales = navigator.languages.slice(0); // clone the array since it's read only
 	}
 	else if (navigator.language) {
 		userAcceptedLocales = [navigator.language];
