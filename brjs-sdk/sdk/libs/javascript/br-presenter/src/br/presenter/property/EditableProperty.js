@@ -115,6 +115,38 @@ br.presenter.property.EditableProperty.prototype.addValidator = function(oValida
 };
 
 /**
+ * Removes {@link module:br/presenter/validator/Validator} from validators array.
+ *
+ * @param {module:br/presenter/validator/Validator} oValidator - validator object class
+ * @param {object} [config] - removes only validator with provided config - optional
+ * @returns {boolean} - true if any validator was removed
+ */
+br.presenter.property.EditableProperty.prototype.removeValidator = function(oValidator, config) {
+	var removed = false;
+
+	if(br.Core.fulfills(oValidator, br.presenter.validator.Validator)) {
+		for (var i = 0; i < this.m_pValidators.length; i++) {
+			if (this.m_pValidators[i].validator == oValidator) {
+				if (typeof config !== 'undefined') {
+					// Remove only validator with the same config
+					if (JSON.stringify(this.m_pValidators[i].config) === JSON.stringify(config)) {
+						this.m_pValidators.splice(i, 1);
+						i--;
+						removed = true;
+					}
+				} else {
+					// Remove all validators of provided type when no config passed
+					this.m_pValidators.splice(i, 1);
+					i--;
+					removed = true;
+				}
+			}
+		}
+	}
+	return removed;
+};
+
+/**
  * @private
  * @see br.presenter.property.Property#addListener
  */
