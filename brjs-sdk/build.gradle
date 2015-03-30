@@ -1,4 +1,7 @@
+import org.apache.commons.io.output.ByteArrayOutputStream
 import org.apache.tools.ant.filters.*
+import org.bladerunnerjs.OSCalculator
+import org.bladerunnerjs.gradle.executionlisteners.StartBRJSExecutionListener
 
 apply plugin: 'maven'
 
@@ -358,6 +361,15 @@ clean {
 	dependsOn = [cleanTemporaryFiles]
 }
 
+task runIntegrationTests(type: Exec) {
+    workingDir './sdk'
+    commandLine OSCalculator.getOSSpecificCommand('brjs test-integration ../brjs-apps/it-app')
+}
+gradle.addListener(new StartBRJSExecutionListener(
+        runIntegrationTests,
+        file('sdk'),
+        file('sdk/libs/java/system')
+))
 
 // util class
 class DistZipPathLogger extends BuildAdapter {
