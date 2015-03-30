@@ -101,6 +101,25 @@
 			});
 
 			assertEquals('20150105', result);
+		},
+
+		'test parsing an unambiguous localised date with endOfUnit flag set': function() {
+			var result = parser.parse('18 Mar 2015', {
+				inputFormats: ['LL'],
+				outputFormat: 'YYYYMMDD',
+				inputLocale: 'en-gb',
+				endOfUnit: true
+			});
+
+			assertEquals('20150318', result);
+		},
+
+		'test parsing does not make loose matches': function() {
+			var result = parser.parse('18 Mar 2015', {
+				inputFormats: ['YYYY']
+			});
+
+			assertUndefined(result);
 		}
 
 	};

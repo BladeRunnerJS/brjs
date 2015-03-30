@@ -1,5 +1,7 @@
 package org.bladerunnerjs.api.spec.utility;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -8,7 +10,7 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.memoization.FileModificationWatcherThread;
+import org.bladerunnerjs.api.memoization.WatchingFileModificationObserverThread;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
@@ -24,7 +26,9 @@ import org.bladerunnerjs.api.spec.engine.BuilderChainer;
 import org.bladerunnerjs.api.spec.engine.NodeBuilder;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.logging.MockLogLevelAccessor;
+import org.bladerunnerjs.memoization.PollingFileModificationObserverThread;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
@@ -249,6 +253,9 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	@Override
 	public BuilderChainer hasBeenCreated() throws Exception
 	{
+		if (brjs != null) {
+			brjs.close();
+		}
 		brjs = specTest.createModel();
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
@@ -272,7 +279,23 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasBeenAuthenticallyCreated() throws Exception
 	{
+		if (brjs != null) {
+			brjs.close();
+		}
 		brjs = specTest.createNonTestModel();
+		brjs.io().installFileAccessChecker();
+		specTest.brjs = brjs;
+		this.node = brjs;
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithWorkingDir(File workingDir) throws Exception
+	{
+		if (brjs != null) {
+			brjs.close();
+		}
+		brjs = specTest.createNonTestModel(workingDir);
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
@@ -283,7 +306,28 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
-		specTest.fileWatcherThread = new FileModificationWatcherThread(brjs, new WatchKeyServiceFactory());
+		brjs.io().uninstallFileAccessChecker();
+		specTest.fileWatcherThread = new WatchingFileModificationObserverThread(brjs, new WatchKeyServiceFactory());
+		specTest.fileWatcherThread.start();
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithFilePollingThread() throws Exception
+	{
+		hasBeenAuthenticallyCreated();
+		brjs.io().uninstallFileAccessChecker();
+		specTest.fileWatcherThread = new PollingFileModificationObserverThread(brjs, 500);
+		specTest.fileWatcherThread.start();
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread() throws Exception
+	{
+		hasBeenAuthenticallyCreated();
+		brjs.io().uninstallFileAccessChecker();
+		specTest.fileWatcherThread = brjs.getFileWatcherThread();
 		specTest.fileWatcherThread.start();
 		
 		return builderChainer;
@@ -291,9 +335,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasBeenAuthenticallyReCreated() throws Exception
 	{
-		if (brjs != null) {
-			brjs.close();
-		}
 		return hasBeenAuthenticallyCreated();
 	}
 
@@ -417,8 +458,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		}
 	}
 	
-	
-	
 	private File locateBrjsSdk()
 	{
 		File thisDir = new File(".").getAbsoluteFile();
@@ -434,5 +473,12 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		}
 		return brjsSdk;
 	}
-	
+
+	public BuilderChainer doesNotContainFolder(String filePath)
+	{
+		File file = brjs.file(filePath);
+		org.apache.commons.io.FileUtils.deleteQuietly(file);
+		assertFalse(file.exists());
+		return builderChainer;
+	}
 }

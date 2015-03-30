@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.brjs.appserver;
 import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
 import static org.bladerunnerjs.appserver.ApplicationServerUtils.Messages.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -10,6 +11,7 @@ import javax.servlet.Servlet;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.model.events.NodeReadyEvent;
@@ -41,10 +43,15 @@ public class AppServerTest extends SpecTest
 	ServerSocket socket;
 	Servlet helloWorldServlet;
 	TemplateGroup templates;
+	Aspect aspect;
+	StringBuffer response = new StringBuffer();
+
+	File secondaryTempFolder;
 	
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
@@ -56,6 +63,7 @@ public class AppServerTest extends SpecTest
 			appServer = brjs.applicationServer(appServerPort);
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
+			aspect = app1.defaultAspect();
 			app1Conf = app1.appConf();
 			app2Conf = app2.appConf();
 			templates = brjs.sdkTemplateGroup("default");
@@ -76,6 +84,7 @@ public class AppServerTest extends SpecTest
 		given(brjs.applicationServer(appServerPort)).stopped()
 			.and(brjs.applicationServer(appServerPort)).requestTimesOutFor("/");
 		if (socket  != null && socket.isBound()) { socket.close(); }
+		if (secondaryTempFolder != null) org.apache.commons.io.FileUtils.deleteQuietly(secondaryTempFolder);
 	}
 	
 	@Test
@@ -228,22 +237,22 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstance() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
+		given(brjs).hasBeenAuthenticallyCreated()
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(app1Conf).localesUpdatedTo("en", "de");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
-	}
+	} 
 	
 	@Test
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstanceAndOnlyAppsDirectoryExists() throws Exception
 	{
 		given(brjs).doesNotContainFolder("brjs-apps")
 			.and(brjs).containsFolder("apps")
-			.and(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread(); 
-			/*and*/ secondBrjsProcess = createNonTestModel();
+			.and(brjs).hasBeenAuthenticallyCreated(); 
+			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel();
 			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
 			.and(brjs.applicationServer(appServerPort)).started();
@@ -252,18 +261,18 @@ public class AppServerTest extends SpecTest
 	}
 	
 	@Test
-	public void newAppsAreHostedOnAppserverAfterServerRestartWhenCreateAppCommandUsedFromADifferentModelInstance() throws Exception
+	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstanceAndWorkingDirIsSeperateFromSdk() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
-			.and(templates).templateGroupCreated()
-			.and(templates.template("app")).containsFile("fileForApp.txt")
+		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(this.getClass());
+		given(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(secondaryTempFolder); 
+			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel(secondaryTempFolder);
+			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
+			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
 			.and(brjs.applicationServer(appServerPort)).started();
-		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
-			.and(app1Conf).localesUpdatedTo("en", "de")
-			.and(brjs.applicationServer(appServerPort)).stopped()
-			.and(brjs.applicationServer(appServerPort)).started();
-		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
+		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
+		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/");
 	}
+	
 	
 	@Test
 	public void newAppsAreHostedViaADifferentModelOnAppserverAfterServerRestart() throws Exception
@@ -319,4 +328,5 @@ public class AppServerTest extends SpecTest
 		given(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/no-such-content-plugin", "Error 404");
 	}
+	
 }
