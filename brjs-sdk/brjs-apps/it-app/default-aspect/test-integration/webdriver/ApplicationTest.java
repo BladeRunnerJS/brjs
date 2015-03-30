@@ -15,7 +15,7 @@ public class ApplicationTest {
         driver = new FirefoxDriver();
         driver.get(baseUrl + "/login/j_security_check?isLoginPage=login-page&j_username=user&j_password=password");
         driver.get(baseUrl);
-        itapp = new ItApp(driver, baseUrl);
+        itapp = new ItApp(driver);
         itapp.parseOutputTable();
     }
 

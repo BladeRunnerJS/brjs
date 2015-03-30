@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import testlib.ItApp;
 
-public class AlternateTheme {
+public class AlternateThemeTest {
     private static WebDriver driver;
     private static String baseUrl = "http://localhost:7070/it-app";
     private static ItApp itapp;
@@ -18,7 +18,7 @@ public class AlternateTheme {
         driver.get(baseUrl + "/login/j_security_check?isLoginPage=login-page&j_username=user&j_password=password");
         String themedURL = baseUrl + "/?theme=alternate";
         driver.get(themedURL);
-        itapp = new ItApp(driver, themedURL);
+        itapp = new ItApp(driver);
     }
 
     @AfterClass

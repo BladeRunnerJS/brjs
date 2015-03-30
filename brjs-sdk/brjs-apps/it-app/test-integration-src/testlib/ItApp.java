@@ -11,8 +11,8 @@ public class ItApp {
     private HashMap<String, String> outputTable;
     private WebDriver driver;
 
-    public ItApp(WebDriver wd, String baseURL) throws Exception {
-        this.outputTable = new HashMap<>();
+    public ItApp(WebDriver wd) throws Exception {
+        this.outputTable = new HashMap<String, String>();
         this.driver = wd;
     }
 
@@ -58,7 +58,7 @@ public class ItApp {
         String javaScript = "var img = new Image();" +
                 "img.src = \"" + imagesrc + "\";" +
                 "return img.naturalWidth * img.naturalHeight;";
-        return (long) ((JavascriptExecutor) this.driver).executeScript(javaScript);
+        return ((Long) ((JavascriptExecutor) this.driver).executeScript(javaScript)).longValue();
     }
 
     public String extractColourForItblade() {
