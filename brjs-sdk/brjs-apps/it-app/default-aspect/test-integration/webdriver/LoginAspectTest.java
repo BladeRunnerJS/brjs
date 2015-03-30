@@ -6,7 +6,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class LoginAspectTest {
 
     private static WebDriver driver;
-    private static String baseUrl = "http://localhost:7070/it-app";
+    private static String baseUrl = WebDriverProvider.getBaseUrl("/it-app");
 
     public LoginAspectTest() throws Exception {
         driver = new FirefoxDriver();

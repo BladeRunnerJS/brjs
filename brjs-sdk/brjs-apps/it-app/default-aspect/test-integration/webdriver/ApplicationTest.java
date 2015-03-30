@@ -7,7 +7,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class ApplicationTest {
 
     private static WebDriver driver;
-    private static String baseUrl = "http://localhost:7070/it-app";
+    private static String baseUrl = WebDriverProvider.getBaseUrl("/it-app");
     private static ItApp itapp;
 
     @BeforeClass
