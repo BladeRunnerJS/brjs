@@ -112,12 +112,14 @@ public class CreateAppCommandTest extends SpecTest {
 	public void appIsCreatedWhenAllArgumentsAreValid() throws Exception {
 		given(defaultTemplates).templateGroupCreated()
 			.and(appJars).hasBeenCreated()
-			.and(logging).enabled();
+			.and(logging).enabled()
+			.and(brjs).pluginsAccessed();
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(app).dirExists()
 			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, app.getName(), app.dir().getPath())
 			.and(logging).containsFormattedConsoleMessage(APP_CREATED_CONSOLE_MSG, app.getName())
-			.and(logging).containsFormattedConsoleMessage(APP_DEPLOYED_CONSOLE_MSG, app.getName());
+			.and(logging).containsFormattedConsoleMessage(APP_DEPLOYED_CONSOLE_MSG, app.getName())
+			.and(logging).otherMessagesIgnored();
 	}
 	
 	@Test

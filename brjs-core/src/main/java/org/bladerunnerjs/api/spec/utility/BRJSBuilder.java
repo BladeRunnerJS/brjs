@@ -39,193 +39,200 @@ import org.bladerunnerjs.utility.FileUtils;
 import org.mockito.Mockito;
 
 
-public class BRJSBuilder extends NodeBuilder<BRJS> {
+public class BRJSBuilder extends NodeBuilder<BRJS>
+{
+
 	private BRJS brjs;
-	
-	public BRJSBuilder(SpecTest modelTest, BRJS brjs) {
+
+	public BRJSBuilder(SpecTest modelTest, BRJS brjs)
+	{
 		super(modelTest, brjs);
 		this.brjs = brjs;
 	}
-	
+
 	//TODO: look at brjs is null - commands must be added before BRJS is created
-	
-	public BuilderChainer hasBeenPopulated() throws Exception {
+
+	public BuilderChainer hasBeenPopulated() throws Exception
+	{
 		brjs.populate("default");
-		
+
 		return builderChainer;
 	}
 
 	public BuilderChainer hasCommandPlugins(CommandPlugin... commands)
 	{
 		verifyBrjsIsNotSet();
-		
-		for(CommandPlugin command : commands)
+
+		for (CommandPlugin command : commands)
 		{
-			specTest.pluginLocator.pluginCommands.add( new VirtualProxyCommandPlugin(command) );
+			specTest.pluginLocator.pluginCommands.add(new VirtualProxyCommandPlugin(command));
 		}
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasModelObserverPlugins(ModelObserverPlugin... modelObservers)
 	{
 		verifyBrjsIsNotSet();
-		
-		for(ModelObserverPlugin modelObserver : modelObservers)
+
+		for (ModelObserverPlugin modelObserver : modelObservers)
 		{
-			specTest.pluginLocator.modelObservers.add( new VirtualProxyModelObserverPlugin(modelObserver) );
+			specTest.pluginLocator.modelObservers.add(new VirtualProxyModelObserverPlugin(modelObserver));
 		}
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasContentPlugins(ContentPlugin... contentPlugins)
 	{
 		verifyBrjsIsNotSet();
-		
-		for(ContentPlugin contentPlugin : contentPlugins)
+
+		for (ContentPlugin contentPlugin : contentPlugins)
 		{
-			specTest.pluginLocator.contentPlugins.add( new VirtualProxyContentPlugin(contentPlugin) );
+			specTest.pluginLocator.contentPlugins.add(new VirtualProxyContentPlugin(contentPlugin));
 		}
-		
+
 		return builderChainer;
 	}
-	
-	public BuilderChainer hasConfigurationFileWithContent(String filename, String content) throws Exception 
+
+	public BuilderChainer hasConfigurationFileWithContent(String filename, String content) throws Exception
 	{
-		FileUtils.write(brjs.conf().file(filename), content);	
+		FileUtils.write(brjs.conf().file(filename), content);
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasAssetPlugins(AssetPlugin... assetPlugins)
 	{
 		verifyBrjsIsNotSet();
-		
-		for(AssetPlugin assetPlugin : assetPlugins)
+
+		for (AssetPlugin assetPlugin : assetPlugins)
 		{
-			specTest.pluginLocator.assetPlugins.add( new VirtualProxyAssetPlugin(assetPlugin) );
+			specTest.pluginLocator.assetPlugins.add(new VirtualProxyAssetPlugin(assetPlugin));
 		}
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasMinifierPlugins(MinifierPlugin... minifyPlugins)
 	{
 		verifyBrjsIsNotSet();
-		
-		for(MinifierPlugin minifierPlugin : minifyPlugins)
+
+		for (MinifierPlugin minifierPlugin : minifyPlugins)
 		{
-			specTest.pluginLocator.minifiers.add( new VirtualProxyMinifierPlugin(minifierPlugin) );
+			specTest.pluginLocator.minifiers.add(new VirtualProxyMinifierPlugin(minifierPlugin));
 		}
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasTagHandlerPlugins(TagHandlerPlugin... tagHandlers)
 	{
 		verifyBrjsIsNotSet();
-		
-		for(TagHandlerPlugin tagHandler : tagHandlers)
+
+		for (TagHandlerPlugin tagHandler : tagHandlers)
 		{
-			specTest.pluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin(tagHandler) );
+			specTest.pluginLocator.tagHandlers.add(new VirtualProxyTagHandlerPlugin(tagHandler));
 		}
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer automaticallyFindsCommandPlugins()
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.pluginCommands);
-		
-		specTest.pluginLocator.pluginCommands.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), CommandPlugin.class, VirtualProxyCommandPlugin.class) );
-		
+
+		specTest.pluginLocator.pluginCommands.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), CommandPlugin.class, VirtualProxyCommandPlugin.class));
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer automaticallyFindsModelObservers()
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.modelObservers);
-		
-		specTest.pluginLocator.modelObservers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ModelObserverPlugin.class, VirtualProxyModelObserverPlugin.class) );
-		
+
+		specTest.pluginLocator.modelObservers.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ModelObserverPlugin.class, VirtualProxyModelObserverPlugin.class));
+
 		return builderChainer;
 	}
-	
-	public BuilderChainer automaticallyFindsContentPlugins() 
+
+	public BuilderChainer automaticallyFindsContentPlugins()
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.contentPlugins);
-		
-		specTest.pluginLocator.contentPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class, VirtualProxyContentPlugin.class) );
-		
+
+		specTest.pluginLocator.contentPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class, VirtualProxyContentPlugin.class));
+
 		return builderChainer;
 	}
-	
-	public BuilderChainer automaticallyFindsTagHandlerPlugins() 
+
+	public BuilderChainer automaticallyFindsTagHandlerPlugins()
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.tagHandlers);
-		
-		specTest.pluginLocator.tagHandlers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class) );
-		
+
+		specTest.pluginLocator.tagHandlers.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class));
+
 		return builderChainer;
 	}
-	
-	public BuilderChainer automaticallyFindsAssetPlugins() {
+
+	public BuilderChainer automaticallyFindsAssetPlugins()
+	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.assetPlugins);
-		
-		specTest.pluginLocator.assetPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class) );
-		
+
+		specTest.pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer automaticallyFindsBundlerPlugins()
 	{
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlerPlugins();
 		automaticallyFindsAssetPlugins();
 		automaticallyFindsRequirePlugins();
-		
+
 		return builderChainer;
 	}
-	
-	public BuilderChainer automaticallyFindsMinifierPlugins() 
+
+	public BuilderChainer automaticallyFindsMinifierPlugins()
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.minifiers);
-		
-		specTest.pluginLocator.minifiers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), MinifierPlugin.class, VirtualProxyMinifierPlugin.class) );
-		
+
+		specTest.pluginLocator.minifiers.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), MinifierPlugin.class, VirtualProxyMinifierPlugin.class));
+
 		return builderChainer;
 	}
-	
-	public BuilderChainer automaticallyFindsRequirePlugins() 
+
+	public BuilderChainer automaticallyFindsRequirePlugins()
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.requirePlugins);
-		
-		specTest.pluginLocator.requirePlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), RequirePlugin.class, VirtualProxyRequirePlugin.class) );
-		
+
+		specTest.pluginLocator.requirePlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), RequirePlugin.class, VirtualProxyRequirePlugin.class));
+
 		return builderChainer;
 	}
-	
-	public BuilderChainer automaticallyFindsAllPlugins() {
+
+	public BuilderChainer automaticallyFindsAllPlugins()
+	{
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlerPlugins();
 		automaticallyFindsAssetPlugins();
 		automaticallyFindsCommandPlugins();
 		automaticallyFindsModelObservers();
 		automaticallyFindsRequirePlugins();
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasNotYetBeenCreated() throws Exception
 	{
-		if (brjs != null) {
+		if (brjs != null)
+		{
 			brjs.close();
 		}
 		brjs = null;
@@ -233,90 +240,94 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		specTest.resetTestObjects();
 		return builderChainer;
 	}
-	
+
 	@Override
 	public BuilderChainer hasBeenCreated() throws Exception
 	{
-		if (brjs != null) {
+		if (brjs != null)
+		{
 			brjs.close();
 		}
 		brjs = specTest.createModel();
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
-		
+
 		super.hasBeenCreated();
-		
+
 		return builderChainer;
 	}
-	
-	public BuilderChainer hasBeenCreatedWithWorkingDir(File workingDir) throws Exception {
+
+	public BuilderChainer hasBeenCreatedWithWorkingDir(File workingDir) throws Exception
+	{
 		brjs = specTest.createModelWithWorkingDir(workingDir);
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
-		
+
 		super.hasBeenCreated();
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasBeenAuthenticallyCreated() throws Exception
 	{
-		if (brjs != null) {
+		if (brjs != null)
+		{
 			brjs.close();
 		}
 		brjs = specTest.createNonTestModel();
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasBeenAuthenticallyCreatedWithWorkingDir(File workingDir) throws Exception
 	{
-		if (brjs != null) {
+		if (brjs != null)
+		{
 			brjs.close();
 		}
 		brjs = specTest.createNonTestModel(workingDir);
 		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
 		brjs.io().uninstallFileAccessChecker();
 		specTest.fileWatcherThread = new WatchingFileModificationObserverThread(brjs, new WatchKeyServiceFactory());
 		specTest.fileWatcherThread.start();
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasBeenAuthenticallyCreatedWithFilePollingThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
 		brjs.io().uninstallFileAccessChecker();
 		specTest.fileWatcherThread = new PollingFileModificationObserverThread(brjs, 500);
 		specTest.fileWatcherThread.start();
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
 		brjs.io().uninstallFileAccessChecker();
 		specTest.fileWatcherThread = brjs.getFileWatcherThread();
 		specTest.fileWatcherThread.start();
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasBeenAuthenticallyReCreated() throws Exception
 	{
 		return hasBeenAuthenticallyCreated();
@@ -328,7 +339,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		return builderChainer;
 	}
-	
+
 	private void verifyBrjsIsSet()
 	{
 		if (specTest.brjs == null)
@@ -336,7 +347,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 			throw new RuntimeException("BRJS must exist before this command can be used.");
 		}
 	}
-	
+
 	private void verifyBrjsIsNotSet()
 	{
 		if (specTest.brjs != null)
@@ -344,74 +355,82 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 			throw new RuntimeException("Plugins must be added to BRJS before it is created.");
 		}
 	}
-	
-	private <P extends Plugin> void verifyPluginsUnitialized(List<P> pluginList) {
-		if(pluginList.size() > 0) {
+
+	private <P extends Plugin> void verifyPluginsUnitialized(List<P> pluginList)
+	{
+		if (pluginList.size() > 0)
+		{
 			throw new RuntimeException("automaticallyFindsXXX() invoked after plug-ins have already been added.");
 		}
 	}
-	
-	public BuilderChainer commandHasBeenRun(String... args) throws Exception {
+
+	public BuilderChainer commandHasBeenRun(String... args) throws Exception
+	{
 		brjs.runCommand(args);
-		
+
 		brjs.incrementFileVersion();
-		
-		return builderChainer;
-	}
-	
-	public BuilderChainer userCommandHasBeenRun(String... args) throws Exception {
-		brjs.runUserCommand(new MockLogLevelAccessor(), args);
-		
-		return builderChainer;
-	}
-	
-	public BuilderChainer usesProductionTemplates() throws IOException {
-		verifyBrjsIsSet();
-		
-		return usesProductionTemplates( locateBrjsSdk() );
-	}
-	
-	public BuilderChainer usesProductionTemplates(File brjsSdkDir) throws IOException {
-		verifyBrjsIsSet();
-		
-		File templateDir = new File(brjsSdkDir, "sdk/templates");
-		FileUtils.copyDirectory(brjs, templateDir, brjs.sdkTemplateGroup("default").dir().getParentFile());
-		
-		File j2eeify = new File(brjsSdkDir, "sdk/j2eeify-app"); 
-		FileUtils.copyDirectory(brjs, j2eeify, brjs.file("sdk/j2eeify-app"));
-		
+
 		return builderChainer;
 	}
 
-	public BuilderChainer usesJsDocResources() throws IOException {
-		verifyBrjsIsSet();
-		
-		return usesJsDocResources( locateBrjsSdk() );
-	}
-	
-	public BuilderChainer usesJsDocResources(File brjsSdkDir) throws IOException {
-		verifyBrjsIsSet();
-		
-		File jsdocResourcesDir = new File(brjsSdkDir, "sdk/jsdoc-toolkit-resources");
-		File jsdocResourcesDest = brjs.sdkRoot().file("jsdoc-toolkit-resources");
-		
-		FileUtils.copyDirectory(brjs, jsdocResourcesDir, jsdocResourcesDest);
-		new File(jsdocResourcesDest, "jsdoc-toolkit/jsdoc").setExecutable(true);
-		
+	public BuilderChainer userCommandHasBeenRun(String... args) throws Exception
+	{
+		brjs.runUserCommand(new MockLogLevelAccessor(), args);
+
 		return builderChainer;
 	}
-	
+
+	public BuilderChainer usesProductionTemplates() throws IOException
+	{
+		verifyBrjsIsSet();
+
+		return usesProductionTemplates(locateBrjsSdk());
+	}
+
+	public BuilderChainer usesProductionTemplates(File brjsSdkDir) throws IOException
+	{
+		verifyBrjsIsSet();
+
+		File templateDir = new File(brjsSdkDir, "sdk/templates");
+		FileUtils.copyDirectory(brjs, templateDir, brjs.sdkTemplateGroup("default").dir().getParentFile());
+
+		File j2eeify = new File(brjsSdkDir, "sdk/j2eeify-app");
+		FileUtils.copyDirectory(brjs, j2eeify, brjs.file("sdk/j2eeify-app"));
+
+		return builderChainer;
+	}
+
+	public BuilderChainer usesJsDocResources() throws IOException
+	{
+		verifyBrjsIsSet();
+
+		return usesJsDocResources(locateBrjsSdk());
+	}
+
+	public BuilderChainer usesJsDocResources(File brjsSdkDir) throws IOException
+	{
+		verifyBrjsIsSet();
+
+		File jsdocResourcesDir = new File(brjsSdkDir, "sdk/jsdoc-toolkit-resources");
+		File jsdocResourcesDest = brjs.sdkRoot().file("jsdoc-toolkit-resources");
+
+		FileUtils.copyDirectory(brjs, jsdocResourcesDir, jsdocResourcesDest);
+		new File(jsdocResourcesDest, "jsdoc-toolkit/jsdoc").setExecutable(true);
+
+		return builderChainer;
+	}
+
 	public BuilderChainer hasProdVersion(String version)
 	{
 		specTest.appVersionGenerator.setProdVersion(version);
-		
+
 		return builderChainer;
 	}
-	
+
 	public BuilderChainer hasDevVersion(String version)
 	{
 		specTest.appVersionGenerator.setDevVersion(version);
-		
+
 		return builderChainer;
 	}
 
@@ -419,45 +438,59 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	{
 		SdkJsLib localeSwitcherLib = brjs.sdkLib("br-locale");
 		FileUtils.write(localeSwitcherLib.file("src/switcher.js"), string);
-		
+
 		return builderChainer;
 	}
 
-	public BuilderChainer appsHaveBeeniterated() {
+	public BuilderChainer appsHaveBeeniterated()
+	{
 		brjs.apps();
-		
+
 		return builderChainer;
 	}
 
-	public void hasBeenInactiveForOneMillisecond() {
+	public BuilderChainer pluginsAccessed()
+	{
+		brjs.plugins();
+
+		return builderChainer;
+	}
+
+	public void hasBeenInactiveForOneMillisecond()
+	{
 		long currentTime = (new Date()).getTime();
-		
-		try {
-			do {
+
+		try
+		{
+			do
+			{
 				Thread.sleep(1);
-			} while(currentTime == (new Date()).getTime());
+			}
+			while (currentTime == (new Date()).getTime());
 		}
-		catch (InterruptedException e) {
+		catch (InterruptedException e)
+		{
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
-	
+
 	private File locateBrjsSdk()
 	{
 		File thisDir = new File(".").getAbsoluteFile();
 		File brjsSdk;
-		
-		do {
+
+		do
+		{
 			brjsSdk = new File(thisDir, "brjs-sdk");
 			thisDir = thisDir.getParentFile();
-		} while (!brjsSdk.isDirectory() && thisDir != null);
-		
-		if (!brjsSdk.exists() || brjsSdk == null) {
+		}
+		while (!brjsSdk.isDirectory() && thisDir != null);
+
+		if (!brjsSdk.exists() || brjsSdk == null)
+		{
 			throw new RuntimeException("Unable to find parent brjs-sdk directory");
 		}
 		return brjsSdk;
 	}
-	
+
 }
