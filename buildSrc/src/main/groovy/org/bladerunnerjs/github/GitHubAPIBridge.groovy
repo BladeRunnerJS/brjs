@@ -22,21 +22,21 @@ import static groovyx.net.http.ContentType.JSON
 
 class GitHubAPIBridge
 {
-	static String CURL_PATH = "curl" 
+	static String CURL_PATH = "curl"
 
 	String userAgentString = ""
-	
-	
+
+
 	String githubWebPrefix = "https://github.com"
 	String apiPrefix = "https://api.github.com"
 	String uploadsPrefix = "https://uploads.github.com"
-	
+
 	Project project
 	Logger logger
 	String repoOwner
 	String repo
 	String authToken
-	
+
 	public GitHubAPIBridge(Project project, String repoOwner, String repo, String authToken)
 	{
 		this.logger = project.logger
@@ -46,7 +46,7 @@ class GitHubAPIBridge
 		this.repo = repo
 		this.authToken = authToken
 	}
-	
+
 	public List<String> getMilestoneIds(List<String> milestones)
 	{
 		def milestoneIds = []
@@ -55,14 +55,14 @@ class GitHubAPIBridge
 		}
 		return milestoneIds
 	}
-	
+
 	public String getMilestoneId(String milestone)
 	{
 		logger.quiet "getting milestone ID for '${milestone}'"
-		
+
 		def response = doRequest(apiPrefix, "get", getRestUrl("milestones"), "state=all", JSON, null)
 		def jsonData = response.data
-		
+
 		for (def milestoneData : jsonData) {
 			if (milestoneData.title == milestone) {
 				return milestoneData.number
@@ -70,23 +70,23 @@ class GitHubAPIBridge
 		}
 		throw new GradleException("Unable to find the milestone ID for '${milestone}'.");
 	}
-	
+
 	public String getMilestonesUrl()
 	{
 		return getWebUrl("issues/milestones")
 	}
-	
+
 	public String getMilestoneUrl(Object milestoneId)
 	{
 		return getWebUrl("issues?milestone=${milestoneId}")
 	}
-	
+
 	List<Issue> getClosedIssuesForMilestone(Object milestoneID)
 	{
 		logger.quiet "getting closed issues for milestoneID ${milestoneID}"
-		
+
 		def response = doRequest(apiPrefix, "get", getRestUrl('issues'), 'milestone='+milestoneID+'&state=closed&per_page=100', URLENC, null)
-		
+
 		List<Issue> issues = new ArrayList<Issue>();
 		response.data.each {
 			def labels = []
@@ -98,14 +98,14 @@ class GitHubAPIBridge
 			logger.info "creating Issue object:  ${issue.toString()}"
 		}
 		logger.quiet "got ${issues.size()} closed issues back from GitHub"
-		
+
 		return issues
 	}
-	
+
 	Release createReleaseForTag(String tagVersion, Map releaseJson, String releaseDescription)
-	{	
+	{
 		logger.quiet "creating release for tag ${tagVersion}"
-		
+
 		String httpMethod = "post"
 		String httpUrl = 'releases'
 		int releaseId = getIdForExistingRelease(tagVersion)
@@ -113,21 +113,21 @@ class GitHubAPIBridge
 			 throw new GradleException("Unable to create release for ${tagVersion} as release already exists. Either delete it and restart the build or update the release notes manually");
 		}
 		String restUrl = getRestUrl(httpUrl)
-		
+
 		def response = doRequest(apiPrefix, httpMethod, restUrl, null, JSON, [
             tag_name: tagVersion,
             name: releaseJson.name,
             body: releaseDescription,
             prerelease: releaseJson.prerelease
         ] )
-		
+
 		def jsonData = response.data
-		
+
 		Release release = new Release(jsonData.url, jsonData.upload_url, jsonData.id, jsonData.name, jsonData.tag_name)
 		logger.quiet "created/editted release '${release.toString()}'"
 		return release
 	}
-	
+
 	void uploadAssetForRelease(File brjsZip, Release release)
 	{
 		logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
@@ -139,18 +139,18 @@ class GitHubAPIBridge
 	{
 		return "/repos/${repoOwner}/${repo}/${suffix}"
 	}
-	
+
 	private String getWebUrl(String suffix)
 	{
 		return "${githubWebPrefix}/${repoOwner}/${repo}/${suffix}"
 	}
-	
+
 	private int getIdForExistingRelease(String tagVersion)
-	{ 
-		logger.quiet "checking if release for tag ${tagVersion} already exists"			
-		
+	{
+		logger.quiet "checking if release for tag ${tagVersion} already exists"
+
 		def response = doRequest(apiPrefix, "get", getRestUrl('releases'), null, URLENC, null )
-		
+
 		int releaseId = -1
 		response.data.each {
 			if (it.tag_name.equals(tagVersion))
@@ -162,19 +162,19 @@ class GitHubAPIBridge
 		{
 			logger.quiet "release for tag ${tagVersion}, already exists, ID is ${releaseId}"
 		}
-		else 
+		else
 		{
 			logger.quiet "no release exists for tag ${tagVersion}"
 		}
-		
+
 		return releaseId
 	}
-	
-	
+
+
 	private Object doRequest(String requestPrefix, String httpMethod, String restUrl, String queryString, Object contentType, Object requestBody)
 	{
 		logger.quiet "making GitHub API ${httpMethod.toUpperCase()} request for '${restUrl}', query string is '${queryString}', body is '${requestBody.toString()}'"
-    		
+
 		if (requestPrefix.equals(uploadsPrefix))
 		{
 			logger.info "using cURL because of SSL certificate issues in the Groovy REST client... (curl path is '${CURL_PATH}')"
@@ -182,8 +182,8 @@ class GitHubAPIBridge
     			commandLine = [ CURL_PATH,
 					"--insecure", // We have to use this because the SSL cert for uploads.github.com doesnt match the hostname
     				"-i",
-    				"-H", "Authorization: token ${authToken}", 
-    				"-H", "Accept: application/vnd.github.manifold-preview", 
+    				"-H", "Authorization: token ${authToken}",
+    				"-H", "Accept: application/vnd.github.manifold-preview",
     				"-H", "Content-Type: ${contentType}",
 					"-X", "${httpMethod.toUpperCase()}",
     				"-v", "-v", "-v",
@@ -197,17 +197,17 @@ class GitHubAPIBridge
 		else
 		{
 			try {
-			
+
     			def restClient = new RESTClient( requestPrefix )
     			restClient.encoder.'application/zip' = this.&encodeZipFile
-    			
+
     			def response = restClient."${httpMethod}"(
         			uri: requestPrefix,
         			requestContentType: contentType,
         			headers: [
 						'User-Agent': userAgentString,
         				'Authorization': "token ${authToken}",
-        				'Accept': 'application/vnd.github.manifold-preview'
+						"Accept": "application/vnd.github.v3+json"
         			],
         			path: restUrl,
         			queryString : queryString,
@@ -222,8 +222,8 @@ class GitHubAPIBridge
         	}
 		}
 	}
-	
-	
+
+
 	/* from http://agileice.blogspot.co.uk/2009/08/groovy-restclient-and-putting-zip-files.html */
 	def encodeZipFile( Object data ) throws UnsupportedEncodingException {
 		if ( data instanceof File ) {
@@ -235,5 +235,5 @@ class GitHubAPIBridge
 				"Don't know how to encode ${data.class.name} as a zip file" );
 		}
 	}
-	
+
 }
