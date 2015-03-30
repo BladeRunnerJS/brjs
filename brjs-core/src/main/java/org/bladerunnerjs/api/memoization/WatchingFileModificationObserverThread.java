@@ -25,6 +25,7 @@ public class WatchingFileModificationObserverThread extends Thread
 	public static final String FILE_CHANGED_MSG = THREAD_IDENTIFIER+" detected a '%s' event for '%s'. Incrementing the file version.";
 	public static final String CANT_RESET_PATH_MSG = "A watch key could not be reset for the path '%s' but the directory or file still exists. "+
 			"You might need to reset the process for file changes to be detected.";
+	public static final String THREAD_STARTED = "Thread %s has been started.";
 	
 	private List<Path> directoriesToWatch;
 	private FileModificationRegistry fileModificationRegistry;
@@ -57,7 +58,7 @@ public class WatchingFileModificationObserverThread extends Thread
 		try {
 
     		init();
-    		
+    		logger.debug(THREAD_STARTED, THREAD_IDENTIFIER);
     		while(true) {
     			checkForUpdates();
     		}

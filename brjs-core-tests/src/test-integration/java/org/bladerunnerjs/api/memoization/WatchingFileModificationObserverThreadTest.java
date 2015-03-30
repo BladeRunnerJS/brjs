@@ -100,6 +100,14 @@ public class WatchingFileModificationObserverThreadTest
 	}
 	
 	@Test
+	public void logLineIsDisplayedWhenBrjsHasBeenCreatedWithWatchingFileThread() throws Exception {
+		modificationWatcherThread = new WatchingFileModificationObserverThread(mockBrjs, mockWatchServiceFactory);
+		modificationWatcherThread.start();
+		
+		verify(mockLogger).debug(WatchingFileModificationObserverThread.THREAD_STARTED, WatchingFileModificationObserverThread.THREAD_IDENTIFIER);
+	}
+	
+	@Test
 	public void watchEventsCauseTheFileModificationRegistryToBeNotified() throws Exception
 	{
 		allowMockWatchKeyForDir( rootWatchDir, rootWatchDirWatchKey );
