@@ -12,7 +12,7 @@ public class ItApp {
     private WebDriver driver;
 
     public ItApp(WebDriver wd) throws Exception {
-        this.outputTable = new HashMap<String, String>();
+        this.outputTable = new HashMap<>();
         this.driver = wd;
     }
 
@@ -58,7 +58,8 @@ public class ItApp {
         String javaScript = "var img = new Image();" +
                 "img.src = \"" + imagesrc + "\";" +
                 "return img.naturalWidth * img.naturalHeight;";
-        return ((Long) ((JavascriptExecutor) this.driver).executeScript(javaScript)).longValue();
+        Object scriptResult = ((JavascriptExecutor) this.driver).executeScript(javaScript);
+        return (long) scriptResult;
     }
 
     public String extractColourForItblade() {
