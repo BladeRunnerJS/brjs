@@ -1,8 +1,8 @@
 package org.bladerunnerjs.plugin.utility;
 
+import static org.bladerunnerjs.plugin.utility.PluginLocatorUtils.*;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,12 +31,12 @@ public class PluginAccessor {
 	
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
-		contentPlugins = sort(pluginLocator.getContentPlugins());
-		tagHandlerPlugins = sort(pluginLocator.getTagHandlerPlugins());
-		minifierPlugins = sort(pluginLocator.getMinifierPlugins());
-		modelObserverPlugins = sort(pluginLocator.getModelObserverPlugins());
-		requirePlugins = sort(pluginLocator.getRequirePlugins());
-		assetPlugins = sort(pluginLocator.assetPlugins());
+		contentPlugins = filterAndOrderPlugins(brjs, pluginLocator.getContentPlugins());
+		tagHandlerPlugins = filterAndOrderPlugins(brjs, pluginLocator.getTagHandlerPlugins());
+		minifierPlugins = filterAndOrderPlugins(brjs, pluginLocator.getMinifierPlugins());
+		modelObserverPlugins = filterAndOrderPlugins(brjs, pluginLocator.getModelObserverPlugins());
+		requirePlugins = filterAndOrderPlugins(brjs, pluginLocator.getRequirePlugins());
+		assetPlugins = filterAndOrderPlugins(brjs, pluginLocator.assetPlugins());
 	}
 
 	public List<Plugin> allPlugins() {
@@ -181,23 +181,6 @@ public class PluginAccessor {
 			}
 		}
 		return null;
-	}
-	
-	
-	private <P extends Plugin> List<P> sort(List<P> plugins) {
-		Collections.sort(plugins, new Comparator<Plugin>()
-		{
-			@Override
-			public int compare(Plugin p1, Plugin p2)
-			{
-				int priorityComparation = Integer.compare(p1.priority(), p2.priority());
-				if (priorityComparation == 0) {
-					return p1.getPluginClass().getCanonicalName().compareTo( p2.getPluginClass().getCanonicalName() );
-				}
-				return priorityComparation;
-			}
-		});
-		return plugins;
 	}
 	
 }
