@@ -7,6 +7,5 @@
 	
 	ExampleClassTest.prototype.testHelloWorldUtil = function()
 	{
-		//assertEquals( "Hello World!", CommonJsLib.helloWorldUtil() );
 	};
 }());

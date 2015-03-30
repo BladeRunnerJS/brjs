@@ -6,6 +6,6 @@
 	var App = require("itapp/App");
 	
 	AppTest.prototype.testSomething = function() {
-		// assertEquals( "hello world!", App.getHello() );
+
 	};
 }());

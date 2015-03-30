@@ -18,7 +18,6 @@
 		});
 	
 		it( 'Should say hello', function() {
-			// expect(console.log).toHaveBeenCalledWith('hello world!');
 		});
 	
 	});
