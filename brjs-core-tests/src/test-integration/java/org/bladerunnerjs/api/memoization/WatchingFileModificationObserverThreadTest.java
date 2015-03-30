@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static java.nio.file.StandardWatchEventKinds.*;
 
-public class FileModificationWatcherThreadTest
+public class WatchingFileModificationObserverThreadTest
 {	
 	private static final int MAX_UPDATE_CHECKS = 120; // 120 x 500ms (wait 1 minute before failing)
 	private static final int THREAD_SLEEP_INTEVAL = 500;
