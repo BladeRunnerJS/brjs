@@ -2,6 +2,7 @@ package org.bladerunnerjs.api.spec.utility;
 
 import static org.junit.Assert.*;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,12 +25,12 @@ public class LogMessageStore
 	private boolean loggingEnabled = false;
 	private boolean assertionMade = false;
 	
-	private LinkedList<LogMessage> fatalMessages = new LinkedList<LogMessage>();
-	private LinkedList<LogMessage> errorMessages = new LinkedList<LogMessage>();
-	private LinkedList<LogMessage> warnMessages = new LinkedList<LogMessage>();
-	private LinkedList<LogMessage> consoleMessages = new LinkedList<LogMessage>();
-	private LinkedList<LogMessage> infoMessages = new LinkedList<LogMessage>();
-	private LinkedList<LogMessage> debugMessages = new LinkedList<LogMessage>();
+	private volatile LinkedList<LogMessage> fatalMessages = new LinkedList<LogMessage>();
+	private volatile LinkedList<LogMessage> errorMessages = new LinkedList<LogMessage>();
+	private volatile LinkedList<LogMessage> warnMessages = new LinkedList<LogMessage>();
+	private volatile LinkedList<LogMessage> consoleMessages = new LinkedList<LogMessage>();
+	private volatile LinkedList<LogMessage> infoMessages = new LinkedList<LogMessage>();
+	private volatile List<LogMessage> debugMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
 
 	public LogMessageStore()
 	{
@@ -200,7 +201,7 @@ public class LogMessageStore
 		verifyNoMoreMessageOnList("info", infoMessages);
 	}
 
-	private void registerLogMessage(LinkedList<LogMessage> messages, String loggerName, LogMessage logMessage)
+	private synchronized void registerLogMessage(List<LogMessage> messages, String loggerName, LogMessage logMessage)
 	{
 		if (echoLogs ) {
 			System.out.println(logMessage.getFormattedMessage());
@@ -220,7 +221,7 @@ public class LogMessageStore
 		}
 	}
 
-	private void verifyLogMessage(String logLevel, boolean strictCheck, LinkedList<LogMessage> messages, LogMessage expectedMessage)
+	private synchronized void verifyLogMessage(String logLevel, boolean strictCheck, List<LogMessage> messages, LogMessage expectedMessage)
 	{
 		assertTrue("log message can't be empty", expectedMessage.message.length() > 0);
 		
@@ -228,7 +229,7 @@ public class LogMessageStore
 		String isNullFailMessage;
 		if (strictCheck)
 		{
-			foundMessage = (!messages.isEmpty()) ? messages.removeFirst() : null;
+			foundMessage = (!messages.isEmpty()) ? messages.remove(0) : null;
 			isNullFailMessage = NO_MESSAGES_RECEIVED;
 		} else {
 			foundMessage = findFirstMessageMatching(messages, expectedMessage.message);
@@ -244,7 +245,7 @@ public class LogMessageStore
 		assertEquals( failMessage, expectedMessage.toString(), foundMessage.toString() );
 	}
 	
-	private void verifyNoLogMessage(String logLevel, LinkedList<LogMessage> messages, LogMessage logMessage)
+	private synchronized void verifyNoLogMessage(String logLevel, LinkedList<LogMessage> messages, LogMessage logMessage)
 	{
 		assertTrue("log message can't be empty", logMessage.message.length() > 0);
 		
@@ -252,7 +253,7 @@ public class LogMessageStore
 		assertNull( String.format("found log message, expected not to", logLevel, logMessage.message) , foundMessage );
 	}
 
-	private String concatenateMessages(LinkedList<LogMessage> messages)
+	private String concatenateMessages(List<LogMessage> messages)
 	{
 		StringBuilder s = new StringBuilder();
 		for (LogMessage m : messages)
@@ -263,7 +264,7 @@ public class LogMessageStore
 		return s.toString().trim();
 	}
 
-	private LogMessage findFirstMessageMatching(LinkedList<LogMessage> messages, String message)
+	private LogMessage findFirstMessageMatching(List<LogMessage> messages, String message)
 	{
 		LogMessage foundMessage = null;
 		for (LogMessage m : messages)
