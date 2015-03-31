@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.utility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -24,7 +25,7 @@ public class PluginLocatorUtils
 		String pluginInterfaceName = pluginInterface.getSimpleName();
 		List<String> activePluginsConf = brjs.bladerunnerConf().getActivePlugins().get(pluginInterfaceName);
 		if (activePluginsConf == null || activePluginsConf.isEmpty()) {
-			return plugins;
+			return Collections.emptyList();
 		}
 		List<P> activePlugins = new ArrayList<>();
 		for(String nextPluginName : activePluginsConf) {

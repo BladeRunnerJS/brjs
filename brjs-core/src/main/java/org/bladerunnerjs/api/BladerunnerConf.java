@@ -90,7 +90,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	public void setActivePlugins(Map<String,List<String>> activePlugins) throws ConfigException {
 		LinkedHashMap<String,List<String>> orderedPlugins = new LinkedHashMap<>();
 		for (String key : activePlugins.keySet()) {
-			orderedPlugins.put( key, orderedPlugins.get(key) );
+			orderedPlugins.put( key, activePlugins.get(key) );
 		}
 		getConf().activePlugins = orderedPlugins;
 		verify();
