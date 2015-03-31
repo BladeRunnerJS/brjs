@@ -1,6 +1,5 @@
 package org.bladerunnerjs.utility;
 
-import static org.bladerunnerjs.plugin.utility.PluginLocatorUtils.filterAndOrderPlugins;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -28,8 +27,8 @@ import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.plugin.utility.CommandList;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
+import org.bladerunnerjs.plugin.utility.PluginLocatorUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -172,6 +171,58 @@ public class PluginAccessorTest
 		assertEquals( 0, pluginAccessor.modelObserverPlugins().size() );
 		assertEquals( 0, pluginAccessor.requirePlugins().size() );
 		assertEquals( 0, pluginAccessor.assetPlugins().size() );
+	}
+	
+	@Test
+	public void warningIsLoggedIfNoPluginMatcheActivePluginConfig() throws Exception {
+		activePlugins.put(ContentPlugin.class.getSimpleName(), Arrays.asList("foo"));
+		pluginLocator.contentPlugins.add( contentPlugin1 );
+		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		
+		new PluginAccessor(brjs, pluginLocator);
+		logStore.verifyWarnLogMessage(PluginLocatorUtils.Messages.NO_MATCHING_PLUGIN, ContentPlugin.class.getSimpleName(), "foo");
+	}
+	
+	@Test
+	public void debugLogsListWildcardEnabledPlugins() throws Exception {
+		activePlugins.put(ContentPlugin.class.getSimpleName(), Arrays.asList("*"));
+		pluginLocator.contentPlugins.add( contentPlugin1 );
+		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		
+		new PluginAccessor(brjs, pluginLocator);
+		logStore.verifyDebugLogMessage(PluginLocatorUtils.Messages.PLUGIN_ENABLED_MESSAGE, contentPlugin1.getClass().getName(), ContentPlugin.class.getSimpleName(), "*");
+	}
+	
+	@Test
+	public void debugLogsListEnabledPlugins() throws Exception {
+		activePlugins.put(ContentPlugin.class.getSimpleName(), Arrays.asList(contentPlugin1.getClass().getSimpleName()));
+		pluginLocator.contentPlugins.add( contentPlugin1 );
+		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		
+		new PluginAccessor(brjs, pluginLocator);
+		logStore.verifyDebugLogMessage(PluginLocatorUtils.Messages.PLUGIN_ENABLED_MESSAGE, contentPlugin1.getClass().getName(), ContentPlugin.class.getSimpleName(), contentPlugin1.getClass().getSimpleName());
+	}
+	
+	@Test
+	public void debugLogsListWildcardDisabledPlugins() throws Exception {
+		activePlugins.put(ContentPlugin.class.getSimpleName(), Arrays.asList());
+		pluginLocator.contentPlugins.add( contentPlugin1 );
+		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		
+		new PluginAccessor(brjs, pluginLocator);
+		logStore.verifyDebugLogMessage(PluginLocatorUtils.Messages.PLUGIN_DISABLED_EMPTY_ACTIVE_PLUGINS_MESSAGE, contentPlugin1.getClass().getName(), ContentPlugin.class.getSimpleName());
+	}
+	
+	@Test
+	public void debugLogsListDisabledPlugins() throws Exception {
+		activePlugins.put( ContentPlugin.class.getSimpleName(), Arrays.asList(contentPlugin1.getClass().getSimpleName(), contentPlugin2.getClass().getSimpleName()) );
+		pluginLocator.contentPlugins.add( contentPlugin1 );
+		pluginLocator.contentPlugins.add( contentPlugin2 );
+		pluginLocator.contentPlugins.add( contentPlugin3 );
+		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		
+		new PluginAccessor(brjs, pluginLocator);
+		logStore.verifyDebugLogMessage(PluginLocatorUtils.Messages.PLUGIN_DISABLED_MESSAGE, contentPlugin3.getClass().getName(), ContentPlugin.class.getSimpleName(), contentPlugin1.getClass().getSimpleName()+", "+contentPlugin2.getClass().getSimpleName());
 	}
 	
 	
