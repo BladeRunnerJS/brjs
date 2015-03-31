@@ -1,7 +1,6 @@
 package org.bladerunnerjs.runner;
 
 import static org.bladerunnerjs.api.spec.utility.BRJSAssertions.*;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -11,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
@@ -243,8 +243,9 @@ public class CommandRunnerTest {
 	
 		System.setIn(new ByteArrayInputStream("y\r\n".getBytes()));
 		commandRunner.run(new String[] {dir("valid-sdk-directory")});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: true", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: true") );
 		verify(mockEventObserver).onEventEmitted(any(NewInstallEvent.class), eq(brjs));
 	}
 	
@@ -258,8 +259,9 @@ public class CommandRunnerTest {
 	
 		System.setIn(new ByteArrayInputStream("n\r\n".getBytes()));
 		commandRunner.run(new String[] {dir("valid-sdk-directory")});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: false", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: false") );
 		verifyZeroInteractions(mockEventObserver);
 	}
 	
@@ -272,8 +274,9 @@ public class CommandRunnerTest {
 		brjs.addObserver(BundleSetCreatedEvent.class, mockEventObserver);
 	
 		commandRunner.run(new String[] {dir("valid-sdk-directory")});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: false", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: false") );
 		verifyZeroInteractions(mockEventObserver);
 	}
 		
@@ -286,8 +289,9 @@ public class CommandRunnerTest {
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "--stats"});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: true", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: true") );
 		verify(mockEventObserver).onEventEmitted(any(NewInstallEvent.class), eq(brjs));
 	}
 	
@@ -300,8 +304,9 @@ public class CommandRunnerTest {
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "--no-stats"});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: false", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: false") );
 		verifyZeroInteractions(mockEventObserver);
 	}
 	

@@ -7,6 +7,7 @@ import org.bladerunnerjs.api.BRJS;
 
 public interface PluginLocator
 {
+	// if more plugin types are added defaults should be added to BladerunnerConf
 	void createPlugins(BRJS brjs);
 	List<CommandPlugin> getCommandPlugins();
 	List<ModelObserverPlugin> getModelObserverPlugins();

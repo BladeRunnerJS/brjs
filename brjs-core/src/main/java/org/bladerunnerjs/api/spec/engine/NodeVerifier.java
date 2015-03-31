@@ -73,6 +73,10 @@ public abstract class NodeVerifier<N extends Node> {
 		return verifierChainer;
 	}
 	
+	public VerifierChainer fileHasContents(String fileName, String... fileContents) throws Exception {
+		return fileHasContents(fileName, StringUtils.join(fileContents, "\n"));
+	}
+	
 	public VerifierChainer fileHasContents(String fileName, String fileContents) throws Exception {
 		assertTrue("The file '" + fileName + "' did not exist at: " + node.file(fileName).getAbsoluteFile(), node.file(fileName).exists());
 		assertEquals(fileContents, fileUtil.readFileToString(node.file(fileName)));

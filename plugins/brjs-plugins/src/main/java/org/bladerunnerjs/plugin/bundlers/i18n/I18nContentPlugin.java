@@ -55,12 +55,6 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	public void setBRJS(BRJS brjs)
 	{
 	}
-	
-	@Override
-	public int priority()
-	{
-		return 0;
-	}
 
 	@Override
 	public void close()

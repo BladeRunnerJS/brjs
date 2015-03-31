@@ -1,5 +1,9 @@
 package org.bladerunnerjs.api;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -75,6 +79,20 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	
 	public void setFileObserverValue(String value) throws ConfigException {
 		getConf().fileObserver = value;
+		verify();
+	}
+	
+	public Map<String,List<String>> getActivePlugins() throws ConfigException {
+		return getConf().activePlugins;
+	}
+	
+	// convert to a LinkedHashMap but accept a map so our API uses Maps
+	public void setActivePlugins(Map<String,List<String>> activePlugins) throws ConfigException {
+		LinkedHashMap<String,List<String>> orderedPlugins = new LinkedHashMap<>();
+		for (String key : activePlugins.keySet()) {
+			orderedPlugins.put( key, orderedPlugins.get(key) );
+		}
+		getConf().activePlugins = orderedPlugins;
 		verify();
 	}
 	

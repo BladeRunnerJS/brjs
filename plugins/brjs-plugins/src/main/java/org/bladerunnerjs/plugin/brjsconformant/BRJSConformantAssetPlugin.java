@@ -23,12 +23,6 @@ import org.bladerunnerjs.model.DirectoryAsset;
 
 public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 {
-
-	@Override
-	public int priority()
-	{
-		return 100;
-	}
 	
 	@Override
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)

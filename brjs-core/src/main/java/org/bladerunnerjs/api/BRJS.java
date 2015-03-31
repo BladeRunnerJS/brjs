@@ -366,7 +366,14 @@ public class BRJS extends AbstractBRJSRootNode
 			PluginLocatorLogger.logPlugins(logger, pluginLocator);
 			
 			logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
-			pluginAccessor = new PluginAccessor(this, pluginLocator);
+			try
+			{
+				pluginAccessor = new PluginAccessor(this, pluginLocator);
+			}
+			catch (ConfigException e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 		return pluginAccessor;
 	}

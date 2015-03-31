@@ -43,7 +43,35 @@ public class BRJSTest extends SpecTest {
 	public void theBrjsConfIsWrittenOnPopulate() throws Exception {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nfileObserver: watching\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf",
+				"activePlugins:",
+				"   ModelObserverPlugin:", 
+				"   - '*'",
+				"   CommandPlugin:", 
+				"   - '*'",
+				"   MinifierPlugin:", 
+				"   - '*'",
+				"   TagHandlerPlugin:", 
+				"   - '*'",
+				"   RequirePlugin:", 
+				"   - '*'",
+				"   AssetPlugin:", 
+				"   - ThirdpartyAssetPlugin",
+				"   - BrowsableNodeSeedLocator",
+				"   - BRJSConformantAssetPlugin",
+				"   - '*'",
+				"   ContentPlugin:", 
+				"   - I18nContentPlugin",
+				"   - AppMetadataContentPlugin",
+				"   - ThirdpartyContentPlugin",
+				"   - CommonJsContentPlugin",
+				"   - NamespacedJsContentPlugin",
+				"   - '*'",
+				"defaultFileCharacterEncoding: UTF-8",
+				"fileObserver: watching",
+				"ignoredPaths: .svn, .git",
+				"jettyPort: 7070",
+				"loginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test

@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
@@ -29,14 +30,14 @@ public class PluginAccessor {
 	private final List<RequirePlugin> requirePlugins;
 	private final List<AssetPlugin> assetPlugins;
 	
-	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
+	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) throws ConfigException {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
-		contentPlugins = filterAndOrderPlugins(brjs, pluginLocator.getContentPlugins());
-		tagHandlerPlugins = filterAndOrderPlugins(brjs, pluginLocator.getTagHandlerPlugins());
-		minifierPlugins = filterAndOrderPlugins(brjs, pluginLocator.getMinifierPlugins());
-		modelObserverPlugins = filterAndOrderPlugins(brjs, pluginLocator.getModelObserverPlugins());
-		requirePlugins = filterAndOrderPlugins(brjs, pluginLocator.getRequirePlugins());
-		assetPlugins = filterAndOrderPlugins(brjs, pluginLocator.assetPlugins());
+		contentPlugins = filterAndOrderPlugins(brjs, ContentPlugin.class, pluginLocator.getContentPlugins());
+		tagHandlerPlugins = filterAndOrderPlugins(brjs, TagHandlerPlugin.class, pluginLocator.getTagHandlerPlugins());
+		minifierPlugins = filterAndOrderPlugins(brjs, MinifierPlugin.class, pluginLocator.getMinifierPlugins());
+		modelObserverPlugins = filterAndOrderPlugins(brjs, ModelObserverPlugin.class, pluginLocator.getModelObserverPlugins());
+		requirePlugins = filterAndOrderPlugins(brjs, RequirePlugin.class, pluginLocator.getRequirePlugins());
+		assetPlugins = filterAndOrderPlugins(brjs, AssetPlugin.class, pluginLocator.assetPlugins());
 	}
 
 	public List<Plugin> allPlugins() {

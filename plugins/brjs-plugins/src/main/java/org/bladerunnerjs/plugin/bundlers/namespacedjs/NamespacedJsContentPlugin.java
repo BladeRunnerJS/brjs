@@ -91,11 +91,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	}
 	
 	@Override
-	public int priority() {
-		return 20;
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser()
 	{
 		return contentPathParser;

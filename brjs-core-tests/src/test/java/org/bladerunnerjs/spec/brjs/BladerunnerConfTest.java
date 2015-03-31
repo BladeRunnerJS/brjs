@@ -17,7 +17,35 @@ public class BladerunnerConfTest extends SpecTest {
 	@Test
 	public void bladerunnerConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		when(brjs).bladerunnerConf().write();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nfileObserver: watching\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf",
+				"activePlugins:",
+				"   ModelObserverPlugin:", 
+				"   - '*'",
+				"   CommandPlugin:", 
+				"   - '*'",
+				"   MinifierPlugin:", 
+				"   - '*'",
+				"   TagHandlerPlugin:", 
+				"   - '*'",
+				"   RequirePlugin:", 
+				"   - '*'",
+				"   AssetPlugin:", 
+				"   - ThirdpartyAssetPlugin",
+				"   - BrowsableNodeSeedLocator",
+				"   - BRJSConformantAssetPlugin",
+				"   - '*'",
+				"   ContentPlugin:", 
+				"   - I18nContentPlugin",
+				"   - AppMetadataContentPlugin",
+				"   - ThirdpartyContentPlugin",
+				"   - CommonJsContentPlugin",
+				"   - NamespacedJsContentPlugin",
+				"   - '*'",
+				"defaultFileCharacterEncoding: UTF-8",
+				"fileObserver: watching",
+				"ignoredPaths: .svn, .git",
+				"jettyPort: 7070",
+				"loginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test
@@ -30,7 +58,35 @@ public class BladerunnerConfTest extends SpecTest {
 	public void bladerunnerConfThatAlreadyExistsCanBeReadAndModified() throws Exception {
 		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf().setJettyPort(8888).setDefaultFileCharacterEncoding("ISO-8859-1").write();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: ISO-8859-1\nfileObserver: watching\nignoredPaths: .svn, .git\njettyPort: 8888\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf",
+				"activePlugins:",
+				"   ModelObserverPlugin:", 
+				"   - '*'",
+				"   CommandPlugin:", 
+				"   - '*'",
+				"   MinifierPlugin:", 
+				"   - '*'",
+				"   TagHandlerPlugin:", 
+				"   - '*'",
+				"   RequirePlugin:", 
+				"   - '*'",
+				"   AssetPlugin:", 
+				"   - ThirdpartyAssetPlugin",
+				"   - BrowsableNodeSeedLocator",
+				"   - BRJSConformantAssetPlugin",
+				"   - '*'",
+				"   ContentPlugin:", 
+				"   - I18nContentPlugin",
+				"   - AppMetadataContentPlugin",
+				"   - ThirdpartyContentPlugin",
+				"   - CommonJsContentPlugin",
+				"   - NamespacedJsContentPlugin",
+				"   - '*'",
+				"defaultFileCharacterEncoding: ISO-8859-1",
+				"fileObserver: watching",
+				"ignoredPaths: .svn, .git",
+				"jettyPort: 8888",
+				"loginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test
