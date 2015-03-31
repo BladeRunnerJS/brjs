@@ -158,7 +158,17 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task "test${it}", dependsOn: [testJsTask, testSystemAppsTask]
 }
 
-task test, dependsOn: testPhantomJS
+task runIntegrationTests(type: Exec) {
+    workingDir './sdk'
+    commandLine OSCalculator.getOSSpecificCommand('brjs test-integration ../brjs-apps/it-app')
+}
+gradle.addListener(new StartBRJSExecutionListener(
+        runIntegrationTests,
+        file('sdk'),
+        file('sdk/libs/java/system')
+))
+
+task test, dependsOn: [testPhantomJS, runIntegrationTests]
 
 
 task createSdkJsDocs, dependsOn: assembleSdk, {
@@ -360,16 +370,6 @@ task cleanTemporaryFiles {
 clean {
 	dependsOn = [cleanTemporaryFiles]
 }
-
-task runIntegrationTests(type: Exec) {
-    workingDir './sdk'
-    commandLine OSCalculator.getOSSpecificCommand('brjs test-integration ../brjs-apps/it-app')
-}
-gradle.addListener(new StartBRJSExecutionListener(
-        runIntegrationTests,
-        file('sdk'),
-        file('sdk/libs/java/system')
-))
 
 // util class
 class DistZipPathLogger extends BuildAdapter {
