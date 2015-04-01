@@ -5,7 +5,7 @@ import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
-import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
+import org.bladerunnerjs.api.model.exception.OutOfBundleScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
@@ -128,7 +128,7 @@ public class BladeWorkbenchBundlingTest extends SpecTest {
 			.and(blade).classRequires("appns/bs/b1/Class1", "appns/App")
 			.and(blade.workbench()).indexPageRequires("appns/bs/b1/Class1");
 		when(blade.workbench()).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(exceptions).verifyException(OutOfScopeRequirePathException.class, 
+		then(exceptions).verifyException(OutOfBundleScopeRequirePathException.class, 
 				"appns/App", "default-aspect/src/appns/App.js", BladeWorkbench.class.getSimpleName(),
 				"brjs-apps/app1/bs-bladeset, brjs-apps/app1/bs-bladeset/blades/b1, brjs-apps/app1/bs-bladeset/blades/b1/workbench")
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
