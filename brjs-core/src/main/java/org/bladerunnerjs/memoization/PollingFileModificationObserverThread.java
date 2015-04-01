@@ -2,6 +2,8 @@ package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
@@ -19,7 +21,7 @@ public class PollingFileModificationObserverThread extends Thread
 	public static final String FILE_CHANGED_MSG = THREAD_IDENTIFIER+" detected a '%s' event for '%s'. Incrementing the file version.";
 	public static final String THREAD_INIT_MESSAGE = "%s configured with a polling interval of '%s'.";
 	
-	private File directoryToWatch;
+	private List<File> directoriesToWatch;
 	private FileModificationRegistry fileModificationRegistry;
 	private FileAlterationListener fileModificationRegistryAlterationListener = new FileModificationRegistryAlterationListener();
 	private FileAlterationMonitor monitor;
@@ -29,7 +31,11 @@ public class PollingFileModificationObserverThread extends Thread
 	public PollingFileModificationObserverThread(BRJS brjs, int interval) throws IOException
 	{
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
-		directoryToWatch = brjs.dir().getUnderlyingFile();
+		directoriesToWatch = new ArrayList<File>();
+		directoriesToWatch.add(brjs.dir());
+		if (!brjs.appsFolder().getAbsolutePath().startsWith(brjs.dir().getAbsolutePath())) {
+			directoriesToWatch.add(brjs.appsFolder());
+		}
 		monitor = new FileAlterationMonitor(interval);
 		logger = brjs.logger(this.getClass());
 		logger.debug(THREAD_INIT_MESSAGE, this.getClass().getSimpleName(), interval);
@@ -39,7 +45,9 @@ public class PollingFileModificationObserverThread extends Thread
 	public void run()
 	{
 		Thread.currentThread().setName(THREAD_IDENTIFIER);
-		addObserverForDir(monitor, directoryToWatch);
+		for (File directoryToWatch : directoriesToWatch) {
+			addObserverForDir(monitor, directoryToWatch);
+		}
         try {
         	monitor.start();
         	while(true) {
