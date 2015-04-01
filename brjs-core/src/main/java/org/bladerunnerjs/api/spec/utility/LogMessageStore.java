@@ -25,12 +25,12 @@ public class LogMessageStore
 	private boolean loggingEnabled = false;
 	private boolean assertionMade = false;
 	
-	private volatile LinkedList<LogMessage> fatalMessages = new LinkedList<LogMessage>();
-	private volatile LinkedList<LogMessage> errorMessages = new LinkedList<LogMessage>();
-	private volatile LinkedList<LogMessage> warnMessages = new LinkedList<LogMessage>();
-	private volatile LinkedList<LogMessage> consoleMessages = new LinkedList<LogMessage>();
-	private volatile LinkedList<LogMessage> infoMessages = new LinkedList<LogMessage>();
-	private volatile List<LogMessage> debugMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
+	private List<LogMessage> fatalMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
+	private List<LogMessage> errorMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
+	private List<LogMessage> warnMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
+	private List<LogMessage> consoleMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
+	private List<LogMessage> infoMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
+	private List<LogMessage> debugMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
 
 	public LogMessageStore()
 	{
@@ -201,7 +201,7 @@ public class LogMessageStore
 		verifyNoMoreMessageOnList("info", infoMessages);
 	}
 
-	private synchronized void registerLogMessage(List<LogMessage> messages, String loggerName, LogMessage logMessage)
+	private void registerLogMessage(List<LogMessage> messages, String loggerName, LogMessage logMessage)
 	{
 		if (echoLogs ) {
 			System.out.println(logMessage.getFormattedMessage());
@@ -221,7 +221,7 @@ public class LogMessageStore
 		}
 	}
 
-	private synchronized void verifyLogMessage(String logLevel, boolean strictCheck, List<LogMessage> messages, LogMessage expectedMessage)
+	private void verifyLogMessage(String logLevel, boolean strictCheck, List<LogMessage> messages, LogMessage expectedMessage)
 	{
 		assertTrue("log message can't be empty", expectedMessage.message.length() > 0);
 		
@@ -245,7 +245,7 @@ public class LogMessageStore
 		assertEquals( failMessage, expectedMessage.toString(), foundMessage.toString() );
 	}
 	
-	private synchronized void verifyNoLogMessage(String logLevel, LinkedList<LogMessage> messages, LogMessage logMessage)
+	private void verifyNoLogMessage(String logLevel, List<LogMessage> messages, LogMessage logMessage)
 	{
 		assertTrue("log message can't be empty", logMessage.message.length() > 0);
 		
