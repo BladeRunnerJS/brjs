@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +13,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.memoization.WatchKeyService;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+import org.bladerunnerjs.utility.FileObserverFactory;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -27,7 +27,7 @@ public class WatchingFileModificationObserverThread extends Thread
 			"You might need to reset the process for file changes to be detected.";
 	public static final String THREAD_STARTED = "Thread %s has been started.";
 	
-	private List<Path> directoriesToWatch;
+	private List<File> directoriesToWatch;
 	private FileModificationRegistry fileModificationRegistry;
 
 	private BRJS brjs;
@@ -42,11 +42,7 @@ public class WatchingFileModificationObserverThread extends Thread
 	{
 		this.watchKeyServiceFactory = watchKeyServiceFactory;
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
-		directoriesToWatch = new ArrayList<Path>();
-		directoriesToWatch.add(brjs.dir().toPath());
-		if (!brjs.appsFolder().getAbsolutePath().startsWith(brjs.dir().getAbsolutePath())) {
-			directoriesToWatch.add(brjs.appsFolder().toPath());
-		}
+		directoriesToWatch = FileObserverFactory.getBrjsRootDirs(brjs);
 		this.brjs = brjs;
 	}
 	
@@ -75,8 +71,8 @@ public class WatchingFileModificationObserverThread extends Thread
 		logger = brjs.logger(this.getClass());
 		logger.debug(THREAD_STARTED, THREAD_IDENTIFIER);
 		logger.debug(USING_WATCH_SERVICE_MSG, this.getClass().getSimpleName(), watchKeyService.getClass().getSimpleName());
-		for (Path path : directoriesToWatch) {
-			watchKeys.putAll( watchKeyService.createWatchKeysForDir(path, false) );
+		for (File dir : directoriesToWatch) {
+			watchKeys.putAll( watchKeyService.createWatchKeysForDir(dir.toPath(), false) );
 		}
 		
 	}

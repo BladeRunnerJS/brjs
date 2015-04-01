@@ -27,7 +27,7 @@ public class BladeNavigationTest
 	}
 	
 	@After
-	public void teardown()
+	public void teardown() throws Exception
 	{
 		brjs.close();
 	}

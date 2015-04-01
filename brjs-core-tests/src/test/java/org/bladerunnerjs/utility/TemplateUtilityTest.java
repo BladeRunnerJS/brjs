@@ -32,7 +32,7 @@ public class TemplateUtilityTest
 	}
 	
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
 		brjs.close();
 	}
 	

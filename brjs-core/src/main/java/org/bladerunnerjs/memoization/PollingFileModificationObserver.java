@@ -2,7 +2,6 @@ package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.monitor.FileAlterationListener;
@@ -10,16 +9,17 @@ import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.FileObserver;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
+import org.bladerunnerjs.utility.FileObserverFactory;
 
 
-public class PollingFileModificationObserverThread extends Thread
+public class PollingFileModificationObserver implements FileObserver
 {
 
-	public static final String THREAD_IDENTIFIER = PollingFileModificationObserverThread.class.getSimpleName();
-	public static final String FILE_CHANGED_MSG = THREAD_IDENTIFIER+" detected a '%s' event for '%s'. Incrementing the file version.";
-	public static final String THREAD_INIT_MESSAGE = "%s configured with a polling interval of '%s'.";
+	public static final String FILE_CHANGED_MSG = PollingFileModificationObserver.class.getSimpleName()+" detected a '%s' event for '%s'. Incrementing the file version.";
+	public static final String INIT_MESSAGE = "%s configured with a polling interval of '%s'.";
 	
 	private List<File> directoriesToWatch;
 	private FileModificationRegistry fileModificationRegistry;
@@ -27,37 +27,46 @@ public class PollingFileModificationObserverThread extends Thread
 	private FileAlterationMonitor monitor;
 	
 	private Logger logger;
+	private int interval;
 	
-	public PollingFileModificationObserverThread(BRJS brjs, int interval) throws IOException
-	{
-		this.fileModificationRegistry = brjs.getFileModificationRegistry();
-		directoriesToWatch = new ArrayList<File>();
-		directoriesToWatch.add(brjs.dir());
-		if (!brjs.appsFolder().getAbsolutePath().startsWith(brjs.dir().getAbsolutePath())) {
-			directoriesToWatch.add(brjs.appsFolder());
-		}
-		monitor = new FileAlterationMonitor(interval);
+	public PollingFileModificationObserver(BRJS brjs, int interval) {
+		fileModificationRegistry = brjs.getFileModificationRegistry();
+		this.directoriesToWatch = FileObserverFactory.getBrjsRootDirs(brjs);
 		logger = brjs.logger(this.getClass());
-		logger.debug(THREAD_INIT_MESSAGE, this.getClass().getSimpleName(), interval);
+		this.interval = interval;
 	}
 	
 	@Override
-	public void run()
+	public void start() throws IOException
 	{
-		Thread.currentThread().setName(THREAD_IDENTIFIER);
+		if (monitor != null) {
+			throw new IllegalStateException(this.getClass().getSimpleName()+" monitor has already been started");
+		}
+		monitor = new FileAlterationMonitor(interval);
+		logger.debug(INIT_MESSAGE, this.getClass().getSimpleName(), interval);
 		for (File directoryToWatch : directoriesToWatch) {
 			addObserverForDir(monitor, directoryToWatch);
 		}
-        try {
-        	monitor.start();
-        	while(true) {
-        		Thread.sleep(60000);
-        	}
-        } catch (InterruptedException iEx) {
-        	// do nothing
-        } catch (Exception ex)
+		try {
+			monitor.start();
+		} catch (Exception ex) {
+			throw new IOException(ex);
+		}
+	}
+	
+	@Override
+	public void stop() throws IOException, InterruptedException
+	{
+		try
 		{
-			throw new RuntimeException(ex);
+			if (monitor != null) {
+				monitor.stop();
+				monitor = null;
+			}
+		}
+		catch (Exception ex)
+		{
+			throw new IOException(ex);
 		}
 	}
 	

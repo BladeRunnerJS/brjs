@@ -18,6 +18,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.FileObserver;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.Workbench;
@@ -108,7 +109,7 @@ public abstract class SpecTest
 	public int appServerPort;
 	public WebappTester webappTester;
 	public MockAppVersionGenerator appVersionGenerator;
-	public Thread fileWatcherThread;
+	public FileObserver fileWatcherThread;
 	
 	public int modelsCreated = 0;
 	
@@ -147,11 +148,11 @@ public abstract class SpecTest
 	}
 	
 	@After
-	public void cleanUp() {
+	public void cleanUp() throws Exception {
 		BRJS.allowInvalidRootDirectories = true;
 		
 		if (fileWatcherThread != null) {
-			fileWatcherThread.interrupt();
+			fileWatcherThread.stop();
 		}
 		
 		if(brjs != null) {

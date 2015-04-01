@@ -9,7 +9,8 @@ import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.memoization.PollingFileModificationObserverThread;
+import org.bladerunnerjs.memoization.PollingFileModificationObserver;
+import org.bladerunnerjs.memoization.WatchingFileModificationObserver;
 import org.bladerunnerjs.spec.brjs.BRJSTest;
 import org.junit.After;
 import org.junit.Before;
@@ -32,15 +33,13 @@ public class BundleCachingIntegrationTest extends SpecTest
 		// dont use fields for BRJS objects since we recreate BRJS in each test
 	}
 	
-	@SuppressWarnings("deprecation")
 	@After
 	public void stopServer() throws Exception {
 		if (brjs != null) {
 			brjs.applicationServer(appServerPort).stop();
 		}
 		try {
-			brjs.getFileWatcherThread().interrupt();
-			brjs.getFileWatcherThread().stop();
+			brjs.fileObserver().stop();
 		} catch (Exception ex) {
 			// ignore
 		}
@@ -88,7 +87,7 @@ public class BundleCachingIntegrationTest extends SpecTest
 		given(brjs.bladerunnerConf()).hasFileObserverValue("polling")
 			.and(logging).enabled();
 		when(brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
-		then(logging).debugMessageReceived(BRJS.Messages.FILE_WATCHER_MESSAGE, PollingFileModificationObserverThread.class.getSimpleName())
+		then(logging).debugMessageReceived(BRJS.Messages.FILE_WATCHER_MESSAGE, PollingFileModificationObserver.class.getSimpleName())
 			.and(logging).otherMessagesIgnored();
 			
 	}
@@ -98,8 +97,8 @@ public class BundleCachingIntegrationTest extends SpecTest
 		given(brjs.bladerunnerConf()).hasFileObserverValue("polling:1000")
 			.and(logging).enabled();
     	when(brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
-    	then(logging).debugMessageReceived(BRJS.Messages.FILE_WATCHER_MESSAGE, PollingFileModificationObserverThread.class.getSimpleName())
-    		.and(logging).debugMessageReceived(PollingFileModificationObserverThread.THREAD_INIT_MESSAGE, PollingFileModificationObserverThread.class.getSimpleName(), 1000)
+    	then(logging).debugMessageReceived(BRJS.Messages.FILE_WATCHER_MESSAGE, PollingFileModificationObserver.class.getSimpleName())
+    		.and(logging).debugMessageReceived(PollingFileModificationObserver.INIT_MESSAGE, PollingFileModificationObserver.class.getSimpleName(), 1000)
     		.and(logging).otherMessagesIgnored();
 	}
 	
@@ -108,7 +107,7 @@ public class BundleCachingIntegrationTest extends SpecTest
 		given(brjs.bladerunnerConf()).hasFileObserverValue("watching")
 			.and(logging).enabled();
 		when(brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
-		then(logging).debugMessageReceived(BRJS.Messages.FILE_WATCHER_MESSAGE, WatchingFileModificationObserverThread.class.getSimpleName())
+		then(logging).debugMessageReceived(BRJS.Messages.FILE_WATCHER_MESSAGE, WatchingFileModificationObserver.class.getSimpleName())
 			.and(logging).otherMessagesIgnored();
 	}
 	
@@ -116,7 +115,7 @@ public class BundleCachingIntegrationTest extends SpecTest
 	public void watchingFileObserverIsUsedAsDefault() throws Throwable {
 		given(logging).enabled();
 		when(brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
-		then(logging).debugMessageReceived(BRJS.Messages.FILE_WATCHER_MESSAGE, WatchingFileModificationObserverThread.class.getSimpleName())
+		then(logging).debugMessageReceived(BRJS.Messages.FILE_WATCHER_MESSAGE, WatchingFileModificationObserver.class.getSimpleName())
 			.and(logging).otherMessagesIgnored();
 	}
 	
