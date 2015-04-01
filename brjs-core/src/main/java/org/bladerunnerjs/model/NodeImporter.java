@@ -253,7 +253,12 @@ public class NodeImporter {
 			String matchedStr = matcher.group();
 			newContent.append(content.substring(startPos, matcher.start()));
 			if (matchedStr.contains("/")) {
-				newContent.append(matcher.group(1) + newRequirePrefix);
+				if (!matchedStr.substring(1).contains(".")) {
+					newContent.append(matcher.group(1) + newRequirePrefix);
+				}
+				else {
+					newContent.append(matcher.group(1) + newNamespace);
+				}
 			}
 			else if (content.substring(matcher.end()).startsWith("/")) {
 				newContent.append(matcher.group(1) + newRequirePrefix);
