@@ -128,4 +128,10 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	{
 		return assetContainer;
 	}
+	
+	@Override
+	public boolean isLogicalAsset()
+	{
+		return true;
+	}
 }

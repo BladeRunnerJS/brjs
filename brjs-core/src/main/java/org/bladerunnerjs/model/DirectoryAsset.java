@@ -85,6 +85,12 @@ public class DirectoryAsset implements DirectoryLinkedAsset
 	{
 		return assetContainer;
 	}
+	
+	@Override
+	public boolean isLogicalAsset()
+	{
+		return false;
+	}
 
 	public static String getRequirePath(String requirePrefix, MemoizedFile dir) {
 		if (requirePrefix == "") {

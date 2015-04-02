@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin.require;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.AmbiguousRequirePathException;
-import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
+import org.bladerunnerjs.api.model.exception.OutOfBundleScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
@@ -25,18 +25,9 @@ public class DefaultRequirePlugin extends AbstractRequirePlugin implements Requi
 	@Override
 	public Asset getAsset(BundlableNode bundlableNode, String requirePathSuffix) throws RequirePathException {
 		Asset asset = null;
-		BRJS brjs = null;
-		StringBuilder scopedLocations = new StringBuilder();
+		
 		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
 			Asset locationAsset = assetContainer.asset(requirePathSuffix);
-
-			if (scopedLocations.length() > 0) {
-				scopedLocations.append(", ");
-			}
-			if (brjs == null) {
-				brjs = assetContainer.root();
-			}
-			scopedLocations.append( brjs.dir().getRelativePath(assetContainer.dir()) );
 			
 			if(locationAsset != null) {
 				if(asset == null) {
@@ -54,7 +45,7 @@ public class DefaultRequirePlugin extends AbstractRequirePlugin implements Requi
 			for (AssetContainer assetContainer : bundlableNode.app().getAllAssetContainers()) {
 				Asset locationAsset = assetContainer.asset(requirePathSuffix);
 				if (locationAsset != null) {
-					throw new OutOfScopeRequirePathException(requirePathSuffix, bundlableNode.getClass().getSimpleName(), scopedLocations.toString(), locationAsset.getAssetPath());
+					throw new OutOfBundleScopeRequirePathException(bundlableNode, requirePathSuffix, locationAsset);
 				}
 			}
 			throw new UnresolvableRequirePathException(requirePathSuffix);

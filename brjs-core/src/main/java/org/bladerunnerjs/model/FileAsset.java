@@ -72,4 +72,10 @@ public class FileAsset implements Asset {
 		return requirePrefix+"/"+assetFile.requirePathName();
 	}
 	
+	@Override
+	public boolean isLogicalAsset()
+	{
+		return false;
+	}
+	
 }

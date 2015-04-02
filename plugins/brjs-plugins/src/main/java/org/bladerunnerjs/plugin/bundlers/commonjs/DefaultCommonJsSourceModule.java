@@ -211,6 +211,12 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		return assetContainer;
 	}
 	
+	@Override
+	public boolean isLogicalAsset()
+	{
+		return false;
+	}
+	
 	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
 	{
 		return requirePrefix+"/"+assetFile.requirePathName();

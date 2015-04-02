@@ -107,4 +107,10 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	{
 		return bundlableNode;
 	}
+	
+	@Override
+	public boolean isLogicalAsset()
+	{
+		return true;
+	}
 }

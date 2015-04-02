@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.JsLib;
@@ -14,6 +15,8 @@ import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.Workbench;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundleSetCreator;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
@@ -82,6 +85,7 @@ public class BundleSetBuilder {
 			}
 			
 			for(Asset asset : moduleDependencies) {
+				ensureDependantAssetIsInScope(linkedAsset, asset);				
 				if(asset instanceof SourceModule){
 					addSourceModule((SourceModule)asset);
 				} else if (asset instanceof LinkedAsset) {
@@ -91,6 +95,38 @@ public class BundleSetBuilder {
 			}
 			
 		}
+	}
+
+	private void ensureDependantAssetIsInScope(LinkedAsset asset, Asset dependantAsset) throws ModelOperationException
+	{
+		if (asset.isLogicalAsset() || dependantAsset.isLogicalAsset()) {
+			return;
+		}
+		
+		StringBuilder scopedLocations = new StringBuilder();
+		AssetContainer sourceAssetContainer = asset.assetContainer();
+		AssetContainer dependantAssetContainer = dependantAsset.assetContainer();
+		BRJS brjs = sourceAssetContainer.root();
+		
+		for (AssetContainer sourceAssetContainerScope : sourceAssetContainer.scopeAssetContainers()) {
+			if (assetContainerMatchesScope(sourceAssetContainerScope, dependantAssetContainer)) {
+				return;
+			}
+			scopedLocations.append( brjs.dir().getRelativePath(sourceAssetContainerScope.dir()) );
+		}
+		RequirePathException scopeException = new OutOfScopeRequirePathException(asset, dependantAsset);
+		throw new ModelOperationException(scopeException);
+	}
+	
+	private boolean assetContainerMatchesScope(AssetContainer sourceAssetContainer, AssetContainer dependantAssetContainer) {
+		// check the dir is equals as well incase the asset container is wrapped
+		if (sourceAssetContainer == dependantAssetContainer || sourceAssetContainer.dir() == dependantAssetContainer.dir()) {
+			return true;
+		}
+		if (sourceAssetContainer instanceof JsLib && dependantAssetContainer instanceof JsLib && sourceAssetContainer.dir().getName().equals(dependantAssetContainer.dir().getName())) {
+			return true;
+		}
+		return false;
 	}
 
 	private List<Asset> getModuleDependencies(LinkedAsset linkedAsset) throws ModelOperationException

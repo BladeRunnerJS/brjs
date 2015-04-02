@@ -5,6 +5,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
@@ -264,6 +265,18 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(aspect).indexPageRequires("appns/App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns/b1/Blade1Class", "appns/b2/Blade2Class");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfBladeClassRequestsAResourceFromDefaultAspect() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/Blade2Class")
+			.and(blade2InDefaultBladeset).hasClass("Blade2Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfScopeRequirePathException.class, 
+				"appns/b1/Blade1Class", "appns/b2/Blade2Class", "blades/b2/src/Blade2Class.js", Blade.class.getSimpleName(),
+				"brjs-apps/app1/blades/b1, brjs-apps/app1")
+			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	
 }
