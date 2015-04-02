@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
@@ -44,8 +46,6 @@ import org.bladerunnerjs.utility.ZipUtility;
 import org.mockito.Mockito;
 
 import com.google.common.collect.ImmutableMap;
-
-import net.sf.jmimemagic.*;
 
 @SuppressWarnings("unused")
 public class NodeImporter {
@@ -205,39 +205,27 @@ public class NodeImporter {
 	{
 		for (File f : files) {
 			if (f.length() != 0) {
-				try {
-					if (checkFileMimeType(f).startsWith("text")) {
-						findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
-					}
-				}
-				catch (MagicMatchNotFoundException e) {
-					continue;
-				}
+				findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
 			}
 		}
 	}
-
-	private static String checkFileMimeType(File file) throws IOException, MagicMatchNotFoundException {
-		byte[] data = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-		MagicMatch match = null;
-		try {
-			match = Magic.getMagicMatch(data);
-		} 
-		catch (MagicParseException | MagicException e) {
-			throw new IOException(e);
-		}
-		catch (MagicMatchNotFoundException e) {
-			throw e;
-		}
-		return match.getMimeType();
+	
+	private static boolean isTextFile(File file) {
+		return true;
 	}
 	
 	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException
 	{
+		for (String extension : ImageIO.getReaderFormatNames()) {
+			if (file.getName().endsWith(extension)) {
+				return; //image file
+			}
+		}
+		
 		String content = org.apache.commons.io.FileUtils.readFileToString(file);
 		String updatedContent = findAndReplaceInText(content, oldRequirePrefix, newRequirePrefix);
 		
-		if(content != updatedContent) {
+		if (!content.equals(updatedContent)) {
 			FileUtils.write(brjs, file, updatedContent);
 		}
 	}
