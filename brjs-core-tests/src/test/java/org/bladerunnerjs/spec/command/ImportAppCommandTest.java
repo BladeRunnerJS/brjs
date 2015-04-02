@@ -260,4 +260,16 @@ public class ImportAppCommandTest extends SpecTest {
 				"<alias name=\"bar.user-prompt-service\" class=\"importedns.myblade.MyUserPromptService\"/>");
 	}
 	
+	@Test
+	public void contentIsCorrectlyRenamespacedWhenOldNamespacesArePrecededWithASlash() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app.defaultBladeset().blade("myblade")).containsFileWithContents("resources/aliases.xml", 
+				"<appns.myblade.SomeTag>tag content</appns.myblade.SomeTag>")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp.defaultBladeset().blade("myblade")).fileContentsContains("resources/aliases.xml", 
+				"<importedns.myblade.SomeTag>tag content</importedns.myblade.SomeTag>");
+	}
+	
 }
