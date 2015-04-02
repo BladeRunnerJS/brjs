@@ -15,6 +15,7 @@ import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.Workbench;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.model.exception.OutOfBundleScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.model.AssetContainer;
@@ -131,7 +132,15 @@ public class BundleSetBuilder {
 
 	private List<Asset> getModuleDependencies(LinkedAsset linkedAsset) throws ModelOperationException
 	{
-		List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
+		List<Asset> moduleDependencies;
+		try {
+			moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
+		} catch (ModelOperationException ex) {
+			if (ex.getCause() instanceof OutOfBundleScopeRequirePathException) {
+				((OutOfBundleScopeRequirePathException) ex.getCause()).setAssetWithException(linkedAsset);
+			}
+			throw ex;
+		}
 		
 		if(moduleDependencies.isEmpty()) {
 			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());

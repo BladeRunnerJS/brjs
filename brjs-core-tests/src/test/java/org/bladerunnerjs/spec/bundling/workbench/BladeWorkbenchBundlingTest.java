@@ -133,6 +133,17 @@ public class BladeWorkbenchBundlingTest extends SpecTest {
 				"brjs-apps/app1/bs-bladeset, brjs-apps/app1/bs-bladeset/blades/b1, brjs-apps/app1/bs-bladeset/blades/b1/workbench")
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
+	
+	@Test
+	public void outOfScopeExceptionContainsTheFileWithTheException() throws Exception {
+		given(aspect).hasClass("appns/App")
+		.and(blade).classRequires("appns/bs/b1/Class1", "appns/App")
+		.and(blade.workbench()).indexPageRequires("appns/bs/b1/Class1");
+		when(blade.workbench()).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfBundleScopeRequirePathException.class, 
+				"bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js")
+			.whereTopLevelExceptionIs(ContentProcessingException.class);
+	}
 
 	
 	// ----------------------------------- C S S  -------------------------------------
