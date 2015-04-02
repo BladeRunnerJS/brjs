@@ -10,6 +10,7 @@ import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.engine.VerifierChainer;
+import org.bladerunnerjs.utility.FileUtils;
 
 public class DirectoryVerifier {
 	private final MemoizedFile dir;
@@ -65,4 +66,14 @@ public class DirectoryVerifier {
 		assertTrue("The directory is empty", dir.isEmpty());
 		return verifierChainer;
 	}
+
+	public VerifierChainer contentsTheSameAsFile(String filePath) throws IOException
+	{
+		File checkAgainstFile = new File(filePath);
+		
+		assertTrue( "file contents wasnt equal", org.apache.commons.io.FileUtils.contentEquals(dir, checkAgainstFile) );
+		
+		return verifierChainer;
+	}
+	
 }
