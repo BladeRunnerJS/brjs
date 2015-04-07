@@ -3,7 +3,6 @@ package org.bladerunnerjs.api.spec.utility;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -158,7 +157,7 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 
 	public CommanderChainer fileHasContentsWithoutNotifyingFileRegistry(String filePath, String content) throws IOException {
 		// do not use EncodedFileUtil or any MemoizedFile utilities as they increment the file versions implicitly
-		FileUtils.write(aspect.file(filePath).getUnderlyingFile(), content);
+		org.apache.commons.io.FileUtils.write(aspect.file(filePath).getUnderlyingFile(), content);
 		return commanderChainer;
 	}
 }

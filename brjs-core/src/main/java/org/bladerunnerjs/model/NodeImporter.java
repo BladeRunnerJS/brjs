@@ -12,15 +12,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.TypedTestPack;
@@ -44,8 +48,6 @@ import org.bladerunnerjs.utility.ZipUtility;
 import org.mockito.Mockito;
 
 import com.google.common.collect.ImmutableMap;
-
-import net.sf.jmimemagic.*;
 
 @SuppressWarnings("unused")
 public class NodeImporter {
@@ -100,14 +102,10 @@ public class NodeImporter {
 
 		File jettyEnv = tempBrjsApp.file("WEB-INF/jetty-env.xml");
 		if (jettyEnv.isFile()) {
-			String prefixAndSuffixRegex = "([ /;])";
-			String jettyEnvContent = org.apache.commons.io.FileUtils.readFileToString(jettyEnv);
-			Matcher matcher = Pattern.compile(prefixAndSuffixRegex+oldAppName+prefixAndSuffixRegex).matcher(jettyEnvContent);
-			if (matcher.find()) {
-				findAndReplaceInTextFile(tempBrjs, jettyEnv, prefixAndSuffixRegex+oldAppName+prefixAndSuffixRegex, matcher.group(1)+targetApp.getName()+matcher.group(2));
-			}
-			else {
-				//do nothing - we are still keeping the old file content
+			String jettyXmlContent = org.apache.commons.io.FileUtils.readFileToString(jettyEnv, targetApp.root().bladerunnerConf().getDefaultFileCharacterEncoding());
+			String newJettyXmlContent = StringUtils.replacePattern(jettyXmlContent, "([ /;])"+oldAppName+"([ /;])", "$1"+targetApp.getName()+"$2");
+			if (!jettyXmlContent.equals(newJettyXmlContent)) {
+				org.apache.commons.io.FileUtils.write(jettyEnv, newJettyXmlContent);
 			}
 		}
 		
@@ -148,7 +146,7 @@ public class NodeImporter {
 		return brjs;
 	}
 	
-	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException {
+	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException, ConfigException {
 		updateRequirePrefix(bladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		renameTestLocations(bladeset.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
@@ -163,7 +161,7 @@ public class NodeImporter {
 		}
 	}
 	
-	private static void renameTestLocations(List<TypedTestPack> testTypes, String sourceAppRequirePrefix, String sourceLocationRequirePrefix, String requirePrefix) throws IOException{
+	private static void renameTestLocations(List<TypedTestPack> testTypes, String sourceAppRequirePrefix, String sourceLocationRequirePrefix, String requirePrefix) throws IOException, ConfigException {
 		
 		for(TypedTestPack typedTestPack : testTypes)
 		{
@@ -173,7 +171,7 @@ public class NodeImporter {
 		}		
 	}
 	
-	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
+	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException {
 		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
 			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 				if(assetLocation.dir().exists()) {
@@ -194,50 +192,38 @@ public class NodeImporter {
 		}
 	}
 	
-	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
+	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException
 	{
 		IOFileFilter dontMatchWebInfDirFilter = new NotFileFilter( new NameFileFilter("WEB-INF") );
 		Collection<File> findAndReplaceFiles = FileUtils.listFiles(rootRenameDirectory, TrueFileFilter.INSTANCE, dontMatchWebInfDirFilter);
 		findAndReplaceInTextFiles(brjs, findAndReplaceFiles, sourceRequirePrefix, targetRequirePrefix);
 	}
 	
-	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
+	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException
 	{
 		for (File f : files) {
 			if (f.length() != 0) {
-				try {
-					if (checkFileMimeType(f).startsWith("text")) {
-						findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
-					}
-				}
-				catch (MagicMatchNotFoundException e) {
-					continue;
-				}
+				findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
 			}
 		}
 	}
-
-	private static String checkFileMimeType(File file) throws IOException, MagicMatchNotFoundException {
-		byte[] data = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-		MagicMatch match = null;
-		try {
-			match = Magic.getMagicMatch(data);
-		} 
-		catch (MagicParseException | MagicException e) {
-			throw new IOException(e);
-		}
-		catch (MagicMatchNotFoundException e) {
-			throw e;
-		}
-		return match.getMimeType();
+	
+	private static boolean isTextFile(File file) {
+		return true;
 	}
 	
-	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException
+	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException, ConfigException
 	{
-		String content = org.apache.commons.io.FileUtils.readFileToString(file);
+		for (String extension : ImageIO.getReaderFormatNames()) {
+			if (file.getName().endsWith(extension)) {
+				return; //image file
+			}
+		}
+		
+		String content = org.apache.commons.io.FileUtils.readFileToString(file, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		String updatedContent = findAndReplaceInText(content, oldRequirePrefix, newRequirePrefix);
 		
-		if(content != updatedContent) {
+		if (!content.equals(updatedContent)) {
 			FileUtils.write(brjs, file, updatedContent);
 		}
 	}
@@ -252,10 +238,7 @@ public class NodeImporter {
 		while(matcher.find(startPos)) { 
 			String matchedStr = matcher.group();
 			newContent.append(content.substring(startPos, matcher.start()));
-			if (matchedStr.contains("/")) {
-				newContent.append(matcher.group(1) + newRequirePrefix);
-			}
-			else if (content.substring(matcher.end()).startsWith("/")) {
+			if ( (matchedStr.contains("/") || content.substring(matcher.end()).startsWith("/")) && !matchedStr.contains(".") ) {
 				newContent.append(matcher.group(1) + newRequirePrefix);
 			}
 			else {
