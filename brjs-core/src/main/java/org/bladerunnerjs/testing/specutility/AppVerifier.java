@@ -79,4 +79,5 @@ public class AppVerifier extends NodeVerifier<App> {
 		appJsLib = (appJsLib instanceof AppSdkJsLib) ? ((AppSdkJsLib) appJsLib).getWrappedJsLib() : appJsLib;
 		assertSame(appJsLib, appOverriddenNonBRLib);
 	}
+	
 }
