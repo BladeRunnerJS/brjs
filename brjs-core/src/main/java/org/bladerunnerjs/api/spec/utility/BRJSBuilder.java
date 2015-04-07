@@ -1,5 +1,7 @@
 package org.bladerunnerjs.api.spec.utility;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -25,6 +27,7 @@ import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.logging.MockLogLevelAccessor;
 import org.bladerunnerjs.memoization.PollingFileModificationObserverThread;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
@@ -442,8 +445,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		}
 	}
 	
-	
-	
 	private File locateBrjsSdk()
 	{
 		File thisDir = new File(".").getAbsoluteFile();
@@ -459,5 +460,12 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		}
 		return brjsSdk;
 	}
-	
+
+	public BuilderChainer doesNotContainFolder(String filePath)
+	{
+		File file = brjs.file(filePath);
+		org.apache.commons.io.FileUtils.deleteQuietly(file);
+		assertFalse(file.exists());
+		return builderChainer;
+	}
 }
