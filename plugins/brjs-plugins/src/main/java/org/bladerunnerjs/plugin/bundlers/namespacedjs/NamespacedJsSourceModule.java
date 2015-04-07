@@ -195,6 +195,12 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return assetContainer;
 	}
 	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
+	
 	public static String calculateRequirePath(String requirePrefix, MemoizedFile file) {
 		return requirePrefix+"/"+file.requirePathName();
 	}

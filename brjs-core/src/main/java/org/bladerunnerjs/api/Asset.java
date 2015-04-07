@@ -19,4 +19,5 @@ public interface Asset {
 	List<String> getRequirePaths();
 	String getPrimaryRequirePath();
 	AssetContainer assetContainer();
+	boolean isRequirable();
 }

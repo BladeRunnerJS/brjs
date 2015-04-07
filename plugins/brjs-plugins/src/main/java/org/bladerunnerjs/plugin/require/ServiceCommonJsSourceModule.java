@@ -119,13 +119,20 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 		return Collections.emptyList();
 	}
 	
-	private String getModuleContent() {
-		return "	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n";
-	}
-
 	@Override
 	public AssetContainer assetContainer()
 	{
 		return assetContainer;
 	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
+	
+	private String getModuleContent() {
+		return "	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n";
+	}
+
 }
