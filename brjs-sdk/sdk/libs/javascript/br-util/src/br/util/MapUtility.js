@@ -370,7 +370,7 @@ MapUtility.deepCloneMap = function(srcMap) {
  */
 MapUtility.deepCloneArray = function(srcArray) {
 	return srcArray.map(function(item) {
-			return this.deepClone(item);
+		return this.deepClone(item);
 	}, this);
 };
 
