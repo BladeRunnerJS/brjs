@@ -291,6 +291,12 @@
 		return this.moduleExports[id];
 	};
 
+	// Note: this is an undocumented feature that you shouldn't normally need to use
+	Realm.prototype.requireFresh = function requireFresh(context, id) {
+		delete this.moduleExports[id || context];
+		return this.require.apply(this, arguments);
+	};
+
 	Realm.prototype.subrealm = function(fallbackRequire) {
 		return new SubRealm(this, fallbackRequire);
 	};
