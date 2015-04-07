@@ -60,6 +60,27 @@ describe('a realm', function() {
 		expect(definitionHasBeenCalled).toBe(false);
 	});
 
+	it('allows defined objects to be required, and provides the same value each time', function() {
+		var id = 0;
+		testRealm.define('id', function(require, exports, module) {
+			module.exports = ++id;
+		});
+
+		expect(testRealm.require('id')).toBe(1);
+		expect(testRealm.require('id')).toBe(1);
+	});
+
+	it('optionally allows a fresh value to be requested each time', function() {
+		var id = 0;
+		testRealm.define('id', function(require, exports, module) {
+			module.exports = ++id;
+		});
+
+		expect(testRealm.require('id')).toBe(1);
+		expect(testRealm.requireFresh('id')).toBe(2);
+		expect(testRealm.require('id')).toBe(2);
+	});
+
 	it('allows one definition to require a definition defined later.', function() {
 		testRealm.define('ClassB', function(require, exports, module) {
 			exports.parent = require('ClassA');
