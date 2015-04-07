@@ -212,7 +212,7 @@ public class NodeImporter {
 		String updatedContent = findAndReplaceInText(content, oldRequirePrefix, newRequirePrefix);
 		
 		if (!content.equals(updatedContent)) {
-			FileUtils.write(brjs, file, updatedContent);
+			FileUtils.write(brjs, file, updatedContent, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 	}
 	
