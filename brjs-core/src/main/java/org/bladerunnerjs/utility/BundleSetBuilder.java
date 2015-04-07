@@ -86,7 +86,7 @@ public class BundleSetBuilder {
 			}
 			
 			for(Asset asset : moduleDependencies) {
-				ensureDependantAssetIsInScope(linkedAsset, asset);				
+				ensureDependentAssetIsInScope(linkedAsset, asset);				
 				if(asset instanceof SourceModule){
 					addSourceModule((SourceModule)asset);
 				} else if (asset instanceof LinkedAsset) {
@@ -98,7 +98,7 @@ public class BundleSetBuilder {
 		}
 	}
 
-	private void ensureDependantAssetIsInScope(LinkedAsset asset, Asset dependantAsset) throws ModelOperationException
+	private void ensureDependentAssetIsInScope(LinkedAsset asset, Asset dependantAsset) throws ModelOperationException
 	{
 		if (asset.isLogicalAsset() || dependantAsset.isLogicalAsset()) {
 			return;
