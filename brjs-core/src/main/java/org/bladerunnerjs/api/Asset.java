@@ -24,5 +24,5 @@ public interface Asset {
 	 * 
 	 * @return True if this Asset is a 'logical' asset and doesn't represent a file on disk, False otherwise
 	 */
-	boolean isLogicalAsset();
+	boolean isScopeEnforced();
 }

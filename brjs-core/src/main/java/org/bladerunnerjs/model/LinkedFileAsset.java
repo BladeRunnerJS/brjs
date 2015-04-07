@@ -130,9 +130,9 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public boolean isLogicalAsset()
+	public boolean isScopeEnforced()
 	{
-		return false;
+		return true;
 	}
 
 	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)

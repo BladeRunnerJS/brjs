@@ -225,9 +225,9 @@ public class ThirdpartySourceModule implements SourceModule, DirectoryLinkedAsse
 	}
 	
 	@Override
-	public boolean isLogicalAsset()
+	public boolean isScopeEnforced()
 	{
-		return false;
+		return true;
 	}
 	
 	public static String calculateRequirePath(AssetContainer assetContainer) {

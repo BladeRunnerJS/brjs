@@ -90,8 +90,8 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public boolean isLogicalAsset()
+	public boolean isScopeEnforced()
 	{
-		return sourceModule.isLogicalAsset();
+		return sourceModule.isScopeEnforced();
 	}
 }

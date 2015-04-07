@@ -148,9 +148,9 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	@Override
-	public boolean isLogicalAsset()
+	public boolean isScopeEnforced()
 	{
-		return true;
+		return false;
 	}
 	
 	public static String calculateRequirePath(AliasDefinition alias) {

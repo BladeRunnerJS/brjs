@@ -196,9 +196,9 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public boolean isLogicalAsset()
+	public boolean isScopeEnforced()
 	{
-		return false;
+		return true;
 	}
 	
 	public static String calculateRequirePath(String requirePrefix, MemoizedFile file) {

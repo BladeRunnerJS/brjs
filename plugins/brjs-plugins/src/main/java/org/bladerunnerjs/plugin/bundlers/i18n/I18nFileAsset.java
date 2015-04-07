@@ -119,9 +119,9 @@ public class I18nFileAsset implements Asset
 	}
 	
 	@Override
-	public boolean isLogicalAsset()
+	public boolean isScopeEnforced()
 	{
-		return false;
+		return true;
 	}
 	
 }

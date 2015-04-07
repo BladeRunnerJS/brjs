@@ -73,9 +73,9 @@ public class FileAsset implements Asset {
 	}
 	
 	@Override
-	public boolean isLogicalAsset()
+	public boolean isScopeEnforced()
 	{
-		return false;
+		return true;
 	}
 	
 }

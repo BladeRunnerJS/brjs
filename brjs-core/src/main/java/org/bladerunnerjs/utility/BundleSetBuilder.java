@@ -100,7 +100,7 @@ public class BundleSetBuilder {
 
 	private void ensureDependentAssetIsInScope(LinkedAsset asset, Asset dependantAsset) throws ModelOperationException
 	{
-		if (asset.isLogicalAsset() || dependantAsset.isLogicalAsset()) {
+		if (!asset.isScopeEnforced() || !dependantAsset.isScopeEnforced()) {
 			return;
 		}
 		

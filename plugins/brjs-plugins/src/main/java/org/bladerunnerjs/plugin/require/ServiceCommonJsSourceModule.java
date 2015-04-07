@@ -130,8 +130,8 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	@Override
-	public boolean isLogicalAsset()
+	public boolean isScopeEnforced()
 	{
-		return true;
+		return false;
 	}
 }
