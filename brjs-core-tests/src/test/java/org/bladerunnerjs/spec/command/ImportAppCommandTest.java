@@ -199,11 +199,21 @@ public class ImportAppCommandTest extends SpecTest {
 	@Test
 	public void oldAppNamePrefixedAndFollowedByASlashIsReplacedInJettyEnv() throws Exception {
 		given(app).hasBeenCreated()
-		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app/some-url" )
+			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app/some-url" )
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "/imported-app/some-url");
+	}
+	
+	@Test
+	public void jndiConfigUrlIsRenamespaced() throws Exception {
+		given( brjs.app("myapp") ).hasBeenCreated()
+			.and( brjs.app("myapp") ).containsFileWithContents("WEB-INF/jetty-env.xml", "jdbc:h2:../generated/app/myapp/somedb/myapp;someDB=config" )
+			.and(brjs).commandHasBeenRun("export-app", "myapp")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/myapp.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsEquals("WEB-INF/jetty-env.xml", "jdbc:h2:../generated/app/imported-app/somedb/imported-app;someDB=config");
 	}
 	
 	@Test
