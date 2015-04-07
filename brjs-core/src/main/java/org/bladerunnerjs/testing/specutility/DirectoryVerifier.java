@@ -61,4 +61,14 @@ public class DirectoryVerifier {
 		assertTrue("The directory is empty", dir.isEmpty());
 		return verifierChainer;
 	}
+
+	public VerifierChainer contentsTheSameAsFile(String filePath) throws IOException
+	{
+		File checkAgainstFile = new File(filePath);
+		
+		assertTrue( "file contents wasnt equal", org.apache.commons.io.FileUtils.contentEquals(dir, checkAgainstFile) );
+		
+		return verifierChainer;
+	}
+	
 }

@@ -99,6 +99,14 @@ public abstract class NodeVerifier<N extends Node> {
 		
 	}
 	
+	public VerifierChainer fileContentsEquals(String fileName, String fileContents) throws Exception {
+		assertTrue("The file '" + fileName + "' did not exist at: " + node.file(fileName).getAbsoluteFile(), node.file(fileName).exists());
+		String actualContents = fileUtil.readFileToString(node.file(fileName));
+		assertTrue("Expected file to equal " + fileContents + " but didnt. Content was:\n"+actualContents, actualContents.equals(fileContents) );
+		
+		return verifierChainer;
+	}
+	
 	public VerifierChainer firstFileIsLarger(String filePath1, String filePath2) {
 		File file1 = node.file(filePath1);
 		File file2 = node.file(filePath2);
