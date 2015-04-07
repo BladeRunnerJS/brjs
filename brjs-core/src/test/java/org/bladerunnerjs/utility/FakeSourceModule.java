@@ -107,4 +107,10 @@ public class FakeSourceModule implements SourceModule {
 	{
 		return null;
 	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
 }

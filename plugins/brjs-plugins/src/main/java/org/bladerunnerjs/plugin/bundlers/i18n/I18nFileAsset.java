@@ -16,7 +16,6 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.model.AssetContainer;
-
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class I18nFileAsset implements Asset
@@ -112,6 +111,12 @@ public class I18nFileAsset implements Asset
 	public AssetContainer assetContainer()
 	{
 		return assetContainer;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
 	}
 
 	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)

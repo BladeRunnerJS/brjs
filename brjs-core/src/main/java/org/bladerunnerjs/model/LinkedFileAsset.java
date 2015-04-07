@@ -128,6 +128,12 @@ public class LinkedFileAsset implements LinkedAsset {
 	{
 		return assetContainer;
 	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
 
 	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
 	{

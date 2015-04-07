@@ -82,6 +82,12 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	public String getPrimaryRequirePath() {
 		return sourceModule.getPrimaryRequirePath();
 	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
 
 	@Override
 	public AssetContainer assetContainer()
