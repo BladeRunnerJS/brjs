@@ -168,7 +168,7 @@ gradle.addListener(new StartBRJSExecutionListener(
         file('sdk/libs/java/system')
 ))
 
-task test, dependsOn: [testPhantomJS, runIntegrationTests]
+task test, dependsOn: testPhantomJS
 
 
 task createSdkJsDocs, dependsOn: assembleSdk, {
