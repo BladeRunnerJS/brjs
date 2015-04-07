@@ -18,11 +18,13 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.TypedTestPack;
@@ -100,14 +102,10 @@ public class NodeImporter {
 
 		File jettyEnv = tempBrjsApp.file("WEB-INF/jetty-env.xml");
 		if (jettyEnv.isFile()) {
-			String prefixAndSuffixRegex = "([ /;])";
-			String jettyEnvContent = org.apache.commons.io.FileUtils.readFileToString(jettyEnv);
-			Matcher matcher = Pattern.compile(prefixAndSuffixRegex+oldAppName+prefixAndSuffixRegex).matcher(jettyEnvContent);
-			if (matcher.find()) {
-				findAndReplaceInTextFile(tempBrjs, jettyEnv, prefixAndSuffixRegex+oldAppName+prefixAndSuffixRegex, matcher.group(1)+targetApp.getName()+matcher.group(2));
-			}
-			else {
-				//do nothing - we are still keeping the old file content
+			String jettyXmlContent = org.apache.commons.io.FileUtils.readFileToString(jettyEnv, targetApp.root().bladerunnerConf().getDefaultFileCharacterEncoding());
+			String newJettyXmlContent = StringUtils.replacePattern(jettyXmlContent, "([ /;])"+oldAppName+"([ /;])", "$1"+targetApp.getName()+"$2");
+			if (!jettyXmlContent.equals(newJettyXmlContent)) {
+				org.apache.commons.io.FileUtils.write(jettyEnv, newJettyXmlContent);
 			}
 		}
 		
@@ -148,7 +146,7 @@ public class NodeImporter {
 		return brjs;
 	}
 	
-	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException {
+	private static void renameBladeset(Bladeset bladeset, String sourceAppRequirePrefix, String sourceBladesetRequirePrefix) throws IOException, ConfigException {
 		updateRequirePrefix(bladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		renameTestLocations(bladeset.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
@@ -163,7 +161,7 @@ public class NodeImporter {
 		}
 	}
 	
-	private static void renameTestLocations(List<TypedTestPack> testTypes, String sourceAppRequirePrefix, String sourceLocationRequirePrefix, String requirePrefix) throws IOException{
+	private static void renameTestLocations(List<TypedTestPack> testTypes, String sourceAppRequirePrefix, String sourceLocationRequirePrefix, String requirePrefix) throws IOException, ConfigException {
 		
 		for(TypedTestPack typedTestPack : testTypes)
 		{
@@ -173,7 +171,7 @@ public class NodeImporter {
 		}		
 	}
 	
-	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException {
+	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException {
 		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
 			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 				if(assetLocation.dir().exists()) {
@@ -194,14 +192,14 @@ public class NodeImporter {
 		}
 	}
 	
-	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
+	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException
 	{
 		IOFileFilter dontMatchWebInfDirFilter = new NotFileFilter( new NameFileFilter("WEB-INF") );
 		Collection<File> findAndReplaceFiles = FileUtils.listFiles(rootRenameDirectory, TrueFileFilter.INSTANCE, dontMatchWebInfDirFilter);
 		findAndReplaceInTextFiles(brjs, findAndReplaceFiles, sourceRequirePrefix, targetRequirePrefix);
 	}
 	
-	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException
+	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException
 	{
 		for (File f : files) {
 			if (f.length() != 0) {
@@ -214,7 +212,7 @@ public class NodeImporter {
 		return true;
 	}
 	
-	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException
+	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException, ConfigException
 	{
 		for (String extension : ImageIO.getReaderFormatNames()) {
 			if (file.getName().endsWith(extension)) {
@@ -222,7 +220,7 @@ public class NodeImporter {
 			}
 		}
 		
-		String content = org.apache.commons.io.FileUtils.readFileToString(file);
+		String content = org.apache.commons.io.FileUtils.readFileToString(file, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		String updatedContent = findAndReplaceInText(content, oldRequirePrefix, newRequirePrefix);
 		
 		if (!content.equals(updatedContent)) {

@@ -10,7 +10,6 @@ import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.engine.VerifierChainer;
-import org.bladerunnerjs.utility.FileUtils;
 
 public class DirectoryVerifier {
 	private final MemoizedFile dir;
