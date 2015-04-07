@@ -334,31 +334,44 @@ MapUtility.clone = function(srcMap) {
 };
 
 /**
- * Creates a deep clone of the supplied map. Map references are copied to an arbitrary number of levels deep.
+ * Creates a deep clone of the supplied map/array. Copies the full depth of the data structure recursively.
  *
- * @private
- * @param {Object} srcMap The map to clone.
+ * @param {Object} src The object to clone.
  *
- * @returns {Object} A deep clone of the map.
+ * @returns {Object} A deep clone of the object.
  */
-MapUtility.deepClone = function(srcMap) {
-	if (typeof srcMap !== 'object') {
-		return srcMap;
+MapUtility.deepClone = function(src) {
+	if (Array.isArray(src)) {
+		return this.deepCloneArray(src);
+	} else if (typeof src === 'object'){
+		return this.deepCloneMap(src);
+	} else {
+		return src;
 	}
+};
 
+/**
+ * @private Use deepClone to copy your map
+ * @param srcMap Map to clone
+ * @returns {Object} A deep clone of the input srcMap
+ */
+MapUtility.deepCloneMap = function(srcMap) {
 	var clone = {};
 	for (var key in srcMap) {
-		if (Array.isArray(srcMap[key])) {
-			clone[key] = srcMap[key].map(function(item) {
-				return this.deepClone(item);
-			}, this);
-		} else if (typeof srcMap[key] === 'object'){
-			clone[key] = this.deepClone(srcMap[key]);
-		} else {
-			clone[key] = srcMap[key];
-		}
+		clone[key] = this.deepClone(srcMap[key]);
 	}
 	return clone;
+};
+
+/**
+ * @private Use deepClone to copy your Array
+ * @param srcArray Array to clone
+ * @returns {Array} A deep clone of the input Array
+ */
+MapUtility.deepCloneArray = function(srcArray) {
+	return srcArray.map(function(item) {
+			return this.deepClone(item);
+	}, this);
 };
 
 /**
