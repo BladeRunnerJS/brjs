@@ -404,3 +404,68 @@ MapUtilityTest.prototype.test_hasAllKeys_emptyArguments = function()
 
 	assertTrue(MapUtility.hasAllKeys(mSource, mMap));
 };
+
+MapUtilityTest.prototype.test_deepCloneReturnsANewObject = function() {
+	var srcMap = {};
+	var clonedMap = MapUtility.deepClone(srcMap);
+
+	assertNotSame(srcMap, clonedMap);
+};
+
+MapUtilityTest.prototype.test_deepCloneClonesAMap = function() {
+	var srcMap = {
+		foo: 1,
+		bar: 'baz'
+	};
+	var clonedMap = MapUtility.deepClone(srcMap);
+
+	assertEquals(1, clonedMap.foo);
+	assertEquals('baz', clonedMap.bar);
+};
+
+MapUtilityTest.prototype.test_deepCloneClonesANestedMap = function() {
+	var srcMap = {
+		foo: 1,
+		bar: {
+			baz: 42
+		}
+	};
+	var clonedMap = MapUtility.deepClone(srcMap);
+
+	assertNotSame(srcMap.bar, clonedMap.bar);
+	assertEquals(1, clonedMap.foo);
+	assertEquals(42, clonedMap.bar.baz);
+};
+
+MapUtilityTest.prototype.test_deepCloneHandlesArrays = function() {
+	var srcMap = {
+		foo: 1,
+		bar: [2, 3]
+	};
+	var clonedMap = MapUtility.deepClone(srcMap);
+
+	assertEquals(1, clonedMap.foo);
+	assertTrue(Array.isArray(clonedMap.bar));
+	assertEquals(2, clonedMap.bar[0]);
+	assertEquals(3, clonedMap.bar[1]);
+};
+
+MapUtilityTest.prototype.test_deepCloneClonesMapInArrays = function() {
+	var srcMap = {
+		foo: [
+			1,
+			{
+				bar: 2
+			},
+			['baz']
+		]
+	};
+	var clonedMap = MapUtility.deepClone(srcMap);
+
+	assertNotSame(srcMap.foo, clonedMap.foo);
+	assertEquals(1, clonedMap.foo[0]);
+	assertNotSame(srcMap.foo[1], clonedMap.foo[1]);
+	assertEquals(2, clonedMap.foo[1].bar);
+	assertNotSame(srcMap.foo[2], clonedMap.foo[2]);
+	assertEquals('baz', clonedMap.foo[2][0]);
+};
