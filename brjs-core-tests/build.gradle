@@ -40,6 +40,7 @@ dependencies {
 
 test {
     testLogging {
+    	displayGranularity = 0
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
 }
