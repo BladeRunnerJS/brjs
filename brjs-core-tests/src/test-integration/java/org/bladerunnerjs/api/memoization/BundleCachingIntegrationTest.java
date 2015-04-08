@@ -89,7 +89,6 @@ public class BundleCachingIntegrationTest extends SpecTest
 	
 	@Test
 	public void brjsConfCanBeUsedToConfigureFileObserverToPolling() throws Throwable {
-		System.err.println("Running test: brjsConfCanBeUsedToConfigureFileObserverToPolling");
 		given(brjs.bladerunnerConf()).hasFileObserverValue("polling")
 			.and(logging).enabled();
 		when(brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
@@ -100,7 +99,6 @@ public class BundleCachingIntegrationTest extends SpecTest
 	
 	@Test
 	public void brjsConfCanBeUsedToConfigureFileObserverToPollingWithASetInterval() throws Throwable {
-		System.err.println("Running test: brjsConfCanBeUsedToConfigureFileObserverToPollingWithASetInterval");
 		given(brjs.bladerunnerConf()).hasFileObserverValue("polling:1000")
 			.and(logging).enabled();
     	when(brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
@@ -111,7 +109,6 @@ public class BundleCachingIntegrationTest extends SpecTest
 	
 	@Test @Ignore //TODO: why does this test cause Travis to hang?
 	public void brjsConfCanBeUsedToConfigureFileObserveToWatching() throws Throwable {
-		System.err.println("Running test: brjsConfCanBeUsedToConfigureFileObserveToWatching");
 		given(brjs.bladerunnerConf()).hasFileObserverValue("watching")
 			.and(logging).enabled();
 		when(brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
@@ -121,7 +118,6 @@ public class BundleCachingIntegrationTest extends SpecTest
 	
 	@Test @Ignore //TODO: why does this test cause Travis to hang?
 	public void watchingFileObserverIsUsedAsDefault() throws Throwable {
-		System.err.println("Running test: watchingFileObserverIsUsedAsDefault");
 		given(logging).enabled();
 		when(brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
 		then(logging).debugMessageReceived(BRJS.Messages.FILE_WATCHER_MESSAGE, WatchingFileModificationObserver.class.getSimpleName())
@@ -146,7 +142,6 @@ public class BundleCachingIntegrationTest extends SpecTest
 	
 	@Test
 	public void exceptionIsThrownIfFileObserverValueIsInvalid() throws Throwable {
-		System.err.println("Running test: exceptionIsThrownIfFileObserverValueIsInvalid");
 		given(brjs.bladerunnerConf()).hasFileObserverValue("invalid");
 		when(brjs).hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread();
 		then(exceptions).verifyException(ConfigException.class, "invalid", "polling(:([0-9]+))?", "watching");

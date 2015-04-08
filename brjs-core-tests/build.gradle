@@ -37,10 +37,3 @@ dependencies {
 	testRuntime project(path: ':brjs-logger-binding')
 	testRuntime dependency('jetty-jsp')
 }
-
-test {
-    testLogging {
-    	displayGranularity = 0
-        events "passed", "skipped", "failed", "standardOut", "standardError"
-    }
-}
