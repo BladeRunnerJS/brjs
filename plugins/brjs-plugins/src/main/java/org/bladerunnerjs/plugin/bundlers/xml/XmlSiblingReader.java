@@ -1,7 +1,11 @@
 package org.bladerunnerjs.plugin.bundlers.xml;
 
+import java.io.IOException;
+import java.io.Reader;
+
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -18,11 +22,12 @@ public class XmlSiblingReader
 	private int depth = 1;
 	private MemoizedFile document;
 	private Asset xmlAsset;
+	private Reader underlyingReader;
 	
-	public XmlSiblingReader(XMLStreamReader streamReader) throws XMLStreamException
-	{
+	public XmlSiblingReader(XMLInputFactory inputFactory, Reader reader) throws XMLStreamException {
+		streamReader = new PeekableXmlStreamReader(inputFactory.createXMLStreamReader(reader));
 		streamReader.nextTag();
-		this.streamReader = new PeekableXmlStreamReader(streamReader);
+		underlyingReader = reader;
 	}
 	
 	private XmlSiblingReader(XmlSiblingReader parent, PeekableXmlStreamReader streamReader)
@@ -38,7 +43,7 @@ public class XmlSiblingReader
 		this.parent = parent;
 		this.streamReader = streamReader;
 	}
-	
+
 	public String getElementName()
 	{
 
@@ -259,9 +264,18 @@ public class XmlSiblingReader
 		return streamReader.getAttributeValue(null, attributeName);
 	}
 	
-	public void close() throws XMLStreamException
+	public void close() throws IOException
 	{
-		streamReader.close();
+		try {
+			streamReader.close();
+			
+			if(underlyingReader != null) {
+				underlyingReader.close();
+			}
+		}
+		catch (XMLStreamException e) {
+			throw new IOException(e);
+		}
 	}
 	
 	private void incrementDepth()
