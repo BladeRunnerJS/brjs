@@ -34,8 +34,8 @@ public class WatchingFileModificationObserverThreadSpectTest extends SpecTest{
 				.and(logging).otherMessagesIgnored();
 		 * But after line 'logger.debug(THREAD_STARTED, THREAD_IDENTIFIER);' of WatchingFileModificationObserverThread 
 		 * the logStore debugMessages doesn't show this	message as existing even though it was output.	
-		 */ 
-		given(logging).echoEnabled();
+		 */
+		given(logging).echoEnabled(); /* dont remove this line, its needed so we can capture the logs and asset against them */
 		when(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread();
 		for (int i = 0; i < 10; i++) {
 			if (outputContents.toString().contains("Thread WatchingFileModificationObserverThread has been started.")) {

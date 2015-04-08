@@ -172,7 +172,6 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void warningMessageIsLoggedWhenBothAppsAndBrjsAppsFoldersExist() throws Exception {
-		given(logging).echoEnabled();
 		given(testSdkDirectory).containsFolder("apps")
 			.and(testSdkDirectory).containsFolder("brjs-apps")
 			.and(logging).enabled();
