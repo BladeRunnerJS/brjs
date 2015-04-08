@@ -301,4 +301,27 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	
+	@Test
+	public void noStrictCheckingFileCanBeAtANestedLevelInsideTheBlade() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/foo/Blade2Class")		
+    		.and(blade2InDefaultBladeset).hasDir("src/foo")
+    		.and(blade2InDefaultBladeset).containsEmptyFile("src/foo/no-strict-checking")
+    		.and(blade2InDefaultBladeset).hasClass("foo/Blade2Class");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("appns/b1/Blade1Class", "appns/b2/Blade2Class")
+    		.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void noStrictCheckingFileCanBeAtANestedLevelInsideTheBladeAndOnlyAppliesToSubfolders() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/Blade2Class")		
+    		.and(blade2InDefaultBladeset).hasDir("src/foo")
+    		.and(blade2InDefaultBladeset).containsEmptyFile("src/foo/no-strict-checking")
+    		.and(blade2InDefaultBladeset).hasClass("Blade2Class");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(exceptions).verifyException(OutOfScopeRequirePathException.class);
+	}
+	
 }

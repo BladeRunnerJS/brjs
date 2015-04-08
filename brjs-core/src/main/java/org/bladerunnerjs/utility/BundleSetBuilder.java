@@ -14,6 +14,7 @@ import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.Workbench;
 import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.OutOfBundleScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
@@ -223,7 +224,14 @@ public class BundleSetBuilder {
 	}
 	
 	private boolean strictCheckingDisabled(Asset asset) {
-		return asset.assetContainer().dir().file("no-strict-checking").isFile();
+		MemoizedFile currentDir = asset.file().isDirectory() ? asset.file() : asset.file().getParentFile();
+		while (currentDir != null && currentDir != asset.assetContainer().dir().getParentFile()) {
+			if (currentDir.file("no-strict-checking").isFile()) {
+				return true;
+			}
+			currentDir = currentDir.getParentFile();
+		}
+		return false;
 	}
 	
 }
