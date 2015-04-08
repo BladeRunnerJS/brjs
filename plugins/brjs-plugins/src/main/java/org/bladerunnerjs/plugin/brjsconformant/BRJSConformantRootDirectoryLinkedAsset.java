@@ -91,7 +91,7 @@ public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAs
 	@Override
 	public boolean isRequirable()
 	{
-		return true;
+		return false;
 	}
 	
 	public static String calculateRequirePath(AssetContainer assetContainer) {
