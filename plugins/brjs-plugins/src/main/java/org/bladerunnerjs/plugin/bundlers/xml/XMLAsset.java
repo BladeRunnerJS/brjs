@@ -26,14 +26,14 @@ public class XMLAsset extends LinkedFileAsset {
 	public List<String> getRequirePaths() {
 		try {
 			List<String> calculatedRequirePaths = requirePaths.value(() -> {
-				String idRequirePrefix = (assetContainer.isNamespaceEnforced()) ? assetContainer.requirePrefix() : assetContainer.app().getRequirePrefix();
+				String idRequirePrefix = assetContainer.app().getRequirePrefix();
     			String idNamespace = idRequirePrefix.replace("/", ".");
 				Reader reader = getReader();
 				XMLIdExtractor extractor = new XMLIdExtractor();
 				List<String> extractedIds = extractor.getXMLIds(reader);
 				List<String> extractedRequirePaths = new ArrayList<>();
 				for (String id : extractedIds) {
-					if (id.startsWith(idNamespace) || id.startsWith(idRequirePrefix)) {
+					if ((id.startsWith(idNamespace) || id.startsWith(idRequirePrefix)) && (id.contains("/") || id.contains("."))) {
 						extractedRequirePaths.add(id);
 					}
 				}

@@ -362,7 +362,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRequires(sdkJsLib)
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
-		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt, cssresource/aspect_default_resource/index.html");
 	}
 	
 	@Test
@@ -425,7 +425,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 		.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
 		then(aspect).prodRequestsForContentPluginsAre("cssresource", 
-				"cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+				"cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt, cssresource/aspect_default_resource/index.html");
 	}
 	
 	@Test
@@ -478,8 +478,8 @@ public class CssResourceContentPluginTest extends SpecTest {
     		.and(sdkJsLib).containsResourceFileWithContents(".git", ".git contents")
     		.and(brjs.bladerunnerConf()).hasIgnoredPaths(".git");
     	when(defaultAspect).requestReceivedInProd("cssresource/lib_sdkLib/.git", response);
-    	then(aspect).prodRequestsForContentPluginsAre("cssresource", "")
-    		.and(aspect).devRequestsForContentPluginsAre("cssresource", "")
+    	then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/aspect_default_resource/index.html")
+    		.and(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/aspect_default_resource/index.html")
     		.and(exceptions).verifyException(FileNotFoundException.class, "sdk/libs/javascript/sdkLib/.git");
 	}
 	
