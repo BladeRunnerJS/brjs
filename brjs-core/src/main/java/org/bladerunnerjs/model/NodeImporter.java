@@ -21,6 +21,7 @@ import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
@@ -40,6 +41,9 @@ import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
 import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
+
+import org.bladerunnerjs.logging.SLF4JLogger;
+
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.utility.FileUtils;
@@ -235,7 +239,7 @@ public class NodeImporter {
 		String updatedContent = findAndReplaceInText(content, oldRequirePrefix, newRequirePrefix);
 		
 		if (!content.equals(updatedContent)) {
-			FileUtils.write(brjs, file, updatedContent);
+			FileUtils.write(brjs, file, updatedContent, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 	}
 	

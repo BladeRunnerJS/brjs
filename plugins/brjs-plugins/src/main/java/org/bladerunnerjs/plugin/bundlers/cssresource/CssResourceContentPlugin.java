@@ -19,7 +19,6 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.JsLib;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
@@ -33,7 +32,6 @@ import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BladesetWorkbench;
 import org.bladerunnerjs.api.BundlableNode;
-import org.bladerunnerjs.model.DirectoryLinkedAsset;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
@@ -370,11 +368,11 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		}
 	}
 
-	private List<LinkedAsset> getDirectoryAssets(AssetContainer container) {
-		List<LinkedAsset> directoryAssets = new ArrayList<>();
+	private List<Asset> getDirectoryAssets(AssetContainer container) {
+		List<Asset> directoryAssets = new ArrayList<>();
 		for (Asset asset : container.assets()) {
-			if (asset instanceof DirectoryLinkedAsset) {
-				directoryAssets.add( (DirectoryLinkedAsset) asset );
+			if (asset.file().isDirectory()) {
+				directoryAssets.add( asset );
 			}
 		}
 		return directoryAssets;
