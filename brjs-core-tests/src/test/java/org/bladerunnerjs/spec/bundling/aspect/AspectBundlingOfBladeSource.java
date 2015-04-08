@@ -279,4 +279,26 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	
+	@Test
+	public void exceptionIsNotThrownIfBladeClassRequestsAResourceFromDefaultAspect_andRequiringBladeAssetContainerHasNoScrictCheckingFile() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/Blade2Class")
+			.and(blade1InDefaultBladeset).containsEmptyFile("no-strict-checking")
+			.and(blade2InDefaultBladeset).hasClass("Blade2Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns/b1/Blade1Class", "appns/b2/Blade2Class")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void exceptionIsNotThrownIfBladeClassRequestsAResourceFromDefaultAspect_andRequiredBladeAssetContainerHasNoScrictCheckingFile() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/Blade2Class")
+			.and(blade2InDefaultBladeset).hasClass("Blade2Class")
+			.and(blade2InDefaultBladeset).containsEmptyFile("no-strict-checking");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns/b1/Blade1Class", "appns/b2/Blade2Class")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
 }

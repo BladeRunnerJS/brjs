@@ -100,7 +100,8 @@ public class BundleSetBuilder {
 
 	private void ensureDependentAssetIsInScope(LinkedAsset asset, Asset dependantAsset) throws ModelOperationException
 	{
-		if (!asset.isScopeEnforced() || !dependantAsset.isScopeEnforced()) {
+		if (!asset.isScopeEnforced() || !dependantAsset.isScopeEnforced() ||
+				strictCheckingDisabled(asset) || strictCheckingDisabled(dependantAsset)) {
 			return;
 		}
 		
@@ -219,6 +220,10 @@ public class BundleSetBuilder {
 		}
 		orderedAssets.addAll(0, unorderedAssets);
 		return orderedAssets;
+	}
+	
+	private boolean strictCheckingDisabled(Asset asset) {
+		return asset.assetContainer().dir().file("no-strict-checking").isFile();
 	}
 	
 }
