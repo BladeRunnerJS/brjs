@@ -151,7 +151,9 @@ public class BRJS extends AbstractBRJSRootNode
 	private File findAppsFolder(File brjsDir, File workingDir) {
 		File currentFolder = workingDir;
 		while(currentFolder != null) {
-			if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
+			if (new File(currentFolder, AppConf.FILE_NAME).exists()) {
+				return currentFolder.getParentFile();
+			} else if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
 				if (new File(currentFolder, "brjs-apps").exists()) {
 					logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, "brjs-apps", brjsDir.getAbsolutePath(), "brjs-apps", "apps", brjsDir.getAbsolutePath()+"/apps", brjsDir.getAbsolutePath()+"/brjs-apps"); 
 				}

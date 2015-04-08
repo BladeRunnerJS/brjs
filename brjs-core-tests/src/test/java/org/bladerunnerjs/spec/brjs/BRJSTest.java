@@ -182,4 +182,13 @@ public class BRJSTest extends SpecTest {
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
+	
+	@Test
+	public void brjsAppsIsntRequiredIfCommandIsRunFromInsideAnApp() throws Exception {
+		given(testSdkDirectory).containsFolder("myprojects")
+			.and(testSdkDirectory).containsFolder("myprojects/myapp")
+			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+		then(brjs).hasApps("myapp");	
+	}
 }
