@@ -233,11 +233,21 @@ public class ImportAppCommandTest extends SpecTest {
 	@Test
 	public void oldAppNamePrefixedAndFollowedByASlashIsReplacedInJettyEnv() throws Exception {
 		given(app).hasBeenCreated()
-		.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app/some-url" )
+			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", "/app/some-url" )
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedApp).fileContentsContains("WEB-INF/jetty-env.xml", "/imported-app/some-url");
+	}
+	
+	@Test
+	public void jndiConfigUrlIsRenamespaced() throws Exception {
+		given( brjs.app("myapp") ).hasBeenCreated()
+			.and( brjs.app("myapp") ).containsFileWithContents("WEB-INF/jetty-env.xml", "jdbc:h2:../generated/app/myapp/somedb/myapp;someDB=config" )
+			.and(brjs).commandHasBeenRun("export-app", "myapp")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/myapp.zip", "imported-app", "importedns");
+		then(importedApp).fileContentsEquals("WEB-INF/jetty-env.xml", "jdbc:h2:../generated/app/imported-app/somedb/imported-app;someDB=config");
 	}
 	
 	@Test
@@ -294,6 +304,7 @@ public class ImportAppCommandTest extends SpecTest {
 				"<alias name=\"bar.user-prompt-service\" class=\"importedns.myblade.MyUserPromptService\"/>");
 	}
 	
+
 	@Test // This test attempts to reproduce a bug we were seeing in the product - https://github.com/BladeRunnerJS/brjs/issues/1238
 	public void bladesetWorkbenchCanBeLoadedWithoutClassCastExceptionAfterImportInANewBRJSProcess() throws Exception {
 		given(app).hasBeenCreated()
@@ -306,6 +317,45 @@ public class ImportAppCommandTest extends SpecTest {
 		when(brjs.applicationServer(appServerPort)).started();
 		then(brjs.applicationServer(appServerPort)).requestForUrlContains(
 				"/app/bs/workbench/v/dev/css/common/bundle.css", "../../cssresource/bladeset_bs/workbench_resource/resources/css/file.png");
+	}
+
+	@Test // test to replicate bugs from https://github.com/BladeRunnerJS/brjs/issues/1315
+	public void contentIsCorrectlyRenamespacedWhenOldNamespacesArePrecededWithASlash() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app.defaultBladeset().blade("myblade")).containsFileWithContents("resources/aliases.xml", 
+				"<appns.myblade.SomeTag>tag content</appns.myblade.SomeTag>")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp.defaultBladeset().blade("myblade")).fileContentsContains("resources/aliases.xml", 
+				"<importedns.myblade.SomeTag>tag content</importedns.myblade.SomeTag>");
+	}
+	
+	@Test // test to replicate bugs from https://github.com/BladeRunnerJS/brjs/issues/1315
+	public void contentIsCorrectlyRenamespacedWhenTheFileContainsAPoundSign() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app.defaultBladeset().blade("myblade")).containsFileWithContents("resources/aliases.xml", 
+				"<appns.myblade.SomeTag>tag £££ content</appns.myblade.SomeTag>")
+				.and(app.defaultBladeset().blade("myblade").testType("unit").defaultTestTech()).containsFileWithContents("tests/Test.js", "££££ appns.myblade.SomeClass")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp.defaultBladeset().blade("myblade")).fileContentsContains("resources/aliases.xml", 
+				"<importedns.myblade.SomeTag>tag £££ content</importedns.myblade.SomeTag>")
+			.and(importedApp.defaultBladeset().blade("myblade")).fileContentsContains("test-unit/tests/Test.js", 
+						"££££ importedns.myblade.SomeClass");
+				
+	}
+	
+	@Test
+	public void imagesArentCorrupOnImport() throws Exception {
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+    		.and(aspect).containsFileCopiedFrom("resources/br-logo.png", "src/test/resources/br-logo.png")
+    		.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(aspect.file("resources/br-logo.png")).contentsTheSameAsFile("src/test/resources/br-logo.png");
 	}
 	
 }
