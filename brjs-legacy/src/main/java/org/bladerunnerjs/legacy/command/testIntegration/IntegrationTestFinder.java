@@ -53,7 +53,7 @@ public class IntegrationTestFinder
 		File ancestorContainingDir = containingDir.getParentFile();
 
 		if (validTestDir && !(containingDir.getName().endsWith("-aspect") || ancestorContainingDir.getName().endsWith("-aspect") || 
-				(new File(containingDir, "app.conf").exists() || new File(ancestorContainingDir, "app.conf").exists()) ||
+				new File(containingDir, "app.conf").exists() || new File(ancestorContainingDir, "app.conf").exists() ||
 				containingDir.getName().equals("workbench") || ancestorContainingDir.getName().equals("workbench") ))
 		{
 			validTestDir = false;
