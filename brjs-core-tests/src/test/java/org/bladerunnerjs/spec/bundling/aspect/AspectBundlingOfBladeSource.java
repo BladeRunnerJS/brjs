@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.utility.BundleSetBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -322,6 +323,18 @@ public class AspectBundlingOfBladeSource extends SpecTest {
     		.and(blade2InDefaultBladeset).hasClass("Blade2Class");
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(exceptions).verifyException(OutOfScopeRequirePathException.class);
+	}
+	
+	@Test
+	public void warningIsLoggedWhenStrictCheckingIsDisabled() throws Exception {
+		given(logging).echoEnabled();
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/foo/Blade2Class")		
+    		.and(blade2InDefaultBladeset).hasDir("src/foo")
+    		.and(blade2InDefaultBladeset).containsEmptyFile("src/foo/no-strict-checking")
+    		.and(blade2InDefaultBladeset).hasClass("foo/Blade2Class");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(logging).warnMessageReceived(BundleSetBuilder.STRICT_CHECKING_DISABLED_MSG, "brjs-apps/app1/blades/b2/src/foo", "brjs-apps/app1/blades/b2/src/foo/no-strict-checking");
 	}
 	
 }

@@ -29,6 +29,8 @@ import com.google.common.base.Joiner;
 public class BundleSetBuilder {
 	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
+	public static final String STRICT_CHECKING_DISABLED_MSG = "Strict checking has been disabled for the directory '%s'."+
+			" This allows the Blade to directly depend on another Blade in the App and the file '%s' should be removed to re-enable the scope enforcement.";
 	
 	private final List<LinkedAsset> seedAssets = new ArrayList<>();
 	private final Set<Asset> assets = new LinkedHashSet<>();
@@ -226,7 +228,10 @@ public class BundleSetBuilder {
 	private boolean strictCheckingDisabled(Asset asset) {
 		MemoizedFile currentDir = asset.file().isDirectory() ? asset.file() : asset.file().getParentFile();
 		while (currentDir != null && currentDir != asset.assetContainer().dir().getParentFile()) {
-			if (currentDir.file("no-strict-checking").isFile()) {
+			MemoizedFile strictCheckingFile = currentDir.file("no-strict-checking");
+			if (strictCheckingFile.isFile()) {
+				BRJS brjs = asset.assetContainer().root();
+				brjs.logger(this.getClass()).warn(STRICT_CHECKING_DISABLED_MSG, brjs.dir().getRelativePath(currentDir), brjs.dir().getRelativePath(strictCheckingFile));
 				return true;
 			}
 			currentDir = currentDir.getParentFile();
