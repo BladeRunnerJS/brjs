@@ -62,7 +62,7 @@ KnockoutComponent.prototype.getElement = function() {
 /** @private */
 KnockoutComponent.prototype._getTemplate = function(sTemplateId) {
 	var eTemplateHolder;
-	var eTemplateNode = require('service!br.html-service').getHTMLTemplate(sTemplateId);
+	var eTemplateNode = require('service!br.html-service').getTemplateElement(sTemplateId);
 
 	if (!eTemplateNode) {
 	    throw new KnockoutComponent.TemplateNotFoundError("Template with ID "+sTemplateId+" couldn't be found");

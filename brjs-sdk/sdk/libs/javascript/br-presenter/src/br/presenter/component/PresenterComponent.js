@@ -317,7 +317,7 @@ PresenterComponent.prototype.removeLifeCycleListener = function(listener) {
  */
 PresenterComponent.prototype._getTemplate = function(sTemplateId) {
 	var eTemplateHolder;
-	var eTemplateNode = ServiceRegistry.getService("br.html-service").getHTMLTemplate(sTemplateId);
+	var eTemplateNode = ServiceRegistry.getService("br.html-service").getTemplateElement(sTemplateId);
 
 	if (!eTemplateNode)
 	{
