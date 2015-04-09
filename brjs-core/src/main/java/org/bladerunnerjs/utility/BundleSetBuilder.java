@@ -1,6 +1,7 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +30,7 @@ import com.google.common.base.Joiner;
 public class BundleSetBuilder {
 	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
-	public static final String STRICT_CHECKING_DISABLED_MSG = "Strict checking has been disabled for the directory '%s'."+
+	public static final String STRICT_CHECKING_DISABLED_MSG = "Strict checking has been disabled for the directory '%s' and therefore the Asset '%s'."+
 			" This allows the Blade to directly depend on another Blade in the App and the file '%s' should be removed to re-enable the scope enforcement.";
 	
 	private final List<LinkedAsset> seedAssets = new ArrayList<>();
@@ -38,6 +39,7 @@ public class BundleSetBuilder {
 	private final Set<LinkedAsset> linkedAssets = new LinkedHashSet<LinkedAsset>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
+	private Set<Asset> strictCheckingAssetsLogged = new HashSet<>();
 	
 	public BundleSetBuilder(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
@@ -230,8 +232,10 @@ public class BundleSetBuilder {
 		while (currentDir != null && currentDir != asset.assetContainer().dir().getParentFile()) {
 			MemoizedFile strictCheckingFile = currentDir.file("no-strict-checking");
 			if (strictCheckingFile.isFile()) {
-				BRJS brjs = asset.assetContainer().root();
-				brjs.logger(this.getClass()).warn(STRICT_CHECKING_DISABLED_MSG, brjs.dir().getRelativePath(currentDir), brjs.dir().getRelativePath(strictCheckingFile));
+				if (!strictCheckingAssetsLogged.add(asset)) {
+					BRJS brjs = asset.assetContainer().root();
+					brjs.logger(this.getClass()).warn(STRICT_CHECKING_DISABLED_MSG, asset.getAssetPath(), brjs.dir().getRelativePath(currentDir), brjs.dir().getRelativePath(strictCheckingFile));
+				}
 				return true;
 			}
 			currentDir = currentDir.getParentFile();
