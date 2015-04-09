@@ -51,8 +51,10 @@ public class IntegrationTestFinder
 		
 		File containingDir = dir.getParentFile().getParentFile();
 		File ancestorContainingDir = containingDir.getParentFile();
+
 		if (validTestDir && !(containingDir.getName().endsWith("-aspect") || ancestorContainingDir.getName().endsWith("-aspect") || 
-				containingDir.getName().equals("workbench") || ancestorContainingDir.getName().equals("workbench")))
+				(new File(containingDir, "app.conf").exists() || new File(ancestorContainingDir, "app.conf").exists()) ||
+				containingDir.getName().equals("workbench") || ancestorContainingDir.getName().equals("workbench") ))
 		{
 			validTestDir = false;
 			logger.info("Found integration test directory in "+dir.getPath()+"\n"+
