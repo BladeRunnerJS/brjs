@@ -189,6 +189,18 @@ public class BRJSTest extends SpecTest {
 			.and(testSdkDirectory).containsFolder("myprojects/myapp")
 			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
 			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
-		then(brjs).hasApps("myapp");	
+		then(brjs).hasApps("myapp");
+	}
+	
+	@Test
+	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutBrjsApps() throws Exception {
+		given(testSdkDirectory).containsFolder("myprojects")
+			.and(testSdkDirectory).containsFolder("myprojects/myapp")
+			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+		when(brjs.app("anotherapp")).create();
+		then(brjs).hasApps("anotherapp", "myapp")
+			.and(testSdkDirectory).containsDir("myprojects/myapp")
+			.and(testSdkDirectory).containsDir("myprojects/anotherapp");
 	}
 }
