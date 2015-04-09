@@ -2,14 +2,14 @@ package org.bladerunnerjs.spec.bundling.testpack;
 
 import static org.junit.Assert.assertEquals;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
-import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -89,7 +89,7 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void aspectTestsDirectoryCanStillBeUsed() throws Exception {
 		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
-		given(brjs).containsFileWithContents("apps/app/default-aspect/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
+		given(brjs).containsFileWithContents("brjs-apps/app/default-aspect/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
 			.and( brjs.app("app").aspect("default") ).hasClass("appns/Class1");
 		when( brjs.app("app").aspect("default").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("Class1");
@@ -98,7 +98,7 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void bladesetTestsDirectoryCanStillBeUsed() throws Exception {
 		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
-		given(brjs).containsFileWithContents("apps/app/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+		given(brjs).containsFileWithContents("brjs-apps/app/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
 			.and( brjs.app("app").bladeset("bs") ).hasClass("appns/bs/Class1");
 		when( brjs.app("app").bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns/bs/Class1");
@@ -107,7 +107,7 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void bladeTestsDirectoryCanStillBeUsed() throws Exception {
 		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
-		given(brjs).containsFileWithContents("apps/app/bs-bladeset/blades/b1/tests/test-type/tech/tests/myTest.js", "require('appns/bs/b1/Class1');")
+		given(brjs).containsFileWithContents("brjs-apps/app/bs-bladeset/blades/b1/tests/test-type/tech/tests/myTest.js", "require('appns/bs/b1/Class1');")
 			.and( brjs.app("app").bladeset("bs").blade("b1") ).hasClass("appns/bs/b1/Class1");
 		when( brjs.app("app").bladeset("bs").blade("b1").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns/bs/b1/Class1");
@@ -116,7 +116,7 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void workbenchTestsDirectoryCanStillBeUsed() throws Exception {
 		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
-		given( brjs ).containsFileWithContents("apps/app/bs-bladeset/blades/b1/workbench/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
+		given( brjs ).containsFileWithContents("brjs-apps/app/bs-bladeset/blades/b1/workbench/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
 			.and( brjs.app("app").bladeset("bs").blade("b1").workbench() ).hasClass("Class1");
 		when( brjs.app("app").bladeset("bs").blade("b1").workbench().testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns/Class1");

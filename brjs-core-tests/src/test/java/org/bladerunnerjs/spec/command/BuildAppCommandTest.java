@@ -1,17 +1,17 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand.Messages.*;
+import static org.bladerunnerjs.plugin.commands.standard.BuildAppCommand.Messages.*;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
-import org.bladerunnerjs.model.exception.command.DirectoryNotEmptyCommandException;
-import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistCommandException;
+import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandException;
+import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -137,7 +137,7 @@ public class BuildAppCommandTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(app.defaultAspect()).indexPageHasContent("index page")
-			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
+			.and(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(brjs).hasDir("sdk/target")
 			.and(brjs).commandHasBeenRun("build-app", "app", "target");
 		when(brjs).runCommand("build-app", "app", "target");
@@ -170,7 +170,7 @@ public class BuildAppCommandTest extends SpecTest
 			.and(brjs.appJars()).containsFile("some-jar.jar")
 			.and(brjs).commandHasBeenRun("create-app", "app")
 			.and(defaultAspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
-			.and(brjs).localeForwarderHasContents("locale-forwarder.js");
+			.and(brjs).localeSwitcherHasContents("locale-forwarder.js");
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")
@@ -247,15 +247,27 @@ public class BuildAppCommandTest extends SpecTest
 	}
 	
 	@Test
-	public void defaultAspectsAreBuiltCorrectly() throws Exception
+	public void defaultAspectsAreBuiltCorrectlyForSingleLocaleApps() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(app.defaultAspect()).hasBeenCreated()
 			.and(app.appConf()).supportsLocales("en_GB")
 			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
 		when(brjs).runCommand("build-app", "app");
-		then(brjs).fileContentsContains("generated/built-apps/app/en_GB/index.html", "DEFAULT ASPECT INDEX PAGE");
+		then(brjs).fileContentsContains("generated/built-apps/app/index.html", "DEFAULT ASPECT INDEX PAGE");
+	}
+	
+	@Test
+	public void defaultAspectsAreBuiltCorrectlyForMultiLocaleApps() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(brjs).localeSwitcherHasContents("")
+			.and(app.defaultAspect()).hasBeenCreated()
+			.and(app.appConf()).supportsLocales("en", "en_GB")
+			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).fileContentsContains("generated/built-apps/app/en_GB.html", "DEFAULT ASPECT INDEX PAGE");
 	}
 	
 }

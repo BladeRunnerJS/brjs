@@ -1,14 +1,15 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.plugin.plugins.commands.standard.CopyThemeCommand.Messages.*;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CopyThemeCommand;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import static org.bladerunnerjs.plugin.commands.standard.CopyThemeCommand.Messages.*;
+
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.commands.standard.CopyThemeCommand;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -103,7 +104,7 @@ public class CopyThemeCommandTest extends SpecTest {
 			.and(blade11).containsFile("themes/red/style.css")
 			.and(blade11).containsFolder("themes/blue");
 		when(brjs).runCommand("copy-theme", "app", "red", "blue");
-		then(logging).warnMessageReceived(THEME_FOLDER_EXISTS, "apps/app/bladeset1-bladeset/blades/blade11/themes/blue");
+		then(logging).warnMessageReceived(THEME_FOLDER_EXISTS, "brjs-apps/app/bladeset1-bladeset/blades/blade11/themes/blue");
 	}
 	
 	@Test

@@ -7,8 +7,9 @@ import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 
 
 public class PollingFileModificationObserverThread extends Thread

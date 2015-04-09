@@ -2,11 +2,11 @@ package org.bladerunnerjs.spec.app;
 
 import static org.bladerunnerjs.yaml.YamlAppConf.Messages.*;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.name.InvalidPackageNameException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class AppConfTest extends SpecTest {
 	public void updateLocaleInAppConf() throws Exception {
 		given(templates).templateGroupCreated()
 			.and(app).hasBeenPopulated("appx", "default");
-		when(app).appConf().setLocales("de").write();
+		when(app).appConf().localesUpdatedTo("de");
 		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: de\nrequirePrefix: appx");
 	}
 	@Test

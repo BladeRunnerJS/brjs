@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model.engine;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 public class DirectoryNodeLocator implements NodeLocator
 {

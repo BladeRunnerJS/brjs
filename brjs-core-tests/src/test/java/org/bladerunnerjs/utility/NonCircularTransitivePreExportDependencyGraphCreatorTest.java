@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.api.SourceModule;
 import org.junit.Ignore;
 import org.junit.Test;
 

@@ -1,0 +1,3 @@
+org.bladerunnerjs.plugin.brjsconformant.BRJSConformantAssetLocationPlugin
+org.bladerunnerjs.plugin.brjsconformant.BRJSConformantTestPackAssetLocationPlugin
+org.bladerunnerjs.plugin.bundlers.thirdparty.ThirdpartyAssetLocationPlugin

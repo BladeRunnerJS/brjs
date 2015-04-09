@@ -3,10 +3,10 @@ package org.bladerunnerjs.spec.plugin.bundler.composite;
 import java.io.File;
 
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("'thirdparty-lib', appns.namespaced.NamespacedClass, appns.node.NodeClass");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-				"// thirdparty-lib", 
+				"// thirdparty-lib",
 				"module.exports = NodeClass",
 				"appns.namespaced.NamespacedClass = function");
 	}
@@ -85,7 +85,6 @@ public class CompositeJsContentPluginTest extends SpecTest {
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 			"// br-bootstrap",
-			"define('$alias-data'",
 			"define('br/AliasRegistry'",
 			"define('appns/Class1'");
 	}
@@ -106,10 +105,10 @@ public class CompositeJsContentPluginTest extends SpecTest {
 					"require('appns/node/Class');\n" );
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragmentsAnyNumberOfTimes(
-				"// br-bootstrap", 
-				"// appLib", 
-				"define('appns/node/Class'", 
-				"appns.namespaced.Class ="); 
+				"// br-bootstrap",
+				"// appLib",
+				"define('appns/node/Class'",
+				"appns.namespaced.Class =");
 	}
 	
 	@Test
@@ -133,7 +132,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	@Test
 	public void onlyMinifiersUsedFromATagHandlerAreReturnedAsUsedContentPaths() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@js.bundle dev-minifier='combined' prod-minifier='closure-whitespace' @/>\n"+"require('appns/Class');")
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(defaultAspect).hasClass("appns/Class")
 			.and(brjs).hasProdVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("js", "js/prod/closure-whitespace/bundle.js");
@@ -142,11 +141,11 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	@Test
 	public void onlyMinifiersUsedFromATagHandlerArePresentInTheBuiltArtifact() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>\n"+"require('appns/Class');")
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(defaultAspect).hasClass("appns/Class")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "v/1234/js/prod/combined/bundle.js")
+		then(targetDir).containsFileWithContents("index.html", "v/1234/js/prod/combined/bundle.js")
 			.and(targetDir).containsFile("v/1234/js/prod/combined/bundle.js")
 			.and(targetDir).doesNotContainFile("v/1234/js/prod/closure-whitespace/bundle.js");
 	}

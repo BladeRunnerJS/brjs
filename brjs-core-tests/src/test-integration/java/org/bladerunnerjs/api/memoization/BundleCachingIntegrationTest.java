@@ -1,12 +1,11 @@
 package org.bladerunnerjs.api.memoization;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.memoization.PollingFileModificationObserverThread;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.memoization.WatchingFileModificationObserverThread;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

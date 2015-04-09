@@ -4,9 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.bladerunnerjs.api.plugin.Event;
+import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.plugin.Event;
-import org.bladerunnerjs.plugin.EventObserver;
 
 
 public class ObserverList

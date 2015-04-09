@@ -1,13 +1,14 @@
 package org.bladerunnerjs.model;
 
-import org.bladerunnerjs.model.exception.DuplicateAssetContainerException;
-import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.DuplicateAssetContainerException;
+import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
 
 
 public class AppUtility
 {
 
-	static <AC extends AssetContainer> AC getImplicitOrExplicitAssetContainer(BRJS brjs, Class<? extends AC> type, AC implicitAssetContainer, AC explicitAssetContainer, boolean preferExplicitDefault) { 
+	public static <AC extends AssetContainer> AC getImplicitOrExplicitAssetContainer(BRJS brjs, Class<? extends AC> type, AC implicitAssetContainer, AC explicitAssetContainer, boolean preferExplicitDefault) { 
 		if (implicitAssetContainer.exists() && explicitAssetContainer.exists()) {
 			throw new DuplicateAssetContainerException(type.getSimpleName(), 
 							brjs.dir().getRelativePath(implicitAssetContainer.dir()), 

@@ -7,19 +7,24 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.TestType;
+import org.bladerunnerjs.api.TypedTestPack;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.TestRunner;
 
-public abstract class AbstractJsLib extends AbstractAssetContainer implements JsLib
+public abstract class AbstractJsLib extends AbstractBundlableNode implements JsLib
 {
 	private String name;
 	private Node parent;
@@ -39,6 +44,18 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	{
 		// TODO: can we avoid having to have a null name for a NamedNode that is available as a single item through the model
 		this(rootNode, parent, dir, null);
+	}
+	
+	@Override
+	public List<LinkedAsset> modelSeedAssets() 
+	{
+		List<LinkedAsset> seedFiles = new ArrayList<>();
+		
+		for(AssetLocation assetLocation : assetLocations()) {
+			seedFiles.addAll(assetLocation.sourceModules());
+		}
+		
+		return seedFiles;
 	}
 	
 	@Override

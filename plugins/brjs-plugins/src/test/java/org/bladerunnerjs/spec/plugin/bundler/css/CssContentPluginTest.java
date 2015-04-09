@@ -2,16 +2,16 @@ package org.bladerunnerjs.spec.plugin.bundler.css;
 
 import java.io.File;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AppConf;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.BladerunnerConf;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -521,7 +521,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void onlyCssBundlesUsedFromATagHandlerAreReturnedAsUsedContentPaths() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
 			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("css", "css/usedtheme/bundle.css");
 	}
@@ -530,10 +530,10 @@ public class CssContentPluginTest extends SpecTest {
 	public void onlyCssBundlesUsedFromATagHandlerArePresentInTheBuiltArtifact() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
 			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
-			.and(brjs).localeForwarderHasContents("")
+			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "v/1234/css/usedtheme/bundle.css")
+		then(targetDir).containsFileWithContents("index.html", "v/1234/css/usedtheme/bundle.css")
 			.and(targetDir).containsFile("v/1234/css/usedtheme/bundle.css")
 			.and(targetDir).doesNotContainFile("v/1234/css/unusedtheme/bundle.css");
 	}

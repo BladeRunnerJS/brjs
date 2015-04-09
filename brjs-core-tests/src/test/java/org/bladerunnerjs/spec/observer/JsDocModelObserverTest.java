@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.observer;
 
-import org.bladerunnerjs.plugin.plugins.jsdoc.JsDocObserver;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.jsdoc.JsDocObserver;
 import org.junit.Test;
 
 public class JsDocModelObserverTest extends SpecTest {

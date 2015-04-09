@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.memoization.WatchingFileModificationObserverThread;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.memoization.PollingFileModificationObserverThread;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
-import org.bladerunnerjs.memoization.WatchingFileModificationObserverThread;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.ConfigException;
 
 
 public class ObserverThreadFactory

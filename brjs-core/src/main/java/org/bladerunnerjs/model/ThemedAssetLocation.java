@@ -1,5 +1,7 @@
 package org.bladerunnerjs.model;
 
+import org.bladerunnerjs.api.AssetLocation;
+
 
 /**
  * A Theme is an AssetLocation with a name, that is used to segregate stylistic Assets (e.g. CSS, images) etc. 

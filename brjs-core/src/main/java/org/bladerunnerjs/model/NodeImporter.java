@@ -19,17 +19,31 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.plugin.AssetPlugin;
+
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.TypedTestPack;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.logging.LoggerFactory;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
+import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
+import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
+import org.bladerunnerjs.logging.SLF4JLogger;
+
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
-import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
-import org.bladerunnerjs.testing.utility.MockPluginLocator;
-import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.ZipUtility;
@@ -127,7 +141,7 @@ public class NodeImporter {
     		MockPluginLocator pluginLocator = new MockPluginLocator();
     		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
     		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
-    		brjs = new BRJS(tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
+    		brjs = new BRJS(tempSdkDir, tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
 		} finally {
 			org.apache.commons.io.FileUtils.deleteQuietly(tempSdkDir);
 		}

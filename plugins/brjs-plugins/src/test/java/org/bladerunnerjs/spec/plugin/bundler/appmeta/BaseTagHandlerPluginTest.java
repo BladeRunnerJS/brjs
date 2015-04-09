@@ -1,8 +1,8 @@
 package org.bladerunnerjs.spec.plugin.bundler.appmeta;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class BaseTagHandlerPluginTest extends SpecTest {
 		given(brjs).hasDevVersion("dev")
 			.and(aspect).indexPageHasContent("<@base.tag@/>");
 		when(aspect).indexPageLoadedInDev(requestResponse, "en_GB");
-		then(requestResponse).containsTextOnce( "<base href=\"../\"/>" );
+		then(requestResponse).containsTextOnce( "<!-- base tag deprecated -->" );
 	}
 	
 	@Test
@@ -35,7 +35,7 @@ public class BaseTagHandlerPluginTest extends SpecTest {
 		given(brjs).hasProdVersion("1234")
 			.and(aspect).indexPageHasContent("<@base.tag@/>");
 		when(aspect).indexPageLoadedInProd(requestResponse, "en_GB");
-		then(requestResponse).containsTextOnce( "<base href=\"../\"/>" );
+		then(requestResponse).containsTextOnce( "<!-- base tag deprecated -->" );
 	}
 	
 }

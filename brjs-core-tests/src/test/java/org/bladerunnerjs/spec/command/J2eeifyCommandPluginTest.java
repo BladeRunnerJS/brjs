@@ -1,11 +1,11 @@
 package org.bladerunnerjs.spec.command;
 
-import org.bladerunnerjs.appserver.ApplicationServer;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.plugins.commands.standard.J2eeifyCommandPlugin;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.appserver.ApplicationServer;
+import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.commands.standard.J2eeifyCommandPlugin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -85,13 +85,13 @@ public class J2eeifyCommandPluginTest extends SpecTest {
 	@Test
 	public void messageIsPrintedOnSucces() throws Exception {
 		when(brjs).runCommand("j2eeify", "app");
-		then(logging).containsFormattedConsoleMessage(J2eeifyCommandPlugin.Messages.SUCCESSFULLY_J2EEIFIED_APP_MESSAGE, "app", "apps/app/WEB-INF");
+		then(logging).containsFormattedConsoleMessage(J2eeifyCommandPlugin.Messages.SUCCESSFULLY_J2EEIFIED_APP_MESSAGE, "app", "brjs-apps/app/WEB-INF");
 	}
 	
 	@Test @Ignore // TODO: investigate why this only fails in Travis...
 	public void applicationServerStillStartsAfterWebInfIsCopiedIn() throws Exception {
 		given(app.defaultAspect()).indexPageHasContent("APP INDEX PAGE")
-			.and(brjs).localeForwarderHasContents("locale forwarder")
+			.and(brjs).localeSwitcherHasContents("locale forwarder")
 			.and(appServer).started()
 			.and(appServer).requestForUrlContains("/app/en/", "APP INDEX PAGE")
 			.and(appServer).stopped()

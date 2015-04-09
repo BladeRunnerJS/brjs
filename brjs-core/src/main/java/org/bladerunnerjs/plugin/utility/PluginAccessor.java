@@ -5,19 +5,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.MinifierPlugin;
-import org.bladerunnerjs.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.plugin.OrderedPlugin;
-import org.bladerunnerjs.plugin.Plugin;
-import org.bladerunnerjs.plugin.PluginLocator;
-import org.bladerunnerjs.plugin.RequirePlugin;
-import org.bladerunnerjs.plugin.TagHandlerPlugin;
-import org.bladerunnerjs.plugin.utility.command.CommandList;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.CommandPlugin;
+import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
+import org.bladerunnerjs.api.plugin.ContentPlugin;
+import org.bladerunnerjs.api.plugin.MinifierPlugin;
+import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.api.plugin.OrderedPlugin;
+import org.bladerunnerjs.api.plugin.Plugin;
+import org.bladerunnerjs.api.plugin.PluginLocator;
+import org.bladerunnerjs.api.plugin.RequirePlugin;
+import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
 
 public class PluginAccessor {
 	
@@ -96,13 +96,17 @@ public class PluginAccessor {
 	public List<ContentPlugin> contentPlugins() {
 		return contentPlugins;
 	}
-	
+
 	public List<ContentPlugin> contentPlugins(String groupName) {
 		List<ContentPlugin> contentProviders = new LinkedList<>();
 		
 		for (ContentPlugin contentPlugin : contentPlugins()) {
-			if (groupName.equals(contentPlugin.getCompositeGroupName())) {
-				contentProviders.add(contentPlugin);
+			if(contentPlugin.instanceOf(CompositeContentPlugin.class)) {
+				CompositeContentPlugin compositeContentPlugin = (CompositeContentPlugin) contentPlugin.castTo(CompositeContentPlugin.class);
+				
+				if (groupName.equals(compositeContentPlugin.getCompositeGroupName())) {
+					contentProviders.add(contentPlugin);
+				}
 			}
 		}
 		

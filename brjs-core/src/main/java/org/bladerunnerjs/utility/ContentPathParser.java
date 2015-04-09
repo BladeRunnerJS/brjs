@@ -9,9 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.eclipse.jetty.util.URIUtil;
 
 
@@ -40,7 +40,7 @@ public class ContentPathParser
 		String requestForm = requestForms.get(requestFormName);
 		List<String> tokens = requestFormTokens.get(requestFormName);
 		if (tokens == null) {
-			throw new IllegalArgumentException("request form name, "+requestFormName+", hasn't been registed");
+			throw new IllegalArgumentException("request form name '" + requestFormName + "' hasn't been registered");
 		}
 		if(args.length != tokens.size()) throw new IllegalArgumentException("wrong number of arguments provided");
 		

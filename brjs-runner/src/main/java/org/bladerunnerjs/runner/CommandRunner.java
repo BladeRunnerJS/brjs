@@ -2,6 +2,7 @@ package org.bladerunnerjs.runner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,24 +12,24 @@ import java.util.Scanner;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.legacy.command.test.TestCommand;
+import org.bladerunnerjs.legacy.command.test.TestServerCommand;
+import org.bladerunnerjs.legacy.command.testIntegration.TestIntegrationCommand;
 import org.bladerunnerjs.logger.ConsoleLogger;
 import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.logger.LogLevel;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.events.NewInstallEvent;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import com.caplin.cutlass.command.test.TestCommand;
-import com.caplin.cutlass.command.test.TestServerCommand;
-import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -83,8 +84,7 @@ public class CommandRunner {
 		
 		return byteStreamOutputStream.toString().trim();
 	}
-	
-	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
+	public int run(File workingDir, String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
 		AbstractRootNode.allowInvalidRootDirectories = false;
 		BRJS brjs = null;
 		
@@ -99,7 +99,7 @@ public class CommandRunner {
 		args = processGlobalCommandFlags(args);
 		
 		try {
-			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir, workingDir.getAbsoluteFile());
 			brjs.populate("default");
 			setBrjsAllowStats(brjs);
 		}
@@ -109,6 +109,10 @@ public class CommandRunner {
 		
 		injectLegacyCommands(brjs);
 		return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
+	}
+	
+	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
+		return run(new File("."), args);
 	}
 	
 	private void setBrjsAllowStats(BRJS brjs) throws ConfigException

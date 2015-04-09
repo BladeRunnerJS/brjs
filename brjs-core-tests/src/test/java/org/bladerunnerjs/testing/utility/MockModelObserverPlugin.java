@@ -1,8 +1,8 @@
 package org.bladerunnerjs.testing.utility;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.plugin.base.AbstractModelObserverPlugin;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractModelObserverPlugin;
 
 
 public class MockModelObserverPlugin extends AbstractModelObserverPlugin implements ModelObserverPlugin
