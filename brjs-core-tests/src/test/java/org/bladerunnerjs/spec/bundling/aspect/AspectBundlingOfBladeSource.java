@@ -303,6 +303,24 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	}
 	
 	@Test
+	public void exceptionIsThrownIfBladeRequiresAnAspectClass() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/AspectClass")
+			.and(aspect).hasClass("appns/AspectClass");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfScopeRequirePathException.class);
+	}
+	
+	@Test
+	public void exceptionIsThrownIfBladeRequiresADefaultAspectClass() throws Exception {
+		given( app.defaultAspect() ).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/AspectClass")
+			.and( app.defaultAspect() ).hasClass("appns/AspectClass");
+		when( app.defaultAspect() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfScopeRequirePathException.class);
+	}
+	
+	@Test
 	public void noStrictCheckingFileCanBeAtANestedLevelInsideTheBlade() throws Exception {
 		given(aspect).indexPageRequires("appns/b1/Blade1Class")
     		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/foo/Blade2Class")		

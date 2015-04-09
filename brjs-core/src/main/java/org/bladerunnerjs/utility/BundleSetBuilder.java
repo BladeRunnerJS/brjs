@@ -127,7 +127,10 @@ public class BundleSetBuilder {
 	
 	private boolean assetContainerMatchesScope(AssetContainer sourceAssetContainer, AssetContainer dependantAssetContainer) {
 		// check the dir is equals as well incase the asset container is wrapped
-		if (sourceAssetContainer == dependantAssetContainer || sourceAssetContainer.dir() == dependantAssetContainer.dir()) {
+		if (sourceAssetContainer == dependantAssetContainer) {
+			return true;
+		}
+		if (sourceAssetContainer.dir() == dependantAssetContainer.dir() && sourceAssetContainer.getClass() == dependantAssetContainer.getClass()) {
 			return true;
 		}
 		if (sourceAssetContainer instanceof JsLib && dependantAssetContainer instanceof JsLib && sourceAssetContainer.dir().getName().equals(dependantAssetContainer.dir().getName())) {
@@ -225,7 +228,7 @@ public class BundleSetBuilder {
 		}
 		orderedAssets.addAll(0, unorderedAssets);
 		return orderedAssets;
-	}
+	}	
 	
 	private boolean strictCheckingDisabled(Asset asset) {
 		MemoizedFile currentDir = asset.file().isDirectory() ? asset.file() : asset.file().getParentFile();
