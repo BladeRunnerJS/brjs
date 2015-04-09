@@ -74,7 +74,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		List<Reader> readerList = new ArrayList<Reader>();
 		for(Asset htmlAsset : htmlAssets){
 			try {
-				validateSourceHtml(htmlAsset);
+				TemplateInfo templateInfo = getTemplateInfo(htmlAsset);
 
 				try(Reader reader = htmlAsset.getReader()) {
 					readerList.add(new StringReader("\n<!-- " + htmlAsset.getAssetName() + " -->\n"));
@@ -84,7 +84,16 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 
 					String htmlContent = IOUtils.toString(reader);
 					String replaced =  htmlContent.replace(xmlBundlePathToken, bundlePath);
+					
+					if(templateInfo.requiresWrapping) {
+						readerList.add(new StringReader("<template id='" + templateInfo.identifier + "' data-auto-wrapped='true'>\n"));
+					}
+					
 					readerList.add(new StringReader(replaced));
+					
+					if(templateInfo.requiresWrapping) {
+						readerList.add(new StringReader("</template>\n"));
+					}
 				}
 			}
 			catch (IOException | NamespaceException | RequirePathException e) {
@@ -95,7 +104,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		return new CharResponseContent( brjs, readerList );		
 	}
 	
-	private void validateSourceHtml(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException
+	private TemplateInfo getTemplateInfo(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException
 	{
 		StartTag startTag = getStartTag(htmlAsset);
 		String identifier = startTag.getAttributeValue("id");
@@ -121,6 +130,8 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 						+ assetWithDuplicateId.getAssetPath()
 						+ "'.");
 		}
+		
+		return new TemplateInfo(identifier, !startTag.getName().equals("template"));
 	}
 	
 	
@@ -151,4 +162,13 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		}
 	}
 	
+	private class TemplateInfo {
+		public final String identifier;
+		public final boolean requiresWrapping;
+
+		public TemplateInfo(String identifier, boolean requiresWrapping) {
+			this.identifier = identifier;
+			this.requiresWrapping = requiresWrapping;
+		}
+	}
 }

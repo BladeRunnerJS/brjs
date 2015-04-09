@@ -11,97 +11,83 @@ var i18n = require('br/I18n');
  * @class
  * @alias module:br/services/html/BRHtmlResourceService
  * @implements module:br/services/HtmlResourceService
- * 
+ *
  * @classdesc
  * Provides access to HTML templates loaded via the HTML bundler.
  * This is the default HtmlResourceService in BladeRunnerJS
- * 
+ *
  * @param {String} url A URL to load HTML from.
  */
 function BRHtmlResourceService(url) {
-	var ServiceRegistry = require("br/ServiceRegistry");
-	/** @private */
-	this.url = url || require('service!br.app-meta-service').getVersionedBundlePath("html/bundle.html");
-
-	/** @private */
-	this.templates = {};
-
-	/** @private */
-	this.element = document.createElement("div");
-	this.element.style.display = "none";
-
-	this._loadHtml();
+	loadHtml(url || require('service!br.app-meta-service').getVersionedBundlePath("html/bundle.html"));
 }
 
 br.implement(BRHtmlResourceService, HtmlResourceService);
 
-/**
- * Access an HTML template by name.
- *
- * @param {String} templateId The identifier of the template that is required. Note that templates should be contained
- * within a template tag (preferably).
- *
- * @returns {HTMLElement}
- */
-BRHtmlResourceService.prototype.getHTMLTemplate = function (templateId) {
-	var template = null;
-	if (this.templates[templateId]) {
-		template = this.templates[templateId];
-	}
-	else {
-		template = getTemplate(document.getElementById(templateId));
-		this.templates[templateId] = template;
-	}
-	if (template !== null) {
-		return template.cloneNode(true);
-	}
-	return null;
+BRHtmlResourceService.prototype.getTemplateFragment = function(templateId) {
+	var template = document.getElementById(templateId);
+	return (template) ? document.importNode(template.content, true) : null;
 };
 
-/**
- * @private
- */
-BRHtmlResourceService.prototype._loadHtml = function () {
-	document.body.appendChild(this.element);
+BRHtmlResourceService.prototype.getTemplateElement = function(templateId) {
+	var templateFragment = this.getTemplateFragment(templateId);
+	var templateNodes = nonEmptyNodes(templateFragment.childNodes);
+	
+	if(templateNodes.length != 1) throw new RangeError("The '" + templateId +
+		"' template contained more than one root node -- use getTemplate() instead.");
+	
+	return (templateFragment) ? templateNodes[0] : null;
+};
 
-	var rawHtml = File.readFileSync(this.url);
+BRHtmlResourceService.prototype.getHTMLTemplate = function(templateId) {
+	if(window.console) console.warn('getHTMLTemplate() is now deprecated -- please use getTemplateElement() instead.');
+	return this.getTemplateElement(templateId);
+};
+
+function loadHtml(url) {
+	var templateElems = document.createElement('div');
+	document.body.appendChild(templateElems); // TODO: move to bottom of method?
+
+	var rawHtml = File.readFileSync(url);
 	var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
-	this.element.innerHTML = sanitizeHtml(translatedHtml);
+	templateElems.innerHTML = sanitizeHtml(translatedHtml);
 
-	for (var i = 0, max = this.element.children.length; i < max; i++) {
-		this.templates[this.element.children[i].id] = getTemplate(this.element.children[i]);
-	}
-
-	document.body.removeChild(this.element);
-};
-
-/**
-* Gets the template by removing the template tag if needed.
-*/
-function getTemplate(template) {
-	if (template !== null && template.tagName.toLowerCase() === "template") {
-		// Template being a non fully supported tag yet, check if we can use content, else use a dummy div to get the
-		// inner content.
-		if (template.content) {
-			template = template.content;
-		}
-		else {
-			// First clone the contents of the template to avoid modifying the original as we will be reparenting.
-
-			var docFrag = document.createDocumentFragment(),
-				tempClone = template.cloneNode(true),
-				children = tempClone.childNodes;
-			
-			while(children.length > 0) {
-				docFrag.appendChild(children[0]);
- 			}
-
-			template = docFrag;
-		}
-	}
-	return template;
+	shimTemplates();
 }
 
+function nonEmptyNodes(childNodes) {
+	var nonEmptyNodes = [];
+	
+	for(var i = 0, l = childNodes.length; i < l; ++i) {
+		var childNode = childNodes[i];
+		
+		if((childNode.nodeType != document.TEXT_NODE) || (childNode.textContent.trim() != '')) {
+			nonEmptyNodes.push(childNode);
+		}
+	}
+	
+	return nonEmptyNodes;
+}
+
+function shimTemplates() {
+	if(!('content' in document.createElement('template'))) {
+		var templateElems = document.getElementsByTagName('template');
+
+		for(var i = 0, l = templateElems.length; i < l; ++i) {
+			var templateElem = templateElems[i];
+			var templateContent = document.createDocumentFragment();
+
+			while(templateElem.childNodes[0]) {
+				templateContent.appendChild(templateElem.childNodes[0]);
+			}
+
+			templateElem.content = templateContent;
+		}
+	}
+}
+
+// TODO: delete this method once we get to 2016
+// TODO: have the server display a warning if we see a script tag
 function sanitizeHtml(html) {
 	function replacer(str, p1) {
 		return '<div' + p1;
@@ -109,7 +95,6 @@ function sanitizeHtml(html) {
 
 	// IE and old Firefox's don't allow assigning text with script tag in it to innerHTML.
 	if (html.match(/<script(.*)type=\"text\/html\"/)) {
-	 	
 	 	// TODO: Log the fact there is a script tag in the template and that it should be replaced with a div.
 	 	html = html.replace(/<script(.*)type=\"text\/html\"/g, replacer).replace(/<\/script>/g, '</div>');
 	}
