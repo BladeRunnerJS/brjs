@@ -10,8 +10,7 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.memoization.WatchingFileModificationObserverThread;
-import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.api.FileObserver;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
@@ -26,9 +25,8 @@ import org.bladerunnerjs.api.spec.engine.BuilderChainer;
 import org.bladerunnerjs.api.spec.engine.NodeBuilder;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.logging.MockLogLevelAccessor;
-import org.bladerunnerjs.memoization.PollingFileModificationObserverThread;
-import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
-
+import org.bladerunnerjs.memoization.PollingFileModificationObserver;
+import org.bladerunnerjs.memoization.WatchingFileModificationObserver;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
@@ -306,9 +304,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
-		brjs.io().uninstallFileAccessChecker();
-		specTest.fileWatcherThread = new WatchingFileModificationObserverThread(brjs, new WatchKeyServiceFactory());
-		specTest.fileWatcherThread.start();
+		attachFileWatcherThread(new WatchingFileModificationObserver(brjs));
 		
 		return builderChainer;
 	}
@@ -316,9 +312,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenAuthenticallyCreatedWithFilePollingThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
-		brjs.io().uninstallFileAccessChecker();
-		specTest.fileWatcherThread = new PollingFileModificationObserverThread(brjs, 500);
-		specTest.fileWatcherThread.start();
+		attachFileWatcherThread(new PollingFileModificationObserver(brjs, 500));
 		
 		return builderChainer;
 	}
@@ -326,19 +320,24 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenAuthenticallyCreatedWithAutoConfiguredObserverThread() throws Exception
 	{
 		hasBeenAuthenticallyCreated();
-		brjs.io().uninstallFileAccessChecker();
-		specTest.fileWatcherThread = brjs.getFileWatcherThread();
-		specTest.fileWatcherThread.start();
+		attachFileWatcherThread(brjs.fileObserver());
 		
 		return builderChainer;
 	}
-	
+
+	public BuilderChainer hasBeenAuthenticallyCreatedWithFileWatcherThreadAndWorkingDir(File workingDir) throws Exception {
+		hasBeenAuthenticallyCreatedWithWorkingDir(workingDir);
+		attachFileWatcherThread(new WatchingFileModificationObserver(brjs));
+		
+		return builderChainer;
+	}
+
 	public BuilderChainer hasBeenAuthenticallyReCreated() throws Exception
 	{
 		return hasBeenAuthenticallyCreated();
 	}
 
-	public BuilderChainer usedForServletModel() throws InvalidSdkDirectoryException
+	public BuilderChainer usedForServletModel() throws Exception
 	{
 		ThreadSafeStaticBRJSAccessor.destroy();
 		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
@@ -480,5 +479,11 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		org.apache.commons.io.FileUtils.deleteQuietly(file);
 		assertFalse(file.exists());
 		return builderChainer;
+	}
+	
+	private void attachFileWatcherThread(FileObserver observer) throws IOException {
+		brjs.io().uninstallFileAccessChecker();
+		specTest.fileWatcherThread = observer;
+		specTest.fileWatcherThread.start();
 	}
 }

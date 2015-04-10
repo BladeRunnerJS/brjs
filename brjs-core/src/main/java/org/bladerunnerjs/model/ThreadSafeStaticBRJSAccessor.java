@@ -41,7 +41,7 @@ public class ThreadSafeStaticBRJSAccessor {
 		return model;
 	}
 	
-	public static synchronized void destroy() {
+	public static synchronized void destroy() throws Exception {
 		if(model != null) {
 			try {
 				model.close();

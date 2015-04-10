@@ -30,7 +30,7 @@ public class AppNavigationTest
 	}
 	
 	@After
-	public void teardown()
+	public void teardown() throws Exception
 	{
 		brjs.close();
 	}

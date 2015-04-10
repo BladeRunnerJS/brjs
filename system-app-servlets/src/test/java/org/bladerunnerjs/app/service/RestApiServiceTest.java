@@ -15,7 +15,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.app.service.RestApiService;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
@@ -346,7 +345,7 @@ public class RestApiServiceTest
 		assertTrue(indexFile.exists());
 	}
 	
-	private void setupService(File sdkRoot) throws InvalidSdkDirectoryException
+	private void setupService(File sdkRoot) throws Exception
 	{
 		BRJS brjs = BRJSTestModelFactory.createModel(sdkRoot);
 		ThreadSafeStaticBRJSAccessor.destroy();

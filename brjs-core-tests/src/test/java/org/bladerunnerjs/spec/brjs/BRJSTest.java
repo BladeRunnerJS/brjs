@@ -172,7 +172,6 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void warningMessageIsLoggedWhenBothAppsAndBrjsAppsFoldersExist() throws Exception {
-		given(logging).echoEnabled();
 		given(testSdkDirectory).containsFolder("apps")
 			.and(testSdkDirectory).containsFolder("brjs-apps")
 			.and(logging).enabled();
@@ -182,5 +181,26 @@ public class BRJSTest extends SpecTest {
 			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
+	}
+	
+	@Test
+	public void brjsAppsIsntRequiredIfCommandIsRunFromInsideAnApp() throws Exception {
+		given(testSdkDirectory).containsFolder("myprojects")
+			.and(testSdkDirectory).containsFolder("myprojects/myapp")
+			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+		then(brjs).hasApps("myapp");
+	}
+	
+	@Test
+	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutBrjsApps() throws Exception {
+		given(testSdkDirectory).containsFolder("myprojects")
+			.and(testSdkDirectory).containsFolder("myprojects/myapp")
+			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+		when(brjs.app("anotherapp")).create();
+		then(brjs).hasApps("anotherapp", "myapp")
+			.and(testSdkDirectory).containsDir("myprojects/myapp")
+			.and(testSdkDirectory).containsDir("myprojects/anotherapp");
 	}
 }

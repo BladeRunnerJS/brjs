@@ -26,7 +26,7 @@ public class AspectNavigationTest
 	}
 	
 	@After
-	public void teardown()
+	public void teardown() throws Exception
 	{
 		brjs.close();
 	}
