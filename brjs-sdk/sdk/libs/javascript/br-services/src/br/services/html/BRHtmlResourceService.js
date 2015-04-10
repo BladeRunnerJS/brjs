@@ -97,7 +97,6 @@ function shimTemplates() {
 }
 
 // TODO: delete this method once we get to 2016
-// TODO: have the server display a warning if we see a script tag
 function sanitizeHtml(html) {
 	function replacer(str, p1) {
 		return '<div' + p1;

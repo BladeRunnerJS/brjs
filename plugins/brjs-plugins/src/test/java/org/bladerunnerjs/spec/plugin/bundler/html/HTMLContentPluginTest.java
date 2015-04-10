@@ -1,5 +1,8 @@
 package org.bladerunnerjs.spec.plugin.bundler.html;
 
+
+import static org.bladerunnerjs.plugin.bundlers.html.HTMLContentPlugin.*;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
@@ -227,5 +230,14 @@ public class HTMLContentPluginTest extends SpecTest
 		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='the-id'>TESTCONTENT</div>");
 		when(aspect).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsText("<!-- view.html -->\n<template id='the-id' data-auto-wrapped='true'>\n<div id='the-id'>TESTCONTENT</div></template>");
+	}
+	
+	@Test
+	public void scriptTagsGenerateAWarning() throws Exception {
+		given(aspect).containsResourceFileWithContents("html/view.html", "<script type='text/html' id='the-id'>TESTCONTENT</script>")
+			.and(logging).enabled();
+		when(aspect).requestReceivedInDev("html/bundle.html", response);
+		then(response).containsText("<!-- view.html -->\n<template id='the-id' data-auto-wrapped='true'>\n<script type='text/html' id='the-id'>TESTCONTENT</script></template>")
+			.and(logging).warnMessageReceived(SCRIPT_TEMPLATE_WARNING, "the-id");
 	}
 }

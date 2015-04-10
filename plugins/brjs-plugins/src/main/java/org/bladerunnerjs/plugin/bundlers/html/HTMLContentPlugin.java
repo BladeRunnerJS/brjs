@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
@@ -35,10 +36,13 @@ import org.bladerunnerjs.utility.AppMetadataUtility;
 
 public class HTMLContentPlugin extends AbstractContentPlugin
 {
+	public static final String SCRIPT_TEMPLATE_WARNING = "A script tag was used for the '%s' template, but these are now deprecated in favor of template tags.";
+	
 	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 	private final List<String> requestPaths = new ArrayList<>();
 	
 	private BRJS brjs;
+	private Logger logger;
 	
 	{
 		requestPaths.add("html/bundle.html");
@@ -48,6 +52,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
+		logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -109,6 +114,10 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		StartTag startTag = getStartTag(htmlAsset);
 		String identifier = startTag.getAttributeValue("id");
 		AssetContainer assetContainer = htmlAsset.assetContainer();
+		
+		if(startTag.getName().equals("script")) {
+			logger.warn(SCRIPT_TEMPLATE_WARNING, identifier);
+		}
 		
 		if(identifier == null)
 		{
