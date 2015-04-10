@@ -31,7 +31,7 @@ public class BundleSetBuilder {
 	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	public static final String STRICT_CHECKING_DISABLED_MSG = "Strict checking has been disabled for the directory '%s' and therefore the Asset '%s'."+
-			" This allows the Blade to directly depend on another Blade in the App and the file '%s' should be removed to re-enable the scope enforcement.";
+			" This allows the Blade class to directly depend on another Blade class when the App loaded. This dependency should be broken using Services and the file '%s' should be removed to re-enable the scope enforcement.";
 	
 	private final List<LinkedAsset> seedAssets = new ArrayList<>();
 	private final Set<Asset> assets = new LinkedHashSet<>();
@@ -237,7 +237,8 @@ public class BundleSetBuilder {
 			if (strictCheckingFile.isFile()) {
 				if (!strictCheckingAssetsLogged.add(asset)) {
 					BRJS brjs = asset.assetContainer().root();
-					brjs.logger(this.getClass()).warn(STRICT_CHECKING_DISABLED_MSG, asset.getAssetPath(), brjs.dir().getRelativePath(currentDir), brjs.dir().getRelativePath(strictCheckingFile));
+					brjs.logger(this.getClass()).warn(STRICT_CHECKING_DISABLED_MSG, brjs.dir().getRelativePath(currentDir), asset.getAssetPath(), brjs.dir().getRelativePath(strictCheckingFile));
+					System.err.println( String.format(STRICT_CHECKING_DISABLED_MSG, brjs.dir().getRelativePath(currentDir), asset.getAssetPath(), brjs.dir().getRelativePath(strictCheckingFile)) );
 				}
 				return true;
 			}

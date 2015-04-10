@@ -27,7 +27,7 @@ public class OutOfBundleScopeRequirePathException extends RequirePathException {
 	@Override
 	public String getMessage() {
 		if (assetWithException != null) {
-			return String.format("There was an exception calculating dependencies for the asset as '%s'. It's dependency the require path '%s' was found at '%s', but it was not in one of the valid bundler scopes."+
+			return String.format("There was an exception calculating dependencies for the asset at '%s'. It's dependency with the require path '%s' was found at '%s', but it was not in one of the valid bundler scopes."+
 					" The bundlable node was '%s' and the valid locations for assets in this scope are '%s'", 
 					assetWithException.getAssetPath(), requirePath, asset.getAssetPath(), bundlableNode.getClass().getSimpleName(), scopedLocations);			
 		}
