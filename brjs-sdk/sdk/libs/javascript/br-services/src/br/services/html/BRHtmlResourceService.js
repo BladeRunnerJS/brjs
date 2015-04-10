@@ -49,7 +49,7 @@ BRHtmlResourceService.prototype.getTemplateElement = function(templateId) {
 		var templateNodes = nonEmptyNodes(templateFragment.childNodes);
 		
 		if(templateNodes.length != 1) throw new RangeError("The '" + templateId +
-			"' template contained more than one root node -- use getTemplate() instead.");
+			"' template contained more than one root node -- use getTemplateFragment() instead.");
 		
 		return templateNodes[0];
 	}
