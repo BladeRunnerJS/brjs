@@ -41,12 +41,18 @@ BRHtmlResourceService.prototype.getTemplateFragment = function(templateId) {
 
 BRHtmlResourceService.prototype.getTemplateElement = function(templateId) {
 	var templateFragment = this.getTemplateFragment(templateId);
-	var templateNodes = nonEmptyNodes(templateFragment.childNodes);
 	
-	if(templateNodes.length != 1) throw new RangeError("The '" + templateId +
-		"' template contained more than one root node -- use getTemplate() instead.");
-	
-	return (templateFragment) ? templateNodes[0] : null;
+	if(!templateFragment) {
+		return null
+	}
+	else {
+		var templateNodes = nonEmptyNodes(templateFragment.childNodes);
+		
+		if(templateNodes.length != 1) throw new RangeError("The '" + templateId +
+			"' template contained more than one root node -- use getTemplate() instead.");
+		
+		return templateNodes[0];
+	}
 };
 
 BRHtmlResourceService.prototype.getHTMLTemplate = function(templateId) {
