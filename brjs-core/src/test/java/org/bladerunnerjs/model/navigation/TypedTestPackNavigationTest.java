@@ -25,7 +25,7 @@ public class TypedTestPackNavigationTest
 	}
 	
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
 		brjs.close();
 	}
 	

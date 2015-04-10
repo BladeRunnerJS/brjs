@@ -1,6 +1,7 @@
 language: java
 jdk:
 - oraclejdk7
+- oraclejdk8
 git:
  depth: 200
 before_install:

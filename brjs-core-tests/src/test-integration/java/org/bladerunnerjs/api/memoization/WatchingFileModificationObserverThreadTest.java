@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static java.nio.file.StandardWatchEventKinds.*;
 
-public class FileModificationWatcherThreadTest
+public class WatchingFileModificationObserverThreadTest
 {	
 	private static final int MAX_UPDATE_CHECKS = 120; // 120 x 500ms (wait 1 minute before failing)
 	private static final int THREAD_SLEEP_INTEVAL = 500;
@@ -68,6 +68,7 @@ public class FileModificationWatcherThreadTest
 		mockBrjs = mock(BRJS.class);
 		rootWatchDir = new MemoizedFile(mockBrjs, FileUtils.createTemporaryDirectory( this.getClass() ).getAbsolutePath() );
 		when(mockBrjs.dir()).thenReturn(rootWatchDir);
+		when(mockBrjs.appsFolder()).thenReturn(rootWatchDir);
 		when(mockBrjs.getFileModificationRegistry()).thenReturn(mockModificationRegistry);
 		mockLogger = mock(Logger.class);
 		when(mockBrjs.logger(any(Class.class))).thenReturn(mockLogger);

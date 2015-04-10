@@ -79,15 +79,14 @@ public class ServeCommand extends JSAPArgsParsingCommandPlugin
 			}
 			
 			appServer.start();
-			brjs.getFileWatcherThread().start();
+			brjs.fileObserver().start();
 			
 			logger.println("\n");
 			logger.println(Messages.SERVER_STARTUP_MESSAGE + appServer.getPort() + "/");
 			logger.println(Messages.SERVER_STOP_INSTRUCTION_MESSAGE + "\n");
 			
 			appServer.join();
-			brjs.getFileWatcherThread().interrupt();
-			brjs.getFileWatcherThread().join();
+			brjs.fileObserver().stop();
 		}
 		catch(NumberFormatException e)
 		{

@@ -175,7 +175,6 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void warningMessageIsLoggedWhenBothAppsAndBrjsAppsFoldersExist() throws Exception {
-		given(logging).echoEnabled();
 		given(testSdkDirectory).containsFolder("apps")
 			.and(testSdkDirectory).containsFolder("brjs-apps")
 			.and(logging).enabled();
@@ -198,6 +197,27 @@ public class BRJSTest extends SpecTest {
 		when(aspect).bundleSetGenerated();
 		then(logging).debugMessageReceived(BRJSConformantAssetPlugin.IMPLICIT_PACKAGE_USED, "brjs-apps/myApp/blades/b1/src", "appns/b1", "appns/b1")
 			.and(logging).otherMessagesIgnored();
+	}
+	
+	@Test
+	public void brjsAppsIsntRequiredIfCommandIsRunFromInsideAnApp() throws Exception {
+		given(testSdkDirectory).containsFolder("myprojects")
+			.and(testSdkDirectory).containsFolder("myprojects/myapp")
+			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+		then(brjs).hasApps("myapp");
+	}
+	
+	@Test
+	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutBrjsApps() throws Exception {
+		given(testSdkDirectory).containsFolder("myprojects")
+			.and(testSdkDirectory).containsFolder("myprojects/myapp")
+			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+		when(brjs.app("anotherapp")).create();
+		then(brjs).hasApps("anotherapp", "myapp")
+			.and(testSdkDirectory).containsDir("myprojects/myapp")
+			.and(testSdkDirectory).containsDir("myprojects/anotherapp");
 	}
 	
 }

@@ -39,7 +39,7 @@ public class MemoizedValueTest {
 	}
 
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
 		brjs.close();
 		org.apache.commons.io.FileUtils.deleteQuietly(tempDir);
 	}
