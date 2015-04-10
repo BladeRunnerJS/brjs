@@ -352,7 +352,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
     		.and(blade2InDefaultBladeset).hasClass("foo/Blade2Class")
     		.and(logging).enabled();
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then(logging).warnMessageReceived(BundleSetBuilder.STRICT_CHECKING_DISABLED_MSG, "blades/b2/src/foo/Blade2Class.js", "brjs-apps/app1/blades/b2/src/foo", "brjs-apps/app1/blades/b2/src/foo/no-strict-checking");
+    	then(logging).warnMessageReceived(BundleSetBuilder.STRICT_CHECKING_DISABLED_MSG, "brjs-apps/app1/blades/b2/src/foo", "blades/b2/src/foo/Blade2Class.js", "brjs-apps/app1/blades/b2/src/foo/no-strict-checking");
 	}
 	
 }
