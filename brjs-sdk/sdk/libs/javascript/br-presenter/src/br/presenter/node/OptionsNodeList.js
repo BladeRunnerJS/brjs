@@ -151,7 +151,7 @@ br.presenter.node.OptionsNodeList.prototype._getOptionObjects = function(vOption
 
 	var pResult = [];
 
-	if(vOptions instanceof Array)
+	if(Object.prototype.toString.call(vOptions) === '[object Array]')
 	{
 		for(var i = 0; i < vOptions.length; i++)
 		{
