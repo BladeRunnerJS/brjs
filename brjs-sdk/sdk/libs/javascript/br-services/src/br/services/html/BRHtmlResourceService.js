@@ -62,7 +62,7 @@ BRHtmlResourceService.prototype.getHTMLTemplate = function(templateId) {
 
 function loadHtml(url) {
 	var templateElems = document.createElement('div');
-	document.body.appendChild(templateElems); // TODO: move to bottom of method?
+	document.querySelector('head').appendChild(templateElems); // TODO: move to bottom of method?
 
 	var rawHtml = File.readFileSync(url);
 	var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
