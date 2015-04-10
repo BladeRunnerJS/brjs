@@ -224,6 +224,11 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
+	public boolean isScopeEnforced() {
+		return true;
+	}
+	
+	@Override
 	public boolean isRequirable()
 	{
 		return true;

@@ -212,6 +212,11 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	@Override
+	public boolean isScopeEnforced() {
+		return true;
+	}
+	
+	@Override
 	public boolean isRequirable()
 	{
 		return true;

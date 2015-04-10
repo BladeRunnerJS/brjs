@@ -196,6 +196,11 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
+	public boolean isScopeEnforced() {
+		return true;
+	}
+	
+	@Override
 	public boolean isRequirable()
 	{
 		return true;

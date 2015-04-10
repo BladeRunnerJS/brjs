@@ -89,6 +89,11 @@ public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAs
 	}
 	
 	@Override
+	public boolean isScopeEnforced() {
+		return true;
+	}
+	
+	@Override
 	public boolean isRequirable()
 	{
 		return false;

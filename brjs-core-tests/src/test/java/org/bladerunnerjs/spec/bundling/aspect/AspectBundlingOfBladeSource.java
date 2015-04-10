@@ -5,9 +5,11 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.utility.BundleSetBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -264,6 +266,93 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(aspect).indexPageRequires("appns/App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns/b1/Blade1Class", "appns/b2/Blade2Class");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfBladeClassRequestsAResourceFromDefaultAspect() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/Blade2Class")
+			.and(blade2InDefaultBladeset).hasClass("Blade2Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfScopeRequirePathException.class, 
+				"appns/b1/Blade1Class", "appns/b2/Blade2Class", "blades/b2/src/Blade2Class.js", Blade.class.getSimpleName(),
+				"brjs-apps/app1/blades/b1, brjs-apps/app1")
+			.whereTopLevelExceptionIs(ContentProcessingException.class);
+	}
+	
+	@Test
+	public void exceptionIsNotThrownIfBladeClassRequestsAResourceFromDefaultAspect_andRequiringBladeAssetContainerHasNoScrictCheckingFile() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/Blade2Class")
+			.and(blade1InDefaultBladeset).containsEmptyFile("no-strict-checking")
+			.and(blade2InDefaultBladeset).hasClass("Blade2Class");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns/b1/Blade1Class", "appns/b2/Blade2Class")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void exceptionIsNotThrownIfBladeClassRequestsAResourceFromDefaultAspect_andRequiredBladeAssetContainerHasNoScrictCheckingFile() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/Blade2Class")
+			.and(blade2InDefaultBladeset).hasClass("Blade2Class")
+			.and(blade2InDefaultBladeset).containsEmptyFile("no-strict-checking");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns/b1/Blade1Class", "appns/b2/Blade2Class")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void exceptionIsThrownIfBladeRequiresAnAspectClass() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/AspectClass")
+			.and(aspect).hasClass("appns/AspectClass");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfScopeRequirePathException.class);
+	}
+	
+	@Test
+	public void exceptionIsThrownIfBladeRequiresADefaultAspectClass() throws Exception {
+		given( app.defaultAspect() ).indexPageRequires("appns/b1/Blade1Class")
+			.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/AspectClass")
+			.and( app.defaultAspect() ).hasClass("appns/AspectClass");
+		when( app.defaultAspect() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfScopeRequirePathException.class);
+	}
+	
+	@Test
+	public void noStrictCheckingFileCanBeAtANestedLevelInsideTheBlade() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/foo/Blade2Class")		
+    		.and(blade2InDefaultBladeset).hasDir("src/foo")
+    		.and(blade2InDefaultBladeset).containsEmptyFile("src/foo/no-strict-checking")
+    		.and(blade2InDefaultBladeset).hasClass("foo/Blade2Class");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsCommonJsClasses("appns/b1/Blade1Class", "appns/b2/Blade2Class")
+    		.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void noStrictCheckingFileCanBeAtANestedLevelInsideTheBladeAndOnlyAppliesToSubfolders() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/Blade2Class")		
+    		.and(blade2InDefaultBladeset).hasDir("src/foo")
+    		.and(blade2InDefaultBladeset).containsEmptyFile("src/foo/no-strict-checking")
+    		.and(blade2InDefaultBladeset).hasClass("Blade2Class");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(exceptions).verifyException(OutOfScopeRequirePathException.class);
+	}
+	
+	@Test
+	public void warningIsLoggedWhenStrictCheckingIsDisabled() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/foo/Blade2Class")
+    		.and(blade2InDefaultBladeset).hasDir("src/foo")
+    		.and(blade2InDefaultBladeset).containsEmptyFile("src/foo/no-strict-checking")
+    		.and(blade2InDefaultBladeset).hasClass("foo/Blade2Class")
+    		.and(logging).enabled();
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(logging).warnMessageReceived(BundleSetBuilder.STRICT_CHECKING_DISABLED_MSG, "brjs-apps/app1/blades/b2/src/foo", "blades/b2/src/foo/Blade2Class.js", "brjs-apps/app1/blades/b2/src/foo/no-strict-checking");
 	}
 	
 }
