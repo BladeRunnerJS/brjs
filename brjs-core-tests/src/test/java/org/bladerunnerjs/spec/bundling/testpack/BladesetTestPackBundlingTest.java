@@ -37,9 +37,9 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladesetUTs).testRefersTo("pkg/test.js", "appns.bs.Class1");
-		then(bladesetUTs).bundledFilesEquals(
-				bladeset.assetLocation("src").file("appns/bs/Class1.js"),
-				bladeset.assetLocation("src").file("appns/bs/Class2.js"));
+		then(bladesetUTs).srcOnlyBundledFilesEquals(
+				bladeset.file("src/appns/bs/Class1.js"),
+				bladeset.file("src/appns/bs/Class2.js"));
 	}
 	
 	@Test
@@ -48,9 +48,9 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1");
-		then(bladesetATs).bundledFilesEquals(
-				bladeset.assetLocation("src").file("appns/bs/Class1.js"),
-				bladeset.assetLocation("src").file("appns/bs/Class2.js"));
+		then(bladesetATs).srcOnlyBundledFilesEquals(
+				bladeset.file("src/appns/bs/Class1.js"),
+				bladeset.file("src/appns/bs/Class2.js"));
 	}
 	
 	@Test
@@ -60,9 +60,9 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			.and(bladeset).hasClasses("appns.bs.Class1")
 			.and(bladesetUTs).classExtends("appns.bs.Util", "appns.bs.Class1")
 			.and(bladesetUTs).testRefersTo("pkg/test.js", "appns.bs.Util");
-		then(bladesetUTs).bundledFilesEquals(
-			bladeset.assetLocation("src").file("appns/bs/Class1.js"),
-			bladesetUTs.testSource().file("appns/bs/Util.js"));
+		then(bladesetUTs).srcOnlyBundledFilesEquals(
+			bladeset.file("src/appns/bs/Class1.js"),
+			bladesetUTs.file("src-test/appns/bs/Util.js"));
 	}
 	
 	@Test
@@ -72,9 +72,9 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).hasDir("src/.svn")
 			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1");
-		then(bladesetATs).bundledFilesEquals(
-			bladeset.assetLocation("src").file("appns/bs/Class1.js"),
-			bladeset.assetLocation("src").file("appns/bs/Class2.js"));
+		then(bladesetATs).srcOnlyBundledFilesEquals(
+			bladeset.file("src/appns/bs/Class1.js"),
+			bladeset.file("src/appns/bs/Class2.js"));
 	}
 	
 	@Test
@@ -85,8 +85,8 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1")
 			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1", "appns.bs.b1.Class1");
-		then(bladesetATs).bundledFilesEquals(
-			bladeset.assetLocation("src").file("appns/bs/Class1.js"),
-			bladeset.assetLocation("src").file("appns/bs/Class2.js"));
+		then(bladesetATs).srcOnlyBundledFilesEquals(
+			bladeset.file("src/appns/bs/Class1.js"),
+			bladeset.file("src/appns/bs/Class2.js"));
 	}
 }

@@ -1,8 +1,8 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +12,7 @@ import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 public class NonCircularTransitivePreExportDependencyGraphCreator {
 	public static Map<SourceModule, List<SourceModule>> createGraph(Map<SourceModule, List<SourceModule>> preExportDependencyGraph, Map<SourceModule, List<SourceModule>> postExportDependencyGraph) throws ModelOperationException {
-		Map<SourceModule, List<SourceModule>> combinedDefineTimeDependencyGraph = new HashMap<>();
+		Map<SourceModule, List<SourceModule>> combinedDefineTimeDependencyGraph = new LinkedHashMap<>();
 		
 		for(SourceModule sourceModule : preExportDependencyGraph.keySet()) {
 			List<SourceModule> combinedDefineTimeDependencies = new ArrayList<>(preExportDependencyGraph.get(sourceModule));
@@ -27,14 +27,14 @@ public class NonCircularTransitivePreExportDependencyGraphCreator {
 	}
 
 	private static Map<SourceModule, List<SourceModule>> nonCircularPostExportDependencies(Map<SourceModule, List<SourceModule>> postExportDependencyGraph, Map<SourceModule, List<SourceModule>> combinedDefineTimeDependencyGraph) {
-		Map<SourceModule, List<SourceModule>> nonCircularPostExportDependencyGraph = new HashMap<>();
+		Map<SourceModule, List<SourceModule>> nonCircularPostExportDependencyGraph = new LinkedHashMap<>();
 		
 		for(SourceModule sourceModule : postExportDependencyGraph.keySet()) {
 			List<SourceModule> dependentSourceModules = postExportDependencyGraph.get(sourceModule);
 			List<SourceModule> nonCircularDependentSourceModules = new ArrayList<>();
 			
 			for(SourceModule dependentSourceModule : dependentSourceModules) {
-				if(!reachable(dependentSourceModule, sourceModule, combinedDefineTimeDependencyGraph, new HashSet<>())) {
+				if(!reachable(dependentSourceModule, sourceModule, combinedDefineTimeDependencyGraph, new LinkedHashSet<>())) {
 					nonCircularDependentSourceModules.add(dependentSourceModule);
 				}
 			}

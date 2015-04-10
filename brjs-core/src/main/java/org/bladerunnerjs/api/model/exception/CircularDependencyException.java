@@ -1,13 +1,13 @@
 package org.bladerunnerjs.api.model.exception;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.model.BundlableNode;
 
 import com.google.common.base.Joiner;
 
@@ -31,7 +31,7 @@ public class CircularDependencyException extends ModelOperationException {
 		for(SourceModule sourceModule : sourceModules) {
 			dependencyChain = new ArrayList<>();
 			dependencyChain.add(sourceModule.getPrimaryRequirePath());
-			circularDependency = traverseDependencies(bundlableNode, sourceModule, sourceModules, dependencyChain, new HashSet<SourceModule>());
+			circularDependency = traverseDependencies(bundlableNode, sourceModule, sourceModules, dependencyChain, new LinkedHashSet<SourceModule>());
 			
 			if(circularDependency != null) {
 				break;
@@ -41,7 +41,7 @@ public class CircularDependencyException extends ModelOperationException {
 		return Joiner.on(" => ").join(circularDependency);
 	}
 	
-	private static List<String> traverseDependencies(BundlableNode bundlableNode, SourceModule sourceModule, Set<SourceModule> sourceModules, List<String> dependencyChain, HashSet<SourceModule> visitedSourceModules) throws ModelOperationException {
+	private static List<String> traverseDependencies(BundlableNode bundlableNode, SourceModule sourceModule, Set<SourceModule> sourceModules, List<String> dependencyChain, LinkedHashSet<SourceModule> visitedSourceModules) throws ModelOperationException {
 		for(Asset dependentAsset : sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode)) {
 			if(sourceModules.contains(dependentAsset)) {
 				SourceModule dependentSourceModule = (SourceModule) dependentAsset;

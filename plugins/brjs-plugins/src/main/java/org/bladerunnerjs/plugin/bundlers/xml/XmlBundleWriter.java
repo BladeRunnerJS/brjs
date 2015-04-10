@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +17,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.aliasing.NamespaceException;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
@@ -124,7 +123,7 @@ public class XmlBundleWriter
 				continue;
 			}
 			
-			MemoizedFile document = xmlAsset.dir().file(xmlAsset.getAssetName());
+			MemoizedFile document = xmlAsset.file();
 			try{
 				XmlSiblingReader siblingReader = new XmlSiblingReader(inputFactory, xmlAsset.getReader());
 				siblingReader.setAsset(xmlAsset);
@@ -203,7 +202,7 @@ public class XmlBundleWriter
 	private Map<String, String> getNamespaceDeclarations(List<XmlSiblingReader> readers, String elementName)
 	{
 
-		Map<String, String> namespaceDeclarations = new HashMap<String, String>();
+		Map<String, String> namespaceDeclarations = new LinkedHashMap<String, String>();
 		
 		for (XmlSiblingReader reader : readers)
 		{
@@ -233,7 +232,7 @@ public class XmlBundleWriter
 
 	private String getNextElement(final List<XmlSiblingReader> readers, final XmlResourceConfig resourceConfig) throws XMLStreamException, ContentProcessingException
 	{
-		Map<String, Boolean> availableElements = new HashMap<String, Boolean>();
+		Map<String, Boolean> availableElements = new LinkedHashMap<String, Boolean>();
 		String nextElement = null;
 
 		for (XmlSiblingReader reader : readers)
@@ -285,7 +284,7 @@ public class XmlBundleWriter
 	private void mergeElements(final List<XmlSiblingReader> readers, XMLStreamWriter writer, final XmlResourceConfig resourceConfig, final String elementName) 
 			throws  ContentProcessingException
 	{
-		Map<String, File> processedIdentifers = new HashMap<String, File>();
+		Map<String, File> processedIdentifers = new LinkedHashMap<String, File>();
 		String identifierAttribute = resourceConfig.getMergeElementIdentifier(elementName);
 
 		for (XmlSiblingReader reader : readers)

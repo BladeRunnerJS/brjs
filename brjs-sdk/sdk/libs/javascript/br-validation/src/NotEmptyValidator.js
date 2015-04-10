@@ -2,19 +2,22 @@
  * @module br/validation/NotEmptyValidator
  */
 
+var brCore = require("br/Core");
+var Validator = require("br/validation/Validator");
+
 /**
  * @class
  * @alias module:br/validation/NotEmptyValidator
  * @implements module:br/validation/Validator
  */
-br.validation.NotEmptyValidator = function(sFailureMessage)
+var NotEmptyValidator = function(sFailureMessage)
 {
 	this.sMessage = sFailureMessage;
 };
 
-br.Core.implement(br.validation.NotEmptyValidator, br.validation.Validator);
+brCore.implement(NotEmptyValidator, Validator);
 
-br.validation.NotEmptyValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
+NotEmptyValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {
 	if(vValue=="")
 	{
@@ -30,3 +33,5 @@ br.validation.NotEmptyValidator.prototype.validate = function(vValue, mAttribute
 	
 	oValidationResult.setResult(bIsValid, sFailureMessage);
 };
+
+module.exports = NotEmptyValidator;

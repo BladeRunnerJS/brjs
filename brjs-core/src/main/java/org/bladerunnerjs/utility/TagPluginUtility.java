@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +81,7 @@ public class TagPluginUtility {
 	{
 		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.getBundlableNode().root().plugins().tagHandlerPlugins();
 		
-		Map<String,Map<String,String>> tagsAndAttributes = new HashMap<>();
+		Map<String,Map<String,String>> tagsAndAttributes = new LinkedHashMap<>();
 		
 		TagMatchHandler tagMatchHandler = new TagMatchHandler() {
 			@Override
@@ -90,7 +89,7 @@ public class TagPluginUtility {
 			{
 				getTagHandlerForTag(tagHandlerPlugins, tagMatch.tag); // check the tag is valid
 				if (!tagsAndAttributes.containsKey(tagMatch.tag)) {
-					tagsAndAttributes.put(tagMatch.tag, new HashMap<>());
+					tagsAndAttributes.put(tagMatch.tag, new LinkedHashMap<>());
 				}
 				tagsAndAttributes.get(tagMatch.tag).putAll( tagMatch.attributes );
 			}

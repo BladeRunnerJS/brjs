@@ -3,7 +3,6 @@ package org.bladerunnerjs.api;
 import java.util.List;
 
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.BundlableNode;
 
 /**
  * An extension of AssetFile, represents any AssetFile that could depend on other AssetFiles. 
@@ -16,5 +15,5 @@ public interface LinkedAsset extends Asset {
 	 * @param bundlableNode TODO
 	 */
 	List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
-	List<String> getAliasNames() throws ModelOperationException;
+	void addImplicitDependencies(List<Asset> implicitDependencies);
 }

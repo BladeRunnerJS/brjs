@@ -5,7 +5,9 @@ import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.spec.utility.AppCommander;
@@ -19,9 +21,7 @@ import org.bladerunnerjs.api.spec.utility.JsLibCommander;
 import org.bladerunnerjs.api.spec.utility.NamedDirNodeCommander;
 import org.bladerunnerjs.api.spec.utility.NamedNodeCommander;
 import org.bladerunnerjs.api.spec.utility.WorkbenchCommander;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.BladeWorkbench;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.eclipse.jetty.server.Server;
 
@@ -46,4 +46,6 @@ public class CommanderChainer {
 	public NamedDirNodeCommander and(NamedDirNode namedDirNode) { return new NamedDirNodeCommander(modelTest, namedDirNode); }
 	public AppServerCommander and(ApplicationServer applicationServer) { return new AppServerCommander(modelTest, applicationServer); }
 	public JettyServerCommander and(Server jettyServer) { return new JettyServerCommander(modelTest, jettyServer); }
+	
+	public <C extends SpecTestCommander> C and(C commander) { return commander; }
 }

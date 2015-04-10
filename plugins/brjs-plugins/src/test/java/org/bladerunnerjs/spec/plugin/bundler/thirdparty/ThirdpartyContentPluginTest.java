@@ -19,6 +19,8 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	private JsLib thirdpartyLib2;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer pageResponse = new StringBuffer();
+	private StringBuffer cssResponse = new StringBuffer();
+	private StringBuffer jsResponse = new StringBuffer();
 	private SdkJsLib sdkLib;
 	
 	@Before
@@ -280,6 +282,21 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires("appns/App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
 		then(pageResponse).containsText("window.my_lib");
+	}
+	
+	@Test
+	public void unusedCssAssetsFromADependentLibraryAreNotBundled() throws Exception {
+		given(thirdpartyLib2).containsFileWithContents("css/file.css", "unused css file")
+			.and(thirdpartyLib2).containsFileWithContents("file.js", "thirdparty-lib2 js file")
+			.and(thirdpartyLib2).containsFileWithContents("thirdparty-lib.manifest", "")
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: thirdparty-lib2")
+			.and(aspect).hasClass("App")
+			.and(aspect).classRequiresThirdpartyLib("App", thirdpartyLib)
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", cssResponse)
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", jsResponse);
+		then(cssResponse).doesNotContainText("unused css file")
+			.and(jsResponse).containsText("thirdparty-lib2 js file");
 	}
 	
 }

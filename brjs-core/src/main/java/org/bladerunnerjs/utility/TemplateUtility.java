@@ -13,6 +13,7 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
@@ -20,21 +21,22 @@ import org.bladerunnerjs.api.model.exception.template.TemplateDirectoryAlreadyEx
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.api.model.exception.template.TemplateNotFoundException;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
-import org.bladerunnerjs.model.BRJSNode;
 
 
 public class TemplateUtility
 {
+	
 	public static boolean templateExists(BRJS brjs, BRJSNode node, String templateGroup, CommandPlugin command) throws CommandArgumentsException {
+		String templateName = node.getTemplateName();
 		if (!brjs.confTemplateGroup(templateGroup).exists() && !brjs.sdkTemplateGroup(templateGroup).exists()) {
 			throw new CommandArgumentsException(new TemplateNotFoundException(("The '" + templateGroup + "' template group "
 					+ "could not be found at '" + brjs.confTemplateGroup(templateGroup).dir() + "'.")), command);
 		}
-		if (!brjs.confTemplateGroup(templateGroup).template(node.getTemplateName()).dir().exists() &&
-				!brjs.sdkTemplateGroup(templateGroup).template(node.getTemplateName()).dir().exists()) {
-			throw new CommandArgumentsException(new TemplateNotFoundException("The '" + node.getTemplateName() + 
+		if (!brjs.confTemplateGroup(templateGroup).template(templateName).dir().exists() &&
+				!brjs.sdkTemplateGroup(templateGroup).template(templateName).dir().exists()) {
+			throw new CommandArgumentsException(new TemplateNotFoundException("The '" + templateName + 
 					"' template for the '" + templateGroup + "' template" + " group could not be found at '" 
-					+ brjs.confTemplateGroup(templateGroup).template(node.getTemplateName()).dir() + "'."), command);
+					+ brjs.confTemplateGroup(templateGroup).template(templateName).dir() + "'."), command);
 		}	
 		return true;
 	}

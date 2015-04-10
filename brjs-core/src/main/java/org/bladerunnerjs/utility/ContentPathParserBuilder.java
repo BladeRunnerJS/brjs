@@ -1,6 +1,5 @@
 package org.bladerunnerjs.utility;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -8,7 +7,7 @@ import java.util.Map;
 public class ContentPathParserBuilder
 {
 	private final Map<String, String> contentForms = new LinkedHashMap<>();
-	private final Map<String, String> tokens = new HashMap<>();
+	private final Map<String, String> tokens = new LinkedHashMap<>();
 	private boolean builderIsMidSentence = false;
 
 	public static final String NAME_TOKEN = "[^_/:*?\"]+";

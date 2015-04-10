@@ -68,7 +68,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public List<String> getDependentContentPluginRequestPrefixes()
+	public List<String> usedContentPluginRequestPrefixes()
 	{
 		return Arrays.asList( "js" );
 	}

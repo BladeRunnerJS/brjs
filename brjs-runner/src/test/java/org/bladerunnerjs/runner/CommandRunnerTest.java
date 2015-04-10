@@ -1,8 +1,9 @@
 package org.bladerunnerjs.runner;
 
 import static org.bladerunnerjs.api.spec.utility.BRJSAssertions.*;
-import static org.mockito.Mockito.*;
+
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

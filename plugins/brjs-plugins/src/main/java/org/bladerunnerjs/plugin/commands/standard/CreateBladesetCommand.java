@@ -12,7 +12,7 @@ import org.bladerunnerjs.api.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
@@ -22,7 +22,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class CreateBladesetCommand extends ArgsParsingCommandPlugin
+public class CreateBladesetCommand extends JSAPArgsParsingCommandPlugin
 {
 	public class Messages {
 		public static final String BLADESET_CREATE_SUCCESS_CONSOLE_MSG = "Successfully created new bladeset '%s'";

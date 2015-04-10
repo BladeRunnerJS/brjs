@@ -2,10 +2,10 @@ package org.bladerunnerjs.api.spec.engine;
 
 import java.io.IOException;
 
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 
 public class BundlableNodeBuilder<N extends BundlableNode> extends AssetContainerBuilder<N> {

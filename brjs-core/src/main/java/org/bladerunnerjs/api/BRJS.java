@@ -3,7 +3,7 @@ package org.bladerunnerjs.api;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +30,6 @@ import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.AbstractBRJSRootNode;
 import org.bladerunnerjs.model.AppVersionGenerator;
 import org.bladerunnerjs.model.BRJSGlobalFilesIOFileFilter;
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.LogLevelAccessor;
 import org.bladerunnerjs.model.SdkJsLib;
@@ -47,7 +45,6 @@ import org.bladerunnerjs.utility.FileObserverFactory;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
-import org.bladerunnerjs.utility.reader.CharBufferPool;
 
 public class BRJS extends AbstractBRJSRootNode
 {
@@ -80,7 +77,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
 	private final MemoizedFileAccessor memoizedFileAccessor;
-	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
+	private final Map<Integer, ApplicationServer> appServers = new LinkedHashMap<Integer, ApplicationServer>();
 	private final PluginAccessor pluginAccessor;
 	private final IOFileFilter globalFilesFilter = new BRJSGlobalFilesIOFileFilter(this);
 	private final IO io = new IO( globalFilesFilter );
@@ -95,7 +92,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private boolean closed = false;
-	private CharBufferPool pool = new CharBufferPool();
+	
 	private MemoizedFile appsFolder;
 	private MemoizedFile sdkFolder;
 
@@ -165,10 +162,6 @@ public class BRJS extends AbstractBRJSRootNode
 			currentFolder = currentFolder.getParentFile();
 		}
 		return new File (brjsDir, "brjs-apps");
-	}
-	
-	public CharBufferPool getCharBufferPool(){
-		return pool;
 	}
 	
 	@Override
@@ -252,7 +245,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> apps()
 	{
-		Map<String,App> apps = new HashMap<>();
+		Map<String,App> apps = new LinkedHashMap<>();
 		
 		for (App app : systemApps()) {
 			apps.put(app.getName(), app);

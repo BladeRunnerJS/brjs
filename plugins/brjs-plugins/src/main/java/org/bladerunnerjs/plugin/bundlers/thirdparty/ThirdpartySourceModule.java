@@ -5,24 +5,24 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.AssetLocationUtility;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
@@ -31,23 +31,32 @@ import com.Ostermiller.util.ConcatReader;
 public class ThirdpartySourceModule implements SourceModule
 {
 
-	private ThirdpartyAssetLocation assetLocation;
 	private ThirdpartyLibManifest manifest;
 	private String assetPath;
 	private SourceModulePatch patch;
 	private String defaultFileCharacterEncoding;
+	private AssetContainer assetContainer;
+	private String primaryRequirePath;
+	private List<Asset> implicitDependencies;
 	
-	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
+	public ThirdpartySourceModule(AssetContainer assetContainer, List<Asset> implicitDependencies) {
 		try {
-			this.assetLocation = assetLocation;
-			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(assetLocation.dir());
-			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
-			manifest = assetLocation.getManifest();
+			this.assetContainer = assetContainer;
+			assetPath = assetContainer.app().dir().getRelativePath(assetContainer.dir());
+			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			primaryRequirePath = calculateRequirePath(assetContainer);
+			patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
+			manifest = new ThirdpartyLibManifest(assetContainer);
+			this.implicitDependencies = implicitDependencies;
 		}
 		catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		this.implicitDependencies.addAll(implicitDependencies);
 	}
 	
 	@Override
@@ -56,7 +65,6 @@ public class ThirdpartySourceModule implements SourceModule
 		List<Reader> fileReaders = new ArrayList<>();
 		List<Reader> jsFileReaders = new ArrayList<>();
 
-		
 		try {			
 			for(File file : manifest.getJsFiles()) {
 				jsFileReaders.add(new UnicodeReader(file, defaultFileCharacterEncoding));
@@ -94,20 +102,9 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public AssetLocation assetLocation()
+	public MemoizedFile file()
 	{
-		return assetLocation;
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
-	}
-	
-	@Override
-	public MemoizedFile dir()
-	{
-		return assetLocation.dir();
+		return assetContainer.dir();
 	}
 	
 	@Override
@@ -127,23 +124,39 @@ public class ThirdpartySourceModule implements SourceModule
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		
+		List<MemoizedFile> cssFiles;
+		try {
+			cssFiles = manifest.getCssFiles();
+		} catch(ConfigException ex) {
+			throw new ModelOperationException(ex);
+		}
+		
+		for (MemoizedFile cssFile : cssFiles) {
+			String cssFileRelativePath = StringUtils.substringBeforeLast(assetContainer.dir().getRelativePath(cssFile),".");
+			String cssFileRequirePath = "css!"+assetContainer.requirePrefix()+"/"+cssFileRelativePath;
+			
+			Asset cssAsset = assetContainer.asset(cssFileRequirePath);
+			if (cssAsset == null) {
+				String appRelativePath = assetContainer.app().dir().getRelativePath(cssFile);
+				throw new ModelOperationException("Unable to find CSS asset located at '"+appRelativePath+"' with the require path '"+cssFileRequirePath+"'.");
+			}
+			dependendAssets.add( cssAsset );
+		}
+		
+		dependendAssets.addAll(implicitDependencies);
+		
 		return dependendAssets;
-	}
-
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException
-	{
-		return Collections.emptyList();
 	}
 
 	@Override
 	public String getPrimaryRequirePath()
 	{
-		return RequirePathUtility.getPrimaryRequirePath(this);
+		return primaryRequirePath;
 	}
 	
 	public String getGlobalisedName() {
-		return dir().getName().replace("-", "_");
+		return file().getName().replace("-", "_");
 	}
 	
 	@Override
@@ -175,9 +188,9 @@ public class ThirdpartySourceModule implements SourceModule
 				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
 				if (!dependentLib.dirExists())
 				{
-					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
+					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
 				}
-				dependentLibs.addAll(dependentLib.linkedAssets());
+				dependentLibs.add(dependentLib.asset(dependentLib.requirePrefix()));
 			}
 		}
 		catch (ConfigException ex)
@@ -201,10 +214,23 @@ public class ThirdpartySourceModule implements SourceModule
 	
 	@Override
 	public List<String> getRequirePaths() {
-		List<String> requirePaths = new ArrayList<String>();
-		requirePaths.add(assetLocation.dir().getName());
-		
-		return requirePaths;
+		return Arrays.asList(primaryRequirePath);
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
+	
+	public static String calculateRequirePath(AssetContainer assetContainer) {
+		return assetContainer.dir().getName();
 	}
 	
 }

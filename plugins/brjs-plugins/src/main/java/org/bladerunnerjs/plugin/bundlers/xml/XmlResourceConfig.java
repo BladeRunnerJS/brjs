@@ -1,15 +1,15 @@
 package org.bladerunnerjs.plugin.bundlers.xml;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class XmlResourceConfig
 {
 	private List<String> templateElements = new ArrayList<String>();
-	private Map<String, String> mergeElementIdentifiers = new HashMap<String, String>();
-	private Map<String, Boolean> mergeElements = new HashMap<String, Boolean>();
+	private Map<String, String> mergeElementIdentifiers = new LinkedHashMap<String, String>();
+	private Map<String, Boolean> mergeElements = new LinkedHashMap<String, Boolean>();
 	
 	XmlResourceConfig(final String rootElementStr, final String templateElementsStr, final String mergeElementsStr)
 	{

@@ -65,4 +65,12 @@ public interface Plugin
 	 * @return A reference to the class of the underlying plug-in.
 	 */
 	Class<?> getPluginClass();
+	
+	/**
+	 * Get the priority for this plugin. Lower priorities correspond to earlier execution.
+	 * The default priority for plugins is 10.
+	 * 
+	 * @return the priority for this plugin. Lower priorities correspond to earlier execution.
+	 */
+	int priority();
 }

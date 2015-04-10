@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.TestAsset;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
@@ -24,10 +25,8 @@ import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsContentPlugin;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -72,7 +71,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
@@ -92,8 +91,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList(CommonJsContentPlugin.class.getCanonicalName());
+	public int priority() {
+		return 20;
 	}
 	
 	@Override
@@ -209,7 +208,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 
 		for (SourceModule sourceModule : bundleSet.getSourceModules())
 		{
-			if ((sourceModule instanceof NamespacedJsSourceModule) && !(sourceModule.assetLocation() instanceof TestAssetLocation))
+			if ((sourceModule instanceof NamespacedJsSourceModule) && !(sourceModule instanceof TestAsset))
 			{
 				List<String> packageList = Arrays.asList(sourceModule.getPrimaryRequirePath().split("/"));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
@@ -305,7 +304,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 		@Override
 		public boolean apply(SourceModule input)
 		{
-			return ( type.isAssignableFrom(input.getClass()) && !(input.assetLocation() instanceof TestAssetLocation) );
+			return ( type.isAssignableFrom(input.getClass()) && !(input instanceof TestAsset) );
 		}
 	}
 }

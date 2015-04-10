@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,16 +18,18 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.logging.Logger;
@@ -34,14 +37,13 @@ import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
 import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
+
 import org.bladerunnerjs.logging.SLF4JLogger;
 
-import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.utility.FileUtils;
@@ -90,6 +92,7 @@ public class NodeImporter {
 		for(Aspect aspect : tempBrjsApp.aspects()) {
 			updateRequirePrefix(aspect, sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
 			renameTestLocations(aspect.testTypes(), sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
+			updateRequirePrefixInRootFiles(aspect, sourceAppRequirePrefix);
 		}
 		
 		for(Bladeset bladeset : tempBrjsApp.bladesets()) {
@@ -136,10 +139,10 @@ public class NodeImporter {
 	private static BRJS createTemporaryBRJSModel() throws InvalidSdkDirectoryException, IOException {
 		BRJS brjs;
 		File tempSdkDir = FileUtils.createTemporaryDirectory(NodeImporter.class);
+		
 		try {
     		new File(tempSdkDir, "sdk").mkdir();
     		MockPluginLocator pluginLocator = new MockPluginLocator();
-    		pluginLocator.assetLocationPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class));
     		pluginLocator.assetPlugins.addAll(PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class));
     		brjs = new BRJS(tempSdkDir, tempSdkDir, pluginLocator, new StubLoggerFactory(), new MockAppVersionGenerator());
 		} finally {
@@ -152,6 +155,7 @@ public class NodeImporter {
 		updateRequirePrefix(bladeset, sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
 		renameTestLocations(bladeset.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
+		updateRequirePrefixInRootFiles(bladeset.workbench(), sourceAppRequirePrefix);
 		
 		for(Blade blade : bladeset.blades()) {
 			updateRequirePrefix(blade, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
@@ -159,7 +163,8 @@ public class NodeImporter {
 			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 			
 			BladeWorkbench workbench = blade.workbench();			
-			updateRequirePrefix(workbench, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());			
+			updateRequirePrefix(workbench, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+			updateRequirePrefixInRootFiles(workbench, sourceAppRequirePrefix);
 		}
 	}
 	
@@ -174,23 +179,31 @@ public class NodeImporter {
 	}
 	
 	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException {
+		BRJS brjs = assetContainer.root();
 		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
-			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-				if(assetLocation.dir().exists()) {
-					if(assetLocation.file(sourceRequirePrefix).exists()) {
-						FileUtils.moveDirectory(assetLocation.file(sourceRequirePrefix), assetLocation.file(targetRequirePrefix));
-						if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && assetLocation.file(sourceAppRequirePrefix).exists()) {
-							FileUtils.deleteDirectory( assetLocation.file(sourceAppRequirePrefix) );
-						}
+			for (String updatePrefixForLocation : Arrays.asList("src", "src-test", "tests", "resources")) {
+				MemoizedFile updateRequirePrefixForLocationDir = assetContainer.file(updatePrefixForLocation);
+				MemoizedFile sourceRequirePrefixDir = updateRequirePrefixForLocationDir.file(sourceRequirePrefix);
+				MemoizedFile targetRequirePrefixDir = updateRequirePrefixForLocationDir.file(targetRequirePrefix);
+				if (sourceRequirePrefixDir.isDirectory()) {
+					FileUtils.moveDirectory(sourceRequirePrefixDir, targetRequirePrefixDir);
+					MemoizedFile sourceAppRequirePrefixDir = assetContainer.file(updatePrefixForLocation+"/"+sourceAppRequirePrefix);
+					if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && sourceAppRequirePrefixDir.exists()) {
+						FileUtils.deleteDirectory(sourceAppRequirePrefixDir);
 					}
-					
+				}
+				if (updateRequirePrefixForLocationDir.isDirectory()) {
+					findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
 				}
 			}
-			for(AssetLocation assetLocation : assetContainer.assetLocations()) { // do this in a seperate loop since the asset locations will change when they are renamed
-				if(assetLocation.dir().exists()) {
-					findAndReplaceInAllTextFiles(assetLocation.root(), assetLocation.dir(), sourceRequirePrefix, targetRequirePrefix);
-				}
-			}
+		}
+	}
+	
+	private static void updateRequirePrefixInRootFiles(BundlableNode browsableNode, String sourceAppRequirePrefix) throws IOException, ConfigException {
+		File[] rootHtmlFiles = browsableNode.dir().getUnderlyingFile().listFiles( (FileFilter)new SuffixFileFilter(".html"));
+		if (rootHtmlFiles != null) {
+			findAndReplaceInTextFiles(browsableNode.root(), Arrays.asList(rootHtmlFiles), 
+					sourceAppRequirePrefix, browsableNode.requirePrefix());
 		}
 	}
 	

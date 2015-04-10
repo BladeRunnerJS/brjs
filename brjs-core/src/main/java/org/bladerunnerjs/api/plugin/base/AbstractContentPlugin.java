@@ -1,12 +1,13 @@
 package org.bladerunnerjs.api.plugin.base;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BrowsableNode;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
@@ -14,8 +15,6 @@ import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
-import org.bladerunnerjs.model.BrowsableNode;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.UrlContentAccessor;
@@ -26,17 +25,7 @@ import org.bladerunnerjs.utility.AppRequestHandler;
  * A specialization of {@link AbstractPlugin} for developers that need to implement {@link ContentPlugin}.
  */
 public abstract class AbstractContentPlugin extends AbstractPlugin implements ContentPlugin {
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Collections.emptyList();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return Collections.emptyList();
-	}
-	
+
 	public boolean outputAllBundles() {
 		return true;
 	}
@@ -85,7 +74,7 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 		Map<String,Map<String,String>> usedTagsAndAttributes = appRequestHandler.getTagsAndAttributesFromIndexPage(browsableNode, locale, urlContentAccessor, requestMode);		
 		
 		for (TagHandlerPlugin tagPlugin : browsableNode.app().root().plugins().tagHandlerPlugins()) {
-			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
+			for (String contentPluginPrefix : tagPlugin.usedContentPluginRequestPrefixes()) {
 				contentPluginProdRequestsMap.put(contentPluginPrefix, new ArrayList<String>());							
 			}
 		}
@@ -94,7 +83,7 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 			TagHandlerPlugin tagPlugin = browsableNode.root().plugins().tagHandlerPlugin(tag);
 			Map<String,String> tagAttributes = usedTagsAndAttributes.get(tag);
 			List<String> generatedRequests = tagPlugin.getGeneratedContentPaths(tagAttributes, bundleSet, requestMode, locale);
-			for (String contentPluginPrefix : tagPlugin.getDependentContentPluginRequestPrefixes()) {
+			for (String contentPluginPrefix : tagPlugin.usedContentPluginRequestPrefixes()) {
 				contentPluginProdRequestsMap.get(contentPluginPrefix).addAll(generatedRequests);
 			}
 		}

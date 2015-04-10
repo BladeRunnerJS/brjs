@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class FileModificationRegistry
 		incrementFileVersion(file);
 		
 		String filePath = file.getAbsolutePath();
-		Set<String> lastModifiedMapKeySet = new HashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
+		Set<String> lastModifiedMapKeySet = new LinkedHashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
 		for (String path : lastModifiedMapKeySet) {
 			if (path.startsWith(filePath)) {
 				lastModifiedMap.get(path).incrementValue();

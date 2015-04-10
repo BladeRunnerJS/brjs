@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.memoization.Getter;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
@@ -18,41 +18,57 @@ import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
-import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocationUtility;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.SourceModulePatch;
-import org.bladerunnerjs.utility.RequirePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
 
 public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	private MemoizedFile assetFile;
-	private AssetLocation assetLocation;
 	
 	private SourceModulePatch patch;
 	
 	private MemoizedValue<ComputedValue> computedValue;
 	private List<String> requirePaths = new ArrayList<>();
 
-	public DefaultCommonJsSourceModule(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		this.assetLocation = assetLocation;
-		this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
+	private String primaryRequirePath;
+
+	private AssetContainer assetContainer;
+
+	private List<Asset> implicitDependencies;
+
+	public DefaultCommonJsSourceModule(AssetContainer assetContainer, String requirePrefix, MemoizedFile assetFile, List<Asset> implicitDependencies) {
+		this.assetFile = assetFile;
+		this.assetContainer = assetContainer;
+		this.implicitDependencies = implicitDependencies;
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().getRelativePath(assetFile).replaceAll("\\.js$", "");
-		requirePaths.add(requirePath);
+		primaryRequirePath = calculateRequirePath(requirePrefix, assetFile);
+		requirePaths.add(primaryRequirePath);
 		
-		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
-		computedValue = new MemoizedValue<>(getAssetPath()+" - computedValue", assetLocation.root(), assetFile, patch.getPatchFile());
+		patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
+		computedValue = new MemoizedValue<>(getAssetPath()+" - computedValue", assetContainer.root(), assetFile, patch.getPatchFile());
+	}
+	
+	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		this.implicitDependencies.addAll(implicitDependencies);
 	}
 	
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependendAssets = new ArrayList<>();
+		
+		String parentRequirePath = StringUtils.substringBeforeLast(getPrimaryRequirePath(), "/");
+		assetContainer.asset(parentRequirePath);
+		
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll(implicitDependencies);
+		
 		return dependendAssets;
 	}
 	
@@ -61,17 +77,11 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		return requirePaths;
 	}
 	
-	
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return getComputedValue().aliases;
-	}
-	
 	@Override
 	public Reader getUnalteredContentReader() throws IOException {
 		try
 		{
-			String defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			String defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			Reader assetReader = new UnicodeReader(assetFile, defaultFileCharacterEncoding);
 			if (patch.patchAvailable()){
 				return new ConcatReader( new Reader[] { assetReader, patch.getReader() });
@@ -96,7 +106,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return RequirePathUtility.getPrimaryRequirePath(this);
+		return primaryRequirePath;
 	}
 	
 	@Override
@@ -125,8 +135,8 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	@Override
-	public MemoizedFile dir() {
-		return assetFile.getParentFile();
+	public MemoizedFile file() {
+		return assetFile;
 	}
 	
 	@Override
@@ -136,18 +146,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	
 	@Override
 	public String getAssetPath() {
-		return assetLocation.assetContainer().app().dir().getRelativePath(assetFile);
-	}
-	
-	@Override
-	public AssetLocation assetLocation()
-	{
-		return assetLocation;
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
+		return assetContainer.app().dir().getRelativePath(assetFile);
 	}
 	
 	private ComputedValue getComputedValue() throws ModelOperationException {
@@ -184,7 +183,7 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 
 	private List<Asset> getSourceModulesForRequirePaths(BundlableNode bundlableNode, Set<String> requirePaths) throws ModelOperationException {
 		try {
-			return bundlableNode.getLinkedAssets( assetLocation, new ArrayList<>(requirePaths) );
+			return bundlableNode.assets( this, new ArrayList<>(requirePaths) );
 		}
 		catch (AmbiguousRequirePathException e) {
 			e.setSourceRequirePath(getPrimaryRequirePath());
@@ -200,10 +199,27 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	private class ComputedValue {
-		public Set<String> preExportDefineTimeRequirePaths = new HashSet<>();
-		public Set<String> postExportDefineTimeRequirePaths = new HashSet<>();
-		public Set<String> useTimeRequirePaths = new HashSet<>();
+		public Set<String> preExportDefineTimeRequirePaths = new LinkedHashSet<>();
+		public Set<String> postExportDefineTimeRequirePaths = new LinkedHashSet<>();
+		public Set<String> useTimeRequirePaths = new LinkedHashSet<>();
 		public List<String> aliases = new ArrayList<>();
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
+	
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
+	{
+		return requirePrefix+"/"+assetFile.requirePathName();
 	}
 	
 }

@@ -9,8 +9,8 @@ import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.utility.deps.DependencyGraphReportBuilder;
 
 import com.martiansoftware.jsap.JSAP;
@@ -20,7 +20,7 @@ import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
+public class WorkbenchDepsCommand extends JSAPArgsParsingCommandPlugin
 {
 	private BRJS brjs;
 	private Logger logger;

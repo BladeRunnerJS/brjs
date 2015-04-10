@@ -2,21 +2,20 @@ package org.bladerunnerjs.plugin.bundlers.i18n;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
-import org.bladerunnerjs.api.aliasing.NamespaceException;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.Locale;
-import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.utility.RequirePathUtility;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class I18nFileAsset implements Asset
@@ -26,41 +25,40 @@ public class I18nFileAsset implements Asset
 		public static final String PROPERTY_NAMESPACE_EXCEPTION = "i18n property '%s' in property file '%s' is invalid. It must start with the same namespace as it's container, '%s'.";
 	}
 	
-	private AssetLocation assetLocation;
 	private MemoizedFile assetFile;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 	private Locale locale;
+	private AssetContainer assetContainer;
+	private String requirePath;
 	
-	public I18nFileAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		try {
-			this.assetLocation = assetLocation;
-			this.assetFile = assetLocation.root().getMemoizedFile(assetFile);
-			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(assetFile);
-			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			locale = Locale.createLocaleFromFilepath(getAssetName());
+	public I18nFileAsset(MemoizedFile i18nFile, AssetContainer assetContainer, String requirePrefix)
+	{
+		this.assetContainer = assetContainer;
+		this.assetFile = i18nFile;
+		assetPath = assetContainer.app().dir().getRelativePath(assetFile);
+		requirePath = calculateRequirePath(requirePrefix, i18nFile);
+		try
+		{
+			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
+		catch (ConfigException ex)
+		{
+			throw new RuntimeException(ex);
 		}
+		locale = Locale.createLocaleFromFilepath(getAssetName());
 	}
-	
+
 	@Override
 	public Reader getReader() throws IOException
 	{
 		return new UnicodeReader(assetFile, defaultFileCharacterEncoding);
 	}
-
-	@Override
-	public AssetLocation assetLocation()
-	{
-		return assetLocation;
-	}
 	
 	@Override
-	public MemoizedFile dir()
+	public MemoizedFile file()
 	{
-		return assetFile.getParentFile();
+		return assetFile;
 	}
 	
 	@Override
@@ -78,17 +76,17 @@ public class I18nFileAsset implements Asset
 	@Override
 	public List<String> getRequirePaths() {
 		// TODO: we should return the complete list of i18n tokens
-		return Collections.emptyList();
+		return Arrays.asList(requirePath);
 	}
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return RequirePathUtility.getPrimaryRequirePath(this);
+		return requirePath;
 	}
 
 	public Map<String,String> getLocaleProperties() throws IOException, RequirePathException, NamespaceException
 	{
-		Map<String, String> propertiesMap = new HashMap<String,String>();
+		Map<String, String> propertiesMap = new LinkedHashMap<String,String>();
 		Properties i18nProperties = new Properties();
 		
 		try(Reader propertiesReader = new UnicodeReader(assetFile, defaultFileCharacterEncoding)) {
@@ -96,7 +94,7 @@ public class I18nFileAsset implements Asset
 			
 			for (String property : i18nProperties.stringPropertyNames())
 			{
-				assetLocation().assertIdentifierCorrectlyNamespaced(property);
+				RequirePathUtility.assertIdentifierCorrectlyNamespaced(assetContainer, property);
 				String value = i18nProperties.getProperty(property);
 				propertiesMap.put(property, value.replaceAll("\n", "\\\\n"));
 			}
@@ -109,4 +107,21 @@ public class I18nFileAsset implements Asset
 		return locale;
 	}
 
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
+
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
+	{
+		return requirePrefix+"/"+assetFile.requirePathName();
+	}
+	
 }

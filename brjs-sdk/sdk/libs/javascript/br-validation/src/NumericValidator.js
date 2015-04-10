@@ -2,12 +2,15 @@
  * @module br/validation/NumericValidator
  */
 
+var brCore = require("br/Core");
+var Validator = require("br/validation/Validator");
+
 /**
  * @class
  * @alias module:br/validation/NumericValidator
  * @implements module:br/validation/Validator
  */
-br.validation.NumericValidator = function(sFailureMessage)
+var NumericValidator = function(sFailureMessage)
 {
 	this.sMessage = sFailureMessage;
 	/*
@@ -18,9 +21,9 @@ br.validation.NumericValidator = function(sFailureMessage)
 	this.m_oRegex = new RegExp(/^[-+]?(([\d]*\.?[\d]+)|([\d]+\.))$/);
 };
 
-br.Core.implement(br.validation.NumericValidator, br.validation.Validator);
+br.Core.implement(NumericValidator, Validator);
 
-br.validation.NumericValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
+NumericValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {
 	if((typeof vValue === 'string' || typeof vValue === 'number') && this.m_oRegex.test(vValue))
 	{
@@ -36,3 +39,5 @@ br.validation.NumericValidator.prototype.validate = function(vValue, mAttributes
 
 	oValidationResult.setResult(bIsValid, sFailureMessage);
 };
+
+module.exports = NumericValidator;

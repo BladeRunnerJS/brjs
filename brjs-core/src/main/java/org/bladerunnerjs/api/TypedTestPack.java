@@ -89,7 +89,7 @@ public class TypedTestPack extends SourceResources implements NamedNode
 	public TestPack defaultTestTech()
 	{
 		if (!hasSingleDefaultTestTech() && !technologyTestPacks.list().isEmpty()) {
-			throw new DuplicateAssetContainerException("The test pack at '%s' contains test tech nodes and therefore should not contain a 'deafult' test tech, yet the default test tech node was requested.", 
+			throw new DuplicateAssetContainerException("The test pack at '%s' contains test tech nodes and therefore should not contain a 'default' test tech, yet the default test tech node was requested.", 
 					root().dir().getRelativePath(dir()) );
 		}
 		return defaultTestPack.item();

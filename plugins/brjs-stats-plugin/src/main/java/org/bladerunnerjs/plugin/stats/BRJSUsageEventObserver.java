@@ -5,7 +5,7 @@ import io.keen.client.java.KeenCallback;
 import io.keen.client.java.KeenClient;
 import io.keen.client.java.KeenProject;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.api.App;
@@ -83,7 +83,7 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 		}
 		
 		String eventType;
-		Map<String,Object> eventData = new HashMap<String,Object>();
+		Map<String,Object> eventData = new LinkedHashMap<String,Object>();
 		
 		if (event instanceof BundleSetCreatedEvent) {
 			eventType = "bundlesets";
@@ -96,7 +96,7 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 				return;
 			}
 			
-			eventData.put("total_count", bundleset.getResourceFiles().size());
+			eventData.put("total_count", bundleset.getAssets().size());
 			eventData.put("execution_duration", bundleSetCreatedEvent.getCreationDuration());
 			eventData.put("bundlable_node_type", bundleset.getBundlableNode().getClass().getSimpleName());
 		}
@@ -136,7 +136,7 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 	}
 	
 	private Map<String, Object> getGlobalKeenIOProps(BRJS brjs) {
-		Map<String,Object> versionInfo = new HashMap<>();
+		Map<String,Object> versionInfo = new LinkedHashMap<>();
 		versionInfo.put("brjs_version", brjs.versionInfo().getVersionNumber());
 		versionInfo.put("toolkit_version", brjs.root().versionInfo().getVersionNumber());
 		versionInfo.put("toolkit_name", "BladeRunnerJS");

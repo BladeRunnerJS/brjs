@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.bundlers.i18n;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +11,10 @@ import java.util.TreeMap;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.api.aliasing.NamespaceException;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
@@ -25,7 +23,6 @@ import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.plugin.bundlers.thirdparty.ThirdpartyContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -39,7 +36,6 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	public static final String LANGUAGE_AND_LOCATION_BUNDLE = "language-and-location-bundle";
 	private static final String LANGUAGE_PROPERTY_NAME = "language";
 	private static final String COUNTRY_PROPERTY_NAME = "country";
-	private AssetPlugin i18nAssetPlugin = null;
 	
 	private ContentPathParser contentPathParser;
 	
@@ -58,7 +54,12 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		i18nAssetPlugin = brjs.plugins().assetPlugin(I18nAssetPlugin.class);
+	}
+	
+	@Override
+	public int priority()
+	{
+		return 0;
 	}
 
 	@Override
@@ -70,11 +71,6 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	public String getRequestPrefix()
 	{
 		return "i18n";
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList(ThirdpartyContentPlugin.class.getCanonicalName());
 	}
 	
 	@Override
@@ -172,9 +168,7 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 		List<I18nFileAsset> languageOnlyAssets = new ArrayList<I18nFileAsset>();
 		List<I18nFileAsset> languageAndLocationAssets = new ArrayList<I18nFileAsset>();
 		
-		List<Asset> propertyAssets = bundleSet.getResourceFiles(i18nAssetPlugin);
-		
-		for (Asset asset : propertyAssets)
+		for (Asset asset : bundleSet.getAssets("i18n!"))
 		{
 			if (asset instanceof I18nFileAsset)
 			{

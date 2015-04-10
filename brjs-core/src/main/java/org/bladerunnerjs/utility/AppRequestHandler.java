@@ -3,22 +3,20 @@ package org.bladerunnerjs.utility;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BladerunnerConf;
-import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.BrowsableNode;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -32,7 +30,6 @@ import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
-import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
@@ -106,10 +103,10 @@ public class AppRequestHandler
 		{
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
+				return getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, devVersion);
 				
 			case WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.aspect(aspectName).getBundleSet(), contentAccessor, devVersion);
+				return getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, devVersion);
 
 			case INDEX_PAGE_REQUEST:
 				return getIndexPageContent(app.aspect(aspectName), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
@@ -184,7 +181,7 @@ public class AppRequestHandler
 			}
 			
 			if (!indexPage.isFile()) {
-				return new HashMap<>();
+				return new LinkedHashMap<>();
 			}
 			
 			String pathRelativeToApp = app.dir().getRelativePath(indexPage);
@@ -226,7 +223,7 @@ public class AppRequestHandler
 	private String getAspectName(String requestPath, Map<String, String> contentPathProperties) throws MalformedRequestException
 	{
 		String aspectName = contentPathProperties.get("aspect");
-
+		
 		if (aspectName.equals("default/"))
 		{
 			throw new MalformedRequestException(requestPath, "The '/default' prefix should be omitted for the default aspect.");
@@ -243,7 +240,7 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public ResponseContent getLocaleForwardingPageContent(BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		try {
 			StringWriter localeSwitchingPage = new StringWriter();
 			
@@ -251,24 +248,16 @@ public class AppRequestHandler
 			localeSwitchingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			localeSwitchingPage.write("<script type='text/javascript'>\n");
 			
-			ContentPlugin appVersionContentPlugin = app.root().plugins().contentPlugin("app-meta");
-			ContentPathParser appVersionContentPathParser = appVersionContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
-			String appVersionContentPath = appVersionContentPathParser.createRequest("app-meta-request");
-			ResponseContent responseContent = appVersionContentPlugin.handleRequest(appVersionContentPath, bundleSet, contentAccessor, appVersionContentPath);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			responseContent.write(baos);
-			localeSwitchingPage.write( baos.toString() );
-			localeSwitchingPage.write("\n");
+			ContentPlugin compositeJsContentPlugin = app.root().plugins().contentPlugin("js");
+			ContentPathParser compositeJsContentPathParser = compositeJsContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
+			String jsBundleContentPath = compositeJsContentPathParser.createRequest("dev-bundle-request", "combined");
+			BundlableNode localeForwarderAspectWrapper = new LocaleForwarderAspectWrapper(aspect);
+			ResponseContent brLocaleBundleResponse = compositeJsContentPlugin.handleRequest(jsBundleContentPath, localeForwarderAspectWrapper.getBundleSet(), contentAccessor, version);
 			
-			BundleSet localeSwitcherBundleSet = app.root().sdkLib("br-locale").getBundleSet();
+			ByteArrayOutputStream brLocaleBundleContent = new ByteArrayOutputStream();
+			brLocaleBundleResponse.write( brLocaleBundleContent );
 			
-			for(SourceModule sourceModule : localeSwitcherBundleSet.getSourceModules()) {
-				try(Reader sourceModuleReader = sourceModule.getReader()) {
-					IOUtils.copy(sourceModuleReader, localeSwitchingPage);
-					localeSwitchingPage.write("\n");
-				}
-			}
-			
+			localeSwitchingPage.write( brLocaleBundleContent.toString() );
 			localeSwitchingPage.write("\n");
 			localeSwitchingPage.write("require('br-locale/switcher').switchToActiveLocale();\n");
 			localeSwitchingPage.write("</script>\n");

@@ -6,7 +6,7 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.model.BladesetWorkbench;
+import org.bladerunnerjs.api.BladesetWorkbench;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.junit.Before;
 import org.junit.Test;

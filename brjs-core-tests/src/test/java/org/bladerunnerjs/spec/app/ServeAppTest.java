@@ -5,7 +5,7 @@ import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.plugin.bundlers.appmeta.AppMetadataContentPlugin;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
@@ -23,8 +23,8 @@ public class ServeAppTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationPlugins()
-			.and(brjs).automaticallyFindsAssetPlugins()
+		given(brjs).automaticallyFindsAssetPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).automaticallyFindsContentPlugins()
 			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))

@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
@@ -9,7 +9,7 @@ import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 public class IO {
-	private final Map<FileAccessLimitScope, File[]> activeScopes = new HashMap<>();
+	private final Map<FileAccessLimitScope, File[]> activeScopes = new LinkedHashMap<>();
 	private final SecurityManager securityManager;
 	private final IOFileFilter classFileAndJarFileFilter = new SuffixFileFilter( new String[] { ".class", ".jar" } );
 	
@@ -33,11 +33,11 @@ public class IO {
 	private void executeFileAccessingStaticInitializers() {
 		try {
 			Class.forName("java.util.Currency");
-			Class.forName("org.bladerunnerjs.aliasing.aliases.AliasesReader");
-			Class.forName("org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsReader");
+			Class.forName("org.bladerunnerjs.plugin.bundlers.aliasing.AliasesReader");
+			Class.forName("org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsReader");
 		}
 		catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+			// do nothing since the classes might not be available
 		}
 	}
 }

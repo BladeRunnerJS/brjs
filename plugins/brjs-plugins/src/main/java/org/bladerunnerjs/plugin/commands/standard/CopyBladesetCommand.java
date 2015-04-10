@@ -13,7 +13,7 @@ import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.model.NodeImporter;
 import org.bladerunnerjs.utility.NameValidator;
 
@@ -22,7 +22,7 @@ import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class CopyBladesetCommand  extends ArgsParsingCommandPlugin
+public class CopyBladesetCommand  extends JSAPArgsParsingCommandPlugin
 {
 	private Logger logger;
 	private BRJS brjs;

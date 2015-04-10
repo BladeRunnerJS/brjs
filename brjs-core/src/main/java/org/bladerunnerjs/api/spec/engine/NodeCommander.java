@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.spec.engine.CommanderChainer;
-import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 

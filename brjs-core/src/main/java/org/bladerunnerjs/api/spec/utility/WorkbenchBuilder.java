@@ -17,18 +17,9 @@ public class WorkbenchBuilder extends BundlableNodeBuilder<Workbench<?>>
 	
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String className) throws Exception 
 	{
-		writeToFile(workbench.assetLocation("resources").file(resourceFileName), "<root refs='" + className + "'/>");
+		writeToFile(workbench.file("resources/"+resourceFileName), "<root refs='" + className + "'/>");
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception 
-	{
-		writeToFile(workbench.aliasesFile().getUnderlyingFile(),
-			"<aliases xmlns='http://schema.caplin.com/CaplinTrader/aliases'>" +
-			"	<alias name='" + aliasName + "' class='" + classRef + "'/>" +
-			"</aliases>");
-		
-		return builderChainer;
-	}
 }

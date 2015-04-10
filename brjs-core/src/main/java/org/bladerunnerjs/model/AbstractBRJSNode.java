@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;

@@ -8,19 +8,16 @@ import java.util.Map;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.AbstractBrowsableNode;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.TestRunner;
 
 public abstract class Workbench<N extends Node> extends AbstractBrowsableNode implements TestableNode
 {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
-	private final IndexPageSeedLocator seedLocator;
 	private final N parent;
 	
 	// TODO add type checking
@@ -29,7 +26,6 @@ public abstract class Workbench<N extends Node> extends AbstractBrowsableNode im
 	{
 		super(rootNode, parent, dir);
 		this.parent = (N) parent;
-		seedLocator = new IndexPageSeedLocator(root());
 	}
 	
 	@Override
@@ -46,11 +42,6 @@ public abstract class Workbench<N extends Node> extends AbstractBrowsableNode im
 	
 	public N parent() {
 		return parent;
-	}
-	
-	@Override
-	public List<LinkedAsset> modelSeedAssets() {
-		return seedLocator.seedAssets(this);
 	}
 	
 	@Override

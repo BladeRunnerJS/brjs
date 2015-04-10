@@ -1,16 +1,23 @@
 package org.bladerunnerjs.api.plugin;
 
-import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
-import org.bladerunnerjs.api.LinkedAsset;
-import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.model.AssetFileInstantationException;
+import java.util.List;
 
-/**
- * Asset plug-ins allow new implementations of {@link SourceModule}, {@link LinkedAsset} &amp; {@link Asset} to be supported within the model.
- */
-public interface AssetPlugin extends OrderedPlugin {
-	boolean canHandleAsset(MemoizedFile assetFile, AssetLocation assetLocation);
-	Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.model.AssetContainer;
+
+
+public interface AssetPlugin extends Plugin
+{
+	/**
+	 * Get the priority for this plugin. Lower priorities correspond to earlier execution.
+	 * The default priority for plugins is 10.
+	 * Any plugin that can detirmine with 100% confidence it can handle a given resource should define a lower priority so it is executed first and can better influence the discovery of assets.
+	 * 
+	 * @return the priority for this plugin. Lower priorities correspond to earlier execution.
+	 */
+	int priority();
+	
+	List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, 
+			List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator);
 }

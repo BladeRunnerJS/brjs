@@ -18,8 +18,6 @@ import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsContentPlugin;
-import org.bladerunnerjs.plugin.bundlers.compositejs.CompositeJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.AppMetadataUtility;
@@ -106,11 +104,8 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin implements C
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return Arrays.asList(
-				CommonJsContentPlugin.class.getCanonicalName(),
-				CompositeJsContentPlugin.class.getCanonicalName()
-		);
+	public int priority() {
+		return 0;
 	}
 	
 }

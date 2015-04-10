@@ -1,28 +1,35 @@
 package org.bladerunnerjs.model;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
 
 public class StandardBundleSet implements BundleSet {
+	private final List<LinkedAsset> seedAssets;
+	private final List<Asset> assets;
+	private final List<LinkedAsset> linkedAssets;
 	private final List<SourceModule> sourceModules;
-	private final List<AliasDefinition> activeAliases;
-	private final List<AssetLocation> resourceLocations;
 	private BundlableNode bundlableNode;
 	
-	public StandardBundleSet(BundlableNode bundlableNode, List<SourceModule> sourceModules, List<AliasDefinition> activeAliases, List<AssetLocation> resources) {
+	public StandardBundleSet(BundlableNode bundlableNode, List<LinkedAsset> seedAssets, List<Asset> assets, List<SourceModule> sourceModules) {
+		this.seedAssets = seedAssets;
 		this.bundlableNode = bundlableNode;
+		this.assets = assets;
+		
+		linkedAssets = new ArrayList<>();
+		for (Asset asset : assets) {
+			if (asset instanceof LinkedAsset) {
+				linkedAssets.add((LinkedAsset) asset);
+			}
+		}
 		this.sourceModules = sourceModules;
-		this.activeAliases = activeAliases;
-		this.resourceLocations = resources;
 	}
 	
 	@Override
@@ -31,57 +38,68 @@ public class StandardBundleSet implements BundleSet {
 	}
 	
 	@Override
-	public List<String> getThemes(){
-		List<String> result = new ArrayList<String>();
-		for(AssetLocation location: resourceLocations){
-			if(location instanceof ThemedAssetLocation){
-				result.add(((ThemedAssetLocation)location).getThemeName());
+	public List<SourceModule> getSourceModules(String... prefixes) {
+		return getAssets(sourceModules, Arrays.asList(prefixes), Collections.emptyList());
+	}
+
+	@Override
+	public List<Asset> getAssets(String... prefixes)
+	{
+		return getAssets(assets, Arrays.asList(prefixes), Collections.emptyList());
+	}
+	
+	@Override
+	public List<Asset> getAssets(List<String> prefixes, List<Class<? extends Asset>> assetTypes)
+	{
+		return getAssets(assets, prefixes, assetTypes);
+	}
+
+	private <AT extends Asset> List<AT> getAssets(List<AT> assets, List<String> prefixes, List<Class<? extends Asset>> assetTypes) {
+		List<AT> assetsWithRequirePath = new ArrayList<>();
+		for (AT asset : assets) { 
+			if (assetHasValidPrefix(asset, prefixes) && assetHasValidType(asset, assetTypes)) {
+				assetsWithRequirePath.add(asset);
 			}
 		}
-		return result;
+		return assetsWithRequirePath;
 	}
 	
-	@Override
-	public List<SourceModule> getSourceModules() {
-		return sourceModules;
-	}
-	
-	@Override
-	public List<AliasDefinition> getActiveAliases() {
-		return activeAliases;
-	}
-	
-	@Override
-	public List<AssetLocation> getResourceNodes() {
-		return resourceLocations;
-	}
-	
-	@Override
-	public List<Asset> getResourceFiles() {
-		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
-		
-		for(AssetLocation resourceNode : resourceLocations) {
-			resourceFiles.addAll(resourceNode.bundlableAssets());
+	private boolean assetHasValidPrefix(Asset asset, List<String> prefixes)
+	{
+		if (prefixes.size() == 0) {
+			return true;
 		}
-		
-		List<Asset> result = new ArrayList<Asset>();
-		result.addAll(resourceFiles);
-		
-		return result;
+		for (String prefix : prefixes) {
+			if (asset.getPrimaryRequirePath().startsWith(prefix)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
-	@Override
-	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
-		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
-		
-		for(AssetLocation resourceNode : resourceLocations) {
-			resourceFiles.addAll(resourceNode.bundlableAssets(assetProducer));
+	private boolean assetHasValidType(Asset asset, List<Class<? extends Asset>> assetTypes)
+	{
+		if (assetTypes.size() == 0) {
+			return true;
 		}
-		
-		List<Asset> result = new ArrayList<Asset>();
-		result.addAll(resourceFiles);
-		
-		return result;
+		for (Class<? extends Asset> assetType : assetTypes) {
+			if (asset.getClass().isAssignableFrom(assetType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public List<LinkedAsset> seedAssets()
+	{
+		return seedAssets;
+	}
+
+	@Override
+	public List<LinkedAsset> getLinkedAssets()
+	{
+		return linkedAssets;
 	}
 	
 }

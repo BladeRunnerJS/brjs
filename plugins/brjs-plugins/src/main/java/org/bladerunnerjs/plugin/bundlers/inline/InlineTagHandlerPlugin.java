@@ -10,7 +10,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.base.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.RequestMode;
 
 public class InlineTagHandlerPlugin extends AbstractTagHandlerPlugin {

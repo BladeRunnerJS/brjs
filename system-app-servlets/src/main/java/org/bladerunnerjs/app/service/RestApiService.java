@@ -250,8 +250,13 @@ public class RestApiService
 	
 	public String getSdkVersion() throws IOException
 	{
-		MemoizedFile versionFile = brjs.versionInfo().getFile();
-		return org.apache.commons.io.FileUtils.readFileToString(versionFile);
+		return String.format(
+			"{\n"+
+				"\"Version\" : \"%s\",\n"+
+				"\"BuildDate\" : \"%s\"\n"+
+			"}", 
+			brjs.versionInfo().getVersionNumber(), brjs.versionInfo().getBuildDate() 
+		);
 	}
 	
 	public void getJsdocForApp(String appName) throws Exception {

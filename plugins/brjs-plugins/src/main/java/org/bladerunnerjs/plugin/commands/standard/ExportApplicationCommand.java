@@ -20,7 +20,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.ZipUtility;
 import org.bladerunnerjs.utility.filefilter.ExcludeDirFileFilter;
@@ -32,7 +32,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class ExportApplicationCommand extends ArgsParsingCommandPlugin
+public class ExportApplicationCommand extends JSAPArgsParsingCommandPlugin
 {	
 	public class Messages {
 		public static final String APP_CREATED_CONSOLE_MSG = "Successfully created new app '%s'";

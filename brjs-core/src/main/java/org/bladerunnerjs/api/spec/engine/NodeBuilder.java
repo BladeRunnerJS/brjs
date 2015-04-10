@@ -6,9 +6,9 @@ import java.util.Collection;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.model.exception.PropertiesException;
 import org.bladerunnerjs.api.spec.engine.BuilderChainer;
-import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.FileUtils;

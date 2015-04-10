@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
-import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 import org.bladerunnerjs.yaml.ConfFactory;
 
@@ -14,7 +13,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	private final MemoizedValue<CF> conf;
 	private final BRJSNode node;
 	private final Class<CF> confClass;
-	private final MemoizedFile confFile;
+	protected final MemoizedFile confFile;
 	private boolean autoWrite = true;
 	private CF previouslyGeneratedConf;
 	

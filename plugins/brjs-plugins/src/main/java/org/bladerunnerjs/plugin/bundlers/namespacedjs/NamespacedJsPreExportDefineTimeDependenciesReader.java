@@ -5,7 +5,6 @@ import java.io.Reader;
 
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
-import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.reader.JsModuleExportsStrippingReader;
@@ -17,10 +16,9 @@ public class NamespacedJsPreExportDefineTimeDependenciesReader extends Reader {
 	
 	public NamespacedJsPreExportDefineTimeDependenciesReader(AugmentedContentSourceModule sourceModule) throws IOException
 	{
-		CharBufferPool pool = sourceModule.assetLocation().root().getCharBufferPool();
-		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.getUnalteredContentReader(), false, pool);
-		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader, pool);
-		namespacedJsPreExportDefineTimeDependenciesReader = new JsModuleExportsStrippingReader(codeBlockStrippingReader, pool, true);
+		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.assetContainer().root(), sourceModule.getUnalteredContentReader(), false);
+		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(sourceModule.assetContainer().root(), commentStrippingReader);
+		namespacedJsPreExportDefineTimeDependenciesReader = new JsModuleExportsStrippingReader(sourceModule.assetContainer().root(), codeBlockStrippingReader, true);
 	}
 	
 	@Override

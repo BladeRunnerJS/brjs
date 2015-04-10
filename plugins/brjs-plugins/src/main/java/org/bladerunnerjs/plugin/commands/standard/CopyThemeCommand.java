@@ -4,21 +4,20 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.api.App;
-import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.model.ThemedAssetLocation;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.utility.FileUtils;
 
 import com.martiansoftware.jsap.JSAP;
@@ -27,7 +26,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class CopyThemeCommand extends ArgsParsingCommandPlugin
+public class CopyThemeCommand extends JSAPArgsParsingCommandPlugin
 {
 	public class Messages {
 		public static final String COPY_THEME_SUCCESS_CONSOLE_MSG = "Successfully copied theme '%s' into '%s'";
@@ -73,59 +72,52 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 		String newTheme = parsedArgs.getString("copy-to-theme-name");
 		
 		Path appPath = Paths.get(argPath);
-		String matchLocation = "";
 				
 		app = brjs.app(appPath.getName(0).toString());
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
-		int pathCount = appPath.getNameCount();
+		int pathCount = appPath.getNameCount();		
+		String matchLocation = (pathCount > 1) ? matchLocation = appPath.subpath(1, pathCount).toString() : "";		
 		
-		if(pathCount > 1)
-		{
-			matchLocation = appPath.subpath(1, pathCount).toString();
-		}
+		Map<MemoizedFile,MemoizedFile> copyToFromMap = new HashMap<>();
 		
-		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
-		
-		for(Aspect asp : app.aspects())
-		{ //asp, hue hue, pun intended
-			for(AssetLocation al : asp.assetLocations())
-			{
-				if(al.dirExists())
-				{
-					assetLocations.add(al);
-				}
-			}
-		}
-		
-		for(Bladeset bs : app.bladesets())
+		List<AssetContainer> assetContainers = new ArrayList<>();
+		assetContainers.addAll(app.aspects());
+		for(Bladeset bladeset : app.bladesets())
 		{		
-			for(AssetLocation al : bs.assetLocations())
-			{
-				if(al.dirExists())
-				{
-					assetLocations.add(al);
-				}
-			}
+			assetContainers.add(bladeset);
+			assetContainers.addAll(bladeset.blades());
+		}
 		
-			for(Blade blade : bs.blades())
-			{
-				for(AssetLocation al : blade.assetLocations())
-				{
-					if(al.dirExists())
-					{
-						assetLocations.add(al);
-					}
-				}
+		boolean foundOrigTheme = false;
+		
+		for(AssetContainer container : assetContainers) {
+			MemoizedFile origThemeDir = container.file("themes/"+origTheme);
+			MemoizedFile newThemeDir = container.file("themes/"+newTheme);
+			String relativePath = Paths.get(app.dir().getRelativePath(origThemeDir)).toString();
+			if (origThemeDir.exists()) {
+				foundOrigTheme = true;
+			}
+			if (newThemeDir.exists()) {
+				logger.warn(Messages.THEME_FOLDER_EXISTS, brjs.dir().getRelativePath(newThemeDir));
+			} else if ( origThemeDir.isDirectory() && (relativePath.contains(matchLocation) || matchLocation.equals("")) ) {
+				copyToFromMap.put(origThemeDir, newThemeDir);
 			}
 		}
 		
-		if(themeExists(assetLocations, origTheme, matchLocation))
+		
+		if (foundOrigTheme)
 		{
-			for(AssetLocation al : assetLocations)
-			{
-				if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
-					copyTheme(al, origTheme, newTheme);
+			for (MemoizedFile copyFileFrom : copyToFromMap.keySet()) {
+				MemoizedFile copyFileTo = copyToFromMap.get(copyFileFrom);
+				try
+				{
+					FileUtils.copyDirectory(copyFileFrom, copyFileTo);
+					logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, app.dir().getRelativePath(copyFileFrom), app.dir().getRelativePath(copyFileTo));
+				}
+				catch (IOException ex)
+				{
+					throw new CommandOperationException(ex);
 				}
 			}
 		}
@@ -135,44 +127,6 @@ public class CopyThemeCommand extends ArgsParsingCommandPlugin
 		}
 		
 		return 0;
-	}
-	
-	void copyTheme(AssetLocation location, String origTheme, String newTheme) throws CommandOperationException{
-		MemoizedFile srcDir = location.dir();
-		MemoizedFile dstDir = location.dir().getParentFile().file(newTheme);	 			 
-		 
-		if(dstDir.exists())
-		{
-			logger.warn(Messages.THEME_FOLDER_EXISTS, brjs.dir().getRelativePath(dstDir));
-			return;
-		}
-		 
-		try {
-			FileUtils.copyDirectory(srcDir, dstDir);
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		logger.println(Messages.COPY_THEME_SUCCESS_CONSOLE_MSG, app.dir().getRelativePath(srcDir), app.dir().getRelativePath(dstDir));			
-	}
-	
-	private boolean themeExists(List<AssetLocation> assetLocations, String origTheme, String matchLocation) {
-		for(AssetLocation al : assetLocations) {
-			if(themeExistsWithinAssetLocation(al, origTheme, matchLocation)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private boolean themeExistsWithinAssetLocation(AssetLocation location, String origTheme, String matchLocation) {
-		matchLocation = Paths.get(matchLocation).toString();
-		String pathToCompare = Paths.get(app.dir().getRelativePath(location.dir())).toString();
-		
-		return location instanceof ThemedAssetLocation && location.dir().getName().compareTo(origTheme) == 0
-				&& pathToCompare.contains(matchLocation);
 	}
 	
 }

@@ -3,7 +3,6 @@ package org.bladerunnerjs.api;
 import java.util.List;
 
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.BundlableNode;
 
 /**
  * A source file, typically JavaScript (.js) files that live in a 'src' directory.
@@ -35,6 +34,4 @@ public interface SourceModule extends LinkedAsset {
 	 * @param bundlableNode The bundlable node for which a bundle-set is being generated.
 	 */
 	List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
-	
-	List<AssetLocation> assetLocations();
 }

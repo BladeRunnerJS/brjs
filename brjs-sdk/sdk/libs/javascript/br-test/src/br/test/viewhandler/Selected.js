@@ -14,12 +14,12 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
  * @class
  * @alias module:br/test/viewhandler/Selected
  * @implements module:br/test/viewhandler/ViewFixtureHandler
- * 
+ *
  * @classdesc
  * <code>Selected</code> instances of <code>ViewFixtureHandler</code> can be used to get or set <code>selected</code>
  * property of an OPTION view element.
  * Example usage:
- * 
+ *
  * <pre>when("demo.view.(#multiSelectBox option:last).selected => true");</pre>
  */
 function Selected(){
@@ -42,7 +42,7 @@ Selected.prototype.set = function(eElement, vValue) {
 	}
 	if (eElement.selected != vValue) {
 		eElement.selected = vValue;
-		jQuery(eElement).parent('select').trigger("change");
+		require("br/test/Utils").fireDomEvent(jQuery(eElement).parent('select'), "change");
 	}
 };
 

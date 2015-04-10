@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +34,7 @@ public class WatchingFileModificationObserverThread extends Thread
 	private WatchKeyServiceFactory watchKeyServiceFactory;
 	private WatchKeyService watchKeyService;
 
-	private final Map<WatchKey,Path> watchKeys = new HashMap<>();
+	private final Map<WatchKey,Path> watchKeys = new LinkedHashMap<>();
 
 	private Logger logger;
 	

@@ -3,6 +3,7 @@
  */
 
 var PropertyListener = require('br/presenter/property/PropertyListener');
+var brCore = require("br/Core");
 
 /**
  * @private
@@ -18,8 +19,7 @@ function CrossValidationPropertyListener(oCrossPropertyValidationProxy, sPropert
 	this.m_oValidationProxy = oCrossPropertyValidationProxy;
 	this.m_sPropertyId = sPropertyId;
 }
-
-br.Core.inherit(CrossValidationPropertyListener, PropertyListener);
+brCore.inherit(CrossValidationPropertyListener, PropertyListener);
 
 CrossValidationPropertyListener.prototype.onPropertyChanged = function()
 {

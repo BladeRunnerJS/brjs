@@ -2,14 +2,14 @@ package org.bladerunnerjs.utility;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 
 public class JsStyleAccessor {
-	private final Map<String, MemoizedValue<String>> dirStyleCache = new HashMap<>();
+	private final Map<String, MemoizedValue<String>> dirStyleCache = new LinkedHashMap<>();
 	private final BRJS brjs;
 	
 	public static final String DEFAULT_JS_STYLE = "common-js";

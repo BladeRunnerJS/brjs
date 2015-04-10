@@ -18,7 +18,7 @@ import org.bladerunnerjs.api.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.TemplateUtility;
 
 import com.martiansoftware.jsap.FlaggedOption;
@@ -28,7 +28,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class CreateLibraryCommand extends ArgsParsingCommandPlugin
+public class CreateLibraryCommand extends JSAPArgsParsingCommandPlugin
 {
 	public static enum SupportedLibraryType {
 		br,
@@ -98,8 +98,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		JsLib library = app.appJsLib(libraryName);
 		if (library.dirExists()) throw new NodeAlreadyExistsException(library, this);
 		
-		if (TemplateUtility.templateExists(brjs, library.rootAssetLocation(), templateGroup, this)) {
-		
+		if (TemplateUtility.templateExists(brjs, library, templateGroup, this)) {
 			switch ( createLibraryType ) {
 				case br:
 					break;
@@ -135,7 +134,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 			File manifestFile = library.file(ThirdpartyLibManifest.LIBRARY_MANIFEST_FILENAME); //TODO: it should be easier to create the manifest
 			manifestFile.getParentFile().mkdirs();
 			manifestFile.createNewFile();
-			manifest = new ThirdpartyLibManifest( library.assetLocation(".") );
+			manifest = new ThirdpartyLibManifest( library );
 			manifest.write();
 		}
 		catch (ConfigException | IOException e)

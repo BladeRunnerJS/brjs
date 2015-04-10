@@ -17,7 +17,7 @@ import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.model.events.NodeReadyEvent;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.utility.FileUtils;

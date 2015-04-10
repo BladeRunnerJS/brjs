@@ -2,20 +2,23 @@
  * @module br/validation/ISODateValidator
  */
 
+var brCore = require("br/Core");
+var Validator = require("br/validation/Validator");
+
 /**
  * @private
  * @class
  * @alias module:br/validation/ISODateValidator
  * @implements module:br/core/Validator
  */
-br.validation.ISODateValidator = function() {
+var ISODateValidator = function() {
 	/** @private */
 	this.m_oSplitterRegex = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 	/** @private */
 	this.m_oSplitterNoDashesRegex = /^(\d{4})(\d{2})(\d{2})$/;
 };
-br.Core.implement(br.validation.ISODateValidator, br.validation.Validator);
+brCore.implement(ISODateValidator, Validator);
 
 /**
  * @private
@@ -23,7 +26,7 @@ br.Core.implement(br.validation.ISODateValidator, br.validation.Validator);
  * @param mAttributes
  * @param oValidationResult
  */
-br.validation.ISODateValidator.prototype.validate = function(value, mAttributes, validationResult) {
+ISODateValidator.prototype.validate = function(value, mAttributes, validationResult) {
 	var isValid = false,
 		i18n = require("br/I18n"),
 		validationMessage = i18n('ct.presenter.validator.invalidISODateFormat', { value: value });
@@ -62,8 +65,10 @@ br.validation.ISODateValidator.prototype.validate = function(value, mAttributes,
  * @param {String} sISODate
  * @type Boolean
  */
-br.validation.ISODateValidator.prototype.isValidISODate = function (ISODateString) {
-	var validationResult = new br.validation.ValidationResult();
+ISODateValidator.prototype.isValidISODate = function (ISODateString) {
+	var validationResult = new require("br/validation/ValidationResult")();
 	this.validate(ISODateString, {}, validationResult);
 	return validationResult.isValid();
 };
+
+module.exports = ISODateValidator;

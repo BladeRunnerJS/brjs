@@ -15,7 +15,7 @@ import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunner.TestType;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfLocator;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.api.DirNode;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;

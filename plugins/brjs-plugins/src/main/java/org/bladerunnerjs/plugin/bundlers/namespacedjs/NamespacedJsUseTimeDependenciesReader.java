@@ -6,7 +6,6 @@ import java.io.Reader;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
-import org.bladerunnerjs.utility.reader.CharBufferPool;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
@@ -18,7 +17,6 @@ public class NamespacedJsUseTimeDependenciesReader extends Reader {
 
 	public NamespacedJsUseTimeDependenciesReader(Asset asset) throws IOException
 	{
-		CharBufferPool pool = asset.assetLocation().root().getCharBufferPool();
 		Predicate<Integer> insideCodeBlockPredicate = new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0);
 		Reader sourceReader = null;
 		
@@ -30,8 +28,8 @@ public class NamespacedJsUseTimeDependenciesReader extends Reader {
 			sourceReader = asset.getReader();
 		}
 		
-		Reader commentStrippingReader = new JsCommentStrippingReader(sourceReader, false, pool);
-		namespacedJsUseTimeDependenciesReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingReader , pool, insideCodeBlockPredicate);
+		Reader commentStrippingReader = new JsCommentStrippingReader(asset.assetContainer().root(), sourceReader, false);
+		namespacedJsUseTimeDependenciesReader = new JsCodeBlockStrippingDependenciesReader(asset.assetContainer().root(), commentStrippingReader, insideCodeBlockPredicate);
 	}
 	
 	@Override

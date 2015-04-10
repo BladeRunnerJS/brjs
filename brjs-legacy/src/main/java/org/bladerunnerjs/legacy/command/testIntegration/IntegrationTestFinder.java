@@ -8,7 +8,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.api.BladeWorkbench;
 
 public class IntegrationTestFinder
 {

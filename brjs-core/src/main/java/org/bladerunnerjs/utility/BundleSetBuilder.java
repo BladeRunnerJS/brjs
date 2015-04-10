@@ -1,28 +1,20 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.Workbench;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasException;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSetCreator;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
 import org.bladerunnerjs.model.StandardBundleSet;
@@ -33,10 +25,10 @@ public class BundleSetBuilder {
 	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
+	private final List<LinkedAsset> seedAssets = new ArrayList<>();
+	private final Set<Asset> assets = new LinkedHashSet<>();
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Map<String,AliasDefinition> activeAliases = new LinkedHashMap<>();
-	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
-	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
+	private final Set<LinkedAsset> linkedAssets = new LinkedHashSet<LinkedAsset>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
 	
@@ -46,12 +38,11 @@ public class BundleSetBuilder {
 	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
-		List<AliasDefinition> activeAliasList = new ArrayList<>();
-		List<AssetLocation> resourceLocationList = new ArrayList<>();
 		
 		if (bundlableNode instanceof Workbench) {
-			for ( AssetLocation assetLocation : bundlableNode.app().aspect("default").seedAssetLocations() ) {
-				addUnscopedAssetLocation( assetLocation );
+			Asset rootAsset = bundlableNode.app().defaultAspect().asset(bundlableNode.app().getRequirePrefix());
+			if (rootAsset instanceof LinkedAsset) {
+				addUnscopedAsset( (LinkedAsset)rootAsset );
 			}
 		}
 		
@@ -61,51 +52,30 @@ public class BundleSetBuilder {
 			addBootstrapAndDependencies(bootstrappingSourceModules);
 		}
 		
-		try {
-			activeAliasList.addAll(activeAliases.values());
-			resourceLocationList.addAll(assetLocations);
-			orderAssetLocations(bundlableNode, resourceLocationList);
-			
-			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases.values())) {
-				addSourceModule((SourceModule)bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
-			}
-		}
-		catch(RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
-		
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
+		List<Asset> assetList = orderAssetsByAssetContainer(assets);
 		
-		return new StandardBundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
+		return new StandardBundleSet(bundlableNode, seedAssets, assetList, orderedSourceModules);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
+		seedAssets.addAll(seedFiles);
 		for(LinkedAsset seedFile : seedFiles) {
 			addLinkedAsset(seedFile);
 		}
 	}
 	
+	
 	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
 		if (sourceModules.add(sourceModule)) {
-			addAliases( getAliases(sourceModule.getAliasNames()) );
 			addLinkedAsset(sourceModule);
 		}
 	}
 
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
-		
 		if(linkedAssets.add(linkedAsset)) {
-			List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
-			
-			addAliases( getAliases(linkedAsset.getAliasNames()) );
-			
-			if(moduleDependencies.isEmpty()) {
-				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
-			}
-			else {
-				
-				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), assetFilePaths(moduleDependencies));
-			}
+			assets.add(linkedAsset);
+			List<Asset> moduleDependencies = getModuleDependencies(linkedAsset);
 			
 			if (linkedAsset instanceof SourceModule) {
 				addSourceModule((SourceModule) linkedAsset);
@@ -114,63 +84,35 @@ public class BundleSetBuilder {
 			for(Asset asset : moduleDependencies) {
 				if(asset instanceof SourceModule){
 					addSourceModule((SourceModule)asset);
-				}else{
-					addAssetLocation(asset.assetLocation());
+				} else if (asset instanceof LinkedAsset) {
+					addLinkedAsset((LinkedAsset) asset);						
 				}
+				assets.add(asset);
 			}
 			
-			addAssetLocation(linkedAsset.assetLocation());
-		}
-		
-	}
-	
-	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
-		
-		if (assetLocations.add(assetLocation)) {
-			for(LinkedAsset resourceSeedFile : assetLocation.linkedAssets()) {
-				addLinkedAsset(resourceSeedFile);
-			}
-			
-			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
-				addAssetLocation(dependentAssetLocation);
-			}
-		}
-	}
-	
-	private void addUnscopedAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
-		if (assetLocation == null) { return; }
-		if (assetLocations.add(assetLocation)) {			
-			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
-				addAssetLocation(dependentAssetLocation);
-			}
 		}
 	}
 
-	private List<AliasDefinition> getAliases(List<String> aliasNames) throws ModelOperationException {
-		List<AliasDefinition> aliases = new ArrayList<>();
+	private List<Asset> getModuleDependencies(LinkedAsset linkedAsset) throws ModelOperationException
+	{
+		List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
 		
-		try {
-			for(String aliasName : aliasNames) {
-				AliasDefinition alias = bundlableNode.getAlias(aliasName);
-				SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
-				addSourceModule(sourceModule);
-				
-				if(alias.getInterfaceName() != null) {
-					SourceModule aliasInterface = (SourceModule) bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
-					
-					if(sourceModule != aliasInterface) {
-						addSourceModule(aliasInterface);
-					}
-				}
-				
-				aliases.add(alias);
+		if(moduleDependencies.isEmpty()) {
+			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
+		}
+		else {
+			logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), assetFilePaths(moduleDependencies));
+		}
+		return moduleDependencies;
+	}
+	
+	
+	private void addUnscopedAsset(LinkedAsset asset) throws ModelOperationException {
+		if (assets.add(asset)) {
+			for (Asset dependentAsset : getModuleDependencies(asset)) {
+				assets.add(dependentAsset);
 			}
 		}
-		catch(AliasException | ContentFileProcessingException | RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
-		
-		return aliases;
 	}
 	
 	private String assetFilePaths(List<Asset> assets) {
@@ -208,46 +150,30 @@ public class BundleSetBuilder {
 		sourceModules.add(sourceModule);
 	}
 	
-	
-	private void orderAssetLocations(BundlableNode bundlableNode, List<AssetLocation> unorderedAssetLocations)
-	{
-		for (AssetContainer assetContainer : bundlableNode.scopeAssetContainers())
-		{
-			List<AssetLocation> assetLocationsForThisContainer = new ArrayList<>();
-			for (AssetLocation assetLocation : unorderedAssetLocations)
-			{
-				if (assetLocation.assetContainer() == assetContainer)
-				{
-					assetLocationsForThisContainer.add(assetLocation);
-				}
-			}
-			unorderedAssetLocations.removeAll(assetLocationsForThisContainer);
-			unorderedAssetLocations.addAll(assetLocationsForThisContainer);
-		}
-	}
-	
 	private void addBootstrapAndDependencies(List<SourceModule> bootstrappingSourceModules) throws ModelOperationException
 	{
 		JsLib boostrapLib = bundlableNode.app().jsLib(BOOTSTRAP_LIB_NAME);
-		for (Asset asset : boostrapLib.linkedAssets()) {
+		for (Asset asset : boostrapLib.assets()) {
 			if (asset instanceof SourceModule) {
 				addSourceModule( (SourceModule) asset );
 				addAllSourceModuleDependencies( (SourceModule) asset, bootstrappingSourceModules );						
 			}
 		}
-		for (AssetLocation assetLocation : boostrapLib.assetLocations()) {
-			addUnscopedAssetLocation(assetLocation);					
-		}
 	}
 	
-	private void addAliases(List<AliasDefinition> aliases)
-	{
-		for (AliasDefinition alias : aliases) {
-			if (!activeAliases.containsKey(alias.getName())) {
-				activeAliases.put(alias.getName(), alias);
+	private List<Asset> orderAssetsByAssetContainer(Set<Asset> assets) {
+		List<Asset> orderedAssets = new ArrayList<>();
+		List<Asset> unorderedAssets = new ArrayList<>(assets);
+		for (AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
+			for (Asset asset : assets) {
+				if (asset.assetContainer() == assetContainer) {
+					orderedAssets.add(asset);
+					unorderedAssets.remove(asset);
+				}
 			}
 		}
+		orderedAssets.addAll(0, unorderedAssets);
+		return orderedAssets;
 	}
-	
 	
 }

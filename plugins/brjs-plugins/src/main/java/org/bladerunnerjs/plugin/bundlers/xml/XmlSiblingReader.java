@@ -10,9 +10,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.aliasing.NamespaceException;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
 
 public class XmlSiblingReader
 {
@@ -169,7 +170,7 @@ public class XmlSiblingReader
 			parent.assertIdentifierCorrectlyNamespaced(identifier);
 		}
 		else if (identifier != null) {
-			xmlAsset.assetLocation().assertIdentifierCorrectlyNamespaced(identifier);
+			RequirePathUtility.assertIdentifierCorrectlyNamespaced(xmlAsset.assetContainer(), identifier);
 		}
 	}
 	

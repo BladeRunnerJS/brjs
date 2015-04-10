@@ -2,14 +2,13 @@ package org.bladerunnerjs.plugin.require;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractRequirePlugin;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 
 public class DefaultRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
 	@Override
@@ -24,9 +23,9 @@ public class DefaultRequirePlugin extends AbstractRequirePlugin implements Requi
 
 	@Override
 	public Asset getAsset(BundlableNode bundlableNode, String requirePathSuffix) throws RequirePathException {
-		LinkedAsset asset = null;
+		Asset asset = null;
 		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
-			LinkedAsset locationAsset = assetContainer.linkedAsset(requirePathSuffix);
+			Asset locationAsset = assetContainer.asset(requirePathSuffix);
 
 			if(locationAsset != null) {
 				if(asset == null) {

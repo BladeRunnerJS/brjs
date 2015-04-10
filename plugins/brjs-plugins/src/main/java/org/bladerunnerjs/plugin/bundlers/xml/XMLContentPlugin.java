@@ -13,7 +13,6 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
@@ -25,7 +24,6 @@ import org.bladerunnerjs.utility.AppMetadataUtility;
 public class XMLContentPlugin extends AbstractContentPlugin
 {
 	private BRJS brjs = null;
-	private AssetPlugin xmlAssetPlugin;
 	private final List<String> requestPaths = new ArrayList<>();
 	private XmlBundlerConfig xmlBundlerConfig;
 	
@@ -37,7 +35,6 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs) 
 	{
 		this.brjs  = brjs;
-		xmlAssetPlugin = brjs.plugins().assetPlugin(XMLAssetPlugin.class);
 		xmlBundlerConfig = new XmlBundlerConfig(brjs);
 	}
 
@@ -49,7 +46,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return bundleSet.getResourceFiles(xmlAssetPlugin).isEmpty() ? Collections.emptyList() : requestPaths;
+		return bundleSet.getAssets("xml!").isEmpty() ? Collections.emptyList() : requestPaths;
 	}
 	
 	@Override
@@ -60,7 +57,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		}
 		
 		XmlBundleWriter bundleWriter = new XmlBundleWriter(xmlBundlerConfig);
-		List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
+		List<Asset> xmlAssets = bundleSet.getAssets("xml!");
 
 		try{
 			StringWriter bufferedOutput = new StringWriter();

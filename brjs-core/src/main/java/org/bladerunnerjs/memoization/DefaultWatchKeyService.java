@@ -10,7 +10,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchKey;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -29,7 +29,7 @@ public class DefaultWatchKeyService implements WatchKeyService
 	
 	@Override
 	public Map<WatchKey,Path> createWatchKeysForDir(Path dirPath, boolean isNewlyDiscovered) throws IOException {
-		Map<WatchKey,Path> watchKeys = new HashMap<>();
+		Map<WatchKey,Path> watchKeys = new LinkedHashMap<>();
 		watchKeys.put(createWatchKeyForDir(dirPath), dirPath);
 		
 		File dir = dirPath.toFile();

@@ -1,6 +1,7 @@
 package org.bladerunnerjs.spec.brjs;
 
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.events.CommandExecutedEvent;
+import org.bladerunnerjs.plugin.brjsconformant.BRJSConformantAssetPlugin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +30,8 @@ public class BRJSTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).hasBeenCreated();
 		brjsTemplate = brjs.sdkTemplateGroup("default").template("brjs");
 		app1 = brjs.app("app1");
 		app2 = brjs.app("app2");
@@ -184,6 +187,19 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
+	public void debugMessageIsLoggedWhenImplicitRequirePrefixesAreUsed() throws Exception {
+		App myApp = brjs.app("myApp");
+		Blade blade = myApp.defaultBladeset().blade("b1");
+		Aspect aspect = myApp.defaultAspect();
+		given(blade).containsFile("src/pkg/Class.js")
+			.and(aspect).indexPageRequires("appns/b1/pkg/Class")
+			.and(logging).enabled();
+		when(aspect).bundleSetGenerated();
+		then(logging).debugMessageReceived(BRJSConformantAssetPlugin.IMPLICIT_PACKAGE_USED, "brjs-apps/myApp/blades/b1/src", "appns/b1", "appns/b1")
+			.and(logging).otherMessagesIgnored();
+	}
+	
+	@Test
 	public void brjsAppsIsntRequiredIfCommandIsRunFromInsideAnApp() throws Exception {
 		given(testSdkDirectory).containsFolder("myprojects")
 			.and(testSdkDirectory).containsFolder("myprojects/myapp")
@@ -203,4 +219,5 @@ public class BRJSTest extends SpecTest {
 			.and(testSdkDirectory).containsDir("myprojects/myapp")
 			.and(testSdkDirectory).containsDir("myprojects/anotherapp");
 	}
+	
 }

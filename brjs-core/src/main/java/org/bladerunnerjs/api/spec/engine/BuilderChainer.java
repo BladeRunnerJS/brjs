@@ -2,7 +2,6 @@ package org.bladerunnerjs.api.spec.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
@@ -10,10 +9,10 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.Workbench;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.plugin.EventObserver;
@@ -30,7 +29,6 @@ import org.bladerunnerjs.api.spec.utility.NamedDirNodeBuilder;
 import org.bladerunnerjs.api.spec.utility.NamedNodeBuilder;
 import org.bladerunnerjs.api.spec.utility.TestPackBuilder;
 import org.bladerunnerjs.api.spec.utility.WorkbenchBuilder;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -44,7 +42,7 @@ public class BuilderChainer {
 		this.specTest = specTest;
 	}
 	
-	public SpecTestBuilder and() { return new SpecTestBuilder(specTest); }
+	public SpecTestEnvironmentBuilder and() { return new SpecTestEnvironmentBuilder(specTest); }
 	public TestPackBuilder and(TestPack testPack) { return new TestPackBuilder(specTest, testPack); }
 	public NamedNodeBuilder and(NamedNode namedDirNode) { return new NamedNodeBuilder(specTest, namedDirNode); }
 	public BRJSBuilder and(BRJS brjs) { return new BRJSBuilder(specTest, brjs); }
@@ -65,7 +63,7 @@ public class BuilderChainer {
 	public NodeObserverBuilder and(EventObserver observer) { return new NodeObserverBuilder(specTest, observer); }
 	public AppServerBuilder and(ApplicationServer appServer) { return new AppServerBuilder(specTest, appServer); }
 	public JettyServerBuilder and(Server jettyServer) { return new JettyServerBuilder(specTest, jettyServer); }
-	public AliasesFileBuilder and(AliasesFile aliasesFile) { return new AliasesFileBuilder(specTest, aliasesFile); }
-	public AliasDefinitionsFileBuilder and(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(specTest, aliasDefinitionsFile); }
+	
+	public <B extends SpecTestBuilder> B and(B builder) { return builder; }
 	
 }

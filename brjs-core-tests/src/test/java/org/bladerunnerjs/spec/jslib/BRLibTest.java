@@ -5,7 +5,7 @@ import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.plugin.brjsconformant.BRLibYamlConf;
+import org.bladerunnerjs.model.BRLibYamlConf;
 import org.junit.Before;
 import org.junit.Test;
 

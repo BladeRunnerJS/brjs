@@ -7,12 +7,10 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.AbstractBundlableNode;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -21,7 +19,6 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class TestPack extends AbstractBundlableNode implements NamedNode
 {
-	private AliasesFile aliasesFile;
 	private String name;
 	
 	public TestPack(RootNode rootNode, Node parent, MemoizedFile dir)
@@ -44,20 +41,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<LinkedAsset> modelSeedAssets() 
-	{
-		// TODO: add extra coverage so this can be fixed without causing only js breakage
-//		return Collections.emptyList();
-		
-		List<LinkedAsset> seedFiles = new ArrayList<>();
-		
-		for(AssetLocation assetLocation : assetLocations()) {
-			if(assetLocation instanceof TestAssetLocation) {
-				seedFiles.addAll(assetLocation.sourceModules());
-			}
-		}
-		
-		return seedFiles;
+	public List<LinkedAsset> seedAssets() 
+	{		
+		return assetDiscoveryInitiator.seedAssets();
 	}
 	
 	@Override
@@ -116,25 +102,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	public AssetContainer testScope() {
 		return (AssetContainer) parentNode().parentNode();
-	}
-	
-	public AliasesFile aliasesFile()
-	{
-		if(aliasesFile == null) {
-			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml", this);
-		}
-		
-		return aliasesFile;
-	}
-	
-	public AssetLocation testSource()
-	{
-		return assetLocation("src-test");
-	}
-	
-	public AssetLocation tests()
-	{
-		return assetLocation("tests");
 	}
 	
 }

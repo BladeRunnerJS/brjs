@@ -12,7 +12,6 @@ import javax.naming.InvalidNameException;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.FileObserver;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.api.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
@@ -29,7 +28,6 @@ import org.bladerunnerjs.memoization.PollingFileModificationObserver;
 import org.bladerunnerjs.memoization.WatchingFileModificationObserver;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
@@ -185,21 +183,11 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsAssetLocationPlugins() {
-		verifyBrjsIsNotSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.assetLocationPlugins);
-		
-		specTest.pluginLocator.assetLocationPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class) );
-		
-		return builderChainer;
-	}
-	
 	public BuilderChainer automaticallyFindsBundlerPlugins()
 	{
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlerPlugins();
 		automaticallyFindsAssetPlugins();
-		automaticallyFindsAssetLocationPlugins();
 		automaticallyFindsRequirePlugins();
 		
 		return builderChainer;
@@ -229,7 +217,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlerPlugins();
 		automaticallyFindsAssetPlugins();
-		automaticallyFindsAssetLocationPlugins();
 		automaticallyFindsCommandPlugins();
 		automaticallyFindsModelObservers();
 		automaticallyFindsRequirePlugins();

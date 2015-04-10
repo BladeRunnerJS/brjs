@@ -17,7 +17,7 @@ import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.FileUtils;
 
 import com.martiansoftware.jsap.JSAP;
@@ -28,7 +28,7 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 //TODO: we have very few (if any) tests around this command
 
-public class JsDocCommand extends ArgsParsingCommandPlugin {
+public class JsDocCommand extends JSAPArgsParsingCommandPlugin {
 	public static final String APP_STORAGE_DIR_NAME = "jsdoc";
 
 	public class Messages {
