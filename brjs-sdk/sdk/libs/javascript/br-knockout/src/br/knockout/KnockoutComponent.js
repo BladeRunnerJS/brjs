@@ -61,17 +61,13 @@ KnockoutComponent.prototype.getElement = function() {
 
 /** @private */
 KnockoutComponent.prototype._getTemplate = function(sTemplateId) {
-	var eTemplateHolder;
 	var eTemplateNode = require('service!br.html-service').getTemplateElement(sTemplateId);
 
-	if (!eTemplateNode) {
-	    throw new KnockoutComponent.TemplateNotFoundError("Template with ID "+sTemplateId+" couldn't be found");
+	if(!eTemplateNode) {
+	    throw new KnockoutComponent.TemplateNotFoundError("Template with ID '" + sTemplateId + "' couldn't be found");
 	}
 
-	eTemplateHolder = eTemplateNode.cloneNode(true);
-	eTemplateHolder.removeAttribute('id');
-
-	return eTemplateHolder;
+	return eTemplateNode;
 };
 
 module.exports = KnockoutComponent;

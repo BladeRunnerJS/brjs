@@ -26,6 +26,16 @@ br.implement(BRHtmlResourceService, HtmlResourceService);
 
 BRHtmlResourceService.prototype.getTemplateFragment = function(templateId) {
 	var template = document.getElementById(templateId);
+	
+	if(template && template.hasAttribute('data-auto-wrapped')) {
+		template.removeAttribute('data-auto-wrapped');
+		var templateNode = nonEmptyNodes(template.content.childNodes)[0];
+		
+		if(templateNode.hasAttribute('id')) {
+			templateNode.removeAttribute('id');
+		}
+	}
+	
 	return (template) ? document.importNode(template.content, true) : null;
 };
 
