@@ -319,7 +319,7 @@ PresenterComponent.prototype._getTemplate = function(sTemplateId) {
 	var eTemplateNode = ServiceRegistry.getService("br.html-service").getTemplateElement(sTemplateId);
 
 	if(!eTemplateNode) {
-		throw new PresenterComponent.TemplateNotFoundError("Template with ID ''" + sTemplateId + "'' couldn't be found");
+		throw new PresenterComponent.TemplateNotFoundError("Template with ID '" + sTemplateId + "' couldn't be found");
 	}
 
 	return eTemplateNode;
