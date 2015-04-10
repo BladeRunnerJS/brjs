@@ -133,6 +133,18 @@ public class AspectBundlingOfXML extends SpecTest {
 		then(response).containsCommonJsClasses("appns.bs.Class1", "appns.bs.Class2");
 	}
 	
+	// end of scoped tests
+	
+	@Test
+	public void extraIdTagsThatDontStartWithTheAppRequirePrefixArentSecondaryRequirePrefixesForXmlAssets() throws Exception {
+		given(aspect).hasClasses("appns/Class1")
+			.and(aspect).containsFileWithContents("resources/xml/file1.xml", "<foo id=\"description\"/><bar id=\"appns.id1\"/>")
+			.and(aspect).containsFileWithContents("resources/xml/anotherFile.xml", "<foo id=\"description\"/><bar id=\"appns.id2\"/>")
+			.and(aspect).indexPageHasContent("require('appns/Class1');");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.Class1");
+	}
+	
 	private String zeroPad(int size) {
 		return StringUtils.leftPad("", size, '0');
 	}

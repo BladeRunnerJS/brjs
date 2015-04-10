@@ -11,10 +11,12 @@ import com.google.common.base.Joiner;
 public class ExceptionsVerifier {
 	private final List<Throwable> exceptions;
 	private SpecTest specTest;
+	private VerifierChainer verifierChaniner;
 	
 	public ExceptionsVerifier(SpecTest specTest, List<Throwable> exceptions) {
 		this.exceptions = exceptions;
 		this.specTest = specTest;
+		this.verifierChaniner = new VerifierChainer(specTest);
 	}
 	
 	public <T extends Throwable> TopLevelExceptionVerifier verifyFormattedException(Class<T> exceptionClass, String message, Object... args) {
@@ -39,7 +41,7 @@ public class ExceptionsVerifier {
 		return null;
 	}
 	
-	public void verifyNoOutstandingExceptions() {
+	public VerifierChainer verifyNoOutstandingExceptions() {
 		if (!exceptions.isEmpty())
 		{
 			System.err.println("\n\n");
@@ -47,7 +49,9 @@ public class ExceptionsVerifier {
 			System.err.println(ExceptionPrinter.printExceptions(exceptions));
 			System.err.println("");
 		}
-		assertTrue("Unexpected exceptions: " + ExceptionPrinter.printExceptions(exceptions), exceptions.isEmpty());	
+		assertTrue("Unexpected exceptions: " + ExceptionPrinter.printExceptions(exceptions), exceptions.isEmpty());
+		
+		return verifierChaniner;
 	}
 	
 	private Throwable getRootCause(Throwable exception) {

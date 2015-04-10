@@ -109,8 +109,13 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	}
 	
 	@Override
-	public boolean isScopeEnforced()
-	{
+	public boolean isScopeEnforced() {
 		return false;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
 	}
 }

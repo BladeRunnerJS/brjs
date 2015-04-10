@@ -21,7 +21,7 @@ import org.bladerunnerjs.utility.ObserverList;
 
 public class MockRootNode implements RootNode
 {
-	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(new File("."), FalseFileFilter.INSTANCE);
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(FalseFileFilter.INSTANCE, new File("."));
 	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	private IO io = new IO( FalseFileFilter.INSTANCE );
 	

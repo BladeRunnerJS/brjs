@@ -21,7 +21,6 @@ import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
-import org.bladerunnerjs.model.DirectoryLinkedAsset;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -29,7 +28,7 @@ import org.bladerunnerjs.utility.UnicodeReader;
 import com.Ostermiller.util.ConcatReader;
 
 
-public class ThirdpartySourceModule implements SourceModule, DirectoryLinkedAsset
+public class ThirdpartySourceModule implements SourceModule
 {
 
 	private ThirdpartyLibManifest manifest;
@@ -225,7 +224,12 @@ public class ThirdpartySourceModule implements SourceModule, DirectoryLinkedAsse
 	}
 	
 	@Override
-	public boolean isScopeEnforced()
+	public boolean isScopeEnforced() {
+		return true;
+	}
+	
+	@Override
+	public boolean isRequirable()
 	{
 		return true;
 	}

@@ -1,5 +1,6 @@
 package org.bladerunnerjs.plugin.bundlers.xml;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +75,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 			
 			return new CharResponseContent(brjs, result);
 		}
-		catch(XMLStreamException  e) {
+		catch(IOException | XMLStreamException  e) {
 			throw new ContentProcessingException(e, "Error while processing XML assets '" );
 		}
 	}

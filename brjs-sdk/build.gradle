@@ -1,4 +1,7 @@
+import org.apache.commons.io.output.ByteArrayOutputStream
 import org.apache.tools.ant.filters.*
+import org.bladerunnerjs.OSCalculator
+import org.bladerunnerjs.gradle.executionlisteners.StartBRJSExecutionListener
 
 apply plugin: 'maven'
 
@@ -154,6 +157,16 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase()
 	task "test${it}", dependsOn: [testJsTask, testSystemAppsTask]
 }
+
+task runIntegrationTests(type: Exec) {
+    workingDir './sdk'
+    commandLine OSCalculator.getOSSpecificCommand('brjs test-integration ../brjs-apps/it-app')
+}
+gradle.addListener(new StartBRJSExecutionListener(
+        runIntegrationTests,
+        file('sdk'),
+        file('sdk/libs/java/system')
+))
 
 task test, dependsOn: testPhantomJS
 
@@ -357,7 +370,6 @@ task cleanTemporaryFiles {
 clean {
 	dependsOn = [cleanTemporaryFiles]
 }
-
 
 // util class
 class DistZipPathLogger extends BuildAdapter {

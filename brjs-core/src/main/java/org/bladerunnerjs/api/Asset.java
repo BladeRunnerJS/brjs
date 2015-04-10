@@ -19,10 +19,6 @@ public interface Asset {
 	List<String> getRequirePaths();
 	String getPrimaryRequirePath();
 	AssetContainer assetContainer();
-	
-	/**
-	 * 
-	 * @return True if this Asset is a 'logical' asset and doesn't represent a file on disk, False otherwise
-	 */
 	boolean isScopeEnforced();
+	boolean isRequirable();
 }

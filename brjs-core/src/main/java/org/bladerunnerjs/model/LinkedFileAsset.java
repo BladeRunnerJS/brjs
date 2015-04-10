@@ -130,7 +130,12 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public boolean isScopeEnforced()
+	public boolean isScopeEnforced() {
+		return true;
+	}
+	
+	@Override
+	public boolean isRequirable()
 	{
 		return true;
 	}
