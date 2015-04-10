@@ -110,7 +110,6 @@ function sanitizeHtml(html) {
 
 	// IE and old Firefox's don't allow assigning text with script tag in it to innerHTML.
 	if (html.match(/<script(.*)type=\"text\/html\"/)) {
-	 	// TODO: Log the fact there is a script tag in the template and that it should be replaced with a div.
 	 	html = html.replace(/<script(.*)type=\"text\/html\"/g, replacer).replace(/<\/script>/g, '</div>');
 	}
 
