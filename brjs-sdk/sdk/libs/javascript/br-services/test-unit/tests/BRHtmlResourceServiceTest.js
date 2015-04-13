@@ -63,7 +63,7 @@ var assertTemplateContentsMatch = (function(){
 	var oService = ServiceRegistry.getService("br.html-service");
 	var tempDiv = document.createElement("div"); // Needed as you cannot call innerHTML on a document fragment.
 	return function assertTemplateContentsMatch(templateId, expected) {
-		var templateDocFrag = oService.getTemplateElement(templateId);
+		var templateDocFrag = oService.getTemplateFragment(templateId);
 		
 		tempDiv.innerHTML = "";
 		tempDiv.appendChild(templateDocFrag);

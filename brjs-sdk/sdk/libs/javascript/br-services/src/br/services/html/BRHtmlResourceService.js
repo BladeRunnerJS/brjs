@@ -26,16 +26,6 @@ br.implement(BRHtmlResourceService, HtmlResourceService);
 
 BRHtmlResourceService.prototype.getTemplateFragment = function(templateId) {
 	var template = document.getElementById(templateId);
-	
-	if(template && template.hasAttribute('data-auto-wrapped')) {
-		template.removeAttribute('data-auto-wrapped');
-		var templateNode = nonEmptyNodes(template.content.childNodes)[0];
-		
-		if(templateNode.hasAttribute('id')) {
-			templateNode.removeAttribute('id');
-		}
-	}
-	
 	return (template) ? document.importNode(template.content, true) : null;
 };
 
@@ -68,7 +58,9 @@ function loadHtml(url) {
 	var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
 	templateElems.innerHTML = sanitizeHtml(translatedHtml);
 
+	fixNestedAutoWrappedTemplates();
 	shimTemplates();
+	fixAutoWrappedTemplates();
 }
 
 function nonEmptyNodes(childNodes) {
@@ -85,6 +77,12 @@ function nonEmptyNodes(childNodes) {
 	return nonEmptyNodes;
 }
 
+function shimTemplate(templateElem) {
+	if(!templateElem.content) {
+		templateElem.content = document.createDocumentFragment();
+	}
+}
+
 function shimTemplates() {
 	if(!('content' in document.createElement('template'))) {
 		var templateElems = document.getElementsByTagName('template');
@@ -98,6 +96,57 @@ function shimTemplates() {
 			}
 
 			templateElem.content = templateContent;
+		}
+	}
+}
+
+function fixNestedAutoWrappedTemplates() {
+	var templateElems = document.querySelectorAll('template[data-auto-wrapped] template');
+
+	for(var i = 0, l = templateElems.length; i < l; ++i) {
+		var templateElem = templateElems[i];
+		var parentTemplate = templateElem.parentNode;
+		parentTemplate.parentNode.insertBefore(templateElem, parentTemplate.nextSibling);
+	}
+}
+
+function fixAutoWrappedTemplates() {
+	var templateElems = document.getElementsByTagName('template');
+
+	for(var i = 0, l = templateElems.length; i < l; ++i) {
+		var templateElem = templateElems[i];
+		
+		if(templateElem.hasAttribute('data-auto-wrapped')) {
+			templateElem.removeAttribute('data-auto-wrapped');
+			var templateNodes = nonEmptyNodes(templateElem.content.childNodes);
+			
+			for(var ni = 0, nl = templateNodes.length; ni < nl; ++ni) {
+				var templateNode = templateNodes[ni];
+				
+				if(ni > 0) {
+					if(templateNode.nodeName == 'TEMPLATE') {
+						// Note: on browser's with native template support, this code is used instead
+						// fixNestedAutoWrappedTemplates()
+						templateElem.parentNode.insertBefore(templateNode, templateElem.nextSibling);
+					}
+					else {
+						var newTemplateElem = document.createElement('template');
+						shimTemplate(newTemplateElem);
+						newTemplateElem.id = templateNode.id;
+						newTemplateElem.content.appendChild(templateNode);
+						templateElem.parentNode.insertBefore(newTemplateElem, templateElem.nextSibling);
+						
+						if(templateNode.hasAttribute('id')) {
+							templateNode.removeAttribute('id');
+						}
+					}
+				}
+				else {
+					if(templateNode.hasAttribute('id')) {
+						templateNode.removeAttribute('id');
+					}
+				}
+			}
 		}
 	}
 }
