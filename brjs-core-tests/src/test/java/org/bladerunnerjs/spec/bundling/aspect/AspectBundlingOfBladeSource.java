@@ -352,7 +352,22 @@ public class AspectBundlingOfBladeSource extends SpecTest {
     		.and(blade2InDefaultBladeset).hasClass("foo/Blade2Class")
     		.and(logging).enabled();
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then(logging).warnMessageReceived(BundleSetBuilder.STRICT_CHECKING_DISABLED_MSG, "brjs-apps/app1/blades/b2/src/foo", "blades/b2/src/foo/Blade2Class.js", "brjs-apps/app1/blades/b2/src/foo/no-strict-checking");
+    	then(logging).warnMessageReceived(BundleSetBuilder.INVALID_REQUIRE_MSG, "appns/b1/Blade1Class", "appns/b2/foo/Blade2Class")
+    		.and(logging).warnMessageReceived(BundleSetBuilder.STRICT_CHECKING_DISABLED_MSG, "brjs-apps/app1/blades/b2/src/foo", "blades/b2/src/foo/Blade2Class.js", "brjs-apps/app1/blades/b2/src/foo/no-strict-checking")
+    		.and(logging).otherMessagesIgnored();
+	}
+	
+	@Test
+	public void badRequiresAreLoggedWhenStrictCheckingIsDisabled() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "appns/b2/foo/Blade2Class")
+    		.and(blade2InDefaultBladeset).hasDir("src/foo")
+    		.and(blade2InDefaultBladeset).containsEmptyFile("src/foo/no-strict-checking")
+    		.and(blade2InDefaultBladeset).hasClass("foo/Blade2Class")
+    		.and(logging).enabled();
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(logging).warnMessageReceived(BundleSetBuilder.INVALID_REQUIRE_MSG, "appns/b1/Blade1Class", "appns/b2/foo/Blade2Class")
+    		.and(logging).otherMessagesIgnored();
 	}
 	
 }

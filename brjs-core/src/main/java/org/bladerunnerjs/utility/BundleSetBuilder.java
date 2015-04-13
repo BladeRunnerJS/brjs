@@ -30,8 +30,9 @@ import com.google.common.base.Joiner;
 public class BundleSetBuilder {
 	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
-	public static final String STRICT_CHECKING_DISABLED_MSG = "Strict checking has been disabled for the directory '%s' and therefore the Asset '%s'."+
+	public static final String STRICT_CHECKING_DISABLED_MSG = "Strict checking has been disabled for the directory '%s' and for the Asset '%s'."+
 			" This allows the Blade class to directly depend on another Blade class when the App loaded. This dependency should be broken using Services and the file '%s' should be removed to re-enable the scope enforcement.";
+	public static final String INVALID_REQUIRE_MSG = "The class '%s' depends on the class '%s' which is outside of it's scope - this dependency should be broken using Services.";
 	
 	private final List<LinkedAsset> seedAssets = new ArrayList<>();
 	private final Set<Asset> assets = new LinkedHashSet<>();
@@ -90,8 +91,12 @@ public class BundleSetBuilder {
 				addSourceModule((SourceModule) linkedAsset);
 			}
 			
+			BRJS brjs = linkedAsset.assetContainer().root();
 			for(Asset asset : moduleDependencies) {
-				ensureDependentAssetIsInScope(linkedAsset, asset);				
+				boolean assetIsInScope = ensureDependentAssetIsInScope(linkedAsset, asset);
+				if (!assetIsInScope) {
+					brjs.logger(this.getClass()).warn(INVALID_REQUIRE_MSG, linkedAsset.getPrimaryRequirePath(), asset.getPrimaryRequirePath());
+				}
 				if(asset instanceof SourceModule){
 					addSourceModule((SourceModule)asset);
 				} else if (asset instanceof LinkedAsset) {
@@ -103,11 +108,12 @@ public class BundleSetBuilder {
 		}
 	}
 
-	private void ensureDependentAssetIsInScope(LinkedAsset asset, Asset dependantAsset) throws ModelOperationException
+	private boolean ensureDependentAssetIsInScope(LinkedAsset asset, Asset dependantAsset) throws ModelOperationException
 	{
+		boolean throwExceptionOnFailure = true;
 		if (!asset.isScopeEnforced() || !dependantAsset.isScopeEnforced() ||
 				strictCheckingDisabled(asset) || strictCheckingDisabled(dependantAsset)) {
-			return;
+			throwExceptionOnFailure = false;
 		}
 		
 		StringBuilder scopedLocations = new StringBuilder();
@@ -117,9 +123,12 @@ public class BundleSetBuilder {
 		
 		for (AssetContainer sourceAssetContainerScope : sourceAssetContainer.scopeAssetContainers()) {
 			if (assetContainerMatchesScope(sourceAssetContainerScope, dependantAssetContainer)) {
-				return;
+				return true;
 			}
 			scopedLocations.append( brjs.dir().getRelativePath(sourceAssetContainerScope.dir()) );
+		}
+		if (!throwExceptionOnFailure) {
+			return false;
 		}
 		RequirePathException scopeException = new OutOfScopeRequirePathException(asset, dependantAsset);
 		throw new ModelOperationException(scopeException);
@@ -238,7 +247,6 @@ public class BundleSetBuilder {
 				if (!strictCheckingAssetsLogged.add(asset)) {
 					BRJS brjs = asset.assetContainer().root();
 					brjs.logger(this.getClass()).warn(STRICT_CHECKING_DISABLED_MSG, brjs.dir().getRelativePath(currentDir), asset.getAssetPath(), brjs.dir().getRelativePath(strictCheckingFile));
-					System.err.println( String.format(STRICT_CHECKING_DISABLED_MSG, brjs.dir().getRelativePath(currentDir), asset.getAssetPath(), brjs.dir().getRelativePath(strictCheckingFile)) );
 				}
 				return true;
 			}
