@@ -11,6 +11,7 @@ public class BundleSetCreatedEvent implements Event
 
 	public BundleSetCreatedEvent(BundleSet bundleSet, long creationDuration) {
 		this.bundleSet = bundleSet;
+		this.creationDuration = creationDuration;
 	}
 	
 	public BundleSet getBundleSet() {
