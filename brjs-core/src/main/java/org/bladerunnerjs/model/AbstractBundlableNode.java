@@ -27,12 +27,13 @@ import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 
-	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().sdkJsLibsDir().dir(), dir());
+	private final MemoizedValue<BundleSet> bundleSet;
 	private RequirePlugin defaultRequirePlugin;
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
 		defaultRequirePlugin = root().plugins().requirePlugin("default");
+		bundleSet = new MemoizedValue<>(this.getClass().getSimpleName()+" bundleSet", root(), root().dir(), app().dir());
 	}
 	
 	@Override
