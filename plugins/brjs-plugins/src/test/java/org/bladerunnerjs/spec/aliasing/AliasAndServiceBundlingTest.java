@@ -666,7 +666,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	public void theLocaleSwitcherAliasCanBeOverridden() throws Exception {
 		brLib = brjs.sdkLib("br");
 		brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
-		given(brLocaleLib).classFileHasContent("switcher", "require('service!br.locale-switcher').switch();")
+		given(brLocaleLib).classFileHasContent("switcher", "require('service!br.locale-switcher').switchLocale();")
     		.and(servicesLib).classFileHasContent("br/ServiceRegistry", "require('./AliasRegistry');")
     		.and(servicesLib).classFileHasContent("br/AliasRegistry", "require('alias!$data');")
 			.and(brLib).hasClasses("br/services/LocaleSwitcher")
