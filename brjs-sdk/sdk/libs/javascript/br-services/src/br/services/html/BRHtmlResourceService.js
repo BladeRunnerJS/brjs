@@ -69,7 +69,8 @@ function nonEmptyNodes(childNodes) {
 	for(var i = 0, l = childNodes.length; i < l; ++i) {
 		var childNode = childNodes[i];
 		
-		if((childNode.nodeType != document.TEXT_NODE) || (childNode.textContent.trim() != '')) {
+		if((childNode.nodeType == document.ELEMENT_NODE) ||
+			((childNode.nodeType == document.TEXT_NODE) && (childNode.textContent.trim() != ''))) {
 			nonEmptyNodes.push(childNode);
 		}
 	}
