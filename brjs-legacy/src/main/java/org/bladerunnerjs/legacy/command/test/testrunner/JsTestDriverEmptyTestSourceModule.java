@@ -94,4 +94,10 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	{
 		return sourceModule.assetContainer();
 	}
+	
+	@Override
+	public boolean isScopeEnforced()
+	{
+		return sourceModule.isScopeEnforced();
+	}
 }

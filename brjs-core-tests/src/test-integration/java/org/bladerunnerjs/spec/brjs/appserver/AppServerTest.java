@@ -45,7 +45,6 @@ public class AppServerTest extends SpecTest
 	TemplateGroup templates;
 	Aspect aspect;
 	StringBuffer response = new StringBuffer();
-
 	File secondaryTempFolder;
 	
 	@Before

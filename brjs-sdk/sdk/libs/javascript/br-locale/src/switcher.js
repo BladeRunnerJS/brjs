@@ -9,14 +9,14 @@ module.exports = {
 		var localePageUrl = this.getLocalizedPageUrl(window.location.href.replace(/[^/]+$/, ''), locale);
 
 		require('service!br.locale-provider').setActiveLocale(locale);
-		require('service!br.locale-switcher').switch(localePageUrl);
+		require('service!br.locale-switcher').switchLocale(localePageUrl);
 	},
 
 	switchToActiveLocale: function() {
 		var activeLocale = require('service!br.locale-provider').getActiveLocale();
 		var localePageUrl = this.getLocalizedPageUrl(window.location.href, activeLocale);
 		
-		require('service!br.locale-switcher').switch(localePageUrl);
+		require('service!br.locale-switcher').switchLocale(localePageUrl);
 	},
 
 	getLocalizedPageUrl: function(pageUrl, locale) {

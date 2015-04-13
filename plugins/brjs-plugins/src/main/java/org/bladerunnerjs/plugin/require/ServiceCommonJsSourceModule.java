@@ -126,6 +126,11 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	@Override
+	public boolean isScopeEnforced() {
+		return false;
+	}
+	
+	@Override
 	public boolean isRequirable()
 	{
 		return true;

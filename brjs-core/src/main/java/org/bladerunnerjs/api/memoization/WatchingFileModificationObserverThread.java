@@ -6,12 +6,14 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.memoization.WatchKeyService;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+import org.bladerunnerjs.utility.FileObserverFactory;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -23,8 +25,9 @@ public class WatchingFileModificationObserverThread extends Thread
 	public static final String FILE_CHANGED_MSG = THREAD_IDENTIFIER+" detected a '%s' event for '%s'. Incrementing the file version.";
 	public static final String CANT_RESET_PATH_MSG = "A watch key could not be reset for the path '%s' but the directory or file still exists. "+
 			"You might need to reset the process for file changes to be detected.";
+	public static final String THREAD_STARTED = "Thread %s has been started.";
 	
-	private Path directoryToWatch;
+	private List<File> directoriesToWatch;
 	private FileModificationRegistry fileModificationRegistry;
 
 	private BRJS brjs;
@@ -34,13 +37,12 @@ public class WatchingFileModificationObserverThread extends Thread
 	private final Map<WatchKey,Path> watchKeys = new LinkedHashMap<>();
 
 	private Logger logger;
-
 	
 	public WatchingFileModificationObserverThread(BRJS brjs, WatchKeyServiceFactory watchKeyServiceFactory) throws IOException
 	{
 		this.watchKeyServiceFactory = watchKeyServiceFactory;
 		this.fileModificationRegistry = brjs.getFileModificationRegistry();
-		directoryToWatch = brjs.dir().toPath();
+		directoriesToWatch = FileObserverFactory.getBrjsRootDirs(brjs);
 		this.brjs = brjs;
 	}
 	
@@ -49,9 +51,7 @@ public class WatchingFileModificationObserverThread extends Thread
 	{
 		Thread.currentThread().setName(THREAD_IDENTIFIER);
 		try {
-
     		init();
-    		
     		while(true) {
     			checkForUpdates();
     		}
@@ -69,8 +69,12 @@ public class WatchingFileModificationObserverThread extends Thread
 		// create the watch service in the init method so we get a 'too many open files' exception
 		watchKeyService = watchKeyServiceFactory.createWatchService();
 		logger = brjs.logger(this.getClass());
+		logger.debug(THREAD_STARTED, THREAD_IDENTIFIER);
 		logger.debug(USING_WATCH_SERVICE_MSG, this.getClass().getSimpleName(), watchKeyService.getClass().getSimpleName());
-		watchKeys.putAll( watchKeyService.createWatchKeysForDir(directoryToWatch, false) );
+		for (File dir : directoriesToWatch) {
+			watchKeys.putAll( watchKeyService.createWatchKeysForDir(dir.toPath(), false) );
+		}
+		
 	}
 	
 	void checkForUpdates() throws IOException, InterruptedException
@@ -126,8 +130,8 @@ public class WatchingFileModificationObserverThread extends Thread
             }
             
 			logger.debug(FILE_CHANGED_MSG, kind, childFile.getPath());
+
             fileModificationRegistry.incrementFileVersion(childFile);
-            
             boolean isWatchKeyReset = watchKey.reset();
             if( !isWatchKeyReset ) {
             	if (!childFile.exists()) {

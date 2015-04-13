@@ -31,7 +31,7 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 	}
 	
 	@After
-	public void tearDownThreadSafeModelAccessor()
+	public void tearDownThreadSafeModelAccessor() throws Exception
 	{
 		ThreadSafeStaticBRJSAccessor.destroy();
 	}

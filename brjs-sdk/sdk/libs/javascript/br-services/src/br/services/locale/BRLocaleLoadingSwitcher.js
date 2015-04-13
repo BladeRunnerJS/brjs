@@ -22,7 +22,7 @@ function BRLocaleLoadingSwitcher() {
 }
 topiarist.implement(BRLocaleLoadingSwitcher, LocaleSwitcher);
 
-BRLocaleLoadingSwitcher.prototype.switch = function(localePageUrl) {
+BRLocaleLoadingSwitcher.prototype.switchLocale = function(localePageUrl) {
   var request = new XMLHttpRequest();
   
   request.onreadystatechange = function () {
@@ -35,7 +35,7 @@ BRLocaleLoadingSwitcher.prototype.switch = function(localePageUrl) {
         // servers this may not even be configurable, so try adding a '.html' suffix on the client -- if it's a '.jsp'
         // page than the server will either automatically do this, or can be configured to do this by modifying
         // 'WEB-INF/web.xml'.
-        this.switch(localePageUrl + '.html');
+        this.switchLocale(localePageUrl + '.html');
       }
     }
   }.bind(this);

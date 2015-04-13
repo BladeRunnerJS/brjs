@@ -52,7 +52,14 @@ public class BRJSDevServletFilter implements Filter {
 	
 	@Override
 	public void destroy() {
-		ThreadSafeStaticBRJSAccessor.destroy();
+		try
+		{
+			ThreadSafeStaticBRJSAccessor.destroy();
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override

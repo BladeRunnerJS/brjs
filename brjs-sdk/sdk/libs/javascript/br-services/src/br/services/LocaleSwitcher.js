@@ -25,7 +25,7 @@ function LocaleSwitcher() {
  *
  * @param {string} localePageUrl - The URL of the locale specific web page.
  */
-LocaleSwitcher.prototype.switch = function(localePageUrl) {
+LocaleSwitcher.prototype.switchLocale = function(localePageUrl) {
 };
 
 module.exports = LocaleSwitcher;
