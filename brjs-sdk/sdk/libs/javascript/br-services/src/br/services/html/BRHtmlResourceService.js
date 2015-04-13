@@ -70,13 +70,17 @@ function nonEmptyNodes(childNodes) {
 		var childNode = childNodes[i];
 		
 		if((childNode.nodeType == document.ELEMENT_NODE) ||
-			((childNode.nodeType == document.TEXT_NODE) && (childNode.textContent.trim() != ''))) {
+			((childNode.nodeType == document.TEXT_NODE) && (text(childNode).trim() != ''))) {
 			nonEmptyNodes.push(childNode);
 		}
 	}
 	
 	return nonEmptyNodes;
 }
+
+function text(textNode) {
+	return textNode.textContent || textNode.innerText || '';
+} 
 
 function shimTemplate(templateElem) {
 	if(!templateElem.content) {
