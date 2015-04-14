@@ -3,8 +3,8 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.model.exception.CircularDependencyException;
+import org.bladerunnerjs.api.model.exception.OutOfBundleScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRelativeRequirePathException;
-import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
@@ -72,7 +72,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).classRequires("appns/Class1", "appns/Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/Class2");
+		then(exceptions).verifyException(OutOfBundleScopeRequirePathException.class, "appns/Class2");
 	}
 	
 	@Test
@@ -268,5 +268,13 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(rootDefaultAspect).indexPageRefersTo("appns.Class1");
 		when(rootDefaultAspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.Class1");
+	}
+	
+	@Test
+	public void sourceCodeInTheSameDirectoryAsAUsedClassIsNotAutomaticallyBundledIfItIsntReferenced() throws Exception {
+		given(rootDefaultAspect).hasClasses("appns/foo/Class1", "appns/foo/Class2")
+			.and(rootDefaultAspect).indexPageRefersTo("appns.foo.Class1");
+		when(rootDefaultAspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).doesNotContainText("appns/foo/Class2");
 	}
 }

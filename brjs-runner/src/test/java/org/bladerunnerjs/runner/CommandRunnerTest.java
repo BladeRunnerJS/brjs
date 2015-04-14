@@ -1,19 +1,18 @@
 package org.bladerunnerjs.runner;
 
 import static org.bladerunnerjs.api.spec.utility.BRJSAssertions.*;
-import static org.mockito.Mockito.*;
+
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
@@ -40,7 +39,7 @@ public class CommandRunnerTest {
 	private InputStream oldSysIn;
 	
 	@Before
-	public void setUp() throws IOException, InvalidSdkDirectoryException {
+	public void setUp() throws Exception {
 		StaticLoggerBinder.getSingleton().getLoggerFactory().setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
 		commandRunner = new CommandRunner();
 		

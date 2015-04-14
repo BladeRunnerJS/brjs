@@ -34,16 +34,6 @@ public class MockContentPluginWithIncorrectRequestPrefix extends AbstractContent
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-
-	@Override
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException
 	{
 		if(!contentPath.equals(requestPaths.get(0))) {

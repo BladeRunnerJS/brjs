@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.ThirdpartyLibYamlManifest;
 
 public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
@@ -17,15 +18,11 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	
 	public static final String commaWithOptionalSpacesSeparator = "[\\s]*,[\\s]*";
 	
-	private final MemoizedFile file;
-	private final MemoizedFile assetLocationDir;
-	private final AssetLocation assetLocation;
+	private AssetContainer assetContainer;
 	
-	public ThirdpartyLibManifest(AssetLocation assetLocation) throws ConfigException {
-		super(assetLocation, ThirdpartyLibYamlManifest.class, assetLocation.file(LIBRARY_MANIFEST_FILENAME));
-		file = assetLocation.root().getMemoizedFile(assetLocation.dir());
-		assetLocationDir = assetLocation.dir();
-		this.assetLocation = assetLocation;
+	public ThirdpartyLibManifest(AssetContainer assetContainer) throws ConfigException {
+		super(assetContainer, ThirdpartyLibYamlManifest.class, assetContainer.file(LIBRARY_MANIFEST_FILENAME));
+		this.assetContainer = assetContainer;
 	}
 	
 	public List<String> getDepends() throws ConfigException
@@ -49,6 +46,10 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	public boolean getCommonjsDefinition() throws ConfigException
 	{
 		return getConf().commonjsDefinition;
+	}
+	
+	public boolean exists() {
+		return confFile.isFile();
 	}
 	
 	
@@ -95,7 +96,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	private List<MemoizedFile> getFilesWithPaths(List<String> filePaths) throws ConfigException
 	{
 		List<MemoizedFile> foundFiles = new ArrayList<>();
-		String assetLocationDirPath = assetLocationDir.getAbsolutePath();
+		String assetLocationDirPath = assetContainer.dir().getAbsolutePath();
 		
 		for (String filePath : filePaths)
 		{
@@ -103,9 +104,9 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 			File file = new File(fullFilePath);
 			
 			if(file.exists()){
-				foundFiles.add( assetLocation.root().getMemoizedFile(file) );
+				foundFiles.add( assetContainer.root().getMemoizedFile(file) );
 			}else{
-				String relativeManifestPath = assetLocation.assetContainer().root().dir().getRelativePath(assetLocation.file(LIBRARY_MANIFEST_FILENAME));
+				String relativeManifestPath = assetContainer.root().dir().getRelativePath(assetContainer.file(LIBRARY_MANIFEST_FILENAME));
 				throw new ConfigException("Unable to find the file '" + filePath + "' required in the manifest at '" + relativeManifestPath + "'.");
 			}
 		}
@@ -115,13 +116,13 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	private List<MemoizedFile> findAllFilesWithExtension(String extension, boolean includeNestedDirs)
 	{
 		List<MemoizedFile> foundFiles = new ArrayList<>();
-		List<MemoizedFile> files = (includeNestedDirs) ? file.nestedFiles() : file.filesAndDirs();
+		List<MemoizedFile> files = (includeNestedDirs) ? assetContainer.dir().nestedFiles() : assetContainer.dir().filesAndDirs();
 		
 		for (File f : files)
 		{
 			if (f.getName().endsWith(extension))
 			{
-				foundFiles.add( assetLocation.root().getMemoizedFile(f) );
+				foundFiles.add( assetContainer.root().getMemoizedFile(f) );
 			}
 		}
 		return foundFiles;

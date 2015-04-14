@@ -8,30 +8,32 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 
 public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
-	private final AssetLocation assetLocation;
-	private final String requirePath;
 	
-	public ServiceCommonJsSourceModule(AssetLocation assetLocation, String requirePath) {
-		this.assetLocation = assetLocation;
+	private final String requirePath;
+	private AssetContainer assetContainer;
+	private MemoizedFile dir;
+	
+	public ServiceCommonJsSourceModule(AssetContainer assetContainer, String requirePath) {
+		this.assetContainer = assetContainer;
 		this.requirePath = requirePath;
+		this.dir = assetContainer.dir();;
 	}
 
+	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+	}
+	
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return getPreExportDefineTimeDependentAssets(bundlableNode);
-	}
-
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return Collections.emptyList();
 	}
 
 	@Override
@@ -48,13 +50,8 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public AssetLocation assetLocation() {
-		return assetLocation;
-	}
-
-	@Override
-	public MemoizedFile dir() {
-		return assetLocation.dir();
+	public MemoizedFile file() {
+		return dir;
 	}
 
 	@Override
@@ -94,8 +91,15 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependencies = new ArrayList<>();
 		
-		try {
+		try
+		{
 			dependencies.add(bundlableNode.getLinkedAsset("br/ServiceRegistry"));
+		}
+		catch (RequirePathException ex)
+		{
+			throw new ModelOperationException(ex);
+		}
+		try {
 			dependencies.add(bundlableNode.getLinkedAsset("alias!" + requirePath));
 		}
 		catch(RequirePathException e) {
@@ -114,13 +118,26 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	public List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return Collections.emptyList();
 	}
-
+	
 	@Override
-	public List<AssetLocation> assetLocations() {
-		return Collections.emptyList();
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
+	}
+	
+	@Override
+	public boolean isScopeEnforced() {
+		return false;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
 	}
 	
 	private String getModuleContent() {
 		return "	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n";
 	}
+
 }

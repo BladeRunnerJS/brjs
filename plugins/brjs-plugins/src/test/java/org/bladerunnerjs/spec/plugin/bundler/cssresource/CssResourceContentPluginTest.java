@@ -14,11 +14,10 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.model.BladesetWorkbench;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.api.BladesetWorkbench;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CssResourceContentPluginTest extends SpecTest {
@@ -224,8 +223,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	/* WORKBENCH LEVEL ASSETS */
-	//JT:TODO workbenches dont have themes
-	@Test @Ignore
+	@Test
 	public void assetsInABladeWorkbenchThemeCanBeRequested() throws Exception
 	{
 		given(app).hasBeenCreated()
@@ -362,8 +360,9 @@ public class CssResourceContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageRequires(sdkJsLib)
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
-		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt, cssresource/aspect_default_resource/index.html");
 	}
 	
 	@Test
@@ -402,7 +401,8 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(aspect).hasBeenCreated()
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 			.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
-		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+		then(aspect).devRequestsForContentPluginsAre("cssresource", 
+				"cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
 	}
 	
 	@Test
@@ -421,9 +421,11 @@ public class CssResourceContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
 		.and(aspect).hasBeenCreated()
+		.and(aspect).indexPageRequires(sdkJsLib)
 		.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 		.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
-		then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+		then(aspect).prodRequestsForContentPluginsAre("cssresource", 
+				"cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt, cssresource/aspect_default_resource/index.html");
 	}
 	
 	@Test
@@ -476,8 +478,8 @@ public class CssResourceContentPluginTest extends SpecTest {
     		.and(sdkJsLib).containsResourceFileWithContents(".git", ".git contents")
     		.and(brjs.bladerunnerConf()).hasIgnoredPaths(".git");
     	when(defaultAspect).requestReceivedInProd("cssresource/lib_sdkLib/.git", response);
-    	then(aspect).prodRequestsForContentPluginsAre("cssresource", "")
-    		.and(aspect).devRequestsForContentPluginsAre("cssresource", "")
+    	then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/aspect_default_resource/index.html")
+    		.and(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/aspect_default_resource/index.html")
     		.and(exceptions).verifyException(FileNotFoundException.class, "sdk/libs/javascript/sdkLib/.git");
 	}
 	

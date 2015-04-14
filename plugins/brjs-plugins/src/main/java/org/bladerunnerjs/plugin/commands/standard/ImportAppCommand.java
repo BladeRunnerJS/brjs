@@ -11,7 +11,7 @@ import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.model.NodeImporter;
 import org.bladerunnerjs.utility.NameValidator;
 
@@ -20,7 +20,7 @@ import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class ImportAppCommand extends ArgsParsingCommandPlugin
+public class ImportAppCommand extends JSAPArgsParsingCommandPlugin
 {
 	private Logger logger;
 	private BRJS brjs;

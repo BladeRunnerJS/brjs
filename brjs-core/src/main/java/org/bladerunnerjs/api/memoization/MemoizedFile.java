@@ -15,7 +15,10 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.utility.JsStyleAccessor;
 
 /**
  * Provides similar methods to {@link File} and wraps a {@link File} object. Several of the methods' return values are 'memoized'
@@ -173,6 +176,16 @@ public class MemoizedFile extends File implements Comparable<File>
 		return nestedFilesAndDirs;
 	}
 	
+	public List<MemoizedFile> nestedFilesAndDirs(IOFileFilter fileFilter) {
+		List<MemoizedFile> returnedFilesAndDirsCopy = new ArrayList<>();
+		for (MemoizedFile file : nestedFilesAndDirs()) {
+			if (fileFilter.accept(file.wrappedFile)) {
+				returnedFilesAndDirsCopy.add(file);
+			}
+		}
+		return returnedFilesAndDirsCopy;
+	}
+	
 	public List<MemoizedFile> nestedFiles() {
 		List<MemoizedFile> nestedFiles = new ArrayList<>();
 		for(MemoizedFile file : nestedFilesAndDirs()) {
@@ -265,6 +278,21 @@ public class MemoizedFile extends File implements Comparable<File>
 
 	public boolean isEmpty() {
 		return filesAndDirs().isEmpty();
+	}
+
+	public Object jsStyle()
+	{
+		MemoizedFile jsStyleDir = (isFile()) ? parentFile : this;
+		return new JsStyleAccessor((BRJS)rootNode).getJsStyle(jsStyleDir);
+	}
+
+	public boolean isChildOf(MemoizedFile file)
+	{
+		return getAbsolutePath().startsWith(file.getAbsolutePath());
+	}
+	
+	public String requirePathName() {
+		return StringUtils.substringBeforeLast(getName(), ".");
 	}
 	
 }

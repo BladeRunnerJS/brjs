@@ -8,63 +8,61 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
-import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocationUtility;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.LinkedFileAsset;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.utility.RequirePathUtility;
 
 import com.Ostermiller.util.ConcatReader;
 import com.google.common.base.Joiner;
 
 public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
-	private AssetLocation assetLocation;
+	private AssetContainer assetContainer;
 	private MemoizedFile assetFile;
 	private LinkedFileAsset linkedFileAsset;
 	private List<String> requirePaths = new ArrayList<>();
+	private String primaryRequirePath;
 	private SourceModulePatch patch;
 	private TrieBasedDependenciesCalculator trieBasedUseTimeDependenciesCalculator;
 	private TrieBasedDependenciesCalculator trieBasedPreExportDefineTimeDependenciesCalculator;
 	private TrieBasedDependenciesCalculator trieBasedPostExportDefineTimeDependenciesCalculator;
+	private List<Asset> implicitDependencies;
 	public static final String JS_STYLE = "namespaced-js";
 	
-	public NamespacedJsSourceModule(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		this.assetLocation = assetLocation;
-		this.assetFile = assetFile;
-		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetLocation);
+	public NamespacedJsSourceModule(AssetContainer assetContainer, String requirePrefix, MemoizedFile jsFile, List<Asset> implicitDependencies)
+	{
+		this.assetContainer = assetContainer;
+		this.assetFile = jsFile;
+		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetContainer, requirePrefix, implicitDependencies);
+		this.implicitDependencies = implicitDependencies;
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().getRelativePath(assetFile).replaceAll("\\.js$", "");
-		requirePaths.add(requirePath);
+		primaryRequirePath = calculateRequirePath(requirePrefix, jsFile);
+		requirePaths.add(primaryRequirePath);
 
-		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
+		patch = SourceModulePatch.getPatchForRequirePath(assetContainer, primaryRequirePath);
 	}
 	
+	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		this.implicitDependencies.addAll(implicitDependencies);
+	}
+
 	@Override
  	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		List<Asset> dependendAssets = new ArrayList<>();
 		dependendAssets.addAll( getPreExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getPostExportDefineTimeDependentAssets(bundlableNode) );
 		dependendAssets.addAll( getUseTimeDependentAssets(bundlableNode) );
+		dependendAssets.addAll(implicitDependencies);
 		return dependendAssets;
-	}
-	
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		List<String> aliases = new ArrayList<>(getPreExportDefineTimeDependencyCalculator().getAliases());
-		aliases.addAll(getPostExportDefineTimeDependencyCalculator().getAliases());
-		aliases.addAll(getUseTimeDependencyCalculator().getAliases());
-		
-		return aliases;
 	}
 	
 	@Override
@@ -102,7 +100,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return RequirePathUtility.getPrimaryRequirePath(this);
+		return primaryRequirePath;
 	}
 	
 	@Override
@@ -118,7 +116,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			 return bundlableNode.getLinkedAssets(assetLocation, getPreExportDefineTimeDependencyCalculator().getRequirePaths());
+			 return bundlableNode.assets(this, getPreExportDefineTimeDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -128,8 +126,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, getPostExportDefineTimeDependencyCalculator().getRequirePaths());
-			assets.addAll(bundlableNode.getLinkedAssets(assetLocation, getUseTimeDependencyCalculator().getRequirePaths()));
+			List<Asset> assets = bundlableNode.assets(this, getPostExportDefineTimeDependencyCalculator().getRequirePaths());
+			assets.addAll(bundlableNode.assets(this, getUseTimeDependencyCalculator().getRequirePaths()));
 			
 			return assets;
 		}
@@ -150,9 +148,9 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public MemoizedFile dir()
+	public MemoizedFile file()
 	{
-		return linkedFileAsset.dir();
+		return linkedFileAsset.file();
 	}
 	
 	@Override
@@ -165,34 +163,23 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return linkedFileAsset.getAssetPath();
 	}
 	
-	@Override
-	public AssetLocation assetLocation()
-	{
-		return assetLocation;
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
-	}
-	
 	private TrieBasedDependenciesCalculator getPreExportDefineTimeDependencyCalculator() {
 		if (trieBasedPreExportDefineTimeDependenciesCalculator == null) {
-			trieBasedPreExportDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsPreExportDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
+			trieBasedPreExportDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(assetContainer, this, new NamespacedJsPreExportDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}
 		return trieBasedPreExportDefineTimeDependenciesCalculator;
 	}
 	
 	private TrieBasedDependenciesCalculator getPostExportDefineTimeDependencyCalculator() {
 		if (trieBasedPostExportDefineTimeDependenciesCalculator == null) {
-			trieBasedPostExportDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsPostExportDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
+			trieBasedPostExportDefineTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(assetContainer, this, new NamespacedJsPostExportDefineTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}
 		return trieBasedPostExportDefineTimeDependenciesCalculator;
 	}
 	
 	private TrieBasedDependenciesCalculator getUseTimeDependencyCalculator() {
 		if (trieBasedUseTimeDependenciesCalculator == null) {
-			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new NamespacedJsUseTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
+			trieBasedUseTimeDependenciesCalculator = new TrieBasedDependenciesCalculator(assetContainer, this, new NamespacedJsUseTimeDependenciesReader.Factory(this), assetFile, patch.getPatchFile());
 		}
 		return trieBasedUseTimeDependenciesCalculator;
 	}
@@ -200,6 +187,27 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<String> getRequirePaths() {
 		return requirePaths;
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
+	}
+	
+	@Override
+	public boolean isScopeEnforced() {
+		return true;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
+	
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile file) {
+		return requirePrefix+"/"+file.requirePathName();
 	}
 	
 }

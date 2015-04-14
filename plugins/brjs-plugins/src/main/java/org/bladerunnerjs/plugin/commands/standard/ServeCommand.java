@@ -8,14 +8,14 @@ import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 
-public class ServeCommand extends ArgsParsingCommandPlugin
+public class ServeCommand extends JSAPArgsParsingCommandPlugin
 {
 	public class Messages {
 		public static final String SERVER_STARTUP_MESSAGE = "BladerunnerJS server is now running and can be accessed at http://localhost:";
@@ -83,15 +83,14 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 			
 			
 			appServer.start();
-			brjs.getFileWatcherThread().start();
+			brjs.fileObserver().start();
 			
 			logger.println("\n");
 			logger.println(Messages.SERVER_STARTUP_MESSAGE + appServer.getPort() + "/");
 			logger.println(Messages.SERVER_STOP_INSTRUCTION_MESSAGE + "\n");
 			
 			appServer.join();
-			brjs.getFileWatcherThread().interrupt();
-			brjs.getFileWatcherThread().join();
+			brjs.fileObserver().stop();
 		}
 		catch(NumberFormatException e)
 		{

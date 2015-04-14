@@ -3,7 +3,10 @@ package org.bladerunnerjs.appserver.filter;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.net.SocketException;
 import java.util.Map;
+
+import javax.servlet.Servlet;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.server.Server;
@@ -19,8 +22,16 @@ public class FileExtensionFilterTest extends ServletFilterTest
 	@Before
 	public void setup() throws Exception
 	{
-		appServer = createAppServer(new DefaultServlet(), new FileExtensionFilter());
-		appServer.start();
+		Servlet servlet = new DefaultServlet();
+		FileExtensionFilter filter = new FileExtensionFilter();
+		try {
+			appServer = createAppServer(servlet, filter);
+			appServer.start();
+		} catch (SocketException ex) {
+			serverPort = generatePortNumber();
+			appServer = createAppServer(servlet, filter);
+			appServer.start();
+		}
 		
 		File htmlFile = new File(contextDir, "page.html");
 		FileUtils.write(htmlFile, "<h1>Hello World!</h1>", "UTF-8");

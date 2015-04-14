@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,7 +150,7 @@ public class ContentPathParser
 	}
 	
 	private Map<String, Pattern> generateTokenPatterns(Map<String, String> tokens) {
-		Map<String, Pattern> tokenPatterns = new HashMap<>();
+		Map<String, Pattern> tokenPatterns = new LinkedHashMap<>();
 		
 		for(String tokenName : tokens.keySet()) {
 			String tokenPattern = tokens.get(tokenName);
@@ -183,7 +182,7 @@ public class ContentPathParser
 	
 	private Map<String, List<String>> generateRequestFormTokens(Map<String, String> requestForms)
 	{
-		Map<String, List<String>> requestFormTokens = new HashMap<>();
+		Map<String, List<String>> requestFormTokens = new LinkedHashMap<>();
 		Pattern tokenPattern = Pattern.compile("<([^>]+)>");
 		
 		for (String requestFormName : requestForms.keySet())

@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.spec.engine.NodeVerifier;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.engine.VerifierChainer;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.RequestMode;
 
 import com.google.common.base.Joiner;

@@ -3,7 +3,6 @@ package org.bladerunnerjs.api.spec.engine;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
@@ -22,7 +21,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 	
 	public BuilderChainer containsResourceFile(String resourceFilePath) throws Exception {
-		writeToFile(node.assetLocation("resources").file(resourceFilePath), resourceFilePath + "\n");
+		writeToFile(node.file("resources/"+resourceFilePath), resourceFilePath + "\n");
 		
 		return builderChainer;
 	}
@@ -37,7 +36,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer containsResourceFileWithContents(String resourceFileName, String contents) throws Exception 
 	{
-		writeToFile(node.assetLocation("resources").file(resourceFileName), contents);
+		writeToFile(node.file("resources/"+resourceFileName), contents);
 		
 		return builderChainer;
 	}
@@ -171,17 +170,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 	
 	public MemoizedFile getSourceFile(String sourceClass) {
-		AssetLocation assetLocation = node.assetLocation("src");
-		if (assetLocation == null) {
-			throw new RuntimeException("Cannot find asset location for the 'src' dir. Either it doesn't exist or there are no asset plugins to discover it.");
-		}
-		return assetLocation.file(sourceClass.replaceAll("\\.", "/") + ".js");
+		return node.file("src/"+sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 	
 	
 	protected MemoizedFile getTestSourceFile(String sourceClass)
 	{
-		return node.assetLocation("src-test").file(sourceClass.replaceAll("\\.", "/") + ".js");		
+		return node.file("src-test/"+sourceClass.replaceAll("\\.", "/") + ".js");		
 	}
 	
 	

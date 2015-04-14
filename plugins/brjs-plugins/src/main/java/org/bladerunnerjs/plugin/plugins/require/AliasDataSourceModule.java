@@ -3,37 +3,33 @@ package org.bladerunnerjs.plugin.plugins.require;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 
 import com.Ostermiller.util.ConcatReader;
 
 public class AliasDataSourceModule implements CommonJsSourceModule {
-	private final AssetLocation assetLocation;
 	private final BundlableNode bundlableNode;
-	private final List<String> requirePaths = new ArrayList<>();
+	public static final String PRIMARY_REQUIRE_PATH = "alias!$data";
 
-	public AliasDataSourceModule(AssetLocation assetLocation, BundlableNode bundlableNode) {
-		this.assetLocation = assetLocation;
+	public AliasDataSourceModule(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
-		requirePaths.add("alias!$data");
 	}
 
+	@Override
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+	}
+	
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
 		return Collections.emptyList();
 	}
 
@@ -57,13 +53,8 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public AssetLocation assetLocation() {
-		return assetLocation;
-	}
-
-	@Override
-	public MemoizedFile dir() {
-		return assetLocation.dir();
+	public MemoizedFile file() {
+		return bundlableNode.dir();
 	}
 
 	@Override
@@ -78,12 +69,12 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public List<String> getRequirePaths() {
-		return requirePaths;
+		return Arrays.asList(PRIMARY_REQUIRE_PATH);
 	}
 
 	@Override
 	public String getPrimaryRequirePath() {
-		return "alias!$data";
+		return PRIMARY_REQUIRE_PATH;
 	}
 
 	@Override
@@ -112,7 +103,19 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	}
 
 	@Override
-	public List<AssetLocation> assetLocations() {
-		return Collections.emptyList();
+	public AssetContainer assetContainer()
+	{
+		return bundlableNode;
+	}
+	
+	@Override
+	public boolean isScopeEnforced() {
+		return false;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
 	}
 }

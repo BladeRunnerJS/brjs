@@ -9,24 +9,23 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.model.FileAsset;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -34,7 +33,6 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 public class CssContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin {
 	
 	private final ContentPathParser contentPathParser;
-	private AssetPlugin cssAssetPlugin;
 	private BRJS brjs;
 	
 	{
@@ -53,7 +51,6 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
-		cssAssetPlugin = brjs.plugins().assetPlugin(CssAssetPlugin.class);
 	}
 	
 	@Override
@@ -73,9 +70,9 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 		try {
 			List<Locale> supportedLocales = Arrays.asList(bundleSet.getBundlableNode().app().appConf().getLocales());
 			
-			for(Asset cssAsset : bundleSet.getResourceFiles(cssAssetPlugin)) {
-				AssetLocation cssAssetLocation = cssAsset.assetLocation();
-				String themeName = (cssAssetLocation instanceof ThemedAssetLocation) ? ((ThemedAssetLocation) cssAssetLocation).getThemeName() : "common";
+			for(Asset cssAsset : getCssAssets(bundleSet)) {
+				
+				String themeName = getThemeName(cssAsset);
 				
 				Locale assetLocale = Locale.createLocaleFromFilepath(".*_", cssAsset.getAssetName());
 				
@@ -111,16 +108,16 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 		Locale locale = new Locale(languageCode, countryCode);
 
 		List<Reader> readerList = new ArrayList<Reader>();
-		List<Asset> cssAssets = getCssAssets(bundleSet, cssAssetPlugin);
-		for(Asset cssAsset : cssAssets) {
-			String assetThemeName = getThemeName(cssAsset.assetLocation());
+		
+		for(Asset cssAsset : getCssAssets(bundleSet)) {
+			String assetThemeName = getThemeName(cssAsset);
 			
 			if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(locale.getLocaleFilePattern(".*_", ".css"))) {
-				CssRewriter processor = new CssRewriter(cssAsset);
+				CssRewriter processor = new CssRewriter(brjs, cssAsset);
 				
 				try {
 					String css = processor.getRewrittenFileContents();
-					readerList.add(new StringReader("/*** " + cssAsset.getAssetPath() + " ***/\n\n" + css));
+					readerList.add(new StringReader("\n\n\n/*** " + cssAsset.getAssetPath() + " ***/\n\n" + css));
 				} catch (IOException e) {
 					throw new ContentProcessingException(e);
 				}
@@ -137,23 +134,23 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 		return false;
 	}
 	
-	// protected so the CT CSS plugin that uses a different CSS ordering can override it
-	protected List<Asset> getCssAssets(BundleSet bundleSet, AssetPlugin cssAssetPlugin){
-		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
+	protected void orderCssAssets(List<Asset> cssAssets) {
+		// do nothing, protected so the CT CSS plugin that uses a different CSS ordering can override it
+	}
+	
+	private List<Asset> getCssAssets(BundleSet bundleSet) {
+		List<Asset> cssAssets = bundleSet.getAssets( Arrays.asList("css!", "theme!"), Arrays.asList(FileAsset.class));
+		orderCssAssets(cssAssets);
 		return cssAssets;
 	}
 	
-	
-	private String getThemeName(AssetLocation cssAssetLocation) {
-		String themeName;
-		
-		if(cssAssetLocation instanceof ThemedAssetLocation) {
-			themeName = ((ThemedAssetLocation) cssAssetLocation).getThemeName();
-		}else {
-			themeName = "common";
+	private String getThemeName(Asset cssAsset) {
+		String cssAssetRequirePath = cssAsset.getPrimaryRequirePath();
+		if (cssAssetRequirePath.startsWith("theme!")) {
+			return StringUtils.substringAfter( StringUtils.substringBefore(cssAssetRequirePath, ":"), "!");
+		} else {
+			return "common";
 		}
-		
-		return themeName;
 	}
 	
 }

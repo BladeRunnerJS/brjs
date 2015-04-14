@@ -9,7 +9,7 @@ import org.bladerunnerjs.api.model.events.AppDeployedEvent;
 import org.bladerunnerjs.api.model.events.NodeReadyEvent;
 import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.junit.Before;

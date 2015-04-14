@@ -85,7 +85,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public List<String> getDependentContentPluginRequestPrefixes()
+	public List<String> usedContentPluginRequestPrefixes()
 	{
 		return Arrays.asList( "css" );
 	}

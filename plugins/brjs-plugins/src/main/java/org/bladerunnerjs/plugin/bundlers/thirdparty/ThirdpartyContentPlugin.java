@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
@@ -65,6 +66,12 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 	}
 	
 	@Override
+	public int priority()
+	{
+		return -10;
+	}
+	
+	@Override
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws MalformedRequestException, ContentProcessingException
 	{
 		try {
@@ -88,7 +95,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			}
 			else if(parsedContentPath.formName.equals("single-module-request")) {
 				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(sourceModules);
-				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
+				LinkedAsset jsModule = bundleSet.getBundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
 				return new CharResponseContent(brjs, 
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
 					jsModule.getReader(),
@@ -105,7 +112,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 		}
 	}
 
-	private String getGlobalisedThirdpartyModuleContent(SourceModule sourceFile, boolean hasUnencapsulatedSourceModule)
+	private String getGlobalisedThirdpartyModuleContent(LinkedAsset sourceFile, boolean hasUnencapsulatedSourceModule)
 	{
 		if (sourceFile instanceof ThirdpartySourceModule && hasUnencapsulatedSourceModule) {
 			ThirdpartySourceModule thirdpartyModule = (ThirdpartySourceModule) sourceFile;

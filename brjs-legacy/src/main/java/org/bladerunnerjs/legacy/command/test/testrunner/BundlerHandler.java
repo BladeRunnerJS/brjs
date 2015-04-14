@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +14,7 @@ import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.ResponseContent;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
@@ -22,8 +22,8 @@ import org.bladerunnerjs.utility.BundleSetRequestHandler;
 public class BundlerHandler
 {	
 	private App app;
-	protected Map<String,String> legacyBundlerHandlerPaths = new HashMap<>();
-	protected Map<String,String> logicalBundlerHandlerPaths = new HashMap<>();
+	protected Map<String,String> legacyBundlerHandlerPaths = new LinkedHashMap<>();
+	protected Map<String,String> logicalBundlerHandlerPaths = new LinkedHashMap<>();
 	private BundlableNode bundlableNode;
 	
 	public BundlerHandler(BundlableNode bundlableNode)

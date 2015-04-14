@@ -56,7 +56,7 @@ public class TestCompiler
 			}
 			
 			// see http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.jdt.doc.isv/guide/jdt_api_compile.htm for command line args
-			String[] compilerArgs = new String[]{ "-1.6", "-sourcepath", sourcePath.toString(), "-d", compiledClassDir.getPath(), "-encoding", "UTF-8", "-nowarn", testContainerDir.getPath() };
+			String[] compilerArgs = new String[]{ "-1.7", "-sourcepath", sourcePath.toString(), "-d", compiledClassDir.getPath(), "-encoding", "UTF-8", "-nowarn", testContainerDir.getPath() };
 			
 			boolean compileReturnValue = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(
 					compilerArgs, 

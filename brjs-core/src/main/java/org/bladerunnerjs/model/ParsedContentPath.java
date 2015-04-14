@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ParsedContentPath {
@@ -9,5 +9,5 @@ public class ParsedContentPath {
 	}
 	
 	public String formName;
-	public Map<String, String> properties = new HashMap<>();
+	public Map<String, String> properties = new LinkedHashMap<>();
 }

@@ -13,7 +13,6 @@ import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.model.AbstractComponent;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BladesetWorkbench;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;

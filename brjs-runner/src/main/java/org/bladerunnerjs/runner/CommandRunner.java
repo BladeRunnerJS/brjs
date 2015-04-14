@@ -112,7 +112,7 @@ public class CommandRunner {
 	}
 	
 	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
-		return run(new File("."), args);
+		return run(new File(""), args);
 	}
 	
 	private void setBrjsAllowStats(BRJS brjs) throws ConfigException

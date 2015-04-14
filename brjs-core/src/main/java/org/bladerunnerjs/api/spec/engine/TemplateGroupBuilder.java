@@ -22,7 +22,8 @@ public class TemplateGroupBuilder {
 		templateGroup.template("aspect").create();
 		templateGroup.template("bladeset").create();
 		templateGroup.template("blade").create();
-		templateGroup.template("brjsconformantjslibrootassetlocation").create();
+		templateGroup.template("br-lib").create();
+		templateGroup.template("thirdparty-lib").create();
 		return builderChainer;
 	}
 }

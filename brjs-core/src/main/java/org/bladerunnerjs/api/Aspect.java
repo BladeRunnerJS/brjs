@@ -18,7 +18,6 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.AspectRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TemplateUtility;
@@ -30,7 +29,6 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this, TypedTestPack.class);
 	private String name;
 	private MemoizedFile[] scopeFiles;
-	private IndexPageSeedLocator indexPageSeedLocator;
 	private AspectRequestHandler aspectRequestHandler;
 	
 	public Aspect(RootNode rootNode, Node parent, MemoizedFile dir) {
@@ -42,7 +40,6 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 		super(rootNode, parent, dir);
 		this.name = name;
 		
-		indexPageSeedLocator = new IndexPageSeedLocator(root());
 		this.aspectRequestHandler = new AspectRequestHandler(this);
 	}
 	
@@ -53,11 +50,6 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 		}
 		
 		return scopeFiles;
-	}
-	
-	@Override
-	public List<LinkedAsset> modelSeedAssets() {
-		return indexPageSeedLocator.seedAssets(this);
 	}
 	
 	@Override

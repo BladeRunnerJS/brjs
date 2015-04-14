@@ -20,21 +20,4 @@ public class BladeVerifier extends NodeVerifier<Blade> {
 		return verifierChainer;
 	}
 	
-	public VerifierChainer hasAssetLocations(String... assetLocations) throws Exception {
-		assetContainerVerifier.hasAssetLocations(assetLocations);
-		
-		return verifierChainer;
-	}
-	
-	public VerifierChainer assetLocationHasNoDependencies(String assetLocation) {
-		assetContainerVerifier.assetLocationHasNoDependencies(assetLocation);
-		
-		return verifierChainer;
-	}
-	
-	public VerifierChainer assetLocationHasDependencies(String assetLocation, String... assetLocationDependencies) {
-		assetContainerVerifier.assetLocationHasDependencies(assetLocation, assetLocationDependencies);
-		
-		return verifierChainer;
-	}
 }

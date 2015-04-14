@@ -4,14 +4,14 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class MultipleArgsTestCommand extends ArgsParsingCommandPlugin {
+public class MultipleArgsTestCommand extends JSAPArgsParsingCommandPlugin {
 	protected Logger logger;
 	
 	@Override

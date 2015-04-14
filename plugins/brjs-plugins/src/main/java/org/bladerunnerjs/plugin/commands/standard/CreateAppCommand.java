@@ -10,7 +10,7 @@ import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TemplateUtility;
 
@@ -20,7 +20,7 @@ import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class CreateAppCommand extends ArgsParsingCommandPlugin
+public class CreateAppCommand extends JSAPArgsParsingCommandPlugin
 {
 	public class Messages {
 		public static final String APP_CREATED_CONSOLE_MSG = "Successfully created new app '%s'";

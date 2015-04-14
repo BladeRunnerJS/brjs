@@ -111,7 +111,7 @@ public class AppBuilderUtilis
 			localeForwardingFile.getParentFile().mkdirs();
 			
 			try (OutputStream os = new FileOutputStream(localeForwardingFile);
-				ResponseContent content = aspect.requestHandler().getLocaleForwardingPageContent(bundleSet, urlContentAccessor, version); )
+				ResponseContent content = aspect.requestHandler().getLocaleForwardingPageContent(aspect, urlContentAccessor, version); )
 			{
 				content.write(os);
 			}

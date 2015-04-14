@@ -12,7 +12,7 @@ var Utility = require('br/core/Utility');
 /**
  * @class
  * @alias module:br/test/Utils
- * 
+ *
  * @classdesc
  * Utility class containing static methods that can be useful for tests.
  */
@@ -29,8 +29,15 @@ Utils.pLoadedAndAttachedCSSElements = [];
 * @param {String} eventString The Event to be fired without 'on', e.g. 'click', 'keydown'
 * @param {String} [character] A character associated with typing events
 */
-Utils.fireDomEvent = function(element, eventString, character) {
+Utils.fireDomEvent = function(eElement, eventString, character) {
 	var evt;
+	var element;
+	if (eElement instanceof jQuery) {
+		element = eElement[0]; //unwrap the jQuery element
+	} else {
+		element = eElement;
+	}
+
 	if (document.createEventObject) {
 		evt = jQuery.Event(eventString);
 		if (character) {
@@ -44,7 +51,10 @@ Utils.fireDomEvent = function(element, eventString, character) {
 			evt.which = Utils.getKeyCodeForChar(character);
 		}
 		evt.initEvent(eventString, true, true);
-		return !element.dispatchEvent(evt);
+		if (element) {
+			return !element.dispatchEvent(evt);
+		}
+		return false;
 	}
 };
 
@@ -79,7 +89,7 @@ Utils.fireKeyEvent = function(element, eventString, key, options) {
 	options = options || {};
 	options.key = options.key || key;
 	options.bubbles = true;
-	
+
 	var evt = new KeyboardEvent(eventString, options);
 	if (element.dispatchEvent) {
 		element.dispatchEvent(evt);

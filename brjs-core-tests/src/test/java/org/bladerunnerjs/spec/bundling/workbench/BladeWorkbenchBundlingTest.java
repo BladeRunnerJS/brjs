@@ -5,9 +5,11 @@ import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.model.exception.OutOfBundleScopeRequirePathException;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.BladeWorkbench;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -118,6 +120,29 @@ public class BladeWorkbenchBundlingTest extends SpecTest {
     	when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(response).containsOrderedTextFragments("// br-bootstrap",
     			"// appLib" );
+	}
+	
+	@Test
+	public void outOfScopeExceptionIsThrownIfTheRequiredClassIsOutOfScope() throws Exception {
+		given(aspect).hasClass("appns/App")
+			.and(blade).classRequires("appns/bs/b1/Class1", "appns/App")
+			.and(blade.workbench()).indexPageRequires("appns/bs/b1/Class1");
+		when(blade.workbench()).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfBundleScopeRequirePathException.class, 
+				"appns/App", "default-aspect/src/appns/App.js", BladeWorkbench.class.getSimpleName(),
+				"brjs-apps/app1/bs-bladeset, brjs-apps/app1/bs-bladeset/blades/b1, brjs-apps/app1/bs-bladeset/blades/b1/workbench")
+			.whereTopLevelExceptionIs(ContentProcessingException.class);
+	}
+	
+	@Test
+	public void outOfScopeExceptionContainsTheFileWithTheException() throws Exception {
+		given(aspect).hasClass("appns/App")
+		.and(blade).classRequires("appns/bs/b1/Class1", "appns/App")
+		.and(blade.workbench()).indexPageRequires("appns/bs/b1/Class1");
+		when(blade.workbench()).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(OutOfBundleScopeRequirePathException.class, 
+				"bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js")
+			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 
 	

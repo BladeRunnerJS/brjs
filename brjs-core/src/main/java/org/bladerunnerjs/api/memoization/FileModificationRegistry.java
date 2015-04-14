@@ -1,8 +1,12 @@
 package org.bladerunnerjs.api.memoization;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,11 +19,11 @@ import org.bladerunnerjs.model.engine.RootNode;
 public class FileModificationRegistry
 {
 	private Map<String,FileVersion> lastModifiedMap = new ConcurrentHashMap<>();
-	private File rootFile;
+	private List<File> rootFiles;
 	private IOFileFilter globalFileFilter;
 
-	public FileModificationRegistry(File rootFile, IOFileFilter globalFileFilter) {
-		this.rootFile = rootFile;
+	public FileModificationRegistry(IOFileFilter globalFileFilter, File... rootFiles) {
+		this.rootFiles = Arrays.asList(rootFiles);
 		this.globalFileFilter = globalFileFilter;
 	}
 	
@@ -47,7 +51,7 @@ public class FileModificationRegistry
 		incrementFileVersion(file);
 		
 		String filePath = file.getAbsolutePath();
-		Set<String> lastModifiedMapKeySet = new HashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
+		Set<String> lastModifiedMapKeySet = new LinkedHashSet<>( lastModifiedMap.keySet() ); // copy the set to prevent concurrent modified exceptions
 		for (String path : lastModifiedMapKeySet) {
 			if (path.startsWith(filePath)) {
 				lastModifiedMap.get(path).incrementValue();
@@ -62,7 +66,7 @@ public class FileModificationRegistry
 	}
 	
 	private void incrementFileAndParentVersion(File file) {
-		while (file != null && !file.equals(rootFile)) {
+		while (file != null && !rootFiles.contains(file)) {
 			getOrCreateVersionValue(file).incrementValue();
 			file = file.getParentFile();
 		}

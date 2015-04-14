@@ -6,22 +6,17 @@ import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
-import org.bladerunnerjs.api.aliasing.AliasDefinition;
-import org.bladerunnerjs.api.aliasing.AliasException;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.api.TestAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
@@ -30,9 +25,7 @@ import org.bladerunnerjs.api.plugin.Event;
 import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.RootAssetLocation;
-import org.bladerunnerjs.model.TestAssetLocation;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
@@ -65,8 +58,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 	
 	@Override
-	public Set<LinkedAsset> linkedAssets() {
-		return bundlableNode.linkedAssets();
+	public Set<Asset> assets() {
+		return bundlableNode.assets();
 	}
 
 	@Override
@@ -75,8 +68,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public LinkedAsset linkedAsset(String requirePath) {
-		return bundlableNode.linkedAsset(requirePath);
+	public Asset asset(String requirePath) {
+		return bundlableNode.asset(requirePath);
 	}
 
 	@Override
@@ -100,18 +93,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public AssetLocation assetLocation(String locationPath) {
-		return bundlableNode.assetLocation(locationPath);
-	}
-
-	@Override
 	public MemoizedFile[] memoizedScopeFiles() {
 		return bundlableNode.memoizedScopeFiles();
-	}
-
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return bundlableNode.assetLocations();
 	}
 
 	@Override
@@ -131,17 +114,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public RootAssetLocation rootAssetLocation() {
-		return bundlableNode.rootAssetLocation();
-	}
-
-	@Override
 	public void create() throws InvalidNameException, ModelUpdateException {
 		bundlableNode.create();
-	}
-	
-	public List<String> getAssetLocationPaths() {
-		return bundlableNode.getAssetLocationPaths();
 	}
 
 	@Override
@@ -185,11 +159,6 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public AliasesFile aliasesFile() {
-		return bundlableNode.aliasesFile();
-	}
-
-	@Override
 	public void notifyObservers(Event event, Node notifyForNode) {
 		bundlableNode.notifyObservers(event, notifyForNode);
 	}
@@ -198,7 +167,7 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
 		LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(requirePath);
 		
-		if((linkedAsset instanceof SourceModule) && (linkedAsset.assetLocation() instanceof TestAssetLocation)) {
+		if (linkedAsset instanceof TestAsset) {
 			linkedAsset = new JsTestDriverEmptyTestSourceModule((SourceModule) linkedAsset);
 		}
 		
@@ -216,11 +185,6 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public List<AssetLocation> seedAssetLocations() {
-		return bundlableNode.seedAssetLocations();
-	}
-
-	@Override
 	public List<LinkedAsset> seedAssets() {
 		return bundlableNode.seedAssets();
 	}
@@ -231,23 +195,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
-		return bundlableNode.getAlias(aliasName);
-	}
-
-	@Override
-	public List<AliasDefinitionsFile> aliasDefinitionFiles() {
-		return bundlableNode.aliasDefinitionFiles();
-	}
-
-	@Override
 	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		return bundlableNode.handleLogicalRequest(logicalRequestPath, contentAccessor, version);
-	}
-
-	@Override
-	public List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
-		return bundlableNode.getLinkedAssets(assetLocation, requirePaths);
 	}
 	
 	@Override
@@ -271,5 +220,17 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	public void incrementChildFileVersions()
 	{
 		bundlableNode.incrementChildFileVersions();	
+	}
+
+	@Override
+	public String canonicaliseRequirePath(Asset asset, String requirePath) throws RequirePathException
+	{
+		return bundlableNode.canonicaliseRequirePath(asset, requirePath);
+	}
+
+	@Override
+	public List<Asset> assets(Asset asset, List<String> requirePaths) throws RequirePathException
+	{
+		return bundlableNode.assets(asset, requirePaths);
 	}
 }

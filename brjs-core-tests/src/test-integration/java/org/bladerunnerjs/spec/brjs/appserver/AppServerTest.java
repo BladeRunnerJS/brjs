@@ -17,7 +17,7 @@ import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.model.events.NodeReadyEvent;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.utility.FileUtils;
@@ -45,7 +45,6 @@ public class AppServerTest extends SpecTest
 	TemplateGroup templates;
 	Aspect aspect;
 	StringBuffer response = new StringBuffer();
-
 	File secondaryTempFolder;
 	
 	@Before
@@ -252,7 +251,7 @@ public class AppServerTest extends SpecTest
 		given(brjs).doesNotContainFolder("brjs-apps")
 			.and(brjs).containsFolder("apps")
 			.and(brjs).hasBeenAuthenticallyCreated(); 
-			/*and*/ secondBrjsProcess = createNonTestModel();
+			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel();
 			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
 			.and(brjs.applicationServer(appServerPort)).started();
@@ -265,7 +264,7 @@ public class AppServerTest extends SpecTest
 	{
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(this.getClass());
 		given(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(secondaryTempFolder); 
-			/*and*/ secondBrjsProcess = createNonTestModel(secondaryTempFolder);
+			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel(secondaryTempFolder);
 			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
 			.and(brjs.applicationServer(appServerPort)).started();

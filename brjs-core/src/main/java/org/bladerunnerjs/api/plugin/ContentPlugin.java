@@ -37,7 +37,7 @@ import org.bladerunnerjs.model.UrlContentAccessor;
  * 
  * @see CompositeContentPlugin
  */
-public interface ContentPlugin extends OrderedPlugin {
+public interface ContentPlugin extends Plugin {
 	/**
 	 * Returns the prefix that all requests for this content plug-in will begin with.
 	 * 

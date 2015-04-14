@@ -9,69 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.DirNode;
+import org.bladerunnerjs.api.FileObserver;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.Workbench;
-import org.bladerunnerjs.api.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.EventObserver;
-import org.bladerunnerjs.api.spec.utility.AppBuilder;
-import org.bladerunnerjs.api.spec.utility.AppCommander;
-import org.bladerunnerjs.api.spec.utility.AppConfCommander;
-import org.bladerunnerjs.api.spec.utility.AppVerifier;
-import org.bladerunnerjs.api.spec.utility.AspectBuilder;
-import org.bladerunnerjs.api.spec.utility.AspectCommander;
-import org.bladerunnerjs.api.spec.utility.AspectVerifier;
-import org.bladerunnerjs.api.spec.utility.AssetLocationBuilder;
-import org.bladerunnerjs.api.spec.utility.BRJSBuilder;
-import org.bladerunnerjs.api.spec.utility.BRJSCommander;
-import org.bladerunnerjs.api.spec.utility.BRJSVerifier;
-import org.bladerunnerjs.api.spec.utility.BladeBuilder;
-import org.bladerunnerjs.api.spec.utility.BladeCommander;
-import org.bladerunnerjs.api.spec.utility.BladeVerifier;
-import org.bladerunnerjs.api.spec.utility.BladesetBuilder;
-import org.bladerunnerjs.api.spec.utility.BladesetCommander;
-import org.bladerunnerjs.api.spec.utility.BladesetVerifier;
-import org.bladerunnerjs.api.spec.utility.DirNodeBuilder;
-import org.bladerunnerjs.api.spec.utility.DirNodeCommander;
-import org.bladerunnerjs.api.spec.utility.DirNodeVerifier;
-import org.bladerunnerjs.api.spec.utility.DirectoryVerifier;
-import org.bladerunnerjs.api.spec.utility.JsLibBuilder;
-import org.bladerunnerjs.api.spec.utility.JsLibCommander;
-import org.bladerunnerjs.api.spec.utility.JsLibVerifier;
-import org.bladerunnerjs.api.spec.utility.LogMessageStore;
-import org.bladerunnerjs.api.spec.utility.LoggerBuilder;
-import org.bladerunnerjs.api.spec.utility.LoggerVerifier;
-import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
-import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
-import org.bladerunnerjs.api.spec.utility.NamedDirNodeBuilder;
-import org.bladerunnerjs.api.spec.utility.NamedDirNodeCommander;
-import org.bladerunnerjs.api.spec.utility.NamedDirNodeVerifier;
-import org.bladerunnerjs.api.spec.utility.NamedNodeBuilder;
-import org.bladerunnerjs.api.spec.utility.NamedNodeCommander;
-import org.bladerunnerjs.api.spec.utility.NamedNodeVerifier;
-import org.bladerunnerjs.api.spec.utility.NodePropertiesBuilder;
-import org.bladerunnerjs.api.spec.utility.NodePropertiesCommander;
-import org.bladerunnerjs.api.spec.utility.NodePropertiesVerifier;
-import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
-import org.bladerunnerjs.api.spec.utility.TestPackVerifier;
-import org.bladerunnerjs.api.spec.utility.WebappTester;
-import org.bladerunnerjs.api.spec.utility.WorkbenchBuilder;
-import org.bladerunnerjs.api.spec.utility.WorkbenchCommander;
-import org.bladerunnerjs.api.spec.utility.WorkbenchVerifier;
-import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.api.spec.utility.*;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
@@ -108,7 +63,7 @@ public abstract class SpecTest
 	public int appServerPort;
 	public WebappTester webappTester;
 	public MockAppVersionGenerator appVersionGenerator;
-	public Thread fileWatcherThread;
+	public FileObserver fileWatcherThread;
 	
 	public int modelsCreated = 0;
 	
@@ -147,11 +102,11 @@ public abstract class SpecTest
 	}
 	
 	@After
-	public void cleanUp() {
+	public void cleanUp() throws Exception {
 		BRJS.allowInvalidRootDirectories = true;
 		
 		if (fileWatcherThread != null) {
-			fileWatcherThread.interrupt();
+			fileWatcherThread.stop();
 		}
 		
 		if(brjs != null) {
@@ -195,6 +150,11 @@ public abstract class SpecTest
 		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, workingDir, logging);
 	}
 	
+	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
+		modelsCreated++;
+		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
+	}
+	
 	public String getActiveCharacterEncoding() {
 		return activeCharacterEncoding;
 	}
@@ -223,7 +183,7 @@ public abstract class SpecTest
 	}
 	
 	// BRJS
-	public SpecTestBuilder given() { return new SpecTestBuilder(this); }
+	public SpecTestEnvironmentBuilder given() { return new SpecTestEnvironmentBuilder(this); }
 	
 
 	// File
@@ -310,9 +270,6 @@ public abstract class SpecTest
 	public JsLibCommander when(JsLib jsLib) { return new JsLibCommander(this, jsLib); }
 	public JsLibVerifier then(JsLib jsLib) { return new JsLibVerifier(this, jsLib); }
 	
-	// AssetLocation
-	public AssetLocationBuilder given(AssetLocation assetLocation) { return new AssetLocationBuilder(this, assetLocation); }
-	
 	// DirNode
 	public DirNodeBuilder given(DirNode dirNode) { return new DirNodeBuilder(this, dirNode); }
 	public DirNodeCommander when(DirNode dirNode) { return new DirNodeCommander(this, dirNode); }
@@ -342,14 +299,13 @@ public abstract class SpecTest
 	
 	// Webapp Tester
 	public WebappTesterCommander when(WebappTester webappTester) { return new WebappTesterCommander(this, webappTester); } 
-
-	// AliasesFile
-	public AliasesFileBuilder given(AliasesFile aliasesFile) { return new AliasesFileBuilder(this, aliasesFile); }
-	
-	// AliasDefinitionsFile
-	public AliasDefinitionsFileBuilder given(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile); }
 	
 	//TODO: we might find we need a better way to deal with multiple methods that want to return different verifiers based on a List
 	public RequestListVerifier thenRequests(List<String> requests) { return new RequestListVerifier(this, requests); }
 	
+	
+	// Syntactic sugar methods that make SpecTest methods semi-pluggable
+	public <B extends SpecTestBuilder> B given(B builder) { return builder; }
+	public <C extends SpecTestCommander> C when(C commander) { return commander; }
+	public <V extends SpecTestVerifier> V then(V verifier) { return verifier; }
 }

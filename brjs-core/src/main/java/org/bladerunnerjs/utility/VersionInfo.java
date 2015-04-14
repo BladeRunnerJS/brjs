@@ -26,12 +26,6 @@ public class VersionInfo
 		}
 	}
 	
-	// TODO: replace this method with a save facility, so we can encapsulate all of the version file functionality in this class
-	public MemoizedFile getFile()
-	{
-		return brjs.file("sdk/version.txt");
-	}
-	
 	public String getVersionNumber()
 	{
 		return getValueFromVersionFile("Version");
@@ -46,6 +40,12 @@ public class VersionInfo
 	public String toString()
 	{
 		return BRJS.PRODUCT_NAME + " version: " + getVersionNumber() + ", built: " + getBuildDate();
+	}
+	
+	
+	private MemoizedFile getFile()
+	{
+		return brjs.file("sdk/version.txt");
 	}
 	
 	private String getValueFromVersionFile(String key)

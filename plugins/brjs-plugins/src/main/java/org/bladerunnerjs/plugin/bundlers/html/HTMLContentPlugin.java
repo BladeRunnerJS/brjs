@@ -17,19 +17,19 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.api.aliasing.NamespaceException;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 
 
@@ -38,7 +38,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 	private final List<String> requestPaths = new ArrayList<>();
 	
-	private AssetPlugin htmlAssetPlugin;
 	private BRJS brjs;
 	
 	{
@@ -48,7 +47,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		htmlAssetPlugin = brjs.plugins().assetPlugin(HTMLAssetPlugin.class);
 		this.brjs = brjs;
 	}
 	
@@ -60,7 +58,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return (bundleSet.getResourceFiles(htmlAssetPlugin).isEmpty()) ? Collections.emptyList() : requestPaths;
+		return (bundleSet.getAssets("html!").isEmpty()) ? Collections.emptyList() : requestPaths;
 	}
 
 	@Override
@@ -71,7 +69,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		}
 		
 		identifiers = new TreeMap<String, Asset>();
-		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
+		List<Asset> htmlAssets = bundleSet.getAssets("html!");
 		
 		List<Reader> readerList = new ArrayList<Reader>();
 		for(Asset htmlAsset : htmlAssets){
@@ -101,17 +99,18 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	{
 		StartTag startTag = getStartTag(htmlAsset);
 		String identifier = startTag.getAttributeValue("id");
+		AssetContainer assetContainer = htmlAsset.assetContainer();
 		
 		if(identifier == null)
 		{
-			String idMessage = (htmlAsset.assetLocation().assetContainer().isNamespaceEnforced()) ?
-				"a namespaced ID of '" + NamespaceUtility.convertToNamespace(htmlAsset.assetLocation().requirePrefix()) + ".*'" : "an ID";
+			String idMessage = (assetContainer.isNamespaceEnforced()) ?
+				"a namespaced ID of '" +RequirePathUtility.calculateNamespace(assetContainer)+ ".*'" : "an ID";
 			
 			throw new NamespaceException( "HTML template found without an identifier: '" +
 					startTag.toString() + "'.  Root element should have " + idMessage + ".");
 		}
 		
-		htmlAsset.assetLocation().assertIdentifierCorrectlyNamespaced(identifier);
+		RequirePathUtility.assertIdentifierCorrectlyNamespaced(htmlAsset, identifier);
 		
 		Asset assetWithDuplicateId = identifiers.get(identifier);
 		if(assetWithDuplicateId == null){

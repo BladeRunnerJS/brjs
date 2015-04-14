@@ -9,14 +9,14 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.api.plugin.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 
 
-public class VersionCommand extends ArgsParsingCommandPlugin
+public class VersionCommand extends JSAPArgsParsingCommandPlugin
 {
 	// Note: ASCII art created using http://patorjk.com/software/taag/#p=display&h=1&f=Ivrit&t=%20%20%20%20BladeRunnerJS%20%20%20%20
 	private static final String ASCII_ART_RESOURCE_PATH = "org/bladerunnerjs/core/plugin/command/core/bladerunner-ascii-art.txt";

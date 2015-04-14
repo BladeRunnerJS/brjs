@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.Workbench;
@@ -29,7 +30,6 @@ import org.bladerunnerjs.api.spec.utility.NamedDirNodeVerifier;
 import org.bladerunnerjs.api.spec.utility.NamedNodeVerifier;
 import org.bladerunnerjs.api.spec.utility.TestPackVerifier;
 import org.bladerunnerjs.api.spec.utility.WorkbenchVerifier;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.eclipse.jetty.server.Server;
@@ -63,4 +63,6 @@ public class VerifierChainer {
 	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(specTest, specTest.brjs.getMemoizedFile(dir)); }
 	public StringVerifier and(StringBuffer stringBuffer) { return new StringVerifier(specTest, stringBuffer); }
 	public TestPackVerifier and(TestPack testPack) { return new TestPackVerifier(specTest, testPack); }
+	
+	public <V extends SpecTestVerifier> V and(V verifier) { return verifier; }
 }

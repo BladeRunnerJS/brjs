@@ -6,11 +6,11 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.AssetLocation;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.api.BundlableNode;
 
 public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	private final SourceModule sourceModule;
@@ -20,13 +20,13 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public Reader getReader() throws IOException {
-		return new StringReader("");
+	public void addImplicitDependencies(List<Asset> implicitDependencies) {
+		sourceModule.addImplicitDependencies(implicitDependencies);
 	}
 	
 	@Override
-	public AssetLocation assetLocation() {
-		return sourceModule.assetLocation();
+	public Reader getReader() throws IOException {
+		return new StringReader("");
 	}
 	
 	@Override
@@ -39,8 +39,8 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 		return sourceModule.isEncapsulatedModule();
 	}
 	
-	public MemoizedFile dir() {
-		return sourceModule.dir();
+	public MemoizedFile file() {
+		return sourceModule.file();
 	}
 	
 	@Override
@@ -84,12 +84,20 @@ public class JsTestDriverEmptyTestSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
-		return sourceModule.getAliasNames();
+	public boolean isRequirable()
+	{
+		return true;
+	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return sourceModule.assetContainer();
 	}
 	
 	@Override
-	public List<AssetLocation> assetLocations() {
-		return sourceModule.assetLocations();
+	public boolean isScopeEnforced()
+	{
+		return sourceModule.isScopeEnforced();
 	}
 }

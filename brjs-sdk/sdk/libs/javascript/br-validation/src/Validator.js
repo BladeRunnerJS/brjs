@@ -3,6 +3,7 @@
  */
 
 var Errors = require('br/Errors');
+var brCore = require("br/Core");
 
 /**
  * This is an interface and should not be constructed.
@@ -31,4 +32,4 @@ Validator.prototype.validate = function(vValue, mAttributes, oValidationResult) 
 	throw new Errors.UnimplementedInterfaceError("Validator.validate() has not been implemented.");
 };
 
-br.validation.Validator = Validator;
+module.exports = Validator;

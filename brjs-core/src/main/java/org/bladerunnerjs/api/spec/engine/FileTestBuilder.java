@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 
-public class FileTestBuilder extends SpecTestBuilder {
+public class FileTestBuilder extends SpecTestEnvironmentBuilder {
 	
 	private final File file;
 	private final BuilderChainer builderChainer;

@@ -3,7 +3,7 @@ package org.bladerunnerjs.appserver;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.api.App;
@@ -32,7 +32,7 @@ public class ApplicationServerUtils
 
 	static Map<App, WebAppContext> addAppContexts(BRJS brjs, ContextHandlerCollection contexts) throws Exception
 	{
-		Map<App, WebAppContext> contextMap = new HashMap<App, WebAppContext>();
+		Map<App, WebAppContext> contextMap = new LinkedHashMap<App, WebAppContext>();
 
 		for (App app : brjs.apps())
 		{

@@ -14,7 +14,7 @@ import org.bladerunnerjs.api.model.exception.modelupdate.DirectoryAlreadyExistsM
 import org.bladerunnerjs.api.model.exception.modelupdate.NoSuchDirectoryException;
 import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.bladerunnerjs.model.BRJSNode;
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.junit.Before;

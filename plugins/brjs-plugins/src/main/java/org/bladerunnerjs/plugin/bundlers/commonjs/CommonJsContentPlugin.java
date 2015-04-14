@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +22,6 @@ import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.plugin.bundlers.i18n.I18nContentPlugin;
 import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -71,11 +69,6 @@ public class CommonJsContentPlugin extends AbstractContentPlugin implements Comp
 	public String getCompositeGroupName()
 	{
 		return "text/javascript";
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList(I18nContentPlugin.class.getCanonicalName());
 	}
 	
 	@Override

@@ -17,7 +17,7 @@ import org.bladerunnerjs.model.RequestMode;
  */
 public abstract class AbstractTagHandlerPlugin extends AbstractPlugin implements TagHandlerPlugin {
 	
-	public List<String> getDependentContentPluginRequestPrefixes() {
+	public List<String> usedContentPluginRequestPrefixes() {
 		return Collections.emptyList();
 	}
 	
