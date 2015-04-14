@@ -38,14 +38,7 @@ Utils.fireDomEvent = function(eElement, eventString, character) {
 		element = eElement;
 	}
 
-	if (document.createEventObject) {
-		evt = jQuery.Event(eventString);
-		if (character) {
-			evt.which = Utils.getKeyCodeForChar(character);
-		}
-		jQuery(element).trigger(evt);
-	} else if (document.createEvent) {
-		//FF, WEBKIT etc..
+	if(document.createEvent) {
 		evt = document.createEvent('HTMLEvents');
 		if (typeof character !== 'undefined') {
 			evt.which = Utils.getKeyCodeForChar(character);
@@ -55,6 +48,13 @@ Utils.fireDomEvent = function(eElement, eventString, character) {
 			return !element.dispatchEvent(evt);
 		}
 		return false;
+	}
+	else if(document.createEventObject) {
+		evt = jQuery.Event(eventString);
+		if (character) {
+			evt.which = Utils.getKeyCodeForChar(character);
+		}
+		jQuery(element).trigger(evt);
 	}
 };
 
