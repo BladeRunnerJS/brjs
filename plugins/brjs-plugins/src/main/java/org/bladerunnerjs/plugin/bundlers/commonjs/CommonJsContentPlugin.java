@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +23,6 @@ import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -82,18 +82,17 @@ public class CommonJsContentPlugin extends AbstractContentPlugin implements Comp
 	{
 		List<String> requestPaths = new ArrayList<>();
 
+		List<CommonJsSourceModule> commonJsSourceModules = bundleSet.getSourceModules(Arrays.asList(CommonJsSourceModule.class));
+		
 		if (requestMode == RequestMode.Prod) {
-			return (InstanceFinder.containsInstance(bundleSet.getSourceModules(), CommonJsSourceModule.class)) ? prodRequestPaths : Collections.emptyList();
+			return (commonJsSourceModules.isEmpty()) ? Collections.emptyList() : prodRequestPaths;
 		}
 		
 		try
 		{
-			for (SourceModule sourceModule : bundleSet.getSourceModules())
+			for (SourceModule sourceModule : commonJsSourceModules)
 			{
-				if (sourceModule instanceof CommonJsSourceModule)
-				{
-					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getPrimaryRequirePath()));
-				}
+				requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getPrimaryRequirePath()));
 			}
 		}
 		catch (MalformedTokenException e)
@@ -120,14 +119,11 @@ public class CommonJsContentPlugin extends AbstractContentPlugin implements Comp
 			else if (parsedContentPath.formName.equals(BUNDLE_REQUEST))
 			{
 				List<Reader> readerList = new ArrayList<Reader>();
-				for (SourceModule sourceModule : bundleSet.getSourceModules())
+				for (SourceModule sourceModule : bundleSet.getSourceModules(Arrays.asList(CommonJsSourceModule.class)))
 				{
-					if (sourceModule instanceof CommonJsSourceModule)
-					{
-						readerList.add(new StringReader("// " + sourceModule.getPrimaryRequirePath() + "\n"));
-						readerList.add(sourceModule.getReader());
-						readerList.add(new StringReader("\n\n"));
-					}
+					readerList.add(new StringReader("// " + sourceModule.getPrimaryRequirePath() + "\n"));
+					readerList.add(sourceModule.getReader());
+					readerList.add(new StringReader("\n\n"));
 				}
 				return new CharResponseContent( brjs, readerList );
 			}

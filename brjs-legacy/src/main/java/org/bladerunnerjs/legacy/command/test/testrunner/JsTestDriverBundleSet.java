@@ -26,14 +26,19 @@ public class JsTestDriverBundleSet implements BundleSet {
 	}
 	
 	@Override
-	public List<Asset> getAssets(List<String> prefixes, List<Class<? extends Asset>> assetTypes)
+	public <AT extends Asset> List<AT> getAssets(List<String> prefixes, List<Class<? extends AT>> assetTypes)
 	{
 		return bundleSet.getAssets(prefixes, assetTypes);
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(String... prefixes) {
+	public List<SourceModule> getSourceModules() {
 		return bundleSet.getSourceModules();
+	}
+	
+	@Override
+	public <AT extends SourceModule> List<AT> getSourceModules(List<Class<? extends AT>> assetTypes) {
+		return bundleSet.getSourceModules(assetTypes);
 	}
 
 	@Override

@@ -2,8 +2,11 @@ package org.bladerunnerjs.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BundlableNode;
@@ -17,6 +20,8 @@ public class StandardBundleSet implements BundleSet {
 	private final List<LinkedAsset> linkedAssets;
 	private final List<SourceModule> sourceModules;
 	private BundlableNode bundlableNode;
+	
+	private Map<Class<? extends Asset>, List<Asset>> assetsByType = new HashMap<>();
 	
 	public StandardBundleSet(BundlableNode bundlableNode, List<LinkedAsset> seedAssets, List<Asset> assets, List<SourceModule> sourceModules) {
 		this.seedAssets = seedAssets;
@@ -38,52 +43,75 @@ public class StandardBundleSet implements BundleSet {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(String... prefixes) {
-		return getAssets(sourceModules, Arrays.asList(prefixes), Collections.emptyList());
+	public List<SourceModule> getSourceModules() {
+		return getTheAssets(sourceModules, null, null);
+	}
+	
+	@Override
+	public <AT extends SourceModule> List<AT> getSourceModules(List<Class<? extends AT>> assetTypes) {
+		return getTheAssets(sourceModules, null, assetTypes);
 	}
 
 	@Override
 	public List<Asset> getAssets(String... prefixes)
 	{
-		return getAssets(assets, Arrays.asList(prefixes), Collections.emptyList());
+		return getTheAssets(assets, Arrays.asList(prefixes), null);
 	}
 	
 	@Override
-	public List<Asset> getAssets(List<String> prefixes, List<Class<? extends Asset>> assetTypes)
+	public <AT extends Asset> List<AT> getAssets(List<String> prefixes, List<Class<? extends AT>> assetTypes)
 	{
-		return getAssets(assets, prefixes, assetTypes);
+		return getTheAssets(assets, prefixes, assetTypes);
 	}
 
-	private <AT extends Asset> List<AT> getAssets(List<AT> assets, List<String> prefixes, List<Class<? extends Asset>> assetTypes) {
+	@SuppressWarnings("unchecked")
+	private <AT extends Asset> List<AT> getTheAssets(List<? extends Asset> assets, List<String> prefixes, List<Class<? extends AT>> assetTypes) {
+		List<AT> assetsOfCorrectType = getAssetsForType(assets, assetTypes);
 		List<AT> assetsWithRequirePath = new ArrayList<>();
-		for (AT asset : assets) { 
-			if (assetHasValidPrefix(asset, prefixes) && assetHasValidType(asset, assetTypes)) {
-				assetsWithRequirePath.add(asset);
+		for (Asset asset : assetsOfCorrectType) { 
+			if (assetHasValidPrefix(asset, prefixes)) {
+				assetsWithRequirePath.add( (AT) asset );
 			}
 		}
 		return assetsWithRequirePath;
 	}
 	
+	@SuppressWarnings("unchecked")
+	private <AT extends Asset> List<AT> getAssetsForType(List<? extends Asset> assets, List<Class<? extends AT>> assetTypes) {
+		if (assetTypes == null || assetTypes.isEmpty()) {
+			return (List<AT>) assets;
+		}
+		
+		Set<AT> assetsOfType = new LinkedHashSet<>();
+		for (Class<? extends AT> assetType : assetTypes) {
+			assetsOfType.addAll( getAssetsForType(assets, assetType) );
+		}
+		
+		return new ArrayList<>(assetsOfType);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <AT extends Asset> List<AT> getAssetsForType(List<? extends Asset> assets, Class<? extends AT> assetType) {
+		List<Asset> assetsOfType = assetsByType.get(assetType);
+		if (assetsOfType == null) {
+			assetsOfType = new ArrayList<>();
+			for (Asset asset : assets) {
+				if (assetType.isAssignableFrom(asset.getClass())) {
+					assetsOfType.add(asset);
+				}
+			}
+			assetsByType.put(assetType, assetsOfType);
+		}
+		return (List<AT>) assetsOfType;
+	}
+	
 	private boolean assetHasValidPrefix(Asset asset, List<String> prefixes)
 	{
-		if (prefixes.size() == 0) {
+		if (prefixes == null || prefixes.size() == 0) {
 			return true;
 		}
 		for (String prefix : prefixes) {
 			if (asset.getPrimaryRequirePath().startsWith(prefix)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean assetHasValidType(Asset asset, List<Class<? extends Asset>> assetTypes)
-	{
-		if (assetTypes.size() == 0) {
-			return true;
-		}
-		for (Class<? extends Asset> assetType : assetTypes) {
-			if (asset.getClass().isAssignableFrom(assetType)) {
 				return true;
 			}
 		}
