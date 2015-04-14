@@ -33,11 +33,11 @@ public class PluginAccessor {
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) throws ConfigException {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
 		contentPlugins = filterAndOrderPlugins(brjs, ContentPlugin.class, pluginLocator.getContentPlugins());
-		tagHandlerPlugins = filterAndOrderPlugins(brjs, TagHandlerPlugin.class, pluginLocator.getTagHandlerPlugins());
-		minifierPlugins = filterAndOrderPlugins(brjs, MinifierPlugin.class, pluginLocator.getMinifierPlugins());
-		modelObserverPlugins = filterAndOrderPlugins(brjs, ModelObserverPlugin.class, pluginLocator.getModelObserverPlugins());
-		requirePlugins = filterAndOrderPlugins(brjs, RequirePlugin.class, pluginLocator.getRequirePlugins());
 		assetPlugins = filterAndOrderPlugins(brjs, AssetPlugin.class, pluginLocator.assetPlugins());
+		tagHandlerPlugins = pluginLocator.getTagHandlerPlugins();
+		minifierPlugins = pluginLocator.getMinifierPlugins();
+		modelObserverPlugins = pluginLocator.getModelObserverPlugins();
+		requirePlugins = pluginLocator.getRequirePlugins();
 	}
 
 	public List<Plugin> allPlugins() {

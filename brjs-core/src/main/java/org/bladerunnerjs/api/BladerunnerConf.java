@@ -82,17 +82,17 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 		verify();
 	}
 	
-	public Map<String,List<String>> getActivePlugins() throws ConfigException {
-		return getConf().activePlugins;
+	public Map<String,List<String>> getOrderedPlugins() throws ConfigException {
+		return getConf().orderedPlugins;
 	}
 	
 	// convert to a LinkedHashMap but accept a map so our API uses Maps
-	public void setActivePlugins(Map<String,List<String>> activePlugins) throws ConfigException {
+	public void setOrderedPlugins(Map<String,List<String>> activePlugins) throws ConfigException {
 		LinkedHashMap<String,List<String>> orderedPlugins = new LinkedHashMap<>();
 		for (String key : activePlugins.keySet()) {
 			orderedPlugins.put( key, activePlugins.get(key) );
 		}
-		getConf().activePlugins = orderedPlugins;
+		getConf().orderedPlugins = orderedPlugins;
 		verify();
 	}
 	

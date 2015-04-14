@@ -47,17 +47,12 @@ public class BRJSTest extends SpecTest {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
 		then(brjs).fileHasContents("conf/brjs.conf",
-				"activePlugins:",
-				"   ModelObserverPlugin:", 
-				"   - '*'",
-				"   CommandPlugin:", 
-				"   - '*'",
-				"   MinifierPlugin:", 
-				"   - '*'",
-				"   TagHandlerPlugin:", 
-				"   - '*'",
-				"   RequirePlugin:", 
-				"   - '*'",
+				"defaultFileCharacterEncoding: UTF-8",
+				"fileObserver: watching",
+				"ignoredPaths: .svn, .git",
+				"jettyPort: 7070",
+				"loginRealm: BladeRunnerLoginRealm",
+				"orderedPlugins:",
 				"   AssetPlugin:", 
 				"   - ThirdpartyAssetPlugin",
 				"   - BrowsableNodeSeedLocator",
@@ -69,12 +64,7 @@ public class BRJSTest extends SpecTest {
 				"   - ThirdpartyContentPlugin",
 				"   - CommonJsContentPlugin",
 				"   - NamespacedJsContentPlugin",
-				"   - '*'",
-				"defaultFileCharacterEncoding: UTF-8",
-				"fileObserver: watching",
-				"ignoredPaths: .svn, .git",
-				"jettyPort: 7070",
-				"loginRealm: BladeRunnerLoginRealm");
+				"   - '*'");
 	}
 	
 	@Test

@@ -27,7 +27,7 @@ public class PluginLocatorUtils
 	public static <P extends Plugin> List<P> filterAndOrderPlugins(BRJS brjs, Class<? extends Plugin> pluginInterface, List<P> plugins) throws ConfigException {
 		Logger logger = brjs.logger(PluginLocatorUtils.class);
 		String pluginInterfaceName = pluginInterface.getSimpleName();
-		List<String> activePluginsConf = brjs.bladerunnerConf().getActivePlugins().get(pluginInterfaceName);
+		List<String> activePluginsConf = brjs.bladerunnerConf().getOrderedPlugins().get(pluginInterfaceName);
 		if (activePluginsConf == null || activePluginsConf.isEmpty()) {
 			for (Plugin plugin : plugins) {
 				logger.debug(Messages.PLUGIN_DISABLED_EMPTY_ACTIVE_PLUGINS_MESSAGE, plugin.getClass().getName(), pluginInterfaceName);

@@ -13,13 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
-import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
-import org.bladerunnerjs.api.plugin.MinifierPlugin;
-import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.api.plugin.Plugin;
-import org.bladerunnerjs.api.plugin.RequirePlugin;
-import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 
 
@@ -54,7 +49,7 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	public String fileObserver;
 	
 	@NotNull // LinkedHashMap so the ordering is preserved and our tests can assert on the contents of written conf files reliably
-	public LinkedHashMap<String,List<String>> activePlugins;
+	public LinkedHashMap<String,List<String>> orderedPlugins;
 	
 	@Override
 	public void initialize(BRJSNode node) {
@@ -64,7 +59,7 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 		ignoredPaths = getDefault(ignoredPaths, ".svn, .git");
 		useNodeCommands = getDefault(useNodeCommands, false);
 		fileObserver = getDefault(fileObserver, "watching");
-		activePlugins = getDefault(activePlugins, getDefaultActivePlugins());
+		orderedPlugins = getDefault(orderedPlugins, getDefaultOrderedPlugins());
 	}
 	
 	@Override
@@ -84,14 +79,8 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 		}
 	}
 	
-	private LinkedHashMap<String,List<String>> getDefaultActivePlugins() {
+	private LinkedHashMap<String,List<String>> getDefaultOrderedPlugins() {
 		LinkedHashMap<String,List<String>> activePlugins = new LinkedHashMap<>();
-		
-		addDefaultActivePlugin(activePlugins, ModelObserverPlugin.class, "*");
-		addDefaultActivePlugin(activePlugins, CommandPlugin.class, "*");
-		addDefaultActivePlugin(activePlugins, MinifierPlugin.class, "*");
-		addDefaultActivePlugin(activePlugins, TagHandlerPlugin.class, "*");
-		addDefaultActivePlugin(activePlugins, RequirePlugin.class, "*");
 		
 		// we need to use strings for classes here because they are plugins and aren't on the classpath
 		// use the full classname and perform a substring inside 'addDefaultActivePlugin' so refactoring *should* work on these strings

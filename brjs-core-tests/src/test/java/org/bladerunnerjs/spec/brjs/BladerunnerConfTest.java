@@ -18,17 +18,12 @@ public class BladerunnerConfTest extends SpecTest {
 	public void bladerunnerConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		when(brjs).bladerunnerConf().write();
 		then(brjs).fileHasContents("conf/brjs.conf",
-				"activePlugins:",
-				"   ModelObserverPlugin:", 
-				"   - '*'",
-				"   CommandPlugin:", 
-				"   - '*'",
-				"   MinifierPlugin:", 
-				"   - '*'",
-				"   TagHandlerPlugin:", 
-				"   - '*'",
-				"   RequirePlugin:", 
-				"   - '*'",
+				"defaultFileCharacterEncoding: UTF-8",
+				"fileObserver: watching",
+				"ignoredPaths: .svn, .git",
+				"jettyPort: 7070",
+				"loginRealm: BladeRunnerLoginRealm",
+				"orderedPlugins:",
 				"   AssetPlugin:", 
 				"   - ThirdpartyAssetPlugin",
 				"   - BrowsableNodeSeedLocator",
@@ -40,12 +35,7 @@ public class BladerunnerConfTest extends SpecTest {
 				"   - ThirdpartyContentPlugin",
 				"   - CommonJsContentPlugin",
 				"   - NamespacedJsContentPlugin",
-				"   - '*'",
-				"defaultFileCharacterEncoding: UTF-8",
-				"fileObserver: watching",
-				"ignoredPaths: .svn, .git",
-				"jettyPort: 7070",
-				"loginRealm: BladeRunnerLoginRealm");
+				"   - '*'");
 	}
 	
 	@Test
@@ -59,17 +49,12 @@ public class BladerunnerConfTest extends SpecTest {
 		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf().setJettyPort(8888).setDefaultFileCharacterEncoding("ISO-8859-1").write();
 		then(brjs).fileHasContents("conf/brjs.conf",
-				"activePlugins:",
-				"   ModelObserverPlugin:", 
-				"   - '*'",
-				"   CommandPlugin:", 
-				"   - '*'",
-				"   MinifierPlugin:", 
-				"   - '*'",
-				"   TagHandlerPlugin:", 
-				"   - '*'",
-				"   RequirePlugin:", 
-				"   - '*'",
+				"defaultFileCharacterEncoding: ISO-8859-1",
+				"fileObserver: watching",
+				"ignoredPaths: .svn, .git",
+				"jettyPort: 8888",
+				"loginRealm: BladeRunnerLoginRealm",
+				"orderedPlugins:",
 				"   AssetPlugin:", 
 				"   - ThirdpartyAssetPlugin",
 				"   - BrowsableNodeSeedLocator",
@@ -81,12 +66,7 @@ public class BladerunnerConfTest extends SpecTest {
 				"   - ThirdpartyContentPlugin",
 				"   - CommonJsContentPlugin",
 				"   - NamespacedJsContentPlugin",
-				"   - '*'",
-				"defaultFileCharacterEncoding: ISO-8859-1",
-				"fileObserver: watching",
-				"ignoredPaths: .svn, .git",
-				"jettyPort: 8888",
-				"loginRealm: BladeRunnerLoginRealm");
+				"   - '*'");
 	}
 	
 	@Test

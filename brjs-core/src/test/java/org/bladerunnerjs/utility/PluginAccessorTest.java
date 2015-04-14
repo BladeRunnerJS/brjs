@@ -15,11 +15,7 @@ import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
-import org.bladerunnerjs.api.plugin.MinifierPlugin;
-import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.ResponseContent;
-import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.api.spec.utility.LogMessageStore;
 import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
@@ -68,7 +64,7 @@ public class PluginAccessorTest
 	@Test
 	public void ifPluginsInBrjsConfAreEmptyNoPluginsAreLoaded() throws Exception {
 		pluginLocator.contentPlugins.add( contentPlugin1 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		PluginAccessor pluginAccessor = new PluginAccessor(brjs, pluginLocator);
 		assertTrue( pluginAccessor.contentPlugins().isEmpty() );
@@ -79,7 +75,7 @@ public class PluginAccessorTest
 		activePlugins.put(ContentPlugin.class.getSimpleName(), Arrays.asList("*"));
 		pluginLocator.contentPlugins.add( contentPlugin1 );
 		pluginLocator.contentPlugins.add( contentPlugin2 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		PluginAccessor pluginAccessor = new PluginAccessor(brjs, pluginLocator);
 		assertEquals( 2, pluginAccessor.contentPlugins().size() );
@@ -95,7 +91,7 @@ public class PluginAccessorTest
 		pluginLocator.contentPlugins.add( contentPlugin1 );
 		pluginLocator.contentPlugins.add( contentPlugin2 );
 		pluginLocator.contentPlugins.add( contentPlugin3 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		PluginAccessor pluginAccessor = new PluginAccessor(brjs, pluginLocator);
 		assertEquals( 3, pluginAccessor.contentPlugins().size() );
@@ -114,7 +110,7 @@ public class PluginAccessorTest
 		pluginLocator.contentPlugins.add( contentPlugin1 );
 		pluginLocator.contentPlugins.add( contentPlugin2 );
 		pluginLocator.contentPlugins.add( contentPlugin3 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		PluginAccessor pluginAccessor = new PluginAccessor(brjs, pluginLocator);
 		assertEquals( 3, pluginAccessor.contentPlugins().size() );
@@ -132,7 +128,7 @@ public class PluginAccessorTest
 		pluginLocator.contentPlugins.add( contentPlugin1 );
 		pluginLocator.contentPlugins.add( contentPlugin2 );
 		pluginLocator.contentPlugins.add( contentPlugin3 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		PluginAccessor pluginAccessor = new PluginAccessor(brjs, pluginLocator);
 		assertEquals( 2, pluginAccessor.contentPlugins().size() );
@@ -143,33 +139,17 @@ public class PluginAccessorTest
 	// TODO: long name can be used too
 	
 	@Test
-	public void allPluginTypesUseTheFilteringMechanism() throws Exception {
+	public void allOrderedPluginTypesUseTheFilteringMechanism() throws Exception {
 		activePlugins.put( ContentPlugin.class.getSimpleName(), Arrays.asList() );
 		pluginLocator.contentPlugins.add( Mockito.mock(ContentPlugin.class) );
-		
-		activePlugins.put( TagHandlerPlugin.class.getSimpleName(), Arrays.asList() );
-		pluginLocator.tagHandlers.add( Mockito.mock(TagHandlerPlugin.class) );
-		
-		activePlugins.put( MinifierPlugin.class.getSimpleName(), Arrays.asList() );
-		pluginLocator.minifiers.add( Mockito.mock(MinifierPlugin.class) );
-		
-		activePlugins.put( ModelObserverPlugin.class.getSimpleName(), Arrays.asList() );
-		pluginLocator.modelObservers.add( Mockito.mock(ModelObserverPlugin.class) );
-		
-		activePlugins.put( RequirePlugin.class.getSimpleName(), Arrays.asList() );
-		pluginLocator.requirePlugins.add( Mockito.mock(RequirePlugin.class) );
 		
 		activePlugins.put( AssetPlugin.class.getSimpleName(), Arrays.asList() );
 		pluginLocator.assetPlugins.add( Mockito.mock(AssetPlugin.class) );
 		
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		PluginAccessor pluginAccessor = new PluginAccessor(brjs, pluginLocator);
 		assertEquals( 0, pluginAccessor.contentPlugins().size() );
-		assertEquals( 0, pluginAccessor.tagHandlerPlugins().size() );
-		assertEquals( 0, pluginAccessor.minifierPlugins().size() );
-		assertEquals( 0, pluginAccessor.modelObserverPlugins().size() );
-		assertEquals( 0, pluginAccessor.requirePlugins().size() );
 		assertEquals( 0, pluginAccessor.assetPlugins().size() );
 	}
 	
@@ -177,7 +157,7 @@ public class PluginAccessorTest
 	public void warningIsLoggedIfNoPluginMatcheActivePluginConfig() throws Exception {
 		activePlugins.put(ContentPlugin.class.getSimpleName(), Arrays.asList("foo"));
 		pluginLocator.contentPlugins.add( contentPlugin1 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		new PluginAccessor(brjs, pluginLocator);
 		logStore.verifyWarnLogMessage(PluginLocatorUtils.Messages.NO_MATCHING_PLUGIN, ContentPlugin.class.getSimpleName(), "foo");
@@ -187,7 +167,7 @@ public class PluginAccessorTest
 	public void debugLogsListWildcardEnabledPlugins() throws Exception {
 		activePlugins.put(ContentPlugin.class.getSimpleName(), Arrays.asList("*"));
 		pluginLocator.contentPlugins.add( contentPlugin1 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		new PluginAccessor(brjs, pluginLocator);
 		logStore.verifyDebugLogMessage(PluginLocatorUtils.Messages.PLUGIN_ENABLED_MESSAGE, contentPlugin1.getClass().getName(), ContentPlugin.class.getSimpleName(), "*");
@@ -197,7 +177,7 @@ public class PluginAccessorTest
 	public void debugLogsListEnabledPlugins() throws Exception {
 		activePlugins.put(ContentPlugin.class.getSimpleName(), Arrays.asList(contentPlugin1.getClass().getSimpleName()));
 		pluginLocator.contentPlugins.add( contentPlugin1 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		new PluginAccessor(brjs, pluginLocator);
 		logStore.verifyDebugLogMessage(PluginLocatorUtils.Messages.PLUGIN_ENABLED_MESSAGE, contentPlugin1.getClass().getName(), ContentPlugin.class.getSimpleName(), contentPlugin1.getClass().getSimpleName());
@@ -207,7 +187,7 @@ public class PluginAccessorTest
 	public void debugLogsListWildcardDisabledPlugins() throws Exception {
 		activePlugins.put(ContentPlugin.class.getSimpleName(), Arrays.asList());
 		pluginLocator.contentPlugins.add( contentPlugin1 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		new PluginAccessor(brjs, pluginLocator);
 		logStore.verifyDebugLogMessage(PluginLocatorUtils.Messages.PLUGIN_DISABLED_EMPTY_ACTIVE_PLUGINS_MESSAGE, contentPlugin1.getClass().getName(), ContentPlugin.class.getSimpleName());
@@ -219,7 +199,7 @@ public class PluginAccessorTest
 		pluginLocator.contentPlugins.add( contentPlugin1 );
 		pluginLocator.contentPlugins.add( contentPlugin2 );
 		pluginLocator.contentPlugins.add( contentPlugin3 );
-		brjs.bladerunnerConf().setActivePlugins(activePlugins);
+		brjs.bladerunnerConf().setOrderedPlugins(activePlugins);
 		
 		new PluginAccessor(brjs, pluginLocator);
 		logStore.verifyDebugLogMessage(PluginLocatorUtils.Messages.PLUGIN_DISABLED_MESSAGE, contentPlugin3.getClass().getName(), ContentPlugin.class.getSimpleName(), contentPlugin1.getClass().getSimpleName()+", "+contentPlugin2.getClass().getSimpleName());
