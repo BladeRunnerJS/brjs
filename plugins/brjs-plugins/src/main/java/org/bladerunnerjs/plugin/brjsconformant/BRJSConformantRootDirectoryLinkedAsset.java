@@ -88,6 +88,17 @@ public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAs
 		return assetContainer;
 	}
 	
+	@Override
+	public boolean isScopeEnforced() {
+		return true;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return false;
+	}
+	
 	public static String calculateRequirePath(AssetContainer assetContainer) {
 		return assetContainer.requirePrefix();
 	}

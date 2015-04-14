@@ -54,9 +54,8 @@ public class AspectBundlingLoggingTest extends SpecTest {
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "default-aspect/index.html", "'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js', 'default-aspect'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js", "'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js', 'bs-bladeset/blades/b1'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js", "'bs-bladeset/blades/b1'")
-			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "bs-bladeset/blades/b1", "'bs-bladeset/blades/b1/resources'")
-			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "bs-bladeset/blades/b1/resources", "'bs-bladeset/blades/b1'")
-			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "default-aspect", "'default-aspect/resources', 'default-aspect/resources/xml', 'default-aspect/resources/xml/config.xml'");
+			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "default-aspect", "'default-aspect/resources', 'default-aspect/resources/xml', 'default-aspect/resources/xml/config.xml'")
+			.and(logging).otherMessagesIgnored();
 	}
 	
 	// 'helpfulLoggingMessagesAreEmittedWhenThereAreNoSeedFiles' test is no longer valid with our current set of plugins but *may* be true if we stop using BRJS conformant Asset plugins 

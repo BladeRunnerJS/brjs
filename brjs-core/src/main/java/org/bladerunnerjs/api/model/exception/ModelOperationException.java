@@ -25,4 +25,14 @@ public class ModelOperationException extends Exception {
 	public ModelOperationException(String message, Exception e) {
 		super(message + "; " + e.getMessage(), e);
 	}
+	
+	@Override
+	public String getMessage()
+	{
+		if (getCause() != null) {
+    		// the Java Throwable class caches the exception message, override it and call through to the cause so the cause message can change as it gets given more information up the call stack
+    		return getCause().getMessage();
+		}
+		return super.getMessage();
+	}
 }

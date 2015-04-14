@@ -147,6 +147,17 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 		return assetContainer;
 	}
 	
+	@Override
+	public boolean isScopeEnforced() {
+		return false;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
+	
 	public static String calculateRequirePath(AliasDefinition alias) {
 		return "alias!"+alias.getName();
 	}

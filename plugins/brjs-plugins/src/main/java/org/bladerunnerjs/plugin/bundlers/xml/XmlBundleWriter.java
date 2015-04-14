@@ -47,7 +47,7 @@ public class XmlBundleWriter
 		}
 	};
 	
-	public void writeBundle(List<Asset> xmlAssets, final Writer writer) throws ContentProcessingException, XMLStreamException {
+	public void writeBundle(List<Asset> xmlAssets, final Writer writer) throws ContentProcessingException, XMLStreamException, IOException {
 		
 		Map<String, List<XmlSiblingReader>> resourceReaders = null;
 		
@@ -69,12 +69,7 @@ public class XmlBundleWriter
 				{
 					for(XmlSiblingReader siblingReader : siblingReaders)
 					{
-						try {
-							siblingReader.close();
-						}
-						catch(XMLStreamException e) {
-							// do nothing: we want to close as many readers as possible
-						}
+						siblingReader.close();
 					}
 				}
 			}
@@ -82,7 +77,7 @@ public class XmlBundleWriter
 	}
 	
 	private void writeBundleInternal(final Map<String, List<XmlSiblingReader>> resourceReaders, final XMLStreamWriter writer) 
-			throws XMLStreamException, XmlSiblingReaderException, ContentProcessingException
+			throws XMLStreamException, XmlSiblingReaderException, ContentProcessingException, IOException
 	{
 		writer.setDefaultNamespace("http://schema.caplin.com/CaplinTrader/bundle");
 		writer.writeStartDocument();
@@ -130,8 +125,7 @@ public class XmlBundleWriter
 			
 			MemoizedFile document = xmlAsset.file();
 			try{
-				Reader bundlerFileReader = xmlAsset.getReader();
-				XmlSiblingReader siblingReader = new XmlSiblingReader(inputFactory.createXMLStreamReader(bundlerFileReader));
+				XmlSiblingReader siblingReader = new XmlSiblingReader(inputFactory, xmlAsset.getReader());
 				siblingReader.setAsset(xmlAsset);
 				
 				siblingReader.setXmlDocument(document);
@@ -380,7 +374,7 @@ public class XmlBundleWriter
 		return childReaders;
 	}
 
-	private void closeResourceReaders(final List<XmlSiblingReader> readers) throws XMLStreamException
+	private void closeResourceReaders(final List<XmlSiblingReader> readers) throws IOException
 	{
 		for (XmlSiblingReader reader : readers)
 		{

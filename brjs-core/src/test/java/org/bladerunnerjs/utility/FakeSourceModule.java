@@ -107,4 +107,15 @@ public class FakeSourceModule implements SourceModule {
 	{
 		return null;
 	}
+	
+	@Override
+	public boolean isScopeEnforced() {
+		return true;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
 }

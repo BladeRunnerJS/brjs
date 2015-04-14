@@ -32,11 +32,11 @@ public class ServletFilterTest {
 	
 	@Before
 	public void setUp() throws IOException {
-		serverPort = new Random().nextInt(2000)+1000;
+		serverPort = generatePortNumber();
 		httpclient = new DefaultHttpClient();
 		contextDir = Files.createTempDirectory("ServletFilterTest").toFile();
 	}
-	
+
 	@After
 	public void tearDown() {
 		httpclient.getConnectionManager().shutdown();
@@ -70,5 +70,10 @@ public class ServletFilterTest {
 		appServer.setHandler(webappContext);
 		
 		return appServer;
+	}
+	
+	protected int generatePortNumber()
+	{
+		return new Random().nextInt(2000)+1000;
 	}
 }

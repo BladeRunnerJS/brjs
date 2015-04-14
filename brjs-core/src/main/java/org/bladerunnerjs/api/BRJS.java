@@ -41,7 +41,7 @@ import org.bladerunnerjs.plugin.utility.CommandList;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.JsStyleAccessor;
-import org.bladerunnerjs.utility.ObserverThreadFactory;
+import org.bladerunnerjs.utility.FileObserverFactory;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -58,7 +58,7 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 		public static final String BOTH_APPS_AND_BRJS_APPS_EXIST = "BRJS now uses a folder named '%s' for the location of your apps but the directory '%s' contains both '%s' and '%s' folders."+
 		" '%s' will be used for the location of apps but this legacy behaviour may be removed so you should move all existing apps into the '%s' directory.";
-		public static final String FILE_WATCHER_MESSAGE = "Using '%s' as the BRJS file watcher";
+		public static final String FILE_WATCHER_MESSAGE = "Using '%s' as the BRJS file observer";
 	}
 	
 	private NodeList<App> userApps;
@@ -86,7 +86,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private CommandList commandList;
 	private final AppVersionGenerator appVersionGenerator;
 	private final FileModificationRegistry fileModificationRegistry;
-	private Thread fileWatcherThread;
+	private FileObserver fileObserver;
 	private final JsStyleAccessor jsStyleAccessor = new JsStyleAccessor(this);
 
 	private BladerunnerConf bladerunnerConf;
@@ -102,12 +102,20 @@ public class BRJS extends AbstractBRJSRootNode
 		super(brjsDir, loggerFactory);
 		
 		this.appVersionGenerator = appVersionGenerator;
-		this.fileModificationRegistry = new FileModificationRegistry( ((dir.getParentFile() != null) ? dir.getParentFile() : dir), globalFilesFilter );
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
-		appsFolder = findAppsFolder(brjsDir, workingDir);
-		sdkFolder = dir().file("sdk");
+		File appsFolderPath = findAppsFolder(brjsDir, workingDir);
+		
+		if ( !appsFolderPath.getAbsolutePath().startsWith(brjsDir.getAbsolutePath()) ) {
+			this.fileModificationRegistry = new FileModificationRegistry(globalFilesFilter, ((dir.getParentFile() != null) ? dir.getParentFile() : dir), appsFolderPath);
+		}
+		else {
+			this.fileModificationRegistry = new FileModificationRegistry(globalFilesFilter, ((dir.getParentFile() != null) ? dir.getParentFile() : dir));
+		}
+		
+		appsFolder = getMemoizedFile(appsFolderPath);
 		userApps = new NodeList<>(this, App.class, appsFolder.getName(), null, null, appsFolder.getParentFile());
 		this.pluginLocator = pluginLocator;
+		sdkFolder = dir().file("sdk");
 		
 		try
 		{
@@ -126,6 +134,25 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public MemoizedFile sdkFolder() {
 		return sdkFolder;
+	}
+	
+	private File findAppsFolder(File brjsDir, File workingDir) {
+		File currentFolder = workingDir;
+		while(currentFolder != null) {
+			if (new File(currentFolder, AppConf.FILE_NAME).exists()) {
+				return currentFolder.getParentFile();
+			} else if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
+				if (new File(currentFolder, "brjs-apps").exists()) {
+					logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, "brjs-apps", brjsDir.getAbsolutePath(), "brjs-apps", "apps", brjsDir.getAbsolutePath()+"/apps", brjsDir.getAbsolutePath()+"/brjs-apps"); 
+				}
+				return new File (currentFolder, "apps");
+			} else if (new File(currentFolder, "brjs-apps").exists()) {
+				return new File (currentFolder, "brjs-apps");
+			}
+			
+			currentFolder = currentFolder.getParentFile();
+		}
+		return new File (brjsDir, "brjs-apps");
 	}
 	
 	@Override
@@ -164,16 +191,16 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	@Override
-	public void finalize() {
+	public void finalize() throws IOException, InterruptedException {
 		if(!closed) {
 			logger.error(Messages.CLOSE_METHOD_NOT_INVOKED);
 			close();
 		}
 	}
 	
-	public void close() {
-		if (fileWatcherThread != null) {
-			fileWatcherThread.interrupt();
+	public void close() throws IOException, InterruptedException {
+		if (fileObserver != null) {
+			fileObserver.stop();
 		}
 		closed  = true;
 	}
@@ -437,36 +464,18 @@ public class BRJS extends AbstractBRJSRootNode
 		return getMemoizedFile( new File(dir, name) );
 	}
 	
-	public Thread getFileWatcherThread() throws ConfigException, IOException {
-		if (fileWatcherThread == null) {
+	public FileObserver fileObserver() throws ConfigException, IOException {
+		if (fileObserver == null) {
 			try
 			{
-				fileWatcherThread = new ObserverThreadFactory(this).getObserverThread();
-				logger.debug(Messages.FILE_WATCHER_MESSAGE, fileWatcherThread.getClass().getSimpleName());
+				fileObserver = FileObserverFactory.getObserver(this);
+				logger.debug(Messages.FILE_WATCHER_MESSAGE, fileObserver.getClass().getSimpleName());
 			}
 			catch (ConfigException ex) {
 				throw ex;
 			}
 		}
-		return fileWatcherThread;
-	}
-	
-	
-	private MemoizedFile findAppsFolder(File brjsDir, File workingDir) {
-		File currentFolder = workingDir;
-		while(currentFolder != null) {
-			if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
-				if (new File(currentFolder, "brjs-apps").exists()) {
-					logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, "brjs-apps", brjsDir.getAbsolutePath(), "brjs-apps", "apps", brjsDir.getAbsolutePath()+"/apps", brjsDir.getAbsolutePath()+"/brjs-apps"); 
-				}
-				return getMemoizedFile(currentFolder).file("apps");
-			} else if (new File(currentFolder, "brjs-apps").exists()) {
-				return getMemoizedFile(currentFolder).file("brjs-apps");
-			}
-			
-			currentFolder = currentFolder.getParentFile();
-		}
-		return dir().file("brjs-apps");
+		return fileObserver;
 	}
 
 	private CommandList getCommandList() {

@@ -45,6 +45,9 @@ public class TrieFactory {
 				for (AssetContainer scopeAssetContainer : assetContainer.scopeAssetContainers()) {
 					try {						
 						for(Asset asset : scopeAssetContainer.assets()) {
+							if (!asset.isRequirable()) {
+								continue;
+							}
 							
 							List<String> requirePaths = asset.getRequirePaths();
 							

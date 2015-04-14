@@ -3,6 +3,8 @@ package org.bladerunnerjs.spec.command;
 import static org.bladerunnerjs.api.App.Messages.*;
 import static org.bladerunnerjs.plugin.commands.standard.CreateAppCommand.Messages.*;
 
+import java.io.File;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
@@ -210,5 +212,18 @@ public class CreateAppCommandTest extends SpecTest {
 			.and(defaultTemplates).templateGroupCreated();
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutBrjsApps() throws Exception {
+		given(testSdkDirectory).containsFolder("myprojects")
+			.and(testSdkDirectory).containsFolder("myprojects/myapp")
+			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
+			.and(appJars).hasBeenCreated()
+			.and(defaultTemplates).templateGroupCreated();
+		when(brjs).runCommand("create-app", "app", "appx");
+		then(brjs).hasApps("app", "myapp")
+			.and( brjs.app("app") ).dirExists();
 	}
 }

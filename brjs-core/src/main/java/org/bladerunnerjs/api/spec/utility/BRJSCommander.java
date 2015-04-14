@@ -156,8 +156,7 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		return commanderChainer;
 	}
 
-	public CommanderChainer pluginsAreAccessed()
-	{
+	public CommanderChainer pluginsAreAccessed() {
 		call(new ValueCommand<Void>() {
 			@Override
 			public Void call() throws Exception {
@@ -165,8 +164,19 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 				return null;
 			}
 		});
+		return commanderChainer;
+	}
+	
+	public CommanderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
+	{
+		call(new ValueCommand<Void>() {
+			@Override
+			public Void call() throws Exception {
+				new BRJSBuilder(specTest, brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread();
+				return null;
+			}
+		});
 		
 		return commanderChainer;
-		
 	}
 }

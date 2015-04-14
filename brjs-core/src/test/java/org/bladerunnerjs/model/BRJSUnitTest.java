@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import static org.junit.Assert.*;
 
 import java.io.File;
-
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
@@ -26,7 +25,7 @@ public class BRJSUnitTest
 	}
 	
 	@After
-	public void teardown()
+	public void teardown() throws Exception
 	{
 		brjs.close();
 		org.apache.commons.io.FileUtils.deleteQuietly(testSdkDirectory);

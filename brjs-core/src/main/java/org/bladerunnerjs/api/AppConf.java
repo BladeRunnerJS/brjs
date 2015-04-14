@@ -8,12 +8,14 @@ import org.bladerunnerjs.yaml.YamlAppConf;
 
 public class AppConf extends ConfFile<YamlAppConf> {
 	
+	public static final String FILE_NAME = "app.conf";
+	
 	public AppConf(BRJS brjs, MemoizedFile confFile) throws ConfigException {
 		super(brjs, YamlAppConf.class, confFile);
 	}
 	
 	public AppConf(App app) throws ConfigException {
-		super(app, YamlAppConf.class, app.file("app.conf"));
+		super(app, YamlAppConf.class, app.file(FILE_NAME));
 	}
 	
 	public String getRequirePrefix() throws ConfigException {

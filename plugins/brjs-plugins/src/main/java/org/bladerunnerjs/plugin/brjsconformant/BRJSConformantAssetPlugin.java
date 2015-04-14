@@ -12,6 +12,7 @@ import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
@@ -23,6 +24,8 @@ import org.bladerunnerjs.model.DirectoryAsset;
 
 public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 {
+
+	public static final String IMPLICIT_PACKAGE_USED = "The location '%s' contains a directory with the same name as the parent asset container require prefix ('%s'), using '%s' as the implied require prefix for this location.";
 	
 	@Override
 	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
@@ -67,18 +70,6 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		
 		return Arrays.asList(rootAsset);
 	}
-
-	private List<MemoizedFile> getSrcDirs(AssetContainer assetContainer)
-	{
-		if (assetContainer instanceof TestPack) {
-			String srcTestDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src-test");
-			return createFilesForFilePaths(assetContainer,  Arrays.asList(srcTestDir) );
-		} else {
-			String srcDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src");
-			String srcTestDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src-test");
-			return createFilesForFilePaths(assetContainer, Arrays.asList(srcDir, srcTestDir) );
-		}
-	}
 	
 	private boolean useImpliedRequirePrefix(AssetContainer assetContainer) {
 		if (assetContainer instanceof JsLib || assetContainer instanceof TestPack) { 
@@ -87,14 +78,19 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		return true;
 	}
 	
-	private String calculateImplicitOrExplicitRequirePrefixDirectory(AssetContainer assetContainer, String dirName) {
+	private String calculateImplicitOrExplicitRequirePrefixDirectory(AssetContainer assetContainer, String srcDirName) {
 		MemoizedFile brjsDir = assetContainer.root().dir();
-		String rootPath = dirName;
+		String rootPath = srcDirName;
 
-		String rootRequirePrefix = StringUtils.substringBefore(assetContainer.requirePrefix(), "/");
-		MemoizedFile rootRequirePrefixDir = assetContainer.file(dirName+"/"+rootRequirePrefix);
+		MemoizedFile srcDir = assetContainer.file(srcDirName);
+		if (!srcDir.isDirectory()) {
+			return srcDirName;
+		}
 		
-		String nestedRequirePrefixPath = dirName+"/"+assetContainer.requirePrefix();
+		String rootRequirePrefix = StringUtils.substringBefore(assetContainer.requirePrefix(), "/");
+		MemoizedFile rootRequirePrefixDir = srcDir.file(rootRequirePrefix);
+		
+		String nestedRequirePrefixPath = srcDirName+"/"+assetContainer.requirePrefix();
 		MemoizedFile nestedRequirePrefixDir = assetContainer.file(nestedRequirePrefixPath);
 		
 		MemoizedFile rootPathDir = assetContainer.file(rootPath);
@@ -105,7 +101,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 					String.format("The location '%s' contains a directory with the same name as the root require prefix ('%s') which suggests it's require prefix is explicitly defined"
 							+ " but no folder exists that corresponds to the require prefix for this location ('%s'). Either move all source files and package folders into the directory '%s'"
 							+ " to use an explicit directory structure or move all files and package folders into '%s' to allow the require prefix to be calculated automatically.",
-							brjsDir.getRelativePath(assetContainer.file(dirName)),
+							brjsDir.getRelativePath(assetContainer.file(srcDirName)),
 							rootRequirePrefix,
 							assetContainer.requirePrefix(),
 							brjsDir.getRelativePath(nestedRequirePrefixDir),
@@ -115,7 +111,27 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 
 		}
 		
-		return (explicitRequirePrefixDirsExist && useImpliedRequirePrefix(assetContainer)) ? nestedRequirePrefixPath : rootPath;
+		BRJS brjs = assetContainer.root();
+		Logger logger = brjs.logger(this.getClass());
+		if (explicitRequirePrefixDirsExist && useImpliedRequirePrefix(assetContainer)) {
+			return nestedRequirePrefixPath;
+		}
+		logger.debug(IMPLICIT_PACKAGE_USED, assetContainer.root().dir().getRelativePath(srcDir), assetContainer.requirePrefix(), assetContainer.requirePrefix());
+		return rootPath;
+	}
+	
+	private List<MemoizedFile> getSrcDirs(AssetContainer assetContainer)
+	{
+		List<MemoizedFile> dirs = new ArrayList<>();
+		if (assetContainer instanceof TestPack) {
+			String srcTestDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src-test");
+			dirs = createFilesForFilePaths(assetContainer,  Arrays.asList(srcTestDir) );
+		} else {
+			String srcDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src");
+			String srcTestDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src-test");
+			dirs = createFilesForFilePaths(assetContainer, Arrays.asList(srcDir, srcTestDir) );
+		}
+		return filterNonExistantDirs(dirs);
 	}
 	
 	private List<MemoizedFile> getThemeDirs(AssetContainer assetContainer)
@@ -127,23 +143,36 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		for (MemoizedFile themeDir : assetContainer.file("themes").dirs()) {
 			themeDirs.add(themeDir);
 		}
-		return themeDirs;
+		return filterNonExistantDirs(themeDirs);
 	}
 	
 	private List<MemoizedFile> getResourceDirs(AssetContainer assetContainer)
 	{
-		return createFilesForFilePaths(assetContainer, Arrays.asList("resources") );
+		List<MemoizedFile> dirs = createFilesForFilePaths(assetContainer, Arrays.asList("resources") );
+		return filterNonExistantDirs(dirs);
 	}
 	
 	private List<MemoizedFile> getTestDirs(AssetContainer assetContainer)
 	{
 		if (assetContainer instanceof TestPack) {
-			return createFilesForFilePaths(assetContainer, Arrays.asList("tests") );
+			List<MemoizedFile> dirs = createFilesForFilePaths(assetContainer, Arrays.asList("tests") );
+			return filterNonExistantDirs(dirs);
 		} else {
 			return Collections.emptyList();
 		}
 	}
 
+	private List<MemoizedFile> filterNonExistantDirs(List<MemoizedFile> dirs) {
+		List<MemoizedFile> existingDirs = new ArrayList<>();
+		for (MemoizedFile dir : dirs) {
+			if (dir.isDirectory()) {
+				existingDirs.add(dir);
+			}
+		}
+		return existingDirs;
+	}
+	
+	
 	private List<Asset> createAssetsForChildDir(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, 
 			AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parentAsset)
 	{

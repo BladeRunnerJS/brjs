@@ -107,4 +107,15 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 	{
 		return bundlableNode;
 	}
+	
+	@Override
+	public boolean isScopeEnforced() {
+		return false;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
 }
