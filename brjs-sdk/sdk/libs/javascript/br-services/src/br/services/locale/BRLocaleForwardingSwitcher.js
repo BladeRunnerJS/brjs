@@ -18,7 +18,7 @@ function BRLocaleForwardingSwitcher() {
 }
 topiarist.implement(BRLocaleForwardingSwitcher, LocaleSwitcher);
 
-BRLocaleForwardingSwitcher.prototype.switch = function(localePageUrl) {
+BRLocaleForwardingSwitcher.prototype.switchLocale = function(localePageUrl) {
 	window.location = localePageUrl;
 };
 
