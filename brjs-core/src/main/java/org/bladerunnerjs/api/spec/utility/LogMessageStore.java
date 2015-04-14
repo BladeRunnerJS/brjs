@@ -136,7 +136,32 @@ public class LogMessageStore
 	
 	public void verifyNoConsoleLogMessage(String message, Object... params)
 	{
+		assertionMade = true;
 		verifyNoLogMessage("console", consoleMessages, new ConsoleLogMessage(message, params));
+	}
+	
+	public void verifyNoErrorLogMessage(String message, Object... params)
+	{
+		assertionMade = true;
+		verifyNoLogMessage("error", errorMessages, new LogMessage(message, params));
+	}
+	
+	public void verifyNoWarnLogMessage(String message, Object... params)
+	{
+		assertionMade = true;
+		verifyNoLogMessage("warn", warnMessages, new LogMessage(message, params));
+	}
+	
+	public void verifyNoInfoLogMessage(String message, Object... params)
+	{
+		assertionMade = true;
+		verifyNoLogMessage("info", infoMessages, new LogMessage(message, params));
+	}
+	
+	public void verifyNoDebugLogMessage(String message, Object... params)
+	{
+		assertionMade = true;
+		verifyNoLogMessage("debug", debugMessages, new LogMessage(message, params));
 	}
 	
 	public void verifyInfoLogMessage(String message, Object... params)
@@ -247,8 +272,6 @@ public class LogMessageStore
 	
 	private void verifyNoLogMessage(String logLevel, List<LogMessage> messages, LogMessage logMessage)
 	{
-		assertTrue("log message can't be empty", logMessage.message.length() > 0);
-		
 		LogMessage foundMessage = findFirstMessageMatching(messages, logMessage.message);
 		assertNull( String.format("found log message, expected not to", logLevel, logMessage.message) , foundMessage );
 	}

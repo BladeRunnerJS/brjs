@@ -92,17 +92,17 @@ public class BundleSetBuilder {
 			}
 			
 			BRJS brjs = linkedAsset.assetContainer().root();
-			for(Asset asset : moduleDependencies) {
-				boolean assetIsInScope = ensureDependentAssetIsInScope(linkedAsset, asset);
-				if (!assetIsInScope) {
-					brjs.logger(this.getClass()).warn(INVALID_REQUIRE_MSG, linkedAsset.getPrimaryRequirePath(), asset.getPrimaryRequirePath());
+			for(Asset dependantAsset : moduleDependencies) {
+				boolean assetIsInScope = ensureDependentAssetIsInScope(linkedAsset, dependantAsset);
+				if (!assetIsInScope && linkedAsset.isScopeEnforced() && dependantAsset.isScopeEnforced()) {
+					brjs.logger(this.getClass()).warn(INVALID_REQUIRE_MSG, linkedAsset.getPrimaryRequirePath(), dependantAsset.getPrimaryRequirePath());
 				}
-				if(asset instanceof SourceModule){
-					addSourceModule((SourceModule)asset);
-				} else if (asset instanceof LinkedAsset) {
-					addLinkedAsset((LinkedAsset) asset);						
+				if(dependantAsset instanceof SourceModule){
+					addSourceModule((SourceModule)dependantAsset);
+				} else if (dependantAsset instanceof LinkedAsset) {
+					addLinkedAsset((LinkedAsset) dependantAsset);
 				}
-				assets.add(asset);
+				assets.add(dependantAsset);
 			}
 			
 		}

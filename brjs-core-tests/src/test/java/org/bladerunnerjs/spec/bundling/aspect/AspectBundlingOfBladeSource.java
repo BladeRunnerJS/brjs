@@ -370,4 +370,13 @@ public class AspectBundlingOfBladeSource extends SpecTest {
     		.and(logging).otherMessagesIgnored();
 	}
 	
+	@Test
+	public void badRequiresAreNotLoggedForNoneScopeEnforcedSourceModules() throws Exception {
+		given(aspect).indexPageRequires("appns/b1/Blade1Class")
+    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "alias!$data")
+    		.and(logging).enabled();
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(logging).doesNotContainWarnMessage(BundleSetBuilder.INVALID_REQUIRE_MSG);
+	}
+	
 }
