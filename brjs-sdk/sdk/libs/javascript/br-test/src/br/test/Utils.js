@@ -30,22 +30,10 @@ Utils.pLoadedAndAttachedCSSElements = [];
 * @param {String} [character] A character associated with typing events
 */
 Utils.fireDomEvent = function(eElement, eventString, character) {
+	var element = (eElement instanceof jQuery) ? eElement.context : eElement;
 	var evt;
-	var element;
-	if (eElement instanceof jQuery) {
-		element = eElement[0]; //unwrap the jQuery element
-	} else {
-		element = eElement;
-	}
 
-	if (document.createEventObject) {
-		evt = jQuery.Event(eventString);
-		if (character) {
-			evt.which = Utils.getKeyCodeForChar(character);
-		}
-		jQuery(element).trigger(evt);
-	} else if (document.createEvent) {
-		//FF, WEBKIT etc..
+	if(document.createEvent) {
 		evt = document.createEvent('HTMLEvents');
 		if (typeof character !== 'undefined') {
 			evt.which = Utils.getKeyCodeForChar(character);
@@ -55,6 +43,19 @@ Utils.fireDomEvent = function(eElement, eventString, character) {
 			return !element.dispatchEvent(evt);
 		}
 		return false;
+	}
+	else if(document.createEventObject) {
+		if(element.nodeName == 'OPTION') {
+			do {
+				element = element.parentNode;
+			} while(element.nodeName != 'SELECT');
+		}
+		
+		evt = document.createEventObject();
+		if (character) {
+			evt.keyCode = Utils.getKeyCodeForChar(character);
+		}
+		element.fireEvent('on' + eventString, evt);
 	}
 };
 

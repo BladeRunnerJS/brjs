@@ -42,6 +42,12 @@ Selected.prototype.set = function(eElement, vValue) {
 	}
 	if (eElement.selected != vValue) {
 		eElement.selected = vValue;
+		
+		// needed for options within optgroup tags in IE8
+		if(eElement.selected != vValue) {
+			(eElement.previousSibling || eElement.nextSibling).selected = true;
+		}
+		
 		require("br/test/Utils").fireDomEvent(jQuery(eElement).parent('select'), "change");
 	}
 };
