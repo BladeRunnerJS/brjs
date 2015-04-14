@@ -50,11 +50,11 @@ Utils.fireDomEvent = function(eElement, eventString, character) {
 		return false;
 	}
 	else if(document.createEventObject) {
-		evt = jQuery.Event(eventString);
+		evt = document.createEventObject();
 		if (character) {
-			evt.which = Utils.getKeyCodeForChar(character);
+			evt.keyCode = Utils.getKeyCodeForChar(character);
 		}
-		jQuery(element).trigger(evt);
+		element.fireEvent('on' + eventString, evt);
 	}
 };
 
