@@ -5,25 +5,12 @@ import java.util.Date;
 
 public class DefaultAppVersionGenerator implements AppVersionGenerator
 {
-	private String devVersion = null;
-	private String prodVersion = null;
+	private String version = String.valueOf( new Date().getTime() );
 	
 	@Override
-	public String getProdVersion()
+	public String getVersion()
 	{
-		if (prodVersion != null && !prodVersion.isEmpty()) {
-			return prodVersion+"."+String.valueOf( new Date().getTime() );
-		}
-		return String.valueOf( new Date().getTime() );
-	}
-	
-	@Override
-	public String getDevVersion()
-	{
-		if (devVersion != null && !devVersion.isEmpty()) {
-			return devVersion;
-		}
-		return "dev";
+		return version;
 	}
 	
 	@Override
@@ -33,17 +20,10 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 	}
 
 	@Override
-	public void setProdVersion(String version)
+	public void setVersion(String version)
 	{
 		checkVersionFormat(version);
-		prodVersion = version;
-	}
-	
-	@Override
-	public void setDevVersion(String version)
-	{
-		checkVersionFormat(version);
-		devVersion = version;
+		this.version = version;
 	}
 	
 	private void checkVersionFormat(String version)

@@ -42,7 +42,7 @@ public class BundlerHandlerSpecTest extends SpecTest
     			File bundleFile = testPack.file(requestPath);
     			String bundlePath = StringUtils.substringAfterLast(bundleFile.getAbsolutePath(), JsTestDriverBundleCreator.BUNDLES_DIR_NAME + File.separator);
     			bundlePath = StringUtils.replace(bundlePath, "\\", "/");
-    			new BundlerHandler(testPack).createBundleFile(bundleFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
+    			new BundlerHandler(testPack).createBundleFile(bundleFile, bundlePath, brjs.getAppVersionGenerator().getVersion());
 			}
 		}
 	}

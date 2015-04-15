@@ -386,14 +386,14 @@ public class XMLContentPluginTest extends SpecTest{
 	}
 	
 	@Test public void bundlePathTagIsReplacedForDev() throws Exception {
-		given(brjs).hasDevVersion("dev")
+		given(brjs).hasVersion("dev")
 			.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path"));
 		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(bundleElem("\n",templateElem("v/dev/some/path")));
 	}
 	
 	@Test public void bundlePathTagIsReplacedForProd() throws Exception {
-		given(brjs).hasProdVersion("1234")
+		given(brjs).hasVersion("1234")
 		.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path"));
 		when(aspect).requestReceivedInProd("xml/bundle.xml", response);
 		then(response).containsText(bundleElem("\n", templateElem("v/1234/some/path")));
@@ -402,7 +402,7 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void bundlePathTagIsReplacedForWorkbench() throws Exception {
 		given(blade).containsResourceFileWithContents("xml/myconfig.xml", "@bundlePath@/some/path")
-			.and(brjs).hasDevVersion("dev")
+			.and(brjs).hasVersion("dev")
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(workbench).indexPageRequires("appns/bs/b1/Class1");
 		when(workbench).requestReceivedInDev("xml/bundle.xml", response);

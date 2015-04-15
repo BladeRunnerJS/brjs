@@ -70,7 +70,7 @@ public class ServedWarTest extends SpecTest {
 		given(brjs).localeSwitcherHasContents("Locale Forwarder")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(aspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(appConf).supportsLocales("en", "de")
 			.and(brjs).usesProductionTemplates()
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -89,7 +89,7 @@ public class ServedWarTest extends SpecTest {
 		given(brjs).localeSwitcherHasContents("Locale Forwarder")
 			.and(rootAspect).containsFileWithContents("index.html", "Hello World!")
 			.and(rootAspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(appConf).supportsLocales("en", "de")
 			.and(brjs).usesProductionTemplates()
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -122,8 +122,8 @@ public class ServedWarTest extends SpecTest {
 		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(aspect).indexPageHasContent("<@js.bundle @/>\n"+"require('appns/Class');")
 			.and(aspect).hasClass("appns/Class")
-			.and(brjs).hasProdVersion("APP.VERSION")
-			.and(brjs).hasDevVersion("APP.VERSION")
+			.and(brjs).hasVersion("APP.VERSION")
+			.and(brjs).hasVersion("APP.VERSION")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
@@ -137,7 +137,7 @@ public class ServedWarTest extends SpecTest {
 		given(aspect).containsResourceFileWithContents("style.css", "body { color: red; }")
 			.and(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(aspect).indexPageHasContent("<@css.bundle @/>\n")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
@@ -152,7 +152,7 @@ public class ServedWarTest extends SpecTest {
 			.and(loginAspect).containsFileWithContents("index.html", "Hello World!")
 			.and(loginAspect).containsFileWithContents("themes/noir/style.css", ".style { background:url('images/file.gif'); }")
 			.and(loginAspect).containsFileWithContents("themes/noir/images/file.gif", "** SOME GIF STUFF... **")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
@@ -165,7 +165,7 @@ public class ServedWarTest extends SpecTest {
 	{
 		given(brjs).localeSwitcherHasContents("Locale Forwarder")
     		.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
-    		.and(brjs).hasProdVersion("1234")
+    		.and(brjs).hasVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
     		.and(warServer).hasWar("app1.war", "app")
     		.and(warServer).hasStarted();
@@ -181,7 +181,7 @@ public class ServedWarTest extends SpecTest {
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app).hasBeenPopulated("default")
 			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
     		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
     		.and(warServer).hasStarted();
@@ -197,7 +197,7 @@ public class ServedWarTest extends SpecTest {
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
-    		.and(brjs).hasProdVersion("1234")
+    		.and(brjs).hasVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
     		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)))
     		.and(warServer).hasStarted();
@@ -214,7 +214,7 @@ public class ServedWarTest extends SpecTest {
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
-    		.and(brjs).hasProdVersion("1234")
+    		.and(brjs).hasVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir())
     		.and(warServer).hasWarWithFilters("app1.war", "app", new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)), new MockCommitResponseFilter())
     		.and(warServer).hasStarted();
@@ -233,7 +233,7 @@ public class ServedWarTest extends SpecTest {
 		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
     		.and(app).hasBeenPopulated("default")
     		.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
-    		.and(brjs).hasProdVersion("1234")
+    		.and(brjs).hasVersion("1234")
     		.and(app).hasBeenBuiltAsWar(brjs.dir());
 		
 		// taken from http://www.eclipse.org/jetty/documentation/current/jndi-embedded.html

@@ -238,7 +238,6 @@ public class BundleSetBuilder {
 				if (!strictCheckingAssetsLogged.add(asset)) {
 					BRJS brjs = asset.assetContainer().root();
 					brjs.logger(this.getClass()).warn(STRICT_CHECKING_DISABLED_MSG, brjs.dir().getRelativePath(currentDir), asset.getAssetPath(), brjs.dir().getRelativePath(strictCheckingFile));
-					System.err.println( String.format(STRICT_CHECKING_DISABLED_MSG, brjs.dir().getRelativePath(currentDir), asset.getAssetPath(), brjs.dir().getRelativePath(strictCheckingFile)) );
 				}
 				return true;
 			}

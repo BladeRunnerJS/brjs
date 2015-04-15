@@ -237,9 +237,10 @@ public class BuildAppCommandTest extends SpecTest
 	@Test
 	public void appVersionTokenIsReplaced() throws Exception
 	{
-		given(app).hasBeenCreated().and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>").and(brjs).hasProdVersion("1234");
-		when(brjs).runCommand("build-app", "app");
-		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234</web-xml>")
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>");
+		when(brjs).runCommand("build-app", "app", "-v", "1234");
+		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234.")
 			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@appVersion@");
 	}
 

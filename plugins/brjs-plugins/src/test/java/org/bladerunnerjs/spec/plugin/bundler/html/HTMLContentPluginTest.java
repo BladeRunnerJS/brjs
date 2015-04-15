@@ -174,7 +174,7 @@ public class HTMLContentPluginTest extends SpecTest
 	@Test
 	public void bundlePathTagIsReplacedForDev() throws Exception {
 		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='some.id'>@bundlePath@/some/path</div>")
-			.and(brjs).hasDevVersion("dev");
+			.and(brjs).hasVersion("dev");
 		when(aspect).requestReceivedInDev("html/bundle.html", response);
 		then(response).containsText("v/dev/some/path");
 	}
@@ -182,7 +182,7 @@ public class HTMLContentPluginTest extends SpecTest
 	@Test
 	public void bundlePathTagIsReplacedForProd() throws Exception {
 		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='some.id'>@bundlePath@/some/path</div>")
-		.and(brjs).hasProdVersion("1234");
+		.and(brjs).hasVersion("1234");
 		when(aspect).requestReceivedInProd("html/bundle.html", response);
 		then(response).containsText("v/1234/some/path");
 	}
@@ -190,7 +190,7 @@ public class HTMLContentPluginTest extends SpecTest
 	@Test
 	public void bundlePathTagIsReplacedForWorkbench() throws Exception {
 		given(blade).containsResourceFileWithContents("html/view.html", "<div id='appns.bs.b1.id'>@bundlePath@/some/path</div>")
-			.and(brjs).hasDevVersion("dev")
+			.and(brjs).hasVersion("dev")
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(workbench).indexPageRequires("appns/bs/b1/Class1");
 		when(workbench).requestReceivedInDev("html/bundle.html", response);

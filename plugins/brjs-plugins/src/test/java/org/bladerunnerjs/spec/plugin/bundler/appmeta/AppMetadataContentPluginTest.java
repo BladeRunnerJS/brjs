@@ -27,14 +27,14 @@ public class AppMetadataContentPluginTest extends SpecTest {
 	
 	@Test
 	public void appVersionContentIsIncluded() throws Exception {
-		given(brjs).hasDevVersion("dev");
+		given(brjs).hasVersion("dev");
 		when(aspect).requestReceivedInDev("app-meta/version.js", requestResponse);
 		then(requestResponse).containsTextOnce( "window.$BRJS_APP_VERSION = 'dev';" );
 	}
 	
 	@Test
 	public void bundlePathContentIsIncluded() throws Exception {
-		given(brjs).hasDevVersion("dev");
+		given(brjs).hasVersion("dev");
 		when(aspect).requestReceivedInDev("app-meta/version.js", requestResponse);
 		then(requestResponse).containsTextOnce( "window.$BRJS_VERSIONED_BUNDLE_PATH = 'v/dev';" );
 	}
@@ -42,7 +42,7 @@ public class AppMetadataContentPluginTest extends SpecTest {
 	@Test
 	public void appVersionContentIsIncludedAtTheTopOfTheCompositeBundle() throws Exception {
 		given(aspect).indexPageRequires("appns/Class")
-			.and(brjs).hasDevVersion("dev")
+			.and(brjs).hasVersion("dev")
 			.and(aspect).hasClass("appns/Class")
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("thirdparty-lib.manifest", "js: bootstrap.js\n"+"exports: lib")

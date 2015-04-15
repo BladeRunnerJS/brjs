@@ -79,7 +79,7 @@ public class ServeCommand extends JSAPArgsParsingCommandPlugin
 				appServer = getApplicationServer(parsedArgs);
 			}
 			
-			brjs.getAppVersionGenerator().setDevVersion( parsedArgs.getString("version") );
+			brjs.getAppVersionGenerator().setVersion( parsedArgs.getString("version") );
 			
 			
 			appServer.start();
