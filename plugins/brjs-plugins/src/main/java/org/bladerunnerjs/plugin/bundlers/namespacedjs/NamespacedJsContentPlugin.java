@@ -32,6 +32,9 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 import com.Ostermiller.util.ConcatReader;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -102,7 +105,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	{
 		List<String> requestPaths = new ArrayList<>();
 		
-		List<NamespacedJsSourceModule> namespacedJsSourceModules = bundleSet.getSourceModules(Arrays.asList(NamespacedJsSourceModule.class));
+		List<NamespacedJsSourceModule> namespacedJsSourceModules = bundleSet.getSourceModules(NamespacedJsSourceModule.class);
 
 		if (requestMode == RequestMode.Prod) {
 			return (namespacedJsSourceModules.isEmpty()) ? Collections.emptyList() : prodRequestPaths;
@@ -145,7 +148,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 				List<Reader> readerList = new ArrayList<Reader>();
 				
 				StringBuffer contentBuffer = new StringBuffer();
-				for (NamespacedJsSourceModule sourceModule : bundleSet.getSourceModules(Arrays.asList(NamespacedJsSourceModule.class)))
+				for (NamespacedJsSourceModule sourceModule : bundleSet.getSourceModules(NamespacedJsSourceModule.class))
 				{
 					contentBuffer.append("// " + sourceModule.getPrimaryRequirePath() + "\n");
 					Reader reader = sourceModule.getReader();
@@ -198,7 +201,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	{
 		Map<String, Map<String, ?>> packageStructure = new LinkedHashMap<>();
 
-		for (NamespacedJsSourceModule sourceModule : bundleSet.getSourceModules(Arrays.asList(NamespacedJsSourceModule.class)))
+		for (NamespacedJsSourceModule sourceModule : bundleSet.getSourceModules(NamespacedJsSourceModule.class))
 		{
 			if (!(sourceModule instanceof TestAsset))
 			{
@@ -278,6 +281,9 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 		
 		List<SourceModule> namespacedOrCommonJsSourceModules = bundleSet.getSourceModules(Arrays.asList(NamespacedJsSourceModule.class, CommonJsSourceModule.class));
 		for(SourceModule sourceModule : namespacedOrCommonJsSourceModules) {
+			if (sourceModule instanceof TestAsset) {
+				continue;
+			}
 			output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
 		}
 		

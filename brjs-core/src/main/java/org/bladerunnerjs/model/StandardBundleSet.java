@@ -3,10 +3,8 @@ package org.bladerunnerjs.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BundlableNode;
@@ -21,7 +19,8 @@ public class StandardBundleSet implements BundleSet {
 	private final List<SourceModule> sourceModules;
 	private BundlableNode bundlableNode;
 	
-	private Map<Class<? extends Asset>, List<Asset>> assetsByType = new HashMap<>();
+	private Map<List<Class<? extends Asset>>, List<Asset>> assetsByType = new HashMap<>();
+	private Map<List<Class<? extends SourceModule>>, List<SourceModule>> sourceModulesByType = new HashMap<>();
 	
 	public StandardBundleSet(BundlableNode bundlableNode, List<LinkedAsset> seedAssets, List<Asset> assets, List<SourceModule> sourceModules) {
 		this.seedAssets = seedAssets;
@@ -43,82 +42,6 @@ public class StandardBundleSet implements BundleSet {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules() {
-		return getTheAssets(sourceModules, null, null);
-	}
-	
-	@Override
-	public <AT extends SourceModule> List<AT> getSourceModules(List<Class<? extends AT>> assetTypes) {
-		return getTheAssets(sourceModules, null, assetTypes);
-	}
-
-	@Override
-	public List<Asset> getAssets(String... prefixes)
-	{
-		return getTheAssets(assets, Arrays.asList(prefixes), null);
-	}
-	
-	@Override
-	public <AT extends Asset> List<AT> getAssets(List<String> prefixes, List<Class<? extends AT>> assetTypes)
-	{
-		return getTheAssets(assets, prefixes, assetTypes);
-	}
-
-	@SuppressWarnings("unchecked")
-	private <AT extends Asset> List<AT> getTheAssets(List<? extends Asset> assets, List<String> prefixes, List<Class<? extends AT>> assetTypes) {
-		List<AT> assetsOfCorrectType = getAssetsForType(assets, assetTypes);
-		List<AT> assetsWithRequirePath = new ArrayList<>();
-		for (Asset asset : assetsOfCorrectType) { 
-			if (assetHasValidPrefix(asset, prefixes)) {
-				assetsWithRequirePath.add( (AT) asset );
-			}
-		}
-		return assetsWithRequirePath;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <AT extends Asset> List<AT> getAssetsForType(List<? extends Asset> assets, List<Class<? extends AT>> assetTypes) {
-		if (assetTypes == null || assetTypes.isEmpty()) {
-			return (List<AT>) assets;
-		}
-		
-		Set<AT> assetsOfType = new LinkedHashSet<>();
-		for (Class<? extends AT> assetType : assetTypes) {
-			assetsOfType.addAll( getAssetsForType(assets, assetType) );
-		}
-		
-		return new ArrayList<>(assetsOfType);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <AT extends Asset> List<AT> getAssetsForType(List<? extends Asset> assets, Class<? extends AT> assetType) {
-		List<Asset> assetsOfType = assetsByType.get(assetType);
-		if (assetsOfType == null) {
-			assetsOfType = new ArrayList<>();
-			for (Asset asset : assets) {
-				if (assetType.isAssignableFrom(asset.getClass())) {
-					assetsOfType.add(asset);
-				}
-			}
-			assetsByType.put(assetType, assetsOfType);
-		}
-		return (List<AT>) assetsOfType;
-	}
-	
-	private boolean assetHasValidPrefix(Asset asset, List<String> prefixes)
-	{
-		if (prefixes == null || prefixes.size() == 0) {
-			return true;
-		}
-		for (String prefix : prefixes) {
-			if (asset.getPrimaryRequirePath().startsWith(prefix)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public List<LinkedAsset> seedAssets()
 	{
 		return seedAssets;
@@ -128,6 +51,116 @@ public class StandardBundleSet implements BundleSet {
 	public List<LinkedAsset> getLinkedAssets()
 	{
 		return linkedAssets;
+	}
+	
+	@Override
+	public List<SourceModule> getSourceModules() {
+		return getTheAssets(sourceModules, sourceModulesByType, null, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <AT extends SourceModule> List<AT> getSourceModules(Class<? extends AT> assetType) {
+		return (List<AT>) getTheAssets(sourceModules, sourceModulesByType, null, Arrays.asList(assetType));
+	}
+	
+	@Override
+	public List<SourceModule> getSourceModules(List<Class<? extends SourceModule>> assetTypes) {
+		return getTheAssets(sourceModules, sourceModulesByType, null, assetTypes);
+	}
+
+	@Override
+	public List<Asset> getAssets(String... prefixes)
+	{
+		return (List<Asset>) getTheAssets(assets, assetsByType, Arrays.asList(prefixes), null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <AT extends Asset> List<AT> getAssets(List<String> prefixes, Class<? extends AT> assetType)
+	{
+		return (List<AT>) getTheAssets(assets, assetsByType, prefixes, Arrays.asList(assetType));
+	}
+	
+	@Override
+	public List<Asset> getAssets(List<String> prefixes, List<Class<? extends Asset>> assetTypes)
+	{
+		return (List<Asset>) getTheAssets(assets, assetsByType, prefixes, assetTypes);
+	}
+
+	
+	
+	
+	private static <AT extends Asset> List<AT> getTheAssets(List<AT> assets, Map<List<Class<? extends AT>>, List<AT>> assetsByType, 
+			List<String> prefixes, List<Class<? extends AT>> assetTypes) {
+		
+		List<AT> assetsOfCorrectType = getAssetsForType(assets, assetsByType, assetTypes);
+		
+		if (prefixes == null || prefixes.isEmpty()) {
+			return assetsOfCorrectType;
+		}
+		
+		List<AT> assetsWithRequirePath = new ArrayList<>();
+		for (AT asset : assetsOfCorrectType) { 
+			if (assetHasValidPrefix(asset, prefixes)) {
+				assetsWithRequirePath.add(asset );
+			}
+		}
+		
+		return assetsWithRequirePath;
+	}
+	
+	private static <AT extends Asset> List<AT> getAssetsForType(List<AT> assets, Map<List<Class<? extends AT>>, List<AT>> assetsByType, List<Class<? extends AT>> assetTypes) {
+		if (assetTypes == null || assetTypes.isEmpty()) {
+			return assets;
+		}
+		
+		List<AT> assetsForAssetsTypes = getAssetsForType(assetsByType, assetTypes);
+		if (assetsForAssetsTypes == null) {
+			assetsForAssetsTypes = new ArrayList<>();
+			for (AT asset : assets) {
+				if (assetHasValidType(asset, assetTypes)) {
+					assetsForAssetsTypes.add(asset);
+				}
+			}
+			
+			assetsByType.put(assetTypes, assetsForAssetsTypes);
+		}
+		
+		return new ArrayList<>(assetsForAssetsTypes);
+	}
+	
+	private static <AT extends Asset> List<AT> getAssetsForType(Map<List<Class<? extends AT>>, List<AT>> assetsByType, List<Class<? extends AT>> assetTypes) {
+		for (List<Class<? extends AT>> assetTypesFromMap : assetsByType.keySet()) {
+			List<Class<? extends AT>> assetTypesToFind = new ArrayList<>(assetTypes);
+			for (Class<? extends AT> assetTypeToMatch : assetTypesFromMap) {
+				assetTypesToFind.remove(assetTypeToMatch);
+				if (assetTypesToFind.isEmpty() && assetTypes.size() == assetTypesFromMap.size()) {
+					return assetsByType.get(assetTypesFromMap);
+				}
+			}
+		}
+		return null;
+	}
+	
+	private static <AT extends Asset> boolean assetHasValidPrefix(AT asset, List<String> prefixes)
+	{
+		for (String prefix : prefixes) {
+			if (asset.getPrimaryRequirePath().startsWith(prefix)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private static <AT extends Asset> boolean assetHasValidType(AT asset, List<Class<? extends AT>> assetTypes)
+	{
+		for (Class<? extends Asset> assetType : assetTypes) {
+			if (assetType.isAssignableFrom(asset.getClass())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

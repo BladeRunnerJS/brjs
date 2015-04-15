@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
@@ -81,7 +80,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			{
 				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(bundleSet);
 				List<Reader> readerList = new ArrayList<Reader>();
-				for(ThirdpartySourceModule sourceFile : bundleSet.getSourceModules(Arrays.asList(ThirdpartySourceModule.class))) 
+				for(ThirdpartySourceModule sourceFile : bundleSet.getSourceModules(ThirdpartySourceModule.class)) 
 				{
 					readerList.add(new StringReader("// " + sourceFile.getPrimaryRequirePath() + "\n"));
 					readerList.add(sourceFile.getReader());
@@ -127,7 +126,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			if (requestMode == RequestMode.Prod) {
 				requestPaths.add(contentPathParser.createRequest("bundle-request"));
 			} else {
-				for(ThirdpartySourceModule sourceModule : bundleSet.getSourceModules(Arrays.asList(ThirdpartySourceModule.class))) {
+				for(ThirdpartySourceModule sourceModule : bundleSet.getSourceModules(ThirdpartySourceModule.class)) {
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
 				}				
 			}

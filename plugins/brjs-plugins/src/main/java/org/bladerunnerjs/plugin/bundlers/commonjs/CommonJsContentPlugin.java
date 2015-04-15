@@ -82,7 +82,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin implements Comp
 	{
 		List<String> requestPaths = new ArrayList<>();
 
-		List<CommonJsSourceModule> commonJsSourceModules = bundleSet.getSourceModules(Arrays.asList(CommonJsSourceModule.class));
+		List<CommonJsSourceModule> commonJsSourceModules = bundleSet.getSourceModules(CommonJsSourceModule.class);
 		
 		if (requestMode == RequestMode.Prod) {
 			return (commonJsSourceModules.isEmpty()) ? Collections.emptyList() : prodRequestPaths;

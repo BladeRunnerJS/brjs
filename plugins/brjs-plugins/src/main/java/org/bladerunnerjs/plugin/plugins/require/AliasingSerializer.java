@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.require;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.api.BundleSet;
@@ -64,7 +63,7 @@ public class AliasingSerializer {
 		
 		AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundleSet.getBundlableNode());
 		
-		for (AliasCommonJsSourceModule sourceModule : bundleSet.getSourceModules(Arrays.asList(AliasCommonJsSourceModule.class))) {
+		for (AliasCommonJsSourceModule sourceModule : bundleSet.getSourceModules(AliasCommonJsSourceModule.class)) {
 			AliasCommonJsSourceModule aliasSourceModule = (AliasCommonJsSourceModule) sourceModule;
 			AliasDefinition aliasDefinition = aliasSourceModule.getAliasDefinition();
 			try
