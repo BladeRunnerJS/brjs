@@ -82,6 +82,7 @@ public class IntegrationServeCommandTest extends SpecTest
 	public void serverWillServeAppsOnceStarted() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyReCreated()
+			.and(brjs).usedForServletModel()
 			.and(brjs).localeSwitcherHasContents("")
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")

@@ -30,6 +30,7 @@ import org.bladerunnerjs.api.spec.utility.*;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.utility.ServerUtility;
@@ -104,6 +105,8 @@ public abstract class SpecTest
 	@After
 	public void cleanUp() throws Exception {
 		BRJS.allowInvalidRootDirectories = true;
+		
+		ThreadSafeStaticBRJSAccessor.destroy();
 		
 		if (fileWatcherThread != null) {
 			fileWatcherThread.stop();

@@ -45,7 +45,7 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
 		argsParser.registerParameter(new UnflaggedOption(Parameters.TARGET_DIR).setHelp("the directory within which the exported app will be built"));
-		argsParser.registerParameter(new FlaggedOption("version").setShortFlag('v').setLongFlag("version").setRequired(false).setDefault("").setHelp("the version number for the app"));
+		argsParser.registerParameter(new FlaggedOption("version").setShortFlag('v').setLongFlag("version").setRequired(false).setHelp("the version number for the app"));
 		argsParser.registerParameter(new Switch("war").setShortFlag('w').setLongFlag("war").setDefault("false").setHelp("whether the exported files should be placed into a war zip."));
 	}
 	
@@ -70,7 +70,10 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		
 		String appName = parsedArgs.getString(Parameters.APP_NAME);
 		String targetDirPath = parsedArgs.getString(Parameters.TARGET_DIR);
-		brjs.getAppVersionGenerator().setProdVersion( parsedArgs.getString("version") );
+		String version = parsedArgs.getString("version");
+		if (version != null && !version.isEmpty()) {
+			brjs.getAppVersionGenerator().setProdVersion(version);
+		}
 		boolean warExport = parsedArgs.getBoolean("war");
 		boolean hasExplicitExportDirArg = (targetDirPath != null);
 		
