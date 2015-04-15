@@ -1,0 +1,29 @@
+<html>
+<head>
+	<title>browser-modules experiment</title>
+</head>
+<body>
+	<script type="text/javascript" src="browser-modules.js"></script>
+	<script type="text/javascript" src="install.js"></script>
+
+	<script>
+		define("PI", 3.14);
+
+		var subrealm = realm.subrealm();
+		subrealm.define("bob", function(require, exports, module) {
+			// Since PI is not defined on the subrealm, it will be got from the parent realm.
+			module.exports = require('PI') * 10;
+		});
+
+		console.log(require("PI"));
+		console.log(subrealm.require("bob"));
+
+		var geo = require("navigator/geolocation");
+		console.log(geo);
+
+		var myorg = {mypackage: {myObj: function MyObjConstructor() {}}};
+		var myObj = require("myorg/mypackage/myObj");
+		console.log(myObj);
+	</script>
+</body>
+</html>
