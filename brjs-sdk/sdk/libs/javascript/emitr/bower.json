@@ -1,0 +1,13 @@
+{
+	"name": "emitr",
+	"version": "0.0.4",
+	"main": "target/single/emitr.js",
+	"description": "An node/browser event emitter that supports dispatching based on types.",
+	"homepage": "http://BladeRunnerJS.github.io/emitr",
+	"license": "MIT",
+	"ignore": ["_layouts", "build", "doc", "node_modules", "spec", "styles", ".gitignore", ".travis.yml", "_config.yml", "Gruntfile.js", "library.manifest", "package.json"],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/BladeRunnerJS/emitr.git"
+	}
+}

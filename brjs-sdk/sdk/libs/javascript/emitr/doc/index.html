@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Index</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Index</h1>
+    
+    
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><hr/>
+
+<hr/>
+
+<p>&lt;script type=&quot;text/javascript&quot; src=&quot;Emitter.js&quot;&gt;&lt;/script&gt;</p>
+
+<h1>EventEmitter</h1>
+
+<p>[<img alt="Build Status" src="https://travis-ci.org/BladeRunnerJS/emitter.png)](https://travis-ci.org/BladeRunnerJS/emitter"/></p>
+
+<ul><li>This document is available nicely formatted <a href="http://BladeRunnerJS.github.io/emitter">here</a>.</li><li>Tests are <a href="http://BladeRunnerJS.github.io/emitter/spec">here</a>.</li><li>Source code is <a href="https://github.com/BladeRunnerJS/emitter">here</a>.</li><li>JSDoc for the Emitter mixin is <a href="http://BladeRunnerJS.github.io/emitter/doc/Emitter.html">here</a>.</li></ul>
+
+<p>The rendered form of this document includes the Emitter script so you can open
+a console and try it immediately.</p>
+
+<p>My two main inspirations in making this implementation were the events in <a href="http://backbonejs.org/#Events">backbone</a>,
+and the EventEmitter in <a href="http://nodejs.org/docs/latest/api/all.html#all_class_events_eventemitter">node</a>.</p>
+
+<p>If we hadn&#39;t required the ability to pass &#39;context&#39; into <code>on</code> and <code>off</code>, we probably would have gone with
+<a href="http://robertwhurst.github.io/LucidJS/">LucidJS</a>.  Not leaking memory is difficult enough when
+building large applications; forcing people to keep extra objects around just so they can clean up after
+themselves is ugly enough that it discourages people from doing something important.</p>
+
+<p>While I haven&#39;t come across this exact combination of focussed microlibrary combined with context,
+the only unusual feature of this Emitter (and deliberately so) is that it allows you to listen to and
+dispatch objects rather than just strings.  Related to this is type based events, which I describe
+later.</p>
+
+<h2>Making an Emitter</h2>
+
+<p>While you can directly create a new Emitter, or use standard prototypical
+inheritance to inherit from it, usually you will want to mix the Emitter
+methods in to your own classes or objects.</p>
+
+<p><code></code>`javascript</p>
+
+<pre><code>function MyEmitter() {};
+Emitter.mixInto(MyEmitter);
+
+var emitter = new MyEmitter();</code></pre>
+
+<p><code></code>`</p>
+
+<h2>Standard Emitter Features</h2>
+
+<p>The big three methods are provided:</p>
+
+<p>on:</p>
+
+<p><code></code>`javascript</p>
+
+<pre><code>// Basic example:
+
+emitter.on(&#39;some-event&#39;, function() {
+	// By default, &#39;this&#39; is set to emitter inside here.
+	// you can change that by providing a context argument.
+});
+
+// Example using context:
+
+function MyObject() {}
+MyObject.prototype.onBoom = function() {
+	// in this example, &#39;this&#39; is set to &#39;obj&#39;.
+};
+
+var obj = new MyObject();
+emitter.on(&#39;end-of-the-world&#39;, obj.onBoom, obj);</code></pre>
+
+<p><code></code>`</p>
+
+<p>The poorly (but commonly) named off:</p>
+
+<p><code></code>`javascript</p>
+
+<pre><code>// clears all listeners registered on emitter.
+emitter.off();
+
+// clears all listeners for &#39;some-event&#39;.
+emitter.off(&#39;some-event&#39;);
+
+// removes the listener added with
+//    emitter.on(&#39;some-event&#39;, callback);
+emitter.off(&#39;some-event&#39;, callback);
+
+// removes the listener added with
+//    emitter.on(&#39;some-event&#39;, callback, context);
+emitter.off(&#39;some-event&#39;, callback, context);
+
+// removes all listeners registered with a context of context.
+emitter.off(null, null, context);
+// or
+emitter.clearListeners(context);</code></pre>
+
+<p><code></code>`</p>
+
+<p>trigger (sometimes called emit or fire or notify):</p>
+
+<p><code></code>`javascript</p>
+
+<pre><code>// All listeners registered for the &#39;end-of-the-world&#39; event
+// will get called with alienSpacecraft as their first argument.
+emitters.trigger(&#39;end-of-the-world&#39;, alienSpacecraft);</code></pre>
+
+<p><code></code>`</p>
+
+<p>once is another function that is commonly provided by Emitters:</p>
+
+<p><code></code>`javascript</p>
+
+<pre><code>// Once behaves similarly to .on, but the listener is only
+// ever called once.
+emitter.once(&#39;some-event&#39;, function() {
+	// this function will only be called once.
+});
+
+emitter.trigger(&#39;some-event&#39;);
+emitter.trigger(&#39;some-event&#39;);</code></pre>
+
+<p><code></code>`</p>
+
+<h2>Extra Features</h2>
+
+<p>This Emitter provides two extra features.</p>
+
+<h3>MetaEvents</h3>
+
+<p>The emitter will also trigger special events that you can listen to in certain
+circumstances. The event emitter in node does a similar thing, firing <code>newListener</code>
+and <code>removeListener</code> events at the appropriate time.</p>
+
+<p>There are three meta events which are:</p>
+
+<ul><li><code>Emitter.meta.AddListenerEvent</code>, triggered when a listener is added.</li><li><code>Emitter.meta.RemoveListenerEvent</code>, triggered when a listener is removed.</li><li><code>Emitter.meta.DeadEvent</code>, triggered when an event is fired but no listeners receive it.</li></ul>
+
+<p><code></code>`javascript</p>
+
+<pre><code>// In this example, I use an AddListenerEvent metaevent to
+// create &#39;sticky&#39; events behaviour for the ready event.
+
+function Document() {
+	this.isReady = false;
+
+	this.on(Emitter.meta.AddListenerEvent, function(addEvent) {
+		if (this.isReady) {
+			addEvent.listener.call(addEvent.context);
+		}
+	}, this);
+}
+Emitter.mixInto(Document);
+Document.prototype.makeReady = function() {
+	this.isReady = true;
+	this.trigger(&#39;ready&#39;);
+};
+
+var doc = new Document();
+
+doc.makeReady();
+
+// Even though makeReady was called before this &#39;on&#39;,
+// the listener will still be called.
+
+doc.on(&#39;ready&#39;, function() {
+	console.log(&#39;ready now&#39;);
+});</code></pre>
+
+<p><code></code>`</p>
+
+<h3>Type Based Events</h3>
+
+<p>The Events themselves in normal usage are usually string identifiers and then a list of
+arguments, almost like an algebraic data type - a tag and then a tuple of data items.  In an
+object language like javascript, it seems more natural to dispatch event objects instead and
+listen for them based on their type.</p>
+
+<p><code></code>`javascript</p>
+
+<pre><code>function MouseEvent(x, y) {
+	this.x = x;
+	this.y = y;
+}
+
+emitter.on(MouseEvent, function(event) {
+	// in here, event is the instance of MouseEvent that
+	// we trigger the emitter with.
+});
+
+emitter.trigger(new MouseEvent(100, 99));</code></pre>
+
+<p><code></code>`</p>
+
+<p>It obeys the Liskov Substitution Principle, so a listener will also get notified of
+events that are subclasses of the event type it is registered for.</p>
+
+<p><code></code>`javascript</p>
+
+<pre><code>function ClickEvent(button, x, y) {
+	MouseEvent.call(this, x, y);
+	this.button = button;
+}
+
+ClickEvent.prototype = Object.create(MouseEvent.prototype);
+
+emitter.on(MouseEvent, function(event) {
+	// in here, event is the instance of ClickEvent that
+	// we trigger the emitter with.
+});
+
+emitter.trigger(new ClickEvent(&quot;right&quot;, 101, 100));</code></pre>
+
+<p><code></code>`</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Emitter.html">Emitter</a></li><li><a href="Emitter.Event.html">Event</a></li><li><a href="Emitter.meta.AddListenerEvent.html">AddListenerEvent</a></li><li><a href="Emitter.meta.DeadEvent.html">DeadEvent</a></li><li><a href="Emitter.meta.ListenerEvent.html">ListenerEvent</a></li><li><a href="Emitter.meta.MetaEvent.html">MetaEvent</a></li><li><a href="Emitter.meta.RemoveListenerEvent.html">RemoveListenerEvent</a></li></ul><h3>Namespaces</h3><ul><li><a href="Emitter.meta.html">meta</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed Nov 06 2013 12:12:21 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
