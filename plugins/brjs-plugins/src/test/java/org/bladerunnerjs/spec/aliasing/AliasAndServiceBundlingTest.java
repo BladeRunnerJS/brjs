@@ -513,7 +513,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("br/DevScenarioClass")
             .and(response).doesNotContainClasses("br/GroupProductionClass")
-            .and(response).containsOrderedTextFragments("define('br/DevScenarioClass'", "define('alias!br.service',", "module.exports = require('br/AliasRegistry').getClass('br.service')", "define('service!br.service',", "module.exports = require('br/ServiceRegistry').getService('br.service');");
+            .and(response).containsOrderedTextFragments("define('br/DevScenarioClass'", "define('alias!br.service',", "module.exports = require('br/AliasRegistry').getClass('br.service')", "define('service!br.service',", "module.preventCaching = true", "module.exports = require('br/ServiceRegistry').getService('br.service');");
 	}
 
 	@Test
