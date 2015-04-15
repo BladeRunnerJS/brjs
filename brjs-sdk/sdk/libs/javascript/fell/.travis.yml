@@ -1,0 +1,18 @@
+before_script:
+- npm install -g grunt-cli
+- git submodule update --init --recursive
+script:
+- npm test
+- npm run-script saucelabs-test
+node_js:
+- 0.1
+branches:
+  only:
+  - master
+  - gh-pages
+language: node_js
+addons:
+  sauce_connect:
+    username: "bladerunnerjs"
+    access_key:
+      secure: "IESbIxp4ggs7Lwpj7gBC3XUErUBNhXyDVv1GNBgF+VZTPIAy3UVIGShwc9SZk43RHShhNTg3a/+b3Ff3dtJXOrfU2wvep05Hwi0yJDYNd5BksYm46TyyBxhejGWwvwb4aM94l4xUJAoqzsDecFN7sV2Ibj/VS7VpXJxiQxyCZTE="
