@@ -137,7 +137,7 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	private String getModuleContent() {
-		return "	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n";
+		return "	module.exports = realm.requireFresh('br/ServiceRegistry').getService('" + requirePath + "');\n";
 	}
 
 }
