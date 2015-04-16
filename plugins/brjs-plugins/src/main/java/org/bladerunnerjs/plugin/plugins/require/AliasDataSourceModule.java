@@ -18,7 +18,7 @@ import com.Ostermiller.util.ConcatReader;
 
 public class AliasDataSourceModule implements CommonJsSourceModule {
 	private final BundlableNode bundlableNode;
-	public static final String PRIMARY_REQUIRE_PATH = "alias!$data";
+	public static final String PRIMARY_REQUIRE_PATH = "alias!$data"; 
 
 	public AliasDataSourceModule(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;

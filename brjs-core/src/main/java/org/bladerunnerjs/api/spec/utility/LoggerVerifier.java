@@ -80,6 +80,20 @@ public class LoggerVerifier
 		return verifierChainer;
 	}
 	
+	public VerifierChainer infoMessageReceived(String message, Object... params)
+	{
+		logStore.verifyInfoLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+
+	public VerifierChainer debugMessageReceived(String message, Object... params)
+	{
+		logStore.verifyDebugLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+	
 	public VerifierChainer containsFormattedConsoleMessage(String message, Object... params)
 	{
 		logStore.verifyFormattedConsoleLogMessage(message, params);
@@ -100,20 +114,6 @@ public class LoggerVerifier
 		
 		return verifierChainer;
 	}
-	
-	public VerifierChainer infoMessageReceived(String message, Object... params)
-	{
-		logStore.verifyInfoLogMessage(message, params);
-		
-		return verifierChainer;
-	}
-
-	public VerifierChainer debugMessageReceived(String message, Object... params)
-	{
-		logStore.verifyDebugLogMessage(message, params);
-		
-		return verifierChainer;
-	}
 
 	public VerifierChainer verifyNoUnhandledMessages() {
 		logStore.verifyNoUnhandledMessage();
@@ -128,4 +128,33 @@ public class LoggerVerifier
 		return verifierChainer;
 		
 	}
+
+	public VerifierChainer doesNotContainErrorMessage(String message, Object... params)
+	{
+		logStore.verifyNoErrorLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer doesNotContainWarnMessage(String message, Object... params)
+	{
+		logStore.verifyNoWarnLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer doesNotContainInfoMessage(String message, Object... params)
+	{
+		logStore.verifyNoInfoLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer doesNotContainDebugMessage(String message, Object... params)
+	{
+		logStore.verifyNoDebugLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+	
 }

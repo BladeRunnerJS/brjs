@@ -2,6 +2,7 @@ package org.bladerunnerjs.api.memoization;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.api.logging.Logger;
@@ -27,11 +28,15 @@ public class MemoizedValue<T extends Object> {
 		this(valueIdentifier, node.root(), node.memoizedScopeFiles());
 	}
 	
-	public MemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) { // take an array of objects so callers can pass in a mix of MemoizedFile and File
+	public MemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) {
+		this(valueIdentifier, rootNode, Arrays.asList(watchItems));
+	}
+
+	public MemoizedValue(String valueIdentifier, RootNode rootNode, List<File> watchItems) {
 		this.valueIdentifier = valueIdentifier;
 		this.rootNode = rootNode;
 		
-		if(watchItems.length == 0) {
+		if(watchItems.size() == 0) {
 			throw new IllegalStateException("At least one directory or file must be provided within the watch list.");
 		}
 		
