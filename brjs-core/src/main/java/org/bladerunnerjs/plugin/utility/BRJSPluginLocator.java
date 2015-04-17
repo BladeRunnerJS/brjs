@@ -32,6 +32,7 @@ public class BRJSPluginLocator implements PluginLocator
 	
 	@Override
 	public void createPlugins(BRJS brjs) {
+		// if more plugin types are added defaults should be added to YamlBladerunnerConf
 		modelObserverPlugins = PluginLoader.createPluginsOfType(brjs, ModelObserverPlugin.class, VirtualProxyModelObserverPlugin.class);
 		commandPlugins = PluginLoader.createPluginsOfType(brjs, CommandPlugin.class, VirtualProxyCommandPlugin.class);
 		minifierPlugins = PluginLoader.createPluginsOfType(brjs, MinifierPlugin.class, VirtualProxyMinifierPlugin.class);
