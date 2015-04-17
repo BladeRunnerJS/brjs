@@ -114,6 +114,7 @@ public class AppBuilderUtilis
 				ResponseContent content = aspect.requestHandler().getLocaleForwardingPageContent(aspect, urlContentAccessor, version); )
 			{
 				content.write(os);
+				content.close();
 			}
 		}
 	}
@@ -144,6 +145,7 @@ public class AppBuilderUtilis
 			ResponseContent pluginContent = contentPlugin.handleRequest(contentPath, bundleSet, contentPluginUtility, version); )
 		{
 			pluginContent.write( bundleFileOutputStream );
+			pluginContent.close();
 		}
 	}
 	
