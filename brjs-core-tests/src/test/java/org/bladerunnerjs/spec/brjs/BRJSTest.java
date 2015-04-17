@@ -229,11 +229,22 @@ public class BRJSTest extends SpecTest {
 		given(testSdkDirectory).containsFolder("myprojects")
 			.and(testSdkDirectory).containsFolder("myprojects/myapp")
 			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
-			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
-		when(brjs.app("anotherapp")).create();
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
+			.and(brjs.sdkTemplateGroup("default").template("app")).containsEmptyFile("index.html");
+		when(brjs.app("anotherapp")).populate("default");
 		then(brjs).hasApps("anotherapp", "myapp")
 			.and(testSdkDirectory).containsDir("myprojects/myapp")
 			.and(testSdkDirectory).containsDir("myprojects/anotherapp");
+	}
+	
+	@Test
+	public void onlyDirsWithAppConfAreDetectedAsAppsWhenTheCommandsIsRunFromInsideAnApp() throws Exception {
+		given(testSdkDirectory).containsFolder("myprojects")
+    		.and(testSdkDirectory).containsFolder("myprojects/nonapp")
+    		.and(testSdkDirectory).containsFolder("myprojects/myapp")
+    		.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+    	then(brjs).hasApps("myapp");
 	}
 	
 }

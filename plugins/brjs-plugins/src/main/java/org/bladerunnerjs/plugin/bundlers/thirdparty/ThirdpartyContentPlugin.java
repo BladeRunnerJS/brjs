@@ -70,25 +70,21 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 	{
 		try {
 			ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
-			List<SourceModule> sourceModules = bundleSet.getSourceModules();
 			if (parsedContentPath.formName.equals("bundle-request"))
 			{
-				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(sourceModules);
+				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(bundleSet);
 				List<Reader> readerList = new ArrayList<Reader>();
-				for(SourceModule sourceFile : sourceModules) 
+				for(ThirdpartySourceModule sourceFile : bundleSet.getSourceModules(ThirdpartySourceModule.class)) 
 				{
-					if(sourceFile instanceof ThirdpartySourceModule)
-					{
-						readerList.add(new StringReader("// " + sourceFile.getPrimaryRequirePath() + "\n"));
-						readerList.add(sourceFile.getReader());
-						readerList.add(new StringReader("\n\n"));
-						readerList.add( new StringReader(getGlobalisedThirdpartyModuleContent(sourceFile, hasUnencapsulatedSourceModule)) );
-					}
+					readerList.add(new StringReader("// " + sourceFile.getPrimaryRequirePath() + "\n"));
+					readerList.add(sourceFile.getReader());
+					readerList.add(new StringReader("\n\n"));
+					readerList.add( new StringReader(getGlobalisedThirdpartyModuleContent(sourceFile, hasUnencapsulatedSourceModule)) );
 				}
 				return new CharResponseContent( brjs, readerList );
 			}
 			else if(parsedContentPath.formName.equals("single-module-request")) {
-				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(sourceModules);
+				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(bundleSet);
 				LinkedAsset jsModule = bundleSet.getBundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
 				return new CharResponseContent(brjs, 
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
@@ -124,10 +120,8 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			if (requestMode == RequestMode.Prod) {
 				requestPaths.add(contentPathParser.createRequest("bundle-request"));
 			} else {
-				for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-					if(sourceModule instanceof ThirdpartySourceModule) {
-						requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
-					}
+				for(ThirdpartySourceModule sourceModule : bundleSet.getSourceModules(ThirdpartySourceModule.class)) {
+					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
 				}				
 			}
 		}
@@ -138,9 +132,9 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 		return requestPaths;
 	}
 
-	private boolean hasUnencapsulatedSourceModule(List<SourceModule> sourceModules)
+	private boolean hasUnencapsulatedSourceModule(BundleSet bundleSet)
 	{
-		for(SourceModule sourceFile : sourceModules) 
+		for(SourceModule sourceFile : bundleSet.getSourceModules()) 
 		{
 			if (sourceFile.isGlobalisedModule()) {
 				return true;

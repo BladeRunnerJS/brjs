@@ -1029,6 +1029,16 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	 * End Alias Model Testing *
 	 */
 	
-	
+	@Test
+	public void testPackBundlesCanBeCreatedForAspectDefaultTechTestsWhereAliasRegistryIsUsed() throws Exception {
+		given(aspect).classRequires("appns/Class1", "alias!$data")
+			.and( aspect.testType("unit").defaultTestTech() ).hasNamespacedJsPackageStyle()
+			.and( aspect.testType("unit").defaultTestTech() ).testRefersTo("pkg/test.js", "appns.Class1")
+			.and( aspect.testType("unit").defaultTestTech() ).containsResourceFileWithContents("en.properties", "appns.prop=val")
+			.and(sdkLib).hasClass("br/AliasRegistry");
+		when( aspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('alias!$data'")
+			.and(response).containsText("define('appns/Class1'");
+	}
 	
 }
