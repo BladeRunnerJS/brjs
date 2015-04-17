@@ -200,4 +200,14 @@ public class TestPackBundlingTest extends SpecTest
     		.and(response).containsCommonJsClasses("appns/App");
 	}
 	
+	@Test
+	public void bundleCanBeGeneratedForTestsInsideAThirdpartyLibrary() throws Exception {
+		given(appLib).containsFileWithContents("src/Lib.js", "Lib = {}")
+			.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "exports: Lib\njs: src/Lib.js")
+    		.and( appLib.testType("unit").defaultTestTech() ).testRequires("test.js", "lib")
+    		.and(brjs).hasBeenAuthenticallyReCreated();
+		when( appLib.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsText("Lib = {}");
+	}
+	
 }
