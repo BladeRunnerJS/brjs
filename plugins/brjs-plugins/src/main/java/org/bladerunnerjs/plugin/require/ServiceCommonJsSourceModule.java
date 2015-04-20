@@ -40,6 +40,7 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	public Reader getReader() throws IOException {
 		return new StringReader(
 			"define('service!" + requirePath + "', function(require, exports, module) {\n" +
+			"	module.preventCaching = true;\n" +
 			"	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n" +
 			"});\n");
 	}
