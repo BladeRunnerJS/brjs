@@ -54,11 +54,12 @@ function loadHtml(url) {
 	if(!document.querySelector('div#templates')) {
 		var templateElems = document.createElement('div');
 		templateElems.id = 'templates';
-		document.querySelector('head').appendChild(templateElems); // TODO: move to bottom of method?
 
 		var rawHtml = File.readFileSync(url);
 		var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
 		templateElems.innerHTML = sanitizeHtml(translatedHtml);
+		
+		document.querySelector('head').appendChild(templateElems);
 
 		fixNestedAutoWrappedTemplates();
 		shimTemplates();
