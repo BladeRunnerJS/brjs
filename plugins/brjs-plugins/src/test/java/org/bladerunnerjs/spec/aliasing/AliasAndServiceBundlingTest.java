@@ -423,8 +423,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
 		given(aspect).hasNamespacedJsPackageStyle()
             .and(aspect).hasClasses("appns.App", "appns.Class1", "appns.Class2", "appns.Class3")
             .and(aspectResourcesAliaseDefinitionsFileBuilder).hasAlias("appns.alias1", "appns.Class1")
-            .and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.Class2\" name=\"appns.alias2\"/>\n" + "</aliasDefinitions>")
-            .and(aspect).containsFileWithContents("resources/subfolder/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.Class3\" name=\"appns.alias3\"/>\n" + "</aliasDefinitions>")
+            .and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.bladerunnerjs.org/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.Class2\" name=\"appns.alias2\"/>\n" + "</aliasDefinitions>")
+            .and(aspect).containsFileWithContents("resources/subfolder/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.bladerunnerjs.org/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.Class3\" name=\"appns.alias3\"/>\n" + "</aliasDefinitions>")
             .and(aspect).indexPageRefersTo("appns.App")
             .and(aspect).classFileHasContent("appns.App", "'appns.alias1' 'appns.alias2' 'appns.alias3'");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
@@ -436,8 +436,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	{
 		given(aspect).hasClasses("appns/App", "appns/Class1", "appns/Class2", "appns/Class3")
             .and(aspectResourcesAliaseDefinitionsFileBuilder).hasAlias("appns.alias1", "appns.Class1")
-            .and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.Class2\" name=\"appns.alias2\"/>\n" + "</aliasDefinitions>")
-            .and(aspect).containsFileWithContents("resources/subfolder/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.Class3\" name=\"appns.alias3\"/>\n" + "</aliasDefinitions>")
+            .and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.bladerunnerjs.org/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.Class2\" name=\"appns.alias2\"/>\n" + "</aliasDefinitions>")
+            .and(aspect).containsFileWithContents("resources/subfolder/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.bladerunnerjs.org/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.Class3\" name=\"appns.alias3\"/>\n" + "</aliasDefinitions>")
             .and(aspect).indexPageRequires("appns/App")
             .and(aspect).classFileHasContent("appns.App", "require('service!appns.alias1'); require('service!appns.alias2'); require('service!appns.alias3');");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
@@ -1014,8 +1014,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	@Test
 	public void nestedAliasDefinitionsFilesCanBeUsedInResourcesDirectories() throws Exception {
 		// TODO: think of a way of doing this in a more BDD way
-		FileUtils.write(blade, blade.file("resources/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
-		FileUtils.write(blade, blade.file("resources/dir/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'/>");
+		FileUtils.write(blade, blade.file("resources/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.bladerunnerjs.org/aliasDefinitions'/>");
+		FileUtils.write(blade, blade.file("resources/dir/aliasDefinitions.xml"), "<aliasDefinitions xmlns='http://schema.bladerunnerjs.org/aliasDefinitions'/>");
 		AliasDefinitionsFileBuilder nestedbladeResourcesAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(blade, "resources"));
 		
 		given(bladesetResourcesAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.alias1", "Class1", "TheInterface")

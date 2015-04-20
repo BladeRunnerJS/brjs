@@ -19,7 +19,7 @@ public class AliasesWriter {
 	public static void write(BRJS brjs, AliasesData data, MemoizedFile file, String defaultFileCharacterEncoding) throws IOException {
 		try {
 			EncodedFileUtil fileUtil = new EncodedFileUtil(brjs, defaultFileCharacterEncoding);
-			XMLBuilder builder = XMLBuilder.create("aliases").ns("http://schema.caplin.com/CaplinTrader/aliases");
+			XMLBuilder builder = XMLBuilder.create("aliases").ns("http://schema.bladerunnerjs.org/aliases");
 			
 			if (data.scenario != null) {
 				builder.a("useScenario", data.scenario);
