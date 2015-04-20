@@ -7,7 +7,7 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
+import org.bladerunnerjs.api.plugin.AssetRegistry;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
@@ -19,7 +19,7 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 {
 
 	@Override
-	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
 	{
 		List<Asset> aliasAssets = new ArrayList<>();
 		
@@ -38,7 +38,7 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 		return aliasAssets;
 	}
 
-	private void addAssetContainerAliases(AssetContainer assetContainer, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, MemoizedFile childDir)
+	private void addAssetContainerAliases(AssetContainer assetContainer, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator, List<Asset> aliasAssets, MemoizedFile childDir)
 	{
 		for (AliasDefinition aliasDefinition : AliasingUtility.aliases(assetContainer, childDir)) {
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(AliasCommonJsSourceModule.calculateRequirePath(aliasDefinition))) {
@@ -49,7 +49,7 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 		}
 	}
 	
-	private void addBundlableNodeAliases(List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode)
+	private void addBundlableNodeAliases(List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode)
 	{
 		for (AliasDefinition aliasDefinition : AliasingUtility.aliases(bundlableNode)) {
 			if (!scopeAssetContainersHaveAlias(bundlableNode, aliasDefinition)) {
@@ -60,7 +60,7 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 		}
 	}
 
-	private void createAliasDataSourceModule(AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode)
+	private void createAliasDataSourceModule(AssetRegistry assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode)
 	{
 		Asset aliasDataAsset = new AliasDataSourceModule(bundlableNode);
 		if (!assetDiscoveryInitiator.hasRegisteredAsset(aliasDataAsset.getPrimaryRequirePath())) {

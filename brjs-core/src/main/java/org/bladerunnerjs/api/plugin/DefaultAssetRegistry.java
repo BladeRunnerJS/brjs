@@ -11,13 +11,13 @@ import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 
-class DefaultAssetDiscoveryInitiator implements AssetDiscoveryInitiator {
+class DefaultAssetRegistry implements AssetRegistry {
 
 	final Map<String,Asset> assets = new LinkedHashMap<>();
 	final List<LinkedAsset> seedAssets = new ArrayList<>();
 	private AssetContainer assetContainer;
 	
-	DefaultAssetDiscoveryInitiator(AssetContainer assetContainer) {
+	DefaultAssetRegistry(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
 		discoverFurtherAssets(assetContainer.dir(), assetContainer.requirePrefix(), Collections.emptyList());
 	}

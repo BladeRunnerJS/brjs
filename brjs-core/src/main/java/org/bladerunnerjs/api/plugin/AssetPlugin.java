@@ -10,5 +10,5 @@ import org.bladerunnerjs.model.AssetContainer;
 public interface AssetPlugin extends Plugin
 {	
 	List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, 
-			List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator);
+			List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator);
 }
