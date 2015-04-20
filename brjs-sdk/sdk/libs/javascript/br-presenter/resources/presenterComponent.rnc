@@ -1,8 +1,4 @@
-# XSD versions of all RNC schemas are available within 'sdk/schema-catalog/catalog'. These can be rebuilt
-# using the 'schema-catalog' target. You can import all schemas into Eclipse, providing XML Validation and
-# Content Assist, by importing the 'sdk/schema-catalog/catalog/catalog.xml' file.
-
-default namespace = "http://schema.caplin.com/CaplinTrader/presenterComponent"
+default namespace = "http://schema.bladerunnerjs.org/presenterComponent"
 namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 
 start = presenterDefinition

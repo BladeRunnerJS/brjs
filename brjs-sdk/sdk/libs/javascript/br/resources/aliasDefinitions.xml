@@ -1,4 +1,4 @@
-<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+<aliasDefinitions xmlns="http://schema.bladerunnerjs.org/aliasDefinitions">
 	<alias name="br.html-service" defaultClass="br.services.html.BRHtmlResourceService">
 		<scenario name="dev" class="br.services.html.JSTDHtmlResourceService" />
 	</alias>

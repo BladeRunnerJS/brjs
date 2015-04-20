@@ -437,7 +437,7 @@ public class XMLContentPluginTest extends SpecTest{
 	
 	private String bundleConfig(){
 		String content = "<?xml version=\"1.0\"?> "
-		 + "<bundleConfig xmlns=\"http://schema.caplin.com/CaplinTrader/bundleConfig\">"
+		 + "<bundleConfig xmlns=\"http://schema.bladerunnerjs.org/bundleConfig\">"
 			+ "<resource rootElement=\"rootElem\""
 			+ "	 templateElements=\"templateElem1, templateElem2\""
 			+ "	 mergeElements=\"mergeElem, alternateMergeElem@custom-id, anonymousMergeElem\"/>"
