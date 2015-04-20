@@ -1,4 +1,4 @@
-default namespace = "http://schema.caplin.com/CaplinTrader/aliasDefinitions"
+default namespace = "http://schema.bladerunnerjs.org/aliasDefinitions"
 namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 
 ## This schema describes the alias definition's markup language which allows you 
