@@ -38,7 +38,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 {
 	public static final String SCRIPT_TEMPLATE_WARNING = "A script tag was used for the '%s' template, but these are now deprecated in favor of template tags.";
 	
-	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 	private final List<String> requestPaths = new ArrayList<>();
 	
 	private BRJS brjs;
@@ -73,13 +72,13 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 			throw new MalformedRequestException(contentPath, "Requests must be for exactly '" + requestPaths.get(0) + "'.");
 		}
 		
-		identifiers = new TreeMap<String, Asset>();
+		Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getAssets("html!");
 		
 		List<Reader> readerList = new ArrayList<Reader>();
 		for(Asset htmlAsset : htmlAssets){
 			try {
-				TemplateInfo templateInfo = getTemplateInfo(htmlAsset);
+				TemplateInfo templateInfo = getTemplateInfo(htmlAsset, identifiers);
 
 				try(Reader reader = htmlAsset.getReader()) {
 					readerList.add(new StringReader("\n<!-- " + htmlAsset.getAssetName() + " -->\n"));
@@ -109,7 +108,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		return new CharResponseContent( brjs, readerList );		
 	}
 	
-	private TemplateInfo getTemplateInfo(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException
+	private TemplateInfo getTemplateInfo(Asset htmlAsset, Map<String, Asset> identifiers) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException
 	{
 		StartTag startTag = getStartTag(htmlAsset);
 		String identifier = startTag.getAttributeValue("id");
