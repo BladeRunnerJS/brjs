@@ -241,7 +241,7 @@ public class PluginAccessorTest
 	class ContentPlugin4 extends EmptyAbstractContentPlugin {}
 	
 	class EmptyAbstractAssetPlugin extends AbstractAssetPlugin {
-		public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator) { return null; }
+		public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator) { }
 		public void setBRJS(BRJS brjs) { }
 	}
 	class AssetPlugin1 extends EmptyAbstractAssetPlugin {}

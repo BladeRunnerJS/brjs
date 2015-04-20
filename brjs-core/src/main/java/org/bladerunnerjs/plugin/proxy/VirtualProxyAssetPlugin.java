@@ -19,10 +19,10 @@ public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements Asset
 	}
 
 	@Override
-	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
 	{
 		initializePlugin();
-		return assetLocationPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
+		assetLocationPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
 	}
 	
 }

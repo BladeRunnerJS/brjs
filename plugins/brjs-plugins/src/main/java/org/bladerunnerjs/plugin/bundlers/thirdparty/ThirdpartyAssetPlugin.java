@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.bundlers.thirdparty;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -25,7 +24,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	}
 
 	@Override
-	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
 	{
 		if ( assetContainer instanceof JsLib && assetContainer.file( ThirdpartyLibManifest.LIBRARY_MANIFEST_FILENAME ).exists()
 				&& !assetDiscoveryInitiator.hasRegisteredAsset(ThirdpartySourceModule.calculateRequirePath(assetContainer)) ) {
@@ -36,10 +35,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 
 			// create CSS assets so they can be implicit dependencies based on the manifest file
 			discoverCssAssets(assetContainer, dir, "css!"+assetContainer.requirePrefix(), assetDiscoveryInitiator);
-			
-			return Arrays.asList(asset);
 		}
-		return Collections.emptyList();
 	}
 	
 	private List<Asset> discoverCssAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetRegistry assetDiscoveryInitiator) {

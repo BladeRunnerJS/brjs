@@ -1,8 +1,6 @@
 package org.bladerunnerjs.plugin.bundlers.css;
 
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -23,24 +21,21 @@ public class CssAssetPlugin extends AbstractAssetPlugin {
 	}
 
 	@Override
-	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
 	{
 		if (assetContainer.dir() == dir) {
-			return Collections.emptyList();
+			return;
 		}
 		
 		if (!requirePrefix.contains("!")) {
 			requirePrefix = "css!"+requirePrefix;
 		}
 		
-		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile cssFile : dir.listFiles(cssFileFilter)) {
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(FileAsset.calculateRequirePath(requirePrefix, cssFile))) {
 				Asset asset = new FileAsset(cssFile, assetContainer, requirePrefix);
-				assets.add(asset);
 				assetDiscoveryInitiator.registerAsset( asset );
 			}
 		}
-		return assets;
 	}
 }

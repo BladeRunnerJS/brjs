@@ -28,12 +28,12 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	public static final String IMPLICIT_PACKAGE_USED = "The location '%s' contains a directory with the same name as the parent asset container require prefix ('%s'), using '%s' as the implied require prefix for this location.";
 	
 	@Override
-	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
 	{
 		// only create assets if we're at the root of the asset container *and* its not a default bladeset
 		if (assetContainer instanceof DefaultBladeset || !neccessaryChildDirsArePresent(assetContainer) 
 				|| assetContainer.dir() != dir || assetDiscoveryInitiator.hasRegisteredAsset(BRJSConformantRootDirectoryLinkedAsset.calculateRequirePath(assetContainer))) {
-			return Collections.emptyList();
+			return;
 		}
 		
 		List<Asset> assets = new ArrayList<>();
@@ -67,8 +67,6 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 			List<Asset> discoveredAssets = createAssetsForChildDir(assetContainer, themeDir, themeRequirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
 			rootAsset.addImplicitDependencies(discoveredAssets);
 		}
-		
-		return Arrays.asList(rootAsset);
 	}
 	
 	private boolean useImpliedRequirePrefix(AssetContainer assetContainer) {
