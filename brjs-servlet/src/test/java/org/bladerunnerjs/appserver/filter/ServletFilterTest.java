@@ -2,6 +2,7 @@ package org.bladerunnerjs.appserver.filter;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,25 @@ public class ServletFilterTest {
 		String contentType = (ContentType.get(response.getEntity()) != null) ? ContentType.get(response.getEntity()).getMimeType().toString() : "";
 		responseMap.put("responseContentType", contentType);
 		return responseMap;
+	}
+	
+	protected Server createAndStartAppServer(Servlet servlet, Filter filter) throws Exception {
+		Server appServer;
+		int attempts = 0;
+		while (true) {
+			attempts++;
+			try {
+				serverPort = generatePortNumber();
+				appServer = createAppServer(servlet, filter);
+				appServer.start();
+				return appServer;
+			} catch (SocketException ex) {
+				if (attempts > 10) {
+					throw ex;
+				}
+			}
+		}
+		
 	}
 	
 	protected Server createAppServer(Servlet servlet, Filter filter) throws Exception

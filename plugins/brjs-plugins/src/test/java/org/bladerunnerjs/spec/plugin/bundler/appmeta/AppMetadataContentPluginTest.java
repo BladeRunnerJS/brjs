@@ -49,9 +49,9 @@ public class AppMetadataContentPluginTest extends SpecTest {
 			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-				"// br-bootstrap",
 				"window.$BRJS_APP_VERSION = 'dev';",
 				"window.$BRJS_VERSIONED_BUNDLE_PATH = 'v/dev';",
+				"// br-bootstrap",
 				"appns/Class" );
 	}
 }

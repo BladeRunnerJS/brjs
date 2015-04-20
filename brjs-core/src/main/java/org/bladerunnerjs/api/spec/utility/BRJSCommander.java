@@ -155,6 +155,17 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		
 		return commanderChainer;
 	}
+
+	public CommanderChainer pluginsAreAccessed() {
+		call(new ValueCommand<Void>() {
+			@Override
+			public Void call() throws Exception {
+				specTest.brjs.plugins();
+				return null;
+			}
+		});
+		return commanderChainer;
+	}
 	
 	public CommanderChainer hasBeenAuthenticallyCreatedWithFileWatcherThread() throws Exception
 	{

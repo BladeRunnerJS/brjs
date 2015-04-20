@@ -25,11 +25,6 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public int priority() {
-		return contentPlugin.priority();
-	}
-	
-	@Override
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException {
 		initializePlugin();
 		return contentPlugin.handleRequest(contentPath, bundleSet, contentAccessor, version);

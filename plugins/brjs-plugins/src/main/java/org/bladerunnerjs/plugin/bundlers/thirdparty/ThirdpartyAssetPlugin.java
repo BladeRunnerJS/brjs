@@ -21,12 +21,6 @@ import org.bladerunnerjs.model.FileAsset;
 public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
-	public int priority()
-	{
-		return 0;
-	}
-	
-	@Override
 	public void setBRJS(BRJS brjs) {
 	}
 

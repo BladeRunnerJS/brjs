@@ -28,14 +28,10 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 import com.Ostermiller.util.ConcatReader;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -91,11 +87,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	}
 	
 	@Override
-	public int priority() {
-		return 20;
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser()
 	{
 		return contentPathParser;
@@ -106,20 +97,19 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	{
 		List<String> requestPaths = new ArrayList<>();
 		
+		List<NamespacedJsSourceModule> namespacedJsSourceModules = bundleSet.getSourceModules(NamespacedJsSourceModule.class);
+
 		if (requestMode == RequestMode.Prod) {
-			return (InstanceFinder.containsInstance(bundleSet.getSourceModules(), NamespacedJsSourceModule.class)) ? prodRequestPaths : Collections.emptyList();
+			return (namespacedJsSourceModules.isEmpty()) ? Collections.emptyList() : prodRequestPaths;
 		}
 		
-		if(InstanceFinder.containsInstance(bundleSet.getSourceModules(), NamespacedJsSourceModule.class)) {
+		if (!namespacedJsSourceModules.isEmpty()) {
 			try
 			{
 				requestPaths.add(contentPathParser.createRequest(PACKAGE_DEFINITIONS_REQUEST));
-				for (SourceModule sourceModule : bundleSet.getSourceModules())
+				for (SourceModule sourceModule : namespacedJsSourceModules)
 				{
-					if (sourceModule instanceof NamespacedJsSourceModule)
-					{
-						requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getPrimaryRequirePath()));
-					}
+					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getPrimaryRequirePath()));
 				}
 				requestPaths.add(contentPathParser.createRequest(GLOBALIZE_EXTRA_CLASSES_REQUEST));
 			}
@@ -150,15 +140,12 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 				List<Reader> readerList = new ArrayList<Reader>();
 				
 				StringBuffer contentBuffer = new StringBuffer();
-				for (SourceModule sourceModule : bundleSet.getSourceModules())
+				for (NamespacedJsSourceModule sourceModule : bundleSet.getSourceModules(NamespacedJsSourceModule.class))
 				{
-					if (sourceModule instanceof NamespacedJsSourceModule)
-					{
-						contentBuffer.append("// " + sourceModule.getPrimaryRequirePath() + "\n");
-						Reader reader = sourceModule.getReader();
-						readerList.add(reader);
-						contentBuffer.append("\n\n");
-					}
+					contentBuffer.append("// " + sourceModule.getPrimaryRequirePath() + "\n");
+					Reader reader = sourceModule.getReader();
+					readerList.add(reader);
+					contentBuffer.append("\n\n");
 				}
 				
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
@@ -206,9 +193,9 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	{
 		Map<String, Map<String, ?>> packageStructure = new LinkedHashMap<>();
 
-		for (SourceModule sourceModule : bundleSet.getSourceModules())
+		for (NamespacedJsSourceModule sourceModule : bundleSet.getSourceModules(NamespacedJsSourceModule.class))
 		{
-			if ((sourceModule instanceof NamespacedJsSourceModule) && !(sourceModule instanceof TestAsset))
+			if (!(sourceModule instanceof TestAsset))
 			{
 				List<String> packageList = Arrays.asList(sourceModule.getPrimaryRequirePath().split("/"));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
@@ -283,28 +270,17 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 	private String getGlobalizedClassesContent(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
 	{		
 		StringBuffer output = new StringBuffer();
-		Predicate<SourceModule> sourceModuleFilter = Predicates.or(new IsSourceModuleTypePredicate(NamespacedJsSourceModule.class), new IsSourceModuleTypePredicate(CommonJsSourceModule.class));
 		
-		for(SourceModule sourceModule : Collections2.filter(bundleSet.getSourceModules(), sourceModuleFilter)) {
+		List<SourceModule> namespacedOrCommonJsSourceModules = bundleSet.getSourceModules(Arrays.asList(NamespacedJsSourceModule.class, CommonJsSourceModule.class));
+		for(SourceModule sourceModule : namespacedOrCommonJsSourceModules) {
+			if (sourceModule instanceof TestAsset) {
+				continue;
+			}
 			output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
 		}
 		
 		String globalizedSourceModules = output.toString();
 		
 		return (globalizedSourceModules.length() == 0) ? "" : "function globalizeSourceModules() {\n" + globalizedSourceModules + "}\nglobalizeSourceModules();\n";
-	}
-	
-	
-	
-	private class IsSourceModuleTypePredicate implements Predicate<SourceModule> {
-		private Class<? extends SourceModule> type;
-		public IsSourceModuleTypePredicate(Class<? extends SourceModule> type) {
-			this.type = type;
-		}
-		@Override
-		public boolean apply(SourceModule input)
-		{
-			return ( type.isAssignableFrom(input.getClass()) && !(input instanceof TestAsset) );
-		}
 	}
 }

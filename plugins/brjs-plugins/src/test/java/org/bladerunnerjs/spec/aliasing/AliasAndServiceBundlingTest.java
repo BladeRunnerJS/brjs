@@ -513,7 +513,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("br/DevScenarioClass")
             .and(response).doesNotContainClasses("br/GroupProductionClass")
-            .and(response).containsOrderedTextFragments("define('br/DevScenarioClass'", "define('alias!br.service',", "module.exports = require('br/AliasRegistry').getClass('br.service')", "define('service!br.service',", "module.exports = require('br/ServiceRegistry').getService('br.service');");
+            .and(response).containsOrderedTextFragments("define('br/DevScenarioClass'", "define('alias!br.service',", "module.exports = require('br/AliasRegistry').getClass('br.service')", "define('service!br.service',", "module.preventCaching = true", "module.exports = require('br/ServiceRegistry').getService('br.service');");
 	}
 
 	@Test
@@ -1029,6 +1029,16 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	 * End Alias Model Testing *
 	 */
 	
-	
+	@Test
+	public void testPackBundlesCanBeCreatedForAspectDefaultTechTestsWhereAliasRegistryIsUsed() throws Exception {
+		given(aspect).classRequires("appns/Class1", "alias!$data")
+			.and( aspect.testType("unit").defaultTestTech() ).hasNamespacedJsPackageStyle()
+			.and( aspect.testType("unit").defaultTestTech() ).testRefersTo("pkg/test.js", "appns.Class1")
+			.and( aspect.testType("unit").defaultTestTech() ).containsResourceFileWithContents("en.properties", "appns.prop=val")
+			.and(sdkLib).hasClass("br/AliasRegistry");
+		when( aspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('alias!$data'")
+			.and(response).containsText("define('appns/Class1'");
+	}
 	
 }
