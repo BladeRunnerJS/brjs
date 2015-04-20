@@ -51,16 +51,19 @@ BRHtmlResourceService.prototype.getHTMLTemplate = function(templateId) {
 };
 
 function loadHtml(url) {
-	var templateElems = document.createElement('div');
-	document.querySelector('head').appendChild(templateElems); // TODO: move to bottom of method?
+	if(!document.querySelector('div#templates')) {
+		var templateElems = document.createElement('div');
+		templateElems.id = 'templates';
+		document.querySelector('head').appendChild(templateElems); // TODO: move to bottom of method?
 
-	var rawHtml = File.readFileSync(url);
-	var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
-	templateElems.innerHTML = sanitizeHtml(translatedHtml);
+		var rawHtml = File.readFileSync(url);
+		var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
+		templateElems.innerHTML = sanitizeHtml(translatedHtml);
 
-	fixNestedAutoWrappedTemplates();
-	shimTemplates();
-	fixAutoWrappedTemplates();
+		fixNestedAutoWrappedTemplates();
+		shimTemplates();
+		fixAutoWrappedTemplates();
+	}
 }
 
 function nonEmptyNodes(childNodes) {
