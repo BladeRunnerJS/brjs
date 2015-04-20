@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.engine.ValidAppDirFileFilter;
 import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.plugin.brjsconformant.BRJSConformantAssetPlugin;
 import org.junit.After;
@@ -245,6 +246,18 @@ public class BRJSTest extends SpecTest {
     		.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
     		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
     	then(brjs).hasApps("myapp");
+	}
+	
+	@Test
+	public void warningIsLoggedIfNonAppDirsAreDiscovered() throws Exception {
+		given(testSdkDirectory).containsFolder("myprojects")
+    		.and(testSdkDirectory).containsFolder("myprojects/nonapp")
+    		.and(testSdkDirectory).containsFolder("myprojects/myapp")
+    		.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
+    		.and(logging).enabled();
+    	when(brjs).discoverApps();
+    	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testSdkDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testSdkDirectory, "myprojects").getAbsolutePath());
 	}
 	
 }
