@@ -40,13 +40,8 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	public Reader getReader() throws IOException {
 		return new StringReader(
 			"define('service!" + requirePath + "', function(require, exports, module) {\n" +
-			getModuleContent() +
+			"	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n" +
 			"});\n");
-	}
-
-	@Override
-	public Reader getUnalteredContentReader() throws IOException {
-		return new StringReader(getModuleContent());
 	}
 
 	@Override
@@ -134,10 +129,6 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	public boolean isRequirable()
 	{
 		return true;
-	}
-	
-	private String getModuleContent() {
-		return "	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n";
 	}
 
 }

@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.bundlers.namespacedjs;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
@@ -14,7 +13,7 @@ public class NamespacedJsPreExportDefineTimeDependenciesReader extends Reader {
 	
 	private Reader namespacedJsPreExportDefineTimeDependenciesReader;
 	
-	public NamespacedJsPreExportDefineTimeDependenciesReader(AugmentedContentSourceModule sourceModule) throws IOException
+	public NamespacedJsPreExportDefineTimeDependenciesReader(NamespacedJsSourceModule sourceModule) throws IOException
 	{
 		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.assetContainer().root(), sourceModule.getUnalteredContentReader(), false);
 		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(sourceModule.assetContainer().root(), commentStrippingReader);
@@ -35,9 +34,9 @@ public class NamespacedJsPreExportDefineTimeDependenciesReader extends Reader {
 	
 	static class Factory implements AssetReaderFactory {
 		
-		private AugmentedContentSourceModule sourceModule;
+		private NamespacedJsSourceModule sourceModule;
 
-		public Factory(AugmentedContentSourceModule sourceModule)
+		public Factory(NamespacedJsSourceModule sourceModule)
 		{
 			this.sourceModule = sourceModule;
 		}
