@@ -47,10 +47,10 @@ public class MemoizedFile extends File implements Comparable<File>
 			// ^^ use composition so we don't have a chicken and egg problem when trying to read memoized files but we're forced to extend java.io.File since its not an interface
 		
 		String className = this.getClass().getSimpleName();
-		isFile = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".isFile", rootNode, this);
-		isDirectory = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".isDirectory", rootNode, this);
-		exists = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".exists", rootNode, this);
-		filesAndDirs = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+".filesAndDirs", rootNode, this);
+		isFile = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+" isFile()", rootNode, this);
+		isDirectory = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+" isDirectory()", rootNode, this);
+		exists = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+" exists()", rootNode, this);
+		filesAndDirs = new MemoizedValue<>(className+"_"+wrappedFile.getAbsolutePath()+" filesAndDirs()", rootNode, this);
 	}	
 	
 	// ---- Methods Using Memoized Values ----
