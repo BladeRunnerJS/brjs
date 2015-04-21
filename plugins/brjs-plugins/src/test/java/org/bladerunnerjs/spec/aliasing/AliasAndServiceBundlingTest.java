@@ -12,8 +12,10 @@ import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingExcept
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.model.SdkJsLib;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsReader;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasNameIsTheSameAsTheClassException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesReader;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.UnresolvableAliasException;
@@ -1039,6 +1041,63 @@ public class AliasAndServiceBundlingTest extends SpecTest
 		when( aspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("define('alias!$data'")
 			.and(response).containsText("define('appns/Class1'");
+	}
+	
+	@Test
+	public void theLegacySchemaCaplinComXmlnsCanBeUsed() throws Exception
+	{
+		given(aspect).hasNamespacedJsPackageStyle()
+	    	.and(aspect).hasClasses("appns.App", "appns.Class1", "appns.Class2")
+	    	.and(aspect).containsFileWithContents("resources/aliases.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliases xmlns=\"http://schema.caplin.com/CaplinTrader/aliases\">\n" + 
+	    				"<alias class=\"appns.Class1\" name=\"appns.alias1\"/>\n" + 
+	    			"</aliases>")
+    	    .and(aspect).containsFileWithContents("resources/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" + 
+	    				"<alias defaultClass=\"appns.Class2\" name=\"appns.alias2\"/>\n" + 
+    	    		"</aliasDefinitions>")
+    	    .and(aspect).indexPageRefersTo("appns.App")
+    	    .and(aspect).classFileHasContent("appns.App", "'appns.alias1' 'appns.alias2'");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsNamespacedJsClasses("appns.Class1", "appns.Class2");
+	}
+	
+	@Test
+	public void aMixOfLegacyAndNewNamespacesCanBeUsed() throws Exception
+	{
+		given(aspect).hasNamespacedJsPackageStyle()
+	    	.and(aspect).hasClasses("appns.App", "appns.Class1", "appns.Class2", "appns.Class3")
+	    	.and(aspect).containsFileWithContents("resources/aliases.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliases xmlns=\"http://schema.caplin.com/CaplinTrader/aliases\">\n" + 
+	    				"<alias class=\"appns.Class1\" name=\"appns.alias1\"/>\n" + 
+	    			"</aliases>")
+    	    .and(aspect).containsFileWithContents("resources/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" + 
+	    				"<alias defaultClass=\"appns.Class2\" name=\"appns.alias2\"/>\n" + 
+    	    		"</aliasDefinitions>")
+	    	.and(aspect).containsFileWithContents("resources/foo/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" + 
+    				"<alias defaultClass=\"appns.Class3\" name=\"appns.alias3\"/>\n" + 
+	    		"</aliasDefinitions>")
+    	    .and(aspect).indexPageRefersTo("appns.App")
+    	    .and(aspect).classFileHasContent("appns.App", "'appns.alias1' 'appns.alias2' 'appns.alias3'");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsNamespacedJsClasses("appns.Class1", "appns.Class2", "appns.Class3");
+	}
+	
+	@Test
+	public void aWarningIsLoggedWhenLegacyNamespacesAreUsed() throws Exception
+	{
+		given(aspect).hasNamespacedJsPackageStyle()
+	    	.and(aspect).hasClasses("appns.App", "appns.Class1", "appns.Class2")
+	    	.and(aspect).containsFileWithContents("resources/aliases.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliases xmlns=\"http://schema.caplin.com/CaplinTrader/aliases\">\n" + 
+	    				"<alias class=\"appns.Class1\" name=\"appns.alias1\"/>\n" + 
+	    			"</aliases>")
+    	    .and(aspect).containsFileWithContents("resources/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" + 
+	    				"<alias defaultClass=\"appns.Class2\" name=\"appns.alias2\"/>\n" + 
+    	    		"</aliasDefinitions>")
+    	    .and(aspect).indexPageRefersTo("appns.App")
+    	    .and(aspect).classFileHasContent("appns.App", "'appns.alias1' 'appns.alias2'")
+    	    .and(logging).enabled();
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsNamespacedJsClasses("appns.Class1", "appns.Class2")
+			.and(logging).warnMessageReceived(AliasesReader.LEGACY_XMLNS_WARN_MSG, "brjs-apps/app1/default-aspect/resources/aliases.xml")
+			.and(logging).warnMessageReceived(AliasDefinitionsReader.LEGACY_XMLNS_WARN_MSG, "brjs-apps/app1/default-aspect/resources/aliasDefinitions.xml");
 	}
 	
 }

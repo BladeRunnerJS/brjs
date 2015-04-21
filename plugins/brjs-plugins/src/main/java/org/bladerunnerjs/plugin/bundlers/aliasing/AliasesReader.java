@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -19,8 +22,13 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.*;
+
 public class AliasesReader {
 	private static final XMLValidationSchema aliasesSchema;
+	private static final XMLValidationSchema legacyAliasesSchema;
+	
+	public static final String LEGACY_XMLNS_WARN_MSG = "The file '%s' is using the deprecated xmlns attribute and should be updated to use http://schema.bladerunnerjs.org/aliases.";
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -28,6 +36,7 @@ public class AliasesReader {
 		try
 		{
 			aliasesSchema = schemaFactory.createSchema(SchemaConverter.convertToRng("org/bladerunnerjs/model/aliasing/aliases.rnc"));
+			legacyAliasesSchema = schemaFactory.createSchema(SchemaConverter.convertToRng("org/bladerunnerjs/model/aliasing/aliases-legacy.rnc"));
 		}
 		catch (XMLStreamException | SchemaCreationException e)
 		{
@@ -35,14 +44,23 @@ public class AliasesReader {
 		}
 	}
 	
-	public static AliasesData read(MemoizedFile aliasesFile, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
+	public static AliasesData read(BRJS brjs, MemoizedFile aliasesFile, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
 		AliasesData aliasesData = new AliasesData();
 		aliasesData.aliasOverrides = new ArrayList<>();
 		aliasesData.groupNames = new ArrayList<>();
 		
 		if(aliasesFile.exists()) {
 			try(Reader fileReader = new UnicodeReader(aliasesFile, defaultFileCharacterEncoding)) {
-				XMLStreamReader2 streamReader = XmlStreamReaderFactory.createReader(fileReader, aliasesSchema);
+				XMLValidationSchema schema;
+				 if (useLegacySchema(aliasesFile, defaultFileCharacterEncoding)) {
+					 schema = legacyAliasesSchema;
+					 if (!xmlnsWarningLogged(brjs, aliasesFile)) {
+						 brjs.logger(AliasesReader.class).warn(LEGACY_XMLNS_WARN_MSG, brjs.dir().getRelativePath(aliasesFile));
+					 }
+				 } else {
+					 schema = aliasesSchema;
+				 }
+				XMLStreamReader2 streamReader = XmlStreamReaderFactory.createReader(fileReader, schema);
 				
 				while(streamReader.hasNext()) {
 					if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
@@ -96,4 +114,16 @@ public class AliasesReader {
 		
 		aliasesData.aliasOverrides.add(new AliasOverride(aliasName, aliasClass));
 	}
+	
+	private static boolean xmlnsWarningLogged(BRJS brjs, MemoizedFile file) {
+		@SuppressWarnings("unchecked")
+		Set<MemoizedFile> loggedWarnings = getNodeProperty(brjs, AliasesReader.class.getSimpleName(), Set.class, 
+				() -> { return new LinkedHashSet<MemoizedFile>(); });
+		if (loggedWarnings.contains(file)) {
+			return true;
+		}
+		loggedWarnings.add(file);
+		return false;
+	}
+	
 }
