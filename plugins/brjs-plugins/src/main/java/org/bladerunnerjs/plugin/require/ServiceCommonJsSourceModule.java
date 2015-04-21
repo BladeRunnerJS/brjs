@@ -49,7 +49,8 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public Reader getUnalteredContentReader() throws IOException {
-		return new StringReader("	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n");
+		return new StringReader("	module.preventCaching = true;\n" +
+			"	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n");
 	}
 
 	@Override

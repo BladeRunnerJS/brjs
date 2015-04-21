@@ -82,12 +82,12 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	private final MemoizedFileAccessor memoizedFileAccessor;
 	private final Map<Integer, ApplicationServer> appServers = new LinkedHashMap<Integer, ApplicationServer>();
-	private final PluginAccessor pluginAccessor;
+	private PluginAccessor pluginAccessor;
 	private final IOFileFilter globalFilesFilter = new BRJSGlobalFilesIOFileFilter(this);
 	private final IO io = new IO( globalFilesFilter );
 	private final Logger logger = loggerFactory.getLogger(BRJS.class);
 	
-	private final CommandList commandList;
+	private CommandList commandList;
 	private final AppVersionGenerator appVersionGenerator;
 	private final FileModificationRegistry fileModificationRegistry;
 	private FileObserver fileObserver;
@@ -99,6 +99,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	private MemoizedFile appsFolder;
 	private MemoizedFile sdkFolder;
+	private PluginLocator pluginLocator;
 
 	public BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
@@ -117,28 +118,18 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		appsFolder = getMemoizedFile(appsFolderPath);
 		userApps = new NodeList<>(this, App.class, appsFolder.getName(), null, null, appsFolder.getParentFile());
+		this.pluginLocator = pluginLocator;
 		sdkFolder = dir().file("sdk");
 		
 		try
 		{
+			logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 			registerNode(this);
 		}
 		catch (NodeAlreadyRegisteredException e)
 		{
 			throw new RuntimeException(e);
 		}
-		
-		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
-		pluginLocator.createPlugins(this);
-		PluginLocatorLogger.logPlugins(logger, pluginLocator);
-		
-		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
-		
-		
-		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
-		
-		pluginAccessor = new PluginAccessor(this, pluginLocator);
-		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 	}
 	
 	public MemoizedFile appsFolder() {
@@ -407,17 +398,32 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public PluginAccessor plugins() {
+		if (pluginAccessor == null) {
+			logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
+			pluginLocator.createPlugins(this);
+			PluginLocatorLogger.logPlugins(logger, pluginLocator);
+			
+			logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
+			try
+			{
+				pluginAccessor = new PluginAccessor(this, pluginLocator);
+			}
+			catch (ConfigException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
 		return pluginAccessor;
 	}
 	
 	public int runCommand(String... args) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
 	{
-		return CommandRunner.run(this, commandList, args);
+		return CommandRunner.run(this, getCommandList(), args);
 	}
 	
 	public int runUserCommand(LogLevelAccessor logLevelAccessor, String... args) throws CommandOperationException
 	{
-		return UserCommandRunner.run(this, commandList, logLevelAccessor, args);
+		return UserCommandRunner.run(this, getCommandList(), logLevelAccessor, args);
 	}
 	
 	public ApplicationServer applicationServer() throws ConfigException
@@ -481,6 +487,13 @@ public class BRJS extends AbstractBRJSRootNode
 			}
 		}
 		return fileObserver;
+	}
+
+	private CommandList getCommandList() {
+		if (commandList == null) {
+			commandList = new CommandList(this, plugins().commandPlugins());
+		}
+		return commandList;
 	}
 	
 }

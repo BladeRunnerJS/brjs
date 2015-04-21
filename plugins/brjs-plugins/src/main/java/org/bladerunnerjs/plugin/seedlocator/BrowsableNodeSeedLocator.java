@@ -17,12 +17,6 @@ import org.bladerunnerjs.model.IndexPageAsset;
 
 public class BrowsableNodeSeedLocator extends AbstractAssetPlugin
 {
-
-	@Override
-	public int priority()
-	{
-		return 0;
-	}
 	
 	@Override
 	public void setBRJS(BRJS brjs)

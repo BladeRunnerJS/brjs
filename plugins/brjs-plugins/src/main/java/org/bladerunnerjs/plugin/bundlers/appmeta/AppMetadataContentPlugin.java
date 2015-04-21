@@ -103,9 +103,4 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin implements C
 		this.brjs = brjs;
 	}
 	
-	@Override
-	public int priority() {
-		return 0;
-	}
-	
 }

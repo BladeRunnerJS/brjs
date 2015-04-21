@@ -46,7 +46,25 @@ public class BRJSTest extends SpecTest {
 	public void theBrjsConfIsWrittenOnPopulate() throws Exception {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nfileObserver: watching\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf",
+				"defaultFileCharacterEncoding: UTF-8",
+				"fileObserver: watching",
+				"ignoredPaths: .svn, .git",
+				"jettyPort: 7070",
+				"loginRealm: BladeRunnerLoginRealm",
+				"orderedPlugins:",
+				"   AssetPlugin:", 
+				"   - ThirdpartyAssetPlugin",
+				"   - BrowsableNodeSeedLocator",
+				"   - BRJSConformantAssetPlugin",
+				"   - '*'",
+				"   ContentPlugin:", 
+				"   - I18nContentPlugin",
+				"   - AppMetadataContentPlugin",
+				"   - ThirdpartyContentPlugin",
+				"   - CommonJsContentPlugin",
+				"   - NamespacedJsContentPlugin",
+				"   - '*'");
 	}
 	
 	@Test
@@ -181,9 +199,7 @@ public class BRJSTest extends SpecTest {
 		when(brjs).hasBeenCreated();
 		then(logging).warnMessageReceived(BOTH_APPS_AND_BRJS_APPS_EXIST, 
 				"brjs-apps", testSdkDirectory.getAbsolutePath(), "brjs-apps", "apps", testSdkDirectory.getAbsolutePath()+"/apps", testSdkDirectory.getAbsolutePath()+"/brjs-apps")
-			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
-			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG);
 	}
 	
 	@Test

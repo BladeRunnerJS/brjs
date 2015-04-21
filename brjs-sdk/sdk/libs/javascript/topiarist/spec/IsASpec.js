@@ -50,8 +50,10 @@ describe("topiarist.isA", function() {
 		}).toThrow();
 	});
 
-	it('returns false for a null instance.', function() {
-		expect( topiarist.isA(null, ChildClass)).toBe( false );
+	it('throws an error for a null instance.', function() {
+		expect( function() {
+			topiarist.isA(null, ChildClass);
+		}).toThrow();
 	});
 
 	it('returns true for an instance and its constructor.', function() {

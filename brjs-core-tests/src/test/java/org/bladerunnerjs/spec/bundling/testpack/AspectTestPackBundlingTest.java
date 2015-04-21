@@ -97,4 +97,15 @@ public class AspectTestPackBundlingTest extends SpecTest
 		when(aspectUTs).requestReceivedInDev("i18n/en.js", response);
 		then(response).containsText("\"appns.prop\": \"val\"");
 	}
+	
+	@Test
+	public void testPackBundlesCanBeCreatedForAspectDefaultTechTests() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and( aspect.testType("unit").defaultTestTech() ).hasNamespacedJsPackageStyle()
+			.and( aspect.testType("unit").defaultTestTech() ).testRefersTo("pkg/test.js", "appns.Class1")
+			.and( aspect.testType("unit").defaultTestTech() ).containsResourceFileWithContents("en.properties", "appns.prop=val");
+		when( aspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then( aspect.testType("unit").defaultTestTech() ).srcOnlyBundledFilesEquals( aspect.file("src/appns/Class1.js") );
+	}
+	
 }

@@ -39,6 +39,7 @@ public class AspectBundlingLoggingTest extends SpecTest {
 	@Test
 	public void helpfulLoggingMessagesAreEmitted() throws Exception {
 		given(logging).enabled()
+			.and(brjs).pluginsAccessed()
 			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.bs.b1.Class1")
