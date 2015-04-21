@@ -137,7 +137,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 		given(defaultAspect).indexPageHasContent("<@js.bundle dev-minifier='combined' prod-minifier='closure-whitespace' @/>\n"+"require('appns/Class');")
 			.and(brjs).localeSwitcherHasContents("")
 			.and(defaultAspect).hasClass("appns/Class")
-			.and(brjs).hasProdVersion("1234");
+			.and(brjs).hasVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("js", "js/prod/closure-whitespace/bundle.js");
 	}
 	
@@ -146,7 +146,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 		given(defaultAspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>\n"+"require('appns/Class');")
 			.and(brjs).localeSwitcherHasContents("")
 			.and(defaultAspect).hasClass("appns/Class")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("index.html", "v/1234/js/prod/combined/bundle.js")
 			.and(targetDir).containsFile("v/1234/js/prod/combined/bundle.js")

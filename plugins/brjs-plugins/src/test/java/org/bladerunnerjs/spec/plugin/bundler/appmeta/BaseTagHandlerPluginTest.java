@@ -24,7 +24,7 @@ public class BaseTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void baseTagWorksInDev() throws Exception {
-		given(brjs).hasDevVersion("dev")
+		given(brjs).hasVersion("dev")
 			.and(aspect).indexPageHasContent("<@base.tag@/>");
 		when(aspect).indexPageLoadedInDev(requestResponse, "en_GB");
 		then(requestResponse).containsTextOnce( "<!-- base tag deprecated -->" );
@@ -32,7 +32,7 @@ public class BaseTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void baseTagWorksInProd() throws Exception {
-		given(brjs).hasProdVersion("1234")
+		given(brjs).hasVersion("1234")
 			.and(aspect).indexPageHasContent("<@base.tag@/>");
 		when(aspect).indexPageLoadedInProd(requestResponse, "en_GB");
 		then(requestResponse).containsTextOnce( "<!-- base tag deprecated -->" );
