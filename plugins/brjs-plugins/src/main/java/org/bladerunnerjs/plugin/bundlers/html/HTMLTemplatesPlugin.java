@@ -27,7 +27,7 @@ public class HTMLTemplatesPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException {
 		try {
-			writer.write("<div id=\"templates\">\n");
+			writer.write("<div id=\"brjs-html-templates\">\n");
 			
 			for(Reader reader : HTMLTemplateUtility.getReaders(bundleSet, version)) {
 				IOUtils.copy(reader, writer);

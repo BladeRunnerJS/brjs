@@ -51,9 +51,9 @@ BRHtmlResourceService.prototype.getHTMLTemplate = function(templateId) {
 };
 
 function loadHtml(url) {
-	if(!document.querySelector('div#templates')) {
+	if(!document.querySelector('div#brjs-html-templates')) {
 		var templateElems = document.createElement('div');
-		templateElems.id = 'templates';
+		templateElems.id = 'brjs-html-templates';
 
 		var rawHtml = File.readFileSync(url);
 		var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");

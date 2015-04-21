@@ -36,7 +36,7 @@ BRHtmlResourceServiceTest.prototype.test_templatesInTemplateTagBundle = function
 BRHtmlResourceServiceTest.prototype.test_loadHTMLFilesDoesNotExist = function()
 {
 	// remove templates first so that the HTMLResourceService is forced to reload them
-	var templates = document.querySelector('div#templates');
+	var templates = document.querySelector('div#brjs-html-templates');
 	if(templates) {
 		templates.parentNode.removeChild(templates);
 	}
