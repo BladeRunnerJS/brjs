@@ -46,9 +46,10 @@ public class BRJSStartupTest extends SpecTest {
 	@Test
 	public void informativeInitializationLogsAreEmittedAtStartup() {
 		given(logging).enabled();
-		when(brjs).hasBeenCreated();
-		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
-			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+		when(brjs).hasBeenCreated()
+			.and(brjs).pluginsAreAccessed();
+		then(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
 	
@@ -57,10 +58,11 @@ public class BRJSStartupTest extends SpecTest {
 		given(logging).enabled()
 			.and(brjs).hasCommandPlugins(passingCommandPlugin)
 			.and(brjs).hasModelObserverPlugins(passingModelObserverPlugin);
-		when(brjs).hasBeenCreated();
-		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
+		when(brjs).hasBeenCreated()
+			.and(brjs).pluginsAreAccessed();
+		then(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).debugMessageReceived(PLUGIN_FOUND_MSG, passingModelObserverPlugin.getClass().getCanonicalName())
-			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG)
 			.and(logging).debugMessageReceived(PLUGIN_FOUND_MSG, passingCommandPlugin.getClass().getCanonicalName());
 	}
@@ -69,10 +71,11 @@ public class BRJSStartupTest extends SpecTest {
 	public void fatalErrorIsEmittedIfAnyOfTheModelObserverPluginsCantBeCreated() {
 		given(logging).enabled()
 			.and(brjs).hasModelObserverPlugins(failingModelObserverPlugin);
-		when(brjs).hasBeenCreated();
-		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
+		when(brjs).hasBeenCreated()
+			.and(brjs).pluginsAreAccessed();
+		then(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLUGIN_ERROR_MSG, failingModelObserverPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
-			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		
 	}
@@ -94,9 +97,9 @@ public class BRJSStartupTest extends SpecTest {
 			.and(brjs).hasCommandPlugins(failingCommandPlugin);
 		when(brjs).hasBeenCreated()
 			.and(brjs).runCommand("help", "failingCommand");
-		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
+		then(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLUGIN_ERROR_MSG, failingCommandPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
-			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
 	

@@ -137,7 +137,8 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	}
 	
 	private String getModuleContent() {
-		return "	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n";
+		return "	module.preventCaching = true;\n" +
+			"	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n";
 	}
 
 }

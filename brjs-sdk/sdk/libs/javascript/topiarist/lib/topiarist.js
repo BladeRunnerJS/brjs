@@ -399,7 +399,7 @@
 	 */
 	function isA(instance, parent) {
 		if(instance == null) {
-			return false;
+			assertArgumentNotNullOrUndefined(instance, ERROR_MESSAGES.NULL, 'Object', 'isA');;
 		}
 
 		// sneaky edge case where we're checking against an object literal we've mixed in or against a prototype of

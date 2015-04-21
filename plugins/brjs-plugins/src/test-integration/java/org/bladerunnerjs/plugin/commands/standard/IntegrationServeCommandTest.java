@@ -45,7 +45,8 @@ public class IntegrationServeCommandTest extends SpecTest
 	@Test
 	public void serveCommandStartsAppServer() throws Exception
 	{
-		given(logging).enabled();
+		given(logging).enabled()
+			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
@@ -69,7 +70,8 @@ public class IntegrationServeCommandTest extends SpecTest
 		appServerPort = 7777;
 		appServer = brjs.applicationServer(appServerPort);
 		
-		given(logging).enabled();
+		given(logging).enabled()
+			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve", "-p", "7777");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")

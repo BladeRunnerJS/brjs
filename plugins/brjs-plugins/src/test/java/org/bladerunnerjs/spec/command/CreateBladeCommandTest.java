@@ -80,7 +80,8 @@ public class CreateBladeCommandTest extends SpecTest {
 		given(blade).hasBeenCreated();
 		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
 		then(exceptions).verifyException(NodeAlreadyExistsException.class, "blade", unquoted(blade.getClass().getSimpleName()))
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
+			.whereTopLevelExceptionIs(CommandArgumentsException.class)
+			.and(logging).otherMessagesIgnored();
 	}
 	
 	@Test
@@ -91,7 +92,8 @@ public class CreateBladeCommandTest extends SpecTest {
 		when(brjs).runCommand("create-blade", "app", "bladeset", "!$%$^");
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, "Blade", badBlade.dir().getPath())
 			.and(exceptions).verifyException(InvalidDirectoryNameException.class, "!$%$^", badBlade.dir().getPath())
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
+			.whereTopLevelExceptionIs(CommandArgumentsException.class)
+			.and(logging).otherMessagesIgnored();
 	}
 	
 	@Test
