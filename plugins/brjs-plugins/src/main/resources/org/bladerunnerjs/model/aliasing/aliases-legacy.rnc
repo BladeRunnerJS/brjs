@@ -1,0 +1,26 @@
+default namespace = "http://schema.caplin.com/CaplinTrader/aliases"
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+## This schema describes the aliases markup language which allows you to define 
+## the class overrides that will be used for given aliases. It also allows you
+## to define the scenario your application will run in.
+
+start = aliases
+
+## The outermost tag of the aliases XML.
+aliases = element aliases
+{
+	attribute useGroups {text}?,
+	## The scenario that the application will run in.
+	attribute useScenario {text}?,
+	alias*
+}
+
+## An over-ride for an alias mapping to be used in this application.
+alias = element alias
+{
+	## The name of the alias to be over-ridden.
+	attribute name {text},
+	## The class that will be used for the named alias in this application.
+	attribute class {text}
+}

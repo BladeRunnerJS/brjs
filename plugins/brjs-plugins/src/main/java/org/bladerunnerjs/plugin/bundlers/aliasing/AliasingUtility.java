@@ -1,16 +1,21 @@
 package org.bladerunnerjs.plugin.bundlers.aliasing;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.bladerunnerjs.api.memoization.Getter;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
+import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.api.BundlableNode;
 
 public class AliasingUtility
@@ -98,10 +103,9 @@ public class AliasingUtility
 		}
 	}
 	
-	
 	@SuppressWarnings("unchecked")
-	private static <OT extends Object> OT getNodeProperty(AssetContainer assetContainer, String propertyKey, Class<? extends OT> valueType, Getter<Exception> valueGetter) {
-		NodeProperties nodeProperties = assetContainer.nodeProperties(AliasingUtility.class.getSimpleName());
+	static <OT extends Object> OT getNodeProperty(Node node, String propertyKey, Class<? extends OT> valueType, Getter<Exception> valueGetter) {
+		NodeProperties nodeProperties = node.nodeProperties(AliasingUtility.class.getSimpleName());
 		Object nodeProperty = nodeProperties.getTransientProperty(propertyKey);
 		if (nodeProperty != null && nodeProperty.getClass().isAssignableFrom(valueType)) {
 			return (OT) nodeProperty;
@@ -117,4 +121,14 @@ public class AliasingUtility
 	}
 	
 	
+	public static boolean useLegacySchema(MemoizedFile aliaseFile, String defaultCharEncoding) throws IOException {
+		LineIterator it = IOUtils.lineIterator( new UnicodeReader(aliaseFile, defaultCharEncoding) );
+		for (int lineNumber = 0; it.hasNext() && lineNumber < 3; lineNumber++) {
+			if (it.nextLine().contains("schema.caplin.com")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

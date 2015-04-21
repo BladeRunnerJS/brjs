@@ -19,7 +19,7 @@ public class PersistentAliasesData {
 	
 	public AliasesData getData() throws ContentFileProcessingException {
 		return aliasesData.value(() -> {
-			return AliasesReader.read(aliasesFile, getCharacterEncoding());
+			return AliasesReader.read(brjs, aliasesFile, getCharacterEncoding());
 		});
 	}
 	

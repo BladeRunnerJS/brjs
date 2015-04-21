@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
@@ -24,8 +27,12 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.*;
+
 public class AliasDefinitionsReader {
 	private static final XMLValidationSchema aliasDefinitionsSchema;
+	private static final XMLValidationSchema legacyAliasDefinitionsSchema;
+	public static final String LEGACY_XMLNS_WARN_MSG = "The file '%s' is using the deprecated xmlns attribute and should be updated to use http://schema.bladerunnerjs.org/aliasDefinitions.";
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -33,12 +40,14 @@ public class AliasDefinitionsReader {
 		try {
 			aliasDefinitionsSchema = schemaFactory.createSchema(SchemaConverter
 				.convertToRng("org/bladerunnerjs/model/aliasing/aliasDefinitions.rnc"));
+			legacyAliasDefinitionsSchema = schemaFactory.createSchema(SchemaConverter
+					.convertToRng("org/bladerunnerjs/model/aliasing/aliasDefinitions-legacy.rnc"));
 		} catch (XMLStreamException | SchemaCreationException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public static AliasDefinitionsData read(MemoizedFile aliasDefinitionsFile, AssetContainer assetContainer, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
+	public static AliasDefinitionsData read(BRJS brjs, MemoizedFile aliasDefinitionsFile, AssetContainer assetContainer, String defaultFileCharacterEncoding) throws ContentFileProcessingException {
 		AliasDefinitionsData data = new AliasDefinitionsData();
 		data.aliasDefinitions = new ArrayList<>();
 		data.scenarioAliases = new LinkedHashMap<>();
@@ -46,7 +55,16 @@ public class AliasDefinitionsReader {
 		
 		if(aliasDefinitionsFile.exists()) {
 			try(Reader fileReader = new UnicodeReader(aliasDefinitionsFile, defaultFileCharacterEncoding)) {
-				XMLStreamReader2 streamReader = XmlStreamReaderFactory.createReader(fileReader, aliasDefinitionsSchema);
+				XMLValidationSchema schema;
+				if (useLegacySchema(aliasDefinitionsFile, defaultFileCharacterEncoding)) {
+					schema = legacyAliasDefinitionsSchema;
+					if (!xmlnsWarningLogged(brjs, aliasDefinitionsFile)) {
+						 brjs.logger(AliasDefinitionsReader.class).warn(LEGACY_XMLNS_WARN_MSG, brjs.dir().getRelativePath(aliasDefinitionsFile));
+					 }
+				} else {
+					schema = aliasDefinitionsSchema;
+				}
+				XMLStreamReader2 streamReader = XmlStreamReaderFactory.createReader(fileReader, schema);
 				XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
 				
 				while(cursor.isWithinInitialNode()) {
@@ -139,5 +157,16 @@ public class AliasDefinitionsReader {
 		AliasOverride scenarioAlias = new AliasOverride(aliasName, aliasClass);
 		
 		data.getScenarioAliases(aliasName).put(scenarioName, scenarioAlias);
+	}
+	
+	private static boolean xmlnsWarningLogged(BRJS brjs, MemoizedFile file) {
+		@SuppressWarnings("unchecked")
+		Set<MemoizedFile> loggedWarnings = getNodeProperty(brjs, AliasDefinitionsReader.class.getSimpleName(), Set.class, 
+				() -> { return new LinkedHashSet<MemoizedFile>(); });
+		if (loggedWarnings.contains(file)) {
+			return true;
+		}
+		loggedWarnings.add(file);
+		return false;
 	}
 }
