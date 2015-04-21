@@ -22,17 +22,11 @@ public class StandardBundleSet implements BundleSet {
 	private Map<List<Class<? extends Asset>>, List<Asset>> assetsByType = new HashMap<>();
 	private Map<List<Class<? extends SourceModule>>, List<SourceModule>> sourceModulesByType = new HashMap<>();
 	
-	public StandardBundleSet(BundlableNode bundlableNode, List<LinkedAsset> seedAssets, List<Asset> assets, List<SourceModule> sourceModules) {
+	public StandardBundleSet(BundlableNode bundlableNode, List<LinkedAsset> seedAssets, List<Asset> assets, List<LinkedAsset> linkedAssets, List<SourceModule> sourceModules) {
 		this.seedAssets = seedAssets;
 		this.bundlableNode = bundlableNode;
 		this.assets = assets;
-		
-		linkedAssets = new ArrayList<>();
-		for (Asset asset : assets) {
-			if (asset instanceof LinkedAsset) {
-				linkedAssets.add((LinkedAsset) asset);
-			}
-		}
+		this.linkedAssets = linkedAssets;
 		this.sourceModules = sourceModules;
 	}
 	
