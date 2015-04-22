@@ -17,16 +17,16 @@ import org.bladerunnerjs.model.AssetContainer;
 public interface Asset {
 	
 	/**
-	 * The method returns a Reader object for obtaining the content of the Asset.
+	 * The method returns a {@link Reader} object for obtaining the content of the Asset.
 	 * 
 	 * @return Reader a Reader object for reading the current Asset's character stream
 	 */
 	Reader getReader() throws IOException;
 	
 	/**
-	 * The method returns a MemoizedFile object that provides similar methods to File and wraps a File object.
+	 * The method returns a {@link MemoizedFile} object that provides similar methods to File and wraps a File object.
 	 * Several of the methods' return values are 'memoized' and only regenerated if properties on the underlying file on disk change. 
-	 * Changes are detected by using MemoizedValue and the FileModificationRegistry.
+	 * Changes are detected by using {@link MemoizedValue} and the {@link FileModificationRegistry}.
 	 * 
 	 * @return MemoizedFile a MemoizedFile object for obtaining the Asset within the BRJS structure and monitoring it for changes.
 	 */
@@ -40,7 +40,7 @@ public interface Asset {
 	String getAssetName();
 	
 	/**
-	 * The method returns the path to the Asset relative to the App that comprises it.
+	 * The method returns the path to the Asset relative to the {@link App} that comprises it.
 	 * 
 	 * @return String a String object representing the path to the Asset file relative to the App that comprises it.
 	 */
@@ -55,7 +55,7 @@ public interface Asset {
 	List<String> getRequirePaths();
 	
 	/**
-	 * The method returns the primary require path to the Asset, which is calculated based on the require prefix of its AssetContainer 
+	 * The method returns the primary require path to the Asset, which is calculated based on the require prefix of its {@link AssetContainer} 
 	 * and the Asset name.
 	 * 
 	 * @return String a String object representing the primary require path to the Asset.
@@ -63,8 +63,8 @@ public interface Asset {
 	String getPrimaryRequirePath();
 	
 	/**
-	 * The method returns the AssetContainer in which the Asset is contained. An AssetContainer may be e.g. an Aspect, a Workbench,
-	 * a TestPack, a Blade, a Bladeset or a library.
+	 * The method returns the AssetContainer in which the Asset is contained. An AssetContainer may be e.g. an {@link Aspect}, a {@link Workbench},
+	 * a {@link TestPack}, a {@link Blade}, a {@link Bladeset} or a library.
 	 * 
 	 * @return AssetContainer an AssetContainer object that contains the Asset.
 	 */
@@ -73,7 +73,7 @@ public interface Asset {
 	/**
 	 * In order to encourage modularity, BRJS does not allow lower level entities to depend on higher level entities. For example,
 	 * a blade may not require an asset from the default aspect. This behaviour is called 'scope enforced' and may be set on a per 
-	 * AssetContainer basis. The method returns true if the scope is enforced, meaning that warnings about such out of scope require paths
+	 * {@link AssetContainer} basis. The method returns true if the scope is enforced, meaning that warnings about such out of scope require paths
 	 * will be logged, or false, if these will be ignored and retrieved.  
 	 * 
 	 * @return boolean a boolean object stating whether eventual invalid require path warnings will be logged.
