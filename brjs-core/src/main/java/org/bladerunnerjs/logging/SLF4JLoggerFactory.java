@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.api.logging.LoggerFactory;
+import org.bladerunnerjs.utility.LoggerFactory;
 
 
 public class SLF4JLoggerFactory implements LoggerFactory
