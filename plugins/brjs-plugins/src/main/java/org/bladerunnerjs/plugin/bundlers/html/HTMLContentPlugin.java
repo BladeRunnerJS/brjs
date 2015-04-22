@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
@@ -35,10 +36,13 @@ import org.bladerunnerjs.utility.AppMetadataUtility;
 
 public class HTMLContentPlugin extends AbstractContentPlugin
 {
+	public static final String SCRIPT_TEMPLATE_WARNING = "A script tag was used for the '%s' template, but these are now deprecated in favor of template tags.";
+	
 	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 	private final List<String> requestPaths = new ArrayList<>();
 	
 	private BRJS brjs;
+	private Logger logger;
 	
 	{
 		requestPaths.add("html/bundle.html");
@@ -48,6 +52,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
+		logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -74,7 +79,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		List<Reader> readerList = new ArrayList<Reader>();
 		for(Asset htmlAsset : htmlAssets){
 			try {
-				validateSourceHtml(htmlAsset);
+				TemplateInfo templateInfo = getTemplateInfo(htmlAsset);
 
 				try(Reader reader = htmlAsset.getReader()) {
 					readerList.add(new StringReader("\n<!-- " + htmlAsset.getAssetName() + " -->\n"));
@@ -84,7 +89,16 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 
 					String htmlContent = IOUtils.toString(reader);
 					String replaced =  htmlContent.replace(xmlBundlePathToken, bundlePath);
+					
+					if(templateInfo.requiresWrapping) {
+						readerList.add(new StringReader("<template id='" + templateInfo.identifier + "' data-auto-wrapped='true'>\n"));
+					}
+					
 					readerList.add(new StringReader(replaced));
+					
+					if(templateInfo.requiresWrapping) {
+						readerList.add(new StringReader("</template>\n"));
+					}
 				}
 			}
 			catch (IOException | NamespaceException | RequirePathException e) {
@@ -95,11 +109,15 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		return new CharResponseContent( brjs, readerList );		
 	}
 	
-	private void validateSourceHtml(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException
+	private TemplateInfo getTemplateInfo(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException
 	{
 		StartTag startTag = getStartTag(htmlAsset);
 		String identifier = startTag.getAttributeValue("id");
 		AssetContainer assetContainer = htmlAsset.assetContainer();
+		
+		if(startTag.getName().equals("script")) {
+			logger.warn(SCRIPT_TEMPLATE_WARNING, identifier);
+		}
 		
 		if(identifier == null)
 		{
@@ -121,6 +139,8 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 						+ assetWithDuplicateId.getAssetPath()
 						+ "'.");
 		}
+		
+		return new TemplateInfo(identifier, !startTag.getName().equals("template"));
 	}
 	
 	
@@ -151,4 +171,13 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		}
 	}
 	
+	private class TemplateInfo {
+		public final String identifier;
+		public final boolean requiresWrapping;
+
+		public TemplateInfo(String identifier, boolean requiresWrapping) {
+			this.identifier = identifier;
+			this.requiresWrapping = requiresWrapping;
+		}
+	}
 }

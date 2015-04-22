@@ -1,3 +1,4 @@
 depends: browser-modules
-js: ie8-shim.js, importNode.js
+js: shivie8.js
+css: shivie8.css
 exports: null

@@ -3407,7 +3407,7 @@
 				// Named template
 				if (typeof template == "string") {
 					templateDocument = templateDocument || document;
-					var elem = br.ServiceRegistry.getService("br.html-service").getHTMLTemplate(template); //BRJS change
+					var elem = br.ServiceRegistry.getService("br.html-service").getTemplateElement(template); //BRJS change
 					if (!elem)
 						throw new Error("Cannot find template with ID " + template);
 					return new ko.templateSources.domElement(elem);
