@@ -26,4 +26,9 @@ public class MockAppVersionGenerator implements AppVersionGenerator
 		this.version = version;
 	}
 	
+	@Override
+	public void appendTimetamp(boolean appendTimetamp)
+	{		
+	}
+	
 }

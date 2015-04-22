@@ -70,10 +70,9 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		
 		String appName = parsedArgs.getString(Parameters.APP_NAME);
 		String targetDirPath = parsedArgs.getString(Parameters.TARGET_DIR);
-		String version = parsedArgs.getString("version");
-		String timestamp = new SimpleDateFormat("yyyyMMddhmmss").format(new Date());
-		version = (version != null) ? version+"."+timestamp : timestamp;
-		brjs.getAppVersionGenerator().setVersion(version);
+		if (parsedArgs.getString("version") != null) {
+			brjs.getAppVersionGenerator().setVersion(parsedArgs.getString("version"));
+		}
 		boolean warExport = parsedArgs.getBoolean("war");
 		boolean hasExplicitExportDirArg = (targetDirPath != null);
 		
