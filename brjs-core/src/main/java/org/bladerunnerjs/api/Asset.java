@@ -50,7 +50,7 @@ public interface Asset {
 	 * The method returns the available require paths to the Asset. An Asset may have one or more valid require paths, as desired.
 	 * This list will include the primary require path for the Asset.
 	 * 
-	 * @return List<String> a List<String> object representing the available require paths to the Asset.
+	 * @return List_String a List of Strings object representing the available require paths to the Asset.
 	 */
 	List<String> getRequirePaths();
 	
