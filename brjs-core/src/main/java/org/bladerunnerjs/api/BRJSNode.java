@@ -17,7 +17,7 @@ public interface BRJSNode extends Node {
 	/**
 	 * The method returns a {@link BRJS} object that represents the root of the model. 
 	 * 
-	 * @return BRJS a BRJS object that represents the root of the model.
+	 * @return a BRJS object that represents the root of the model.
 	 */
 	BRJS root();
 	
@@ -40,7 +40,7 @@ public interface BRJSNode extends Node {
 	 * The method returns the name of the template, that is, the entity type and not the template group (which represents a collection
 	 * of templates).
 	 * 
-	 * @return String a String representing the name of the template
+	 * @return a String representing the name of the template
 	 */
 	String getTemplateName();
 	
