@@ -77,7 +77,6 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 		return requirePaths;
 	}
 	
-	@Override
 	public Reader getUnalteredContentReader() throws IOException {
 		try
 		{

@@ -15,7 +15,6 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 
-import com.Ostermiller.util.ConcatReader;
 
 public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	
@@ -40,17 +39,11 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public Reader getReader() throws IOException {
-		return new ConcatReader(new Reader[] {
-			new StringReader("define('service!" + requirePath + "', function(require, exports, module) {\n"),
-			getUnalteredContentReader(),
-			new StringReader("});\n")
-		});
-	}
-
-	@Override
-	public Reader getUnalteredContentReader() throws IOException {
-		return new StringReader("	module.preventCaching = true;\n" +
-			"	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n");
+		return new StringReader("define('service!" + requirePath + "', function(require, exports, module) {\n"+
+			"	module.preventCaching = true;\n" +
+			"	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n" +
+			"});\n"
+		);
 	}
 
 	@Override

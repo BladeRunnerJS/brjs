@@ -3,8 +3,6 @@ package org.bladerunnerjs.plugin.bundlers.namespacedjs;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
@@ -15,18 +13,10 @@ public class NamespacedJsUseTimeDependenciesReader extends Reader {
 	
 	private Reader namespacedJsUseTimeDependenciesReader;
 
-	public NamespacedJsUseTimeDependenciesReader(Asset asset) throws IOException
+	public NamespacedJsUseTimeDependenciesReader(NamespacedJsSourceModule asset) throws IOException
 	{
 		Predicate<Integer> insideCodeBlockPredicate = new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0);
-		Reader sourceReader = null;
-		
-		if(asset instanceof AugmentedContentSourceModule) {
-			AugmentedContentSourceModule source = (AugmentedContentSourceModule) asset;
-			sourceReader = source.getUnalteredContentReader();
-		}
-		else {
-			sourceReader = asset.getReader();
-		}
+		Reader sourceReader = asset.getUnalteredContentReader();
 		
 		Reader commentStrippingReader = new JsCommentStrippingReader(asset.assetContainer().root(), sourceReader, false);
 		namespacedJsUseTimeDependenciesReader = new JsCodeBlockStrippingDependenciesReader(asset.assetContainer().root(), commentStrippingReader, insideCodeBlockPredicate);
@@ -46,9 +36,9 @@ public class NamespacedJsUseTimeDependenciesReader extends Reader {
 	
 	static class Factory implements AssetReaderFactory {
 		
-		private Asset asset;
+		private NamespacedJsSourceModule asset;
 
-		public Factory(Asset asset)
+		public Factory(NamespacedJsSourceModule asset)
 		{
 			this.asset = asset;
 		}
