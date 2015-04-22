@@ -3,7 +3,7 @@ package org.bladerunnerjs.model;
 
 public interface AppVersionGenerator
 {
-	String getProdVersion();
-	String getDevVersion();
+	void setVersion(String version);
+	String getVersion();
 	String getVersionPattern();
 }

@@ -37,7 +37,8 @@ public class BundleSetBuilder {
 	private final List<LinkedAsset> seedAssets = new ArrayList<>();
 	private final Set<Asset> assets = new LinkedHashSet<>();
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Set<LinkedAsset> linkedAssets = new LinkedHashSet<LinkedAsset>();
+	private final Set<LinkedAsset> linkedAssets = new LinkedHashSet<>();
+	private final Set<Asset> processedAssets = new LinkedHashSet<>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
 	private Set<Asset> strictCheckingAssetsLogged = new HashSet<>();
@@ -64,8 +65,9 @@ public class BundleSetBuilder {
 		
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		List<Asset> assetList = orderAssetsByAssetContainer(assets);
+		List<LinkedAsset> linkedAssetList = orderAssetsByAssetContainer(linkedAssets);
 		
-		return new StandardBundleSet(bundlableNode, seedAssets, assetList, orderedSourceModules);
+		return new StandardBundleSet(bundlableNode, seedAssets, assetList, linkedAssetList, orderedSourceModules);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
@@ -83,8 +85,12 @@ public class BundleSetBuilder {
 	}
 
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
-		if(linkedAssets.add(linkedAsset)) {
-			assets.add(linkedAsset);
+		if(processedAssets.add(linkedAsset)) {
+			if (linkedAsset.isRequirable()) {
+				linkedAssets.add(linkedAsset);
+				assets.add(linkedAsset);
+			}
+			
 			List<Asset> moduleDependencies = getModuleDependencies(linkedAsset);
 			
 			if (linkedAsset instanceof SourceModule) {
@@ -102,7 +108,10 @@ public class BundleSetBuilder {
 				} else if (dependantAsset instanceof LinkedAsset) {
 					addLinkedAsset((LinkedAsset) dependantAsset);
 				}
-				assets.add(dependantAsset);
+				
+				if (dependantAsset.isRequirable()) {
+					assets.add(dependantAsset);
+				}
 			}
 			
 		}
@@ -224,11 +233,11 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private List<Asset> orderAssetsByAssetContainer(Set<Asset> assets) {
-		List<Asset> orderedAssets = new ArrayList<>();
-		List<Asset> unorderedAssets = new ArrayList<>(assets);
+	private <AT extends Asset> List<AT> orderAssetsByAssetContainer(Set<? extends AT> assets) {
+		List<AT> orderedAssets = new ArrayList<>();
+		List<AT> unorderedAssets = new ArrayList<>(assets);
 		for (AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
-			for (Asset asset : assets) {
+			for (AT asset : assets) {
 				if (asset.assetContainer() == assetContainer) {
 					orderedAssets.add(asset);
 					unorderedAssets.remove(asset);

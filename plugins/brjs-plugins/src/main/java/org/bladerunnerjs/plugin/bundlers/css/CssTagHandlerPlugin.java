@@ -73,7 +73,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	{
 		try {
 			List<String> requests = new ArrayList<>();
-			String version = bundleSet.getBundlableNode().root().getAppVersionGenerator().getDevVersion();
+			String version = bundleSet.getBundlableNode().root().getAppVersionGenerator().getVersion();
 			for (StylesheetRequest stylesheet : getOrderedStylesheets(requestMode, tagAttributes, bundleSet, locale, version)) {
 				requests.add( stylesheet.contentPath );
 			}

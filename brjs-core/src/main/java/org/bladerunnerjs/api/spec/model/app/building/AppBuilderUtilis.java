@@ -37,7 +37,7 @@ public class AppBuilderUtilis
 		if(!targetContainer.isDirectory()) throw new ModelOperationException("'" + targetContainer.getPath() + "' is not a directory.");
 		
 		try {
-			String version = app.root().getAppVersionGenerator().getProdVersion();
+			String version = app.root().getAppVersionGenerator().getVersion();
 			BRJS brjs = app.root();
 			UrlContentAccessor urlContentAccessor = new StaticContentAccessor(app);
 			Locale[] locales = app.appConf().getLocales();
