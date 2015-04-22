@@ -67,11 +67,15 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin implements C
 			{
 				App app = bundleSet.getBundlableNode().app();
 				//NOTE: this metadata is used by the BRAppMetaService
-				return new CharResponseContent( brjs, "// these variables should not be used directly but accessed via the 'br.app-meta-service' instead\n" + 
-						"window.$BRJS_APP_VERSION = '"+version+"';\n" +
-						"window.$BRJS_VERSIONED_BUNDLE_PATH = '"+AppMetadataUtility.getRelativeVersionedBundlePath(app, version, "")+"';\n" +
-						"window.$BRJS_LOCALE_COOKIE_NAME = '"+app.appConf().getLocaleCookieName()+"';\n" +
-						"window.$BRJS_APP_LOCALES = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n" );
+				// This can't be modeled as a SourceModule since it needs access to the version which is only available to ContentPlugins
+				return new CharResponseContent( brjs, 
+					"define('app-meta!$data', function(require, exports, module) {\n"+	
+						"// these variables should not be used directly but accessed via the 'br.app-meta-service' instead\n" + 
+						"module.exports.APP_VERSION = '"+version+"';\n" +
+						"module.exports.VERSIONED_BUNDLE_PATH = '"+AppMetadataUtility.getRelativeVersionedBundlePath(app, version, "")+"';\n" +
+						"module.exports.LOCALE_COOKIE_NAME = '"+app.appConf().getLocaleCookieName()+"';\n" +
+						"module.exports.APP_LOCALES = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n" +
+					"});\n");
 			}
 			catch (ConfigException ex)
 			{

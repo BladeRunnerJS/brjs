@@ -290,7 +290,7 @@ public class BuildAppCommandTest extends SpecTest
 			.and(aspect).indexPageHasContent("<@js.bundle@/>\nrequire('appns/Class1');");
 		when(brjs).runCommand("build-app", "app1", "-v", "myversion");
 		then(brjs).hasDirectoryWithFormat("generated/built-apps/app1/v/", "myversion\\-.*", filePath)
-			.and(new File(filePath.toString())).containsFileWithContents("/js/prod/combined/bundle.js", "window.$BRJS_APP_VERSION = '"+new File(filePath.toString()).getName()+"';");
+			.and(new File(filePath.toString())).containsFileWithContents("/js/prod/combined/bundle.js", "module.exports.APP_VERSION = '"+new File(filePath.toString()).getName()+"';");
 			
 	}
 	

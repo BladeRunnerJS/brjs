@@ -61,8 +61,8 @@ public class BRJSTest extends SpecTest {
 				"   - '*'",
 				"   ContentPlugin:", 
 				"   - I18nContentPlugin",
-				"   - AppMetadataContentPlugin",
 				"   - ThirdpartyContentPlugin",
+				"   - AppMetadataContentPlugin",
 				"   - CommonJsContentPlugin",
 				"   - NamespacedJsContentPlugin",
 				"   - '*'");

@@ -141,7 +141,7 @@ public class IntegrationServeCommandTest extends SpecTest
 			@Override
 			public boolean apply(String input)
 			{
-				return input.contains("window.$BRJS_APP_VERSION = 'myversion");
+				return input.contains("module.exports.APP_VERSION = 'myversion");
 			}
 		});
 	}
@@ -167,7 +167,7 @@ public class IntegrationServeCommandTest extends SpecTest
 			{
 				for (String line : StringUtils.split(input, "\n")) {
 					
-					if (line.matches( "window\\.\\$BRJS_APP_VERSION = 'myversion\\-[0-9]{14}';")) {
+					if (line.matches( "module\\.exports\\.APP_VERSION = 'myversion\\-[0-9]{14}';")) {
 						return true;
 					}
 				}

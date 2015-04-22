@@ -77,7 +77,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("v/prod/app-meta/version.js", "v/prod/thirdparty/bundle.js", "v/prod/common-js/bundle.js");
+		then(pageResponse).containsRequests("v/prod/thirdparty/bundle.js", "v/prod/app-meta/version.js", "v/prod/common-js/bundle.js");
 	}
 	
 	@Test

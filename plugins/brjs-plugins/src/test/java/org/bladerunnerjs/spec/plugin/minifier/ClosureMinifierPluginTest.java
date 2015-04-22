@@ -47,7 +47,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 				"hello('New user');\n"+
 				"\n";
 		minifyWhitespaceContent = "function hello(name){alert(\"Hello, \"+name)}hello(\"New user\")";
-		minifySimpleContent		= "function(a,b,c){alert(\"Hello, New user\")";
+		minifySimpleContent		= "function(b,c,a){alert(\"Hello, New user\")";
 		minifyAdvancedContent	= "alert(\"Hello, New user\")";
 		
 		// for closure compiler test using reserved words as var names
