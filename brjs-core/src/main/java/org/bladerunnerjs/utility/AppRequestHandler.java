@@ -97,7 +97,7 @@ public class AppRequestHandler
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
 
-		String devVersion = app.root().getAppVersionGenerator().getDevVersion();
+		String devVersion = app.root().getAppVersionGenerator().getVersion();
 
 		switch (parsedContentPath.formName)
 		{

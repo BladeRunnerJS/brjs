@@ -63,8 +63,9 @@ public class AliasingSerializer {
 		
 		AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundleSet.getBundlableNode());
 		
-		for (AliasCommonJsSourceModule sourceModule : bundleSet.getSourceModules(AliasCommonJsSourceModule.class)) {
-			AliasCommonJsSourceModule aliasSourceModule = (AliasCommonJsSourceModule) sourceModule;
+		List<AliasCommonJsSourceModule> aliasModules = bundleSet.getSourceModules(AliasCommonJsSourceModule.class);
+		
+		for (AliasCommonJsSourceModule aliasSourceModule : aliasModules) {
 			AliasDefinition aliasDefinition = aliasSourceModule.getAliasDefinition();
 			try
 			{

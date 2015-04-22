@@ -114,7 +114,7 @@ public class BuildAppTest extends SpecTest {
 		given(defaultAspect).containsFile("index.html")
 			.and(defaultAspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).localeSwitcherHasContents("")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFile("v/1234/html/bundle.html")
 			.and(targetDir).containsFile("v/1234/i18n/en.js");
@@ -134,7 +134,7 @@ public class BuildAppTest extends SpecTest {
 		given(brjs).localeSwitcherHasContents("")
 			.and(defaultAspect).indexPageHasContent("<@js.bundle @/>\n"+"require('appns/Class');")
 			.and(defaultAspect).hasClass("appns/Class")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFile("v/1234/js/prod/combined/bundle.js")
 			.and(targetDir).doesNotContainFile("v/1234/common-js/bundle.js");
@@ -148,7 +148,7 @@ public class BuildAppTest extends SpecTest {
     		.and(defaultAspect).hasClass("appns/Class")
     		.and(defaultAspect).containsFileWithContents("themes/common/style.css", "some app styling")
     		.and(defaultAspect).indexPageHasContent("<@css.bundle @/>\n"+"<@js.bundle @/>\n"+"require('appns/Class');")
-    		.and(brjs).hasProdVersion("1234")
+    		.and(brjs).hasVersion("1234")
     		.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/v/1234/js/prod/combined/bundle.js", "define('appns/Class'")
 			.and(targetDir).containsFileWithContents("/v/1234/css/common/bundle.css", "some app styling");
@@ -161,7 +161,7 @@ public class BuildAppTest extends SpecTest {
     		.and(app).hasBeenCreated()
     		.and(defaultAspect).indexPageHasContent("")
     		.and(defaultAspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
-    		.and(brjs).hasProdVersion("1234")
+    		.and(brjs).hasVersion("1234")
     		.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/v/1234/unbundled-resources/file.jsp", "<%= 1 + 2 %>");
 	}
@@ -173,7 +173,7 @@ public class BuildAppTest extends SpecTest {
 			.and(app).hasBeenCreated()
 			.and(defaultAspect).indexPageHasContent("")
 			.and(defaultAspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName())
 			.and(targetDir).doesNotContainFile("v/1234/mock-content-plugin/unversioned/url");
@@ -187,7 +187,7 @@ public class BuildAppTest extends SpecTest {
 			.and(defaultAspect).containsEmptyFile("index.html")
 			.and(defaultAspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£€\"")
 			.and(brjs).localeSwitcherHasContents("")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };\n"
 				+ "window._brjsI18nProperties['en'] = {\n"
@@ -204,7 +204,7 @@ public class BuildAppTest extends SpecTest {
 			.and(defaultAspect).containsEmptyFile("index.html")
 			.and(defaultAspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£\"")
 			.and(brjs).localeSwitcherHasContents("")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };\n"
 				+ "window._brjsI18nProperties['en'] = {\n"

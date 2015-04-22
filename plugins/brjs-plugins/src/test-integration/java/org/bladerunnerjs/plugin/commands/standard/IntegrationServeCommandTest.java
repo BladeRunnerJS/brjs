@@ -84,6 +84,7 @@ public class IntegrationServeCommandTest extends SpecTest
 	public void serverWillServeAppsOnceStarted() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyReCreated()
+			.and(brjs).usedForServletModel()
 			.and(brjs).localeSwitcherHasContents("")
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
@@ -119,5 +120,30 @@ public class IntegrationServeCommandTest extends SpecTest
 			}
 		});
 	}
+	
+	@Test
+	public void versionIsConfigurable() throws Exception
+	{
+		brjs = null;
+		given(brjs).hasBeenAuthenticallyReCreated()
+			.and(brjs).localeSwitcherHasContents("")
+			.and(brjs).usedForServletModel();
+			App app = brjs.app("app1");
+    		Aspect aspect = app.defaultAspect();
+    		appServer = brjs.applicationServer();
+    		given(aspect).hasClass("appns/Class1")
+			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(brjs).runThreadedCommand("serve", "-v", "myversion");
+		then(appServer).requestCanEventuallyBeMadeWhereResponseMatches("/app1/v/myversion/js/dev/combined/bundle.js", new Predicate<String>()
+		{
+			@Override
+			public boolean apply(String input)
+			{
+				return input.contains("window.$BRJS_APP_VERSION = 'myversion';");
+			}
+		});
+	}
+	
 	
 }

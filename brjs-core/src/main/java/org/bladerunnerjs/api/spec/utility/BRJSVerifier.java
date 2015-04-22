@@ -49,4 +49,20 @@ public class BRJSVerifier extends NodeVerifier<BRJS> {
 		
 		return verifierChainer;
 	}
+
+	public VerifierChainer hasDirectoryWithFormat(String base, String dirPattern, StringBuffer filePath)
+	{
+		File baseDir = brjs.file(base);
+		File[] children = baseDir.listFiles();
+		if (children == null || children.length == 0) {
+			throw new RuntimeException(baseDir + " doesn't contain any files or doesnt exist");
+		}
+		for (File childDir : children) {
+			if (childDir.getName().matches(dirPattern)) {
+				filePath.append(childDir.getAbsolutePath());
+				return verifierChainer;
+			}
+		}
+		throw new RuntimeException("Unable to find a directory that matches " + dirPattern);
+	}
 }

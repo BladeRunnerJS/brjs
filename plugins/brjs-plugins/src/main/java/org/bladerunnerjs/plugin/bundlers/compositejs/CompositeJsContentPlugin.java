@@ -89,8 +89,6 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin implements R
 			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(requestMode, parsedContentPath, bundleSet, contentAccessor, version);
 			ResponseContent content = new CharResponseContent( bundleSet.getBundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
 			
-			closeInputSources(inputSources);
-			
 			return content;
 		}
 		else {
@@ -102,19 +100,6 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin implements R
 	public boolean outputAllBundles()
 	{
 		return false;
-	}
-	
-	private void closeInputSources(List<InputSource> inputSources)
-	{
-		for (InputSource input : inputSources) {
-			try
-			{
-				input.getContentPluginReader().close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 	
 	private List<InputSource> getInputSourcesFromOtherBundlers(RequestMode requestMode, ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {

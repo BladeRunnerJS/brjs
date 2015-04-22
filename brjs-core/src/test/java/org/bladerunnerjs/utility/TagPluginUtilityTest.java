@@ -209,7 +209,7 @@ public class TagPluginUtilityTest
 	private void filterAndAssert(String input, String expectedOutput, BundleSet bundleSet, RequestMode opMode, String locale) throws Exception
 	{
 		StringWriter writer = new StringWriter();
-		TagPluginUtility.filterContent(input, bundleSet, writer, opMode, new Locale(locale), brjs.getAppVersionGenerator().getDevVersion());
+		TagPluginUtility.filterContent(input, bundleSet, writer, opMode, new Locale(locale), brjs.getAppVersionGenerator().getVersion());
 		assertEquals(expectedOutput, writer.toString());
 	}
 	
