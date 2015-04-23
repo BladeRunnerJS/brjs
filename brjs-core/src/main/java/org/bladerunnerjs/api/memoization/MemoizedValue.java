@@ -62,11 +62,13 @@ public class MemoizedValue<T extends Object> {
 	 * 
 	 * Lambas can provided instead of a getter, for example:
 	 * 
-	 * <code>
+	 * <pre>
+	 * {@code
 	 * memoizedValue.value(() -> {
 	 *   return SomethingThatTakesALongTimeToComplete();
 	 * });
-	 * </code>
+	 * }
+	 * </pre>
 	 * 
 	 * Be aware that using Lambdas is only supported in Java8.
 	 * 
@@ -74,7 +76,7 @@ public class MemoizedValue<T extends Object> {
 	 * @return The calculated value
 	 * @throws E
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "javadoc" })
 	public <E extends Exception> T value(Getter<E> getter) throws E {
 		if (valueNeedsToBeRecomputed()) {
 			

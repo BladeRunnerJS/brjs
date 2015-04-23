@@ -30,7 +30,7 @@ public interface ApplicationServer
 	
 	/**
 	 * Set how often the {@link App} deployment watcher should check for new apps that need deploying to the application server.
-	 * @param The check interval
+	 * @param interval The check interval
 	 */
 	void setAppDeploymentWatcherInterval(long interval);
 }
