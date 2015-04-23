@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
@@ -100,6 +101,9 @@ public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAs
 	}
 	
 	public static String calculateRequirePath(AssetContainer assetContainer) {
+		if (assetContainer instanceof TestPack) {
+			return "test/"+assetContainer.requirePrefix();			
+		}
 		return assetContainer.requirePrefix();
 	}
 }

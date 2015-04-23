@@ -13,7 +13,6 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.LinkedFileAsset;
 import org.bladerunnerjs.model.SourceModulePatch;
@@ -23,7 +22,7 @@ import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import com.Ostermiller.util.ConcatReader;
 import com.google.common.base.Joiner;
 
-public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
+public class NamespacedJsSourceModule implements SourceModule {
 	
 	private AssetContainer assetContainer;
 	private MemoizedFile assetFile;
@@ -65,7 +64,6 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return dependendAssets;
 	}
 	
-	@Override
 	public Reader getUnalteredContentReader() throws IOException {
 		if (patch.patchAvailable()){
 			return new ConcatReader( new Reader[] { linkedFileAsset.getReader(), patch.getReader() });
@@ -144,7 +142,13 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	private String calculateDependenciesRequireDefinition(List<String> requirePaths) throws ModelOperationException {
-		return (requirePaths.isEmpty()) ? "" : "requireAll(require, ['" + Joiner.on("','").join(requirePaths) + "']);\n";
+		List<String> requireAllRequirePaths = new ArrayList<>();
+		for (String requirePath : requirePaths) {
+			if (!requirePath.contains("!")) {
+				requireAllRequirePaths.add(requirePath);
+			}
+		}
+		return (requireAllRequirePaths.isEmpty()) ? "" : "requireAll(require, ['" + Joiner.on("','").join(requireAllRequirePaths) + "']);\n";
 	}
 	
 	@Override

@@ -306,7 +306,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		try {
     		given(app).hasBeenCreated()
         		.and(appAspect).containsFileWithContents("unbundled-resources/file.jsp", "2 + 2 = <%= 2 + 2 %>")
-        		.and(brjs).hasDevVersion("1234")
+        		.and(brjs).hasVersion("1234")
         		.and(brjs.applicationServer(appServerPort)).started();
         	then(brjs.applicationServer(appServerPort)).requestForUrlReturns("/app1/v/123/unbundled-resources/file.jsp", "2 + 2 = 4");
 		} finally {

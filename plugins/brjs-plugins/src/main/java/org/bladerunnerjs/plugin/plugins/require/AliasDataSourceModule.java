@@ -14,11 +14,9 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 
-import com.Ostermiller.util.ConcatReader;
-
 public class AliasDataSourceModule implements CommonJsSourceModule {
 	private final BundlableNode bundlableNode;
-	public static final String PRIMARY_REQUIRE_PATH = "alias!$data";
+	public static final String PRIMARY_REQUIRE_PATH = "alias!$data"; 
 
 	public AliasDataSourceModule(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
@@ -35,19 +33,16 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public Reader getReader() throws IOException {
-		return new ConcatReader(new Reader[] {
-			new StringReader(String.format(COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath())),
-			getUnalteredContentReader(),
-			new StringReader(COMMONJS_DEFINE_BLOCK_FOOTER)
-		});
-	}
-	
-	@Override
-	public Reader getUnalteredContentReader() throws IOException {
-		try {
-			return new StringReader("module.exports = " + AliasingSerializer.createJson(bundlableNode.getBundleSet()) + ";");
+		try
+		{
+			return new StringReader(
+				String.format(COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath()) +
+				"module.exports = " + AliasingSerializer.createJson(bundlableNode.getBundleSet()) + ";" +
+				COMMONJS_DEFINE_BLOCK_FOOTER
+			);
 		}
-		catch (ModelOperationException e) {
+		catch (ModelOperationException e)
+		{
 			throw new IOException(e);
 		}
 	}

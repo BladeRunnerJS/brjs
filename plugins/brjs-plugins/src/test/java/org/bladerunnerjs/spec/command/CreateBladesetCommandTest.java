@@ -77,7 +77,8 @@ public class CreateBladesetCommandTest extends SpecTest {
 		when(brjs).runCommand("create-bladeset", "app", "bladeset#$@/");
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, "Bladeset", badBladeset.dir().getPath())
 			.and(exceptions).verifyException(InvalidDirectoryNameException.class, "bladeset#$@/", badBladeset.dir().getPath())
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
+			.whereTopLevelExceptionIs(CommandArgumentsException.class)
+			.and(logging).otherMessagesIgnored();
 	}
 	
 	@Test

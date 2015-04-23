@@ -1,3 +1,9 @@
+if(!window.Element) {
+	throw new Error(
+		"The importNode shim requires IE8 to be in strict mode which can be done by adding a DOCTYPE to the page" +
+		" -- full details at <http://blogs.msdn.com/b/ie/archive/2010/03/02/how-ie8-determines-document-mode.aspx>");
+}
+
 if(!window.DocumentFragment && window.HTMLDocument) {
 	window.DocumentFragment = HTMLDocument;
 }

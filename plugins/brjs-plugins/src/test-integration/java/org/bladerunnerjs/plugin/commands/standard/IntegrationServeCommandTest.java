@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.commands.standard;
 import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
 import static org.bladerunnerjs.plugin.commands.standard.ServeCommand.Messages.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
@@ -45,7 +46,8 @@ public class IntegrationServeCommandTest extends SpecTest
 	@Test
 	public void serveCommandStartsAppServer() throws Exception
 	{
-		given(logging).enabled();
+		given(logging).enabled()
+			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
@@ -69,7 +71,8 @@ public class IntegrationServeCommandTest extends SpecTest
 		appServerPort = 7777;
 		appServer = brjs.applicationServer(appServerPort);
 		
-		given(logging).enabled();
+		given(logging).enabled()
+			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve", "-p", "7777");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")
@@ -82,6 +85,7 @@ public class IntegrationServeCommandTest extends SpecTest
 	public void serverWillServeAppsOnceStarted() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyReCreated()
+			.and(brjs).usedForServletModel()
 			.and(brjs).localeSwitcherHasContents("")
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
@@ -117,5 +121,60 @@ public class IntegrationServeCommandTest extends SpecTest
 			}
 		});
 	}
+	
+	@Test
+	public void versionIsConfigurable() throws Exception
+	{
+		brjs = null;
+		given(brjs).hasBeenAuthenticallyReCreated()
+			.and(brjs).localeSwitcherHasContents("")
+			.and(brjs).usedForServletModel();
+			App app = brjs.app("app1");
+    		Aspect aspect = app.defaultAspect();
+    		appServer = brjs.applicationServer();
+    		given(aspect).hasClass("appns/Class1")
+			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(brjs).runThreadedCommand("serve", "-v", "myversion");
+		then(appServer).requestCanEventuallyBeMadeWhereResponseMatches("/app1/v/myversion/js/dev/combined/bundle.js", new Predicate<String>()
+		{
+			@Override
+			public boolean apply(String input)
+			{
+				return input.contains("module.exports.APP_VERSION = 'myversion");
+			}
+		});
+	}
+	
+	@Test
+	public void customVersionHasTimestampAppended() throws Exception
+	{
+		brjs = null;
+		given(brjs).hasBeenAuthenticallyReCreated()
+			.and(brjs).localeSwitcherHasContents("")
+			.and(brjs).usedForServletModel();
+			App app = brjs.app("app1");
+    		Aspect aspect = app.defaultAspect();
+    		appServer = brjs.applicationServer();
+    		given(aspect).hasClass("appns/Class1")
+			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(brjs).runThreadedCommand("serve", "-v", "myversion");
+		then(appServer).requestCanEventuallyBeMadeWhereResponseMatches("/app1/v/myversion/js/dev/combined/bundle.js", new Predicate<String>()
+		{
+			@Override
+			public boolean apply(String input)
+			{
+				for (String line : StringUtils.split(input, "\n")) {
+					
+					if (line.matches( "module\\.exports\\.APP_VERSION = 'myversion\\-[0-9]{14}';")) {
+						return true;
+					}
+				}
+				return false;
+			}
+		});
+	}
+	
 	
 }

@@ -275,7 +275,9 @@
 				definition = returnValue || module.exports;
 			}
 
-			this.moduleExports[id] = definition;
+			if(!module.preventCaching) {
+				this.moduleExports[id] = definition;
+			}
 		}
 		catch(e) {
 			// this is here to slightly improve the dev experience when debugging exceptions that occur within this try/finally block.
@@ -288,7 +290,7 @@
 			delete this.incompleteExports[id];
 		}
 
-		return this.moduleExports[id];
+		return definition;
 	};
 
 	Realm.prototype.subrealm = function(fallbackRequire) {

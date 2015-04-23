@@ -29,8 +29,7 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		mockJndiContext = TestContextFactory.getTestContext();
 		dummyServlet = new DummyServlet();
 		dummyServlet.resetResponse();
-		appServer = createAppServer(dummyServlet, new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)));
-		appServer.start();
+		appServer = createAndStartAppServer(dummyServlet, new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)));
 	}
 
 	@After

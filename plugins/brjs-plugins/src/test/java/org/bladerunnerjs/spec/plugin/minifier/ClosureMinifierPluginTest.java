@@ -47,7 +47,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 				"hello('New user');\n"+
 				"\n";
 		minifyWhitespaceContent = "function hello(name){alert(\"Hello, \"+name)}hello(\"New user\")";
-		minifySimpleContent		= "function(a,b,c){alert(\"Hello, New user\")";
+		minifySimpleContent		= "function(b,c,a){alert(\"Hello, New user\")";
 		minifyAdvancedContent	= "alert(\"Hello, New user\")";
 		
 		// for closure compiler test using reserved words as var names
@@ -152,7 +152,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='closure-whitespace'@/>\n"+"require('appns/Class');")
 			.and(aspect).classFileHasContent("Class", "{ prop=\"$£€ø\" }")
 			.and(brjs).localeSwitcherHasContents("")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/v/1234/js/prod/closure-whitespace/bundle.js", "{prop=\"$\\u00a3\\u20ac\\u00f8\"}");
 	}

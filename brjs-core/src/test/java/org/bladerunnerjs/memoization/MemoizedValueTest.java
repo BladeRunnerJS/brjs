@@ -91,7 +91,7 @@ public class MemoizedValueTest {
 		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);
 		memoizedValue.value(incrementingGetter);
 		
-		loggerMessageStore.verifyDebugLogMessage(MemoizedValue.RECALCULATING_VALUE_MSG, "MemoizedFile_"+tempDir.getAbsolutePath()+".exists");
+		loggerMessageStore.verifyDebugLogMessage(MemoizedValue.RECALCULATING_VALUE_MSG, "MemoizedFile_"+tempDir.getAbsolutePath()+" exists()");
 		loggerMessageStore.verifyDebugLogMessage(MemoizedValue.RECALCULATING_VALUE_MSG, "THE_ID");
 	}
 	

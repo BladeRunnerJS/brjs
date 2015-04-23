@@ -15,7 +15,7 @@ import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.InvalidRequirePathException;
-import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
+import org.bladerunnerjs.api.plugin.AssetRegistry;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.DefaultBladeset;
@@ -28,18 +28,12 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	public static final String IMPLICIT_PACKAGE_USED = "The location '%s' contains a directory with the same name as the parent asset container require prefix ('%s'), using '%s' as the implied require prefix for this location.";
 	
 	@Override
-	public int priority()
-	{
-		return 100;
-	}
-	
-	@Override
-	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
 	{
 		// only create assets if we're at the root of the asset container *and* its not a default bladeset
 		if (assetContainer instanceof DefaultBladeset || !neccessaryChildDirsArePresent(assetContainer) 
 				|| assetContainer.dir() != dir || assetDiscoveryInitiator.hasRegisteredAsset(BRJSConformantRootDirectoryLinkedAsset.calculateRequirePath(assetContainer))) {
-			return Collections.emptyList();
+			return;
 		}
 		
 		List<Asset> assets = new ArrayList<>();
@@ -73,8 +67,6 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 			List<Asset> discoveredAssets = createAssetsForChildDir(assetContainer, themeDir, themeRequirePrefix, implicitDependencies, assetDiscoveryInitiator, rootAsset);
 			rootAsset.addImplicitDependencies(discoveredAssets);
 		}
-		
-		return Arrays.asList(rootAsset);
 	}
 	
 	private boolean useImpliedRequirePrefix(AssetContainer assetContainer) {
@@ -180,7 +172,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 	
 	
 	private List<Asset> createAssetsForChildDir(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, 
-			AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parentAsset)
+			AssetRegistry assetDiscoveryInitiator, Asset parentAsset)
 	{
 		List<Asset> assets = new ArrayList<>();
 		Asset child = getOrCreateAsset(assetContainer, dir, requirePrefix, assetDiscoveryInitiator, implicitDependencies, parentAsset);
@@ -189,7 +181,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		return assets;
 	}
 	
-	private List<Asset> discoverFurtherAssetsForChild(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, Asset parent)
+	private List<Asset> discoverFurtherAssetsForChild(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator, Asset parent)
 	{
 		List<Asset> furtherAssetImplicitDependencies = new ArrayList<>();
 		furtherAssetImplicitDependencies.addAll(implicitDependencies);
@@ -213,7 +205,7 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 		return discoveredAssets;
 	}
 
-	public Asset getOrCreateAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> implicitDependencies, Asset parent) {
+	public Asset getOrCreateAsset(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetRegistry assetDiscoveryInitiator, List<Asset> implicitDependencies, Asset parent) {
 		if (!assetDiscoveryInitiator.hasRegisteredAsset(DirectoryAsset.getRequirePath(requirePrefix, dir))) {
 			List<Asset> furtherAssetImplicitDependencies = new ArrayList<>();
 			furtherAssetImplicitDependencies.addAll(implicitDependencies);

@@ -60,6 +60,43 @@ describe('a realm', function() {
 		expect(definitionHasBeenCalled).toBe(false);
 	});
 
+	it('allows defined objects to be required, and provides the same value each time', function() {
+		var id = 0;
+		testRealm.define('id', function(require, exports, module) {
+			module.exports = ++id;
+		});
+
+		expect(testRealm.require('id')).toBe(1);
+		expect(testRealm.require('id')).toBe(1);
+	});
+
+	it('optionally allows a fresh value to be returned each time', function() {
+		var id = 0;
+		testRealm.define('id', function(require, exports, module) {
+			module.preventCaching = true;
+			module.exports = ++id;
+		});
+
+		expect(testRealm.require('id')).toBe(1);
+		expect(testRealm.require('id')).toBe(2);
+	});
+
+	it('also allows a fresh value to be returned initially, while still allowing caching at some future point', function() {
+		var id = 0;
+		testRealm.define('id', function(require, exports, module) {
+			if(++id < 3) {
+				module.preventCaching = true;
+			}
+
+			module.exports = id;
+		});
+
+		expect(testRealm.require('id')).toBe(1);
+		expect(testRealm.require('id')).toBe(2);
+		expect(testRealm.require('id')).toBe(3);
+		expect(testRealm.require('id')).toBe(3);
+	});
+
 	it('allows one definition to require a definition defined later.', function() {
 		testRealm.define('ClassB', function(require, exports, module) {
 			exports.parent = require('ClassA');
