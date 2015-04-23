@@ -29,11 +29,15 @@ public interface CommandPlugin extends Plugin
 	 * <p><b>Note:</b> Developers should not rely on any class initialization performed within {@link Plugin#setBRJS Plugin.setBRJS()} as this
 	 * method is an <i>identifier-method</i> which may be invoked before {@link Plugin#setBRJS Plugin.setBRJS()} has itself been
 	 * invoked.</p>
+	 * 
+	 * @return The name of the command
 	 */
 	public String getCommandName();
 	
 	/**
 	 * Returns a description message that helps users to determine whether a command may be of interest to them or not.
+	 * 
+	 * @return The command description
 	 */
 	public String getCommandDescription();
 	
@@ -41,6 +45,8 @@ public interface CommandPlugin extends Plugin
 	 * Returns a usage message that shows the user an example of how the command parameters are used.
 	 * 
 	 * <p><b>Note:</b> This method doesn't need to be implemented if you've chosen to extend {@link JSAPArgsParsingCommandPlugin}.</p>
+	 * 
+	 * @return A string detailing the usage of the command
 	 */
 	public String getCommandUsage();
 	
@@ -48,6 +54,8 @@ public interface CommandPlugin extends Plugin
 	 * Returns a detailed help message that describes the various parameters the command provides, and how they are used.
 	 * 
 	 * <p><b>Note:</b> This method doesn't need to be implemented if you've chosen to extend {@link JSAPArgsParsingCommandPlugin}.</p>
+	 * 
+	 * @return A help message to be displayed if the command is used incorrectly
 	 */
 	public String getCommandHelp();
 	
@@ -62,6 +70,7 @@ public interface CommandPlugin extends Plugin
 	 * 
 	 * @throws CommandArgumentsException if any invalid arguments were provided.
 	 * @throws CommandOperationException if a problem was encountered while running the command.
+	 * 
 	 */
 	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException;
 }

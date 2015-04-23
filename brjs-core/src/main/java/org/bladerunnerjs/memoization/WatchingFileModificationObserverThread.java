@@ -1,4 +1,4 @@
-package org.bladerunnerjs.api.memoization;
+package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +11,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.memoization.WatchKeyService;
-import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.utility.FileObserverFactory;
 
 import static java.nio.file.StandardWatchEventKinds.*;

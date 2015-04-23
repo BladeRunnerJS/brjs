@@ -20,7 +20,7 @@ public interface BrowsableNode extends BundlableNode {
 	 * @param version a String object representing the version used
 	 * @param writer a Writer object used as a stream for the newly updated content
 	 * @param requestMode a RequestMode object showing whether the request is made in DEV (development) or PROD (production) mode
-	 * @throws ModelOperationException for non-BRJS-specific issues
+	 * @throws ModelOperationException if any exceptions are thrown when performing the filter
 	 */
 	public void filterIndexPage(String indexPage, Locale locale, String version, Writer writer, RequestMode requestMode) throws ModelOperationException;
 }

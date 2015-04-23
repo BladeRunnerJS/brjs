@@ -50,8 +50,10 @@ public interface BRJSNode extends Node {
 	 * to the BRJSNode.
 	 * 
 	 * @param transformations a Map of Strings to Strings where the key is the token and the value is the String it will be replaced with
+	 * 
+	 * * @see <a href="http://bladerunnerjs.org/docs/use/custom_templates/">Custom Templates</a>
+	 * @throws ModelUpdateException for any exceptions thrown while calculating node template transformations
 	 * @throws ModelUpdateException for non-BRJS-specific exceptions
-	 * @see <a href="http://bladerunnerjs.org/docs/use/custom_templates/">Custom Templates</a>
 	 */
 	void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException;
 }

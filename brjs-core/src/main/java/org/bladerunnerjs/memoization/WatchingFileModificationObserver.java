@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.FileObserver;
-import org.bladerunnerjs.api.memoization.WatchingFileModificationObserverThread;
 
 
 public class WatchingFileModificationObserver implements FileObserver
