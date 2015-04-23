@@ -87,10 +87,11 @@ public class MemoizedFile extends File implements Comparable<File>
 	
 	public List<MemoizedFile> filesAndDirs() {		
 		List<MemoizedFile> filesAndDirsList = filesAndDirs.value(() -> {
-			if (!wrappedFile.isDirectory()) {
+			File[] wrappedListFiles = wrappedFile.listFiles();
+			if (!wrappedFile.isDirectory() || wrappedListFiles == null) {
 				return Collections.emptyList();
 			}
-			List<File> listedFiles = Arrays.asList(wrappedFile.listFiles());
+			List<File> listedFiles = Arrays.asList(wrappedListFiles);
 			Collections.sort(listedFiles);
 			List<MemoizedFile> memoizedFileList = new ArrayList<>();
 			for (File file : listedFiles) {

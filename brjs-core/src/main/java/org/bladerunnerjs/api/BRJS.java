@@ -115,7 +115,7 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		appsFolder = getMemoizedFile(appsFolderPath);
 		
-		userApps = new NodeList<>(this, App.class, appsFolder.getName(), null, null, new ValidAppDirFileFilter(this), appsFolder.getParentFile());
+		userApps = new NodeList<>(this, App.class, null, null, null, new ValidAppDirFileFilter(this), appsFolder);
 		this.pluginLocator = pluginLocator;
 		sdkFolder = dir().file("sdk");
 		
