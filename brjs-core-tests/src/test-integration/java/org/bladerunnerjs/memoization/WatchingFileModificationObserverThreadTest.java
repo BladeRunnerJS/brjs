@@ -1,4 +1,4 @@
-package org.bladerunnerjs.api.memoization;
+package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.io.IOException;

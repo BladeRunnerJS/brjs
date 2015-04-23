@@ -40,7 +40,7 @@ public class MemoizedFile extends File implements Comparable<File>
 	private MemoizedValue<List<MemoizedFile>> filesAndDirs;
 	
 	
-	MemoizedFile(RootNode rootNode, String file) {
+	public MemoizedFile(RootNode rootNode, String file) {
 		super( file );
 		this.rootNode = rootNode;
 		wrappedFile = new File( FilenameUtils.normalize(file) );

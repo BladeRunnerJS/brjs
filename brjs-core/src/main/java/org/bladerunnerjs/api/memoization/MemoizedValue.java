@@ -10,6 +10,12 @@ import org.bladerunnerjs.model.FileAccessLimitScope;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
+/**
+ * Provides <a href="https://en.wikipedia.org/wiki/Memoization">Memoization</a>  by using the {@link FileModificationRegistry} to check whether or not files have changed and 
+ * values need to be recomputed.
+ *
+ * @param <T>
+ */
 public class MemoizedValue<T extends Object> {
 	
 	public static final String RECALCULATING_VALUE_MSG = "Recalculating memoized value for '%s'";
@@ -51,6 +57,23 @@ public class MemoizedValue<T extends Object> {
 		logger = rootNode.logger(this.getClass());
 	}
 	
+	/**
+	 * Used to access the Memoized value. If the value needs to be computed the {@link Getter} is executed to calculate the new value.
+	 * 
+	 * Lambas can provided instead of a getter, for example:
+	 * 
+	 * <code>
+	 * memoizedValue.value(() -> {
+	 *   return SomethingThatTakesALongTimeToComplete();
+	 * });
+	 * </code>
+	 * 
+	 * Be aware that using Lambdas is only supported in Java8.
+	 * 
+	 * @param getter
+	 * @return The calculated value
+	 * @throws E
+	 */
 	@SuppressWarnings("unchecked")
 	public <E extends Exception> T value(Getter<E> getter) throws E {
 		if (valueNeedsToBeRecomputed()) {
