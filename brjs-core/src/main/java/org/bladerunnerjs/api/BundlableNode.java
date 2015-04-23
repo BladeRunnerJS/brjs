@@ -23,7 +23,7 @@ public interface BundlableNode extends Node, AssetContainer {
 	 * 
 	 * @param requirePath the require path from which the resource will be retrieved
 	 * @return the LinkedAsset object retrieved
-	 * @exception RequirePathException if the require path is invalid or the resource is out of scope
+	 * @throws RequirePathException if the require path is invalid or the resource is out of scope
 	 */
 	LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException;
 	
@@ -49,9 +49,9 @@ public interface BundlableNode extends Node, AssetContainer {
 	 * @param contentAccessor the output stream the content will be written to
 	 * @param version the version of the bundle being retrieved
 	 * @return the ResponseContent corresponding to the bundled resources
-	 * @exception MalformedRequestException if the request does not adhere to the expected format
-	 * @exception ResourceNotFoundException if the request may not be handled due to the indicated resource not being found
-	 * @exception ContentProcessingException for non-BRJS-specific issues
+	 * @throws MalformedRequestException if the request does not adhere to the expected format
+	 * @throws ResourceNotFoundException if the request may not be handled due to the indicated resource not being found
+	 * @throws ContentProcessingException for non-BRJS-specific issues
 	 */
 	ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 	
@@ -62,7 +62,7 @@ public interface BundlableNode extends Node, AssetContainer {
 	 * @param asset the Asset object whose required Assets will be retrieved
 	 * @param requirePaths the require paths to be resolved
 	 * @return a list of Assets that are required by the parameter Asset
-	 * @exception RequirePathException if the require path is invalid or ambiguous, out of scope, or may otherwise not be resolvable
+	 * @throws RequirePathException if the require path is invalid or ambiguous, out of scope, or may otherwise not be resolvable
 	 */
 	List<Asset> assets(Asset asset, List<String> requirePaths) throws RequirePathException;
 }
