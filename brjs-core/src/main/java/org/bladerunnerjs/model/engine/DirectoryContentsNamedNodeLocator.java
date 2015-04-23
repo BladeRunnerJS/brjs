@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
@@ -12,13 +14,20 @@ public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 	private String dirNameFilter;
 	private RootNode rootNode;
 	private String dirNameExcludeFilter;
+	private IOFileFilter contentsFileFilter;
 	
 	public DirectoryContentsNamedNodeLocator(RootNode rootNode, String subDirPath, String dirNameFilter, String dirNameExcludeFilter)
+	{
+		this(rootNode, subDirPath, dirNameFilter, dirNameExcludeFilter, TrueFileFilter.INSTANCE);
+	}
+	
+	public DirectoryContentsNamedNodeLocator(RootNode rootNode, String subDirPath, String dirNameFilter, String dirNameExcludeFilter, IOFileFilter contentsFileFilter)
 	{
 		this.rootNode = rootNode;
 		this.subDirPath = subDirPath;
 		this.dirNameFilter = dirNameFilter;
 		this.dirNameExcludeFilter = dirNameExcludeFilter;
+		this.contentsFileFilter = contentsFileFilter;
 	}
 	
 	@Override
@@ -37,7 +46,7 @@ public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 			{
 				MemoizedFile fileInfo = rootNode.getMemoizedFile(file);
 				
-				if ( fileInfo.isDirectory() && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
+				if ( fileInfo.isDirectory() && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) && contentsFileFilter.accept(fileInfo) )
 				{
 					String childName = file.getName();
 					
@@ -55,7 +64,7 @@ public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 		
 		return dirSet;
 	}
-	
+
 	@Override
 	public boolean couldSupportLogicalNodeName(String logicalNodeName)
 	{

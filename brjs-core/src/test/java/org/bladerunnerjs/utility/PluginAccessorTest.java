@@ -14,7 +14,7 @@ import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
+import org.bladerunnerjs.api.plugin.AssetRegistry;
 import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
@@ -241,7 +241,7 @@ public class PluginAccessorTest
 	class ContentPlugin4 extends EmptyAbstractContentPlugin {}
 	
 	class EmptyAbstractAssetPlugin extends AbstractAssetPlugin {
-		public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator) { return null; }
+		public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator) { }
 		public void setBRJS(BRJS brjs) { }
 	}
 	class AssetPlugin1 extends EmptyAbstractAssetPlugin {}

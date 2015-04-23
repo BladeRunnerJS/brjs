@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.bundlers.thirdparty;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -12,7 +11,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
+import org.bladerunnerjs.api.plugin.AssetRegistry;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.DirectoryAsset;
@@ -25,7 +24,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	}
 
 	@Override
-	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
 	{
 		if ( assetContainer instanceof JsLib && assetContainer.file( ThirdpartyLibManifest.LIBRARY_MANIFEST_FILENAME ).exists()
 				&& !assetDiscoveryInitiator.hasRegisteredAsset(ThirdpartySourceModule.calculateRequirePath(assetContainer)) ) {
@@ -36,13 +35,10 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 
 			// create CSS assets so they can be implicit dependencies based on the manifest file
 			discoverCssAssets(assetContainer, dir, "css!"+assetContainer.requirePrefix(), assetDiscoveryInitiator);
-			
-			return Arrays.asList(asset);
 		}
-		return Collections.emptyList();
 	}
 	
-	private List<Asset> discoverCssAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator) {
+	private List<Asset> discoverCssAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetRegistry assetDiscoveryInitiator) {
 		List<Asset> assets = new ArrayList<>();
 		FileFilter cssFileFilter = new SuffixFileFilter(".css");
 		for (MemoizedFile cssFile : dir.listFiles(cssFileFilter)) {
@@ -62,7 +58,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 		return assets;
 	}
 	
-	private List<Asset> createDirectoryAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetDiscoveryInitiator assetDiscoveryInitiator) {
+	private List<Asset> createDirectoryAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetRegistry assetDiscoveryInitiator) {
 		List<Asset> assets = new ArrayList<>();
 		for (MemoizedFile assetDir : dir.nestedDirs()) {
 			Asset dirAsset;

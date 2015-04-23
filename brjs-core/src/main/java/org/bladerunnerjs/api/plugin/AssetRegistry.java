@@ -7,7 +7,7 @@ import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 
 
-public interface AssetDiscoveryInitiator
+public interface AssetRegistry
 {
 	public void registerSeedAsset(LinkedAsset asset);
 	public void promoteRegisteredAssetToSeed(LinkedAsset asset);

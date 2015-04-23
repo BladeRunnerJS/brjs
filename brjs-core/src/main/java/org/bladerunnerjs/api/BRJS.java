@@ -1,10 +1,8 @@
 package org.bladerunnerjs.api;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +10,6 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.logging.LoggerFactory;
@@ -37,6 +34,7 @@ import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.LogLevelAccessor;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.TemplateGroup;
+import org.bladerunnerjs.model.engine.ValidAppDirFileFilter;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -52,7 +50,6 @@ import org.bladerunnerjs.utility.VersionInfo;
 public class BRJS extends AbstractBRJSRootNode
 {
 	public static final String PRODUCT_NAME = "BladeRunnerJS";
-	private static final FilenameFilter APP_CONTENTS_FILENAME_FILTER = new WildcardFileFilter(Arrays.asList(AppConf.FILE_NAME, "*.html", "*.jsp", "*-aspect", "*-bladeset", "blades", "WEB-INF"));
 	
 	public class Messages {
 		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "Performing node discovery.";
@@ -117,7 +114,8 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		appsFolder = getMemoizedFile(appsFolderPath);
-		userApps = new NodeList<>(this, App.class, appsFolder.getName(), null, null, appsFolder.getParentFile());
+		
+		userApps = new NodeList<>(this, App.class, appsFolder.getName(), null, null, new ValidAppDirFileFilter(this), appsFolder.getParentFile());
 		this.pluginLocator = pluginLocator;
 		sdkFolder = dir().file("sdk");
 		
@@ -264,14 +262,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> userApps()
 	{
-		List<App> apps = new ArrayList<>();
-		List<App> possibleApps = userApps.list();
-		for (App app : possibleApps) {
-			if (app.dir().list(APP_CONTENTS_FILENAME_FILTER).length > 0) {
-				apps.add(app);
-			}
-		}
-		return apps;
+		return userApps.list();
 	}
 	
 	public App userApp(String appName)

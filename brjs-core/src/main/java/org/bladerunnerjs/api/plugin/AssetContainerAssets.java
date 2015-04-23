@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.AssetContainer;
 
 public class AssetContainerAssets
 {
-	private final MemoizedValue<DefaultAssetDiscoveryInitiator> assetDiscoveryResult;
+	private final MemoizedValue<DefaultAssetRegistry> assetDiscoveryResult;
 
 	private AssetContainer assetContainer;
 	
@@ -47,9 +47,9 @@ public class AssetContainerAssets
 		return assetDiscoveryResult().assets.get(requirePath);
 	}
 	
-	private DefaultAssetDiscoveryInitiator assetDiscoveryResult() {
+	private DefaultAssetRegistry assetDiscoveryResult() {
 		return assetDiscoveryResult.value(() -> {
-			return new DefaultAssetDiscoveryInitiator(assetContainer);
+			return new DefaultAssetRegistry(assetContainer);
 		});
 	}
 	

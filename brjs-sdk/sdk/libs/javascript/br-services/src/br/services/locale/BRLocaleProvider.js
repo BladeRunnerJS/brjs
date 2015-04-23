@@ -28,10 +28,10 @@ BRLocaleProvider.prototype.setActiveLocale = function(locale) {
 BRLocaleProvider.prototype.getActiveLocale = function() {
 	var userPreferredLocale = localStorage.getItem('locale');
 	var browserAcceptedLocales = getBrowserAcceptedLocales();
-	var appLocales = window.$BRJS_APP_LOCALES;
+	var appLocales = require("service!br.app-meta-service").getLocales();
 	
 	if(!userPreferredLocale) {
-		userPreferredLocale = getCookie(window.$BRJS_LOCALE_COOKIE_NAME);
+		userPreferredLocale = getCookie(require("service!br.app-meta-service").getLocaleCookieName());
 	}
 	
 	return this.getActiveLocaleGiven(userPreferredLocale, browserAcceptedLocales, appLocales);

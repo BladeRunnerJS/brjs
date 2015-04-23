@@ -14,7 +14,7 @@ public class CommonJsUseTimeDependenciesReader extends Reader
 
 	private Reader useTimeDependencesReader;
 
-	public CommonJsUseTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
+	public CommonJsUseTimeDependenciesReader(DefaultCommonJsSourceModule sourceModule) throws IOException {
 		Predicate<Integer> insideCodeBlockPredicate = new JsCodeBlockStrippingDependenciesReader.MoreThanPredicate(0);
 		
 		Reader sourceReader = sourceModule.getUnalteredContentReader();
