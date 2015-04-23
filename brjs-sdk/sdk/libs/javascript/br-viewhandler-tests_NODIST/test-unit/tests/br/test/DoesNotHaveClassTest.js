@@ -1,4 +1,3 @@
-require("jsunitextensions");
 DoesNotHaveClassTest = TestCase("DoesNotHaveClassTest");
 
 require('br/test/ViewFixture');

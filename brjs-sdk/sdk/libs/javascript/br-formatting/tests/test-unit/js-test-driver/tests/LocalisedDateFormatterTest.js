@@ -1,7 +1,4 @@
 (function() {
-
-	require('jsunitextensions');
-
 	var LocalisedDateFormatter = require('br/formatting/LocalisedDateFormatter');
 	var formatter;
 

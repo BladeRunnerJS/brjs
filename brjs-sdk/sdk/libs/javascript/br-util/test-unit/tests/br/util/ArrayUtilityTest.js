@@ -1,4 +1,3 @@
-require('jsunitextensions');
 require('mock4js');
 
 var ArrayUtility = require('br/util/ArrayUtility');

@@ -1,9 +1,6 @@
 (function() {
 	var Component = require('br/component/Component');
 
-	br.Core.thirdparty('jsunitextensions');
-	br.Core.thirdparty('mock4js');
-
 	ComponentTest = TestCase("ComponentTest");
 
 	ComponentTest.prototype.createSetDisplayFrameComponent = function()
