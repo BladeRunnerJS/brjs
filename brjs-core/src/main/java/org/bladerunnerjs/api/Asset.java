@@ -20,6 +20,7 @@ public interface Asset {
 	 * The method returns a {@link Reader} object for obtaining the content of the Asset.
 	 * 
 	 * @return a Reader object for reading the current Asset's character stream
+	 * @thors IOException if the Asset may not be read
 	 */
 	Reader getReader() throws IOException;
 	
