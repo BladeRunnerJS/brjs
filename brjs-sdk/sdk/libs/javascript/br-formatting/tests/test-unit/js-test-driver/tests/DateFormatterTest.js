@@ -1,6 +1,4 @@
 (function() {
-	require('jsunitextensions');
-
 	DateFormatterTest = TestCase("DateFormatterTest");
 
 	var DateFormatter = require('br/presenter/formatter/DateFormatter');
@@ -29,7 +27,7 @@
 
 		// convert from date string to object
 		this.assertSimpleParse = function(sDatePicture, sDateInput, oDateOutput) {
-			assertVariantEquals(sDatePicture, oDateOutput, that.oFormatter.parseDate(sDateInput, sDatePicture));
+			assertEquals(sDatePicture, oDateOutput, that.oFormatter.parseDate(sDateInput, sDatePicture));
 		};
 
 		this.assertFormat = function(sOutputFormat, sDateOutput, sDateInput, sInputFormat) {
@@ -39,7 +37,7 @@
 			};
 			var sExpected = sDateOutput;
 			var sActual = that.oFormatter.format(sDateInput, mAttributes);
-			assertVariantEquals(sDateInput + " -> " + sDateOutput, sExpected, sActual);
+			assertEquals(sDateInput + " -> " + sDateOutput, sExpected, sActual);
 		};
 
 		this.assertFormatWithTimezone = function(sOutputFormat, sDateOutput, sDateInput, sInputFormat) {
@@ -50,7 +48,7 @@
 			};
 			var sExpected = sDateOutput;
 			var sActual = that.oFormatter.format(sDateInput, mAttributes);
-			assertVariantEquals(sDateInput + " -> " + sDateOutput, sExpected, sActual);
+			assertEquals(sDateInput + " -> " + sDateOutput, sExpected, sActual);
 		};
 
 		this.fixTimeZone = function(nAdjustment) {

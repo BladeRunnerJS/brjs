@@ -1,6 +1,3 @@
-require('jsunitextensions');
-require('mock4js');
-
 var ElementUtility = require('br/util/ElementUtility');
 
 ElementUtilityTest = TestCase('ElementUtilityTest');

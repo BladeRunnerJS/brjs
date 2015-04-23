@@ -1,6 +1,5 @@
 (function() {
 	ThousandsFormatterTest = TestCase("ThousandsFormatterTest");
-	require('jsunitextensions');
 	var ThousandsFormatter = require('br/presenter/formatter/ThousandsFormatter');
 
 	ThousandsFormatterTest.prototype.setUp = function()
