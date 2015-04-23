@@ -30,9 +30,9 @@ public interface BRJSNode extends Node {
 	 * The templateGroup may contain templates for various BRJS entities, and the one corresponding to your current BRJSNode type 
 	 * will be retrieved automatically.
 	 * 
-	 * @exception InvalidNameException if the node may not be created due to an invalid name associated to it
-	 * @exception TemplateInstallationException if the template has not been found
-	 * @exception ModelUpdateException for other non-BRJS-specific issues
+	 * @throws InvalidNameException if the node may not be created due to an invalid name associated to it
+	 * @throws TemplateInstallationException if the template has not been found
+	 * @throws ModelUpdateException for other non-BRJS-specific issues
 	 */
 	void populate(String templateGroup) throws InvalidNameException, ModelUpdateException, TemplateInstallationException;
 	
@@ -49,9 +49,9 @@ public interface BRJSNode extends Node {
 	 * added to any template and must be prefix by `@` to indicate that the token will be replaced. The method applies these replacements
 	 * to the BRJSNode.
 	 * 
-	 * param transformations a Map of Strings to Strings where the key is the token and the value is the String it will be replaced with
-	 * 
-	 * * @see <a href="http://bladerunnerjs.org/docs/use/custom_templates/">Custom Templates</a>
+	 * @param transformations a Map of Strings to Strings where the key is the token and the value is the String it will be replaced with
+	 * @throws ModelUpdateException for any exceptions thrown while calculating node template transformations
+	 * @see <a href="http://bladerunnerjs.org/docs/use/custom_templates/">Custom Templates</a>
 	 */
 	void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException;
 }

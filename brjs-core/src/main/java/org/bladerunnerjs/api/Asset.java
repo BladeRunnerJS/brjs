@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
+import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetContainer;
 
 /**
@@ -20,6 +22,7 @@ public interface Asset {
 	 * The method returns a {@link Reader} object for obtaining the content of the Asset.
 	 * 
 	 * @return a Reader object for reading the current Asset's character stream
+	 * @throws IOException if there is any exceptions while creating the Reader
 	 */
 	Reader getReader() throws IOException;
 	

@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.engine.RootNode;
  * Provides <a href="https://en.wikipedia.org/wiki/Memoization">Memoization</a>  by using the {@link FileModificationRegistry} to check whether or not files have changed and 
  * values need to be recomputed.
  *
- * @param <T>
+ * @param <T> the type of value to be memoized
  */
 public class MemoizedValue<T extends Object> {
 	
@@ -72,9 +72,10 @@ public class MemoizedValue<T extends Object> {
 	 * 
 	 * Be aware that using Lambdas is only supported in Java8.
 	 * 
-	 * @param getter
+	 * @param <E> the type of exception
+	 * @param getter The getter used to calculate the value
 	 * @return The calculated value
-	 * @throws E
+	 * @throws E for any exception
 	 */
 	@SuppressWarnings({ "unchecked", "javadoc" })
 	public <E extends Exception> T value(Getter<E> getter) throws E {

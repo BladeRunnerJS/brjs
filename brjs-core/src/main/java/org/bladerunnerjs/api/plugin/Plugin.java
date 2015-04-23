@@ -39,6 +39,7 @@ public interface Plugin
 	 * <p>Plug-ins are not expected to implement this method themselves, and should instead extend one of the {@link org.bladerunnerjs.api.plugin.base.AbstractPlugin}
 	 * sub-classes (e.g. {@link org.bladerunnerjs.api.plugin.base.AbstractCommandPlugin}).</p>
 	 * 
+	 * @param <P> Any plugin
 	 * @param pluginInterface The interface which this object may, or may not be, an instance of.
 	 * @return <code>true</code>, if this object is an instance of the given interface, and <code>false</code> otherwise.
 	 */
@@ -51,7 +52,9 @@ public interface Plugin
 	 * <p>Plug-ins are not expected to implement this method themselves, and should instead extend one of the {@link org.bladerunnerjs.api.plugin.base.AbstractPlugin}
 	 * sub-classes (e.g. {@link org.bladerunnerjs.api.plugin.base.AbstractCommandPlugin}).</p>
 	 * 
+	 * @param <P> Any plugin
 	 * @param pluginInterface The interface which this object may, or may not be, an instance of.
+	 * @return The plugin cast to the type P
 	 */
 	<P extends Plugin> P castTo(Class<P> pluginInterface);
 	
