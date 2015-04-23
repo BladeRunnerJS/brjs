@@ -17,5 +17,13 @@ public interface LinkedAsset extends Asset {
 	 * @return The list of assets
 	 */
 	List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
+	
+	/**
+	 * BRJS calculates dependencies implicitly for additional {@link Asset}s found by plugins, for example, a JavaScript file
+	 * from a blade will implicitly depend on a CSS file in the same blade once this has been located. The method will add these implicit 
+	 * dependencies to the current LinkedAsset. 
+	 * 
+	 * @param implicitDependencies the previously retrieved implicitDependencies to be added
+	 */
 	void addImplicitDependencies(List<Asset> implicitDependencies);
 }
