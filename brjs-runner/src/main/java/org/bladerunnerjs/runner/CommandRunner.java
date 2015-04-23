@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,7 +113,7 @@ public class CommandRunner {
 	}
 	
 	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
-		return run(new File(""), args);
+		return run(Paths.get(".").toAbsolutePath().normalize().toFile(), args);
 	}
 	
 	private void setBrjsAllowStats(BRJS brjs) throws ConfigException
