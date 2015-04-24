@@ -5,6 +5,7 @@ function ClockClass() {
 }
 
 ClockClass.prototype.install = function() {
+	this.installed = true;
 	this.origSetTimeout = setTimeout;
 	this.origSetInterval = setInterval;
 	this.origClearTimeout = clearTimeout;
@@ -32,6 +33,7 @@ ClockClass.prototype.install = function() {
 };
 
 ClockClass.prototype.uninstall = function() {
+	this.installed = false;
 	setTimeout = this.origSetTimeout;
 	setInterval= this.origSetInterval;
 	clearTimeout = this.origClearTimeout;
@@ -39,6 +41,8 @@ ClockClass.prototype.uninstall = function() {
 };
 
 ClockClass.prototype.reset = function() {
+		this._verifyInstalled();
+		
 		this.scheduledFunctions = {};
 		this.nowMillis = 0;
 		this.timeoutsMade = 0;
@@ -46,6 +50,8 @@ ClockClass.prototype.reset = function() {
 
 
 ClockClass.prototype.tick = function(millis) {
+		this._verifyInstalled();
+		
 		var oldMillis = this.nowMillis;
 		var newMillis = oldMillis + millis;
 		this.runFunctionsWithinRange(oldMillis, newMillis);
@@ -53,6 +59,8 @@ ClockClass.prototype.tick = function(millis) {
 };
 
 ClockClass.prototype.runFunctionsWithinRange = function(oldMillis, nowMillis) {
+		this._verifyInstalled();
+
 		var scheduledFunc;
 		var funcsToRun = [];
 		for (var timeoutKey in this.scheduledFunctions) {
@@ -87,6 +95,8 @@ ClockClass.prototype.runFunctionsWithinRange = function(oldMillis, nowMillis) {
 };
 
 ClockClass.prototype.scheduleFunction = function(timeoutKey, funcToCall, millis, recurring) {
+		this._verifyInstalled();
+
 		Clock.scheduledFunctions[timeoutKey] = {
 				runAtMillis: Clock.nowMillis + millis,
 				funcToCall: funcToCall,
@@ -94,6 +104,10 @@ ClockClass.prototype.scheduleFunction = function(timeoutKey, funcToCall, millis,
 				timeoutKey: timeoutKey,
 				millis: millis
 		};
+};
+
+ClockClass.prototype._verifyInstalled = function() {
+	if(!this.installed) throw new Error("Clock can no longer be used until you've installed it. You should install it in your set-up method, and uninstall it in your tear-down method.");
 };
 
 var Clock = new ClockClass();
