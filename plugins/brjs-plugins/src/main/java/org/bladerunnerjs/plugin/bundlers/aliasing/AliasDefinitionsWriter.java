@@ -18,7 +18,7 @@ public class AliasDefinitionsWriter {
 	public static void write(BRJS brjs, AliasDefinitionsData data, MemoizedFile file, String defaultFileCharacterEncoding) throws IOException {
 		try {
 			EncodedFileUtil fileUtil = new EncodedFileUtil(brjs, defaultFileCharacterEncoding);
-			XMLBuilder builder = XMLBuilder.create("aliasDefinitions").ns("http://schema.caplin.com/CaplinTrader/aliasDefinitions");
+			XMLBuilder builder = XMLBuilder.create("aliasDefinitions").ns("http://schema.bladerunnerjs.org/aliasDefinitions");
 			
 			for (AliasDefinition aliasDefinition : data.aliasDefinitions) {
 				XMLBuilder aliasBuilder = builder.e("alias").a("name", aliasDefinition.getName());

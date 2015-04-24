@@ -1,18 +1,32 @@
 package org.bladerunnerjs.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
 public class DefaultAppVersionGenerator implements AppVersionGenerator
 {
-	private String version = String.valueOf( new Date().getTime() );
+	private String version = null;
+	private boolean appendTimetamp = true;
 	
 	@Override
 	public String getVersion()
 	{
+		if (version == null) {
+			return getTimestamp();
+		}
+		if (appendTimetamp) {
+			return version+"-"+getTimestamp();
+		}
 		return version;
 	}
 	
+	@Override
+	public void appendTimetamp(boolean appendTimetamp)
+	{
+		this.appendTimetamp = appendTimetamp;
+	}
+
 	@Override
 	public String getVersionPattern()
 	{
@@ -33,4 +47,7 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 		}
 	}
 
+	private String getTimestamp() {
+		return new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+	}
 }

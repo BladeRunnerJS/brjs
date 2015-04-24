@@ -240,7 +240,7 @@ public class BuildAppCommandTest extends SpecTest
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>");
 		when(brjs).runCommand("build-app", "app", "-v", "1234");
-		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234.")
+		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234")
 			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@appVersion@");
 	}
 
@@ -289,8 +289,8 @@ public class BuildAppCommandTest extends SpecTest
 			.and(aspect).hasClass("appns/Class2")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>\nrequire('appns/Class1');");
 		when(brjs).runCommand("build-app", "app1", "-v", "myversion");
-		then(brjs).hasDirectoryWithFormat("generated/built-apps/app1/v/", "myversion\\..*", filePath)
-			.and(new File(filePath.toString())).containsFileWithContents("/js/prod/combined/bundle.js", "window.$BRJS_APP_VERSION = '"+new File(filePath.toString()).getName()+"';");
+		then(brjs).hasDirectoryWithFormat("generated/built-apps/app1/v/", "myversion\\-.*", filePath)
+			.and(new File(filePath.toString())).containsFileWithContents("/js/prod/combined/bundle.js", "module.exports.APP_VERSION = '"+new File(filePath.toString()).getName()+"';");
 			
 	}
 	

@@ -12,15 +12,15 @@ if (window.attachEvent && !window.addEventListener) {
 BRHtmlResourceServiceTest.prototype.test_scriptTagsAreParsedByTheBrowser = function()
 {
 	var oService = ServiceRegistry.getService("br.html-service");
-	var eTemplate = oService.getHTMLTemplate('br.services.testing-template');
+	var eTemplate = oService.getTemplateElement('br.services.testing-template');
 	assertEquals(eTemplate.innerHTML.toLowerCase(), "<div>script</div>");
 };
 
 BRHtmlResourceServiceTest.prototype.test_templatesInBundle = function()
 {
 	var oService = ServiceRegistry.getService("br.html-service");
-	assertEquals(oService.getHTMLTemplate("br.services.template1").innerHTML.toLowerCase(), "some html1");
-	assertEquals(oService.getHTMLTemplate("br.services.template2").innerHTML.toLowerCase(), "some html2");
+	assertEquals(oService.getTemplateElement("br.services.template1").innerHTML.toLowerCase(), "some html1");
+	assertEquals(oService.getTemplateElement("br.services.template2").innerHTML.toLowerCase(), "some html2");
 };
 
 // Failing in IE8 resulting in red build. See #678
@@ -63,7 +63,7 @@ var assertTemplateContentsMatch = (function(){
 	var oService = ServiceRegistry.getService("br.html-service");
 	var tempDiv = document.createElement("div"); // Needed as you cannot call innerHTML on a document fragment.
 	return function assertTemplateContentsMatch(templateId, expected) {
-		var templateDocFrag = oService.getHTMLTemplate(templateId);
+		var templateDocFrag = oService.getTemplateFragment(templateId);
 		
 		tempDiv.innerHTML = "";
 		tempDiv.appendChild(templateDocFrag);

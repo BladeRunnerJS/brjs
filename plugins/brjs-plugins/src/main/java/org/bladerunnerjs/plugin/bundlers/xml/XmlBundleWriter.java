@@ -79,7 +79,7 @@ public class XmlBundleWriter
 	private void writeBundleInternal(final Map<String, List<XmlSiblingReader>> resourceReaders, final XMLStreamWriter writer) 
 			throws XMLStreamException, XmlSiblingReaderException, ContentProcessingException, IOException
 	{
-		writer.setDefaultNamespace("http://schema.caplin.com/CaplinTrader/bundle");
+		writer.setDefaultNamespace("http://schema.bladerunnerjs.org/xmlBundle");
 		writer.writeStartDocument();
 		writer.writeStartElement("bundle");
 		flush(writer);

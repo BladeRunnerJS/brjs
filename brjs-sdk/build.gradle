@@ -360,7 +360,7 @@ task cleanTemporaryFiles {
 	doFirst {
 		ant.delete(includeemptydirs: 'true') {
 			fileset(dir: projectDir) {
-				include(name: 'brjs.conf')
+				include(name: 'conf/brjs.conf')
 				include(name: '**/test-*/**/bundles/')
 				include(name: '**/WEB-INF/lib/brjs-*.jar')
 			}

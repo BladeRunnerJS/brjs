@@ -80,6 +80,9 @@ public class ServeCommand extends JSAPArgsParsingCommandPlugin
 			}
 			
 			brjs.getAppVersionGenerator().setVersion( parsedArgs.getString("version") );
+			if (parsedArgs.getString("version").equals("dev")) {
+				brjs.getAppVersionGenerator().appendTimetamp(false);
+			}
 			
 			
 			appServer.start();

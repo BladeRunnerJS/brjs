@@ -42,7 +42,8 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 			"define('service!" + requirePath + "', function(require, exports, module) {\n" +
 			"	module.preventCaching = true;\n" +
 			"	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n" +
-			"});\n");
+			"});\n"
+		);
 	}
 
 	@Override

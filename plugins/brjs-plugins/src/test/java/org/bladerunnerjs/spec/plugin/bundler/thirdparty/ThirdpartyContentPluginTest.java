@@ -206,8 +206,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("define('lib', function(require, exports, module) {",
-				"module.exports = function() { };\n",
-				"});\n");
+				"module.exports = function() { };\n");
 	}
 	
 	@Test 
