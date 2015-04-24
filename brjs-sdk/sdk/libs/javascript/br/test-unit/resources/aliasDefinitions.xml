@@ -1,4 +1,4 @@
-<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+<aliasDefinitions xmlns="http://schema.bladerunnerjs.org/aliasDefinitions">
 	<alias name="some.alias1" defaultClass="br.a.AliasClass1" interface="br.Alias1Interface"/>
 	<alias name="some.alias2" defaultClass="br.b.AliasClass2"/>
 	<alias name="some.alias3" interface="br.Alias3Interface"/>
