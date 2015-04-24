@@ -15,7 +15,6 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 
-
 public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	
 	private final String requirePath;
@@ -39,7 +38,8 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public Reader getReader() throws IOException {
-		return new StringReader("define('service!" + requirePath + "', function(require, exports, module) {\n"+
+		return new StringReader(
+			"define('service!" + requirePath + "', function(require, exports, module) {\n" +
 			"	module.preventCaching = true;\n" +
 			"	module.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n" +
 			"});\n"
