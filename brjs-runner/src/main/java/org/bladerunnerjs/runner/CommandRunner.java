@@ -39,6 +39,10 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
 
 public class CommandRunner {
+	
+	private static List<String> STATS_PLUGIN_NO_ANSWERS = Arrays.asList("no", "n");
+	private static List<String> STATS_PLUGIN_YES_ANSWERS = Arrays.asList("", "yes", "y");
+	
 	private static final JSAP argsParser = new JSAP();
 	
 	private boolean stats = false;
@@ -134,9 +138,9 @@ public class CommandRunner {
         		System.out.println("Do you agree to the collection of this anonymous data? (Y/n)");
         		try {
         			String userInput = scanner.nextLine();
-        			if (userInput.equalsIgnoreCase("n") || userInput.equalsIgnoreCase("no")) {
+        			if (STATS_PLUGIN_NO_ANSWERS.contains(userInput.toLowerCase())) {
         				brjs.bladerunnerConf().setAllowAnonymousStats(false);
-        			} else if (userInput.isEmpty() || userInput.equalsIgnoreCase("y") || userInput.equalsIgnoreCase("yes") ){
+        			} else if (STATS_PLUGIN_YES_ANSWERS.contains(userInput.toLowerCase())) {
         				brjs.bladerunnerConf().setAllowAnonymousStats(true);
         				brjs.notifyObservers(new NewInstallEvent(), brjs);
         			} else {
