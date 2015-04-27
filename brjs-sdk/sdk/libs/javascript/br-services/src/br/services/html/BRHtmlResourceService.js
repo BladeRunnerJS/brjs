@@ -96,15 +96,18 @@ function shimTemplates() {
 	if(!('content' in document.createElement('template'))) {
 		var templateElems = document.getElementsByTagName('template');
 
-		for(var i = 0, l = templateElems.length; i < l; ++i) {
+		for(var i = 0;  i < templateElems.length; ++i) {
 			var templateElem = templateElems[i];
-			var templateContent = document.createDocumentFragment();
 
-			while(templateElem.childNodes[0]) {
-				templateContent.appendChild(templateElem.childNodes[0]);
+			if(!templateElem.content) {
+				var templateContent = document.createDocumentFragment();
+
+				while(templateElem.childNodes[0]) {
+					templateContent.appendChild(templateElem.childNodes[0]);
+				}
+
+				templateElem.content = templateContent;
 			}
-
-			templateElem.content = templateContent;
 		}
 	}
 }
@@ -112,7 +115,7 @@ function shimTemplates() {
 function fixNestedAutoWrappedTemplates() {
 	var templateElems = document.querySelectorAll('template[data-auto-wrapped] template');
 
-	for(var i = 0, l = templateElems.length; i < l; ++i) {
+	for(var i = 0;  i < templateElems.length; ++i) {
 		var templateElem = templateElems[i];
 		var parentTemplate = templateElem.parentNode;
 		parentTemplate.parentNode.insertBefore(templateElem, parentTemplate.nextSibling);
@@ -122,14 +125,14 @@ function fixNestedAutoWrappedTemplates() {
 function fixAutoWrappedTemplates() {
 	var templateElems = document.getElementsByTagName('template');
 
-	for(var i = 0, l = templateElems.length; i < l; ++i) {
+	for(var i = 0;  i < templateElems.length; ++i) {
 		var templateElem = templateElems[i];
 		
 		if(templateElem.hasAttribute('data-auto-wrapped')) {
 			templateElem.removeAttribute('data-auto-wrapped');
 			var templateNodes = nonEmptyNodes(templateElem.content.childNodes);
 			
-			for(var ni = 0, nl = templateNodes.length; ni < nl; ++ni) {
+			for(var ni = 0; ni < templateNodes.length; ++ni) {
 				var templateNode = templateNodes[ni];
 				
 				if(ni > 0) {
