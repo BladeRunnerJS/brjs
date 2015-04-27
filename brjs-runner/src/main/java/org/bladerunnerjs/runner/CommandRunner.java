@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.naming.InvalidNameException;
@@ -132,18 +133,21 @@ public class CommandRunner {
         		System.out.println("This data is completely anonymous, does not identify you as an individual or your company and does not include any source code.");
         		System.out.println("Do you agree to the collection of this anonymous data? (Y/n)");
         		try {
-        			String userInput = scanner.next();
+        			String userInput = scanner.nextLine();
         			if (userInput.equalsIgnoreCase("n") || userInput.equalsIgnoreCase("no")) {
         				brjs.bladerunnerConf().setAllowAnonymousStats(false);
-        			} else {
+        			} else if (userInput.isEmpty() || userInput.equalsIgnoreCase("y") || userInput.equalsIgnoreCase("yes") ){
         				brjs.bladerunnerConf().setAllowAnonymousStats(true);
         				brjs.notifyObservers(new NewInstallEvent(), brjs);
+        			} else {
+        				throw new RuntimeException( String.format("'%s' is not a valid response.", userInput));
         			}
-        		} catch (Exception ex) {
+        		} catch (NoSuchElementException ex) {
         			brjs.bladerunnerConf().setAllowAnonymousStats(false); // default to false
+        		} finally {
+        			scanner.close();
         		}
         		System.out.println();
-        		scanner.close();
         	}
 		}
 		brjs.bladerunnerConf().write();
