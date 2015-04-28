@@ -15,6 +15,8 @@
 	var AliasRegistry = require('br/AliasRegistryClass');
 	var AliasRegistryTest = TestCase("AliasRegistryTest").prototype;
 
+	var AliasInterfaceError = require("br/AliasInterfaceError");
+
 	var aliasRegistry = null;
 
 	AliasRegistryTest.setUp = function()
@@ -110,7 +112,7 @@
 			function() {
 				aliasRegistry.getClass('some.alias1');
 			},
-			Errors.ILLEGAL_STATE
+			Errors.AliasInterfaceError
 		);
 	};
 
