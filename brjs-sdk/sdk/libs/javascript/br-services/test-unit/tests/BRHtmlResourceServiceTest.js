@@ -9,16 +9,24 @@ if (window.attachEvent && !window.addEventListener) {
 	document.createElement('template');
 }
 
+BRHtmlResourceServiceTest.prototype.setup = function()
+{
+	var brjsTemplates = document.getElementById("brjs-html-templates");
+	if (brjsTemplates) {
+		brjsTemplates.parentNode.removeChild(brjsTemplates);
+	}
+};
+
 BRHtmlResourceServiceTest.prototype.test_scriptTagsAreParsedByTheBrowser = function()
 {
-	var oService = ServiceRegistry.getService("br.html-service");
+	var oService = getService();
 	var eTemplate = oService.getTemplateElement('br.services.testing-template');
 	assertEquals(eTemplate.innerHTML.toLowerCase(), "<div>script</div>");
 };
 
 BRHtmlResourceServiceTest.prototype.test_templatesInBundle = function()
 {
-	var oService = ServiceRegistry.getService("br.html-service");
+	var oService = getService();
 	assertEquals(oService.getTemplateElement("br.services.template1").innerHTML.toLowerCase(), "some html1");
 	assertEquals(oService.getTemplateElement("br.services.template2").innerHTML.toLowerCase(), "some html2");
 };
@@ -40,14 +48,14 @@ BRHtmlResourceServiceTest.prototype.test_loadHTMLFilesDoesNotExist = function()
 	if(templates) {
 		templates.parentNode.removeChild(templates);
 	}
-	
+
 	var bErrorThrown = false;
 	var error = null;
 
 	var sFileUrl = "/test/resources/unbundled-html/doesnotexist.html";
 	try
 	{
-		BRHtmlResourceServiceTest.getService(sFileUrl);
+		getService(sFileUrl);
 	}
 	catch(e)
 	{
@@ -62,22 +70,20 @@ BRHtmlResourceServiceTest.prototype.test_loadHTMLFilesDoesNotExist = function()
 	assertEquals("Unable to load file /test/resources/unbundled-html/doesnotexist.html (status 404).", error.message);
 };
 
-/**
- * 
- */
+var getService = function(sUrl)
+{
+	if (!sUrl) { sUrl = "/test/bundles/html.bundle"; }
+	return new BRHtmlResourceService(sUrl);
+};
+
 var assertTemplateContentsMatch = (function(){
-	var oService = ServiceRegistry.getService("br.html-service");
+	var oService = getService();
 	var tempDiv = document.createElement("div"); // Needed as you cannot call innerHTML on a document fragment.
 	return function assertTemplateContentsMatch(templateId, expected) {
 		var templateDocFrag = oService.getTemplateFragment(templateId);
-		
+
 		tempDiv.innerHTML = "";
 		tempDiv.appendChild(templateDocFrag);
 		assertEquals(expected, tempDiv.innerHTML.toLowerCase().replace(/[\n\r]/g, ''));
 	};
 })();
-
-BRHtmlResourceServiceTest.getService = function(sUrl)
-{
-	return new BRHtmlResourceService(sUrl);
-};
