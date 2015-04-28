@@ -1,6 +1,4 @@
 (function() {
-	// Hack to get jsunitextensions bundled but not throw JS error
-	//require("jsunitextensions");
 	LocalisedNumberTest = TestCase("LocalisedNumberTest");
 
 	LocalisedNumberTest.prototype.setUp = function()

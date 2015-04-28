@@ -1,4 +1,3 @@
-require('jsunitextensions');
 require('mock4js');
 
 var Observable = require('br/util/Observable');

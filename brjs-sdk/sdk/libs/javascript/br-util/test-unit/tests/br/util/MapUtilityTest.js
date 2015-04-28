@@ -1,5 +1,3 @@
-require('jsunitextensions');
-
 var MapUtility = require('br/util/MapUtility');
 
 var MapUtilityTest = TestCase("MapUtilityTest");

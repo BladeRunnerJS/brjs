@@ -1,10 +1,9 @@
 (function(){
 	"use strict";
-	
+
 	// TODO: this line can be deleted once CommonJs supports aliases
 	require('br/workaround/CommonJsAliasWorkaround');
 
-	require("jstestdriverextensions");
 	require("jsmockito");
 	var br = require('br/Core');
 	var Errors = require('br/Errors');
@@ -106,7 +105,7 @@
 				"interface":"br/Alias2Interface",
 				"interfaceName":"br.Alias2Interface"
 			}});
-		
+
 		assertException("Should throw an error if the alias is not implementor of the alias interface",
 			function() {
 				aliasRegistry.getClass('some.alias1');

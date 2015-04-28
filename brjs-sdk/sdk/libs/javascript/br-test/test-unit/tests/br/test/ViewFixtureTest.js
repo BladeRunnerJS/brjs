@@ -1,5 +1,3 @@
-br.Core.thirdparty('jsunitextensions');
-
 var ViewFixtureTest = TestCase("ViewFixtureTest");
 
 ViewFixtureTest.prototype.setUp = function() {

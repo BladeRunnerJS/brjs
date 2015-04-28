@@ -1,5 +1,4 @@
 (function() {
-	require("jsunitextensions");
 	var DateParser = require('br/parsing/DateParser');
 
 	DateParserTest = TestCase("DateParserTest");
@@ -22,7 +21,7 @@
 		this._assertParse = function(sDateInput, sDateOutput, mAttributes) {
 			var sExpected = sDateOutput;
 			var sActual = that.oParser.parse(sDateInput, mAttributes);
-			assertVariantEquals(sDateInput + " -> " + sDateOutput, sExpected, sActual);
+			assertEquals(sDateInput + " -> " + sDateOutput, sExpected, sActual);
 		};
 
 		this.assertParse = function(sOutputFormat, sDateOutput, sDateInput, sInputFormat) {
