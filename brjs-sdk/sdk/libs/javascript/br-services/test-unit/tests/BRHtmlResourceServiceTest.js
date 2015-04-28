@@ -70,6 +70,28 @@ BRHtmlResourceServiceTest.prototype.test_loadHTMLFilesDoesNotExist = function()
 	assertEquals("Unable to load file /test/resources/unbundled-html/doesnotexist.html (status 404).", error.message);
 };
 
+BRHtmlResourceServiceTest.prototype.test_nestedTemplatesAddedViaTheHtmlTagAreUnwrappedCorrectly = function()
+{
+	if(!document.querySelector('div#brjs-html-templates')) {
+		var templateContainer = document.createElement('div');
+		templateContainer.id = 'brjs-html-templates';
+		document.querySelector('head').appendChild(templateContainer);
+	}
+	document.getElementById("brjs-html-templates").innerHTML = "<template id='template1' data-auto-wrapped='true'>"+
+"<div id='template1'><div>template1</div></div>"+
+"<div id='template2'><div>template2</div></div>"+
+"</template>";
+
+
+	var oService = getService();
+	var eTemplate1 = oService.getTemplateElement('template1');
+	var eTemplate2 = oService.getTemplateElement('template2');
+	assertEquals(eTemplate1.innerHTML.toLowerCase(), "<div>template1</div>");
+	assertEquals(eTemplate2.innerHTML.toLowerCase(), "<div>template2</div>");
+};
+
+
+
 var getService = function(sUrl)
 {
 	if (!sUrl) { sUrl = "/test/bundles/html.bundle"; }

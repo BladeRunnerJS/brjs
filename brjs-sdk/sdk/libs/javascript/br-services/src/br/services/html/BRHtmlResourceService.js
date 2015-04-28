@@ -60,11 +60,10 @@ function loadHtml(url) {
 		templateContainer.innerHTML = sanitizeHtml(translatedHtml);
 
 		document.querySelector('head').appendChild(templateContainer);
-
-		fixNestedAutoWrappedTemplates();
-		shimTemplates();
-		fixAutoWrappedTemplates();
 	}
+	fixNestedAutoWrappedTemplates();
+	shimTemplates();
+	fixAutoWrappedTemplates();
 }
 
 function nonEmptyNodes(childNodes) {
