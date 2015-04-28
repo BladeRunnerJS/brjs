@@ -107,7 +107,7 @@ ClockClass.prototype.scheduleFunction = function(timeoutKey, funcToCall, millis,
 };
 
 ClockClass.prototype._verifyInstalled = function() {
-	if(!this.installed) throw new Error("Clock can no longer be used until you've installed it. You should install it in your set-up method, and uninstall it in your tear-down method.");
+	if(!this.installed) throw new Error("Clock cannot be used until you've installed it. You should install it in your set-up method, and uninstall it in your tear-down method.");
 };
 
 var Clock = new ClockClass();
