@@ -46,6 +46,15 @@ public class HTMLTemplatePluginTest extends SpecTest
 		then(indexPageResponse).containsText("i18n replacement");
 	}
 	
+	@Test //this mirrors the behaviour for tokens being replaced on the client side if they are loaded via XHR
+	public void i18nTokensAreCaseInsensitive() throws Exception {
+		given(aspect).containsResourceFileWithContents("html/view.html", "<template id='appns.view'>@{appns.i18n.TOKEN}</template>")
+			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.i18n.token=i18n replacement")
+			.and(aspect).indexPageHasContent("<@html.bundle@/>");
+		when(aspect).indexPageLoadedInDev(indexPageResponse, "en_GB");
+		then(indexPageResponse).containsText("i18n replacement");
+	}
+	
 	@Test
 	public void exceptionIsThrownIfAnI18nReplacementCantBeFound() throws Exception {
 		given(aspect).containsResourceFileWithContents("html/view.html", "<template id='appns.view'>@{appns.i18n.token}</template>")

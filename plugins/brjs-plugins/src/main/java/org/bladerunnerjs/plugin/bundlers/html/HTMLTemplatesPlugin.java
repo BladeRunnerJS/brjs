@@ -18,7 +18,7 @@ import org.bladerunnerjs.plugin.bundlers.i18n.I18nPropertiesUtils;
 
 public class HTMLTemplatesPlugin extends AbstractTagHandlerPlugin {
 	
-	private final static Pattern I18N_TOKEN_PATTERN = Pattern.compile("@\\{([0-9A-Za-z\\.\\-_]+)\\}");
+	private final static Pattern I18N_TOKEN_PATTERN = Pattern.compile("@\\{(.*?)\\}");
 
 	@Override
 	public void setBRJS(BRJS brjs) {
@@ -56,7 +56,7 @@ public class HTMLTemplatesPlugin extends AbstractTagHandlerPlugin {
 		StringBuffer translatedContent = new StringBuffer();
 		
 		while (i18nTokenMatcher.find()) {
-			String i18nKey = i18nTokenMatcher.group(1);
+			String i18nKey = i18nTokenMatcher.group(1).toLowerCase();
 			String keyReplacement = propertiesMap.get(i18nKey);
 			if (keyReplacement == null) {
 				throw new ContentProcessingException("Unable to find a replacement for the i18n key '"+i18nKey+"'.");

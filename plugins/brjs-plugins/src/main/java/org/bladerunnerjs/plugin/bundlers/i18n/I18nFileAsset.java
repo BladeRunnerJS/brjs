@@ -96,7 +96,7 @@ public class I18nFileAsset implements Asset
 			{
 				RequirePathUtility.assertIdentifierCorrectlyNamespaced(assetContainer, property);
 				String value = i18nProperties.getProperty(property);
-				propertiesMap.put(property, value.replaceAll("\n", "\\\\n"));
+				propertiesMap.put(property.toLowerCase(), value.replaceAll("\n", "\\\\n"));
 			}
 		}
 		

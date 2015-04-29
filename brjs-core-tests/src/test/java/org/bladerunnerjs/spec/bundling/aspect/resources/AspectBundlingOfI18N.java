@@ -115,8 +115,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 			.and(userLib).hasClass("userLib.Class1")
 			.and(aspect).indexPageRefersTo("userLib.Class1");
 		when(aspect).requestReceivedInDev("i18n/en.js", response);
-		then(response).containsText("\"userLib.token\": \"userLib token\"");
-			
+		then(response).containsText("\"userlib.token\": \"userLib token\"");
 	}
 	
 }
