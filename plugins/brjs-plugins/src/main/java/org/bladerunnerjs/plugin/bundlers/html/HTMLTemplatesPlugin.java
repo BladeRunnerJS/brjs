@@ -19,11 +19,9 @@ import org.bladerunnerjs.plugin.bundlers.i18n.I18nPropertiesUtils;
 public class HTMLTemplatesPlugin extends AbstractTagHandlerPlugin {
 	
 	private final static Pattern I18N_TOKEN_PATTERN = Pattern.compile("@\\{([0-9A-Za-z\\.\\-_]+)\\}");
-	private BRJS brjs;
 
 	@Override
 	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
 	}
 	
 	@Override
