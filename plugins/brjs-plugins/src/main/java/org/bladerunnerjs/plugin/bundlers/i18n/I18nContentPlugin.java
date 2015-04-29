@@ -118,28 +118,9 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	
 	private ResponseContent generateBundleForLocale(BundleSet bundleSet, Locale locale) throws ContentProcessingException
 	{
-		SortedMap<String,String> propertiesMap = new TreeMap<String,String>();
-		
-		for (Asset asset : getI18nAssetFiles(bundleSet))
-		{
-			addI18nProperties(propertiesMap, locale, (I18nFileAsset) asset);
-		}
+		Map<String,String> propertiesMap = I18nPropertiesUtils.getI18nProperties(bundleSet, locale);
 
 		return getReaderForProperties(bundleSet.getBundlableNode().root(), locale, propertiesMap);
-	}
-
-	private void addI18nProperties(Map<String,String> propertiesMap, Locale locale, I18nFileAsset i18nFile) throws ContentProcessingException
-	{
-		if (locale.isAbsoluteOrPartialMatch(i18nFile.getLocale())) {
-			try
-			{
-				propertiesMap.putAll( i18nFile.getLocaleProperties() );
-			}
-			catch (IOException | RequirePathException | NamespaceException ex)
-			{
-				throw new ContentProcessingException(ex, "Error getting locale properties from file");
-			}
-		}
 	}
 	
 	private ResponseContent getReaderForProperties(BRJS brjs, Locale locale, Map<String, String> propertiesMap) throws ContentProcessingException
@@ -157,34 +138,7 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 						+ "window._brjsI18nUseLocale = '" + locale + "';");
 	}
 	
-	private List<I18nFileAsset> getI18nAssetFiles(BundleSet bundleSet)
-	{
-		List<I18nFileAsset> languageOnlyAssets = new ArrayList<I18nFileAsset>();
-		List<I18nFileAsset> languageAndLocationAssets = new ArrayList<I18nFileAsset>();
-		
-		for (Asset asset : bundleSet.getAssets("i18n!"))
-		{
-			if (asset instanceof I18nFileAsset)
-			{
-				I18nFileAsset i18nAsset = (I18nFileAsset) asset;
-				Locale assetLocale = i18nAsset.getLocale();
-				if (assetLocale.isCompleteLocale())
-				{
-					languageAndLocationAssets.add(i18nAsset);
-				}
-				else if (!assetLocale.isEmptyLocale())
-				{
-					languageOnlyAssets.add(i18nAsset);
-				}
-			}
-		}
-		
-		List<I18nFileAsset> orderedI18nAssets = new LinkedList<I18nFileAsset>();
-		orderedI18nAssets.addAll(languageOnlyAssets);
-		orderedI18nAssets.addAll(languageAndLocationAssets);
-		
-		return orderedI18nAssets;
-	}
+	
 	
 	
 }

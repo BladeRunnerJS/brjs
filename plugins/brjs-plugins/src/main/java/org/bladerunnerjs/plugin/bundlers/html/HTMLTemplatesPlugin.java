@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.BRJS;
@@ -12,11 +14,16 @@ import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.plugin.bundlers.i18n.I18nPropertiesUtils;
 
 public class HTMLTemplatesPlugin extends AbstractTagHandlerPlugin {
+	
+	private final static Pattern I18N_TOKEN_PATTERN = Pattern.compile("@\\{([0-9A-Za-z\\.\\-_]+)\\}");
+	private BRJS brjs;
+
 	@Override
 	public void setBRJS(BRJS brjs) {
-		// do nothing
+		this.brjs = brjs;
 	}
 	
 	@Override
@@ -29,14 +36,38 @@ public class HTMLTemplatesPlugin extends AbstractTagHandlerPlugin {
 		try {
 			writer.write("<div id=\"brjs-html-templates\">\n");
 			
+			StringBuffer untranslatedContent = new StringBuffer();
+			
 			for(Reader reader : HTMLTemplateUtility.getReaders(bundleSet, version)) {
-				IOUtils.copy(reader, writer);
+				untranslatedContent.append( IOUtils.toString(reader) );
 			}
 			
-			writer.write("</div>\n");
+			IOUtils.write( translateContent(untranslatedContent.toString(), bundleSet, locale), writer);
+			
+			writer.write("\n</div>\n");
 		}
 		catch(ContentProcessingException e) {
 			throw new IOException(e);
 		}
+	}
+
+	private String translateContent(String untranslatedContent, BundleSet bundleSet, Locale locale) throws ContentProcessingException
+	{
+		Map<String,String> propertiesMap = I18nPropertiesUtils.getI18nProperties(bundleSet, locale);
+		Matcher i18nTokenMatcher = I18N_TOKEN_PATTERN.matcher(untranslatedContent);
+		StringBuffer translatedContent = new StringBuffer();
+		
+		while (i18nTokenMatcher.find()) {
+			String i18nKey = i18nTokenMatcher.group(1);
+			String keyReplacement = propertiesMap.get(i18nKey);
+			if (keyReplacement == null) {
+				throw new ContentProcessingException("Unable to find a replacement for the i18n key '"+i18nKey+"'.");
+			}
+			i18nTokenMatcher.appendReplacement(translatedContent, keyReplacement);
+		}
+		i18nTokenMatcher.appendTail(translatedContent);
+		
+		
+		return translatedContent.toString();
 	}
 }
