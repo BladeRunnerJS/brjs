@@ -16,7 +16,7 @@ import org.bladerunnerjs.api.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.plugin.bundlers.i18n.I18nPropertiesUtils;
 
-public class HTMLTemplatesPlugin extends AbstractTagHandlerPlugin {
+public class HTMLBundlerTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	private final static Pattern I18N_TOKEN_PATTERN = Pattern.compile("@\\{(.*?)\\}");
 
@@ -32,7 +32,8 @@ public class HTMLTemplatesPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException {
 		try {
-			writer.write("<div id=\"brjs-html-templates\">\n");
+			writer.write("<style>template{display:none;}</style>\n");
+			writer.write("<template id=\"brjs-html-templates-loaded\"></template>\n");
 			
 			StringBuffer untranslatedContent = new StringBuffer();
 			
@@ -41,8 +42,6 @@ public class HTMLTemplatesPlugin extends AbstractTagHandlerPlugin {
 			}
 			
 			IOUtils.write( translateContent(untranslatedContent.toString(), bundleSet, locale), writer);
-			
-			writer.write("\n</div>\n");
 		}
 		catch(ContentProcessingException e) {
 			throw new IOException(e);

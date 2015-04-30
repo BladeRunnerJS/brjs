@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class HTMLTemplatePluginTest extends SpecTest
+public class HTMLBundlerTagHandlerPluginTest extends SpecTest
 {
 
 	private App app;
@@ -34,7 +34,9 @@ public class HTMLTemplatePluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("html/bundle.html", response)
 			.and(aspect).indexPageLoadedInDev(indexPageResponse, "en_GB");
 		then(indexPageResponse.toString().replace("\n", "")).equals( 
-				("<div id=\"brjs-html-templates\">"+response.toString()+"</div>").replace("\n","") );
+				("<style>template{display:none;}</style>\n"+
+						"<template id=\"brjs-html-templates-loaded\"></template>\n"+
+						response.toString()).replace("\n","") );
 	}
 	
 	@Test
