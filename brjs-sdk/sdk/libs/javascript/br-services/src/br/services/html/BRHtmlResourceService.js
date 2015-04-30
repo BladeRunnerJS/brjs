@@ -31,16 +31,16 @@ BRHtmlResourceService.prototype.getTemplateFragment = function(templateId) {
 
 BRHtmlResourceService.prototype.getTemplateElement = function(templateId) {
 	var templateFragment = this.getTemplateFragment(templateId);
-	
+
 	if(!templateFragment) {
-		return null
+		return null;
 	}
 	else {
 		var templateNodes = nonEmptyNodes(templateFragment.childNodes);
-		
+
 		if(templateNodes.length != 1) throw new RangeError("The '" + templateId +
 			"' template contained more than one root node -- use getTemplateFragment() instead.");
-		
+
 		return templateNodes[0];
 	}
 };
@@ -51,13 +51,16 @@ BRHtmlResourceService.prototype.getHTMLTemplate = function(templateId) {
 };
 
 function loadHtml(url) {
-	var templateElems = document.createElement('div');
-	document.querySelector('head').appendChild(templateElems); // TODO: move to bottom of method?
+	if(!document.querySelector('div#brjs-html-templates')) {
+		var templateContainer = document.createElement('div');
+		templateContainer.id = 'brjs-html-templates';
 
-	var rawHtml = File.readFileSync(url);
-	var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
-	templateElems.innerHTML = sanitizeHtml(translatedHtml);
+		var rawHtml = File.readFileSync(url);
+		var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
+		templateContainer.innerHTML = sanitizeHtml(translatedHtml);
 
+		document.querySelector('head').appendChild(templateContainer);
+	}
 	fixNestedAutoWrappedTemplates();
 	shimTemplates();
 	fixAutoWrappedTemplates();
@@ -65,22 +68,22 @@ function loadHtml(url) {
 
 function nonEmptyNodes(childNodes) {
 	var nonEmptyNodes = [];
-	
+
 	for(var i = 0, l = childNodes.length; i < l; ++i) {
 		var childNode = childNodes[i];
-		
+
 		if((childNode.nodeType == document.ELEMENT_NODE) ||
 			((childNode.nodeType == document.TEXT_NODE) && (text(childNode).trim() != ''))) {
 			nonEmptyNodes.push(childNode);
 		}
 	}
-	
+
 	return nonEmptyNodes;
 }
 
 function text(textNode) {
 	return textNode.textContent || textNode.innerText || '';
-} 
+}
 
 function shimTemplate(templateElem) {
 	if(!templateElem.content) {
@@ -92,15 +95,18 @@ function shimTemplates() {
 	if(!('content' in document.createElement('template'))) {
 		var templateElems = document.getElementsByTagName('template');
 
-		for(var i = 0, l = templateElems.length; i < l; ++i) {
+		for(var i = 0;  i < templateElems.length; ++i) {
 			var templateElem = templateElems[i];
-			var templateContent = document.createDocumentFragment();
 
-			while(templateElem.childNodes[0]) {
-				templateContent.appendChild(templateElem.childNodes[0]);
+			if(!templateElem.content) {
+				var templateContent = document.createDocumentFragment();
+
+				while(templateElem.childNodes[0]) {
+					templateContent.appendChild(templateElem.childNodes[0]);
+				}
+
+				templateElem.content = templateContent;
 			}
-
-			templateElem.content = templateContent;
 		}
 	}
 }
@@ -108,7 +114,7 @@ function shimTemplates() {
 function fixNestedAutoWrappedTemplates() {
 	var templateElems = document.querySelectorAll('template[data-auto-wrapped] template');
 
-	for(var i = 0, l = templateElems.length; i < l; ++i) {
+	for(var i = 0;  i < templateElems.length; ++i) {
 		var templateElem = templateElems[i];
 		var parentTemplate = templateElem.parentNode;
 		parentTemplate.parentNode.insertBefore(templateElem, parentTemplate.nextSibling);
@@ -118,16 +124,16 @@ function fixNestedAutoWrappedTemplates() {
 function fixAutoWrappedTemplates() {
 	var templateElems = document.getElementsByTagName('template');
 
-	for(var i = 0, l = templateElems.length; i < l; ++i) {
+	for(var i = 0;  i < templateElems.length; ++i) {
 		var templateElem = templateElems[i];
-		
+
 		if(templateElem.hasAttribute('data-auto-wrapped')) {
 			templateElem.removeAttribute('data-auto-wrapped');
 			var templateNodes = nonEmptyNodes(templateElem.content.childNodes);
-			
-			for(var ni = 0, nl = templateNodes.length; ni < nl; ++ni) {
+
+			for(var ni = 0; ni < templateNodes.length; ++ni) {
 				var templateNode = templateNodes[ni];
-				
+
 				if(ni > 0) {
 					if(templateNode.nodeName == 'TEMPLATE') {
 						// Note: on browser's with native template support, this code is used instead
@@ -140,7 +146,7 @@ function fixAutoWrappedTemplates() {
 						newTemplateElem.id = templateNode.id;
 						newTemplateElem.content.appendChild(templateNode);
 						templateElem.parentNode.insertBefore(newTemplateElem, templateElem.nextSibling);
-						
+
 						if(templateNode.hasAttribute('id')) {
 							templateNode.removeAttribute('id');
 						}

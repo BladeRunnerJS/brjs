@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.plugin.bundler.html;
 
 
-import static org.bladerunnerjs.plugin.bundlers.html.HTMLContentPlugin.*;
+import static org.bladerunnerjs.plugin.bundlers.html.HTMLTemplateUtility.*;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
