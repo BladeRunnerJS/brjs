@@ -5,6 +5,10 @@
 		<title>IT Application</title>
         <% String theme = request.getParameter("theme") == null ? "common" : request.getParameter("theme"); %>
 		<@css.bundle theme="<%=theme%>" alternateTheme="alternate" @/>
+		<@i18n.bundle @/>
+    	<!-- dev-minifier can be set to "combined" for all JS content to be bundled with a single request -->
+		<@js.bundle dev-minifier="none" prod-minifier="combined"@/>
+		<@html.bundle@/>
 	</head>
 	<body>
 		<div class="app">
@@ -20,9 +24,7 @@
             <th>Test name</th>
             <th>Test Output</th>
         </table>
-		<@i18n.bundle @/>
-    	<!-- dev-minifier can be set to "combined" for all JS content to be bundled with a single request -->
-		<@js.bundle dev-minifier="none" prod-minifier="combined"@/>
+
 		<script>
 			( function() {
 				window.jndiToken = "@TEST.JNDI.TOKEN@";
