@@ -32,7 +32,7 @@ public class TestPackVerifier extends AssetContainerVerifier
 	public VerifierChainer srcOnlyBundledFilesEquals(MemoizedFile... expectedFiles) throws Exception
 	{
 		List<MemoizedFile> bundleSetFiles = new ArrayList<>();
-		List<SourceModule> sourceModules = testPack.getBundleSet().getSourceModules();
+		List<SourceModule> sourceModules = testPack.getBundleSet().getAssets(SourceModule.class);
 		
 		for (SourceModule sourceModule : sourceModules)
 		{

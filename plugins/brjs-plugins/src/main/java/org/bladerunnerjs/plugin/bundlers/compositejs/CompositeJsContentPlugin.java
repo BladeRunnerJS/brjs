@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
@@ -60,7 +61,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin implements R
 		List<String> requestPaths = new ArrayList<>();
 		String requestFormName = (requestMode == RequestMode.Prod) ? PROD_BUNDLE_REQUEST : DEV_BUNDLE_REQUEST;
 		
-		if(bundleSet.getSourceModules().size() > 0) {
+		if(bundleSet.getAssets(SourceModule.class).size() > 0) {
 			try {
 				for(MinifierPlugin minifier : brjs.plugins().minifierPlugins()) {
 					for(String minifierSettingName : minifier.getSettingNames()) {

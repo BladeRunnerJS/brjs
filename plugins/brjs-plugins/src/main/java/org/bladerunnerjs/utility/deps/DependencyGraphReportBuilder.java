@@ -59,7 +59,7 @@ public class DependencyGraphReportBuilder {
 	public static String createReportForRequirePrefix(BrowsableNode browsableNode, String requirePathPrefix, boolean showAllDependencies) throws ModelOperationException {
 		List<LinkedAsset> linkedAssets = new ArrayList<>();
 		
-		for(SourceModule sourceModule : browsableNode.getBundleSet().getSourceModules()) {
+		for(SourceModule sourceModule : browsableNode.getBundleSet().getAssets(SourceModule.class)) {
 			if(sourceModule.getPrimaryRequirePath().startsWith(requirePathPrefix)) {
 				linkedAssets.add(sourceModule);
 			}

@@ -38,11 +38,6 @@ public class JsTestDriverBundleSet implements BundleSet {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules() {
-		return bundleSet.getSourceModules();
-	}
-	
-	@Override
 	public <AT extends SourceModule> List<AT> getSourceModules(Class<? extends AT> assetType) {
 		return bundleSet.getSourceModules(assetType);
 	}
