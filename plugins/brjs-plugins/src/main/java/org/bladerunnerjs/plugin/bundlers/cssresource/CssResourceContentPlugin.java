@@ -131,7 +131,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		}
 		
 		
-		List<Asset> assetsToDetirmineUsedPaths = bundleSet.getAssets("css!", "theme!");
+		List<Asset> assetsToDetirmineUsedPaths = bundleSet.assets("css!", "theme!");
 		assetsToDetirmineUsedPaths.addAll(bundleSet.bundlableNode().seedAssets());
 		
 		for (Asset asset : assetsToDetirmineUsedPaths) {

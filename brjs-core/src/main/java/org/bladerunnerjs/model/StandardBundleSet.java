@@ -40,36 +40,36 @@ public class StandardBundleSet implements BundleSet {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules() {
+	public List<SourceModule> sourceModules() {
 		return getTheAssets(sourceModules, sourceModulesByType, null, null);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <AT extends SourceModule> List<AT> getSourceModules(Class<? extends AT> assetType) {
+	public <AT extends SourceModule> List<AT> sourceModules(Class<? extends AT> assetType) {
 		return (List<AT>) getTheAssets(sourceModules, sourceModulesByType, null, Arrays.asList(assetType));
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(List<Class<? extends SourceModule>> assetTypes) {
+	public List<SourceModule> sourceModules(List<Class<? extends SourceModule>> assetTypes) {
 		return getTheAssets(sourceModules, sourceModulesByType, null, assetTypes);
 	}
 
 	@Override
-	public List<Asset> getAssets(String... prefixes)
+	public List<Asset> assets(String... prefixes)
 	{
 		return (List<Asset>) getTheAssets(assets, assetsByType, Arrays.asList(prefixes), null);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <AT extends Asset> List<AT> getAssets(Class<? extends AT> assetType, String... prefixes)
+	public <AT extends Asset> List<AT> assets(Class<? extends AT> assetType, String... prefixes)
 	{
 		return (List<AT>) getTheAssets(assets, assetsByType, Arrays.asList(prefixes), Arrays.asList(assetType));
 	}
 	
 	@Override
-	public List<Asset> getAssets(List<Class<? extends Asset>> assetTypes, String... prefixes)
+	public List<Asset> assets(List<Class<? extends Asset>> assetTypes, String... prefixes)
 	{
 		return (List<Asset>) getTheAssets(assets, assetsByType, Arrays.asList(prefixes), assetTypes);
 	}

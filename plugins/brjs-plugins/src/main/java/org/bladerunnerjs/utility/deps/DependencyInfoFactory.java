@@ -34,7 +34,7 @@ public class DependencyInfoFactory {
 		};
 		DependencyInfo reverseDependencyGraph;
 		
-		if((sourceModule == null) || bundleSet.getSourceModules().contains(sourceModule)) {
+		if((sourceModule == null) || bundleSet.sourceModules().contains(sourceModule)) {
 			reverseDependencyGraph = buildDependencyGraphFromBundleSet(bundleSet, dependencyAdder);
 		}
 		else {
@@ -50,7 +50,7 @@ public class DependencyInfoFactory {
 		
 		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
 		
-		for(LinkedAsset asset : bundleSet.getAssets(LinkedAsset.class)) {
+		for(LinkedAsset asset : bundleSet.assets(LinkedAsset.class)) {
 			addAssetDependencies(dependencyAdder, bundlableNode, dependencyInfo, asset);
 		}
 		

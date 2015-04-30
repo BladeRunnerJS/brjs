@@ -20,36 +20,36 @@ public class JsTestDriverBundleSet implements BundleSet {
 	}
 	
 	@Override
-	public List<Asset> getAssets(String... prefixes)
+	public List<Asset> assets(String... prefixes)
 	{
-		return bundleSet.getAssets(prefixes);
+		return bundleSet.assets(prefixes);
 	}
 	
 	@Override
-	public <AT extends Asset> List<AT> getAssets(Class<? extends AT> assetType, String... prefixes)
+	public <AT extends Asset> List<AT> assets(Class<? extends AT> assetType, String... prefixes)
 	{
-		return bundleSet.getAssets(assetType, prefixes);
+		return bundleSet.assets(assetType, prefixes);
 	}
 	
 	@Override
-	public List<Asset> getAssets(List<Class<? extends Asset>> assetTypes, String... prefixes)
+	public List<Asset> assets(List<Class<? extends Asset>> assetTypes, String... prefixes)
 	{
-		return bundleSet.getAssets(assetTypes, prefixes);
+		return bundleSet.assets(assetTypes, prefixes);
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules() {
-		return bundleSet.getSourceModules();
+	public List<SourceModule> sourceModules() {
+		return bundleSet.sourceModules();
 	}
 	
 	@Override
-	public <AT extends SourceModule> List<AT> getSourceModules(Class<? extends AT> assetType) {
-		return bundleSet.getSourceModules(assetType);
+	public <AT extends SourceModule> List<AT> sourceModules(Class<? extends AT> assetType) {
+		return bundleSet.sourceModules(assetType);
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(List<Class<? extends SourceModule>> assetTypes) {
-		return bundleSet.getSourceModules(assetTypes);
+	public List<SourceModule> sourceModules(List<Class<? extends SourceModule>> assetTypes) {
+		return bundleSet.sourceModules(assetTypes);
 	}
 
 	@Override

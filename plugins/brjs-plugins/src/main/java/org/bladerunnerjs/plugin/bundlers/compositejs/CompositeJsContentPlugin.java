@@ -60,7 +60,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin implements R
 		List<String> requestPaths = new ArrayList<>();
 		String requestFormName = (requestMode == RequestMode.Prod) ? PROD_BUNDLE_REQUEST : DEV_BUNDLE_REQUEST;
 		
-		if(bundleSet.getSourceModules().size() > 0) {
+		if(bundleSet.sourceModules().size() > 0) {
 			try {
 				for(MinifierPlugin minifier : brjs.plugins().minifierPlugins()) {
 					for(String minifierSettingName : minifier.getSettingNames()) {

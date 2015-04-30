@@ -96,7 +96,7 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 				return;
 			}
 			
-			eventData.put("total_count", bundleset.getAssets().size());
+			eventData.put("total_count", bundleset.assets().size());
 			eventData.put("execution_duration", bundleSetCreatedEvent.getCreationDuration());
 			eventData.put("bundlable_node_type", bundleset.bundlableNode().getClass().getSimpleName());
 		}

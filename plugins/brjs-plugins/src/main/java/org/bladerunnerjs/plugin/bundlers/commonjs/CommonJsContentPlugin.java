@@ -82,7 +82,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin implements Comp
 	{
 		List<String> requestPaths = new ArrayList<>();
 
-		List<CommonJsSourceModule> commonJsSourceModules = bundleSet.getSourceModules(CommonJsSourceModule.class);
+		List<CommonJsSourceModule> commonJsSourceModules = bundleSet.sourceModules(CommonJsSourceModule.class);
 		
 		if (requestMode == RequestMode.Prod) {
 			return (commonJsSourceModules.isEmpty()) ? Collections.emptyList() : prodRequestPaths;
@@ -119,7 +119,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin implements Comp
 			else if (parsedContentPath.formName.equals(BUNDLE_REQUEST))
 			{
 				List<Reader> readerList = new ArrayList<Reader>();
-				for (SourceModule sourceModule : bundleSet.getSourceModules(Arrays.asList(CommonJsSourceModule.class)))
+				for (SourceModule sourceModule : bundleSet.sourceModules(Arrays.asList(CommonJsSourceModule.class)))
 				{
 					readerList.add(new StringReader("// " + sourceModule.getPrimaryRequirePath() + "\n"));
 					readerList.add(sourceModule.getReader());
