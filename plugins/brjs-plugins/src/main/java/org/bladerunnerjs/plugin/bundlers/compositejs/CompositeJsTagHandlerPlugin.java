@@ -76,7 +76,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private List<String> getGeneratedRequests(RequestMode requestMode, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException
 	{
 		List<String> requests = new ArrayList<String>();
-		App app = bundleSet.getBundlableNode().app();
+		App app = bundleSet.bundlableNode().app();
 		for (String contentPath : getGeneratedContentPaths(tagAttributes, bundleSet, requestMode, locale)) {
 			String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
 			requests.add(requestPath);

@@ -73,7 +73,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	{
 		try {
 			List<String> requests = new ArrayList<>();
-			String version = bundleSet.getBundlableNode().root().getAppVersionGenerator().getVersion();
+			String version = bundleSet.bundlableNode().root().getAppVersionGenerator().getVersion();
 			for (StylesheetRequest stylesheet : getOrderedStylesheets(requestMode, tagAttributes, bundleSet, locale, version)) {
 				requests.add( stylesheet.contentPath );
 			}
@@ -93,7 +93,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	public List<StylesheetRequest> getOrderedStylesheets(RequestMode requestMode, Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException, ContentProcessingException, IOException
 	{
 		try {
-			App app = bundleSet.getBundlableNode().app();
+			App app = bundleSet.bundlableNode().app();
 			String theme = getTheme(tagAttributes);
 			List<String> alternateThemes = getAlternateThemes(tagAttributes);
 			List<String> contentPaths = cssContentPlugin.getValidContentPaths(bundleSet, requestMode, locale);

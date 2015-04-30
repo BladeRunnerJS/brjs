@@ -40,7 +40,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return (bundleSet.getAssets("html!").isEmpty()) ? Collections.emptyList() : requestPaths;
+		return (bundleSet.assets("html!").isEmpty()) ? Collections.emptyList() : requestPaths;
 	}
 
 	@Override
@@ -50,6 +50,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 			throw new MalformedRequestException(contentPath, "Requests must be for exactly '" + requestPaths.get(0) + "'.");
 		}
 		
-		return new CharResponseContent( brjs, HTMLTemplateUtility.getReaders(bundleSet, version) );		
+		return new CharResponseContent( brjs, HTMLTemplateUtility.getReaders(bundleSet, version) );
 	}
 }

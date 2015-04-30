@@ -112,7 +112,7 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 	{
 		Map<String,String> propertiesMap = I18nPropertiesUtils.getI18nProperties(bundleSet, locale);
 
-		return getReaderForProperties(bundleSet.getBundlableNode().root(), locale, propertiesMap);
+		return getReaderForProperties(bundleSet.bundlableNode().root(), locale, propertiesMap);
 	}
 	
 	private ResponseContent getReaderForProperties(BRJS brjs, Locale locale, Map<String, String> propertiesMap) throws ContentProcessingException
@@ -128,9 +128,6 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 		return new CharResponseContent( brjs, "if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };\n"
 				+ "window._brjsI18nProperties['" + locale + "'] = " + jsonProperties + ";\n"
 						+ "window._brjsI18nUseLocale = '" + locale + "';");
-	}
-	
-	
-	
+	}	
 	
 }

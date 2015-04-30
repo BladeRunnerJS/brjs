@@ -29,8 +29,8 @@ public class HTMLTemplateUtility {
 	
 	public static List<Reader> getReaders(BundleSet bundleSet, String version) throws ContentFileProcessingException, ContentProcessingException {
 		Map<String, Asset> identifiers = new TreeMap<String, Asset>();
-		List<Asset> htmlAssets = bundleSet.getAssets("html!");
-		Logger logger = bundleSet.getBundlableNode().root().logger(HTMLTemplateUtility.class);
+		List<Asset> htmlAssets = bundleSet.assets("html!");
+		Logger logger = bundleSet.bundlableNode().root().logger(HTMLTemplateUtility.class);
 		
 		List<Reader> readerList = new ArrayList<Reader>();
 		for(Asset htmlAsset : htmlAssets){
@@ -40,7 +40,7 @@ public class HTMLTemplateUtility {
 				try(Reader reader = htmlAsset.getReader()) {
 					readerList.add(new StringReader("\n<!-- " + htmlAsset.getAssetName() + " -->\n"));
 
-					String bundlePath = AppMetadataUtility.getRelativeVersionedBundlePath(bundleSet.getBundlableNode().app(), version, "").replaceFirst("/$", "");
+					String bundlePath = AppMetadataUtility.getRelativeVersionedBundlePath(bundleSet.bundlableNode().app(), version, "").replaceFirst("/$", "");
 					String xmlBundlePathToken = AppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
 
 					String htmlContent = IOUtils.toString(reader);

@@ -22,7 +22,7 @@ public class BundleSetRequestHandler {
 	}
 	
 	public static ResponseContent handle(BundleSet bundleSet, String logicalRequestpath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		BundlableNode bundlableNode = bundleSet.getBundlableNode();
+		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		App app = bundlableNode.app();
 		Logger logger = app.root().logger(BundleSetRequestHandler.class);
 		

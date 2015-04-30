@@ -99,30 +99,30 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin imple
     		if (parsedContentPath.formName.equals(UNBUNDLED_RESOURCES_REQUEST)
     				|| parsedContentPath.formName.equals(VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
     		{
-    			return getFileContents(bundleSet, parsedContentPath, contentAccessor, bundleSet.getBundlableNode());
+    			return getFileContents(bundleSet, parsedContentPath, contentAccessor, bundleSet.bundlableNode());
     		}
     		else if (parsedContentPath.formName.equals(BLADESET_UNBUNDLED_RESOURCES_REQUEST)
     				 || parsedContentPath.formName.equals(BLADESET_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
     		{    			
-    			Bladeset bladeset = bundleSet.getBundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset"));
+    			Bladeset bladeset = bundleSet.bundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset"));
     			return getFileContents(bundleSet, parsedContentPath, contentAccessor, bladeset);
     		}
     		else if (parsedContentPath.formName.equals(BLADE_UNBUNDLED_RESOURCES_REQUEST)
    				 || parsedContentPath.formName.equals(BLADE_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
 	   		{    			
-	   			Blade blade = bundleSet.getBundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset")).blade(parsedContentPath.properties.get("blade"));
+	   			Blade blade = bundleSet.bundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset")).blade(parsedContentPath.properties.get("blade"));
 	   			return getFileContents(bundleSet, parsedContentPath, contentAccessor, blade);
 	   		}
     		else if (parsedContentPath.formName.equals(BLADEWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
       				 || parsedContentPath.formName.equals(BLADEWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
    	   		{    			
-   	   			Workbench<?> workbench = bundleSet.getBundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset")).blade(parsedContentPath.properties.get("blade")).workbench();
+   	   			Workbench<?> workbench = bundleSet.bundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset")).blade(parsedContentPath.properties.get("blade")).workbench();
    	   			return getFileContents(bundleSet, parsedContentPath, contentAccessor, workbench);
    	   		}
     		else if (parsedContentPath.formName.equals(BLADESETWORKBENCH_UNBUNDLED_RESOURCES_REQUEST)
      				 || parsedContentPath.formName.equals(BLADESETWORKBENCH_VERSIONED_UNBUNDLED_RESOURCES_REQUEST))
   	   		{    			
-  	   			Workbench<?> workbench = bundleSet.getBundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset")).workbench();
+  	   			Workbench<?> workbench = bundleSet.bundlableNode().app().bladeset(parsedContentPath.properties.get("bladeset")).workbench();
   	   			return getFileContents(bundleSet, parsedContentPath, contentAccessor, workbench);
   	   		}
 			else {
@@ -139,7 +139,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin imple
 			UrlContentAccessor contentAccessor,	AssetContainer assetContainer) throws ContentProcessingException, IOException {
 		String relativeFilePath = contentPath.properties.get(FILE_PATH_REQUEST_FORM);
 		MemoizedFile unbundledResourcesDir = assetContainer.file(UNBUNDLED_RESOURCES_DIRNAME);
-		App app = bundleSet.getBundlableNode().app();
+		App app = bundleSet.bundlableNode().app();
 		MemoizedFile requestedFile = unbundledResourcesDir.file(relativeFilePath);
 		String requestedFilePathRelativeToApp = app.dir().getRelativePath(requestedFile);
 		if (!requestedFile.isFile())
@@ -156,7 +156,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin imple
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
 		List<String> requestPaths = new ArrayList<String>();
-		for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers()) {
+		for(AssetContainer assetContainer : bundleSet.bundlableNode().scopeAssetContainers()) {
 			requestPaths.addAll(createRequest(assetContainer));
 		}
 		return requestPaths;

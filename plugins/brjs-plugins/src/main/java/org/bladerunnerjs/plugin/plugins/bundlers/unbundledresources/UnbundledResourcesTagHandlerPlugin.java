@@ -27,7 +27,7 @@ public class UnbundledResourcesTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException {
 		try {
-			App app = bundleSet.getBundlableNode().app();
+			App app = bundleSet.bundlableNode().app();
 			writer.write(app.requestHandler().createRelativeBundleRequest("unbundled-resources", version));
 		}
 		catch (MalformedTokenException e) {

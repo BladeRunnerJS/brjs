@@ -15,53 +15,47 @@ public class JsTestDriverBundleSet implements BundleSet {
 		this.bundleSet = bundleSet;
 	}
 	
-	public BundlableNode getBundlableNode() {
-		return new JsTestDriverBundlableNode(bundleSet.getBundlableNode());
+	public BundlableNode bundlableNode() {
+		return new JsTestDriverBundlableNode(bundleSet.bundlableNode());
 	}
 	
 	@Override
-	public List<Asset> getAssets(String... prefixes)
+	public List<Asset> assets(String... prefixes)
 	{
-		return bundleSet.getAssets(prefixes);
+		return bundleSet.assets(prefixes);
 	}
 	
 	@Override
-	public <AT extends Asset> List<AT> getAssets(List<String> prefixes, Class<? extends AT> assetType)
+	public <AT extends Asset> List<AT> assets(Class<? extends AT> assetType, String... prefixes)
 	{
-		return bundleSet.getAssets(prefixes, assetType);
+		return bundleSet.assets(assetType, prefixes);
 	}
 	
 	@Override
-	public List<Asset> getAssets(List<String> prefixes, List<Class<? extends Asset>> assetTypes)
+	public List<Asset> assets(List<Class<? extends Asset>> assetTypes, String... prefixes)
 	{
-		return bundleSet.getAssets(prefixes, assetTypes);
+		return bundleSet.assets(assetTypes, prefixes);
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules() {
-		return bundleSet.getSourceModules();
+	public List<SourceModule> sourceModules() {
+		return bundleSet.sourceModules();
 	}
 	
 	@Override
-	public <AT extends SourceModule> List<AT> getSourceModules(Class<? extends AT> assetType) {
-		return bundleSet.getSourceModules(assetType);
+	public <AT extends SourceModule> List<AT> sourceModules(Class<? extends AT> assetType) {
+		return bundleSet.sourceModules(assetType);
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(List<Class<? extends SourceModule>> assetTypes) {
-		return bundleSet.getSourceModules(assetTypes);
+	public List<SourceModule> sourceModules(List<Class<? extends SourceModule>> assetTypes) {
+		return bundleSet.sourceModules(assetTypes);
 	}
 
 	@Override
 	public List<LinkedAsset> seedAssets()
 	{
 		return bundleSet.seedAssets();
-	}
-
-	@Override
-	public List<LinkedAsset> getLinkedAssets()
-	{
-		return bundleSet.getLinkedAssets();
 	}
 
 }

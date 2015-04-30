@@ -37,7 +37,6 @@ public class BundleSetBuilder {
 	private final List<LinkedAsset> seedAssets = new ArrayList<>();
 	private final Set<Asset> assets = new LinkedHashSet<>();
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Set<LinkedAsset> linkedAssets = new LinkedHashSet<>();
 	private final Set<Asset> processedAssets = new LinkedHashSet<>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
@@ -65,9 +64,8 @@ public class BundleSetBuilder {
 		
 		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		List<Asset> assetList = orderAssetsByAssetContainer(assets);
-		List<LinkedAsset> linkedAssetList = orderAssetsByAssetContainer(linkedAssets);
 		
-		return new StandardBundleSet(bundlableNode, seedAssets, assetList, linkedAssetList, orderedSourceModules);
+		return new StandardBundleSet(bundlableNode, seedAssets, assetList, orderedSourceModules);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
@@ -87,7 +85,6 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		if(processedAssets.add(linkedAsset)) {
 			if (linkedAsset.isRequirable()) {
-				linkedAssets.add(linkedAsset);
 				assets.add(linkedAsset);
 			}
 			

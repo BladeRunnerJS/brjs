@@ -40,7 +40,7 @@ public class MockContentPluginWithIncorrectRequestPrefix extends AbstractContent
 			throw new MalformedRequestException(contentPath, "Requests must be for exactly '" + requestPaths.get(0) + "'.");
 		}
 		
-		return new CharResponseContent( bundleSet.getBundlableNode().root(), this.getClass().getCanonicalName() );
+		return new CharResponseContent( bundleSet.bundlableNode().root(), this.getClass().getCanonicalName() );
 	}
 
 	@Override

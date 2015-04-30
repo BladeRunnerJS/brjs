@@ -46,7 +46,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return bundleSet.getAssets("xml!").isEmpty() ? Collections.emptyList() : requestPaths;
+		return bundleSet.assets("xml!").isEmpty() ? Collections.emptyList() : requestPaths;
 	}
 	
 	@Override
@@ -57,7 +57,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		}
 		
 		XmlBundleWriter bundleWriter = new XmlBundleWriter(xmlBundlerConfig);
-		List<Asset> xmlAssets = bundleSet.getAssets("xml!");
+		List<Asset> xmlAssets = bundleSet.assets("xml!");
 
 		try{
 			StringWriter bufferedOutput = new StringWriter();
@@ -68,7 +68,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 				bundleWriter.concatenateBundle(xmlAssets, bufferedOutput);
 			}
 			
-			String bundlePath = AppMetadataUtility.getRelativeVersionedBundlePath(bundleSet.getBundlableNode().app(), version, "").replaceFirst("/$", "");
+			String bundlePath = AppMetadataUtility.getRelativeVersionedBundlePath(bundleSet.bundlableNode().app(), version, "").replaceFirst("/$", "");
 			String xmlBundlePathToken = AppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
 			//TODO: Can we do a streaming replacement rather than buffer into  string?
 			String result = bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath);

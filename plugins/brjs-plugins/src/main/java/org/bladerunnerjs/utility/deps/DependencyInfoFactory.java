@@ -34,23 +34,23 @@ public class DependencyInfoFactory {
 		};
 		DependencyInfo reverseDependencyGraph;
 		
-		if((sourceModule == null) || bundleSet.getSourceModules().contains(sourceModule)) {
+		if((sourceModule == null) || bundleSet.sourceModules().contains(sourceModule)) {
 			reverseDependencyGraph = buildDependencyGraphFromBundleSet(bundleSet, dependencyAdder);
 		}
 		else {
-			reverseDependencyGraph = buildDependencyGraphFromBundlableNode(bundleSet.getBundlableNode(), dependencyAdder);
+			reverseDependencyGraph = buildDependencyGraphFromBundlableNode(bundleSet.bundlableNode(), dependencyAdder);
 		}
 		
 		return reverseDependencyGraph;
 	}
 	
 	private static DependencyInfo buildDependencyGraphFromBundleSet(BundleSet bundleSet, DependencyAdder dependencyAdder) throws ModelOperationException {
-		BundlableNode bundlableNode = bundleSet.getBundlableNode();
+		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		DependencyInfo dependencyInfo = new DependencyInfo();
 		
 		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
 		
-		for(LinkedAsset asset : bundleSet.getLinkedAssets()) {
+		for(LinkedAsset asset : bundleSet.assets(LinkedAsset.class)) {
 			addAssetDependencies(dependencyAdder, bundlableNode, dependencyInfo, asset);
 		}
 		
