@@ -134,7 +134,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 
 	private boolean hasUnencapsulatedSourceModule(BundleSet bundleSet)
 	{
-		for(SourceModule sourceFile : bundleSet.getAssets(SourceModule.class)) 
+		for(SourceModule sourceFile : bundleSet.getSourceModules()) 
 		{
 			if (sourceFile.isGlobalisedModule()) {
 				return true;

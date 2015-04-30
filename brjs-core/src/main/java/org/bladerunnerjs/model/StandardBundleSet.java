@@ -39,6 +39,11 @@ public class StandardBundleSet implements BundleSet {
 		return seedAssets;
 	}
 	
+	@Override
+	public List<SourceModule> getSourceModules() {
+		return getTheAssets(sourceModules, sourceModulesByType, null, null);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <AT extends SourceModule> List<AT> getSourceModules(Class<? extends AT> assetType) {
