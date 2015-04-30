@@ -139,7 +139,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 	}
 	
 	private List<Asset> getCssAssets(BundleSet bundleSet) {
-		List<Asset> cssAssets = bundleSet.getAssets( Arrays.asList("css!", "theme!"), Arrays.asList(FileAsset.class));
+		List<Asset> cssAssets = bundleSet.getAssets(FileAsset.class, "css!", "theme!");
 		orderCssAssets(cssAssets);
 		return cssAssets;
 	}
