@@ -53,10 +53,4 @@ public class JsTestDriverBundleSet implements BundleSet {
 		return bundleSet.seedAssets();
 	}
 
-	@Override
-	public List<LinkedAsset> getLinkedAssets()
-	{
-		return bundleSet.getLinkedAssets();
-	}
-
 }

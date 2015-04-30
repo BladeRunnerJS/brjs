@@ -50,7 +50,7 @@ public class DependencyInfoFactory {
 		
 		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
 		
-		for(LinkedAsset asset : bundleSet.getLinkedAssets()) {
+		for(LinkedAsset asset : bundleSet.getAssets(LinkedAsset.class)) {
 			addAssetDependencies(dependencyAdder, bundlableNode, dependencyInfo, asset);
 		}
 		

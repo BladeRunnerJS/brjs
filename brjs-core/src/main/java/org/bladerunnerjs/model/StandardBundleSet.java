@@ -15,18 +15,16 @@ import org.bladerunnerjs.api.SourceModule;
 public class StandardBundleSet implements BundleSet {
 	private final List<LinkedAsset> seedAssets;
 	private final List<Asset> assets;
-	private final List<LinkedAsset> linkedAssets;
 	private final List<SourceModule> sourceModules;
 	private BundlableNode bundlableNode;
 	
 	private Map<List<Class<? extends Asset>>, List<Asset>> assetsByType = new HashMap<>();
 	private Map<List<Class<? extends SourceModule>>, List<SourceModule>> sourceModulesByType = new HashMap<>();
 	
-	public StandardBundleSet(BundlableNode bundlableNode, List<LinkedAsset> seedAssets, List<Asset> assets, List<LinkedAsset> linkedAssets, List<SourceModule> sourceModules) {
+	public StandardBundleSet(BundlableNode bundlableNode, List<LinkedAsset> seedAssets, List<Asset> assets, List<SourceModule> sourceModules) {
 		this.seedAssets = seedAssets;
 		this.bundlableNode = bundlableNode;
 		this.assets = assets;
-		this.linkedAssets = linkedAssets;
 		this.sourceModules = sourceModules;
 	}
 	
@@ -39,12 +37,6 @@ public class StandardBundleSet implements BundleSet {
 	public List<LinkedAsset> seedAssets()
 	{
 		return seedAssets;
-	}
-
-	@Override
-	public List<LinkedAsset> getLinkedAssets()
-	{
-		return linkedAssets;
 	}
 	
 	@SuppressWarnings("unchecked")
