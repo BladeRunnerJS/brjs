@@ -88,7 +88,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin implements R
 			RequestMode requestMode = (parsedContentPath.formName.equals(PROD_BUNDLE_REQUEST)) ? RequestMode.Prod : RequestMode.Dev;
 			
 			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(requestMode, parsedContentPath, bundleSet, contentAccessor, version);
-			ResponseContent content = new CharResponseContent( bundleSet.getBundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
+			ResponseContent content = new CharResponseContent( bundleSet.bundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
 			
 			return content;
 		}

@@ -61,7 +61,7 @@ public class AliasingSerializer {
 	private static List<AliasDefinition> getAliasDefinitions(BundleSet bundleSet) {
 		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 		
-		AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundleSet.getBundlableNode());
+		AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundleSet.bundlableNode());
 		
 		List<AliasCommonJsSourceModule> aliasModules = bundleSet.getSourceModules(AliasCommonJsSourceModule.class);
 		

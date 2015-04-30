@@ -99,7 +99,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		
 		try
 		{
-			for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers())
+			for(AssetContainer assetContainer : bundleSet.bundlableNode().scopeAssetContainers())
 			{
 				contentPaths.addAll( getValidContentPaths(assetContainer) );
 			}
@@ -132,7 +132,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 		
 		
 		List<Asset> assetsToDetirmineUsedPaths = bundleSet.getAssets("css!", "theme!");
-		assetsToDetirmineUsedPaths.addAll(bundleSet.getBundlableNode().seedAssets());
+		assetsToDetirmineUsedPaths.addAll(bundleSet.bundlableNode().seedAssets());
 		
 		for (Asset asset : assetsToDetirmineUsedPaths) {
 			filterUsedContentPaths(asset, validContentPaths, usedContentPaths);
@@ -171,7 +171,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException {
 		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
 		
-		BundlableNode bundlableNode = bundleSet.getBundlableNode();
+		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		String theme = parsedContentPath.properties.get("theme");
 		String resourcePath = parsedContentPath.properties.get("resourcePath");
 		MemoizedFile resourceFile = null;

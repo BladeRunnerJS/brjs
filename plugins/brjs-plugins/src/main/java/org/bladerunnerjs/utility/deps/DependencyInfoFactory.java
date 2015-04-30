@@ -38,14 +38,14 @@ public class DependencyInfoFactory {
 			reverseDependencyGraph = buildDependencyGraphFromBundleSet(bundleSet, dependencyAdder);
 		}
 		else {
-			reverseDependencyGraph = buildDependencyGraphFromBundlableNode(bundleSet.getBundlableNode(), dependencyAdder);
+			reverseDependencyGraph = buildDependencyGraphFromBundlableNode(bundleSet.bundlableNode(), dependencyAdder);
 		}
 		
 		return reverseDependencyGraph;
 	}
 	
 	private static DependencyInfo buildDependencyGraphFromBundleSet(BundleSet bundleSet, DependencyAdder dependencyAdder) throws ModelOperationException {
-		BundlableNode bundlableNode = bundleSet.getBundlableNode();
+		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		DependencyInfo dependencyInfo = new DependencyInfo();
 		
 		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);

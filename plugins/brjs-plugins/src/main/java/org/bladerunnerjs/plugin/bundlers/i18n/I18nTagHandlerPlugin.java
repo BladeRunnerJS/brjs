@@ -44,7 +44,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 			} else {
 				contentPath = i18nContentPathParser.createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale.getLanguageCode());				
 			}
-			App app = bundleSet.getBundlableNode().app();
+			App app = bundleSet.bundlableNode().app();
 			String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
 			
 			writer.write("<script type=\"text/javascript\" src=\"" + requestPath + "\"></script>\n");

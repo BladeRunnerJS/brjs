@@ -68,7 +68,7 @@ public class CssContentPlugin extends AbstractContentPlugin implements RoutableC
 		Set<String> contentPaths = new LinkedHashSet<>();
 		
 		try {
-			List<Locale> supportedLocales = Arrays.asList(bundleSet.getBundlableNode().app().appConf().getLocales());
+			List<Locale> supportedLocales = Arrays.asList(bundleSet.bundlableNode().app().appConf().getLocales());
 			
 			for(Asset cssAsset : getCssAssets(bundleSet)) {
 				

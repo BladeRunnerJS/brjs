@@ -90,15 +90,15 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 			BundleSetCreatedEvent bundleSetCreatedEvent = (BundleSetCreatedEvent) event;
 			
 			BundleSet bundleset = bundleSetCreatedEvent.getBundleSet();
-			App bundlesetApp = bundleset.getBundlableNode().app();
+			App bundlesetApp = bundleset.bundlableNode().app();
 			String appName = bundlesetApp.getName();
-			if (bundleset.getBundlableNode().root().systemApp(appName) == bundlesetApp) {
+			if (bundleset.bundlableNode().root().systemApp(appName) == bundlesetApp) {
 				return;
 			}
 			
 			eventData.put("total_count", bundleset.getAssets().size());
 			eventData.put("execution_duration", bundleSetCreatedEvent.getCreationDuration());
-			eventData.put("bundlable_node_type", bundleset.getBundlableNode().getClass().getSimpleName());
+			eventData.put("bundlable_node_type", bundleset.bundlableNode().getClass().getSimpleName());
 		}
 		else if (event instanceof CommandExecutedEvent) {
 			eventType = "commands";

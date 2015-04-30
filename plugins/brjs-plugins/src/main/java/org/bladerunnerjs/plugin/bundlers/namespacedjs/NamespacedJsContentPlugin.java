@@ -131,7 +131,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 			
 			if (parsedContentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
-				SourceModule jsModule =  (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
+				SourceModule jsModule =  (SourceModule)bundleSet.bundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
 				return new CharResponseContent(brjs, jsModule.getReader());
 			}
 

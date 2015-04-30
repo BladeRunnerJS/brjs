@@ -125,7 +125,7 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 			addI18nProperties(propertiesMap, locale, (I18nFileAsset) asset);
 		}
 
-		return getReaderForProperties(bundleSet.getBundlableNode().root(), locale, propertiesMap);
+		return getReaderForProperties(bundleSet.bundlableNode().root(), locale, propertiesMap);
 	}
 
 	private void addI18nProperties(Map<String,String> propertiesMap, Locale locale, I18nFileAsset i18nFile) throws ContentProcessingException

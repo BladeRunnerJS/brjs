@@ -65,7 +65,7 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin implements C
 		{
 			try
 			{
-				App app = bundleSet.getBundlableNode().app();
+				App app = bundleSet.bundlableNode().app();
 				//NOTE: this metadata is used by the BRAppMetaService
 				// This can't be modeled as a SourceModule since it needs access to the version which is only available to ContentPlugins
 				return new CharResponseContent( brjs, 

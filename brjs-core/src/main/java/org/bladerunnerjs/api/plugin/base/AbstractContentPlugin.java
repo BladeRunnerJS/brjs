@@ -44,12 +44,12 @@ public abstract class AbstractContentPlugin extends AbstractPlugin implements Co
 	
 	
 	private List<String> filterUnusedContentPaths(RequestMode requestMode, BundleSet bundleSet, List<String> contentPaths, Locale... locales) throws ContentProcessingException, ResourceNotFoundException, MalformedTokenException {
-		BundlableNode bundlableNode = bundleSet.getBundlableNode();
+		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		if (outputAllBundles() || !(bundlableNode instanceof BrowsableNode) || locales.length <= 0) {			
 			return contentPaths;
 		}
 		
-		App app = bundleSet.getBundlableNode().app();
+		App app = bundleSet.bundlableNode().app();
 		AppRequestHandler appRequestHandler = new AppRequestHandler(app);
 		UrlContentAccessor urlContentAccessor = new StaticContentAccessor(app);
 		Map<String,List<String>> contentPluginRequestsMap = new LinkedHashMap<>();

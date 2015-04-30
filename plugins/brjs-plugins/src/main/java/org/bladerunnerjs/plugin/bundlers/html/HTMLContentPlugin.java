@@ -84,7 +84,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 				try(Reader reader = htmlAsset.getReader()) {
 					readerList.add(new StringReader("\n<!-- " + htmlAsset.getAssetName() + " -->\n"));
 
-					String bundlePath = AppMetadataUtility.getRelativeVersionedBundlePath(bundleSet.getBundlableNode().app(), version, "").replaceFirst("/$", "");
+					String bundlePath = AppMetadataUtility.getRelativeVersionedBundlePath(bundleSet.bundlableNode().app(), version, "").replaceFirst("/$", "");
 					String xmlBundlePathToken = AppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
 
 					String htmlContent = IOUtils.toString(reader);

@@ -15,8 +15,8 @@ public class JsTestDriverBundleSet implements BundleSet {
 		this.bundleSet = bundleSet;
 	}
 	
-	public BundlableNode getBundlableNode() {
-		return new JsTestDriverBundlableNode(bundleSet.getBundlableNode());
+	public BundlableNode bundlableNode() {
+		return new JsTestDriverBundlableNode(bundleSet.bundlableNode());
 	}
 	
 	@Override

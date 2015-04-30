@@ -3,7 +3,7 @@ package org.bladerunnerjs.api;
 import java.util.List;
 
 public interface BundleSet {
-	public BundlableNode getBundlableNode();
+	public BundlableNode bundlableNode();
 	public List<LinkedAsset> seedAssets();
 	public List<Asset> getAssets(String... prefixes);
 	public <AT extends Asset> List<AT> getAssets(Class<? extends AT> assetType, String... prefixes);
