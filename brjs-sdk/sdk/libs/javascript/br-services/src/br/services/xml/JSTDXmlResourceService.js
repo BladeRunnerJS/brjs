@@ -18,7 +18,7 @@ var BRXmlResourceService = require('./BRXmlResourceService');
  * @param {String} sUrl A URL to load XML from.
  */
 function JSTDXmlResourceService(sUrl) {
-	var sDefaultUrl = (window.jstestdriver) ? "/test/bundles/xml.bundle" : null;
+	var sDefaultUrl = (window.jstestdriver) ? "/test/bundles/bundle.xml" : null;
 	BRXmlResourceService.call(this, sUrl || sDefaultUrl);
 }
 

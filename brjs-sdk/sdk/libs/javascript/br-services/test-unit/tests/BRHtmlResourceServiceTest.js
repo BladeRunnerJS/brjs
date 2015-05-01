@@ -94,7 +94,7 @@ BRHtmlResourceServiceTest.prototype.test_nestedTemplatesAddedViaTheHtmlTagAreUnw
 
 var getService = function(sUrl)
 {
-	if (!sUrl) { sUrl = "/test/bundles/html.bundle"; }
+	if (!sUrl) { sUrl = "/test/bundles/bundle.html"; }
 	return new BRHtmlResourceService(sUrl);
 };
 
