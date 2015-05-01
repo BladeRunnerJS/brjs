@@ -1,17 +1,16 @@
 package org.bladerunnerjs.utility;
 
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.api.plugin.ContentPlugin;
+import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.engine.NamedNode;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.ContentPlugin;
 
 
 public class BundleSetRequestHandler {
@@ -23,7 +22,7 @@ public class BundleSetRequestHandler {
 	}
 	
 	public static ResponseContent handle(BundleSet bundleSet, String logicalRequestpath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		BundlableNode bundlableNode = bundleSet.getBundlableNode();
+		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		App app = bundlableNode.app();
 		Logger logger = app.root().logger(BundleSetRequestHandler.class);
 		
@@ -40,7 +39,6 @@ public class BundleSetRequestHandler {
 		
 		logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), logicalRequestpath);
 		
-		ParsedContentPath contentPath = contentProvider.getContentPathParser().parse(logicalRequestpath);
-		return contentProvider.handleRequest(contentPath, bundleSet, contentAccessor, version);
+		return contentProvider.handleRequest(logicalRequestpath, bundleSet, contentAccessor, version);
 	}
 }

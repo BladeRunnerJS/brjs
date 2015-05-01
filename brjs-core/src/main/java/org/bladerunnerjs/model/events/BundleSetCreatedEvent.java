@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.events;
 
-import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.plugin.Event;
 
 
 public class BundleSetCreatedEvent implements Event
@@ -11,6 +11,7 @@ public class BundleSetCreatedEvent implements Event
 
 	public BundleSetCreatedEvent(BundleSet bundleSet, long creationDuration) {
 		this.bundleSet = bundleSet;
+		this.creationDuration = creationDuration;
 	}
 	
 	public BundleSet getBundleSet() {

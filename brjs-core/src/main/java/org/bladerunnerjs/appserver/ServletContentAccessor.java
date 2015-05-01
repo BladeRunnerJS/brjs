@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.model.StaticContentAccessor;
 
 

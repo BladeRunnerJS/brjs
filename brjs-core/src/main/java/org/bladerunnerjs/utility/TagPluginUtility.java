@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +17,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,7 +42,7 @@ public class TagPluginUtility {
 	
 	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, Locale locale, String version) throws IOException, NoTagHandlerFoundException
 	{
-		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.getBundlableNode().root().plugins().tagHandlerPlugins();
+		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.bundlableNode().root().plugins().tagHandlerPlugins();
 		StringBuffer result = new StringBuffer();
 		
 		TagMatchHandler tagMatchHandler = new TagMatchHandler() {
@@ -52,7 +51,7 @@ public class TagPluginUtility {
 			{
 				TagHandlerPlugin tagHandler = getTagHandlerForTag(tagHandlerPlugins, tagMatch.tag);
 				String replacement = getTagReplacement(bundleSet, requestMode, locale, version, tagHandler, tagMatch.attributes);
-				matcher.appendReplacement(result, replacement);
+				matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
 			}
 			@Override
 			public void handleUnprocessableTagMatch(Matcher matcher, String tagContent)
@@ -80,9 +79,9 @@ public class TagPluginUtility {
 
 	public static Map<String, Map<String, String>> getUsedTagsAndAttributes(String content, BundleSet bundleSet, RequestMode requestMode, Locale locale) throws IOException, NoTagHandlerFoundException
 	{
-		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.getBundlableNode().root().plugins().tagHandlerPlugins();
+		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.bundlableNode().root().plugins().tagHandlerPlugins();
 		
-		Map<String,Map<String,String>> tagsAndAttributes = new HashMap<>();
+		Map<String,Map<String,String>> tagsAndAttributes = new LinkedHashMap<>();
 		
 		TagMatchHandler tagMatchHandler = new TagMatchHandler() {
 			@Override
@@ -90,7 +89,7 @@ public class TagPluginUtility {
 			{
 				getTagHandlerForTag(tagHandlerPlugins, tagMatch.tag); // check the tag is valid
 				if (!tagsAndAttributes.containsKey(tagMatch.tag)) {
-					tagsAndAttributes.put(tagMatch.tag, new HashMap<>());
+					tagsAndAttributes.put(tagMatch.tag, new LinkedHashMap<>());
 				}
 				tagsAndAttributes.get(tagMatch.tag).putAll( tagMatch.attributes );
 			}
@@ -110,7 +109,7 @@ public class TagPluginUtility {
 	}
 	
 	private static void findAndHandleTagMatches(String content, BundleSet bundleSet, RequestMode requestMode, Locale locale, TagMatchHandler tagMatchHandler) throws IOException, NoTagHandlerFoundException {
-		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.getBundlableNode().root().plugins().tagHandlerPlugins();
+		List<TagHandlerPlugin> tagHandlerPlugins = bundleSet.bundlableNode().root().plugins().tagHandlerPlugins();
 		
 		Matcher matcher = tagPattern.matcher(content);
 		while (matcher.find())
@@ -139,9 +138,9 @@ public class TagPluginUtility {
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder domParser = builderFactory.newDocumentBuilder();
 		InputStream stream = new ByteArrayInputStream(xmlContent.getBytes(StandardCharsets.UTF_8));
-		domParser.setErrorHandler(new DocumentBuilderErrorParser(bundleSet.getBundlableNode().root().logger(TagPluginUtility.class)));
+		domParser.setErrorHandler(new DocumentBuilderErrorParser(bundleSet.bundlableNode().root().logger(TagPluginUtility.class)));
 		
-		domParser.setErrorHandler(new SilentDomParserErrorHandler(bundleSet.getBundlableNode().root()));
+		domParser.setErrorHandler(new SilentDomParserErrorHandler(bundleSet.bundlableNode().root()));
 		
 		document = domParser.parse(stream);
 		Element root = document.getDocumentElement();

@@ -3,6 +3,7 @@ package org.bladerunnerjs.utility.reader;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.utility.TailBuffer;
 
 /*
@@ -34,13 +35,13 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private CommentStripperState state;
-	private CharBufferPool pool;
+	private BRJS brjs;
 	
-	public XmlCommentStrippingDependenciesReader(Reader sourceReader, CharBufferPool pool)
+	public XmlCommentStrippingDependenciesReader(BRJS brjs, Reader sourceReader)
 	{
 		super();
+		this.brjs = brjs;
 		this.sourceReader = sourceReader;
-		this.pool = pool;
 		state = CommentStripperState.WITHIN_SOURCE;
 	}
 	
@@ -53,7 +54,7 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 		int currentOffset = offset;
 		int maxOffset = offset + maxCharacters;
 		char nextChar;
-		char[] sourceBuffer = pool.getBuffer();
+		char[] sourceBuffer = CharBufferPool.getBuffer(brjs);
 		
 		while(currentOffset < maxOffset) {
 			if(nextCharPos == lastCharPos) {
@@ -84,7 +85,7 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 			}
 		}
 		
-		pool.returnBuffer(sourceBuffer);
+		CharBufferPool.returnBuffer(brjs, sourceBuffer);
 		int charsProvided = (currentOffset - offset);
 		return (charsProvided == 0) ? -1 : charsProvided;
 	}

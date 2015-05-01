@@ -1,13 +1,12 @@
 package org.bladerunnerjs.spec.plugin.bundler.commonjs;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
-import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,8 +15,6 @@ public class CommonJsContentPluginTest extends SpecTest {
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
 	private JsLib sdkJsLib;
-	private Bladeset bladeset;
-	private Blade blade;
 	private Bladeset defaultBladeset;
 	private Blade bladeInDefaultBladeset;
 	private Aspect defaultAspect;
@@ -31,8 +28,6 @@ public class CommonJsContentPluginTest extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			defaultAspect = app.defaultAspect();
-			bladeset = app.bladeset("bs");
-			blade = bladeset.blade("b1");
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			defaultBladeset = app.defaultBladeset();
 			bladeInDefaultBladeset = defaultBladeset.blade("b1");
@@ -103,33 +98,6 @@ public class CommonJsContentPluginTest extends SpecTest {
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "randomStuff", "appns/Class" );
 	}
 	
-	@Test 
-	public void ambiguousRequirePathExceptionThrownFromIndexContainsFilePath() throws Exception{
-		given(aspect).indexPageRequires("appns/bs/b1/Class")
-			.and(aspect).hasClass("appns/bs/b1/Class")
-			.and(bladeset).hasBeenCreated() 
-			.and(blade).hasClass("appns/bs/b1/Class");
-		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
-		then(exceptions).verifyException(AmbiguousRequirePathException.class, 	"default-aspect/index.html",
-																					"bs-bladeset/blades/b1/src/appns/bs/b1/Class.js",
-																					"default-aspect/src/appns/bs/b1/Class.js",
-																					"appns/bs/b1/Class");
-	}
-	
-	@Test 
-	public void ambiguousRequirePathExceptionThrownFromSourceModuleContainsFilePath() throws Exception{
-		given(aspect).indexPageRequires("appns/Class")
-			.and(aspect).classRequires("appns/Class", "appns/bs/b1/Class")
-			.and(aspect).hasClass("appns/bs/b1/Class")
-			.and(bladeset).hasBeenCreated() 
-			.and(blade).hasClass("appns/bs/b1/Class");
-		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
-		then(exceptions).verifyException(AmbiguousRequirePathException.class, 	"appns/Class",
-																					"bs-bladeset/blades/b1/src/appns/bs/b1/Class.js",
-																					"default-aspect/src/appns/bs/b1/Class.js",
-																					"appns/bs/b1/Class");
-	}
-	
 	@Test
 	public void bladeClassesInDefaultBladesetCanBeBundled() throws Exception {
 		given(bladeInDefaultBladeset).hasClass("appns/b1/BladeClass")
@@ -144,6 +112,6 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(defaultAspect).indexPageRequires("appns/AspectClass");
 		when(defaultAspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
 		then(requestResponse).containsCommonJsClasses("appns/AspectClass");
-	}
+	}	
 	
 }

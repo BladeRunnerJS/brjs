@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.brjs;
 
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +17,25 @@ public class BladerunnerConfTest extends SpecTest {
 	@Test
 	public void bladerunnerConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		when(brjs).bladerunnerConf().write();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\nfileObserver: watching\nignoredPaths: .svn, .git\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf",
+				"defaultFileCharacterEncoding: UTF-8",
+				"fileObserver: watching",
+				"ignoredPaths: .svn, .git",
+				"jettyPort: 7070",
+				"loginRealm: BladeRunnerLoginRealm",
+				"orderedPlugins:",
+				"   AssetPlugin:", 
+				"   - ThirdpartyAssetPlugin",
+				"   - BrowsableNodeSeedLocator",
+				"   - BRJSConformantAssetPlugin",
+				"   - '*'",
+				"   ContentPlugin:", 
+				"   - I18nContentPlugin",
+				"   - ThirdpartyContentPlugin",
+				"   - AppMetadataContentPlugin",
+				"   - CommonJsContentPlugin",
+				"   - NamespacedJsContentPlugin",
+				"   - '*'");
 	}
 	
 	@Test
@@ -30,7 +48,25 @@ public class BladerunnerConfTest extends SpecTest {
 	public void bladerunnerConfThatAlreadyExistsCanBeReadAndModified() throws Exception {
 		given(brjs).containsFileWithContents("conf/brjs.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf().setJettyPort(8888).setDefaultFileCharacterEncoding("ISO-8859-1").write();
-		then(brjs).fileHasContents("conf/brjs.conf", "defaultFileCharacterEncoding: ISO-8859-1\nfileObserver: watching\nignoredPaths: .svn, .git\njettyPort: 8888\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs).fileHasContents("conf/brjs.conf",
+				"defaultFileCharacterEncoding: ISO-8859-1",
+				"fileObserver: watching",
+				"ignoredPaths: .svn, .git",
+				"jettyPort: 8888",
+				"loginRealm: BladeRunnerLoginRealm",
+				"orderedPlugins:",
+				"   AssetPlugin:", 
+				"   - ThirdpartyAssetPlugin",
+				"   - BrowsableNodeSeedLocator",
+				"   - BRJSConformantAssetPlugin",
+				"   - '*'",
+				"   ContentPlugin:", 
+				"   - I18nContentPlugin",
+				"   - ThirdpartyContentPlugin",
+				"   - AppMetadataContentPlugin",
+				"   - CommonJsContentPlugin",
+				"   - NamespacedJsContentPlugin",
+				"   - '*'");
 	}
 	
 	@Test

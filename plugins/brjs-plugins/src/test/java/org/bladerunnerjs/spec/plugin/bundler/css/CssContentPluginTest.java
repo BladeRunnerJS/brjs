@@ -2,16 +2,17 @@ package org.bladerunnerjs.spec.plugin.bundler.css;
 
 import java.io.File;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AppConf;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.BladerunnerConf;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.api.BladeWorkbench;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,6 +37,7 @@ public class CssContentPluginTest extends SpecTest {
 	private Blade bladeInDefaultBladeset;
 	private Aspect defaultAspect;
 	private File targetDir;
+	private SdkJsLib sdkNonConformantLib;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -49,6 +51,7 @@ public class CssContentPluginTest extends SpecTest {
 			mainTheme = aspect.file("themes/main");
 			brBoostrapLib = brjs.sdkLib("br-bootstrap");
 			nonConformantLib = app.jsLib("non-conformant-lib");
+			sdkNonConformantLib = brjs.sdkLib("non-conformant-lib");
 			nonConformantLib2 = app.jsLib("non-conformant-lib2");
 			bladerunnerConf = brjs.bladerunnerConf();
 			bladeset = app.bladeset("bs");
@@ -211,8 +214,8 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires("appns/Class1")
 			.and(brBoostrapLib).containsFileWithContents("thirdparty-lib.manifest", "depends: non-conformant-lib\n"+"exports: lib")
-			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
-			.and(nonConformantLib).containsFile("style1.css");
+			.and(sdkNonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
+			.and(sdkNonConformantLib).containsFile("style1.css");
 		when(aspect).requestReceivedInDev("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style1.css");
 	}
@@ -300,7 +303,7 @@ public class CssContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void allCssFilesInNonConformantLibrariesAppearIfAildcardIsExplicitlySpecified() throws Exception {
+	public void allCssFilesInNonConformantLibraryRootDirectoriesAppearIfAildcardIsExplicitlySpecified() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"*.css\"\n"+"exports: lib")
@@ -521,8 +524,8 @@ public class CssContentPluginTest extends SpecTest {
 	public void onlyCssBundlesUsedFromATagHandlerAreReturnedAsUsedContentPaths() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
 			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
-			.and(brjs).localeForwarderHasContents("")
-			.and(brjs).hasProdVersion("1234");
+			.and(brjs).localeSwitcherHasContents("")
+			.and(brjs).hasVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("css", "css/usedtheme/bundle.css");
 	}
 	
@@ -530,10 +533,10 @@ public class CssContentPluginTest extends SpecTest {
 	public void onlyCssBundlesUsedFromATagHandlerArePresentInTheBuiltArtifact() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@css.bundle theme=\"usedtheme\" @/>")
 			.and(defaultAspect).containsFiles("themes/usedtheme/someStyles.css", "themes/unusedtheme/style.css" )
-			.and(brjs).localeForwarderHasContents("")
-			.and(brjs).hasProdVersion("1234")
+			.and(brjs).localeSwitcherHasContents("")
+			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "v/1234/css/usedtheme/bundle.css")
+		then(targetDir).containsFileWithContents("index.html", "v/1234/css/usedtheme/bundle.css")
 			.and(targetDir).containsFile("v/1234/css/usedtheme/bundle.css")
 			.and(targetDir).doesNotContainFile("v/1234/css/unusedtheme/bundle.css");
 	}

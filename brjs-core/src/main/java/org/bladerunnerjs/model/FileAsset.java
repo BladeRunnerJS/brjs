@@ -1,28 +1,29 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.utility.RequirePathUtility;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class FileAsset implements Asset {
 	private MemoizedFile file;
-	private AssetLocation assetLocation;
 	private String defaultFileCharacterEncoding;
 	private String assetPath;
+	private String primaryRequirePath;
+	private AssetContainer assetContainer;
 	
-	public FileAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+	public FileAsset(MemoizedFile assetFile, AssetContainer assetContainer, String requirePrefix) {
 		try {
-			this.file = assetLocation.root().getMemoizedFile(assetFile);
-			this.assetLocation = assetLocation;
-			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			assetPath = assetLocation.assetContainer().app().dir().getRelativePath(file);
+			this.file = assetFile;
+			this.assetContainer = assetContainer;
+			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			assetPath = assetContainer.app().dir().getRelativePath(file);
+			primaryRequirePath = calculateRequirePath(requirePrefix, assetFile);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -35,14 +36,9 @@ public class FileAsset implements Asset {
 	}
 	
 	@Override
-	public AssetLocation assetLocation() {
-		return assetLocation;
-	}
-	
-	@Override
-	public MemoizedFile dir()
+	public MemoizedFile file()
 	{
-		return file.getParentFile();
+		return file;
 	}
 	
 	@Override
@@ -57,11 +53,35 @@ public class FileAsset implements Asset {
 
 	@Override
 	public List<String> getRequirePaths() {
-		return Collections.emptyList();
+		return Arrays.asList(primaryRequirePath);
 	}
 	
 	@Override
 	public String getPrimaryRequirePath() {
-		return RequirePathUtility.getPrimaryRequirePath(this);
+		return primaryRequirePath;
 	}
+
+	@Override
+	public AssetContainer assetContainer()
+	{
+		return assetContainer;
+	}
+	
+	@Override
+	public boolean isRequirable()
+	{
+		return true;
+	}
+
+	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
+	{
+		return requirePrefix+"/"+assetFile.requirePathName();
+	}
+	
+	@Override
+	public boolean isScopeEnforced()
+	{
+		return true;
+	}
+	
 }

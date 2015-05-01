@@ -6,20 +6,27 @@ import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.TestType;
+import org.bladerunnerjs.api.TypedTestPack;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.api.plugin.Event;
+import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.plugin.Event;
-import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.ObserverList;
 
 public final class AppSdkJsLib implements JsLib {
 	private App app;
 	private JsLib sdkJsLib;
 	private MemoizedFile[] scopeFiles;
-	
+
 	public AppSdkJsLib(App app, SdkJsLib sdkJsLib) {
 		this.app = app;
 		this.sdkJsLib = sdkJsLib;
@@ -75,13 +82,13 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public Set<LinkedAsset> linkedAssets() {
-		return sdkJsLib.linkedAssets();
+	public Set<Asset> assets() {
+		return sdkJsLib.assets();
 	}
 	
 	@Override
-	public LinkedAsset linkedAsset(String requirePath) {
-		return sdkJsLib.linkedAsset(requirePath);
+	public Asset asset(String requirePath) {
+		return sdkJsLib.asset(requirePath);
 	}
 	
 	@Override
@@ -102,11 +109,6 @@ public final class AppSdkJsLib implements JsLib {
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException {
 		sdkJsLib.addTemplateTransformations(transformations);
-	}
-	
-	@Override
-	public AssetLocation assetLocation(String locationPath) {
-		return sdkJsLib.assetLocation(locationPath);
 	}
 	
 	@Override
@@ -142,22 +144,6 @@ public final class AppSdkJsLib implements JsLib {
 	public boolean exists()
 	{
 		return sdkJsLib.exists();
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		return sdkJsLib.assetLocations();
-	}
-	
-	@Override
-	public RootAssetLocation rootAssetLocation() {
-		return sdkJsLib.rootAssetLocation();
-	}
-	
-	@Override
-	public List<String> getAssetLocationPaths()
-	{
-		return sdkJsLib.getAssetLocationPaths();
 	}
 	
 	@Override
@@ -248,5 +234,11 @@ public final class AppSdkJsLib implements JsLib {
 	public void incrementChildFileVersions()
 	{
 		sdkJsLib.incrementChildFileVersions();
+	}
+
+	@Override
+	public String canonicaliseRequirePath(Asset asset, String requirePath) throws RequirePathException
+	{
+		return sdkJsLib.canonicaliseRequirePath(asset, requirePath);
 	}
 }

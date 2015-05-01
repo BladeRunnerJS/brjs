@@ -9,16 +9,17 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
-import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.appserver.ApplicationServer;
+import org.bladerunnerjs.api.model.events.NodeReadyEvent;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.plugin.plugins.appdeployer.AppDeploymentObserverPlugin;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.plugin.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -34,13 +35,16 @@ public class AppServerTest extends SpecTest
 	App sysapp2;
 	App app1;
 	App app2;
+	AppConf app1Conf;
+	AppConf app2Conf;
+	AppConf sysapp1Conf;
+	AppConf sysapp2Conf;
 	DirNode appJars;
 	ServerSocket socket;
 	Servlet helloWorldServlet;
 	TemplateGroup templates;
 	Aspect aspect;
 	StringBuffer response = new StringBuffer();
-
 	File secondaryTempFolder;
 	
 	@Before
@@ -50,8 +54,8 @@ public class AppServerTest extends SpecTest
 			.and(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
-			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
-			.and(brjs).containsFolder("apps")
+			.and(brjs).localeSwitcherHasContents("locale-forwarder.js")
+			.and(brjs).containsFolder("brjs-apps")
 			.and(brjs).containsFolder("sdk/system-applications");
 			brjs.bladerunnerConf().setJettyPort(appServerPort);
 			brjs.bladerunnerConf().write();
@@ -59,9 +63,13 @@ public class AppServerTest extends SpecTest
 			app1 = brjs.app("app1");
 			app2 = brjs.app("app2");
 			aspect = app1.defaultAspect();
+			app1Conf = app1.appConf();
+			app2Conf = app2.appConf();
 			templates = brjs.sdkTemplateGroup("default");
 			sysapp1 = brjs.systemApp("sysapp1");
 			sysapp2 = brjs.systemApp("sysapp2");
+			sysapp1Conf = sysapp1.appConf();
+			sysapp2Conf = sysapp2.appConf();
 			appJars = brjs.appJars();
 			appJars.create();
 		
@@ -90,7 +98,8 @@ public class AppServerTest extends SpecTest
 	public void appIsDeployedWhenAppServerStarts() throws Exception
 	{
 		given(logging).enabled()
-			.and(app1).hasBeenCreated();
+			.and(app1).hasBeenCreated()
+			.and(app1Conf).supportsLocales("en", "de");
 		when(appServer).started();
 		then(appServer).requestCanBeMadeFor("/app1")
 			.and(appServer).requestIs302Redirected("/","/dashboard")
@@ -103,7 +112,9 @@ public class AppServerTest extends SpecTest
 	public void multipleAppsAreHostedWhenAppServerStarts() throws Exception
 	{
 		given(app1).hasBeenCreated()
-			.and(app2).hasBeenCreated();
+			.and(app1Conf).supportsLocales("en", "de")
+			.and(app2).hasBeenCreated()
+			.and(app2Conf).supportsLocales("en", "de");
 		when(appServer).started();
 		then(appServer).requestCanBeMadeFor("/app1")
 			.and(appServer).requestCanBeMadeFor("/app2");
@@ -116,6 +127,7 @@ public class AppServerTest extends SpecTest
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt");
 		when(app1).populate("default")
+			.and(app1Conf).localesUpdatedTo("en", "de")
 			.and(app1).deployApp();
 		then(appServer).requestCanEventuallyBeMadeFor("/app1");
 	}	
@@ -153,7 +165,8 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void singleSystemAppCanBeHosted() throws Exception
 	{
-		given(sysapp1).hasBeenCreated();
+		given(sysapp1).hasBeenCreated()
+			.and(sysapp1Conf).supportsLocales("en", "de");
 		when(appServer).started();
 		then(appServer).requestCanBeMadeFor("/sysapp1");
 	}
@@ -162,7 +175,9 @@ public class AppServerTest extends SpecTest
 	public void multipleSystemAppsCanBeHosted() throws Exception
 	{
 		given(sysapp1).hasBeenCreated()
-			.and(sysapp2).hasBeenCreated();
+			.and(sysapp1Conf).supportsLocales("en", "de")
+			.and(sysapp2).hasBeenCreated()
+			.and(sysapp2Conf).supportsLocales("en", "de");
 		when(appServer).started();
 		then(appServer).requestCanBeMadeFor("/sysapp1")
 			.and(appServer).requestCanBeMadeFor("/sysapp2");
@@ -175,6 +190,7 @@ public class AppServerTest extends SpecTest
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(appServer).started();
 		when(sysapp1).populate("default")
+			.and(sysapp1Conf).localesUpdatedTo("en", "de")
 			.and(sysapp1).deployApp();
 		then(appServer).requestCanEventuallyBeMadeFor("/sysapp1");
 	}
@@ -218,17 +234,29 @@ public class AppServerTest extends SpecTest
 	}
 	
 	@Test
+	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstance() throws Exception
+	{
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(templates).templateGroupCreated()
+			.and(templates.template("app")).containsFile("fileForApp.txt")
+			.and(brjs.applicationServer(appServerPort)).started();
+		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
+			.and(app1Conf).localesUpdatedTo("en", "de");
+		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
+	} 
+	
+	@Test
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstanceAndOnlyAppsDirectoryExists() throws Exception
 	{
 		given(brjs).doesNotContainFolder("brjs-apps")
 			.and(brjs).containsFolder("apps")
-			.and(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread(); 
+			.and(brjs).hasBeenAuthenticallyCreated(); 
 			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel();
 			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
-		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
+		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/");
 	}
 	
 	@Test
@@ -236,8 +264,9 @@ public class AppServerTest extends SpecTest
 	{
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(this.getClass());
 		given(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(secondaryTempFolder); 
-			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel();
-			given(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
+			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel(secondaryTempFolder);
+			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
+			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/");
@@ -252,6 +281,7 @@ public class AppServerTest extends SpecTest
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
+			.and(app1Conf).localesUpdatedTo("en", "de")
 			.and(brjs.applicationServer(appServerPort)).stopped()
 			.and(brjs).hasBeenAuthenticallyReCreated()
 			.and(brjs.applicationServer(appServerPort)).started();
@@ -270,9 +300,10 @@ public class AppServerTest extends SpecTest
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
 			.and(templates).templateGroupCreated()
-			.and(brjs).containsFile("apps/file.txt")
+			.and(brjs).containsFile("brjs-apps/file.txt")
 			.and(brjs.applicationServer(appServerPort)).started();
-		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
+		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
+			.and(app1Conf).localesUpdatedTo("en", "de");
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
 	}
 	

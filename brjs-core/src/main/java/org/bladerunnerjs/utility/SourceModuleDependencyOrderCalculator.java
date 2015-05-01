@@ -1,24 +1,23 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.exception.CircularDependencyException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.model.exception.CircularDependencyException;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 public class SourceModuleDependencyOrderCalculator {
 	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules) throws ModelOperationException {
 		Map<SourceModule, List<SourceModule>> sourceModuleDependencies = NonCircularTransitivePreExportDependencyGraphCreator.createGraph(
 			DefineTimeDependencyGraphCreator.createGraph(bundlableNode, unorderedSourceModules, true), DefineTimeDependencyGraphCreator.createGraph(bundlableNode, unorderedSourceModules, false));
 		Set<SourceModule> orderedSourceModules = new LinkedHashSet<>();
-		Set<SourceModule> metDependencies = new HashSet<>();		
+		Set<SourceModule> metDependencies = new LinkedHashSet<>();		
 		
 		for (SourceModule bootstrapModule : bootstrappingSourceModules) {
 			orderedSourceModules.add(bootstrapModule);

@@ -1,5 +1,4 @@
 br.Core.thirdparty('mock4js');
-br.Core.thirdparty('jsunitextensions');
 
 PresenterComponentFixtureTest = TestCase("PresenterComponentFixtureTest");
 

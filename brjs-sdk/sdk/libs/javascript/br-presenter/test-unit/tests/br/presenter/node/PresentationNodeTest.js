@@ -1,5 +1,3 @@
-br.Core.thirdparty('jsunitextensions');
-
 PresentationNodeTest = TestCase("PresentationNodeTest");
 
 PresentationNodeTest.prototype.test_nodes = function()

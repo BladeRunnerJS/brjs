@@ -1,9 +1,9 @@
 package org.bladerunnerjs.spec.plugin.bundler.appmeta;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,22 +27,22 @@ public class AppMetadataContentPluginTest extends SpecTest {
 	
 	@Test
 	public void appVersionContentIsIncluded() throws Exception {
-		given(brjs).hasDevVersion("dev");
+		given(brjs).hasVersion("dev");
 		when(aspect).requestReceivedInDev("app-meta/version.js", requestResponse);
-		then(requestResponse).containsTextOnce( "window.$BRJS_APP_VERSION = 'dev';" );
+		then(requestResponse).containsTextOnce( "module.exports.APP_VERSION = 'dev';" );
 	}
 	
 	@Test
 	public void bundlePathContentIsIncluded() throws Exception {
-		given(brjs).hasDevVersion("dev");
+		given(brjs).hasVersion("dev");
 		when(aspect).requestReceivedInDev("app-meta/version.js", requestResponse);
-		then(requestResponse).containsTextOnce( "window.$BRJS_VERSIONED_BUNDLE_PATH = 'v/dev';" );
+		then(requestResponse).containsTextOnce( "module.exports.VERSIONED_BUNDLE_PATH = 'v/dev';" );
 	}
 	
 	@Test
-	public void appVersionContentIsIncludedAtTheTopOfTheCompositeBundle() throws Exception {
+	public void appVersionContentIsIncludedInTheCompositeBundle() throws Exception {
 		given(aspect).indexPageRequires("appns/Class")
-			.and(brjs).hasDevVersion("dev")
+			.and(brjs).hasVersion("dev")
 			.and(aspect).hasClass("appns/Class")
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("thirdparty-lib.manifest", "js: bootstrap.js\n"+"exports: lib")
@@ -50,8 +50,8 @@ public class AppMetadataContentPluginTest extends SpecTest {
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"// br-bootstrap",
-				"window.$BRJS_APP_VERSION = 'dev';",
-				"window.$BRJS_VERSIONED_BUNDLE_PATH = 'v/dev';",
+				"module.exports.APP_VERSION = 'dev';",
+				"module.exports.VERSIONED_BUNDLE_PATH = 'v/dev';",
 				"appns/Class" );
 	}
 }

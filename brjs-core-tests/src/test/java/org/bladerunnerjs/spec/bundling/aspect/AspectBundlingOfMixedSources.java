@@ -1,12 +1,12 @@
 package org.bladerunnerjs.spec.bundling.aspect;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.exception.InvalidRequirePathException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.model.exception.InvalidRequirePathException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -168,7 +168,12 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(bladeset).hasBeenCreated()
 			.and(blade).hasClass("appns/mypkg/Class");
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then(exceptions).verifyException(InvalidRequirePathException.class, "bladeset-bladeset/blades/blade/src/appns/mypkg/Class.js", "appns/bladeset/blade/*", "appns/mypkg");
+    	then(exceptions).verifyException(InvalidRequirePathException.class, 
+    			"brjs-apps/app1/bladeset-bladeset/blades/blade/src",
+    			"appns",
+    			"appns/bladeset/blade",
+    			"brjs-apps/app1/bladeset-bladeset/blades/blade/src/appns/bladeset/blade",
+    			"brjs-apps/app1/bladeset-bladeset/blades/blade/src");
 	}
 	
 	@Test

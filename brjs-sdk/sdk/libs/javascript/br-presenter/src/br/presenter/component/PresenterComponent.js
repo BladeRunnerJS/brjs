@@ -316,18 +316,13 @@ PresenterComponent.prototype.removeLifeCycleListener = function(listener) {
  * @type Element
  */
 PresenterComponent.prototype._getTemplate = function(sTemplateId) {
-	var eTemplateHolder;
-	var eTemplateNode = ServiceRegistry.getService("br.html-service").getHTMLTemplate(sTemplateId);
+	var eTemplateNode = ServiceRegistry.getService("br.html-service").getTemplateElement(sTemplateId);
 
-	if (!eTemplateNode)
-	{
-		throw new PresenterComponent.TemplateNotFoundError("Template with ID "+sTemplateId+" couldn't be found");
+	if(!eTemplateNode) {
+		throw new PresenterComponent.TemplateNotFoundError("Template with ID '" + sTemplateId + "' couldn't be found");
 	}
 
-	eTemplateHolder = eTemplateNode.cloneNode(true);
-	eTemplateHolder.removeAttribute('id');
-
-	return eTemplateHolder;
+	return eTemplateNode;
 };
 
 module.exports = PresenterComponent;

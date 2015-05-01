@@ -1,24 +1,23 @@
 package org.bladerunnerjs.runner;
 
-import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
-import static org.mockito.Mockito.*;
+import static org.bladerunnerjs.api.spec.utility.BRJSAssertions.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
 import org.bladerunnerjs.model.events.NewInstallEvent;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.runner.CommandRunner;
 import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
@@ -40,7 +39,7 @@ public class CommandRunnerTest {
 	private InputStream oldSysIn;
 	
 	@Before
-	public void setUp() throws IOException, InvalidSdkDirectoryException {
+	public void setUp() throws Exception {
 		StaticLoggerBinder.getSingleton().getLoggerFactory().setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
 		commandRunner = new CommandRunner();
 		
@@ -206,9 +205,9 @@ public class CommandRunnerTest {
 		dirFile("valid-sdk-directory/sdk/libs/java").mkdirs();
 		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/sdk/libs/java/application/brjs-servlet-1.2.3.jar"), "some jar contents" );
 		dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib").mkdirs();
-		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
+		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/brjs-apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
 		
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
+		commandRunner.run(tempDir, new String[] {dir("valid-sdk-directory"), "log-test"});
 		String output = outputStream.toString("UTF-8");
 		String warnMessage = String.format(UserCommandRunner.Messages.OUTDATED_JAR_MESSAGE, "myApp", "brjs-", "sdk/libs/java/application");
 		assertContains(warnMessage, output);
@@ -236,14 +235,70 @@ public class CommandRunnerTest {
 	public void newInstallEventIsEmittedIfYesIsAnsweredToStatsCollection() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	
 		System.setIn(new ByteArrayInputStream("y\r\n".getBytes()));
 		commandRunner.run(new String[] {dir("valid-sdk-directory")});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: true", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: true") );
+		verify(mockEventObserver).onEventEmitted(any(NewInstallEvent.class), eq(brjs));
+	}
+	
+	@Test
+	public void newInstallEventIsEmittedIfDefaultYesIsAcceptedForStatsCollection() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
+	
+		System.setIn(new ByteArrayInputStream("\r\n".getBytes()));
+		commandRunner.run(new String[] {dir("valid-sdk-directory")});
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: true") );
+		verify(mockEventObserver).onEventEmitted(any(NewInstallEvent.class), eq(brjs));
+	}
+	
+	@Test 
+	public void nonsensAnswerToCollectionThorwsException() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
+	
+		System.setIn(new ByteArrayInputStream("foo\r\n".getBytes()));
+		try {
+			commandRunner.run(new String[] {dir("valid-sdk-directory")});
+		} catch (Throwable t) {
+			assertEquals("'foo' is not a valid response.", t.getMessage());
+		}
+	}
+	
+	@Test 
+	public void statsQuestionIsStillAskedIfFIrstAnswerIsNonsense() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
+		EventObserver mockEventObserver = mock(EventObserver.class);
+		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
+	
+		System.setIn(new ByteArrayInputStream("foo\r\n".getBytes()));
+		try {
+			commandRunner.run(new String[] {dir("valid-sdk-directory")});
+		} catch (Throwable t) {
+		}
+		
+		System.setIn(new ByteArrayInputStream("y\r\n".getBytes()));
+		commandRunner.run(new String[] {dir("valid-sdk-directory")});
+		
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: true") );
 		verify(mockEventObserver).onEventEmitted(any(NewInstallEvent.class), eq(brjs));
 	}
 	
@@ -251,14 +306,15 @@ public class CommandRunnerTest {
 	public void newInstallEventIsNotEmittedIfNoIsAnsweredToStatsCollection() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	
 		System.setIn(new ByteArrayInputStream("n\r\n".getBytes()));
 		commandRunner.run(new String[] {dir("valid-sdk-directory")});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: false", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: false") );
 		verifyZeroInteractions(mockEventObserver);
 	}
 	
@@ -266,13 +322,14 @@ public class CommandRunnerTest {
 	public void newInstallEventIsNotEmittedIfThereIsNoStdin_egBrjsIsExecutedFromScripts() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(BundleSetCreatedEvent.class, mockEventObserver);
 	
 		commandRunner.run(new String[] {dir("valid-sdk-directory")});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: false", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: false") );
 		verifyZeroInteractions(mockEventObserver);
 	}
 		
@@ -280,13 +337,14 @@ public class CommandRunnerTest {
 	public void newInstallEventIsEmittedIfStatsFlagIsUsed() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "--stats"});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: true", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: true") );
 		verify(mockEventObserver).onEventEmitted(any(NewInstallEvent.class), eq(brjs));
 	}
 	
@@ -294,13 +352,14 @@ public class CommandRunnerTest {
 	public void newInstallEventIsNotEmittedIfNoStatsFlagIsUsed() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")) );
+		BRJS brjs = ThreadSafeStaticBRJSAccessor.initializeModel( new File(dir("valid-sdk-directory")), new File("") );
 		EventObserver mockEventObserver = mock(EventObserver.class);
 		brjs.addObserver(NewInstallEvent.class, mockEventObserver);
 	
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "--no-stats"});
-		String brjsConfLine1 = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf")).get(0);
-		assertEquals("allowAnonymousStats: false", brjsConfLine1);
+		List<String> brjsConfLines = org.apache.commons.io.FileUtils.readLines(dirFile("valid-sdk-directory/conf/brjs.conf"));
+		String brjsConfContents = org.apache.commons.lang3.StringUtils.join(brjsConfLines, "\n");
+		assertTrue( brjsConfContents.contains("allowAnonymousStats: false") );
 		verifyZeroInteractions(mockEventObserver);
 	}
 	

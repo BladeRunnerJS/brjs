@@ -2,7 +2,7 @@ package org.bladerunnerjs.logger;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 
 public class ConsoleLoggerStore implements ILoggerFactory
 {
-	private final Map<String, ConsoleLogger> loggers = new HashMap<>();
+	private final Map<String, ConsoleLogger> loggers = new LinkedHashMap<>();
 	private List<String> allWhitelistedPackages = new ArrayList<>();
 	private LogLevel currentLogLevel = LogLevel.WARN;
 	private boolean logClassNames = false;

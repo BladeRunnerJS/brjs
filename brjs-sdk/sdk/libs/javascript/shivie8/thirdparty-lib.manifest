@@ -1,0 +1,4 @@
+depends: browser-modules
+js: shivie8.js
+css: shivie8.css
+exports: null

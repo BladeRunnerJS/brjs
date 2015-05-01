@@ -2,6 +2,8 @@
  * @module br/validation/ValidationResult
  */
 
+var brCore = require("br/Core");
+
 /**
  * Creates a new instance of <code>ValidationResult</code>.
  * 
@@ -13,7 +15,7 @@
  * 
  * @param {module:br/validation/ValidationResultListener} oValidationResultListener (optional) Listener informed when the validation result is available.
  */
-br.validation.ValidationResult = function(oValidationResultListener)
+var ValidationResult = function(oValidationResultListener)
 {
 	this.m_bIsValid = null;
 	this.m_sFailureMessage = null;
@@ -27,7 +29,7 @@ br.validation.ValidationResult = function(oValidationResultListener)
  * @param {boolean} bIsValid whether or not the current validation succeeded or failed.
  * @param {String} sFailureMessage a message describing why validation failed if it did. Can be omitted if validation succeeded.
  */
-br.validation.ValidationResult.prototype.setResult = function(bIsValid, sFailureMessage)
+ValidationResult.prototype.setResult = function(bIsValid, sFailureMessage)
 {
 	this.m_bIsValid = bIsValid;
 	this.m_sFailureMessage = sFailureMessage;
@@ -43,7 +45,7 @@ br.validation.ValidationResult.prototype.setResult = function(bIsValid, sFailure
  * 
  * @returns {boolean} true if setResult has been called, false otherwise.
  */
-br.validation.ValidationResult.prototype.hasResult = function()
+ValidationResult.prototype.hasResult = function()
 {
 	return this.m_bHasResult;
 };
@@ -53,7 +55,7 @@ br.validation.ValidationResult.prototype.hasResult = function()
  * 
  * @returns {boolean} true if the validation succeeded, false if it failed and null if it has not yet happened.
  */
-br.validation.ValidationResult.prototype.isValid = function()
+ValidationResult.prototype.isValid = function()
 {
 	return this.m_bIsValid;
 };
@@ -63,7 +65,9 @@ br.validation.ValidationResult.prototype.isValid = function()
  * 
  * @returns {String} the failure message or null if there isn't one.
  */
-br.validation.ValidationResult.prototype.getFailureMessage = function()
+ValidationResult.prototype.getFailureMessage = function()
 {
 	return this.m_sFailureMessage;
 };
+
+module.exports = ValidationResult;

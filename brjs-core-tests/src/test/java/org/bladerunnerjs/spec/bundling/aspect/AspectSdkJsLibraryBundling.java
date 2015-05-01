@@ -1,10 +1,10 @@
 package org.bladerunnerjs.spec.bundling.aspect;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +17,8 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 	private JsLib sdkLib;
 	private StringBuffer response = new StringBuffer();
 	private TestPack sdkLibTestPack;
+	private JsLib sdkLib1;
+	private JsLib sdkLib2;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -28,6 +30,8 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			aspect = app.aspect("default");
 			sdkLib = brjs.sdkLib("br");
 			sdkLibTestPack = sdkLib.testType("unit").testTech("techy");
+			sdkLib1 = brjs.sdkLib("lib1");
+			sdkLib2 = brjs.sdkLib("lib2");
 	}
 
 	@Test
@@ -76,6 +80,36 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			.and(sdkLibTestPack).testRequires("test.js", "br/SdkClass");
 		when(sdkLibTestPack).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("define('br/SdkClass'");
+	}
+	
+	@Test
+	public void noNamespaceEnforcementFlagDoesntCauseConflictBetweenLibraryPrefixesWhenPackageDirectoryIsUsed() throws Exception {
+		given(sdkLib1).hasBeenCreated()
+			.and(sdkLib1).containsFileWithContents("br-lib.conf","requirePrefix: sdk/lib1")
+			.and(sdkLib1).containsFile("no-namespace-enforcement")
+			.and(sdkLib1).hasClass("sdk/lib1/Lib1Class")
+			.and(sdkLib2).hasBeenCreated()
+			.and(sdkLib2).containsFileWithContents("br-lib.conf","requirePrefix: sdk/lib2")
+			.and(sdkLib2).containsFile("no-namespace-enforcement")
+			.and(sdkLib2).hasClass("sdk/lib2/Lib2Class")
+			.and(aspect).indexPageHasContent("getLogger('sdk')");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void noNamespaceEnforcementFlagDoesntCauseConflictBetweenRootLibraryPrefixesWhenPackageDirectoryIsUsed() throws Exception {
+		given(sdkLib1).hasBeenCreated()
+			.and(sdkLib1).containsFileWithContents("br-lib.conf","requirePrefix: sdk")
+			.and(sdkLib1).containsFile("no-namespace-enforcement")
+			.and(sdkLib1).hasClass("sdk/lib1/Lib1Class")
+			.and(sdkLib2).hasBeenCreated()
+			.and(sdkLib2).containsFileWithContents("br-lib.conf","requirePrefix: sdk/lib2")
+			.and(sdkLib2).containsFile("no-namespace-enforcement")
+			.and(sdkLib2).hasClass("sdk/lib2/Lib2Class")
+			.and(aspect).indexPageHasContent("getLogger('sdk')");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
 }

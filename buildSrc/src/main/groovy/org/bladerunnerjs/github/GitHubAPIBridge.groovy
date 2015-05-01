@@ -60,7 +60,7 @@ class GitHubAPIBridge
 	{
 		logger.quiet "getting milestone ID for '${milestone}'"
 
-		def response = doRequest(apiPrefix, "get", getRestUrl("milestones"), "state=all", JSON, null)
+		def response = doRequest(apiPrefix, "get", getRestUrl("milestones"), "state=all&sort=due_date&direction=desc", JSON, null)
 		def jsonData = response.data
 
 		for (def milestoneData : jsonData) {

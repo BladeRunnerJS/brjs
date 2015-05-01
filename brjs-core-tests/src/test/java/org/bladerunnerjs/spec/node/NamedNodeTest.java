@@ -5,18 +5,18 @@ import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BRJSNode;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.events.NodeCreatedEvent;
+import org.bladerunnerjs.api.model.events.NodeDeletedEvent;
+import org.bladerunnerjs.api.model.events.NodeDiscoveredEvent;
+import org.bladerunnerjs.api.model.events.NodeReadyEvent;
+import org.bladerunnerjs.api.model.exception.modelupdate.DirectoryAlreadyExistsModelException;
+import org.bladerunnerjs.api.model.exception.modelupdate.NoSuchDirectoryException;
+import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.api.BRJSNode;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.NamedNode;
-import org.bladerunnerjs.model.events.NodeCreatedEvent;
-import org.bladerunnerjs.model.events.NodeDeletedEvent;
-import org.bladerunnerjs.model.events.NodeDiscoveredEvent;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsModelException;
-import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
-import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -240,7 +240,7 @@ public class NamedNodeTest extends SpecTest {
 	public void nodesAreNotNotifiedOfCeatedWhenANodeIsDiscovered() throws Exception
 	{
 		given(observer).observing(brjs);
-		when(super.testSdkDirectory).containsFile("apps/myApp/appContent.txt")
+		when(super.testSdkDirectory).containsFile("brjs-apps/myApp/appContent.txt")
 			.and(brjs.userApp("myApp"));
 		then(observer).notified(NodeDiscoveredEvent.class, brjs.userApp("myApp"))
 			.and(observer).notified(NodeReadyEvent.class, brjs.userApp("myApp"))

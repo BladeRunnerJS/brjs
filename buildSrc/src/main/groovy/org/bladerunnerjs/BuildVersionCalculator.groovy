@@ -37,14 +37,14 @@ class BuildVersionCalculator
 	{
 		def stdout = new ByteArrayOutputStream()
 		def stderr = new ByteArrayOutputStream()
-		try 
+		try
 		{
 			p.exec {
 				commandLine 'git', 'describe', '--long', "--dirty=${DIRTY_TAG}"
 				standardOutput = stdout
 				errorOutput = stderr
 			}
-			return stdout.toString().trim().replaceFirst("-",".");
+			return stdout.toString().trim().replaceFirst("-g",".g"); // replace the -g<commit> with .g<commit>
 		}
 		catch (ex)
 		{

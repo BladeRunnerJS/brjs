@@ -1,18 +1,20 @@
 package org.bladerunnerjs.spec.app;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.plugin.plugins.bundlers.appmeta.AppMetadataContentPlugin;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AppConf;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.api.BladeWorkbench;
+import org.bladerunnerjs.plugin.bundlers.appmeta.AppMetadataContentPlugin;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ServeAppTest extends SpecTest {
 	private App app;
+	private AppConf appConf;
 	private Aspect defaultAspect;
 	private Aspect alternateAspect;
 	private BladeWorkbench workbench;
@@ -21,8 +23,8 @@ public class ServeAppTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationPlugins()
-			.and(brjs).automaticallyFindsAssetPlugins()
+		given(brjs).automaticallyFindsAssetPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).automaticallyFindsContentPlugins()
 			.and(brjs).automaticallyFindsRequirePlugins()
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
@@ -30,57 +32,87 @@ public class ServeAppTest extends SpecTest {
 			.and(brjs).hasContentPlugins(new AppMetadataContentPlugin())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
+			appConf = app.appConf();
 			defaultAspect = app.aspect("default");
 			alternateAspect = app.aspect("alternate");
 			workbench = app.bladeset("bs").blade("b1").workbench();
 	}
 	
 	@Test
-	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecified() throws Exception {
+	public void indexPageCanBeAccessedForSingleLocaleApps() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
-			.and(brjs).localeForwarderHasContents("locale forwarding page");
+			.and(brjs).localeSwitcherHasContents("");
+		when(app).requestReceived("", response);
+		then(response).textEquals("index page");
+	}
+	
+	@Test
+	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecifiedForMultiLocaleApps() throws Exception {
+		given(appConf).supportsLocales("en", "de")
+			.and(defaultAspect).indexPageHasContent("index page")
+			.and(brjs).localeSwitcherHasContents("locale forwarding page");
 		when(app).requestReceived("", response);
 		then(response).containsText("locale forwarding page");
 	}
 	
 	@Test
-	public void exceptionIsThrownIfAnInvalidLocaleIsRequested() throws Exception {
-		given(defaultAspect).indexPageHasContent("index page")
-    		.and(brjs).localeForwarderHasContents("locale forwarding page");
-    	when(app).requestReceived("zz/", response);
+	public void exceptionIsThrownIfAnInvalidLocaleIsRequestedForMultiLocaleApps() throws Exception {
+		given(appConf).supportsLocales("en", "de")
+			.and(defaultAspect).indexPageHasContent("index page")
+    		.and(brjs).localeSwitcherHasContents("locale forwarding page");
+    	when(app).requestReceived("zz", response);
     	then(exceptions).verifyException(ResourceNotFoundException.class, "zz");
 	}
 	
 	@Test
-	public void indexPageCanBeAccessed() throws Exception {
-		given(defaultAspect).indexPageHasContent("index page")
-			.and(brjs).localeForwarderHasContents("");
-		when(app).requestReceived("en/", response);
+	public void indexPageCanBeAccessedForMultiLocaleApps() throws Exception {
+		given(appConf).supportsLocales("en", "de")
+			.and(defaultAspect).indexPageHasContent("index page")
+			.and(brjs).localeSwitcherHasContents("");
+		when(app).requestReceived("en", response);
 		then(response).textEquals("index page");
 	}
 	
 	@Test
 	public void tagsWithinIndexPagesAreProcessed() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@tagToken @/>")
-			.and(brjs).localeForwarderHasContents("");
-		when(app).requestReceived("en/", response);
+			.and(brjs).localeSwitcherHasContents("");
+		when(app).requestReceived("", response);
 		then(response).textEquals("dev replacement");
 	}
 	
 	@Test
-	public void localesCanBeUsedInTagHandlers() throws Exception {
-		given(defaultAspect).indexPageHasContent("<@localeToken @/>")
-			.and(brjs).localeForwarderHasContents("")
-			.and(app).hasSupportedLocales("en_GB");
-		when(app).requestReceived("en_GB/", response);
+	public void localesCanBeUsedInTagHandlersInSingleLocaleApps() throws Exception {
+		given(appConf).supportsLocales("en_GB")
+			.and(defaultAspect).indexPageHasContent("<@localeToken @/>")
+			.and(brjs).localeSwitcherHasContents("");
+		when(app).requestReceived("", response);
 		then(response).textEquals("- en_GB");
 	}
 	
 	@Test
-	public void workbenchPageCanBeAccessed() throws Exception {
+	public void localesCanBeUsedInTagHandlersInMultiLocaleApps() throws Exception {
+		given(appConf).supportsLocales("en", "en_GB")
+			.and(defaultAspect).indexPageHasContent("<@localeToken @/>")
+			.and(brjs).localeSwitcherHasContents("");
+		when(app).requestReceived("en_GB", response);
+		then(response).textEquals("- en_GB");
+	}
+	
+	@Test
+	public void workbenchPageCanBeAccessedInSingleLocaleApps() throws Exception {
 		given(workbench).indexPageHasContent("workbench index page")
-			.and(brjs).localeForwarderHasContents("");
-		when(app).requestReceived("bs/b1/workbench/en/", response);
+			.and(brjs).localeSwitcherHasContents("");
+		when(app).requestReceived("bs/b1/workbench/", response);
+		then(response).textEquals("workbench index page");
+	}
+	
+	@Test
+	public void workbenchPageCanBeAccessedInMultiLocaleApps() throws Exception {
+		given(appConf).supportsLocales("en", "en_GB")
+			.and(workbench).indexPageHasContent("workbench index page")
+			.and(brjs).localeSwitcherHasContents("");
+		when(app).requestReceived("bs/b1/workbench/en", response);
 		then(response).textEquals("workbench index page");
 	}
 	

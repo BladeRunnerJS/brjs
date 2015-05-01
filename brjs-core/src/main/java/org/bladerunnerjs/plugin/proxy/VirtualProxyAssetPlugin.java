@@ -2,37 +2,27 @@ package org.bladerunnerjs.plugin.proxy;
 
 import java.util.List;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.plugin.AssetRegistry;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.model.AssetContainer;
+
 
 public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements AssetPlugin {
-	private AssetPlugin assetPlugin;
 	
-	public VirtualProxyAssetPlugin(AssetPlugin assetPlugin) {
-		super(assetPlugin);
-		this.assetPlugin = assetPlugin;
+	private AssetPlugin assetLocationPlugin;
+
+	public VirtualProxyAssetPlugin(AssetPlugin assetLocationPlugin) {
+		super(assetLocationPlugin);
+		this.assetLocationPlugin = assetLocationPlugin;
 	}
-	
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return assetPlugin.getPluginsThatMustAppearBeforeThisPlugin();
-	}
-	
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return assetPlugin.getPluginsThatMustAppearAfterThisPlugin();
-	}
-	
+
 	@Override
-	public boolean canHandleAsset(MemoizedFile assetFile, AssetLocation assetLocation) {
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
+	{
 		initializePlugin();
-		return assetPlugin.canHandleAsset(assetFile, assetLocation);
+		assetLocationPlugin.discoverAssets(assetContainer, dir, requirePrefix, implicitDependencies, assetDiscoveryInitiator);
 	}
 	
-	@Override
-	public Asset createAsset(MemoizedFile assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		initializePlugin();
-		return assetPlugin.createAsset(assetFile, assetLocation);
-	}
 }

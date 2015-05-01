@@ -1,22 +1,25 @@
 package org.bladerunnerjs.yaml;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.ConfigException;
+import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.BRJSNode;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.esotericsoftware.yamlbeans.YamlWriter;
-import com.google.common.base.Joiner;
 
 public abstract class AbstractYamlConfFile implements YamlConfFile {
+	
+	// see http://stackoverflow.com/questions/5205339/regular-expression-matching-fully-qualified-java-classes
+	private static final String JAVA_CLASSNAME_REGEX = "([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*";
+	
 	protected BRJSNode node;
 	private MemoizedFile confFile;
 	private EncodedFileUtil fileUtil;
@@ -48,7 +51,7 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 	
 	@Override
 	public String getRenderedConfig() {
-		List<String> lines;
+		StringBuilder renderedConfig = new StringBuilder();
 		
 		try {
 			try(ByteArrayOutputStream byteStream = new ByteArrayOutputStream()) {
@@ -56,9 +59,15 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 				writer.write(this);
 				writer.close();
 				
-				// YamlWriter writes out the classname at the top of the file which we dont want
-				lines = IOUtils.readLines(new ByteArrayInputStream(byteStream.toByteArray()));
-				lines.remove(0);
+				List<String> yamlConfLines = Arrays.asList(StringUtils.split(byteStream.toString(), "\n"));
+				for (String line : yamlConfLines) {
+					// YamlWriter writes out the classnames which we don't want
+					line = line.replaceFirst("((^!)|( !))"+JAVA_CLASSNAME_REGEX+"$", "");
+					line = line.replaceFirst("\\s+$", ""); // remove end of line whitespace
+					if (!line.isEmpty()) {
+						renderedConfig.append(line+"\n");
+					}
+				}
 			}
 		}
 		catch(IOException e) {
@@ -66,7 +75,7 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 			throw new RuntimeException(e);
 		}
 		
-		return Joiner.on("\n").join(lines);
+		return renderedConfig.toString().trim();
 	}
 	
 	@Override

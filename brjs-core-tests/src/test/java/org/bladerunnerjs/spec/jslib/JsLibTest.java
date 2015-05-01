@@ -2,13 +2,12 @@ package org.bladerunnerjs.spec.jslib;
 
 import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantJsLibRootAssetLocation;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,12 +21,12 @@ public class JsLibTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationPlugins()
+		given(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			lib = app.jsLib("lib1");
 			badLib = app.jsLib("%$&@");
-			libTemplate = brjs.sdkTemplateGroup("default").template(BRJSConformantJsLibRootAssetLocation.class.getSimpleName().toLowerCase());
+			libTemplate = brjs.sdkTemplateGroup("default").template("br-lib");
 	}
 	
 	@Test

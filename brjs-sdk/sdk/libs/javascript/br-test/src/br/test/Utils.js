@@ -12,7 +12,7 @@ var Utility = require('br/core/Utility');
 /**
  * @class
  * @alias module:br/test/Utils
- * 
+ *
  * @classdesc
  * Utility class containing static methods that can be useful for tests.
  */
@@ -29,22 +29,33 @@ Utils.pLoadedAndAttachedCSSElements = [];
 * @param {String} eventString The Event to be fired without 'on', e.g. 'click', 'keydown'
 * @param {String} [character] A character associated with typing events
 */
-Utils.fireDomEvent = function(element, eventString, character) {
+Utils.fireDomEvent = function(eElement, eventString, character) {
+	var element = (eElement instanceof jQuery) ? eElement.context : eElement;
 	var evt;
-	if (document.createEventObject) {
-		evt = jQuery.Event(eventString);
-		if (character) {
-			evt.which = Utils.getKeyCodeForChar(character);
-		}
-		jQuery(element).trigger(evt);
-	} else if (document.createEvent) {
-		//FF, WEBKIT etc..
+
+	if(document.createEvent) {
 		evt = document.createEvent('HTMLEvents');
 		if (typeof character !== 'undefined') {
 			evt.which = Utils.getKeyCodeForChar(character);
 		}
 		evt.initEvent(eventString, true, true);
-		return !element.dispatchEvent(evt);
+		if (element) {
+			return !element.dispatchEvent(evt);
+		}
+		return false;
+	}
+	else if(document.createEventObject) {
+		if(element.nodeName == 'OPTION') {
+			do {
+				element = element.parentNode;
+			} while(element.nodeName != 'SELECT');
+		}
+		
+		evt = document.createEventObject();
+		if (character) {
+			evt.keyCode = Utils.getKeyCodeForChar(character);
+		}
+		element.fireEvent('on' + eventString, evt);
 	}
 };
 
@@ -79,7 +90,7 @@ Utils.fireKeyEvent = function(element, eventString, key, options) {
 	options = options || {};
 	options.key = options.key || key;
 	options.bubbles = true;
-	
+
 	var evt = new KeyboardEvent(eventString, options);
 	if (element.dispatchEvent) {
 		element.dispatchEvent(evt);

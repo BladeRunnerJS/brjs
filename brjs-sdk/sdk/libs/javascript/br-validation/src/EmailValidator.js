@@ -2,12 +2,15 @@
  * @module br/validation/EmailValidator
  */
 
+var brCore = require("br/Core");
+var Validator = require("br/validation/Validator");
+
 /**
  * @implements module:br/validation/EmailValidator
  * @class
  * @alias module:br/validation/EmailValidator
  */
-br.validation.EmailValidator = function()
+var EmailValidator = function()
 {
 	// This regex has no false negatives, but does have quite a few false positives.
 	// see http://www.pgregg.com/projects/php/code/showvalidemail.php
@@ -18,9 +21,11 @@ br.validation.EmailValidator = function()
 	// a character other than @ . or -, and may be followed by none or more of anything except @.
 };
 
-br.Core.implement(br.validation.EmailValidator, br.validation.Validator);
+brCore.implement(EmailValidator, Validator);
 
-br.validation.EmailValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
+EmailValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {
 	oValidationResult.setResult(vValue.match(this.partsRegex) != null, "Invalid E-Mail address.");
 };
+
+module.exports = EmailValidator;

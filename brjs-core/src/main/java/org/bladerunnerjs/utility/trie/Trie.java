@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class Trie<T>
 	
 	private TrieNode<T> root;
 	private int readAheadLimit = 1;
-	private Map<String, TrieNode<T>> trieLookup = new HashMap<String, TrieNode<T>>();
+	private Map<String, TrieNode<T>> trieLookup = new LinkedHashMap<String, TrieNode<T>>();
 	private List<Character> seperators;
 
 	private char primarySeperator;

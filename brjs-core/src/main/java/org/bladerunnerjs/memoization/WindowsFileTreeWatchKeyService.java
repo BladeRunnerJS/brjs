@@ -10,7 +10,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -27,7 +27,7 @@ public class WindowsFileTreeWatchKeyService implements WatchKeyService
 
 	@Override
 	public Map<WatchKey,Path> createWatchKeysForDir(Path dirPath, boolean isNewlyDiscovered) throws IOException {
-		Map<WatchKey,Path> watchKeys = new HashMap<>();
+		Map<WatchKey,Path> watchKeys = new LinkedHashMap<>();
 		
 		if (isNewlyDiscovered) {
 			return watchKeys;

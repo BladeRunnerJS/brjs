@@ -58,3 +58,6 @@ br.presenter.property.Snapshot.prototype.apply = function()
 		saved.property.setValue(saved.value);
 	};
 };
+
+//TODO: this can be removed once this package has been converted to CommonJS
+br.presenter.property.Property;

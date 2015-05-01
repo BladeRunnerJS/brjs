@@ -1,13 +1,13 @@
 package org.bladerunnerjs.spec.plugin.bundler.thirdparty;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BladerunnerConf;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +19,8 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	private JsLib thirdpartyLib2;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer pageResponse = new StringBuffer();
+	private StringBuffer cssResponse = new StringBuffer();
+	private StringBuffer jsResponse = new StringBuffer();
 	private SdkJsLib sdkLib;
 	
 	@Before
@@ -172,7 +174,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: doesnt-exist.js\n"+"exports: lib");
 		when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
-		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "apps/app1/libs/thirdparty-lib/thirdparty-lib.manifest");
+		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "brjs-apps/app1/libs/thirdparty-lib/thirdparty-lib.manifest");
 	}
 	
 	@Test
@@ -204,8 +206,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("define('lib', function(require, exports, module) {",
-				"module.exports = function() { };\n",
-				"});\n");
+				"module.exports = function() { };\n");
 	}
 	
 	@Test 
@@ -280,6 +281,21 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRequires("appns/App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
 		then(pageResponse).containsText("window.my_lib");
+	}
+	
+	@Test
+	public void unusedCssAssetsFromADependentLibraryAreNotBundled() throws Exception {
+		given(thirdpartyLib2).containsFileWithContents("css/file.css", "unused css file")
+			.and(thirdpartyLib2).containsFileWithContents("file.js", "thirdparty-lib2 js file")
+			.and(thirdpartyLib2).containsFileWithContents("thirdparty-lib.manifest", "")
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: thirdparty-lib2")
+			.and(aspect).hasClass("App")
+			.and(aspect).classRequiresThirdpartyLib("App", thirdpartyLib)
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", cssResponse)
+			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", jsResponse);
+		then(cssResponse).doesNotContainText("unused css file")
+			.and(jsResponse).containsText("thirdparty-lib2 js file");
 	}
 	
 }

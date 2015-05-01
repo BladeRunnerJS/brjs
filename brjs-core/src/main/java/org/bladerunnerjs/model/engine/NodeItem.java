@@ -6,8 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
 
 public class NodeItem<N extends Node>
 {

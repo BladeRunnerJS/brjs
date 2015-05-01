@@ -1,4 +1,4 @@
-<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+<aliasDefinitions xmlns="http://schema.bladerunnerjs.org/aliasDefinitions">
 	<alias
 		name="br.presenter.tooltip-helper"
 		interface="br.presenter.control.tooltip.TooltipHelper"

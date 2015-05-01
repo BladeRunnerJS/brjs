@@ -1,14 +1,14 @@
 package org.bladerunnerjs.spec.model;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.model.events.NodeReadyEvent;
+import org.bladerunnerjs.api.model.exception.DuplicateAssetContainerException;
+import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.api.model.exception.name.InvalidPackageNameException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.AbstractNode;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.model.exception.DuplicateAssetContainerException;
-import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -114,7 +114,7 @@ public class BladesetTest extends SpecTest {
 			.and(app).hasDir("default-bladeset/blades/myBlade")
     		.and(app).hasDir("blades/myBlade");
 		when(app).bladesetsListed();
-		then(exceptions).verifyException(DuplicateAssetContainerException.class, "default Bladeset", "apps/app", "apps/app/default-bladeset");
+		then(exceptions).verifyException(DuplicateAssetContainerException.class, "default Bladeset", "brjs-apps/app", "brjs-apps/app/default-bladeset");
 	}
 	
 }

@@ -1,8 +1,8 @@
 package org.bladerunnerjs.spec.node;
 
+import org.bladerunnerjs.api.model.events.NodeReadyEvent;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.engine.NodeProperties;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class NodeTest extends SpecTest {
 	public void observerisNotifiedWhenNodeIsFirstDiscoveredAfterManualCreation() {
 		final String APP_NAME = "someApp";
 		given(observer).observing(brjs)
-			.and(brjs).hasDir("apps/"+APP_NAME);
+			.and(brjs).hasDir("brjs-apps/"+APP_NAME);
 		when(brjs).discoverApps();
 		then(observer).notified( NodeReadyEvent.class, brjs.app("someApp") );
 	}

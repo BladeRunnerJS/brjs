@@ -1,11 +1,11 @@
 package org.bladerunnerjs.spec.jslib;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRLibYamlConf;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.model.BRLibYamlConf;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -82,7 +82,7 @@ public class BRLibTest extends SpecTest {
     		.and(sdkLib).containsResourceFileWithContents("en_GB.properties", "br.property=property value\n" + "anotherRootPkg.property=another value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText("\"br.property\": \"property value\"")
-			.and(response).containsText("\"anotherRootPkg.property\": \"another value\"");
+			.and(response).containsText("\"anotherrootpkg.property\": \"another value\"");
 	}
 	
 	@Test

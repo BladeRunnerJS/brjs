@@ -1,0 +1,9 @@
+article,aside,dialog,figcaption,figure,footer,header,hgroup,main,nav,section {
+	display: block;
+}
+mark {
+	background: #FFFF00; color: #000000;
+}
+template {
+	display:none;
+}

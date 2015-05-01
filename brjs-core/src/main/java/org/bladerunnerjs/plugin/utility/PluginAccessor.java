@@ -1,23 +1,24 @@
 package org.bladerunnerjs.plugin.utility;
 
+import static org.bladerunnerjs.plugin.utility.PluginLocatorUtils.*;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.MinifierPlugin;
-import org.bladerunnerjs.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.plugin.OrderedPlugin;
-import org.bladerunnerjs.plugin.Plugin;
-import org.bladerunnerjs.plugin.PluginLocator;
-import org.bladerunnerjs.plugin.RequirePlugin;
-import org.bladerunnerjs.plugin.TagHandlerPlugin;
-import org.bladerunnerjs.plugin.utility.command.CommandList;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.plugin.AssetPlugin;
+import org.bladerunnerjs.api.plugin.CommandPlugin;
+import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
+import org.bladerunnerjs.api.plugin.ContentPlugin;
+import org.bladerunnerjs.api.plugin.MinifierPlugin;
+import org.bladerunnerjs.api.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.api.plugin.Plugin;
+import org.bladerunnerjs.api.plugin.PluginLocator;
+import org.bladerunnerjs.api.plugin.RequirePlugin;
+import org.bladerunnerjs.api.plugin.TagHandlerPlugin;
 
 public class PluginAccessor {
 	
@@ -26,18 +27,16 @@ public class PluginAccessor {
 	private final List<TagHandlerPlugin> tagHandlerPlugins;
 	private final List<MinifierPlugin> minifierPlugins;
 	private final List<ModelObserverPlugin> modelObserverPlugins;
-	private final List<AssetPlugin> assetPlugins;
-	private final List<AssetLocationPlugin> assetLocationPlugins;
 	private final List<RequirePlugin> requirePlugins;
+	private final List<AssetPlugin> assetPlugins;
 	
-	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
+	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) throws ConfigException {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
-		contentPlugins = sort(pluginLocator.getContentPlugins());
+		contentPlugins = orderPlugins(brjs, ContentPlugin.class, pluginLocator.getContentPlugins());
+		assetPlugins = orderPlugins(brjs, AssetPlugin.class, pluginLocator.assetPlugins());
 		tagHandlerPlugins = pluginLocator.getTagHandlerPlugins();
 		minifierPlugins = pluginLocator.getMinifierPlugins();
 		modelObserverPlugins = pluginLocator.getModelObserverPlugins();
-		assetPlugins = sort(pluginLocator.getAssetPlugins());
-		assetLocationPlugins = sort(pluginLocator.getAssetLocationPlugins());
 		requirePlugins = pluginLocator.getRequirePlugins();
 	}
 
@@ -50,7 +49,6 @@ public class PluginAccessor {
 		plugins.addAll(minifierPlugins());
 		plugins.addAll(modelObserverPlugins());
 		plugins.addAll(assetPlugins());
-		plugins.addAll(assetLocationPlugins());
 		plugins.addAll(requirePlugins());
 		
 		return plugins;
@@ -96,13 +94,17 @@ public class PluginAccessor {
 	public List<ContentPlugin> contentPlugins() {
 		return contentPlugins;
 	}
-	
+
 	public List<ContentPlugin> contentPlugins(String groupName) {
 		List<ContentPlugin> contentProviders = new LinkedList<>();
 		
 		for (ContentPlugin contentPlugin : contentPlugins()) {
-			if (groupName.equals(contentPlugin.getCompositeGroupName())) {
-				contentProviders.add(contentPlugin);
+			if(contentPlugin.instanceOf(CompositeContentPlugin.class)) {
+				CompositeContentPlugin compositeContentPlugin = (CompositeContentPlugin) contentPlugin.castTo(CompositeContentPlugin.class);
+				
+				if (groupName.equals(compositeContentPlugin.getCompositeGroupName())) {
+					contentProviders.add(contentPlugin);
+				}
 			}
 		}
 		
@@ -160,21 +162,13 @@ public class PluginAccessor {
 		return assetPlugins;
 	}
 	
-	public List<AssetLocationPlugin> assetLocationPlugins() {
-		return assetLocationPlugins;
-	}
-	
-	public AssetPlugin assetPlugin(Class<?> pluginClass ) {
-		AssetPlugin result = null;
-		List<AssetPlugin> assetProducers = assetPlugins();
-		for(AssetPlugin producer: assetProducers){
-			Class<?> possiblePluginClass = producer.getPluginClass();
-			if(possiblePluginClass.equals(pluginClass)){
-				result =  producer;
-				break;
+	public AssetPlugin AssetLocationPlugin(Class<?> pluginClass ) {
+		for(AssetPlugin plugin: assetPlugins()){
+			if(plugin.getPluginClass().equals(pluginClass)){
+				return plugin;
 			}
 		}
-		return result;
+		return null;
 	}
 	
 	public List<RequirePlugin> requirePlugins() {
@@ -188,15 +182,6 @@ public class PluginAccessor {
 			}
 		}
 		return null;
-	}
-	
-	private <P extends OrderedPlugin> List<P> sort(List<P> plugins) {
-		try {
-			return PluginSorter.sort(plugins);
-		}
-		catch (PluginOrderingException | NonExistentPluginException e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 }

@@ -5,21 +5,21 @@ import io.keen.client.java.KeenCallback;
 import io.keen.client.java.KeenClient;
 import io.keen.client.java.KeenProject;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.plugin.Event;
+import org.bladerunnerjs.api.plugin.EventObserver;
+import org.bladerunnerjs.api.plugin.base.AbstractModelObserverPlugin;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
 import org.bladerunnerjs.model.events.CommandExecutedEvent;
 import org.bladerunnerjs.model.events.NewInstallEvent;
-import org.bladerunnerjs.plugin.Event;
-import org.bladerunnerjs.plugin.EventObserver;
-import org.bladerunnerjs.plugin.base.AbstractModelObserverPlugin;
 
 
 public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implements EventObserver
@@ -83,22 +83,22 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 		}
 		
 		String eventType;
-		Map<String,Object> eventData = new HashMap<String,Object>();
+		Map<String,Object> eventData = new LinkedHashMap<String,Object>();
 		
 		if (event instanceof BundleSetCreatedEvent) {
 			eventType = "bundlesets";
 			BundleSetCreatedEvent bundleSetCreatedEvent = (BundleSetCreatedEvent) event;
 			
 			BundleSet bundleset = bundleSetCreatedEvent.getBundleSet();
-			App bundlesetApp = bundleset.getBundlableNode().app();
+			App bundlesetApp = bundleset.bundlableNode().app();
 			String appName = bundlesetApp.getName();
-			if (bundleset.getBundlableNode().root().systemApp(appName) == bundlesetApp) {
+			if (bundleset.bundlableNode().root().systemApp(appName) == bundlesetApp) {
 				return;
 			}
 			
-			eventData.put("total_count", bundleset.getResourceFiles().size());
+			eventData.put("total_count", bundleset.assets().size());
 			eventData.put("execution_duration", bundleSetCreatedEvent.getCreationDuration());
-			eventData.put("bundlable_node_type", bundleset.getBundlableNode().getClass().getSimpleName());
+			eventData.put("bundlable_node_type", bundleset.bundlableNode().getClass().getSimpleName());
 		}
 		else if (event instanceof CommandExecutedEvent) {
 			eventType = "commands";
@@ -136,7 +136,7 @@ public class BRJSUsageEventObserver extends AbstractModelObserverPlugin implemen
 	}
 	
 	private Map<String, Object> getGlobalKeenIOProps(BRJS brjs) {
-		Map<String,Object> versionInfo = new HashMap<>();
+		Map<String,Object> versionInfo = new LinkedHashMap<>();
 		versionInfo.put("brjs_version", brjs.versionInfo().getVersionNumber());
 		versionInfo.put("toolkit_version", brjs.root().versionInfo().getVersionNumber());
 		versionInfo.put("toolkit_name", "BladeRunnerJS");

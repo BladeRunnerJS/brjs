@@ -1,16 +1,16 @@
 package org.bladerunnerjs.spec.model;
 
 import org.apache.commons.lang3.text.WordUtils;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.model.events.NodeReadyEvent;
+import org.bladerunnerjs.api.model.exception.name.InvalidDirectoryNameException;
+import org.bladerunnerjs.api.model.exception.name.InvalidPackageNameException;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.model.engine.AbstractNode;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,8 +27,7 @@ public class BladeTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationPlugins()
-			.and(brjs).automaticallyFindsAssetPlugins()
+		given(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			bladeset = app.bladeset("bs");

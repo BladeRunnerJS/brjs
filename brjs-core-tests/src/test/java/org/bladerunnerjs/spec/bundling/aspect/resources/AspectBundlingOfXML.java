@@ -1,10 +1,10 @@
 package org.bladerunnerjs.spec.bundling.aspect.resources;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -131,6 +131,18 @@ public class AspectBundlingOfXML extends SpecTest {
 			.and(aspect).containsResourceFileWithContents("xml/config.xml", zeroPad(4090)+"\n appns.bs.Class1 <!-- some comment -->\n"+zeroPad(4090)+"\n appns.bs.Class2 ");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.bs.Class1", "appns.bs.Class2");
+	}
+	
+	// end of scoped tests
+	
+	@Test
+	public void extraIdTagsThatDontStartWithTheAppRequirePrefixArentSecondaryRequirePrefixesForXmlAssets() throws Exception {
+		given(aspect).hasClasses("appns/Class1")
+			.and(aspect).containsFileWithContents("resources/xml/file1.xml", "<foo id=\"description\"/><bar id=\"appns.id1\"/>")
+			.and(aspect).containsFileWithContents("resources/xml/anotherFile.xml", "<foo id=\"description\"/><bar id=\"appns.id2\"/>")
+			.and(aspect).indexPageHasContent("require('appns/Class1');");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.Class1");
 	}
 	
 	private String zeroPad(int size) {

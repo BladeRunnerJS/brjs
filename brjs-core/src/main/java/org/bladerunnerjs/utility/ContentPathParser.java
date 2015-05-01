@@ -1,7 +1,6 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,9 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.eclipse.jetty.util.URIUtil;
 
 
@@ -40,7 +39,7 @@ public class ContentPathParser
 		String requestForm = requestForms.get(requestFormName);
 		List<String> tokens = requestFormTokens.get(requestFormName);
 		if (tokens == null) {
-			throw new IllegalArgumentException("request form name, "+requestFormName+", hasn't been registed");
+			throw new IllegalArgumentException("request form name '" + requestFormName + "' hasn't been registered");
 		}
 		if(args.length != tokens.size()) throw new IllegalArgumentException("wrong number of arguments provided");
 		
@@ -151,7 +150,7 @@ public class ContentPathParser
 	}
 	
 	private Map<String, Pattern> generateTokenPatterns(Map<String, String> tokens) {
-		Map<String, Pattern> tokenPatterns = new HashMap<>();
+		Map<String, Pattern> tokenPatterns = new LinkedHashMap<>();
 		
 		for(String tokenName : tokens.keySet()) {
 			String tokenPattern = tokens.get(tokenName);
@@ -183,7 +182,7 @@ public class ContentPathParser
 	
 	private Map<String, List<String>> generateRequestFormTokens(Map<String, String> requestForms)
 	{
-		Map<String, List<String>> requestFormTokens = new HashMap<>();
+		Map<String, List<String>> requestFormTokens = new LinkedHashMap<>();
 		Pattern tokenPattern = Pattern.compile("<([^>]+)>");
 		
 		for (String requestFormName : requestForms.keySet())

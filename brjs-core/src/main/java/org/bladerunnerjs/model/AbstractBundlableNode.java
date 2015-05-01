@@ -3,123 +3,92 @@ package org.bladerunnerjs.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.aliasing.AliasException;
-import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
-import org.bladerunnerjs.aliasing.aliases.AliasesFile;
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
+import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.Workbench;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
+import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.api.plugin.RequirePlugin;
+import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.plugin.RequirePlugin;
-import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
-	private AliasesFile aliasesFile;
-	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
-	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
+
+	private final MemoizedValue<BundleSet> bundleSet;
+	private RequirePlugin defaultRequirePlugin;
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
-	}
-	
-	protected abstract List<LinkedAsset> modelSeedAssets();
-	
-	@Override
-	public List<AssetLocation> seedAssetLocations() {
-		List<AssetLocation> seedAssetLocations = new ArrayList<>();
-		
-		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
-			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
-				for(String seedAssetLocationName : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
-					AssetLocation seedAssetLocation = assetLocation(seedAssetLocationName);
-					
-					if (seedAssetLocation != null) {
-						seedAssetLocations.add(seedAssetLocation);
-					}
-				}
-				
-				if(!assetLocationPlugin.allowFurtherProcessing()) {
-					break;
-				}
-			}
-		}
-		
-		return seedAssetLocations;
+		defaultRequirePlugin = root().plugins().requirePlugin("default");
+		bundleSet = new MemoizedValue<>(this.getClass().getSimpleName()+" bundleSet", root(), root().dir(), app().dir());
 	}
 	
 	@Override
 	public List<LinkedAsset> seedAssets() {
-		List<LinkedAsset> seedFiles = new ArrayList<>(modelSeedAssets());
-		
-		for(AssetLocation seedAssetLocation : seedAssetLocations()) {
-			seedFiles.addAll(seedAssetLocation.linkedAssets());
-//			seedFiles.addAll(seedAssetLocation.sourceModules()); // TODO: add extra coverage so this can be fixed without causing only js breakage
+		List<LinkedAsset> seedAssets = new ArrayList<>();
+		seedAssets.addAll( assetDiscoveryInitiator.seedAssets() );
+		for (AssetContainer scopeAssetContainer : scopeAssetContainers()) {
+			if (scopeAssetContainer instanceof Aspect || scopeAssetContainer instanceof Bladeset 
+						|| scopeAssetContainer instanceof Blade || scopeAssetContainer instanceof Workbench<?>) {
+				Asset assetContainerRootAsset = scopeAssetContainer.asset(scopeAssetContainer.requirePrefix());
+				if (assetContainerRootAsset instanceof LinkedAsset) {
+					seedAssets.add( (LinkedAsset) assetContainerRootAsset );
+				}
+			}
 		}
-		
-		return seedFiles;
+		return seedAssets;
 	}
-	
-	@Override
-	public AliasesFile aliasesFile() {
-		if(aliasesFile == null) {
-			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml", this);
-		}
 		
-		return aliasesFile;
-	}
-	
 	@Override
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
+		LinkedAsset linkedAsset;
+		RuntimeException noLinkedAssetException = null;
 		RequirePlugin requirePlugin;
+		String pluginName;
 		String requirePathSuffix;
 		
 		if(requirePath.contains("!")) {
-			String[] parts = requirePath.split("!");
-			String pluginName = parts[0];
-			requirePathSuffix = parts[1];
+			pluginName = StringUtils.substringBefore(requirePath, "!");
+			requirePathSuffix = StringUtils.substringAfter(requirePath, "!");
 			requirePlugin = root().plugins().requirePlugin(pluginName);
-		}
-		else {
-			requirePlugin = root().plugins().requirePlugin("default");
+		} else {
+			requirePlugin = defaultRequirePlugin;
+			pluginName = "default";
 			requirePathSuffix = requirePath;
 		}
 		
-		return (LinkedAsset) requirePlugin.getAsset(this, requirePathSuffix);
-	}
-	
-	@Override
-	public AliasDefinition getAlias(String aliasName) throws AliasException, ContentFileProcessingException {
-		return aliasesFile().getAlias(aliasName);
+		if (requirePlugin == null) {
+			linkedAsset = (LinkedAsset) defaultRequirePlugin.getAsset(this, requirePath);
+			noLinkedAssetException = new RuntimeException("Unable to find a require plugin for the prefix '"+pluginName+"' and there is no asset registered for the require path '"+requirePath+"'.");
+		} else {
+			linkedAsset = (LinkedAsset) requirePlugin.getAsset(this, requirePathSuffix);
+			noLinkedAssetException = new RuntimeException("There is no asset registered for the require path '"+requirePathSuffix+"'.");
+		}
+		
+		if (linkedAsset == null) {
+			throw noLinkedAssetException;
+		}
+		
+		return linkedAsset;
 	}
 	
 	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
 		return bundleSet.value(() -> {
 			return BundleSetCreator.createBundleSet(this);
-		});
-	}
-	
-	@Override
-	public List<AliasDefinitionsFile> aliasDefinitionFiles() {
-		return aliasDefinitionFilesList.value(() -> {
-			List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
-			
-			for(AssetContainer assetContainer : scopeAssetContainers()) {
-				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-					aliasDefinitionFiles.addAll( assetLocation.aliasDefinitionsFiles() );
-				}
-			}
-			
-			return aliasDefinitionFiles;
 		});
 	}
 	
@@ -134,11 +103,11 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
+	public List<Asset> assets(Asset asset, List<String> requirePaths) throws RequirePathException {
 		List<Asset> assets = new ArrayList<Asset>();
 		
 		for(String requirePath : requirePaths) {				
-			String canonicalRequirePath = assetLocation.canonicaliseRequirePath(requirePath);
+			String canonicalRequirePath = asset.assetContainer().canonicaliseRequirePath(asset, requirePath);
 			assets.add(getLinkedAsset(canonicalRequirePath));
 		}
 		

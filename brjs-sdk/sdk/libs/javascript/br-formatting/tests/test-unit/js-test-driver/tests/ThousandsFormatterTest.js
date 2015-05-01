@@ -1,6 +1,5 @@
 (function() {
 	ThousandsFormatterTest = TestCase("ThousandsFormatterTest");
-	require('jsunitextensions');
 	var ThousandsFormatter = require('br/presenter/formatter/ThousandsFormatter');
 
 	ThousandsFormatterTest.prototype.setUp = function()
@@ -94,9 +93,11 @@
 			var I18N = require('br/i18n/I18N');
 
 			module.exports = I18N.create(new Translator({
-				"br.i18n.number.grouping.separator":".",
-				"br.i18n.decimal.radix.character":","
-			}));
+				'locale' : {
+					"br.i18n.number.grouping.separator":".",
+					"br.i18n.decimal.radix.character":","
+				}
+			}, 'locale'));
 		});
 
 		this.oFormatter = new ThousandsFormatter();

@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<@base.tag@/>
 		<meta charset="UTF-8">
-		
 		<title>Workbench</title>
 
-		<@css.bundle theme="standard" alternateTheme="alternate" @/>
-
+		<@css.bundle theme="standard" alternateTheme="alternate"@/>
+		<@html.bundle@/>
+		<@i18n.bundle@/>
+		<@js.bundle@/>
 	</head>
 	<body>
-
-		<@i18n.bundle @/>
-		<@js.bundle @/>
-
 		<script type="text/javascript">
 			var ServiceRegistry = require( 'br/ServiceRegistry' );
 

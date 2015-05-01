@@ -3,12 +3,12 @@ package org.bladerunnerjs.model.engine;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.memoization.FileModificationRegistry;
-import org.bladerunnerjs.memoization.MemoizedFile;
+import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.api.memoization.FileModificationRegistry;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.MultipleNodesForPathException;
+import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.model.IO;
-import org.bladerunnerjs.model.exception.MultipleNodesForPathException;
-import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
 public interface RootNode extends Node {

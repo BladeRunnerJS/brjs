@@ -1,8 +1,8 @@
 package org.bladerunnerjs.spec.bundling.testpack;
 
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 		given(sdkLib).hasNamespacedJsPackageStyle()
 			.and(sdkLib).hasClass("brjsLib.Class1")
 			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib.Class1");
-		then(sdkLibUTs).bundledFilesEquals(sdkLib.assetLocation("src").file("brjsLib/Class1.js"));
+		then(sdkLibUTs).srcOnlyBundledFilesEquals(sdkLib.file("src/brjsLib/Class1.js"));
 	}
 	
 	@Test
@@ -40,7 +40,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 		given(sdkLib).hasNamespacedJsPackageStyle()
 		.and(sdkLib).hasClass("brjsLib.Class1")
 		.and(sdkLibATs).testRefersTo("pkg/test.js", "brjsLib.Class1");
-	then(sdkLibATs).bundledFilesEquals(sdkLib.assetLocation("src").file("brjsLib/Class1.js"));
+	then(sdkLibATs).srcOnlyBundledFilesEquals(sdkLib.file("src/brjsLib/Class1.js"));
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLib).hasClass("brjsLib.Class1")
 			.and(sdkLib).containsFileWithContents("src/.svn/generatedSvnFile.txt", "generatedContent")
 			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib.Class1");
-		then(sdkLibUTs).bundledFilesEquals(sdkLib.assetLocation("src").file("brjsLib/Class1.js"));
+		then(sdkLibUTs).srcOnlyBundledFilesEquals(sdkLib.file("src/brjsLib/Class1.js"));
 	}
 	
 	@Test 
@@ -58,9 +58,9 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLib).hasClass("brjsLib.Class1")
 			.and(sdkLib).hasTestClasses("brjsLib.TestClass1")
 			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib.Class1", "brjsLib.TestClass1");
-		then(sdkLibUTs).bundledFilesEquals(
-				sdkLib.assetLocation("src").file("brjsLib/Class1.js"),
-				sdkLib.assetLocation("src-test").file("brjsLib/TestClass1.js"));
+		then(sdkLibUTs).srcOnlyBundledFilesEquals(
+				sdkLib.file("src/brjsLib/Class1.js"),
+				sdkLib.file("src-test/brjsLib/TestClass1.js"));
 	}
 	
 	@Test
@@ -69,9 +69,9 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLib).hasClass("brjsLib.Class1")
 			.and(sdkLibUTs).hasTestClasses("brjsLib.TestClass1")
 			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib.TestClass1", "brjsLib.Class1");
-		then(sdkLibUTs).bundledFilesEquals(
-			sdkLib.assetLocation("src").file("brjsLib/Class1.js"),
-			sdkLibUTs.assetLocation("src-test").file("brjsLib/TestClass1.js"));
+		then(sdkLibUTs).srcOnlyBundledFilesEquals(
+			sdkLib.file("src/brjsLib/Class1.js"),
+			sdkLibUTs.file("src-test/brjsLib/TestClass1.js"));
 	}	
 	
 	
@@ -92,7 +92,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLibUTs).hasNamespacedJsPackageStyle()			
 			.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.TestClass()");
 		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(sdkLibUTs).bundledFilesEquals( sdkLib.assetLocation("src-test").file("brjsLib/TestClass.js") )
+		then(sdkLibUTs).srcOnlyBundledFilesEquals( sdkLib.file("src-test/brjsLib/TestClass.js") )
 			.and(response).containsText( "brjsLib.TestClass = require('brjsLib/TestClass');" );
 	}
 	
@@ -103,7 +103,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLibUTs).hasNamespacedJsPackageStyle()			
 			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib/Class");
 		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(sdkLibUTs).bundledFilesEquals( sdkLib.assetLocation("src").file("brjsLib/Class.js") )
+		then(sdkLibUTs).srcOnlyBundledFilesEquals( sdkLib.file("src/brjsLib/Class.js") )
 			.and(response).containsText( "brjsLib.Class = require('brjsLib/Class');" );
 	}
 	
@@ -114,7 +114,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
     		.and(sdkLibUTs).hasNamespacedJsPackageStyle("tests")			
     		.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.sdkLibUTs.Class()");
     	when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then(sdkLibUTs).bundledFilesEquals( sdkLibUTs.assetLocation("src-test").file("brjsLib/sdkLibUTs/Class.js") )
+    	then(sdkLibUTs).srcOnlyBundledFilesEquals( sdkLibUTs.file("src-test/brjsLib/sdkLibUTs/Class.js") )
     		.and(response).containsText( "brjsLib.sdkLibUTs.Class = require('brjsLib/sdkLibUTs/Class');" );
 	}
 	

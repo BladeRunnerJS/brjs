@@ -7,18 +7,17 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.BladesetWorkbench;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.BladeWorkbench;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.plugin.ContentPlugin;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.api.BladesetWorkbench;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CssResourceContentPluginTest extends SpecTest {
@@ -224,8 +223,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	/* WORKBENCH LEVEL ASSETS */
-	//JT:TODO workbenches dont have themes
-	@Test @Ignore
+	@Test
 	public void assetsInABladeWorkbenchThemeCanBeRequested() throws Exception
 	{
 		given(app).hasBeenCreated()
@@ -362,8 +360,9 @@ public class CssResourceContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageRequires(sdkJsLib)
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
-		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt, cssresource/aspect_default_resource/index.html");
 	}
 	
 	@Test
@@ -402,7 +401,8 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(aspect).hasBeenCreated()
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 			.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
-		then(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+		then(aspect).devRequestsForContentPluginsAre("cssresource", 
+				"cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
 	}
 	
 	@Test
@@ -421,9 +421,11 @@ public class CssResourceContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
 		.and(aspect).hasBeenCreated()
+		.and(aspect).indexPageRequires(sdkJsLib)
 		.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 		.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
-		then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt");
+		then(aspect).prodRequestsForContentPluginsAre("cssresource", 
+				"cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt, cssresource/aspect_default_resource/index.html");
 	}
 	
 	@Test
@@ -466,7 +468,7 @@ public class CssResourceContentPluginTest extends SpecTest {
     	when(defaultAspect).requestReceivedInProd("cssresource/aspect_default_resource/resources/.git", response);
     	then(aspect).prodRequestsForContentPluginsAre("cssresource", "")
     		.and(aspect).devRequestsForContentPluginsAre("cssresource", "")
-    		.and(exceptions).verifyException(FileNotFoundException.class, "apps/app1/resources/.git");
+    		.and(exceptions).verifyException(FileNotFoundException.class, "brjs-apps/app1/resources/.git");
 	}
 	
 	@Test
@@ -476,8 +478,8 @@ public class CssResourceContentPluginTest extends SpecTest {
     		.and(sdkJsLib).containsResourceFileWithContents(".git", ".git contents")
     		.and(brjs.bladerunnerConf()).hasIgnoredPaths(".git");
     	when(defaultAspect).requestReceivedInProd("cssresource/lib_sdkLib/.git", response);
-    	then(aspect).prodRequestsForContentPluginsAre("cssresource", "")
-    		.and(aspect).devRequestsForContentPluginsAre("cssresource", "")
+    	then(aspect).prodRequestsForContentPluginsAre("cssresource", "cssresource/aspect_default_resource/index.html")
+    		.and(aspect).devRequestsForContentPluginsAre("cssresource", "cssresource/aspect_default_resource/index.html")
     		.and(exceptions).verifyException(FileNotFoundException.class, "sdk/libs/javascript/sdkLib/.git");
 	}
 	
@@ -485,8 +487,8 @@ public class CssResourceContentPluginTest extends SpecTest {
 	public void cssResourcesWithCommonExtensionsAreIncludedInContentPathsEvenIfTheyArentUsed() throws Exception {
 		given(defaultAspect).indexPageHasContent("")
 			.and(defaultAspect).containsFiles("themes/common/unusedFile.png")
-			.and(brjs).localeForwarderHasContents("")
-			.and(brjs).hasProdVersion("1234");
+			.and(brjs).localeSwitcherHasContents("")
+			.and(brjs).hasVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default/theme_common/unusedFile.png");
 	}
 	
@@ -495,8 +497,8 @@ public class CssResourceContentPluginTest extends SpecTest {
 		given(defaultAspect).indexPageHasContent("")
 			.and(defaultAspect).containsFiles("themes/common/usedFile.ext", "resources/css/usedFile.ext", "resources/css/unusedFile.ext", "resources/some-dir/unusedFile.ext")
 			.and(defaultAspect).containsFileWithContents("themes/common/style.css", ".style { background:url('usedFile.ext'); background:url('../../resources/css/usedFile.ext');")
-			.and(brjs).localeForwarderHasContents("")
-			.and(brjs).hasProdVersion("1234");
+			.and(brjs).localeSwitcherHasContents("")
+			.and(brjs).hasVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default_resource/resources/css/usedFile.ext", "cssresource/aspect_default/theme_common/usedFile.ext");
 	}
 	
@@ -504,8 +506,8 @@ public class CssResourceContentPluginTest extends SpecTest {
 	public void cssResourcesUsedInIndexPagesShouldBeIncludedInFilteredContentPaths() throws Exception {
 		given(defaultAspect).indexPageHasContent(".style { background:url('v/1234/cssresource/aspect_default_resource/resources/css/usedFile.ext') }")
 			.and(defaultAspect).containsFiles("themes/common/usedFile.ext", "resources/css/usedFile.ext", "resources/css/unusedFile.ext", "resources/some-dir/unusedFile.ext")
-			.and(brjs).localeForwarderHasContents("")
-			.and(brjs).hasProdVersion("1234");
+			.and(brjs).localeSwitcherHasContents("")
+			.and(brjs).hasVersion("1234");
 		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default_resource/resources/css/usedFile.ext");
 	}
 	
@@ -514,8 +516,8 @@ public class CssResourceContentPluginTest extends SpecTest {
 		given(defaultAspect).indexPageHasContent("")
 			.and(defaultAspect).containsFiles("themes/common/usedFile.ext", "resources/css/usedFile.ext", "resources/css/unusedFile.ext", "resources/some-dir/unusedFile.ext")
     		.and(defaultAspect).containsFileWithContents("themes/common/style.css", ".style { background:url('usedFile.ext'); background:url('../../resources/css/usedFile.ext');")
-    		.and(brjs).localeForwarderHasContents("")
-    		.and(brjs).hasProdVersion("1234")
+    		.and(brjs).localeSwitcherHasContents("")
+    		.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFile("v/1234/cssresource/aspect_default_resource/resources/css/usedFile.ext")
 			.and(targetDir).containsFile("v/1234/cssresource/aspect_default/theme_common/usedFile.ext")

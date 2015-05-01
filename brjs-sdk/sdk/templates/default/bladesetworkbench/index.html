@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<@base.tag@/>
 		<meta charset="UTF-8">
 		
 		<title>Workbench</title>
 
-		<@css.bundle theme="standard" alternateTheme="alternate" @/>
-
+		<@css.bundle theme="standard" alternateTheme="alternate"@/>
+		<@html.bundle@/>
+		<@i18n.bundle@/>
+		<@js.bundle@/>
 	</head>
 	<body>
-
-		<@i18n.bundle @/>
-		<@js.bundle @/>
-
 		<div class="app">
 			<p>This is your bladeset workbench. You can use this workbench for performing integration tests involving multiple blades.</p>
 			<div class="br-logo">
@@ -22,8 +19,8 @@
 		
 		<!--
 		This is a location to configure blades as required. For example, you may use a ServiceRegistry here to register
-		a dummy service to facilitate the development of the blades contained within your bladeset. Furthermore, you 
-		may send messages between blades through a Event Hub, which you may view in your EventHubViewer. A 
+		a dummy service to facilitate the development of the blades contained within your bladeset. Furthermore, you
+		may send messages between blades through a Event Hub, which you may view in your EventHubViewer. A
 		KnockoutComponent panel is also available, which will enable you to view the model corresponding to the
 		specified blade.
 		Below you may find an example on how these configurations will work for a single blade, given it has been

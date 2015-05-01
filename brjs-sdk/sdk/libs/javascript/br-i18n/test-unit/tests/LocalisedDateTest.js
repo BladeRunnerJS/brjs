@@ -6,22 +6,23 @@
 		var I18N = require('br/i18n/I18N');
 		
 		this.mDateMessages = {
-			"br.i18n.date.format": "DD-MM-YYYY",
-			"br.i18n.date.format.long": "ddd, DD MMM, YYYY, HH:mm:ss A",
-			"br.i18n.date.month.january": "Leden",
-			"br.i18n.date.month.short.april": "Dub",
-			"br.i18n.date.month.short.december": "Pros",
-			"br.i18n.date.day.saturday": "Sobota",
-			"br.i18n.date.day.short.monday": "Mon",
-			"br.i18n.date.day.short.wednesday": "Wed"
-		};
+			'locale' : {
+				"br.i18n.date.format": "DD-MM-YYYY",
+				"br.i18n.date.format.long": "ddd, DD MMM, YYYY, HH:mm:ss A",
+				"br.i18n.date.month.january": "Leden",
+				"br.i18n.date.month.short.april": "Dub",
+				"br.i18n.date.month.short.december": "Pros",
+				"br.i18n.date.day.saturday": "Sobota",
+				"br.i18n.date.day.short.monday": "Mon",
+				"br.i18n.date.day.short.wednesday": "Wed"
+		}};
 		
 		this.subrealm = realm.subrealm();
 		this.subrealm.install();
 		
 		var oThis = this;
 		define('br/I18n', function(require, exports, module) {
-			module.exports = I18N.create(new Translator(oThis.mDateMessages));
+			module.exports = I18N.create(new Translator(oThis.mDateMessages, 'locale'));
 		});
 	};
 
@@ -147,7 +148,7 @@
 		oDate.setMinutes(39);
 		oDate.setSeconds(1);
 
-		var sDateFormat = this.mDateMessages["br.i18n.date.format"];
+		var sDateFormat = this.mDateMessages["locale"]["br.i18n.date.format"];
 		var oLocalisedDate = new (require("br/i18n/LocalisedDate"))(oDate);
 		var sLocalisedDate = oLocalisedDate.format(sDateFormat);
 
@@ -166,7 +167,7 @@
 		oDate.setMinutes(39);
 		oDate.setSeconds(1);
 
-		var sDateFormat = this.mDateMessages["br.i18n.date.format.long"];
+		var sDateFormat = this.mDateMessages["locale"]["br.i18n.date.format.long"];
 		var oLocalisedDate = new (require("br/i18n/LocalisedDate"))(oDate);
 		var sLocalisedDate = oLocalisedDate.format(sDateFormat);
 

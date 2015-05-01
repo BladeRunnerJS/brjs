@@ -15,11 +15,11 @@ var Utils = require('br/test/Utils');
  * @class
  * @alias module:br/test/viewhandler/Clicked
  * @implements module:br/test/viewhandler/ViewFixtureHandler
- * 
+ *
  * @classdesc
  * <code>Clicked</code> instances of <code>ViewFixtureHandler</code> can be used to trigger a click on a view element.
  * Example usage:
- * 
+ *
  * <pre>when("form.view.(.executeOrder [identifier=\'buttonOrder\'] .order_button).clicked => true");</pre>
  */
 function Clicked() {
@@ -27,22 +27,32 @@ function Clicked() {
 br.implement(Clicked, ViewFixtureHandler);
 
 Clicked.prototype.set = function(eElement, mArgs) {
+
 	var jq_Element = jQuery(eElement);
 
-	if ( jq_Element.hasClass("disabled") || jq_Element.is(":disabled") ) { 
+	if ( jq_Element.hasClass("disabled") || jq_Element.is(":disabled") ) {
 		return;
 	}
 
-	if (document.activeElement && document.activeElement != eElement && 
+	var Utils = require("br/test/Utils");
+
+	if (document.activeElement && document.activeElement != eElement &&
 			document.activeElement.tagName &&
 			document.activeElement.tagName.toLowerCase() != 'body') {
-		var jq_activeElement = jQuery(document.activeElement) 
+
+		var activeElement = document.activeElement;
+		var jq_activeElement = jQuery(activeElement);
 		jq_activeElement.trigger('focusout');
-		
+
 		var active_nodeName =  jq_activeElement[0].nodeName.toLowerCase();
 		var active_inputType = (jq_activeElement.attr('type')) ? jq_activeElement.attr('type').toLowerCase() : "";
 		if ( active_nodeName == 'select' || ( active_nodeName == 'input' && active_inputType != 'submit' ) ) {
-			jq_activeElement.trigger('change');
+			/*
+			 * DO NOT use JQuery for the change events here.
+			 * Knockout doesn't listen for the jQuery change event unless jQuery appears before the knockout library
+			 * and in order to make that happen presenter-knockout has to directly depends on jQuery.
+			*/
+			Utils.fireDomEvent(activeElement, "change");
 		}
 	}
 
@@ -59,12 +69,12 @@ Clicked.prototype.set = function(eElement, mArgs) {
 
 	Utils.fireMouseEvent(eElement, 'click', mArgs);
 
-	if ( element_nodeName == 'select' || 
+	if ( element_nodeName == 'select' ||
 			( element_nodeName == 'input' && element_inputType != 'submit' ) ) {
-		jq_Element.trigger('change');
+		Utils.fireDomEvent(eElement, "change");
 	}
 
-	if ( ( (element_nodeName == 'input' && element_inputType == 'submit') 
+	if ( ( (element_nodeName == 'input' && element_inputType == 'submit')
 				|| element_nodeName == 'button') ) {
 		var elementParentForm = jq_Element.parents('form')
 		if (elementParentForm != null && (elementParentForm.attr('action') != null || elementParentForm.attr('onsubmit') != null)) {

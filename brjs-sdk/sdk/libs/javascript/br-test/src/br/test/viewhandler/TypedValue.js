@@ -15,11 +15,11 @@ var Utils = require('br/test/Utils');
  * @class
  * @alias module:br/test/viewhandler/TypedValue
  * @implements module:br/test/viewhandler/ViewFixtureHandler
- * 
+ *
  * @classdesc
  * <code>TypedValue</code> instances of <code>ViewFixtureHandler</code> can be used to simulate typing a value into an input view element.
  * Example usage:
- * 
+ *
  * <pre>when("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).typedValue => 'abc'");</pre>
  */
 function TypedValue() {
@@ -36,7 +36,7 @@ TypedValue.prototype.set = function(eElement, sValue) {
 		throw new Errors.InvalidTestError("The element you tried to use 'typedValue' on doesn't have a value field to simulate typing on.");
 	}
 
-	//Check whether the last active element wants us to fire a change event. 
+	//Check whether the last active element wants us to fire a change event.
 	if (document.activeElement && document.activeElement.bFireChangeEventWhenNextElementIsActivated)
 	{
 		delete document.activeElement.bFireChangeEventWhenNextElementIsActivated;
@@ -56,7 +56,7 @@ TypedValue.prototype.set = function(eElement, sValue) {
 		Utils.fireKeyEvent(eElement, "keyup", sKey);
 	}
 
-	//Request the next active element to fire a change event 
+	//Request the next active element to fire a change event
 	eElement.bFireChangeEventWhenNextElementIsActivated = true;
 };
 

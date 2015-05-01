@@ -2,33 +2,36 @@ package org.bladerunnerjs.runner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
+import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.legacy.command.test.TestCommand;
+import org.bladerunnerjs.legacy.command.test.TestServerCommand;
+import org.bladerunnerjs.legacy.command.testIntegration.TestIntegrationCommand;
 import org.bladerunnerjs.logger.ConsoleLogger;
 import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.logger.LogLevel;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.events.NewInstallEvent;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import com.caplin.cutlass.command.test.TestCommand;
-import com.caplin.cutlass.command.test.TestServerCommand;
-import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -36,6 +39,10 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
 
 public class CommandRunner {
+	
+	private static List<String> STATS_PLUGIN_NO_ANSWERS = Arrays.asList("no", "n");
+	private static List<String> STATS_PLUGIN_YES_ANSWERS = Arrays.asList("", "yes", "y");
+	
 	private static final JSAP argsParser = new JSAP();
 	
 	private boolean stats = false;
@@ -83,8 +90,7 @@ public class CommandRunner {
 		
 		return byteStreamOutputStream.toString().trim();
 	}
-	
-	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
+	public int run(File workingDir, String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
 		AbstractRootNode.allowInvalidRootDirectories = false;
 		BRJS brjs = null;
 		
@@ -99,7 +105,7 @@ public class CommandRunner {
 		args = processGlobalCommandFlags(args);
 		
 		try {
-			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir, workingDir.getAbsoluteFile());
 			brjs.populate("default");
 			setBrjsAllowStats(brjs);
 		}
@@ -109,6 +115,10 @@ public class CommandRunner {
 		
 		injectLegacyCommands(brjs);
 		return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
+	}
+	
+	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
+		return run(Paths.get(".").toAbsolutePath().normalize().toFile(), args);
 	}
 	
 	private void setBrjsAllowStats(BRJS brjs) throws ConfigException
@@ -127,18 +137,21 @@ public class CommandRunner {
         		System.out.println("This data is completely anonymous, does not identify you as an individual or your company and does not include any source code.");
         		System.out.println("Do you agree to the collection of this anonymous data? (Y/n)");
         		try {
-        			String userInput = scanner.next();
-        			if (userInput.equalsIgnoreCase("n") || userInput.equalsIgnoreCase("no")) {
+        			String userInput = scanner.nextLine();
+        			if (STATS_PLUGIN_NO_ANSWERS.contains(userInput.toLowerCase())) {
         				brjs.bladerunnerConf().setAllowAnonymousStats(false);
-        			} else {
+        			} else if (STATS_PLUGIN_YES_ANSWERS.contains(userInput.toLowerCase())) {
         				brjs.bladerunnerConf().setAllowAnonymousStats(true);
         				brjs.notifyObservers(new NewInstallEvent(), brjs);
+        			} else {
+        				throw new RuntimeException( String.format("'%s' is not a valid response.", userInput));
         			}
-        		} catch (Exception ex) {
+        		} catch (NoSuchElementException ex) {
         			brjs.bladerunnerConf().setAllowAnonymousStats(false); // default to false
+        		} finally {
+        			scanner.close();
         		}
         		System.out.println();
-        		scanner.close();
         	}
 		}
 		brjs.bladerunnerConf().write();

@@ -1,10 +1,9 @@
 (function(){
 	"use strict";
-	
+
 	// TODO: this line can be deleted once CommonJs supports aliases
 	require('br/workaround/CommonJsAliasWorkaround');
 
-	require("jstestdriverextensions");
 	require("jsmockito");
 	var br = require('br/Core');
 	var Errors = require('br/Errors');
@@ -15,6 +14,8 @@
 
 	var AliasRegistry = require('br/AliasRegistryClass');
 	var AliasRegistryTest = TestCase("AliasRegistryTest").prototype;
+
+	var AliasInterfaceError = require("br/AliasInterfaceError");
 
 	var aliasRegistry = null;
 
@@ -39,7 +40,7 @@
 
 	AliasRegistryTest["test Return the list of aliases from the alias JSON"] = function()
 	{
-		assertEquals("Incorrect alias list", ["some.alias1", "some.alias2", "some.alias3"], aliasRegistry.getAllAliases().filter(function(str) {return str.match(/^some\.alias/)}));
+		assertEquals("Incorrect alias list", ["some.alias2", "some.alias1"], aliasRegistry.getAllAliases().filter(function(str) {return str.match(/^some\.alias/)}));
 	};
 
 	AliasRegistryTest["test No aliases are returned for an unknown interface"] = function()
@@ -72,14 +73,12 @@
 	AliasRegistryTest["test Check isAlias returns the correct values"] = function()
 	{
 		assertTrue(aliasRegistry.isAlias("some.alias1"));
-		assertTrue(aliasRegistry.isAlias("some.alias3"));
 		assertFalse(aliasRegistry.isAlias("some.alias4"));
 	};
 
 	AliasRegistryTest["test Check isAliasAssigned returns the correct values"] = function()
 	{
 		assertTrue(aliasRegistry.isAliasAssigned("some.alias1"));
-		assertFalse(aliasRegistry.isAliasAssigned("some.alias3"));
 	};
 
 	AliasRegistryTest["test Fails fast when alias is not found"] = function()
@@ -108,12 +107,12 @@
 				"interface":"br/Alias2Interface",
 				"interfaceName":"br.Alias2Interface"
 			}});
-		
+
 		assertException("Should throw an error if the alias is not implementor of the alias interface",
 			function() {
 				aliasRegistry.getClass('some.alias1');
 			},
-			Errors.ILLEGAL_STATE
+			Errors.AliasInterfaceError
 		);
 	};
 

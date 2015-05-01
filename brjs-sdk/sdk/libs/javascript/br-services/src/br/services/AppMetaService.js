@@ -10,7 +10,7 @@ var Errors = require('br/Errors');
  * @class
  * @interface
  * @alias module:br/services/AppMetaService
- * 
+ *
  * @classdesc
  * A service which provides access to meta data for a BRJS app.
  */
@@ -43,8 +43,8 @@ AppMetaService.prototype.getLocales = function() {
 };
 
 /**
-* Returns the name of the cookie used to store the locale preference
-* @returns The cookie name
+* Returns the name of the locale cookie set via app.conf
+* @returns The locales cookie
 */
 AppMetaService.prototype.getLocaleCookieName = function() {
 	throw new Errors.UnimplementedInterfaceError("AppMetaService.getLocaleCookieName() has not been implemented.");

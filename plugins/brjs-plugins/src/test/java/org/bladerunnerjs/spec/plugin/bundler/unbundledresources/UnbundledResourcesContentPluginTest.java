@@ -6,16 +6,16 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.memoization.MemoizedFile;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.Workbench;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.plugin.ContentPlugin;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
-import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -306,7 +306,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		try {
     		given(app).hasBeenCreated()
         		.and(appAspect).containsFileWithContents("unbundled-resources/file.jsp", "2 + 2 = <%= 2 + 2 %>")
-        		.and(brjs).hasDevVersion("1234")
+        		.and(brjs).hasVersion("1234")
         		.and(brjs.applicationServer(appServerPort)).started();
         	then(brjs.applicationServer(appServerPort)).requestForUrlReturns("/app1/v/123/unbundled-resources/file.jsp", "2 + 2 = 4");
 		} finally {
