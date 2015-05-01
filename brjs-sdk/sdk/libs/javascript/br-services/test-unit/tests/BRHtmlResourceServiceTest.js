@@ -11,9 +11,11 @@ if (window.attachEvent && !window.addEventListener) {
 
 BRHtmlResourceServiceTest.prototype.setup = function()
 {
-	var brjsTemplates = document.getElementById("brjs-html-templates");
-	if (brjsTemplates) {
-		brjsTemplates.parentNode.removeChild(brjsTemplates);
+	var templateElems = document.querySelectorAll('template');
+
+	for(var i = 0;  i < templateElems.length; ++i) {
+		var templateElem = templateElems[i];
+		templateElem.parentNode.removeChild(templateElem);
 	}
 };
 
@@ -31,7 +33,6 @@ BRHtmlResourceServiceTest.prototype.test_templatesInBundle = function()
 	assertEquals(oService.getTemplateElement("br.services.template2").innerHTML.toLowerCase(), "some html2");
 };
 
-// Failing in IE8 resulting in red build. See #678
 BRHtmlResourceServiceTest.prototype.test_templatesInTemplateTagBundle = function()
 {
 	assertTemplateContentsMatch("br.services.template3", "some html3");
@@ -98,14 +99,11 @@ var getService = function(sUrl)
 	return new BRHtmlResourceService(sUrl);
 };
 
-var assertTemplateContentsMatch = (function(){
+var assertTemplateContentsMatch = function(templateId, expected) {
 	var oService = getService();
 	var tempDiv = document.createElement("div"); // Needed as you cannot call innerHTML on a document fragment.
-	return function assertTemplateContentsMatch(templateId, expected) {
-		var templateDocFrag = oService.getTemplateFragment(templateId);
-
-		tempDiv.innerHTML = "";
-		tempDiv.appendChild(templateDocFrag);
-		assertEquals(expected, tempDiv.innerHTML.toLowerCase().replace(/[\n\r]/g, ''));
-	};
-})();
+	var templateDocFrag = oService.getTemplateFragment(templateId);
+	tempDiv.innerHTML = "";
+	tempDiv.appendChild(templateDocFrag);
+	assertEquals(expected, tempDiv.innerHTML.toLowerCase().replace(/[\n\r]/g, ''));
+};
