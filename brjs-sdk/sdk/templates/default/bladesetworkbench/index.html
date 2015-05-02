@@ -26,40 +26,39 @@
 		Below you may find an example on how these configurations will work for a single blade, given it has been
 		created within your current bladeset.-->
 		<script type="text/javascript">
-			var ServiceRegistry = require( 'br/ServiceRegistry' );
-
-			function addEventHubLogger( workbench ) {
-				var eventHub = ServiceRegistry.getService( 'br.event-hub' );
-				var EventHubViewer = require( 'br/workbench/tools/EventHubViewer' );
-				var eventHubViewer = new EventHubViewer( eventHub );
-				workbench.addToLeftWing( eventHubViewer, "EventHub Logging", false );
+			function addEventHubLogger(workbench) {
+				var eventHub = require('service!br.event-hub');
+				var EventHubViewer = require('br/workbench/tools/EventHubViewer');
+				var eventHubViewer = new EventHubViewer(eventHub);
+				workbench.addToLeftWing(eventHubViewer, 'EventHub Logging', false);
 			}
 
-			function addModelViewer( model, workbench ) {
+			function addModelViewer(model, workbench) {
 				var KnockoutJsTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
 				var PresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
-				var presentationModelViewer = new PresentationModelViewer(KnockoutJsTreeModelFactory.createTreeModelFromKnockoutViewModel(model));
-				workbench.addToRightWing(presentationModelViewer, "Visualise Knockout View Model", false);
+				var presentationModelViewer = new PresentationModelViewer(
+					KnockoutJsTreeModelFactory.createTreeModelFromKnockoutViewModel(model)
+				);
+				workbench.addToRightWing(presentationModelViewer, 'Visualise Knockout View Model', false);
 			}
 
-			function addComponent( component, workbench  ) {
-				workbench.displayComponent( component, 200, 100 );
+			function addComponent(component, workbench) {
+				workbench.displayComponent(component, 200, 100);
 			}
 
-			var Workbench = require( 'br/workbench/ui/Workbench' );
+			var Workbench = require('br/workbench/ui/Workbench');
 			var workbench = new Workbench(250, 310);
 			addEventHubLogger( workbench );
 
 			// ViewModel that is being created in the workbench
-			/*var myBladeTitleViewModel = require( 'myBladeRequirePrefix/myBladeTitleViewModel' );
-			var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
+			/*var myBladeTitleViewModel = require('myBladeRequirePrefix/myBladeTitleViewModel');
+			var KnockoutComponent = require('br/knockout/KnockoutComponent');
 
 			var model = new myBladeTitleViewModel();
-			var component = new KnockoutComponent( 'myBladeNamespace.view-template', model );
+			var component = new KnockoutComponent('myBladeNamespace.view-template', model);
 
-			addComponent( component, workbench )
-			addModelViewer( model, workbench );*/
+			addComponent(component, workbench)
+			addModelViewer(model, workbench);*/
 		</script>
-		
 	</body>
 </html>
