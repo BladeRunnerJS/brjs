@@ -37,7 +37,7 @@ public class AppBuilderUtilis
 		if(!targetContainer.isDirectory()) throw new ModelOperationException("'" + targetContainer.getPath() + "' is not a directory.");
 		
 		try {
-			String version = app.root().getAppVersionGenerator().getProdVersion();
+			String version = app.root().getAppVersionGenerator().getVersion();
 			BRJS brjs = app.root();
 			UrlContentAccessor urlContentAccessor = new StaticContentAccessor(app);
 			Locale[] locales = app.appConf().getLocales();
@@ -84,7 +84,7 @@ public class AppBuilderUtilis
 			}
 		}
 		else {
-			bundleSet.getBundlableNode().root().logger(AppBuilderUtilis.class).info("The content plugin '%s' implements ComposisteContentPlugin so no files will be generated.", contentPlugin.getPluginClass().getSimpleName());
+			bundleSet.bundlableNode().root().logger(AppBuilderUtilis.class).info("The content plugin '%s' implements ComposisteContentPlugin so no files will be generated.", contentPlugin.getPluginClass().getSimpleName());
 		}
 	}
 
@@ -104,7 +104,7 @@ public class AppBuilderUtilis
 
 	private static void writeLocaleForwardingFileForAspect(BundleSet bundleSet, File target, Aspect aspect, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException
 	{
-		App app = bundleSet.getBundlableNode().app();
+		App app = bundleSet.bundlableNode().app();
 		
 		if(app.isMultiLocaleApp()) {
 			File localeForwardingFile = new File(target, aspect.requestHandler().createLocaleForwardingRequest()+"index.html");

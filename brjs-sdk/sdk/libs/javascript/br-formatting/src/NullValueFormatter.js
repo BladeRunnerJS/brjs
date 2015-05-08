@@ -46,7 +46,7 @@ topiarist.implement(NullValueFormatter, Formatter);
  * @type  String
  */
 NullValueFormatter.prototype.format = function(vValue, mAttributes) {
-	return (vValue == undefined || vValue == null ||  vValue == "") ? mAttributes["nullValue"] == null ? this.m_sNullValueDefault : mAttributes["nullValue"] : vValue;
+	return (vValue == undefined || vValue == null ||  vValue === "") ? mAttributes["nullValue"] == null ? this.m_sNullValueDefault : mAttributes["nullValue"] : vValue;
 };
 
 /**

@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.seedlocator;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
@@ -8,7 +7,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
+import org.bladerunnerjs.api.plugin.AssetRegistry;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 
@@ -17,7 +16,7 @@ public class BrLocaleLibSeedLocator extends AbstractAssetPlugin
 {
 
 	@Override
-	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
 	{
 		if (assetContainer instanceof JsLib) {
 			JsLib jsLib = (JsLib) assetContainer;
@@ -28,7 +27,6 @@ public class BrLocaleLibSeedLocator extends AbstractAssetPlugin
 				}
 			}
 		}
-		return Collections.emptyList();
 	}
 
 	@Override

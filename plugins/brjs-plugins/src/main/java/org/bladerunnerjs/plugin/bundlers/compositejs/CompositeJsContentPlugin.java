@@ -60,7 +60,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin implements R
 		List<String> requestPaths = new ArrayList<>();
 		String requestFormName = (requestMode == RequestMode.Prod) ? PROD_BUNDLE_REQUEST : DEV_BUNDLE_REQUEST;
 		
-		if(bundleSet.getSourceModules().size() > 0) {
+		if(bundleSet.sourceModules().size() > 0) {
 			try {
 				for(MinifierPlugin minifier : brjs.plugins().minifierPlugins()) {
 					for(String minifierSettingName : minifier.getSettingNames()) {
@@ -87,9 +87,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin implements R
 			RequestMode requestMode = (parsedContentPath.formName.equals(PROD_BUNDLE_REQUEST)) ? RequestMode.Prod : RequestMode.Dev;
 			
 			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(requestMode, parsedContentPath, bundleSet, contentAccessor, version);
-			ResponseContent content = new CharResponseContent( bundleSet.getBundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
-			
-			closeInputSources(inputSources);
+			ResponseContent content = new CharResponseContent( bundleSet.bundlableNode().root(), minifierPlugin.minify(minifierSetting, inputSources) );
 			
 			return content;
 		}
@@ -102,19 +100,6 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin implements R
 	public boolean outputAllBundles()
 	{
 		return false;
-	}
-	
-	private void closeInputSources(List<InputSource> inputSources)
-	{
-		for (InputSource input : inputSources) {
-			try
-			{
-				input.getContentPluginReader().close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 	
 	private List<InputSource> getInputSourcesFromOtherBundlers(RequestMode requestMode, ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {

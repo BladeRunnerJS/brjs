@@ -74,7 +74,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			{
 				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(bundleSet);
 				List<Reader> readerList = new ArrayList<Reader>();
-				for(ThirdpartySourceModule sourceFile : bundleSet.getSourceModules(ThirdpartySourceModule.class)) 
+				for(ThirdpartySourceModule sourceFile : bundleSet.sourceModules(ThirdpartySourceModule.class)) 
 				{
 					readerList.add(new StringReader("// " + sourceFile.getPrimaryRequirePath() + "\n"));
 					readerList.add(sourceFile.getReader());
@@ -85,7 +85,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			}
 			else if(parsedContentPath.formName.equals("single-module-request")) {
 				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(bundleSet);
-				LinkedAsset jsModule = bundleSet.getBundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
+				LinkedAsset jsModule = bundleSet.bundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
 				return new CharResponseContent(brjs, 
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
 					jsModule.getReader(),
@@ -120,7 +120,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			if (requestMode == RequestMode.Prod) {
 				requestPaths.add(contentPathParser.createRequest("bundle-request"));
 			} else {
-				for(ThirdpartySourceModule sourceModule : bundleSet.getSourceModules(ThirdpartySourceModule.class)) {
+				for(ThirdpartySourceModule sourceModule : bundleSet.sourceModules(ThirdpartySourceModule.class)) {
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
 				}				
 			}
@@ -134,7 +134,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 
 	private boolean hasUnencapsulatedSourceModule(BundleSet bundleSet)
 	{
-		for(SourceModule sourceFile : bundleSet.getSourceModules()) 
+		for(SourceModule sourceFile : bundleSet.sourceModules()) 
 		{
 			if (sourceFile.isGlobalisedModule()) {
 				return true;

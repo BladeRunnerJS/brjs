@@ -9,7 +9,7 @@ var testHtml = null;
 
 TestUtils.setupPage = function() {
 	if (testHtml == null) {
-		testHtml = require("service!br.html-service").getHTMLTemplate("testWrapper");
+		testHtml = require("service!br.html-service").getTemplateElement("testWrapper");
 
 		jQuery('body').empty();
 	}

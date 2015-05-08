@@ -6,35 +6,29 @@ import org.bladerunnerjs.model.AppVersionGenerator;
 public class MockAppVersionGenerator implements AppVersionGenerator
 {
 
-	private String prodVersion = "prod";
-	private String devVersion = "dev";
-
+	String version = "dev";
+	
 	@Override
-	public String getProdVersion()
+	public String getVersion()
 	{
-		return prodVersion;
-	}
-
-	@Override
-	public String getDevVersion()
-	{
-		return devVersion;
+		return version;
 	}
 
 	@Override
 	public String getVersionPattern()
 	{
-		return "("+devVersion+"|"+prodVersion+")";
+		return "("+version+")";
 	}
 
-	public void setProdVersion(String version)
+	@Override
+	public void setVersion(String version)
 	{
-		prodVersion = version;
+		this.version = version;
 	}
 	
-	public void setDevVersion(String version)
-	{
-		devVersion = version;
+	@Override
+	public void appendTimetamp(boolean appendTimetamp)
+	{		
 	}
 	
 }

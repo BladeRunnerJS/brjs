@@ -10,7 +10,7 @@ var Errors = require('./Errors');
 /**
 * @class
 * @alias module:br/AliasRegistryClass
-* 
+*
 * @classdesc
 * The <code>AliasRegistryClass</code> class provides access to the aliases used within
 * the application.
@@ -67,7 +67,7 @@ AliasRegistryClass.prototype.getAliasesByInterface = function getAliasesByInterf
 	for(var i = 0, length = allAliases.length; i < length; ++i) {
 		var aliasName = allAliases[i];
 		var aliasInterface = this._getInterfaceRef(aliasName);
-		
+
 		if(aliasInterface === requiredInterface) {
 			filteredAliases.push(aliasName);
 		} else if (this.isAliasAssigned(aliasName)) {
@@ -93,19 +93,19 @@ AliasRegistryClass.prototype.getClass = function getClass(aliasName) {
 	if (!this.isAliasAssigned(aliasName)) {
 		throw new Errors.IllegalStateError("No class has been found for alias '" + aliasName +"'");
 	}
-	
+
 	var classRef = this._getClassRef(aliasName);
 	var interfaceRef = this._getInterfaceRef(aliasName);
-	
+
 	if(interfaceRef) {
 		if(!br.classIsA(classRef, interfaceRef)) {
 			var alias = this._aliasData[aliasName];
-			
-			throw new Errors.IllegalStateError("Class '" + alias['class'] + "' does not implement interface '" + alias['interface'] +
-				"', as required by alias '" + aliasName + "'.");
+			var AliasInterfaceError = require("br/AliasInterfaceError");
+
+			throw new AliasInterfaceError(aliasName, alias['class'], alias['interface']);
 		}
 	}
-	
+
 	return classRef;
 };
 
@@ -135,11 +135,11 @@ AliasRegistryClass.prototype.isAliasAssigned = function isAliasAssigned(aliasNam
  */
 AliasRegistryClass.prototype._getClassRef = function(aliasName) {
 	var alias = this._aliasData[aliasName];
-	
+
 	if(alias.classRef === undefined) {
 		alias.classRef = require(alias["class"]);
 	}
-	
+
 	return alias.classRef;
 };
 
@@ -148,12 +148,12 @@ AliasRegistryClass.prototype._getClassRef = function(aliasName) {
  */
 AliasRegistryClass.prototype._getInterfaceRef = function(aliasName) {
 	var alias = this._aliasData[aliasName];
-	
+
 	if(alias.interfaceRef === undefined) {
 		var interfaceName = alias['interface'];
 		alias.interfaceRef = (interfaceName) ? require(interfaceName) : null;
 	}
-	
+
 	return alias.interfaceRef;
 };
 

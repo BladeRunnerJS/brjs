@@ -18,7 +18,7 @@ import com.thaiopensource.relaxng.translate.util.InvalidParamsException;
 import com.thaiopensource.xml.sax.ErrorHandlerImpl;
 
 public class SchemaConverter {
-	public static File convertToRng(String schemaPath) throws SchemaCreationException {
+	public static File convertToRng(String schemaPath) throws SchemaCreationException {		
 		String rngSchemaName = schemaPath.substring(schemaPath.lastIndexOf('/') + 1).replaceAll("\\.rnc$", ".rng");
 		File rngOutputFile = new File(Files.createTempDir(), rngSchemaName);
 		

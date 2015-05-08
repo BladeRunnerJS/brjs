@@ -1,4 +1,3 @@
-br.Core.thirdparty('jsunitextensions');
 br.Core.thirdparty('mock4js');
 
 PresentationModelTest = TestCase("PresentationModelTest");

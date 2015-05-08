@@ -35,7 +35,7 @@ public class BundlableNodeBuilder<N extends BundlableNode> extends AssetContaine
 	}
 	
 	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException {
-		bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getDevVersion());
+		bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getVersion());
 
 		return builderChainer;
 	}

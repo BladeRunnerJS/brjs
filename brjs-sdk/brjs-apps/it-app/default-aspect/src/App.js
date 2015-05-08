@@ -65,7 +65,11 @@ App.prototype.aliasFail = function() {
 };
 
 App.prototype.testBundledXml = function () {
-	return require('service!br.xml-service').getXmlDocument("bundledXml")[0].children[0].innerHTML;
+    var childNode = require('service!br.xml-service').getXmlDocument("bundledXml")[0].childNodes[0];
+    if (childNode.text) {
+        return childNode.text;
+    }
+	return childNode.innerHTML;
 };
 
 module.exports = App;

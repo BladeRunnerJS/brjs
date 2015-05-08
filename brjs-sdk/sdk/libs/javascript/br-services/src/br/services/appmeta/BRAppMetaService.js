@@ -1,5 +1,9 @@
 "use strict";
 
+// use a variable to store this so the modle doesn't try to find the source module that represents it during the dependency analysis
+var metaDataRequirePath = "app-meta!$data";
+var metaData;
+
 /**
 * @module br/services/bundlepath/BRAppMetaService
 */
@@ -18,15 +22,19 @@ function BRAppMetaService() {
 br.implement(BRAppMetaService, AppMetaService);
 
 BRAppMetaService.prototype.getVersion = function() {
-	return window.$BRJS_APP_VERSION;
+	return metaData.APP_VERSION;
 };
 
 BRAppMetaService.prototype.getVersionedBundlePath = function(bundlePath) {
-	return getBundlePath(window.$BRJS_VERSIONED_BUNDLE_PATH, bundlePath);
+	return getBundlePath(metaData.VERSIONED_BUNDLE_PATH, bundlePath);
 };
 
 BRAppMetaService.prototype.getLocales = function() {
-	return window.$BRJS_APP_LOCALES;
+	return metaData.APP_LOCALES;
+};
+
+BRAppMetaService.prototype.getLocaleCookieName = function() {
+	return metaData.LOCALE_COOKIE_NAME;
 };
 
 function getBundlePath(prefix, bundlePath) {
@@ -41,5 +49,6 @@ function getBundlePath(prefix, bundlePath) {
 	return prefix;
 }
 
-
 module.exports = BRAppMetaService;
+
+metaData = require(metaDataRequirePath);

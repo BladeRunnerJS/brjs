@@ -7,7 +7,7 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-import org.bladerunnerjs.api.plugin.AssetDiscoveryInitiator;
+import org.bladerunnerjs.api.plugin.AssetRegistry;
 import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
@@ -19,53 +19,46 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 {
 
 	@Override
-	public List<Asset> discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator)
-	{
-		List<Asset> aliasAssets = new ArrayList<>();
-		
+	public void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator)
+	{		
 		if (assetContainer.dir() == dir) {
 			if (assetContainer instanceof BundlableNode) {
 				BundlableNode bundlableNode = (BundlableNode) assetContainer;
-				createAliasDataSourceModule(assetDiscoveryInitiator, aliasAssets, bundlableNode);
-				addBundlableNodeAliases(implicitDependencies, assetDiscoveryInitiator, aliasAssets, bundlableNode);
+				createAliasDataSourceModule(assetDiscoveryInitiator, bundlableNode);
+				addBundlableNodeAliases(implicitDependencies, assetDiscoveryInitiator, bundlableNode);
 			}
 			
 			for (MemoizedFile childDir : getAliasDefinitionsLocations(dir)) {
-				addAssetContainerAliases(assetContainer, implicitDependencies, assetDiscoveryInitiator, aliasAssets, childDir);
+				addAssetContainerAliases(assetContainer, implicitDependencies, assetDiscoveryInitiator, childDir);
 			}
 		}
-		
-		return aliasAssets;
 	}
 
-	private void addAssetContainerAliases(AssetContainer assetContainer, List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, MemoizedFile childDir)
+	private void addAssetContainerAliases(AssetContainer assetContainer, List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator, MemoizedFile childDir)
 	{
 		for (AliasDefinition aliasDefinition : AliasingUtility.aliases(assetContainer, childDir)) {
 			if (!assetDiscoveryInitiator.hasRegisteredAsset(AliasCommonJsSourceModule.calculateRequirePath(aliasDefinition))) {
 				Asset aliasAsset = new AliasCommonJsSourceModule(assetContainer, aliasDefinition, implicitDependencies);
 				assetDiscoveryInitiator.registerAsset(aliasAsset);
-				aliasAssets.add(aliasAsset);
 			}
 		}
 	}
 	
-	private void addBundlableNodeAliases(List<Asset> implicitDependencies, AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode)
+	private void addBundlableNodeAliases(List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator, BundlableNode bundlableNode)
 	{
 		for (AliasDefinition aliasDefinition : AliasingUtility.aliases(bundlableNode)) {
 			if (!scopeAssetContainersHaveAlias(bundlableNode, aliasDefinition)) {
 				Asset aliasAsset = new AliasCommonJsSourceModule(bundlableNode, aliasDefinition, implicitDependencies);
 				assetDiscoveryInitiator.registerAsset(aliasAsset);
-				aliasAssets.add(aliasAsset);
 			}
 		}
 	}
 
-	private void createAliasDataSourceModule(AssetDiscoveryInitiator assetDiscoveryInitiator, List<Asset> aliasAssets, BundlableNode bundlableNode)
+	private void createAliasDataSourceModule(AssetRegistry assetDiscoveryInitiator, BundlableNode bundlableNode)
 	{
 		Asset aliasDataAsset = new AliasDataSourceModule(bundlableNode);
 		if (!assetDiscoveryInitiator.hasRegisteredAsset(aliasDataAsset.getPrimaryRequirePath())) {
 			assetDiscoveryInitiator.registerAsset(aliasDataAsset);
-			aliasAssets.add(aliasDataAsset);
 		}
 	}
 

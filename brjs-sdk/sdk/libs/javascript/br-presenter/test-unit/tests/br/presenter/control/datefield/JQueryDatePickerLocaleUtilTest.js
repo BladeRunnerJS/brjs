@@ -1,6 +1,5 @@
 (function() {
 	require('jsmockito');
-	require('jstestdriverextensions');
 
 	var subrealm;
 	var spyI18n;

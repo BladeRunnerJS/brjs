@@ -22,8 +22,6 @@ import org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 
-import com.Ostermiller.util.ConcatReader;
-
 public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	
 	private final AssetContainer assetContainer;
@@ -57,16 +55,11 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public Reader getReader() throws IOException {
-		return new ConcatReader(new Reader[] {
-			new StringReader("define('alias!" + aliasDefinition.getName() + "', function(require, exports, module) {\n"),
-			getUnalteredContentReader(),
-			new StringReader("});\n")
-		});
-	}
-	
-	@Override
-	public Reader getUnalteredContentReader() throws IOException {
-		return new StringReader("	module.exports = require('br/AliasRegistry').getClass('"+aliasDefinition.getName()+"');\n");
+		return new StringReader(
+			"define('alias!" + aliasDefinition.getName() + "', function(require, exports, module) {\n" +
+			"	module.exports = require('br/AliasRegistry').getClass('"+aliasDefinition.getName()+"');\n" +
+			"});\n"
+		);
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class ScriptedContentPlugin extends AbstractContentPlugin implements Rout
 	@Override
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException
 	{
-		return new CharResponseContent( bundleSet.getBundlableNode().root(), this.getClass().getCanonicalName() );
+		return new CharResponseContent( bundleSet.bundlableNode().root(), this.getClass().getCanonicalName() );
 	}
 
 	@Override

@@ -1,7 +1,4 @@
 (function() {
-
-	require('jsunitextensions');
-
 	var LocalisedDateParser = require('br/parsing/LocalisedDateParser');
 	var parser;
 

@@ -15,7 +15,6 @@ import org.bladerunnerjs.api.SourceModule;
 public class StandardBundleSet implements BundleSet {
 	private final List<LinkedAsset> seedAssets;
 	private final List<Asset> assets;
-	private final List<LinkedAsset> linkedAssets;
 	private final List<SourceModule> sourceModules;
 	private BundlableNode bundlableNode;
 	
@@ -26,18 +25,11 @@ public class StandardBundleSet implements BundleSet {
 		this.seedAssets = seedAssets;
 		this.bundlableNode = bundlableNode;
 		this.assets = assets;
-		
-		linkedAssets = new ArrayList<>();
-		for (Asset asset : assets) {
-			if (asset instanceof LinkedAsset) {
-				linkedAssets.add((LinkedAsset) asset);
-			}
-		}
 		this.sourceModules = sourceModules;
 	}
 	
 	@Override
-	public BundlableNode getBundlableNode() {
+	public BundlableNode bundlableNode() {
 		return bundlableNode;
 	}
 	
@@ -46,46 +38,40 @@ public class StandardBundleSet implements BundleSet {
 	{
 		return seedAssets;
 	}
-
-	@Override
-	public List<LinkedAsset> getLinkedAssets()
-	{
-		return linkedAssets;
-	}
 	
 	@Override
-	public List<SourceModule> getSourceModules() {
+	public List<SourceModule> sourceModules() {
 		return getTheAssets(sourceModules, sourceModulesByType, null, null);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <AT extends SourceModule> List<AT> getSourceModules(Class<? extends AT> assetType) {
+	public <AT extends SourceModule> List<AT> sourceModules(Class<? extends AT> assetType) {
 		return (List<AT>) getTheAssets(sourceModules, sourceModulesByType, null, Arrays.asList(assetType));
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(List<Class<? extends SourceModule>> assetTypes) {
+	public List<SourceModule> sourceModules(List<Class<? extends SourceModule>> assetTypes) {
 		return getTheAssets(sourceModules, sourceModulesByType, null, assetTypes);
 	}
 
 	@Override
-	public List<Asset> getAssets(String... prefixes)
+	public List<Asset> assets(String... prefixes)
 	{
 		return (List<Asset>) getTheAssets(assets, assetsByType, Arrays.asList(prefixes), null);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <AT extends Asset> List<AT> getAssets(List<String> prefixes, Class<? extends AT> assetType)
+	public <AT extends Asset> List<AT> assets(Class<? extends AT> assetType, String... prefixes)
 	{
-		return (List<AT>) getTheAssets(assets, assetsByType, prefixes, Arrays.asList(assetType));
+		return (List<AT>) getTheAssets(assets, assetsByType, Arrays.asList(prefixes), Arrays.asList(assetType));
 	}
 	
 	@Override
-	public List<Asset> getAssets(List<String> prefixes, List<Class<? extends Asset>> assetTypes)
+	public List<Asset> assets(List<Class<? extends Asset>> assetTypes, String... prefixes)
 	{
-		return (List<Asset>) getTheAssets(assets, assetsByType, prefixes, assetTypes);
+		return (List<Asset>) getTheAssets(assets, assetsByType, Arrays.asList(prefixes), assetTypes);
 	}
 
 	

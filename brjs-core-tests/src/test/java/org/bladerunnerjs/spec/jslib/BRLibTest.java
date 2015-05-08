@@ -82,7 +82,7 @@ public class BRLibTest extends SpecTest {
     		.and(sdkLib).containsResourceFileWithContents("en_GB.properties", "br.property=property value\n" + "anotherRootPkg.property=another value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText("\"br.property\": \"property value\"")
-			.and(response).containsText("\"anotherRootPkg.property\": \"another value\"");
+			.and(response).containsText("\"anotherrootpkg.property\": \"another value\"");
 	}
 	
 	@Test

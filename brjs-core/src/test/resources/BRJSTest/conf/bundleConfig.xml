@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<bundleConfig xmlns="http://schema.caplin.com/CaplinTrader/bundleConfig">
+<bundleConfig xmlns="http://schema.bladerunnerjs.org/bundleConfig">
 	
 	<resource rootElement="gridDefinitions"
 		templateElements="dataProviderMappings, decoratorMappings, templates, grids"

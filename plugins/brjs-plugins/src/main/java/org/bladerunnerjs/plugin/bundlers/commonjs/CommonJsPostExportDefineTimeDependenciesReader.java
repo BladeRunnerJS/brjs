@@ -13,7 +13,7 @@ public class CommonJsPostExportDefineTimeDependenciesReader extends Reader
 
 	private Reader postExportDefineTimeDependencesReader;
 
-	public CommonJsPostExportDefineTimeDependenciesReader(CommonJsSourceModule sourceModule) throws IOException {
+	public CommonJsPostExportDefineTimeDependenciesReader(DefaultCommonJsSourceModule sourceModule) throws IOException {
 		Reader sourceReader = sourceModule.getUnalteredContentReader();
 		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.assetContainer().root(), sourceReader, false);
 		Reader codeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(sourceModule.assetContainer().root(), commentStrippingReader);

@@ -2,6 +2,8 @@ package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.plugin.commands.standard.BuildAppCommand.Messages.*;
 
+import java.io.File;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
@@ -26,6 +28,8 @@ public class BuildAppCommandTest extends SpecTest
 	Blade badBlade;
 	private App otherApp;
 
+	private StringBuffer filePath = new StringBuffer();
+	
 	@Before
 	public void initTestObjects() throws Exception
 	{
@@ -233,9 +237,10 @@ public class BuildAppCommandTest extends SpecTest
 	@Test
 	public void appVersionTokenIsReplaced() throws Exception
 	{
-		given(app).hasBeenCreated().and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>").and(brjs).hasProdVersion("1234");
-		when(brjs).runCommand("build-app", "app");
-		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234</web-xml>")
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>");
+		when(brjs).runCommand("build-app", "app", "-v", "1234");
+		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234")
 			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@appVersion@");
 	}
 
@@ -269,6 +274,24 @@ public class BuildAppCommandTest extends SpecTest
 			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
 		when(brjs).runCommand("build-app", "app");
 		then(brjs).fileContentsContains("generated/built-apps/app/en_GB.html", "DEFAULT ASPECT INDEX PAGE");
+	}
+	
+	@Test
+	public void versionIsConfigurable() throws Exception
+	{
+		brjs = null;
+		given(brjs).hasBeenAuthenticallyReCreated()
+			.and(brjs).localeSwitcherHasContents("")
+			.and(brjs).usedForServletModel();
+			App app = brjs.app("app1");
+    		Aspect aspect = app.defaultAspect();
+    		given(aspect).hasClass("appns/Class1")
+			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).indexPageHasContent("<@js.bundle@/>\nrequire('appns/Class1');");
+		when(brjs).runCommand("build-app", "app1", "-v", "myversion");
+		then(brjs).hasDirectoryWithFormat("generated/built-apps/app1/v/", "myversion\\-.*", filePath)
+			.and(new File(filePath.toString())).containsFileWithContents("/js/prod/combined/bundle.js", "module.exports.APP_VERSION = '"+new File(filePath.toString()).getName()+"';");
+			
 	}
 	
 }

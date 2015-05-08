@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.MultipleNodesForPathException;
@@ -30,9 +32,13 @@ public class NodeList<N extends Node> {
 	}
 	
 	public NodeList(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter, String dirNameExcludeFilter, MemoizedFile dir) {
+		this(node, nodeClass, subDirPath, dirNameFilter, dirNameExcludeFilter, TrueFileFilter.INSTANCE, dir);
+	}
+	
+	public NodeList(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter, String dirNameExcludeFilter, IOFileFilter dirContentsFileFilter, MemoizedFile dir) {
 		this.node = node;
 		this.nodeClass = nodeClass;
-		namedNodeLocators.add(new DirectoryContentsNamedNodeLocator(node.root(), subDirPath, dirNameFilter, dirNameExcludeFilter));
+		namedNodeLocators.add(new DirectoryContentsNamedNodeLocator(node.root(), subDirPath, dirNameFilter, dirNameExcludeFilter, dirContentsFileFilter));
 		this.nodeDir = dir;
 	}
 	

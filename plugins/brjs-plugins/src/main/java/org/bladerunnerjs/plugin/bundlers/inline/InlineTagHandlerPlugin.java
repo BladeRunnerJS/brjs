@@ -34,7 +34,7 @@ public class InlineTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException {
 		String filePath = tagAttributes.get(FILE_ATTRIBUTE);
-		BundlableNode bundlableNode = bundleSet.getBundlableNode();
+		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		try {
 			File file = bundlableNode.file(filePath);
 			writer.write( FileUtils.readFileToString(file) );

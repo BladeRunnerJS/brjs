@@ -23,7 +23,7 @@ public class PersistentAliasDefinitionsData {
 	
 	public AliasDefinitionsData getData() throws ContentFileProcessingException {
 		return aliasDefinitionsData.value(() -> {
-			return AliasDefinitionsReader.read(aliasesFile, assetContainer, getCharacterEncoding());
+			return AliasDefinitionsReader.read(brjs, aliasesFile, assetContainer, getCharacterEncoding());
 		});
 	}
 	

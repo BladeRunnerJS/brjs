@@ -45,6 +45,7 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer indexPageLoadedInProd(final StringBuffer pageResponse, final String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
 		call(new Command() {
 			public void call() throws Exception {
+				specTest.brjs.getAppVersionGenerator().setVersion("prod");
 				pageLoaded(pageResponse, new Locale(locale), RequestMode.Prod);
 			}
 		});
@@ -55,9 +56,7 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	private void pageLoaded(StringBuffer pageResponse, Locale locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, RequirePathException {
 		StringWriter writer = new StringWriter();	
 		
-		String version = (opMode == RequestMode.Dev) ? aspect.root().getAppVersionGenerator().getDevVersion() : aspect.root().getAppVersionGenerator().getProdVersion();
-		
-		TagPluginUtility.filterContent(fileUtil.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale, version);
+		TagPluginUtility.filterContent(fileUtil.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale, aspect.root().getAppVersionGenerator().getVersion());
 		
 		pageResponse.append(writer.toString());
 	}
