@@ -30,7 +30,6 @@ function PresenterComponent(sTemplateId, vPresentationModel) {
 	this.m_eTemplate = this._getTemplate(sTemplateId);
 	this.m_sPresentationModel = null;
 	this.m_oPresentationModel = null;
-	this.m_bViewBound = false;
 	this.m_bViewAttached = false;
 	this.m_oFrame = null;
 	this.m_pLifecycleListeners = [];
@@ -120,14 +119,12 @@ PresenterComponent.prototype.setDisplayFrame = function(frame) {
 
 	frame.setContent(this.getElement());
 
+	frame.on('attach', function() {
+		presenter_knockout.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
+	}.bind(this));
 };
 
 PresenterComponent.prototype.getElement = function() {
-	if (!this.m_bViewBound) {
-		this.m_bViewBound = true;
-		presenter_knockout.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
-	}
-
 	return this.m_eTemplate;
 };
 
