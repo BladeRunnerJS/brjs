@@ -13,6 +13,7 @@ public interface ResponseContent extends AutoCloseable
 	 * The method writes the content of the corresponding property of the class e.g. Reader or InputStream to the specified OutputStream.
 	 * 
 	 * @param outputStream an OutputStream object that will contain the newly added stream
+	 * @throws IOException if an error occurs while writing the stream
 	 */
 	public void write(OutputStream outputStream) throws IOException;
 	

@@ -17,7 +17,6 @@ public interface AssetPlugin extends Plugin
 	 * @param requirePrefix a String object specifying what require prefix the newly discovered Assets should adhere to
 	 * @param implicitDependencies a List of Assets specifying the already determined implicit dependencies for the container
 	 * @param assetDiscoveryInitiator an AssetRegistry for the management and storage of Assets discovered
-	 * @return the list of Assets identified by the AssetPlugins available for the current AssetContainer}
 	 */
 	void discoverAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, 
 			List<Asset> implicitDependencies, AssetRegistry assetDiscoveryInitiator);

@@ -5,7 +5,6 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
-
 /**
  * An interface for the management and recording of existing {@link Asset}s.
  */
@@ -61,7 +60,7 @@ public interface AssetRegistry
 	public Asset getRegisteredAsset(String requirePath);
 	
 	/**
-	 * The method retrieves the List of {@link Asset}s identified by the {@link AssetPlugin}s available for the current {@link AssetContainer}, 
+	 * The method retrieves the List of {@link Asset}s identified by the AssetPlugins available for the current {@link AssetContainer}, 
 	 * specified by a {@link MemoizedFile}.
 	 * 
 	 * @param dir a MemoizedFile object specifying the assetContainer for which the AssetPlugins will be determined

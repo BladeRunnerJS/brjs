@@ -39,6 +39,7 @@ public interface BundlableNode extends Node, AssetContainer {
 	 * 
 	 * @return the BundleSet corresponding to the current BundableNode
 	 * @return ModelOperationException for non-BRJS-specific issues
+	 * @throws ModelOperationException if any exceptions are thrown when retrieving the BundleSet
 	 */
 	BundleSet getBundleSet() throws ModelOperationException;
 	

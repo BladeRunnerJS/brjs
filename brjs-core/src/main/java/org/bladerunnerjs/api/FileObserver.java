@@ -19,6 +19,7 @@ public interface FileObserver
 	 * The method stops a FileObserver object for monitoring files for changes.
 	 * 
 	 * @throws IOException if an error occurs stopping the observer
+	 * @throws InterruptedException if the action is interrupted by another event on the observer
 	 */
 	void stop() throws IOException, InterruptedException;;
 	

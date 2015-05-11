@@ -27,9 +27,9 @@ public interface PluginLocator
 	List<CommandPlugin> getCommandPlugins();
 	
 	/**
-	 * The method retrieves all {@link ModelObserver}s for the {@link BRJS} object inputed through the createPlugins function.
+	 * The method retrieves all {@link ModelObserverPlugin}s for the {@link BRJS} object inputed through the createPlugins function.
 	 * 
-	 * @return all available ModelObserver objects
+	 * @return all available ModelObserverPlugin objects
 	 */
 	List<ModelObserverPlugin> getModelObserverPlugins();
 	
