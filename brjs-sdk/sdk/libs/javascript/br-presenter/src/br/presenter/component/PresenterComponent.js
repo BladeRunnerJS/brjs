@@ -117,11 +117,11 @@ PresenterComponent.prototype.setDisplayFrame = function(frame) {
 		frame.on(event, getEventHandler.call(this, event), this);
 	}, this);
 
-	frame.setContent(this.getElement());
-
 	frame.on('attach', function() {
 		presenter_knockout.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
 	}.bind(this));
+
+	frame.setContent(this.getElement());
 };
 
 PresenterComponent.prototype.getElement = function() {

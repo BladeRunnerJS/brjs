@@ -45,11 +45,11 @@ br.extend(KnockoutComponent.TemplateNotFoundError, Errors.CustomError);
 KnockoutComponent.prototype.setDisplayFrame = function(frame) {
   this.m_oFrame = frame;
 
-  frame.setContent(this.getElement());
-
   frame.on('attach', function() {
     ko.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
   }.bind(this));
+
+  frame.setContent(this.getElement());
 };
 
 KnockoutComponent.prototype.getElement = function() {
