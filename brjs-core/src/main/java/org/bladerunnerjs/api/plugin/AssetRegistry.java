@@ -5,6 +5,7 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.model.AssetContainer;
 /**
  * An interface for the management and recording of existing {@link Asset}s.
  */

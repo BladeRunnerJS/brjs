@@ -33,7 +33,7 @@ public interface BundleSet {
 	/**
 	 * The method retrieves all the entities of the requested {@link Asset} subtype that correspond to the specified prefixes e.g. css! or theme!.
 	 * 
-	 * @param AT a Class extending Asset
+	 * @param <AT> a Class extending Asset
 	 * @param assetType a Class representing an Asset subtype that will be the type of the returned Assets
 	 * @param prefixes optional Strings representing the prefixes that the Assets should have
 	 * @return a List of Assets subtype entities representing all the assets that correspond to the specified prefixes
@@ -59,7 +59,7 @@ public interface BundleSet {
 	/**
 	 * The method retrieves all the entities of the requested {@link Asset} subtype that are SourceModules for the current bundle.
 	 * 
-	 * @param SMT a Class extending SourceModule
+	 * @param <SMT> a Class extending SourceModule
 	 * @param assetType a Class representing a SourceModule subtype that will be the type of the returned SourceModules
 	 * @return a List of SourceModule subtype entities representing all the SourceModules for the current bundle
 	 */
