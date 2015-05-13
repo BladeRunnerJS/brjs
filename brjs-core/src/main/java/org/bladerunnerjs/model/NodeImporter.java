@@ -55,9 +55,8 @@ import com.google.common.collect.ImmutableMap;
 
 @SuppressWarnings("unused")
 public class NodeImporter {
-	
+	private static final IOFileFilter DONT_MATCH_WEB_INF_FILE_FILTER = new NotFileFilter( new NameFileFilter("WEB-INF") );
 	private static final List<String> srcDirNames = Arrays.asList("src", "src-test", "tests", "resources");
-	
 	private static final IOFileFilter RENAMESPACED_ASSET_CONTAINER_SRC_DIRS_FILE_FILTER = new AndFileFilter(
 		DirectoryFileFilter.INSTANCE,
 		new NameFileFilter(srcDirNames)
@@ -68,11 +67,10 @@ public class NodeImporter {
 		new NotFileFilter(new NameFileFilter(srcDirNames))
 	));
 	
-	
 	public static void importAppFromZip(ZipFile sourceAppZip, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		BRJS tempBrjs = createTemporaryBRJSModel();
-		
 		File temporaryUnzipDir = FileUtils.createTemporaryDirectory( NodeImporter.class, targetApp.getName() );
+		
 		try {
     		ZipUtility.unzip(sourceAppZip, temporaryUnzipDir );
     		File[] temporaryUnzipDirFiles = temporaryUnzipDir.listFiles();
@@ -100,7 +98,6 @@ public class NodeImporter {
 		
 		tempBrjsApp.appConf().setRequirePrefix(targetAppRequirePrefix);
 		tempBrjsApp.appConf().write();
-		
 		
 		for(Aspect aspect : tempBrjsApp.aspects()) {
 			updateRequirePrefix(aspect, sourceAppRequirePrefix, sourceAppRequirePrefix, targetAppRequirePrefix);
@@ -243,29 +240,21 @@ public class NodeImporter {
 	private static void updateRequirePrefixInRootFiles(BundlableNode browsableNode, String sourceAppRequirePrefix) throws IOException, ConfigException {
 		File[] rootHtmlFiles = browsableNode.dir().getUnderlyingFile().listFiles( (FileFilter)new SuffixFileFilter(".html"));
 		if (rootHtmlFiles != null) {
-			findAndReplaceInTextFiles(browsableNode.root(), Arrays.asList(rootHtmlFiles), 
-					sourceAppRequirePrefix, browsableNode.requirePrefix());
+			findAndReplaceInTextFiles(browsableNode.root(), Arrays.asList(rootHtmlFiles), sourceAppRequirePrefix, browsableNode.requirePrefix());
 		}
 	}
 	
 	private static void findAndReplaceInAllTextFiles(BRJS brjs, File rootRenameDirectory, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException
 	{
-		IOFileFilter dontMatchWebInfDirFilter = new NotFileFilter( new NameFileFilter("WEB-INF") );
-		Collection<File> findAndReplaceFiles = FileUtils.listFiles(rootRenameDirectory, TrueFileFilter.INSTANCE, dontMatchWebInfDirFilter);
+		Collection<File> findAndReplaceFiles = FileUtils.listFiles(rootRenameDirectory, TrueFileFilter.INSTANCE, DONT_MATCH_WEB_INF_FILE_FILTER);
 		findAndReplaceInTextFiles(brjs, findAndReplaceFiles, sourceRequirePrefix, targetRequirePrefix);
 	}
 	
 	private static void findAndReplaceInTextFiles(BRJS brjs, Collection<File> files, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException
 	{
 		for (File f : files) {
-			if (f.length() != 0) {
-				findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
-			}
+			findAndReplaceInTextFile(brjs, f, sourceRequirePrefix, targetRequirePrefix);
 		}
-	}
-	
-	private static boolean isTextFile(File file) {
-		return true;
 	}
 	
 	private static void findAndReplaceInTextFile(BRJS brjs, File file, String oldRequirePrefix, String newRequirePrefix) throws IOException, ConfigException
