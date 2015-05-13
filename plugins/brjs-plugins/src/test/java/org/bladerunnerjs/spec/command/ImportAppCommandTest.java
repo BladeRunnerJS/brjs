@@ -382,4 +382,15 @@ public class ImportAppCommandTest extends SpecTest {
 		then(importedApp.bladeset("bs").blade("b2")).fileContentsEquals("src/importedns/bs/b2/Blade2Class.js", "importedns.bs.b1.Blade1Class");
 	}
 	
+	@Test
+	public void referencesToAParentBladesetIsReplacead() throws Exception {
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenCreated()
+			.and(blade).classFileHasContent("appns/bs/b1/BladeClass", "appns.bs.BladesetClass")
+    		.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp.bladeset("bs").blade("b1")).fileContentsEquals("src/importedns/bs/b1/BladeClass.js", "importedns.bs.BladesetClass");
+	}
+	
 }
