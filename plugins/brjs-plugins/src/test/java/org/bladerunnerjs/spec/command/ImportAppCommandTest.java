@@ -28,7 +28,7 @@ public class ImportAppCommandTest extends SpecTest {
 	App importedApp;
 	Aspect importedAspect;
 	private Bladeset bladeset;
-	private Blade blade;
+	private Blade blade, blade1, blade2;
 	private BladeWorkbench workbench;
 	DirNode appJars;
 	private BladesetWorkbench bladesetWorkbench;
@@ -44,6 +44,8 @@ public class ImportAppCommandTest extends SpecTest {
 			bladeset = app.bladeset("bs");
 			bladesetWorkbench = bladeset.workbench();
 			blade = bladeset.blade("b1");
+			blade1 = blade;
+			blade2 = bladeset.blade("b2");
 			workbench = blade.workbench();
 			importedApp = brjs.app("imported-app");
 			importedAspect = importedApp.aspect("default");
@@ -366,6 +368,18 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
 		then(importedAspect).fileContentsEquals("unbundled-resources/file.txt", "importedns.bs.b1.Class");
+	}
+	
+	@Test // new apps shouldnt have Blade -> another Blade deps but we need to support this for backwards compatibility
+	public void referencesToAClassFromOneBladeToAnotherIsReplacead() throws Exception {
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenCreated()
+			.and(blade1).hasBeenCreated()
+			.and(blade2).classFileHasContent("appns/bs/b2/Blade2Class", "appns.bs.b1.Blade1Class")
+    		.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp.bladeset("bs").blade("b2")).fileContentsEquals("src/importedns/bs/b2/Blade2Class.js", "importedns.bs.b1.Blade1Class");
 	}
 	
 }

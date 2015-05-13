@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -169,8 +170,14 @@ public class NodeImporter {
 		renameTestLocations(bladeset.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		updateRequirePrefixInRootFiles(bladeset.workbench(), sourceAppRequirePrefix);
 		
+		List<Blade> blades = bladeset.blades();
+		Map<String,String> findReplaceMappings = new HashMap<>();
+		for (Blade blade : blades) {
+			findReplaceMappings.put(sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+		}
+		
 		for(Blade blade : bladeset.blades()) {
-			updateRequirePrefix(blade, sourceAppRequirePrefix, sourceBladesetRequirePrefix + "/" + blade.getName(), blade.requirePrefix());
+			updateRequirePrefix(blade, sourceAppRequirePrefix, findReplaceMappings);
 			
 			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());
 			
@@ -181,7 +188,6 @@ public class NodeImporter {
 	}
 	
 	private static void renameTestLocations(List<TypedTestPack> testTypes, String sourceAppRequirePrefix, String sourceLocationRequirePrefix, String requirePrefix) throws IOException, ConfigException {
-		
 		for(TypedTestPack typedTestPack : testTypes)
 		{
 			for( TestPack testPack : typedTestPack.testTechs()){
@@ -191,33 +197,45 @@ public class NodeImporter {
 	}
 	
 	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException {
-		BRJS brjs = assetContainer.root();
 		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
-			updateRequirePrefixInSrc(brjs, assetContainer, sourceAppRequirePrefix, sourceRequirePrefix, targetRequirePrefix);
-			updateRequirePrefixInFileAssets(brjs, assetContainer, sourceAppRequirePrefix, sourceRequirePrefix, targetRequirePrefix);
+			Map<String,String> requirePrefixFindReplaceMappings = new HashMap<>();
+			requirePrefixFindReplaceMappings.put(sourceRequirePrefix, targetRequirePrefix);
+			updateRequirePrefix(assetContainer, sourceAppRequirePrefix, requirePrefixFindReplaceMappings);
 		}
 	}
 	
-	private static void updateRequirePrefixInSrc(BRJS brjs, AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException {
-		for (MemoizedFile updateRequirePrefixForLocationDir : assetContainer.dir().listFiles( (FileFilter) RENAMESPACED_ASSET_CONTAINER_SRC_DIRS_FILE_FILTER)) {
-			MemoizedFile sourceRequirePrefixDir = updateRequirePrefixForLocationDir.file(sourceRequirePrefix);
-			MemoizedFile targetRequirePrefixDir = updateRequirePrefixForLocationDir.file(targetRequirePrefix);
-			if (sourceRequirePrefixDir.isDirectory()) {
-				FileUtils.moveDirectory(sourceRequirePrefixDir, targetRequirePrefixDir);
-				MemoizedFile sourceAppRequirePrefixDir = updateRequirePrefixForLocationDir.file(sourceAppRequirePrefix);
-				if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && sourceAppRequirePrefixDir.exists()) {
-					FileUtils.deleteDirectory(sourceAppRequirePrefixDir);
-				}
-			}
-			if (updateRequirePrefixForLocationDir.isDirectory()) {
-				findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
-			}
+	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, Map<String,String> requirePrefixFindReplaceMappings) throws IOException, ConfigException {
+		BRJS brjs = assetContainer.root();
+		updateRequirePrefixInSrc(brjs, assetContainer, sourceAppRequirePrefix, requirePrefixFindReplaceMappings);
+		updateRequirePrefixInFileAssets(brjs, assetContainer, sourceAppRequirePrefix, requirePrefixFindReplaceMappings);
+	}
+	
+	private static void updateRequirePrefixInSrc(BRJS brjs, AssetContainer assetContainer, String sourceAppRequirePrefix, Map<String,String> requirePrefixFindReplaceMappings) throws IOException, ConfigException {
+		for (String sourceRequirePrefix : requirePrefixFindReplaceMappings.keySet()) {
+			String targetRequirePrefix = requirePrefixFindReplaceMappings.get(sourceRequirePrefix);
+    		for (MemoizedFile updateRequirePrefixForLocationDir : assetContainer.dir().listFiles( (FileFilter) RENAMESPACED_ASSET_CONTAINER_SRC_DIRS_FILE_FILTER)) {
+    			MemoizedFile sourceRequirePrefixDir = updateRequirePrefixForLocationDir.file(sourceRequirePrefix);
+    			MemoizedFile targetRequirePrefixDir = updateRequirePrefixForLocationDir.file(targetRequirePrefix);
+    			if (sourceRequirePrefixDir.isDirectory()) {
+    				FileUtils.moveDirectory(sourceRequirePrefixDir, targetRequirePrefixDir);
+    				MemoizedFile sourceAppRequirePrefixDir = updateRequirePrefixForLocationDir.file(sourceAppRequirePrefix);
+    				if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && sourceAppRequirePrefixDir.exists()) {
+    					FileUtils.deleteDirectory(sourceAppRequirePrefixDir);
+    				}
+    			}
+    			if (updateRequirePrefixForLocationDir.isDirectory()) {
+    				findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
+    			}
+    		}
 		}
 	}
 	
-	private static void updateRequirePrefixInFileAssets(BRJS brjs, AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException {
-		for (MemoizedFile updateRequirePrefixForLocationDir : assetContainer.dir().listFiles( (FileFilter) RENAMESPACED_ASSET_CONTAINER_ASSET_DIRS_FILE_FILTER)) {
-			findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
+	private static void updateRequirePrefixInFileAssets(BRJS brjs, AssetContainer assetContainer, String sourceAppRequirePrefix, Map<String,String> requirePrefixFindReplaceMappings) throws IOException, ConfigException {
+		for (String sourceRequirePrefix : requirePrefixFindReplaceMappings.keySet()) {
+			String targetRequirePrefix = requirePrefixFindReplaceMappings.get(sourceRequirePrefix);
+    		for (MemoizedFile updateRequirePrefixForLocationDir : assetContainer.dir().listFiles( (FileFilter) RENAMESPACED_ASSET_CONTAINER_ASSET_DIRS_FILE_FILTER)) {
+    			findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
+    		}
 		}
 	}
 	
