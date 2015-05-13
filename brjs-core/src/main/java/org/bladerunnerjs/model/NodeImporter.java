@@ -15,13 +15,14 @@ import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
-
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
@@ -41,9 +42,7 @@ import org.bladerunnerjs.api.plugin.AssetPlugin;
 import org.bladerunnerjs.api.spec.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.api.spec.utility.MockPluginLocator;
 import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
-
 import org.bladerunnerjs.logging.SLF4JLogger;
-
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.utility.FileUtils;
@@ -55,6 +54,19 @@ import com.google.common.collect.ImmutableMap;
 
 @SuppressWarnings("unused")
 public class NodeImporter {
+	
+	private static final List<String> srcDirNames = Arrays.asList("src", "src-test", "tests", "resources");
+	
+	private static final IOFileFilter RENAMESPACED_ASSET_CONTAINER_SRC_DIRS_FILE_FILTER = new AndFileFilter(
+		DirectoryFileFilter.INSTANCE,
+		new NameFileFilter(srcDirNames)
+	);
+	private static final IOFileFilter RENAMESPACED_ASSET_CONTAINER_ASSET_DIRS_FILE_FILTER = new AndFileFilter( Arrays.asList(
+		DirectoryFileFilter.INSTANCE,
+		new NotFileFilter(new NameFileFilter(Arrays.asList("blades", "WEB-INF"))),
+		new NotFileFilter(new NameFileFilter(srcDirNames))
+	));
+	
 	
 	public static void importAppFromZip(ZipFile sourceAppZip, App targetApp, String targetAppRequirePrefix) throws InvalidSdkDirectoryException, IOException, ConfigException {
 		BRJS tempBrjs = createTemporaryBRJSModel();
@@ -181,21 +193,31 @@ public class NodeImporter {
 	private static void updateRequirePrefix(AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException {
 		BRJS brjs = assetContainer.root();
 		if(!sourceRequirePrefix.equals(targetRequirePrefix)) {
-			for (String updatePrefixForLocation : Arrays.asList("src", "src-test", "tests", "resources")) {
-				MemoizedFile updateRequirePrefixForLocationDir = assetContainer.file(updatePrefixForLocation);
-				MemoizedFile sourceRequirePrefixDir = updateRequirePrefixForLocationDir.file(sourceRequirePrefix);
-				MemoizedFile targetRequirePrefixDir = updateRequirePrefixForLocationDir.file(targetRequirePrefix);
-				if (sourceRequirePrefixDir.isDirectory()) {
-					FileUtils.moveDirectory(sourceRequirePrefixDir, targetRequirePrefixDir);
-					MemoizedFile sourceAppRequirePrefixDir = assetContainer.file(updatePrefixForLocation+"/"+sourceAppRequirePrefix);
-					if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && sourceAppRequirePrefixDir.exists()) {
-						FileUtils.deleteDirectory(sourceAppRequirePrefixDir);
-					}
-				}
-				if (updateRequirePrefixForLocationDir.isDirectory()) {
-					findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
+			updateRequirePrefixInSrc(brjs, assetContainer, sourceAppRequirePrefix, sourceRequirePrefix, targetRequirePrefix);
+			updateRequirePrefixInFileAssets(brjs, assetContainer, sourceAppRequirePrefix, sourceRequirePrefix, targetRequirePrefix);
+		}
+	}
+	
+	private static void updateRequirePrefixInSrc(BRJS brjs, AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException {
+		for (MemoizedFile updateRequirePrefixForLocationDir : assetContainer.dir().listFiles( (FileFilter) RENAMESPACED_ASSET_CONTAINER_SRC_DIRS_FILE_FILTER)) {
+			MemoizedFile sourceRequirePrefixDir = updateRequirePrefixForLocationDir.file(sourceRequirePrefix);
+			MemoizedFile targetRequirePrefixDir = updateRequirePrefixForLocationDir.file(targetRequirePrefix);
+			if (sourceRequirePrefixDir.isDirectory()) {
+				FileUtils.moveDirectory(sourceRequirePrefixDir, targetRequirePrefixDir);
+				MemoizedFile sourceAppRequirePrefixDir = updateRequirePrefixForLocationDir.file(sourceAppRequirePrefix);
+				if (!targetRequirePrefix.startsWith(sourceAppRequirePrefix) && sourceAppRequirePrefixDir.exists()) {
+					FileUtils.deleteDirectory(sourceAppRequirePrefixDir);
 				}
 			}
+			if (updateRequirePrefixForLocationDir.isDirectory()) {
+				findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
+			}
+		}
+	}
+	
+	private static void updateRequirePrefixInFileAssets(BRJS brjs, AssetContainer assetContainer, String sourceAppRequirePrefix, String sourceRequirePrefix, String targetRequirePrefix) throws IOException, ConfigException {
+		for (MemoizedFile updateRequirePrefixForLocationDir : assetContainer.dir().listFiles( (FileFilter) RENAMESPACED_ASSET_CONTAINER_ASSET_DIRS_FILE_FILTER)) {
+			findAndReplaceInAllTextFiles(brjs, updateRequirePrefixForLocationDir, sourceRequirePrefix, targetRequirePrefix);
 		}
 	}
 	

@@ -354,7 +354,18 @@ public class ImportAppCommandTest extends SpecTest {
     		.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
-		then(aspect.file("resources/br-logo.png")).contentsTheSameAsFile("src/test/resources/br-logo.png");
+		then(importedAspect.file("resources/br-logo.png")).contentsTheSameAsFile("src/test/resources/br-logo.png");
+	}
+	
+	@Test
+	public void referencesToBladeCodeFromUnbundledResourcesIsReplaced() throws Exception {
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+    		.and(aspect).containsFileWithContents("unbundled-resources/file.txt", "appns.bs.b1.Class")
+    		.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedAspect).fileContentsEquals("unbundled-resources/file.txt", "importedns.bs.b1.Class");
 	}
 	
 }
