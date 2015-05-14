@@ -2,7 +2,7 @@ if((navigator.appName == 'Microsoft Internet Explorer') && (navigator.userAgent.
 {
 	// see <http://tatiyants.com/how-to-get-ie8-to-support-html5-tags-and-web-fonts/> for info
 	 var html5tags = ["article", "aside", "bdi", "details", "dialog", "figcaption", "figure", "footer", "header", "main", "mark", "menuitem", "meter", "nav", "progress", "rp", "rt", "ruby",
-	 					"section", "summary", "time", "wbr", "datalist", "keygen", "output", "canvas", "svg", "audio", "embed", "source", "track", "video"];
+	                  "section", "summary", "time", "wbr", "datalist", "keygen", "output", "canvas", "svg", "audio", "embed", "source", "track", "video"];
 	 for(var i = 0; i < html5tags.length; i++)
 	 {	 	
 	 	document.createElement(html5tags[i]);
