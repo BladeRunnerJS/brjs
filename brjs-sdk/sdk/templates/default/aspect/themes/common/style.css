@@ -1,17 +1,18 @@
 body {
-    background-color: #eee;
+	background-color: #eee;
 }
 
 .app {
-    background-color:white;
-    max-width:500px;
-    margin:20px auto;
-    padding: 5px 20px;
+	background-color:white;
+	max-width:500px;
+	margin:20px auto;
+	padding: 5px 20px;
 }
 
 .br-logo {
-    text-align: center;
+	text-align: center;
 }
+
 .br-logo img {
-    width:50px;
+	width:50px;
 }
