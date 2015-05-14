@@ -22,7 +22,6 @@ import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.bundlers.commonjs.DefaultCommonJsSourceModule;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 
 import com.esotericsoftware.yamlbeans.YamlException;
