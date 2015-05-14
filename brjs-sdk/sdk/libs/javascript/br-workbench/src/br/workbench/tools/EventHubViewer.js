@@ -35,8 +35,11 @@ function EventHubViewer( eventHub ) {
   this._el = document.createElement("div");
   this._el.className = "presentation-model-viewier";
 
-  var messagesEl = this._component.getElement();
+  var frame = new br.component.SimpleFrame(this._component, null, null); 
+
+  var messagesEl = frame.getElement();
   this._el.appendChild( messagesEl );
+  frame.trigger('attach');
 
   this._eventHub.on( 'new-channel', this._newChannel, this );
 }
