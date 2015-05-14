@@ -174,7 +174,7 @@ public class NodeImporter {
 		}
 		findReplaceMappings.put(sourceBladesetRequirePrefix, bladeset.requirePrefix());
 		
-		for(Blade blade : bladeset.blades()) {
+		for(Blade blade : blades) {
 			updateRequirePrefix(blade, sourceAppRequirePrefix, findReplaceMappings);
 			
 			renameTestLocations(blade.testTypes(), sourceAppRequirePrefix, sourceBladesetRequirePrefix, bladeset.requirePrefix());

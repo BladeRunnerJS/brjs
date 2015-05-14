@@ -28,7 +28,7 @@ public class ImportAppCommandTest extends SpecTest {
 	App importedApp;
 	Aspect importedAspect;
 	private Bladeset bladeset;
-	private Blade blade, blade1, blade2;
+	private Blade blade1, blade2;
 	private BladeWorkbench workbench;
 	DirNode appJars;
 	private BladesetWorkbench bladesetWorkbench;
@@ -43,10 +43,9 @@ public class ImportAppCommandTest extends SpecTest {
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			bladesetWorkbench = bladeset.workbench();
-			blade = bladeset.blade("b1");
-			blade1 = blade;
+			blade1 = bladeset.blade("b1");
 			blade2 = bladeset.blade("b2");
-			workbench = blade.workbench();
+			workbench = blade1.workbench();
 			importedApp = brjs.app("imported-app");
 			importedAspect = importedApp.aspect("default");
 			appJars = brjs.appJars();
@@ -136,7 +135,7 @@ public class ImportAppCommandTest extends SpecTest {
 	public void directoriesAreNotDuplicatedWhenExportedAppsAreImportedWithNewNamespace() throws Exception {
 		given(aspect).containsFile("src/appns/AspectClass.js")
 			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
-			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(blade1).containsFile("src/appns/bs/b1/BladeClass.js")
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
@@ -200,7 +199,7 @@ public class ImportAppCommandTest extends SpecTest {
 	public void allSrcDirectoriesAreCorrectlyReNamespacedWhenImported() throws Exception {
 		given(aspect).containsFile("src/appns/AspectClass.js")
 			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
-			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(blade1).containsFile("src/appns/bs/b1/BladeClass.js")
 			.and(workbench).containsFile("src/appns/bs/b1/WorkbenchClass.js")
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
@@ -218,9 +217,9 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(aspect).containsFile("tests/test-unit/js-test-driver/tests/appns/AspectTest.js")
 			.and(bladeset).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/BladeTestClass.js")
 			.and(bladeset).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/BladeTest.js")
-			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
-			.and(blade).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/b1/BladeTestClass.js")
-			.and(blade).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/b1/BladeTest.js")
+			.and(blade1).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(blade1).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/b1/BladeTestClass.js")
+			.and(blade1).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/b1/BladeTest.js")
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
@@ -363,7 +362,7 @@ public class ImportAppCommandTest extends SpecTest {
 	public void referencesToBladeCodeFromUnbundledResourcesIsReplaced() throws Exception {
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
-    		.and(aspect).containsFileWithContents("unbundled-resources/file.txt", "appns.bs.b1.Class")
+			.and(aspect).containsFileWithContents("unbundled-resources/file.txt", "appns.bs.b1.Class")
     		.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
@@ -386,7 +385,7 @@ public class ImportAppCommandTest extends SpecTest {
 	public void referencesToAParentBladesetIsReplacead() throws Exception {
 		given(app).hasBeenCreated()
 			.and(bladeset).hasBeenCreated()
-			.and(blade).classFileHasContent("appns/bs/b1/BladeClass", "appns.bs.BladesetClass")
+			.and(blade1).classFileHasContent("appns/bs/b1/BladeClass", "appns.bs.BladesetClass")
     		.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
