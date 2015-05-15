@@ -9,6 +9,7 @@ import java.util.Map;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
+import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.eclipse.jetty.security.Authenticator;
 import org.eclipse.jetty.security.HashLoginService;
@@ -121,6 +122,9 @@ public class ApplicationServerUtils
 	}
 	
 	static File getDeployFile(File dir) {
+		if (dir instanceof MemoizedFile ) {
+			dir = ((MemoizedFile) dir).getUnderlyingFile(); // get the underlying file so listFiles isnt cached
+		}
 		return new File(dir, BRJSApplicationServer.DEPLOY_APP_FILENAME);
 	}
 
