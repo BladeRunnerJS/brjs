@@ -37,6 +37,7 @@ public class WatchingFileModificationObserverThread extends Thread
 	private final Map<WatchKey,Path> watchKeys = new LinkedHashMap<>();
 
 	private Logger logger;
+	private boolean initialised = false;
 	
 	public WatchingFileModificationObserverThread(BRJS brjs, WatchKeyServiceFactory watchKeyServiceFactory) throws IOException
 	{
@@ -65,7 +66,11 @@ public class WatchingFileModificationObserverThread extends Thread
 		}
 	}
 
-	void init() throws IOException {
+	public void init() throws IOException {
+		if (initialised) {
+			return;
+		}
+		initialised = true;
 		// create the watch service in the init method so we get a 'too many open files' exception
 		watchKeyService = watchKeyServiceFactory.createWatchService();
 		logger = brjs.logger(this.getClass());
@@ -74,7 +79,6 @@ public class WatchingFileModificationObserverThread extends Thread
 		for (File dir : directoriesToWatch) {
 			watchKeys.putAll( watchKeyService.createWatchKeysForDir(dir.toPath(), false) );
 		}
-		
 	}
 	
 	void checkForUpdates() throws IOException, InterruptedException
