@@ -161,8 +161,8 @@ public class BRJSTest extends SpecTest {
 	public void appsFolderIsTheActiveAppsFolderItExists() throws Exception {
 		given(testSdkDirectory).containsFolder("apps")
 			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
-		when(brjs.app("app1BrjsApps")).create();
-		then(brjs).hasDir("apps/app1BrjsApps");	
+		when(brjs.app("app1")).create();
+		then(brjs).hasDir("apps/app1");	
 	}
 	
 	@Test
@@ -170,8 +170,8 @@ public class BRJSTest extends SpecTest {
 		given(testSdkDirectory).containsFolder("apps")
 			.and(testSdkDirectory).containsFolder("brjs-apps")
 			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
-		when(brjs.app("app1BrjsApps")).create();
-		then(brjs).hasDir("apps/app1BrjsApps");	
+		when(brjs.app("app1")).create();
+		then(brjs).hasDir("apps/app1");	
 	}
 	
 	@Test
@@ -179,18 +179,25 @@ public class BRJSTest extends SpecTest {
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
 		given(secondaryTempFolder).containsFolder("brjs-apps/dir1/dir2/dir3")
 			.and(brjs).hasBeenCreatedWithWorkingDir(new File(secondaryTempFolder, "brjs-apps/dir1/dir2/dir3"));
-		when(brjs.app("app1BrjsApps")).create();
-		then(secondaryTempFolder).containsDir("brjs-apps/app1BrjsApps");
+		when(brjs.app("app1")).create();
+		then(secondaryTempFolder).containsDir("brjs-apps/app1");
 	}
 	
 	@Test
-	public void brjsAppsFolderIsUsedIfNoOtherDirectoryCanBeFoundToUseForApps() throws Exception {
+	public void brjsAppsDirNextToSdkIsUsedIfWorkingDirIsBrjsDir() throws Exception {
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
-		given(secondaryTempFolder).containsFolder("brjs-apps")
-			.and(brjs).hasBeenCreatedWithWorkingDir(secondaryTempFolder);
-		when(brjs.app("app1BrjsApps")).create();
-		then(secondaryTempFolder).containsDir("brjs-apps/app1BrjsApps");
-	}	
+		given(brjs).hasBeenCreated();
+		when(brjs.app("app1")).create();
+		then(testSdkDirectory).containsDir("brjs-apps/app1");
+	}
+	
+	@Test
+	public void workingDirIsusedIfNoOtherDirectoryCanBeFoundToUseForApps() throws Exception {
+		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
+		given(brjs).hasBeenCreatedWithWorkingDir(secondaryTempFolder);
+		when(brjs.app("app1")).create();
+		then(secondaryTempFolder).containsDir("app1");
+	}
 	
 	@Test
 	public void warningMessageIsLoggedWhenBothAppsAndBrjsAppsFoldersExist() throws Exception {
