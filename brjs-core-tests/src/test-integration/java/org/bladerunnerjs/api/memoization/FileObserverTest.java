@@ -26,6 +26,7 @@ public class FileObserverTest extends SpecTest
 	private FileObserverFactory fileObserverFactory;
 	private FileObserver fileObserver;
 	private FileModificationRegistry modificationRegistry;
+	private File brjsDir;
 	
 	@Parameters(name="{0}")
 	public static Collection<Object[]> getParameters() {
@@ -60,6 +61,7 @@ public class FileObserverTest extends SpecTest
 		given(brjs).hasBeenCreated();
 		modificationRegistry = brjs.getFileModificationRegistry();
 		fileObserver = fileObserverFactory.createObserver(brjs);
+		brjsDir = brjs.dir().getUnderlyingFile();
 	}
 	
 	@After
@@ -70,13 +72,74 @@ public class FileObserverTest extends SpecTest
 	
 	
 	@Test
-	public void fileVersionIsIncrementedForChangesInTheRootDir() throws Exception {
+	public void fileVersionIsIncrementedForNewFilesInTheRootDir() throws Exception {
 		fileObserver.start();
-		File file = brjs.file("somefile.txt").getUnderlyingFile();
+		File file = new File(brjsDir, "somefile.txt");
 		long oldVersion = modificationRegistry.getFileVersion(file);
 		file.createNewFile();
 		assertVersionIncreased(oldVersion, file);
 	}
+	
+	@Test
+	public void fileVersionIsIncrementedForNewFilesInASubDirDir() throws Exception {
+		File file = new File(brjsDir, "dir1/dir2/somefile.txt");
+		file.getParentFile().mkdirs();
+		fileObserver.start();
+		long oldVersion = modificationRegistry.getFileVersion(file);
+		file.createNewFile();
+		assertVersionIncreased(oldVersion, file);
+	}
+	
+	@Test
+	public void fileVersionIsIncrementedForNewDirsInTheRootDir() throws Exception {
+		File file = new File(brjsDir, "dir1");
+		fileObserver.start();
+		long oldVersion = modificationRegistry.getFileVersion(file);
+		file.mkdir();
+		assertVersionIncreased(oldVersion, file);
+	}
+	
+	@Test
+	public void fileVersionIsIncrementedForNewDirsInASubDir() throws Exception {
+		File file = new File(brjsDir, "dir1/dir2/dir3");
+		file.getParentFile().mkdirs();
+		fileObserver.start();
+		long oldVersion = modificationRegistry.getFileVersion(file);
+		file.mkdir();
+		assertVersionIncreased(oldVersion, file);
+	}
+	
+	@Test
+	public void fileVersionIsIncrementedForParentDirs() throws Exception {
+		File dir1 = new File(brjsDir, "dir1");
+		File dir2 = new File(dir1, "dir2");
+		File file = new File(dir2, "someFile.txt");
+		file.getParentFile().mkdirs();
+		fileObserver.start();
+		long oldFileVersion = modificationRegistry.getFileVersion(file);
+		long oldDir1Version = modificationRegistry.getFileVersion(dir1);
+		long oldDir2Version = modificationRegistry.getFileVersion(dir2);
+		file.createNewFile();
+		assertVersionIncreased(oldFileVersion, file);
+		assertVersionIncreased(oldDir1Version, dir1);
+		assertVersionIncreased(oldDir2Version, dir2);
+	}
+	
+	@Test
+	public void fileVersionIsIncrementedForParentDirsIncludingTheRoot() throws Exception {
+		File dir1 = new File(brjsDir, "dir1");
+		File file = new File(dir1, "someFile.txt");
+		file.getParentFile().mkdirs();
+		fileObserver.start();
+		long oldFileVersion = modificationRegistry.getFileVersion(file);
+		long oldDir1Version = modificationRegistry.getFileVersion(dir1);
+		long oldDir2Version = modificationRegistry.getFileVersion(brjsDir);
+		file.createNewFile();
+		assertVersionIncreased(oldFileVersion, file);
+		assertVersionIncreased(oldDir1Version, dir1);
+		assertVersionIncreased(oldDir2Version, brjsDir);
+	}
+	
 	
 	
 	private void assertVersionIncreased(long oldVersion, File file) throws Exception {
@@ -88,10 +151,10 @@ public class FileObserverTest extends SpecTest
 				assertTrue(oldVersion < newVersion);
 				break;
 			} catch (AssertionError ex) {
-				if (i++ > 10) {
+				if (i++ > 100) {
 					throw ex;
 				}
-				Thread.sleep(1000);
+				Thread.sleep(100);
 			}
 		}
 	}
