@@ -82,27 +82,25 @@ public class PollingFileModificationObserver implements FileObserver
 	public class FileModificationRegistryAlterationListener extends FileAlterationListenerAdaptor implements FileAlterationListener
 	{
     	public void onDirectoryCreate(final File directory) {
-    		logger.debug(FILE_CHANGED_MSG, "NEW_DIRECTORY", directory.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(directory);
+    		onChange("NEW_DIRECTORY", directory);
     	}
     	public void onDirectoryChange(final File directory) {
-    		logger.debug(FILE_CHANGED_MSG, "CHANGE_DIRECTORY", directory.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(directory);
+    		onChange("CHANGE_DIRECTORY", directory);
 		}
     	public void onDirectoryDelete(final File directory) {
-    		logger.debug(FILE_CHANGED_MSG, "DELETE_DIRECTORY", directory.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(directory);
+    		onChange("DELETE_DIRECTORY", directory);
     	}
     	public void onFileCreate(final File file) {
-    		logger.debug(FILE_CHANGED_MSG, "CREATE_FILE", file.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(file);
+    		onChange("CREATE_FILE", file);
     	}
     	public void onFileChange(final File file) {
-    		logger.debug(FILE_CHANGED_MSG, "CHANGE_FILE", file.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(file);
+    		onChange("CHANGE_FILE", file);
     	}
     	public void onFileDelete(final File file) {
-    		logger.debug(FILE_CHANGED_MSG, "DELETE_FILE", file.getPath());
+    		onChange("DELETE_FILE", file);
+    	}
+    	public void onChange(String eventMessage, File file) {
+    		logger.debug(FILE_CHANGED_MSG, eventMessage, file.getPath());
     		fileModificationRegistry.incrementChildFileVersions(file);
     	}
 	}
