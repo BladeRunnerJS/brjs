@@ -6,11 +6,13 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.FileObserver;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.memoization.PollingFileModificationObserver;
 import org.bladerunnerjs.memoization.WatchingFileModificationObserver;
+import org.bladerunnerjs.spec.brjs.BRJSTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +29,7 @@ public class FileObserverTest extends SpecTest
 	private FileObserver fileObserver;
 	private FileModificationRegistry modificationRegistry;
 	private File brjsDir;
+	private File secondaryTempFolder;
 	
 	@Parameters(name="{0}")
 	public static Collection<Object[]> getParameters() {
@@ -67,6 +70,7 @@ public class FileObserverTest extends SpecTest
 	@After
 	public void tearDown() throws Exception {
 		fileObserver.stop();
+		if (secondaryTempFolder != null) FileUtils.deleteQuietly(secondaryTempFolder);
 	}
 	
 	
@@ -138,6 +142,31 @@ public class FileObserverTest extends SpecTest
 		assertVersionIncreased(oldFileVersion, file);
 		assertVersionIncreased(oldDir1Version, dir1);
 		assertVersionIncreased(oldDir2Version, brjsDir);
+	}
+	
+	@Test
+	public void fileVersionIsIncrementedForDirsInASeperateAppsDirectory() throws Exception {
+		brjs.close();
+		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
+		File brjsAppsDir = new File(secondaryTempFolder, "brjs-apps");
+		brjsAppsDir.mkdir();
+		
+		given(brjs).hasBeenCreatedWithWorkingDir(secondaryTempFolder);
+		modificationRegistry = brjs.getFileModificationRegistry();
+		fileObserver = fileObserverFactory.createObserver(brjs);
+		brjsDir = brjs.dir().getUnderlyingFile();
+		
+		File dir1 = new File(brjsAppsDir, "dir1");
+		File file = new File(dir1, "someFile.txt");
+		file.getParentFile().mkdirs();
+		fileObserver.start();
+		long oldFileVersion = modificationRegistry.getFileVersion(file);
+		long oldDir1Version = modificationRegistry.getFileVersion(dir1);
+		long oldDir2Version = modificationRegistry.getFileVersion(brjsAppsDir);
+		file.createNewFile();
+		assertVersionIncreased(oldFileVersion, file);
+		assertVersionIncreased(oldDir1Version, dir1);
+		assertVersionIncreased(oldDir2Version, brjsAppsDir);
 	}
 	
 	
