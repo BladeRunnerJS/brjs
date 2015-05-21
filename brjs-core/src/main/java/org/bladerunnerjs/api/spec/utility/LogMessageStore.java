@@ -243,6 +243,8 @@ public class LogMessageStore
 		else if (storeLogs)
 		{
 			messages.add(logMessage);
+		} else if (echoLogs) {
+			System.err.println( String.format("Log message '%s' was made but the log store has not been configured to store it.", logMessage) );
 		}
 	}
 
