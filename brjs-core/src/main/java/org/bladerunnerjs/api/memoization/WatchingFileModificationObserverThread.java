@@ -10,9 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.FileObserverMessages;
 import org.bladerunnerjs.api.logging.Logger;
+import org.bladerunnerjs.memoization.PollingFileModificationObserver;
 import org.bladerunnerjs.memoization.WatchKeyService;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+import org.bladerunnerjs.memoization.WatchingFileModificationObserver;
 import org.bladerunnerjs.utility.FileObserverFactory;
 
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -22,7 +25,6 @@ public class WatchingFileModificationObserverThread extends Thread
 {
 	public static final String USING_WATCH_SERVICE_MSG = "%s using %s as the file watcher service";
 	public static final String THREAD_IDENTIFIER = WatchingFileModificationObserverThread.class.getSimpleName();
-	public static final String FILE_CHANGED_MSG = THREAD_IDENTIFIER+" detected a '%s' event for '%s'. Incrementing the file version.";
 	public static final String CANT_RESET_PATH_MSG = "A watch key could not be reset for the path '%s' but the directory or file still exists. "+
 			"You might need to reset the process for file changes to be detected.";
 	public static final String THREAD_STARTED = "Thread %s has been started.";
@@ -133,7 +135,7 @@ public class WatchingFileModificationObserverThread extends Thread
             	watchKeys.putAll( watchKeyService.createWatchKeysForDir(child, true) );
             }
             
-			logger.debug(FILE_CHANGED_MSG, kind, childFile.getPath());
+			logger.debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserver.class.getSimpleName(), kind, childFile.getPath());
 
             fileModificationRegistry.incrementFileVersion(childFile);
             boolean isWatchKeyReset = watchKey.reset();

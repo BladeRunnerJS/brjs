@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.FileObserverMessages;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
@@ -131,15 +132,15 @@ public class WatchingFileModificationObserverThreadTest
 				
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockCreateFileEvent(fileInRoot));
 		checkForUpdates(1);
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.FILE_CHANGED_MSG, ENTRY_CREATE, fileInRoot.getPath());
+		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), ENTRY_CREATE, fileInRoot.getPath());
 		
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileChangeEvent(fileInRoot));
 		checkForUpdates(1);
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.FILE_CHANGED_MSG, ENTRY_MODIFY, fileInRoot.getPath());
+		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), ENTRY_MODIFY, fileInRoot.getPath());
 		
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileDeleteEvent(fileInRoot));
 		checkForUpdates(1);
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.FILE_CHANGED_MSG, ENTRY_DELETE, fileInRoot.getPath());
+		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), ENTRY_DELETE, fileInRoot.getPath());
 	}
 
 	@Test
