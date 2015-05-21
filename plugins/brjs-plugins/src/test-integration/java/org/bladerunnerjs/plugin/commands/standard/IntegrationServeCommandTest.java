@@ -3,9 +3,12 @@ package org.bladerunnerjs.plugin.commands.standard;
 import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
 import static org.bladerunnerjs.plugin.commands.standard.ServeCommand.Messages.*;
 
+import java.io.File;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
@@ -20,6 +23,8 @@ public class IntegrationServeCommandTest extends SpecTest
 {
 	private ApplicationServer appServer;
 	private TemplateGroup templates;
+	private File secondaryTempFolder;
+	private BRJS secondBrjsProcess;
 
 	@Before
 	public void initTestObjects() throws Exception
@@ -37,6 +42,8 @@ public class IntegrationServeCommandTest extends SpecTest
 	@After
 	public void tearDown() throws Exception
 	{
+		if (secondaryTempFolder != null) org.apache.commons.io.FileUtils.deleteQuietly(secondaryTempFolder);
+		if (secondBrjsProcess != null) { secondBrjsProcess.close(); }
 		logging.disableStoringLogs();
 		logging.emptyLogStore();
 		appServer = brjs.applicationServer(appServerPort);
@@ -54,6 +61,23 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + appServerPort +"/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
 			.and(appServer).requestIs302Redirected("/","/dashboard");
+	}
+	
+	@Test
+	public void newAppCreatedFromADifferentModelIsHostedIfAppsLiveSeperateFromTheSdk() throws Exception
+	{
+		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(this.getClass());
+		given(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(secondaryTempFolder); 
+			/*and*/ secondBrjsProcess = createNonTestModel(secondaryTempFolder);
+			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
+			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
+			.and(brjs).usedForServletModel();
+		when(brjs).runThreadedCommand("serve")
+			.and(secondBrjsProcess).runCommand("create-app", "app1", "blah");
+		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/")
+			.and(testSdkDirectory).doesNotContainDir("brjs-apps")
+			.and(testSdkDirectory).doesNotContainDir("app1")
+			.and(secondaryTempFolder).containsDir("app1");
 	}
 	
 	@Test
