@@ -12,11 +12,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.FileObserverMessages;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.DefaultWatchKeyService;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+import org.bladerunnerjs.memoization.WatchingFileModificationObserver;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -126,20 +128,21 @@ public class WatchingFileModificationObserverThreadTest
 		
 		createAndInitWatcher();
 		verify(mockLogger).debug(WatchingFileModificationObserverThread.USING_WATCH_SERVICE_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), mockWatchKeyService.getClass().getSimpleName());
+		verify(mockLogger).debug(WatchingFileModificationObserverThread.THREAD_STARTED, WatchingFileModificationObserverThread.class.getSimpleName());
 		
 		queueWatchServiceEventKeys(rootWatchDirWatchKey);
 				
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockCreateFileEvent(fileInRoot));
 		checkForUpdates(1);
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.FILE_CHANGED_MSG, ENTRY_CREATE, fileInRoot.getPath());
+		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserver.class.getSimpleName(), FileObserverMessages.CREATE_FILE_EVENT, fileInRoot.getPath());
 		
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileChangeEvent(fileInRoot));
 		checkForUpdates(1);
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.FILE_CHANGED_MSG, ENTRY_MODIFY, fileInRoot.getPath());
+		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserver.class.getSimpleName(), FileObserverMessages.CHANGE_FILE_EVENT, fileInRoot.getPath());
 		
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileDeleteEvent(fileInRoot));
 		checkForUpdates(1);
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.FILE_CHANGED_MSG, ENTRY_DELETE, fileInRoot.getPath());
+		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserver.class.getSimpleName(), FileObserverMessages.DELETE_FILE_EVENT, fileInRoot.getPath());
 	}
 
 	@Test
