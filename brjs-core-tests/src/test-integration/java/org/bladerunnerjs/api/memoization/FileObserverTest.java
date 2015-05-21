@@ -9,12 +9,14 @@ import java.util.Collection;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.FileObserver;
+import org.bladerunnerjs.api.FileObserverMessages;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.memoization.PollingFileModificationObserver;
 import org.bladerunnerjs.memoization.WatchingFileModificationObserver;
 import org.bladerunnerjs.spec.brjs.BRJSTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -144,6 +146,37 @@ public class FileObserverTest extends SpecTest
 		assertVersionIncreased(oldDir2Version, brjsDir);
 	}
 	
+	@Test @Ignore //TODO: why does the watching file observer not detect this? Could be something to do with the speed of the test and not having time to init the new key
+	public void fileVersionIsIncrementedForChangedFilesInTheRootDir() throws Exception {
+		File file = new File(brjsDir, "somefile.txt");
+		file.createNewFile();
+		fileObserver.start();
+		long oldVersion = modificationRegistry.getFileVersion(file);
+		FileUtils.write(file, "some new data");
+		assertVersionIncreased(oldVersion, file);
+	}
+	
+	@Test
+	public void fileVersionIsIncrementedForDeletedFilesInTheRootDir() throws Exception {
+		File file = new File(brjsDir, "somefile.txt");
+		file.createNewFile();
+		fileObserver.start();
+		long oldVersion = modificationRegistry.getFileVersion(file);
+		file.delete();
+		assertVersionIncreased(oldVersion, file);
+	}
+	
+	@Test
+	public void fileVersionIsIncrementedForDeletedFilesInASubDirDir() throws Exception {
+		File file = new File(brjsDir, "dir1/dir2/somefile.txt");
+		file.getParentFile().mkdirs();
+		file.createNewFile();
+		fileObserver.start();
+		long oldVersion = modificationRegistry.getFileVersion(file);
+		file.delete();
+		assertVersionIncreased(oldVersion, file);
+	}
+	
 	@Test
 	public void fileVersionIsIncrementedForDirsInASeperateAppsDirectory() throws Exception {
 		brjs.close();
@@ -169,6 +202,63 @@ public class FileObserverTest extends SpecTest
 		assertVersionIncreased(oldDir2Version, brjsAppsDir);
 	}
 	
+	@Test
+	public void debugMessageLoggedOnNewFile() throws Exception {
+		File file = new File(brjsDir, "somefile.txt");
+		fileObserver.start();
+		logging.enableLogging(); logging.enableStoringLogs();
+		file.createNewFile();
+		assertMessageIsLogged(file, FileObserverMessages.FILE_CHANGED_MSG, fileObserver.getClass().getSimpleName(), FileObserverMessages.CREATE_FILE_EVENT, file.getAbsolutePath());
+	}
+	
+	@Test
+	public void debugMessageLoggedOnDeletedFile() throws Exception {
+		File file = new File(brjsDir, "somefile.txt");
+		file.createNewFile();
+		fileObserver.start();
+		logging.enableLogging(); logging.enableStoringLogs();
+		file.delete();
+		assertMessageIsLogged(file, FileObserverMessages.FILE_CHANGED_MSG, fileObserver.getClass().getSimpleName(), FileObserverMessages.DELETE_FILE_EVENT, file.getAbsolutePath());
+	}
+	
+	@Test @Ignore //TODO: why does the watching file observer not detect this? Could be something to do with the speed of the test and not having time to init the new key
+	public void debugMessageLoggedOnChangedFile() throws Exception {
+		File file = new File(brjsDir, "somefile.txt");
+		file.createNewFile();
+		fileObserver.start();
+		logging.enableLogging(); logging.enableStoringLogs();
+		FileUtils.write(file, "some new data");
+		assertMessageIsLogged(file, FileObserverMessages.FILE_CHANGED_MSG, fileObserver.getClass().getSimpleName(), FileObserverMessages.CHANGE_FILE_EVENT, file.getAbsolutePath());
+	}
+	
+	@Test
+	public void debugMessageLoggedOnNewDirectory() throws Exception {
+		File dir = new File(brjsDir, "someDir");
+		fileObserver.start();
+		logging.enableLogging(); logging.enableStoringLogs();
+		dir.mkdir();
+		assertMessageIsLogged(dir, FileObserverMessages.FILE_CHANGED_MSG, fileObserver.getClass().getSimpleName(), FileObserverMessages.CREATE_DIRECTORY_EVENT, dir.getAbsolutePath());
+	}
+	
+	@Test @Ignore //TODO: why does the watching file observer not detect this? Could be something to do with the speed of the test and not having time to init the new key
+	public void debugMessageLoggedOnDeletedDirectory() throws Exception {
+		File dir = new File(brjsDir, "someDir");
+		dir.mkdir();
+		fileObserver.start();
+		logging.enableLogging(); logging.enableStoringLogs();
+		dir.delete();
+		assertMessageIsLogged(dir, FileObserverMessages.FILE_CHANGED_MSG, fileObserver.getClass().getSimpleName(), FileObserverMessages.DELETE_DIRECTORY_EVENT, dir.getAbsolutePath());
+	}
+	
+	@Test @Ignore //TODO: how can we simulate a changed directory?
+	public void debugMessageLoggedOnChangedDirectory() throws Exception {
+		File dir = new File(brjsDir, "someDir");
+		dir.mkdir();
+		fileObserver.start();
+		logging.enableLogging(); logging.enableStoringLogs();
+		dir.setLastModified( System.currentTimeMillis()+100 );
+		assertMessageIsLogged(dir, FileObserverMessages.FILE_CHANGED_MSG, fileObserver.getClass().getSimpleName(), FileObserverMessages.DELETE_DIRECTORY_EVENT, dir.getAbsolutePath());
+	}
 	
 	
 	private void assertVersionIncreased(long oldVersion, File file) throws Exception {
@@ -178,6 +268,21 @@ public class FileObserverTest extends SpecTest
 			try {
 				newVersion = modificationRegistry.getFileVersion(file);
 				assertTrue(oldVersion < newVersion);
+				break;
+			} catch (AssertionError ex) {
+				if (i++ > 100) {
+					throw ex;
+				}
+				Thread.sleep(100);
+			}
+		}
+	}
+	
+	private void assertMessageIsLogged(File file, String message, Object... params) throws InterruptedException {
+		int i = 0;
+		while (true) {
+			try {
+				then(logging).debugMessageReceived(message, params);
 				break;
 			} catch (AssertionError ex) {
 				if (i++ > 100) {

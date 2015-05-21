@@ -81,7 +81,7 @@ public class PollingFileModificationObserver implements FileObserver
 	public class FileModificationRegistryAlterationListener extends FileAlterationListenerAdaptor implements FileAlterationListener
 	{
     	public void onDirectoryCreate(final File directory) {
-    		onChange(FileObserverMessages.NEW_DIRECTORY_EVENT, directory);
+    		onChange(FileObserverMessages.CREATE_DIRECTORY_EVENT, directory);
     	}
     	public void onDirectoryChange(final File directory) {
     		onChange(FileObserverMessages.CHANGE_DIRECTORY_EVENT, directory);

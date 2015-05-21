@@ -12,7 +12,6 @@ import java.util.Map;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.FileObserverMessages;
 import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.memoization.PollingFileModificationObserver;
 import org.bladerunnerjs.memoization.WatchKeyService;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
 import org.bladerunnerjs.memoization.WatchingFileModificationObserver;
@@ -135,7 +134,8 @@ public class WatchingFileModificationObserverThread extends Thread
             	watchKeys.putAll( watchKeyService.createWatchKeysForDir(child, true) );
             }
             
-			logger.debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserver.class.getSimpleName(), kind, childFile.getPath());
+			String eventMessage = FileObserverMessages.eventMessage(kind, childFile);
+			logger.debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserver.class.getSimpleName(), eventMessage, childFile.getPath());
 
             fileModificationRegistry.incrementFileVersion(childFile);
             boolean isWatchKeyReset = watchKey.reset();
