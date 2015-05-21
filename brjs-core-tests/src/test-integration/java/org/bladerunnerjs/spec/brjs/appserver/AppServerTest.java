@@ -267,6 +267,7 @@ public class AppServerTest extends SpecTest
 			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel(secondaryTempFolder);
 			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
 			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
+			.and(brjs).usedForServletModel()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/");
