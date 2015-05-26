@@ -154,7 +154,10 @@ public class BRJS extends AbstractBRJSRootNode
 			
 			currentFolder = currentFolder.getParentFile();
 		}
-		return new File (brjsDir, "brjs-apps");
+		if (brjsDir == workingDir) {
+			return new File (brjsDir, "brjs-apps");
+		}
+		return workingDir;		
 	}
 	
 	@Override
