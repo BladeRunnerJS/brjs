@@ -76,7 +76,7 @@ public class WatchingFileModificationObserverThread extends Thread
 		watchKeyService = watchKeyServiceFactory.createWatchService();
 		logger = brjs.logger(this.getClass());
 		logger.debug(THREAD_STARTED, THREAD_IDENTIFIER);
-		logger.debug(USING_WATCH_SERVICE_MSG, this.getClass().getSimpleName(), watchKeyService.getClass().getSimpleName());
+		logger.debug(USING_WATCH_SERVICE_MSG, WatchingFileModificationObserver.class.getSimpleName(), watchKeyService.getClass().getSimpleName());
 		for (File dir : directoriesToWatch) {
 			watchKeys.putAll( watchKeyService.createWatchKeysForDir(dir.toPath(), false) );
 		}

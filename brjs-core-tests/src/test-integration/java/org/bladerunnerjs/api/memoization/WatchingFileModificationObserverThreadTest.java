@@ -18,6 +18,7 @@ import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.memoization.DefaultWatchKeyService;
 import org.bladerunnerjs.memoization.WatchKeyServiceFactory;
+import org.bladerunnerjs.memoization.WatchingFileModificationObserver;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -126,21 +127,22 @@ public class WatchingFileModificationObserverThreadTest
 		allowMockWatchKeyForDir( rootWatchDir, rootWatchDirWatchKey );
 		
 		createAndInitWatcher();
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.USING_WATCH_SERVICE_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), mockWatchKeyService.getClass().getSimpleName());
+		verify(mockLogger).debug(WatchingFileModificationObserverThread.THREAD_STARTED, WatchingFileModificationObserverThread.class.getSimpleName());
+		verify(mockLogger).debug(WatchingFileModificationObserverThread.USING_WATCH_SERVICE_MSG, WatchingFileModificationObserver.class.getSimpleName(), mockWatchKeyService.getClass().getSimpleName());
 		
 		queueWatchServiceEventKeys(rootWatchDirWatchKey);
 				
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockCreateFileEvent(fileInRoot));
 		checkForUpdates(1);
-		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), ENTRY_CREATE, fileInRoot.getPath());
+		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserver.class.getSimpleName(), FileObserverMessages.CREATE_FILE_EVENT, fileInRoot.getPath());
 		
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileChangeEvent(fileInRoot));
 		checkForUpdates(1);
-		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), ENTRY_MODIFY, fileInRoot.getPath());
+		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserver.class.getSimpleName(), FileObserverMessages.CHANGE_FILE_EVENT, fileInRoot.getPath());
 		
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockFileDeleteEvent(fileInRoot));
 		checkForUpdates(1);
-		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), ENTRY_DELETE, fileInRoot.getPath());
+		verify(mockLogger).debug(FileObserverMessages.FILE_CHANGED_MSG, WatchingFileModificationObserver.class.getSimpleName(), FileObserverMessages.DELETE_FILE_EVENT, fileInRoot.getPath());
 	}
 
 	@Test
@@ -307,6 +309,7 @@ public class WatchingFileModificationObserverThreadTest
 	{
 		modificationWatcherThread = new WatchingFileModificationObserverThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
+//		reset(mockLogger);
 	}
 	
 	private void queueWatchServiceEventKeys(WatchKey... watchKeys) throws InterruptedException
