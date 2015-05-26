@@ -64,6 +64,16 @@ public class TestRunnerController
 	
 	public int run(BRJS brjs, String[] args, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
 	{
+		JSAP argsParser = createArgsParser(mode);
+		JSAPResult config = argsParser.parse(args);
+		
+		System.out.println(brjs.appsFolder().getAbsolutePath());
+		System.out.println(brjs.getMemoizedFile(new File(config.getString("dir"))).getAbsolutePath());
+		
+		if (!brjs.getMemoizedFile(new File(config.getString("dir"))).getAbsolutePath().contains(brjs.appsFolder().getAbsolutePath())) {
+			throw new CommandArgumentsException("The entity you are attempting to test is not in the current app location.", testCommand);
+		}
+		
 		MemoizedFile configFile = null;
 		try {
 			configFile = TestRunnerConfLocator.getTestRunnerConf();
@@ -73,9 +83,6 @@ public class TestRunnerController
 		}
 		
 		MemoizedFile resultDir = getResultsDir();
-		JSAP argsParser = createArgsParser(mode);
-
-		JSAPResult config = argsParser.parse(args);
 
 		boolean success = true;
 		if (!config.success())
