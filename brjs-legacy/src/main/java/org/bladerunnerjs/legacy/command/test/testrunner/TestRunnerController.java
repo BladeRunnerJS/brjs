@@ -3,6 +3,7 @@ package org.bladerunnerjs.legacy.command.test.testrunner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.naming.InvalidNameException;
 
@@ -67,12 +68,7 @@ public class TestRunnerController
 		JSAP argsParser = createArgsParser(mode);
 		JSAPResult config = argsParser.parse(args);
 		
-		System.out.println(brjs.appsFolder().getAbsolutePath());
-		System.out.println(brjs.getMemoizedFile(new File(config.getString("dir"))).getAbsolutePath());
-		
-		if (!brjs.getMemoizedFile(new File(config.getString("dir"))).getAbsolutePath().contains(brjs.appsFolder().getAbsolutePath())) {
-			throw new CommandArgumentsException("The entity you are attempting to test is not in the current app location.", testCommand);
-		}
+		assertValidTestDirectory(brjs, testCommand, config);
 		
 		MemoizedFile configFile = null;
 		try {
@@ -132,6 +128,20 @@ public class TestRunnerController
 		}
 		if (!success) {  return 1;  }
 		return 0;
+	}
+
+	private void assertValidTestDirectory(BRJS brjs, CommandPlugin testCommand,
+			JSAPResult config) throws CommandArgumentsException {
+		File testDir = new File(config.getString("dir"));
+		List<MemoizedFile> validTestDirs = Arrays.asList(brjs.appsFolder(), brjs.sdkFolder().file("libs"), 
+				brjs.sdkFolder().file("system-applications"));
+		for (MemoizedFile validTestDir : validTestDirs) {
+			if (testDir.getAbsolutePath().contains(validTestDir.getAbsolutePath())) {
+				return;
+			}
+		}
+		throw new CommandArgumentsException("The entity you are attempting to test does not exist inside a recognized app. "
+					+ "The current apps directory is '" + brjs.appsFolder().getAbsolutePath() + "'.", testCommand);
 	}
 
 	private TestType getTestTypeEnum(String testType) 

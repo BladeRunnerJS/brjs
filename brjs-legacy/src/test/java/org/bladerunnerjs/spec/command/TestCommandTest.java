@@ -74,7 +74,7 @@ public class TestCommandTest extends SpecTest
 			.and(brjs).containsFile("conf/test-runner.conf")
 			.and(brjs).hasBeenCreatedWithWorkingDir(secondaryTempFolder);
 		when(brjs).runCommand("test", "myapp");
-		then(exceptions).verifyException(CommandArgumentsException.class);
+		then(exceptions).verifyException(CommandArgumentsException.class, brjs.appsFolder().getAbsolutePath());
 	}
 	
 }
