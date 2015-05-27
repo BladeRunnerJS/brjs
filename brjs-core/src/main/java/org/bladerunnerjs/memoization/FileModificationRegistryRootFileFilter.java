@@ -24,7 +24,13 @@ public class FileModificationRegistryRootFileFilter extends AbstractFileFilter i
 	@Override
 	public boolean accept(File file)
 	{
-		return rootFiles.contains(file);
+		String fileAbsolutePath = file.getAbsolutePath(); // check the absolute path and if the objects are equal in case one is a File and the other a MemoizedFile 
+		for (File rootFile : rootFiles) {
+			if (rootFile == file || rootFile.getAbsolutePath().equals(fileAbsolutePath)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
