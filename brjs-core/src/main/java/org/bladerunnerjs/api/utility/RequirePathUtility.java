@@ -3,6 +3,7 @@ package org.bladerunnerjs.api.utility;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,8 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.DirectoryLinkedAsset;
+
+import com.google.common.base.Joiner;
 
 
 public class RequirePathUtility
@@ -106,5 +109,28 @@ public class RequirePathUtility
 			}
 		}
 	}
+
+	public static String requirePathAssetList(List<Asset> assets) {
+		return requirePathList(getRequirePaths(assets));
+	}
 	
+	public static String requirePathList(List<String> requirePaths) {
+		List<String> quotedRequirePaths = new ArrayList<>();
+		
+		for(String requirePath : requirePaths) {
+			quotedRequirePaths.add("'" + requirePath + "'");
+		}
+		
+		return "[" + Joiner.on(", ").join(quotedRequirePaths) + "]";
+	}
+
+	private static List<String> getRequirePaths(List<Asset> assets) {
+		List<String> requirePaths = new ArrayList<>();
+		
+		for(Asset asset : assets) {
+			requirePaths.add(asset.getPrimaryRequirePath());
+		}
+		
+		return requirePaths;
+	}
 }

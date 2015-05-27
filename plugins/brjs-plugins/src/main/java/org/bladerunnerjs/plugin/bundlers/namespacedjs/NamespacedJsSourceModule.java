@@ -12,6 +12,7 @@ import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.LinkedFileAsset;
@@ -80,9 +81,12 @@ public class NamespacedJsSourceModule implements SourceModule {
 			List<String> staticRequirePaths = getPreExportDefineTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String staticRequireAllInvocation = (staticRequirePaths.size() == 0) ? "" : " " + calculateDependenciesRequireDefinition(staticRequirePaths);
 			String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticRequireAllInvocation + "\n";
+			List<String> allRequirePaths = new ArrayList<>();
+			allRequirePaths.addAll(requirePaths);
+			allRequirePaths.addAll(staticRequirePaths);
 			
 			Reader[] readers = new Reader[] { 
-				new StringReader( String.format(defineBlockHeader, getPrimaryRequirePath()) ), 
+				new StringReader( String.format(defineBlockHeader, getPrimaryRequirePath(), RequirePathUtility.requirePathList(allRequirePaths)) ), 
 				getUnalteredContentReader(),
 				new StringReader( "\n" ),
 				new StringReader( "module.exports = " + getPrimaryRequirePath().replaceAll("/", ".") + ";" ),

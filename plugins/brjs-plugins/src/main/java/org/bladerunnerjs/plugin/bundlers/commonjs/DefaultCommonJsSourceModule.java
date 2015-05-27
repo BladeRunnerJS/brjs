@@ -96,11 +96,20 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 	
 	@Override
 	public Reader getReader() throws IOException {
-		return new ConcatReader(new Reader[] {
-			new StringReader( String.format(COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath()) ),
-			getUnalteredContentReader(),
-			new StringReader( COMMONJS_DEFINE_BLOCK_FOOTER )
-		});
+		try {
+			List<String> allRequirePaths = new ArrayList<>(getComputedValue().preExportDefineTimeRequirePaths);
+			allRequirePaths.addAll(getComputedValue().postExportDefineTimeRequirePaths);
+			allRequirePaths.addAll(getComputedValue().useTimeRequirePaths);
+			
+			return new ConcatReader(new Reader[] {
+				new StringReader( String.format(COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath(), RequirePathUtility.requirePathList(allRequirePaths)) ),
+				getUnalteredContentReader(),
+				new StringReader( COMMONJS_DEFINE_BLOCK_FOOTER )
+			});
+		}
+		catch(ModelOperationException e) {
+			throw new IOException(e);
+		}
 	}
 	
 	@Override

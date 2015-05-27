@@ -19,6 +19,7 @@ import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.SourceModulePatch;
@@ -71,7 +72,8 @@ public class ThirdpartySourceModule implements SourceModule
 				jsFileReaders.add(new StringReader("\n\n"));
 			}
 			
-			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath());
+			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath(),
+				RequirePathUtility.requirePathAssetList(getThirdpartyDependentAssets()));
 			String defineBlockFooter = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER;
 			
 			if (manifest.getCommonjsDefinition())
@@ -92,15 +94,14 @@ public class ThirdpartySourceModule implements SourceModule
     			fileReaders.add( new StringReader( defineBlockFooter ) );
 			}
 		}
-		catch (ConfigException e)
+		catch (ConfigException | ModelOperationException e)
 		{
 			throw new RuntimeException(e);
 		}
 		
-		
 		return new ConcatReader(fileReaders.toArray(new Reader[]{}));
 	}
-	
+
 	@Override
 	public MemoizedFile file()
 	{
@@ -179,26 +180,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
-		
-		try 
-		{
-			for (String dependentLibName : manifest.getDepends())
-			{
-				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
-				if (!dependentLib.dirExists())
-				{
-					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
-				}
-				dependentLibs.add(dependentLib.asset(dependentLib.requirePrefix()));
-			}
-		}
-		catch (ConfigException ex)
-		{
-			throw new ModelOperationException( ex );
-		}
-		
-		return new ArrayList<Asset>( dependentLibs );
+		return getThirdpartyDependentAssets();
 	}
 	
 	@Override
@@ -238,4 +220,27 @@ public class ThirdpartySourceModule implements SourceModule
 		return assetContainer.dir().getName();
 	}
 	
+	private List<Asset> getThirdpartyDependentAssets() throws ModelOperationException
+	{
+		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
+		
+		try 
+		{
+			for (String dependentLibName : manifest.getDepends())
+			{
+				JsLib dependentLib = assetContainer().app().jsLib(dependentLibName);
+				if (!dependentLib.dirExists())
+				{
+					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
+				}
+				dependentLibs.add(dependentLib.asset(dependentLib.requirePrefix()));
+			}
+		}
+		catch (ConfigException ex)
+		{
+			throw new ModelOperationException( ex );
+		}
+		
+		return new ArrayList<Asset>( dependentLibs );
+	}
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
@@ -36,7 +37,7 @@ public class AliasDataSourceModule implements CommonJsSourceModule {
 		try
 		{
 			return new StringReader(
-				String.format(COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath()) +
+				String.format(COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath(), RequirePathUtility.requirePathAssetList(getDependentAssets(bundlableNode))) +
 				"module.exports = " + AliasingSerializer.createJson(bundlableNode.getBundleSet()) + ";" +
 				COMMONJS_DEFINE_BLOCK_FOOTER
 			);
