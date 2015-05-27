@@ -24,8 +24,6 @@ function KnockoutComponent(sTemplateId, vPresentationModel) {
   this.m_sTemplateId = sTemplateId;
   this.m_eTemplate = this._getTemplate(sTemplateId);
   this.m_oPresentationModel = vPresentationModel;
-  this.m_bViewBound = false;
-  this.m_bViewAttached = false;
 }
 br.implement( KnockoutComponent, Component );
 
@@ -47,15 +45,14 @@ br.extend(KnockoutComponent.TemplateNotFoundError, Errors.CustomError);
 KnockoutComponent.prototype.setDisplayFrame = function(frame) {
   this.m_oFrame = frame;
 
+  frame.on('attach', function() {
+    ko.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
+  }.bind(this));
+
   frame.setContent(this.getElement());
 };
 
 KnockoutComponent.prototype.getElement = function() {
-  if (!this.m_bViewBound) {
-    this.m_bViewBound = true;
-    ko.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
-  }
-
   return this.m_eTemplate;
 };
 
