@@ -27,6 +27,7 @@ import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.api.plugin.PluginLocator;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
+import org.bladerunnerjs.memoization.FileModificationRegistryRootFileFilter;
 import org.bladerunnerjs.model.AbstractBRJSRootNode;
 import org.bladerunnerjs.model.AppVersionGenerator;
 import org.bladerunnerjs.model.BRJSGlobalFilesIOFileFilter;
@@ -104,14 +105,9 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		this.appVersionGenerator = appVersionGenerator;
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
-		File appsFolderPath = findAppsFolder(brjsDir, workingDir);
 		
-		if ( !appsFolderPath.getAbsolutePath().startsWith(brjsDir.getAbsolutePath()) ) {
-			this.fileModificationRegistry = new FileModificationRegistry(globalFilesFilter, ((dir.getParentFile() != null) ? dir.getParentFile() : dir), appsFolderPath);
-		}
-		else {
-			this.fileModificationRegistry = new FileModificationRegistry(globalFilesFilter, ((dir.getParentFile() != null) ? dir.getParentFile() : dir));
-		}
+		File appsFolderPath = findAppsFolder(brjsDir, workingDir);
+		fileModificationRegistry = new FileModificationRegistry(new FileModificationRegistryRootFileFilter(this, brjsDir, appsFolderPath), globalFilesFilter);
 		
 		appsFolder = getMemoizedFile(appsFolderPath);
 		
