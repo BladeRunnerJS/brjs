@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.SourceModule;
@@ -20,6 +21,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
+import org.bladerunnerjs.api.utility.RequirePathUtility;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.SourceModulePatch;
@@ -72,7 +74,8 @@ public class ThirdpartySourceModule implements SourceModule
 				jsFileReaders.add(new StringReader("\n\n"));
 			}
 			
-			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath());
+			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath(),
+				RequirePathUtility.requirePathAssetList(getThirdpartyDependentAssets()));
 			String defineBlockFooter = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER;
 			
 			if (manifest.getCommonjsDefinition())
@@ -93,15 +96,14 @@ public class ThirdpartySourceModule implements SourceModule
     			fileReaders.add( new StringReader( defineBlockFooter ) );
 			}
 		}
-		catch (ConfigException e)
+		catch (ConfigException | ModelOperationException e)
 		{
 			throw new RuntimeException(e);
 		}
 		
-		
 		return new ConcatReader(fileReaders.toArray(new Reader[]{}));
 	}
-	
+
 	@Override
 	public MemoizedFile file()
 	{
@@ -180,43 +182,9 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
-		
-		try 
-		{
-			for (String dependentLibName : manifest.getDepends())
-			{
-				dependentLibs.add( findDependentAsset(bundlableNode, dependentLibName) );
-			}
-		}
-		catch (ConfigException ex)
-		{
-			throw new ModelOperationException( ex );
-		}
-		
-		return new ArrayList<Asset>( dependentLibs );
+		return getThirdpartyDependentAssets();
 	}
 	
-	private Asset findDependentAsset(BundlableNode bundlableNode, String dependentLibName) throws ConfigException
-	{
-		JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
-		if (dependentLib.dirExists())
-		{
-			return dependentLib.asset(dependentLib.requirePrefix());
-		}
-		
-		try {
-			Asset dependentAsset = bundlableNode.getLinkedAsset(dependentLibName);
-			if (dependentAsset.isRequirable()) {
-				return dependentAsset;
-			}
-		} catch (RequirePathException ex) {
-			// ignore the exception
-		}
-		
-		throw new ConfigException(String.format("Library '%s' depends on the library or source module '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
-	}
-
 	@Override
 	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return Collections.emptyList();
@@ -254,4 +222,42 @@ public class ThirdpartySourceModule implements SourceModule
 		return assetContainer.dir().getName();
 	}
 	
+	private List<Asset> getThirdpartyDependentAssets() throws ModelOperationException
+	{
+		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
+		
+		try 
+		{
+			for (String dependentLibName : manifest.getDepends())
+			{
+				dependentLibs.add( findDependentAsset(assetContainer.app(), dependentLibName) );
+			}
+		}
+		catch (ConfigException ex)
+		{
+			throw new ModelOperationException( ex );
+		}
+		
+		return new ArrayList<Asset>( dependentLibs );
+	}
+	
+	private Asset findDependentAsset(App app, String dependentLibName) throws ConfigException
+	{
+		JsLib dependentLib = app.jsLib(dependentLibName);
+		if (dependentLib.dirExists())
+		{
+			return dependentLib.asset(dependentLib.requirePrefix());
+		}
+		
+		try {
+			Asset dependentAsset = app.defaultAspect().getLinkedAsset(dependentLibName);
+			if (dependentAsset.isRequirable()) {
+				return dependentAsset;
+			}
+		} catch (RequirePathException ex) {
+			// ignore the exception
+		}
+		
+		throw new ConfigException(String.format("Library '%s' depends on the library or source module '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
+	}
 }
