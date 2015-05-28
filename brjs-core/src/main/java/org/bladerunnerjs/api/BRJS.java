@@ -107,7 +107,9 @@ public class BRJS extends AbstractBRJSRootNode
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		
 		File appsFolderPath = findAppsFolder(brjsDir, workingDir);
-		fileModificationRegistry = new FileModificationRegistry(new FileModificationRegistryRootFileFilter(this, brjsDir, appsFolderPath), globalFilesFilter);
+		
+		FileModificationRegistryRootFileFilter fileModificationRegistryRootFileFilter = new FileModificationRegistryRootFileFilter(this, brjsDir, appsFolderPath);
+		fileModificationRegistry = new FileModificationRegistry(fileModificationRegistryRootFileFilter, globalFilesFilter);
 		
 		appsFolder = getMemoizedFile(appsFolderPath);
 		
@@ -119,6 +121,7 @@ public class BRJS extends AbstractBRJSRootNode
 		{
 			logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 			registerNode(this);
+			fileModificationRegistryRootFileFilter.addRootFile(rootStorageDir());
 		}
 		catch (NodeAlreadyRegisteredException e)
 		{

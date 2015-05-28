@@ -15,12 +15,17 @@ public class FileModificationRegistryRootFileFilter extends AbstractFileFilter i
 
 	public FileModificationRegistryRootFileFilter(BRJS brjs, File brjsDir, File appsFolderPath)
 	{
-		rootFiles.add(brjsDir);
+		addRootFile(brjsDir);
 		if ( !appsFolderPath.getAbsolutePath().startsWith(brjsDir.getAbsolutePath()) ) {
-			rootFiles.add(appsFolderPath);
-		}	
+			addRootFile(appsFolderPath);
+		}
 	}
 
+	public void addRootFile(File file)
+	{
+		rootFiles.add(file);
+	}
+	
 	@Override
 	public boolean accept(File file)
 	{
@@ -32,5 +37,4 @@ public class FileModificationRegistryRootFileFilter extends AbstractFileFilter i
 		}
 		return false;
 	}
-
 }
