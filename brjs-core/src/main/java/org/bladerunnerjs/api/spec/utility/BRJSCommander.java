@@ -155,7 +155,7 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		
 		return commanderChainer;
 	}
-
+	
 	public CommanderChainer pluginsAreAccessed() {
 		call(new ValueCommand<Void>() {
 			@Override
