@@ -261,7 +261,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 			if(!requirePath.contains("!")) {
 				String sourceModuleClassName = requirePath.replace('/', '.').replace('-', '_');
 				
-				return "\t" + sourceModuleClassName + " = System.get('" + requirePath + "');\n";
+				return "\t" + sourceModuleClassName + " = System.syncImport('" + requirePath + "');\n";
 			}
 		}
 		return "";
