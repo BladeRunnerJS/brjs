@@ -51,4 +51,4 @@ function getBundlePath(prefix, bundlePath) {
 
 module.exports = BRAppMetaService;
 
-metaData = require(metaDataRequirePath);
+// metaData = require(metaDataRequirePath);
