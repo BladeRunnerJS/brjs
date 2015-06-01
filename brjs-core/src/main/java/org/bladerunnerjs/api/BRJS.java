@@ -66,8 +66,6 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String NO_APPS_DISCOVERED = "No apps have been found.";
 	}
 	
-	//private List<String> appNames = new ArrayList<>();
-	
 	private NodeList<App> userApps;
 	private final NodeItem<DirNode> sdkRoot = new NodeItem<>(this, DirNode.class, "sdk");
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
@@ -273,8 +271,6 @@ public class BRJS extends AbstractBRJSRootNode
 				apps.put(app.getName(), app);				
 			}
 		}		
-		
-		//appNames = new ArrayList<>( apps.keySet() );
 
 		return new ArrayList<>( apps.values() );
 	}
