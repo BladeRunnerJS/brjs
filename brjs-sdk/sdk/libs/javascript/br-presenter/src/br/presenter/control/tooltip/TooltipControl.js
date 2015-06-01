@@ -64,7 +64,11 @@ br.presenter.control.tooltip.TooltipControl.prototype.onTooltipMoved = function(
 {
 	if(this.m_oPresentationNode.hasMoved.getValue())
 	{
-		this._addTooltip(this.m_oPresentationNode.message.getValue())
+		//need to delay showing tooltip until view is fully rendered
+		//in case tooltip needs to be shown immediately when page loads
+		setTimeout(function() {
+			this._addTooltip(this.m_oPresentationNode.message.getValue());
+		}.bind(this), 0);
 	}
 	else
 	{
