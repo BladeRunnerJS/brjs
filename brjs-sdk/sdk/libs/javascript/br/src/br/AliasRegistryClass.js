@@ -137,7 +137,7 @@ AliasRegistryClass.prototype._getClassRef = function(aliasName) {
 	var alias = this._aliasData[aliasName];
 
 	if(alias.classRef === undefined) {
-		alias.classRef = require(alias["class"]);
+		alias.classRef = System.get(alias["class"]).default;
 	}
 
 	return alias.classRef;
@@ -151,7 +151,7 @@ AliasRegistryClass.prototype._getInterfaceRef = function(aliasName) {
 
 	if(alias.interfaceRef === undefined) {
 		var interfaceName = alias['interface'];
-		alias.interfaceRef = (interfaceName) ? require(interfaceName) : null;
+		alias.interfaceRef = (interfaceName) ? System.get(interfaceName).default : null;
 	}
 
 	return alias.interfaceRef;
