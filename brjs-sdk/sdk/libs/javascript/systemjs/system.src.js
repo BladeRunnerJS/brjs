@@ -2297,7 +2297,7 @@ global(System);
 cjs(System);
 amd(System);
 map(System);
-plugins(System);
+// plugins(System);
 bundles(System);
 versions(System);
 depCache(System);
