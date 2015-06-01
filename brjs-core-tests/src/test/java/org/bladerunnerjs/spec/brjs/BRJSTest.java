@@ -207,7 +207,8 @@ public class BRJSTest extends SpecTest {
 			.and(app1).hasBeenCreated()
 			.and(app1).containsFiles(AppConf.FILE_NAME, "index.html");
 		when(brjs).hasBeenCreated();
-		then(logging).infoMessageReceived(APPS_FOLDER_FOUND, testSdkDirectory.getAbsolutePath() + File.separator + "brjs-apps")
+		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, testSdkDirectory.getAbsolutePath() + File.separator + "brjs-apps")
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).infoMessageReceived(APPS_DISCOVERED, app1.getName());
 	}
@@ -218,11 +219,23 @@ public class BRJSTest extends SpecTest {
 			.and(testSdkDirectory).containsFolder("brjs-apps")
 			.and(logging).enabled();
 		when(brjs).hasBeenCreated();
-		then(logging).warnMessageReceived(BOTH_APPS_AND_BRJS_APPS_EXIST, 
-				"brjs-apps", testSdkDirectory.getAbsolutePath(), "brjs-apps", "apps", testSdkDirectory.getAbsolutePath()+"/apps", testSdkDirectory.getAbsolutePath()+"/brjs-apps")
-				.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, testSdkDirectory.getAbsolutePath() + File.separator + "apps")
-				.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-				.and(logging).infoMessageReceived(NO_APPS_DISCOVERED);
+		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
+			.and(logging).warnMessageReceived(BOTH_APPS_AND_BRJS_APPS_EXIST, 
+					"brjs-apps", testSdkDirectory.getAbsolutePath(), "brjs-apps", "apps", testSdkDirectory.getAbsolutePath()+"/apps", testSdkDirectory.getAbsolutePath()+"/brjs-apps")
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, testSdkDirectory.getAbsolutePath() + File.separator + "apps")
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED);
+	}
+	
+	@Test
+	public void infoMessageIsLoggedContainingBRJSLocation() throws Exception {
+		given(logging).enabled();
+		when(brjs).hasBeenCreated();
+		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "brjs-apps")
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED);
+			
 	}
 	
 	@Test

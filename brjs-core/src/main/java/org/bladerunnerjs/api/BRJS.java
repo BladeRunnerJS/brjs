@@ -64,6 +64,7 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String APPS_FOLDER_FOUND = "Your apps folder has been identified as '%s'.";
 		public static final String APPS_DISCOVERED = "Apps found: %s.";
 		public static final String NO_APPS_DISCOVERED = "No apps have been found.";
+		public static final String BRJS_LOCATION = "Your BladerunnerJS installation has been found at '%s'.";
 	}
 	
 	private NodeList<App> userApps;
@@ -105,6 +106,7 @@ public class BRJS extends AbstractBRJSRootNode
 	public BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
+		logger.info(Messages.BRJS_LOCATION, brjsDir.getAbsolutePath());
 		
 		this.appVersionGenerator = appVersionGenerator;
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
