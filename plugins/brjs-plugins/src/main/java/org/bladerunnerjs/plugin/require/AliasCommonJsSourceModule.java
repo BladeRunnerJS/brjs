@@ -56,7 +56,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		return new StringReader(
-			"System.register('alias!" + aliasDefinition.getName() + "', ['br/AliasRegistry', '"+aliasDefinition.getName()+"'], true, function(require, exports, module) {\n" +
+			"System.register('alias!" + aliasDefinition.getName() + "', ['br/AliasRegistry'], true, function(require, exports, module) {\n" +
 			"\tmodule.exports = require('br/AliasRegistry').getClass('"+aliasDefinition.getName()+"');\n" +
 			"\treturn module.exports;\n" +
 			"});\n"
