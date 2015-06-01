@@ -179,6 +179,13 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		
 		return commanderChainer;
 	}
+	
+	public CommanderChainer hasVersion(String version)
+	{
+		specTest.appVersionGenerator.setVersion(version);
+
+		return commanderChainer;
+	}
 
 	public CommanderChainer hasBeenCreatedWithWorkingDir(File workingDir) {
 		call(new ValueCommand<Void>() {
@@ -191,4 +198,5 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		
 		return commanderChainer;
 	}
+	
 }

@@ -10,11 +10,9 @@ brjs.dashboard.app.DashboardApp = function(oDashboardService, oPageUrlService, o
 	this.m_oPresentationModel = new brjs.dashboard.app.model.DashboardPresentationModel(oDashboardService, oPageUrlService, oWindowOpenerService, oLocalStorage, oBrowserDetector);
 	this.m_oPresenterComponent = new br.presenter.component.PresenterComponent("brjs.dashboard.app.root", this.m_oPresentationModel);
 
-	// TODO: update dashboard to use new component interface.
-	// TODO: add proper frame support
-	eDisplayElement.appendChild(this.m_oPresenterComponent.getElement());
-
-	//	this.m_oPresenterComponent.onOpen();
+	var frame = new br.component.SimpleFrame(this.m_oPresenterComponent, null, null);
+	eDisplayElement.appendChild(frame.getElement());
+	frame.trigger('attach');
 
 	this.m_bAppsLoaded = false;
 	oPageUrlService.addPageUrlListener(this._onPageUrlUpdated.bind(this), true);

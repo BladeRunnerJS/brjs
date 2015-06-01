@@ -1,6 +1,8 @@
 package org.bladerunnerjs.plugin.commands.standard;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
@@ -79,11 +81,12 @@ public class ServeCommand extends JSAPArgsParsingCommandPlugin
 				appServer = getApplicationServer(parsedArgs);
 			}
 			
-			brjs.getAppVersionGenerator().setVersion( parsedArgs.getString("version") );
-			if (parsedArgs.getString("version").equals("dev")) {
-				brjs.getAppVersionGenerator().appendTimetamp(false);
+			String version = parsedArgs.getString("version");
+			if (!version.equals("dev") && !version.matches(".*\\-[0-9]+")) {
+				version += "-"+new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
 			}
-			
+			brjs.getAppVersionGenerator().setVersion(version);
+			brjs.getAppVersionGenerator().appendTimetamp(false);
 			
 			appServer.start();
 			brjs.fileObserver().start();
