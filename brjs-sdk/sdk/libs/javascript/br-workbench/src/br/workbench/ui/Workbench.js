@@ -45,6 +45,7 @@ Workbench.prototype.displayComponent = function(oComponent, width, height)
 
 	this.center(simpleFrame.getElement());
 	document.body.appendChild(simpleFrame.getElement());
+	simpleFrame.trigger('attach');
 };
 
 /**

@@ -179,4 +179,12 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		
 		return commanderChainer;
 	}
+	
+	public CommanderChainer hasVersion(String version)
+	{
+		specTest.appVersionGenerator.setVersion(version);
+		
+		return commanderChainer;
+	}
+	
 }

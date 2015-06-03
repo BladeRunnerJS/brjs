@@ -377,7 +377,7 @@ GwtTestRunner.prototype._parseStatement = function(sStatement, nPhase) {
 
 	var newlinePlaceholder = "<!--space--!>";
 
-	sStatement = sStatement.replace("\n",newlinePlaceholder);
+	sStatement = sStatement.replace(new RegExp("\n", "g"), newlinePlaceholder);
 
 	this._updatePhase(nPhase, sStatement);
 
@@ -398,7 +398,7 @@ GwtTestRunner.prototype._parseStatement = function(sStatement, nPhase) {
 	var oStatement = {
 		property:(pStatement[1].trim()),
 		operator:pStatement[2],
-		propertyValue:this._getTypedPropertyValue(pStatement[3].replace(newlinePlaceholder,"\n"))
+		propertyValue:this._getTypedPropertyValue(pStatement[3].replace(new RegExp(newlinePlaceholder, "g"), "\n"))
 	};
 
 	if (nPhase === GwtTestRunner.WHEN_PHASE && oStatement.operator != "=>") {
