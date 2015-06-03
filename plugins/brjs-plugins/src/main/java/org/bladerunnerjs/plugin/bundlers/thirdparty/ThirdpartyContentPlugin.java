@@ -106,7 +106,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 	{
 		if (sourceFile instanceof ThirdpartySourceModule && hasUnencapsulatedSourceModule) {
 			ThirdpartySourceModule thirdpartyModule = (ThirdpartySourceModule) sourceFile;
-			return "window." + thirdpartyModule.getGlobalisedName() + " = System.get('"+thirdpartyModule.getPrimaryRequirePath()+"');\n\n";
+			return "window." + thirdpartyModule.getGlobalisedName() + " = System.syncImport('"+thirdpartyModule.getPrimaryRequirePath()+"');\n\n";
 		}
 		return "";
 	}
