@@ -8,6 +8,7 @@ import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 
 import static org.bladerunnerjs.api.BRJS.Messages.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -265,6 +266,14 @@ public class BRJSTest extends SpecTest {
     		.and(logging).enabled();
     	when(brjs).discoverApps();
     	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testSdkDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testSdkDirectory, "myprojects").getAbsolutePath());
+	}
+	
+	@Test
+	public void newFilesInGeneratedDirDoesntIncrementSdkVersion() throws Exception
+	{
+		long sdkFileVersion = brjs.getFileModificationRegistry().getFileVersion(testSdkDirectory);
+		when(testSdkDirectory).containsFile("generated/foo");
+		assertEquals(sdkFileVersion, brjs.getFileModificationRegistry().getFileVersion(testSdkDirectory));
 	}
 	
 }

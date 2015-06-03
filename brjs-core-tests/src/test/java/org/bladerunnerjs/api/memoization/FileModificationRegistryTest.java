@@ -4,9 +4,12 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AbstractFileFilter;
 import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +32,7 @@ public class FileModificationRegistryTest
 		secondRootDir = BRJSTestModelFactory.createTestSdkDirectory();
 		dirInRoot = new File(testRootDir, "some-dir");
 		fileInChildDir = new File(dirInRoot, "nested-file.txt");
-		fileModificationRegistry = new FileModificationRegistry(FalseFileFilter.INSTANCE, testRootDir);
+		fileModificationRegistry = new FileModificationRegistry(new MatchFileFilter(testRootDir), FalseFileFilter.INSTANCE);
 	}
 	
 	@After
@@ -73,9 +76,17 @@ public class FileModificationRegistryTest
 	@Test
 	public void parentDirectoryVersionsAreUpdatedIncludingTheSecondRootDir() throws Exception
 	{
-		fileModificationRegistry = new FileModificationRegistry(FalseFileFilter.INSTANCE, testRootDir, secondRootDir);
+		fileModificationRegistry = new FileModificationRegistry(new MatchFileFilter(testRootDir, secondRootDir), FalseFileFilter.INSTANCE);
 		fileModificationRegistry.incrementFileVersion( new File(secondRootDir, "foo/bar") );
 		assertEquals(1, fileModificationRegistry.getFileVersion(secondRootDir));
 	}
 	
+	
+	
+	private class MatchFileFilter extends AbstractFileFilter implements IOFileFilter {
+		List<File> matchFiles;
+		public MatchFileFilter(File... matchFiles) { this.matchFiles = Arrays.asList(matchFiles); }
+		public boolean accept(File file) { return matchFiles.contains(file); }
+		
+	}
 }
