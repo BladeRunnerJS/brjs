@@ -65,11 +65,13 @@ public class FileModificationRegistry
 		}
 	}
 	
-	private void incrementFileAndParentVersion(File file) {
-		while (file != null && !rootFiles.contains(file)) {
+	private void incrementFileAndParentVersion(File file)  {
+		File nextFile = file;
+		do {
+			file = nextFile;
 			getOrCreateVersionValue(file).incrementValue();
-			file = file.getParentFile();
-		}
+			nextFile = file.getParentFile();
+		} while (!rootFiles.contains(file) && nextFile != null);
 	}
 	
 	private FileVersion getOrCreateVersionValue(File file)

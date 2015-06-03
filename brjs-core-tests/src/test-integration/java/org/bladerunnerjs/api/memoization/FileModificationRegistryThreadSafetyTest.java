@@ -4,24 +4,28 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class FileModificationRegistryThreadSafetyTest extends SpecTest
+public class FileModificationRegistryThreadSafetyTest
 {
 
 	private File fileInRoot;
 	private File dirInRoot;
 	private File fileInChildDir;
+	private File testSdkDirectory;
+	private FileModificationRegistry fileModificationRegistry;
 	
 	@Before
 	public void setup() throws Exception {
-		given(brjs).hasBeenCreated();
+		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
 		fileInRoot = new File(testSdkDirectory, "some-file.txt");
 		dirInRoot = new File(testSdkDirectory, "some-dir");
 		fileInChildDir = new File(dirInRoot, "nested-file.txt");
+		fileModificationRegistry = new FileModificationRegistry(FalseFileFilter.INSTANCE, testSdkDirectory);
 	}
 	
 	
@@ -61,8 +65,8 @@ public class FileModificationRegistryThreadSafetyTest extends SpecTest
 		{
 			try {
 				for (int i = 0; i < threadIterationLimit; i++) {
-					brjs.getFileModificationRegistry().incrementFileVersion(fileInChildDir);
-					brjs.getFileModificationRegistry().incrementChildFileVersions(fileInRoot);
+					fileModificationRegistry.incrementFileVersion(fileInChildDir);
+					fileModificationRegistry.incrementChildFileVersions(fileInRoot);
 				}
 			} catch (Throwable t) {
 				thrownException = t;
@@ -77,9 +81,9 @@ public class FileModificationRegistryThreadSafetyTest extends SpecTest
 		{
 			try {
 				for (int i = 0; i < threadIterationLimit; i++) {
-					brjs.getFileModificationRegistry().getFileVersion(fileInChildDir);
-					brjs.getFileModificationRegistry().getFileVersion(dirInRoot);
-					brjs.getFileModificationRegistry().getFileVersion(fileInRoot);
+					fileModificationRegistry.getFileVersion(fileInChildDir);
+					fileModificationRegistry.getFileVersion(dirInRoot);
+					fileModificationRegistry.getFileVersion(fileInRoot);
 				}
 			} catch (Throwable t) {
 				thrownException = t;
