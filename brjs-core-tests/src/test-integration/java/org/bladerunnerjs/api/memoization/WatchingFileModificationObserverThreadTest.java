@@ -129,7 +129,7 @@ public class WatchingFileModificationObserverThreadTest
 		createAndInitWatcher();
 		verify(mockLogger).debug(WatchingFileModificationObserverThread.THREAD_STARTED, WatchingFileModificationObserverThread.class.getSimpleName());
 		verify(mockLogger).debug(WatchingFileModificationObserverThread.USING_WATCH_SERVICE_MSG, WatchingFileModificationObserver.class.getSimpleName(), mockWatchKeyService.getClass().getSimpleName());
-		
+
 		queueWatchServiceEventKeys(rootWatchDirWatchKey);
 				
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockCreateFileEvent(fileInRoot));
