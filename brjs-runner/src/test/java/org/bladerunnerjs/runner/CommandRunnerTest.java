@@ -204,8 +204,8 @@ public class CommandRunnerTest {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
 		dirFile("valid-sdk-directory/sdk/libs/java").mkdirs();
 		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/sdk/libs/java/application/brjs-servlet-1.2.3.jar"), "some jar contents" );
-		dirFile("valid-sdk-directory/brjs-apps/myApp/WEB-INF/lib").mkdirs();
-		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/brjs-apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
+		dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib").mkdirs();
+		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
 		
 		commandRunner.run(dirFile("valid-sdk-directory"), new String[] {dir("valid-sdk-directory"), "log-test"});
 		String output = outputStream.toString("UTF-8");

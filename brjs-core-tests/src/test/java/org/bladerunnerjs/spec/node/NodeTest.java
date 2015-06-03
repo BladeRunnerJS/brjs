@@ -21,7 +21,7 @@ public class NodeTest extends SpecTest {
 	public void observerisNotifiedWhenNodeIsFirstDiscoveredAfterManualCreation() {
 		final String APP_NAME = "someApp";
 		given(observer).observing(brjs)
-			.and(brjs).hasDir("brjs-apps/"+APP_NAME);
+			.and(brjs).hasDir("apps/"+APP_NAME);
 		when(brjs).discoverApps();
 		then(observer).notified( NodeReadyEvent.class, brjs.app("someApp") );
 	}

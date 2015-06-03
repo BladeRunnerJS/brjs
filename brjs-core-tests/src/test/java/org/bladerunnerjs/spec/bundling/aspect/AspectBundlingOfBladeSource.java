@@ -276,7 +276,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(OutOfScopeRequirePathException.class, 
 				"appns/b1/Blade1Class", "appns/b2/Blade2Class", "blades/b2/src/Blade2Class.js", Blade.class.getSimpleName(),
-				"brjs-apps/app1/blades/b1, brjs-apps/app1")
+				"apps/app1/blades/b1, apps/app1")
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	
@@ -353,7 +353,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
     		.and(logging).enabled();
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(logging).warnMessageReceived(BundleSetBuilder.INVALID_REQUIRE_MSG, "appns/b1/Blade1Class", "appns/b2/foo/Blade2Class")
-    		.and(logging).warnMessageReceived(BundleSetBuilder.STRICT_CHECKING_DISABLED_MSG, "brjs-apps/app1/blades/b2/src/foo", "blades/b2/src/foo/Blade2Class.js", "brjs-apps/app1/blades/b2/src/foo/no-strict-checking")
+    		.and(logging).warnMessageReceived(BundleSetBuilder.STRICT_CHECKING_DISABLED_MSG, "apps/app1/blades/b2/src/foo", "blades/b2/src/foo/Blade2Class.js", "apps/app1/blades/b2/src/foo/no-strict-checking")
     		.and(logging).otherMessagesIgnored();
 	}
 	

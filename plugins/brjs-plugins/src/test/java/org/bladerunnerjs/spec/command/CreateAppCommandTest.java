@@ -215,7 +215,7 @@ public class CreateAppCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutBrjsApps() throws Exception {
+	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutApps() throws Exception {
 		given(testSdkDirectory).containsFolder("myprojects")
 			.and(testSdkDirectory).containsFolder("myprojects/myapp")
 			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")

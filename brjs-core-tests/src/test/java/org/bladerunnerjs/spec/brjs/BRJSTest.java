@@ -7,8 +7,6 @@ import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 
-import static org.bladerunnerjs.api.BRJS.Messages.*;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -39,7 +37,7 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@After
-	public void deleteCreatedBrjsAppsDirFromTemp() throws IOException {
+	public void deleteCreatedAppsDirFromTemp() throws IOException {
 		if (secondaryTempFolder != null) FileUtils.deleteQuietly(secondaryTempFolder);
 	}
 	
@@ -128,21 +126,21 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulated() throws Exception {
-		given(brjs.file("brjs-apps/app1/blades/myBlade/src")).containsFile("Class.js");
+		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js");
 		// we can't check the actual node or talk about any nodes since brjs.app('myApp') etc would cause the node to be discovered and we need to keep an empty node tree
-		then(brjs).ancestorNodeCanBeFound(brjs.file("brjs-apps/app1/blades/myBlade/src/Class.js"), App.class);
+		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade/src/Class.js"), App.class);
 	}
 	
 	@Test
 	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulatedAndTheFileRepresentsTheNodeType() throws Exception {
-		given(brjs.file("brjs-apps/app1/blades/myBlade/src")).containsFile("Class.js");
-		then(brjs).ancestorNodeCanBeFound(brjs.file("brjs-apps/app1/blades/myBlade"), Blade.class);
+		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js");
+		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade"), Blade.class);
 	}
 	
 	@Test // this is not a duplicate of the test above even though it may look like it, this test has been seen failing when the above was passing
 	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulatedAndTheFileRepresentsATestPack() throws Exception {
-		given(brjs.file("brjs-apps/app1/blades/myBlade/test-unit")).containsFile("file.txt");
-		then(brjs).ancestorNodeCanBeFound(brjs.file("brjs-apps/app1/blades/myBlade/test-unit/file.txt"), TestPack.class);
+		given(brjs.file("apps/app1/blades/myBlade/test-unit")).containsFile("file.txt");
+		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade/test-unit/file.txt"), TestPack.class);
 	}
 	
 	@Test // this is not a duplicate of the test above even though it may look like it, this test has been seen failing when the above was passing
@@ -166,29 +164,21 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
-	public void appsFolderIsTheActiveAppsFolderItExistsAlongWithBrjsAppsFolder() throws Exception {
-		given(testSdkDirectory).containsFolder("apps")
-			.and(testSdkDirectory).containsFolder("brjs-apps")
-			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
-		when(brjs.app("app1")).create();
-		then(brjs).hasDir("apps/app1");	
-	}
-	
-	@Test
-	public void brjsAppsFolderInTheParentOfTheWorkingDirIsUsed() throws Exception {
+	public void appsFolderInTheParentOfTheWorkingDirIsUsedIfNextToSdk() throws Exception {
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
-		given(secondaryTempFolder).containsFolder("brjs-apps/dir1/dir2/dir3")
-			.and(brjs).hasBeenCreatedWithWorkingDir(new File(secondaryTempFolder, "brjs-apps/dir1/dir2/dir3"));
+		given(secondaryTempFolder).containsFolder("apps/dir1/dir2/dir3")
+			.and(secondaryTempFolder).containsFolder("sdk")
+			.and(brjs).hasBeenCreatedWithWorkingDir(new File(secondaryTempFolder, "apps/dir1/dir2/dir3"));
 		when(brjs.app("app1")).create();
-		then(secondaryTempFolder).containsDir("brjs-apps/app1");
+		then(secondaryTempFolder).containsDir("apps/app1");
 	}
 	
 	@Test
-	public void brjsAppsDirNextToSdkIsUsedIfWorkingDirIsBrjsDir() throws Exception {
+	public void appsDirNextToSdkIsUsedIfWorkingDirIsBrjsDir() throws Exception {
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
 		given(brjs).hasBeenCreated();
 		when(brjs.app("app1")).create();
-		then(testSdkDirectory).containsDir("brjs-apps/app1");
+		then(testSdkDirectory).containsDir("apps/app1");
 	}
 	
 	@Test
@@ -200,17 +190,6 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
-	public void warningMessageIsLoggedWhenBothAppsAndBrjsAppsFoldersExist() throws Exception {
-		given(testSdkDirectory).containsFolder("apps")
-			.and(testSdkDirectory).containsFolder("brjs-apps")
-			.and(logging).enabled();
-		when(brjs).hasBeenCreated();
-		then(logging).warnMessageReceived(BOTH_APPS_AND_BRJS_APPS_EXIST, 
-				"brjs-apps", testSdkDirectory.getAbsolutePath(), "brjs-apps", "apps", testSdkDirectory.getAbsolutePath()+"/apps", testSdkDirectory.getAbsolutePath()+"/brjs-apps")
-			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG);
-	}
-	
-	@Test
 	public void debugMessageIsLoggedWhenImplicitRequirePrefixesAreUsed() throws Exception {
 		App myApp = brjs.app("myApp");
 		Blade blade = myApp.defaultBladeset().blade("b1");
@@ -219,12 +198,12 @@ public class BRJSTest extends SpecTest {
 			.and(aspect).indexPageRequires("appns/b1/pkg/Class")
 			.and(logging).enabled();
 		when(aspect).bundleSetGenerated();
-		then(logging).debugMessageReceived(BRJSConformantAssetPlugin.IMPLICIT_PACKAGE_USED, "brjs-apps/myApp/blades/b1/src", "appns/b1", "appns/b1")
+		then(logging).debugMessageReceived(BRJSConformantAssetPlugin.IMPLICIT_PACKAGE_USED, "apps/myApp/blades/b1/src", "appns/b1", "appns/b1")
 			.and(logging).otherMessagesIgnored();
 	}
 	
 	@Test
-	public void brjsAppsIsntRequiredIfCommandIsRunFromInsideAnApp() throws Exception {
+	public void appsIsntRequiredIfCommandIsRunFromInsideAnApp() throws Exception {
 		given(testSdkDirectory).containsFolder("myprojects")
 			.and(testSdkDirectory).containsFolder("myprojects/myapp")
 			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
@@ -233,7 +212,7 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
-	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutBrjsApps() throws Exception {
+	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutApps() throws Exception {
 		given(testSdkDirectory).containsFolder("myprojects")
 			.and(testSdkDirectory).containsFolder("myprojects/myapp")
 			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")

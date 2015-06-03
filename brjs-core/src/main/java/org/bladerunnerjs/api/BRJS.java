@@ -57,8 +57,6 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "Making plugins available via model.";
 		public static final String PLUGIN_FOUND_MSG = "Found plugin '%s'.";
 		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
-		public static final String BOTH_APPS_AND_BRJS_APPS_EXIST = "BRJS now uses a folder named '%s' for the location of your apps but the directory '%s' contains both '%s' and '%s' folders."+
-		" '%s' will be used for the location of apps but this legacy behaviour may be removed so you should move all existing apps into the '%s' directory.";
 		public static final String FILE_WATCHER_MESSAGE = "Using '%s' as the BRJS file observer";
 	}
 	
@@ -144,18 +142,13 @@ public class BRJS extends AbstractBRJSRootNode
 			if (new File(currentFolder, AppConf.FILE_NAME).exists()) {
 				return currentFolder.getParentFile();
 			} else if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
-				if (new File(currentFolder, "brjs-apps").exists()) {
-					logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, "brjs-apps", brjsDir.getAbsolutePath(), "brjs-apps", "apps", brjsDir.getAbsolutePath()+"/apps", brjsDir.getAbsolutePath()+"/brjs-apps"); 
-				}
 				return new File (currentFolder, "apps");
-			} else if (new File(currentFolder, "brjs-apps").exists()) {
-				return new File (currentFolder, "brjs-apps");
 			}
 			
 			currentFolder = currentFolder.getParentFile();
 		}
 		if (brjsDir == workingDir) {
-			return new File (brjsDir, "brjs-apps");
+			return new File (brjsDir, "apps");
 		}
 		return workingDir;		
 	}

@@ -75,7 +75,7 @@ public class IntegrationServeCommandTest extends SpecTest
 		when(brjs).runThreadedCommand("serve")
 			.and(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/")
-			.and(testSdkDirectory).doesNotContainDir("brjs-apps")
+			.and(testSdkDirectory).doesNotContainDir("apps")
 			.and(testSdkDirectory).doesNotContainDir("app1")
 			.and(secondaryTempFolder).containsDir("app1");
 	}
