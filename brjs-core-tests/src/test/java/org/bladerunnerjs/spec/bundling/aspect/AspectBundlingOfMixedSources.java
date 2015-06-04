@@ -59,7 +59,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		then(response).containsOrderedTextFragmentsAnyNumberOfTimes(
 				
 				// The sdkCommonJsLib is defined
-				"define('sdkCommonJsLib/Class1', function(require, exports, module) {",
+				"System.register('sdkCommonJsLib/Class1', [], true, function(require, exports, module) {",
 				"function empty() {};",
 				"});",
 				// The classes are both made available globally
@@ -67,7 +67,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 				// The namespaced style sdk class is assigned to the require of the CommonJsLib class  
 				"requireAll(require, ['sdkCommonJsLib/Class1']);",
 				"sdkNamespaceLib.ProxyClass = sdkCommonJsLib.Class1;",
-				"sdkCommonJsLib.Class1 = require('sdkCommonJsLib/Class1');");
+				"sdkCommonJsLib.Class1 = System.syncImport('sdkCommonJsLib/Class1');");
 	}
 	
 	@Test

@@ -79,7 +79,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		given(sdkLib).hasClass("br/SdkClass")
 			.and(sdkLibTestPack).testRequires("test.js", "br/SdkClass");
 		when(sdkLibTestPack).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('br/SdkClass'");
+		then(response).containsDefinedClasses("br/SdkClass");
 	}
 	
 	@Test

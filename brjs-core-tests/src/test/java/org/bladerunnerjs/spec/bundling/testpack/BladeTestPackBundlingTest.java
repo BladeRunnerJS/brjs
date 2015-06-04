@@ -177,6 +177,6 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Class");
 		when(bladeUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(bladeUTs).srcOnlyBundledFilesEquals( blade.file("src/appns/bs/b1/Class.js") )
-			.and(response).containsText( "appns.bs.b1.Class = require('appns/bs/b1/Class');" );
+			.and(response).containsText( "appns.bs.b1.Class = System.syncImport('appns/bs/b1/Class');" );
 	}
 }

@@ -182,7 +182,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return getThirdpartyDependentAssets();
+		return getThirdpartyDependentAssets(bundlableNode.app());
 	}
 	
 	@Override
@@ -223,6 +223,12 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	private List<Asset> getThirdpartyDependentAssets() throws ModelOperationException
+	{
+		return getThirdpartyDependentAssets(assetContainer().app());
+	}
+	
+	// Note: we allow the app to be passed in because for SDK libraries assetContainer.app() will not be the same as bundlableNode.app()
+	private List<Asset> getThirdpartyDependentAssets(App app) throws ModelOperationException
 	{
 		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
 		

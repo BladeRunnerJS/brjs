@@ -160,7 +160,7 @@ public class BuildAppTest extends SpecTest {
     		.and(defaultAspect).indexPageHasContent("<@css.bundle @/>\n"+"<@js.bundle @/>\n"+"require('appns/Class');")
     		.and(brjs).hasVersion("1234")
     		.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("/v/1234/js/prod/combined/bundle.js", "define('appns/Class'")
+		then(targetDir).containsFileWithContents("/v/1234/js/prod/combined/bundle.js", "System.register('appns/Class'")
 			.and(targetDir).containsFileWithContents("/v/1234/css/common/bundle.css", "some app styling");
 	}
 	
