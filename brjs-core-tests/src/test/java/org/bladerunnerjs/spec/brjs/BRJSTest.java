@@ -8,6 +8,7 @@ import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 
 import static org.bladerunnerjs.api.BRJS.Messages.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -161,8 +162,8 @@ public class BRJSTest extends SpecTest {
 	public void appsFolderIsTheActiveAppsFolderItExists() throws Exception {
 		given(testSdkDirectory).containsFolder("apps")
 			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
-		when(brjs.app("app1BrjsApps")).create();
-		then(brjs).hasDir("apps/app1BrjsApps");	
+		when(brjs.app("app1")).create();
+		then(brjs).hasDir("apps/app1");	
 	}
 	
 	@Test
@@ -170,17 +171,8 @@ public class BRJSTest extends SpecTest {
 		given(testSdkDirectory).containsFolder("apps")
 			.and(testSdkDirectory).containsFolder("brjs-apps")
 			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
-		when(brjs.app("app1BrjsApps")).create();
-		then(brjs).hasDir("apps/app1BrjsApps");	
-	}
-	
-	@Test
-	public void brjsAppsFolderInTheWorkingDirIsUsed() throws Exception {
-		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
-		given(secondaryTempFolder).containsFolder("brjs-apps")
-			.and(brjs).hasBeenCreatedWithWorkingDir(secondaryTempFolder);
-		when(brjs.app("app1BrjsApps")).create();
-		then(secondaryTempFolder).containsDir("brjs-apps/app1BrjsApps");
+		when(brjs.app("app1")).create();
+		then(brjs).hasDir("apps/app1");	
 	}
 	
 	@Test
@@ -188,8 +180,24 @@ public class BRJSTest extends SpecTest {
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
 		given(secondaryTempFolder).containsFolder("brjs-apps/dir1/dir2/dir3")
 			.and(brjs).hasBeenCreatedWithWorkingDir(new File(secondaryTempFolder, "brjs-apps/dir1/dir2/dir3"));
-		when(brjs.app("app1BrjsApps")).create();
-		then(secondaryTempFolder).containsDir("brjs-apps/app1BrjsApps");
+		when(brjs.app("app1")).create();
+		then(secondaryTempFolder).containsDir("brjs-apps/app1");
+	}
+	
+	@Test
+	public void brjsAppsDirNextToSdkIsUsedIfWorkingDirIsBrjsDir() throws Exception {
+		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
+		given(brjs).hasBeenCreated();
+		when(brjs.app("app1")).create();
+		then(testSdkDirectory).containsDir("brjs-apps/app1");
+	}
+	
+	@Test
+	public void workingDirIsusedIfNoOtherDirectoryCanBeFoundToUseForApps() throws Exception {
+		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
+		given(brjs).hasBeenCreatedWithWorkingDir(secondaryTempFolder);
+		when(brjs.app("app1")).create();
+		then(secondaryTempFolder).containsDir("app1");
 	}
 	
 	@Test
@@ -258,6 +266,14 @@ public class BRJSTest extends SpecTest {
     		.and(logging).enabled();
     	when(brjs).discoverApps();
     	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testSdkDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testSdkDirectory, "myprojects").getAbsolutePath());
+	}
+	
+	@Test
+	public void newFilesInGeneratedDirDoesntIncrementSdkVersion() throws Exception
+	{
+		long sdkFileVersion = brjs.getFileModificationRegistry().getFileVersion(testSdkDirectory);
+		when(testSdkDirectory).containsFile("generated/foo");
+		assertEquals(sdkFileVersion, brjs.getFileModificationRegistry().getFileVersion(testSdkDirectory));
 	}
 	
 }

@@ -20,6 +20,7 @@ import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.bundlers.commonjs.DefaultCommonJsSourceModule;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 
@@ -63,15 +64,26 @@ public class JsTestDriverBundleCreator
 				bundlerHandler.createBundleFile(requestedFile, bundlePath, brjs.getAppVersionGenerator().getVersion());
 			}
 		}
-		for (File currentTestFile : jsTestDriverConf.getParentFile().file("tests").listFiles())
+		MemoizedFile testsDir = jsTestDriverConf.getParentFile().file("tests");
+		checkTestsForIife(brjs, testsDir, testsDir);
+	}
+
+	private static void checkTestsForIife(BRJS brjs, MemoizedFile rootTestDir, MemoizedFile testsDir) throws IOException
+	{
+		if (!brjs.jsStyleAccessor().getJsStyle(testsDir).equals(DefaultCommonJsSourceModule.JS_STYLE)) {
+			return;
+		}
+		for (MemoizedFile listedFile : testsDir.listFiles())
 		{
-			if (currentTestFile.isFile())
+			if (listedFile.isFile())
 			{
-				Matcher m = JsCodeBlockStrippingDependenciesReader.SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(currentTestFile));
+				Matcher m = JsCodeBlockStrippingDependenciesReader.SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(listedFile));
 				if (!m.find())
 				{
-					logger.warn("The CommonJS test '" + currentTestFile.getName() + "' is not wrapped within an IIFE, which may cause unreliability in tests.");
+					logger.warn("The CommonJS test '%s' is not wrapped within an IIFE, which may cause unreliability in tests.", rootTestDir.getRelativePath(listedFile));
 				}
+			} else {
+				checkTestsForIife(brjs, rootTestDir, listedFile);
 			}
 		}
 	}
