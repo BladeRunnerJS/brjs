@@ -9,7 +9,6 @@ import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 //TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'appns' when the default namespace is 'appns')?
@@ -317,7 +316,6 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		then(response).doesNotContainText("brlib/Class");
 	}
 	
-	@Ignore // TODO: understand why this test used to work before													
 	@Test
 	public void transitiveDependenciesOfBootstrapCanBeOverriddenByAppLibraries() throws Exception {
 		StringBuffer jsResponse = new StringBuffer();   StringBuffer cssResponse = new StringBuffer();

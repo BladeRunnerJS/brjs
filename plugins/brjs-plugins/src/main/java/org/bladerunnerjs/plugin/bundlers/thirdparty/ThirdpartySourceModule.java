@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.SourceModule;
@@ -180,7 +181,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return getThirdpartyDependentAssets();
+		return getThirdpartyDependentAssets(bundlableNode.app());
 	}
 	
 	@Override
@@ -222,13 +223,19 @@ public class ThirdpartySourceModule implements SourceModule
 	
 	private List<Asset> getThirdpartyDependentAssets() throws ModelOperationException
 	{
+		return getThirdpartyDependentAssets(assetContainer().app());
+	}
+	
+	// Note: we allow the app to be passed in because for SDK libraries assetContainer.app() will not be the same as bundlableNode.app()
+	private List<Asset> getThirdpartyDependentAssets(App app) throws ModelOperationException
+	{
 		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
 		
 		try 
 		{
 			for (String dependentLibName : manifest.getDepends())
 			{
-				JsLib dependentLib = assetContainer().app().jsLib(dependentLibName);
+				JsLib dependentLib = app.jsLib(dependentLibName);
 				if (!dependentLib.dirExists())
 				{
 					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
