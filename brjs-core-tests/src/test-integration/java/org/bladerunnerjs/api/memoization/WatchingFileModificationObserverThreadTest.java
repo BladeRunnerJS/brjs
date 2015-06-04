@@ -127,9 +127,9 @@ public class WatchingFileModificationObserverThreadTest
 		allowMockWatchKeyForDir( rootWatchDir, rootWatchDirWatchKey );
 		
 		createAndInitWatcher();
-		verify(mockLogger).debug(WatchingFileModificationObserverThread.USING_WATCH_SERVICE_MSG, WatchingFileModificationObserverThread.class.getSimpleName(), mockWatchKeyService.getClass().getSimpleName());
 		verify(mockLogger).debug(WatchingFileModificationObserverThread.THREAD_STARTED, WatchingFileModificationObserverThread.class.getSimpleName());
-		
+		verify(mockLogger).debug(WatchingFileModificationObserverThread.USING_WATCH_SERVICE_MSG, WatchingFileModificationObserver.class.getSimpleName(), mockWatchKeyService.getClass().getSimpleName());
+
 		queueWatchServiceEventKeys(rootWatchDirWatchKey);
 				
 		queueWatchKeyPollEvents(rootWatchDirWatchKey, mockCreateFileEvent(fileInRoot));
@@ -309,6 +309,7 @@ public class WatchingFileModificationObserverThreadTest
 	{
 		modificationWatcherThread = new WatchingFileModificationObserverThread(mockBrjs, mockWatchServiceFactory);
 		modificationWatcherThread.init();
+//		reset(mockLogger);
 	}
 	
 	private void queueWatchServiceEventKeys(WatchKey... watchKeys) throws InterruptedException
