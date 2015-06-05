@@ -44,6 +44,8 @@ public interface ContentPlugin extends Plugin {
 	 * <p><b>Note:</b> Developers should not rely on any class initialization performed within {@link Plugin#setBRJS Plugin.setBRJS()} as this
 	 * method is an <i>identifier-method</i> which may be invoked before {@link Plugin#setBRJS Plugin.setBRJS()} has itself been
 	 * invoked.</p>
+	 * 
+	 * @return The string that is prefixed to every request handled by this Content plugin
 	 */
 	String getRequestPrefix();
 	
@@ -54,7 +56,11 @@ public interface ContentPlugin extends Plugin {
 	 * @param bundleSet The bundle-set for the bundlable node to which this request is related to.
 	 * @param contentAccessor The output stream the content will be written to.
 	 * @param version TODO
-	 * @throws ContentProcessingException if a problem is encountered.
+	 * 
+	 * @throws ContentProcessingException if a problem is encountered when generating the content
+	 * @throws MalformedRequestException if the content path is invalid
+	 * 
+	 * @return The response content after handling the request
 	 */
 	ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException;
 	
@@ -66,8 +72,12 @@ public interface ContentPlugin extends Plugin {
 	 * @param locales The locale for which content paths must be generated.
 	 * 
 	 * @throws ContentProcessingException if a problem is encountered.
+	 * 
+	 * @return The list of valid content paths
 	 */
 	List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException;
+	
+	
 	List<String> getUsedContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException;
 	
 }

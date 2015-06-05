@@ -18,7 +18,11 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
 
-
+/**
+ * The {@link FileModificationRegistry} tracks the 'version' of files. It's used by {@link MemoizedFile} and {@link MemoizedValue} to determine whether
+ * or not a value needs to be re-calculated based on if any dependent files need to change.
+ *
+ */
 @SuppressWarnings("unused")
 public class FileModificationRegistry
 {
