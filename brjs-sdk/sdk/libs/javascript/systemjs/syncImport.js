@@ -8,7 +8,8 @@ System.syncImport = function(name) {
 	try {
 		var promise = this.import(name);
 		
-		for(var fn of scheduledFuncs) {
+		for(var i = 0, l = scheduledFuncs.length; i < l; ++i) {
+			var fn = scheduledFuncs[i];
 			fn();
 		}
 		
