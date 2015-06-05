@@ -16,6 +16,16 @@
 		window.mergePackageBlock = mergePackageBlock;
 	})();
 
+	// TODO: put this into a separate 'browser-modules-compat' library
+	// TODO: stop using syncImport() once tests automatically sync import on our behalf
+	/** @private */
+	(function(){
+		var require = function(requirePath) {
+			return System.syncImport(requirePath);
+		}
+		window.require = require;
+	})();
+
 	/** @private */
 	(function(){
 		var requireAll = function(require, requirePaths) {
