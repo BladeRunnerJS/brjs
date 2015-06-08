@@ -263,7 +263,7 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	baseName = "BladeRunnerJS"
 	from projectDir
 	into "BladeRunnerJS/"
-	include "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
+	include "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
 	exclude "**/.gitignore", "**/.p4ignore"
 	exclude "**/libs/**/tests/*", "**/libs/javascript/*/test-*/*", "**/libs/**/src-test/*"
 	exclude "**/system-applications/**/tests/*", "**/system-applications/*/test-*/*", "**/system-applications/**/src-test/*"
