@@ -1,7 +1,6 @@
 package org.bladerunnerjs.api.plugin;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,7 +22,6 @@ public class DefaultAssetRegistry implements AssetRegistry {
 	
 	public DefaultAssetRegistry(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
-		discoverFurtherAssets(assetContainer.dir(), assetContainer.requirePrefix(), Collections.emptyList());
 	}
 	
 	@Override

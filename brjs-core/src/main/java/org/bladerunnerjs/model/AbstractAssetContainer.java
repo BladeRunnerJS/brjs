@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -99,7 +100,9 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	protected AssetRegistry assetDiscoveryResult() {
 		return assetDiscoveryResult.value(() -> {
-			return new DefaultAssetRegistry(this);
+			AssetRegistry assetRegistry = new DefaultAssetRegistry(this);
+			assetRegistry.discoverFurtherAssets(dir(), requirePrefix(), Collections.emptyList());
+			return assetRegistry;
 		});
 	}
 	
