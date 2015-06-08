@@ -34,10 +34,10 @@ public class BrowsableNodeSeedLocator extends AbstractAssetPlugin
 				indexFile = assetContainer.file("index.jsp");
 			}
 			
-			if (indexFile != null) {
+			if ( indexFile != null && !assetDiscoveryInitiator.hasRegisteredAsset(IndexPageAsset.calculateRequirePath(requirePrefix, indexFile)) ) {
 				LinkedAsset indexAsset = new IndexPageAsset(indexFile, assetContainer, requirePrefix, implicitDependencies);
 				assetDiscoveryInitiator.registerSeedAsset(indexAsset);
-			}			
+			}
 		}
 	}
 
