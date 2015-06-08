@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.utility.TailBuffer;
+import org.bladerunnerjs.utility.FixedLengthStringBuilder;
 
 /*
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
@@ -19,7 +19,7 @@ public class JsModuleExportsStrippingReader extends Reader {
 
 	private final Reader sourceReader;
 	
-	private final TailBuffer tailBuffer = new TailBuffer(MODULE_EXPORTS_REGEX.length() + 10); // + 10 to allow for extra spaces in the definition
+	private final FixedLengthStringBuilder tailBuffer = new FixedLengthStringBuilder(MODULE_EXPORTS_REGEX.length() + 10); // + 10 to allow for extra spaces in the definition
 	
 	private boolean moduleExportsLocated = false;
 	
@@ -61,7 +61,7 @@ public class JsModuleExportsStrippingReader extends Reader {
 			}
 			
 			nextChar = sourceBuffer[nextCharPos++];
-			tailBuffer.push(nextChar);
+			tailBuffer.append(nextChar);
 			
 			if (!moduleExportsLocated) {
 				if (matchesModuleExports()) {
@@ -85,8 +85,7 @@ public class JsModuleExportsStrippingReader extends Reader {
 	}
 	
 	private boolean matchesModuleExports() {
-		String tail = new String(tailBuffer.toArray());
-		Matcher moduleExportsMatcher = MODULE_EXPORTS_REGEX_PATTERN.matcher(tail);
+		Matcher moduleExportsMatcher = MODULE_EXPORTS_REGEX_PATTERN.matcher(tailBuffer.toString());
 		
 		return moduleExportsMatcher.matches();
 	}
