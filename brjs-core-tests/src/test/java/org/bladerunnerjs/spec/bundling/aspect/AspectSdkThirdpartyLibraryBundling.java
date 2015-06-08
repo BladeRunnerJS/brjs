@@ -70,7 +70,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		then(response).containsOrderedTextFragments(
 				"// br-bootstrap",
 				"// this is bootstrap",
-				"System.register('appns/Class1'" ); 
+				"System.registerDynamic('appns/Class1'" ); 
 	}
 	
 	@Test
@@ -278,7 +278,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
     		.and(aspect).indexPageRequires(thirdpartyLib);
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then(response).containsOrderedTextFragments("System.register('thirdparty-lib1', [], true, function(require, exports, module) {\n",
+    	then(response).containsOrderedTextFragments("System.registerDynamic('thirdparty-lib1', [], true, function(require, exports, module) {\n",
     						"module.exports = thirdpartyLib");
 	}
 
@@ -292,7 +292,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
     		.and(aspect).indexPageRequires(thirdpartyLib);
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("System.register('thirdparty-lib1', [], true, function(require, exports, module) {\n");
+		then(response).containsText("System.registerDynamic('thirdparty-lib1', [], true, function(require, exports, module) {\n");
 	}
 	
 	@Test

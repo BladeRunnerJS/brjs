@@ -465,7 +465,7 @@
 	_define("fell/lib/Log", function(require, exports, module) {
 		"use strict";
 		
-		var Emitter = System.get('emitr').default;
+		var Emitter = System.get(System.normalizeSync('emitr')).default;
 		if(false) require('emitr');
 		var Logger = require('./Logger');
 		var Levels = require('./Levels');

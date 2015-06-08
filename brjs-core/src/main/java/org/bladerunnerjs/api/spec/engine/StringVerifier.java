@@ -81,7 +81,7 @@ public class StringVerifier {
 	public VerifierChainer containsDefinedClasses(String... classRequirePaths)
 	{
 		for(String classRequirePath : classRequirePaths) {
-			String expectedDefineString = "System.register('" + classRequirePath + "', ";
+			String expectedDefineString = "System.registerDynamic('" + classRequirePath + "', ";
 			
 			if(!string.contains(expectedDefineString) )
 			{

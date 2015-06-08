@@ -59,7 +59,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		then(response).containsOrderedTextFragmentsAnyNumberOfTimes(
 				
 				// The sdkCommonJsLib is defined
-				"System.register('sdkCommonJsLib/Class1', [], true, function(require, exports, module) {",
+				"System.registerDynamic('sdkCommonJsLib/Class1', [], true, function(require, exports, module) {",
 				"function empty() {};",
 				"});",
 				// The classes are both made available globally
