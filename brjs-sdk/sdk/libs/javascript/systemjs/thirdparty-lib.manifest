@@ -1,2 +1,2 @@
-js: bluebird.js, es6-module-loader-sans-promises.src.js, system.src.js, syncImport.js
+js: system-csp-production.src.js, bluebird.js, syncImport.js
 exports: System
