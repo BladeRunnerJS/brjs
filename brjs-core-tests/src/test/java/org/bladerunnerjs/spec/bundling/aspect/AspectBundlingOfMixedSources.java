@@ -67,7 +67,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 				// The namespaced style sdk class is assigned to the require of the CommonJsLib class  
 				"requireAll(require, ['sdkCommonJsLib/Class1']);",
 				"sdkNamespaceLib.ProxyClass = sdkCommonJsLib.Class1;",
-				"sdkCommonJsLib.Class1 = System.syncImport('sdkCommonJsLib/Class1');");
+				"sdkCommonJsLib.Class1 = require('sdkCommonJsLib/Class1');");
 	}
 	
 	@Test

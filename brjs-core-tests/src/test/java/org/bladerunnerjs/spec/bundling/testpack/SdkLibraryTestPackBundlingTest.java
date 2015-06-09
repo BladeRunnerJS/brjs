@@ -93,7 +93,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.TestClass()");
 		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(sdkLibUTs).srcOnlyBundledFilesEquals( sdkLib.file("src-test/brjsLib/TestClass.js") )
-			.and(response).containsText( "brjsLib.TestClass = System.syncImport('brjsLib/TestClass');" );
+			.and(response).containsText( "brjsLib.TestClass = require('brjsLib/TestClass');" );
 	}
 	
 	@Test
@@ -104,7 +104,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib/Class");
 		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(sdkLibUTs).srcOnlyBundledFilesEquals( sdkLib.file("src/brjsLib/Class.js") )
-			.and(response).containsText( "brjsLib.Class = System.syncImport('brjsLib/Class');" );
+			.and(response).containsText( "brjsLib.Class = require('brjsLib/Class');" );
 	}
 	
 	@Test
@@ -115,7 +115,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
     		.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.sdkLibUTs.Class()");
     	when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(sdkLibUTs).srcOnlyBundledFilesEquals( sdkLibUTs.file("src-test/brjsLib/sdkLibUTs/Class.js") )
-    		.and(response).containsText( "brjsLib.sdkLibUTs.Class = System.syncImport('brjsLib/sdkLibUTs/Class');" );
+    		.and(response).containsText( "brjsLib.sdkLibUTs.Class = require('brjsLib/sdkLibUTs/Class');" );
 	}
 	
 }
