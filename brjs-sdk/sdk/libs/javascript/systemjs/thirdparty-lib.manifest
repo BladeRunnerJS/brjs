@@ -1,2 +1,2 @@
-js: system-csp-production.src.js, bluebird.js, syncImport.js
+js: system-csp-production.src.js, sync-import.js, bind.js
 exports: System

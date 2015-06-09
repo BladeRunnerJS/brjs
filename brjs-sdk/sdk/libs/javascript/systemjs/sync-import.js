@@ -1,3 +1,5 @@
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.syncImport = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (process,global){
 /* @preserve
  * The MIT License (MIT)
  * 
@@ -23,7 +25,7 @@
  * 
  */
 /**
- * bluebird build version 2.9.25
+ * bluebird build version 2.9.27
  * Features enabled: core, race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, cancel, using, filter, any, each, timers
 */
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Promise=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
@@ -1282,6 +1284,10 @@ var returner = function () {
 var thrower = function () {
     throw this;
 };
+var returnUndefined = function() {};
+var throwUndefined = function() {
+    throw undefined;
+};
 
 var wrapper = function (value, action) {
     if (action === 1) {
@@ -1298,6 +1304,8 @@ var wrapper = function (value, action) {
 
 Promise.prototype["return"] =
 Promise.prototype.thenReturn = function (value) {
+    if (value === undefined) return this.then(returnUndefined);
+
     if (wrapsPrimitiveReceiver && isPrimitive(value)) {
         return this._then(
             wrapper(value, 2),
@@ -1312,6 +1320,8 @@ Promise.prototype.thenReturn = function (value) {
 
 Promise.prototype["throw"] =
 Promise.prototype.thenThrow = function (reason) {
+    if (reason === undefined) return this.then(throwUndefined);
+
     if (wrapsPrimitiveReceiver && isPrimitive(reason)) {
         return this._then(
             wrapper(reason, 1),
@@ -3850,23 +3860,16 @@ Promise.reduce = function (promises, fn, initialValue, _each) {
 },{"./async.js":2,"./util.js":38}],31:[function(_dereq_,module,exports){
 "use strict";
 var schedule;
+var util = _dereq_("./util");
 var noAsyncScheduler = function() {
     throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/m3OTXk\u000a");
 };
-if (_dereq_("./util.js").isNode) {
-    var version = process.versions.node.split(".").map(Number);
-    schedule = (version[0] === 0 && version[1] > 10) || (version[0] > 0)
-        ? global.setImmediate : process.nextTick;
-
-    if (!schedule) {
-        if (typeof setImmediate !== "undefined") {
-            schedule = setImmediate;
-        } else if (typeof setTimeout !== "undefined") {
-            schedule = setTimeout;
-        } else {
-            schedule = noAsyncScheduler;
-        }
-    }
+if (util.isNode && typeof MutationObserver === "undefined") {
+    var GlobalSetImmediate = global.setImmediate;
+    var ProcessNextTick = process.nextTick;
+    schedule = util.isRecentNode
+                ? function(fn) { GlobalSetImmediate.call(global, fn); }
+                : function(fn) { ProcessNextTick.call(process, fn); };
 } else if (typeof MutationObserver !== "undefined") {
     schedule = function(fn) {
         var div = document.createElement("div");
@@ -3888,7 +3891,7 @@ if (_dereq_("./util.js").isNode) {
 }
 module.exports = schedule;
 
-},{"./util.js":38}],32:[function(_dereq_,module,exports){
+},{"./util":38}],32:[function(_dereq_,module,exports){
 "use strict";
 module.exports =
     function(Promise, PromiseArray) {
@@ -4787,6 +4790,10 @@ var ret = {
     isNode: typeof process !== "undefined" &&
         classString(process).toLowerCase() === "[object process]"
 };
+ret.isRecentNode = ret.isNode && (function() {
+    var version = process.versions.node.split(".").map(Number);
+    return (version[0] === 0 && version[1] > 10) || (version[0] > 0);
+})();
 try {throw new Error(); } catch (e) {ret.lastLineError = e;}
 module.exports = ret;
 
@@ -5095,3 +5102,161 @@ function isUndefined(arg) {
 
 },{}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"_process":2}],2:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = setTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            currentQueue[queueIndex].run();
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    clearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        setTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],3:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+exports['default'] = syncImport;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
+function syncImport(name) {
+	var scheduledFuncs = [];
+	var origScheduler = _bluebird2['default'].setScheduler(function (fn) {
+		return scheduledFuncs.push(fn);
+	});
+	var origPromise = global.Promise;
+
+	try {
+		global.Promise = _bluebird2['default'];
+		var promise = System['import'](name);
+
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+		var _iteratorError = undefined;
+
+		try {
+			for (var _iterator = scheduledFuncs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var fn = _step.value;
+
+				fn();
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator['return']) {
+					_iterator['return']();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
+
+		var value = promise.value();
+	} finally {
+		_bluebird2['default'].setScheduler(origScheduler);
+		global.Promise = origPromise;
+	}
+
+	return value;
+}
+
+module.exports = exports['default'];
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"bluebird":1}]},{},[3])(3)
+});
