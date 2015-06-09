@@ -81,6 +81,7 @@ public class JsModuleExportsStrippingReader extends Reader {
 	}
 	
 	private boolean matchesModuleExports() {
+		// do not try to replace with with a regex that matches various module.exports permutations - using .contains is far more performant (see https://github.com/BladeRunnerJS/brjs/pull/1420)
 		String condensedTailBufferContent = tailBuffer.toString().replaceAll("\\s+","");
 		return condensedTailBufferContent.contains(EXPORTS_MATCH);
 	}
