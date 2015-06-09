@@ -40,9 +40,10 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		return new StringReader(
-			"System.registerDynamic('service!" + requirePath + "', ['br/ServiceRegistry'], true, function(require, exports, module) {\n"+
-			"\tmodule.exports = require('br/ServiceRegistry').getService('" + requirePath + "');\n" +
-			"\treturn module.exports;\n" +
+			"System.registerDynamic('service!" + requirePath + "', ['alias!" + requirePath + "'], true, function(require, exports, module) {\n" +
+			"	var ServiceClass = require('alias!" + requirePath + "');\n" +
+			"	module.exports = new ServiceClass();\n" +
+			"	return module.exports;\n" +
 			"});\n"
 		);
 	}
