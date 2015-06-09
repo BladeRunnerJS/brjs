@@ -2,24 +2,20 @@ package org.bladerunnerjs.utility.reader;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.utility.FixedLengthStringBuilder;
 
 /*
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
- * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
+ * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact when bundling
  */
 
 public class JsModuleExportsStrippingReader extends Reader {
-	public static final String MODULE_EXPORTS_REGEX = "^.*(module\\.)?exports\\W*=.*";
-	public static final Pattern MODULE_EXPORTS_REGEX_PATTERN = Pattern.compile(MODULE_EXPORTS_REGEX, Pattern.DOTALL);
-
+	private String EXPORTS_MATCH = "exports=";
 	private final Reader sourceReader;
 	
-	private final FixedLengthStringBuilder tailBuffer = new FixedLengthStringBuilder(MODULE_EXPORTS_REGEX.length() + 10); // + 10 to allow for extra spaces in the definition
+	private final FixedLengthStringBuilder tailBuffer = new FixedLengthStringBuilder(EXPORTS_MATCH.length() + 10); // + 10 to allow for extra spaces in the definition
 	
 	private boolean moduleExportsLocated = false;
 	
@@ -85,9 +81,8 @@ public class JsModuleExportsStrippingReader extends Reader {
 	}
 	
 	private boolean matchesModuleExports() {
-		Matcher moduleExportsMatcher = MODULE_EXPORTS_REGEX_PATTERN.matcher(tailBuffer.toString());
-		
-		return moduleExportsMatcher.matches();
+		String condensedTailBufferContent = tailBuffer.toString().replaceAll("\\s+","");
+		return condensedTailBufferContent.contains(EXPORTS_MATCH);
 	}
 	
 }
