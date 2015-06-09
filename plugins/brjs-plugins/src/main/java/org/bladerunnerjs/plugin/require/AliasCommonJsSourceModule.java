@@ -22,6 +22,8 @@ import org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 
+import com.google.common.base.Joiner;
+
 public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 	
 	private final AssetContainer assetContainer;
@@ -55,10 +57,26 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 
 	@Override
 	public Reader getReader() throws IOException {
+		List<String> dependencies = new ArrayList<>();
+		if(aliasDefinition.getRequirePath() != null) {
+			dependencies.add("'" + aliasDefinition.getRequirePath() + "'");
+		}
+		if(aliasDefinition.getInterfaceRequirePath() != null) {
+			dependencies.add("'" + aliasDefinition.getInterfaceRequirePath() + "'");
+			dependencies.add("'topiarist'");
+		}
+		
+		String interfaceCheck =
+			"	var InterfaceClass = require('" + aliasDefinition.getInterfaceRequirePath() + "');\n" +
+			"	var topiarist = require('topiarist');\n" +
+			"	if(!topiarist.isA(AliasClass, InterfaceClass)) throw new TypeError(\"'" + aliasDefinition.getRequirePath() + "' was not an instance of '" + aliasDefinition.getInterfaceRequirePath() + "'.\");\n";
+		
 		return new StringReader(
-			"System.registerDynamic('alias!" + aliasDefinition.getName() + "', ['br/AliasRegistry'], true, function(require, exports, module) {\n" +
-			"\tmodule.exports = require('br/AliasRegistry').getClass('"+aliasDefinition.getName()+"');\n" +
-			"\treturn module.exports;\n" +
+			"System.registerDynamic('alias!" + aliasDefinition.getName() + "', [" + Joiner.on(", ").join(dependencies) + "], true, function(require, exports, module) {\n" +
+			"	var AliasClass = require('" + aliasDefinition.getRequirePath() + "');\n" +
+			((aliasDefinition.getInterfaceRequirePath() == null) ? "" : interfaceCheck) +
+			"	module.exports = AliasClass;\n" +
+			"	return module.exports;\n" +
 			"});\n"
 		);
 	}
