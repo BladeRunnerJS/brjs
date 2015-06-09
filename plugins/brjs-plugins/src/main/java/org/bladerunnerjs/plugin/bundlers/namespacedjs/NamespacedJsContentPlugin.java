@@ -32,6 +32,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 import com.Ostermiller.util.ConcatReader;
+import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -261,7 +262,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 			if(!requirePath.contains("!")) {
 				String sourceModuleClassName = requirePath.replace('/', '.').replace('-', '_');
 				
-				return "\t" + sourceModuleClassName + " = System.syncImport('" + requirePath + "');\n";
+				return "\t\t\t" + sourceModuleClassName + " = require('" + requirePath + "');\n";
 			}
 		}
 		return "";
@@ -269,18 +270,39 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin implements 
 
 	private String getGlobalizedClassesContent(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
 	{		
-		StringBuffer output = new StringBuffer();
+		StringBuffer globalizedSourceModulesBuf = new StringBuffer();
+		List<String> globalizedSourceModuleNames = new ArrayList<>();
 		
 		List<SourceModule> namespacedOrCommonJsSourceModules = bundleSet.sourceModules(Arrays.asList(NamespacedJsSourceModule.class, CommonJsSourceModule.class));
 		for(SourceModule sourceModule : namespacedOrCommonJsSourceModules) {
 			if (sourceModule instanceof TestAsset) {
 				continue;
 			}
-			output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
+			globalizedSourceModulesBuf.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
+			
+			if(!sourceModule.getPrimaryRequirePath().contains("!")) {
+				globalizedSourceModuleNames.add("'" + sourceModule.getPrimaryRequirePath() + "'");
+			}
 		}
 		
-		String globalizedSourceModules = output.toString();
+		String globalizedSourceModules = globalizedSourceModulesBuf.toString();
+
+		String brAllModule =
+			"System.registerDynamic('br/all', [" + Joiner.on(", ").join(globalizedSourceModuleNames) + "], true, function(require, exports, module) {\n" +
+			"	module.exports = {\n" +
+			"		globalize: function() {\n" +
+						globalizedSourceModules +
+			"		}\n" +
+			"	}\n" +
+			"\n" +
+			"	return module.exports;\n" +
+			"});\n\n";
+
+		String globalizationFunction =
+			"function globalizeSourceModules() {\n" +
+			"	System.syncImport('br/all').globalize();\n" +
+			"}\n\n";
 		
-		return (globalizedSourceModules.length() == 0) ? "" : "function globalizeSourceModules() {\n" + globalizedSourceModules + "}\nglobalizeSourceModules();\n";
+		return brAllModule + globalizationFunction + ((globalizedSourceModules.length() == 0) ? "System.syncImport('br/all');" : "System.syncImport('br/all').globalize();");
 	}
 }
