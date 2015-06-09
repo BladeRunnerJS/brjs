@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.plugin.PluginLocator;
 import org.bladerunnerjs.api.spec.utility.LogMessageStore;
@@ -14,6 +13,7 @@ import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
 import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.utility.FileUtils;
+import org.bladerunnerjs.utility.LoggerFactory;
 
 
 public class BRJSTestModelFactory

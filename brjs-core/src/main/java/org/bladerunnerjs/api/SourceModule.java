@@ -17,6 +17,8 @@ public interface SourceModule extends LinkedAsset {
 	 * Returns the list of all dependencies required by the source-module before it's able to define itself.
 	 * 
 	 * @param bundlableNode The bundlable node for which a bundle-set is being generated.
+	 * @return The list of dependent assets
+	 * @throws ModelOperationException for any exception when calculating dependencies and resolving require paths
 	 */
 	List<Asset> getPreExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
 	
@@ -25,6 +27,8 @@ public interface SourceModule extends LinkedAsset {
 	 * source-module to actually define itself.
 	 * 
 	 * @param bundlableNode The bundlable node for which a bundle-set is being generated.
+	 * @return The list of dependent assets
+	 * @throws ModelOperationException for any exception when calculating dependencies and resolving require paths
 	 */
 	List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
 	
@@ -32,6 +36,8 @@ public interface SourceModule extends LinkedAsset {
 	 * Returns the list of dependencies that are known not to be needed by the source-module until use-time.
 	 * 
 	 * @param bundlableNode The bundlable node for which a bundle-set is being generated.
+	 * @return The list of dependent assets
+	 * @throws ModelOperationException for any exception when calculating dependencies and resolving require paths
 	 */
 	List<Asset> getUseTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException;
 }
