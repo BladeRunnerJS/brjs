@@ -9,6 +9,7 @@ var ko = require( 'ko' );
 var moment = require( 'momentjs' );
 
 var WorkbenchComponent = require( 'br/workbench/ui/WorkbenchComponent' );
+var SimpleFrame = require( 'br/component/SimpleFrame' );
 var KnockoutComponent;
 
 /**
@@ -35,7 +36,7 @@ function EventHubViewer( eventHub ) {
   this._el = document.createElement("div");
   this._el.className = "presentation-model-viewier";
 
-  var frame = new br.component.SimpleFrame(this._component, null, null); 
+  var frame = new SimpleFrame(this._component, null, null); 
 
   var messagesEl = frame.getElement();
   this._el.appendChild( messagesEl );
