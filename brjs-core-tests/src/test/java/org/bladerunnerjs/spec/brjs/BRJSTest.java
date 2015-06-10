@@ -1,6 +1,7 @@
 package org.bladerunnerjs.spec.brjs;
 
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.TestPack;
@@ -201,14 +202,41 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
+	public void infoMessageIsLoggedWhenAppsDirectoryIsDiscovered() throws Exception {
+		given(testSdkDirectory).containsFolder("brjs-apps")
+			.and(logging).enabled()
+			.and(app1).hasBeenCreated()
+			.and(app1).containsFiles(AppConf.FILE_NAME, "index.html");
+		when(brjs).hasBeenCreated();
+		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, testSdkDirectory.getAbsolutePath() + File.separator + "brjs-apps")
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(APPS_DISCOVERED, app1.getName());
+	}
+	
+	@Test
 	public void warningMessageIsLoggedWhenBothAppsAndBrjsAppsFoldersExist() throws Exception {
 		given(testSdkDirectory).containsFolder("apps")
 			.and(testSdkDirectory).containsFolder("brjs-apps")
 			.and(logging).enabled();
 		when(brjs).hasBeenCreated();
-		then(logging).warnMessageReceived(BOTH_APPS_AND_BRJS_APPS_EXIST, 
-				"brjs-apps", testSdkDirectory.getAbsolutePath(), "brjs-apps", "apps", testSdkDirectory.getAbsolutePath()+"/apps", testSdkDirectory.getAbsolutePath()+"/brjs-apps")
-			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG);
+		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
+			.and(logging).warnMessageReceived(BOTH_APPS_AND_BRJS_APPS_EXIST, 
+					"brjs-apps", testSdkDirectory.getAbsolutePath(), "brjs-apps", "apps", testSdkDirectory.getAbsolutePath()+"/apps", testSdkDirectory.getAbsolutePath()+"/brjs-apps")
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, testSdkDirectory.getAbsolutePath() + File.separator + "apps")
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED);
+	}
+	
+	@Test
+	public void infoMessageIsLoggedContainingBRJSLocation() throws Exception {
+		given(logging).enabled();
+		when(brjs).hasBeenCreated();
+		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "brjs-apps")
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED);
+			
 	}
 	
 	@Test
@@ -258,14 +286,15 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void warningIsLoggedIfNonAppDirsAreDiscovered() throws Exception {
-		given(testSdkDirectory).containsFolder("myprojects")
+		given(logging).enabled()
+			.and(logging).echoEnabled();
+		when(testSdkDirectory).containsFolder("myprojects")
     		.and(testSdkDirectory).containsFolder("myprojects/nonapp")
     		.and(testSdkDirectory).containsFolder("myprojects/myapp")
     		.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
-    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
-    		.and(logging).enabled();
-    	when(brjs).discoverApps();
-    	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testSdkDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testSdkDirectory, "myprojects").getAbsolutePath());
+    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+    	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testSdkDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testSdkDirectory, "myprojects").getAbsolutePath())
+    		.and(logging).otherMessagesIgnored();
 	}
 	
 	@Test

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
@@ -61,6 +62,10 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String BOTH_APPS_AND_BRJS_APPS_EXIST = "BRJS now uses a folder named '%s' for the location of your apps but the directory '%s' contains both '%s' and '%s' folders."+
 		" '%s' will be used for the location of apps but this legacy behaviour may be removed so you should move all existing apps into the '%s' directory.";
 		public static final String FILE_WATCHER_MESSAGE = "Using '%s' as the BRJS file observer";
+		public static final String APPS_FOLDER_FOUND = "Your apps folder has been identified as '%s'.";
+		public static final String APPS_DISCOVERED = "Apps found: %s.";
+		public static final String NO_APPS_DISCOVERED = "No apps have been found.";
+		public static final String BRJS_LOCATION = "Your BladerunnerJS installation has been found at '%s'.";
 	}
 	
 	private NodeList<App> userApps;
@@ -102,11 +107,13 @@ public class BRJS extends AbstractBRJSRootNode
 	public BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
+		logger.info(Messages.BRJS_LOCATION, brjsDir.getAbsolutePath());
 		
 		this.appVersionGenerator = appVersionGenerator;
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		
 		File appsFolderPath = findAppsFolder(brjsDir, workingDir);
+		logger.info(Messages.APPS_FOLDER_FOUND, appsFolderPath.getAbsolutePath());
 		
 		FileModificationRegistryRootFileFilter fileModificationRegistryRootFileFilter = new FileModificationRegistryRootFileFilter(this, brjsDir, appsFolderPath);
 		fileModificationRegistry = new FileModificationRegistry(fileModificationRegistryRootFileFilter, globalFilesFilter);
@@ -126,6 +133,21 @@ public class BRJS extends AbstractBRJSRootNode
 		catch (NodeAlreadyRegisteredException e)
 		{
 			throw new RuntimeException(e);
+		}
+		
+		logDiscoveredApps();
+	}
+
+	private void logDiscoveredApps() {
+		List<String> appNames = new ArrayList<>();
+		for (App app : apps()) {
+			appNames.add(app.getName());
+		}
+		if ( !appNames.isEmpty() ) {
+			logger.info(Messages.APPS_DISCOVERED, StringUtils.join(appNames.toArray(), ", "));
+		}
+		else {
+			logger.info(Messages.NO_APPS_DISCOVERED);
 		}
 	}
 	
@@ -250,7 +272,7 @@ public class BRJS extends AbstractBRJSRootNode
 				apps.put(app.getName(), app);				
 			}
 		}		
-		
+
 		return new ArrayList<>( apps.values() );
 	}
 	

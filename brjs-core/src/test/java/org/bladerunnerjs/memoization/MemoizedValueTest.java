@@ -33,9 +33,9 @@ public class MemoizedValueTest {
 		
 		sdkDir.mkdir();
 		loggerMessageStore = new LogMessageStore();
+		brjs = BRJSTestModelFactory.createModel(sdkDir, sdkDir, new MockPluginLocator(), new TestLoggerFactory(loggerMessageStore), new MockAppVersionGenerator());
 		loggerMessageStore.storeLogsIfEnabled();
 		loggerMessageStore.enableStoringLogs();
-		brjs = BRJSTestModelFactory.createModel(sdkDir, sdkDir, new MockPluginLocator(), new TestLoggerFactory(loggerMessageStore), new MockAppVersionGenerator());
 	}
 
 	@After
@@ -91,7 +91,6 @@ public class MemoizedValueTest {
 		brjs.getFileModificationRegistry().incrementFileVersion(watchFile);
 		memoizedValue.value(incrementingGetter);
 		
-		loggerMessageStore.verifyDebugLogMessage(MemoizedValue.RECALCULATING_VALUE_MSG, "MemoizedFile_"+tempDir.getAbsolutePath()+" exists()");
 		loggerMessageStore.verifyDebugLogMessage(MemoizedValue.RECALCULATING_VALUE_MSG, "THE_ID");
 	}
 	
