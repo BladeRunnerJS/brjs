@@ -118,4 +118,14 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
     		.and(response).containsText( "brjsLib.sdkLibUTs.Class = require('brjsLib/sdkLibUTs/Class');" );
 	}
 	
+	@Test 
+	public void weBundleLibSrcTestContentsInUTsAtUTLevelWithImplicitRequirePath_WithoutUsingSpecTestUtils() throws Exception {	
+		sdkLibUTs = sdkLib.testType("unit").defaultTestTech();
+		given(sdkLib).hasBeenCreated()
+			.and(sdkLib).containsFile("test-unit/src-test/foo/Util.js")
+			.and(sdkLib).containsFileWithContents("test-unit/tests/Test.js", "require('foo/Util')");
+		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('foo/Util', function(require, exports, module) {\n");
+	}
+	
 }
