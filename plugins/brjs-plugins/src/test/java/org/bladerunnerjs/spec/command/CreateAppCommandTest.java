@@ -75,8 +75,8 @@ public class CreateAppCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfTheAppNamespaceIsNotAValidRootPackageName() throws Exception {
 		given(defaultTemplates).templateGroupCreated();
-		when(brjs).runCommand("create-app", "app", "caplin");
-		then(exceptions).verifyException(InvalidRootPackageNameException.class, "caplin", app.dir().getPath())
+		when(brjs).runCommand("create-app", "app", "br");
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, "br", app.dir().getPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
