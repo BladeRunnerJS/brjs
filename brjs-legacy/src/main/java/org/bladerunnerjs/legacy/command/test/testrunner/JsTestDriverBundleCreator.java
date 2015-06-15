@@ -38,9 +38,7 @@ public class JsTestDriverBundleCreator
 	{
 		logger = brjs.logger(JsTestDriverBundleCreator.class);
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
-		FileUtils.deleteDirectoryFromBottomUp(bundlesDir);
-		FileUtils.deleteQuietly(brjs, bundlesDir);
-		bundlesDir.mkdir();
+		recreateBundlesDir(brjs, bundlesDir);
 		
 		Map<String, Object> configMap = getMapFromYamlConfig(jsTestDriverConf);
 		
@@ -66,6 +64,20 @@ public class JsTestDriverBundleCreator
 		}
 		MemoizedFile testsDir = jsTestDriverConf.getParentFile().file("tests");
 		checkTestsForIife(brjs, testsDir, testsDir);
+	}
+
+	private static void recreateBundlesDir(BRJS brjs, File bundlesDir) throws IOException
+	{
+		FileUtils.deleteDirectoryFromBottomUp(bundlesDir);
+		if (bundlesDir.exists()) {
+			throw new IOException( String.format("Unable to delete the temporary '%s' directory at %s", bundlesDir.getName(), bundlesDir.getParentFile().getAbsolutePath()) );
+		}
+		
+		bundlesDir.mkdir();
+		if (!bundlesDir.isDirectory()) {
+			throw new IOException( String.format("The '%s' directory does not exist at %s as BRJS was unable to create it", bundlesDir.getName(), bundlesDir.getParentFile().getAbsolutePath()) );
+		}
+		brjs.getFileModificationRegistry().incrementAllFileVersions();
 	}
 
 	private static void checkTestsForIife(BRJS brjs, MemoizedFile rootTestDir, MemoizedFile testsDir) throws IOException
