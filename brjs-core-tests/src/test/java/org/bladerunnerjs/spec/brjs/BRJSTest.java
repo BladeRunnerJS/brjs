@@ -1,6 +1,7 @@
 package org.bladerunnerjs.spec.brjs;
 
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.TestPack;
@@ -8,6 +9,7 @@ import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 
 import static org.junit.Assert.*;
+import static org.bladerunnerjs.api.BRJS.Messages.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -192,6 +194,30 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
+	public void infoMessageIsLoggedWhenAppsDirectoryIsDiscovered() throws Exception {
+		given(testSdkDirectory).containsFolder("apps")
+			.and(logging).enabled()
+			.and(app1).hasBeenCreated()
+			.and(app1).containsFiles(AppConf.FILE_NAME, "index.html");
+		when(brjs).hasBeenCreated();
+		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, testSdkDirectory.getAbsolutePath() + File.separator + "apps")
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(APPS_DISCOVERED, app1.getName());
+	}
+	
+	@Test
+	public void infoMessageIsLoggedContainingBRJSLocation() throws Exception {
+		given(logging).enabled();
+		when(brjs).hasBeenCreated();
+		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "apps")
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED);
+			
+	}
+	
+	@Test
 	public void debugMessageIsLoggedWhenImplicitRequirePrefixesAreUsed() throws Exception {
 		App myApp = brjs.app("myApp");
 		Blade blade = myApp.defaultBladeset().blade("b1");
@@ -245,14 +271,15 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void warningIsLoggedIfNonAppDirsAreDiscovered() throws Exception {
-		given(testSdkDirectory).containsFolder("myprojects")
+		given(logging).enabled()
+			.and(logging).echoEnabled();
+		when(testSdkDirectory).containsFolder("myprojects")
     		.and(testSdkDirectory).containsFolder("myprojects/nonapp")
     		.and(testSdkDirectory).containsFolder("myprojects/myapp")
     		.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
-    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
-    		.and(logging).enabled();
-    	when(brjs).discoverApps();
-    	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testSdkDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testSdkDirectory, "myprojects").getAbsolutePath());
+    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+    	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testSdkDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testSdkDirectory, "myprojects").getAbsolutePath())
+    		.and(logging).otherMessagesIgnored();
 	}
 	
 	@Test

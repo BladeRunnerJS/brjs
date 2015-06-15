@@ -1,5 +1,7 @@
 package org.bladerunnerjs.api.spec.engine;
 
+import java.io.File;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
@@ -48,4 +50,8 @@ public class CommanderChainer {
 	public JettyServerCommander and(Server jettyServer) { return new JettyServerCommander(modelTest, jettyServer); }
 	
 	public <C extends SpecTestCommander> C and(C commander) { return commander; }
+
+	public FileTestCommander and(File file) {
+		return new FileTestCommander(modelTest, file);
+	}
 }

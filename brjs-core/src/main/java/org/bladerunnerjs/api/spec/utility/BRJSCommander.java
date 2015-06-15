@@ -155,7 +155,7 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		
 		return commanderChainer;
 	}
-
+	
 	public CommanderChainer pluginsAreAccessed() {
 		call(new ValueCommand<Void>() {
 			@Override
@@ -183,6 +183,18 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 	public CommanderChainer hasVersion(String version)
 	{
 		specTest.appVersionGenerator.setVersion(version);
+
+		return commanderChainer;
+	}
+
+	public CommanderChainer hasBeenCreatedWithWorkingDir(File workingDir) {
+		call(new ValueCommand<Void>() {
+			@Override
+			public Void call() throws Exception {
+				new BRJSBuilder(specTest, brjs).hasBeenCreatedWithWorkingDir(workingDir);
+				return null;
+			}
+		});
 		
 		return commanderChainer;
 	}

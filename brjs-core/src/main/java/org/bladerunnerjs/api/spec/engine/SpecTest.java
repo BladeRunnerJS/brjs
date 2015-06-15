@@ -191,9 +191,9 @@ public abstract class SpecTest
 
 	// File
 	public FileTestBuilder given(MemoizedFile file) { return new FileTestBuilder(this, file); }
-	public FileTestBuilder when(MemoizedFile file) { return new FileTestBuilder(this, file); }
+	public FileTestCommander when(MemoizedFile file) { return new FileTestCommander(this, file); }
 	public FileTestBuilder given(File file) { return new FileTestBuilder(this, file); }
-	public FileTestBuilder when(File file) { return new FileTestBuilder(this, file); }
+	public FileTestCommander when(File file) { return new FileTestCommander(this, file); }
 	
 	// exceptions
 	protected ExceptionsBuilder given(List<Throwable> exceptions) { return new ExceptionsBuilder(this, exceptions); }

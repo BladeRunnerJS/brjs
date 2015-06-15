@@ -10,9 +10,9 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedFileAccessor;
@@ -44,6 +44,7 @@ import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.FileObserverFactory;
+import org.bladerunnerjs.utility.LoggerFactory;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -59,6 +60,10 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String PLUGIN_FOUND_MSG = "Found plugin '%s'.";
 		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 		public static final String FILE_WATCHER_MESSAGE = "Using '%s' as the BRJS file observer";
+		public static final String APPS_FOLDER_FOUND = "Your apps folder has been identified as '%s'.";
+		public static final String APPS_DISCOVERED = "Apps found: %s.";
+		public static final String NO_APPS_DISCOVERED = "No apps have been found.";
+		public static final String BRJS_LOCATION = "Your BladerunnerJS installation has been found at '%s'.";
 	}
 	
 	private NodeList<App> userApps;
@@ -100,11 +105,13 @@ public class BRJS extends AbstractBRJSRootNode
 	public BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
+		logger.info(Messages.BRJS_LOCATION, brjsDir.getAbsolutePath());
 		
 		this.appVersionGenerator = appVersionGenerator;
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		
 		File appsFolderPath = findAppsFolder(brjsDir, workingDir);
+		logger.info(Messages.APPS_FOLDER_FOUND, appsFolderPath.getAbsolutePath());
 		
 		FileModificationRegistryRootFileFilter fileModificationRegistryRootFileFilter = new FileModificationRegistryRootFileFilter(this, brjsDir, appsFolderPath);
 		fileModificationRegistry = new FileModificationRegistry(fileModificationRegistryRootFileFilter, globalFilesFilter);
@@ -124,6 +131,21 @@ public class BRJS extends AbstractBRJSRootNode
 		catch (NodeAlreadyRegisteredException e)
 		{
 			throw new RuntimeException(e);
+		}
+		
+		logDiscoveredApps();
+	}
+
+	private void logDiscoveredApps() {
+		List<String> appNames = new ArrayList<>();
+		for (App app : apps()) {
+			appNames.add(app.getName());
+		}
+		if ( !appNames.isEmpty() ) {
+			logger.info(Messages.APPS_DISCOVERED, StringUtils.join(appNames.toArray(), ", "));
+		}
+		else {
+			logger.info(Messages.NO_APPS_DISCOVERED);
 		}
 	}
 	
@@ -243,7 +265,7 @@ public class BRJS extends AbstractBRJSRootNode
 				apps.put(app.getName(), app);				
 			}
 		}		
-		
+
 		return new ArrayList<>( apps.values() );
 	}
 	
