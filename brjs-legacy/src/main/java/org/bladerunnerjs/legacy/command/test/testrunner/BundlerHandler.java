@@ -71,11 +71,14 @@ public class BundlerHandler
 	// see http://stackoverflow.com/a/10516563/2634854 for more info
 	private void repeatedlyAttemptToCreateBundleFile(File bundleFile) throws IOException
 	{
+		if (bundleFile.exists()) {
+			throw new IOException( String.format("The bundle file '%s' already exists and should have previously been deleted so new content can be written to it", bundleFile.getAbsolutePath()) );
+		}
 		bundleFile.getParentFile().mkdirs();
 		for (int i = 0; i < 100; i++) {
 			try {
-    			boolean fileCreated = bundleFile.createNewFile();
-    			if (fileCreated) {
+    			bundleFile.createNewFile();
+    			if (bundleFile.isFile()) {
     				return;
     			}
     			Thread.sleep(10);
