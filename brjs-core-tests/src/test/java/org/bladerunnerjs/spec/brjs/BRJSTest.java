@@ -7,7 +7,6 @@ import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 
-import static org.bladerunnerjs.api.BRJS.Messages.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -225,6 +224,13 @@ public class BRJSTest extends SpecTest {
 		then(brjs).hasApps("anotherapp", "myapp")
 			.and(testSdkDirectory).containsDir("myprojects/myapp")
 			.and(testSdkDirectory).containsDir("myprojects/anotherapp");
+	}
+	
+	@Test
+	public void appsDirectoryIsCreatedIfItDoesNotExist() {
+		given(brjs).doesNotContainFolder("apps");
+		when(brjs.app("app")).create();
+		then(brjs).hasDir("apps/app");
 	}
 	
 	@Test
