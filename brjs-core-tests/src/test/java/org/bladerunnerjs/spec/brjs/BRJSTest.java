@@ -253,8 +253,9 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
-	public void appsDirectoryIsCreatedIfItDoesNotExist() {
-		given(brjs).doesNotContainFolder("apps");
+	public void appsDirectoryIsCreatedIfItDoesNotExist() throws Exception {
+		given(brjs).doesNotContainFolder("apps")
+			.and(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(new File(testSdkDirectory, "sdk"));
 		when(brjs.app("app")).create();
 		then(brjs).hasDir("apps/app");
 	}
