@@ -4,14 +4,10 @@ import java.io.File;
 
 public class FileTestCommander {
 
-	private SpecTest specTest;
-	private File file;
 	private FileTestBuilder fileTestBuilder;
 	private CommanderChainer commanderChainer;
 	
 	public FileTestCommander(SpecTest specTest, File file) {
-		this.specTest = specTest;
-		this.file = file;
 		fileTestBuilder = new FileTestBuilder(specTest, file);
 		commanderChainer = new CommanderChainer(specTest);
 	}
