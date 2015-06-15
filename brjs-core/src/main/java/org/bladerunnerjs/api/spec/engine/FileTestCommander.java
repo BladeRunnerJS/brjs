@@ -21,6 +21,13 @@ public class FileTestCommander {
 		return commanderChainer;
 	}
 
+	public CommanderChainer containsFiles(String... filePaths) throws Exception {
+		for (String filePath: filePaths) {
+			fileTestBuilder.containsFile(filePath);
+		}
+		return commanderChainer;
+	}
+	
 	public CommanderChainer containsFile(String filePath) throws Exception {
 		fileTestBuilder.containsFile(filePath);
 		return commanderChainer;

@@ -200,7 +200,8 @@ public class AppTest extends SpecTest {
 			.and(brjs).hasBeenAuthenticallyCreated()
 			.and(brjs).appsHaveBeeniterated()
 			.and(brjs).hasBeenInactiveForOneMillisecond();
-		when(brjs.app("app1")).populate("default");
+		when(brjs.app("app1")).populate("default")
+			.and(brjs.app("app1")).containsFileWithContents("app.conf", "");
 		then(brjs).hasApps("app1");
 	}
 	

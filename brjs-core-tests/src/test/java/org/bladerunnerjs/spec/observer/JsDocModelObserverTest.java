@@ -13,7 +13,7 @@ public class JsDocModelObserverTest extends SpecTest {
 		when(brjs).hasBeenCreated()
 			.and(brjs).pluginsAreAccessed()
 			.and(testSdkDirectory).containsFileWithContents("apps/app1/src/MyClass.js", "// my class")
-			.and(testSdkDirectory).containsFile("apps/app1/index.html");
+			.and(testSdkDirectory).containsFiles("apps/app1/index.html", "apps/app1/app.conf");
 			brjs.getFileModificationRegistry().incrementAllFileVersions();
 			when(brjs).discoverApps();
 		then(brjs).hasDir("generated/app/app1/jsdoc")

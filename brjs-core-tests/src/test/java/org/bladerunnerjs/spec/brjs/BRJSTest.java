@@ -137,13 +137,15 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulatedAndTheFileRepresentsTheNodeType() throws Exception {
-		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js");
+		given(brjs.file("apps/app1/blades/myBlade/src")).containsFile("Class.js")
+			.and(brjs.file("apps/app1")).containsFile("app.conf");
 		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade"), Blade.class);
 	}
 	
 	@Test // this is not a duplicate of the test above even though it may look like it, this test has been seen failing when the above was passing
 	public void locateAncestorNodeWorksWhenTheModelHasntBeenPopulatedAndTheFileRepresentsATestPack() throws Exception {
-		given(brjs.file("apps/app1/blades/myBlade/test-unit")).containsFile("file.txt");
+		given(brjs.file("apps/app1/blades/myBlade/test-unit")).containsFile("file.txt")
+			.and(brjs.file("apps/app1/")).containsFileWithContents("app.conf", "");
 		then(brjs).ancestorNodeCanBeFound(brjs.file("apps/app1/blades/myBlade/test-unit/file.txt"), TestPack.class);
 	}
 	
@@ -246,7 +248,8 @@ public class BRJSTest extends SpecTest {
 			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
 			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
 			.and(brjs.sdkTemplateGroup("default").template("app")).containsEmptyFile("index.html");
-		when(brjs.app("anotherapp")).populate("default");
+		when(brjs.app("anotherapp")).populate("default")
+			.and((brjs.app("anotherapp"))).containsFileWithContents("app.conf", "");
 		then(brjs).hasApps("anotherapp", "myapp")
 			.and(testSdkDirectory).containsDir("myprojects/myapp")
 			.and(testSdkDirectory).containsDir("myprojects/anotherapp");
