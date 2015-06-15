@@ -59,7 +59,7 @@ public class JsTestDriverBundleCreator
 			{
 				String bundlePath = StringUtils.substringAfterLast( requestedFile.getAbsolutePath(), BUNDLES_DIR_NAME+File.separator);
 				bundlePath = StringUtils.replace(bundlePath, "\\", "/");
-				bundlerHandler.createBundleFile(requestedFile, bundlePath, brjs.getAppVersionGenerator().getVersion());
+				bundlerHandler.createBundleFile(brjs, requestedFile, bundlePath, brjs.getAppVersionGenerator().getVersion());
 			}
 		}
 		MemoizedFile testsDir = jsTestDriverConf.getParentFile().file("tests");
