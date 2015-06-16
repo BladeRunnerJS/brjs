@@ -43,7 +43,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public List<LinkedAsset> seedAssets() 
 	{		
-		return assetDiscoveryInitiator.seedAssets();
+		return new ArrayList<>( assetDiscoveryResult().getRegisteredSeedAssets() );
 	}
 	
 	@Override
