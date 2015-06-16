@@ -133,7 +133,11 @@ public class TestRunnerController
 
 	private void assertValidTestDirectory(BRJS brjs, CommandPlugin testCommand,
 			JSAPResult config) throws CommandArgumentsException {
-		File testDir = new File(config.getString("dir"));
+		String dirArg = config.getString("dir");
+		if (dirArg == null) {
+			return;
+		}
+		File testDir = new File(dirArg);
 		List<MemoizedFile> validTestDirs = Arrays.asList(brjs.appsFolder(), brjs.sdkFolder().file("libs"), 
 				brjs.sdkFolder().file("system-applications"));
 		for (MemoizedFile validTestDir : validTestDirs) {
