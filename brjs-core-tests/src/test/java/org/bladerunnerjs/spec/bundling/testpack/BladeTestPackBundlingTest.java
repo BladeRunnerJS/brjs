@@ -62,7 +62,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	}
 	
 	@Test
-	public void weBundleBladeSrcTestContentsInUTs() throws Exception {		
+	public void weBundleBladeSrcTestContentsInUTsAtUTLevelWithExplicitRequirePath() throws Exception {		
 		given(blade).hasNamespacedJsPackageStyle()
 			.and(bladeUTs).containsFile("src-test/appns/bs/b1/Util.js")
 			.and(blade).hasClasses("appns.bs.b1.Class1")
@@ -71,6 +71,29 @@ public class BladeTestPackBundlingTest extends SpecTest
 		then(bladeUTs).srcOnlyBundledFilesEquals(
 			blade.file("src/appns/bs/b1/Class1.js"),
 			bladeUTs.file("src-test/appns/bs/b1/Util.js"));
+	}
+	
+	@Test
+	public void weBundleBladeSrcTestContentsInUTsAtUTLevelWithImplicitRequirePath() throws Exception {	
+		bladeUTs = blade.testType("unit").defaultTestTech();
+		given(blade).hasNamespacedJsPackageStyle()
+			.and(bladeUTs).containsFile("src-test/Util.js")
+			.and(blade).hasClasses("appns.bs.b1.Class1")
+			.and(bladeUTs).classExtends("Util", "appns.bs.b1.Class1")
+			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Util");
+		then(bladeUTs).srcOnlyBundledFilesEquals(
+			blade.file("src/appns/bs/b1/Class1.js"),
+			blade.file("test-unit/src-test/Util.js"));
+	}
+	
+	@Test // This test looks the same as the one above but doesn't use spec tests utils and has been seen to fail when the one above passes
+	public void weBundleBladeSrcTestContentsInUTsAtUTLevelWithImplicitRequirePath_WithoutUsingSpecTestUtils() throws Exception {	
+		bladeUTs = blade.testType("unit").defaultTestTech();
+		given(blade).hasBeenCreated()
+			.and(blade).containsFile("test-unit/src-test/Util.js")
+			.and(blade).containsFileWithContents("test-unit/tests/Test.js", "require('appns/bs/b1/Util')");
+		when(bladeUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("define('appns/bs/b1/Util', function(require, exports, module) {\n");
 	}
 	
 	@Test
