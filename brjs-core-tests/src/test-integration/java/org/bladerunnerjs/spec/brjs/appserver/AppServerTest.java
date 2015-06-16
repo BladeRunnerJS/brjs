@@ -216,6 +216,9 @@ public class AppServerTest extends SpecTest
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app1).hasBeenPopulated("default")
+			.and(app1).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: app1")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "/servlet/hello/*");
 		then(appServer).requestForUrlReturns("/app1/servlet/hello", "Hello World!");
@@ -228,6 +231,9 @@ public class AppServerTest extends SpecTest
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app1).hasBeenPopulated("default")
+			.and(app1).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: app1")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "*.mock");
 		then(appServer).requestForUrlReturns("/app1/hello.mock", "Hello World!");
@@ -311,6 +317,9 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void errorCode500IsThrownIfBadFileIsRequired() throws Exception {
 		given(app1.defaultAspect()).indexPageRequires("appns/App")
+			.and(app1).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: app1")
 			.and(app1.defaultAspect()).classFileHasContent("appns/App", "require('badFile')")
 			.and(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "Error 500");
@@ -319,6 +328,9 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void errorCode400IsThrownIfTheRequestIsMalformed() throws Exception {
 		given(app1.defaultAspect()).indexPageHasContent("")
+			.and(app1).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: app1")
 			.and(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/js/malformed-request", "Error 400");
 	}
