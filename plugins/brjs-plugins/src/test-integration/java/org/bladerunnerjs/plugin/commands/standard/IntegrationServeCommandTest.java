@@ -132,6 +132,9 @@ public class IntegrationServeCommandTest extends SpecTest
 		
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
 		when(brjs).runThreadedCommand("serve")
@@ -158,6 +161,9 @@ public class IntegrationServeCommandTest extends SpecTest
     		appServer = brjs.applicationServer();
     		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(brjs).runThreadedCommand("serve", "-v", "myversion");
 		then(appServer).requestCanEventuallyBeMadeWhereResponseMatches("/app1/v/myversion/js/dev/combined/bundle.js", new Predicate<String>()
@@ -181,6 +187,9 @@ public class IntegrationServeCommandTest extends SpecTest
     		Aspect aspect = app.defaultAspect();
     		appServer = brjs.applicationServer();
     		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
 			.and(aspect).hasClass("appns/Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(brjs).runThreadedCommand("serve", "-v", "myversion");

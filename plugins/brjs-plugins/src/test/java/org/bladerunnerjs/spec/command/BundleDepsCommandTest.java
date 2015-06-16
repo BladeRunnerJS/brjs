@@ -71,7 +71,10 @@ public class BundleDepsCommandTest extends SpecTest {
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
-		given(aspect).hasBeenCreated()
+		given(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(aspect).hasBeenCreated()
 			.and(brjs).hasBeenAuthenticallyCreated();
 		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
 		then(exceptions).verifyNoOutstandingExceptions();
