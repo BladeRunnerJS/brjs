@@ -130,7 +130,7 @@ public class NameValidatorTest
 	@Test
 	public void testReservedNamespace()
 	{
-		assertFalse("1a", NameValidator.isValidRootPackageName("caplin"));
+		assertFalse("1a", NameValidator.isValidRootPackageName("br"));
 		assertTrue("1b", NameValidator.isValidRootPackageName("appns"));
 	}
 	
@@ -148,7 +148,7 @@ public class NameValidatorTest
 	public void testgetReservedNamespaceList()
 	{
 		String[] messageLines = NameValidator.getReservedNamespaces().split("\n");
-		assertEquals(messageLines[0], "Reserved namespace(s): 'caplin', 'caplinx'");
+		assertEquals(messageLines[0], "Reserved namespace(s): 'br'");
 		assertTrue(messageLines[2], messageLines[2].startsWith("Banned Namespaces/JavaScript keywords: 'abstract', 'as', 'boolean', 'break'"));
 	}
 	

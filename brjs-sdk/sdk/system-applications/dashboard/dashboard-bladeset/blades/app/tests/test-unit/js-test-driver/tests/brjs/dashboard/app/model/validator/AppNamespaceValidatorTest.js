@@ -24,13 +24,12 @@ AppNamespaceValidatorTest.prototype.testNamespacesCanOnlyBeLowerCaseAlphanumsWhe
 	assertTrue("2c", this.isValid("a1"));
 };
 
-AppNamespaceValidatorTest.prototype.testCaplinAndbrjsAreReservedNames = function()
+AppNamespaceValidatorTest.prototype.testReservedNames = function()
 {
-	assertFalse("1a", this.isValid("caplin"));
-	assertFalse("1b", this.isValid("brjs"));
+	assertFalse("1a", this.isValid("brjs"));
+	assertFalse("1b", this.isValid("br"));
 	
-	assertTrue("2a", this.isValid("caplinz"));
-	assertTrue("2b", this.isValid("brjsyz"));
+	assertTrue("2a", this.isValid("brjsx"));
 };
 
 AppNamespaceValidatorTest.prototype.testThatEmptyStringIsAValidNamespace = function()

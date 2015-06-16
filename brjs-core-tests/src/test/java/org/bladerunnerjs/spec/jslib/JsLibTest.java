@@ -51,8 +51,8 @@ public class JsLibTest extends SpecTest {
 	
 	@Test
 	public void populateFailsIfTheLibraryNamespaceIsReserved() throws Exception {
-		when(lib).populate("caplin", "default");
-		then(exceptions).verifyException(InvalidRootPackageNameException.class, "caplin", lib.dir().getPath());
+		when(lib).populate("br", "default");
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, "br", lib.dir().getPath());
 	}
 	
 	@Test

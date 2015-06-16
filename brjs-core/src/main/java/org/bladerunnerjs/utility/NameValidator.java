@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.engine.Node;
 
 public class NameValidator
 {
-	private static final String[] RESERVED_NAMESPACES = new String[] { "caplin", "caplinx" };
+	private static final String[] RESERVED_NAMESPACES = new String[] { "br" };
 	private static final String[] RESERVED_JS_KEYWORDS = new String[] { "abstract", "as", "boolean", "break", "byte", "case", "catch", 
 		"char", "class", "continue", "const", "debugger", "default", "delete", "do", "double", "else", "enum", "export", "extends", 
 		"false", "final", "finally", "float", "for", "function", "goto", "if", "implements", "import", "in", "instanceof", "int", 
