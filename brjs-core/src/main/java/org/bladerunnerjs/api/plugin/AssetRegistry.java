@@ -1,6 +1,7 @@
 package org.bladerunnerjs.api.plugin;
 
 import java.util.List;
+import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.LinkedAsset;
@@ -59,6 +60,18 @@ public interface AssetRegistry
 	 * @return the Asset object identified by the specified require path within the current registry.
 	 */
 	public Asset getRegisteredAsset(String requirePath);
+	
+	/**
+	 * Returns all Assets registered with the Asset registry
+	 * @return assets
+	 */
+	public Set<Asset> getRegisteredAssets();
+	
+	/**
+	 * Returns all Assets registered as seed assets with the Asset registry
+	 * @return assets
+	 */
+	public Set<LinkedAsset> getRegisteredSeedAssets();
 	
 	/**
 	 * The method retrieves the List of {@link Asset}s identified by the AssetPlugins available for the current {@link AssetContainer}, 

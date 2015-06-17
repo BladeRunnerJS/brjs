@@ -71,7 +71,7 @@ task copyBrowsers(type: Sync) {
 		}
 }
 
-task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemAppServlets, configurations.testRunner, configurations.javadocs], {	
+task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemAppServlets, configurations.testRunner, configurations.javadocs], {
 	destinationDir projectDir
 	inputs.property "buildVersion", buildVersion
 	inputs.property "buildHostname", buildHostname
@@ -171,7 +171,7 @@ gradle.addListener(new StartBRJSExecutionListener(
 task test, dependsOn: testPhantomJS
 
 
-task createSdkJsDocs, dependsOn: assembleSdk, {
+task jsdoc, dependsOn: assembleSdk, {
 	inputs.dir "sdk/libs/javascript"
     outputs.dir "sdk/docs/js"
 	def jsDocTmpAppName = "jsdoc-tmp-app"
@@ -194,13 +194,21 @@ task createSdkJsDocs, dependsOn: assembleSdk, {
 	doLast {
 		delete file("apps/${jsDocTmpAppName}")
 		delete file("apps/${jsDocTmpAppName}")
-		file("sdk/docs/js/hosted-docs.css").text = ".regeneratedDocsBtn, .subnav, #topnav { display: none !important; }"
+		file("sdk/docs/js/hosted-docs/hosted-docs.css").text += "\n.regeneratedDocsBtn, .subnav, .dashboard-link, .releases-link { display: none !important; }"
+		file("sdk/docs/js/hosted-docs/hosted-docs.js").text += "\nfunction addVersion() {\n"+
+			"	var dashboardLinkEl = document.querySelector('.dashboard-link');\n"+
+			"	var versionEl = document.createElement('li');\n"+
+			"	versionEl.innerHTML = '<a href=\"https://github.com/BladeRunnerJS/brjs/releases/$buildMajorVersion\" target=\"_blank\">BRJS $buildVersion</a>';\n"+
+			"	dashboardLinkEl.parentNode.insertBefore(versionEl, dashboardLinkEl.nextSibling);\n"+
+			"};\n"+
+			"if (window.addEventListener) window.addEventListener('load', addVersion, false);\n"+
+			"else if (window.attachEvent) window.attachEvent('onload', addVersion);\n"
 	}
 }
 
 
 
-assemble.dependsOn = [assembleSdk, copyBrowsers, createSdkJsDocs]
+assemble.dependsOn = [assembleSdk, copyBrowsers, jsdoc]
 
 task check, dependsOn: test, {}
 task build, dependsOn: check, {}

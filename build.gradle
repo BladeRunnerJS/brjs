@@ -8,6 +8,7 @@ def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBui
 def projectCurrentBranch = org.bladerunnerjs.BuildVersionCalculator.calculateCurrentBranch(project)
 
 logger.info "Build version calculated as: ${projectBuildVersion}"
+logger.info "Build major version calculated as: ${projectBuildMajorVersion}"
 logger.info "Build date is: ${projectBuildDate}"
 logger.info "Build hostname is: ${projectBuildHostname}"
 logger.info "Build branch is: ${projectCurrentBranch}"
@@ -42,6 +43,7 @@ allprojects {
 
 	ext {
 		buildVersion = projectBuildVersion
+		buildMajorVersion = projectBuildMajorVersion
 		buildDate = projectBuildDate
 		buildHostname = projectBuildHostname
 	}
@@ -94,7 +96,7 @@ subprojects { p ->
 	afterEvaluate { project ->
 
 		if (project.plugins.hasPlugin(JavaPlugin)) {
-			if(project.name == 'brjs-core' 
+			if(project.name == 'brjs-core'
 					|| project.name == 'brjs-core-tests'
 					|| project.name == 'brjs-plugins') {
 				sourceCompatibility = '1.8'

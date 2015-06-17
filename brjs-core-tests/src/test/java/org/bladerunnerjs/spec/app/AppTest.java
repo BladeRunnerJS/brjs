@@ -125,8 +125,8 @@ public class AppTest extends SpecTest {
 	@Test
 	public void usingReservedKeywordAsAppNameSpaceThrowsException() throws Exception {
 		given(appTemplate).containsFile("some-file.blah");
-		when(app).populate("caplinx", "default");
-		then(exceptions).verifyException(InvalidRootPackageNameException.class, app.dir(), unquoted("'caplinx'"));
+		when(app).populate("br", "default");
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, app.dir(), unquoted("'br'"));
 	}
 	
 	@Test

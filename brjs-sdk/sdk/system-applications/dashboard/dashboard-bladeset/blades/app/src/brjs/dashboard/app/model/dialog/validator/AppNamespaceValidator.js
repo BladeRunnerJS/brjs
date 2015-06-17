@@ -13,7 +13,7 @@ brjs.dashboard.app.model.dialog.validator.AppNamespaceValidator.prototype.valida
 	{
 		oValidationResult.setResult(false, brjs.dashboard.app.NameValidator.RESERVED_JS_WORD_MESSAGE);
 	}
-	else if((vValue == "caplin") || (vValue == "brjs"))
+	else if((vValue == "brjs") || (vValue == "br"))
 	{
 		oValidationResult.setResult(false, "'" + vValue + "' is a reserved namespace.");
 	}
