@@ -216,10 +216,10 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutApps() throws Exception {
-		given(testSdkDirectory).containsFolder("myprojects")
-			.and(testSdkDirectory).containsFolder("myprojects/myapp")
-			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
-			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
+		given(testRootDirectory).containsFolder("myprojects")
+			.and(testRootDirectory).containsFolder("myprojects/myapp")
+			.and(testRootDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testRootDirectory, "myprojects/myapp") )
 			.and(appJars).hasBeenCreated()
 			.and(defaultTemplates).templateGroupCreated();
 		when(brjs).runCommand("create-app", "app", "appx");

@@ -37,7 +37,7 @@ public class JsTestDriverBundleCreatorTest {
 	
 	@Before
 	public void setup() throws InvalidSdkDirectoryException, IOException, InvalidNameException, ModelUpdateException {
-		brjs = BRJSTestModelFactory.createModel(BRJSTestModelFactory.createTestSdkDirectory(), new TestLoggerFactory(logMessageStore));
+		brjs = BRJSTestModelFactory.createModel(BRJSTestModelFactory.createRootTestDir(), new TestLoggerFactory(logMessageStore));
 		FileUtils.write(brjs.app("app1").file("app.conf"), "");
 		aspectTestPack = brjs.app("app1").aspect("default").testType("unit");
 		aspectTestConfig = new File(aspectTestPack.dir(), "jsTestDriver.conf");

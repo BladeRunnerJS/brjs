@@ -163,8 +163,8 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void appsFolderIsTheActiveAppsFolderItExists() throws Exception {
-		given(testSdkDirectory).containsFolder("apps")
-			.and(brjs).hasBeenCreatedWithWorkingDir(testSdkDirectory);
+		given(testRootDirectory).containsFolder("apps")
+			.and(brjs).hasBeenCreatedWithWorkingDir(testRootDirectory);
 		when(brjs.app("app1")).create();
 		then(brjs).hasDir("apps/app1");	
 	}
@@ -184,7 +184,7 @@ public class BRJSTest extends SpecTest {
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
 		given(brjs).hasBeenCreated();
 		when(brjs.app("app1")).create();
-		then(testSdkDirectory).containsDir("apps/app1");
+		then(testRootDirectory).containsDir("apps/app1");
 	}
 	
 	@Test
@@ -197,14 +197,14 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void infoMessageIsLoggedWhenAppsDirectoryIsDiscovered() throws Exception {
-		given(testSdkDirectory).containsFolder("apps")
+		given(testRootDirectory).containsFolder("apps")
 			.and(logging).enabled()
 			.and(app1).hasBeenCreated()
 			.and(app1).containsFiles(AppConf.FILE_NAME, "index.html");
 		when(brjs).hasBeenCreated()
 			.and(brjs).discoverUserApps();
 		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
-			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, testSdkDirectory.getAbsolutePath() + File.separator + "apps")
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, testRootDirectory.getAbsolutePath() + File.separator + "apps")
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).infoMessageReceived(APPS_DISCOVERED, "User", app1.getName());
 	}
@@ -236,53 +236,53 @@ public class BRJSTest extends SpecTest {
 	
 	@Test
 	public void appsIsntRequiredIfCommandIsRunFromInsideAnApp() throws Exception {
-		given(testSdkDirectory).containsFolder("myprojects")
-			.and(testSdkDirectory).containsFolder("myprojects/myapp")
-			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
-			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+		given(testRootDirectory).containsFolder("myprojects")
+			.and(testRootDirectory).containsFolder("myprojects/myapp")
+			.and(testRootDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testRootDirectory, "myprojects/myapp") );
 		then(brjs).hasApps("myapp");
 	}
 	
 	@Test
 	public void appsCanBecreatedIfCommandIsRunFromInsideAnAppWithoutApps() throws Exception {
-		given(testSdkDirectory).containsFolder("myprojects")
-			.and(testSdkDirectory).containsFolder("myprojects/myapp")
-			.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
-			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
+		given(testRootDirectory).containsFolder("myprojects")
+			.and(testRootDirectory).containsFolder("myprojects/myapp")
+			.and(testRootDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+			.and(brjs).hasBeenCreatedWithWorkingDir( new File(testRootDirectory, "myprojects/myapp") )
 			.and(brjs.sdkTemplateGroup("default").template("app")).containsEmptyFile("index.html");
 		when(brjs.app("anotherapp")).populate("default")
 			.and((brjs.app("anotherapp"))).containsFileWithContents("app.conf", "");
 		then(brjs).hasApps("anotherapp", "myapp")
-			.and(testSdkDirectory).containsDir("myprojects/myapp")
-			.and(testSdkDirectory).containsDir("myprojects/anotherapp");
+			.and(testRootDirectory).containsDir("myprojects/myapp")
+			.and(testRootDirectory).containsDir("myprojects/anotherapp");
 	}
 	
 	@Test
 	public void appsDirectoryIsCreatedIfItDoesNotExistAndBrjsIsRunFromSdkDir() throws Exception {
 		given(brjs).doesNotContainFolder("apps")
-			.and(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(new File(testSdkDirectory, "sdk"));
+			.and(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(new File(testRootDirectory, "sdk"));
 		when(brjs.app("app1")).create();
-		then(testSdkDirectory).containsDir("apps/app1");
+		then(testRootDirectory).containsDir("apps/app1");
 	}
 	
 	@Test
 	public void appsDirectoryIsCreatedIfItDoesNotExistAndBrjsIsRunAndCreatedFromSdkDir() throws Exception {
-		File testDir = testSdkDirectory;
-		testSdkDirectory = new File(testSdkDirectory, "sdk");
-		testSdkDirectory.mkdirs();
+		File testDir = testRootDirectory;
+		testRootDirectory = new File(testRootDirectory, "sdk");
+		testRootDirectory.mkdirs();
 		given(brjs).doesNotContainFolder("apps")
-			.and(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(testSdkDirectory);
+			.and(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(testRootDirectory);
 		when(brjs.app("app1")).create();
 		then(testDir).containsDir("apps/app1");
 	}
 	
 	@Test
 	public void onlyDirsWithAppConfAreDetectedAsAppsWhenTheCommandsIsRunFromInsideAnApp() throws Exception {
-		given(testSdkDirectory).containsFolder("myprojects")
-    		.and(testSdkDirectory).containsFolder("myprojects/nonapp")
-    		.and(testSdkDirectory).containsFolder("myprojects/myapp")
-    		.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
-    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+		given(testRootDirectory).containsFolder("myprojects")
+    		.and(testRootDirectory).containsFolder("myprojects/nonapp")
+    		.and(testRootDirectory).containsFolder("myprojects/myapp")
+    		.and(testRootDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testRootDirectory, "myprojects/myapp") );
     	then(brjs).hasApps("myapp");
 	}
 	
@@ -290,22 +290,22 @@ public class BRJSTest extends SpecTest {
 	public void warningIsLoggedIfNonAppDirsAreDiscovered() throws Exception {
 		given(logging).enabled()
 			.and(logging).echoEnabled();
-		when(testSdkDirectory).containsFolder("myprojects")
-    		.and(testSdkDirectory).containsFolder("myprojects/nonapp")
-    		.and(testSdkDirectory).containsFolder("myprojects/myapp")
-    		.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
-    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
+		when(testRootDirectory).containsFolder("myprojects")
+    		.and(testRootDirectory).containsFolder("myprojects/nonapp")
+    		.and(testRootDirectory).containsFolder("myprojects/myapp")
+    		.and(testRootDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
+    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testRootDirectory, "myprojects/myapp") )
     		.and(brjs).discoverUserApps();
-    	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testSdkDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testSdkDirectory, "myprojects").getAbsolutePath())
+    	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testRootDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testRootDirectory, "myprojects").getAbsolutePath())
     		.and(logging).otherMessagesIgnored();
 	}
 	
 	@Test
 	public void newFilesInGeneratedDirDoesntIncrementSdkVersion() throws Exception
 	{
-		long sdkFileVersion = brjs.getFileModificationRegistry().getFileVersion(testSdkDirectory);
-		when(testSdkDirectory).containsFile("generated/foo");
-		assertEquals(sdkFileVersion, brjs.getFileModificationRegistry().getFileVersion(testSdkDirectory));
+		long sdkFileVersion = brjs.getFileModificationRegistry().getFileVersion(testRootDirectory);
+		when(testRootDirectory).containsFile("generated/foo");
+		assertEquals(sdkFileVersion, brjs.getFileModificationRegistry().getFileVersion(testRootDirectory));
 	}
 	
 }

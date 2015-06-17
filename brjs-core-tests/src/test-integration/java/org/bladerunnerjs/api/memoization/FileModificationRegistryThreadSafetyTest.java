@@ -24,7 +24,7 @@ public class FileModificationRegistryThreadSafetyTest
 	
 	@Before
 	public void setup() throws Exception {
-		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
+		testSdkDirectory = BRJSTestModelFactory.createRootTestDir();
 		fileInRoot = new File(testSdkDirectory, "some-file.txt");
 		dirInRoot = new File(testSdkDirectory, "some-dir");
 		fileInChildDir = new File(dirInRoot, "nested-file.txt");

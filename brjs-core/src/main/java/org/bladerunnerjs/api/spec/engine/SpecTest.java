@@ -58,7 +58,7 @@ public abstract class SpecTest
 	public boolean catchAndVerifyExceptions = true;
 	public boolean cleanupTestSdkDirectory = true;
 	public EventObserver observer;
-	public File testSdkDirectory;
+	public File testRootDirectory;
 	public MockPluginLocator pluginLocator;
 	public BRJS brjs;
 	public int appServerPort;
@@ -95,10 +95,10 @@ public abstract class SpecTest
 		logging = new LogMessageStore();
 		exceptions = new ArrayList<>();
 		observer = mock(EventObserver.class);
-		if (testSdkDirectory != null) FileUtils.deleteQuietly(testSdkDirectory);
-		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
+		if (testRootDirectory != null) FileUtils.deleteQuietly(testRootDirectory);
+		testRootDirectory = BRJSTestModelFactory.createRootTestDir();
 		pluginLocator = new MockPluginLocator();
-		webappTester = new WebappTester(testSdkDirectory);
+		webappTester = new WebappTester(testRootDirectory);
 		appVersionGenerator = new MockAppVersionGenerator();
 	}
 	
@@ -117,8 +117,8 @@ public abstract class SpecTest
 			brjs.close();
 		}
 		
-		if (testSdkDirectory.exists() && cleanupTestSdkDirectory) {
-			org.apache.commons.io.FileUtils.deleteQuietly(testSdkDirectory);
+		if (testRootDirectory.exists() && cleanupTestSdkDirectory) {
+			org.apache.commons.io.FileUtils.deleteQuietly(testRootDirectory);
 		}
 		
 		try (ServerSocket socket = new ServerSocket(appServerPort))
@@ -315,7 +315,7 @@ public abstract class SpecTest
 	
 	
 	private File getSdkDir() {
-		return new File(testSdkDirectory, "sdk");
+		return new File(testRootDirectory, "sdk");
 //		return testSdkDirectory;
 	}
 }
