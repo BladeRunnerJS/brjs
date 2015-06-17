@@ -134,28 +134,28 @@ public abstract class SpecTest
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
 		modelsCreated++;
-		return BRJSTestModelFactory.createModel(testSdkDirectory, testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
+		return BRJSTestModelFactory.createModel(getSdkDir(), getSdkDir(), pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createModelWithWorkingDir(File workingDir) throws InvalidSdkDirectoryException 
 	{	
 		modelsCreated++;
-		return BRJSTestModelFactory.createModel(testSdkDirectory, workingDir, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
+		return BRJSTestModelFactory.createModel(getSdkDir(), workingDir, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
 		modelsCreated++;
-		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging);
+		return BRJSTestModelFactory.createNonTestModel(getSdkDir(), logging);
 	}
 	
 	public BRJS createNonTestModel(File workingDir) throws InvalidSdkDirectoryException {
 		modelsCreated++;
-		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, workingDir, logging);
+		return BRJSTestModelFactory.createNonTestModel(getSdkDir(), workingDir, logging);
 	}
 	
 	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
 		modelsCreated++;
-		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
+		return BRJSTestModelFactory.createNonTestModel(getSdkDir(), logging, new TestLoggerFactory(logging));
 	}
 	
 	public String getActiveCharacterEncoding() {
@@ -312,4 +312,10 @@ public abstract class SpecTest
 	public <B extends SpecTestBuilder> B given(B builder) { return builder; }
 	public <C extends SpecTestCommander> C when(C commander) { return commander; }
 	public <V extends SpecTestVerifier> V then(V verifier) { return verifier; }
+	
+	
+	private File getSdkDir() {
+		return new File(testSdkDirectory, "sdk");
+//		return testSdkDirectory;
+	}
 }

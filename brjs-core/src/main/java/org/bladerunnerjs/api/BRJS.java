@@ -108,7 +108,7 @@ public class BRJS extends AbstractBRJSRootNode
 	public BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
-		logger.info(Messages.BRJS_LOCATION, brjsDir.getAbsolutePath());
+		logger.info(Messages.BRJS_LOCATION, rootDir.getAbsolutePath());
 		
 		this.appVersionGenerator = appVersionGenerator;
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
@@ -116,7 +116,7 @@ public class BRJS extends AbstractBRJSRootNode
 		File appsFolderPath = findAppsFolder(rootDir, workingDir);
 		logger.info(Messages.APPS_FOLDER_FOUND, appsFolderPath.getAbsolutePath());
 		
-		FileModificationRegistryRootFileFilter fileModificationRegistryRootFileFilter = new FileModificationRegistryRootFileFilter(this, brjsDir, appsFolderPath);
+		FileModificationRegistryRootFileFilter fileModificationRegistryRootFileFilter = new FileModificationRegistryRootFileFilter(this, rootDir, appsFolderPath);
 		fileModificationRegistry = new FileModificationRegistry(fileModificationRegistryRootFileFilter, globalFilesFilter);
 		
 		appsFolder = getMemoizedFile(appsFolderPath);
