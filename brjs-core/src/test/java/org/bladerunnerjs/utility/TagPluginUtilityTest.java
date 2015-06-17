@@ -51,7 +51,7 @@ public class TagPluginUtilityTest
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("1tag", "replaced tag!", "") ) );
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("-tag", "replaced tag!", "") ) );
 		
-		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
+		testSdkDirectory = BRJSTestModelFactory.createRootTestDir();
 		brjs = BRJSTestModelFactory.createModel(testSdkDirectory, mockPluginLocator);
 		
 		app = brjs.app("app");

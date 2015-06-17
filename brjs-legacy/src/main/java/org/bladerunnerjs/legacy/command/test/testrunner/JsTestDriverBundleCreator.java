@@ -44,6 +44,7 @@ public class JsTestDriverBundleCreator
 		
 		File baseDirectory = getBaseDirectory(jsTestDriverConf, configMap);
 		
+		brjs.getFileModificationRegistry().incrementAllFileVersions();
 		TestPack testPack = brjs.locateAncestorNodeOfClass(jsTestDriverConf, TestPack.class);
 		if(testPack == null){
 			throw new RuntimeException("Unable to find test pack which represents the path " + jsTestDriverConf.getParentFile());

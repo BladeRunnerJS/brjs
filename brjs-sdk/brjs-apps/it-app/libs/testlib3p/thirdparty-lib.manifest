@@ -1,4 +1,0 @@
-css: 
-depends:
-exports: Testlib3p
-js: src/Testlib3p.js

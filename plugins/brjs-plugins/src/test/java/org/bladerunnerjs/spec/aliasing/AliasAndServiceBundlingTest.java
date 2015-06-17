@@ -1096,8 +1096,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
     	    .and(logging).enabled();
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsNamespacedJsClasses("appns.Class1", "appns.Class2")
-			.and(logging).warnMessageReceived(AliasesReader.LEGACY_XMLNS_WARN_MSG, "brjs-apps/app1/default-aspect/resources/aliases.xml")
-			.and(logging).warnMessageReceived(AliasDefinitionsReader.LEGACY_XMLNS_WARN_MSG, "brjs-apps/app1/default-aspect/resources/aliasDefinitions.xml");
+			.and(logging).warnMessageReceived(AliasesReader.LEGACY_XMLNS_WARN_MSG, "apps/app1/default-aspect/resources/aliases.xml")
+			.and(logging).warnMessageReceived(AliasDefinitionsReader.LEGACY_XMLNS_WARN_MSG, "apps/app1/default-aspect/resources/aliasDefinitions.xml");
 	}
 	
 }

@@ -59,12 +59,10 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "Making plugins available via model.";
 		public static final String PLUGIN_FOUND_MSG = "Found plugin '%s'.";
 		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
-		public static final String BOTH_APPS_AND_BRJS_APPS_EXIST = "BRJS now uses a folder named '%s' for the location of your apps but the directory '%s' contains both '%s' and '%s' folders."+
-		" '%s' will be used for the location of apps but this legacy behaviour may be removed so you should move all existing apps into the '%s' directory.";
 		public static final String FILE_WATCHER_MESSAGE = "Using '%s' as the BRJS file observer";
 		public static final String APPS_FOLDER_FOUND = "Your apps folder has been identified as '%s'.";
-		public static final String APPS_DISCOVERED = "Apps found: %s.";
-		public static final String NO_APPS_DISCOVERED = "No apps have been found.";
+		public static final String APPS_DISCOVERED = "%s apps found: %s.";
+		public static final String NO_APPS_DISCOVERED = "No %s apps have been found.";
 		public static final String BRJS_LOCATION = "Your BladerunnerJS installation has been found at '%s'.";
 	}
 	
@@ -100,6 +98,9 @@ public class BRJS extends AbstractBRJSRootNode
 	private TestRunnerConf testRunnerConf;
 	private boolean closed = false;
 	
+	private boolean loggedUserApps = false;
+	private boolean loggedSystemApps = false;
+	
 	private MemoizedFile appsFolder;
 	private MemoizedFile sdkFolder;
 	private PluginLocator pluginLocator;
@@ -107,15 +108,15 @@ public class BRJS extends AbstractBRJSRootNode
 	public BRJS(File brjsDir, File workingDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory);
-		logger.info(Messages.BRJS_LOCATION, brjsDir.getAbsolutePath());
+		logger.info(Messages.BRJS_LOCATION, rootDir.getAbsolutePath());
 		
 		this.appVersionGenerator = appVersionGenerator;
 		memoizedFileAccessor  = new MemoizedFileAccessor(this);
 		
-		File appsFolderPath = findAppsFolder(brjsDir, workingDir);
+		File appsFolderPath = findAppsFolder(rootDir, workingDir);
 		logger.info(Messages.APPS_FOLDER_FOUND, appsFolderPath.getAbsolutePath());
 		
-		FileModificationRegistryRootFileFilter fileModificationRegistryRootFileFilter = new FileModificationRegistryRootFileFilter(this, brjsDir, appsFolderPath);
+		FileModificationRegistryRootFileFilter fileModificationRegistryRootFileFilter = new FileModificationRegistryRootFileFilter(this, rootDir, appsFolderPath);
 		fileModificationRegistry = new FileModificationRegistry(fileModificationRegistryRootFileFilter, globalFilesFilter);
 		
 		appsFolder = getMemoizedFile(appsFolderPath);
@@ -134,21 +135,6 @@ public class BRJS extends AbstractBRJSRootNode
 		{
 			throw new RuntimeException(e);
 		}
-		
-		logDiscoveredApps();
-	}
-
-	private void logDiscoveredApps() {
-		List<String> appNames = new ArrayList<>();
-		for (App app : apps()) {
-			appNames.add(app.getName());
-		}
-		if ( !appNames.isEmpty() ) {
-			logger.info(Messages.APPS_DISCOVERED, StringUtils.join(appNames.toArray(), ", "));
-		}
-		else {
-			logger.info(Messages.NO_APPS_DISCOVERED);
-		}
 	}
 	
 	public MemoizedFile appsFolder() {
@@ -165,18 +151,14 @@ public class BRJS extends AbstractBRJSRootNode
 			if (new File(currentFolder, AppConf.FILE_NAME).exists()) {
 				return currentFolder.getParentFile();
 			} else if (new File(currentFolder, "apps").exists() && new File(currentFolder, "sdk").exists()) {
-				if (new File(currentFolder, "brjs-apps").exists()) {
-					logger.warn(Messages.BOTH_APPS_AND_BRJS_APPS_EXIST, "brjs-apps", brjsDir.getAbsolutePath(), "brjs-apps", "apps", brjsDir.getAbsolutePath()+"/apps", brjsDir.getAbsolutePath()+"/brjs-apps"); 
-				}
 				return new File (currentFolder, "apps");
-			} else if (new File(currentFolder, "brjs-apps").exists()) {
-				return new File (currentFolder, "brjs-apps");
 			}
 			
 			currentFolder = currentFolder.getParentFile();
 		}
-		if (brjsDir == workingDir) {
-			return new File (brjsDir, "brjs-apps");
+		
+		if (brjsDir.equals(workingDir) || (workingDir.getName().equals("sdk") && workingDir.getParentFile().equals(brjsDir))) {
+			return new File (brjsDir, "apps");
 		}
 		return workingDir;		
 	}
@@ -286,7 +268,12 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> userApps()
 	{
-		return userApps.list();
+		List<App> discoveredUserApps = userApps.list();
+		if (!loggedUserApps) {
+			logDiscoveredApps("user", discoveredUserApps);
+			loggedUserApps = true;
+		}
+		return discoveredUserApps;
 	}
 	
 	public App userApp(String appName)
@@ -296,7 +283,12 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> systemApps()
 	{
-		return systemApps.list();
+		List<App> discoveredSystemApps = systemApps.list();
+		if (!loggedSystemApps) {
+			logDiscoveredApps("system", discoveredSystemApps);
+			loggedSystemApps = true;
+		}
+		return discoveredSystemApps;
 	}
 	
 	public App systemApp(String appName)
@@ -509,6 +501,19 @@ public class BRJS extends AbstractBRJSRootNode
 			commandList = new CommandList(this, plugins().commandPlugins());
 		}
 		return commandList;
+	}
+	
+	private void logDiscoveredApps(String appType, List<App> appps) {
+		List<String> appNames = new ArrayList<>();
+		for (App app : appps) {
+			appNames.add(app.getName());
+		}
+		if ( !appNames.isEmpty() ) {
+			logger.info(Messages.APPS_DISCOVERED, StringUtils.capitalize(appType.toLowerCase()), StringUtils.join(appNames.toArray(), ", "));
+		}
+		else {
+			logger.info(Messages.NO_APPS_DISCOVERED, appType.toLowerCase());
+		}
 	}
 	
 }

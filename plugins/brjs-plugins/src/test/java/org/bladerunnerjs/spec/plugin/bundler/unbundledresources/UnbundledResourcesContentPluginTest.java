@@ -305,6 +305,9 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	{
 		try {
     		given(app).hasBeenCreated()
+    			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
         		.and(appAspect).containsFileWithContents("unbundled-resources/file.jsp", "2 + 2 = <%= 2 + 2 %>")
         		.and(brjs).hasVersion("1234")
         		.and(brjs.applicationServer(appServerPort)).started();

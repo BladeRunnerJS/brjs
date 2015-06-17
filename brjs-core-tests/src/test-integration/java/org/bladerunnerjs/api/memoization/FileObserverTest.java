@@ -181,25 +181,25 @@ public class FileObserverTest extends SpecTest
 	public void fileVersionIsIncrementedForDirsInASeperateAppsDirectory() throws Exception {
 		brjs.close();
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
-		File brjsAppsDir = new File(secondaryTempFolder, "brjs-apps");
-		brjsAppsDir.mkdir();
+		File appsDir = new File(secondaryTempFolder, "apps");
+		appsDir.mkdir();
 		
 		given(brjs).hasBeenCreatedWithWorkingDir(secondaryTempFolder);
 		modificationRegistry = brjs.getFileModificationRegistry();
 		fileObserver = fileObserverFactory.createObserver(brjs);
 		brjsDir = brjs.dir().getUnderlyingFile();
 		
-		File dir1 = new File(brjsAppsDir, "dir1");
+		File dir1 = new File(appsDir, "dir1");
 		File file = new File(dir1, "someFile.txt");
 		file.getParentFile().mkdirs();
 		fileObserver.start();
 		long oldFileVersion = modificationRegistry.getFileVersion(file);
 		long oldDir1Version = modificationRegistry.getFileVersion(dir1);
-		long oldDir2Version = modificationRegistry.getFileVersion(brjsAppsDir);
+		long oldDir2Version = modificationRegistry.getFileVersion(appsDir);
 		file.createNewFile();
 		assertVersionIncreased(oldFileVersion, file);
 		assertVersionIncreased(oldDir1Version, dir1);
-		assertVersionIncreased(oldDir2Version, brjsAppsDir);
+		assertVersionIncreased(oldDir2Version, appsDir);
 	}
 	
 	@Test
