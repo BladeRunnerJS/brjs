@@ -85,31 +85,7 @@ public class FavIconContentPlugin extends AbstractContentPlugin implements Routa
 
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException {
-		List<String> requestPaths = new ArrayList<String>();
-		for(AssetContainer assetContainer : bundleSet.bundlableNode().scopeAssetContainers()) {
-			requestPaths.addAll(createRequest(assetContainer));
-		}
-		return requestPaths;
-	}
-	
-	private List<String> createRequest(AssetContainer assetContainer) throws ContentProcessingException {
-		List<String> requestPaths = new ArrayList<String>();
-		MemoizedFile faviconFile = assetContainer.file(FAVICON_FILE);
-		if (!faviconFile.isFile()) {
-			return requestPaths;
-		}
-		try	{
-			String relativePath = faviconFile.getRelativePath(faviconFile);
-			if (assetContainer instanceof Aspect) {
-	    		requestPaths.add( contentPathParser.createRequest(FAVICON_REQUEST, relativePath) );
-	    		requestPaths.add( contentPathParser.createRequest(VERSIONED_FAVICON_REQUEST, relativePath) );
-			}
-		}
-		catch (MalformedTokenException e)
-		{
-			throw new ContentProcessingException(e);
-		}
-		return requestPaths;
+		return new ArrayList<String>();
 	}
 
 	@Override
