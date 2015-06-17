@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
@@ -47,7 +48,7 @@ public class BundlerHandler
 	}
 
 	
-	public void createBundleFile(File bundleFile, String bundlePath, String version) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
+	public void createBundleFile(BRJS brjs, File bundleFile, String bundlePath, String version) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
 	{
 		if (bundlePath.contains("\\"))
 		{
@@ -56,7 +57,7 @@ public class BundlerHandler
 		
 		String modelRequestPath = getModelRequestPath(bundlePath);
 		
-		repeatedlyAttemptToCreateBundleFile(bundleFile);
+		createBundleFile(brjs, bundleFile);
 		
 		try (OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile, false);
 			ResponseContent content = BundleSetRequestHandler.handle(new JsTestDriverBundleSet(bundlableNode.getBundleSet()), modelRequestPath, new StaticContentAccessor(app), version); )
@@ -69,21 +70,17 @@ public class BundlerHandler
 	
 	// this is a workaround for the scenario where Windows indexing service or virus scanners etc can lock the file when we try to create it
 	// see http://stackoverflow.com/a/10516563/2634854 for more info
-	private void repeatedlyAttemptToCreateBundleFile(File bundleFile) throws IOException
+	private void createBundleFile(BRJS brjs, File bundleFile) throws IOException
 	{
-		bundleFile.getParentFile().mkdirs();
-		for (int i = 0; i < 100; i++) {
-			try {
-    			boolean fileCreated = bundleFile.createNewFile();
-    			if (fileCreated) {
-    				return;
-    			}
-    			Thread.sleep(10);
-			} catch (IOException | InterruptedException ex) {
-				// ignore the exception from creating the file or thread interupted
-			}
+		if (bundleFile.exists()) {
+			throw new IOException( String.format("The bundle file '%s' already exists and should not. It should have previously been deleted so new content can be written to it", bundleFile.getAbsolutePath()) );
 		}
-		throw new IOException("Unable to create an empty bundle file at " + bundleFile.getAbsolutePath());
+		bundleFile.getParentFile().mkdirs();
+		bundleFile.createNewFile();
+		
+		if (!bundleFile.isFile()) {
+			throw new IOException("Unable to create an empty bundle file at " + bundleFile.getAbsolutePath());
+		}
 	}
 
 
