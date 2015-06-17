@@ -34,9 +34,19 @@ public class HTMLBundlerTagHandlerPluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("html/bundle.html", response)
 			.and(aspect).indexPageLoadedInDev(indexPageResponse, "en_GB");
 		then(indexPageResponse.toString().replace("\n", "")).textEquals( 
-				("<style>template{display:none;}</style>\n"+
-						"<template id=\"brjs-html-templates-loaded\"></template>\n"+
-						response.toString()).replace("\n","") );
+				("<script>document.createElement(\"template\");</script>\n"+
+					"<style>template{display:none;}</style>\n"+
+					"<template id=\"brjs-html-templates-loaded\"></template>\n"+
+					response.toString()).replace("\n","") );
+	}
+	
+	@Test
+	public void templateElementIsRegisteredAboveContent() throws Exception {
+		given(aspect).containsResourceFileWithContents("html/view.html", "<template id='appns.view'>TESTCONTENT</template>")
+			.and(aspect).indexPageHasContent("<@html.bundle@/>");
+		when(aspect).indexPageLoadedInDev(indexPageResponse, "en_GB");
+		then(indexPageResponse).containsText("<script>document.createElement(\"template\");</script>\n"+
+				"<style>template{display:none;}</style>\n");
 	}
 	
 	@Test

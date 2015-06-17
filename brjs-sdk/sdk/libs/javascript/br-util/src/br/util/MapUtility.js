@@ -8,13 +8,13 @@ var Errors = require('br/Errors');
 
 /**
  * This is a static class that never needs to be instantiated.
- * 
+ *
  * @class
  * @alias module:br/util/MapUtility
- * 
+ *
  * @classdesc
  * Utility class providing common operations on maps.
- * 
+ *
  * <p>In the context of this class, a <code>Map</code> is considered to be anything that is an instance of
  * <code>Object</code>.</p>
  */
@@ -351,7 +351,8 @@ MapUtility.deepClone = function(src) {
 };
 
 /**
- * @private Use deepClone to copy your map
+ * Use deepClone to copy your map
+ * @private
  * @param srcMap Map to clone
  * @returns {Object} A deep clone of the input srcMap
  */
@@ -364,7 +365,8 @@ MapUtility.deepCloneMap = function(srcMap) {
 };
 
 /**
- * @private Use deepClone to copy your Array
+ * Use deepClone to copy your Array
+ * @private
  * @param srcArray Array to clone
  * @returns {Array} A deep clone of the input Array
  */
