@@ -207,6 +207,7 @@ public abstract class SpecTest
 	
 	// node observer
 	public NodeObserverBuilder given(EventObserver observer) { return new NodeObserverBuilder(this, observer); }
+	public NodeObserverCommander when(EventObserver observer) { return new NodeObserverCommander(this, observer); }
 	public NodeObserverVerifier then(EventObserver observer) { return new NodeObserverVerifier(this, observer); }
 	
 	// NamedDirNode

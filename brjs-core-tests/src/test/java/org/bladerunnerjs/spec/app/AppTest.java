@@ -6,6 +6,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.events.AppDeployedEvent;
+import org.bladerunnerjs.api.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.api.model.events.NodeReadyEvent;
 import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
@@ -73,6 +74,16 @@ public class AppTest extends SpecTest {
 		when(app).populate("default");
 		then(observer).notified(NodeReadyEvent.class, app)
 			.and(observer).notified(NodeReadyEvent.class, defaultAspect);
+	}
+	
+	@Test
+	public void nodeReadyEventIsFiredWhenExistingAppIsDiscovered() throws Exception {
+		given(templates).templateGroupCreated()
+			.and(app).hasBeenPopulated("default")
+			.and(brjs).hasBeenAuthenticallyReCreated();
+		when(observer).observing(brjs)
+			.and(brjs).discoverUserApps();
+		then(observer).notified(NodeDiscoveredEvent.class, brjs.app("app"));
 	}
 	
 	@Test
