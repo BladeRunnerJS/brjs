@@ -266,6 +266,17 @@ public class BRJSTest extends SpecTest {
 	}
 	
 	@Test
+	public void appsDirectoryIsCreatedIfItDoesNotExistAndBrjsIsRunAndCreatedFromSdkDir() throws Exception {
+		File testDir = testSdkDirectory;
+		testSdkDirectory = new File(testSdkDirectory, "sdk");
+		testSdkDirectory.mkdirs();
+		given(brjs).doesNotContainFolder("apps")
+			.and(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(testSdkDirectory);
+		when(brjs.app("app1")).create();
+		then(testDir).containsDir("apps/app1");
+	}
+	
+	@Test
 	public void onlyDirsWithAppConfAreDetectedAsAppsWhenTheCommandsIsRunFromInsideAnApp() throws Exception {
 		given(testSdkDirectory).containsFolder("myprojects")
     		.and(testSdkDirectory).containsFolder("myprojects/nonapp")
