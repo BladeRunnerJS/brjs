@@ -15,7 +15,7 @@ public class JsDocModelObserverTest extends SpecTest {
 			.and(testSdkDirectory).containsFileWithContents("apps/app1/src/MyClass.js", "// my class")
 			.and(testSdkDirectory).containsFiles("apps/app1/index.html", "apps/app1/app.conf");
 			brjs.getFileModificationRegistry().incrementAllFileVersions();
-			when(brjs).discoverApps();
+			when(brjs).discoverUserApps();
 		then(brjs).hasDir("generated/app/app1/jsdoc")
 			.and(brjs.app("app1").storageDir("jsdoc")).containsFileWithContents("index.html", "PLACEHOLDER");
 	}

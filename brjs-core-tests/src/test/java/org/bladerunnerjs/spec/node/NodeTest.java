@@ -22,7 +22,7 @@ public class NodeTest extends SpecTest {
 		final String APP_NAME = "someApp";
 		given(observer).observing(brjs)
 			.and(brjs).hasDir("apps/"+APP_NAME);
-		when(brjs).discoverApps();
+		when(brjs).discoverUserApps();
 		then(observer).notified( NodeReadyEvent.class, brjs.app("someApp") );
 	}
 	

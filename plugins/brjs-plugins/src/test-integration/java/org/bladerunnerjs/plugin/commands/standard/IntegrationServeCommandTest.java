@@ -57,6 +57,8 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "system")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "user")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + appServerPort +"/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
@@ -99,6 +101,8 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve", "-p", "7777");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "system")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "user")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + "7777/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")

@@ -61,8 +61,8 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 		public static final String FILE_WATCHER_MESSAGE = "Using '%s' as the BRJS file observer";
 		public static final String APPS_FOLDER_FOUND = "Your apps folder has been identified as '%s'.";
-		public static final String APPS_DISCOVERED = "Apps found: %s.";
-		public static final String NO_APPS_DISCOVERED = "No apps have been found.";
+		public static final String APPS_DISCOVERED = "%s apps found: %s.";
+		public static final String NO_APPS_DISCOVERED = "No %s apps have been found.";
 		public static final String BRJS_LOCATION = "Your BladerunnerJS installation has been found at '%s'.";
 	}
 	
@@ -98,6 +98,9 @@ public class BRJS extends AbstractBRJSRootNode
 	private TestRunnerConf testRunnerConf;
 	private boolean closed = false;
 	
+	private boolean loggedUserApps = false;
+	private boolean loggedSystemApps = false;
+	
 	private MemoizedFile appsFolder;
 	private MemoizedFile sdkFolder;
 	private PluginLocator pluginLocator;
@@ -131,21 +134,6 @@ public class BRJS extends AbstractBRJSRootNode
 		catch (NodeAlreadyRegisteredException e)
 		{
 			throw new RuntimeException(e);
-		}
-		
-		logDiscoveredApps();
-	}
-
-	private void logDiscoveredApps() {
-		List<String> appNames = new ArrayList<>();
-		for (App app : apps()) {
-			appNames.add(app.getName());
-		}
-		if ( !appNames.isEmpty() ) {
-			logger.info(Messages.APPS_DISCOVERED, StringUtils.join(appNames.toArray(), ", "));
-		}
-		else {
-			logger.info(Messages.NO_APPS_DISCOVERED);
 		}
 	}
 	
@@ -279,7 +267,12 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> userApps()
 	{
-		return userApps.list();
+		List<App> discoveredUserApps = userApps.list();
+		if (!loggedUserApps) {
+			logDiscoveredApps("user", discoveredUserApps);
+			loggedUserApps = true;
+		}
+		return discoveredUserApps;
 	}
 	
 	public App userApp(String appName)
@@ -289,7 +282,12 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> systemApps()
 	{
-		return systemApps.list();
+		List<App> discoveredSystemApps = systemApps.list();
+		if (!loggedSystemApps) {
+			logDiscoveredApps("system", discoveredSystemApps);
+			loggedSystemApps = true;
+		}
+		return discoveredSystemApps;
 	}
 	
 	public App systemApp(String appName)
@@ -502,6 +500,19 @@ public class BRJS extends AbstractBRJSRootNode
 			commandList = new CommandList(this, plugins().commandPlugins());
 		}
 		return commandList;
+	}
+	
+	private void logDiscoveredApps(String appType, List<App> appps) {
+		List<String> appNames = new ArrayList<>();
+		for (App app : appps) {
+			appNames.add(app.getName());
+		}
+		if ( !appNames.isEmpty() ) {
+			logger.info(Messages.APPS_DISCOVERED, StringUtils.capitalize(appType.toLowerCase()), StringUtils.join(appNames.toArray(), ", "));
+		}
+		else {
+			logger.info(Messages.NO_APPS_DISCOVERED, appType.toLowerCase());
+		}
 	}
 	
 }

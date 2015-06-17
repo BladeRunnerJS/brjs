@@ -201,21 +201,23 @@ public class BRJSTest extends SpecTest {
 			.and(logging).enabled()
 			.and(app1).hasBeenCreated()
 			.and(app1).containsFiles(AppConf.FILE_NAME, "index.html");
-		when(brjs).hasBeenCreated();
+		when(brjs).hasBeenCreated()
+			.and(brjs).discoverUserApps();
 		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
 			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, testSdkDirectory.getAbsolutePath() + File.separator + "apps")
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-			.and(logging).infoMessageReceived(APPS_DISCOVERED, app1.getName());
+			.and(logging).infoMessageReceived(APPS_DISCOVERED, "User", app1.getName());
 	}
 	
 	@Test
 	public void infoMessageIsLoggedContainingBRJSLocation() throws Exception {
 		given(logging).enabled();
-		when(brjs).hasBeenCreated();
+		when(brjs).hasBeenCreated()
+			.and(brjs).discoverUserApps();
 		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
 			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "apps")
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED);
+			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED, "user");
 			
 	}
 	
@@ -281,7 +283,8 @@ public class BRJSTest extends SpecTest {
     		.and(testSdkDirectory).containsFolder("myprojects/nonapp")
     		.and(testSdkDirectory).containsFolder("myprojects/myapp")
     		.and(testSdkDirectory).containsFileWithContents("myprojects/myapp/app.conf", "requirePrefix: myapp")
-    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") );
+    		.and(brjs).hasBeenCreatedWithWorkingDir( new File(testSdkDirectory, "myprojects/myapp") )
+    		.and(brjs).discoverUserApps();
     	then(logging).warnMessageReceived(ValidAppDirFileFilter.NON_APP_DIR_FOUND_MSG, new File(testSdkDirectory, "myprojects/nonapp").getAbsolutePath(), new File(testSdkDirectory, "myprojects").getAbsolutePath())
     		.and(logging).otherMessagesIgnored();
 	}

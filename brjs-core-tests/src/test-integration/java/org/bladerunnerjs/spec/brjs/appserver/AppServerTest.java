@@ -104,6 +104,8 @@ public class AppServerTest extends SpecTest
 		then(appServer).requestCanBeMadeFor("/app1")
 			.and(appServer).requestIs302Redirected("/","/dashboard")
 			.and(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "system")
+			.and(logging).infoMessageReceived(BRJS.Messages.APPS_DISCOVERED, "User", "app1")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
 			.and(logging).debugMessageReceived(DEPLOYING_APP_MSG, "app1");
 	}
