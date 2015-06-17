@@ -121,8 +121,6 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		appsFolder = getMemoizedFile(appsFolderPath);
 		
-		System.err.println("using " + appsFolder  + " as apps folder");
-		
 		userApps = new NodeList<>(this, App.class, null, null, null, new ValidAppDirFileFilter(this), appsFolder);
 		this.pluginLocator = pluginLocator;
 		sdkFolder = dir().file("sdk");
@@ -158,9 +156,6 @@ public class BRJS extends AbstractBRJSRootNode
 			
 			currentFolder = currentFolder.getParentFile();
 		}
-		
-		System.err.println("working dir is " + workingDir);
-		System.err.println("brjs dir is " + brjsDir);
 		
 		if (brjsDir.equals(workingDir) || (workingDir.getName().equals("sdk") && workingDir.getParentFile().equals(brjsDir))) {
 			return new File (brjsDir, "apps");
