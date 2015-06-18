@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.plugin.EventObserver;
+import org.bladerunnerjs.logger.ConsoleLoggerStore;
+import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
 import org.bladerunnerjs.model.events.NewInstallEvent;
@@ -40,7 +42,9 @@ public class CommandRunnerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		StaticLoggerBinder.getSingleton().getLoggerFactory().setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
+		ConsoleLoggerStore loggerFactory = StaticLoggerBinder.getSingleton().getLoggerFactory();
+		loggerFactory.setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
+		loggerFactory.setLogLevel(LogLevel.WARN);
 		commandRunner = new CommandRunner();
 		
 		tempDir = FileUtils.createTemporaryDirectory( getClass() );
