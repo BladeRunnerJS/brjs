@@ -81,23 +81,27 @@ br.presenter.node.OptionsNodeList.prototype.getFirstOption = function() {
  *  instance is returned.)
  *
  * @param {String} label Label to search.
- * @param {Boolean} ignoreCase Controls wether the search should be case sensetive (default: false).
+ * @param {Boolean} ignoreCase Controls whether the search should be case sensitive (default: false).
  * @returns {@link br.presenter.node.Option}
  */
 br.presenter.node.OptionsNodeList.prototype.getOptionByLabel = function(label, ignoreCase) {
 	if (typeof ignoreCase === 'undefined') {
 		ignoreCase = false;
 	}
+	
+	if (typeof ignoreCase !== 'boolean') {
+		throw new Error("'ignoreCase' argument must be a Boolean value");
+	}
 
 	var nodes = this.getOptions();
 	var labelToCompareWith = label;
 
-	if (ignoreCase === true) {
+	if (ignoreCase) {
 		labelToCompareWith = label.toLowerCase();
 	}
 
 	function getNodeValue(node) {
-		if (ignoreCase === true) {
+		if (ignoreCase) {
 			return node.label.getValue().toLowerCase();
 		} else {
 			return node.label.getValue();
