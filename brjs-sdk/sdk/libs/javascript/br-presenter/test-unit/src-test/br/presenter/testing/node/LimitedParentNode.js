@@ -1,6 +1,14 @@
-br.presenter.testing.node.LimitedParentNode = function()
+var brCore = require("br/Core");
+var PresentationNode = require("br/presenter/node/PresentationNode");
+
+var LimitedParentNode = function()
 {
-	this.parentProperty = new br.presenter.property.WritableProperty("p");
-	this.nestedChild = new br.presenter.testing.node.LimitedDescendantNode();
+	var LimitedDescendantNode = require("br/presenter/testing/node/LimitedDescendantNode");
+	var WritableProperty = require("br/presenter/property/WritableProperty");
+	
+	this.parentProperty = new WritableProperty("p");
+	this.nestedChild = new LimitedDescendantNode();
 };
-br.Core.extend(br.presenter.testing.node.LimitedParentNode, br.presenter.node.PresentationNode);
+brCore.extend(LimitedParentNode, PresentationNode);
+
+module.exports = LimitedParentNode;

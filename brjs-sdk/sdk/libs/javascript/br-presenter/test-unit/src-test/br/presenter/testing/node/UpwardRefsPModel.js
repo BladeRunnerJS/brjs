@@ -1,5 +1,11 @@
-br.presenter.testing.node.UpwardRefsPModel = function()
+var brCore = require("br/Core");
+var PresentationModel = require("br/presenter/PresentationModel");
+var UpwardRefsChildNode = require("br/presenter/testing/node/UpwardRefsChildNode");
+
+var UpwardRefsPModel = function()
 {
-	this.child = new br.presenter.testing.node.UpwardRefsChildNode(this);
+	this.child = new UpwardRefsChildNode(this);
 };
-br.Core.extend(br.presenter.testing.node.UpwardRefsPModel, br.presenter.PresentationModel);
+brCore.extend(UpwardRefsPModel, PresentationModel);
+
+module.exports = UpwardRefsPModel;
