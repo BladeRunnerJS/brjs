@@ -139,6 +139,19 @@ public class CommandRunnerTest {
 	}
 	
 	@Test
+	public void onlyErrorsAreDisplayedWhenTheQuietFlagIsEnabled() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--quiet"});
+		
+		String output = outputStream.toString("UTF-8");
+		assertDoesNotContain("warn-level", output);
+		assertDoesNotContain("console-level", output);
+		assertDoesNotContain("info-level", output);
+		assertDoesNotContain("debug-level", output);
+	}
+	
+	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabled() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();

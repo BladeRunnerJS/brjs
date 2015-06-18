@@ -50,6 +50,7 @@ public class CommandRunner {
 	
 	static {
 		try {
+			argsParser.registerParameter(new Switch("quiet").setShortFlag('q').setLongFlag("quiet").setDefault("false").setHelp("quiet level logging"));
 			argsParser.registerParameter(new Switch("info").setShortFlag('i').setLongFlag("info").setDefault("false").setHelp("info level logging"));
 			argsParser.registerParameter(new Switch("debug").setShortFlag('d').setLongFlag("debug").setDefault("false").setHelp("debug level logging"));
 			argsParser.registerParameter(new FlaggedOption("pkg").setLongFlag("pkg").setHelp("the comma delimited list of packages to show messages from, or '"+
@@ -90,6 +91,7 @@ public class CommandRunner {
 		
 		return byteStreamOutputStream.toString().trim();
 	}
+	
 	public int run(File workingDir, String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
 		AbstractRootNode.allowInvalidRootDirectories = false;
 		BRJS brjs = null;
@@ -175,11 +177,15 @@ public class CommandRunner {
 	}
 	
 	private void processedParsedArgs(JSAPResult parsedArgs) {
+		boolean isQuiet = parsedArgs.getBoolean("quiet");
 		boolean isInfo = parsedArgs.getBoolean("info");
 		boolean isDebug = parsedArgs.getBoolean("debug");
 		List<String> whitelistedPackages = (parsedArgs.getString("pkg") != null) ? Arrays.asList(parsedArgs.getString("pkg").split("\\s*,\\s*")) : new ArrayList<String>();
 		boolean logClassNames = parsedArgs.getBoolean("show-pkg");
 		
+		if(isQuiet) {
+			getLoggerStore().setLogLevel(LogLevel.ERROR);
+		}
 		if(isDebug) {
 			getLoggerStore().setLogLevel(LogLevel.DEBUG);
 		}
