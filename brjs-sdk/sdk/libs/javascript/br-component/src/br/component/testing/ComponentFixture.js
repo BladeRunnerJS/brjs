@@ -11,17 +11,17 @@ var ComponentFrame, ComponentFrameFixture, ComponentModelFixture, Frame, AliasRe
  * @class
  * @alias module:br/component/testing/ComponentFixture
  * @implements module:br/test/Fixture
- * 
+ *
  * @classdesc
  * Constructs a <code>ComponentFixture</code>.
- * 
+ *
  * The <code>ComponentFixture</code> serves to create components using the ComponentFactory when these are
  * required in the system under test.
  *
  * <p>In addition to creating and opening the component, the ComponentFixture defines several sub-fixtures
  * to be added to the test runner, enabling the testing and manipulation of the view and presentation model
  * of the component.</p>
- * 
+ *
  * @param {String} sXml the component XML required to create the component. Required.
  * @param {module:br/component/testing/ComponentModelFixture} oModelFixture the presentation model fixture. Required.
  * @param {module:br/test/ViewFixture} oViewFixture the view fixture. Optional.
@@ -223,9 +223,17 @@ ComponentFixture.prototype._createComponent = function(sXml) {
 	var sXMLRootMatch = /^\s*<([-A-Za-z0-9_.]+)/;
 	var sType = ((sXml)?sXml.match(sXMLRootMatch)[1]:null);
 
-	var Component = Utility.locate(sType, window);
-	if(!Component){
-		var Component = AliasRegistry.getClass( sType );
+	var requirePath = sType.replace(/\./g, "/");
+	var Component;
+	try {
+		debugger;
+		Component = require(requirePath);
+	} catch(e) {
+		try {
+			Component = AliasRegistry.getClass( sType );
+		} catch (e) {
+			throw new Error("No class could be found for '"+requirePath+"' and no Alias could be found for '"+sType+"'.");
+		}
 	}
 
 	var oComponent = null;

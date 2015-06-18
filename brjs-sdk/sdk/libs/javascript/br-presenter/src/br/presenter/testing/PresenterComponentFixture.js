@@ -13,18 +13,18 @@ var presenter_knockout = require('presenter-knockout');
 
 /**
  * Constructs a <code>br.presenter.testing.PresenterComponentFixture</code>.
- * 
+ *
  * @class
  * @alias module:br/presenter/testing/PresenterComponentFixture
  * @extends module:br/component/testing/ComponentFixture
- * 
+ *
  * @classdesc
- * The <code>PresenterComponentFixture</code> serves to create presenter components in order to test the 
+ * The <code>PresenterComponentFixture</code> serves to create presenter components in order to test the
  * component behavior.
- * 
+ *
  * <p>Tests may use the <code>PresenterComponentFixture</code> to:</p>
- * 
- * <ul> 
+ *
+ * <ul>
  * 	<li>create a presenter component to test the model behavior:</br>
  * 		<code>
  *  	given("component.opened = true")<br>
@@ -44,7 +44,7 @@ var presenter_knockout = require('presenter-knockout');
  * 		</code>
  * 	</li>
  * </ul>
- * 
+ *
  * @param {String} sTemplateId the HTML template id representing the view of the presenter component. Required, not-null.
  * @param {String} sPresentationModel the presentation model class name for the presenter component. Required, not-null.
  */
@@ -56,6 +56,7 @@ function PresenterComponentFixture(sTemplateId, sPresentationModel) {
 		throw new Errors.InvalidParametersError('PresenterComponentFixture must be provided with a presentation model');
 	}
 
+	require("br/presenter/component/PresenterComponent"); // require presenter component so it's seen as a dependency
 	var sPresenterComponentXML = '<br.presenter.component.PresenterComponent templateId="' + sTemplateId + '" presentationModel="' + sPresentationModel + '"></br.presenter.component.PresenterComponent>';
 
 	// call super constructor
@@ -73,9 +74,9 @@ Core.extend(PresenterComponentFixture, ComponentFixture);
 
 /**
  * PresenterComponentFixture handles properties 'opened' and 'viewOpened'.
- * 
+ *
  * @param {String} sProperty The property to check.
- * 
+ *
  * @see br.test.Fixture#canHandleProperty
  */
 PresenterComponentFixture.prototype.canHandleProperty = function(sProperty) {
@@ -83,13 +84,13 @@ PresenterComponentFixture.prototype.canHandleProperty = function(sProperty) {
 };
 
 /**
- * This method creates the presenter component (if property = 'opened') and binds it to the view template (if 
- * property = 'viewOpened') using the references to the template Id and presentation model provided in the 
+ * This method creates the presenter component (if property = 'opened') and binds it to the view template (if
+ * property = 'viewOpened') using the references to the template Id and presentation model provided in the
  * constructor.
- * 
+ *
  * @param {String} sProperty The property name
  * @param {Variant} vValue The value to check.
- * 
+ *
  * @see br.test.Fixture#doGiven
  */
 PresenterComponentFixture.prototype.doGiven = function(sProperty, vValue) {
@@ -112,5 +113,3 @@ PresenterComponentFixture.prototype.doGiven = function(sProperty, vValue) {
 
 
 module.exports = PresenterComponentFixture;
-
-
