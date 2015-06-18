@@ -20,41 +20,47 @@ var FixtureRegistry = require('br/test/FixtureRegistry');
  * @alias module:br/test/GwtTestRunner
  * @implements module:br/test/FixtureRegistry
  */
-function GwtTestRunner(sFixtureFactoryClass) {
+function GwtTestRunner(fixtureFactoryClass) {
 	var Utility = require('br/core/Utility');
 
 	this.m_pFixtures = [];
 
+	if (typeof fixtureFactoryClass === "undefined") {
+		throw new Error("fixtureFactoryClass must be provided and cannot be undefined");
+	}
+
 	var fFixtureFactoryClass;
 	try {
-		if (typeof sFixtureFactoryClass !== "undefined" && sFixtureFactoryClass.indexOf("/") > -1) {
-			fFixtureFactoryClass = require(sFixtureFactoryClass);
+		if (typeof fixtureFactoryClass === "object") {
+			fFixtureFactoryClass = fixtureFactoryClass;
+		} else if (fixtureFactoryClass.indexOf("/") > -1) {
+			fFixtureFactoryClass = require(fixtureFactoryClass);
 		} else {
 			try {
-				var requirePath = sFixtureFactoryClass.replace(/\./g, "/");
+				var requirePath = fixtureFactoryClass.replace(/\./g, "/");
 				fFixtureFactoryClass = require(requirePath);
 			} catch (e) {
-				fFixtureFactoryClass = Utility.locate(sFixtureFactoryClass);
+				fFixtureFactoryClass = Utility.locate(fixtureFactoryClass);
 			}
 		}
 	} catch (e) {
 		throw new Errors.CustomError("InvalidFactoryError", "An error occured in br.test.GwtTestRunner when creating the fixture factory " +
-				"(" + sFixtureFactoryClass + "): " + e.message);
+				"(" + fixtureFactoryClass + "): " + e.message);
 	}
 
 	if (typeof fFixtureFactoryClass === 'undefined') {
-		throw new Errors.CustomError("InvalidFactoryError", "Fixture factory class '" + sFixtureFactoryClass + "' does not exist.");
+		throw new Errors.CustomError("InvalidFactoryError", "Fixture factory class '" + fixtureFactoryClass + "' does not exist.");
 	}
 
 	try {
 		this.m_oFixtureFactory = new fFixtureFactoryClass();
 	} catch (e) {
 		throw new Errors.CustomError("InvalidFactoryError", "An error occured in br.test.GwtTestRunner when creating the fixture factory " +
-				"(" + sFixtureFactoryClass + "): " + e.message);
+				"(" + fixtureFactoryClass + "): " + e.message);
 	}
 
 	if (!br.fulfills(this.m_oFixtureFactory, FixtureFactory)) {
-		throw new Errors.CustomError("InvalidFactoryError", "The provided fixture factory (" + sFixtureFactoryClass +
+		throw new Errors.CustomError("InvalidFactoryError", "The provided fixture factory (" + fixtureFactoryClass +
 				") does not implement br.test.FixtureFactory");
 	}
 
@@ -178,8 +184,8 @@ GwtTestRunner.prototype.addFixture = function(sScope, oFixture) {
 // *** Public Methods ***
 
 /** @private */
-GwtTestRunner.initializeTest = function(sFixtureFactoryClass) {
-	var oTestRunner = new GwtTestRunner(sFixtureFactoryClass);
+GwtTestRunner.initializeTest = function(fixtureFactoryClass) {
+	var oTestRunner = new GwtTestRunner(fixtureFactoryClass);
 
 	beforeEach(this.createTestMethod(oTestRunner, "startTest"));
 	afterEach(this.createTestMethod(oTestRunner, "endTest"));

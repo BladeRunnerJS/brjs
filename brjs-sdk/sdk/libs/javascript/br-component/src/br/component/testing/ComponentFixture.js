@@ -226,7 +226,6 @@ ComponentFixture.prototype._createComponent = function(sXml) {
 	var requirePath = sType.replace(/\./g, "/");
 	var Component;
 	try {
-		debugger;
 		Component = require(requirePath);
 	} catch(e) {
 		try {
