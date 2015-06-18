@@ -10,7 +10,7 @@ var Core = require('br/Core');
  * @module br/presenter/property/ISODateProperty
  */
 
-Core.thirdparty('momentjs');
+var momentjs = require('momentjs');
 
 /**
  * Constructs a new <code>ISODateProperty</code> instance.

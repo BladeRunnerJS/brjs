@@ -4,6 +4,7 @@
 
 var Validator = require('br/validation/Validator');
 var CrossValidationPropertyListener = require('br/presenter/validator/CrossValidationPropertyListener');
+var brCore = require("br/Core");
 
 /**
  * @private
@@ -55,7 +56,7 @@ function CrossPropertyValidatorProxy(mProperties, oCrossPropertyValidator)
 		this.m_mCrossValidationPropertyListeners[sPropId] = oListener;
 	}
 }
-br.Core.implement(CrossPropertyValidatorProxy, Validator);
+brCore.implement(CrossPropertyValidatorProxy, Validator);
 
 /**
  * @private

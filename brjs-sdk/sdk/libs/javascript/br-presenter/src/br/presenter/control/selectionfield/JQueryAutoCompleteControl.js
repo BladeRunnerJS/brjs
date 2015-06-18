@@ -11,7 +11,7 @@ var Core = require('br/Core');
  * @module br/presenter/control/selectionfield/JQueryAutoCompleteControl
  */
 
-Core.thirdparty('jquery');
+var jQuery = require('jquery');
 
 /**
  * @class

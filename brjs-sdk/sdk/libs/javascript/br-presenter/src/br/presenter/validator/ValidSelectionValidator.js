@@ -4,6 +4,7 @@
 
 var Validator = require('br/validation/Validator');
 var Errors = require('br/Errors');
+var brCore = require("br/Core");
 
 /**
  * @private
@@ -22,7 +23,7 @@ function ValidSelectionValidator(oOptions)
 	this.m_oOptions = oOptions;
 	this.m_bAllowInvalidSelections = false;
 }
-br.Core.implement(ValidSelectionValidator, Validator);
+brCore.implement(ValidSelectionValidator, Validator);
 
 ValidSelectionValidator.prototype.allowInvalidSelections = function(bAllowInvalidSelections)
 {

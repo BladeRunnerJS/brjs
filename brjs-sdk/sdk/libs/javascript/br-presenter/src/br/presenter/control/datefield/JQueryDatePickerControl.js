@@ -10,7 +10,7 @@ var Core = require('br/Core');
  * @module br/presenter/control/datefield/JQueryDatePickerControl
  */
 
-Core.thirdparty('jquery');
+var jQuery = require('jquery');
 
 var MapUtility = require('br/util/MapUtility');
 
@@ -18,15 +18,15 @@ var MapUtility = require('br/util/MapUtility');
  * @class
  * @alias module:br/presenter/control/datefield/JQueryDatePickerControl
  * @implements module:br/presenter/control/ControlAdaptor
- * 
+ *
  * @classdesc
  * A control adaptor that allows the JQuery Calendar control to be used to render instances
  * of {@link module:br/presenter/node/DateField} within presenter.
  * This class is constructed by presenter automatically on your behalf.
- * 
+ *
  * <p>The jQuery date picker control is aliased by <em>br.date-picker</em>, and can
  * be used within templates as follows:</p>
- * 
+ *
  * <pre>
  *   &lt;span data-bind="controlNode:dateFieldProperty, control:'br.date-picker'"&gt;&lt;/span&gt;
  * </pre>

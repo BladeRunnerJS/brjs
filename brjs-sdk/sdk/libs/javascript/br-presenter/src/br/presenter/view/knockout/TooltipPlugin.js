@@ -9,7 +9,7 @@ var Core = require('br/Core');
 
 // TODO: TAT - this class needs testing
 
-Core.thirdparty('jquery');
+var jQuery = require('jquery');
 var presenter_knockout = require('presenter-knockout');
 
 /**

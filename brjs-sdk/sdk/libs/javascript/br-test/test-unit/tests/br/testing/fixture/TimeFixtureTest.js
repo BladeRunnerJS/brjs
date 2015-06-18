@@ -2,7 +2,7 @@
     var Errors = require("br/Errors");
     var TimeFixture = require("br/test/TimeFixture");
     var Core = require("br/Core");
-    Core.thirdparty('mock4js');
+    var Mock4JS = require('mock4js');
 
     TimeFixtureTest = TestCase("TimeFixtureTest");
 

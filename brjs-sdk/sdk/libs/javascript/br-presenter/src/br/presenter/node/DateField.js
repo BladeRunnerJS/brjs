@@ -12,19 +12,19 @@ var Core = require('br/Core');
  * @module br/presenter/node/DateField
  */
 
-Core.thirdparty('momentjs');
+var momentjs = require('momentjs');
 
 /**
  * Constructs a new instance of <code>DateField</code>.
- * 
+ *
  * @class
  * @alias module:br/presenter/node/DateField
  * @extends module:br/presenter/node/Field
- * 
+ *
  * @classdesc
  * A <code>PresentationNode</code> containing all of the attributes necessary to model a
  * date input field on screen.
- * 
+ *
  * @param [vDate] The initial value of the date field, either using a
  * String or as a {@link module:br/presenter/property/EditableProperty}.
  * @param [vStartDate] Start of the date range for this field, either as
