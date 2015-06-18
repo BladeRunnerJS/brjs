@@ -1,7 +1,9 @@
+'use strict';
+
+var presenter = require('br/presenter');
 // include if statement to ensure that the definition of the root package is not wiped out if this
 // file is accidentally loaded.
-if (false)
-{
+if (false) {
 	/**
 	 * @classdesc
 	 *  The Presenter library enables developers to create screen views using standard HTML
@@ -63,6 +65,8 @@ if (false)
 	 * @package
 	 * @BladeRunner
 	 */
-	br.presenter = function() {};
+	presenter = function() {};
 }
+
+module.exports = package.html;
 

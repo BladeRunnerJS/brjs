@@ -26,7 +26,8 @@ function TooltipHelper() {
  * @param {String} message The message to display in the tooltip.
  * @return {module:br/presenter/control/tooltip/TooltipHelper} Returns the `this` pointer, so calls can be chained.
  */
-TooltipHelper.prototype.updateTooltip = function(/*message*/) {
+TooltipHelper.prototype.updateTooltip = function(
+/*message*/ ) {
 	throw new Errors.UnimplementedInterfaceError('TooltipHelper#updateTooltip() has not been implemented.');
 };
 
@@ -35,7 +36,8 @@ TooltipHelper.prototype.updateTooltip = function(/*message*/) {
  * @param {DOMElement} container The container element.
  * @return {module:br/presenter/control/tooltip/TooltipHelper} Returns the `this` pointer, so calls can be chained.
  */
-TooltipHelper.prototype.containWithin = function(/*container*/) {
+TooltipHelper.prototype.containWithin = function(
+/*container*/ ) {
 	throw new Errors.UnimplementedInterfaceError('TooltipHelper#containWithin() has not been implemented.');
 };
 
@@ -44,7 +46,8 @@ TooltipHelper.prototype.containWithin = function(/*container*/) {
  * @param {DOMElement} errorElement The element to which the tooltip will 'point to'.
  * @return {module:br/presenter/control/tooltip/TooltipHelper} Returns the `this` pointer, so calls can be chained.
  */
-TooltipHelper.prototype.pointTo = function(/*errorElement*/) {
+TooltipHelper.prototype.pointTo = function(
+/*errorElement*/ ) {
 	throw new Errors.UnimplementedInterfaceError('TooltipHelper#pointTo() has not been implemented.');
 };
 
@@ -55,4 +58,6 @@ TooltipHelper.prototype.remove = function() {
 	throw new Errors.UnimplementedInterfaceError('TooltipHelper#remove() has not been implemented.');
 };
 
-br.presenter.control.tooltip.TooltipHelper = TooltipHelper;
+TooltipHelper = TooltipHelper;
+
+module.exports = TooltipHelper;

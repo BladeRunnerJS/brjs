@@ -1,8 +1,17 @@
+'use strict';
+
+var jQuery = require('jquery');
+var InvalidControlModelError = require('br/presenter/control/InvalidControlModelError');
+var AutoCompleteSelectionField = require('br/presenter/node/AutoCompleteSelectionField');
+var PropertyListener = require('br/presenter/property/PropertyListener');
+var ControlAdaptor = require('br/presenter/control/ControlAdaptor');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/control/selectionfield/JQueryAutoCompleteControl
  */
 
-br.Core.thirdparty("jquery");
+Core.thirdparty('jquery');
 
 /**
  * @class
@@ -35,26 +44,24 @@ br.Core.thirdparty("jquery");
  * 
  * @see br.presenter.node.AutoCompleteSelectionField
  */
-br.presenter.control.selectionfield.JQueryAutoCompleteControl = function()
-{
-	br.presenter.control.ControlAdaptor.call(this);
+function JQueryAutoCompleteControl() {
+	ControlAdaptor.call(this);
 
 	/** @private */
 	this.m_eElement = {};
 	this.m_bOpenOnFocus = false;
 	this.m_sAppendTo = 'body';
-};
+}
 
-br.Core.inherit(br.presenter.control.selectionfield.JQueryAutoCompleteControl, br.presenter.control.ControlAdaptor);
-br.Core.inherit(br.presenter.control.selectionfield.JQueryAutoCompleteControl, br.presenter.property.PropertyListener);
+Core.inherit(JQueryAutoCompleteControl, ControlAdaptor);
+Core.inherit(JQueryAutoCompleteControl, PropertyListener);
 
 /**
  * @private
  * @see br.presenter.control.ControlAdaptor#setElement
  */
-br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype.setElement = function(eElement)
-{
-	if(eElement.type && eElement.type === 'text') {
+JQueryAutoCompleteControl.prototype.setElement = function(eElement) {
+	if (eElement.type && eElement.type === 'text') {
 		this.m_eElement = eElement;
 	} else {
 		this.m_eElement = document.createElement('input');
@@ -66,20 +73,17 @@ br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype.setEleme
  * @private
  * @see br.presenter.control.ControlAdaptor#setPresentationNode
  */
-br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype.setPresentationNode = function(oPresentationNode)
-{
-	if (!(oPresentationNode instanceof br.presenter.node.AutoCompleteSelectionField))
-	{
-		throw new br.presenter.control.InvalidControlModelError("JQueryAutoCompleteControl", "AutoCompleteSelectionField");
+JQueryAutoCompleteControl.prototype.setPresentationNode = function(oPresentationNode) {
+	if (!(oPresentationNode instanceof AutoCompleteSelectionField)) {
+		throw new InvalidControlModelError('JQueryAutoCompleteControl', 'AutoCompleteSelectionField');
 	}
 
 	this.m_eElement.value = oPresentationNode.value.getValue();
-	oPresentationNode.value.addUpdateListener(this, "_valueChanged");
+	oPresentationNode.value.addUpdateListener(this, '_valueChanged');
 	this.m_oPresentationNode = oPresentationNode;
 };
 
-br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype.onViewReady = function()
-{
+JQueryAutoCompleteControl.prototype.onViewReady = function() {
 	var oJqueryInput = jQuery(this.m_eElement);
 	var self = this;
 
@@ -113,48 +117,40 @@ br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype.onViewRe
 		}
 	});
 
-	if (this.m_bOpenOnFocus)
-	{
+	if (this.m_bOpenOnFocus) {
 		oJqueryInput.focus(function(e) {
-			jQuery(this).autocomplete("search", oJqueryInput.val() || "");
+			jQuery(this).autocomplete('search', oJqueryInput.val() || '');
 		});
 	}
 };
 
-br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype._setValue = function(oPresentationNode, oInput, oUi)
-{
-	if (oPresentationNode.isValidOption(oInput.value))
-	{
+JQueryAutoCompleteControl.prototype._setValue = function(oPresentationNode, oInput, oUi) {
+	if (oPresentationNode.isValidOption(oInput.value)) {
 		oPresentationNode.value.setValue(oInput.value);
 		this.m_eElement.value = oInput.value;
-	}
-	else if (oUi)
-	{
+	} else if (oUi) {
 		oPresentationNode.value.setValue(oUi.item.value);
 		this.m_eElement.value = oUi.item.value;
 	}
 };
 
-br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype._valueChanged = function()
-{
+JQueryAutoCompleteControl.prototype._valueChanged = function() {
 	this.m_eElement.value = this.m_oPresentationNode.value.getValue();
 };
 
 /**
  * @private
  */
-br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype.setOptions = function(mOptions)
-{
-	if (mOptions && mOptions.openOnFocus !== undefined && mOptions.openOnFocus !== "false")
-	{
+JQueryAutoCompleteControl.prototype.setOptions = function(mOptions) {
+	if (mOptions && mOptions.openOnFocus !== undefined && mOptions.openOnFocus !== 'false') {
 		this.m_bOpenOnFocus = true;
 	}
-	if (mOptions && mOptions.appendTo !== undefined)
-	{
+	if (mOptions && mOptions.appendTo !== undefined) {
 		this.m_sAppendTo = mOptions.appendTo;
 	}
-	if (mOptions && mOptions.minCharAmount !== undefined)
-	{
+	if (mOptions && mOptions.minCharAmount !== undefined) {
 		this.m_nMinCharAmount = mOptions.minCharAmount;
 	}
 };
+
+module.exports = JQueryAutoCompleteControl;

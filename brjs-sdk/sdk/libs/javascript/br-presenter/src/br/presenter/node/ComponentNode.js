@@ -1,3 +1,8 @@
+'use strict';
+
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/node/ComponentNode
  */
@@ -20,19 +25,19 @@
  * 
  * @param {module:br/component/Component} oComponent The component to be displayed on the page.
  */
-br.presenter.node.ComponentNode = function(oComponent)
-{
+function ComponentNode(oComponent) {
 	/** @private */
 	this.m_oComponent = oComponent;
-};
+}
 
-br.Core.extend(br.presenter.node.ComponentNode, br.presenter.node.PresentationNode);
+Core.extend(ComponentNode, PresentationNode);
 
 /**
  * Retrieve the component stored within this node.
  * @type br.component.Component
  */
-br.presenter.node.ComponentNode.prototype.getComponent = function()
-{
+ComponentNode.prototype.getComponent = function() {
 	return this.m_oComponent;
 };
+
+module.exports = ComponentNode;

@@ -1,3 +1,8 @@
+'use strict';
+
+var Core = require('br/Core');
+var Property = require('br/presenter/property/Property');
+
 /**
  * @module br/presenter/property/WritableProperty
  */
@@ -15,11 +20,11 @@
  * 
  * @param {Object} vValue (optional) The default value for this property.
  */
-br.presenter.property.WritableProperty = function(vValue)
-{
-	br.presenter.property.Property.call(this, vValue);
-};
-br.Core.extend(br.presenter.property.WritableProperty, br.presenter.property.Property);
+function WritableProperty(vValue) {
+	Property.call(this, vValue);
+}
+
+Core.extend(WritableProperty, Property);
 
 /**
  * Sets the unformatted value for this property and notifies listeners of the
@@ -31,7 +36,8 @@ br.Core.extend(br.presenter.property.WritableProperty, br.presenter.property.Pro
  * @param {Variant} vValue The new value for this property.
  * @type br.presenter.property.WritableProperty
  */
-br.presenter.property.WritableProperty.prototype.setValue = function(vValue)
-{
+WritableProperty.prototype.setValue = function(vValue) {
 	return this._$setInternalValue(vValue);
 };
+
+module.exports = WritableProperty;

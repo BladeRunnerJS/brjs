@@ -1,8 +1,15 @@
+'use strict';
+
+var PresentationModelFixture = require('br/presenter/testing/PresentationModelFixture');
+var ComponentFixture = require('br/component/testing/ComponentFixture');
+var Errors = require('br/Errors');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/testing/PresenterComponentFixture
  */
 
-br.Core.thirdparty("presenter-knockout");
+var presenter_knockout = require('presenter-knockout');
 
 /**
  * Constructs a <code>br.presenter.testing.PresenterComponentFixture</code>.
@@ -41,33 +48,28 @@ br.Core.thirdparty("presenter-knockout");
  * @param {String} sTemplateId the HTML template id representing the view of the presenter component. Required, not-null.
  * @param {String} sPresentationModel the presentation model class name for the presenter component. Required, not-null.
  */
-br.presenter.testing.PresenterComponentFixture = function(sTemplateId, sPresentationModel)
-{
-	if(!sTemplateId)
-	{
-		throw new br.Errors.InvalidParametersError("PresenterComponentFixture must be provided with a view template id");
+function PresenterComponentFixture(sTemplateId, sPresentationModel) {
+	if (!sTemplateId) {
+		throw new Errors.InvalidParametersError('PresenterComponentFixture must be provided with a view template id');
 	}
-	if(!sPresentationModel)
-	{
-		throw new br.Errors.InvalidParametersError("PresenterComponentFixture must be provided with a presentation model");
+	if (!sPresentationModel) {
+		throw new Errors.InvalidParametersError('PresenterComponentFixture must be provided with a presentation model');
 	}
-	
-	var sPresenterComponentXML = 
-		'<br.presenter.component.PresenterComponent templateId="' + sTemplateId + '" presentationModel="' + sPresentationModel + '"></br.presenter.component.PresenterComponent>';
 
-	//call super constructor
-	br.component.testing.ComponentFixture.call(this, sPresenterComponentXML, 
-			new br.presenter.testing.PresentationModelFixture());
-	
+	var sPresenterComponentXML = '<br.presenter.component.PresenterComponent templateId="' + sTemplateId + '" presentationModel="' + sPresentationModel + '"></br.presenter.component.PresenterComponent>';
+
+	// call super constructor
+	ComponentFixture.call(this, sPresenterComponentXML,
+		new PresentationModelFixture());
+
 	/**
 	 * @private
 	 */
 	this.m_fBindPresentationModel = presenter_knockout.applyBindings;
-};
+}
 
 
-br.Core.extend(br.presenter.testing.PresenterComponentFixture, br.component.testing.ComponentFixture);
-
+Core.extend(PresenterComponentFixture, ComponentFixture);
 
 /**
  * PresenterComponentFixture handles properties 'opened' and 'viewOpened'.
@@ -76,9 +78,8 @@ br.Core.extend(br.presenter.testing.PresenterComponentFixture, br.component.test
  * 
  * @see br.test.Fixture#canHandleProperty
  */
-br.presenter.testing.PresenterComponentFixture.prototype.canHandleProperty = function(sProperty)
-{
-	return (sProperty == "opened") || (sProperty == "viewOpened");
+PresenterComponentFixture.prototype.canHandleProperty = function(sProperty) {
+	return (sProperty == 'opened') || (sProperty == 'viewOpened');
 };
 
 /**
@@ -91,28 +92,25 @@ br.presenter.testing.PresenterComponentFixture.prototype.canHandleProperty = fun
  * 
  * @see br.test.Fixture#doGiven
  */
-br.presenter.testing.PresenterComponentFixture.prototype.doGiven = function(sProperty, vValue)
-{
-	if (!(sProperty == "opened" || sProperty == "viewOpened") )
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "PresenterComponentFixture only supports 'opened' or 'viewOpened' as property-value pairs.");
+PresenterComponentFixture.prototype.doGiven = function(sProperty, vValue) {
+	if (!(sProperty == 'opened' || sProperty == 'viewOpened')) {
+		throw new Errors.CustomError(Errors.INVALID_TEST, "PresenterComponentFixture only supports 'opened' or 'viewOpened' as property-value pairs.");
 	}
-	
-	
-	if(sProperty == "opened")
-	{
-		presenter_knockout.applyBindings = function(){};
+
+
+	if (sProperty == 'opened') {
+		presenter_knockout.applyBindings = function() {};
 	}
-	
-	try
-	{
+
+	try {
 		// call super method
-		br.component.testing.ComponentFixture.prototype.doGiven.call(this, "opened", vValue);
-	}
-	finally
-	{
+		ComponentFixture.prototype.doGiven.call(this, 'opened', vValue);
+	} finally {
 		presenter_knockout.applyBindings = this.m_fBindPresentationModel;
 	}
 };
+
+
+module.exports = PresenterComponentFixture;
 
 

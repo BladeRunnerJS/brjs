@@ -1,3 +1,17 @@
+'use strict';
+
+var MappedNodeList = require('br/presenter/node/MappedNodeList');
+var NodeListLengthProperty = require('br/presenter/testing/NodeListLengthProperty');
+var BrErrors = require('br/Errors');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+var EditableProperty = require('br/presenter/property/EditableProperty');
+var NodeList = require('br/presenter/node/NodeList');
+var OptionsNodeList = require('br/presenter/node/OptionsNodeList');
+var Property = require('br/presenter/property/Property');
+var KnockoutInvocationCountPlugin = require('br/presenter/testing/KnockoutInvocationCountPlugin');
+var ComponentModelFixture = require('br/component/testing/ComponentModelFixture');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/testing/PresentationModelFixture
  */
@@ -13,26 +27,24 @@
  * The <code>PresentationModelFixture</code> serves to manipulate and verify the state of the presentation
  * model of a presenter component. 
  */
-br.presenter.testing.PresentationModelFixture = function()
-{
+function PresentationModelFixture() {
 	this._initializePlugins();
-};
-br.Core.inherit(br.presenter.testing.PresentationModelFixture, br.component.testing.ComponentModelFixture);
+}
+
+Core.inherit(PresentationModelFixture, ComponentModelFixture);
 
 /**
  * @private
  */
-br.presenter.testing.PresentationModelFixture.prototype._initializePlugins = function()
-{
-	presenter_knockout.bindingHandlers.event = new br.presenter.testing.KnockoutInvocationCountPlugin();
+PresentationModelFixture.prototype._initializePlugins = function() {
+	presenter_knockout.bindingHandlers.event = new KnockoutInvocationCountPlugin();
 };
 
 // * **********************************************************************************
 // *						 ComponentModelFixture interface
 // ************************************************************************************
 
-br.presenter.testing.PresentationModelFixture.prototype.setComponent = function(oComponent)
-{
+PresentationModelFixture.prototype.setComponent = function(oComponent) {
 	this.m_oPresentationModel = oComponent.getPresentationModel();
 };
 
@@ -40,13 +52,11 @@ br.presenter.testing.PresentationModelFixture.prototype.setComponent = function(
 // *							  Fixture interface
 // ************************************************************************************
 
-br.presenter.testing.PresentationModelFixture.prototype.tearDown = function()
-{
+PresentationModelFixture.prototype.tearDown = function() {
 	delete this.m_oPresentationModel;
 };
 
-br.presenter.testing.PresentationModelFixture.prototype.canHandleExactMatch = function()
-{
+PresentationModelFixture.prototype.canHandleExactMatch = function() {
 	return false;
 };
 
@@ -59,8 +69,7 @@ br.presenter.testing.PresentationModelFixture.prototype.canHandleExactMatch = fu
  * 
  * @see br.test.Fixture#canHandleProperty
  */
-br.presenter.testing.PresentationModelFixture.prototype.canHandleProperty = function(sProperty)
-{
+PresentationModelFixture.prototype.canHandleProperty = function(sProperty) {
 	return true;
 };
 
@@ -74,8 +83,7 @@ br.presenter.testing.PresentationModelFixture.prototype.canHandleProperty = func
  * 
  * @see br.test.Fixture#doGiven
  */
-br.presenter.testing.PresentationModelFixture.prototype.doGiven = function(sProperty, vValue)
-{
+PresentationModelFixture.prototype.doGiven = function(sProperty, vValue) {
 	this._doGivenAndDoWhen(sProperty, vValue);
 };
 
@@ -87,16 +95,14 @@ br.presenter.testing.PresentationModelFixture.prototype.doGiven = function(sProp
  * @param {Variant} vValue The value to set.
  * @see br.test.Fixture#doWhen
  */
-br.presenter.testing.PresentationModelFixture.prototype.doWhen = function(sProperty, vValue)
-{
+PresentationModelFixture.prototype.doWhen = function(sProperty, vValue) {
 	this._doGivenAndDoWhen(sProperty, vValue);
 };
 
 function _assertEquals(msg, expected, actual) {
-	if(expected instanceof Array) {
+	if (expected instanceof Array) {
 		assertEquals(msg, expected, actual);
-	}
-	else {
+	} else {
 		assertSame(msg, expected, actual);
 	}
 }
@@ -111,28 +117,22 @@ function _assertEquals(msg, expected, actual) {
  * 
  * @see br.test.Fixture#doThen
  */
-br.presenter.testing.PresentationModelFixture.prototype.doThen = function(sProperty, vValue) {
+PresentationModelFixture.prototype.doThen = function(sProperty, vValue) {
 	var Errors = require('br/Errors');
 
 	var oItem = this._getItem(sProperty);
 
-	if(oItem instanceof br.presenter.property.Property)
-	{
+	if (oItem instanceof Property) {
 		_assertEquals("'" + sProperty + "' should equal '" + vValue + "'", vValue, oItem.getFormattedValue());
-	}
-	else if(oItem instanceof br.presenter.node.OptionsNodeList)
-	{
+	} else if (oItem instanceof OptionsNodeList) {
 		_assertEquals("'" + sProperty + "' should equal '" + vValue + "'", vValue, oItem.getOptionLabels());
-	}
-	else if(oItem instanceof br.presenter.node.NodeList)
-	{
-		if(!Array.isArray(vValue)) {
-			throw new Errors.InvalidTestError("Validating a NodeList must supply an array of options as the test value.");
+	} else if (oItem instanceof NodeList) {
+		if (!Array.isArray(vValue)) {
+			throw new Errors.InvalidTestError('Validating a NodeList must supply an array of options as the test value.');
 		}
 		oItem.peek().forEach(function(oNode, nIndex) {
-			if(!oNode.value && !oNode.label)
-			{
-				throw new Errors.InvalidTestError("PresentationNode in NodeList must have a `value` or `label` property.");
+			if (!oNode.value && !oNode.label) {
+				throw new Errors.InvalidTestError('PresentationNode in NodeList must have a `value` or `label` property.');
 			}
 
 			var vExpected = vValue[nIndex];
@@ -140,18 +140,12 @@ br.presenter.testing.PresentationModelFixture.prototype.doThen = function(sPrope
 			var sErrorMessage = sProperty + "' index " + nIndex + " : '" + vActual + "' should equal '" + vValue + "'";
 			_assertEquals(sErrorMessage, vExpected, vActual);
 		});
-	}
-	else if(oItem instanceof br.presenter.testing.PresentationModelFixture.MethodInvocation)
-	{
+	} else if (oItem instanceof PresentationModelFixture.MethodInvocation) {
 		throw new Errors.InvalidTestError("the 'invoked' property can only be used in given and when clauses");
-	}
-	else if(oItem instanceof br.presenter.testing.PresentationModelFixture.InvocationCountSetter)
-	{
+	} else if (oItem instanceof PresentationModelFixture.InvocationCountSetter) {
 		oItem.verifyInvocationCount(vValue);
-	}
-	else
-	{
-		throw new Errors.InvalidTestError("unable to handle: " + sProperty + " = " + vValue);
+	} else {
+		throw new Errors.InvalidTestError('unable to handle: ' + sProperty + ' = ' + vValue);
 	}
 };
 
@@ -162,105 +156,75 @@ br.presenter.testing.PresentationModelFixture.prototype.doThen = function(sPrope
 /**
  * @private
  */
-br.presenter.testing.PresentationModelFixture.prototype._doGivenAndDoWhen = function(sProperty, vValue)
-{
+PresentationModelFixture.prototype._doGivenAndDoWhen = function(sProperty, vValue) {
 	var oItem = this._getItem(sProperty);
-	
-	if(oItem instanceof br.presenter.property.EditableProperty)
-	{
+
+	if (oItem instanceof EditableProperty) {
 		oItem.setUserEnteredValue(vValue);
-	}
-	else if(oItem instanceof br.presenter.property.WritableProperty)
-	{
+	} else if (oItem instanceof WritableProperty) {
 		oItem.setValue(vValue);
-	}
-	else if(oItem instanceof br.presenter.property.Property)
-	{
+	} else if (oItem instanceof Property) {
 		oItem._$setInternalValue(vValue);
-	}
-	else if(oItem instanceof br.presenter.node.OptionsNodeList)
-	{
+	} else if (oItem instanceof OptionsNodeList) {
 		oItem.setOptions(vValue);
-	}
-	else if(oItem instanceof br.presenter.testing.PresentationModelFixture.MethodInvocation)
-	{
+	} else if (oItem instanceof PresentationModelFixture.MethodInvocation) {
 		oItem.invokeMethod(vValue);
-	}
-	else if(oItem instanceof br.presenter.testing.PresentationModelFixture.InvocationCountSetter)
-	{
+	} else if (oItem instanceof PresentationModelFixture.InvocationCountSetter) {
 		oItem.setInvocationCount(vValue);
-	}
-	else
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "unable to handle: " + sProperty + " = " + vValue);
+	} else {
+		throw new BrErrors.CustomError(BrErrors.INVALID_TEST, 'unable to handle: ' + sProperty + ' = ' + vValue);
 	}
 };
 
 /**
  * @private
  */
-br.presenter.testing.PresentationModelFixture.prototype._getItem = function(sItemName, nDistanceFromEnd)
-{
+PresentationModelFixture.prototype._getItem = function(sItemName, nDistanceFromEnd) {
 	nDistanceFromEnd = nDistanceFromEnd || 0;
 	var oItem = this.m_oPresentationModel;
-	var pParts = sItemName.replace(/\[(\d+)\]/g, ".$1").split(".");
-	
-	for(var i = 0, l = pParts.length - nDistanceFromEnd; i < l; ++i)
-	{
+	var pParts = sItemName.replace(/\[(\d+)\]/g, '.$1').split('.');
+
+	for (var i = 0, l = pParts.length - nDistanceFromEnd; i < l; ++i) {
 		var sPartName = pParts[i];
-		
-		if(((sPartName == "invoked") || (sPartName == "invocationCount")) && (oItem instanceof Function))
-		{
+
+		if (((sPartName == 'invoked') || (sPartName == 'invocationCount')) && (oItem instanceof Function)) {
 			var oPresentationNode = this._getItem(sItemName, 2);
-			
-			if(sPartName == "invoked")
-			{
+
+			if (sPartName == 'invoked') {
 				var fMethod = oItem;
-				oItem = new br.presenter.testing.PresentationModelFixture.MethodInvocation(oPresentationNode, fMethod);
-			}
-			else if(sPartName == "invocationCount")
-			{
+				oItem = new PresentationModelFixture.MethodInvocation(oPresentationNode, fMethod);
+			} else if (sPartName == 'invocationCount') {
 				var sMethod = pParts[i - 1];
-				oItem = new br.presenter.testing.PresentationModelFixture.InvocationCountSetter(oPresentationNode, sMethod);
+				oItem = new PresentationModelFixture.InvocationCountSetter(oPresentationNode, sMethod);
 			}
-		}
-		else if((sPartName == "length") && (oItem instanceof br.presenter.node.NodeList))
-		{
-			oItem = new br.presenter.testing.NodeListLengthProperty(oItem);
-		}
-		else
-		{
-			if(oItem instanceof br.presenter.node.NodeList && !(oItem instanceof br.presenter.node.MappedNodeList) )
-			{
+		} else if ((sPartName == 'length') && (oItem instanceof NodeList)) {
+			oItem = new NodeListLengthProperty(oItem);
+		} else {
+			if (oItem instanceof NodeList && !(oItem instanceof MappedNodeList)) {
 				oItem = oItem.getPresentationNodesArray()[this._getNodeListIndex(sPartName)];
-			}
-			else
-			{
+			} else {
 				oItem = oItem[sPartName];
 			}
-			
-			if(!oItem)
-			{
+
+			if (!oItem) {
 				break;
 			}
 		}
 	}
-	
+
 	return oItem;
 };
 
 /**
  * @private
  */
-br.presenter.testing.PresentationModelFixture.prototype._getNodeListIndex = function(sPartName)
-{
+PresentationModelFixture.prototype._getNodeListIndex = function(sPartName) {
 	var nIndex = Number(sPartName);
-	
-	if(isNaN(nIndex))
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "attempt to access NodeList without using an ordinal: '" + sPartName + "'");
+
+	if (isNaN(nIndex)) {
+		throw new BrErrors.CustomError(BrErrors.INVALID_TEST, "attempt to access NodeList without using an ordinal: '" + sPartName + "'");
 	}
-	
+
 	return nIndex;
 };
 
@@ -269,19 +233,16 @@ br.presenter.testing.PresentationModelFixture.prototype._getNodeListIndex = func
 // ************************************************************************************
 
 
-br.presenter.testing.PresentationModelFixture.MethodInvocation = function(oPresentationNode, fMethod)
-{
+PresentationModelFixture.MethodInvocation = function(oPresentationNode, fMethod) {
 	this.m_oPresentationNode = oPresentationNode;
 	this.m_fMethod = fMethod;
 };
 
-br.presenter.testing.PresentationModelFixture.MethodInvocation.prototype.invokeMethod = function(vValue)
-{
-	if(vValue !== true)
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "the 'invoked' property can only be set to true: was set to " + vValue);
+PresentationModelFixture.MethodInvocation.prototype.invokeMethod = function(vValue) {
+	if (vValue !== true) {
+		throw new BrErrors.CustomError(BrErrors.INVALID_TEST, "the 'invoked' property can only be set to true: was set to " + vValue);
 	}
-	
+
 	this.m_fMethod.call(this.m_oPresentationNode);
 };
 
@@ -289,66 +250,54 @@ br.presenter.testing.PresentationModelFixture.MethodInvocation.prototype.invokeM
 // *	br.presenter.testing.PresentationModelFixture.InvocationCountSetter
 // ************************************************************************************
 
-br.presenter.testing.PresentationModelFixture.InvocationCountSetter = function(oPresentationNode, sMethod)
-{
+PresentationModelFixture.InvocationCountSetter = function(oPresentationNode, sMethod) {
 	this.m_oPresentationNode = oPresentationNode;
 	this.m_sMethod = sMethod;
 };
 
-br.presenter.testing.PresentationModelFixture.InvocationCountSetter.prototype.setInvocationCount = function(vValue)
-{
+PresentationModelFixture.InvocationCountSetter.prototype.setInvocationCount = function(vValue) {
 	var nValue = Number(vValue);
-	
-	if(isNaN(nValue))
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "the 'invocationCount' property can only be set to a number, and not " + vValue);
+
+	if (isNaN(nValue)) {
+		throw new BrErrors.CustomError(BrErrors.INVALID_TEST, "the 'invocationCount' property can only be set to a number, and not " + vValue);
 	}
-	
-	if(this._getMethod().invocationCount === undefined)
-	{
+
+	if (this._getMethod().invocationCount === undefined) {
 		this.m_oPresentationNode[this.m_sMethod] = this._getInvocationCountingProxyMethod(nValue);
 	}
 };
 
-br.presenter.testing.PresentationModelFixture.InvocationCountSetter.prototype.verifyInvocationCount = function(vValue)
-{
+PresentationModelFixture.InvocationCountSetter.prototype.verifyInvocationCount = function(vValue) {
 	var nValue = Number(vValue);
 
-	if(isNaN(nValue))
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "the 'invocationCount' property must be compared to a number");
-	}
-	else
-	{
+	if (isNaN(nValue)) {
+		throw new BrErrors.CustomError(BrErrors.INVALID_TEST, "the 'invocationCount' property must be compared to a number");
+	} else {
 		var fMethod = this._getMethod();
-		
-		if(fMethod.invocationCount === undefined)
-		{
-			throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "the 'invocationCount' property first needs to be set in given or when before it can be verified in then");
-		}
-		else
-		{
+
+		if (fMethod.invocationCount === undefined) {
+			throw new BrErrors.CustomError(BrErrors.INVALID_TEST, "the 'invocationCount' property first needs to be set in given or when before it can be verified in then");
+		} else {
 			assertEquals("'invocationCount' should be " + nValue, nValue, fMethod.invocationCount);
 		}
 	}
 };
 
 
-br.presenter.testing.PresentationModelFixture.InvocationCountSetter.prototype._getMethod = function()
-{
+PresentationModelFixture.InvocationCountSetter.prototype._getMethod = function() {
 	return this.m_oPresentationNode[this.m_sMethod];
 };
 
 
-br.presenter.testing.PresentationModelFixture.InvocationCountSetter.prototype._getInvocationCountingProxyMethod = function(nInitialValue)
-{
+PresentationModelFixture.InvocationCountSetter.prototype._getInvocationCountingProxyMethod = function(nInitialValue) {
 	var fOrigMethod = this._getMethod();
-	var fMethod = function()
-	{
+	var fMethod = function() {
 		fMethod.invocationCount++;
 		fOrigMethod.apply(this, arguments);
 	};
 	fMethod.invocationCount = nInitialValue;
-	
+
 	return fMethod;
 };
+
+module.exports = PresentationModelFixture;

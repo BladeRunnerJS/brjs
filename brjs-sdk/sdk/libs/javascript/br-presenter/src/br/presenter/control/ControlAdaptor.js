@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * @module br/presenter/control/ControlAdaptor
@@ -24,7 +24,7 @@ function ControlAdaptor() {
  * element as the actual control (progressive enhancement).
  */
 ControlAdaptor.prototype.setElement = function(eElement) {
-	throw new Errors.UnimplementedInterfaceError("ControlAdaptor.setElement() has not been implemented.");
+	throw new Errors.UnimplementedInterfaceError('ControlAdaptor.setElement() has not been implemented.');
 };
 
 /**
@@ -42,7 +42,7 @@ ControlAdaptor.prototype.setElement = function(eElement) {
  * @param {Object} mOptions A map of options
  */
 ControlAdaptor.prototype.setOptions = function(mOptions) {
-	throw new Errors.UnimplementedInterfaceError("ControlAdaptor.setOptions() has not been implemented.");
+	throw new Errors.UnimplementedInterfaceError('ControlAdaptor.setOptions() has not been implemented.');
 };
 
 /**
@@ -74,7 +74,7 @@ ControlAdaptor.prototype.setOptions = function(mOptions) {
  * node is used.
  */
 ControlAdaptor.prototype.setPresentationNode = function(oPresentationNode) {
-		// do nothing -- this method is optional.
+	// do nothing -- this method is optional.
 };
 
 /**
@@ -84,7 +84,7 @@ ControlAdaptor.prototype.setPresentationNode = function(oPresentationNode) {
  * has been added to the document (via {@link #getElement}),  can do so within this call-back.</p>
  */
 ControlAdaptor.prototype.onViewReady = function() {
-		// do nothing -- this method is optional.
+	// do nothing -- this method is optional.
 };
 
 /**
@@ -94,4 +94,6 @@ ControlAdaptor.prototype.destroy = function() {
 	// do nothing -- this method is optional.
 };
 
-br.presenter.control.ControlAdaptor = ControlAdaptor;
+ControlAdaptor = ControlAdaptor;
+
+module.exports = ControlAdaptor;

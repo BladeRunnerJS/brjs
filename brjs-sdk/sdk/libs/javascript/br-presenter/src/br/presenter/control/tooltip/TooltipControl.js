@@ -1,3 +1,11 @@
+'use strict';
+
+var ElementUtility = require('br/util/ElementUtility');
+var AliasRegistry = require('br/AliasRegistry');
+var ControlAdaptor = require('br/presenter/control/ControlAdaptor');
+var Core = require('br/Core');
+var PropertyHelper = require('br/presenter/property/PropertyHelper');
+
 /**
  * @module br/presenter/control/tooltip/TooltipControl
  */
@@ -31,72 +39,60 @@
  * an deal with this. We recommend the use of this class for {@link module:br/presenter/node/TooltipField}
  * monitoring.</p>
  */
-br.presenter.control.tooltip.TooltipControl = function()
-{
-	this.m_oPropertyHelper = new br.presenter.property.PropertyHelper;
+function TooltipControl() {
+	this.m_oPropertyHelper = newPropertyHelper;
 	this.m_eNode = null;
 	this.m_oTooltip = null;
 	this.m_oPresentationNode = null;
-};
-br.Core.inherit(br.presenter.control.tooltip.TooltipControl, br.presenter.control.ControlAdaptor);
+}
 
-br.presenter.control.tooltip.TooltipControl.prototype.destroy = function()
-{
+Core.inherit(TooltipControl, ControlAdaptor);
+
+TooltipControl.prototype.destroy = function() {
 	this._removeTooltip();
 	this.m_oPropertyHelper.removeAllListeners();
 
 	this.m_oPresentationNode = null;
 };
 
-br.presenter.control.tooltip.TooltipControl.prototype.setElement = function(eElement)
-{
+TooltipControl.prototype.setElement = function(eElement) {
 	this.m_eNode = eElement;
 };
 
-br.presenter.control.tooltip.TooltipControl.prototype.setPresentationNode = function(oPresentationNode)
-{
+TooltipControl.prototype.setPresentationNode = function(oPresentationNode) {
 	this.m_oPresentationNode = oPresentationNode;
 
-	this.m_oPropertyHelper.addChangeListener(oPresentationNode.hasMoved, this, "onTooltipMoved");
+	this.m_oPropertyHelper.addChangeListener(oPresentationNode.hasMoved, this, 'onTooltipMoved');
 };
 
-br.presenter.control.tooltip.TooltipControl.prototype.onTooltipMoved = function()
-{
-	if(this.m_oPresentationNode.hasMoved.getValue())
-	{
-		this._addTooltip(this.m_oPresentationNode.message.getValue())
-	}
-	else
-	{
+TooltipControl.prototype.onTooltipMoved = function() {
+	if (this.m_oPresentationNode.hasMoved.getValue()) {
+		this._addTooltip(this.m_oPresentationNode.message.getValue());
+	} else {
 		this._removeTooltip();
 	}
 };
 
-br.presenter.control.tooltip.TooltipControl.prototype._addTooltip = function(sFailureMessage)
-{
-	var TooltipHelper = br.AliasRegistry.getClass('br.presenter.tooltip-helper');
+TooltipControl.prototype._addTooltip = function(sFailureMessage) {
+	var TooltipHelper = AliasRegistry.getClass('br.presenter.tooltip-helper');
 	this._removeTooltip();
 
-	var ePointTo = br.util.ElementUtility.getElementsByClassName(this.m_eNode, "*", this.m_oPresentationNode.getTooltipClassName());
+	var ePointTo = ElementUtility.getElementsByClassName(this.m_eNode, '*', this.m_oPresentationNode.getTooltipClassName());
 	this.m_oTooltip = new TooltipHelper()
 		.updateTooltip(sFailureMessage)
 		.containWithin(this.m_eNode)
 		.pointTo(ePointTo);
 };
 
-br.presenter.control.tooltip.TooltipControl.prototype._removeTooltip = function()
-{
-	if(this.m_oTooltip)
-	{
+TooltipControl.prototype._removeTooltip = function() {
+	if (this.m_oTooltip) {
 		this.m_oTooltip.remove();
 		delete this.m_oTooltip;
 	}
 };
 
-br.presenter.control.tooltip.TooltipControl.prototype.setOptions = function(mOptions)
-{
-};
+TooltipControl.prototype.setOptions = function(mOptions) {};
 
-br.presenter.control.tooltip.TooltipControl.prototype.updateEnabled = function()
-{
-};
+TooltipControl.prototype.updateEnabled = function() {};
+
+module.exports = TooltipControl;

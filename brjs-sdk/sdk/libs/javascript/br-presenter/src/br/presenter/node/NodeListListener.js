@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @module br/presenter/node/NodeListListener
  */
@@ -23,4 +25,6 @@ NodeListListener.prototype.onNodeListChanged = function() {
 	// optional callback
 };
 
-br.presenter.node.NodeListListener = NodeListListener;
+NodeListListener = NodeListListener;
+
+module.exports = NodeListListener;

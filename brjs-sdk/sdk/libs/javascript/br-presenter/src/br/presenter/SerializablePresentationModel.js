@@ -1,3 +1,7 @@
+'use strict';
+
+var Errors = require('br/Errors');
+
 /**
  * @module br/presenter/SerializablePresentationModel
  */
@@ -21,8 +25,8 @@ function SerializablePresentationModel() {
  * @type String
  */
 SerializablePresentationModel.prototype.serialize = function() {
-	throw new br.Errors.CustomError(br.Errors.UNIMPLEMENTED_INTERFACE,
-			"br.presenter.SerializablePresentationModel.serialize() has not been implemented.");
+	throw new Errors.CustomError(Errors.UNIMPLEMENTED_INTERFACE,
+		'br.presenter.SerializablePresentationModel.serialize() has not been implemented.');
 };
 
 /**
@@ -31,8 +35,10 @@ SerializablePresentationModel.prototype.serialize = function() {
  * @param {String} sData Serialized presentation model.
  */
 SerializablePresentationModel.prototype.deserialize = function(sData) {
-	throw new br.Errors.CustomError(br.Errors.UNIMPLEMENTED_INTERFACE,
-			"br.presenter.SerializablePresentationModel.deserialize() has not been implemented.");
+	throw new Errors.CustomError(Errors.UNIMPLEMENTED_INTERFACE,
+		'br.presenter.SerializablePresentationModel.deserialize() has not been implemented.');
 };
 
-br.presenter.SerializablePresentationModel = SerializablePresentationModel;
+SerializablePresentationModel = SerializablePresentationModel;
+
+module.exports = SerializablePresentationModel;
