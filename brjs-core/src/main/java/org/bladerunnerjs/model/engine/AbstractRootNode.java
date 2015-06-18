@@ -23,12 +23,14 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	private Map<String, List<Node>> nodeCache = new TreeMap<>();
 	protected LoggerFactory loggerFactory;
+
+	protected File rootDir;
 	
 	public AbstractRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{
 		super();
 		
-		File rootDir = locateRootDir(dir);
+		rootDir = locateRootDir(dir);
 		
 		if(rootDir == null) {
 			if(!allowInvalidRootDirectories) {

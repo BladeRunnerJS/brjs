@@ -51,9 +51,8 @@ public class BRJSStartupTest extends SpecTest {
 		when(brjs).hasBeenCreated()
 			.and(brjs).pluginsAreAccessed();
 		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
-			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "brjs-apps")
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "apps")
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED)
 			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
@@ -66,10 +65,9 @@ public class BRJSStartupTest extends SpecTest {
 		when(brjs).hasBeenCreated()
 			.and(brjs).pluginsAreAccessed();
 		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
-			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "brjs-apps")
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "apps")
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).debugMessageReceived(PLUGIN_FOUND_MSG, passingModelObserverPlugin.getClass().getCanonicalName())
-			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED)
 			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG)
 			.and(logging).debugMessageReceived(PLUGIN_FOUND_MSG, passingCommandPlugin.getClass().getCanonicalName());
@@ -82,10 +80,9 @@ public class BRJSStartupTest extends SpecTest {
 		when(brjs).hasBeenCreated()
 			.and(brjs).pluginsAreAccessed();
 		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
-			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "brjs-apps")
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "apps")
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLUGIN_ERROR_MSG, failingModelObserverPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
-			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED)
 			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		
@@ -109,10 +106,9 @@ public class BRJSStartupTest extends SpecTest {
 		when(brjs).hasBeenCreated()
 			.and(brjs).runCommand("help", "failingCommand");
 		then(logging).infoMessageReceived(BRJS_LOCATION, brjs.dir().getAbsolutePath())
-			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "brjs-apps")
+			.and(logging).infoMessageReceived(APPS_FOLDER_FOUND, brjs.dir().getAbsolutePath() + File.separator + "apps")
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLUGIN_ERROR_MSG, failingCommandPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
-			.and(logging).infoMessageReceived(NO_APPS_DISCOVERED)
 			.and(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}

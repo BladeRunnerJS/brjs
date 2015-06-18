@@ -4,14 +4,10 @@ import java.io.File;
 
 public class FileTestCommander {
 
-	private SpecTest specTest;
-	private File file;
 	private FileTestBuilder fileTestBuilder;
 	private CommanderChainer commanderChainer;
 	
 	public FileTestCommander(SpecTest specTest, File file) {
-		this.specTest = specTest;
-		this.file = file;
 		fileTestBuilder = new FileTestBuilder(specTest, file);
 		commanderChainer = new CommanderChainer(specTest);
 	}
@@ -21,6 +17,13 @@ public class FileTestCommander {
 		return commanderChainer;
 	}
 
+	public CommanderChainer containsFiles(String... filePaths) throws Exception {
+		for (String filePath: filePaths) {
+			fileTestBuilder.containsFile(filePath);
+		}
+		return commanderChainer;
+	}
+	
 	public CommanderChainer containsFile(String filePath) throws Exception {
 		fileTestBuilder.containsFile(filePath);
 		return commanderChainer;

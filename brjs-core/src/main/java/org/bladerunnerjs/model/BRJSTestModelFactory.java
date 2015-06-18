@@ -75,18 +75,18 @@ public class BRJSTestModelFactory
 		return brjs;
 	}
 	
-	public static File createTestSdkDirectory() {
-		File sdkDir;
+	public static File createRootTestDir() {
+		File testDir;
 		
 		try {
-			sdkDir = FileUtils.createTemporaryDirectory( BRJSTestModelFactory.class );
-			new File(sdkDir, "sdk").mkdirs();
+			testDir = FileUtils.createTemporaryDirectory( BRJSTestModelFactory.class );
+			new File(testDir, "sdk").mkdirs();
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		
-		return sdkDir;
+		return testDir;
 	}
 	
 }

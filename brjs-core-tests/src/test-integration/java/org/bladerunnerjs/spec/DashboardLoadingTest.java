@@ -32,7 +32,7 @@ public class DashboardLoadingTest extends SpecTest
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		testSdkDirectory = new File("../brjs-sdk/sdk/").getAbsoluteFile();
+		testRootDirectory = new File("../brjs-sdk/sdk/").getAbsoluteFile();
 		System.out.print("BRJS initialization: ");
 		long startTime = new Date().getTime();
 		given(brjs).hasBeenAuthenticallyCreated();

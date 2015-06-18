@@ -28,8 +28,8 @@ public class FileModificationRegistryTest
 	
 	@Before
 	public void setup() throws Exception {
-		testRootDir = BRJSTestModelFactory.createTestSdkDirectory();
-		secondRootDir = BRJSTestModelFactory.createTestSdkDirectory();
+		testRootDir = BRJSTestModelFactory.createRootTestDir();
+		secondRootDir = BRJSTestModelFactory.createRootTestDir();
 		dirInRoot = new File(testRootDir, "some-dir");
 		fileInChildDir = new File(dirInRoot, "nested-file.txt");
 		fileModificationRegistry = new FileModificationRegistry(new MatchFileFilter(testRootDir), FalseFileFilter.INSTANCE);

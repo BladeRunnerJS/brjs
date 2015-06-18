@@ -57,6 +57,8 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "system")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "user")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + appServerPort +"/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
@@ -75,8 +77,8 @@ public class IntegrationServeCommandTest extends SpecTest
 		when(brjs).runThreadedCommand("serve")
 			.and(secondBrjsProcess).runCommand("create-app", "app1", "blah");
 		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/")
-			.and(testSdkDirectory).doesNotContainDir("brjs-apps")
-			.and(testSdkDirectory).doesNotContainDir("app1")
+			.and(testRootDirectory).doesNotContainDir("apps")
+			.and(testRootDirectory).doesNotContainDir("app1")
 			.and(secondaryTempFolder).containsDir("app1");
 	}
 	
@@ -99,6 +101,8 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve", "-p", "7777");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "system")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "user")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + "7777/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
@@ -132,6 +136,9 @@ public class IntegrationServeCommandTest extends SpecTest
 		
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
 		when(brjs).runThreadedCommand("serve")
@@ -158,6 +165,9 @@ public class IntegrationServeCommandTest extends SpecTest
     		appServer = brjs.applicationServer();
     		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(brjs).runThreadedCommand("serve", "-v", "myversion");
 		then(appServer).requestCanEventuallyBeMadeWhereResponseMatches("/app1/v/myversion/js/dev/combined/bundle.js", new Predicate<String>()
@@ -181,6 +191,9 @@ public class IntegrationServeCommandTest extends SpecTest
     		Aspect aspect = app.defaultAspect();
     		appServer = brjs.applicationServer();
     		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
 			.and(aspect).hasClass("appns/Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(brjs).runThreadedCommand("serve", "-v", "myversion");

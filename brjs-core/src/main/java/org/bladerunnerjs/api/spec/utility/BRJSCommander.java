@@ -65,7 +65,7 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 		return commanderChainer;
 	}
 	
-	public CommanderChainer discoverApps()
+	public CommanderChainer discoverUserApps()
 	{
 		call(new Command() {
 			public void call() throws Exception {

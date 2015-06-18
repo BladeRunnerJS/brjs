@@ -141,7 +141,7 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task taskName, type: org.bladerunnerjs.gradle.tasks.RunJstdTests, dependsOn: assemble, {
 		description = "Run ${taskTestType} for ${taskTestDir} using ${browser}"
 		dependsOn = [assemble, copyBrowsers]
-		inputs.dir file("brjs-apps/")
+		inputs.dir file("apps/")
     	inputs.dir file("sdk/")
     	inputs.dir file("conf/")
 		workingDir = "sdk"
@@ -160,7 +160,7 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 
 task runIntegrationTests(type: Exec) {
     workingDir './sdk'
-    commandLine OSCalculator.getOSSpecificCommand('brjs test-integration ../brjs-apps/it-app')
+    commandLine OSCalculator.getOSSpecificCommand('brjs test-integration ../apps/it-app')
 }
 gradle.addListener(new StartBRJSExecutionListener(
         runIntegrationTests,
@@ -176,7 +176,7 @@ task jsdoc, dependsOn: assembleSdk, {
     outputs.dir "sdk/docs/js"
 	def jsDocTmpAppName = "jsdoc-tmp-app"
 	doFirst {
-		delete file("brjs-apps/${jsDocTmpAppName}")
+		delete file("apps/${jsDocTmpAppName}")
 		delete file("apps/${jsDocTmpAppName}")
 		exec {
 			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["create-app", jsDocTmpAppName, "--no-stats"]
@@ -192,7 +192,7 @@ task jsdoc, dependsOn: assembleSdk, {
 		}
 	}
 	doLast {
-		delete file("brjs-apps/${jsDocTmpAppName}")
+		delete file("apps/${jsDocTmpAppName}")
 		delete file("apps/${jsDocTmpAppName}")
 		file("sdk/docs/js/hosted-docs/hosted-docs.css").text += "\n.regeneratedDocsBtn, .subnav, .dashboard-link, .releases-link { display: none !important; }"
 		file("sdk/docs/js/hosted-docs/hosted-docs.js").text += "\nfunction addVersion() {\n"+
@@ -224,7 +224,7 @@ task downloadExampleApps, {
 
 task extractExampleApps, type:Copy, dependsOn:downloadExampleApps, {
 	from zipTree( tasks.downloadExampleApps.outputs.files.singleFile )
-	into "brjs-apps/example-app-brjs-todo"   // Temporarily changing to explicit folder
+	into "apps/example-app-brjs-todo"   // Temporarily changing to explicit folder
 	includeEmptyDirs = false
 	eachFile {
 		it.path = it.path.replaceFirst("[A-Za-z0-9-_]+/","")
@@ -232,9 +232,9 @@ task extractExampleApps, type:Copy, dependsOn:downloadExampleApps, {
 	}
 }
 
-createTestTask "exampleAppsTestJsChrome", "../brjs-apps/", "ALL", "chrome"
+createTestTask "exampleAppsTestJsChrome", "../apps/", "ALL", "chrome"
 exampleAppsTestJsChrome.dependsOn extractExampleApps
-createTestTask "exampleAppsTestJsFirefox", "../brjs-apps/", "ALL", "firefox"
+createTestTask "exampleAppsTestJsFirefox", "../apps/", "ALL", "firefox"
 exampleAppsTestJsFirefox.dependsOn extractExampleApps
 
 task exampleAppsTestJs, dependsOn: [exampleAppsTestJsChrome, exampleAppsTestJsFirefox], {}
@@ -271,7 +271,7 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	baseName = "BladeRunnerJS"
 	from projectDir
 	into "BladeRunnerJS/"
-	include "sdk/**", "sdk/**", "brjs-apps/apps.txt", "LICENSE", "README.txt"
+	include "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
 	exclude "**/.gitignore", "**/.p4ignore"
 	exclude "**/libs/**/tests/*", "**/libs/javascript/*/test-*/*", "**/libs/**/src-test/*"
 	exclude "**/system-applications/**/tests/*", "**/system-applications/*/test-*/*", "**/system-applications/**/src-test/*"
@@ -331,7 +331,7 @@ task checkSdkStructure, type:org.bladerunnerjs.gradle.tasks.CheckDirectoryStruct
 		"sdk/jsdoc-toolkit-resources/jsdoc-toolkit/node_modules/**",
 		"README.txt",
 		"LICENSE",
-		"brjs-apps/apps.txt"
+		"apps/apps.txt"
 	]
 	bannedPaths = [
 	   "**/build/**",
@@ -355,7 +355,7 @@ task checkSdkStructure, type:org.bladerunnerjs.gradle.tasks.CheckDirectoryStruct
 	   "*/sdk/libs/javascript/br-libs/**",
 	   "*/sdk/run*",
 	   "*/sdk/libs/**/node_modules/**",
-	   "*/brjs-apps/*/*",
+	   "*/apps/*/*",
 	   "*/apps/**",
 	   "**/*_NODIST/**"
 	]

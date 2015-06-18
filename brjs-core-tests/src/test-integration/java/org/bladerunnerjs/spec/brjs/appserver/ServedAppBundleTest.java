@@ -33,6 +33,9 @@ public class ServedAppBundleTest extends SpecTest
 		BladeWorkbench workbench = b1.workbench();
 		
 		given(app).hasBeenPopulated("default")
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: appns")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(b1).hasClass("appns/bs/b1/Class")
