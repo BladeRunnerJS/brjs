@@ -48,6 +48,17 @@ public class JsTestDriverBundleCreatorTest {
 		logMessageStore.enableLogging();
 	}
 	
+	@Test(expected=RuntimeException.class)
+	public void throwExceptionIfThereIsAnOldTestsDirNextToTestsUnitDir() throws FileNotFoundException, YamlException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException {
+		// given
+		FileUtils.writeStringToFile(aspectTestConfig, "basepath: .", "UTF-8");		
+		FileUtils.writeStringToFile(aspectTest, "var foo = function(){ /* code */ }", "UTF-8");
+		FileUtils.forceMkdir(new File(brjs.app("app1").aspect("default").dir(), "tests"));
+		
+		// when
+		JsTestDriverBundleCreator.createRequiredBundles(brjs, memoizedConfigFile);
+	}
+	
 	@Test
 	public void logAWarningWhenCommonJsTestsAreNotWrappedWithinAnIIFE() throws FileNotFoundException, YamlException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException {
 		// given

@@ -43,6 +43,11 @@ public class JsTestDriverBundleCreator
 		Map<String, Object> configMap = getMapFromYamlConfig(jsTestDriverConf);
 		
 		File baseDirectory = getBaseDirectory(jsTestDriverConf, configMap);
+		File oldTestsDir = new File(baseDirectory.getParentFile(), "tests");
+		
+		if (oldTestsDir.isDirectory()) {
+			throw new RuntimeException("Your folder '" + oldTestsDir.getAbsolutePath() + "' may be an old test location. Please remove it and run your tests again.");
+		}
 		
 		brjs.getFileModificationRegistry().incrementAllFileVersions();
 		TestPack testPack = brjs.locateAncestorNodeOfClass(jsTestDriverConf, TestPack.class);
