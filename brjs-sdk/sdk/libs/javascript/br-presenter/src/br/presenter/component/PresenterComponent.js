@@ -17,7 +17,6 @@ var Core = require('br/Core');
 
 var presenter_knockout = require('presenter-knockout');
 
-var Utility = require('br/core/Utility');
 var Errors = require('br/Errors');
 var ServiceRegistry = require('br/ServiceRegistry');
 
@@ -48,7 +47,8 @@ function PresenterComponent(sTemplateId, vPresentationModel) {
 	var oPresentationModel;
 	if (typeof (vPresentationModel) == 'string') {
 		this.m_sPresentationModel = vPresentationModel;
-		var fPresentationModel = Utility.locate(this.m_sPresentationModel);
+		var requirePath = this.m_sPresentationModel.replace(/\./g, "/");
+		var fPresentationModel = require(requirePath);
 		oPresentationModel = new fPresentationModel();
 	} else {
 		oPresentationModel = vPresentationModel;

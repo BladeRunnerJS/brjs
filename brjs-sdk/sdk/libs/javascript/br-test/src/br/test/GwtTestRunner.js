@@ -30,7 +30,12 @@ function GwtTestRunner(sFixtureFactoryClass) {
 		if (typeof sFixtureFactoryClass !== "undefined" && sFixtureFactoryClass.indexOf("/") > -1) {
 			fFixtureFactoryClass = require(sFixtureFactoryClass);
 		} else {
-			fFixtureFactoryClass = Utility.locate(sFixtureFactoryClass);
+			try {
+				var requirePath = sFixtureFactoryClass.replace(/\./g, "/");
+				fFixtureFactoryClass = require(requirePath);
+			} catch (e) {
+				fFixtureFactoryClass = Utility.locate(sFixtureFactoryClass);
+			}
 		}
 	} catch (e) {
 		throw new Errors.CustomError("InvalidFactoryError", "An error occured in br.test.GwtTestRunner when creating the fixture factory " +
