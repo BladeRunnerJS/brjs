@@ -10,8 +10,8 @@
  * @extends br.presenter.node.NodeList
  */
 br.presenter.node.OptionsNodeList = function(options) {
-	var optionObjects = this._getOptionObjects(options);
-	br.presenter.node.NodeList.call(this, optionObjects, br.presenter.node.Option);
+	var options = this._getOptionObjects(options);
+	br.presenter.node.NodeList.call(this, options, br.presenter.node.Option);
 };
 br.Core.extend(br.presenter.node.OptionsNodeList, br.presenter.node.NodeList);
 
@@ -81,13 +81,31 @@ br.presenter.node.OptionsNodeList.prototype.getFirstOption = function() {
  *  instance is returned.)
  *
  * @param {String} label Label to search.
+ * @param {Boolean} ignoreCase Controls wether the search should be case sensetive (default: false).
  * @returns {@link br.presenter.node.Option}
  */
-br.presenter.node.OptionsNodeList.prototype.getOptionByLabel = function(label) {
+br.presenter.node.OptionsNodeList.prototype.getOptionByLabel = function(label, ignoreCase) {
+	if (typeof ignoreCase === 'undefined') {
+		ignoreCase = false;
+	}
+
 	var nodes = this.getOptions();
+	var labelToCompareWith = label;
+
+	if (ignoreCase === true) {
+		labelToCompareWith = label.toLowerCase();
+	}
+
+	function getNodeValue(node) {
+		if (ignoreCase === true) {
+			return node.label.getValue().toLowerCase();
+		} else {
+			return node.label.getValue();
+		}
+	}
 
 	for (var i = 0, max = nodes.length; i < max; i++) {
-		if (nodes[i].label.getValue() === label) {
+		if (getNodeValue(nodes[i]) === labelToCompareWith) {
 			return nodes[i];
 		}
 	}

@@ -73,6 +73,12 @@ OptionsNodeListTest.prototype.test_getOptionByLabel = function() {
 
 	optionFound = optionList.getOptionByLabel('dLabel');
 	assertNull(optionFound);
+
+	optionFound = optionList.getOptionByLabel('ALABEL', false);
+	assertNull(optionFound);
+
+	optionFound = optionList.getOptionByLabel('ALABEL', true);
+	assertEquals('aValue', optionFound.value.getValue());
 };
 
 OptionsNodeListTest.prototype.test_canSetNewOptionsOnExistingOptionsNodeList = function() {
