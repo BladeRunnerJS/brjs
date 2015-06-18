@@ -14,19 +14,19 @@ var PropertyHelper = require('br/presenter/property/PropertyHelper');
  * @class
  * @alias module:br/presenter/control/tooltip/TooltipControl
  * @implements module:br/presenter/control/ControlAdaptor
- * 
+ *
  * @classdesc
  * A presenter control that places a tooltip next to the field defined by the  {@link module:br/presenter/node/ToolTipNode}.
  * This class is constructed by presenter automatically on your behalf.
- * 
+ *
  * <p>The TooltipControl must be used with a {@link module:br/presenter/node/ToolTipNode}.
- * This presentation node represents the view element which will be the container of the tooltip box. 
+ * This presentation node represents the view element which will be the container of the tooltip box.
  * This means, all the fields in which a tooltip will be displayed must be contained inside this
  * element. Unlike a normal tooltip this automatically displays beside the specified field without the user having to hover over it.</p>
- * 
- * <p>The TooltipControl is aliased by <em>br.tooltip</em>, and can be used within templates 
+ *
+ * <p>The TooltipControl is aliased by <em>br.tooltip</em>, and can be used within templates
  * as follows:</p>
- * 
+ *
  * <pre>
  *   &lt;div data-bind="control:'br.tooltip', controlNode:tooltipNode"&gt;
  *   	&lt;input class="tooltip-field1" /&gt;
@@ -40,7 +40,7 @@ var PropertyHelper = require('br/presenter/property/PropertyHelper');
  * monitoring.</p>
  */
 function TooltipControl() {
-	this.m_oPropertyHelper = newPropertyHelper;
+	this.m_oPropertyHelper = new PropertyHelper();
 	this.m_eNode = null;
 	this.m_oTooltip = null;
 	this.m_oPresentationNode = null;
@@ -74,7 +74,7 @@ TooltipControl.prototype.onTooltipMoved = function() {
 };
 
 TooltipControl.prototype._addTooltip = function(sFailureMessage) {
-	var TooltipHelper = AliasRegistry.getClass('br.presenter.tooltip-helper');
+	var TooltipHelper = require('alias!br.presenter.tooltip-helper');
 	this._removeTooltip();
 
 	var ePointTo = ElementUtility.getElementsByClassName(this.m_eNode, '*', this.m_oPresentationNode.getTooltipClassName());

@@ -8,7 +8,7 @@ describe("Floating Tooltip Control tests", function() {
 	/* input1 validation incorrect: any value != 1 (tooltip error msg=ERR)*/
 	/* input2 validation incorrect: any value != 0 (tooltip error msg=ANOTHERERR)*/
 	
-	it("Does not display tooltip when form is opened insitially", function() {
+	it("Does not display tooltip when form is opened initially", function() {
 		given("form.viewOpened = true");
 		then("form.view.(.input1).doesNotHaveClass = 'has-tooltip'");
 		then("form.view.(.input2).doesNotHaveClass = 'has-tooltip'");
@@ -16,7 +16,7 @@ describe("Floating Tooltip Control tests", function() {
 
 	
 	it("Shows tooltip on first input when validation incorrect", function() {
-		given("test.continuesFrom = 'Does not display tooltip when form is opened insitially'");
+		given("test.continuesFrom = 'Does not display tooltip when form is opened initially'");
 		when("form.view.(.input1).value => '0'");
 		then("form.view.(.input1).hasClass = 'has-tooltip'");
 			and("form.view.(.tooltip-content).isVisible = true");
