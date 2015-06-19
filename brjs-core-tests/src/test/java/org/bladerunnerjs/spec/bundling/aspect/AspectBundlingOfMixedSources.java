@@ -169,11 +169,11 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(blade).hasClass("appns/mypkg/Class");
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(exceptions).verifyException(InvalidRequirePathException.class, 
-    			"brjs-apps/app1/bladeset-bladeset/blades/blade/src",
+    			"apps/app1/bladeset-bladeset/blades/blade/src",
     			"appns",
     			"appns/bladeset/blade",
-    			"brjs-apps/app1/bladeset-bladeset/blades/blade/src/appns/bladeset/blade",
-    			"brjs-apps/app1/bladeset-bladeset/blades/blade/src");
+    			"apps/app1/bladeset-bladeset/blades/blade/src/appns/bladeset/blade",
+    			"apps/app1/bladeset-bladeset/blades/blade/src");
 	}
 	
 	@Test

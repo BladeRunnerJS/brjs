@@ -6,13 +6,15 @@ import java.util.Date;
 import java.util.Scanner;
 
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
 public class DashboardLoadingTest extends SpecTest
 {
-	private App dashboard;
+	private App app;
+	private FileModificationRegistry modificationRegistry;
 	
 	public static void main(String[] args) throws Exception {
 		try(Scanner keyboard = new Scanner(System.in)) {
@@ -30,10 +32,15 @@ public class DashboardLoadingTest extends SpecTest
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		testSdkDirectory = new File("../brjs-sdk/workspace/sdk/").getAbsoluteFile();
+		testRootDirectory = new File("../brjs-sdk/sdk/").getAbsoluteFile();
+		System.out.print("BRJS initialization: ");
+		long startTime = new Date().getTime();
 		given(brjs).hasBeenAuthenticallyCreated();
+		long endTime = new Date().getTime();
+		System.out.println((endTime - startTime) + " ms");
 		brjs.io().uninstallFileAccessChecker();
-		dashboard = brjs.systemApp("dashboard");
+		app = brjs.app("dashboard");
+		modificationRegistry = brjs.getFileModificationRegistry();
 		cleanupTestSdkDirectory = false;
 	}
 	
@@ -44,28 +51,32 @@ public class DashboardLoadingTest extends SpecTest
 		StringBuffer response = new StringBuffer();
 		long startTime, endTime;
 		
+		System.out.print("Cold Request: ");
 		startTime = new Date().getTime();
-	
-		when(dashboard).requestReceived(requestPath, response);
-		
+		when(app).requestReceived(requestPath, response);
 		endTime = new Date().getTime();
-		System.out.println("Cold Request: " + (endTime - startTime) + " ms");
+		System.out.println((endTime - startTime) + " ms");
 		
-		touchFile(dashboard.aspect("default").file("index.html"));
-		touchFile(brjs.sdkLib("br").file("src/br/Core.js"));
-		
+		System.out.print("Cold Request: ");
+		modificationRegistry.incrementAllFileVersions();
 		startTime = new Date().getTime();
-		when(dashboard).requestReceived(requestPath, response);
+		when(app).requestReceived(requestPath, response);
 		endTime = new Date().getTime();
-		System.out.println("Warm Request: " + (endTime - startTime) + " ms (some files modified)");
+		System.out.println((endTime - startTime) + " ms (all files modified but BRJS initialized)");
 		
+		System.out.print("Warm Request: ");
+		modificationRegistry.incrementChildFileVersions(app.aspect("default").file("index.html"));
+		modificationRegistry.incrementChildFileVersions(brjs.sdkLib("br").file("src/br/Core.js"));
 		startTime = new Date().getTime();
-		when(dashboard).requestReceived(requestPath, response);
+		when(app).requestReceived(requestPath, response);
 		endTime = new Date().getTime();
-		System.out.println("Hot Request: " + (endTime - startTime) + " ms");
+		System.out.println((endTime - startTime) + " ms (some files modified)");
+		
+		System.out.print("Hot Request: ");
+		startTime = new Date().getTime();
+		when(app).requestReceived(requestPath, response);
+		endTime = new Date().getTime();
+		System.out.println((endTime - startTime) + " ms");
 	}
 	
-	private void touchFile(File file) {
-		brjs.getFileModificationRegistry().incrementFileVersion(file);
-	}
 }

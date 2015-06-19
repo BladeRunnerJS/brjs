@@ -1,6 +1,7 @@
 package org.bladerunnerjs.api.memoization;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,19 +12,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.DelegateFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.OrFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
 
-
+/**
+ * The {@link FileModificationRegistry} tracks the 'version' of files. It's used by {@link MemoizedFile} and {@link MemoizedValue} to determine whether
+ * or not a value needs to be re-calculated based on if any dependent files need to change.
+ *
+ */
 @SuppressWarnings("unused")
 public class FileModificationRegistry
 {
 	private Map<String,FileVersion> lastModifiedMap = new ConcurrentHashMap<>();
-	private List<File> rootFiles;
-	private IOFileFilter globalFileFilter;
+	private FileFilter rootFileFilter;
+	private FileFilter globalFileFilter;
 
-	public FileModificationRegistry(IOFileFilter globalFileFilter, File... rootFiles) {
-		this.rootFiles = Arrays.asList(rootFiles);
+	public FileModificationRegistry(FileFilter rootFileFilter, FileFilter globalFileFilter) {
+		this.rootFileFilter = rootFileFilter;
 		this.globalFileFilter = globalFileFilter;
 	}
 	
@@ -65,11 +73,13 @@ public class FileModificationRegistry
 		}
 	}
 	
-	private void incrementFileAndParentVersion(File file) {
-		while (file != null && !rootFiles.contains(file)) {
+	private void incrementFileAndParentVersion(File file)  {
+		File nextFile = file;
+		do {
+			file = nextFile;
 			getOrCreateVersionValue(file).incrementValue();
-			file = file.getParentFile();
-		}
+			nextFile = file.getParentFile();
+		} while (nextFile != null && !rootFileFilter.accept(file));
 	}
 	
 	private FileVersion getOrCreateVersionValue(File file)
@@ -90,6 +100,14 @@ public class FileModificationRegistry
 			version = lastModifiedMap.get(filePath);
 		}
 		return version;
+	}
+	
+	
+	private class NotNullFileFilter implements IOFileFilter {
+		@Override
+		public boolean accept(File file) { return file != null; }
+		@Override
+		public boolean accept(File dir, String name) { return accept(new File(dir, name)); }
 	}
 	
 }

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.plugin.PluginLocator;
 import org.bladerunnerjs.api.spec.utility.LogMessageStore;
@@ -14,6 +13,7 @@ import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
 import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.utility.FileUtils;
+import org.bladerunnerjs.utility.LoggerFactory;
 
 
 public class BRJSTestModelFactory
@@ -75,18 +75,18 @@ public class BRJSTestModelFactory
 		return brjs;
 	}
 	
-	public static File createTestSdkDirectory() {
-		File sdkDir;
+	public static File createRootTestDir() {
+		File testDir;
 		
 		try {
-			sdkDir = FileUtils.createTemporaryDirectory( BRJSTestModelFactory.class );
-			new File(sdkDir, "sdk").mkdirs();
+			testDir = FileUtils.createTemporaryDirectory( BRJSTestModelFactory.class );
+			new File(testDir, "sdk").mkdirs();
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		
-		return sdkDir;
+		return testDir;
 	}
 	
 }

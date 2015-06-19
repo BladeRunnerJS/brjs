@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.utility.TailBuffer;
+import org.bladerunnerjs.utility.FixedLengthStringBuilder;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -35,7 +35,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	
 	private final Reader sourceReader;
 	// buffer the length of the function definition + 12 to allow for things like new(<IIFE>) etc.
-	private final TailBuffer tailBuffer = new TailBuffer(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 12);
+	private final FixedLengthStringBuilder tailBuffer = new FixedLengthStringBuilder(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 12);
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private int depthCount = 0;
@@ -83,7 +83,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			
 			boolean writtenChar = false;
 			nextChar = sourceBuffer[nextCharPos++];
-			tailBuffer.push(nextChar);
+			tailBuffer.append(nextChar);
 			
 			if (satisfiesMatcherPredicateAndModuleExportsPredicate()) {
 				destBuffer[currentOffset++] = nextChar;
@@ -113,7 +113,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 
 	public boolean satisfiesMatcherPredicateAndModuleExportsPredicate()
 	{
-		return matcherPredicate.apply(depthCount) || foundModuleExportsPredicate.apply(new String(tailBuffer.toArray()));
+		return matcherPredicate.apply(depthCount) || foundModuleExportsPredicate.apply(tailBuffer.toString());
 	}
 	
 	@Override
@@ -122,15 +122,13 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	}
 	
 	private boolean isImmediatelyInvokingFunction() {
-		String tail = new String(tailBuffer.toArray());
-		Matcher immedidatelyInvokingFunctionMatcher = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(tail);
+		Matcher immedidatelyInvokingFunctionMatcher = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(tailBuffer.toString());
 		
 		return immedidatelyInvokingFunctionMatcher.matches();
 	}
 	
 	private boolean isInlineMapDefiniton() {
-		String tail = new String(tailBuffer.toArray());
-		Matcher inlineMapDefinitionMatcher = INLINE_MAP_DEFINITION_REGEX_PATTERN.matcher( tail );
+		Matcher inlineMapDefinitionMatcher = INLINE_MAP_DEFINITION_REGEX_PATTERN.matcher( tailBuffer.toString() );
 		return inlineMapDefinitionMatcher.find();
 	}
 	

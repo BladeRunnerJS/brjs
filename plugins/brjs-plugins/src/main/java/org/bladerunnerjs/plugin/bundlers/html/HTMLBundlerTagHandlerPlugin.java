@@ -32,6 +32,7 @@ public class HTMLBundlerTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, RequestMode requestMode, Locale locale, Writer writer, String version) throws IOException {
 		try {
+			writer.write("<script>document.createElement(\"template\");</script>\n");
 			writer.write("<style>template{display:none;}</style>\n");
 			writer.write("<template id=\"brjs-html-templates-loaded\"></template>\n");
 			

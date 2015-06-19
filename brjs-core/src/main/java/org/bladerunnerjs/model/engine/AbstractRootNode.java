@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.model.exception.MultipleNodesForPathException;
 import org.bladerunnerjs.api.model.exception.NodeAlreadyRegisteredException;
+import org.bladerunnerjs.utility.LoggerFactory;
 
 
 public abstract class AbstractRootNode extends AbstractNode implements RootNode
@@ -23,12 +23,14 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	private Map<String, List<Node>> nodeCache = new TreeMap<>();
 	protected LoggerFactory loggerFactory;
+
+	protected File rootDir;
 	
 	public AbstractRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{
 		super();
 		
-		File rootDir = locateRootDir(dir);
+		rootDir = locateRootDir(dir);
 		
 		if(rootDir == null) {
 			if(!allowInvalidRootDirectories) {

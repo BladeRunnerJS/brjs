@@ -79,6 +79,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 	/**
 	 * Returns *all* of the asset containers in the model. 
 	 * This is different to BundleableNode.getAssetContainers which returns only the valid AssetContainers for a given BundleableNode.
+	 * 
+	 * @return The list of {@link AssetContainer}s
 	 */
 	public List<AssetContainer> getAllAssetContainers() {
 		List<AssetContainer> assetContainersList = new ArrayList<>();
@@ -196,7 +198,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	/**
 	 * Get a named bladeset. 
-	 * bladeset("default") returns a bladeset with the name 'default' rather than the bladeset that represents the optional bladeset. 
+	 * bladeset("default") returns a bladeset with the name 'default' rather than the bladeset that represents the optional bladeset.
+	 *
+	 * @param bladesetName The name of the bladeset 
 	 * @return the named bladeset
 	 */
 	public Bladeset bladeset(String bladesetName)
@@ -233,7 +237,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	/**
 	 * Get a named aspects. 
-	 * aspect("default") returns an aspect with the name 'default' rather than the aspect that represents the optional aspect. 
+	 * aspect("default") returns an aspect with the name 'default' rather than the aspect that represents the optional aspect.
+	 * 
+	 * @param aspectName The name of the Aspect
 	 * @return the named bladeset
 	 */
 	public Aspect aspect(String aspectName)

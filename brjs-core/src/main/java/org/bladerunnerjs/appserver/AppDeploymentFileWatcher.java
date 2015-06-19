@@ -13,7 +13,7 @@ import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.*;
 
 public class AppDeploymentFileWatcher extends Thread
 {
-	private static final long DEFAULT_CHECK_INTERVAL = 100;
+	private static final long DEFAULT_CHECK_INTERVAL = 500;
 	
 	//TOOD: these messages arent tested in our spec tests
 	public class Messages
@@ -91,7 +91,7 @@ public class AppDeploymentFileWatcher extends Thread
 		if (!dir.isDirectory()) {
 			return false;
 		}
-		return ApplicationServerUtils.getDeployFile(dir).isFile(); // get the underlying file so listFiles isnt cached
+		return ApplicationServerUtils.getDeployFile(dir).isFile();
 	}
 
 	private void deployApp(File rootWatchDir, File appDir)

@@ -39,7 +39,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	@Override
 	public List<LinkedAsset> seedAssets() {
 		List<LinkedAsset> seedAssets = new ArrayList<>();
-		seedAssets.addAll( assetDiscoveryInitiator.seedAssets() );
+		seedAssets.addAll( assetDiscoveryResult().getRegisteredSeedAssets() );
 		for (AssetContainer scopeAssetContainer : scopeAssetContainers()) {
 			if (scopeAssetContainer instanceof Aspect || scopeAssetContainer instanceof Bladeset 
 						|| scopeAssetContainer instanceof Blade || scopeAssetContainer instanceof Workbench<?>) {

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedFileAccessor;
@@ -13,6 +12,7 @@ import org.bladerunnerjs.api.spec.utility.StubLoggerFactory;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
+import org.bladerunnerjs.utility.LoggerFactory;
 
 
 public final class TestRootNode extends AbstractRootNode
@@ -21,7 +21,7 @@ public final class TestRootNode extends AbstractRootNode
 	NodeList<TestChildNode> multiLocationChildNodes = new NodeList<>(this, TestChildNode.class, "set-primary-location", "^child-");
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(this, TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(this, TestMultiLocationItemNode.class, "single-item-primary-location");
-	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(FalseFileFilter.INSTANCE, new File("."));
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(FalseFileFilter.INSTANCE, FalseFileFilter.INSTANCE);
 	private final IO io = new IO( FalseFileFilter.INSTANCE );
 	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	

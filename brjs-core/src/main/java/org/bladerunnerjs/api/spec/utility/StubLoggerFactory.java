@@ -1,7 +1,7 @@
 package org.bladerunnerjs.api.spec.utility;
 
 import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.api.logging.LoggerFactory;
+import org.bladerunnerjs.utility.LoggerFactory;
 
 public class StubLoggerFactory implements LoggerFactory {
 	@Override

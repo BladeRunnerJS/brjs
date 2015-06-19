@@ -11,6 +11,7 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.AbstractBundlableNode;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -20,6 +21,7 @@ import org.bladerunnerjs.utility.NameValidator;
 public class TestPack extends AbstractBundlableNode implements NamedNode
 {
 	private String name;
+	private AssetContainer parentAssetContainer;
 	
 	public TestPack(RootNode rootNode, Node parent, MemoizedFile dir)
 	{
@@ -34,7 +36,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public MemoizedFile[] memoizedScopeFiles() {
-		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(testScope().memoizedScopeFiles()));
+		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(getParentAssetContainer().memoizedScopeFiles()));
 		scopeFiles.add(dir());
 		
 		return scopeFiles.toArray(new MemoizedFile[scopeFiles.size()]);
@@ -43,24 +45,27 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public List<LinkedAsset> seedAssets() 
 	{		
-		return assetDiscoveryInitiator.seedAssets();
+		return new ArrayList<>( assetDiscoveryResult().getRegisteredSeedAssets() );
 	}
 	
 	@Override
 	public String requirePrefix()
 	{
-		return testScope().requirePrefix();
+		return getParentAssetContainer().requirePrefix();
 	}
 	
 	@Override
 	public boolean isNamespaceEnforced() {
-		return false;
+		if (getParentAssetContainer() instanceof SdkJsLib) {
+			return false;
+		}
+		return getParentAssetContainer().isNamespaceEnforced();
 	}
 	
 	@Override
 	public List<AssetContainer> scopeAssetContainers()
 	{
-		List<AssetContainer> assetContainers = new ArrayList<>(testScope().scopeAssetContainers());
+		List<AssetContainer> assetContainers = new ArrayList<>(getParentAssetContainer().scopeAssetContainers());
 		assetContainers.add(this);
 		
 		return assetContainers;
@@ -94,14 +99,17 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	{
 		if (parentNode() instanceof TypedTestPack) {
 			String testTechName = ((TypedTestPack) (parentNode())).getName();
-			return testScope().getTypeName().toLowerCase() + "-test-" + testTechName + "-" + name;
+			return getParentAssetContainer().getTypeName().toLowerCase() + "-test-" + testTechName + "-" + name;
 			
 		}
-		return testScope().getTypeName().toLowerCase() + "-" + name;
+		return getParentAssetContainer().getTypeName().toLowerCase() + "-" + name;
 	}
-	
-	public AssetContainer testScope() {
-		return (AssetContainer) parentNode().parentNode();
+
+	private AssetContainer getParentAssetContainer() {
+		if (parentAssetContainer == null) {
+			parentAssetContainer = rootNode.locateAncestorNodeOfClass(parentNode(), AssetContainer.class);
+		}
+		return parentAssetContainer;
 	}
 	
 }

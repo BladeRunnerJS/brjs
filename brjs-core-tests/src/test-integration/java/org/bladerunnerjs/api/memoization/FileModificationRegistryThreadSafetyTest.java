@@ -2,26 +2,33 @@ package org.bladerunnerjs.api.memoization;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.apache.commons.io.filefilter.AbstractFileFilter;
+import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class FileModificationRegistryThreadSafetyTest extends SpecTest
+public class FileModificationRegistryThreadSafetyTest
 {
 
 	private File fileInRoot;
 	private File dirInRoot;
 	private File fileInChildDir;
+	private File testSdkDirectory;
+	private FileModificationRegistry fileModificationRegistry;
 	
 	@Before
 	public void setup() throws Exception {
-		given(brjs).hasBeenCreated();
+		testSdkDirectory = BRJSTestModelFactory.createRootTestDir();
 		fileInRoot = new File(testSdkDirectory, "some-file.txt");
 		dirInRoot = new File(testSdkDirectory, "some-dir");
 		fileInChildDir = new File(dirInRoot, "nested-file.txt");
+		fileModificationRegistry = new FileModificationRegistry(new MatchFileFilter(testSdkDirectory), FalseFileFilter.INSTANCE);
 	}
 	
 	
@@ -61,8 +68,8 @@ public class FileModificationRegistryThreadSafetyTest extends SpecTest
 		{
 			try {
 				for (int i = 0; i < threadIterationLimit; i++) {
-					brjs.getFileModificationRegistry().incrementFileVersion(fileInChildDir);
-					brjs.getFileModificationRegistry().incrementChildFileVersions(fileInRoot);
+					fileModificationRegistry.incrementFileVersion(fileInChildDir);
+					fileModificationRegistry.incrementChildFileVersions(fileInRoot);
 				}
 			} catch (Throwable t) {
 				thrownException = t;
@@ -77,14 +84,22 @@ public class FileModificationRegistryThreadSafetyTest extends SpecTest
 		{
 			try {
 				for (int i = 0; i < threadIterationLimit; i++) {
-					brjs.getFileModificationRegistry().getFileVersion(fileInChildDir);
-					brjs.getFileModificationRegistry().getFileVersion(dirInRoot);
-					brjs.getFileModificationRegistry().getFileVersion(fileInRoot);
+					fileModificationRegistry.getFileVersion(fileInChildDir);
+					fileModificationRegistry.getFileVersion(dirInRoot);
+					fileModificationRegistry.getFileVersion(fileInRoot);
 				}
 			} catch (Throwable t) {
 				thrownException = t;
 			}
 		}
+	}
+	
+	
+	private class MatchFileFilter extends AbstractFileFilter implements IOFileFilter {
+		List<File> matchFiles;
+		public MatchFileFilter(File... matchFiles) { this.matchFiles = Arrays.asList(matchFiles); }
+		public boolean accept(File file) { return matchFiles.contains(file); }
+		
 	}
 	
 }
