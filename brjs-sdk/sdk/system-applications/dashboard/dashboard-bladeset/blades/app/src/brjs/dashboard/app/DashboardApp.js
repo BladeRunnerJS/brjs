@@ -26,11 +26,6 @@ function DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, 
 	this._showBrowserWarningDialogIfNeeded();
 }
 
-/**
- * @static
- */
-DashboardApp.initializeLibrary = function() {};
-
 DashboardApp.prototype.getPresentationModel = function() {
 	return this.m_oPresentationModel;
 };
