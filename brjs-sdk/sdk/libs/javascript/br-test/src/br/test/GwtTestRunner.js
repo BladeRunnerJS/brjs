@@ -31,7 +31,7 @@ function GwtTestRunner(fixtureFactoryClass) {
 
 	var fFixtureFactoryClass;
 	try {
-		if (typeof fixtureFactoryClass === "object") {
+		if (typeof fixtureFactoryClass === "function") {
 			fFixtureFactoryClass = fixtureFactoryClass;
 		} else if (fixtureFactoryClass.indexOf("/") > -1) {
 			fFixtureFactoryClass = require(fixtureFactoryClass);
