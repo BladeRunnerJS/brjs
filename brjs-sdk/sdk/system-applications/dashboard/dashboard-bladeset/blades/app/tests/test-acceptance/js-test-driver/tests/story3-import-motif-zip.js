@@ -5,7 +5,7 @@
     // Story 3 - IMPORT MOTIF ZIP
     describe("story #3", function() 
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
         
         
         it("displays the import motif dialog when the import motif button is clicked", function() {

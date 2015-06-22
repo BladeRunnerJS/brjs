@@ -1,10 +1,12 @@
 (function() {
     var ValidationResult = require("br/presenter/validator/ValidationResult");
+    var AppNamespaceValidator = require("brjs/dashboard/app/model/dialog/validator/AppNamespaceValidator");
+    
     AppNamespaceValidatorTest = TestCase("AppNamespaceValidatorTest");
 
     AppNamespaceValidatorTest.prototype.setUp = function()
     {
-        this.m_oValidator = new brjs.dashboard.app.model.dialog.validator.AppNamespaceValidator();
+        this.m_oValidator = new AppNamespaceValidator();
     };
 
     AppNamespaceValidatorTest.prototype.isValid = function(sNamespace)
@@ -44,4 +46,3 @@
         assertFalse("1a", this.isValid("bla bla"));
     };
 })();
-

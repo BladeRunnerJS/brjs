@@ -5,7 +5,7 @@
     // Story 6 - CREATE NEW BLADE
     describe("story #6", function() 
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
         
         
         it("displays the new-blade dialog when the New Blade context menu button is invoked", function() {

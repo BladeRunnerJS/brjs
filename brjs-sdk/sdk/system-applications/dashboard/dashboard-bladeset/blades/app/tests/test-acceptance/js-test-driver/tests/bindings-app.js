@@ -3,7 +3,7 @@
     GwtTestRunner.initialize();
 
     describe("Dashboard App", function() {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
         
         it("displays the screens that are visible", function() {
             given("dash.loaded = true");

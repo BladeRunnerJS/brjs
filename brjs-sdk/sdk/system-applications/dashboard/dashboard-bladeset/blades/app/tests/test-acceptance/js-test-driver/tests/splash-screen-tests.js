@@ -4,7 +4,7 @@
 
     describe("splash screen tests", function() 
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
         
         it("splash screen displayed by default", function() {
             given("dash.loaded = true");

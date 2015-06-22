@@ -4,7 +4,7 @@
 
     describe("Import Blades Dialog", function() 
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
         
         it("newBladesetName field is correctly bound", function() {
             given("test.continuesFrom = 'story #7::displays the bladesets and blades for the selected application in the dialog'");

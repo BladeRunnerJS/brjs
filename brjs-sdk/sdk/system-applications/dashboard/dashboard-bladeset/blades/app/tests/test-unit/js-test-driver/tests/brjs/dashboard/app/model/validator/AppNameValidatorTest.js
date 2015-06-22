@@ -1,10 +1,12 @@
 (function() {
     var ValidationResult = require("br/presenter/validator/ValidationResult");
+    var AppNameValidator = require("brjs/dashboard/app/model/dialog/validator/AppNameValidator");
+    
     AppNameValidatorTest = TestCase("AppNameValidatorTest");
 
     AppNameValidatorTest.prototype.setUp = function()
     {
-        this.m_oValidator = new brjs.dashboard.app.model.dialog.validator.AppNameValidator();
+        this.m_oValidator = new AppNameValidator();
     };
 
     AppNameValidatorTest.prototype.isValid = function(sAppName)
@@ -38,4 +40,3 @@
         assertFalse("1a", this.isValid("bla bla"));
     };
 })();
-

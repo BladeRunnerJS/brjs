@@ -1,6 +1,8 @@
 
 (function() {
     var Core = require("br/Core");
+    var DashboardProvider = require("brjs/dashboard/app/service/dashboard/DashboardProvider");
+    
     DashboardProviderTest = TestCase("DashboardProviderTest");
 
     var Mock4JS = require("mock4js");
@@ -11,7 +13,7 @@
         
         this.mockRequest = mock(DummyXmlHttpRequest);
         
-        this.provider = new brjs.dashboard.app.service.dashboard.DashboardProvider(new MockXHRFactory(this.mockRequest.proxy()), "servlet/app-manager");
+        this.provider = new DashboardProvider(new MockXHRFactory(this.mockRequest.proxy()), "servlet/app-manager");
         
         this.responseStatusCode = -1;
         this.responseBody = "";

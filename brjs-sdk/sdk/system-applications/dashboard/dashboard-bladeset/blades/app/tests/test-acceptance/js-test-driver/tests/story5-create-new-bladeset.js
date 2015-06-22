@@ -5,7 +5,7 @@
     // Story 5 - CREATE NEW BLADESET
     describe("story #5", function() 
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
 
         it("displays the new-bladeset dialog when the New Bladeset button is invoked", function() {
             given("test.continuesFrom = 'story #4::can display single app details with no bladesets'");

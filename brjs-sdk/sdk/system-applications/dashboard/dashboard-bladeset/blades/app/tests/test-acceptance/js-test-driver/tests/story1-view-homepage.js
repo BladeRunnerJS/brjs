@@ -5,7 +5,7 @@
     // Story 1 - DASHBOARD HOME PAGE
     describe("story #1", function()
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
         
         it("shouldn't display the crumbtrail when the homepage is loaded", function() {
             given("dash.loaded = true");

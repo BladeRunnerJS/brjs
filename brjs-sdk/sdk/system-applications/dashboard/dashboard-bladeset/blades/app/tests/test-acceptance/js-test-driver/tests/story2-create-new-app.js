@@ -5,7 +5,7 @@
     // Story 2 - CREATE NEW APP
     describe("story #2", function() 
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
         
         
         it("displays the new-app dialog when the create-app button is invoked", function() {

@@ -5,7 +5,7 @@
     // Story 4 - VIEW APP DETAILS
     describe("story #4", function() 
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
         
         it("should display a correctly formatted crumbtrail when the app details page is loaded", function() {
             given("dash.loaded = true");

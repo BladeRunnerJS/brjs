@@ -5,7 +5,7 @@
     // Story 11 - LAUNCH WORKBENCH
     describe("story #11", function()
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
 
 
         it("can display app details with bladesets", function() {

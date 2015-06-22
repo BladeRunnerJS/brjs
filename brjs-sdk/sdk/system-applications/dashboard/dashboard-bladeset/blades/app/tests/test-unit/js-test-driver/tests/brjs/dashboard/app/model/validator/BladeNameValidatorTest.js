@@ -1,10 +1,12 @@
 (function() {
     var ValidationResult = require("br/presenter/validator/ValidationResult");
+    var BladeNameValidator = require("brjs/dashboard/app/model/dialog/validator/BladeNameValidator");
+    
     BladeNameValidatorTest = TestCase("BladeNameValidatorTest");
 
     BladeNameValidatorTest.prototype.setUp = function()
     {
-        this.m_oValidator = new brjs.dashboard.app.model.dialog.validator.BladeNameValidator();
+        this.m_oValidator = new BladeNameValidator();
     };
 
     BladeNameValidatorTest.prototype.isValid = function(sBladeName)
@@ -36,4 +38,3 @@
         assertFalse("1a", this.isValid("bla bla"));
     };
 })();
-

@@ -2,6 +2,8 @@
     var PresentationNode = require("br/presenter/node/PresentationNode");
     var NodeList = require("br/presenter/node/NodeList");
     var WritableProperty = require("br/presenter/property/WritableProperty");
+    var ConditionalChangeListener = require("brjs/dashboard/app/model/ConditionalChangeListener");
+    
     ConditionalChangeListenerTest = TestCase("ConditionalChangeListenerTest");
 
     ConditionalChangeListenerTest.prototype.setUp = function()
@@ -14,7 +16,7 @@
 
     ConditionalChangeListenerTest.prototype.getListener = function(vConditionValue)
     {
-        return new brjs.dashboard.app.model.ConditionalChangeListener(this, "onChange", this.m_oConditionProperty, vConditionValue);
+        return new ConditionalChangeListener(this, "onChange", this.m_oConditionProperty, vConditionValue);
     };
 
     ConditionalChangeListenerTest.prototype.onChange = function()
@@ -106,4 +108,3 @@
         assertEquals(1, this.m_nChangeInvocationCount);
     };
 })();
-

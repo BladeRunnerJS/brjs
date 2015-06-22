@@ -5,7 +5,7 @@
     // Story 10 - LAUNCH APP
     describe("story #10", function()
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
 
 
         it("can display single app details with no bladesets", function() {

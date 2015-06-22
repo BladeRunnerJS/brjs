@@ -4,7 +4,7 @@
 
     describe("browser warning dialog", function() 
     {
-        fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+        fixtures( require("brjs/dashboard/app/testing/DashboardFixtureFactory") );
         
         it("displays the dialog for ie6", function() {
             given("browser.name = 'ie'");
