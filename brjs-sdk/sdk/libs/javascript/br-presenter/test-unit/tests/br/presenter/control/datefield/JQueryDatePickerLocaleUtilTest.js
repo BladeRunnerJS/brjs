@@ -35,8 +35,8 @@
 					}
 				};
 			});
-
-			jQuery = require('jquery');
+            
+            jQuery = require('jquery');
 			JQueryDatePickerLocaleUtil = require('br/presenter/control/datefield/JQueryDatePickerLocaleUtil');
 		},
 

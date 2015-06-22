@@ -1,5 +1,5 @@
 (function() {
-	require("jquery");
+	var jQuery = require("jquery");
 
 	var Errors = require('br/Errors');
 	var ViewFixture = require('br/test/ViewFixture');
