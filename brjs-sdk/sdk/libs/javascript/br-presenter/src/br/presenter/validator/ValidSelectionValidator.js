@@ -5,6 +5,7 @@
 var Validator = require('br/validation/Validator');
 var Errors = require('br/Errors');
 var brCore = require("br/Core");
+var OptionsNodeList = require("br/presenter/node/OptionsNodeList");
 
 /**
  * @private
@@ -16,7 +17,7 @@ var brCore = require("br/Core");
  */
 function ValidSelectionValidator(oOptions)
 {
-	if (!oOptions || !(oOptions instanceof br.presenter.node.OptionsNodeList))
+	if (!oOptions || !(oOptions instanceof OptionsNodeList))
 	{
 		throw new Errors.InvalidParametersError("You must provide an instance of OptionsNodeList");
 	}

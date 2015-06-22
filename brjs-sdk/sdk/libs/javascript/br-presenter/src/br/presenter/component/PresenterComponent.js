@@ -55,7 +55,7 @@ function PresenterComponent(sTemplateId, vPresentationModel) {
 	}
 
 	if (!(oPresentationModel instanceof PresentationModel)) {
-		throw new Errors.InvalidParametersError('Presentation Model passed to PresenterComponent is not a br.presenter.PresentationModel');
+		throw new Errors.InvalidParametersError('Presentation Model passed to PresenterComponent is not a br/presenter/PresentationModel');
 	}
 	this.m_oPresentationModel = oPresentationModel;
 

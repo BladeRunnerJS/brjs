@@ -1,5 +1,7 @@
 var brCore = require("br/Core");
 var PresentationNode = require("br/presenter/node/PresentationNode");
+var WritableProperty = require("br/presenter/property/WritableProperty");
+var GrandChildPresentationNode = require("br/presenter/testing/node/GrandChildPresentationNode");
 
 var ChildPresentationNode = function()
 {
@@ -9,9 +11,6 @@ var ChildPresentationNode = function()
 	this.property3 = new WritableProperty("p3");
 	this.grandchild = new GrandChildPresentationNode();
 };
-br.Core.extend(ChildPresentationNode, PresentationNode);
+brCore.extend(ChildPresentationNode, PresentationNode);
 
 module.exports = ChildPresentationNode;
-
-var WritableProperty = require("br/presenter/property/WritableProperty");
-var GrandChildPresentationNode = require("br/presenter/testing/node/GrandChildPresentationNode");

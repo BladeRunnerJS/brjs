@@ -6,6 +6,6 @@ var SimplePresentationNode = function(vPropValue)
 {
 	this.property = new WritableProperty(vPropValue);
 };
-brCore.extend(SimplePresentationNode, br.presenter.node.PresentationNode);
+brCore.extend(SimplePresentationNode, PresentationNode);
 
 module.exports = SimplePresentationNode;

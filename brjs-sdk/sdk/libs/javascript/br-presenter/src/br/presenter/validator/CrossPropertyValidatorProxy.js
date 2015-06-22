@@ -5,6 +5,7 @@
 var Validator = require('br/validation/Validator');
 var CrossValidationPropertyListener = require('br/presenter/validator/CrossValidationPropertyListener');
 var brCore = require("br/Core");
+var EditableProperty = require("br/presenter/property/EditableProperty");
 
 /**
  * @private
@@ -46,7 +47,7 @@ function CrossPropertyValidatorProxy(mProperties, oCrossPropertyValidator)
 	for (var sPropId in this.m_mAllProperties)
 	{
 		var oProperty = this.m_mAllProperties[sPropId];
-		if(oProperty instanceof br.presenter.property.EditableProperty)
+		if(oProperty instanceof EditableProperty)
 		{
 			this.m_mEditableProperties[sPropId] = oProperty;
 			oProperty.addValidator(this, {"sPropertyId": sPropId});

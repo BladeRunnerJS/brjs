@@ -1,7 +1,7 @@
 var brCore = require("br/Core");
-var WritableProperty = require("br/presenter/property/WritableProperty");
-var ChildPresentationNode = require("br/presenter/testing/node/ChildPresentationNode");
 var PresentationModel = require("br/presenter/PresentationModel");
+var ChildPresentationNode = require("br/presenter/testing/node/ChildPresentationNode");
+var WritableProperty = require("br/presenter/property/WritableProperty");
 
 var RootPresentationNode = function()
 {

@@ -1,6 +1,5 @@
 'use strict';
 
-var PresentationNode = require('br/presenter/node/PresentationNode');
 var Formatter = require('br/presenter/formatter/Formatter');
 var Core = require('br/Core');
 var PropertyListener = require('br/presenter/property/PropertyListener');
@@ -16,10 +15,10 @@ var KnockoutProperty = require('br/presenter/view/knockout/KnockoutProperty');
 /**
  * Constructs a new <code>Property</code> instance &mdash; you will probably never want to
  * construct a <code>Property</code> yourself since they are not writable.
- * 
+ *
  * @class
  * @alias module:br/presenter/property/Property
- * 
+ *
  * @classdesc
  * Instances of <code>Property</code> are used to store all the values held within a
  * presentation model.
@@ -283,3 +282,5 @@ Property.prototype._containsPresentationNode = function(pValues) {
 };
 
 module.exports = Property;
+
+var PresentationNode = require('br/presenter/node/PresentationNode');
