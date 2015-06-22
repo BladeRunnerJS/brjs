@@ -1,10 +1,18 @@
-brjs.dashboard.app.model.crumbtrail.BreadCrumb = function(sClass, sName, sUrl)
-{
+'use strict';
+
+var Core = require('br/Core');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+var TemplateNode = require('br/presenter/node/TemplateNode');
+
+function BreadCrumb(sClass, sName, sUrl) {
 	// call super constructor
-	br.presenter.node.TemplateNode.call(this, "brjs.dashboard.app." + sClass);
-	
-	this.className = new br.presenter.property.WritableProperty(sClass);
-	this.name = new br.presenter.property.WritableProperty(sName);
-	this.url = new br.presenter.property.WritableProperty(sUrl);
-};
-br.Core.extend(brjs.dashboard.app.model.crumbtrail.BreadCrumb, br.presenter.node.TemplateNode);
+	TemplateNode.call(this, 'brjs.dashboard.app.' + sClass);
+
+	this.className = new WritableProperty(sClass);
+	this.name = new WritableProperty(sName);
+	this.url = new WritableProperty(sUrl);
+}
+
+Core.extend(BreadCrumb, TemplateNode);
+
+module.exports = BreadCrumb;
