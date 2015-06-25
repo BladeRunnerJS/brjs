@@ -25,7 +25,7 @@ public class AliasingUtility
 	
 	public static AliasesFile aliasesFile(BundlableNode bundlableNode) {
 		return getNodeProperty(bundlableNode, AliasesFile.class.getSimpleName(), AliasesFile.class, 
-				() -> { return new AliasesFile(bundlableNode); });
+				() -> { return new AliasesFile(bundlableNode, bundlableNode.root()); });
 	}
 	
 	public static AliasDefinitionsFile aliasDefinitionsFile(AssetContainer assetContainer, String path) {

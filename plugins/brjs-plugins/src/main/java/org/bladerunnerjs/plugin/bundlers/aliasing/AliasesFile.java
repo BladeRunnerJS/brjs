@@ -4,15 +4,16 @@ import java.util.List;
 
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.model.engine.Node;
 
 public class AliasesFile {
 	private final MemoizedFile file;
 	private final PersistentAliasesData persistentAliasesData;
 	
-	public AliasesFile(BundlableNode bundlableNode) {
-		this.file = bundlableNode.file("resources/aliases.xml");
-		persistentAliasesData = new PersistentAliasesData(bundlableNode.root(), file);
+	public AliasesFile(Node node, BRJS brjs) {
+		this.file = node.file("resources/aliases.xml");
+		persistentAliasesData = new PersistentAliasesData(brjs, file);
 	}
 	
 	public MemoizedFile getUnderlyingFile() {
