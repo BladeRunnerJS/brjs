@@ -21,6 +21,8 @@ import org.bladerunnerjs.api.BundlableNode;
 public class AliasingUtility
 {
 	
+	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
+	
 	public static AliasesFile aliasesFile(BundlableNode bundlableNode) {
 		return getNodeProperty(bundlableNode, AliasesFile.class.getSimpleName(), AliasesFile.class, 
 				() -> { return new AliasesFile(bundlableNode); });
@@ -73,7 +75,7 @@ public class AliasingUtility
 			}
 			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 			for (AliasOverride aliasOverride : aliasesFile.aliasOverrides()) {
-				aliasDefinitions.add( aliasesFile.getAlias(aliasOverride.getName()) );
+				aliasDefinitions.add( resolveAlias(aliasOverride.getName(), bundlableNode) );
 			}
 			return aliasDefinitions;
 		}
@@ -130,5 +132,89 @@ public class AliasingUtility
 		}
 		return false;
 	}
-
+	
+	public static AliasDefinition resolveAlias(String aliasName, BundlableNode bundlableNode) throws AliasException, ContentFileProcessingException {
+		AliasesFile aliasesFile = aliasesFile(bundlableNode);
+		AliasOverride aliasOverride = getLocalAliasOverride(aliasName, bundlableNode);
+		AliasDefinition aliasDefinition = getAliasDefinition(aliasName, bundlableNode);
+		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName, bundlableNode);
+		
+		if ((aliasOverride == null) && (groupAliasOverride != null)) {
+			aliasOverride = groupAliasOverride;
+		}
+		
+		if((aliasDefinition == null) && (aliasOverride == null)) {
+			throw new UnresolvableAliasException(aliasesFile, aliasName);
+		}
+		
+		if(aliasDefinition == null) {
+			aliasDefinition = new AliasDefinition(aliasOverride.getName(), aliasOverride.getClassName(), null);
+		}
+		else if(aliasOverride != null) {
+			aliasDefinition = new AliasDefinition(aliasOverride.getName(), aliasOverride.getClassName(), aliasDefinition.getInterfaceName());
+		}
+		
+		if((aliasDefinition.getClassName() == null)) {
+			aliasDefinition = new AliasDefinition(aliasDefinition.getName(), BR_UNKNOWN_CLASS_NAME, aliasDefinition.getInterfaceName());
+		}
+		
+		return aliasDefinition;
+	}
+	
+	private static AliasOverride getLocalAliasOverride(String aliasName, BundlableNode bundlableNode) throws ContentFileProcessingException {
+		AliasOverride aliasOverride = null;
+		AliasesFile aliasesFile = aliasesFile(bundlableNode);
+		
+		for(AliasOverride nextAliasOverride : aliasesFile.aliasOverrides()) {
+			if(nextAliasOverride.getName().equals(aliasName)) {
+				aliasOverride = nextAliasOverride;
+				break;
+			}
+		}
+		
+		return aliasOverride;
+	}
+	
+	private static AliasOverride getGroupAliasOverride(String aliasName, BundlableNode bundlableNode) throws ContentFileProcessingException, AmbiguousAliasException {
+		AliasOverride aliasOverride = null;
+		AliasesFile aliasesFile = aliasesFile(bundlableNode);
+		List<String> groupNames = aliasesFile.groupNames();
+		
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
+			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
+			if(aliasOverride != null && nextAliasOverride != null) {
+				throw new AmbiguousAliasException(aliasesFile.getUnderlyingFile(), aliasName, groupNames);
+			}
+			
+			if (nextAliasOverride != null)
+			{
+				aliasOverride = nextAliasOverride;
+			}
+		}
+		
+		return aliasOverride;
+	}
+	
+	private static AliasDefinition getAliasDefinition(String aliasName, BundlableNode bundlableNode) throws ContentFileProcessingException, AliasException {
+		AliasDefinition aliasDefinition = null;
+		AliasesFile aliasesFile = aliasesFile(bundlableNode);
+		String scenarioName = aliasesFile.scenarioName();
+		List<String> groupNames = aliasesFile.groupNames();
+		
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
+			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
+			
+			if (nextAliasDefinition != null)
+			{    			
+    			if (aliasDefinition != null && nextAliasDefinition != null) {
+    				throw new AmbiguousAliasException(aliasesFile.getUnderlyingFile(), aliasName, scenarioName);
+    			}
+			
+				aliasDefinition = nextAliasDefinition;
+			}
+		}
+		
+		return aliasDefinition;
+	}
+	
 }

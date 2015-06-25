@@ -22,7 +22,7 @@ public class AliasesVerifier implements SpecTestVerifier
 	}
 	
 	public VerifierChainer hasAlias(String aliasName, String classRef, String interfaceRef) throws Exception {
-		AliasDefinition alias = AliasingUtility.aliasesFile(aspect).getAlias(aliasName);
+		AliasDefinition alias = AliasingUtility.resolveAlias(aliasName, aspect);
 		
 		assertEquals("Class not as expected for alias '" + aliasName + "'", classRef, alias.getClassName());
 		assertEquals("Interface not as expected for alias '" + aliasName + "'", interfaceRef, alias.getInterfaceName());
