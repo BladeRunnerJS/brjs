@@ -16,6 +16,8 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.utility.UnicodeReader;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BundlableNode;
 
 public class AliasingUtility
@@ -23,9 +25,14 @@ public class AliasingUtility
 	
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
 	
-	public static AliasesFile aliasesFile(BundlableNode bundlableNode) {
-		return getNodeProperty(bundlableNode, AliasesFile.class.getSimpleName(), AliasesFile.class, 
-				() -> { return new AliasesFile(bundlableNode, bundlableNode.root()); });
+	public static AliasesFile aliasesFile(Node node) {
+		return getNodeProperty(node, AliasesFile.class.getSimpleName(), AliasesFile.class, 
+				() -> { return new AliasesFile(node, node.root()); });
+	}
+	
+	public static AliasesFile aliasesFile(App app) {
+		return getNodeProperty(app, AliasesFile.class.getSimpleName(), AliasesFile.class, 
+				() -> { return new AliasesFile(app, app.root()); });
 	}
 	
 	public static AliasDefinitionsFile aliasDefinitionsFile(AssetContainer assetContainer, String path) {
@@ -58,10 +65,21 @@ public class AliasingUtility
 		});
 	}
 	
-	public static List<AliasDefinitionsFile> scopeAliasDefinitionFiles(BundlableNode bundlableNode) {
+	public static List<AliasDefinitionsFile> scopeAliasDefinitionFiles(Node node) {
 		List<AliasDefinitionsFile> scopeAliasDefinitions = new ArrayList<>();
-		for (AssetContainer scopeAssetContainer : bundlableNode.scopeAssetContainers()) {
-			scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
+		if (node instanceof App) {
+			App app = (App) node;
+			for (Aspect aspect : app.aspects()) {
+				for (AssetContainer scopeAssetContainer : aspect.scopeAssetContainers()) {
+					scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
+				}
+			}
+		}
+		else {
+			BundlableNode bundlableNode = (BundlableNode) node;
+			for (AssetContainer scopeAssetContainer : bundlableNode.scopeAssetContainers()) {
+				scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
+			}
 		}
 		return scopeAliasDefinitions;
 	}
@@ -134,10 +152,16 @@ public class AliasingUtility
 	}
 	
 	public static AliasDefinition resolveAlias(String aliasName, BundlableNode bundlableNode) throws AliasException, ContentFileProcessingException {
-		AliasesFile aliasesFile = aliasesFile(bundlableNode);
-		AliasOverride aliasOverride = getLocalAliasOverride(aliasName, bundlableNode);
-		AliasDefinition aliasDefinition = getAliasDefinition(aliasName, bundlableNode);
-		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName, bundlableNode);
+		AliasesFile aliasesFile = null;
+		if (aliasesFile(bundlableNode.app()).getUnderlyingFile().exists()) {
+			aliasesFile = aliasesFile(bundlableNode.app());
+		}
+		else {
+			aliasesFile = aliasesFile(bundlableNode);
+		}
+		AliasOverride aliasOverride = getLocalAliasOverride(aliasName, aliasesFile.node());
+		AliasDefinition aliasDefinition = getAliasDefinition(aliasName, aliasesFile.node());
+		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName, aliasesFile.node());
 		
 		if ((aliasOverride == null) && (groupAliasOverride != null)) {
 			aliasOverride = groupAliasOverride;
@@ -161,9 +185,9 @@ public class AliasingUtility
 		return aliasDefinition;
 	}
 	
-	private static AliasOverride getLocalAliasOverride(String aliasName, BundlableNode bundlableNode) throws ContentFileProcessingException {
+	private static AliasOverride getLocalAliasOverride(String aliasName, Node node) throws ContentFileProcessingException {
 		AliasOverride aliasOverride = null;
-		AliasesFile aliasesFile = aliasesFile(bundlableNode);
+		AliasesFile aliasesFile = aliasesFile(node);
 		
 		for(AliasOverride nextAliasOverride : aliasesFile.aliasOverrides()) {
 			if(nextAliasOverride.getName().equals(aliasName)) {
@@ -175,12 +199,12 @@ public class AliasingUtility
 		return aliasOverride;
 	}
 	
-	private static AliasOverride getGroupAliasOverride(String aliasName, BundlableNode bundlableNode) throws ContentFileProcessingException, AmbiguousAliasException {
+	private static AliasOverride getGroupAliasOverride(String aliasName, Node node) throws ContentFileProcessingException, AmbiguousAliasException {
 		AliasOverride aliasOverride = null;
-		AliasesFile aliasesFile = aliasesFile(bundlableNode);
+		AliasesFile aliasesFile = aliasesFile(node);
 		List<String> groupNames = aliasesFile.groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(node)) {
 			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
 			if(aliasOverride != null && nextAliasOverride != null) {
 				throw new AmbiguousAliasException(aliasesFile.getUnderlyingFile(), aliasName, groupNames);
@@ -195,13 +219,13 @@ public class AliasingUtility
 		return aliasOverride;
 	}
 	
-	private static AliasDefinition getAliasDefinition(String aliasName, BundlableNode bundlableNode) throws ContentFileProcessingException, AliasException {
+	private static AliasDefinition getAliasDefinition(String aliasName, Node node) throws ContentFileProcessingException, AliasException {
 		AliasDefinition aliasDefinition = null;
-		AliasesFile aliasesFile = aliasesFile(bundlableNode);
+		AliasesFile aliasesFile = aliasesFile(node);
 		String scenarioName = aliasesFile.scenarioName();
 		List<String> groupNames = aliasesFile.groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(node)) {
 			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
 			
 			if (nextAliasDefinition != null)
