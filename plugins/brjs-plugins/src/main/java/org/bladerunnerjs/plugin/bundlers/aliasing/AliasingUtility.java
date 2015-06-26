@@ -159,9 +159,13 @@ public class AliasingUtility
 		else {
 			aliasesFile = aliasesFile(bundlableNode);
 		}
-		AliasOverride aliasOverride = getLocalAliasOverride(aliasName, aliasesFile.node());
-		AliasDefinition aliasDefinition = getAliasDefinition(aliasName, aliasesFile.node());
-		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName, aliasesFile.node());
+		return resolveAlias(aliasName, bundlableNode, aliasesFile);
+	}
+	
+	public static AliasDefinition resolveAlias(String aliasName, BundlableNode bundlableNode, AliasesFile aliasesFile) throws AliasException, ContentFileProcessingException {
+		AliasOverride aliasOverride = getLocalAliasOverride(aliasName, aliasesFile);
+		AliasDefinition aliasDefinition = getAliasDefinition(aliasName, aliasesFile, bundlableNode);
+		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName, aliasesFile, bundlableNode);
 		
 		if ((aliasOverride == null) && (groupAliasOverride != null)) {
 			aliasOverride = groupAliasOverride;
@@ -185,9 +189,8 @@ public class AliasingUtility
 		return aliasDefinition;
 	}
 	
-	private static AliasOverride getLocalAliasOverride(String aliasName, Node node) throws ContentFileProcessingException {
+	private static AliasOverride getLocalAliasOverride(String aliasName, AliasesFile aliasesFile) throws ContentFileProcessingException {
 		AliasOverride aliasOverride = null;
-		AliasesFile aliasesFile = aliasesFile(node);
 		
 		for(AliasOverride nextAliasOverride : aliasesFile.aliasOverrides()) {
 			if(nextAliasOverride.getName().equals(aliasName)) {
@@ -199,12 +202,11 @@ public class AliasingUtility
 		return aliasOverride;
 	}
 	
-	private static AliasOverride getGroupAliasOverride(String aliasName, Node node) throws ContentFileProcessingException, AmbiguousAliasException {
+	private static AliasOverride getGroupAliasOverride(String aliasName, AliasesFile aliasesFile, BundlableNode bundlableNode) throws ContentFileProcessingException, AmbiguousAliasException {
 		AliasOverride aliasOverride = null;
-		AliasesFile aliasesFile = aliasesFile(node);
 		List<String> groupNames = aliasesFile.groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(node)) {
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
 			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
 			if(aliasOverride != null && nextAliasOverride != null) {
 				throw new AmbiguousAliasException(aliasesFile.getUnderlyingFile(), aliasName, groupNames);
@@ -219,13 +221,12 @@ public class AliasingUtility
 		return aliasOverride;
 	}
 	
-	private static AliasDefinition getAliasDefinition(String aliasName, Node node) throws ContentFileProcessingException, AliasException {
+	private static AliasDefinition getAliasDefinition(String aliasName, AliasesFile aliasesFile, BundlableNode bundlableNode) throws ContentFileProcessingException, AliasException {
 		AliasDefinition aliasDefinition = null;
-		AliasesFile aliasesFile = aliasesFile(node);
 		String scenarioName = aliasesFile.scenarioName();
 		List<String> groupNames = aliasesFile.groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(node)) {
+		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
 			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
 			
 			if (nextAliasDefinition != null)
