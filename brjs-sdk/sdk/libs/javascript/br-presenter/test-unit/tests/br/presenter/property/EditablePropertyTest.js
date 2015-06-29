@@ -589,4 +589,22 @@
         
         assertFalse(oEditableProperty.hasValidationError());
     };
+
+    EditablePropertyTest.prototype.test_weDontContinuouslyReparseNaN = function()
+    {
+    	var fParser = function(){};
+    	Core.implement(fParser, Parser);
+
+    	fParser.prototype.parse = function(sText, mConfig){
+    		return sText;
+    	};
+    	fParser.prototype.isSingleUseParser = function(){
+    		return false;
+    	};
+
+    	var oEditableProperty = new EditableProperty().addParser(new fParser(), {});
+    	oEditableProperty.setUserEnteredValue(NaN);
+    	assertTrue(Number.isNaN(oEditableProperty.getValue()));
+    };
+
 })();

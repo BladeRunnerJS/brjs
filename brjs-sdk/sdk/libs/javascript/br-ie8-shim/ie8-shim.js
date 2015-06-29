@@ -47,3 +47,9 @@ if (Function.prototype.bind && typeof console == "object" && typeof console.log 
 		console[method] = Function.prototype.call.bind(console[method], console);
 	}
 }
+
+if(!Number.isNaN) {
+	Number.isNaN = Number.isNaN || function(value) {
+	    return typeof value === "number" && value !== value;
+	}
+}
