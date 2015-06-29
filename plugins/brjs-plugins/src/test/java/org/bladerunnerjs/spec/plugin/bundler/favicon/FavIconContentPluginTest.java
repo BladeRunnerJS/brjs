@@ -35,6 +35,9 @@ public class FavIconContentPluginTest extends SpecTest {
 		binaryResponse = new FileOutputStream(binaryResponseFile);
 		
 		brjs.appJars().create();
+		
+		given(app).hasBeenCreated()
+			.and(app).containsEmptyFile("app.conf");
 	}
 	
 	@After
@@ -61,8 +64,7 @@ public class FavIconContentPluginTest extends SpecTest {
 	@Test
 	public void theContentOfTheFavIconIsTheSameAsTheResponseObtainedForTheRequest() throws Exception
 	{
-		given(app).hasBeenCreated()
-			.and(appAspect).hasBeenCreated()
+		given(appAspect).hasBeenCreated()
 			.and(app).containsFile("favicon.ico");
 		when(appAspect).requestReceivedInDev("/favicon.ico", binaryResponse);
     	then(binaryResponseFile).sameAsFile(app.file("favicon.ico").getAbsolutePath());
@@ -71,8 +73,7 @@ public class FavIconContentPluginTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfFavIconDoesNotExist() throws Exception
 	{
-		given(app).hasBeenCreated()
-			.and(appAspect).hasBeenCreated()
+		given(appAspect).hasBeenCreated()
 			.and(app).doesNotContainFile("favicon.ico");
 		when(appAspect).requestReceivedInDev("/favicon.ico", binaryResponse);
     	then(exceptions).verifyException(FileNotFoundException.class)
@@ -82,8 +83,7 @@ public class FavIconContentPluginTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfFavIconIsAFolder() throws Exception
 	{
-		given(app).hasBeenCreated()
-			.and(appAspect).hasBeenCreated()
+		given(appAspect).hasBeenCreated()
 			.and(app).containsFolder("favicon.ico");
 		when(appAspect).requestReceivedInDev("/favicon.ico", binaryResponse);
     	then(exceptions).verifyException(FileNotFoundException.class)
@@ -92,8 +92,7 @@ public class FavIconContentPluginTest extends SpecTest {
 
 	@Test
 	public void theRequestForAnExistingFavIconReturnsCode200() throws Exception {
-		given(app).hasBeenCreated()
-			.and(appAspect).hasBeenCreated()
+		given(appAspect).hasBeenCreated()
 			.and(app).containsFile("favicon.ico");
 		when(appServer).started();
 		then(appServer).requestForUrlHasResponseCode("/app1/favicon.ico", 200);
@@ -101,8 +100,7 @@ public class FavIconContentPluginTest extends SpecTest {
 	
 	@Test
 	public void theRequestForANonExistingFavIconReturnsCode404() throws Exception {
-		given(app).hasBeenCreated()
-			.and(appAspect).hasBeenCreated()
+		given(appAspect).hasBeenCreated()
 			.and(app).doesNotContainFile("favicon.ico");
 		when(appServer).started();
 		then(appServer).requestForUrlHasResponseCode("/app1/favicon.ico", 404);
@@ -111,8 +109,7 @@ public class FavIconContentPluginTest extends SpecTest {
 	@Test
 	public void theContentTypeOfTheResponseObtainedForTheRequestIsImageXIcon() throws Exception
 	{
-		given(app).hasBeenCreated()
-			.and(appAspect).hasBeenCreated()
+		given(appAspect).hasBeenCreated()
 			.and(app).containsFileCopiedFrom("favicon.ico", "src/test/resources/favicon.ico");
 		when(appServer).started();
 		then(appServer).contentTypeForRequestIs("/app1/favicon.ico", "image/x-icon");
