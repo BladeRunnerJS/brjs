@@ -149,6 +149,7 @@ public class CommandRunnerTest {
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--quiet"});
 		
 		String output = outputStream.toString("UTF-8");
+		assertContains("error-level", output);
 		assertDoesNotContain("warn-level", output);
 		assertDoesNotContain("console-level", output);
 		assertDoesNotContain("info-level", output);
