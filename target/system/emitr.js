@@ -1,4 +1,4 @@
-// emitr built for bundle module system 2014-12-10T10:43:19.131Z
+// emitr built for bundle module system 2015-06-19T14:28:08.535Z
 define("emitr", function(require, exports, module) {
 	module.exports = require("./lib/index");
 });
@@ -28,7 +28,11 @@ define("emitr/lib/Emitter", function(require, exports, module) {
 			var listener = listeners[i];
 			try {
 				listener.callback.apply(listener.context, args);
-			} catch(e) {}
+			} catch(e) {
+				if(window.console) {
+					console.error(e);
+				}
+			}
 		}
 		return true;
 	}

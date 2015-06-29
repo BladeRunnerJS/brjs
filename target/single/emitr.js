@@ -1,4 +1,4 @@
-// emitr built for browser 2014-12-10T10:43:19.131Z
+// emitr built for browser 2015-06-19T14:28:08.535Z
 ;(function (name, factory) {
 	if (typeof module === 'object') {
 		// Does not work with strict CommonJS, but only CommonJS-like environments
@@ -125,7 +125,11 @@
 				var listener = listeners[i];
 				try {
 					listener.callback.apply(listener.context, args);
-				} catch(e) {}
+				} catch(e) {
+					if(window.console) {
+						console.error(e);
+					}
+				}
 			}
 			return true;
 		}
