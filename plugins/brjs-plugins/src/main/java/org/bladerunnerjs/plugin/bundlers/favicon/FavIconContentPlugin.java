@@ -2,24 +2,24 @@ package org.bladerunnerjs.plugin.bundlers.favicon;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.App;
-import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.BinaryResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
@@ -28,35 +28,32 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 public class FavIconContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin {
 
-	public static final String FAVICON_FILE = "favicon.ico";
-	public static final String VERSIONED_FAVICON_REQUEST = "versioned-favicon-request";
+	public static final String FAVICON_FILENAME = "favicon.ico";
 	public static final String FAVICON_REQUEST = "favicon-request";
 	
 	private ContentPathParser contentPathParser;
-	private BRJS brjs;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-		contentPathParserBuilder
-			.accepts("favicon.ico").as(VERSIONED_FAVICON_REQUEST)
-				.and("/favicon.ico").as(FAVICON_REQUEST);
+		contentPathParserBuilder.accepts("/favicon.ico").as(FAVICON_REQUEST);
 
 		contentPathParser = contentPathParserBuilder.build();
 	}
 	
 	@Override
 	public String getRequestPrefix() {
-		return FAVICON_FILE;
+		return FAVICON_FILENAME;
 	}
 
 	@Override
 	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor,
-			String version) throws MalformedRequestException, ContentProcessingException {
+			String version) throws MalformedRequestException, ContentProcessingException, ResourceNotFoundException {
+		
 		try {
 			ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
 			
-    		if (parsedContentPath.formName.equals(FAVICON_REQUEST) || parsedContentPath.formName.equals(VERSIONED_FAVICON_REQUEST)) {
-    			return getFileContents(bundleSet, parsedContentPath, contentAccessor, bundleSet.bundlableNode());
+    		if (parsedContentPath.formName.equals(FAVICON_REQUEST)) {
+    			return getFileContents(bundleSet.bundlableNode().app(), contentAccessor);
     		}
 			else {
 				throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
@@ -68,29 +65,36 @@ public class FavIconContentPlugin extends AbstractContentPlugin implements Routa
 		}
 	}
 
-	private ResponseContent getFileContents(BundleSet bundleSet, ParsedContentPath contentPath,	UrlContentAccessor contentAccessor, 
-			AssetContainer assetContainer) throws ContentProcessingException, IOException {
-		MemoizedFile faviconFile = assetContainer.file(FAVICON_FILE);
-		App app = bundleSet.bundlableNode().app();
-		String requestedFilePathRelativeToApp = app.dir().getRelativePath(faviconFile);
-		if (!faviconFile.isFile())
-		{
-			String requestedFilePathRelativeToRoot = app.dir().getParentFile().getRelativePath(faviconFile);
-			throw new ContentProcessingException("The requested 'favicon.ico' at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
-		}	
-		ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
-		contentAccessor.handleRequest(requestedFilePathRelativeToApp, outputBuffer);
-		return new BinaryResponseContent( new ByteArrayInputStream(outputBuffer.toByteArray()) );
+	private ResponseContent getFileContents(App app, UrlContentAccessor contentAccessor) throws ContentProcessingException, IOException, ResourceNotFoundException {
+		try {
+			ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+			contentAccessor.handleRequest(FAVICON_FILENAME, outputBuffer);
+			return new BinaryResponseContent( new ByteArrayInputStream(outputBuffer.toByteArray()) );
+		} catch (FileNotFoundException ex) {
+			throw new ResourceNotFoundException( String.format("No '%s' file was found for the app '%s'", FAVICON_FILENAME, app.getName()), ex );
+		}
 	}
 
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException {
-		return new ArrayList<String>();
+		App app = bundleSet.bundlableNode().app();
+		if (app.file(FAVICON_FILENAME).isFile()) {
+			List<String> validContentPaths = new ArrayList<>();
+			try
+			{
+				validContentPaths.add( contentPathParser.createRequest(FAVICON_REQUEST) );
+			}
+			catch (MalformedTokenException ex)
+			{
+				throw new ContentProcessingException(ex);
+			}
+			return validContentPaths;
+		}
+		return Collections.emptyList();
 	}
 
 	@Override
 	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
 	}
 
 	@Override
