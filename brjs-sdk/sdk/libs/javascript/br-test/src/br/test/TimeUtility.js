@@ -10,7 +10,7 @@ var Errors = require('br/Errors');
  * @private
  * @class
  * @alias module:br/test/TimeUtility
- * 
+ *
  * @classdesc
  * Utility class containing static methods that can be useful for controlling time in tests.
  */
@@ -89,7 +89,7 @@ TimeUtility.clearCapturedFunctions = function() {
  *  is passed, this will execute all captured functions.
  */
 TimeUtility.executeCapturedFunctions = function(nMsToExecuteTo) {
-	var capturedFunction;
+	var capturedFunction, innerCapturedFunction;
 
 	this.pCapturedTimerFunctionArgs.sort(this.fCapturedTimersSort);
 
@@ -97,7 +97,14 @@ TimeUtility.executeCapturedFunctions = function(nMsToExecuteTo) {
 		capturedFunction = this.pCapturedTimerFunctionArgs[idx];
 
 		if (nMsToExecuteTo == null || capturedFunction[1] <= nMsToExecuteTo) {
+			var l = this.pCapturedTimerFunctionArgs.length;
 			capturedFunction[0]();
+			
+			for (var idy = l; idy < this.pCapturedTimerFunctionArgs.length; idy++) {
+				innerCapturedFunction = this.pCapturedTimerFunctionArgs[idy];
+				innerCapturedFunction[1] += capturedFunction[1];
+			}
+			
 			this.pCapturedTimerFunctionArgs.splice(idx, 1);
 			idx--;
 		} else {
