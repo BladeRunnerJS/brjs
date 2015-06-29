@@ -240,7 +240,7 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException, ResourceNotFoundException {
 		try {
 			StringWriter localeSwitchingPage = new StringWriter();
 			
