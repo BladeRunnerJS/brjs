@@ -308,6 +308,9 @@ public class ImportAppCommandTest extends SpecTest {
 	@Test // This test attempts to reproduce a bug we were seeing in the product - https://github.com/BladeRunnerJS/brjs/issues/1238
 	public void bladesetWorkbenchCanBeLoadedWithoutClassCastExceptionAfterImportInANewBRJSProcess() throws Exception {
 		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: appns")
 			.and(bladeset).hasBeenCreated()
 			.and(bladesetWorkbench).containsFileWithContents("resources/css/style.css", "url('./file.png')")
 			.and(bladesetWorkbench).containsFileWithContents("resources/file.png", "my cool image")

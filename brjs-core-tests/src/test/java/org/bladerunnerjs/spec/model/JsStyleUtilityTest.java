@@ -66,10 +66,10 @@ public class JsStyleUtilityTest extends SpecTest {
 	@Test
 	public void jsStyleUtilityDoesntRecurseOutsideOfBrjsRoot() throws Exception {
 		given(brjs).hasNotYetBeenCreated();
-		FileUtils.cleanDirectory(testSdkDirectory);
-		File oldTestSdkDirectory = testSdkDirectory;
-		testSdkDirectory = new File(oldTestSdkDirectory, "subdir");
-		new File(testSdkDirectory, "sdk").mkdirs();
+		FileUtils.cleanDirectory(testRootDirectory);
+		File oldTestSdkDirectory = testRootDirectory;
+		testRootDirectory = new File(oldTestSdkDirectory, "subdir");
+		new File(testRootDirectory, "sdk").mkdirs();
 		
 		given(brjs).hasBeenCreated()
 			.and(oldTestSdkDirectory).containsFileWithContents(".js-style", "namespaced-js");

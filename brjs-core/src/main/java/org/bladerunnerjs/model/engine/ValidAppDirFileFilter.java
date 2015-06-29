@@ -21,7 +21,7 @@ public class ValidAppDirFileFilter implements IOFileFilter
 
 	
 	public ValidAppDirFileFilter(BRJS brjs) {
-		this.validAppDirContentsFilter = new WildcardFileFilter(Arrays.asList(AppConf.FILE_NAME, "*.html", "*.jsp", "*-aspect", "*-bladeset", "blades", "WEB-INF"));
+		this.validAppDirContentsFilter = new WildcardFileFilter(Arrays.asList(AppConf.FILE_NAME));
 		logger = brjs.logger(this.getClass());
 	}
 

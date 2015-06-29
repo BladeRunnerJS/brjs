@@ -55,7 +55,7 @@ public class AppServerTest extends SpecTest
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).localeSwitcherHasContents("locale-forwarder.js")
-			.and(brjs).containsFolder("brjs-apps")
+			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
 			brjs.bladerunnerConf().setJettyPort(appServerPort);
 			brjs.bladerunnerConf().write();
@@ -104,6 +104,8 @@ public class AppServerTest extends SpecTest
 		then(appServer).requestCanBeMadeFor("/app1")
 			.and(appServer).requestIs302Redirected("/","/dashboard")
 			.and(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "system")
+			.and(logging).infoMessageReceived(BRJS.Messages.APPS_DISCOVERED, "User", "app1")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
 			.and(logging).debugMessageReceived(DEPLOYING_APP_MSG, "app1");
 	}
@@ -216,6 +218,9 @@ public class AppServerTest extends SpecTest
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app1).hasBeenPopulated("default")
+			.and(app1).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: app1")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "/servlet/hello/*");
 		then(appServer).requestForUrlReturns("/app1/servlet/hello", "Hello World!");
@@ -228,6 +233,9 @@ public class AppServerTest extends SpecTest
 			.and(templates).templateGroupCreated()
 			.and(templates.template("app")).containsFile("fileForApp.txt")
 			.and(app1).hasBeenPopulated("default")
+			.and(app1).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: app1")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app1, helloWorldServlet, "*.mock");
 		then(appServer).requestForUrlReturns("/app1/hello.mock", "Hello World!");
@@ -248,7 +256,7 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstanceAndOnlyAppsDirectoryExists() throws Exception
 	{
-		given(brjs).doesNotContainFolder("brjs-apps")
+		given(brjs).doesNotContainFolder("apps")
 			.and(brjs).containsFolder("apps")
 			.and(brjs).hasBeenAuthenticallyCreated(); 
 			/*and*/ secondBrjsProcess.close(); secondBrjsProcess = createNonTestModel();
@@ -301,7 +309,7 @@ public class AppServerTest extends SpecTest
 	{
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread()
 			.and(templates).templateGroupCreated()
-			.and(brjs).containsFile("brjs-apps/file.txt")
+			.and(brjs).containsFile("apps/file.txt")
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(app1Conf).localesUpdatedTo("en", "de");
@@ -311,6 +319,9 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void errorCode500IsThrownIfBadFileIsRequired() throws Exception {
 		given(app1.defaultAspect()).indexPageRequires("appns/App")
+			.and(app1).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: app1")
 			.and(app1.defaultAspect()).classFileHasContent("appns/App", "require('badFile')")
 			.and(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "Error 500");
@@ -319,6 +330,9 @@ public class AppServerTest extends SpecTest
 	@Test
 	public void errorCode400IsThrownIfTheRequestIsMalformed() throws Exception {
 		given(app1.defaultAspect()).indexPageHasContent("")
+			.and(app1).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: app1")
 			.and(appServer).started();
 		then(appServer).requestForUrlContains("/app1/v/dev/js/malformed-request", "Error 400");
 	}

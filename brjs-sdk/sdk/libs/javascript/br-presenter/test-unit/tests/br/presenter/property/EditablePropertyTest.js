@@ -110,6 +110,23 @@ EditablePropertyTest.prototype.test_setUserEnteredValueSetsParsedValueWhenParser
 	assertEquals("zz", oEditableProperty.getValue());
 };
 
+EditablePropertyTest.prototype.test_weDontContinuouslyReparseNaN = function()
+{
+	var fParser = function(){};
+	br.Core.implement(fParser, br.presenter.parser.Parser);
+
+	fParser.prototype.parse = function(sText, mConfig){
+		return sText;
+	};
+	fParser.prototype.isSingleUseParser = function(){
+		return false;
+	};
+
+	var oEditableProperty = new br.presenter.property.EditableProperty().addParser(new fParser(), {});
+	oEditableProperty.setUserEnteredValue(NaN);
+	assertTrue(Number.isNaN(oEditableProperty.getValue()));
+};
+
 EditablePropertyTest.prototype.test_whenThereAreNoValidatorsValidationAlwaysSucceed = function()
 {
 	var oMockListener = mock(br.presenter.property.PropertyListener);

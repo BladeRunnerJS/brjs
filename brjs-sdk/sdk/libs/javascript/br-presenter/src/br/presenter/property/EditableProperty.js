@@ -380,7 +380,7 @@ br.presenter.property.EditableProperty.prototype._parse = function(vValue)
 			var oParser = parsers[i];
 			var vNewValue = oParser.parser.parse(vParsedValue, oParser.config);
 
-			if(vNewValue !== null && vNewValue !== undefined && vNewValue !== vParsedValue)
+			if(vNewValue !== null && vNewValue !== undefined && !Number.isNaN(vNewValue) && vNewValue !== vParsedValue)
 			{
 				vParsedValue = vNewValue;
 				bValueChanged = true;
