@@ -56,6 +56,15 @@ public class ServeAppTest extends SpecTest {
 	}
 	
 	@Test
+	public void localeForwardingPageHasADocType() throws Exception {
+		given(appConf).supportsLocales("en", "de")
+		.and(defaultAspect).indexPageHasContent("index page")
+		.and(brjs).localeSwitcherHasContents("locale forwarding page");
+		when(app).requestReceived("", response);
+		then(response).containsText("<!DOCTYPE html>");
+	}
+	
+	@Test
 	public void exceptionIsThrownIfAnInvalidLocaleIsRequestedForMultiLocaleApps() throws Exception {
 		given(appConf).supportsLocales("en", "de")
 			.and(defaultAspect).indexPageHasContent("index page")
