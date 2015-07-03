@@ -205,7 +205,7 @@ public class AppRequestHandler
 			
 			String pathRelativeToApp = app.dir().getRelativePath(indexPage);
 			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
-			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
+			contentAccessor.handleRequest(pathRelativeToApp, indexPageContent);
 			
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			

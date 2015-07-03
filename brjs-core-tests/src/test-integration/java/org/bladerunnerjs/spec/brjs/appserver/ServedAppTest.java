@@ -73,7 +73,7 @@ public class ServedAppTest extends SpecTest
 	}
 	
 	@Test
-	public void jspSupportIsEnabled() throws Exception
+	public void indexJspSupportIsEnabled() throws Exception
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
@@ -82,6 +82,18 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).containsFileWithContents("index.jsp", "<%= 1 + 2 %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/", "3");
+	}
+	
+	@Test
+	public void indexJspCanSendRedirects() throws Exception
+	{
+		given(app).hasBeenPopulated("default")
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: appns")
+			.and(aspect).containsFileWithContents("index.jsp", "<% response.sendRedirect(\"/redirected/\"); %>")
+			.and(appServer).started();
+		then(appServer).requestIs302Redirected("/app/", "/redirected/");
 	}
 	
 	@Test
