@@ -14,7 +14,7 @@ EditablePropertyTest.prototype.tearDown = function()
 };
 
 EditablePropertyTest.prototype._getTestValidator = function(bAsync)
-{	
+{
 	var fValidator = function(bAsync)
 	{
 		this.m_bAsync = (bAsync === true);
@@ -600,3 +600,31 @@ EditablePropertyTest.prototype.test_hasValidationErrorReturnsFalseIfAllValidator
 	assertFalse(oEditableProperty.hasValidationError());
 };
 
+EditablePropertyTest.prototype.test_parsersCanBeRemovedAndReturnTrueOnlyIfTheyAreRemoved = function()
+{
+	var fParser = function(parseOperation) {
+		this.parseOperation = parseOperation;
+	};
+	br.Core.implement(fParser, br.presenter.parser.Parser);
+
+	fParser.prototype.parse = function(sValue, mConfig){
+		return isNaN(sValue) ? null : this.parseOperation(sValue);
+	};
+	fParser.prototype.isSingleUseParser = function(sValue, mConfig){
+		return true;
+	};
+	
+	var oParser1 = new fParser(function(nValue){return nValue / 10});
+	var oParser2 = new fParser(function(nValue){return nValue + "K"});
+	
+	var oEditableProperty = new br.presenter.property.EditableProperty().addParser(oParser1, {}).addParser(oParser2, {});
+	
+	oEditableProperty.setUserEnteredValue("10");
+	assertEquals("1K", oEditableProperty.getValue());
+	
+	assertTrue(oEditableProperty.removeParser(oParser1));
+	oEditableProperty.setUserEnteredValue("10");
+	assertEquals("10K", oEditableProperty.getValue());
+	
+	assertFalse(oEditableProperty.removeParser(oParser1));
+};
