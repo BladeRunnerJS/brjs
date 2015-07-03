@@ -1,4 +1,4 @@
-// emitr built for browser 2015-06-19T14:28:08.535Z
+// emitr built for browser 2015-07-03T09:30:46.613Z
 ;(function (name, factory) {
 	if (typeof module === 'object') {
 		// Does not work with strict CommonJS, but only CommonJS-like environments
@@ -126,8 +126,8 @@
 				try {
 					listener.callback.apply(listener.context, args);
 				} catch(e) {
-					if(window.console) {
-						console.error(e);
+					if(typeof console !== 'undefined' && typeof console.error !== 'undefined') {
+						console.error("Error notifying an observer, the error was: '" + e + "'");
 					}
 				}
 			}
@@ -390,6 +390,90 @@
 		module.exports = Emitter;
 		
 	});
+	_define("emitr/lib/events", function(require, exports, module) {
+		"use strict";
+		
+		var Event = require('./Event');
+		
+		var MetaEvent = Event.extend(
+				/**
+				 * @memberOf Emitter.meta
+				 * @class MetaEvent
+				 * @param {*} event The event this MetaEvent is about
+				 * @classdesc
+				 * A parent class for all meta events.
+				 */
+						function(event) {
+					/**
+					 * Event provides the identifier of the event that this MetaEvent is about.
+					 * @name Emitter.meta.MetaEvent#event
+					 * @type {*}
+					 */
+					this.event = event;
+				}
+		);
+		/**
+		 * @memberOf Emitter.meta
+		 * @extends Emitter.meta.MetaEvent
+		 * @class ListenerEvent
+		 * @classdesc
+		 * A parent class for all MetaEvents about listeners.
+		 */
+		var ListenerEvent = MetaEvent.extend(
+				function(event, listener, context) {
+					MetaEvent.call(this, event);
+					/**
+					 * The listener this ListenerEvent is about.
+					 * @name Emitter.meta.ListenerEvent#listener
+					 * @type {function}
+					 */
+					this.listener = listener;
+					/**
+					 * The context associated with the listener.
+					 * @name Emitter.meta.ListenerEvent#context
+					 * @type {?object}
+					 */
+					this.context = context;
+				}
+		);
+		/**
+		 * @memberOf Emitter.meta
+		 * @class AddListenerEvent
+		 * @extends Emitter.meta.ListenerEvent
+		 */
+		var AddListenerEvent = ListenerEvent.extend();
+		/**
+		 * @memberOf Emitter.meta
+		 * @class RemoveListenerEvent
+		 * @extends Emitter.meta.ListenerEvent
+		 */
+		var RemoveListenerEvent = ListenerEvent.extend();
+		/**
+		 * @memberOf Emitter.meta
+		 * @class DeadEvent
+		 * @extends Emitter.meta.MetaEvent
+		 */
+		var DeadEvent = MetaEvent.extend(
+				function(event, args) {
+					MetaEvent.call(this, event);
+					this.data = args;
+				}
+		);
+		
+		/**
+		 * Where the meta events live.
+		 * @memberOf Emitter
+		 * @namespace meta
+		 */
+		module.exports = {
+			MetaEvent: MetaEvent,
+			ListenerEvent: ListenerEvent,
+			AddListenerEvent: AddListenerEvent,
+			RemoveListenerEvent: RemoveListenerEvent,
+			DeadEvent: DeadEvent
+		};
+		
+	});
 	_define("emitr/lib/Event", function(require, exports, module) {
 		"use strict";
 		
@@ -482,90 +566,6 @@
 		};
 		
 		module.exports = Event;
-	});
-	_define("emitr/lib/events", function(require, exports, module) {
-		"use strict";
-		
-		var Event = require('./Event');
-		
-		var MetaEvent = Event.extend(
-				/**
-				 * @memberOf Emitter.meta
-				 * @class MetaEvent
-				 * @param {*} event The event this MetaEvent is about
-				 * @classdesc
-				 * A parent class for all meta events.
-				 */
-						function(event) {
-					/**
-					 * Event provides the identifier of the event that this MetaEvent is about.
-					 * @name Emitter.meta.MetaEvent#event
-					 * @type {*}
-					 */
-					this.event = event;
-				}
-		);
-		/**
-		 * @memberOf Emitter.meta
-		 * @extends Emitter.meta.MetaEvent
-		 * @class ListenerEvent
-		 * @classdesc
-		 * A parent class for all MetaEvents about listeners.
-		 */
-		var ListenerEvent = MetaEvent.extend(
-				function(event, listener, context) {
-					MetaEvent.call(this, event);
-					/**
-					 * The listener this ListenerEvent is about.
-					 * @name Emitter.meta.ListenerEvent#listener
-					 * @type {function}
-					 */
-					this.listener = listener;
-					/**
-					 * The context associated with the listener.
-					 * @name Emitter.meta.ListenerEvent#context
-					 * @type {?object}
-					 */
-					this.context = context;
-				}
-		);
-		/**
-		 * @memberOf Emitter.meta
-		 * @class AddListenerEvent
-		 * @extends Emitter.meta.ListenerEvent
-		 */
-		var AddListenerEvent = ListenerEvent.extend();
-		/**
-		 * @memberOf Emitter.meta
-		 * @class RemoveListenerEvent
-		 * @extends Emitter.meta.ListenerEvent
-		 */
-		var RemoveListenerEvent = ListenerEvent.extend();
-		/**
-		 * @memberOf Emitter.meta
-		 * @class DeadEvent
-		 * @extends Emitter.meta.MetaEvent
-		 */
-		var DeadEvent = MetaEvent.extend(
-				function(event, args) {
-					MetaEvent.call(this, event);
-					this.data = args;
-				}
-		);
-		
-		/**
-		 * Where the meta events live.
-		 * @memberOf Emitter
-		 * @namespace meta
-		 */
-		module.exports = {
-			MetaEvent: MetaEvent,
-			ListenerEvent: ListenerEvent,
-			AddListenerEvent: AddListenerEvent,
-			RemoveListenerEvent: RemoveListenerEvent,
-			DeadEvent: DeadEvent
-		};
-		
 	});
 	_define("emitr/lib/shams", function(require, exports, module) {
 		// Partial 'sham' to work around ie8s lack of es5 //////////////////////////////////////////////
