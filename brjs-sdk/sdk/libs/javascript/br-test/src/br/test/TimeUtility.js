@@ -97,10 +97,10 @@ TimeUtility.executeCapturedFunctions = function(nMsToExecuteTo) {
 		capturedFunction = this.pCapturedTimerFunctionArgs[idx];
 
 		if (nMsToExecuteTo == null || capturedFunction[1] <= nMsToExecuteTo) {
-			var l = this.pCapturedTimerFunctionArgs.length;
+			var timerArgsLength = this.pCapturedTimerFunctionArgs.length;
 			capturedFunction[0]();
 			
-			for (var idy = l; idy < this.pCapturedTimerFunctionArgs.length; idy++) {
+			for (var idy = timerArgsLength; idy < this.pCapturedTimerFunctionArgs.length; idy++) {
 				innerCapturedFunction = this.pCapturedTimerFunctionArgs[idy];
 				innerCapturedFunction[1] += capturedFunction[1];
 			}
