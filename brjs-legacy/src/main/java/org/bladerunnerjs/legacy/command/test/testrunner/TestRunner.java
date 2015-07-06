@@ -412,7 +412,7 @@ public class TestRunner {
 			Process process =  builder.start();
 			childProcesses.add(process);
 			
-			ProcessLogger processLogger = new ProcessLogger(brjs, process, LogLevel.WARN, LogLevel.ERROR, null);
+			ProcessLogger processLogger = new ProcessLogger(brjs, process, LogLevel.CONSOLE, LogLevel.ERROR, null);
 			int exitCode = process.waitFor();
 			processLogger.waitFor();
 			

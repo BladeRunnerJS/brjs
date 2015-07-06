@@ -8,6 +8,7 @@ import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.bladerunnerjs.testing.utility.ScriptedContentPlugin;
 import org.bladerunnerjs.testing.utility.ScriptedRequestGeneratingTagHandlerPlugin;
@@ -29,6 +30,7 @@ public class BuildAppTest extends SpecTest {
 		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
+			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement"))
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			appConf = app.appConf();
@@ -88,12 +90,20 @@ public class BuildAppTest extends SpecTest {
 	}
 	
 	@Test
-	public void jspIndexPagesAreUnprocessedAndKeepTheJspSuffix() throws Exception {
+	public void indexJspIndexPagesAreUnprocessedAndKeepTheJspSuffix() throws Exception {
 		given(defaultAspect).containsFileWithContents("index.jsp", "<%= 1 + 2 %>\n<@js.bundle@/>")
 			.and(brjs).localeSwitcherHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/index.jsp", "<%= 1 + 2 %>")
 			.and(targetDir).containsFileWithContents("/index.jsp", "/js/prod/combined/bundle.js");
+	}
+	
+	@Test
+	public void tokensInIndexJspAreReplaced() throws Exception
+	{
+		given(defaultAspect).containsFileWithContents("index.jsp", "<@tagToken @/>")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("/index.jsp", "prod replacement");
 	}
 	
 	@Test

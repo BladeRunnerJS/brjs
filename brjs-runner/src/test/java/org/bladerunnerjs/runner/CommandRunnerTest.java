@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.plugin.EventObserver;
+import org.bladerunnerjs.logger.ConsoleLoggerStore;
+import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
 import org.bladerunnerjs.model.events.NewInstallEvent;
@@ -40,7 +42,9 @@ public class CommandRunnerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		StaticLoggerBinder.getSingleton().getLoggerFactory().setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
+		ConsoleLoggerStore loggerFactory = StaticLoggerBinder.getSingleton().getLoggerFactory();
+		loggerFactory.setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
+		loggerFactory.setLogLevel(LogLevel.WARN);
 		commandRunner = new CommandRunner();
 		
 		tempDir = FileUtils.createTemporaryDirectory( getClass() );
@@ -134,6 +138,20 @@ public class CommandRunnerTest {
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--debug"});
 		
 		String output = outputStream.toString("UTF-8");
+		assertDoesNotContain("info-level", output);
+		assertDoesNotContain("debug-level", output);
+	}
+	
+	@Test
+	public void onlyErrorsAreDisplayedWhenTheQuietFlagIsEnabled() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--quiet"});
+		
+		String output = outputStream.toString("UTF-8");
+		assertContains("error-level", output);
+		assertDoesNotContain("warn-level", output);
+		assertDoesNotContain("console-level", output);
 		assertDoesNotContain("info-level", output);
 		assertDoesNotContain("debug-level", output);
 	}
