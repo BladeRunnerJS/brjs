@@ -188,7 +188,7 @@ public class AppRequestHandler
 			
 			String pathRelativeToApp = app.dir().getRelativePath(indexPage);
 			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
-			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
+			contentAccessor.handleRequest(pathRelativeToApp, indexPageContent);
 			
 			return TagPluginUtility.getUsedTagsAndAttributes(indexPageContent.toString(), browsableNode.getBundleSet(), requestMode, locale);
 		}
