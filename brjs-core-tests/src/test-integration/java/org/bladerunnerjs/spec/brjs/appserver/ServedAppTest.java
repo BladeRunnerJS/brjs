@@ -109,6 +109,18 @@ public class ServedAppTest extends SpecTest
 	}
 	
 	@Test
+	public void tokensInIndexJspAreReplaced() throws Exception
+	{
+		given(app).hasBeenPopulated("default")
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: appns")
+			.and(aspect).containsFileWithContents("index.jsp", "<@tagToken @/>")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/", "dev replacement");
+	}
+	
+	@Test
 	public void localeForwarderPageCanBeAccessedWithoutEndingInForwardSlash() throws Exception
 	{
 		given(app).hasBeenPopulated("default")
