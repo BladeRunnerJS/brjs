@@ -25,14 +25,14 @@ public class AliasingUtility
 	
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
 	
-	public static AliasesFile aliasesFile(Node node) {
-		return getNodeProperty(node, AliasesFile.class.getSimpleName(), AliasesFile.class, 
-				() -> { return new AliasesFile(node, node.root()); });
+	public static AliasesFile aliasesFile(AssetContainer assetContainer) {
+		return getNodeProperty(assetContainer, AliasesFile.class.getSimpleName(), AliasesFile.class, 
+				() -> { return new AliasesFile(assetContainer); });
 	}
 	
 	public static AliasesFile aliasesFile(App app) {
 		return getNodeProperty(app, AliasesFile.class.getSimpleName(), AliasesFile.class, 
-				() -> { return new AliasesFile(app, app.root()); });
+				() -> { return new AliasesFile(app); });
 	}
 	
 	public static AliasDefinitionsFile aliasDefinitionsFile(AssetContainer assetContainer, String path) {

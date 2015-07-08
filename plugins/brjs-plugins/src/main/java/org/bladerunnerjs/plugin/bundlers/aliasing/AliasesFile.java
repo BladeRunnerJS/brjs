@@ -5,23 +5,26 @@ import java.util.List;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.RootNode;
 
 public class AliasesFile {
 	private final MemoizedFile file;
 	private final PersistentAliasesData persistentAliasesData;
 	private final Node node;
 	
-	public AliasesFile(Node node, RootNode rootNode) {
+	public AliasesFile(AssetContainer assetContainer) {
+		this(assetContainer, assetContainer.file("resources/aliases.xml"));
+	}
+	
+	public AliasesFile(App app) {
+		this(app, app.file("aliases.xml"));;
+	}
+	
+	private AliasesFile(Node node, MemoizedFile file) {
 		this.node = node;
-		if (node instanceof App) {
-			this.file = node.file("aliases.xml");
-		}
-		else {
-			this.file = node.file("resources/aliases.xml");
-		}
-		persistentAliasesData = new PersistentAliasesData(rootNode, file);
+		this.file = file;
+		persistentAliasesData = new PersistentAliasesData(node.root(), file);
 	}
 	
 	public Node node() {
