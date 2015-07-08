@@ -88,8 +88,11 @@ public class AliasingUtility
 	{
 		try {
 			AliasesFile aliasesFile = aliasesFile(bundlableNode);
-			if (!aliasesFile.getUnderlyingFile().isFile()) {
+			if ( !aliasesFile.getUnderlyingFile().isFile() && !aliasesFile(bundlableNode.app()).getUnderlyingFile().isFile() ) {
 				return Collections.emptyList();
+			}
+			else if (aliasesFile(bundlableNode.app()).getUnderlyingFile().isFile()) {
+				aliasesFile = aliasesFile(bundlableNode.app());
 			}
 			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 			for (AliasOverride aliasOverride : aliasesFile.aliasOverrides()) {

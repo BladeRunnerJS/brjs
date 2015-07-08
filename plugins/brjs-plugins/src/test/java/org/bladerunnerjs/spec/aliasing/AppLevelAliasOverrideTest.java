@@ -46,4 +46,14 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		given(appAliasesFileBuilder).hasAlias("the-alias", "TheClassOverride");
 		then(aspectAliasesVerifier).hasAlias("the-alias", "TheClassOverride");
 	}
+	
+	@Test
+	public void aliasDefinitionsInLibsAreOverridenByTheAppAliases() throws Exception {
+		given(brLib).hasClasses("br/Class1", "br/Class2")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.alias", "br.Class2")
+			.and(appAliasesFileBuilder).hasAlias("br.TheAliasOverride", "br.Class2")
+			.and(aspect).indexPageHasAliasReferences("br.TheAliasOverride");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("br/Class2");
+	}
 }
