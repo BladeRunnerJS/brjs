@@ -2,6 +2,7 @@ package org.bladerunnerjs.appserver.filter;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
@@ -15,13 +16,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.appserver.util.CommitedResponseCharResponseWrapper;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
-import org.bladerunnerjs.appserver.util.StreamTokeniser;
+import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 
 public class TokenisingServletFilter implements Filter
 {
-	private StreamTokeniser streamTokeniser;
+	private TokenReplacingReader streamTokeniser;
 	private JndiTokenFinder tokenFinder;
 	private final Pattern validUrl = Pattern.compile("^.*(/|/[a-z]{2}|/[a-z]{2}_[A-Z]{2}|\\.(xml|json|html|htm|jsp))$");
 	
@@ -56,9 +58,9 @@ public class TokenisingServletFilter implements Filter
 			
 			try
 			{
-				StringBuffer filteredResponse = getStreamTokeniser().replaceTokens(responseWrapper.getReader());
-				byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
 				if (!response.isCommitted()) { // only write the content if the headers havent been commited (an error code hasnt been sent)
+					String filteredResponse = IOUtils.toString( getStreamTokeniser(responseWrapper.getReader()) );
+					byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
 					response.setContentLength(filteredData.length);
 					out.write(filteredData);
 					response.flushBuffer();
@@ -87,7 +89,7 @@ public class TokenisingServletFilter implements Filter
 		return validUrl.matcher(requestUrl).matches();
 	}
 	
-	private StreamTokeniser getStreamTokeniser() throws ServletException {
+	private Reader getStreamTokeniser(Reader reader) throws ServletException {
 		if (tokenFinder == null) {
 			try {
 				tokenFinder = new JndiTokenFinder();
@@ -96,7 +98,7 @@ public class TokenisingServletFilter implements Filter
 			}
 		}
 		if (streamTokeniser == null) {
-			streamTokeniser = new StreamTokeniser(tokenFinder);
+			streamTokeniser = new TokenReplacingReader(tokenFinder, reader);
 		}
 		return streamTokeniser;
 	}

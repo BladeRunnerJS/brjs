@@ -10,4 +10,5 @@ dependencies {
 	testCompile dependency("junit")
 	testCompile dependency("mockito-core")
 	testCompile dependency("commons-io")
+	testCompile dependency("commons-lang3")
 }
