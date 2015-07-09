@@ -21,21 +21,12 @@ import org.bladerunnerjs.appserver.util.StreamTokeniser;
 
 public class TokenisingServletFilter implements Filter
 {
-	private StreamTokeniser streamTokeniser = new StreamTokeniser();
+	private StreamTokeniser streamTokeniser;
 	private JndiTokenFinder tokenFinder;
 	private final Pattern validUrl = Pattern.compile("^.*(/|/[a-z]{2}|/[a-z]{2}_[A-Z]{2}|\\.(xml|json|html|htm|jsp))$");
-	private String contextPath;
-
+	
 	public TokenisingServletFilter() throws ServletException
 	{
-		try
-		{ 
-			this.tokenFinder = new JndiTokenFinder();
-		}
-		catch (NamingException e)
-		{
-			throw new ServletException("Error getting context for JNDI lookups. (" + e + ")", e);
-		}
 	}
 	
 	/* this should only be used for testing */
@@ -47,7 +38,6 @@ public class TokenisingServletFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig)
 	{
-		contextPath = filterConfig.getServletContext().getContextPath();
 	}
 	
 	@Override
@@ -60,17 +50,13 @@ public class TokenisingServletFilter implements Filter
 	{
 		if (shouldProcessResponse(request))
 		{
-			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			String parentRequestPath = httpRequest.getRequestURI().replaceAll("/[^/]*$", "");
-			String hostIdentifier = httpRequest.getRequestURL().toString().replaceAll(contextPath + ".*$", "");
-			String requestUri = hostIdentifier + parentRequestPath;
 			ServletOutputStream out = response.getOutputStream();
 			CommitedResponseCharResponseWrapper responseWrapper = new CommitedResponseCharResponseWrapper((HttpServletResponse) response);
 			chain.doFilter(request, responseWrapper);
 			
 			try
 			{
-				StringBuffer filteredResponse = streamTokeniser.replaceTokens(responseWrapper.getReader(), tokenFinder, requestUri);
+				StringBuffer filteredResponse = getStreamTokeniser().replaceTokens(responseWrapper.getReader());
 				byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
 				if (!response.isCommitted()) { // only write the content if the headers havent been commited (an error code hasnt been sent)
 					response.setContentLength(filteredData.length);
@@ -100,4 +86,19 @@ public class TokenisingServletFilter implements Filter
 		
 		return validUrl.matcher(requestUrl).matches();
 	}
+	
+	private StreamTokeniser getStreamTokeniser() throws ServletException {
+		if (tokenFinder == null) {
+			try {
+				tokenFinder = new JndiTokenFinder();
+			} catch(NamingException ex) {
+				throw new ServletException("Error getting context for JNDI lookups. (" + ex + ")", ex);
+			}
+		}
+		if (streamTokeniser == null) {
+			streamTokeniser = new StreamTokeniser(tokenFinder);
+		}
+		return streamTokeniser;
+	}
+	
 }

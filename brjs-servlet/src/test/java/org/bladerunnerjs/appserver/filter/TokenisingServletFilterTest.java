@@ -7,11 +7,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
@@ -87,20 +89,7 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertEquals("token replacement", response.get("responseText"));
 		assertEquals("text/plain", response.get("responseContentType"));
 	}
-
-	@Test
-	public void tokenReplacementWorksForEnptyStringValues() throws Exception
-	{
-		dummyServlet.setResponseText("@AN.EMPTY.TOKEN@");
-		when(mockJndiContext.lookup("java:comp/env/AN.EMPTY.TOKEN")).thenReturn(null);
-
-		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/file.xml");
-		verify(mockJndiContext, times(1)).lookup("java:comp/env/AN.EMPTY.TOKEN");
-		assertEquals("200", response.get("responseCode"));
-		assertEquals("", response.get("responseText"));
-		assertEquals("text/plain", response.get("responseContentType"));
-	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void test500ResponseCodeIfTokenCannotBeReplaced() throws Exception
@@ -112,7 +101,7 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.NONEXISTANT.TOKEN");
 		assertEquals("500", response.get("responseCode"));
 	}
-
+	
 	@Test
 	public void testTokenisingFilterOnlyProcessesXmlAndJsonFiles() throws Exception
 	{
@@ -123,7 +112,7 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertEquals("200", response.get("responseCode"));
 		assertEquals("this token @A.TOKEN@ should not be processed", response.get("responseText"));
 	}
-
+	
 	@Test
 	public void tokenReplacementWorksForIndexPages() throws Exception
 	{
@@ -136,7 +125,7 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertEquals("token replacement", response.get("responseText"));
 		assertEquals("text/plain", response.get("responseContentType"));
 	}
-
+	
 	@Test
 	public void tokenReplacementWorksForLocalizedIndexPages() throws Exception
 	{
@@ -160,11 +149,13 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertEquals("200", response.get("responseCode"));
 		assertEquals("this token @A.TOKEN@ should not be processed", response.get("responseText"));
 	}
-
+	
 	@Test
 	public void testFilterDoesNotChokeOnAStreamOnNonTextBits() throws Exception
 	{
-		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/jollyroger.jpg");
+		FileUtils.copyFileToDirectory( new File("src/test/resources/br-logo.png"), contextDir );
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/br-logo.png");
 		assertEquals("200", response.get("responseCode"));
 	}
+
 }

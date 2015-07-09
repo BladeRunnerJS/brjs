@@ -7,8 +7,14 @@ public class StreamTokeniser
 {
 	public static final char tokenStart = '@';
 	public static final char tokenEnd = '@';
+	private JndiTokenFinder tokenFinder;
 	
-	public StringBuffer replaceTokens(Reader input, JndiTokenFinder tokenFinder, String requestUri) throws IOException
+	public StreamTokeniser(JndiTokenFinder tokenFinder)
+	{
+		this.tokenFinder = tokenFinder;
+	}
+
+	public StringBuffer replaceTokens(Reader input) throws IOException
 	{
 		StringBuffer output = new StringBuffer();
 		boolean withinToken = false;
@@ -34,7 +40,7 @@ public class StreamTokeniser
 			{
 				if (withinToken)
 				{
-					withinToken = processPossbileTokenCharacter(tokenFinder, output, withinToken, tokenString, c, requestUri);
+					withinToken = processPossbileTokenCharacter(tokenFinder, output, withinToken, tokenString, c);
 				}
 				else
 				{
@@ -61,7 +67,7 @@ public class StreamTokeniser
 		return output;
 	}
 
-	private boolean processPossbileTokenCharacter(JndiTokenFinder tokenFinder, StringBuffer output, boolean withinToken, StringBuffer tokenString, char c, String requestUri)
+	private boolean processPossbileTokenCharacter(JndiTokenFinder tokenFinder, StringBuffer output, boolean withinToken, StringBuffer tokenString, char c)
 	{
 		if (isValidTokenChar(c))
 		{
@@ -69,7 +75,7 @@ public class StreamTokeniser
 		}
 		else if (c == tokenEnd)
 		{
-			withinToken = processEndOfToken(tokenFinder, output, tokenString, c, requestUri);
+			withinToken = processEndOfToken(tokenFinder, output, tokenString, c);
 		}
 		else
 		{
@@ -80,7 +86,7 @@ public class StreamTokeniser
 		return withinToken;
 	}
 
-	private boolean processEndOfToken(JndiTokenFinder tokenFinder, StringBuffer output, StringBuffer tokenString, char c, String requestUri)
+	private boolean processEndOfToken(JndiTokenFinder tokenFinder, StringBuffer output, StringBuffer tokenString, char c)
 	{
 		boolean withinToken;
 		withinToken = false;
@@ -91,7 +97,7 @@ public class StreamTokeniser
 		}
 		else
 		{
-			String tokenReplacement = findTokenReplacement(tokenString.toString(), tokenFinder, requestUri);
+			String tokenReplacement = findTokenReplacement(tokenString.toString(), tokenFinder);
 			if (tokenReplacement != null)
 			{
 				output.append(tokenReplacement);
@@ -109,7 +115,7 @@ public class StreamTokeniser
 		return Character.isUpperCase(c) || c == '.';
 	}
 
-	private String findTokenReplacement(String tokenName, JndiTokenFinder tokenFinder, String requestUri)
+	private String findTokenReplacement(String tokenName, JndiTokenFinder tokenFinder)
 	{
 		tokenName = tokenName.substring(1, tokenName.length() - 1);
 		String tokenReplacement = tokenFinder.findTokenValue(tokenName);		
