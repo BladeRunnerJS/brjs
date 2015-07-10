@@ -96,19 +96,13 @@ subprojects { p ->
 	afterEvaluate { project ->
 
 		if (project.plugins.hasPlugin(JavaPlugin)) {
-			if(project.name == 'brjs-core'
-					|| project.name == 'brjs-core-tests'
-					|| project.name == 'brjs-plugins') {
-				sourceCompatibility = '1.8'
-				targetCompatibility = '1.8'
-			}
-			else if(project.name == 'brjs-servlet') {
+			if(project.name == 'brjs-servlet') {
 				sourceCompatibility = '1.6'
 				targetCompatibility = '1.6'
 			}
 			else {
-				sourceCompatibility = '1.7'
-				targetCompatibility = '1.7'
+				sourceCompatibility = '1.8'
+				targetCompatibility = '1.8'
 			}
 
 			project.tasks.withType(Test) { testTask ->
