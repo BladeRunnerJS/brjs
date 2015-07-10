@@ -15,7 +15,7 @@ public class TokenReplacingReader extends Reader
 	private Reader sourceReader;
 	
 	private boolean withinToken = false;
-	private StringBuffer currentTokenString;
+	private StringBuffer currentTokenString = new StringBuffer();;
 	
 	private StringBuffer tokenReplacementBuffer = new StringBuffer();
 	
@@ -63,19 +63,22 @@ public class TokenReplacingReader extends Reader
 					currentTokenString.append(nextChar);
 					if (currentTokenString.length() <= 2)
 					{
-						addToCharBuffer(destBuffer, currentTokenString.toString().toCharArray());
+						appendTokenString(destBuffer);
+						currentTokenString.setLength(0);
 					}
 					else
 					{
 						tokenReplacementBuffer.ensureCapacity(0);
 						tokenReplacementBuffer.append( findTokenReplacement(currentTokenString.toString()) );
+						currentTokenString.setLength(0);
 						appendTokenReplacement(destBuffer);
 					}
 				}
 				else
 				{
 					withinToken = false;
-					addToCharBuffer(destBuffer, currentTokenString.toString().toCharArray());
+					appendTokenString(destBuffer);
+					currentTokenString.setLength(0);
 					addToCharBuffer(destBuffer, nextChar);
 				}
 			}
@@ -84,7 +87,7 @@ public class TokenReplacingReader extends Reader
 				if (nextChar == tokenStart)
 				{
 					withinToken = true;
-					currentTokenString = new StringBuffer();
+					currentTokenString.setLength(0);
 					currentTokenString.append(nextChar);
 				}
 				else
@@ -93,6 +96,11 @@ public class TokenReplacingReader extends Reader
 				}
 			}
 				
+		}
+		
+		if (currentTokenString.length() > 0) {
+			addToCharBuffer(destBuffer, currentTokenString.toString().toCharArray());
+			currentTokenString.setLength(0);
 		}
 		
 		int charsProvided = (currentOffset - offset);
@@ -114,6 +122,11 @@ public class TokenReplacingReader extends Reader
 			destBuffer[currentOffset++] = c;
 			totalNumberOfCharsWritten ++;
 		}
+	}
+	
+	private void appendTokenString(char[] destBuffer) {
+		addToCharBuffer(destBuffer, currentTokenString.toString().toCharArray());
+		currentTokenString.setLength(0);
 	}
 	
 	private void appendTokenReplacement(char[] destBuffer) {

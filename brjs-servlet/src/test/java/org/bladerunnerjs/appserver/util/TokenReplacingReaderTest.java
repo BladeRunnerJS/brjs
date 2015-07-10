@@ -46,12 +46,72 @@ public class TokenReplacingReaderTest
 	}
 	
 	@Test
-	public void testJndiIsLookupPerformedForToken() throws Exception
+	public void testLookupIsPerformedForToken() throws Exception
 	{
 		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.TOKEN@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("token replacement", replacedContent);
 		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
+	}
+	
+	@Test
+	public void testTokensCanBeReplacedBackToBack() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.TOKEN@@A.TOKEN@@A.TOKEN@") );
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals("token replacementtoken replacementtoken replacement", replacedContent);
+	}
+	
+	@Test
+	public void testTokensMustBeUppcaseAndDots() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.token@") );
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals("@A.token@", replacedContent);
+		verify(mockJndiContext, times(0)).lookup(any(String.class));
+	}
+	
+	@Test
+	public void testTokensMustBeContainedWithin2AtSymbols() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.token") );
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals("@A.token", replacedContent);
+		verify(mockJndiContext, times(0)).lookup(any(String.class));
+	}
+	
+	@Test
+	public void testTokensCannotContainInvalidChars() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A_TOKEN@") );
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals("@A_TOKEN@", replacedContent);
+		verify(mockJndiContext, times(0)).lookup(any(String.class));
+	}
+	
+	@Test
+	public void testTwoAtSymbolsArentAValidToken() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@@") );
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals("@@", replacedContent);
+		verify(mockJndiContext, times(0)).lookup(any(String.class));
+	}
+	
+	@Test
+	public void tokenStringThatIsntClosedIsOutputAsTheTokenString() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.TOKEN") );
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals("@A.TOKEN", replacedContent);
+	}
+	
+	@Test
+	public void tokenAfterASingleAtSymbolIsReplaced() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@Foo@A.TOKEN@") );
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals("@Footoken replacement", replacedContent);
 	}
 	
 	@Test
