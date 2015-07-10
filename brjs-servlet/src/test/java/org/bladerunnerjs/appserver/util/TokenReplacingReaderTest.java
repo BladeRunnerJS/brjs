@@ -5,11 +5,13 @@ import static org.mockito.Mockito.*;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Arrays;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.appserver.filter.TestContextFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -34,6 +36,7 @@ public class TokenReplacingReaderTest
 		when(mockJndiContext.lookup("java:comp/env/AN.EMPTY.TOKEN")).thenReturn("");
 		when(mockJndiContext.lookup("java:comp/env/A.NULL.TOKEN")).thenReturn(null);
 		when(mockJndiContext.lookup("java:comp/env/A.NONEXISTANT.TOKEN")).thenThrow(NamingException.class);
+		when(mockJndiContext.lookup("java:comp/env/LONG.TOKEN.REPLACEMENT")).thenReturn( StringUtils.leftPad("", 5000, "0") );
 	}
 
 	@After
@@ -66,7 +69,6 @@ public class TokenReplacingReaderTest
 		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@AN.EMPTY.TOKEN@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("", replacedContent);
-		verify(mockJndiContext, times(1)).lookup("java:comp/env/AN.EMPTY.TOKEN");
 	}
 	
 	@Test
@@ -75,7 +77,6 @@ public class TokenReplacingReaderTest
 		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.NULL.TOKEN@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("", replacedContent);
-		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.NULL.TOKEN");
 	}
 
 	@Test 
@@ -84,6 +85,40 @@ public class TokenReplacingReaderTest
 		exception.expect(IllegalArgumentException.class);
 		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.NONEXISTANT.TOKEN@") );
 		IOUtils.readLines( tokenisingReader );
+	}
+	
+	@Test
+	public void longTokenReplacementsCanBeUsed() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@LONG.TOKEN.REPLACEMENT@") );
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals(StringUtils.leftPad("", 5000, "0"), replacedContent);
+	}
+	
+	@Test
+	public void tokenStringsCanSpanBufferLimits() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader(
+				StringUtils.leftPad("", 4094, "0")+" @A.TOKEN@ "+StringUtils.leftPad("", 4094, "0"))
+		);
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals( 
+				StringUtils.leftPad("", 4094, "0")+" token replacement "+StringUtils.leftPad("", 4094, "0")
+		, replacedContent);
+	}
+	
+	@Test
+	public void tokensAreReplacedInsideOfLargeContent() throws Exception
+	{
+		for (int padLength : Arrays.asList(4096, 5000, 10000)) {
+    		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader(
+    				StringUtils.leftPad("", padLength, "0")+" @A.TOKEN@ "+StringUtils.leftPad("", padLength, "0"))
+    		);
+    		String replacedContent = IOUtils.toString( tokenisingReader );
+    		assertEquals( 
+    				StringUtils.leftPad("", padLength, "0")+" token replacement "+StringUtils.leftPad("", padLength, "0")
+    		, replacedContent);
+		}
 	}
 	
 	@Test

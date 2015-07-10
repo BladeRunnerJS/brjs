@@ -4,20 +4,26 @@ import java.io.IOException;
 import java.io.Reader;
 
 
+// this class only reads a single char at a time from the SourceReader as it massively simplifies the code and we're not reading from large files as we might with the JS 'stripping' readers
 public class TokenReplacingReader extends Reader
 {
-	private static final int MAX_SINGLE_WRITE = 3;
+	
 	public static final char tokenStart = '@';
 	public static final char tokenEnd = '@';
-	private JndiTokenFinder tokenFinder;
+	
+	private TokenFinder tokenFinder;
 	private Reader sourceReader;
 	
-	private int nextCharPos = 0;
-	private int lastCharPos = 0;
 	private boolean withinToken = false;
-	private StringBuffer tokenString;
+	private StringBuffer currentTokenString;
 	
-	public TokenReplacingReader(JndiTokenFinder tokenFinder, Reader sourceReader)
+	private StringBuffer tokenReplacementBuffer = new StringBuffer();
+	
+	private int currentOffset;
+	private int maxCharactersToWrite;
+	private int totalNumberOfCharsWritten;
+	
+	public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader)
 	{
 		this.tokenFinder = tokenFinder;
 		this.sourceReader = sourceReader;
@@ -26,64 +32,51 @@ public class TokenReplacingReader extends Reader
 	@Override
 	public int read(char[] destBuffer, int offset, int maxCharacters) throws IOException
 	{
-		if(lastCharPos == -1) {
-			return -1;
+		currentOffset = offset;
+		totalNumberOfCharsWritten = 0;
+		maxCharactersToWrite = maxCharacters;
+		
+		int nextCharVal = -1;
+		char nextChar = '\0';
+		
+		if (tokenReplacementBuffer.length() > 0) {
+			appendTokenReplacement(destBuffer);
 		}
 		
-		int currentOffset = offset;
-		int maxOffset = offset + maxCharacters - (MAX_SINGLE_WRITE - 1);
-		char nextChar = '\0';
-		char[] sourceBuffer = new char[4096];
-		
-		while(currentOffset < maxOffset) {
-			if(nextCharPos == lastCharPos) {
-				nextCharPos = 0;
-				lastCharPos = sourceReader.read(sourceBuffer, 0, sourceBuffer.length - 1);
-				
-				if(lastCharPos == -1) {
-					break;
-				}
-			}
+		while (canWriteMoreChars()) {
+			nextCharVal = sourceReader.read();
 			
-			nextChar = sourceBuffer[nextCharPos++];
-			
-			if (nextChar == '\r' && nextChar != '\n') {
-				throw new IOException("Mac line endings detected. This type of line ending is not supported.");
+			if (nextCharVal == -1) {
+				break;
 			}
-
+			nextChar = (char) nextCharVal;
 			
 			if (withinToken)
 			{
 				if (isValidTokenChar(nextChar))
 				{
-					tokenString.append(nextChar);
+					currentTokenString.append(nextChar);
 				}
 				else if (nextChar == tokenEnd)
 				{
 					withinToken = false;
-					tokenString.append(nextChar);
-					if (tokenString.length() <= 2)
+					currentTokenString.append(nextChar);
+					if (currentTokenString.length() <= 2)
 					{
-						currentOffset = addToCharBuffer(destBuffer, currentOffset, tokenString.toString().toCharArray());
+						addToCharBuffer(destBuffer, currentTokenString.toString().toCharArray());
 					}
 					else
 					{
-						String tokenReplacement = findTokenReplacement(tokenString.toString(), tokenFinder);
-						if (tokenReplacement != null)
-						{
-							currentOffset = addToCharBuffer(destBuffer, currentOffset, tokenReplacement.toString().toCharArray());
-						}
-						else
-						{
-							throw new IllegalArgumentException("No replacement found for token " + tokenString);
-						}
+						tokenReplacementBuffer.ensureCapacity(0);
+						tokenReplacementBuffer.append( findTokenReplacement(currentTokenString.toString()) );
+						appendTokenReplacement(destBuffer);
 					}
 				}
 				else
 				{
 					withinToken = false;
-					currentOffset = addToCharBuffer(destBuffer, currentOffset, tokenString.toString().toCharArray());
-					currentOffset = addToCharBuffer(destBuffer, currentOffset, nextChar);
+					addToCharBuffer(destBuffer, currentTokenString.toString().toCharArray());
+					addToCharBuffer(destBuffer, nextChar);
 				}
 			}
 			else
@@ -91,12 +84,12 @@ public class TokenReplacingReader extends Reader
 				if (nextChar == tokenStart)
 				{
 					withinToken = true;
-					tokenString = new StringBuffer();
-					tokenString.append(nextChar);
+					currentTokenString = new StringBuffer();
+					currentTokenString.append(nextChar);
 				}
 				else
 				{
-					currentOffset = addToCharBuffer(destBuffer, currentOffset, nextChar);
+					addToCharBuffer(destBuffer, nextChar);
 				}
 			}
 				
@@ -112,11 +105,22 @@ public class TokenReplacingReader extends Reader
 		sourceReader.close();		
 	}
 	
-	private int addToCharBuffer(char[] destBuffer, int currentOffset, char... chars) {
+	private boolean canWriteMoreChars() {
+		return totalNumberOfCharsWritten < maxCharactersToWrite;
+	}
+	
+	private void addToCharBuffer(char[] destBuffer, char... chars) {
 		for (char c : chars) {
 			destBuffer[currentOffset++] = c;
+			totalNumberOfCharsWritten ++;
 		}
-		return currentOffset;
+	}
+	
+	private void appendTokenReplacement(char[] destBuffer) {
+		while (tokenReplacementBuffer.length() > 0 && canWriteMoreChars()) {
+			addToCharBuffer(destBuffer, tokenReplacementBuffer.charAt(0));
+			tokenReplacementBuffer.delete(0, 1);
+		}
 	}
 	
 	private boolean isValidTokenChar(char c)
@@ -124,10 +128,13 @@ public class TokenReplacingReader extends Reader
 		return Character.isUpperCase(c) || c == '.';
 	}
 
-	private String findTokenReplacement(String tokenName, JndiTokenFinder tokenFinder)
+	private String findTokenReplacement(String tokenName)
 	{
 		tokenName = tokenName.substring(1, tokenName.length() - 1);
-		String tokenReplacement = tokenFinder.findTokenValue(tokenName);		
+		String tokenReplacement = tokenFinder.findTokenValue(tokenName);
+		if (tokenReplacement == null) {
+			throw new IllegalArgumentException("No replacement found for token " + tokenName);
+		}
 		return tokenReplacement;
 	}
 	

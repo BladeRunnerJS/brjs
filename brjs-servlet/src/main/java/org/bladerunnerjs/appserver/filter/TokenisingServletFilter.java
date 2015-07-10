@@ -59,8 +59,7 @@ public class TokenisingServletFilter implements Filter
 			try
 			{
 				if (!response.isCommitted()) { // only write the content if the headers havent been commited (an error code hasnt been sent)
-					String filteredResponse = IOUtils.toString( getStreamTokeniser(responseWrapper.getReader()) );
-					byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
+					byte[] filteredData = IOUtils.toByteArray( getStreamTokeniser(responseWrapper.getReader()) );
 					response.setContentLength(filteredData.length);
 					out.write(filteredData);
 					response.flushBuffer();

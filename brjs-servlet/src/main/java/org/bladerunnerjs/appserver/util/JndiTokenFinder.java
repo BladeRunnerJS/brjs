@@ -4,7 +4,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-public class JndiTokenFinder
+public class JndiTokenFinder implements TokenFinder
 {
 	private final Context appServerContext;
 
