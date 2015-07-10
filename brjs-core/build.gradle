@@ -1,34 +1,13 @@
 
 apply plugin: 'java'
-apply plugin: 'retrolambda'
 apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
-
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath dependency('gradle-retrolambda')
-	}
-}
-
-retrolambda {
-	javaVersion JavaVersion.VERSION_1_7
-	oldJdk JAVA7_HOME
-	jdk JAVA8_HOME
-}
-project.afterEvaluate {
-	compileTestJava.dependsOn compileRetrolambdaMain
-}
 
 configurations {
 	javadocs
 	srcJar
 }
 
-dependencies {
-	retrolambdaConfig dependency('retrolambda')
-	
+dependencies {	
 	compile project(":brjs-servlet")
 	compile project(":brjs-logger")
 	compile dependency('commons-io')
