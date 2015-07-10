@@ -18,5 +18,6 @@ dependencies {
 	testCompile project(path: ":plugins:brjs-plugins")
 	
 	testRuntime project(path: ':brjs-logger-binding')
-	testRuntime dependency('jetty-jsp')
+	testRuntime dependency('jetty-jsp-v9')
+	testRuntime dependency('jetty-jsp-jdt')
 }

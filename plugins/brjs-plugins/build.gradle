@@ -7,7 +7,8 @@ apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
 dependencies {
 	compile project(path: ":brjs-core")
 	
-	testRuntime dependency('jetty-jsp')
+	testRuntime dependency('jetty-jsp-v9')
+	testRuntime dependency('jetty-jsp-jdt')
 }
 
 sourceSets {

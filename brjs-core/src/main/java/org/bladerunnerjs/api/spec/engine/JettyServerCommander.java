@@ -3,6 +3,7 @@ package org.bladerunnerjs.api.spec.engine;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.fluent.Request;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 
 public class JettyServerCommander {
 	private final Server jettyServer;
@@ -14,7 +15,7 @@ public class JettyServerCommander {
 	}
 	
 	public CommanderChainer receivesRequestFor(String requestPath, StringBuffer response) throws Exception {
-		int jettyPort = jettyServer.getConnectors()[0].getPort();
+		int jettyPort = ((ServerConnector) jettyServer.getConnectors()[0]).getPort();
 		String url = "http://localhost:" + jettyPort + requestPath;
 		try {
 			response.append(Request.Get(url).execute().returnContent());

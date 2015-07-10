@@ -22,7 +22,8 @@ dependencies {
 	system project(path: ':brjs-logger')
 	system project(":brjs-logger-binding")
 	system dependency('selenium-java')
-	system dependency('jetty-jsp')
+	system dependency('jetty-jsp-v9')
+	system dependency('jetty-jsp-jdt')
 
 	application project(path: ':brjs-servlet')
 

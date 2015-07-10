@@ -26,9 +26,24 @@ configurations.all {
  * 			'jetty-all-server'	:	'org.eclipse.jetty.aggregate:jetty-all-server:8.1.0.v20120127'
  */
 Dependencies.putAll([
-	'jetty-all-server'			:	'org.eclipse.jetty.aggregate:jetty-all-server:7.6.15.v20140411',	/* version should be 7.x - this version uses servlet api v2.5 */
-	'jetty-jsp'					:	'org.eclipse.jetty:jetty-jsp:7.6.15.v20140411', /* this must be the same version as the Jetty version above */
-	'servlet-api'				:	'javax.servlet:servlet-api:2.5',	/* do not update - this is the version Tomcat 6.0.x uses */
+	'jetty-server-all-v9'		:	'org.eclipse.jetty.aggregate:jetty-all:9.3.0.v20150612',
+	
+//	'jetty-server-v9'			:	'org.eclipse.jetty:jetty-server:9.3.0.v20150612',
+//	'jetty-servlet-v9'			:	'org.eclipse.jetty:jetty-servlet:9.3.0.v20150612',
+//	'jetty-webapp-v9'			:	'org.eclipse.jetty:jetty-webapp:9.3.0.v20150612',
+//	'jetty-security-v9'			:	'org.eclipse.jetty:jetty-security:9.3.0.v20150612',
+//	'jetty-util-v9'				:	'org.eclipse.jetty:jetty-util:9.3.0.v20150612',
+//	'jetty-plus-v9'				:	'org.eclipse.jetty:jetty-plus:9.3.0.v20150612',
+//	'jetty-http-v9'				:	'org.eclipse.jetty:jetty-http:9.3.0.v20150612',
+	'jetty-jndi-v9'				:	'org.eclipse.jetty:jetty-jndi:9.3.0.v20150612',
+	'jetty-jsp-v9'				:	'org.eclipse.jetty:jetty-jsp:9.3.0.M1',
+	'jetty-annotations-v9'		:	'org.eclipse.jetty:jetty-annotations:9.3.0.v20150612',
+	'jetty-apache-jsp-v9'		:	'org.eclipse.jetty:apache-jsp:9.3.0.v20150612',
+	'jetty-apache-jstl-v9'		:	'org.eclipse.jetty:apache-jstl:9.3.0.v20150612',
+	
+	'jetty-jsp-jdt'				:	'org.eclipse.jetty.toolchain:jetty-jsp-jdt:2.3.3',
+	
+	'servlet-api-v3'			:	'javax.servlet:javax.servlet-api:3.1.0',
 	
 	'jta'						:	'javax.transaction:jta:1.1',
 	'xom'						:	'com.io7m.xom:xom:1.2.10',
