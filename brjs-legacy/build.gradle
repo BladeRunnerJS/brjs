@@ -15,7 +15,7 @@ dependencies {
 
 	/* compile only so it isnt considered a transitive dependency - any projects that depend on this project and selenium-java will need to explicitly add it as a dependency */
 	compileOnly dependency('selenium-java')
-	compileOnly dependency('servlet-api')
+	compileOnly dependency('servlet-api-v3')
 	compileOnly project(":brjs-logger-binding")
 
 	runtime dependency('saxon-dom')
@@ -24,7 +24,7 @@ dependencies {
 	testCompile dependency('mockito-core')
 	testCompile dependency('httpclient')
 	testCompile dependency('hamcrest-all')
-	testCompile dependency('jetty-all-server')
+	testCompile dependency('jetty-server-all-v9')
 	
 	testRuntime project(path: ':brjs-logger-binding')
 }

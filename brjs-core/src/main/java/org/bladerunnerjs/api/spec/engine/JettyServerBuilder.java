@@ -1,7 +1,10 @@
 package org.bladerunnerjs.api.spec.engine;
 
 import java.io.File;
+import java.util.EnumSet;
+
 import javax.naming.NamingException;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 
 import org.eclipse.jetty.server.HandlerContainer;
@@ -43,7 +46,7 @@ public class JettyServerBuilder {
 	public BuilderChainer hasWarWithFilters(File warPath, String appName, Filter... filters) throws NamingException {
 		WebAppContext webappContext = new WebAppContext((HandlerContainer) jettyServer.getHandler(), warPath.getPath(), "/" + appName);
 		for (Filter filter : filters) {
-			webappContext.addFilter(new FilterHolder(filter), "/*", 1);
+			webappContext.addFilter(new FilterHolder(filter), "/*", EnumSet.of(DispatcherType.REQUEST));
 		}
 		
 		return builderChainer;

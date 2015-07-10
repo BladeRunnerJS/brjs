@@ -6,7 +6,7 @@ dependencies {
 	compile dependency('commons-fileupload')
 	
 	compileOnly project(":brjs-legacy")
-	compileOnly dependency('servlet-api')
+	compileOnly dependency('servlet-api-v3')
 	
 	//TODO: this is wrong, once 'Bundle request api improvements #1099' has been merged in remove this
 	compileOnly project(":plugins:brjs-plugins")
@@ -15,7 +15,7 @@ dependencies {
 	testCompile dependency('mockito-core')
 	testCompile dependency('httpclient')
 	testCompile dependency('httpmime')
-	testCompile dependency('jetty-all-server')
+	testCompile dependency('jetty-server-all-v9')
 	
 	testRuntime project(":brjs-legacy")
 	testRuntime project(path: ':brjs-logger-binding')
