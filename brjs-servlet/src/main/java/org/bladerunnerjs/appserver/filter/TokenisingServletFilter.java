@@ -2,6 +2,7 @@ package org.bladerunnerjs.appserver.filter;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.lang.StringBuilder;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
@@ -16,7 +17,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.appserver.util.CommitedResponseCharResponseWrapper;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.bladerunnerjs.appserver.util.TokenReplacingReader;
@@ -59,7 +59,16 @@ public class TokenisingServletFilter implements Filter
 			try
 			{
 				if (!response.isCommitted()) { // only write the content if the headers havent been commited (an error code hasnt been sent)
-					byte[] filteredData = IOUtils.toByteArray( getStreamTokeniser(responseWrapper.getReader()) );
+					Reader streamTokeniserReader = getStreamTokeniser(responseWrapper.getReader());
+					
+					char[] charArray = new char[8 * 1024];
+				    StringBuilder filteredDataStringBuilder = new StringBuilder();
+				    int numCharsRead;
+				    while ((numCharsRead = streamTokeniserReader.read(charArray, 0, charArray.length)) != -1) {
+				        filteredDataStringBuilder.append(charArray, 0, numCharsRead);
+				    }
+				    byte[] filteredData = filteredDataStringBuilder.toString().getBytes();
+					
 					response.setContentLength(filteredData.length);
 					out.write(filteredData);
 					response.flushBuffer();
@@ -96,10 +105,7 @@ public class TokenisingServletFilter implements Filter
 				throw new ServletException("Error getting context for JNDI lookups. (" + ex + ")", ex);
 			}
 		}
-		if (streamTokeniser == null) {
-			streamTokeniser = new TokenReplacingReader(tokenFinder, reader);
-		}
-		return streamTokeniser;
+		return new TokenReplacingReader(tokenFinder, reader);
 	}
 	
 }
