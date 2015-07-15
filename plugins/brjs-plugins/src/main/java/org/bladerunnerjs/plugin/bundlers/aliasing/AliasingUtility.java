@@ -87,16 +87,18 @@ public class AliasingUtility
 	public static List<AliasDefinition> aliases(BundlableNode bundlableNode)
 	{
 		try {
-			AliasesFile aliasesFile = aliasesFile(bundlableNode);
-			if ( !aliasesFile.getUnderlyingFile().isFile() && !aliasesFile(bundlableNode.app()).getUnderlyingFile().isFile() ) {
-				return Collections.emptyList();
-			}
-			else if (aliasesFile(bundlableNode.app()).getUnderlyingFile().isFile()) {
-				aliasesFile = aliasesFile(bundlableNode.app());
-			}
+			AliasesFile appAliasesFile = aliasesFile(bundlableNode.app());
+			AliasesFile bundlableNodeAliasesFile = aliasesFile(bundlableNode);
+			
 			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-			for (AliasOverride aliasOverride : aliasesFile.aliasOverrides()) {
-				aliasDefinitions.add( resolveAlias(aliasOverride.getName(), bundlableNode) );
+			for (AliasOverride appAliasOverride : appAliasesFile.aliasOverrides()) {
+				aliasDefinitions.add( resolveAlias(appAliasOverride.getName(), bundlableNode) );
+			}
+			
+			for (AliasOverride bundlableNodeAliasOverride : bundlableNodeAliasesFile.aliasOverrides()) {
+				if (getAliasDefinition(bundlableNodeAliasOverride.getName(), appAliasesFile, bundlableNode) == null) {
+					aliasDefinitions.add( resolveAlias(bundlableNodeAliasOverride.getName(), bundlableNode) );
+				}
 			}
 			return aliasDefinitions;
 		}
