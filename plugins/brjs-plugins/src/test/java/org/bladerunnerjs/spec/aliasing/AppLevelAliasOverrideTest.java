@@ -20,7 +20,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	private AppConf appConf;
 	private Aspect aspect;
 	private JsLib brLib;
-	private AliasesFileBuilder appAliasesFileBuilder;
+	private AliasesFileBuilder appAliasesFileBuilder, aspectAliasesFileBuilder;
 	private AliasesVerifier aspectAliasesVerifier;
 	private AliasDefinitionsFileBuilder aspectResourcesAliaseDefinitionsFileBuilder;
 	private AliasDefinitionsFileBuilder brLibAliasDefinitionsFileBuilder;
@@ -45,6 +45,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		brLib = app.jsLib("br");
 		appAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(app));
 		aspectAliasesVerifier = new AliasesVerifier(this, aspect);
+		aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
 		brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
 		aspectResourcesAliaseDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(aspect, "resources"));
 		bladeAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(blade, "src"));
@@ -119,4 +120,15 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.bs.b1.BladeClass1", "appns.AspectClass2", "appns.AspectClass3");
 	}
+	
+	@Test
+	public void aspectAliasesOverridesAppAliases() throws Exception {
+		given(aspect).hasClasses("appns/App", "appns/Class1", "appns/Class2")
+			.and(appAliasesFileBuilder).hasAlias("appns.aspectAlias", "appns.Class1")
+			.and(aspectAliasesFileBuilder).hasAlias("appns.aspectAlias", "appns.Class2")
+			.and(aspect).indexPageHasAliasReferences("appns.aspectAlias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.Class2");
+	}
+	
 }

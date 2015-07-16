@@ -91,15 +91,20 @@ public class AliasingUtility
 			AliasesFile bundlableNodeAliasesFile = aliasesFile(bundlableNode);
 			
 			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-			for (AliasOverride appAliasOverride : appAliasesFile.aliasOverrides()) {
-				aliasDefinitions.add( resolveAlias(appAliasOverride.getName(), bundlableNode) );
-			}
 			
 			for (AliasOverride bundlableNodeAliasOverride : bundlableNodeAliasesFile.aliasOverrides()) {
-				if (getAliasDefinition(bundlableNodeAliasOverride.getName(), appAliasesFile, bundlableNode) == null) {
-					aliasDefinitions.add( resolveAlias(bundlableNodeAliasOverride.getName(), bundlableNode) );
+				aliasDefinitions.add( resolveAlias(bundlableNodeAliasOverride.getName(), bundlableNode) );
+			}
+			
+			for (AliasOverride appAliasOverride : appAliasesFile.aliasOverrides()) {
+				try {
+					resolveAlias(appAliasOverride.getName(), bundlableNode, bundlableNodeAliasesFile);
+				}
+				catch (UnresolvableAliasException ex) {
+					aliasDefinitions.add( resolveAlias(appAliasOverride.getName(), bundlableNode) );
 				}
 			}
+			
 			return aliasDefinitions;
 		}
 		catch (ContentFileProcessingException | AliasException ex) {
@@ -157,14 +162,14 @@ public class AliasingUtility
 	}
 	
 	public static AliasDefinition resolveAlias(String aliasName, BundlableNode bundlableNode) throws AliasException, ContentFileProcessingException {
-		AliasesFile aliasesFile = null;
-		if (aliasesFile(bundlableNode.app()).getUnderlyingFile().exists()) {
-			aliasesFile = aliasesFile(bundlableNode.app());
+		AliasDefinition resolvedAlias = null;
+		if ( aliasesFile(bundlableNode).getUnderlyingFile().exists() ) {
+			resolvedAlias = resolveAlias(aliasName, bundlableNode, aliasesFile(bundlableNode));
 		}
-		else {
-			aliasesFile = aliasesFile(bundlableNode);
+		if (resolvedAlias == null) {
+			resolvedAlias = resolveAlias(aliasName, bundlableNode, aliasesFile(bundlableNode.app()));
 		}
-		return resolveAlias(aliasName, bundlableNode, aliasesFile);
+		return resolvedAlias;
 	}
 	
 	public static AliasDefinition resolveAlias(String aliasName, BundlableNode bundlableNode, AliasesFile aliasesFile) throws AliasException, ContentFileProcessingException {
