@@ -146,7 +146,7 @@ public class AppRequestHandler
 		if (response == null) {
 			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 		}
-		return new TokenReplacingResponseContentWrapper(response);
+		return new TokenReplacingResponseContentWrapper( response, new PropertyFileTokenFinder(app.file("app-properties")), true );
 	}
 
 	public String createRelativeBundleRequest(String contentPath, String version) throws MalformedTokenException
