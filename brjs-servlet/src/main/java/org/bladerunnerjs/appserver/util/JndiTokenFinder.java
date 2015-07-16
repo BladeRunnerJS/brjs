@@ -18,8 +18,7 @@ public class JndiTokenFinder implements TokenFinder
 		this.appServerContext = appServerContext;
 	}
 
-	public String findTokenValue(String tokenName)
-	{
+	public String findTokenValue(String tokenName) throws NoTokenFoundException {
 		if (tokenName == null || tokenName.length() < 1)
 		{
 			return null;
@@ -36,7 +35,7 @@ public class JndiTokenFinder implements TokenFinder
 		}
 		catch (NamingException ex)
 		{
-			return null;
+			throw new NoTokenFoundException(tokenName, this.getClass(), ex);
 		}
 	}
 }

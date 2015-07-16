@@ -8,6 +8,7 @@ dependencies {
 	testCompile dependency('httpclient')
 	testCompile dependency("jetty-all-server")
 	testCompile dependency("junit")
+    testCompile dependency("hamcrest-all")
 	testCompile dependency("mockito-core")
 	testCompile dependency("commons-io")
         testCompile dependency("commons-lang3")

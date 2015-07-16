@@ -144,11 +144,15 @@ public class TokenReplacingReader extends Reader
 	private String findTokenReplacement(String tokenName)
 	{
 		tokenName = tokenName.substring(1, tokenName.length() - 1);
-		String tokenReplacement = tokenFinder.findTokenValue(tokenName);
-		if (tokenReplacement == null) {
-			throw new IllegalArgumentException("No replacement found for token " + tokenName);
-		}
-		return tokenReplacement;
-	}
+        try {
+            String tokenValue = tokenFinder.findTokenValue(tokenName);
+            if (tokenValue == null) {
+                return "";
+            }
+            return tokenValue;
+        } catch (NoTokenFoundException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+    }
 	
 }

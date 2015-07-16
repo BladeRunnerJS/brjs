@@ -7,12 +7,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
 
-import javax.naming.Context;
-import javax.naming.NamingException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.appserver.filter.TestContextFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,20 +19,19 @@ import org.junit.rules.ExpectedException;
 public class TokenReplacingReaderTest
 {
 	@Rule
-	 public final ExpectedException exception = ExpectedException.none();
+	public final ExpectedException exception = ExpectedException.none();
 	
-	private Context mockJndiContext;
-
-	@SuppressWarnings("unchecked")
+	private TokenFinder mockTokenFinder;
+	
 	@Before
 	public void setup() throws Exception
 	{
-		mockJndiContext = TestContextFactory.getTestContext();
-		when(mockJndiContext.lookup("java:comp/env/A.TOKEN")).thenReturn("token replacement");
-		when(mockJndiContext.lookup("java:comp/env/AN.EMPTY.TOKEN")).thenReturn("");
-		when(mockJndiContext.lookup("java:comp/env/A.NULL.TOKEN")).thenReturn(null);
-		when(mockJndiContext.lookup("java:comp/env/A.NONEXISTANT.TOKEN")).thenThrow(NamingException.class);
-		when(mockJndiContext.lookup("java:comp/env/LONG.TOKEN.REPLACEMENT")).thenReturn( StringUtils.leftPad("", 5000, "0") );
+		mockTokenFinder = mock(TokenFinder.class);
+		when(mockTokenFinder.findTokenValue("A.TOKEN")).thenReturn("token replacement");
+		when(mockTokenFinder.findTokenValue("AN.EMPTY.TOKEN")).thenReturn("");
+		when(mockTokenFinder.findTokenValue("A.NULL.TOKEN")).thenReturn(null);
+		when(mockTokenFinder.findTokenValue("EXCEPTION.THROWING.TOKEN")).thenThrow(NoTokenFoundException.class);
+		when(mockTokenFinder.findTokenValue("LONG.TOKEN.REPLACEMENT")).thenReturn( StringUtils.leftPad("", 5000, "0") );
 	}
 
 	@After
@@ -46,18 +41,18 @@ public class TokenReplacingReaderTest
 	}
 	
 	@Test
-	public void testLookupIsPerformedForToken() throws Exception
+	public void testfindTokenValueIsPerformedForToken() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.TOKEN@") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.TOKEN@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("token replacement", replacedContent);
-		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
+		verify(mockTokenFinder, times(1)).findTokenValue("A.TOKEN");
 	}
 	
 	@Test
 	public void testTokensCanBeReplacedBackToBack() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.TOKEN@@A.TOKEN@@A.TOKEN@") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.TOKEN@@A.TOKEN@@A.TOKEN@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("token replacementtoken replacementtoken replacement", replacedContent);
 	}
@@ -65,43 +60,43 @@ public class TokenReplacingReaderTest
 	@Test
 	public void testTokensMustBeUppcaseAndDots() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.token@") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.token@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("@A.token@", replacedContent);
-		verify(mockJndiContext, times(0)).lookup(any(String.class));
+		verify(mockTokenFinder, times(0)).findTokenValue(any(String.class));
 	}
 	
 	@Test
 	public void testTokensMustBeContainedWithin2AtSymbols() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.token") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.token") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("@A.token", replacedContent);
-		verify(mockJndiContext, times(0)).lookup(any(String.class));
+		verify(mockTokenFinder, times(0)).findTokenValue(any(String.class));
 	}
 	
 	@Test
 	public void testTokensCannotContainInvalidChars() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A_TOKEN@") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A_TOKEN@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("@A_TOKEN@", replacedContent);
-		verify(mockJndiContext, times(0)).lookup(any(String.class));
+		verify(mockTokenFinder, times(0)).findTokenValue(any(String.class));
 	}
 	
 	@Test
 	public void testTwoAtSymbolsArentAValidToken() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@@") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("@@", replacedContent);
-		verify(mockJndiContext, times(0)).lookup(any(String.class));
+		verify(mockTokenFinder, times(0)).findTokenValue(any(String.class));
 	}
 	
 	@Test
 	public void tokenStringThatIsntClosedIsOutputAsTheTokenString() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.TOKEN") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.TOKEN") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("@A.TOKEN", replacedContent);
 	}
@@ -109,48 +104,48 @@ public class TokenReplacingReaderTest
 	@Test
 	public void tokenAfterASingleAtSymbolIsReplaced() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@Foo@A.TOKEN@") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@Foo@A.TOKEN@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("@Footoken replacement", replacedContent);
 	}
 	
 	@Test
-	public void testJndiIsLookupPerformedForTokenInsideOfALargerString() throws Exception
+	public void testJndiIsfindTokenValuePerformedForTokenInsideOfALargerString() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("this is a @A.TOKEN@ :-)") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("this is a @A.TOKEN@ :-)") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals("this is a token replacement :-)", replacedContent);
-		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
+		verify(mockTokenFinder, times(1)).findTokenValue("A.TOKEN");
 	}
 
 	@Test
-	public void tokenReplacementWorksForEmptyStringValues() throws Exception
-	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@AN.EMPTY.TOKEN@") );
-		String replacedContent = IOUtils.toString( tokenisingReader );
-		assertEquals("", replacedContent);
-	}
-	
-	@Test
-	public void tokenReplacementWorksForNullStringValues() throws Exception
-	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.NULL.TOKEN@") );
-		String replacedContent = IOUtils.toString( tokenisingReader );
+	public void tokenReplacementWorksForEmptyStringValues() throws Exception {
+		Reader tokenisingReader = new TokenReplacingReader(mockTokenFinder, new StringReader("@AN.EMPTY.TOKEN@"));
+		String replacedContent = IOUtils.toString(tokenisingReader);
 		assertEquals("", replacedContent);
 	}
 
-	@Test 
-	public void testExceptionIsThrownIfTokenCannotBeReplaced() throws Exception
+    @Test
+    public void testEmptyStringIsUsedIfTokenReaderReturnsNull() throws Exception
+    {
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.NULL.TOKEN@") );
+        String replacedContent = IOUtils.toString(tokenisingReader);
+        assertEquals("", replacedContent);
+    }
+
+
+    @Test
+	public void testExceptionIsThrownIfTokenFinderThrowsAnInvalidTokenException() throws Exception
 	{
 		exception.expect(IllegalArgumentException.class);
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@A.NONEXISTANT.TOKEN@") );
-		IOUtils.readLines( tokenisingReader );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@") );
+		IOUtils.readLines(tokenisingReader);
 	}
 	
 	@Test
 	public void longTokenReplacementsCanBeUsed() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader("@LONG.TOKEN.REPLACEMENT@") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@LONG.TOKEN.REPLACEMENT@") );
 		String replacedContent = IOUtils.toString( tokenisingReader );
 		assertEquals(StringUtils.leftPad("", 5000, "0"), replacedContent);
 	}
@@ -158,7 +153,7 @@ public class TokenReplacingReaderTest
 	@Test
 	public void tokenStringsCanSpanBufferLimits() throws Exception
 	{
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader(
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader(
 				StringUtils.leftPad("", 4094, "0")+" @A.TOKEN@ "+StringUtils.leftPad("", 4094, "0"))
 		);
 		String replacedContent = IOUtils.toString( tokenisingReader );
@@ -171,7 +166,7 @@ public class TokenReplacingReaderTest
 	public void tokensAreReplacedInsideOfLargeContent() throws Exception
 	{
 		for (int padLength : Arrays.asList(4096, 5000, 10000)) {
-    		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), new StringReader(
+    		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader(
     				StringUtils.leftPad("", padLength, "0")+" @A.TOKEN@ "+StringUtils.leftPad("", padLength, "0"))
     		);
     		String replacedContent = IOUtils.toString( tokenisingReader );
@@ -185,7 +180,7 @@ public class TokenReplacingReaderTest
 	public void closeMethodClosesTheSourceReader() throws Exception
 	{
 		Reader sourceReader = mock(Reader.class);
-		Reader tokenisingReader = new TokenReplacingReader( new JndiTokenFinder(mockJndiContext), sourceReader );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, sourceReader );
 		tokenisingReader.close();
 		verify(sourceReader, times(1)).close();
 	}
