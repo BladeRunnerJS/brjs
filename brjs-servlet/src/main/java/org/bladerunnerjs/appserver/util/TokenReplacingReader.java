@@ -2,6 +2,7 @@ package org.bladerunnerjs.appserver.util;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 
 
 // this class only reads a single char at a time from the SourceReader as it massively simplifies the code and we're not reading from large files as we might with the JS 'stripping' readers
@@ -10,9 +11,10 @@ public class TokenReplacingReader extends Reader
 	
 	public static final char tokenStart = '@';
 	public static final char tokenEnd = '@';
-	
-	private TokenFinder tokenFinder;
-	private Reader sourceReader;
+
+    private final TokenFinder tokenFinder;
+	private final Reader sourceReader;
+    private final boolean ignoreFailedReplacements;
 	
 	private boolean withinToken = false;
 	private StringBuffer currentTokenString = new StringBuffer();;
@@ -25,11 +27,16 @@ public class TokenReplacingReader extends Reader
 	
 	public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader)
 	{
-		this.tokenFinder = tokenFinder;
-		this.sourceReader = sourceReader;
+		this(tokenFinder, sourceReader, false);
 	}
-	
-	@Override
+
+    public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader, boolean ignoreFailedReplacements) {
+        this.tokenFinder = tokenFinder;
+        this.sourceReader = sourceReader;
+        this.ignoreFailedReplacements = ignoreFailedReplacements;
+    }
+
+    @Override
 	public int read(char[] destBuffer, int offset, int maxCharacters) throws IOException
 	{
 		currentOffset = offset;
@@ -143,14 +150,17 @@ public class TokenReplacingReader extends Reader
 
 	private String findTokenReplacement(String tokenName)
 	{
-		tokenName = tokenName.substring(1, tokenName.length() - 1);
+		String tokenKey = tokenName.substring(1, tokenName.length() - 1);
         try {
-            String tokenValue = tokenFinder.findTokenValue(tokenName);
+            String tokenValue = tokenFinder.findTokenValue(tokenKey);
             if (tokenValue == null) {
                 return "";
             }
             return tokenValue;
         } catch (NoTokenFoundException ex) {
+            if (ignoreFailedReplacements) {
+                return tokenName;
+            }
             throw new IllegalArgumentException(ex);
         }
     }

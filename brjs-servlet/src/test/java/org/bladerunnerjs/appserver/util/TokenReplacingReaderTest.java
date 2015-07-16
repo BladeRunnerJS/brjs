@@ -184,5 +184,37 @@ public class TokenReplacingReaderTest
 		tokenisingReader.close();
 		verify(sourceReader, times(1)).close();
 	}
+
+    @Test
+    public void tokenReplacingReaderCanBeConfiguredToIgnoreFailedReplacementsAndIncludeOriginalToken() throws Exception
+    {
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@"), true );
+        String replacedContent = IOUtils.toString(tokenisingReader);
+        assertEquals("@EXCEPTION.THROWING.TOKEN@", replacedContent);
+    }
+
+    @Test
+    public void ignoredFailedReplacementsDoNotCauseOtherTokensTobeReplacedBefore() throws Exception
+    {
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.TOKEN@@EXCEPTION.THROWING.TOKEN@"), true );
+        String replacedContent = IOUtils.toString(tokenisingReader);
+        assertEquals("token replacement@EXCEPTION.THROWING.TOKEN@", replacedContent);
+    }
+
+    @Test
+    public void ignoredFailedReplacementsDoNotCauseOtherTokensTobeReplacedAfterwards() throws Exception
+    {
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@@A.TOKEN@"), true );
+        String replacedContent = IOUtils.toString(tokenisingReader);
+        assertEquals("@EXCEPTION.THROWING.TOKEN@token replacement", replacedContent);
+    }
+
+    @Test
+    public void ignoredFailedReplacementsDoNotCauseOtherTokensTobeReplacedBeforeAndAfterwards() throws Exception
+    {
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.TOKEN@@EXCEPTION.THROWING.TOKEN@@A.TOKEN@"), true );
+        String replacedContent = IOUtils.toString(tokenisingReader);
+        assertEquals("token replacement@EXCEPTION.THROWING.TOKEN@token replacement", replacedContent);
+    }
 	
 }
