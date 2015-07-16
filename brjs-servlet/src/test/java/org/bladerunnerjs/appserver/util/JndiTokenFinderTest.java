@@ -56,7 +56,7 @@ public class JndiTokenFinderTest
         try {
             tokenFinder.findTokenValue("NON.EXISTENT.TOKEN");
             fail("Expect an exception to be thrown");
-        } catch (NoTokenFoundException ex) {
+        } catch (TokenReplacementException ex) {
             assertEquals("An error occurred when the token finder 'JndiTokenFinder' attempted to locate a replacement for the the token 'NON.EXISTENT.TOKEN'.", ex.getMessage());
             assertEquals(NamingException.class, ex.getCause().getClass());
         }

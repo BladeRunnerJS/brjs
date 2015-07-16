@@ -30,7 +30,7 @@ public class TokenReplacingReaderTest
 		when(mockTokenFinder.findTokenValue("A.TOKEN")).thenReturn("token replacement");
 		when(mockTokenFinder.findTokenValue("AN.EMPTY.TOKEN")).thenReturn("");
 		when(mockTokenFinder.findTokenValue("A.NULL.TOKEN")).thenReturn(null);
-		when(mockTokenFinder.findTokenValue("EXCEPTION.THROWING.TOKEN")).thenThrow(NoTokenFoundException.class);
+		when(mockTokenFinder.findTokenValue("EXCEPTION.THROWING.TOKEN")).thenThrow(TokenReplacementException.class);
 		when(mockTokenFinder.findTokenValue("LONG.TOKEN.REPLACEMENT")).thenReturn( StringUtils.leftPad("", 5000, "0") );
 	}
 

@@ -2,7 +2,6 @@ package org.bladerunnerjs.appserver.util;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 
 
 // this class only reads a single char at a time from the SourceReader as it massively simplifies the code and we're not reading from large files as we might with the JS 'stripping' readers
@@ -157,7 +156,7 @@ public class TokenReplacingReader extends Reader
                 return "";
             }
             return tokenValue;
-        } catch (NoTokenFoundException ex) {
+        } catch (TokenReplacementException ex) {
             if (ignoreFailedReplacements) {
                 return tokenName;
             }
