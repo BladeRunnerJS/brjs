@@ -7,10 +7,12 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +22,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	private AppConf appConf;
 	private Aspect aspect;
 	private JsLib brLib;
-	private AliasesFileBuilder appAliasesFileBuilder, aspectAliasesFileBuilder;
+	private AliasesFileBuilder appAliasesFileBuilder, aspectAliasesFileBuilder, worbenchAliasesFileBuilder;
 	private AliasesVerifier aspectAliasesVerifier;
 	private AliasDefinitionsFileBuilder aspectResourcesAliaseDefinitionsFileBuilder;
 	private AliasDefinitionsFileBuilder brLibAliasDefinitionsFileBuilder;
@@ -29,6 +31,8 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	private AliasDefinitionsFileBuilder bladeAliasDefinitionsFileBuilder;
 	private Bladeset bladeset;
 	private Blade blade;
+	private BladeWorkbench workbench;
+	private AliasesFile worbenchAliasesFile;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -43,6 +47,9 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		brLib = app.jsLib("br");
+		workbench = blade.workbench();
+		worbenchAliasesFile = aliasesFile(workbench);
+		worbenchAliasesFileBuilder = new AliasesFileBuilder(this, worbenchAliasesFile);
 		appAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(app));
 		aspectAliasesVerifier = new AliasesVerifier(this, aspect);
 		aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
@@ -124,11 +131,21 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	@Test
 	public void aspectAliasesOverridesAppAliases() throws Exception {
 		given(aspect).hasClasses("appns/App", "appns/Class1", "appns/Class2")
-			.and(appAliasesFileBuilder).hasAlias("appns.aspectAlias", "appns.Class1")
 			.and(aspectAliasesFileBuilder).hasAlias("appns.aspectAlias", "appns.Class2")
+			.and(appAliasesFileBuilder).hasAlias("appns.aspectAlias", "appns.Class1")
 			.and(aspect).indexPageHasAliasReferences("appns.aspectAlias");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.Class2");
+	}
+	
+	@Test
+	public void workbenchAliasesOverridesAppAliases() throws Exception {
+		given(workbench).hasClasses("appns/WorkbenchClass1", "appns/WorkbenchClass2")
+			.and(worbenchAliasesFileBuilder).hasAlias("workbenchAlias", "appns.WorkbenchClass2")
+			.and(appAliasesFileBuilder).hasAlias("workbenchAlias", "appns.WorkbenchClass1")
+			.and(workbench).indexPageRequires("alias!workbenchAlias");
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.WorkbenchClass2");
 	}
 	
 }
