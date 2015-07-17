@@ -22,6 +22,7 @@ public class TokenReplacingReaderTest
 	public final ExpectedException exception = ExpectedException.none();
 	
 	private TokenFinder mockTokenFinder;
+    private NoTokenReplacementHandler mockTokenReplacementHandler = mock(NoTokenReplacementHandler.class);
 	
 	@Before
 	public void setup() throws Exception
@@ -31,7 +32,7 @@ public class TokenReplacingReaderTest
 		when(mockTokenFinder.findTokenValue("AN.EMPTY.TOKEN")).thenReturn("");
 		when(mockTokenFinder.findTokenValue("A.NULL.TOKEN")).thenReturn(null);
 		when(mockTokenFinder.findTokenValue("EXCEPTION.THROWING.TOKEN")).thenThrow(TokenReplacementException.class);
-		when(mockTokenFinder.findTokenValue("LONG.TOKEN.REPLACEMENT")).thenReturn( StringUtils.leftPad("", 5000, "0") );
+		when(mockTokenFinder.findTokenValue("LONG.TOKEN.REPLACEMENT")).thenReturn(StringUtils.leftPad("", 5000, "0") );
 	}
 
 	@After
@@ -216,5 +217,14 @@ public class TokenReplacingReaderTest
         String replacedContent = IOUtils.toString(tokenisingReader);
         assertEquals("token replacement@EXCEPTION.THROWING.TOKEN@token replacement", replacedContent);
     }
-	
+
+    @Test
+    public void tokenReplacementHandlerIsNotifiedAndCanCauseTheFailedReplacementToBeIgnored() throws Exception
+    {
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@"), mockTokenReplacementHandler );
+        String replacedContent = IOUtils.toString(tokenisingReader);
+        assertEquals("@EXCEPTION.THROWING.TOKEN@", replacedContent);
+        verify(mockTokenReplacementHandler, times(0)).handleNoTokenFound( eq("EXCEPTION.THROWING.TOKEN"), any(TokenReplacementException.class) );
+    }
+
 }

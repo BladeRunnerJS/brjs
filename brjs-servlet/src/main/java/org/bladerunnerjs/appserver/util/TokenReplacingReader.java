@@ -13,9 +13,9 @@ public class TokenReplacingReader extends Reader
 
     private final TokenFinder tokenFinder;
 	private final Reader sourceReader;
-    private final boolean ignoreFailedReplacements;
-	
-	private boolean withinToken = false;
+    private final NoTokenReplacementHandler replacementHandler;
+
+    private boolean withinToken = false;
 	private StringBuffer currentTokenString = new StringBuffer();;
 	
 	private StringBuffer tokenReplacementBuffer = new StringBuffer();
@@ -30,9 +30,13 @@ public class TokenReplacingReader extends Reader
 	}
 
     public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader, boolean ignoreFailedReplacements) {
+        this(tokenFinder, sourceReader, (ignoreFailedReplacements) ? new IgnoreExceptionNoTokenReplacementHandler() : new ExceptionThrowingNoTokenReplacementHandler());
+    }
+
+    public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader, NoTokenReplacementHandler replacementHandler) {
         this.tokenFinder = tokenFinder;
         this.sourceReader = sourceReader;
-        this.ignoreFailedReplacements = ignoreFailedReplacements;
+        this.replacementHandler = replacementHandler;
     }
 
     @Override
@@ -157,10 +161,12 @@ public class TokenReplacingReader extends Reader
             }
             return tokenValue;
         } catch (TokenReplacementException ex) {
-            if (ignoreFailedReplacements) {
+            try {
+                replacementHandler.handleNoTokenFound( tokenName, ex );
                 return tokenName;
+            } catch (TokenReplacementException handlerThrownEx) {
+                throw new IllegalArgumentException(handlerThrownEx);
             }
-            throw new IllegalArgumentException(ex);
         }
     }
 	
