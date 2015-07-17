@@ -189,7 +189,7 @@ public class TokenReplacingReaderTest
     @Test
     public void tokenReplacingReaderCanBeConfiguredToIgnoreFailedReplacementsAndIncludeOriginalToken() throws Exception
     {
-        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@"), true );
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@"), mockTokenReplacementHandler );
         String replacedContent = IOUtils.toString(tokenisingReader);
         assertEquals("@EXCEPTION.THROWING.TOKEN@", replacedContent);
     }
@@ -197,7 +197,7 @@ public class TokenReplacingReaderTest
     @Test
     public void ignoredFailedReplacementsDoNotCauseOtherTokensTobeReplacedBefore() throws Exception
     {
-        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.TOKEN@@EXCEPTION.THROWING.TOKEN@"), true );
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.TOKEN@@EXCEPTION.THROWING.TOKEN@"), mockTokenReplacementHandler );
         String replacedContent = IOUtils.toString(tokenisingReader);
         assertEquals("token replacement@EXCEPTION.THROWING.TOKEN@", replacedContent);
     }
@@ -205,7 +205,7 @@ public class TokenReplacingReaderTest
     @Test
     public void ignoredFailedReplacementsDoNotCauseOtherTokensTobeReplacedAfterwards() throws Exception
     {
-        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@@A.TOKEN@"), true );
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@@A.TOKEN@"), mockTokenReplacementHandler );
         String replacedContent = IOUtils.toString(tokenisingReader);
         assertEquals("@EXCEPTION.THROWING.TOKEN@token replacement", replacedContent);
     }
@@ -213,7 +213,7 @@ public class TokenReplacingReaderTest
     @Test
     public void ignoredFailedReplacementsDoNotCauseOtherTokensTobeReplacedBeforeAndAfterwards() throws Exception
     {
-        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.TOKEN@@EXCEPTION.THROWING.TOKEN@@A.TOKEN@"), true );
+        Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@A.TOKEN@@EXCEPTION.THROWING.TOKEN@@A.TOKEN@"), mockTokenReplacementHandler );
         String replacedContent = IOUtils.toString(tokenisingReader);
         assertEquals("token replacement@EXCEPTION.THROWING.TOKEN@token replacement", replacedContent);
     }

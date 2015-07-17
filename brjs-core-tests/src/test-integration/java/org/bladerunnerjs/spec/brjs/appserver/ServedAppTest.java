@@ -37,9 +37,8 @@ public class ServedAppTest extends SpecTest
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsAssetPlugins()
-			.and(brjs).automaticallyFindsContentPlugins()
-			.and(brjs).automaticallyFindsRequirePlugins()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement"))
 			.and(brjs).hasBeenCreated()
@@ -136,8 +135,8 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app", "/app/");
@@ -148,8 +147,8 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
     		.and(anotherAspect).hasBeenPopulated()
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/another", "/app/another/");
@@ -160,8 +159,8 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
     		.and(anotherAspect).containsFileWithContents("index.html", "aspect index.html")
     		.and(appServer).started()
     		.and(appServer).appHasServlet(app, new HelloWorldServlet(), "/my_servlet/*");
@@ -203,8 +202,8 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
@@ -217,8 +216,8 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
 			.and(aspect).containsFileWithContents("index.jsp", "<%= \"aspect \" + \"index.jsp\" %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/", "aspect index.jsp");
@@ -264,8 +263,8 @@ public class ServedAppTest extends SpecTest
 	public void indexPageCanBeAccessedWithAQueryString() throws Exception {
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
 			.and(appServer).started()
 			.and(aspect).indexPageHasContent("index page")
 			.and(brjs).localeSwitcherHasContents("locale-forwarder.js");
@@ -316,8 +315,8 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
 			.and(aspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/unbundled-resources/file.jsp", "3");
@@ -373,8 +372,8 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
 			.and(aspect).containsFileWithContents("unbundled-resources/file.txt", "unbundled resources file content")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/unbundled-resources/file.txt", "unbundled resources file content");
@@ -409,8 +408,8 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
 			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
 			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", ""
 					+ "<?xml version=\"1.0\"?>"
@@ -432,8 +431,8 @@ public class ServedAppTest extends SpecTest
 	{
 		given(app).hasBeenPopulated("default")
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-					+ "locales: en\n"
-					+ "requirePrefix: appns")
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
 			.and(aspect).containsFileWithContents("index.html", "@SOME.TOKEN@")
 			.and(app).containsFileWithContents("WEB-INF/jetty-env.xml", ""
 					+ "<?xml version=\"1.0\"?>"
@@ -449,6 +448,36 @@ public class ServedAppTest extends SpecTest
 		when(appServer).started();
 		then(appServer).requestForUrlReturns("/app/", "some token replacement")
 			.and(appServer).contentLengthForRequestIs("/app/", "some token replacement".getBytes().length);
+	}
+
+	@Test
+	public void tokensCanBeReplacedFromDefaultEnvironmentPropertiesFile() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageHasContent("@SOME.TOKEN@")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/", "token replacement");
+	}
+
+	@Test
+	public void tokensFromPropertiesFilesCanBeReplacedInBundles() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+			.and(aspect).indexPageRequires("appns/App")
+			.and(brjs).hasVersion("dev")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app/v/dev/js/dev/combined/bundle.js", "token replacement");
 	}
 	
 }

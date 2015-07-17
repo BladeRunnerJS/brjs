@@ -6,10 +6,7 @@ import org.bladerunnerjs.appserver.util.TokenFinder;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class PropertyFileTokenFinder implements TokenFinder {
 
@@ -26,13 +23,14 @@ public class PropertyFileTokenFinder implements TokenFinder {
         this.environmentFilesRoot = environmentFilesRoot;
         this.environments.add(DEFAULT_ENVIRONMENT);
         this.environments.addAll( Arrays.asList(environments) );
+		this.environments.removeAll(Collections.singleton(null));
     }
 
     @Override
     public String findTokenValue(String tokenName) throws TokenReplacementException {
         String value = null;
         for (String environment : environments) {
-            String environmentValue = environmentValue = getValueFromEnvironmentProperties(environment, tokenName);
+            String environmentValue = getValueFromEnvironmentProperties(environment, tokenName);
             if (environmentValue != null) {
                 value = environmentValue;
             }

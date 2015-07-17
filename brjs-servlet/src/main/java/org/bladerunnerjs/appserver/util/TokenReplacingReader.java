@@ -23,15 +23,10 @@ public class TokenReplacingReader extends Reader
 	private int currentOffset;
 	private int maxCharactersToWrite;
 	private int totalNumberOfCharsWritten;
-	
-	public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader)
-	{
-		this(tokenFinder, sourceReader, false);
-	}
 
-    public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader, boolean ignoreFailedReplacements) {
-        this(tokenFinder, sourceReader, (ignoreFailedReplacements) ? new IgnoreExceptionNoTokenReplacementHandler() : new ExceptionThrowingNoTokenReplacementHandler());
-    }
+	public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader) {
+		this(tokenFinder, sourceReader, new ExceptionThrowingNoTokenReplacementHandler());
+	}
 
     public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader, NoTokenReplacementHandler replacementHandler) {
         this.tokenFinder = tokenFinder;

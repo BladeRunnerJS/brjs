@@ -44,7 +44,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	}
 	
 	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
-		app.build( specTest.brjs.getMemoizedFile(targetDir) );
+		app.build(specTest.brjs.getMemoizedFile(targetDir));
 		
 		return builderChainer;
 	}
@@ -52,7 +52,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	public BuilderChainer hasBeenBuiltAsWar(MemoizedFile targetDir) throws Exception {
 		MemoizedFile warExportFile = targetDir.file(app.getName()+".war");
 		warExportFile.getParentFile().mkdir();
-		app.buildWar( warExportFile );
+		app.buildWar(warExportFile);
 		
 		return builderChainer;
 	}
@@ -98,4 +98,15 @@ public class AppBuilder extends NodeBuilder<App> {
 		
 		return builderChainer;
 	}
+
+	public BuilderChainer hasDefaultEnvironmentProperties(String key, String value) throws IOException {
+		return hasEnvironmentProperties("default", key, value);
+	}
+
+	public BuilderChainer hasEnvironmentProperties(String environment, String key, String value) throws IOException {
+		writeToFile( app.file("app-properties/"+environment+".properties"), key+":"+value );
+
+		return builderChainer;
+	}
+
 }
