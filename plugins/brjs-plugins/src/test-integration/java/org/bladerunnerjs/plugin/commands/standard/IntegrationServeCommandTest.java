@@ -15,6 +15,7 @@ import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.commands.standard.ServeCommand;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.base.Predicate;
@@ -279,6 +280,22 @@ public class IntegrationServeCommandTest extends SpecTest
 				.and(brjs).hasVersion("dev");
 		when(brjs).runThreadedCommand("serve", "--environment", "prod");
 		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "prod replacement");
+	}
+
+	@Test @Ignore //log at info since when running 'serve' the JNDI token filter will replace more tokens
+	public void warningIsLoggedAtInfoLevelIfTokenCannotBeReplaced() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(aspect).hasBeenCreated()
+				.and(aspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(aspect).indexPageRequires("appns/App")
+				.and(brjs).hasVersion("dev");
+		when(brjs).runThreadedCommand("serve", "-e", "prod");
+		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "@SOME.TOKEN@")
+			.and(logging).infoMessageReceived()
 	}
 
 }
