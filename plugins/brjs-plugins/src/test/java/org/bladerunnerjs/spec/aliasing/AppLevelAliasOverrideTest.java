@@ -115,7 +115,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	}
 	
 	@Test
-	public void appAliasesHavePriorityIfAliasesArePresentInBothAppAliasesAndBladeAliasesAndAlsoContainUniqueOnes() throws Exception {
+	public void appAliasesHavePriorityIfAliasesArePresentInBothAppAliasesAndBladeAliasDefinitionsAndAlsoContainUniqueOnes() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns/AspectClass1", "appns/AspectClass2", "appns/AspectClass3")
 			.and(blade).hasClasses("appns/bs/b1/BladeClass1", "appns/bs/b1/BladeClass2")

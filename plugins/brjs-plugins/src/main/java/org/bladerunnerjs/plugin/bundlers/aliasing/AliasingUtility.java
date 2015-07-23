@@ -83,26 +83,39 @@ public class AliasingUtility
 		}
 		return scopeAliasDefinitions;
 	}
+	
+	public static List<AliasDefinition> aliasesIncludingAppAliases(BundlableNode bundlableNode) {
+		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+		List<AliasDefinition> aliasDefinitionsOnlyFromBundlableNode = aliases(bundlableNode);
+		aliasDefinitions.addAll(aliasDefinitionsOnlyFromBundlableNode);
+		
+		List<AliasDefinition> aliasesFromAppAliases = aliasesFromAppAliases(bundlableNode);
+		
+		for (AliasDefinition alias : aliasesFromAppAliases) {
+			if (aliasDefinitionsOnlyFromBundlableNode.isEmpty()) {
+				aliasDefinitions.add(alias);
+				continue;
+			}
+			for (AliasDefinition aliasFromBundlableNode : aliasDefinitionsOnlyFromBundlableNode) {
+				if (aliasFromBundlableNode.getName().equals(alias.getName())) {
+					continue;
+				}
+				aliasDefinitions.add(alias);
+			}
+		}
+		
+		return aliasDefinitions;
+	}
 
 	public static List<AliasDefinition> aliases(BundlableNode bundlableNode)
 	{
 		try {
-			AliasesFile appAliasesFile = aliasesFile(bundlableNode.app());
 			AliasesFile bundlableNodeAliasesFile = aliasesFile(bundlableNode);
 			
 			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 			
 			for (AliasOverride bundlableNodeAliasOverride : bundlableNodeAliasesFile.aliasOverrides()) {
 				aliasDefinitions.add( resolveAlias(bundlableNodeAliasOverride.getName(), bundlableNode) );
-			}
-			
-			for (AliasOverride appAliasOverride : appAliasesFile.aliasOverrides()) {
-				try {
-					resolveAlias(appAliasOverride.getName(), bundlableNode, bundlableNodeAliasesFile);
-				}
-				catch (UnresolvableAliasException ex) {
-					aliasDefinitions.add( resolveAlias(appAliasOverride.getName(), bundlableNode) );
-				}
 			}
 			
 			return aliasDefinitions;
@@ -112,6 +125,26 @@ public class AliasingUtility
 		}
 	}
 
+	public static List<AliasDefinition> aliasesFromAppAliases(BundlableNode bundlableNode) {
+		AliasesFile appAliasesFile = aliasesFile(bundlableNode.app());
+		
+		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+		
+		try {
+			for (AliasOverride appAliasOverride : appAliasesFile.aliasOverrides()) {
+				try {
+					aliasDefinitions.add(resolveAlias(appAliasOverride.getName(), bundlableNode, appAliasesFile));
+				}
+				catch (UnresolvableAliasException ex) {
+					// if unresolved don't add to alias definitions, because it could be for another bundlable node
+				}
+			}
+		} catch (ContentFileProcessingException | AliasException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return aliasDefinitions;
+	}
 	
 	public static List<AliasDefinition> aliases(AssetContainer assetContainer, MemoizedFile childDir)
 	{
