@@ -28,11 +28,13 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	private AliasDefinitionsFileBuilder brLibAliasDefinitionsFileBuilder;
 	private SdkJsLib servicesLib;
 	private StringBuffer response = new StringBuffer();
+	private StringBuffer responseForAspectWithoutAliasesFile = new StringBuffer();
 	private AliasDefinitionsFileBuilder bladeAliasDefinitionsFileBuilder;
 	private Bladeset bladeset;
 	private Blade blade;
 	private BladeWorkbench workbench;
 	private AliasesFile worbenchAliasesFile;
+	private Aspect aspectWithoutAliasesFile;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -44,6 +46,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		app = brjs.app("app1");
 		appConf = app.appConf();
 		aspect = app.aspect("default");
+		aspectWithoutAliasesFile = app.aspect("withoutAliasesFile");
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		brLib = app.jsLib("br");
@@ -146,6 +149,35 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 			.and(workbench).indexPageRequires("alias!workbenchAlias");
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.WorkbenchClass2");
+	}
+	
+//	@Test
+//	public void testPackAliasesOverrideAppAliases() throws Exception {
+//		given(appConf).hasRequirePrefix("appns")
+//			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+//			// given(testPack).containsFileWithContents("Class1.js", "Class1")
+//			// .and(testPack).containsFileWithContents("Class2.js", "Class2")
+//			.and(testPackAliasesFileBuilder).hasAlias("testAlias", "appns.Class1")
+//			.and(appAliasesFileBuilder).hasAlias("testAlias", "appns.Class2")
+//			.and(testPack).hasNamespacedJsPackageStyle()
+//			.and(testPack).testRefersTo("pkg/test.js", "alias!testAlias");
+//		when(testPack).requestReceivedInDev("js/dev/combined/bundle.js", response);
+//		then(response).containsCommonJsClasses("appns.Class1");
+//	}
+	
+	@Test
+	public void aspectWithoutAnAliasesFileUsesAppAliasesAndAspectWithAnAliasesFileUsesItsAliasesFile() throws Exception {
+		given(aspectWithoutAliasesFile).hasClasses("appns/Class1WithoutAlias", "appns/Class2WithoutAlias")
+			.and(aspect).hasClasses("appns/App", "appns/Class1", "appns/Class2")
+			.and(aspectAliasesFileBuilder).hasAlias("appns.aspectAliasWithAspectAliasesFile", "appns.Class2")
+			.and(appAliasesFileBuilder).hasAlias("appns.aspectAliasWithAspectAliasesFile", "appns.Class1")
+			.and(appAliasesFileBuilder).hasAlias("appns.aspectAliasWithoutAspectAliasesFile", "appns.Class1WithoutAlias")
+			.and(aspect).indexPageHasAliasReferences("appns.aspectAliasWithAspectAliasesFile")
+			.and(aspectWithoutAliasesFile).indexPageHasAliasReferences("appns.aspectAliasWithoutAspectAliasesFile");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response)
+			.and(aspectWithoutAliasesFile).requestReceivedInDev("js/dev/combined/bundle.js", responseForAspectWithoutAliasesFile);
+		then(response).containsCommonJsClasses("appns.Class2")
+			.and(responseForAspectWithoutAliasesFile).containsCommonJsClasses("appns.Class1WithoutAlias");
 	}
 	
 }
