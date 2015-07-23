@@ -22,19 +22,20 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	private AppConf appConf;
 	private Aspect aspect;
 	private JsLib brLib;
-	private AliasesFileBuilder appAliasesFileBuilder, aspectAliasesFileBuilder, worbenchAliasesFileBuilder;
+	private AliasesFileBuilder appAliasesFileBuilder, aspectAliasesFileBuilder, workbenchAliasesFileBuilder;
 	private AliasesVerifier aspectAliasesVerifier;
 	private AliasDefinitionsFileBuilder aspectResourcesAliaseDefinitionsFileBuilder;
 	private AliasDefinitionsFileBuilder brLibAliasDefinitionsFileBuilder;
 	private SdkJsLib servicesLib;
 	private StringBuffer response = new StringBuffer();
-	private StringBuffer responseForAspectWithoutAliasesFile = new StringBuffer();
+	private StringBuffer responseWithoutAliasesFile = new StringBuffer();
 	private AliasDefinitionsFileBuilder bladeAliasDefinitionsFileBuilder;
 	private Bladeset bladeset;
-	private Blade blade;
+	private Blade blade, bladeForWorkbenchWithoutAliasesFile;
 	private BladeWorkbench workbench;
 	private AliasesFile worbenchAliasesFile;
 	private Aspect aspectWithoutAliasesFile;
+	private BladeWorkbench workbenchWithoutAliasesFile;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -49,10 +50,12 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		aspectWithoutAliasesFile = app.aspect("withoutAliasesFile");
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
+		bladeForWorkbenchWithoutAliasesFile = bladeset.blade("b2");
 		brLib = app.jsLib("br");
 		workbench = blade.workbench();
+		workbenchWithoutAliasesFile = bladeForWorkbenchWithoutAliasesFile.workbench();
 		worbenchAliasesFile = aliasesFile(workbench);
-		worbenchAliasesFileBuilder = new AliasesFileBuilder(this, worbenchAliasesFile);
+		workbenchAliasesFileBuilder = new AliasesFileBuilder(this, worbenchAliasesFile);
 		appAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(app));
 		aspectAliasesVerifier = new AliasesVerifier(this, aspect);
 		aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
@@ -144,7 +147,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	@Test
 	public void workbenchAliasesOverridesAppAliases() throws Exception {
 		given(workbench).hasClasses("appns/WorkbenchClass1", "appns/WorkbenchClass2")
-			.and(worbenchAliasesFileBuilder).hasAlias("workbenchAlias", "appns.WorkbenchClass2")
+			.and(workbenchAliasesFileBuilder).hasAlias("workbenchAlias", "appns.WorkbenchClass2")
 			.and(appAliasesFileBuilder).hasAlias("workbenchAlias", "appns.WorkbenchClass1")
 			.and(workbench).indexPageRequires("alias!workbenchAlias");
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
@@ -175,9 +178,24 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 			.and(aspect).indexPageHasAliasReferences("appns.aspectAliasWithAspectAliasesFile")
 			.and(aspectWithoutAliasesFile).indexPageHasAliasReferences("appns.aspectAliasWithoutAspectAliasesFile");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response)
-			.and(aspectWithoutAliasesFile).requestReceivedInDev("js/dev/combined/bundle.js", responseForAspectWithoutAliasesFile);
+			.and(aspectWithoutAliasesFile).requestReceivedInDev("js/dev/combined/bundle.js", responseWithoutAliasesFile);
 		then(response).containsCommonJsClasses("appns.Class2")
-			.and(responseForAspectWithoutAliasesFile).containsCommonJsClasses("appns.Class1WithoutAlias");
+			.and(responseWithoutAliasesFile).containsCommonJsClasses("appns.Class1WithoutAlias");
+	}
+	
+	@Test
+	public void workbenchWithoutAnAliasesFileUsesAppAliasesAndWorkbenchWithAnAliasesFileUsesItsAliasesFile() throws Exception {
+		given(workbenchWithoutAliasesFile).hasClasses("appns/Class1WithoutAlias", "appns/Class2WithoutAlias")
+			.and(workbench).hasClasses("appns/App", "appns/Class1", "appns/Class2")
+			.and(workbenchAliasesFileBuilder).hasAlias("appns.aspectAliasWithAspectAliasesFile", "appns.Class2")
+			.and(appAliasesFileBuilder).hasAlias("appns.aspectAliasWithAspectAliasesFile", "appns.Class1")
+			.and(appAliasesFileBuilder).hasAlias("appns.aspectAliasWithoutAspectAliasesFile", "appns.Class1WithoutAlias")
+			.and(workbench).indexPageRequires("alias!appns.aspectAliasWithAspectAliasesFile")
+			.and(workbenchWithoutAliasesFile).indexPageRequires("alias!appns.aspectAliasWithoutAspectAliasesFile");
+		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response)
+			.and(workbenchWithoutAliasesFile).requestReceivedInDev("js/dev/combined/bundle.js", responseWithoutAliasesFile);
+		then(response).containsCommonJsClasses("appns.Class2")
+			.and(responseWithoutAliasesFile).containsCommonJsClasses("appns.Class1WithoutAlias");
 	}
 	
 }
