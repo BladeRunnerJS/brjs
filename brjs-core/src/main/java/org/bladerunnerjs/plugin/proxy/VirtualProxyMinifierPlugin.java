@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.InputSource;
 import org.bladerunnerjs.api.plugin.MinifierPlugin;
 
@@ -21,7 +22,7 @@ public class VirtualProxyMinifierPlugin extends VirtualProxyPlugin implements Mi
 	}
 	
 	@Override
-	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException {
+	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException, ResourceNotFoundException {
 		initializePlugin();
 		return minifierPlugin.minify(settingName, inputSources);
 	}

@@ -25,15 +25,18 @@ public class TopLevelExceptionVerifier {
 		return this.verifierChainer;
 	}
 	
-	public <T extends Throwable> VerifierChainer whereTopLevelExceptionContainsString(Class<T> exceptionClass, String expectedString) {
+	public <T extends Throwable> VerifierChainer whereTopLevelExceptionContainsString(Class<T> exceptionClass, String... expectedStrings) {
 		if(!exceptionClass.isInstance(exception)) {
 			fail(exception.getClass().getName() + " is not an instance of " + exceptionClass.getName());
 		}
 		
-		if(!ExceptionsVerifier.containsString(exception, expectedString)) {
-			fail("expected exception containing string '" + expectedString + "' for given exception " + exception.getMessage());
+		for (String expectedString : expectedStrings) {
+    		if(!ExceptionsVerifier.containsString(exception, expectedString)) {
+    			fail("expected exception containing string '" + expectedString + "' for given exception " + exception.getMessage());
+    		}
 		}
 		
 		return this.verifierChainer;
 	}
+	
 }

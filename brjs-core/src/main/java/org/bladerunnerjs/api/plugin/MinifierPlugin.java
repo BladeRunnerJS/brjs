@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 
 
 /**
@@ -28,6 +29,6 @@ import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
  */
 public interface MinifierPlugin extends Plugin {
 	List<String> getSettingNames();
-	Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException;
+	Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException, ResourceNotFoundException;
 	Reader generateSourceMap(String minifierLevel, List<InputSource> inputSources) throws ContentProcessingException;
 }

@@ -242,7 +242,7 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException, ResourceNotFoundException {
 		try {
 			String redirectionPageContent;
 			try (InputStream redirectionPageInputStream = getClass().getClassLoader().getResourceAsStream( "org/bladerunnerjs/locale-redirection-page.html" )) {

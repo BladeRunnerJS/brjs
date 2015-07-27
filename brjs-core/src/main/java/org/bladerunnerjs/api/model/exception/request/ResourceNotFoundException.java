@@ -16,4 +16,14 @@ public class ResourceNotFoundException extends RequestHandlingException {
 	public ResourceNotFoundException(String message) {
 		super(message);
 	}
+	
+	public ResourceNotFoundException(Throwable wrappedException)
+	{
+		super(wrappedException);
+	}
+	
+	public ResourceNotFoundException(String message, Throwable wrappedException)
+	{
+		super(message, wrappedException);
+	}	
 }
