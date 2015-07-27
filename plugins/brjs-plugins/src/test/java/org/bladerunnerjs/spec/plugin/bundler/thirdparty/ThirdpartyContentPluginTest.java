@@ -200,6 +200,28 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void dependendSourceModulesAreBundled() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: lib/Class\n"+"exports: lib")
+			.and(thirdpartyLib).containsFiles("lib1-file.js")
+			.and(thirdpartyLib2).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
+			.and(thirdpartyLib2).containsFiles("src/lib/Class.js")
+			.and(aspect).indexPageHasContent("require('"+thirdpartyLib.getName()+"')");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsOrderedTextFragments("lib1-file.js", "lib/Class.js"); // the order here is correct, thirdparty content always appears before other types
+	}
+	
+	@Test
+	public void exceptionIsThrownIfADependentSourceModuleDoesntExist() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).indexPageRequires(thirdpartyLib)
+			.and(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: foo/bar/baz\n"+"exports: lib");
+		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
+		then(exceptions).verifyException(ConfigException.class, "thirdparty-lib", "foo/bar/baz");
+	}
+	
+	@Test
 	public void allSettingsAreOptional() throws Exception
 	{
 		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "")
