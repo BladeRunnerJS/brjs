@@ -260,7 +260,7 @@ public class AppRequestHandler
 		}
 	}
 	
-	private String getLocaleForwardingPageJSBundleContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws MalformedTokenException, MalformedRequestException, ContentProcessingException, ModelOperationException, IOException {
+	private String getLocaleForwardingPageJSBundleContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws MalformedTokenException, MalformedRequestException, ContentProcessingException, ModelOperationException, IOException, ResourceNotFoundException {
 		ContentPlugin compositeJsContentPlugin = app.root().plugins().contentPlugin("js");
 		ContentPathParser compositeJsContentPathParser = compositeJsContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
 		String jsBundleContentPath = compositeJsContentPathParser.createRequest("dev-bundle-request", "combined");
