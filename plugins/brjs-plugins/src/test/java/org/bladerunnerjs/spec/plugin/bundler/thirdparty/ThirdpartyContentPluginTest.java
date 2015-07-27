@@ -178,6 +178,17 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void dependendLibrariesAreBundled() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: "+thirdpartyLib2.getName()+"\n"+"exports: lib")
+			.and(thirdpartyLib).containsFiles("lib1-file.js")
+			.and(thirdpartyLib2).containsFileWithContents("thirdparty-lib.manifest", "exports: lib")
+			.and(thirdpartyLib2).containsFiles("lib2-file.js")
+			.and(aspect).indexPageHasContent("require('"+thirdpartyLib.getName()+"')");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsOrderedTextFragments("lib2-file.js", "lib1-file.js");
+	}
+	
+	@Test
 	public void exceptionIsThrownIfADependentLibraryDoesntExist() throws Exception
 	{
 		given(app).hasBeenCreated()
