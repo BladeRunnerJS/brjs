@@ -2,7 +2,6 @@ package org.bladerunnerjs.utility;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.plugin.ResponseContent;
-import org.bladerunnerjs.appserver.util.ExceptionThrowingNoTokenReplacementHandler;
 import org.bladerunnerjs.appserver.util.NoTokenReplacementHandler;
 import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 import org.bladerunnerjs.appserver.util.TokenFinder;

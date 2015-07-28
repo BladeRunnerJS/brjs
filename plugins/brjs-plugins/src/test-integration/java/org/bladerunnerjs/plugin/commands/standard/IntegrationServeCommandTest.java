@@ -13,9 +13,9 @@ import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.commands.standard.ServeCommand;
+import org.bladerunnerjs.utility.WarningNoTokenReplacementHandler;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.base.Predicate;
@@ -282,7 +282,7 @@ public class IntegrationServeCommandTest extends SpecTest
 		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "prod replacement");
 	}
 
-	@Test @Ignore //log at info since when running 'serve' the JNDI token filter will replace more tokens
+	@Test //log at info since when running 'serve' the JNDI token filter will replace more tokens
 	public void warningIsLoggedAtInfoLevelIfTokenCannotBeReplaced() throws Exception
 	{
 		given(app).hasBeenCreated()
@@ -292,10 +292,11 @@ public class IntegrationServeCommandTest extends SpecTest
 				.and(aspect).hasBeenCreated()
 				.and(aspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
 				.and(aspect).indexPageRequires("appns/App")
-				.and(brjs).hasVersion("dev");
+				.and(brjs).hasVersion("dev")
+				.and(logging).enabled();
 		when(brjs).runThreadedCommand("serve", "-e", "prod");
 		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "@SOME.TOKEN@")
-			.and(logging).infoMessageReceived()
+			.and(logging).unorderedInfoMessageReceived(WarningNoTokenReplacementHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" );
 	}
 
 }

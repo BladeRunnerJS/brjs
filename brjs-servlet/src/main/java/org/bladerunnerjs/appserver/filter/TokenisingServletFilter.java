@@ -24,7 +24,6 @@ import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 
 public class TokenisingServletFilter implements Filter
 {
-	private TokenReplacingReader streamTokeniser;
 	private JndiTokenFinder tokenFinder;
 	private final Pattern validUrl = Pattern.compile("^.*(/|/[a-z]{2}|/[a-z]{2}_[A-Z]{2}|\\.(xml|json|html|htm|jsp))$");
 	

@@ -24,6 +24,7 @@ public class TokenReplacingReaderTest
 	private TokenFinder mockTokenFinder;
     private NoTokenReplacementHandler mockTokenReplacementHandler = mock(NoTokenReplacementHandler.class);
 	
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception
 	{
@@ -224,7 +225,7 @@ public class TokenReplacingReaderTest
         Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@"), mockTokenReplacementHandler );
         String replacedContent = IOUtils.toString(tokenisingReader);
         assertEquals("@EXCEPTION.THROWING.TOKEN@", replacedContent);
-        verify(mockTokenReplacementHandler, times(0)).handleNoTokenFound( eq("EXCEPTION.THROWING.TOKEN"), any(TokenReplacementException.class) );
+        verify(mockTokenReplacementHandler, times(1)).handleNoTokenFound( eq("EXCEPTION.THROWING.TOKEN"), any(TokenReplacementException.class) );
     }
 
 }

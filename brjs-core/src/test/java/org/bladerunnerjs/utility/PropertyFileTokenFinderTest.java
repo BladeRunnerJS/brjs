@@ -1,6 +1,5 @@
 package org.bladerunnerjs.utility;
 
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.appserver.util.TokenFinder;
 import org.bladerunnerjs.appserver.util.TokenReplacementException;
 import org.junit.Before;
