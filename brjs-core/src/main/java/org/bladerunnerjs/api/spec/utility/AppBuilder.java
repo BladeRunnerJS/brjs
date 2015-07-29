@@ -17,6 +17,7 @@ import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.spec.engine.BuilderChainer;
 import org.bladerunnerjs.api.spec.engine.NodeBuilder;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 
 
@@ -79,7 +80,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	
 	public BuilderChainer hasReceivedRequest(String requestPath, StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException 
 	{
-		ResponseContent content = app.requestHandler().handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+		ResponseContent content = app.requestHandler().handleLogicalRequest(requestPath, new StaticContentAccessor(app), RequestMode.Prod);
 		if (response == null) {
 			return builderChainer;
 		}

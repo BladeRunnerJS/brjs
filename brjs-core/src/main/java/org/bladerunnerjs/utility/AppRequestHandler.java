@@ -95,7 +95,7 @@ public class AppRequestHandler
 		}
 	}
 	
-	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException {
+	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor, RequestMode requestMode) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException {
 		ParsedContentPath parsedContentPath = parseRequest(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
@@ -115,15 +115,15 @@ public class AppRequestHandler
 				break;
 
 			case INDEX_PAGE_REQUEST:
-				response = getIndexPageContent(app.aspect(aspectName), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				response = getIndexPageContent(app.aspect(aspectName), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, requestMode);
 				break;
 
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, requestMode);
 				break;
 			
 			case WORKBENCH_BLADESET_INDEX_PAGE_REQUEST:
-				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, requestMode);
 				break;
 			
 			case UNVERSIONED_BUNDLE_REQUEST:

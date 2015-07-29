@@ -98,7 +98,7 @@ public class AppBuilderUtilis
 		localeIndexPageFile.getParentFile().mkdirs();
 		
 		try (FileOutputStream indexFileOutputStream = new FileOutputStream(localeIndexPageFile);
-				ResponseContent responseContent = aspect.app().requestHandler().handleLogicalRequest(indexPageRequestPath, urlContentAccessor); )
+				ResponseContent responseContent = aspect.app().requestHandler().handleLogicalRequest(indexPageRequestPath, urlContentAccessor, RequestMode.Prod); )
 		{
 			responseContent.write( indexFileOutputStream );
 		}
@@ -147,7 +147,7 @@ public class AppBuilderUtilis
 		bundleFile.createNewFile();
 		
 		try (FileOutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
-			ResponseContent pluginContent = app.requestHandler().handleLogicalRequest(appBundleRequest, contentAccessor); )
+			ResponseContent pluginContent = app.requestHandler().handleLogicalRequest(appBundleRequest, contentAccessor, RequestMode.Prod); )
 		{
 			pluginContent.write( bundleFileOutputStream );
 		}
