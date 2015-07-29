@@ -9,9 +9,9 @@ br.Core.thirdparty("jquery");
  * @alias module:br/presenter/control/selectionfield/JQueryAutoCompleteControl
  * @extends module:br/presenter/control/ControlAdaptor
  * @extends module:br/presenter/property/PropertyListener
- * 
+ *
  * @classdesc
- * Provides an input box that supports auto complete when used in conjunction with a 
+ * Provides an input box that supports auto complete when used in conjunction with a
  * {@link module:br/presenter/node/AutoCompleteSelectionField}.
  *
  * <p>The jQuery auto complete control is aliased by <em>br.autocomplete-box</em>, and can
@@ -32,7 +32,7 @@ br.Core.thirdparty("jquery");
  * <em>appendTo</em> - Specify the jquery selector of the element that the menu should be appended to.
  * <em>minCharAmount</em> - Specify the minimun amount of characters to be typed before the autocomplete menu is displayed. Default is 0.
  * </p>
- * 
+ *
  * @see br.presenter.node.AutoCompleteSelectionField
  */
 br.presenter.control.selectionfield.JQueryAutoCompleteControl = function()
@@ -109,6 +109,13 @@ br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype.onViewRe
 			// don't propagate this to the keydown (if it's triggered by an enter)
 			event.stopImmediatePropagation();
 			event.preventDefault();
+			// if the selection is triggered by a click, not by pressing enter, then blur
+			if (self.m_bBlurAfterClick === true) {
+				if (event.which === 1) {
+					this.blur();
+				}
+			}
+
 			return false;
 		}
 	});
@@ -156,5 +163,8 @@ br.presenter.control.selectionfield.JQueryAutoCompleteControl.prototype.setOptio
 	if (mOptions && mOptions.minCharAmount !== undefined)
 	{
 		this.m_nMinCharAmount = mOptions.minCharAmount;
+	}
+	if ( mOptions && mOptions.blurAfterClick !== undefined) {
+		this.m_bBlurAfterClick = mOptions.blurAfterClick;
 	}
 };
