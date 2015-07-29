@@ -16,8 +16,10 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
+
+import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.utility.AppRequestHandler;
-import org.bladerunnerjs.utility.WarningNoTokenReplacementHandler;
+import org.bladerunnerjs.utility.LoggingTokenReplacementHandler;
 
 public class ServeCommand extends JSAPArgsParsingCommandPlugin
 {
@@ -93,7 +95,7 @@ public class ServeCommand extends JSAPArgsParsingCommandPlugin
 
 			String environment = parsedArgs.getString("environment");
 			AppRequestHandler.setPropertiesEnvironment(brjs, environment);
-			AppRequestHandler.setNoTokenExceptionHandler(brjs, new WarningNoTokenReplacementHandler(brjs, this.getPluginClass(), environment));
+			AppRequestHandler.setNoTokenExceptionHandler(brjs, new LoggingTokenReplacementHandler(brjs, this.getPluginClass(), environment, LogLevel.INFO));
 
 			appServer.start();
 			brjs.fileObserver().start();

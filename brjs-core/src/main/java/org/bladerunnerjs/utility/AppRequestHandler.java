@@ -29,6 +29,7 @@ import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.appserver.util.NoTokenReplacementHandler;
+import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
@@ -163,7 +164,7 @@ public class AppRequestHandler
 	public String createBundleRequest(Aspect aspect, String contentPath, String version) throws MalformedTokenException
 	{
 		if (contentPath.startsWith("/")) {
-			return createRequest(aspect, AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, contentPath);
+			return createRequest( aspect, AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, ((contentPath.startsWith("/") ? StringUtils.substringAfter(contentPath, "/") : contentPath)) );
 		}
 		else {
 			return createRequest(aspect, AppRequestHandler.BUNDLE_REQUEST, version, contentPath);
@@ -178,7 +179,7 @@ public class AppRequestHandler
 	public String createIndexPageRequest(Aspect aspect, Locale locale) throws MalformedTokenException
 	{
 		if(!aspect.app().isMultiLocaleApp()) {
-			return createRequest(aspect, INDEX_PAGE_REQUEST) + "index";
+			return createRequest(aspect, INDEX_PAGE_REQUEST);
 		}
 		else {
 			return createRequest(aspect, INDEX_PAGE_REQUEST, locale.toString());
@@ -373,7 +374,7 @@ public class AppRequestHandler
 	public static NoTokenReplacementHandler getNoTokenExNoTokenReplacementHandler(BRJS brjs) {
 		NoTokenReplacementHandler handler = (NoTokenReplacementHandler) brjs.nodeProperties(AppRequestHandler.class.getSimpleName()).getTransientProperty(NO_TOKEN_FOUND_HANDLER_PROPERTY_KEY);
 		if (handler == null) {
-			return new WarningNoTokenReplacementHandler(brjs, AppRequestHandler.class, getPropertiesEnvironment(brjs) );
+			return new LoggingTokenReplacementHandler(brjs, AppRequestHandler.class, getPropertiesEnvironment(brjs), LogLevel.INFO );
 		}
 		return handler;
 	}

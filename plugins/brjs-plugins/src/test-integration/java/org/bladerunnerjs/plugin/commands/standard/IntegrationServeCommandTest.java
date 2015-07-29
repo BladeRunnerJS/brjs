@@ -13,7 +13,7 @@ import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.commands.standard.ServeCommand;
-import org.bladerunnerjs.utility.WarningNoTokenReplacementHandler;
+import org.bladerunnerjs.utility.LoggingTokenReplacementHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -296,7 +296,7 @@ public class IntegrationServeCommandTest extends SpecTest
 				.and(logging).enabled();
 		when(brjs).runThreadedCommand("serve", "-e", "prod");
 		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "@SOME.TOKEN@")
-			.and(logging).unorderedInfoMessageReceived(WarningNoTokenReplacementHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" );
+			.and(logging).unorderedInfoMessageReceived(LoggingTokenReplacementHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" );
 	}
 
 }

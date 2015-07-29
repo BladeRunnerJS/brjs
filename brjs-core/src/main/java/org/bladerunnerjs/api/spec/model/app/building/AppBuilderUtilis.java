@@ -76,7 +76,7 @@ public class AppBuilderUtilis
 	}
 	
 	
-	private static void outputContentPluginBundles(ContentPlugin contentPlugin, BundleSet bundleSet, Locale[] locales, File target, String version, Aspect aspect, UrlContentAccessor urlContentAccessor) throws ContentProcessingException, MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException
+	private static void outputContentPluginBundles(ContentPlugin contentPlugin, BundleSet bundleSet, Locale[] locales, File target, String version, Aspect aspect, UrlContentAccessor urlContentAccessor) throws ContentProcessingException, MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException, ResourceNotFoundException, ModelOperationException
 	{
 		if (!contentPlugin.instanceOf(CompositeContentPlugin.class)) {
 			for (String contentPath : contentPlugin.getUsedContentPaths(bundleSet, RequestMode.Prod, locales)) {
@@ -89,17 +89,20 @@ public class AppBuilderUtilis
 	}
 
 
-	private static void outputAspectIndexPage(Aspect aspect, Locale locale, BundleSet bundleSet, File targetDir, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException, ResourceNotFoundException
+	private static void outputAspectIndexPage(Aspect aspect, Locale locale, BundleSet bundleSet, File targetDir, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException, ResourceNotFoundException, MalformedRequestException, ModelOperationException
 	{
-		String indexPageSuffix = (aspect.file("index.jsp").exists()) ? ".jsp" : ".html";
-		File localeIndexPageFile = new File(targetDir, aspect.requestHandler().createIndexPageRequest(locale) + indexPageSuffix);
+		String indexPageFilename = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
+		String indexPageRequestPath = aspect.requestHandler().createIndexPageRequest(locale);
+		
+		File localeIndexPageFile = new File(targetDir, indexPageRequestPath + "/" + indexPageFilename);
 		localeIndexPageFile.getParentFile().mkdirs();
 		
-		try (OutputStream os = new FileOutputStream(localeIndexPageFile);
-			ResponseContent content = aspect.requestHandler().getIndexPageContent(locale, version, urlContentAccessor, RequestMode.Prod); )
+		try (FileOutputStream indexFileOutputStream = new FileOutputStream(localeIndexPageFile);
+				ResponseContent responseContent = aspect.app().requestHandler().handleLogicalRequest(indexPageRequestPath, urlContentAccessor); )
 		{
-			content.write(os);
+			responseContent.write( indexFileOutputStream );
 		}
+		
 	}
 
 	private static void writeLocaleForwardingFileForAspect(BundleSet bundleSet, File target, Aspect aspect, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException
@@ -134,14 +137,17 @@ public class AppBuilderUtilis
 		}
 	}
 
-	private static void writeContentFile(BundleSet bundleSet, UrlContentAccessor contentPluginUtility, File target, String version, Aspect aspect, ContentPlugin contentPlugin, String contentPath) throws MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException, ContentProcessingException
+	private static void writeContentFile(BundleSet bundleSet, UrlContentAccessor contentAccessor, File target, String version, Aspect aspect, ContentPlugin contentPlugin, String contentPath) throws MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException, ContentProcessingException, ResourceNotFoundException, ModelOperationException
 	{
-		File bundleFile = new File(target, aspect.requestHandler().createBundleRequest(contentPath, version));
+		App app = aspect.app();
+		String appBundleRequest = app.requestHandler().createBundleRequest(aspect, contentPath, version);
+		File bundleFile = new File(target, appBundleRequest);
 		
 		bundleFile.getParentFile().mkdirs();
 		bundleFile.createNewFile();
+		
 		try (FileOutputStream bundleFileOutputStream = new FileOutputStream(bundleFile);
-			ResponseContent pluginContent = contentPlugin.handleRequest(contentPath, bundleSet, contentPluginUtility, version); )
+			ResponseContent pluginContent = app.requestHandler().handleLogicalRequest(appBundleRequest, contentAccessor); )
 		{
 			pluginContent.write( bundleFileOutputStream );
 		}

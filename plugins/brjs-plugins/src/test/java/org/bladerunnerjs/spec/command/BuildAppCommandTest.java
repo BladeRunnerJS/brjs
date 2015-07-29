@@ -14,6 +14,8 @@ import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistComman
 import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.appserver.util.TokenReplacementException;
+import org.bladerunnerjs.utility.LoggingTokenReplacementHandler;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -273,7 +275,7 @@ public class BuildAppCommandTest extends SpecTest
 			.and(app.appConf()).supportsLocales("en", "en_GB")
 			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
 		when(brjs).runCommand("build-app", "app");
-		then(brjs).fileContentsContains("generated/built-apps/app/en_GB.html", "DEFAULT ASPECT INDEX PAGE");
+		then(brjs).fileContentsContains("generated/built-apps/app/en_GB/index.html", "DEFAULT ASPECT INDEX PAGE");
 	}
 	
 	@Test
@@ -291,7 +293,134 @@ public class BuildAppCommandTest extends SpecTest
 		when(brjs).runCommand("build-app", "app1", "-v", "myversion");
 		then(brjs).hasDirectoryWithFormat("generated/built-apps/app1/v/", "myversion\\-.*", filePath)
 			.and(new File(filePath.toString())).containsFileWithContents("/js/prod/combined/bundle.js", "module.exports.APP_VERSION = '"+new File(filePath.toString()).getName()+"';");
-			
+	}
+	
+	@Test
+	public void tokensCanBeReplacedFromDefaultEnvironmentPropertiesFile() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).indexPageHasContent("@SOME.TOKEN@");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).fileContentsContains("generated/built-apps/app/index.html", "token replacement");
+	}
+
+	@Test
+	public void tokensFromPropertiesFilesCanBeReplacedInBundles() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).fileContentsContains("generated/built-apps/app/v/123/js/prod/combined/bundle.js", "token replacement");
+	}
+
+	@Test
+	public void environmenShortFlagCanBeUsedToSetTheEnvironmentForTokens() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+				.and(app).hasEnvironmentProperties("prod", "SOME.TOKEN", "prod replacement")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123");
+		when(brjs).runCommand("build-app", "app", "-e", "prod");
+		then(brjs).fileContentsContains("generated/built-apps/app/v/123/js/prod/combined/bundle.js", "prod replacement");
+	}
+
+	@Test
+	public void environmenLongFlagCanBeUsedToSetTheEnvironmentForTokens() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+				.and(app).hasEnvironmentProperties("prod", "SOME.TOKEN", "prod replacement")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123");
+		when(brjs).runCommand("build-app", "app", "--environment", "prod");
+		then(brjs).fileContentsContains("generated/built-apps/app/v/123/js/prod/combined/bundle.js", "prod replacement");
+	}
+
+	@Test
+	public void exceptionIsThrownIfStaticAppTokenCannotBeReplaced() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123");
+		when(brjs).runCommand("build-app", "app");
+		then(exceptions).verifyException(TokenReplacementException.class, "PropertyFileTokenFinder", "SOME.TOKEN");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfStaticAppTokenCannotBeReplacedUsingADefinedEnvironment() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123");
+		when(brjs).runCommand("build-app", "app", "-e", "prod");
+		then(exceptions).verifyException(TokenReplacementException.class, "PropertyFileTokenFinder", "SOME.TOKEN");
+	}
+	
+	@Test
+	public void warningIsPrintedIfWarAppTokenCannotBeReplaced() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123")
+				.and(logging).enabled();
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(logging).unorderedWarnMessageReceived(LoggingTokenReplacementHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "default" )
+			.and(logging).otherMessagesIgnored();
+	}
+	
+	@Test
+	public void warningIsPrintedIfWarAppTokenCannotBeReplacedUsingADefinedEnvironment() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123")
+				.and(logging).enabled();
+		when(brjs).runCommand("build-app", "app", "-e", "prod", "-w");
+		then(logging).unorderedWarnMessageReceived(LoggingTokenReplacementHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" )
+			.and(logging).otherMessagesIgnored();
 	}
 	
 }

@@ -16,7 +16,11 @@ import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistComman
 import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
+import org.bladerunnerjs.appserver.util.ExceptionThrowingNoTokenReplacementHandler;
+import org.bladerunnerjs.logger.LogLevel;
+import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtils;
+import org.bladerunnerjs.utility.LoggingTokenReplacementHandler;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -46,6 +50,7 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
 		argsParser.registerParameter(new UnflaggedOption(Parameters.TARGET_DIR).setHelp("the directory within which the exported app will be built"));
 		argsParser.registerParameter(new FlaggedOption("version").setShortFlag('v').setLongFlag("version").setRequired(false).setHelp("the version number for the app"));
+		argsParser.registerParameter(new FlaggedOption("environment").setShortFlag('e').setLongFlag("environment").setRequired(false).setHelp("the environment to use when locating app properties"));
 		argsParser.registerParameter(new Switch("war").setShortFlag('w').setLongFlag("war").setDefault("false").setHelp("whether the exported files should be placed into a war zip."));
 	}
 	
@@ -75,6 +80,7 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		}
 		boolean warExport = parsedArgs.getBoolean("war");
 		boolean hasExplicitExportDirArg = (targetDirPath != null);
+		String environment = parsedArgs.getString("environment");		
 		
 		App app = brjs.app(appName);
 		
@@ -117,13 +123,17 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		if(!targetDir.isDirectory()) throw new DirectoryDoesNotExistCommandException(targetDirPath, this);
 		
+		
+		AppRequestHandler.setPropertiesEnvironment(brjs, environment);
 		try {
 			if (warExport) {
+				AppRequestHandler.setNoTokenExceptionHandler(brjs, new LoggingTokenReplacementHandler(brjs, this.getPluginClass(), environment, LogLevel.WARN));
 				if(warExportFile.exists()) throw new DirectoryAlreadyExistsCommandException(warExportFile.getPath(), this);
 				app.buildWar(warExportFile);
 				brjs.getFileModificationRegistry().incrementFileVersion(warExportFile);
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getAbsolutePath());
 			} else {
+				AppRequestHandler.setNoTokenExceptionHandler(brjs, new ExceptionThrowingNoTokenReplacementHandler());
 				if (hasExplicitExportDirArg) {
 					if (appExportDir.listFiles().length > 0) throw new DirectoryNotEmptyCommandException(appExportDir.getPath(), this);								
 				} else {
