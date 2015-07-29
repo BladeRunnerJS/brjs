@@ -275,7 +275,7 @@ public class BuildAppCommandTest extends SpecTest
 			.and(app.appConf()).supportsLocales("en", "en_GB")
 			.and(app.defaultAspect()).indexPageHasContent("DEFAULT ASPECT INDEX PAGE");
 		when(brjs).runCommand("build-app", "app");
-		then(brjs).fileContentsContains("generated/built-apps/app/en_GB/index.html", "DEFAULT ASPECT INDEX PAGE");
+		then(brjs).fileContentsContains("generated/built-apps/app/en_GB.html", "DEFAULT ASPECT INDEX PAGE");
 	}
 	
 	@Test

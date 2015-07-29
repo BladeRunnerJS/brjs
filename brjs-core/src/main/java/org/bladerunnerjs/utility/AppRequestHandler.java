@@ -127,7 +127,11 @@ public class AppRequestHandler
 				break;
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
-				response = app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), contentAccessor, devVersion);
+				String contentPath = pathProperties.get("content-path");
+				if (contentPath.startsWith("/")) {
+					contentPath = contentPath.substring(1);
+				}
+				response = app.aspect(aspectName).handleLogicalRequest("/"+contentPath, contentAccessor, devVersion);
 				break;
 				
 			case BUNDLE_REQUEST:
@@ -164,7 +168,7 @@ public class AppRequestHandler
 	public String createBundleRequest(Aspect aspect, String contentPath, String version) throws MalformedTokenException
 	{
 		if (contentPath.startsWith("/")) {
-			return createRequest( aspect, AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, ((contentPath.startsWith("/") ? StringUtils.substringAfter(contentPath, "/") : contentPath)) );
+			return createRequest(aspect, AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST, contentPath);
 		}
 		else {
 			return createRequest(aspect, AppRequestHandler.BUNDLE_REQUEST, version, contentPath);
