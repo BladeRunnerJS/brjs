@@ -22,11 +22,13 @@ import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.AppRequestHandler;
+import org.bladerunnerjs.utility.BrjsPropertyTokenFinder;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.WebXmlCompiler;
 
@@ -134,8 +136,15 @@ public class AppBuilderUtilis
 			File exportedWebXml = new File(exportedWebInf, "web.xml");
 			if (exportedWebXml.isFile()) {
 				WebXmlCompiler.compile(app.root(), exportedWebXml);					
+				
 				String webXmlContents = org.apache.commons.io.FileUtils.readFileToString(exportedWebXml);
+				
+				String originalWebXmlContents = webXmlContents;
 				webXmlContents = webXmlContents.replace(AppMetadataUtility.APP_VERSION_TOKEN, version);
+				
+				if (!originalWebXmlContents.equals(webXmlContents)) {
+					app.root().logger(AppBuilder.class).warn(AppMetadataUtility.DEPRECATED_TOKEN_WARNING, AppMetadataUtility.APP_VERSION_TOKEN, TokenReplacingReader.TOKEN_START+BrjsPropertyTokenFinder.APP_VERSION_KEY+TokenReplacingReader.TOKEN_END);
+				}
 				
 				ResponseContent tokenFilteredContent = AppRequestHandler.getTokenFilteredResponseContent(app, AppRequestHandler.appLocale(app, null), version, new CharResponseContent(app, new StringReader(webXmlContents)));
 				tokenFilteredContent.write( new FileOutputStream(exportedWebXml, false) );

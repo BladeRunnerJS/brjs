@@ -11,14 +11,19 @@ import org.bladerunnerjs.appserver.util.TokenReplacementException;
 public class BrjsPropertyTokenFinder implements TokenFinder
 {
 
-	private Properties props = new Properties();
-
+	public static String APP_LOCALE_KEY = "BRJS.APP.LOCALE";
+	public static String APP_NAME_KEY = "BRJS.APP.NAME";
+	public static String APP_VERSION_KEY = "BRJS.APP.VERSION";
+	public static String BUNDLE_PATH_KEY = "BRJS.BUNDLE.PATH";
+	
+	private Properties props = new Properties(); 
+	
 	public BrjsPropertyTokenFinder(App app, Locale appLocale, String version)
 	{
-		props.put("BRJS.APP.LOCALE", appLocale.toString());
-		props.put("BRJS.APP.NAME", app.getName());
-		props.put("BRJS.APP.VERSION", version);
-		props.put("BRJS.BUNDLE.PATH", AppMetadataUtility.getRelativeVersionedBundlePath(app, version, "").replaceFirst("/$", ""));
+		props.put(APP_LOCALE_KEY, appLocale.toString());
+		props.put(APP_NAME_KEY, app.getName());
+		props.put(APP_VERSION_KEY, version);
+		props.put(BUNDLE_PATH_KEY, AppMetadataUtility.getRelativeVersionedBundlePath(app, version, "").replaceFirst("/$", ""));
 	}
 
 	@Override

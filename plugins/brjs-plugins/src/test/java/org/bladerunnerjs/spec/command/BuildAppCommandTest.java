@@ -15,6 +15,7 @@ import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandExc
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.appserver.util.TokenReplacementException;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.LoggingTokenReplacementHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -240,10 +241,12 @@ public class BuildAppCommandTest extends SpecTest
 	public void legacyAppVersionTokenIsReplacedInWebXml() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>");
+			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>")
+			.and(logging).enabled();
 		when(brjs).runCommand("build-app", "app", "-v", "1234");
 		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234")
-			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@appVersion@");
+			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@appVersion@")
+			.and(logging).warnMessageReceived(AppMetadataUtility.DEPRECATED_TOKEN_WARNING, "@appVersion@", "@BRJS.APP.VERSION@");
 	}
 	
 	@Test
