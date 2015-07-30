@@ -396,6 +396,7 @@ public class BuildAppCommandTest extends SpecTest
 				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
 				+ "locales: en\n"
 				+ "requirePrefix: appns")
+				.and(app).containsFolder("WEB-INF")
 				.and(defaultAspect).hasBeenCreated()
 				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
 				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
@@ -413,6 +414,7 @@ public class BuildAppCommandTest extends SpecTest
 				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
 				+ "locales: en\n"
 				+ "requirePrefix: appns")
+				.and(app).containsFolder("WEB-INF")
 				.and(defaultAspect).hasBeenCreated()
 				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
 				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
@@ -421,6 +423,21 @@ public class BuildAppCommandTest extends SpecTest
 		when(brjs).runCommand("build-app", "app", "-e", "prod", "-w");
 		then(logging).unorderedWarnMessageReceived(LoggingTokenReplacementHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" )
 			.and(logging).otherMessagesIgnored();
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTokenCannotBeReplacedForBuiltWarWhereWebInfIsNotPresent() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123");
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(exceptions).verifyException(TokenReplacementException.class, "PropertyFileTokenFinder", "SOME.TOKEN");
 	}
 	
 }

@@ -125,15 +125,20 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		
 		
 		AppRequestHandler.setPropertiesEnvironment(brjs, environment);
+		if (warExport && app.file("WEB-INF").isDirectory()) {
+			AppRequestHandler.setNoTokenExceptionHandler(brjs, new LoggingTokenReplacementHandler(brjs, this.getPluginClass(), environment, LogLevel.WARN));
+		} else {
+			AppRequestHandler.setNoTokenExceptionHandler(brjs, new ExceptionThrowingNoTokenReplacementHandler());
+		}
+		
 		try {
 			if (warExport) {
-				AppRequestHandler.setNoTokenExceptionHandler(brjs, new LoggingTokenReplacementHandler(brjs, this.getPluginClass(), environment, LogLevel.WARN));
 				if(warExportFile.exists()) throw new DirectoryAlreadyExistsCommandException(warExportFile.getPath(), this);
 				app.buildWar(warExportFile);
 				brjs.getFileModificationRegistry().incrementFileVersion(warExportFile);
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getAbsolutePath());
 			} else {
-				AppRequestHandler.setNoTokenExceptionHandler(brjs, new ExceptionThrowingNoTokenReplacementHandler());
+				
 				if (hasExplicitExportDirArg) {
 					if (appExportDir.listFiles().length > 0) throw new DirectoryNotEmptyCommandException(appExportDir.getPath(), this);								
 				} else {
