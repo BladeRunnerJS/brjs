@@ -13,8 +13,10 @@ public class TokenReplacingResponseContentWrapper implements ResponseContent {
     private final ResponseContent wrappedResponse;
     private final TokenFinder tokenFinder;
     private final NoTokenReplacementHandler replacementHandler;
+	private final TokenFinder brjsTokenFinder;
 
-    public TokenReplacingResponseContentWrapper(ResponseContent wrappedResponse, TokenFinder tokenFinder, NoTokenReplacementHandler replacementHandler) {
+    public TokenReplacingResponseContentWrapper(ResponseContent wrappedResponse, TokenFinder brjsTokenFinder, TokenFinder tokenFinder, NoTokenReplacementHandler replacementHandler) {
+    	this.brjsTokenFinder = brjsTokenFinder;
         this.wrappedResponse = wrappedResponse;
         this.tokenFinder = tokenFinder;
         this.replacementHandler = replacementHandler;
@@ -26,7 +28,7 @@ public class TokenReplacingResponseContentWrapper implements ResponseContent {
         wrappedResponse.write( wrappedContentByteOutput );
 
         Reader reader = new InputStreamReader(new ByteArrayInputStream(wrappedContentByteOutput.toByteArray()));
-        Reader tokenReplacingReader = new TokenReplacingReader(tokenFinder, reader, replacementHandler);
+        Reader tokenReplacingReader = new TokenReplacingReader(brjsTokenFinder, tokenFinder, reader, replacementHandler);
         IOUtils.copy(tokenReplacingReader, outputStream);
     }
 

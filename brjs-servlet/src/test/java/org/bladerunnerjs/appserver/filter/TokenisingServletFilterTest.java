@@ -1,6 +1,6 @@
 package org.bladerunnerjs.appserver.filter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,6 +15,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
+import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
@@ -156,6 +157,16 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		FileUtils.copyFileToDirectory( new File("src/test/resources/br-logo.png"), contextDir );
 		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/br-logo.png");
 		assertEquals("200", response.get("responseCode"));
+	}
+	
+	@Test
+	public void tokenReplacementCantBePerformedForBrjsTokens() throws Exception
+	{
+		dummyServlet.setResponseText("@BRJS.TOKEN@");
+
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/");
+		assertEquals("500", response.get("responseCode"));
+		assertTrue( response.get("responseText").contains(TokenReplacingReader.NO_BRJS_TOKEN_CONFIGURED_MESSAGE) );
 	}
 
 }

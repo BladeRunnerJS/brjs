@@ -10,8 +10,12 @@ public class TokenReplacingReader extends Reader
 	
 	public static final char tokenStart = '@';
 	public static final char tokenEnd = '@';
+	private static final String BRJS_KEY_PREFIX = "BRJS.";
+	public static final String NO_BRJS_TOKEN_CONFIGURED_MESSAGE = "No token finder has been configured for '"+BRJS_KEY_PREFIX+"*' tokens. Only 'user' tokens can be used at this location";
+	public static final String NO_BRJS_TOKEN_FOUND_MESSAGE = "The token '%s' is an invalid BRJS system token.";
 
-    private final TokenFinder tokenFinder;
+	private final TokenFinder brjsTokenFinder;
+    private final TokenFinder userTokenFinder;
 	private final Reader sourceReader;
     private final NoTokenReplacementHandler replacementHandler;
 
@@ -24,12 +28,17 @@ public class TokenReplacingReader extends Reader
 	private int maxCharactersToWrite;
 	private int totalNumberOfCharsWritten;
 
-	public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader) {
-		this(tokenFinder, sourceReader, new ExceptionThrowingNoTokenReplacementHandler());
+	public TokenReplacingReader(TokenFinder userTokenFinder, Reader sourceReader) {
+		this(null, userTokenFinder, sourceReader, new ExceptionThrowingNoTokenReplacementHandler());
 	}
 
-    public TokenReplacingReader(TokenFinder tokenFinder, Reader sourceReader, NoTokenReplacementHandler replacementHandler) {
-        this.tokenFinder = tokenFinder;
+	public TokenReplacingReader(TokenFinder userTokenFinder, Reader sourceReader, NoTokenReplacementHandler replacementHandler) {
+		this(null, userTokenFinder, sourceReader, replacementHandler);
+	}
+	
+    public TokenReplacingReader(TokenFinder brjsTokenFinder, TokenFinder tokenFinder, Reader sourceReader, NoTokenReplacementHandler replacementHandler) {
+    	this.userTokenFinder = tokenFinder;
+    	this.brjsTokenFinder = brjsTokenFinder;
         this.sourceReader = sourceReader;
         this.replacementHandler = replacementHandler;
     }
@@ -150,7 +159,12 @@ public class TokenReplacingReader extends Reader
 	{
 		String tokenKey = tokenName.substring(1, tokenName.length() - 1);
         try {
-            String tokenValue = tokenFinder.findTokenValue(tokenKey);
+        	String tokenValue;
+        	if (tokenKey.startsWith(BRJS_KEY_PREFIX)) {
+        		tokenValue = getBrjsToken(tokenKey);
+        	} else {
+        		tokenValue = userTokenFinder.findTokenValue(tokenKey);
+        	}
             if (tokenValue == null) {
                 return "";
             }
@@ -164,5 +178,17 @@ public class TokenReplacingReader extends Reader
             }
         }
     }
+
+	private String getBrjsToken(String tokenKey)
+	{
+		if (brjsTokenFinder == null) {
+			throw new IllegalArgumentException(NO_BRJS_TOKEN_CONFIGURED_MESSAGE);
+		}
+		try {
+			return brjsTokenFinder.findTokenValue(tokenKey);
+		 } catch (TokenReplacementException ex) {
+			 throw new IllegalArgumentException( String.format(NO_BRJS_TOKEN_FOUND_MESSAGE, tokenKey), ex );
+        }
+	}
 	
 }

@@ -311,4 +311,85 @@ public class BuildAppTest extends SpecTest {
     		.and(targetDir).containsFile("scripted/unused/url");
 	}
 	
+	@Test
+	public void userTokensCanBeReplaced() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("dev")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("v/dev/js/prod/combined/bundle.js", "token replacement");
+	}
+	
+	@Test
+	public void brjsTokensCanBeReplaced() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).containsFileWithContents("src/App.js", "@BRJS.BUNDLE.PATH@/some/path")
+			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("123")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "v/123/some/path");
+	}
+	
+	@Test
+	public void brjsTokensHaveTheCorrectValues() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).containsFileWithContents("src/App.js", 
+    				"name = @BRJS.APP.NAME@\n"+
+    				"version = @BRJS.APP.VERSION@\n"+
+    				"bundlepath = @BRJS.BUNDLE.PATH@\n"
+			)
+			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("123")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "name = app1\n")
+			.and(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "version = 123\n")
+			.and(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "bundlepath = v/123\n");
+	}
+	
+	@Test
+	public void brjsAppLocaleTokensCanBeReplacedForIndexPages() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en,de\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).indexPageHasContent("@BRJS.APP.LOCALE@")
+			.and(brjs).hasVersion("123")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("en.html", "en")
+			.and(targetDir).containsFileWithContents("de.html", "de");
+	}
+	
+	@Test
+	public void defaultAppLocaleTokensIsUsedForBundles() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en,de\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).containsFileWithContents("src/App.js", "@BRJS.APP.LOCALE@")
+			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("123")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "en");
+	}
+	
 }

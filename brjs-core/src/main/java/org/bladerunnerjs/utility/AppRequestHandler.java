@@ -29,6 +29,7 @@ import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.appserver.util.NoTokenReplacementHandler;
+import org.bladerunnerjs.appserver.util.TokenFinder;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
@@ -99,31 +100,32 @@ public class AppRequestHandler
 		ParsedContentPath parsedContentPath = parseRequest(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
+		Locale appLocale = appLocale(pathProperties.get("locale"));
 
-		String devVersion = app.root().getAppVersionGenerator().getVersion();
+		String version = app.root().getAppVersionGenerator().getVersion();
 		ResponseContent response = null;
 
 		switch (parsedContentPath.formName)
 		{
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
-				response = getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, devVersion);
+				response = getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, version);
 				break;
 				
 			case WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST:
-				response = getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, devVersion);
+				response = getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, version);
 				break;
 
 			case INDEX_PAGE_REQUEST:
-				response = getIndexPageContent(app.aspect(aspectName), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, requestMode);
+				response = getIndexPageContent(app.aspect(aspectName), appLocale, version, contentAccessor, requestMode);
 				break;
 
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, requestMode);
+				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), appLocale, version, contentAccessor, requestMode);
 				break;
 			
 			case WORKBENCH_BLADESET_INDEX_PAGE_REQUEST:
-				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, requestMode);
+				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), appLocale, version, contentAccessor, requestMode);
 				break;
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
@@ -131,19 +133,19 @@ public class AppRequestHandler
 				if (contentPath.startsWith("/")) {
 					contentPath = contentPath.substring(1);
 				}
-				response = app.aspect(aspectName).handleLogicalRequest("/"+contentPath, contentAccessor, devVersion);
+				response = app.aspect(aspectName).handleLogicalRequest("/"+contentPath, contentAccessor, version);
 				break;
 				
 			case BUNDLE_REQUEST:
-				response = app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+				response = app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, version);
 				break;
 
 			case WORKBENCH_BUNDLE_REQUEST:
-				response = app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+				response = app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, version);
 				break;
 			
 			case WORKBENCH_BLADESET_BUNDLE_REQUEST:
-				response = app.bladeset(pathProperties.get("bladeset")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+				response = app.bladeset(pathProperties.get("bladeset")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, version);
 				break;
 				
 		}
@@ -152,7 +154,9 @@ public class AppRequestHandler
 			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 		}
 		String environment = getPropertiesEnvironment(app.root());
-		return new TokenReplacingResponseContentWrapper( response, new PropertyFileTokenFinder(app.file("app-properties"), environment), getNoTokenExNoTokenReplacementHandler(app.root()) );
+		TokenFinder brjsTokenFinder = new BrjsPropertyTokenFinder(app, appLocale, version);
+		TokenFinder tokenFinder = new PropertyFileTokenFinder(app.file("app-properties"), environment);
+		return new TokenReplacingResponseContentWrapper( response, brjsTokenFinder, tokenFinder, getNoTokenExNoTokenReplacementHandler(app.root()) );
 	}
 
 	public String createRelativeBundleRequest(String contentPath, String version) throws MalformedTokenException

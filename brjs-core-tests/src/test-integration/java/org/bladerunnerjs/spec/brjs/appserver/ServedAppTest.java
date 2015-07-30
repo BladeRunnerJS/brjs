@@ -480,4 +480,69 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlContains("/app/v/dev/js/dev/combined/bundle.js", "token replacement");
 	}
 	
+	@Test
+	public void brjsTokensCanBeReplaced() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("src/App.js", "@BRJS.BUNDLE.PATH@/some/path")
+			.and(aspect).indexPageRequires("appns/App")
+			.and(brjs).hasVersion("dev")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app/v/dev/js/dev/combined/bundle.js", "v/dev/some/path");
+	}
+	
+	@Test
+	public void brjsTokensHaveTheCorrectValues() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("src/App.js", 
+    				"name = @BRJS.APP.NAME@\n"+
+    				"version = @BRJS.APP.VERSION@\n"+
+    				"bundlepath = @BRJS.BUNDLE.PATH@\n"
+			)
+			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("dev")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app/v/dev/js/dev/combined/bundle.js", "name = app\n")
+			.and(appServer).requestForUrlContains("/app/v/dev/js/dev/combined/bundle.js", "version = dev\n")
+			.and(appServer).requestForUrlContains("/app/v/dev/js/dev/combined/bundle.js", "bundlepath = v/dev\n");
+	}
+	
+	@Test
+	public void brjsAppLocaleTokensCanBeReplacedForIndexPages() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en,de\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).indexPageHasContent("@BRJS.APP.LOCALE@")
+			.and(brjs).hasVersion("123")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app/en/", "en")
+			.and(appServer).requestForUrlContains("/app/de/", "de");
+	}
+	
+	@Test
+	public void defaultAppLocaleTokensIsUsedForBundles() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en,de\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).containsFileWithContents("src/App.js", "@BRJS.APP.LOCALE@")
+			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("123")
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app/v/123/js/prod/combined/bundle.js", "en");
+	}
+	
 }
