@@ -170,6 +170,25 @@ public class BuildAppCommandTest extends SpecTest
 		then(brjs).doesNotHaveDir("sdk/app").and(brjs).hasFile("generated/built-apps/app.war")
 			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getAbsolutePath());
 	}
+	
+	@Test
+	public void propertyIsApendedToWarNameIfSetViaCommandLine() throws Exception
+	{
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("build-app", "app", "-w", "-e", "prod");
+		then(brjs).doesNotHaveDir("sdk/app")
+			.and(brjs).hasFile("generated/built-apps/app_prod.war")
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app_prod.war").getAbsolutePath());
+	}
+	
+	@Test
+	public void propertyIsApendedToStaticAppDirNameIfSetViaCommandLine() throws Exception
+	{
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("build-app", "app", "-e", "prod");
+		then(brjs).doesNotHaveDir("sdk/app")
+			.and(brjs).hasDir("generated/built-apps/app_prod");
+	}
 
 	@Test
 	public void appWithThemedDefaultAspectCanBeExportedAsAWar() throws Exception
@@ -278,7 +297,7 @@ public class BuildAppCommandTest extends SpecTest
 			.and(app).hasDefaultEnvironmentProperties("MY.TOKEN", "token replacement")
 			.and(app).hasDefaultEnvironmentProperties("MY.TOKEN", "prod replacement");
 		when(brjs).runCommand("build-app", "app", "-v", "1234", "-e", "prod");
-		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>prod replacement");
+		then(brjs).fileContentsContains("generated/built-apps/app_prod/WEB-INF/web.xml", "<web-xml>prod replacement");
 	}
 
 	@Test
@@ -374,7 +393,7 @@ public class BuildAppCommandTest extends SpecTest
 				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
 				.and(brjs).hasVersion("123");
 		when(brjs).runCommand("build-app", "app", "-e", "prod");
-		then(brjs).fileContentsContains("generated/built-apps/app/v/123/js/prod/combined/bundle.js", "prod replacement");
+		then(brjs).fileContentsContains("generated/built-apps/app_prod/v/123/js/prod/combined/bundle.js", "prod replacement");
 	}
 
 	@Test
@@ -391,7 +410,7 @@ public class BuildAppCommandTest extends SpecTest
 				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
 				.and(brjs).hasVersion("123");
 		when(brjs).runCommand("build-app", "app", "--environment", "prod");
-		then(brjs).fileContentsContains("generated/built-apps/app/v/123/js/prod/combined/bundle.js", "prod replacement");
+		then(brjs).fileContentsContains("generated/built-apps/app_prod/v/123/js/prod/combined/bundle.js", "prod replacement");
 	}
 
 	@Test

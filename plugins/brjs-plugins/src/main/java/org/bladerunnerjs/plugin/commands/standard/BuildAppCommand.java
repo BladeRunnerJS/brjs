@@ -51,7 +51,7 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		argsParser.registerParameter(new UnflaggedOption(Parameters.TARGET_DIR).setHelp("the directory within which the exported app will be built"));
 		argsParser.registerParameter(new FlaggedOption("version").setShortFlag('v').setLongFlag("version").setRequired(false).setHelp("the version number for the app"));
 		argsParser.registerParameter(new FlaggedOption("environment").setShortFlag('e').setLongFlag("environment").setRequired(false).setHelp("the environment to use when locating app properties"));
-		argsParser.registerParameter(new Switch("war").setShortFlag('w').setLongFlag("war").setDefault("false").setHelp("whether the exported files should be placed into a war zip."));
+		argsParser.registerParameter(new Switch("war").setShortFlag('w').setLongFlag("war").setDefault("false").setHelp("whether the exported files should be placed into a war archive"));
 	}
 	
 	@Override
@@ -81,6 +81,7 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		boolean warExport = parsedArgs.getBoolean("war");
 		boolean hasExplicitExportDirArg = (targetDirPath != null);
 		String environment = parsedArgs.getString("environment");		
+		String archiveName = (environment != null) ? appName + "_"+environment : appName;
 		
 		App app = brjs.app(appName);
 		
@@ -96,24 +97,24 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 				targetDir = brjs.file("sdk/" + targetDirPath);
 			}
 			appExportDir = targetDir;
-			warExportFile = targetDir.file(appName+".war");			
+			warExportFile = targetDir.file(archiveName+".war");			
 		} 
 		else {
-			appExportDir = targetDir.file(appName);
-			warExportFile = targetDir.file(appName+".war");
+			appExportDir = targetDir.file(archiveName);
+			warExportFile = targetDir.file(archiveName+".war");
 			
 			if (warExport && warExportFile.exists()) {
 				boolean deleted = FileUtils.deleteQuietly(warExportFile);
 				if (!deleted) {
 					MemoizedFile oldWarExportFile = warExportFile;
-					warExportFile = targetDir.file(appName+"_"+getBuiltAppTimestamp()+".war");
+					warExportFile = targetDir.file(archiveName+"_"+getBuiltAppTimestamp()+".war");
 					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, app.dir().getRelativePath(oldWarExportFile), app.dir().getRelativePath(warExportFile)); 
 				}
 			} else if (!warExport && appExportDir.exists()){
 				boolean deleted = FileUtils.deleteQuietly(appExportDir);			
 				if (!deleted) {
 					MemoizedFile oldAppExportDir = appExportDir;
-					appExportDir = targetDir.file(appName+"_"+getBuiltAppTimestamp());
+					appExportDir = targetDir.file(archiveName+"_"+getBuiltAppTimestamp());
 					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, app.dir().getRelativePath(oldAppExportDir), app.dir().getRelativePath(appExportDir));
 				}
 			}
@@ -138,7 +139,6 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 				brjs.getFileModificationRegistry().incrementFileVersion(warExportFile);
 				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getAbsolutePath());
 			} else {
-				
 				if (hasExplicitExportDirArg) {
 					if (appExportDir.listFiles().length > 0) throw new DirectoryNotEmptyCommandException(appExportDir.getPath(), this);								
 				} else {
