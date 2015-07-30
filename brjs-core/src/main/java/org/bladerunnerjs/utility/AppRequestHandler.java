@@ -100,7 +100,7 @@ public class AppRequestHandler
 		ParsedContentPath parsedContentPath = parseRequest(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
-		Locale appLocale = appLocale(pathProperties.get("locale"));
+		Locale appLocale = appLocale(app, pathProperties.get("locale"));
 
 		String version = app.root().getAppVersionGenerator().getVersion();
 		ResponseContent response = null;
@@ -153,12 +153,10 @@ public class AppRequestHandler
 		if (response == null) {
 			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 		}
-		String environment = getPropertiesEnvironment(app.root());
-		TokenFinder brjsTokenFinder = new BrjsPropertyTokenFinder(app, appLocale, version);
-		TokenFinder tokenFinder = new PropertyFileTokenFinder(app.file("app-properties"), environment);
-		return new TokenReplacingResponseContentWrapper( response, brjsTokenFinder, tokenFinder, getNoTokenExNoTokenReplacementHandler(app.root()) );
+		
+		return getTokenFilteredResponseContent(app, appLocale, version, response);
 	}
-
+	
 	public String createRelativeBundleRequest(String contentPath, String version) throws MalformedTokenException
 	{
 		if (contentPath.startsWith("/")) {
@@ -353,15 +351,6 @@ public class AppRequestHandler
 		});
 	}
 
-	private Locale appLocale(String locale) {
-		try {
-			return (locale != null) ? new Locale(locale) : app.appConf().getLocales()[0];
-		}
-		catch (ConfigException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	private String getAspectNames()
 	{
 		List<String> aspectNames = new ArrayList<>();
@@ -374,6 +363,21 @@ public class AppRequestHandler
 		return Joiner.on("|").join(aspectNames);
 	}
 
+	public static Locale appLocale(App app, String locale) {
+		try {
+			return (locale != null) ? new Locale(locale) : app.appConf().getLocales()[0];
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static ResponseContent getTokenFilteredResponseContent(App app, Locale appLocale, String version, ResponseContent wrappedResponse) {
+		String environment = getPropertiesEnvironment(app.root());
+		TokenFinder brjsTokenFinder = new BrjsPropertyTokenFinder(app, appLocale, version);
+		TokenFinder tokenFinder = new PropertyFileTokenFinder(app.file("app-properties"), environment);
+		return new TokenReplacingResponseContentWrapper( wrappedResponse, brjsTokenFinder, tokenFinder, getNoTokenExNoTokenReplacementHandler(app.root()) );
+	}
 
 	public static void setNoTokenExceptionHandler(BRJS brjs, NoTokenReplacementHandler handler) {
 		brjs.nodeProperties(AppRequestHandler.class.getSimpleName()).setTransientProperty(NO_TOKEN_FOUND_HANDLER_PROPERTY_KEY, handler);

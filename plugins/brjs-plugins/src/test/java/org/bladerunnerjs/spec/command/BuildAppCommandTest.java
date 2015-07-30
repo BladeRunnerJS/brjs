@@ -237,13 +237,45 @@ public class BuildAppCommandTest extends SpecTest
 	}
 
 	@Test
-	public void appVersionTokenIsReplaced() throws Exception
+	public void legacyAppVersionTokenIsReplacedInWebXml() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>");
 		when(brjs).runCommand("build-app", "app", "-v", "1234");
 		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234")
 			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@appVersion@");
+	}
+	
+	@Test
+	public void staticBRJSAppTokensAreReplacedInWebXml() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@BRJS.APP.VERSION@ @BRJS.APP.NAME@</web-xml>");
+		when(brjs).runCommand("build-app", "app", "-v", "1234");
+		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234 app")
+			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@BRJS.APP.VERSION@")
+			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@BRJS.APP.NAME@");
+	}
+	
+	@Test
+	public void staticAppTokensAreReplacedInWebXml() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@MY.TOKEN@</web-xml>")
+			.and(app).hasDefaultEnvironmentProperties("MY.TOKEN", "token replacement");
+		when(brjs).runCommand("build-app", "app", "-v", "1234");
+		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>token replacement");
+	}
+	
+	@Test
+	public void staticAppTokensUsedTheCorrectEnvironmentAreReplacedInWebXml() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@MY.TOKEN@</web-xml>")
+			.and(app).hasDefaultEnvironmentProperties("MY.TOKEN", "token replacement")
+			.and(app).hasDefaultEnvironmentProperties("MY.TOKEN", "prod replacement");
+		when(brjs).runCommand("build-app", "app", "-v", "1234", "-e", "prod");
+		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>prod replacement");
 	}
 
 	@Test

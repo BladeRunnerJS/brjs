@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.text.ParseException;
 
 import org.bladerunnerjs.api.App;
@@ -16,6 +17,7 @@ import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
@@ -24,6 +26,7 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.utility.AppMetadataUtility;
+import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.WebXmlCompiler;
 
@@ -133,7 +136,9 @@ public class AppBuilderUtilis
 				WebXmlCompiler.compile(app.root(), exportedWebXml);					
 				String webXmlContents = org.apache.commons.io.FileUtils.readFileToString(exportedWebXml);
 				webXmlContents = webXmlContents.replace(AppMetadataUtility.APP_VERSION_TOKEN, version);
-				FileUtils.write(app, exportedWebXml, webXmlContents, false);
+				
+				ResponseContent tokenFilteredContent = AppRequestHandler.getTokenFilteredResponseContent(app, AppRequestHandler.appLocale(app, null), version, new CharResponseContent(app, new StringReader(webXmlContents)));
+				tokenFilteredContent.write( new FileOutputStream(exportedWebXml, false) );
 			}
 		}
 	}
