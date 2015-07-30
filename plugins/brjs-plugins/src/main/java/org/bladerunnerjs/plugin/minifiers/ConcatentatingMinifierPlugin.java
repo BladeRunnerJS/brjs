@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.InputSource;
 import org.bladerunnerjs.api.plugin.MinifierPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractMinifierPlugin;
@@ -32,7 +33,7 @@ public class ConcatentatingMinifierPlugin extends AbstractMinifierPlugin impleme
 	}
 	
 	@Override
-	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException {
+	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException, ResourceNotFoundException {
 		List<Reader> readers = new LinkedList<Reader>();
 		
 		for (InputSource inputSource : inputSources) {

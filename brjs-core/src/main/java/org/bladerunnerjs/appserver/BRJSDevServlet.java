@@ -73,7 +73,7 @@ public class BRJSDevServlet extends HttpServlet {
 		String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath() + request.getServletPath() + "/", "");
 		
 		if (!requestPath.endsWith("/")) {
-			String fileName = StringUtils.substringAfterLast(requestPath, "/");
+			String fileName = (requestPath.contains("/")) ? StringUtils.substringAfterLast(requestPath, "/") : requestPath;
 			String mimeType = servletContext.getMimeType(fileName);
 			if (mimeType != null) {
 				response.setHeader(CONTENT_TYPE, mimeType);

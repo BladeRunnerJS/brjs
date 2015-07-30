@@ -19,6 +19,7 @@ import org.apache.commons.io.input.ReaderInputStream;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.InputSource;
 import org.bladerunnerjs.api.plugin.MinifierPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractMinifierPlugin;
@@ -66,7 +67,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	/* using ClosureCompiler API in Java taken from http://blog.bolinfest.com/2009/11/calling-closure-compiler-from-java.html 
 	 * 	and https://code.google.com/p/closure-compiler/wiki/FAQ#How_do_I_call_Closure_Compiler_from_the_Java_API? */
 	@Override
-	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException {
+	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException, ResourceNotFoundException {
 		ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
 		
 		Compiler compiler = new Compiler( new PrintStream(errorStream) );
@@ -116,7 +117,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	}
 	
 	
-	private InputStream getSingleInputStreamForInputSources(List<InputSource> inputSources) throws ContentProcessingException
+	private InputStream getSingleInputStreamForInputSources(List<InputSource> inputSources) throws ContentProcessingException, ResourceNotFoundException
 	{
 		Vector<InputStream> inputStreams = new Vector<InputStream>();
 		for (InputSource inputSource : inputSources)

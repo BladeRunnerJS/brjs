@@ -80,7 +80,6 @@ public class AppBuilderUtilis
 		}
 	}
 	
-	
 	private static void outputContentPluginBundles(ContentPlugin contentPlugin, BundleSet bundleSet, Locale[] locales, File target, String version, Aspect aspect, UrlContentAccessor urlContentAccessor) throws ContentProcessingException, MalformedTokenException, MalformedRequestException, IOException, FileNotFoundException, ResourceNotFoundException, ModelOperationException
 	{
 		if (!contentPlugin.instanceOf(CompositeContentPlugin.class)) {
@@ -111,7 +110,7 @@ public class AppBuilderUtilis
 		
 	}
 
-	private static void writeLocaleForwardingFileForAspect(BundleSet bundleSet, File target, Aspect aspect, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException
+	private static void writeLocaleForwardingFileForAspect(BundleSet bundleSet, File target, Aspect aspect, UrlContentAccessor urlContentAccessor, String version) throws MalformedTokenException, IOException, FileNotFoundException, ContentProcessingException, ResourceNotFoundException
 	{
 		App app = bundleSet.bundlableNode().app();
 		

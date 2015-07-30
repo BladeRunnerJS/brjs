@@ -53,7 +53,7 @@ public class AspectRequestHandler
 		return appRequestHandler.getIndexPageContent(aspect, locale, version, contentAccessor, requestMode);
 	}
 
-	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
+	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException, ResourceNotFoundException
 	{
 		return appRequestHandler.getLocaleForwardingPageContent(aspect, contentAccessor, version);
 	}

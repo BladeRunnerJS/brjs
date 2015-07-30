@@ -5,6 +5,7 @@ import java.util.List;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 
@@ -57,12 +58,13 @@ public interface ContentPlugin extends Plugin {
 	 * @param contentAccessor The output stream the content will be written to.
 	 * @param version TODO
 	 * 
-	 * @throws ContentProcessingException if a problem is encountered when generating the content
-	 * @throws MalformedRequestException if the content path is invalid
+	 * @throws ContentProcessingException if a problem is encountered when generating the content. Typically a 500 type error
+	 * @throws MalformedRequestException if the content path isn't formed properly. Typically a 400 type error
+	 * @throws ResourceNotFoundException if the content path is valid but the requested file/path doesn't exist. Typically a 404 type error
 	 * 
 	 * @return The response content after handling the request
 	 */
-	ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException;
+	ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException, ResourceNotFoundException;
 	
 	/**
 	 * Returns the list of valid content paths for the given bundle-set and locale.
