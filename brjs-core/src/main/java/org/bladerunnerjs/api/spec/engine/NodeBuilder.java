@@ -12,6 +12,7 @@ import org.bladerunnerjs.api.spec.engine.BuilderChainer;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.FileUtils;
+import org.junit.Assert;
 
 import static org.junit.Assert.*;
 
@@ -155,6 +156,22 @@ public abstract class NodeBuilder<N extends Node> {
 	public void writeToFile(File file, String content, boolean append) throws IOException {
 		fileUtil.write(file, content, append);
 		specTest.brjs.getFileModificationRegistry().incrementFileVersion(file);
+	}
+	
+	public BuilderChainer doesNotContainFile(String filePath)
+	{
+		File file = node.file(filePath);
+		
+		Assert.assertFalse( "The file at "+file.getAbsolutePath()+" was not meant to exist", file.exists() );
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer containsFileCopiedFrom(String resourceFileName, String srcFile) throws Exception 
+	{
+		FileUtils.copyFile( specTest.brjs, new File(srcFile), node.file(resourceFileName) );
+		
+		return builderChainer;
 	}
 	
 }

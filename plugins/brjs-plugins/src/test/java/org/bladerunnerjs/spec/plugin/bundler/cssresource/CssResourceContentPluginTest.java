@@ -36,6 +36,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	private Aspect defaultAspect;
 	private Blade bladeInDefaultBladeset;
 	private File targetDir;
+	private JsLib appLib;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -51,6 +52,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			bladeInDefaultBladeset = app.defaultBladeset().blade("b1");
 			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
+			appLib = app.jsLib("lib");
 		
 		binaryResponseFile = FileUtils.createTemporaryFile( this.getClass() );
 		binaryResponse = new FileOutputStream(binaryResponseFile);
@@ -524,6 +526,19 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default_resource/resources/css/unusedFile.ext")
 			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default_resource/resources/some-dir/unusedFile.ext")
 			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default/theme_common/style.css");
+	}
+	
+	@Test // test for https://github.com/BladeRunnerJS/brjs/issues/1443 - "'themes' dirs in libs cause `request form name 'null' hasn't been registered` when building apps"
+	public void filesInsideLibThemesAreSupported() throws Exception {
+		given(appLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
+			.and(appLib).containsFileWithContents("src/Class.js", "lib Class")
+			.and(appLib).containsFileWithContents("themes/cssResource.txt", "themes/cssResource.txt")
+			.and(appLib).containsFileWithContents("themes/myTheme/cssResource.txt", "themes/myTheme/cssResource.txt")
+			.and(defaultAspect).indexPageHasContent("require('lib/Class')");
+		when(defaultAspect).requestReceivedInProd("cssresource/lib_lib/themes/myTheme/cssResource.txt", response);
+		then(aspect).prodAndDevRequestsForContentPluginsAre("cssresource", 
+				"cssresource/lib_lib/br-lib.conf", "cssresource/lib_lib/themes/myTheme/cssResource.txt")
+			.and(response).containsText("themes/myTheme/cssResource.txt");
 	}
 	
 }

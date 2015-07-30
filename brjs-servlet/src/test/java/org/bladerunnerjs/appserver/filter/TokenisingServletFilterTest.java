@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 
 import javax.naming.Context;
+import javax.naming.NamingException;
 
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.eclipse.jetty.server.Server;
@@ -88,10 +89,24 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 	}
 
 	@Test
+	public void tokenReplacementWorksForEnptyStringValues() throws Exception
+	{
+		dummyServlet.setResponseText("@AN.EMPTY.TOKEN@");
+		when(mockJndiContext.lookup("java:comp/env/AN.EMPTY.TOKEN")).thenReturn(null);
+
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/file.xml");
+		verify(mockJndiContext, times(1)).lookup("java:comp/env/AN.EMPTY.TOKEN");
+		assertEquals("200", response.get("responseCode"));
+		assertEquals("", response.get("responseText"));
+		assertEquals("text/plain", response.get("responseContentType"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
 	public void test500ResponseCodeIfTokenCannotBeReplaced() throws Exception
 	{
 		dummyServlet.setResponseText("@A.NONEXISTANT.TOKEN@");
-		when(mockJndiContext.lookup("java:comp/env/A.NONEXISTANT.TOKEN")).thenReturn(null);
+		when(mockJndiContext.lookup("java:comp/env/A.NONEXISTANT.TOKEN")).thenThrow(NamingException.class);
 
 		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/file.xml");
 		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.NONEXISTANT.TOKEN");
@@ -108,7 +123,7 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertEquals("200", response.get("responseCode"));
 		assertEquals("this token @A.TOKEN@ should not be processed", response.get("responseText"));
 	}
-	
+
 	@Test
 	public void tokenReplacementWorksForIndexPages() throws Exception
 	{
@@ -121,7 +136,7 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertEquals("token replacement", response.get("responseText"));
 		assertEquals("text/plain", response.get("responseContentType"));
 	}
-	
+
 	@Test
 	public void tokenReplacementWorksForLocalizedIndexPages() throws Exception
 	{
@@ -134,7 +149,7 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertEquals("token replacement", response.get("responseText"));
 		assertEquals("text/plain", response.get("responseContentType"));
 	}
-	
+
 	@Test
 	public void tokenReplacementDoesntHappenForThingsThatLooksLikeLocalizedIndexPages() throws Exception
 	{

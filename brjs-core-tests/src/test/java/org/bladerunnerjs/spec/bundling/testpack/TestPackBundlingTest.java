@@ -8,6 +8,7 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.junit.Before;
@@ -208,6 +209,57 @@ public class TestPackBundlingTest extends SpecTest
     		.and(brjs).hasBeenAuthenticallyReCreated();
 		when( appLib.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(response).containsText("Lib = {}");
+	}
+	
+	@Test
+	public void warningIsLoggedIfTestsDirAndTestHypenDirsExistInAnAssetContainer() throws Exception {
+		Blade b1 = brjs.app("app1").bladeset("bs").blade("b1");
+		given(b1).containsFolder("tests")
+			.and(b1).containsFolder("test-unit")
+    		.and(brjs).hasBeenAuthenticallyReCreated()
+    		.and(logging).enabled();
+		/* when */
+    		logging.enableStoringLogs();
+    		b1 = brjs.app("app1").bladeset("bs").blade("b1");
+    		b1.testType("unit").dir().mkdirs();
+    		b1.testType("unit").file("test-dir-location").createNewFile();
+    	then(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_DIR_WARNING, "apps/app1/bs-bladeset/blades/b1")
+    		.and(logging).otherMessagesIgnored()
+    		.and(app).hasFile("bs-bladeset/blades/b1/test-unit/test-dir-location");
+	}
+	
+	@Test
+	public void warningIsLoggedIfTestsDirAndTestHypenDirsExist_andTestsDirIsEmpty() throws Exception {
+		Blade b1 = brjs.app("app1").bladeset("bs").blade("b1");
+		given(b1).containsFolder("tests")
+			.and(b1).containsFolder("test-unit")
+    		.and(brjs).hasBeenAuthenticallyReCreated()
+    		.and(logging).enabled();
+		/* when */
+			logging.enableStoringLogs();
+			b1 = brjs.app("app1").bladeset("bs").blade("b1");
+			b1.testType("unit").dir().mkdirs();
+			b1.testType("unit").file("test-dir-location").createNewFile();
+		then(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_DIR_WARNING, "apps/app1/bs-bladeset/blades/b1")
+			.and(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_USING_TESTS_HYPHEN_DIR)
+			.and(app).hasFile("bs-bladeset/blades/b1/test-unit/test-dir-location");
+	}
+	
+	@Test
+	public void warningIsLoggedIfTestsDirAndTestHypenDirsExist_andTestsDirIsNotEmpty() throws Exception {
+		Blade b1 = brjs.app("app1").bladeset("bs").blade("b1");
+		given(b1).containsFolder("tests/foo")
+			.and(b1).containsFolder("test-unit")
+    		.and(brjs).hasBeenAuthenticallyReCreated()
+    		.and(logging).enabled();
+		/* when */
+    		logging.enableStoringLogs();
+    		b1 = brjs.app("app1").bladeset("bs").blade("b1");
+    		b1.testType("unit").dir().mkdirs();
+    		b1.testType("unit").file("test-dir-location").createNewFile();
+		then(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_DIR_WARNING, "apps/app1/bs-bladeset/blades/b1")
+			.and(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_USING_TESTS_DIR)
+			.and(app).hasFile("bs-bladeset/blades/b1/tests/test-unit/test-dir-location");
 	}
 	
 }

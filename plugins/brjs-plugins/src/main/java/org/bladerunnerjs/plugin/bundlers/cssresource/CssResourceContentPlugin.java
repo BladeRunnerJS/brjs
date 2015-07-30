@@ -356,7 +356,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin implements R
 			AssetContainer container, String themeRequestName, String resourcesRequestName, String[] requestArgs) throws MalformedTokenException
 	{
 		String dirAssetRequestPath = dirAsset.getPrimaryRequirePath();
-		if (dirAssetRequestPath.contains("theme!")) {
+		if (dirAssetRequestPath.contains("theme!") && !(dirAsset.assetContainer() instanceof JsLib)) {
 			String themeName = StringUtils.substringBefore( StringUtils.substringAfter(dirAssetRequestPath, "!"), ":" );
 			String assetPath = getThemeDir(container, themeName).getRelativePath(assetFile);
 			String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themeName, assetPath } );

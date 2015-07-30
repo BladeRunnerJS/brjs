@@ -33,7 +33,7 @@ public class HTMLBundlerTagHandlerPluginTest extends SpecTest
 			.and(aspect).indexPageHasContent("<@html.bundle@/>");
 		when(aspect).requestReceivedInDev("html/bundle.html", response)
 			.and(aspect).indexPageLoadedInDev(indexPageResponse, "en_GB");
-		then(indexPageResponse.toString().replace("\n", "")).equals( 
+		then(indexPageResponse.toString().replace("\n", "")).textEquals( 
 				("<script>document.createElement(\"template\");</script>\n"+
 					"<style>template{display:none;}</style>\n"+
 					"<template id=\"brjs-html-templates-loaded\"></template>\n"+
