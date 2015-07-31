@@ -23,7 +23,6 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	private Aspect aspect;
 	private JsLib brLib;
 	private AliasesFileBuilder appAliasesFileBuilder, aspectAliasesFileBuilder, workbenchAliasesFileBuilder;
-	private AliasesVerifier aspectAliasesVerifier;
 	private AliasDefinitionsFileBuilder aspectResourcesAliaseDefinitionsFileBuilder;
 	private AliasDefinitionsFileBuilder brLibAliasDefinitionsFileBuilder;
 	private SdkJsLib servicesLib;
@@ -57,7 +56,6 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		worbenchAliasesFile = aliasesFile(workbench);
 		workbenchAliasesFileBuilder = new AliasesFileBuilder(this, worbenchAliasesFile);
 		appAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(app));
-		aspectAliasesVerifier = new AliasesVerifier(this, aspect);
 		aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
 		brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
 		aspectResourcesAliaseDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(aspect, "resources"));
@@ -66,12 +64,6 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		servicesLib = brjs.sdkLib("ServicesLib");
 		given(servicesLib).containsFileWithContents("br-lib.conf", "requirePrefix: br")
 			.and(servicesLib).hasClasses("br/AliasRegistry", "br/ServiceRegistry");
-	}
-	
-	@Test
-	public void aspectAliasesAreOverridenByTheAppAliases() throws Exception {
-		given(appAliasesFileBuilder).hasAlias("the-alias", "TheClassOverride");
-		then(aspectAliasesVerifier).hasAlias("the-alias", "TheClassOverride");
 	}
 	
 	@Test
@@ -89,8 +81,6 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.App", "appns.AspectClass1", "appns.AspectClass2", "appns.AspectClass3")
 			.and(aspectResourcesAliaseDefinitionsFileBuilder).hasAlias("appns.aspectAlias1", "appns.AspectClass1")
-			.and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.bladerunnerjs.org/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.AspectClass2\" name=\"appns.aspectAlias2\"/>\n" + "</aliasDefinitions>")
-			.and(aspect).containsFileWithContents("resources/subfolder/subfolder/aliasDefinitions.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.bladerunnerjs.org/aliasDefinitions\">\n" + "<alias defaultClass=\"appns.AspectClass3\" name=\"appns.aspectAlias3\"/>\n" + "</aliasDefinitions>")
 			.and(aspect).indexPageRefersTo("appns.App")
 			.and(appAliasesFileBuilder).hasAlias("appns.aspectAlias1", "appns.AspectClass2")
 			.and(aspect).classFileHasContent("appns.App", "'appns.aspectAlias1'");
@@ -169,7 +159,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 //	}
 	
 	@Test
-	public void aspectWithoutAnAliasesFileUsesAppAliasesAndAspectWithAnAliasesFileUsesItsAliasesFile() throws Exception {
+	public void aspectsUseTheCorrectAliasesWhenOneHasAnAliasesFileAndAnotherDoes() throws Exception {
 		given(aspectWithoutAliasesFile).hasClasses("appns/Class1WithoutAlias", "appns/Class2WithoutAlias")
 			.and(aspect).hasClasses("appns/App", "appns/Class1", "appns/Class2")
 			.and(aspectAliasesFileBuilder).hasAlias("appns.aspectAliasWithAspectAliasesFile", "appns.Class2")
@@ -184,7 +174,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	}
 	
 	@Test
-	public void workbenchWithoutAnAliasesFileUsesAppAliasesAndWorkbenchWithAnAliasesFileUsesItsAliasesFile() throws Exception {
+	public void workbenchesUseTheCorrectAliasesWhenOneHasAnAliasesFileAndAnotherDoes() throws Exception {
 		given(workbenchWithoutAliasesFile).hasClasses("appns/Class1WithoutAlias", "appns/Class2WithoutAlias")
 			.and(workbench).hasClasses("appns/App", "appns/Class1", "appns/Class2")
 			.and(workbenchAliasesFileBuilder).hasAlias("appns.aspectAliasWithAspectAliasesFile", "appns.Class2")
