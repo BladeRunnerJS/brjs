@@ -10,6 +10,7 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
+import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
@@ -35,6 +36,8 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	private AliasesFile worbenchAliasesFile;
 	private Aspect aspectWithoutAliasesFile;
 	private BladeWorkbench workbenchWithoutAliasesFile;
+	private TestPack bladeTestPack;
+	private AliasesFileBuilder bladeTestPackAliasesFileBuilder;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -49,6 +52,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		aspectWithoutAliasesFile = app.aspect("withoutAliasesFile");
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
+		bladeTestPack = blade.testType("ut").defaultTestTech();
 		bladeForWorkbenchWithoutAliasesFile = bladeset.blade("b2");
 		brLib = app.jsLib("br");
 		workbench = blade.workbench();
@@ -60,6 +64,7 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
 		aspectResourcesAliaseDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(aspect, "resources"));
 		bladeAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(blade, "src"));
+		bladeTestPackAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(bladeTestPack));
 		
 		servicesLib = brjs.sdkLib("ServicesLib");
 		given(servicesLib).containsFileWithContents("br-lib.conf", "requirePrefix: br")
@@ -144,19 +149,17 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		then(response).containsCommonJsClasses("appns.WorkbenchClass2");
 	}
 	
-//	@Test
-//	public void testPackAliasesOverrideAppAliases() throws Exception {
-//		given(appConf).hasRequirePrefix("appns")
-//			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
-//			// given(testPack).containsFileWithContents("Class1.js", "Class1")
-//			// .and(testPack).containsFileWithContents("Class2.js", "Class2")
-//			.and(testPackAliasesFileBuilder).hasAlias("testAlias", "appns.Class1")
-//			.and(appAliasesFileBuilder).hasAlias("testAlias", "appns.Class2")
-//			.and(testPack).hasNamespacedJsPackageStyle()
-//			.and(testPack).testRefersTo("pkg/test.js", "alias!testAlias");
-//		when(testPack).requestReceivedInDev("js/dev/combined/bundle.js", response);
-//		then(response).containsCommonJsClasses("appns.Class1");
-//	}
+	@Test
+	public void testPackAliasesOverrideAppAliases() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(aspect).hasClass("appns/Class1")
+			.and(bladeTestPack).hasClass("test/Class1")
+			.and(bladeTestPackAliasesFileBuilder).hasAlias("testAlias", "appns.bs.b1.test.Class1")
+			.and(appAliasesFileBuilder).hasAlias("testAlias", "appns.Class2")
+			.and(bladeTestPack).testRequires("pkg/test.js", "alias!testAlias");
+		when(bladeTestPack).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.bs.b1.test.Class1");
+	}
 	
 	@Test
 	public void aspectsUseTheCorrectAliasesWhenOneHasAnAliasesFileAndAnotherDoes() throws Exception {

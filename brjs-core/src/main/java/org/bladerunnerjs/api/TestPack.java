@@ -38,6 +38,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	public MemoizedFile[] memoizedScopeFiles() {
 		List<MemoizedFile> scopeFiles = new ArrayList<>(Arrays.asList(getParentAssetContainer().memoizedScopeFiles()));
 		scopeFiles.add(dir());
+		scopeFiles.add(app().dir());
 		
 		return scopeFiles.toArray(new MemoizedFile[scopeFiles.size()]);
 	}
