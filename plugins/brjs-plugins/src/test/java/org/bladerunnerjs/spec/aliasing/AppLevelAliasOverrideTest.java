@@ -11,9 +11,11 @@ import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
+import org.bladerunnerjs.plugin.bundlers.aliasing.AmbiguousAliasException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,6 +40,8 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 	private BladeWorkbench workbenchWithoutAliasesFile;
 	private TestPack bladeTestPack;
 	private AliasesFileBuilder bladeTestPackAliasesFileBuilder;
+	private AliasDefinitionsFileBuilder bladesetResourcesAliasDefinitionsFileBuilder;
+	private AliasDefinitionsFileBuilder bladeResourcesAliasDefinitionsFileBuilder;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -63,6 +67,8 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 		aspectAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(aspect));
 		brLibAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
 		aspectResourcesAliaseDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(aspect, "resources"));
+		bladesetResourcesAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(bladeset, "resources"));
+		bladeResourcesAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(blade, "resources"));
 		bladeAliasDefinitionsFileBuilder = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(blade, "src"));
 		bladeTestPackAliasesFileBuilder = new AliasesFileBuilder(this, aliasesFile(bladeTestPack));
 		
@@ -189,6 +195,188 @@ public class AppLevelAliasOverrideTest extends SpecTest {
 			.and(workbenchWithoutAliasesFile).requestReceivedInDev("js/dev/combined/bundle.js", responseWithoutAliasesFile);
 		then(response).containsCommonJsClasses("appns.Class2")
 			.and(responseWithoutAliasesFile).containsCommonJsClasses("appns.Class1WithoutAlias");
+	}
+	
+	
+	
+	/* Alias Group and Scenrio Tests */
+	
+	@Test
+	public void settingMultipleGroupsChangesTheAliasesThatAreUsed_usingTheAppToSetTheGroup_usingTheAppToSetTheGroup() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.alias1", "appns.bs.Class1")
+			.and(bladeResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g2", "br.alias2", "appns.bs.Class2")
+			.and(bladeset).hasClasses("Class1", "Class2")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g1", "appns.bs.b1.g2")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.alias1", "br.Class")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.alias2", "br.Class")
+			.and(aspect).indexPageHasAliasReferences("br.alias1", "br.alias2");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'br.alias1':{'class':'appns/bs/Class1','className':'appns.bs.Class1'},'br.alias2':{'class':'appns/bs/Class2','className':'appns.bs.Class2'}};");
+	}
+	
+	@Test
+	public void theInterfaceIsMaintainedWhenAnAliasIsOverriddenInAGroup_usingTheAppToSetTheGroup() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasAlias("appns.bs.the-alias", "appns.bs.Class1", "appns.bs.TheInterface")
+			.and(bladeResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "appns.bs.the-alias", "appns.bs.Class2")
+			.and(bladeset).hasClasses("Class2", "TheInterface")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g1")
+			.and(aspect).indexPageHasAliasReferences("appns.bs.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'appns.bs.the-alias':{'class':'appns/bs/Class2','className':'appns.bs.Class2','interface':'appns/bs/TheInterface','interfaceName':'appns.bs.TheInterface'}};");
+	}
+	
+	@Test
+	public void groupAliasesCanOverrideNonGroupAliases_usingTheAppToSetTheGroup() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.the-alias", "appns.bs.Class1")
+			.and(bladeResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.bs.Class2")
+			.and(bladeResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g2", "appns.bs.b1.the-alias", "appns.bs.Class3")
+			.and(bladeset).hasClass("Class2")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g1")
+			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'appns.bs.b1.the-alias':{'class':'appns/bs/Class2','className':'appns.bs.Class2'}};");
+	}
+	
+	@Test
+	public void groupAliasesDoNotNeedToBeNamespaced_usingTheAppToSetTheGroup() throws Exception {
+		given(brLibAliasDefinitionsFileBuilder).hasAlias("br.the-alias", "br.TheClass")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.the-alias", "appns.bs.TheClass")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g1")
+			.and(bladeset).hasClass("TheClass")
+			.and(aspect).indexPageHasAliasReferences("br.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'br.the-alias':{'class':'appns/bs/TheClass','className':'appns.bs.TheClass'}};");
+	}
+	
+	@Test
+	public void settingAGroupChangesTheAliasesThatAreUsed_usingTheAppToSetTheGroup() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.the-alias", "appns.bs.Class1")
+			.and(bladeResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g2", "br.the-alias", "appns.bs.Class2")
+			.and(bladeset).hasClass("appns/bs/Class2")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g2")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.the-alias", "br.Class")
+			.and(aspect).indexPageHasAliasReferences("br.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'br.the-alias':{'class':'appns/bs/Class2','className':'appns.bs.Class2'}};");
+	}
+	
+	@Test
+	public void usingGroupsCanLeadToAmbiguity_usingTheAppToSetTheGroup() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.the-alias", "Class1")
+			.and(bladeResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.the-alias", "Class2")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g1")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.the-alias", "br.Class")
+			.and(aspect).indexPageHasAliasReferences("br.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(AmbiguousAliasException.class, "br.the-alias", appAliasesFileBuilder.getUnderlyingFilePath());
+	}
+	
+	@Test
+	public void usingGroupsCanLeadToAmbiguityEvenWhenASingleGroupIsUsed_usingTheAppToSetTheGroup() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.the-alias", "Class1")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.the-alias", "Class2")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g1")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.the-alias", "br.Class")
+			.and(aspect).indexPageHasAliasReferences("br.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(AmbiguousAliasException.class, "br.the-alias", bladesetResourcesAliasDefinitionsFileBuilder.getUnderlyingFilePath());
+	}
+	
+	@Test
+	public void usingDifferentGroupsCanLeadToAmbiguity_usingTheAppToSetTheGroup() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.the-alias", "Class1")
+			.and(bladeResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g2", "br.the-alias", "Class2")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g1", "appns.bs.b1.g2")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.the-alias", "br.Class")
+			.and(aspect).indexPageHasAliasReferences("br.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(AmbiguousAliasException.class, "br.the-alias", appAliasesFileBuilder.getUnderlyingFilePath());
+	}
+	
+	@Test
+	public void multipleScenariosCanBeDefinedForAnAlias_usingTheAppToSetTheScenario() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.the-alias", "appns.bs.Class1")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasScenarioAlias("s1", "appns.bs.b1.the-alias", "appns.bs.Class2")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasScenarioAlias("s2", "appns.bs.b1.the-alias", "appns.bs.Class3")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasScenarioAlias("s3", "appns.bs.b1.the-alias", "appns.bs.Class4")
+			.and(bladeset).hasClass("Class3")
+			.and(appAliasesFileBuilder).usesScenario("s2")
+			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'appns.bs.b1.the-alias':{'class':'appns/bs/Class3','className':'appns.bs.Class3'}};");
+	}
+	
+	@Test
+	public void aliasDefinitionsDefinedWithinBladesMustBeNamespaced_usingTheAppToSetTheGroup() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasAlias("the-alias", "TheClass")
+    		.and(aspect).indexPageHasAliasReferences("the-alias");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs.*");
+	}
+	
+	@Test
+	public void theInterfaceIsMaintainedWhenAnAliasIsOverriddenInTheScenario_usingTheAppToSetTheScenario() throws Exception {
+		given(bladeResourcesAliasDefinitionsFileBuilder).hasAlias("appns.bs.b1.the-alias", "appns.bs.b1.Class1", "appns.bs.b1.TheInterface")
+			.and(bladeResourcesAliasDefinitionsFileBuilder).hasScenarioAlias("s1", "appns.bs.b1.the-alias", "appns.bs.b1.Class2")
+			.and(blade).hasClass("TheInterface")
+			.and(blade).hasClass("Class2")
+			.and(appAliasesFileBuilder).usesScenario("s1")
+			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'appns.bs.b1.the-alias':{'class':'appns/bs/b1/Class2','className':'appns.bs.b1.Class2','interface':'appns/bs/b1/TheInterface','interfaceName':'appns.bs.b1.TheInterface'}};");
+	}
+	
+	@Test
+	public void settingTheScenarioChangesTheAliasesThatAreUsed_usingTheAppToSetTheScenario() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasAlias("appns.bs.the-alias", "Class1")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasScenarioAlias("s1", "appns.bs.the-alias", "appns.bs.Class2")
+			.and(bladeset).hasClass("Class2")
+			.and(appAliasesFileBuilder).usesScenario("s1")
+			.and(aspect).indexPageHasAliasReferences("appns.bs.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'appns.bs.the-alias':{'class':'appns/bs/Class2','className':'appns.bs.Class2'}};");
+	}
+	
+	@Test
+	public void groupsCanContainMultipleAliases_usingTheAppToSetTheGroup() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.alias1", "appns.bs.Class1")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.alias2", "appns.bs.Class2")
+			.and(bladeset).hasClasses("Class1", "Class2")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g1")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.alias1", "br.Class")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.alias2", "br.Class")
+			.and(aspect).indexPageHasAliasReferences("br.alias1", "br.alias2");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'br.alias1':{'class':'appns/bs/Class1','className':'appns.bs.Class1'},'br.alias2':{'class':'appns/bs/Class2','className':'appns.bs.Class2'}};");
+	}
+	
+	@Test
+	public void aspectLevelGroupsOverrideAppLevelGroups() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.alias1", "appns.bs.Class1")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g2", "br.alias1", "appns.bs.Class3")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g1", "br.alias2", "appns.bs.Class2")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasGroupAlias("appns.bs.b1.g2", "br.alias2", "appns.bs.Class4")
+			.and(bladeset).hasClasses("Class1", "Class2", "Class3", "Class4")
+			.and(appAliasesFileBuilder).usesGroups("appns.bs.b1.g1")
+			.and(aspectAliasesFileBuilder).usesGroups("appns.bs.b1.g2")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.alias1", "br.Class")
+			.and(brLibAliasDefinitionsFileBuilder).hasAlias("br.alias2", "br.Class")
+			.and(aspect).indexPageHasAliasReferences("br.alias1", "br.alias2");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'br.alias1':{'class':'appns/bs/Class3','className':'appns.bs.Class3'},'br.alias2':{'class':'appns/bs/Class4','className':'appns.bs.Class4'}};");
+	}
+	
+	@Test
+	public void settingTheScenarioViaTheAspectOverridesTheAppScenario() throws Exception {
+		given(bladesetResourcesAliasDefinitionsFileBuilder).hasAlias("appns.bs.the-alias", "Class1")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasScenarioAlias("s1", "appns.bs.the-alias", "appns.bs.Class2")
+			.and(bladesetResourcesAliasDefinitionsFileBuilder).hasScenarioAlias("s2", "appns.bs.the-alias", "appns.bs.Class3")
+			.and(bladeset).hasClasses("Class2", "Class3")
+			.and(appAliasesFileBuilder).usesScenario("s1")
+			.and(aspectAliasesFileBuilder).usesScenario("s2")
+			.and(aspect).indexPageHasAliasReferences("appns.bs.the-alias");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsText("module.exports = {'appns.bs.the-alias':{'class':'appns/bs/Class3','className':'appns.bs.Class3'}};");
 	}
 	
 }
