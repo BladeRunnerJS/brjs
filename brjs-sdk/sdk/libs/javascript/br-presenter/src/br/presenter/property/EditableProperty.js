@@ -104,6 +104,22 @@ EditableProperty.prototype.addParser = function(oParser, mConfig) {
 };
 
 /**
+* Removes {@link module:br/presenter/parser/Parser} from parsers array.
+*
+* @param {Object} parser - The parser to remove.
+* @returns {boolean} - true if any validator was removed
+*/
+EditableProperty.prototype.removeParser = function (parser) {
+	for (var i = 0, l = this.m_pParsers.length; i < l; ++i) {
+		if (this.m_pParsers[i].parser === parser) {
+			this.m_pParsers.splice(i, 1);
+			return true;
+		}
+	}
+	return false;
+};
+
+/**
  * Adds a {@link module:br/presenter/validator/Validator} that will be run each time the user enters a
  * new value.
  *

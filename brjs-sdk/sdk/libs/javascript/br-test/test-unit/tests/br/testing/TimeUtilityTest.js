@@ -191,4 +191,58 @@
         assertTrue(bSecondTimeoutExecuted);
         assertTrue(bThirdTimeoutExecuted);
     };
+    
+    TimeUtilityTest.prototype["test that timeouts can contain timeouts"] = function() {
+    	TimeUtility.captureTimerFunctions();
+    	var bOuterTimeoutExecuted = false;
+    	var bNestedTimeoutExecuted = false;
+    	var bSecondOuterTimeoutExecuted = false;
+    
+    	window.setTimeout(function(){
+    		bOuterTimeoutExecuted = true;
+    		window.setTimeout(function(){ bNestedTimeoutExecuted = true; }, 10);
+    	}, 10);
+    	window.setTimeout(function(){ bSecondOuterTimeoutExecuted = true; }, 20);
+    	
+    	TimeUtility.executeCapturedFunctions(10);
+    	
+    	assertTrue(bOuterTimeoutExecuted);
+    	assertFalse(bNestedTimeoutExecuted);
+    	assertFalse(bSecondOuterTimeoutExecuted);
+    	
+    	TimeUtility.executeCapturedFunctions(10);
+    
+    	assertTrue(bOuterTimeoutExecuted);
+    	assertTrue(bNestedTimeoutExecuted);
+    	assertTrue(bSecondOuterTimeoutExecuted);
+    };
+    
+    TimeUtilityTest.prototype["test that timeouts can contain an arbitrary amount of nested timeouts"] = function() {
+    	TimeUtility.captureTimerFunctions();
+    	var bTimeout1Executed = false;
+    	var bTimeout2Executed = false;
+    	var bTimeout3Executed = false;
+    	var bTimeout4Executed = false;
+    
+    	window.setTimeout(function(){
+    		bTimeout1Executed = true;
+    		window.setTimeout(function(){
+    			bTimeout2Executed = true;
+    			window.setTimeout(function(){
+    				bTimeout3Executed = true;
+    				window.setTimeout(function(){
+    					bTimeout4Executed = true;
+    				}, 10);
+    			}, 10);
+    		}, 10);
+    	}, 10);
+    	
+    	TimeUtility.executeCapturedFunctions();
+    	
+    	assertTrue(bTimeout1Executed);
+    	assertTrue(bTimeout2Executed);
+    	assertTrue(bTimeout3Executed);
+    	assertTrue(bTimeout4Executed);
+    };
+
 })();

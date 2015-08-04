@@ -8,6 +8,7 @@ import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.InputSource;
@@ -77,7 +78,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin implements R
 	}
 	
 	@Override
-	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException, MalformedRequestException {
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException, MalformedRequestException, ResourceNotFoundException {
 		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
 		
 		if (parsedContentPath.formName.equals(DEV_BUNDLE_REQUEST) || parsedContentPath.formName.equals(PROD_BUNDLE_REQUEST)) {

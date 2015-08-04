@@ -354,9 +354,10 @@ describe('An Emitter', function(){
 	});
 
 	describe('with two listeners registered for two different events and a listener registered for the RemoveListenerEvent,', function() {
-		var receivedEvents, alertTheMedia, scrambleTheJets, context;
+		var receivedEvents, alertTheMedia, scrambleTheJets, context, origConsoleError;
 
 		beforeEach(function() {
+			origConsoleError = console.error;
 			receivedEvents = [];
 			context = {};
 
@@ -373,6 +374,11 @@ describe('An Emitter', function(){
 
 			emitter.on('elvis-sighted', alertTheMedia, context);
 			emitter.on('war-with-eurasia', scrambleTheJets, context);
+		});
+
+		afterEach(function() {
+			console.error = origConsoleError;
+			origConsoleError = null;
 		});
 
 		it('when all listeners are removed, it should trigger RemoveListenerEvents for every listener.', function() {
@@ -467,5 +473,20 @@ describe('An Emitter', function(){
 		emitter.trigger('ev');
 
 		expect(called).toBe(true);
+	});
+
+	it('should log an error if one throws an exception', function() {
+		var logMessage = false;
+		emitter.on('ev', function() {
+			throw "error";
+		});
+
+		console.error = function(message) {
+			logMessage = message;
+		}
+
+		emitter.trigger('ev');
+
+		expect(logMessage).toBe("Error notifying an observer, the error was: 'error'");
 	});
 });

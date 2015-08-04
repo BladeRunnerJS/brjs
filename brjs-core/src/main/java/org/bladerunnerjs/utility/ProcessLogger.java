@@ -128,6 +128,9 @@ public class ProcessLogger {
 			case DEBUG:
 				logger.debug(message, params);
 				break;
+				
+			case CONSOLE:
+				logger.console(message, params);
 		}
 	}
 

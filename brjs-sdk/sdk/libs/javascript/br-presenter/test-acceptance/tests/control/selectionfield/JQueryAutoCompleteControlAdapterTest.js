@@ -1,7 +1,7 @@
 (function() {
     var GwtTestRunner = require("br/test/GwtTestRunner");
     GwtTestRunner.initialize();
-
+    
     describe("View to model interactions for JQueryAutoCompleteControlAdapter", function() {
         fixtures( require("br/presenter/PresenterFixtureFactory") );
         
@@ -52,5 +52,16 @@
             and("demo.view.(#jqueryAutoCompleteBox2).typedValue => 'AA'");
             then("demo.view.(#autocomplete-container2 li:eq(0)).text = 'AA'");
         });
+		
+		it("does blur the input after selection is made by click if blurAfterClick is set to true", function() {
+			given("demo.viewOpened = true");
+			when("demo.model.jquerySelectionField.value => ''");
+				and("demo.view.(#jqueryAutoCompleteBox3).typedValue => 'A'");
+				and("demo.view.(#autocomplete-container li:eq(0) a).clicked => true");
+			then("demo.model.jquerySelectionField.value = 'AA'");
+				and("demo.view.(#jqueryAutoCompleteBox3).value = 'AA'");
+				and("demo.view.(#jqueryAutoCompleteBox3).focused = false");
+		});
+		
     });
 })();
