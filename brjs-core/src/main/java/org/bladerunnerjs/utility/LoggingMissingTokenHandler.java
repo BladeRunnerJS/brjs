@@ -2,18 +2,18 @@ package org.bladerunnerjs.utility;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.appserver.util.NoTokenReplacementHandler;
+import org.bladerunnerjs.appserver.util.MissingTokenHandler;
 import org.bladerunnerjs.appserver.util.TokenReplacementException;
 import org.bladerunnerjs.logger.LogLevel;
 
-public class LoggingTokenReplacementHandler implements NoTokenReplacementHandler {
+public class LoggingMissingTokenHandler implements MissingTokenHandler {
 
 	public static final String NO_TOKEN_REPLACEMENT_MESSAGE = "No token replacement could be found for '%s' in the '%s' environment. JNDI must be configured to define a replacement for this token key.";
 	private final Logger logger;
 	private String environment;
 	private LogLevel logLevel;
 
-	public LoggingTokenReplacementHandler(BRJS brjs, Class<?> loggerClass, String environment, LogLevel logLevel) {
+	public LoggingMissingTokenHandler(BRJS brjs, Class<?> loggerClass, String environment, LogLevel logLevel) {
 		this.logger = brjs.logger(loggerClass);
 		this.environment = (environment != null) ? environment : "default";
 		this.logLevel = logLevel;

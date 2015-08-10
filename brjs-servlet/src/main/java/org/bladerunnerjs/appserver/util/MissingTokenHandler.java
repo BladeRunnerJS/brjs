@@ -5,7 +5,7 @@ package org.bladerunnerjs.appserver.util;
  * BRJS uses of the TokenReplacementReader can provide an implementation of NoTokenReplacementHandler that uses BRJS to log the error instead of throwing the exception
  */
 
-public interface NoTokenReplacementHandler {
+public interface MissingTokenHandler {
 
     public void handleNoTokenFound(String tokenName, TokenReplacementException thrownException) throws TokenReplacementException;
 

@@ -16,11 +16,11 @@ import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistComman
 import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
-import org.bladerunnerjs.appserver.util.ExceptionThrowingNoTokenReplacementHandler;
+import org.bladerunnerjs.appserver.util.ExceptionThrowingMissingTokenHandler;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.utility.LoggingTokenReplacementHandler;
+import org.bladerunnerjs.utility.LoggingMissingTokenHandler;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -127,9 +127,9 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		
 		AppRequestHandler.setPropertiesEnvironment(brjs, environment);
 		if (warExport && app.file("WEB-INF").isDirectory()) {
-			AppRequestHandler.setNoTokenExceptionHandler(brjs, new LoggingTokenReplacementHandler(brjs, this.getPluginClass(), environment, LogLevel.WARN));
+			AppRequestHandler.setNoTokenExceptionHandler(brjs, new LoggingMissingTokenHandler(brjs, this.getPluginClass(), environment, LogLevel.WARN));
 		} else {
-			AppRequestHandler.setNoTokenExceptionHandler(brjs, new ExceptionThrowingNoTokenReplacementHandler());
+			AppRequestHandler.setNoTokenExceptionHandler(brjs, new ExceptionThrowingMissingTokenHandler());
 		}
 		
 		try {

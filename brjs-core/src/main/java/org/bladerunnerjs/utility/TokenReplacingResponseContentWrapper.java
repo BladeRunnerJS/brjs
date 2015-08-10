@@ -2,7 +2,7 @@ package org.bladerunnerjs.utility;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.plugin.ResponseContent;
-import org.bladerunnerjs.appserver.util.NoTokenReplacementHandler;
+import org.bladerunnerjs.appserver.util.MissingTokenHandler;
 import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 import org.bladerunnerjs.appserver.util.TokenFinder;
 
@@ -12,10 +12,10 @@ public class TokenReplacingResponseContentWrapper implements ResponseContent {
 
     private final ResponseContent wrappedResponse;
     private final TokenFinder tokenFinder;
-    private final NoTokenReplacementHandler replacementHandler;
+    private final MissingTokenHandler replacementHandler;
 	private final TokenFinder brjsTokenFinder;
 
-    public TokenReplacingResponseContentWrapper(ResponseContent wrappedResponse, TokenFinder brjsTokenFinder, TokenFinder tokenFinder, NoTokenReplacementHandler replacementHandler) {
+    public TokenReplacingResponseContentWrapper(ResponseContent wrappedResponse, TokenFinder brjsTokenFinder, TokenFinder tokenFinder, MissingTokenHandler replacementHandler) {
     	this.brjsTokenFinder = brjsTokenFinder;
         this.wrappedResponse = wrappedResponse;
         this.tokenFinder = tokenFinder;

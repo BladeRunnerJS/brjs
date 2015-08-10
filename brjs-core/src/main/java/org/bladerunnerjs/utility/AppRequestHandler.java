@@ -28,7 +28,7 @@ import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
-import org.bladerunnerjs.appserver.util.NoTokenReplacementHandler;
+import org.bladerunnerjs.appserver.util.MissingTokenHandler;
 import org.bladerunnerjs.appserver.util.TokenFinder;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.UrlContentAccessor;
@@ -379,14 +379,14 @@ public class AppRequestHandler
 		return new TokenReplacingResponseContentWrapper( wrappedResponse, brjsTokenFinder, tokenFinder, getNoTokenExNoTokenReplacementHandler(app.root()) );
 	}
 
-	public static void setNoTokenExceptionHandler(BRJS brjs, NoTokenReplacementHandler handler) {
+	public static void setNoTokenExceptionHandler(BRJS brjs, MissingTokenHandler handler) {
 		brjs.nodeProperties(AppRequestHandler.class.getSimpleName()).setTransientProperty(NO_TOKEN_FOUND_HANDLER_PROPERTY_KEY, handler);
 	}
 
-	public static NoTokenReplacementHandler getNoTokenExNoTokenReplacementHandler(BRJS brjs) {
-		NoTokenReplacementHandler handler = (NoTokenReplacementHandler) brjs.nodeProperties(AppRequestHandler.class.getSimpleName()).getTransientProperty(NO_TOKEN_FOUND_HANDLER_PROPERTY_KEY);
+	public static MissingTokenHandler getNoTokenExNoTokenReplacementHandler(BRJS brjs) {
+		MissingTokenHandler handler = (MissingTokenHandler) brjs.nodeProperties(AppRequestHandler.class.getSimpleName()).getTransientProperty(NO_TOKEN_FOUND_HANDLER_PROPERTY_KEY);
 		if (handler == null) {
-			return new LoggingTokenReplacementHandler(brjs, AppRequestHandler.class, getPropertiesEnvironment(brjs), LogLevel.INFO );
+			return new LoggingMissingTokenHandler(brjs, AppRequestHandler.class, getPropertiesEnvironment(brjs), LogLevel.INFO );
 		}
 		return handler;
 	}

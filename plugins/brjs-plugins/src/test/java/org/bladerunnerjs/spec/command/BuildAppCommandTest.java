@@ -16,7 +16,7 @@ import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.appserver.util.TokenReplacementException;
 import org.bladerunnerjs.utility.AppMetadataUtility;
-import org.bladerunnerjs.utility.LoggingTokenReplacementHandler;
+import org.bladerunnerjs.utility.LoggingMissingTokenHandler;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -457,7 +457,7 @@ public class BuildAppCommandTest extends SpecTest
 				.and(brjs).hasVersion("123")
 				.and(logging).enabled();
 		when(brjs).runCommand("build-app", "app", "-w");
-		then(logging).unorderedWarnMessageReceived(LoggingTokenReplacementHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "default" )
+		then(logging).unorderedWarnMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "default" )
 			.and(logging).otherMessagesIgnored();
 	}
 	
@@ -475,7 +475,7 @@ public class BuildAppCommandTest extends SpecTest
 				.and(brjs).hasVersion("123")
 				.and(logging).enabled();
 		when(brjs).runCommand("build-app", "app", "-e", "prod", "-w");
-		then(logging).unorderedWarnMessageReceived(LoggingTokenReplacementHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" )
+		then(logging).unorderedWarnMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" )
 			.and(logging).otherMessagesIgnored();
 	}
 	

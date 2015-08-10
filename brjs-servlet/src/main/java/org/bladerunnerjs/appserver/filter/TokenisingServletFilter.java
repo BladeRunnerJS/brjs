@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bladerunnerjs.appserver.util.CommitedResponseCharResponseWrapper;
-import org.bladerunnerjs.appserver.util.ExceptionThrowingNoTokenReplacementHandler;
+import org.bladerunnerjs.appserver.util.ExceptionThrowingMissingTokenHandler;
 import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 
@@ -105,7 +105,7 @@ public class TokenisingServletFilter implements Filter
 				throw new ServletException("Error getting context for JNDI lookups. (" + ex + ")", ex);
 			}
 		}
-		return new TokenReplacingReader(tokenFinder, reader, new ExceptionThrowingNoTokenReplacementHandler());
+		return new TokenReplacingReader(tokenFinder, reader, new ExceptionThrowingMissingTokenHandler());
 	}
 	
 }

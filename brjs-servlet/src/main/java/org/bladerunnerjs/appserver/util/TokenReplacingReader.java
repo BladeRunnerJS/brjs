@@ -17,7 +17,7 @@ public class TokenReplacingReader extends Reader
 	private final TokenFinder brjsTokenFinder;
     private final TokenFinder userTokenFinder;
 	private final Reader sourceReader;
-    private final NoTokenReplacementHandler replacementHandler;
+    private final MissingTokenHandler replacementHandler;
 
     private boolean withinToken = false;
 	private StringBuffer currentTokenString = new StringBuffer();;
@@ -29,14 +29,14 @@ public class TokenReplacingReader extends Reader
 	private int totalNumberOfCharsWritten;
 
 	public TokenReplacingReader(TokenFinder userTokenFinder, Reader sourceReader) {
-		this(null, userTokenFinder, sourceReader, new ExceptionThrowingNoTokenReplacementHandler());
+		this(null, userTokenFinder, sourceReader, new ExceptionThrowingMissingTokenHandler());
 	}
 
-	public TokenReplacingReader(TokenFinder userTokenFinder, Reader sourceReader, NoTokenReplacementHandler replacementHandler) {
+	public TokenReplacingReader(TokenFinder userTokenFinder, Reader sourceReader, MissingTokenHandler replacementHandler) {
 		this(null, userTokenFinder, sourceReader, replacementHandler);
 	}
 	
-    public TokenReplacingReader(TokenFinder brjsTokenFinder, TokenFinder tokenFinder, Reader sourceReader, NoTokenReplacementHandler replacementHandler) {
+    public TokenReplacingReader(TokenFinder brjsTokenFinder, TokenFinder tokenFinder, Reader sourceReader, MissingTokenHandler replacementHandler) {
     	this.userTokenFinder = tokenFinder;
     	this.brjsTokenFinder = brjsTokenFinder;
         this.sourceReader = sourceReader;

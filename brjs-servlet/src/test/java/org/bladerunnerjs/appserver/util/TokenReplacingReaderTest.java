@@ -23,7 +23,7 @@ public class TokenReplacingReaderTest
 	
 	private TokenFinder mockTokenFinder;
 	private TokenFinder brjsTokenFinder;
-    private NoTokenReplacementHandler mockTokenReplacementHandler = mock(NoTokenReplacementHandler.class);
+    private MissingTokenHandler mockTokenReplacementHandler = mock(MissingTokenHandler.class);
 	
 	@SuppressWarnings("unchecked")
 	@Before

@@ -1,9 +1,9 @@
 package org.bladerunnerjs.appserver.util;
 
-public class IgnoreExceptionNoTokenReplacementHandler implements NoTokenReplacementHandler {
+public class ExceptionThrowingMissingTokenHandler implements  MissingTokenHandler {
 
     @Override
     public void handleNoTokenFound(String tokenName, TokenReplacementException thrownException) throws TokenReplacementException {
-        // ignore
+        throw thrownException;
     }
 }
