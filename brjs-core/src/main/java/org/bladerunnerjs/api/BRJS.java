@@ -68,6 +68,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	private NodeList<App> userApps;
 	private final NodeItem<DirNode> sdkRoot = new NodeItem<>(this, DirNode.class, "sdk");
+	private final NodeList<BRJSPlugin> sdkPlugins = new NodeList<>(this, BRJSPlugin.class, "sdk-plugins", null);
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
 	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript", null);
@@ -303,12 +304,31 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<SdkJsLib> sdkLibs()
 	{
-		return new ArrayList<SdkJsLib>( sdkLibs.list() );
+		List<SdkJsLib> libs = new ArrayList<>( sdkLibs.list() );
+		for (BRJSPlugin sdkPlugin : sdkPlugins.list()) {
+			libs.addAll( sdkPlugin.sdkLibs() );
+		}
+		return libs;
 	}
 	
 	public SdkJsLib sdkLib(String libName)
 	{
 		return sdkLibs.item(libName);
+	}
+	
+	public JsLib sdkPluginLib(String pluginName, String libName)
+	{
+		return sdkPlugins.item(pluginName).sdkLib(libName);
+	}
+	
+	public List<BRJSPlugin> sdkPlugins()
+	{
+		return sdkPlugins.list();
+	}
+	
+	public BRJSPlugin sdkPlugin(String pluginName)
+	{
+		return sdkPlugins.item(pluginName);
 	}
 	
 	public DirNode jsPatches()

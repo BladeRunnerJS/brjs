@@ -24,6 +24,7 @@ public class AppTest extends SpecTest {
 	private JsLib appNonBladeRunnerLib;
 	private JsLib globalOverriddenNonBRLib;
 	private JsLib appOverriddenNonBRLib;
+	private JsLib sdkPluginLib;
 	private App app;
 	private JsLib appLib;
 	private NamedDirNode appTemplate;
@@ -46,6 +47,8 @@ public class AppTest extends SpecTest {
 			appNonBladeRunnerLib = app.appJsLib("app-legacy-thirdparty");
 			globalOverriddenNonBRLib = brjs.sdkLib("overridden-lib");
 			appOverriddenNonBRLib = app.appJsLib("overridden-lib");
+			appOverriddenNonBRLib = app.appJsLib("overridden-lib");
+			sdkPluginLib = brjs.sdkPluginLib("foo", "sdkPluginLib");
 	}
 	
 	// TODO: does this add anything over the baselining test?
@@ -221,6 +224,13 @@ public class AppTest extends SpecTest {
 	{
 		assertEquals("/mock-content-plugin/some file", app.requestHandler().createBundleRequest(app.defaultAspect(), "/mock-content-plugin/some file", "dev"));
 		assertEquals("v/dev/mock-content-plugin/some file", app.requestHandler().createBundleRequest(app.defaultAspect(), "mock-content-plugin/some file", "dev"));
+	}
+	
+	@Test
+	public void libsCanBeAugmentedByASdkPlugin() throws Exception {
+		given(app).hasBeenCreated()
+			.and(sdkPluginLib).hasBeenCreated();
+		then(app).hasLibs(sdkPluginLib);
 	}
 	
 }
