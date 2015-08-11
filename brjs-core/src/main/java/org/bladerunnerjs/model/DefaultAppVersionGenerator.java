@@ -30,7 +30,7 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 	@Override
 	public String getVersionPattern()
 	{
-		return "([a-zA-Z0-9\\.\\-]+)";
+		return "([a-zA-Z0-9\\.\\-_]+)";
 	}
 
 	@Override
