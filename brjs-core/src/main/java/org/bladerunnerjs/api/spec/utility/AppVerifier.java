@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.spec.engine.NodeVerifier;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.api.spec.engine.VerifierChainer;
 import org.bladerunnerjs.model.AppSdkJsLib;
 
 import com.google.common.base.Joiner;
@@ -25,7 +26,7 @@ public class AppVerifier extends NodeVerifier<App> {
 		this.app = app;
 	}
 
-	public void hasLibs(JsLib... libs)
+	public VerifierChainer hasLibs(JsLib... libs)
 	{
 		List<JsLib> appLibs = new ArrayList<>();
 		
@@ -42,6 +43,8 @@ public class AppVerifier extends NodeVerifier<App> {
 		}
 		
 		assertLibsListsAreSame( Arrays.asList(libs), appLibs ); 
+		
+		return verifierChainer;
 	}
 
 	public void libsReturnCorrectApp()

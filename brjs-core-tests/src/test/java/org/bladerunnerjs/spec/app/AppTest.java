@@ -26,6 +26,7 @@ public class AppTest extends SpecTest {
 	private JsLib appOverriddenNonBRLib;
 	private JsLib sdkPluginLib;
 	private App app;
+	private App pluginApp;
 	private JsLib appLib;
 	private NamedDirNode appTemplate;
 	private DirNode appJars;
@@ -39,6 +40,7 @@ public class AppTest extends SpecTest {
 			sdkLib = brjs.sdkLib("br");
 			app = brjs.app("app1");
 			appLib = app.jsLib("lib1");
+			pluginApp = brjs.pluginApp("foo", "pluginApp");
 			templates = brjs.sdkTemplateGroup("default");
 			appTemplate = templates.template("app");
 			appJars = brjs.appJars();
@@ -230,7 +232,15 @@ public class AppTest extends SpecTest {
 	public void libsCanBeAugmentedByASdkPlugin() throws Exception {
 		given(app).hasBeenCreated()
 			.and(sdkPluginLib).hasBeenCreated();
-		then(app).hasLibs(sdkPluginLib);
+		then(app).hasLibs(sdkPluginLib)
+			.and(brjs).hasDir("sdk-plugins/foo/libs/javascript/sdkPluginLib");
+	}
+	
+	@Test
+	public void appsCanBeAugmentedByASdkPlugin() throws Exception {
+		given(pluginApp).hasBeenCreated();
+		then(brjs).hasApps("pluginApp")
+			.and(brjs).hasDir("sdk-plugins/foo/system-applications/pluginApp");
 	}
 	
 }

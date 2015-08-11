@@ -1,6 +1,7 @@
 package org.bladerunnerjs.api;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ public class BRJSPlugin extends AbstractBRJSNode implements NamedNode
 	private String name;
 	private Logger logger;
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "libs/javascript", null);
+	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "system-applications", null);
 
 	public BRJSPlugin(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
@@ -68,11 +70,19 @@ public class BRJSPlugin extends AbstractBRJSNode implements NamedNode
 	{
 		return sdkLibs.item(libName);
 	}
+
+	public List<App> systemApps()
+	{
+		return systemApps.list();
+	}
+	
+	public App systemApp(String name)
+	{
+		return systemApps.item(name);
+	}
 	
 	
-//	javascript
 //	java
-//	system apps
 //	templates overrides
 //
 //	jsdoc-toolkit-resources

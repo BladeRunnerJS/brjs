@@ -101,6 +101,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	private boolean loggedUserApps = false;
 	private boolean loggedSystemApps = false;
+	private boolean loggedPluginApps = false;
 	
 	private MemoizedFile appsFolder;
 	private MemoizedFile sdkFolder;
@@ -249,6 +250,9 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		for (App app : systemApps()) {
 			apps.put(app.getName(), app);
+		}		
+		for (App app : pluginApps()) {
+			apps.put(app.getName(), app);
 		}
 		for (App app : userApps()) {
 			if (!apps.containsKey(app.getName())) {
@@ -292,6 +296,25 @@ public class BRJS extends AbstractBRJSRootNode
 		return discoveredSystemApps;
 	}
 	
+	public App pluginApp(String pluginName, String name)
+	{
+		return sdkPlugin(pluginName).systemApp(name);
+	}
+	
+	public List<App> pluginApps()
+	{
+		List<App> discoveredPluginApps = new ArrayList<>();
+		for (BRJSPlugin plugin : sdkPlugins()) {
+			discoveredPluginApps.addAll(plugin.systemApps());
+		}
+		
+		if (!loggedPluginApps) {
+			logDiscoveredApps("plugin", discoveredPluginApps);
+			loggedPluginApps = true;
+		}
+		return discoveredPluginApps;
+	}
+	
 	public App systemApp(String appName)
 	{
 		return systemApps.item(appName);
@@ -305,7 +328,7 @@ public class BRJS extends AbstractBRJSRootNode
 	public List<SdkJsLib> sdkLibs()
 	{
 		List<SdkJsLib> libs = new ArrayList<>( sdkLibs.list() );
-		for (BRJSPlugin sdkPlugin : sdkPlugins.list()) {
+		for (BRJSPlugin sdkPlugin : sdkPlugins()) {
 			libs.addAll( sdkPlugin.sdkLibs() );
 		}
 		return libs;
@@ -318,7 +341,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public JsLib sdkPluginLib(String pluginName, String libName)
 	{
-		return sdkPlugins.item(pluginName).sdkLib(libName);
+		return sdkPlugin(pluginName).sdkLib(libName);
 	}
 	
 	public List<BRJSPlugin> sdkPlugins()
