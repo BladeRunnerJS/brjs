@@ -87,6 +87,12 @@ public final class TestRootNode extends AbstractRootNode
 	}
 
 	@Override
+	public MemoizedFile getMemoizedFile(String filePath)
+	{
+		return getMemoizedFile( new File(filePath) );
+	}
+	
+	@Override
 	public MemoizedFile getMemoizedFile(File file)
 	{
 		return memoizedFileAccessor.getMemoizedFile(file);
