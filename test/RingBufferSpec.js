@@ -1,23 +1,25 @@
-describe('A RingBuffer ', function(){
-	var global = (function() {return this;})();
-	var RingBuffer = global.fell ? global.fell.RingBuffer : require("..").RingBuffer;
+'use strict';
 
+var RingBuffer = require('../src/RingBuffer');
+var expect = require('expectations');
+
+describe('A RingBuffer ', function(){
 	it('should throw exceptions when constructed with invalid arguments.', function() {
 		expect(function() {
 			new RingBuffer();
-		}).toThrow(new Error(RingBuffer.errorMessage("size not integer", "undefined")));
+		}).toThrow(new Error(RingBuffer.errorMessage('size not integer', 'undefined')));
 
 		expect(function() {
-			new RingBuffer("fred");
-		}).toThrow(new Error(RingBuffer.errorMessage("size not integer", "fred")));
+			new RingBuffer('fred');
+		}).toThrow(new Error(RingBuffer.errorMessage('size not integer', 'fred')));
 
 		expect(function() {
 			new RingBuffer(0);
-		}).toThrow(new Error(RingBuffer.errorMessage("size less than 1", 0)));
+		}).toThrow(new Error(RingBuffer.errorMessage('size less than 1', 0)));
 
 		expect(function() {
 			new RingBuffer(3.2);
-		}).toThrow(new Error(RingBuffer.errorMessage("size not integer", 3.2)));
+		}).toThrow(new Error(RingBuffer.errorMessage('size not integer', 3.2)));
 
 		// This should not throw an Exception.
 		new RingBuffer(4);
@@ -53,7 +55,7 @@ describe('A RingBuffer ', function(){
 			expect(buffer.getSize()).toBe(0);
 
 			for (var i = 1; i < 10; ++i) {
-				buffer.push("hi"+i);
+				buffer.push('hi' + i);
 				expect(buffer.getSize()).toBe(Math.min(5, i));
 			}
 		});
@@ -61,10 +63,10 @@ describe('A RingBuffer ', function(){
 		it('should iterate over the items correctly.', function() {
 			expect(function() {
 				buffer.forEach(6);
-			}).toThrow(new TypeError(RingBuffer.errorMessage("parameter not function", "number")));
+			}).toThrow(new TypeError(RingBuffer.errorMessage('parameter not function', 'number')));
 
-			buffer.forEach(function(item) {
-				throw new Error("There are no items currently in the buffer.");
+			buffer.forEach(function() {
+				throw new Error('There are no items currently in the buffer.');
 			});
 
 			buffer.push(0);

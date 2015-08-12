@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
 var Emitter = require('emitr');
 var Logger = require('./Logger');
 var Levels = require('./Levels');
 
-var DEFAULT_COMPONENT = "[default]";
+var DEFAULT_COMPONENT = '[default]';
 
 function Log() {
 	this.loggers = null;
@@ -16,6 +16,23 @@ function Log() {
 Emitter.mixInto(Log);
 
 Log.prototype.DEFAULT_COMPONENT = DEFAULT_COMPONENT;
+
+function bestLevelMatch(config, key, otherwise) {
+	var candidates = Object.keys(config)
+			.filter(function(a) {
+				return a === key || key.substring(0, a.length + 1) === (a + '.');
+			}).sort(function(a, b) {
+				return b.length - a.length;
+			});
+	return candidates[0] ? config[candidates[0]] : otherwise;
+}
+
+function setLoggerLevels(defaultLevel, config, loggers) {
+	for (var loggerId in loggers) {
+		var level = bestLevelMatch(config, loggerId, defaultLevel);
+		loggers[loggerId]._setLevel(level);
+	}
+}
 
 Log.prototype.getLogger = function(component) {
 	if (arguments.length === 0) { component = DEFAULT_COMPONENT; }
@@ -33,7 +50,7 @@ Log.prototype.getLogger = function(component) {
 Log.prototype.configure = function(defaultLevel, config, destinations) {
 	if (arguments.length === 1 && typeof defaultLevel === 'object') {
 		config = arguments[0];
-		defaultLevel = "info";
+		defaultLevel = 'info';
 	}
 	config = config || {};
 	this.config = config;
@@ -42,7 +59,7 @@ Log.prototype.configure = function(defaultLevel, config, destinations) {
 	this.rootLogger = this.getLogger();
 
 	this.off();
-	if (! destinations && typeof console !== 'undefined') {
+	if (!destinations && typeof console !== 'undefined') {
 		var ConsoleLogDestination = require('./destination/ConsoleLog');
 		destinations = [new ConsoleLogDestination()];
 	}
@@ -81,7 +98,7 @@ Log.prototype.removeDestination = function(logDestination, context) {
 
 Log.prototype.clear = function() {
 	this.loggers = {};
-	this.configure("info");
+	this.configure('info');
 };
 
 Log.prototype.Levels = Levels;
@@ -95,21 +112,4 @@ Levels.forEach(function(level) {
 	};
 });
 
-function setLoggerLevels(defaultLevel, config, loggers) {
-	for (var loggerId in loggers) {
-		var level = bestLevelMatch(config, loggerId, defaultLevel);
-		loggers[loggerId]._setLevel(level);
-	}
-}
-
-function bestLevelMatch(config, key, otherwise) {
-	var candidates = Object.keys(config)
-			.filter(function(a) {
-				return a === key || key.substring(0, a.length + 1) === (a + ".");
-			}).sort(function(a, b) {
-				return b.length - a.length;
-			});
-	return candidates[0] ? config[candidates[0]] : otherwise;
-}
-
-module.exports = new Log();
+module.exports = Log;

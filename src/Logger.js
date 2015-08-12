@@ -1,8 +1,9 @@
-"use strict";
+'use strict';
 
 var Levels = require('./Levels');
 
-function NOOP() {};
+function NOOP() {
+}
 
 /**
  * Creates a Logger class specific to a component.
@@ -20,7 +21,7 @@ function Logger(emitter, component) {
 // creates a method for each of the log levels.
 Levels.forEach(function(level) {
 	Logger.prototype[level] = function() {
-		this.emitter.trigger('log', Date.now(), this.component, level, arguments);
+		this.emitter.trigger('log', this.component, level, arguments, Date.now());
 	};
 });
 
