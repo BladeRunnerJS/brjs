@@ -1,3 +1,6 @@
+/*eslint no-native-reassign:0, dot-notation:0*/
+'use strict';
+
 var Map = require('./Map');
 
 function MultiMap() {
@@ -40,7 +43,7 @@ MultiMap.prototype = {
 	},
 	'filterAll': function(filterFunction) {
 
-		//TODO: The following line can be removed and instead a third 'map' parameter 
+		//TODO: The following line can be removed and instead a third 'map' parameter
 		// can be added to the forEach callback once the following webkit bug is resovled
 		// https://bugs.webkit.org/show_bug.cgi?id=138563
 

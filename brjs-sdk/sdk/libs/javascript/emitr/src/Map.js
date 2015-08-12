@@ -1,6 +1,5 @@
-"use strict";
-
-var global = Function("return this")();
+/*eslint no-native-reassign:0*/
+'use strict';
 
 var Map = global.Map;
 

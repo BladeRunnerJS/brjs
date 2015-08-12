@@ -1,14 +1,14 @@
+'use strict';
+
 // A conversion of some of the backbone event tests.
 // removed event maps, once, all, triggering many events at once,
 //    listening to many events at once, chaining
 // We can implement these features and tests later if required.
 
-/*global require, describe, beforeEach, it, expect*/
+var Emitter = require('..');
+var expect = require('expectations');
 
 describe('A backbone-like Emitter,', function() {
-	var global = (function() {return this;})();
-	var Emitter = global["emitr"] || require("..");
-
 	var emitter;
 	var MyEmitter;
 
@@ -34,19 +34,19 @@ describe('A backbone-like Emitter,', function() {
 
 		it('should call the listener for every time the event is triggered', function() {
 			emitter.trigger('event');
-			expect(emitter.counter).toBe(1);
+			expect(emitter.counter).toEqual(1);
 			emitter.trigger('event');
 			emitter.trigger('event');
 			emitter.trigger('event');
 			emitter.trigger('event');
-			expect(emitter.counter).toBe(5);
+			expect(emitter.counter).toEqual(5);
 		});
 
 		it('should stop calling the listener after off is called', function() {
 			emitter.trigger('event');
 			emitter.off('event');
 			emitter.trigger('event');
-			expect(emitter.counter).toBe(1);
+			expect(emitter.counter).toEqual(1);
 		});
 
 		it('should stop receiving events if it calls off during an event firing', function() {
@@ -56,7 +56,7 @@ describe('A backbone-like Emitter,', function() {
 			emitter.trigger('event');
 			emitter.trigger('event');
 			emitter.trigger('event');
-			expect(emitter.counter).toBe(1);
+			expect(emitter.counter).toEqual(1);
 		});
 
 		it('works with nested triggers.', function() {
@@ -67,7 +67,7 @@ describe('A backbone-like Emitter,', function() {
 			}
 			emitter.on('event', incr1);
 			emitter.trigger('event');
-			expect(emitter.counter).toBe(3);
+			expect(emitter.counter).toEqual(3);
 		});
 
 	});
@@ -93,8 +93,8 @@ describe('A backbone-like Emitter,', function() {
 			emitter.trigger('event');
 			emitter.off('event', callback);
 			emitter.trigger('event');
-			expect(emitter.counterA).toBe(1);
-			expect(emitter.counterB).toBe(2);
+			expect(emitter.counterA).toEqual(1);
+			expect(emitter.counterB).toEqual(2);
 		});
 
 	});
@@ -125,7 +125,7 @@ describe('A backbone-like Emitter,', function() {
 		});
 		emitter.trigger('event');
 
-		expect(counter).toBe(0);
+		expect(counter).toEqual(0);
 
 		emitter.off();
 
@@ -139,7 +139,7 @@ describe('A backbone-like Emitter,', function() {
 
 		emitter.trigger('event');
 
-		expect(counter).toBe(2);
+		expect(counter).toEqual(2);
 	});
 
 	it('should allow all events for a specific context to be removed', function() {
@@ -154,8 +154,8 @@ describe('A backbone-like Emitter,', function() {
 		emitter.off(null, null, otherContext);
 		emitter.trigger('x');
 		emitter.trigger('y');
-		expect(emitter.counter).toBe(2);
-		expect(otherContext.counter).toBe(0);
+		expect(emitter.counter).toEqual(2);
+		expect(otherContext.counter).toEqual(0);
 	});
 
 	it('should remove consecutive events with off context', function() {
@@ -191,8 +191,8 @@ describe('A backbone-like Emitter,', function() {
 
 		emitter.trigger('event');
 
-		expect(emitter.counterA).toBe(1);
-		expect(emitter.counterB).toBe(1);
+		expect(emitter.counterA).toEqual(1);
+		expect(emitter.counterB).toEqual(1);
 	});
 
 	describe('with a listener that counts invocations and two emitters,', function() {
@@ -217,7 +217,7 @@ describe('A backbone-like Emitter,', function() {
 			b.trigger('event');
 			b.trigger('event');
 
-			expect(counter).toBe(3);
+			expect(counter).toEqual(3);
 		});
 
 		it('adding a listener with once shouldn\'t stop it from working even on the same object and event with on', function() {
@@ -227,7 +227,7 @@ describe('A backbone-like Emitter,', function() {
 			a.trigger('event');
 			a.trigger('event');
 
-			expect(counter).toBe(3);
+			expect(counter).toEqual(3);
 		});
 
 		it('a listener added with once can still be removed with off before the event fires.', function() {
@@ -235,7 +235,7 @@ describe('A backbone-like Emitter,', function() {
 			a.off('event', f);
 			a.trigger('event');
 
-			expect(counter).toBe(0);
+			expect(counter).toEqual(0);
 		});
 
 		it('a listener added with once can be removed by context.', function() {
@@ -244,7 +244,7 @@ describe('A backbone-like Emitter,', function() {
 			a.clearListeners(context);
 			a.trigger('event');
 
-			expect(counter).toBe(0);
+			expect(counter).toEqual(0);
 		});
 
 	});

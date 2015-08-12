@@ -1,39 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: Emitter.js</title>
-    
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
+/*eslint dot-notation:0*/
+'use strict';
 
-<body>
-
-<div id="main">
-    
-    <h1 class="page-title">Source: Emitter.js</h1>
-    
-    
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source"><code>"use strict";
-
-var Emitter = null;
 var slice = Array.prototype.slice;
 
 var metaEvents = require('./events');
 var MultiMap = require('./MultiMap');
-
-var getPrototypeOf = require('./shams').getPrototypeOf;
 
 ///////////////////////////////////////////////////////////////////////////
 var ONCE_FUNCTION_MARKER = {};
@@ -42,15 +13,19 @@ function notify(listeners, args) {
 	if (listeners.length === 0) { return false; }
 	// take a copy in case one of the callbacks modifies the listeners array.
 	listeners = listeners.slice();
-	for (var i = 0, len = listeners.length; i &lt; len; ++i) {
+	for (var i = 0, len = listeners.length; i < len; ++i) {
 		var listener = listeners[i];
-		listener.callback.apply(listener.context, args);
+		try {
+			listener.callback.apply(listener.context, args);
+		} catch(e) {
+			// do nothing
+		}
 	}
 	return true;
 }
 
 function notifyRemoves(emitter, listenerRecords) {
-	for (var i = 0, len = listenerRecords.length; i &lt; len; ++i) {
+	for (var i = 0, len = listenerRecords.length; i < len; ++i) {
 		var listenerRecord = listenerRecords[i];
 		emitter.trigger(new metaEvents.RemoveListenerEvent(listenerRecord.eventIdentifier, listenerRecord.callback, listenerRecord.registeredContext));
 	}
@@ -60,7 +35,7 @@ function notifyRemoves(emitter, listenerRecords) {
  * This constructor function can be used directly, but most commonly, you will
  * call it from within your own constructor.
  *
- * e.g. &lt;code>Emitter.call(this);&lt;/code>
+ * e.g. <code>Emitter.call(this);</code>
  *
  * It will set up the emitter state if called, but it is optional.
  *
@@ -68,18 +43,18 @@ function notifyRemoves(emitter, listenerRecords) {
  * @class Emitter
  * @classdesc
  * Emitter provides event emitting capabilities, similar to Backbone.
- * For more information see &lt;a href="http://caplin.github.io/Emitter">the project page&lt;/a>.
+ * For more information see <a href="http://caplin.github.io/Emitter">the project page</a>.
  */
-Emitter = function Emitter() {
+function Emitter() {
 	this._emitterListeners = new MultiMap();
 	this._emitterMetaEventsOn = false;
-};
+}
 
 Emitter.prototype = {
 	/**
 	 * Registers a listener for an event.
 	 *
-	 * If context is provided, then the &lt;code>this&lt;/code> pointer will refer to it
+	 * If context is provided, then the <code>this</code> pointer will refer to it
 	 * inside the callback.
 	 *
 	 * @param {*} eventIdentifier The identifier of the event that the callback should listen to.
@@ -87,7 +62,7 @@ Emitter.prototype = {
 	 * @param {?Object} [context] An optional context that defines what 'this' should be inside the callback.
 	 */
 	on: function listen(eventIdentifier, callback, context) {
-		if (typeof callback !== 'function') { throw new TypeError("on: Illegal Argument: callback must be a function, was " + (typeof callback)); }
+		if (typeof callback !== 'function') { throw new TypeError('on: Illegal Argument: callback must be a function, was ' + (typeof callback)); }
 
 		// This allows us to work even if the constructor hasn't been called.  Useful for mixins.
 		if (this._emitterListeners === undefined) {
@@ -98,6 +73,17 @@ Emitter.prototype = {
 			// Since triggering meta events can be expensive, we only
 			// do so if a listener has been added to listen to them.
 			this._emitterMetaEventsOn = true;
+		}
+
+		var currentListeners = this._emitterListeners.getValues(eventIdentifier);
+		currentListeners = currentListeners.filter(function(listenerRecord) {
+			return listenerRecord.registeredContext === context
+				&& (listenerRecord.callback === callback
+					|| (listenerRecord.callback._wrappedCallback !== undefined
+						&& listenerRecord.callback._wrappedCallback === callback._wrappedCallback));
+		});
+		if (currentListeners.length > 0) {
+			throw new Error('This callback is already listening to this event.');
 		}
 
 		this._emitterListeners.add(eventIdentifier, {
@@ -115,7 +101,7 @@ Emitter.prototype = {
 	/**
 	 * Registers a listener to receive an event only once.
 	 *
-	 * If context is provided, then the &lt;code>this&lt;/code> pointer will refer to it
+	 * If context is provided, then the <code>this</code> pointer will refer to it
 	 * inside the callback.
 	 *
 	 * @param {*} eventIdentifier The identifier of the event that the callback should listen to.
@@ -123,7 +109,7 @@ Emitter.prototype = {
 	 * @param {?Object} [context] An optional context that defines what 'this' should be inside the callback.
 	 */
 	once: function(eventIdentifier, callback, context) {
-		if (typeof callback !== 'function') { throw new TypeError("onnce: Illegal Argument: callback must be a function, was " + (typeof callback)); }
+		if (typeof callback !== 'function') { throw new TypeError('once: Illegal Argument: callback must be a function, was ' + (typeof callback)); }
 
 		var off = this.off.bind(this), hasFired = false;
 
@@ -184,7 +170,7 @@ Emitter.prototype = {
 			return this.clearListeners(context);
 		} else {
 			// clear a specific listener.
-			if (typeof callback !== 'function') { throw new TypeError("off: Illegal Argument: callback must be a function, was " + (typeof callback)); }
+			if (typeof callback !== 'function') { throw new TypeError('off: Illegal Argument: callback must be a function, was ' + (typeof callback)); }
 
 			var removedAListener = this._emitterListeners.removeLastMatch(eventIdentifier, function(record) {
 				var callbackToCompare = record.callback._onceFunctionMarker === ONCE_FUNCTION_MARKER ? record.callback._wrappedCallback : record.callback;
@@ -222,14 +208,14 @@ Emitter.prototype = {
 
 			// navigate up the prototype chain emitting against the constructors.
 			if (typeof event === 'object') {
-				var last = event, proto = getPrototypeOf(event);
+				var last = event, proto = Object.getPrototypeOf(event);
 				while (proto !== null && proto !== last) {
 					if (this._emitterListeners.hasAny(proto.constructor)) {
 						anyListeners = true;
 						notify(this._emitterListeners.getValues(proto.constructor), arguments);
 					}
 					last = proto;
-					proto = getPrototypeOf(proto);
+					proto = Object.getPrototypeOf(proto);
 				}
 			}
 		}
@@ -284,7 +270,7 @@ Emitter.mixInto = function(destination) {
 		// we would want to copy those methods/properties too.
 		//noinspection JSUnfilteredForInLoop
 		if (destination.hasOwnProperty(key)) {
-			throw new Error("Emitter.mixInto: Destination already has function " + key + " unable to mixin.");
+			throw new Error('Emitter.mixInto: Destination already has function ' + key + ' unable to mixin.');
 		}
 		//noinspection JSUnfilteredForInLoop
 		destination[key] = Emitter.prototype[key];
@@ -292,26 +278,3 @@ Emitter.mixInto = function(destination) {
 };
 
 module.exports = Emitter;
-</code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Emitter.html">Emitter</a></li><li><a href="Emitter.Event.html">Event</a></li><li><a href="Emitter.meta.AddListenerEvent.html">AddListenerEvent</a></li><li><a href="Emitter.meta.DeadEvent.html">DeadEvent</a></li><li><a href="Emitter.meta.ListenerEvent.html">ListenerEvent</a></li><li><a href="Emitter.meta.MetaEvent.html">MetaEvent</a></li><li><a href="Emitter.meta.RemoveListenerEvent.html">RemoveListenerEvent</a></li></ul><h3>Namespaces</h3><ul><li><a href="Emitter.meta.html">meta</a></li></ul>
-</nav>
-
-<br clear="both">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed Nov 06 2013 12:12:21 GMT-0000 (GMT)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>
