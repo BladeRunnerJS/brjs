@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var Utils = require('./Utils');
 
@@ -15,10 +15,17 @@ function RingBuffer(size) {
 }
 
 var ERRORS = {
-	"parameter not function": "Parameter must be a function, was a {0}.",
-	"size less than 1": "RingBuffer cannot be created with a size less than 1 (was {0}).",
-	"size not integer": "RingBuffer cannot be created with a non integer size (was {0})."
+	'parameter not function': 'Parameter must be a function, was a {0}.',
+	'size less than 1': 'RingBuffer cannot be created with a size less than 1 (was {0}).',
+	'size not integer': 'RingBuffer cannot be created with a non integer size (was {0}).'
 };
+
+function errorMessage() {
+	var args = Array.prototype.slice.call(arguments);
+	args[0] = ERRORS[args[0]];
+	return Utils.interpolate.apply(Utils, args);
+}
+RingBuffer.errorMessage = errorMessage;
 
 /**
  * Clears all items from this RingBuffer and resets it.
@@ -61,7 +68,10 @@ RingBuffer.prototype.oldest = function () {
  *          items stored.
  */
 RingBuffer.prototype.get = function (n) {
-	if (n >= this.maxSize) return undefined;
+	if (n >= this.maxSize) {
+		return undefined;
+	}
+
 	if (this.isFull) {
 		return this.buffer[(this.next + n) % this.maxSize];
 	}
@@ -101,7 +111,7 @@ RingBuffer.prototype.push = function(object) {
 RingBuffer.prototype.setSize = function(newSize) {
 	this._checkSize(newSize);
 
-	if (this.maxSize == newSize) {
+	if (this.maxSize === newSize) {
 		return;
 	}
 	var tmpBuffer = new RingBuffer(newSize);
@@ -119,8 +129,8 @@ RingBuffer.prototype.setSize = function(newSize) {
  * @param {Function} func a function that will be called with each item.
  */
 RingBuffer.prototype.forEach = function (func) {
-	if (typeof func != 'function') {
-		throw new TypeError(errorMessage("parameter not function", typeof func));
+	if (typeof func !== 'function') {
+		throw new TypeError(errorMessage('parameter not function', typeof func));
 	}
 
 	for (var i = 0, end = this.getSize(); i < end; ++i) {
@@ -141,37 +151,30 @@ RingBuffer.prototype.getSize = function () {
  *          human readable for debugging but may change.
  */
 RingBuffer.prototype.toString = function () {
-	var result = [ "{sidingwindow start=" ];
+	var result = [ '{sidingwindow start=' ];
 	result.push(this.next);
-	result.push(" values=[");
-	result.push(this.buffer.join(","));
-	result.push("] }");
+	result.push(' values=[');
+	result.push(this.buffer.join(','));
+	result.push('] }');
 
-	return result.join("");
+	return result.join('');
 };
 
 RingBuffer.prototype._checkSize = function(size) {
-	if (size !== (size|0)) {
-		throw new Error(errorMessage("size not integer", size));
+	if (size !== (size | 0)) {
+		throw new Error(errorMessage('size not integer', size));
 	}
 	if (size < 1) {
-		throw new Error(errorMessage("size less than 1", size));
+		throw new Error(errorMessage('size less than 1', size));
 	}
 };
 
 RingBuffer.prototype._changeWindow = function(incoming) {
 	this.buffer[this.next] = incoming;
 	this.next = (this.next + 1) % this.maxSize;
-	if (this.next == 0) {
+	if (this.next === 0) {
 		this.isFull = true;
 	}
 };
-
-function errorMessage() {
-	var args = Array.prototype.slice.call(arguments);
-	args[0] = ERRORS[args[0]];
-	return Utils.interpolate.apply(Utils, args);
-}
-RingBuffer.errorMessage = errorMessage;
 
 module.exports = RingBuffer;

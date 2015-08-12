@@ -1,4 +1,4 @@
 depends: emitr
-js: target/single/fell-no-emitr.js
+js: dist/fell.js
 exports: fell
 commonjsDefinition: true
