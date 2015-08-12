@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.AbstractBRJSNode;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -30,6 +31,7 @@ public class BRJSPlugin extends AbstractBRJSNode implements NamedNode
 	private Logger logger;
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "libs/javascript", null);
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "system-applications", null);
+	private final NodeItem<DirNode> systemJars = new NodeItem<>(this, DirNode.class, "libs/java/system");
 
 	public BRJSPlugin(RootNode rootNode, Node parent, MemoizedFile dir, String name)
 	{
@@ -79,6 +81,11 @@ public class BRJSPlugin extends AbstractBRJSNode implements NamedNode
 	public App systemApp(String name)
 	{
 		return systemApps.item(name);
+	}
+
+	public DirNode systemJars()
+	{
+		return systemJars.item();
 	}
 	
 	

@@ -1,5 +1,6 @@
 package org.bladerunnerjs.plugin.utility;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,8 +9,10 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BRJSPlugin;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.plugin.Plugin;
+import org.bladerunnerjs.utility.ClassPathUpdater;
 
 
 
@@ -27,6 +30,25 @@ public class PluginLoader
 	public static <P extends Plugin, VPP extends P> List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface, Class<VPP> virtualProxyClass)
 	{
 		ClassLoader classLoader = Plugin.class.getClassLoader();
+		
+		
+		
+		
+		
+		for (BRJSPlugin plugin : brjs.sdkPlugins()) {
+			try
+			{
+				ClassPathUpdater.add(plugin.systemJars().dir(), Plugin.class.getClassLoader());
+			}
+			catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException ex)
+			{
+				throw new RuntimeException(ex);
+			}
+		}
+		
+		
+		
+		
 		try {
 			pluginInterface = (Class<P>) classLoader.loadClass(pluginInterface.getCanonicalName());
 		}

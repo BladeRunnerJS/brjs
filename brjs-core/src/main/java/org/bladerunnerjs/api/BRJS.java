@@ -2,6 +2,7 @@ package org.bladerunnerjs.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.plugin.utility.CommandList;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
+import org.bladerunnerjs.utility.ClassPathUpdater;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.JsStyleAccessor;
 import org.bladerunnerjs.utility.FileObserverFactory;
@@ -121,6 +123,21 @@ public class BRJS extends AbstractBRJSRootNode
 		FileModificationRegistryRootFileFilter fileModificationRegistryRootFileFilter = new FileModificationRegistryRootFileFilter(this, rootDir, appsFolderPath);
 		fileModificationRegistry = new FileModificationRegistry(fileModificationRegistryRootFileFilter, globalFilesFilter);
 		
+		
+		for (BRJSPlugin plugin : sdkPlugins()) {
+			try
+			{
+				ClassPathUpdater.add(plugin.systemJars().dir(), this.getClass().getClassLoader());
+			}
+			catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException ex)
+			{
+				throw new RuntimeException(ex);
+			}
+		}
+		
+		
+		
+		
 		appsFolder = getMemoizedFile(appsFolderPath);
 		
 		userApps = new NodeList<>(this, App.class, null, null, null, new ValidAppDirFileFilter(this), appsFolder);
@@ -137,6 +154,10 @@ public class BRJS extends AbstractBRJSRootNode
 		{
 			throw new RuntimeException(e);
 		}
+		
+		
+		
+		
 	}
 	
 	public MemoizedFile appsFolder() {
