@@ -258,7 +258,7 @@ public class BuildAppCommandTest extends SpecTest
 	{
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("build-app", "app", "-v", "1.2.3 BOB");
-		then(exceptions).verifyException(IllegalArgumentException.class, "([a-zA-Z0-9\\.\\-_]+)");
+		then(exceptions).verifyException(IllegalArgumentException.class, "([a-zA-Z0-9\\._\\-]+)");
 	}
 
 	@Test
