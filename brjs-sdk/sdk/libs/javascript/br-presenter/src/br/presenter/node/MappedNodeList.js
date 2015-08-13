@@ -1,3 +1,9 @@
+'use strict';
+
+var Errors = require('br/Errors');
+var Core = require('br/Core');
+var NodeList = require('br/presenter/node/NodeList');
+
 /**
  * @module br/presenter/node/MappedNodeList
  */
@@ -28,23 +34,21 @@
  * @param {Map} mPresentationNodes The initial map of {@link module:br/presenter/node/PresentationNode} instances.
  * @param {Function} fNodeClass (optional) The class/interface that all nodes in this list should be an instance of.
  */
-br.presenter.node.MappedNodeList = function(mPresentationNodes, fNodeClass)
-{
+function MappedNodeList(mPresentationNodes, fNodeClass) {
 	/** @private */
 	this.m_mMappings = {};
 
 	var pPresentationNodes = this._doMapping(mPresentationNodes);
-	br.presenter.node.NodeList.call(this, pPresentationNodes, fNodeClass);
-};
+	NodeList.call(this, pPresentationNodes, fNodeClass);
+}
 
-br.Core.extend(br.presenter.node.MappedNodeList, br.presenter.node.NodeList);
+Core.extend(MappedNodeList, NodeList);
 
 /**
  * Returns the string-to-node mapping. Treat as immutable.
  * @type Object
  */
-br.presenter.node.MappedNodeList.prototype.getPresentationNodesMap = function ()
-{
+MappedNodeList.prototype.getPresentationNodesMap = function() {
 	return this.m_mMappings;
 };
 
@@ -56,26 +60,22 @@ br.presenter.node.MappedNodeList.prototype.getPresentationNodesMap = function ()
  *
  * @param {Array} mPresentationNodes The new map of {@link module:br/presenter/node/PresentationNode} instances.
  */
-br.presenter.node.MappedNodeList.prototype.updateList = function (mPresentationNodes)
-{
+MappedNodeList.prototype.updateList = function(mPresentationNodes) {
 	var pPresentationNodes = this._doMapping(mPresentationNodes);
-	br.presenter.node.NodeList.prototype.updateList.call(this, pPresentationNodes);
+	NodeList.prototype.updateList.call(this, pPresentationNodes);
 	return this;
 };
 
 /**
  * @private
  */
-br.presenter.node.MappedNodeList.prototype._doMapping = function(mPresentationNodes)
-{
-	if(mPresentationNodes instanceof Array)
-	{
-		throw new br.Errors.InvalidParametersError("Cannot use an array to update values in a MappedNodeList, use a map.");
+MappedNodeList.prototype._doMapping = function(mPresentationNodes) {
+	if (mPresentationNodes instanceof Array) {
+		throw new Errors.InvalidParametersError('Cannot use an array to update values in a MappedNodeList, use a map.');
 	}
 	this._cleanUpMappings();
 	var pResult = [];
-	for (var sKey in mPresentationNodes)
-	{
+	for (var sKey in mPresentationNodes) {
 		var oNode = mPresentationNodes[sKey];
 		pResult.push(oNode);
 		this[sKey] = oNode;
@@ -89,31 +89,26 @@ br.presenter.node.MappedNodeList.prototype._doMapping = function(mPresentationNo
 /**
  * @private
  */
-br.presenter.node.MappedNodeList.prototype._setPathsOfNewlyAddedNodes = function()
-{
-    if(this.getPath() !== undefined)
-    {
-        for(var s in this.m_mMappings)
-        {
-            if(this.m_mMappings[s].getPath() === undefined)
-            {
-                this.m_mMappings[s]._$setPath(this.getPath() + "." + s, this.__oPresenterComponent);
-            }
-        }
-    }
+MappedNodeList.prototype._setPathsOfNewlyAddedNodes = function() {
+	if (this.getPath() !== undefined) {
+		for (var s in this.m_mMappings) {
+			if (this.m_mMappings[s].getPath() === undefined) {
+				this.m_mMappings[s]._$setPath(this.getPath() + '.' + s, this.__oPresenterComponent);
+			}
+		}
+	}
 };
 
 /**
 * @private
 */
-br.presenter.node.MappedNodeList.prototype._cleanUpMappings = function()
-{
-	for(var sKey in this.m_mMappings)
-	{
-		if(this[sKey])
-		{
+MappedNodeList.prototype._cleanUpMappings = function() {
+	for (var sKey in this.m_mMappings) {
+		if (this[sKey]) {
 			delete this[sKey];
 		}
 	}
 	this.m_mMappings = {};
 };
+
+module.exports = MappedNodeList;

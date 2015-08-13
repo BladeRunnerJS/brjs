@@ -360,9 +360,9 @@
 								};
 							}
 							jQuery(element)['bind'](eventType, handler);
-						} else if (!mustUseAttachEvent && typeof element.addEventListener == "function")
+						} else if (!mustUseAttachEvent && typeof element.addEventListener == "function") {
 							element.addEventListener(eventType, handler, false);
-						else if (typeof element.attachEvent != "undefined") {
+						} else if (typeof element.attachEvent != "undefined") {
 							var attachEventHandler = function (event) { handler.call(element, event); },
 								attachEventName = "on" + eventType;
 							element.attachEvent(attachEventName, attachEventHandler);
@@ -1134,9 +1134,18 @@
 				return ko.hasPrototype(instance, ko.observable);
 			}
 			ko.isWriteableObservable = function (instance) {
+				/* start BRJS change */
+				var WritableProperty;
+				try {
+					WritableProperty = require("br/presenter/property/WritableProperty");
+				} catch(e) {
+					// ignore the failed require
+				}
 				// Observable
-				if (instance[protoProperty] === ko.observable && instance instanceof br.presenter.property.WritableProperty) //BRJS change
+				if (instance[protoProperty] === ko.observable && typeof WritableProperty !== "undefined" && instance instanceof WritableProperty) {
 					return true;
+				}
+				/* end BRJS change */
 				// Writeable dependent observable
 				if ((typeof instance == "function") && (instance[protoProperty] === ko.dependentObservable) && (instance.hasWriteFunction))
 					return true;
@@ -1939,7 +1948,15 @@
 							if (propWriters && propWriters[key])
 								propWriters[key](value);
 						} else if (ko.isWriteableObservable(property) && (!checkIfDifferent || property.peek() !== value)) {
-							if (property instanceof br.presenter.property.EditableProperty) //BRJS change
+							/* start BRJS change */
+							var EditableProperty;
+							try {
+								EditableProperty = require("br/presenter/property/EditableProperty");
+							} catch(e) {
+								// ignore the failed require
+							}
+							if (typeof EditableProperty !== "undefined" && property instanceof EditableProperty)
+							/* end BRJS change */
 							{
 								property.setUserEnteredValue(value);
 							}
@@ -3407,7 +3424,9 @@
 				// Named template
 				if (typeof template == "string") {
 					templateDocument = templateDocument || document;
-					var elem = br.ServiceRegistry.getService("br.html-service").getTemplateElement(template); //BRJS change
+					/* start BRJS change */
+					var elem = require("service!br.html-service").getTemplateElement(template);
+					/* end BRJS change */
 					if (!elem)
 						throw new Error("Cannot find template with ID " + template);
 					return new ko.templateSources.domElement(elem);

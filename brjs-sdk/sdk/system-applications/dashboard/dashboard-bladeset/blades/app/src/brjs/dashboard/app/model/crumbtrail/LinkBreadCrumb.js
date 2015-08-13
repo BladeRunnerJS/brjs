@@ -1,6 +1,13 @@
-brjs.dashboard.app.model.crumbtrail.LinkBreadCrumb = function(sName, sUrl)
-{
+'use strict';
+
+var Core = require('br/Core');
+var BreadCrumb = require("brjs/dashboard/app/model/crumbtrail/BreadCrumb");
+
+function LinkBreadCrumb(sName, sUrl) {
 	// call super constructor
-	brjs.dashboard.app.model.crumbtrail.BreadCrumb.call(this, "link-breadcrumb", sName, sUrl);
-};
-br.Core.extend(brjs.dashboard.app.model.crumbtrail.LinkBreadCrumb, brjs.dashboard.app.model.crumbtrail.BreadCrumb);
+	BreadCrumb.call(this, 'link-breadcrumb', sName, sUrl);
+}
+
+Core.extend(LinkBreadCrumb, BreadCrumb);
+
+module.exports = LinkBreadCrumb;

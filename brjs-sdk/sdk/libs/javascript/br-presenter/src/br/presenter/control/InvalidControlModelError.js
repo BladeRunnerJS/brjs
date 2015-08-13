@@ -1,3 +1,8 @@
+'use strict';
+
+var Core = require('br/Core');
+var Errors = require('br/Errors');
+
 /**
  * @module br/presenter/control/InvalidControlModelError
  */
@@ -14,10 +19,11 @@
  * @param {String} sControlAdaptor The class name of the control adaptor that's been invoked.
  * @param {String} sAcceptedControlModel The particular class of the presentation node this control adaptor accepts.
  */
-br.presenter.control.InvalidControlModelError = function(sControlAdaptor, sAcceptedControlModel)
-{
+function InvalidControlModelError(sControlAdaptor, sAcceptedControlModel) {
 	var message = "Attempt to bind '" + sControlAdaptor + "' to a presentation node that is not of type '" + sAcceptedControlModel + "'";
-	br.Errors.CustomError.call(this, "InvalidControlModelError", message);
-};
+	Errors.CustomError.call(this, 'InvalidControlModelError', message);
+}
 
-br.Core.extend(br.presenter.control.InvalidControlModelError, br.Errors.CustomError);
+Core.extend(InvalidControlModelError, Errors.CustomError);
+
+module.exports = InvalidControlModelError;

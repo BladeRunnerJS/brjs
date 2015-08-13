@@ -1,3 +1,8 @@
+'use strict';
+
+var Core = require('br/Core');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+
 /**
  * @module br/presenter/testing/NodeListLengthProperty
  */
@@ -7,26 +12,26 @@
  * @alias module:br/presenter/testing/NodeListLengthProperty
  * @extends module:br/presenter/property/WritableProperty
  */
-br.presenter.testing.NodeListLengthProperty = function(oNodeList)
-{
+function NodeListLengthProperty(oNodeList) {
 	// call super constructor
-	br.presenter.property.WritableProperty.call(this, oNodeList.getPresentationNodesArray().length);
-	
-	this.m_oNodeList = oNodeList;
-	this.addChangeListener(this, "_onPropertyChanged");
-};
-br.Core.extend(br.presenter.testing.NodeListLengthProperty, br.presenter.property.WritableProperty);
+	WritableProperty.call(this, oNodeList.getPresentationNodesArray().length);
 
-br.presenter.testing.NodeListLengthProperty.prototype._onPropertyChanged = function()
-{
+	this.m_oNodeList = oNodeList;
+	this.addChangeListener(this, '_onPropertyChanged');
+}
+
+Core.extend(NodeListLengthProperty, WritableProperty);
+
+NodeListLengthProperty.prototype._onPropertyChanged = function() {
 	var nNewLength = this.getValue();
 	var pNodes = this.m_oNodeList.getPresentationNodesArray().slice(0, nNewLength);
-	
-	for(var i = pNodes.length; i < nNewLength; ++i)
-	{
+
+	for (var i = pNodes.length; i < nNewLength; ++i) {
 		var fNodeClass = this.m_oNodeList.m_fPermittedClass;
 		pNodes.push(new fNodeClass());
 	}
-	
+
 	this.m_oNodeList.updateList(pNodes);
 };
+
+module.exports = NodeListLengthProperty;

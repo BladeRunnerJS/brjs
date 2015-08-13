@@ -1,3 +1,9 @@
+'use strict';
+
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var Core = require('br/Core');
+var EditableProperty = require('br/presenter/property/EditableProperty');
+
 /**
  * @module br/presenter/node/ToolTipNode
  */
@@ -13,27 +19,26 @@
  * 
  * @param {String} tooltipClassname Css class name that the {@link module:br/presenter/control/tooltip/TooltipControl} will scan for rendering the tool tip box on.
  */
-br.presenter.node.ToolTipNode = function(tooltipClassname)
-{
-	this.m_sTooltipClassName = tooltipClassname || "has-tooltip";
+function ToolTipNode(tooltipClassname) {
+	this.m_sTooltipClassName = tooltipClassname || 'has-tooltip';
 
-	this.message = new br.presenter.property.EditableProperty("");
+	this.message = new EditableProperty('');
 
-	this.hasMoved = new br.presenter.property.EditableProperty("");
-};
-br.Core.extend(br.presenter.node.ToolTipNode, br.presenter.node.PresentationNode);
+	this.hasMoved = new EditableProperty('');
+}
 
-br.presenter.node.ToolTipNode.prototype.setMessage = function(sMessage)
-{
+Core.extend(ToolTipNode, PresentationNode);
+
+ToolTipNode.prototype.setMessage = function(sMessage) {
 	this.message.setValue(sMessage);
-}
+};
 
-br.presenter.node.ToolTipNode.prototype.move = function(bMove)
-{
+ToolTipNode.prototype.move = function(bMove) {
 	this.hasMoved.setValue(bMove);
-}
+};
 
-br.presenter.node.ToolTipNode.prototype.getTooltipClassName = function()
-{
+ToolTipNode.prototype.getTooltipClassName = function() {
 	return this.m_sTooltipClassName;
-}
+};
+
+module.exports = ToolTipNode;

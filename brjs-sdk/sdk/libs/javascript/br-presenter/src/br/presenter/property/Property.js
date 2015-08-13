@@ -1,3 +1,13 @@
+'use strict';
+
+var Formatter = require('br/presenter/formatter/Formatter');
+var Core = require('br/Core');
+var PropertyListener = require('br/presenter/property/PropertyListener');
+var ListenerFactory = require('br/util/ListenerFactory');
+var Observable = require('br/util/Observable');
+var Errors = require('br/Errors');
+var KnockoutProperty = require('br/presenter/view/knockout/KnockoutProperty');
+
 /**
  * @module br/presenter/property/Property
  */
@@ -5,10 +15,10 @@
 /**
  * Constructs a new <code>Property</code> instance &mdash; you will probably never want to
  * construct a <code>Property</code> yourself since they are not writable.
- * 
+ *
  * @class
  * @alias module:br/presenter/property/Property
- * 
+ *
  * @classdesc
  * Instances of <code>Property</code> are used to store all the values held within a
  * presentation model.
@@ -34,13 +44,12 @@
  *
  * @param {Object} vValue (optional) The default value for this property.
  */
-br.presenter.property.Property = function(vValue)
-{
-	br.presenter.view.knockout.KnockoutProperty.call(this);
+function Property(vValue) {
+	KnockoutProperty.call(this);
 
 	if (vValue instanceof Array) {
 		if (this._containsPresentationNode(vValue)) {
-			throw new br.Errors.InvalidParametersError("Array passed into property instance contains a PresentationNode, use NodeList instead.");
+			throw new Errors.InvalidParametersError('Array passed into property instance contains a PresentationNode, use NodeList instead.');
 		}
 	}
 
@@ -51,30 +60,29 @@ br.presenter.property.Property = function(vValue)
 	this.m_pFormatters = [];
 
 	/** @private */
-	this.m_oObservable = new br.util.Observable();
+	this.m_oObservable = new Observable();
 
 	/** @private */
-	this.m_oChangeListenerFactory = new br.util.ListenerFactory(br.presenter.property.PropertyListener, "onPropertyChanged");
+	this.m_oChangeListenerFactory = new ListenerFactory(PropertyListener, 'onPropertyChanged');
 
 	/** @private */
-	this.m_oUpdateListenerFactory = new br.util.ListenerFactory(br.presenter.property.PropertyListener, "onPropertyUpdated");
-};
-br.Core.extend(br.presenter.property.Property, br.presenter.view.knockout.KnockoutProperty);
+	this.m_oUpdateListenerFactory = new ListenerFactory(PropertyListener, 'onPropertyUpdated');
+}
+
+Core.extend(Property, KnockoutProperty);
 
 /**
  * Returns the unformatted value for this property.
  * @type Object
  */
-br.presenter.property.Property.prototype.getValue = function()
-{
+Property.prototype.getValue = function() {
 	return this.m_vValue;
 };
 
 /**
  * @private
  */
-br.presenter.property.Property.prototype._$setInternalValue = function(vValue)
-{
+Property.prototype._$setInternalValue = function(vValue) {
 	var vOldValue = this.m_vValue;
 	var bBothValuesAreNaN = false;
 	this.m_vValue = vValue;
@@ -85,10 +93,9 @@ br.presenter.property.Property.prototype._$setInternalValue = function(vValue)
 
 	this.updateView(this.getFormattedValue());
 
-	this.m_oObservable.notifyObservers("onPropertyUpdated");
-	if (vOldValue !== this.m_vValue && bBothValuesAreNaN === false)
-	{
-		this.m_oObservable.notifyObservers("onPropertyChanged");
+	this.m_oObservable.notifyObservers('onPropertyUpdated');
+	if (vOldValue !== this.m_vValue && bBothValuesAreNaN === false) {
+		this.m_oObservable.notifyObservers('onPropertyChanged');
 	}
 
 	return this;
@@ -100,12 +107,10 @@ br.presenter.property.Property.prototype._$setInternalValue = function(vValue)
  *
  * @type Object
  */
-br.presenter.property.Property.prototype.getFormattedValue = function()
-{
+Property.prototype.getFormattedValue = function() {
 	var sFormattedValue = this.m_vValue;
 
-	for(var i = 0, l = this.m_pFormatters.length; i < l; ++i)
-	{
+	for (var i = 0, l = this.m_pFormatters.length; i < l; ++i) {
 		var oFormatterPair = this.m_pFormatters[i];
 		sFormattedValue = oFormatterPair.formatter.format(sFormattedValue, oFormatterPair.config);
 	}
@@ -119,8 +124,7 @@ br.presenter.property.Property.prototype.getFormattedValue = function()
  *
  * @type Object
  */
-br.presenter.property.Property.prototype.getRenderedValue = function()
-{
+Property.prototype.getRenderedValue = function() {
 	return this.getValue();
 };
 
@@ -132,8 +136,7 @@ br.presenter.property.Property.prototype.getRenderedValue = function()
  *
  * @type String
  */
-br.presenter.property.Property.prototype.getPath = function()
-{
+Property.prototype.getPath = function() {
 	return this.m_sPath;
 };
 
@@ -148,14 +151,15 @@ br.presenter.property.Property.prototype.getPath = function()
  * @param {Object} mConfig (optional) Any additional configuration for the formatter.
  * @type br.presenter.property.Property
  */
-br.presenter.property.Property.prototype.addFormatter = function(oFormatter, mConfig)
-{
-	if(!br.Core.fulfills(oFormatter, br.presenter.formatter.Formatter))
-	{
-		throw new br.Errors.InvalidParametersError("oFormatter was not an instance of Formatter");
+Property.prototype.addFormatter = function(oFormatter, mConfig) {
+	if (!Core.fulfills(oFormatter, Formatter)) {
+		throw new Errors.InvalidParametersError('oFormatter was not an instance of Formatter');
 	}
 
-	var oFormatterPair = {formatter:oFormatter, config:mConfig};
+	var oFormatterPair = {
+		formatter: oFormatter,
+		config: mConfig
+	};
 	this.m_pFormatters.push(oFormatterPair);
 	return this;
 };
@@ -168,16 +172,14 @@ br.presenter.property.Property.prototype.addFormatter = function(oFormatter, mCo
  * @param {boolean} bNotifyImmediately Whether to invoke the listener immediately using the current value.
  * @type br.presenter.property.Property
  */
-br.presenter.property.Property.prototype.addListener = function(oListener, bNotifyImmediately)
-{
-	if(!br.Core.fulfills(oListener, br.presenter.property.PropertyListener))
-	{
-		throw new br.Errors.InvalidParametersError("oListener was not an instance of PropertyListener");
+Property.prototype.addListener = function(oListener, bNotifyImmediately) {
+	if (!Core.fulfills(oListener, PropertyListener)) {
+		throw new Errors.InvalidParametersError('oListener was not an instance of PropertyListener');
 	}
 
 	this.m_oObservable.addObserver(oListener);
 
-	if(bNotifyImmediately) {
+	if (bNotifyImmediately) {
 		oListener.onPropertyUpdated();
 		oListener.onPropertyChanged();
 	}
@@ -191,8 +193,7 @@ br.presenter.property.Property.prototype.addListener = function(oListener, bNoti
  * @param {module:br/presenter/property/PropertyListener} oListener The listener being removed.
  * @type br.presenter.property.Property
  */
-br.presenter.property.Property.prototype.removeListener = function(oListener)
-{
+Property.prototype.removeListener = function(oListener) {
 	this.m_oObservable.removeObserver(oListener);
 	return this;
 };
@@ -202,8 +203,7 @@ br.presenter.property.Property.prototype.removeListener = function(oListener)
  *
  * @type br.presenter.property.Property
  */
-br.presenter.property.Property.prototype.removeAllListeners = function()
-{
+Property.prototype.removeAllListeners = function() {
 	this.m_oObservable.removeAllObservers();
 	return this;
 };
@@ -224,8 +224,7 @@ br.presenter.property.Property.prototype.removeAllListeners = function()
  * @param {boolean} [bNotifyImmediately] (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-br.presenter.property.Property.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmediately)
-{
+Property.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmediately) {
 	var oPropertyListener = this.m_oChangeListenerFactory.createListener(oListener, sMethod);
 	this.addListener(oPropertyListener, bNotifyImmediately);
 
@@ -248,8 +247,7 @@ br.presenter.property.Property.prototype.addChangeListener = function(oListener,
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-br.presenter.property.Property.prototype.addUpdateListener = function(oListener, sMethod, bNotifyImmediately)
-{
+Property.prototype.addUpdateListener = function(oListener, sMethod, bNotifyImmediately) {
 	var oPropertyListener = this.m_oUpdateListenerFactory.createListener(oListener, sMethod);
 	this.addListener(oPropertyListener, bNotifyImmediately);
 
@@ -259,28 +257,30 @@ br.presenter.property.Property.prototype.addUpdateListener = function(oListener,
 /**
  * @private
  */
-br.presenter.property.Property.prototype._$setPath = function(sPath)
-{
+Property.prototype._$setPath = function(sPath) {
 	this.m_sPath = sPath;
 };
 
 /**
  * @private
  */
-br.presenter.property.Property.prototype._$getObservable = function()
-{
+Property.prototype._$getObservable = function() {
 	return this.m_oObservable;
 };
 
 /**
  * @private
  */
-br.presenter.property.Property.prototype._containsPresentationNode = function(pValues)
-{
+Property.prototype._containsPresentationNode = function(pValues) {
 	for (var idx = 0, max = pValues.length; idx < max; idx++) {
-		if (pValues[idx] instanceof br.presenter.node.PresentationNode) {
+		if (pValues[idx] instanceof PresentationNode) {
 			return true;
 		}
 	}
+
 	return false;
 };
+
+module.exports = Property;
+
+var PresentationNode = require('br/presenter/node/PresentationNode');

@@ -101,4 +101,6 @@ JQueryDatePickerLocaleUtil.getDefaultLocales = function() {
 	return defaults;
 };
 
-br.presenter.control.datefield.JQueryDatePickerLocaleUtil = JQueryDatePickerLocaleUtil;
+JQueryDatePickerLocaleUtil = JQueryDatePickerLocaleUtil;
+
+module.exports = JQueryDatePickerLocaleUtil;

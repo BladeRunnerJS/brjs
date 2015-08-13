@@ -19,6 +19,7 @@ import org.bladerunnerjs.api.ThirdpartyLibManifest;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.SourceModulePatch;
@@ -185,12 +186,7 @@ public class ThirdpartySourceModule implements SourceModule
 		{
 			for (String dependentLibName : manifest.getDepends())
 			{
-				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
-				if (!dependentLib.dirExists())
-				{
-					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
-				}
-				dependentLibs.add(dependentLib.asset(dependentLib.requirePrefix()));
+				dependentLibs.add( findDependentAsset(bundlableNode, dependentLibName) );
 			}
 		}
 		catch (ConfigException ex)
@@ -201,6 +197,26 @@ public class ThirdpartySourceModule implements SourceModule
 		return new ArrayList<Asset>( dependentLibs );
 	}
 	
+	private Asset findDependentAsset(BundlableNode bundlableNode, String dependentLibName) throws ConfigException
+	{
+		JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
+		if (dependentLib.dirExists())
+		{
+			return dependentLib.asset(dependentLib.requirePrefix());
+		}
+		
+		try {
+			Asset dependentAsset = bundlableNode.getLinkedAsset(dependentLibName);
+			if (dependentAsset.isRequirable()) {
+				return dependentAsset;
+			}
+		} catch (RequirePathException ex) {
+			// ignore the exception
+		}
+		
+		throw new ConfigException(String.format("Library '%s' depends on the library or source module '%s', which doesn't exist.", file().getName(), dependentLibName)) ;
+	}
+
 	@Override
 	public List<Asset> getPostExportDefineTimeDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return Collections.emptyList();

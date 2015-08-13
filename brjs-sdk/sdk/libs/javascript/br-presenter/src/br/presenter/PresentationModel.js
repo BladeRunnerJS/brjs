@@ -1,3 +1,9 @@
+'use strict';
+
+var Errors = require('br/Errors');
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/PresentationModel
  */
@@ -21,10 +27,10 @@
  * instances, where the root node must extend <code>PresentationModel</code>, which in turn
  * extends {@link module:br/presenter/node/PresentationNode}.</p>
  */
-br.presenter.PresentationModel = function()
-{
-};
-br.Core.extend(br.presenter.PresentationModel, br.presenter.node.PresentationNode);
+function PresentationModel() {
+}
+
+Core.extend(PresentationModel, PresentationNode);
 
 /**
  * Presentation models can use the {@link module:br/presenter/PresentationModel#getComponentFrame}
@@ -34,8 +40,7 @@ br.Core.extend(br.presenter.PresentationModel, br.presenter.node.PresentationNod
  * @param {module:br/component/Frame} oComponentFrame The frame within which the
  * presenter component resides.
  */
-br.presenter.PresentationModel.prototype.setComponentFrame = function(oComponentFrame)
-{
+PresentationModel.prototype.setComponentFrame = function(oComponentFrame) {
 	this.m_oComponentFrame = oComponentFrame;
 };
 
@@ -46,8 +51,7 @@ br.presenter.PresentationModel.prototype.setComponentFrame = function(oComponent
  * 
  * @type br.component.Frame
  */
-br.presenter.PresentationModel.prototype.getComponentFrame = function()
-{
+PresentationModel.prototype.getComponentFrame = function() {
 	return this.m_oComponentFrame;
 };
 
@@ -57,37 +61,32 @@ br.presenter.PresentationModel.prototype.getComponentFrame = function()
  * @return Presentation model class name.
  * @type String
  */
-br.presenter.PresentationModel.prototype.getClassName = function()
-{
-	throw new br.Errors.UnimplementedAbstractMethodError("br.presenter.PresentationModel.getClassName() has not been implemented.");
+PresentationModel.prototype.getClassName = function() {
+	throw new Errors.UnimplementedAbstractMethodError('br.presenter.PresentationModel.getClassName() has not been implemented.');
 };
 
 /**
  * @private
  * @param {String} sPath
  */
-br.presenter.PresentationModel.prototype._$setPath = function(oPresenterComponent)
-{
-	this.m_sPath = "";
-	
-	for(var sChildToBeSet in this)
-	{
+PresentationModel.prototype._$setPath = function(oPresenterComponent) {
+	this.m_sPath = '';
+
+	for (var sChildToBeSet in this) {
 		var oChildToBeSet = this[sChildToBeSet];
-		
-		if(this._isPresenterChild(sChildToBeSet,oChildToBeSet))
-		{
+
+		if (this._isPresenterChild(sChildToBeSet, oChildToBeSet)) {
 			var sCurrentPath = oChildToBeSet.getPath();
-			
-			if(sCurrentPath === undefined)
-			{
+
+			if (sCurrentPath === undefined) {
 				oChildToBeSet._$setPath(sChildToBeSet, oPresenterComponent);
-			}
-			else
-			{
-				throw new br.Errors.IllegalStateError("'" + sCurrentPath + "' and '" + sChildToBeSet + "' are both references to the same instance in PresentationModel.");
+			} else {
+				throw new Errors.IllegalStateError("'" + sCurrentPath + "' and '" + sChildToBeSet + "' are both references to the same instance in PresentationModel.");
 			}
 		}
 	}
-	
+
 	this.__oPresenterComponent = oPresenterComponent;
 };
+
+module.exports = PresentationModel;

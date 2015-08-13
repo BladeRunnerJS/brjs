@@ -7,7 +7,7 @@
 /**
  * @class
  * @alias module:br/test/ViewFixture
- * 
+ *
  * @classdesc
  * <p>The <code>ViewFixture</code> enables interacting with the rendered view via <code>ViewFixtureHandlers</code>. An
  * element in the view can be selected with jQuery selectors. In Given and When phases the selected element in the
@@ -19,13 +19,13 @@
  * and the corresponding presentation model properties have been specified correctly. A test might set a value on the
  * view element in the Given or When phases and then check in the Then phase that this value has been updated after
  * updating the relevant presentation model property.</p>
- * 
+ *
  * <p>Assuming that the <code>ViewFixture</code> has been added with the identifier <code>view</code> as a subfixture
  * of the <code>ComponentFixture</code> which has the identifier <code>form</code>, then the <code>ViewFixture</code>
  * can be used in the following way in a test:</p>
- * 
+ *
  * <pre>then("form.view.(.orderSummary [identifier=\'orderStatus\']).text = 'complete'");</pre>
- * 
+ *
  * <p>In the above example the jQuery selector for the element in the view is
  * <code>.spotGeneralSummary [identifier=\'dealSubmittedFor\']</code> and it must be specified within parentheses. The
  * following part of the statement, <code>.text = 'test phrase'</code>, specifies the ViewFixtureHandler
@@ -35,7 +35,7 @@
  * <code>'test phrase'</code>.</p>
  */
 
-require('jquery');
+var jQuery = require('jquery');
 require('es5-shim');
 
 var br = require('br/Core');

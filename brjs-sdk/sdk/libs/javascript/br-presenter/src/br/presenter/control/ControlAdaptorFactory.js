@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @module br/presenter/control/ControlAdaptorFactory
  */
@@ -7,7 +9,5 @@ var ControlAdaptorFactoryClass = require('br/presenter/control/ControlAdaptorFac
 /**
  * @type {module:br/presenter/control/ControlAdaptorFactoryClass}
  */
-module.exports = new ControlAdaptorFactoryClass();
 
-// TODO: delete this line once the package is CommonJs
-br.presenter.control.ControlAdaptorFactory = module.exports;
+module.exports = new ControlAdaptorFactoryClass();

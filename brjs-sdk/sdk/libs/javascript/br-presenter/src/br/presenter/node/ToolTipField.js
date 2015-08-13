@@ -1,3 +1,10 @@
+'use strict';
+
+var Core = require('br/Core');
+var PropertyListener = require('br/presenter/property/PropertyListener');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+var Field = require('br/presenter/node/Field');
+
 /**
  * @module br/presenter/node/ToolTipField
  */
@@ -21,17 +28,19 @@
  * @param {Object} vValue (optional) The initial value of the field, either using a
  * primitive type or as a {@link module:br/presenter/property/EditableProperty}.
  */
-br.presenter.node.ToolTipField = function(vValue)
-{
-	br.presenter.node.Field.call(this, vValue);
-	this.tooltipClassName = new br.presenter.property.WritableProperty('');
+function ToolTipField(vValue) {
+	Field.call(this, vValue);
+	this.tooltipClassName = new WritableProperty('');
 
-	this.hasToolTip = new br.presenter.property.WritableProperty(false);
+	this.hasToolTip = new WritableProperty(false);
 
-	var tooltipClassNamePropertyListener = new br.presenter.property.PropertyListener();
+	var tooltipClassNamePropertyListener = new PropertyListener();
 	tooltipClassNamePropertyListener.onPropertyChanged = function() {
-		this.hasToolTip.setValue(this.tooltipClassName.getValue() !== "")
+		this.hasToolTip.setValue(this.tooltipClassName.getValue() !== '');
 	}.bind(this);
 	this.tooltipClassName.addListener(tooltipClassNamePropertyListener, true);
-};
-br.Core.extend(br.presenter.node.ToolTipField, br.presenter.node.Field);
+}
+
+Core.extend(ToolTipField, Field);
+
+module.exports = ToolTipField;
