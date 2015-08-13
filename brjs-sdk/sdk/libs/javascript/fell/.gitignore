@@ -1,5 +1,5 @@
 *.iml
 *.idea
-target/amd-simple/
 node_modules/
+npm-debug.log
 sauce_connect.log*

@@ -1,18 +1,7 @@
-before_script:
-- npm install -g grunt-cli
-- git submodule update --init --recursive
-script:
-- npm test
-- npm run-script saucelabs-test
-node_js:
-- 0.1
-branches:
-  only:
-  - master
-  - gh-pages
 language: node_js
-addons:
-  sauce_connect:
-    username: "bladerunnerjs"
-    access_key:
-      secure: "L14SCbZI6Dv0mfcD1a93TgnmHtneyCvrMp591+mYK9YrSb4OoputqrJWZUcheErvs4/RHWj4XdxRoQtCsOZDVIIt8HxgJZsL+14nU9/AQX+F7QYDx3UeDaDycSTl5BQgrlvSdGyqsRxXRc/HcFWLLceE4BH2fI7a4G6kNGEotak="
+node_js:
+  - "0.12"
+sudo: false
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
