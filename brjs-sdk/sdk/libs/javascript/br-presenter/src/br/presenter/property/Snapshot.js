@@ -64,7 +64,4 @@ Snapshot.prototype.apply = function() {
 	}
 };
 
-// TODO: this can be removed once this package has been converted to CommonJS
-Property;
-
 module.exports = Snapshot;

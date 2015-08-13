@@ -73,6 +73,4 @@ PropertyListener.prototype.onValidationComplete = function() {
 	// optional callback
 };
 
-PropertyListener = PropertyListener;
-
 module.exports = PropertyListener;

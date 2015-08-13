@@ -25,6 +25,4 @@ NodeListListener.prototype.onNodeListChanged = function() {
 	// optional callback
 };
 
-NodeListListener = NodeListListener;
-
 module.exports = NodeListListener;

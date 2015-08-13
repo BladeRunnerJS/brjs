@@ -39,6 +39,4 @@ SerializablePresentationModel.prototype.deserialize = function(sData) {
 		'br.presenter.SerializablePresentationModel.deserialize() has not been implemented.');
 };
 
-SerializablePresentationModel = SerializablePresentationModel;
-
 module.exports = SerializablePresentationModel;

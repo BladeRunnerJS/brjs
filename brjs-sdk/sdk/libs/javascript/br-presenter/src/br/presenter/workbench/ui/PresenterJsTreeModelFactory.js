@@ -105,9 +105,4 @@ TreeItemPropertyListener.prototype.onPropertyChanged = function() {
 	this._treeModel.onChange(this._treeItem.id, this._treeItem.text);
 };
 
-
-// TODO: switch to the other line once this package is moved to CommonJs
-// module.exports = PresenterJsTreeModelFactory;
-PresenterJsTreeModelFactory = PresenterJsTreeModelFactory;
-
 module.exports = PresenterJsTreeModelFactory;

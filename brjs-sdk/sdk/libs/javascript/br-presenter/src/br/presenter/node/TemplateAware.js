@@ -35,6 +35,4 @@ TemplateAware.prototype.getTemplateName = function() {
 	throw new Errors.UnimplementedInterfaceError('This method should be overridden.');
 };
 
-TemplateAware = TemplateAware;
-
 module.exports = TemplateAware;

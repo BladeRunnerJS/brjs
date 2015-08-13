@@ -58,6 +58,4 @@ TooltipHelper.prototype.remove = function() {
 	throw new Errors.UnimplementedInterfaceError('TooltipHelper#remove() has not been implemented.');
 };
 
-TooltipHelper = TooltipHelper;
-
 module.exports = TooltipHelper;

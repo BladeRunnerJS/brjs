@@ -94,6 +94,4 @@ ControlAdaptor.prototype.destroy = function() {
 	// do nothing -- this method is optional.
 };
 
-ControlAdaptor = ControlAdaptor;
-
 module.exports = ControlAdaptor;

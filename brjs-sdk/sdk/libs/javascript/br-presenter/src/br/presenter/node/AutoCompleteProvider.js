@@ -39,6 +39,4 @@ AutoCompleteProvider.prototype.isValidOption = function(sValue) {
 	throw new Errors.CustomError(Errors.UNIMPLEMENTED_INTERFACE, 'br.presenter.node.AutoCompleteProvider.getList() has not been implemented.');
 };
 
-AutoCompleteProvider = AutoCompleteProvider;
-
 module.exports = AutoCompleteProvider;
