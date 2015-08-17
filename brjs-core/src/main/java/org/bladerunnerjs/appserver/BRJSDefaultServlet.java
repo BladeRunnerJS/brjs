@@ -27,7 +27,7 @@ public class BRJSDefaultServlet extends DefaultServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		if (isInternalErrorPageRequest(req)) {
+		if (isInternalErrorPageRedirect(req)) {
 			super.doGet(req, resp);
 		} else {
 			sendError(resp);
@@ -37,7 +37,7 @@ public class BRJSDefaultServlet extends DefaultServlet {
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		if (isInternalErrorPageRequest(req)) {
+		if (isInternalErrorPageRedirect(req)) {
 			super.doDelete(req, resp);
 		} else {
 			sendError(resp);
@@ -46,7 +46,7 @@ public class BRJSDefaultServlet extends DefaultServlet {
 	@Override
 	protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		if (isInternalErrorPageRequest(req)) {
+		if (isInternalErrorPageRedirect(req)) {
 			super.doHead(req, resp);
 		} else {
 			sendError(resp);
@@ -55,7 +55,7 @@ public class BRJSDefaultServlet extends DefaultServlet {
 	@Override
 	protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		if (isInternalErrorPageRequest(req)) {
+		if (isInternalErrorPageRedirect(req)) {
 			super.doOptions(req, resp);
 		} else {
 			sendError(resp);
@@ -64,7 +64,7 @@ public class BRJSDefaultServlet extends DefaultServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		if (isInternalErrorPageRequest(req)) {
+		if (isInternalErrorPageRedirect(req)) {
 			super.doPost(req, resp);
 		} else {
 			sendError(resp);
@@ -73,7 +73,7 @@ public class BRJSDefaultServlet extends DefaultServlet {
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		if (isInternalErrorPageRequest(req)) {
+		if (isInternalErrorPageRedirect(req)) {
 			super.doPut(req, resp);
 		} else {
 			sendError(resp);
@@ -82,14 +82,14 @@ public class BRJSDefaultServlet extends DefaultServlet {
 	@Override
 	protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		if (isInternalErrorPageRequest(req)) {
+		if (isInternalErrorPageRedirect(req)) {
 			super.doTrace(req, resp);
 		} else {
 			sendError(resp);
 		}
 	}
 	
-	private boolean isInternalErrorPageRequest(HttpServletRequest request) {
+	private boolean isInternalErrorPageRedirect(HttpServletRequest request) {
 		return (request.getAttribute(Dispatcher.FORWARD_REQUEST_URI) != null && 
 				request.getAttribute(Dispatcher.ERROR_STATUS_CODE) != null &&
 				request.getAttribute(Dispatcher.ERROR_REQUEST_URI) != null &&
