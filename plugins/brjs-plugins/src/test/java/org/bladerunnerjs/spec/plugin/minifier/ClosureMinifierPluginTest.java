@@ -25,7 +25,9 @@ public class ClosureMinifierPluginTest extends SpecTest
 	private String unminifiedContentReserved;
 	private String minifyWhitespaceContent;
 	private String minifySimpleContent;
+	private String minifyMediumContent;
 	private String minifyAdvancedContent;
+	private String unminifiedClass;
 	private File targetDir;
 	
 	@Before
@@ -41,21 +43,34 @@ public class ClosureMinifierPluginTest extends SpecTest
 			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
 			
 		/* only closure compiler service used to calculate responses - http://closure-compiler.appspot.com/home */
-		unminifiedContent = "function hello(name) {\n"+
+		unminifiedContent = "function _hello(name) {\n"+
 				"  alert('Hello, ' + name);\n"+
 				"}\n"+
-				"hello('New user');\n"+
+				"_hello('New user');\n"+
 				"\n";
-		minifyWhitespaceContent = "function hello(name){alert(\"Hello, \"+name)}hello(\"New user\")";
-		minifySimpleContent		= "function(b,c,a){alert(\"Hello, New user\")";
-		minifyAdvancedContent	= "alert(\"Hello, New user\")";
+		minifyWhitespaceContent 	= "function _hello(name){alert(\"Hello, \"+name)}_hello(\"New user\")";
+		minifySimpleContent			= "function(b,c,a){alert(\"Hello, New user\")";
+		minifyMediumContent			= "function d(a){alert(\"Hello, \"+a)}d(\"New user\")";
+		minifyAdvancedContent		= "alert(\"Hello, New user\")";
+
+		unminifiedClass = "var MyClass = function() {\n" +
+				"	this.m_nCount = 0;\n" +
+				"	this.someProp = true;\n" +
+				"};\n" +
+				"MyClass.prototype.publicMethod = function() {\n" +
+				"	this.someProp = true;\n" +
+				"};\n" +
+				"MyClass.prototype._privateMethod = function() {\n" +
+				"	this.someProp = false;\n" +
+				"};\n" +
+				"window.obj = new MyClass();\n";
 		
 		// for closure compiler test using reserved words as var names
-		unminifiedContentReserved = "function hello(name) {\n" +
+		unminifiedContentReserved = "function _hello(name) {\n" +
 				"  var while = 1000;\n" +
 				"  alert('Hello, ' + name + ' ' + while);\n" +
 				"}\n" +
-				"hello('New user');\n" +
+				"_hello('New user');\n" +
 				"\n";
 	}
 	
@@ -89,6 +104,29 @@ public class ClosureMinifierPluginTest extends SpecTest
 		then(response).containsText(minifySimpleContent);
 	}
 	
+	@Test
+	public void closureMinifierRunsForRequestsWithClosureMediumOption() throws Exception
+	{
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1", unminifiedContent);
+		when(aspect).requestReceivedInDev("js/prod/closure-medium/bundle.js", response);
+		then(response).containsText(minifyMediumContent);
+	}
+	
+	@Test
+	public void mediumOptionDoesntRenamePrivateMembers() throws Exception
+	{
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1", unminifiedClass);
+		when(aspect).requestReceivedInDev("js/prod/closure-medium/bundle.js", response);
+		then(response).containsText("this.someProp")
+			.and(response).containsText("prototype.publicMethod")
+			.and(response).doesNotContainText("this.m_nCount")
+			.and(response).doesNotContainText("prototype._privateMethod");
+	}
+
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureAdvancedOption() throws Exception
 	{

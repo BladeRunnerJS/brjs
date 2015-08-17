@@ -28,8 +28,10 @@ import com.Ostermiller.util.ConcatReader;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.PropertyRenamingPolicy;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.VariableRenamingPolicy;
 
 
 public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements MinifierPlugin {
@@ -41,6 +43,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	
 	public static final String CLOSURE_WHITESPACE = "closure-whitespace";
 	public static final String CLOSURE_SIMPLE = "closure-simple";
+	public static final String CLOSURE_MEDIUM = "closure-medium";
 	public static final String CLOSURE_ADVANCED = "closure-advanced";
 	
 	private Logger logger;
@@ -50,6 +53,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	{
 		settingNames.add(CLOSURE_WHITESPACE);
 		settingNames.add(CLOSURE_SIMPLE);
+		settingNames.add(CLOSURE_MEDIUM);
 		settingNames.add(CLOSURE_ADVANCED);
 	}
 	
@@ -71,9 +75,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 		ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
 		
 		Compiler compiler = new Compiler( new PrintStream(errorStream) );
-		CompilerOptions options = new CompilerOptions();
-		
-		getCompilationLevelForSettingName(settingName).setOptionsForCompilationLevel(options);
+		CompilerOptions options = getCompilerOptions(settingName);
 		
 		/* we have to use an extern, so create a dummy one */
 		SourceFile extern = SourceFile.fromCode("externs.js", "function alert(x) {}");
@@ -128,21 +130,35 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 		return new SequenceInputStream( inputStreams.elements() );
 	}
 	
-	private CompilationLevel getCompilationLevelForSettingName(String settingName)
+	private CompilerOptions getCompilerOptions(String settingName)
 	{
+		CompilerOptions options = new CompilerOptions();
+		
 		if (settingName.equals(CLOSURE_WHITESPACE))
 		{
-			return CompilationLevel.WHITESPACE_ONLY;
+			CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options);
 		}
-		if (settingName.equals(CLOSURE_SIMPLE))
+		else if (settingName.equals(CLOSURE_SIMPLE))
 		{
-			return CompilationLevel.SIMPLE_OPTIMIZATIONS;
+			CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
 		}
-		if (settingName.equals(CLOSURE_ADVANCED))
+		else if (settingName.equals(CLOSURE_MEDIUM))
 		{
-			return CompilationLevel.ADVANCED_OPTIMIZATIONS;
+			CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
+			options.setRenamingPolicy(VariableRenamingPolicy.LOCAL, PropertyRenamingPolicy.ALL_UNQUOTED);
+			options.setRenamePrivatePropertiesOnly(true);
+			options.setCodingConvention(new BRJSCodingConvention());
 		}
-		throw new RuntimeException("Closure compile does not support the seting " + settingName);
+		else if (settingName.equals(CLOSURE_ADVANCED))
+		{
+			CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
+		}
+		else
+		{
+			throw new RuntimeException("Closure compile does not support the seting " + settingName);
+		}
+		
+		return options;
 	}
 	
 }
