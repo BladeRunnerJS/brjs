@@ -203,8 +203,7 @@ public class IntegrationServeCommandTest extends SpecTest
 			public boolean apply(String input)
 			{
 				for (String line : StringUtils.split(input, "\n")) {
-					
-					if (line.matches( "module\\.exports\\.APP_VERSION = 'myversion\\-[0-9]{14}';")) {
+					if (line.matches( ".*module\\.exports\\.APP_VERSION = 'myversion\\-[0-9]{14}';.*")) {
 						return true;
 					}
 				}

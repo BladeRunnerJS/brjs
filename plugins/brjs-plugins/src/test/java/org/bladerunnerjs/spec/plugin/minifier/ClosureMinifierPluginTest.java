@@ -141,7 +141,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(aspect).indexPageRequires("appns/Class")
 			.and(aspect).classFileHasContent("Class", "{ prop=\"$£€ø\" }");
 		when(aspect).requestReceivedInDev("js/prod/closure-whitespace/bundle.js", response);
-		then(response).containsText("{prop=\"$\\u00a3\\u20ac\\u00f8\"}");
+		then(response).containsText("{prop=\"$\\u00a3\\u20ac\\u00f8\";return module.exports}");
 	}
 	
 	@Test
@@ -154,7 +154,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("/v/1234/js/prod/closure-whitespace/bundle.js", "{prop=\"$\\u00a3\\u20ac\\u00f8\"}");
+		then(targetDir).containsFileWithContents("/v/1234/js/prod/closure-whitespace/bundle.js", "{prop=\"$\\u00a3\\u20ac\\u00f8\";return module.exports}");
 	}
 	
 }
