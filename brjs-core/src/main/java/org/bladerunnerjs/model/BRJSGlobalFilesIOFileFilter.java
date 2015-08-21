@@ -22,7 +22,7 @@ public class BRJSGlobalFilesIOFileFilter implements IOFileFilter
 	@Override
 	public boolean accept(File dir, String name)
 	{
-		return name.equals(".js-style") || name.equals("brjs.conf") || name.equals("app.conf");
+		return name.equals(".js-style") || name.equals("brjs.conf") || name.equals("app.conf") || name.equals("tzdb.dat");
 	}
 
 }
