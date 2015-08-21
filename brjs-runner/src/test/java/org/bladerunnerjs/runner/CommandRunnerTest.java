@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.plugin.EventObserver;
+import org.bladerunnerjs.logger.ConsoleLoggerStore;
+import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.events.BundleSetCreatedEvent;
 import org.bladerunnerjs.model.events.NewInstallEvent;
@@ -40,7 +42,9 @@ public class CommandRunnerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		StaticLoggerBinder.getSingleton().getLoggerFactory().setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
+		ConsoleLoggerStore loggerFactory = StaticLoggerBinder.getSingleton().getLoggerFactory();
+		loggerFactory.setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
+		loggerFactory.setLogLevel(LogLevel.WARN);
 		commandRunner = new CommandRunner();
 		
 		tempDir = FileUtils.createTemporaryDirectory( getClass() );
@@ -139,6 +143,20 @@ public class CommandRunnerTest {
 	}
 	
 	@Test
+	public void onlyErrorsAreDisplayedWhenTheQuietFlagIsEnabled() throws Exception {
+		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--quiet"});
+		
+		String output = outputStream.toString("UTF-8");
+		assertContains("error-level", output);
+		assertDoesNotContain("warn-level", output);
+		assertDoesNotContain("console-level", output);
+		assertDoesNotContain("info-level", output);
+		assertDoesNotContain("debug-level", output);
+	}
+	
+	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabled() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();
 		dirFile("valid-sdk-directory/sdk").mkdirs();
@@ -205,15 +223,15 @@ public class CommandRunnerTest {
 		dirFile("valid-sdk-directory/sdk/libs/java").mkdirs();
 		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/sdk/libs/java/application/brjs-servlet-1.2.3.jar"), "some jar contents" );
 		dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib").mkdirs();
-		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/brjs-apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
-		
-		commandRunner.run(tempDir, new String[] {dir("valid-sdk-directory"), "log-test"});
+		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/apps/myApp/WEB-INF/lib/brjs-servlet-1.2.2.jar"), "old jar contents" );
+		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/apps/myApp/app.conf"), "" );
+		commandRunner.run(dirFile("valid-sdk-directory"), new String[] {dir("valid-sdk-directory"), "log-test"});
 		String output = outputStream.toString("UTF-8");
 		String warnMessage = String.format(UserCommandRunner.Messages.OUTDATED_JAR_MESSAGE, "myApp", "brjs-", "sdk/libs/java/application");
 		assertContains(warnMessage, output);
 	}
 	
-	//if I do an incorrect command I get the properties outputted in the right order
+	//if I do an incorrect command I get the properties output in the right order
 	@Test
 	public void theCommandIsExecutedWithIncorrectParametersExpectCorrectPropertiesOrder() throws Exception {
 		dirFile("valid-sdk-directory/conf/templates/default/brjs").mkdirs();

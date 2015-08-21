@@ -35,7 +35,6 @@ import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.logging.Logger;
-import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
@@ -48,6 +47,7 @@ import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.JsStyleAccessor;
+import org.bladerunnerjs.utility.LoggerFactory;
 import org.bladerunnerjs.utility.ZipUtility;
 import org.mockito.Mockito;
 

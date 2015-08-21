@@ -72,6 +72,7 @@ javadoc {
 	title = "BladeRunnerJS ${buildVersion}"
 	/* info for JavaDoc options http://docs.oracle.com/javase/6/docs/technotes/tools/windows/javadoc.html#overviewcomment */
 	options.overview = "${sourceSets.main.java.srcDirs.toArray()[0]}/overview-summary.html"
+	include '**/org/bladerunnerjs/api/**'
 	maxMemory = "128m"
 	executable = "$System.env.JAVA8_HOME/bin/javadoc"
 }

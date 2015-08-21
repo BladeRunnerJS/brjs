@@ -592,6 +592,18 @@ GwtTestRunnerTest.prototype.testExceptionIsThrownIfDescriptionContainsInvalidCha
 	if (!passTest) fail("Expected test failure - invalid char in description");
 };
 
+GwtTestRunnerTest.prototype.test_valuesWithNewLinesAreParsedProperly = function()
+{
+	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");
+	oTestRunner.startTest();
+	
+	this.getFixture(oTestRunner, "propertyFixture").expects(once()).doGiven("prop", "1\n2");
+	this.getFixture(oTestRunner, "propertyFixture").expects(once()).doGiven("prop", "1\n2\n3\n4");
+	
+	oTestRunner.doGiven("propertyFixture.prop = '1\n2'");
+	oTestRunner.doGiven("propertyFixture.prop = '1\n2\n3\n4'");
+};
+
 GwtTestRunnerTest.prototype.test_xitCanBeUsedToDisableTestsWithoutBreakingChaining = function()
 {
 	var oTestRunner = new br.test.GwtTestRunner("br.test.TestFixtureFactory");

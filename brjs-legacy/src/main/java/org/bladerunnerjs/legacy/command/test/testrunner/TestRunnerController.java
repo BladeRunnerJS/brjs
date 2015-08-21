@@ -2,7 +2,9 @@ package org.bladerunnerjs.legacy.command.test.testrunner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.naming.InvalidNameException;
 
@@ -64,6 +66,11 @@ public class TestRunnerController
 	
 	public int run(BRJS brjs, String[] args, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
 	{
+		JSAP argsParser = createArgsParser(mode);
+		JSAPResult config = argsParser.parse(args);
+		
+		assertValidTestDirectory(brjs, testCommand, config);
+		
 		MemoizedFile configFile = null;
 		try {
 			configFile = TestRunnerConfLocator.getTestRunnerConf();
@@ -73,9 +80,6 @@ public class TestRunnerController
 		}
 		
 		MemoizedFile resultDir = getResultsDir();
-		JSAP argsParser = createArgsParser(mode);
-
-		JSAPResult config = argsParser.parse(args);
 
 		boolean success = true;
 		if (!config.success())
@@ -125,6 +129,29 @@ public class TestRunnerController
 		}
 		if (!success) {  return 1;  }
 		return 0;
+	}
+
+	private void assertValidTestDirectory(BRJS brjs, CommandPlugin testCommand,
+			JSAPResult config) throws CommandArgumentsException {
+		String dirArg = config.getString("dir");
+		if (dirArg == null) {
+			return;
+		}
+		File testDir = new File(dirArg);
+		List<MemoizedFile> validTestDirs = Arrays.asList(brjs.appsFolder(), brjs.sdkFolder().file("libs"), 
+				brjs.sdkFolder().file("system-applications"));
+		for (MemoizedFile validTestDir : validTestDirs) {
+			try {
+				if (testDir.getCanonicalPath().toLowerCase().contains(validTestDir.getCanonicalPath().toLowerCase())) {
+					return;
+				}
+			} catch (IOException e) {
+				throw new CommandArgumentsException("The test location could not be successfully established for the entity "
+						+ "you are attempting to test.", testCommand);
+			}
+		}
+		throw new CommandArgumentsException("The entity you are attempting to test does not exist inside a recognized app. "
+					+ "The current apps directory is '" + brjs.appsFolder().getAbsolutePath() + "'.", testCommand);
 	}
 
 	private TestType getTestTypeEnum(String testType) 

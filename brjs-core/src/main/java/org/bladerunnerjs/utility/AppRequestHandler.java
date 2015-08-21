@@ -2,8 +2,8 @@ package org.bladerunnerjs.utility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BladerunnerConf;
@@ -186,7 +188,7 @@ public class AppRequestHandler
 			
 			String pathRelativeToApp = app.dir().getRelativePath(indexPage);
 			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
-			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
+			contentAccessor.handleRequest(pathRelativeToApp, indexPageContent);
 			
 			return TagPluginUtility.getUsedTagsAndAttributes(indexPageContent.toString(), browsableNode.getBundleSet(), requestMode, locale);
 		}
@@ -205,7 +207,7 @@ public class AppRequestHandler
 			
 			String pathRelativeToApp = app.dir().getRelativePath(indexPage);
 			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
-			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
+			contentAccessor.handleRequest(pathRelativeToApp, indexPageContent);
 			
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
@@ -242,32 +244,33 @@ public class AppRequestHandler
 
 	public ResponseContent getLocaleForwardingPageContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		try {
-			StringWriter localeSwitchingPage = new StringWriter();
+			String redirectionPageContent;
+			try (InputStream redirectionPageInputStream = getClass().getClassLoader().getResourceAsStream( "org/bladerunnerjs/locale-redirection-page.html" )) {
+				List<String> redirectionPageLines = IOUtils.readLines(redirectionPageInputStream);
+				redirectionPageContent = StringUtils.join(redirectionPageLines, "\n");
+			}
 			
-			localeSwitchingPage.write("<head>\n");
-			localeSwitchingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
-			localeSwitchingPage.write("<script type='text/javascript'>\n");
+			redirectionPageContent = redirectionPageContent.replace("@DEFAULT.LOCALE@", app.appConf().getDefaultLocale().toString() );
+			redirectionPageContent = redirectionPageContent.replace("@JS.BUNDLE@", getLocaleForwardingPageJSBundleContent(aspect, contentAccessor, version) );
 			
-			ContentPlugin compositeJsContentPlugin = app.root().plugins().contentPlugin("js");
-			ContentPathParser compositeJsContentPathParser = compositeJsContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
-			String jsBundleContentPath = compositeJsContentPathParser.createRequest("dev-bundle-request", "combined");
-			BundlableNode localeForwarderAspectWrapper = new LocaleForwarderAspectWrapper(aspect);
-			ResponseContent brLocaleBundleResponse = compositeJsContentPlugin.handleRequest(jsBundleContentPath, localeForwarderAspectWrapper.getBundleSet(), contentAccessor, version);
-			
-			ByteArrayOutputStream brLocaleBundleContent = new ByteArrayOutputStream();
-			brLocaleBundleResponse.write( brLocaleBundleContent );
-			
-			localeSwitchingPage.write( brLocaleBundleContent.toString() );
-			localeSwitchingPage.write("\n");
-			localeSwitchingPage.write("require('br-locale/switcher').switchToActiveLocale();\n");
-			localeSwitchingPage.write("</script>\n");
-			localeSwitchingPage.write("</head>\n");
-			
-			return new CharResponseContent( app.root(), localeSwitchingPage.toString() );
+			return new CharResponseContent( app.root(), redirectionPageContent );
 		}
 		catch (IOException | ConfigException | MalformedTokenException | MalformedRequestException | ModelOperationException e) {
 			throw new ContentProcessingException(e);
 		}
+	}
+	
+	private String getLocaleForwardingPageJSBundleContent(Aspect aspect, UrlContentAccessor contentAccessor, String version) throws MalformedTokenException, MalformedRequestException, ContentProcessingException, ModelOperationException, IOException {
+		ContentPlugin compositeJsContentPlugin = app.root().plugins().contentPlugin("js");
+		ContentPathParser compositeJsContentPathParser = compositeJsContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
+		String jsBundleContentPath = compositeJsContentPathParser.createRequest("dev-bundle-request", "combined");
+		BundlableNode localeForwarderAspectWrapper = new LocaleForwarderAspectWrapper(aspect);
+		ResponseContent brLocaleBundleResponse = compositeJsContentPlugin.handleRequest(jsBundleContentPath, localeForwarderAspectWrapper.getBundleSet(), contentAccessor, version);
+		
+		ByteArrayOutputStream brLocaleBundleContent = new ByteArrayOutputStream();
+		brLocaleBundleResponse.write( brLocaleBundleContent );
+		
+		return brLocaleBundleContent.toString();
 	}
 	
 	private String createRequest(Aspect aspect, String requestFormName, String... args) throws MalformedTokenException

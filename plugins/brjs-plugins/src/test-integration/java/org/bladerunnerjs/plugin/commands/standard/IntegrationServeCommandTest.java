@@ -3,9 +3,12 @@ package org.bladerunnerjs.plugin.commands.standard;
 import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
 import static org.bladerunnerjs.plugin.commands.standard.ServeCommand.Messages.*;
 
+import java.io.File;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
@@ -20,6 +23,8 @@ public class IntegrationServeCommandTest extends SpecTest
 {
 	private ApplicationServer appServer;
 	private TemplateGroup templates;
+	private File secondaryTempFolder;
+	private BRJS secondBrjsProcess;
 
 	@Before
 	public void initTestObjects() throws Exception
@@ -37,6 +42,8 @@ public class IntegrationServeCommandTest extends SpecTest
 	@After
 	public void tearDown() throws Exception
 	{
+		if (secondaryTempFolder != null) org.apache.commons.io.FileUtils.deleteQuietly(secondaryTempFolder);
+		if (secondBrjsProcess != null) { secondBrjsProcess.close(); }
 		logging.disableStoringLogs();
 		logging.emptyLogStore();
 		appServer = brjs.applicationServer(appServerPort);
@@ -50,10 +57,29 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "system")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "user")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + appServerPort +"/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
 			.and(appServer).requestIs302Redirected("/","/dashboard");
+	}
+	
+	@Test
+	public void newAppCreatedFromADifferentModelIsHostedIfAppsLiveSeperateFromTheSdk() throws Exception
+	{
+		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(this.getClass());
+		given(brjs).hasBeenAuthenticallyCreatedWithWorkingDir(secondaryTempFolder); 
+			/*and*/ secondBrjsProcess = createNonTestModel(secondaryTempFolder);
+			given(brjs.sdkTemplateGroup("default")).templateGroupCreated()
+			.and(brjs.sdkTemplateGroup("default").template("app")).containsFile("index.html")
+			.and(brjs).usedForServletModel();
+		when(brjs).runThreadedCommand("serve")
+			.and(secondBrjsProcess).runCommand("create-app", "app1", "blah");
+		then(brjs.applicationServer(appServerPort)).requestCanEventuallyBeMadeFor("/app1/")
+			.and(testRootDirectory).doesNotContainDir("apps")
+			.and(testRootDirectory).doesNotContainDir("app1")
+			.and(secondaryTempFolder).containsDir("app1");
 	}
 	
 	@Test
@@ -75,6 +101,8 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).pluginsAccessed();
 		when(brjs).runThreadedCommand("serve", "-p", "7777");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "system")
+			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "user")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + "7777/")
 			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
@@ -108,6 +136,9 @@ public class IntegrationServeCommandTest extends SpecTest
 		
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
 		when(brjs).runThreadedCommand("serve")
@@ -134,6 +165,9 @@ public class IntegrationServeCommandTest extends SpecTest
     		appServer = brjs.applicationServer();
     		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasClass("appns/Class2")
+			.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(brjs).runThreadedCommand("serve", "-v", "myversion");
 		then(appServer).requestCanEventuallyBeMadeWhereResponseMatches("/app1/v/myversion/js/dev/combined/bundle.js", new Predicate<String>()
@@ -157,6 +191,9 @@ public class IntegrationServeCommandTest extends SpecTest
     		Aspect aspect = app.defaultAspect();
     		appServer = brjs.applicationServer();
     		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    				+ "locales: en\n"
+    				+ "requirePrefix: appns")
 			.and(aspect).hasClass("appns/Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(brjs).runThreadedCommand("serve", "-v", "myversion");

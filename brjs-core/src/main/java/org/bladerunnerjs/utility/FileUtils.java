@@ -64,9 +64,11 @@ public class FileUtils {
 			if (child.isDirectory())
 			{
 				deleteDirectoryFromBottomUp(child);
+			} else {
+				child.delete();
 			}
-			dir.delete();
 		}
+		dir.delete();
 	}
 	
 	public static void moveDirectoryContents(BRJS brjs, File srcDir, File destDir) throws IOException {

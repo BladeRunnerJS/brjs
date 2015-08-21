@@ -9,7 +9,7 @@ public class JndiTokenFinder
 	private final Context appServerContext;
 
 	public JndiTokenFinder() throws NamingException
-	{		
+	{
 		this.appServerContext = (Context) new InitialContext();
 	}
 
@@ -27,17 +27,16 @@ public class JndiTokenFinder
 
 		try
 		{
-			Object theToken = appServerContext.lookup("java:comp/env/" + tokenName);
-			if (theToken != null)
+			Object tokenValue = appServerContext.lookup("java:comp/env/" + tokenName);
+			if (tokenValue != null)
 			{
-				return theToken.toString();
+				return tokenValue.toString();
 			}
+			return "";
 		}
 		catch (NamingException ex)
 		{
 			return null;
 		}
-		return null;
 	}
-
 }

@@ -52,7 +52,9 @@
 				var PresenterJsTreeModelFactory = require('br/presenter/workbench/ui/PresenterJsTreeModelFactory');
 				var PresentationModelViewer2 = require('br/knockout/workbench/PresentationModelViewer');
 				var presentationModelViewer2 = new PresentationModelViewer2(PresenterJsTreeModelFactory.createTreeModelFromPresentationModel(model));
-				document.body.querySelector('.workbench-component').appendChild(presentationModelViewer2.getElement());
+				var frame = new br.component.SimpleFrame(presentationModelViewer2, null, null);
+				document.body.querySelector('.workbench-component').appendChild(frame.getElement());
+				frame.trigger('attach');
 			}
 		</script>
 	</head>

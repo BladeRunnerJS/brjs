@@ -130,7 +130,7 @@ public class BladeWorkbenchBundlingTest extends SpecTest {
 		when(blade.workbench()).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(OutOfBundleScopeRequirePathException.class, 
 				"appns/App", "default-aspect/src/appns/App.js", BladeWorkbench.class.getSimpleName(),
-				"brjs-apps/app1/bs-bladeset, brjs-apps/app1/bs-bladeset/blades/b1, brjs-apps/app1/bs-bladeset/blades/b1/workbench")
+				"apps/app1/bs-bladeset, apps/app1/bs-bladeset/blades/b1, apps/app1/bs-bladeset/blades/b1/workbench")
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	

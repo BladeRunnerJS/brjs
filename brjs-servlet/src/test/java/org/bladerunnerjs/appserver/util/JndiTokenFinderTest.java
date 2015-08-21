@@ -61,16 +61,16 @@ public class JndiTokenFinderTest
 	{
 		when(mockContext.lookup("java:comp/env/NON.EXISTANT.TOKEN")).thenThrow(NamingException.class);
 
-		assertNull("token value", tokenFinder.findTokenValue("NON.EXISTANT.TOKEN"));
+		assertNull(tokenFinder.findTokenValue("NON.EXISTANT.TOKEN"));
 		verify(mockContext, times(1)).lookup("java:comp/env/NON.EXISTANT.TOKEN");
 	}
 
 	@Test
-	public void testNullIsReturnedIfLookupReturnsNull() throws Exception
+	public void testEmptyStringIsReturnedIfLookupReturnsNull() throws Exception
 	{
 		when(mockContext.lookup("java:comp/env/NON.EXISTANT.TOKEN")).thenReturn(null);
 
-		assertNull("token value", tokenFinder.findTokenValue("NON.EXISTANT.TOKEN"));
+		assertEquals("", tokenFinder.findTokenValue("NON.EXISTANT.TOKEN"));
 		verify(mockContext, times(1)).lookup("java:comp/env/NON.EXISTANT.TOKEN");
 	}
 

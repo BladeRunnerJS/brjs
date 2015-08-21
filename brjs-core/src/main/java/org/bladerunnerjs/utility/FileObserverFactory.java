@@ -45,9 +45,9 @@ public class FileObserverFactory
 	public static List<File> getBrjsRootDirs(BRJS brjs)
 	{
 		List<File> rootDirs = new ArrayList<>();
-		rootDirs.add(brjs.dir());
+		rootDirs.add(brjs.dir().getUnderlyingFile());
 		if (!brjs.appsFolder().getAbsolutePath().startsWith(brjs.dir().getAbsolutePath())) {
-			rootDirs.add(brjs.appsFolder());
+			rootDirs.add(brjs.appsFolder().getUnderlyingFile());
 		}
 		return rootDirs;
 	}
