@@ -58,8 +58,8 @@ public class CommonJsContentPluginTest extends SpecTest {
 		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("common-js/module/appns/Class1.js", requestResponse);
-		then(requestResponse).containsLines(
-			"define('appns/Class1', function(require, exports, module) {",
+		then(requestResponse).containsOrderedTextFragments(
+			"System.registerDynamic('appns/Class1',",
 			"Class1 = function() {",
 			"};\n",
 			"module.exports = Class1;\n",
@@ -73,7 +73,7 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "sdkLib.Class1.patch = function() {}");
 		when(aspect).requestReceivedInDev("common-js/module/sdkLib/Class1.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-			"define('sdkLib/Class1', function(require, exports, module) {",
+			"System.registerDynamic('sdkLib/Class1',",
 			"Class1 = function() {",
 			"};",
 			"module.exports = Class1;",
@@ -87,7 +87,7 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("sdkLib.Class1")
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "require('sdkLib/Class2')");
 		when(aspect).requestReceivedInDev("common-js/bundle.js", requestResponse);
-		then(requestResponse).containsText("define('sdkLib/Class2'");
+		then(requestResponse).containsText("System.registerDynamic('sdkLib/Class2'");
 	}
 	
 	@Test 

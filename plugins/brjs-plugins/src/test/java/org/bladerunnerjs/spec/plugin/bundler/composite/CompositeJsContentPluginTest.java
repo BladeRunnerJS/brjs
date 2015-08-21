@@ -88,8 +88,8 @@ public class CompositeJsContentPluginTest extends SpecTest {
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 			"// br-bootstrap",
-			"define('br/AliasRegistry'",
-			"define('appns/Class1'");
+			"System.registerDynamic('br/AliasRegistry'",
+			"System.registerDynamic('appns/Class1'");
 	}
 	
 	@Test
@@ -110,7 +110,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragmentsAnyNumberOfTimes(
 				"// br-bootstrap",
 				"// appLib",
-				"define('appns/node/Class'",
+				"System.registerDynamic('appns/node/Class'",
 				"appns.namespaced.Class =");
 	}
 	

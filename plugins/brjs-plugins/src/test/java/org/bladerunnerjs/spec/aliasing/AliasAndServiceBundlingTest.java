@@ -182,7 +182,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classRequires("Class1", "service!br.service")
             .and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('service!br.service',")
+		then(response).containsText("System.registerDynamic('service!br.service',")
 			.and(response).doesNotContainText("br/Class2");
 	}
 
@@ -476,7 +476,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspectAliasesFileBuilder).hasAlias("the-alias", "appns.Class3")
             .and(aspect).indexPageRequires("appns/Class1", "appns/Class2", "br/AliasRegistry");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsTextOnce("module.exports = require('br/AliasRegistry').getClass('the-alias')");
+		then(response).containsTextOnce("System.registerDynamic('alias!the-alias',");
 	}
 
 	@Test
@@ -487,7 +487,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspectAliasesFileBuilder).hasAlias("the-alias", "appns.b1.Class1")
             .and(aspect).indexPageRequires("appns/b1/BladeClass");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("module.exports = require('br/AliasRegistry').getClass('the-alias')");
+		then(response).containsText("System.registerDynamic('alias!the-alias',");
 	}
 
 	@Test
@@ -515,7 +515,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("br/DevScenarioClass")
             .and(response).doesNotContainClasses("br/GroupProductionClass")
-            .and(response).containsOrderedTextFragments("define('br/DevScenarioClass'", "define('alias!br.service',", "module.exports = require('br/AliasRegistry').getClass('br.service')", "define('service!br.service',", "module.preventCaching = true", "module.exports = require('br/ServiceRegistry').getService('br.service');");
+            .and(response).containsOrderedTextFragments("System.registerDynamic('br/DevScenarioClass'", "System.registerDynamic('alias!br.service', ['br/Interface']", "System.registerDynamic('service!br.service', ['alias!br.service']");
 	}
 
 	@Test
@@ -528,7 +528,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(workbench).indexPageRequires("alias!the-alias")
             .and(workbench).hasReceivedRequest("js/dev/combined/bundle.js");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("module.exports = require('br/AliasRegistry').getClass('the-alias')");
+		then(response).containsText("System.registerDynamic('alias!the-alias',");
 	}
 
 	@Test
@@ -541,7 +541,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "AliasRegistry.getClass('some.service')")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!some.service'");
+		then(response).containsText("System.registerDynamic('alias!some.service'");
 	}
 
 	@Test
@@ -554,8 +554,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classDependsOn("appns.App", "ServiceRegistry.getService('some.service')")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!some.service'")
-			.and(response).containsText("define('alias!some.service'");
+		then(response).containsText("System.registerDynamic('alias!some.service'")
+			.and(response).containsText("System.registerDynamic('alias!some.service'");
 	}
 
 	@Test
@@ -568,8 +568,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).hasClass("appns.ServiceClass")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
-			.and(response).containsText("define('alias!some.service'");
+		then(response).containsText("System.registerDynamic('alias!$data'")
+			.and(response).containsText("System.registerDynamic('alias!some.service'");
 	}
 
 	@Test
@@ -582,8 +582,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "ServiceRegistry.getService('some.service')")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
-			.and(response).containsText("define('alias!some.service'");
+		then(response).containsText("System.registerDynamic('alias!$data'")
+			.and(response).containsText("System.registerDynamic('alias!some.service'");
 	}
 
 	@Test
@@ -596,8 +596,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "ServiceRegistry.getService('br.service')")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
-			.and(response).containsText("define('alias!br.service'");
+		then(response).containsText("System.registerDynamic('alias!$data'")
+			.and(response).containsText("System.registerDynamic('alias!br.service'");
 	}
 
 	@Test
@@ -611,8 +611,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "ServiceRegistry.getService('br.service')")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
-			.and(response).containsText("define('alias!br.service'");
+		then(response).containsText("System.registerDynamic('alias!$data'")
+			.and(response).containsText("System.registerDynamic('alias!br.service'");
 	}
 
 	@Test
@@ -628,8 +628,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "otherBrLib.ServiceUser();")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
-            .and(response).containsText("define('alias!lib.service'")
+		then(response).containsText("System.registerDynamic('alias!$data'")
+            .and(response).containsText("System.registerDynamic('alias!lib.service'")
             .and(response).containsText("otherBrLib.ServiceUser();");
 	}
 
@@ -647,8 +647,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "otherBrLib.ServiceUser();")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
-            .and(response).containsText("define('alias!lib.service'")
+		then(response).containsText("System.registerDynamic('alias!$data'")
+            .and(response).containsText("System.registerDynamic('alias!lib.service'")
             .and(response).containsText("otherBrLib.ServiceUser();");
 	}
 	
@@ -659,9 +659,9 @@ public class AliasAndServiceBundlingTest extends SpecTest
     		.and(aspect).classRequires("appns/AliasOverride", "br/AliasInterface")
     		.and(aspectAliasesFileBuilder).hasAlias("br.the-alias", "appns/AliasOverride");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('appns/AliasOverride")
-			.and(response).containsText("define('br/AliasInterface")
-			.and(response).doesNotContainText("define('br/AliasClass");
+		then(response).containsText("System.registerDynamic('appns/AliasOverride")
+			.and(response).containsText("System.registerDynamic('br/AliasInterface")
+			.and(response).doesNotContainText("System.registerDynamic('br/AliasClass");
 	}
 
 	@Test 
@@ -678,8 +678,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
     		.and(aspectAliasesFileBuilder).hasAlias("br.locale-switcher", "br/services/BRLocaleForwardingSwitcher")
     		.and(appConf).supportsLocales("en", "de");
 		when(app).requestReceived("", response);
-		then(response).containsText("define('br/services/BRLocaleForwardingSwitcher")
-			.and(response).doesNotContainText("define('br/services/BRLocaleLoadingSwitcher")
+		then(response).containsText("System.registerDynamic('br/services/BRLocaleForwardingSwitcher")
+			.and(response).doesNotContainText("System.registerDynamic('br/services/BRLocaleLoadingSwitcher")
 			.and(response).containsText("'br.locale-switcher':{'class':'br/services/BRLocaleForwardingSwitcher'");
 	}
 	
@@ -693,11 +693,11 @@ public class AliasAndServiceBundlingTest extends SpecTest
     		.and(brLib).classFileHasContent("br/AliasOverride", "require('br/AliasOverrideDepedency'); require('br/AliasInterface');")
     		.and(aspectAliasesFileBuilder).hasAlias("br.the-alias", "appns/AliasOverride");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('appns/AliasOverride")
-			.and(response).containsText("define('br/AliasInterface")
-			.and(response).containsText("define('br/AliasOverrideDepedency")
-			.and(response).doesNotContainText("define('br/AliasClass")
-			.and(response).doesNotContainText("define('br/AliasDependency");
+		then(response).containsText("System.registerDynamic('appns/AliasOverride")
+			.and(response).containsText("System.registerDynamic('br/AliasInterface")
+			.and(response).containsText("System.registerDynamic('br/AliasOverrideDepedency")
+			.and(response).doesNotContainText("System.registerDynamic('br/AliasClass")
+			.and(response).doesNotContainText("System.registerDynamic('br/AliasDependency");
 	}
 	
 	
@@ -1039,8 +1039,8 @@ public class AliasAndServiceBundlingTest extends SpecTest
 			.and( aspect.testType("unit").defaultTestTech() ).containsResourceFileWithContents("en.properties", "appns.prop=val")
 			.and(sdkLib).hasClass("br/AliasRegistry");
 		when( aspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
-			.and(response).containsText("define('appns/Class1'");
+		then(response).containsText("System.registerDynamic('alias!$data'")
+			.and(response).containsText("System.registerDynamic('appns/Class1'");
 	}
 	
 	@Test

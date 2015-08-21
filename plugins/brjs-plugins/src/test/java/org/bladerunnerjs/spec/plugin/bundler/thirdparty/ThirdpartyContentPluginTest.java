@@ -238,7 +238,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"commonjsDefinition: true")
 			.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
-		then(pageResponse).containsOrderedTextFragments("define('lib', function(require, exports, module) {",
+		then(pageResponse).containsOrderedTextFragments("System.registerDynamic('lib', [], true, function(require, exports, module) {",
 				"module.exports = function() { };\n");
 	}
 	
@@ -253,7 +253,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 				"// lib",
 				"some lib content",
 				"",
-				"define('lib', function(require, exports, module) {",		
+				"System.registerDynamic('lib', [], true, function(require, exports, module) {",		
 				"module.exports = {};")
 			.and(pageResponse).doesNotContainText("{} = require('lib');");
 	}
@@ -287,7 +287,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).classDependsOnThirdpartyLib("App", sdkLib)
 			.and(aspect).indexPageRequires("appns/App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
-		then(pageResponse).containsText("lib = require('lib');");
+		then(pageResponse).containsText("lib = System.syncImport('lib');");
 	}
 	
 	@Test
@@ -300,7 +300,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).classDependsOnThirdpartyLib("App", sdkLib)
 			.and(aspect).indexPageRequires("appns/App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
-		then(pageResponse).containsText("my_lib = require('my-lib');");
+		then(pageResponse).containsText("my_lib = System.syncImport('my-lib');");
 	}
 	
 	@Test
