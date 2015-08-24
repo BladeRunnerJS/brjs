@@ -172,6 +172,31 @@ public class TokenReplacingReaderTest
 	}
 	
 	@Test
+	public void invalidTokenStringsCanSpanBufferLimits() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader(
+				StringUtils.leftPad("", 4094, "0")+" @A INVALID TOKEN "+StringUtils.leftPad("", 4094, "0"))
+		);
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals( 
+				StringUtils.leftPad("", 4094, "0")+" @A INVALID TOKEN "+StringUtils.leftPad("", 4094, "0")
+		, replacedContent);
+	}
+	
+	@Test
+	public void invalidTokenStringsCanSpanBufferLimitsWhenForcedToSpanByALargeTokenRepacement() throws Exception
+	{
+		when(mockTokenFinder.findTokenValue("LONG.TOKEN.REPLACEMENT")).thenReturn(StringUtils.leftPad("", 4094, "0") );
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader(
+				"@LONG.TOKEN.REPLACEMENT@ @A INVALID TOKEN"
+		));
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals( 
+				StringUtils.leftPad("", 4094, "0")+" @A INVALID TOKEN"
+		, replacedContent);
+	}
+	
+	@Test
 	public void tokensAreReplacedInsideOfLargeContent() throws Exception
 	{
 		for (int padLength : Arrays.asList(4096, 5000, 10000)) {

@@ -22,6 +22,7 @@ public class TokenReplacingReader extends Reader
     private boolean withinToken = false;
 	private StringBuffer currentTokenString = new StringBuffer();;
 	
+	private StringBuffer readTokensBuffer = new StringBuffer();
 	private StringBuffer tokenReplacementBuffer = new StringBuffer();
 	
 	private int currentOffset;
@@ -53,6 +54,9 @@ public class TokenReplacingReader extends Reader
 		int nextCharVal = -1;
 		char nextChar = '\0';
 		
+		if (readTokensBuffer.length() > 0) {
+			appendBufferedTokens(destBuffer);
+		}
 		if (tokenReplacementBuffer.length() > 0) {
 			appendTokenReplacement(destBuffer);
 		}
@@ -133,14 +137,25 @@ public class TokenReplacingReader extends Reader
 	
 	private void addToCharBuffer(char[] destBuffer, char... chars) {
 		for (char c : chars) {
-			destBuffer[currentOffset++] = c;
-			totalNumberOfCharsWritten ++;
+			if (canWriteMoreChars()) {
+				destBuffer[currentOffset++] = c;
+				totalNumberOfCharsWritten ++;
+			} else {
+				readTokensBuffer.append(c);
+			}
 		}
 	}
 	
 	private void appendTokenString(char[] destBuffer) {
 		addToCharBuffer(destBuffer, currentTokenString.toString().toCharArray());
 		currentTokenString.setLength(0);
+	}
+	
+	private void appendBufferedTokens(char[] destBuffer) {
+		while (readTokensBuffer.length() > 0 && canWriteMoreChars()) {
+			addToCharBuffer(destBuffer, readTokensBuffer.charAt(0));
+			readTokensBuffer.delete(0, 1);
+		}
 	}
 	
 	private void appendTokenReplacement(char[] destBuffer) {
