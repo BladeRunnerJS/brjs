@@ -23,7 +23,6 @@ public class TokenReplacingReader extends Reader
 	private StringBuffer currentTokenString = new StringBuffer();;
 	
 	private StringBuffer readTokensBuffer = new StringBuffer();
-	private StringBuffer tokenReplacementBuffer = new StringBuffer();
 	
 	private int currentOffset;
 	private int maxCharactersToWrite;
@@ -55,10 +54,7 @@ public class TokenReplacingReader extends Reader
 		char nextChar = '\0';
 		
 		if (readTokensBuffer.length() > 0) {
-			appendBufferedTokens(destBuffer);
-		}
-		if (tokenReplacementBuffer.length() > 0) {
-			appendTokenReplacement(destBuffer);
+			addToCharBuffer(destBuffer, readTokensBuffer);
 		}
 		
 		while (canWriteMoreChars()) {
@@ -81,22 +77,18 @@ public class TokenReplacingReader extends Reader
 					currentTokenString.append(nextChar);
 					if (currentTokenString.length() <= 2)
 					{
-						appendTokenString(destBuffer);
-						currentTokenString.setLength(0);
+						addToCharBuffer(destBuffer, currentTokenString);
 					}
 					else
 					{
-						tokenReplacementBuffer.ensureCapacity(0);
-						tokenReplacementBuffer.append( findTokenReplacement(currentTokenString.toString()) );
+						addToCharBuffer(destBuffer, findTokenReplacement(currentTokenString.toString()).toCharArray());
 						currentTokenString.setLength(0);
-						appendTokenReplacement(destBuffer);
 					}
 				}
 				else
 				{
 					withinToken = false;
-					appendTokenString(destBuffer);
-					currentTokenString.setLength(0);
+					addToCharBuffer(destBuffer, currentTokenString);
 					addToCharBuffer(destBuffer, nextChar);
 				}
 			}
@@ -146,23 +138,9 @@ public class TokenReplacingReader extends Reader
 		}
 	}
 	
-	private void appendTokenString(char[] destBuffer) {
-		addToCharBuffer(destBuffer, currentTokenString.toString().toCharArray());
-		currentTokenString.setLength(0);
-	}
-	
-	private void appendBufferedTokens(char[] destBuffer) {
-		while (readTokensBuffer.length() > 0 && canWriteMoreChars()) {
-			addToCharBuffer(destBuffer, readTokensBuffer.charAt(0));
-			readTokensBuffer.delete(0, 1);
-		}
-	}
-	
-	private void appendTokenReplacement(char[] destBuffer) {
-		while (tokenReplacementBuffer.length() > 0 && canWriteMoreChars()) {
-			addToCharBuffer(destBuffer, tokenReplacementBuffer.charAt(0));
-			tokenReplacementBuffer.delete(0, 1);
-		}
+	private void addToCharBuffer(char[] destBuffer, StringBuffer buffer) {
+		addToCharBuffer(destBuffer, buffer.toString().toCharArray());
+		buffer.setLength(0);
 	}
 	
 	private boolean isValidTokenChar(char c)

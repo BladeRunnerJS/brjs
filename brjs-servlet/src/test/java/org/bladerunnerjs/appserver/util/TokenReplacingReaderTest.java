@@ -197,6 +197,18 @@ public class TokenReplacingReaderTest
 	}
 	
 	@Test
+	public void tokenStringsCanSpanMultipleBufferLimits() throws Exception
+	{
+		Reader tokenisingReader = new TokenReplacingReader( mockTokenFinder, new StringReader(
+				StringUtils.leftPad("", 12286, "0")+" @A.TOKEN@ "+StringUtils.leftPad("", 12286, "0"))
+		);
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals( 
+				StringUtils.leftPad("", 12286, "0")+" token replacement "+StringUtils.leftPad("", 12286, "0")
+		, replacedContent);
+	}
+	
+	@Test
 	public void tokensAreReplacedInsideOfLargeContent() throws Exception
 	{
 		for (int padLength : Arrays.asList(4096, 5000, 10000)) {
