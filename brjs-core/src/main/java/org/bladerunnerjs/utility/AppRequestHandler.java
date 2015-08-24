@@ -373,10 +373,20 @@ public class AppRequestHandler
 	}
 	
 	public static ResponseContent getTokenFilteredResponseContent(App app, Locale appLocale, String version, ResponseContent wrappedResponse) {
+		return getTokenFilteredResponseContent( app, appLocale, version, wrappedResponse, getNoTokenExNoTokenReplacementHandler(app.root()) );
+	}
+	
+	public static ResponseContent getTokenFilteredResponseContent(App app, Locale appLocale, String version, ResponseContent wrappedResponse, MissingTokenHandler handler) {
+		if (wrappedResponse instanceof TokenReplacingResponseContentWrapper) {
+			return wrappedResponse;
+		}
 		String environment = getPropertiesEnvironment(app.root());
 		TokenFinder brjsTokenFinder = new BrjsPropertyTokenFinder(app, appLocale, version);
 		TokenFinder tokenFinder = new PropertyFileTokenFinder(app.file("app-properties"), environment);
-		return new TokenReplacingResponseContentWrapper( wrappedResponse, brjsTokenFinder, tokenFinder, getNoTokenExNoTokenReplacementHandler(app.root()) );
+		if (handler == null) {
+			handler = getNoTokenExNoTokenReplacementHandler(app.root());
+		}
+		return new TokenReplacingResponseContentWrapper( wrappedResponse, brjsTokenFinder, tokenFinder, handler );
 	}
 
 	public static void setNoTokenExceptionHandler(BRJS brjs, MissingTokenHandler handler) {

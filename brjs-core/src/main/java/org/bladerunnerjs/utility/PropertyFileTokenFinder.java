@@ -12,7 +12,7 @@ public class PropertyFileTokenFinder implements TokenFinder {
 
     public static final String DEFAULT_ENVIRONMENT = "default";
 
-    private final List<String> environments = new ArrayList<>();
+    private final Set<String> environments = new LinkedHashSet<>();
     private final File environmentFilesRoot;
 
     public PropertyFileTokenFinder(File environmentFilesRoot) {

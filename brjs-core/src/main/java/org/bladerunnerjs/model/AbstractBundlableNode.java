@@ -12,10 +12,12 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
+import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.Workbench;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
@@ -24,9 +26,12 @@ import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.appserver.util.ExceptionThrowingMissingTokenHandler;
+import org.bladerunnerjs.appserver.util.MissingTokenHandler;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.utility.AppRequestHandler;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 
@@ -142,7 +147,13 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		
 		logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), logicalRequestpath);
 		
-		return contentProvider.handleRequest(logicalRequestpath, bundleSet, contentAccessor, version);
+		ResponseContent pluginResponseContent = contentProvider.handleRequest(logicalRequestpath, bundleSet, contentAccessor, version);
+		try {
+			MissingTokenHandler missingTokenHandler = (bundleSet.bundlableNode() instanceof TestPack) ? new ExceptionThrowingMissingTokenHandler() : null;
+			return AppRequestHandler.getTokenFilteredResponseContent(app, app.appConf().getDefaultLocale(), version, pluginResponseContent, missingTokenHandler);
+		} catch (ConfigException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 	
 }
