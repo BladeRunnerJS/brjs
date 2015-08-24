@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -26,13 +27,13 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 	private Context mockJndiContext;
 	private Server appServer;
 	private DummyServlet dummyServlet;
+	private File tempFile = null;
 
 	@Before
 	public void setup() throws Exception
 	{
 		mockJndiContext = TestContextFactory.getTestContext();
 		dummyServlet = new DummyServlet();
-		dummyServlet.resetResponse();
 		appServer = createAndStartAppServer(dummyServlet, new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)));
 	}
 
@@ -41,13 +42,17 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 	{
 		verifyNoMoreInteractions(mockJndiContext);
 		appServer.stop();
+		if (tempFile != null) {
+			FileUtils.deleteQuietly(tempFile);
+		}
 	}
 
 	@Test
 	public void basicTestForDummyServlet() throws Exception
 	{
+		dummyServlet.setResponseText("OK");
 		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/file.xml");
-
+		
 		assertEquals("200", response.get("responseCode"));
 		assertEquals("OK", response.get("responseText"));
 		assertEquals("text/plain", response.get("responseContentType"));
@@ -152,11 +157,20 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 	}
 	
 	@Test
-	public void testFilterDoesNotChokeOnAStreamOnNonTextBits() throws Exception
-	{
-		FileUtils.copyFileToDirectory( new File("src/test/resources/br-logo.png"), contextDir );
+    public void testFilterDoesNotChokeOnAStreamOnNonTextBits() throws Exception
+    {
 		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/br-logo.png");
 		assertEquals("200", response.get("responseCode"));
+    }
+	
+	@Test
+	public void testFilterDoesNotBreakBinaryResponses() throws Exception
+	{
+		File logoFile = new File("src/test/resources/br-logo.png");
+		tempFile = File.createTempFile(this.getClass().getSimpleName(), "temp");
+		Map<String, String> response = makeBinaryRequest("http://localhost:"+serverPort+"/br-logo.png", new FileOutputStream(tempFile));
+		assertEquals("200", response.get("responseCode"));
+		assertTrue( "file contents wasnt equal", org.apache.commons.io.FileUtils.contentEquals(logoFile, tempFile) );
 	}
 	
 	@Test

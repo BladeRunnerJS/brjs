@@ -2,6 +2,7 @@ package org.bladerunnerjs.appserver.filter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.SocketException;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Random;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -49,11 +51,26 @@ public class ServletFilterTest {
 		Map<String, String> responseMap = new HashMap<String, String>();
 		HttpGet httpget = new HttpGet(url);
 		HttpResponse response = httpclient.execute(httpget);
-		responseMap.put("responseCode", Integer.toString(response.getStatusLine().getStatusCode()));
+		populateResponseDetails(response, responseMap);
 		responseMap.put("responseText", EntityUtils.toString(response.getEntity()));
+		return responseMap;
+	}
+	
+	protected Map<String, String> makeBinaryRequest(String url, OutputStream outputStream) throws ClientProtocolException, IOException
+	{
+		Map<String, String> responseMap = new HashMap<String, String>();
+		HttpGet httpget = new HttpGet(url);
+		HttpResponse response = httpclient.execute(httpget);
+		populateResponseDetails(response, responseMap);
+		IOUtils.copy(response.getEntity().getContent(), outputStream);
+		outputStream.flush();
+		return responseMap;
+	}
+	
+	private void populateResponseDetails(HttpResponse response, Map<String, String> responseMap) {
+		responseMap.put("responseCode", Integer.toString(response.getStatusLine().getStatusCode()));
 		String contentType = (ContentType.get(response.getEntity()) != null) ? ContentType.get(response.getEntity()).getMimeType().toString() : "";
 		responseMap.put("responseContentType", contentType);
-		return responseMap;
 	}
 	
 	protected Server createAndStartAppServer(Servlet servlet, Filter filter) throws Exception {
