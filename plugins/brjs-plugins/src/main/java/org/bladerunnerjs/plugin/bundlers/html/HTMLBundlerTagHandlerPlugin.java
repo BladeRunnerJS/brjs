@@ -59,7 +59,7 @@ public class HTMLBundlerTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			String i18nKey = i18nTokenMatcher.group(1).toLowerCase();
 			String keyReplacement = propertiesMap.get(i18nKey);
 			if (keyReplacement == null) {
-				throw new ContentProcessingException("Unable to find a replacement for the i18n key '"+i18nKey+"'.");
+				throw new ContentProcessingException("Unable to find a replacement for the i18n key '"+i18nKey+"' in the '" + locale + "' locale.");
 			}
 			i18nTokenMatcher.appendReplacement(translatedContent, keyReplacement);
 		}
