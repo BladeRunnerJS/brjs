@@ -23,6 +23,7 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.api.plugin.BinaryResponseContent;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.ResponseContent;
@@ -148,11 +149,15 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), logicalRequestpath);
 		
 		ResponseContent pluginResponseContent = contentProvider.handleRequest(logicalRequestpath, bundleSet, contentAccessor, version);
-		try {
-			MissingTokenHandler missingTokenHandler = (bundleSet.bundlableNode() instanceof TestPack) ? new ExceptionThrowingMissingTokenHandler() : null;
-			return AppRequestHandler.getTokenFilteredResponseContent(app, app.appConf().getDefaultLocale(), version, pluginResponseContent, missingTokenHandler);
-		} catch (ConfigException ex) {
-			throw new RuntimeException(ex);
+		if (pluginResponseContent instanceof BinaryResponseContent) {
+			return pluginResponseContent;
+		} else {
+			try {
+				MissingTokenHandler missingTokenHandler = (bundleSet.bundlableNode() instanceof TestPack) ? new ExceptionThrowingMissingTokenHandler() : null;
+				return AppRequestHandler.getTokenFilteredResponseContent(app, app.appConf().getDefaultLocale(), version, pluginResponseContent, missingTokenHandler);
+			} catch (ConfigException ex) {
+				throw new RuntimeException(ex);
+			}			
 		}
 	}
 	
