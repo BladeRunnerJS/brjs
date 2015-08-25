@@ -1,6 +1,7 @@
 package org.bladerunnerjs.utility;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.appserver.util.MissingTokenHandler;
 import org.bladerunnerjs.appserver.util.TokenReplacingReader;
@@ -14,8 +15,10 @@ public class TokenReplacingResponseContentWrapper implements ResponseContent {
     private final TokenFinder tokenFinder;
     private final MissingTokenHandler replacementHandler;
 	private final TokenFinder brjsTokenFinder;
+	private App app;
 
-    public TokenReplacingResponseContentWrapper(ResponseContent wrappedResponse, TokenFinder brjsTokenFinder, TokenFinder tokenFinder, MissingTokenHandler replacementHandler) {
+    public TokenReplacingResponseContentWrapper(App app, ResponseContent wrappedResponse, TokenFinder brjsTokenFinder, TokenFinder tokenFinder, MissingTokenHandler replacementHandler) {
+    	this.app = app;
     	this.brjsTokenFinder = brjsTokenFinder;
         this.wrappedResponse = wrappedResponse;
         this.tokenFinder = tokenFinder;
@@ -28,7 +31,7 @@ public class TokenReplacingResponseContentWrapper implements ResponseContent {
         wrappedResponse.write( wrappedContentByteOutput );
 
         Reader reader = new InputStreamReader(new ByteArrayInputStream(wrappedContentByteOutput.toByteArray()));
-        Reader tokenReplacingReader = new TokenReplacingReader(brjsTokenFinder, tokenFinder, reader, replacementHandler);
+        Reader tokenReplacingReader = new TokenReplacingReader(app.getName(), brjsTokenFinder, tokenFinder, reader, replacementHandler);
         IOUtils.copy(tokenReplacingReader, outputStream);
     }
 

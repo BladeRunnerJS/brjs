@@ -386,7 +386,7 @@ public class AppRequestHandler
 		if (handler == null) {
 			handler = getNoTokenExNoTokenReplacementHandler(app.root());
 		}
-		return new TokenReplacingResponseContentWrapper( wrappedResponse, brjsTokenFinder, tokenFinder, handler );
+		return new TokenReplacingResponseContentWrapper( app, wrappedResponse, brjsTokenFinder, tokenFinder, handler );
 	}
 
 	public static void setNoTokenExceptionHandler(BRJS brjs, MissingTokenHandler handler) {

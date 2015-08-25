@@ -26,6 +26,7 @@ public class TokenisingServletFilter implements Filter
 {
 	private JndiTokenFinder tokenFinder;
 	private final Pattern validUrl = Pattern.compile("^.*(/|/[a-z]{2}|/[a-z]{2}_[A-Z]{2}|\\.(xml|json|html|htm|jsp))$");
+	private String appName;
 	
 	public TokenisingServletFilter() throws ServletException
 	{
@@ -40,6 +41,8 @@ public class TokenisingServletFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig)
 	{
+		String[] pathSplit = filterConfig.getServletContext().getContextPath().split("/");
+		appName = pathSplit[pathSplit.length - 1];
 	}
 	
 	@Override
@@ -105,7 +108,7 @@ public class TokenisingServletFilter implements Filter
 				throw new ServletException("Error getting context for JNDI lookups. (" + ex + ")", ex);
 			}
 		}
-		return new TokenReplacingReader(tokenFinder, reader, new ExceptionThrowingMissingTokenHandler());
+		return new TokenReplacingReader(appName, tokenFinder, reader, new ExceptionThrowingMissingTokenHandler());
 	}
 	
 }

@@ -27,16 +27,18 @@ public class TokenReplacingReader extends Reader
 	private int currentOffset;
 	private int maxCharactersToWrite;
 	private int totalNumberOfCharsWritten;
+	private String appName;
 
-	public TokenReplacingReader(TokenFinder userTokenFinder, Reader sourceReader) {
-		this(null, userTokenFinder, sourceReader, new ExceptionThrowingMissingTokenHandler());
+	public TokenReplacingReader(String appName, TokenFinder userTokenFinder, Reader sourceReader) {
+		this(appName, null, userTokenFinder, sourceReader, new ExceptionThrowingMissingTokenHandler());
 	}
 
-	public TokenReplacingReader(TokenFinder userTokenFinder, Reader sourceReader, MissingTokenHandler replacementHandler) {
-		this(null, userTokenFinder, sourceReader, replacementHandler);
+	public TokenReplacingReader(String appName, TokenFinder userTokenFinder, Reader sourceReader, MissingTokenHandler replacementHandler) {
+		this(appName, null, userTokenFinder, sourceReader, replacementHandler);
 	}
 	
-    public TokenReplacingReader(TokenFinder brjsTokenFinder, TokenFinder tokenFinder, Reader sourceReader, MissingTokenHandler replacementHandler) {
+    public TokenReplacingReader(String appName, TokenFinder brjsTokenFinder, TokenFinder tokenFinder, Reader sourceReader, MissingTokenHandler replacementHandler) {
+    	this.appName = appName;
     	this.userTokenFinder = tokenFinder;
     	this.brjsTokenFinder = brjsTokenFinder;
         this.sourceReader = sourceReader;
