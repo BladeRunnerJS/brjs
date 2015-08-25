@@ -166,7 +166,7 @@ public class TokenReplacingReader extends Reader
             return tokenValue;
         } catch (TokenReplacementException ex) {
             try {
-                replacementHandler.handleNoTokenFound( tokenKey, ex );
+                replacementHandler.handleNoTokenFound( appName, tokenKey, ex );
                 return tokenName;
             } catch (TokenReplacementException handlerThrownEx) {
                 throw new IllegalArgumentException(handlerThrownEx);

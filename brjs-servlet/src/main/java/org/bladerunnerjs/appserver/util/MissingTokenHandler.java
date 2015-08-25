@@ -7,6 +7,6 @@ package org.bladerunnerjs.appserver.util;
 
 public interface MissingTokenHandler {
 
-    public void handleNoTokenFound(String tokenName, TokenReplacementException thrownException) throws TokenReplacementException;
+    public void handleNoTokenFound(String appName, String tokenName, TokenReplacementException thrownException) throws TokenReplacementException;
 
 }

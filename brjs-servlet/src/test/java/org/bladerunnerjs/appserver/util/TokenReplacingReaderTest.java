@@ -271,7 +271,7 @@ public class TokenReplacingReaderTest
         Reader tokenisingReader = new TokenReplacingReader( APP_NAME, mockTokenFinder, new StringReader("@EXCEPTION.THROWING.TOKEN@"), mockTokenReplacementHandler );
         String replacedContent = IOUtils.toString(tokenisingReader);
         assertEquals("@EXCEPTION.THROWING.TOKEN@", replacedContent);
-        verify(mockTokenReplacementHandler, times(1)).handleNoTokenFound( eq("EXCEPTION.THROWING.TOKEN"), any(TokenReplacementException.class) );
+        verify(mockTokenReplacementHandler, times(1)).handleNoTokenFound( eq(APP_NAME), eq("EXCEPTION.THROWING.TOKEN"), any(TokenReplacementException.class) );
     }
     
     @Test
@@ -306,7 +306,7 @@ public class TokenReplacingReaderTest
         
     	Reader tokenisingReader = new TokenReplacingReader( APP_NAME, brjsTokenFinder, mockTokenFinder, new StringReader("@BRJS.EXCEPTION.THROWING.TOKEN@"), mockTokenReplacementHandler );
         IOUtils.toString(tokenisingReader);
-        verify(mockTokenReplacementHandler, times(0)).handleNoTokenFound( any(String.class), any(TokenReplacementException.class) );
+        verify(mockTokenReplacementHandler, times(0)).handleNoTokenFound( eq(APP_NAME), any(String.class), any(TokenReplacementException.class) );
     }
     
     @Test // the servlet filter does not have BRJS at runtime so can't depend on any BRJS classes or tokens 
@@ -330,7 +330,7 @@ public class TokenReplacingReaderTest
         
     	Reader tokenisingReader = new TokenReplacingReader( APP_NAME, brjsTokenFinder, mockTokenFinder, new StringReader("@BRJS.NO.OVERRIDING.TOKEN@"), mockTokenReplacementHandler );
         IOUtils.toString(tokenisingReader);
-        verify(mockTokenReplacementHandler, times(0)).handleNoTokenFound( any(String.class), any(TokenReplacementException.class) );
+        verify(mockTokenReplacementHandler, times(0)).handleNoTokenFound( eq(APP_NAME), any(String.class), any(TokenReplacementException.class) );
     }
     
 }

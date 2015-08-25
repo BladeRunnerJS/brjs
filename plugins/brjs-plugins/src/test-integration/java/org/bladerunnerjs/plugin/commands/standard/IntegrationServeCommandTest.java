@@ -28,6 +28,7 @@ public class IntegrationServeCommandTest extends SpecTest
 	private BRJS secondBrjsProcess;
 	private App app;
 	private Aspect aspect;
+	private StringBuffer response = new StringBuffer();
 
 	@Before
 	public void initTestObjects() throws Exception
@@ -283,9 +284,10 @@ public class IntegrationServeCommandTest extends SpecTest
 	}
 
 	@Test //log at info since when running 'serve' the JNDI token filter will replace more tokens
-	public void warningIsLoggedAtInfoLevelIfTokenCannotBeReplaced() throws Exception
+	public void warningIsLoggedAtInfoLevelIfTokenCannotBeReplacedAndWebInfExists() throws Exception
 	{
 		given(app).hasBeenCreated()
+				.and(app).containsFolder("WEB-INF")
 				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
 				+ "locales: en\n"
 				+ "requirePrefix: appns")
@@ -297,6 +299,22 @@ public class IntegrationServeCommandTest extends SpecTest
 		when(brjs).runThreadedCommand("serve", "-e", "prod");
 		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "@SOME.TOKEN@")
 			.and(logging).unorderedInfoMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" );
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTokenCannotBeReplacedForAppWhereWebInfIsNotPresent() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+			+ "locales: en\n"
+			+ "requirePrefix: appns")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("123");
+		when(brjs).runThreadedCommand("serve")
+			.and(appServer).requestIsMadeFor("/app1/v/dev/js/dev/combined/bundle.js", response);
+		then(response).containsText("The token finder 'PropertyFileTokenFinder' could not find a replacement for the token 'SOME.TOKEN'.");
 	}
 
 }
