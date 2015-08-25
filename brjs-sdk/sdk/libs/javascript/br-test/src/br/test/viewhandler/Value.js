@@ -4,7 +4,8 @@
  * @module br/test/viewhandler/Value
  */
 
-require('jquery');
+var jQuery = require('jquery');
+var Utils = require("br/test/Utils");
 
 var br = require('br/Core');
 var Errors = require('br/Errors');
@@ -45,7 +46,7 @@ Value.prototype.set = function(eElement, vValue) {
 	 * Knockout doesn't listen for the jQuery change event unless jQuery appears before the knockout library
 	 * and in order to make that happen presenter-knockout has to directly depends on jQuery.
 	*/
-	require("br/test/Utils").fireDomEvent(eElement, "change");
+	Utils.fireDomEvent(eElement, "change");
 };
 
 module.exports = Value;

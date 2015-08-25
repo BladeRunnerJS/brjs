@@ -1,9 +1,17 @@
-br.presenter.testing.node.RootPresentationNodeContainingList = function()
+var brCore = require("br/Core");
+var WritableProperty = require("br/presenter/property/WritableProperty");
+var ChildPresentationNode = require("br/presenter/testing/node/ChildPresentationNode");
+var NodeList = require("br/presenter/node/NodeList");
+var PresentationModel = require("br/presenter/PresentationModel");
+
+var RootPresentationNodeContainingList = function()
 {
-	this.m_oPrivateProperty1 = new br.presenter.property.WritableProperty();
-	this.m_oOnlyChild = new br.presenter.testing.node.ChildPresentationNode();
+	this.m_oPrivateProperty1 = new WritableProperty();
+	this.m_oOnlyChild = new ChildPresentationNode();
 	
-	this.property1 = new br.presenter.property.WritableProperty();
-	this.children = new br.presenter.node.NodeList([this.m_oOnlyChild]);
+	this.property1 = new WritableProperty();
+	this.children = new NodeList([this.m_oOnlyChild]);
 };
-br.Core.extend(br.presenter.testing.node.RootPresentationNodeContainingList, br.presenter.PresentationModel);
+brCore.extend(RootPresentationNodeContainingList, PresentationModel);
+
+module.exports = RootPresentationNodeContainingList;

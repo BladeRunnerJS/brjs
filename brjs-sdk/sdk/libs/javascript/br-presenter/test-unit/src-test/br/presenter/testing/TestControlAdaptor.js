@@ -1,19 +1,24 @@
-br.presenter.testing.TestControlAdaptor = function()
+var brCore = require("br/Core");
+var ControlAdaptor = require("br/presenter/control/ControlAdaptor");
+
+var TestControlAdaptor = function()
 {
 };
-br.Core.inherit(br.presenter.testing.TestControlAdaptor, br.presenter.control.ControlAdaptor);
+brCore.inherit(TestControlAdaptor, ControlAdaptor);
 
-br.presenter.testing.TestControlAdaptor.prototype.setOptions = function()
+TestControlAdaptor.prototype.setOptions = function()
 {
 	// do nothing
 };
 
-br.presenter.testing.TestControlAdaptor.prototype.setPresentationNode = function()
+TestControlAdaptor.prototype.setPresentationNode = function()
 {
 	// do nothing
 };
 
-br.presenter.testing.TestControlAdaptor.prototype.onViewReady = function()
+TestControlAdaptor.prototype.onViewReady = function()
 {
 	// do nothing
 };
+
+module.exports = TestControlAdaptor;

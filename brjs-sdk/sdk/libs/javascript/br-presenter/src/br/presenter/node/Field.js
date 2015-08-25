@@ -1,3 +1,13 @@
+'use strict';
+
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var Core = require('br/Core');
+var FieldValuePropertyListener = require('br/presenter/node/FieldValuePropertyListener');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+var Errors = require('br/Errors');
+var EditableProperty = require('br/presenter/property/EditableProperty');
+var Property = require('br/presenter/property/Property');
+
 /**
  * @module br/presenter/node/Field
  */
@@ -14,51 +24,50 @@
  * @param {Object} vValue (optional) The initial value of the field, either using a
  * primitive type or as a {@link module:br/presenter/property/EditableProperty}.
  */
-br.presenter.node.Field = function(vValue)
-{
-	if((vValue instanceof br.presenter.property.Property) && !(vValue instanceof br.presenter.property.EditableProperty)){
-		throw new br.Errors.InvalidParametersError("Field constructor: can't pass non-editable property as parameter");
+function Field(vValue) {
+	if ((vValue instanceof Property) && !(vValue instanceof EditableProperty)) {
+		throw new Errors.InvalidParametersError("Field constructor: can't pass non-editable property as parameter");
 	}
-	
-	if(!(vValue instanceof br.presenter.property.EditableProperty)) {
-		vValue = new br.presenter.property.EditableProperty(vValue);
+
+	if (!(vValue instanceof EditableProperty)) {
+		vValue = new EditableProperty(vValue);
 	}
-	
+
 	/**
 	 * The textual label associated with the input field.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.label = new br.presenter.property.WritableProperty("");
-	
+	this.label = new WritableProperty('');
+
 	/**
 	 * The current value displayed within the input field.
 	 * @type br.presenter.property.EditableProperty
 	 */
 	this.value = vValue;
-	
+
 	/**
 	 * A boolean property that is <code>true</code> if {@link #value} has any validation errors, and <code>false</code> otherwise.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.hasError = new br.presenter.property.WritableProperty(false);
-	
+	this.hasError = new WritableProperty(false);
+
 	/**
 	 * A textual description of the currently failing validation message when {@link #hasError} is <code>true</code>.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.failureMessage = new br.presenter.property.WritableProperty();
-	
+	this.failureMessage = new WritableProperty();
+
 	/**
 	 * A boolean property representing whether the input field is enabled or not.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.enabled = new br.presenter.property.WritableProperty(true);
-	
+	this.enabled = new WritableProperty(true);
+
 	/**
 	 * A boolean property representing whether the input field is visible or not.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.visible = new br.presenter.property.WritableProperty(true);
+	this.visible = new WritableProperty(true);
 
 	/**
 	 * The logical control-name the field is being bound to &mdash; this
@@ -66,9 +75,12 @@ br.presenter.node.Field = function(vValue)
 	 * to a native HTML control.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.controlName = new br.presenter.property.WritableProperty("");
-	
+	this.controlName = new WritableProperty('');
+
 	/** @private */
-	this.m_oValueListener = new br.presenter.node.FieldValuePropertyListener(this);
-};
-br.Core.extend(br.presenter.node.Field, br.presenter.node.PresentationNode);
+	this.m_oValueListener = new FieldValuePropertyListener(this);
+}
+
+Core.extend(Field, PresentationNode);
+
+module.exports = Field;

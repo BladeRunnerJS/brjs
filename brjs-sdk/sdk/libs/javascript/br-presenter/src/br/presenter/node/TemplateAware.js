@@ -1,3 +1,7 @@
+'use strict';
+
+var Errors = require('br/Errors');
+
 /**
  * @module br/presenter/node/TemplateAware
  */
@@ -28,7 +32,7 @@ function TemplateAware() {
  * @type String
  */
 TemplateAware.prototype.getTemplateName = function() {
-	throw new br.Errors.UnimplementedInterfaceError("This method should be overridden.");
+	throw new Errors.UnimplementedInterfaceError('This method should be overridden.');
 };
 
-br.presenter.node.TemplateAware = TemplateAware;
+module.exports = TemplateAware;

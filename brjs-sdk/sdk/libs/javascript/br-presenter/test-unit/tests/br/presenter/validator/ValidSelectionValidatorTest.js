@@ -1,35 +1,36 @@
 (function() {
-	var OptionsNodeList = require('br/presenter/node/OptionsNodeList');
-	var ValidSelectionValidator = require('br/presenter/validator/ValidSelectionValidator');
-	var ValidationResult = require('br/presenter/validator/ValidationResult');
+    var Errors = require("br/Errors");
+    var OptionsNodeList = require('br/presenter/node/OptionsNodeList');
+    var ValidSelectionValidator = require('br/presenter/validator/ValidSelectionValidator');
+    var ValidationResult = require('br/presenter/validator/ValidationResult');
 
-	ValidSelectionValidatorTest = TestCase("ValidSelectionValidatorTest");
+    ValidSelectionValidatorTest = TestCase("ValidSelectionValidatorTest");
 
-	ValidSelectionValidatorTest.prototype.setUp = function()
+    ValidSelectionValidatorTest.prototype.setUp = function()
 	{
 		this.oOptions = new OptionsNodeList(["a", "b", "fOoBaR"]);
 		this.oValidSelectionValidator = new ValidSelectionValidator(this.oOptions);
 	};
 
-	ValidSelectionValidatorTest.prototype.tearDown = function()
+    ValidSelectionValidatorTest.prototype.tearDown = function()
 	{
 		// nothing
 	};
 
-	ValidSelectionValidatorTest.prototype.test_cannotConstructValidSelectionValidatorWithoutAnOptionsNodeList = function()
+    ValidSelectionValidatorTest.prototype.test_cannotConstructValidSelectionValidatorWithoutAnOptionsNodeList = function()
 	{
 		assertException("1a", function(){
 			new ValidSelectionValidator();
-		}, br.Errors.INVALID_PARAMETERS);
+		}, Errors.INVALID_PARAMETERS);
 		assertException("1b", function(){
 			new ValidSelectionValidator("a");
-		}, br.Errors.INVALID_PARAMETERS);
+		}, Errors.INVALID_PARAMETERS);
 		assertException("1c", function(){
 			new ValidSelectionValidator(["a", "b"]);
-		}, br.Errors.INVALID_PARAMETERS);
+		}, Errors.INVALID_PARAMETERS);
 	};
 
-	ValidSelectionValidatorTest.prototype.test_knownOptionValuesValidateSuccessfully = function()
+    ValidSelectionValidatorTest.prototype.test_knownOptionValuesValidateSuccessfully = function()
 	{
 		var oValidationResult = new ValidationResult();
 		this.oValidSelectionValidator.validate("a", {}, oValidationResult);
@@ -40,21 +41,21 @@
 		assertTrue("1b", oValidationResult.isValid());
 	};
 
-	ValidSelectionValidatorTest.prototype.test_nonExistentOptionValuesFailValidationByDefault = function()
+    ValidSelectionValidatorTest.prototype.test_nonExistentOptionValuesFailValidationByDefault = function()
 	{
 		var oValidationResult = new ValidationResult();
 		this.oValidSelectionValidator.validate("c", {}, oValidationResult);
 		assertFalse("1a", oValidationResult.isValid());
 	};
 
-	ValidSelectionValidatorTest.prototype.test_canCorrectlyValidateWhenValueIsUndefined = function()
+    ValidSelectionValidatorTest.prototype.test_canCorrectlyValidateWhenValueIsUndefined = function()
 	{
 		var oValidationResult = new ValidationResult();
 		this.oValidSelectionValidator.validate(undefined, {}, oValidationResult);
 		assertFalse("1a", oValidationResult.isValid());
 	};
 
-	ValidSelectionValidatorTest.prototype.test_weCanAllowInvalidSelectionsToPassValidations = function()
+    ValidSelectionValidatorTest.prototype.test_weCanAllowInvalidSelectionsToPassValidations = function()
 	{
 		var oValidationResult = new ValidationResult();
 		this.oValidSelectionValidator.allowInvalidSelections(true);
@@ -62,14 +63,14 @@
 		assertTrue("1a", oValidationResult.isValid());
 	};
 
-	ValidSelectionValidatorTest.prototype.test_caseIsIgnoredWhenValidating = function()
+    ValidSelectionValidatorTest.prototype.test_caseIsIgnoredWhenValidating = function()
 	{
 		var oValidationResult = new ValidationResult();
 		this.oValidSelectionValidator.validate("FOObar", {}, oValidationResult);
 		assertTrue(oValidationResult.isValid());
 	};
 
-	ValidSelectionValidatorTest.prototype.test_canValidateNumericOptions = function()
+    ValidSelectionValidatorTest.prototype.test_canValidateNumericOptions = function()
 	{
 		var oNumericOptions = new OptionsNodeList([1, 2, 3]);
 		var oValidSelectionValidator = new ValidSelectionValidator(oNumericOptions);
@@ -79,7 +80,7 @@
 		assertTrue(oValidationResult.isValid());
 	};
 
-	ValidSelectionValidatorTest.prototype.test_canValidateNumericOptionsWhenComparisonValueIsZero = function()
+    ValidSelectionValidatorTest.prototype.test_canValidateNumericOptionsWhenComparisonValueIsZero = function()
 	{
 		var oNumericOptions = new OptionsNodeList([0, 1, 2]);
 		var oValidSelectionValidator = new ValidSelectionValidator(oNumericOptions);

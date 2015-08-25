@@ -1,5 +1,11 @@
-br.presenter.testing.node.SimplePresentationNode = function(vPropValue)
+var brCore = require("br/Core");
+var WritableProperty = require("br/presenter/property/WritableProperty");
+var PresentationNode = require("br/presenter/node/PresentationNode");
+
+var SimplePresentationNode = function(vPropValue)
 {
-	this.property = new br.presenter.property.WritableProperty(vPropValue);
+	this.property = new WritableProperty(vPropValue);
 };
-br.Core.extend(br.presenter.testing.node.SimplePresentationNode, br.presenter.node.PresentationNode);
+brCore.extend(SimplePresentationNode, PresentationNode);
+
+module.exports = SimplePresentationNode;

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @module br/presenter/property/PropertyListener
  */
@@ -71,4 +73,4 @@ PropertyListener.prototype.onValidationComplete = function() {
 	// optional callback
 };
 
-br.presenter.property.PropertyListener = PropertyListener;
+module.exports = PropertyListener;

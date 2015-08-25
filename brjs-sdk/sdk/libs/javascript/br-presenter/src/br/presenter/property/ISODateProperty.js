@@ -1,8 +1,17 @@
+'use strict';
+
+var Errors = require('br/Errors');
+var ValidationResult = require('br/presenter/validator/ValidationResult');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+var ISODateValidator = require('br/presenter/validator/ISODateValidator');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/property/ISODateProperty
  */
 
-br.Core.thirdparty("momentjs");
+var momentjs = require('momentjs');
+
 /**
  * Constructs a new <code>ISODateProperty</code> instance.
  * 
@@ -16,29 +25,26 @@ br.Core.thirdparty("momentjs");
  * 
  * @param vValue (optional) A valid ISO Date string (YYYY-MM-DD) or a native Date object
  */
-br.presenter.property.ISODateProperty = function(vValue)
-{
+function ISODateProperty(vValue) {
 	/** @private */
-	this.m_oDateValidator = new br.presenter.validator.ISODateValidator();
+	this.m_oDateValidator = new ISODateValidator();
 
 	vValue = this._validateDate(vValue);
 
 	// super constructor
-	br.presenter.property.WritableProperty.call(this, vValue);
-};
+	WritableProperty.call(this, vValue);
+}
 
-br.Core.extend(br.presenter.property.ISODateProperty, br.presenter.property.WritableProperty);
+Core.extend(ISODateProperty, WritableProperty);
 
 /**
  * Gets the date object that is property represents
  * @type Date
  */
-br.presenter.property.ISODateProperty.prototype.getDateValue = function()
-{
+ISODateProperty.prototype.getDateValue = function() {
 	var sDate = this.getValue();
-	if (sDate)
-	{
-		return new Date(Number(sDate.substr(0, 4)), Number(sDate.substr(5, 2))-1, Number(sDate.substr(8, 2)));
+	if (sDate) {
+		return new Date(Number(sDate.substr(0, 4)), Number(sDate.substr(5, 2)) - 1, Number(sDate.substr(8, 2)));
 	}
 	return null;
 };
@@ -47,30 +53,26 @@ br.presenter.property.ISODateProperty.prototype.getDateValue = function()
  * Sets the value of the date
  * @param {Variant} vValue The new date value (A valid ISO Date string (YYYY-MM-DD) or a native Date object)
  */
-br.presenter.property.ISODateProperty.prototype.setValue = function(vValue)
-{
+ISODateProperty.prototype.setValue = function(vValue) {
 	vValue = this._validateDate(vValue);
-	br.presenter.property.WritableProperty.prototype.setValue.call(this, vValue);
+	WritableProperty.prototype.setValue.call(this, vValue);
 };
 
 /**
  * @private
  */
-br.presenter.property.ISODateProperty.prototype._validateDate = function(vDate)
-{
-	if (vDate instanceof Date)
-	{
-		vDate = moment(vDate).format("YYYY-MM-DD");
+ISODateProperty.prototype._validateDate = function(vDate) {
+	if (vDate instanceof Date) {
+		vDate = moment(vDate).format('YYYY-MM-DD');
 		return vDate;
 	}
-	var oValidationResult = new br.presenter.validator.ValidationResult();
+	var oValidationResult = new ValidationResult();
 	this.m_oDateValidator.validate(vDate, {}, oValidationResult);
-	if(!oValidationResult.isValid())
-	{
-		throw new br.Errors.InvalidParametersError(oValidationResult.getFailureMessage());
-	}
-	else
-	{
+	if (!oValidationResult.isValid()) {
+		throw new Errors.InvalidParametersError(oValidationResult.getFailureMessage());
+	} else {
 		return vDate;
 	}
 };
+
+module.exports = ISODateProperty;
