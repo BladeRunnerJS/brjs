@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @module br/presenter/control/ControlAdaptorFactoryClass
  */
@@ -7,7 +9,7 @@ var AliasRegistry = require('br/AliasRegistry');
 /**
  * @class
  * @alias module:br/presenter/control/ControlAdaptorFactoryClass
- * 
+ *
  * @classdesc
  * Repository for presenter controls referenced in HTML templates.
  * All custom controls are registered here.
@@ -39,7 +41,7 @@ ControlAdaptorFactoryClass.prototype.createControlAdaptor = function(sName) {
 		fControlAdaptorClass = AliasRegistry.getClass(sName);
 	} else {
 		if (!this.m_mConfiguredControlAdaptors[sName]) {
-			throw "Unknown Control Adaptor: " + sName;
+			throw 'Unknown Control Adaptor: ' + sName;
 		}
 		fControlAdaptorClass = this.m_mConfiguredControlAdaptors[sName];
 	}
@@ -48,6 +50,3 @@ ControlAdaptorFactoryClass.prototype.createControlAdaptor = function(sName) {
 };
 
 module.exports = ControlAdaptorFactoryClass;
-
-// TODO: delete this line once the package is CommonJs
-br.presenter.control.ControlAdaptorFactoryClass = module.exports;

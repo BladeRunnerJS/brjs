@@ -4,7 +4,7 @@
  * @module br/test/viewhandler/BlurHandler
  */
 
-require('jquery');
+var jQuery = require('jquery');
 
 /**
  * @private

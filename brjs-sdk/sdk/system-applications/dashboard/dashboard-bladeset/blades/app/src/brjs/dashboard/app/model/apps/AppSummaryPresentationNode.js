@@ -1,7 +1,15 @@
-brjs.dashboard.app.model.apps.AppSummaryPresentationNode = function(sAppName, sAppInfoUrl, sImageUrl)
-{
-	this.appName = new br.presenter.property.Property(sAppName);
-	this.appInfoUrl = new br.presenter.property.Property(sAppInfoUrl);
-	this.imageUrl = new br.presenter.property.Property(sImageUrl);
-};
-br.Core.extend(brjs.dashboard.app.model.apps.AppSummaryPresentationNode, br.presenter.node.PresentationNode);
+'use strict';
+
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var Core = require('br/Core');
+var Property = require('br/presenter/property/Property');
+
+function AppSummaryPresentationNode(sAppName, sAppInfoUrl, sImageUrl) {
+	this.appName = new Property(sAppName);
+	this.appInfoUrl = new Property(sAppInfoUrl);
+	this.imageUrl = new Property(sImageUrl);
+}
+
+Core.extend(AppSummaryPresentationNode, PresentationNode);
+
+module.exports = AppSummaryPresentationNode;

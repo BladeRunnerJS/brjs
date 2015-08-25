@@ -1,6 +1,13 @@
-brjs.dashboard.app.model.crumbtrail.HomeBreadCrumb = function()
-{
+'use strict';
+
+var Core = require('br/Core');
+var BreadCrumb = require("brjs/dashboard/app/model/crumbtrail/BreadCrumb");
+
+function HomeBreadCrumb() {
 	// call super constructor
-	brjs.dashboard.app.model.crumbtrail.BreadCrumb.call(this, "home-breadcrumb", null, "#");
-};
-br.Core.extend(brjs.dashboard.app.model.crumbtrail.HomeBreadCrumb, brjs.dashboard.app.model.crumbtrail.BreadCrumb);
+	BreadCrumb.call(this, 'home-breadcrumb', null, '#');
+}
+
+Core.extend(HomeBreadCrumb, BreadCrumb);
+
+module.exports = HomeBreadCrumb;

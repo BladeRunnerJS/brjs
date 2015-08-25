@@ -1,9 +1,15 @@
-brjs.dashboard.app.service.window.WindowOpenerProvider = function()
-{
-};
-br.Core.inherit(brjs.dashboard.app.service.window.WindowOpenerProvider, brjs.dashboard.app.service.window.WindowOpenerService);
+'use strict';
 
-brjs.dashboard.app.service.window.WindowOpenerProvider.prototype.openWindow = function(sUrl)
-{
-	window.open(sUrl, "_blank");
+var Core = require('br/Core');
+var WindowOpenerService = require("brjs/dashboard/app/service/window/WindowOpenerService");
+
+function WindowOpenerProvider() {
+}
+
+Core.inherit(WindowOpenerProvider, WindowOpenerService);
+
+WindowOpenerProvider.prototype.openWindow = function(sUrl) {
+	window.open(sUrl, '_blank');
 };
+
+module.exports = WindowOpenerProvider;

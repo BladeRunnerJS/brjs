@@ -33,10 +33,7 @@ public class BuildAppCommandTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsCommandPlugins()
-			.and(brjs).automaticallyFindsBundlerPlugins()
-			.and(brjs).automaticallyFindsMinifierPlugins()
-			.and(brjs).hasBeenCreated();
+		given(brjs).hasBeenAuthenticallyCreated();
 		app = brjs.app("app");
 		defaultAspect = app.defaultAspect();
 		otherApp = brjs.app("other-app");
@@ -242,6 +239,26 @@ public class BuildAppCommandTest extends SpecTest
 		when(brjs).runCommand("build-app", "app", "-v", "1234");
 		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1234")
 			.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "@appVersion@");
+	}
+	
+	/*
+	 * this test should fail when we remove the underscore from the getVersionPattern regex, but doesn't. needs investigation
+	 */
+	@Test
+	public void appVersiontWithUnderscores() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@appVersion@</web-xml>");
+		when(brjs).runCommand("build-app", "app", "-v", "1.2.3_BOB");
+		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<web-xml>1.2.3_BOB");
+	}
+
+	@Test
+	public void exceptionIsThrownWhenVersionInWrongFormat() throws Exception
+	{
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("build-app", "app", "-v", "1.2.3 BOB");
+		then(exceptions).verifyException(IllegalArgumentException.class, "([a-zA-Z0-9\\._\\-]+)");
 	}
 
 	@Test

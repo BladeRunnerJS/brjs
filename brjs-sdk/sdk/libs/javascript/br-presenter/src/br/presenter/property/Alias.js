@@ -1,3 +1,9 @@
+'use strict';
+
+var Core = require('br/Core');
+var Errors = require('br/Errors');
+var Property = require('br/presenter/property/Property');
+
 /**
  * @module br/presenter/property/Alias
  */
@@ -15,42 +21,39 @@
  * 
  * @param {module:br/presenter/property/Property} oProperty The property to wrap.
  */
-br.presenter.property.Alias = function(oProperty)
-{
-	if (!(oProperty instanceof br.presenter.property.Property))
-	{
-		throw new br.Errors.InvalidParametersError("An Alias can only constructed with a presenter Property");
+function Alias(oProperty) {
+	if (!(oProperty instanceof Property)) {
+		throw new Errors.InvalidParametersError('An Alias can only constructed with a presenter Property');
 	}
+
 	/** @private */
 	this.m_oWrappedProperty = oProperty;
-	
-	oProperty.addChangeListener(this, "_onWrappedChanged", false);
-	var vInitial = oProperty.getValue();
-	br.presenter.property.Property.call(this, vInitial);
-};
 
-br.Core.extend(br.presenter.property.Alias, br.presenter.property.Property);
+	oProperty.addChangeListener(this, '_onWrappedChanged', false);
+	var vInitial = oProperty.getValue();
+	Property.call(this, vInitial);
+}
+
+Core.extend(Alias, Property);
 
 /**
  * @private
  */
-br.presenter.property.Alias.prototype._onWrappedChanged = function()
-{
+Alias.prototype._onWrappedChanged = function() {
 	var vValue = this.m_oWrappedProperty.getValue();
 	this._$setInternalValue(vValue);
 };
 
-br.presenter.property.Alias.prototype.getValue = function()
-{
+Alias.prototype.getValue = function() {
 	return this.m_oWrappedProperty.getValue();
 };
 
-br.presenter.property.Alias.prototype.getFormattedValue = function()
-{
+Alias.prototype.getFormattedValue = function() {
 	return this.m_oWrappedProperty.getFormattedValue();
 };
 
-br.presenter.property.Alias.prototype.getRenderedValue = function()
-{
+Alias.prototype.getRenderedValue = function() {
 	return this.m_oWrappedProperty.getRenderedValue();
 };
+
+module.exports = Alias;

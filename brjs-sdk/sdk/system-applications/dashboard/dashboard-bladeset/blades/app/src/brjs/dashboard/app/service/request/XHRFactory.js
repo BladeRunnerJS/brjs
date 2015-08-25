@@ -1,9 +1,10 @@
+'use strict';
 
-brjs.dashboard.app.service.request.XHRFactory = function()
-{
-};
+function XHRFactory() {
+}
 
-brjs.dashboard.app.service.request.XHRFactory.prototype.getRequestObject = function()
-{
+XHRFactory.prototype.getRequestObject = function() {
 	return new XMLHttpRequest();
 };
+
+module.exports = XHRFactory;

@@ -1,3 +1,11 @@
+'use strict';
+
+var Errors = require('br/Errors');
+var Property = require('br/presenter/property/Property');
+var Core = require('br/Core');
+var Option = require('br/presenter/node/Option');
+var NodeList = require('br/presenter/node/NodeList');
+
 /**
  * Constructs a new <code>OptionsNodeList</code> instance.
  *
@@ -9,17 +17,18 @@
  * @param {Object} options The set of available options, either as an array (keys only) or a map (keys to label).
  * @extends br.presenter.node.NodeList
  */
-br.presenter.node.OptionsNodeList = function(options) {
-	var options = this._getOptionObjects(options);
-	br.presenter.node.NodeList.call(this, options, br.presenter.node.Option);
-};
-br.Core.extend(br.presenter.node.OptionsNodeList, br.presenter.node.NodeList);
+function OptionsNodeList(vOptions) {
+	var options = this._getOptionObjects(vOptions);
+	NodeList.call(this, options, Option);
+}
+
+Core.extend(OptionsNodeList, NodeList);
 
 /**
  * Retrieve the array of {@link br.presenter.node.Option} instances contained by this object.
  * @returns {Array}
  */
-br.presenter.node.OptionsNodeList.prototype.getOptions = function() {
+OptionsNodeList.prototype.getOptions = function() {
 	return this.getPresentationNodesArray();
 };
 
@@ -27,14 +36,13 @@ br.presenter.node.OptionsNodeList.prototype.getOptions = function() {
  * Retrieve an array of values for each {@link br.presenter.node.Option} contained within this object.
  * @returns {Array}
  */
-br.presenter.node.OptionsNodeList.prototype.getOptionValues = function() {
+OptionsNodeList.prototype.getOptionValues = function() {
 	var nodes = this.getOptions();
 	var result = [];
-
 	for (var i = 0, max = nodes.length; i < max; i++) {
 		result.push(nodes[i].value.getValue());
 	}
-
+	
 	return result;
 };
 
@@ -42,10 +50,9 @@ br.presenter.node.OptionsNodeList.prototype.getOptionValues = function() {
  * Retrieve an array of labels for each {@link br.presenter.node.Option} contained within this object.
  * @returns {Array}
  */
-br.presenter.node.OptionsNodeList.prototype.getOptionLabels = function() {
+OptionsNodeList.prototype.getOptionLabels = function() {
 	var nodes = this.getOptions();
 	var result = [];
-
 	for (var i = 0, max = nodes.length; i < max; i++) {
 		result.push(nodes[i].label.getValue());
 	}
@@ -57,7 +64,7 @@ br.presenter.node.OptionsNodeList.prototype.getOptionLabels = function() {
  * Reset the list of available options using the given array or map.
  * @param {Object} options The set of available options, either as an array (keys only) or a map (keys to label).
  */
-br.presenter.node.OptionsNodeList.prototype.setOptions = function(options) {
+OptionsNodeList.prototype.setOptions = function(options) {
 	this.updateList(options);
 };
 
@@ -66,9 +73,8 @@ br.presenter.node.OptionsNodeList.prototype.setOptions = function(options) {
 
  * @returns {br.presenter.node.Option}
  */
-br.presenter.node.OptionsNodeList.prototype.getFirstOption = function() {
-	var options  = this.getOptions();
-
+OptionsNodeList.prototype.getFirstOption = function() {
+	var options = this.getOptions();
 	if (options.length == 0) {
 		return null;
 	}
@@ -84,7 +90,7 @@ br.presenter.node.OptionsNodeList.prototype.getFirstOption = function() {
  * @param {Boolean} ignoreCase Controls whether the search should be case sensitive (default: false).
  * @returns {@link br.presenter.node.Option}
  */
-br.presenter.node.OptionsNodeList.prototype.getOptionByLabel = function(label, ignoreCase) {
+OptionsNodeList.prototype.getOptionByLabel = function(label, ignoreCase) {
 	if (typeof ignoreCase === 'undefined') {
 		ignoreCase = false;
 	}
@@ -123,7 +129,7 @@ br.presenter.node.OptionsNodeList.prototype.getOptionByLabel = function(label, i
  * @param {String} value Value to search.
  * @param {@link br.presenter.node.Option}
  */
-br.presenter.node.OptionsNodeList.prototype.getOptionByValue = function(value) {
+OptionsNodeList.prototype.getOptionByValue = function(value) {
 	var nodes = this.getOptions();
 
 	for (var i = 0, max = nodes.length; i < max; i++) {
@@ -136,38 +142,40 @@ br.presenter.node.OptionsNodeList.prototype.getOptionByValue = function(value) {
 };
 
 /** @private */
-br.presenter.node.OptionsNodeList.prototype.updateList = function(options) {
+OptionsNodeList.prototype.updateList = function(options) {
 	var optionsObj = this._getOptionObjects(options);
-	br.presenter.node.NodeList.prototype.updateList.call(this, optionsObj);
+	NodeList.prototype.updateList.call(this, optionsObj);
 };
 
 /** @private */
-br.presenter.node.OptionsNodeList.prototype._getOptionObjects = function(options) {
+OptionsNodeList.prototype._getOptionObjects = function(options) {
 	var option;
 
 	options = options || [];
 
-	if (options instanceof br.presenter.property.Property) {
-		throw new br.Errors.InvalidParametersError('OptionsNodeList only accepts maps or arrays');
+	if (options instanceof Property) {
+		throw new Errors.InvalidParametersError('OptionsNodeList only accepts maps or arrays');
 	}
 
 	var result = [];
 
-	if (options instanceof Array) {
+	if (Object.prototype.toString.call(options) === '[object Array]') {
 		for (var i = 0, len = options.length; i < len; i++) {
-			if (options[i] instanceof br.presenter.node.Option) {
+			if (options[i] instanceof Option) {
 				result.push(options[i]);
 			} else {
-				option = new br.presenter.node.Option(options[i],options[i]);
+				option = new Option(options[i],options[i]);
 				result.push(option);
 			}
 		}
 	} else {
 		for (var key in options) {
-			option = new br.presenter.node.Option(key, options[key]);
+			option = new Option(key, options[key]);
 			result.push(option);
 		}
 	}
 
 	return result;
 };
+
+module.exports = OptionsNodeList;

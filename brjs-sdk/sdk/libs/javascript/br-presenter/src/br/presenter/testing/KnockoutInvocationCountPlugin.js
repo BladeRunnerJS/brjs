@@ -1,23 +1,25 @@
+'use strict';
+
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/testing/KnockoutInvocationCountPlugin
  */
 
-br.Core.thirdparty("presenter-knockout");
+var presenter_knockout = require('presenter-knockout');
 
 /**
  * @private
  * @class
  * @alias module:br/presenter/testing/KnockoutInvocationCountPlugin
  */
-br.presenter.testing.KnockoutInvocationCountPlugin = function()
-{
-};
+function KnockoutInvocationCountPlugin() {
+}
 
-br.presenter.testing.KnockoutInvocationCountPlugin.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel) {
-	
+KnockoutInvocationCountPlugin.prototype.init = function(element, valueAccessor, allBindingsAccessor, viewModel) {
 	var eventsToHandle = valueAccessor() || {};
-	
-	for(var eventNameOutsideClosure in eventsToHandle) {
+
+	for (var eventNameOutsideClosure in eventsToHandle) {
 		var methodToBeReplacedByProxy = eventsToHandle[eventNameOutsideClosure];
 		eventsToHandle[eventNameOutsideClosure] = presenter_knockout.bindingHandlers.event._getInvocationCountingProxyMethod(methodToBeReplacedByProxy);
 		valueAccessor = function() {
@@ -25,18 +27,18 @@ br.presenter.testing.KnockoutInvocationCountPlugin.prototype.init = function (el
 		};
 		(function() {
 			var eventName = eventNameOutsideClosure; // Separate variable to be captured by event handler closure
-			if (typeof eventName == "string") {
-				presenter_knockout.utils.registerEventHandler(element, eventName, function (event) {
+			if (typeof eventName == 'string') {
+				presenter_knockout.utils.registerEventHandler(element, eventName, function(event) {
 					var handlerReturnValue;
 					var handlerFunction = valueAccessor()[eventName];
 					if (!handlerFunction)
 						return;
 					var allBindings = allBindingsAccessor();
-					
-					try { 
+
+					try {
 						var argsForHandler = presenter_knockout.utils.makeArray(arguments);
 						argsForHandler.unshift(viewModel);
-						handlerReturnValue = handlerFunction.apply(viewModel, argsForHandler );
+						handlerReturnValue = handlerFunction.apply(viewModel, argsForHandler);
 					} finally {
 						if (handlerReturnValue !== true) { // Normally we want to prevent default action. Developer can override this be explicitly returning true.
 							if (event.preventDefault)
@@ -45,7 +47,7 @@ br.presenter.testing.KnockoutInvocationCountPlugin.prototype.init = function (el
 								event.returnValue = false;
 						}
 					}
-					
+
 					var bubble = allBindings[eventName + 'Bubble'] !== false;
 					if (!bubble) {
 						event.cancelBubble = true;
@@ -58,19 +60,18 @@ br.presenter.testing.KnockoutInvocationCountPlugin.prototype.init = function (el
 	}
 };
 
-br.presenter.testing.KnockoutInvocationCountPlugin.prototype.update = function(eElement, fValueAccessor, fAllBindingsAccessor, oViewModel)
-{
+KnockoutInvocationCountPlugin.prototype.update = function(eElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 	// this method doesn't provide us anything useful we don't already get in init()
 };
 
 /** @private */
-br.presenter.testing.KnockoutInvocationCountPlugin.prototype._getInvocationCountingProxyMethod = function(fOrigMethod) {
-	
-	var fMethod = function()
-	{
+KnockoutInvocationCountPlugin.prototype._getInvocationCountingProxyMethod = function(fOrigMethod) {
+	var fMethod = function() {
 		fOrigMethod.invocationCount++;
 		fOrigMethod.apply(this, arguments);
 	};
 	fOrigMethod.invocationCount = 0;
 	return fMethod;
 };
+
+module.exports = KnockoutInvocationCountPlugin;

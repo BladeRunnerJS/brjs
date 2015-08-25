@@ -4,6 +4,8 @@
 
 var Validator = require('br/validation/Validator');
 var Errors = require('br/Errors');
+var brCore = require("br/Core");
+var OptionsNodeList = require("br/presenter/node/OptionsNodeList");
 
 /**
  * @private
@@ -15,14 +17,14 @@ var Errors = require('br/Errors');
  */
 function ValidMultiSelectionValidator(oOptions)
 {
-	if (!oOptions || !(oOptions instanceof br.presenter.node.OptionsNodeList))
+	if (!oOptions || !(oOptions instanceof OptionsNodeList))
 	{
 		throw new Errors.InvalidParametersError("You must provide an instance of OptionsNodeList");
 	}
 	this.m_oOptions = oOptions;
 	this.m_bAllowInvalidSelections = false;
 }
-br.Core.implement(ValidMultiSelectionValidator, Validator);
+brCore.implement(ValidMultiSelectionValidator, Validator);
 
 ValidMultiSelectionValidator.prototype.allowInvalidSelections = function(bAllowInvalidSelections)
 {

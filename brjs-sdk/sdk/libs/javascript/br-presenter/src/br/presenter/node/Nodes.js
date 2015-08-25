@@ -1,3 +1,7 @@
+'use strict';
+
+var Properties = require('br/presenter/property/Properties');
+
 /**
  * @module br/presenter/node/Nodes
  */
@@ -15,18 +19,16 @@
  * 
  * @param {Array} pNodes (optional) The set of nodes.
  */
-br.presenter.node.Nodes = function(pNodes)
-{
+function Nodes(pNodes) {
 	/** @private */
 	this.m_pNodes = pNodes || [];
-};
+}
 
 /**
  * Returns the underlying array this collection is built from.
  * @type Array
  */
-br.presenter.node.Nodes.prototype.getNodesArray = function()
-{
+Nodes.prototype.getNodesArray = function() {
 	return this.m_pNodes;
 };
 
@@ -34,16 +36,16 @@ br.presenter.node.Nodes.prototype.getNodesArray = function()
  * Returns all properties for the nodes within this collection.
  * @type br.presenter.property.Properties
  */
-br.presenter.node.Nodes.prototype.properties = function()
-{
-	var oProperties = new br.presenter.property.Properties();
-	
-	for(var i = 0, l = this.m_pNodes.length; i < l; ++i)
-	{
+Nodes.prototype.properties = function() {
+	var oProperties = new Properties();
+
+	for (var i = 0, l = this.m_pNodes.length; i < l; ++i) {
 		var oPresentationNode = this.m_pNodes[i];
-		
+
 		oProperties.add(oPresentationNode.properties());
 	}
-	
+
 	return oProperties;
 };
+
+module.exports = Nodes;

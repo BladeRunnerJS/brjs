@@ -1,3 +1,8 @@
+'use strict';
+
+var WorkbenchComponent = require('br/workbench/ui/WorkbenchComponent');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/workbench/ui/PresentationModelViewer
  */
@@ -11,21 +16,19 @@ var KnockoutTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeMode
  * @class
  * @alias module:br/presenter/workbench/ui/PresentationModelViewer
  */
-br.presenter.workbench.ui.PresentationModelViewer = function(viewOrPresentationModel, TreeModelClass) 
-{
+function PresentationModelViewer(viewOrPresentationModel, TreeModelClass) {
 	var treeModel;
-	
-	if(!TreeModelClass || (TreeModelClass instanceof PresenterModelTree))
-	{
+
+	if (!TreeModelClass || (TreeModelClass instanceof PresenterModelTree)) {
 		treeModel = PresenterJsTreeModelFactory.createTreeModelFromPresentationModel(viewOrPresentationModel);
-	}
-	else
-	{
+	} else {
 		treeModel = KnockoutTreeModelFactory.createTreeModelFromKnockoutViewModel(viewOrPresentationModel);
 	}
-	
-	KnockoutPresentationModelViewer.call(this,treeModel);
-};
 
-br.Core.extend(br.presenter.workbench.ui.PresentationModelViewer, KnockoutPresentationModelViewer);
-br.Core.implement(br.presenter.workbench.ui.PresentationModelViewer, br.workbench.ui.WorkbenchComponent);
+	KnockoutPresentationModelViewer.call(this, treeModel);
+}
+
+Core.extend(PresentationModelViewer, KnockoutPresentationModelViewer);
+Core.implement(PresentationModelViewer, WorkbenchComponent);
+
+module.exports = PresentationModelViewer;

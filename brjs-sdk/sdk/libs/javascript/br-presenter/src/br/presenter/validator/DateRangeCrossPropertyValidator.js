@@ -3,6 +3,7 @@
  */
 
 var CrossPropertyValidator = require('br/presenter/validator/CrossPropertyValidator');
+var brCore = require("br/Core");
 
 /**
  * @private
@@ -13,7 +14,7 @@ function DateRangeCrossPropertyValidator()
 {
 	// nothing
 }
-br.Core.implement(DateRangeCrossPropertyValidator, CrossPropertyValidator);
+brCore.implement(DateRangeCrossPropertyValidator, CrossPropertyValidator);
 
 /**
  * @private

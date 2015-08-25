@@ -1,18 +1,23 @@
-brjs.dashboard.app.service.url.PageUrlProviderStub = function(sRootUrl)
-{
-	// call super constructor
-	brjs.dashboard.app.service.url.PageUrlProvider.call(this);
-	
-	this.m_sRootUrl = sRootUrl;
-};
-br.Core.inherit(brjs.dashboard.app.service.url.PageUrlProviderStub, brjs.dashboard.app.service.url.PageUrlProvider);
+'use strict';
 
-brjs.dashboard.app.service.url.PageUrlProviderStub.prototype.getRootUrl = function()
-{
+var Core = require('br/Core');
+var PageUrlProvider = require("brjs/dashboard/app/service/url/PageUrlProvider");
+
+function PageUrlProviderStub(sRootUrl) {
+	// call super constructor
+	PageUrlProvider.call(this);
+
+	this.m_sRootUrl = sRootUrl;
+}
+
+Core.inherit(PageUrlProviderStub, PageUrlProvider);
+
+PageUrlProviderStub.prototype.getRootUrl = function() {
 	return this.m_sRootUrl;
 };
 
-brjs.dashboard.app.service.url.PageUrlProviderStub.prototype.setPageUrl = function(sPageUrl)
-{
+PageUrlProviderStub.prototype.setPageUrl = function(sPageUrl) {
 	this._updatePageUrl(sPageUrl);
 };
+
+module.exports = PageUrlProviderStub;

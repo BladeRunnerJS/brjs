@@ -1,3 +1,9 @@
+'use strict';
+
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var Core = require('br/Core');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+
 /**
  * @module br/presenter/node/Option
  */
@@ -13,32 +19,34 @@
  * @param {String} sLabel The label that is displayed on the screen.
  * @param {Boolean} bEnabled Is the option enabled or disabled (enabled by default).
  */
-br.presenter.node.Option = function(sValue, sLabel, bEnabled)
-{
+function Option(sValue, sLabel, bEnabled) {
 	/**
 	 * The value of the option.
 	 * @type String
 	 */
-	this.value = new br.presenter.property.WritableProperty(sValue);
+	this.value = new WritableProperty(sValue);
+
 	/**
 	 * The textual label associated with the option.
 	 * @type String
 	 */
-	this.label = new br.presenter.property.WritableProperty(sLabel);
+	this.label = new WritableProperty(sLabel);
+
 	/**
 	 * If option is enabled
 	 * @type String
 	 */
-	this.enabled = new br.presenter.property.WritableProperty(bEnabled === undefined ? true : bEnabled);
-};
+	this.enabled = new WritableProperty(bEnabled === undefined ? true : bEnabled);
+}
 
-br.Core.extend(br.presenter.node.Option, br.presenter.node.PresentationNode);
+Core.extend(Option, PresentationNode);
 
 /**
  * Returns the option label.
  * @type String
  */
-br.presenter.node.Option.prototype.toString = function()
-{
+Option.prototype.toString = function() {
 	return this.label.getValue();
 };
+
+module.exports = Option;

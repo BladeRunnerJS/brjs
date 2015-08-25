@@ -1,3 +1,8 @@
+'use strict';
+
+var Property = require('br/presenter/property/Property');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+
 /**
  * @module br/presenter/property/Snapshot
  */
@@ -18,32 +23,33 @@
  * 
  * @param {Array} pProperties The list of properties to be snapshot.
  */
-br.presenter.property.Snapshot = function(pProperties)
-{
+function Snapshot(pProperties) {
 	/** @private */
 	this.mValues = [];
-	
-	for(var i = 0; i < pProperties.length; i++){
-		if(pProperties[i] instanceof br.presenter.property.WritableProperty)
-		{
+
+	for (var i = 0; i < pProperties.length; i++) {
+		if (pProperties[i] instanceof WritableProperty) {
 			var vValue = pProperties[i].getValue();
-			if(vValue instanceof Array){
+			if (vValue instanceof Array) {
 				vValue = this._cloneArray(vValue);
 			}
-			
-			var saved = {value : vValue, property: pProperties[i] };
+
+			var saved = {
+				value: vValue,
+				property: pProperties[i]
+			};
 			this.mValues.push(saved);
 		}
 	}
-};
+}
 
 /** @private */
-br.presenter.property.Snapshot.prototype._cloneArray = function(pIn)
-{
+Snapshot.prototype._cloneArray = function(pIn) {
 	var pResult = [];
-	for(var i = 0; i < pIn.length; i++){
+	for (var i = 0; i < pIn.length; i++) {
 		pResult.push(pIn[i]);
 	}
+
 	return pResult;
 };
 
@@ -51,13 +57,11 @@ br.presenter.property.Snapshot.prototype._cloneArray = function(pIn)
  * Revert the properties within the snapshot back to their state when the snapshot
  * was originally taken.
  */
-br.presenter.property.Snapshot.prototype.apply = function()
-{
-	for(var i = 0; i < this.mValues.length; i++){
+Snapshot.prototype.apply = function() {
+	for (var i = 0; i < this.mValues.length; i++) {
 		var saved = this.mValues[i];
 		saved.property.setValue(saved.value);
-	};
+	}
 };
 
-//TODO: this can be removed once this package has been converted to CommonJS
-br.presenter.property.Property;
+module.exports = Snapshot;

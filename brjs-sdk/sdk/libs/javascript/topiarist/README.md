@@ -1,12 +1,3 @@
----
-layout: main
-permalink: /index.html
-title: topiarist
----
-
-<script type="text/javascript" src="lib/topiarist.js">
-</script>
-
 Topiarist
 =======
 
@@ -14,16 +5,7 @@ Topiarist provides tree and shape-based type verification for JavaScript.
 
 [![Build Status](https://travis-ci.org/BladeRunnerJS/topiarist.png)](https://travis-ci.org/BladeRunnerJS/topiarist)
 
-Details
--------
-
-You can see the main page [here](http://BladeRunnerJS.github.io/topiarist/), or the git repository [here](https://github.com/BladeRunnerJS/topiarist).
-The specification is [here](https://github.com/BladeRunnerJS/topiarist/tree/gh-pages/spec).
-Actual js file is at <https://github.com/BladeRunnerJS/topiarist/blob/gh-pages/lib/topiarist.js>.
-
-You can also read the [introductory blog post](http://bladerunnerjs.org/blog/topiarist/).
-
-This page has the library loaded so you can experiment by opening up a console.
+You can read the [introductory blog post](http://bladerunnerjs.org/blog/topiarist/) for more information.
 
 
 A Note on implementation

@@ -1,6 +1,13 @@
-brjs.dashboard.app.model.crumbtrail.ActiveBreadCrumb = function(sName)
-{
+'use strict';
+
+var Core = require('br/Core');
+var BreadCrumb = require("brjs/dashboard/app/model/crumbtrail/BreadCrumb");
+
+function ActiveBreadCrumb(sName) {
 	// call super constructor
-	brjs.dashboard.app.model.crumbtrail.BreadCrumb.call(this, "active-breadcrumb", sName, null);
-};
-br.Core.extend(brjs.dashboard.app.model.crumbtrail.ActiveBreadCrumb, brjs.dashboard.app.model.crumbtrail.BreadCrumb);
+	BreadCrumb.call(this, 'active-breadcrumb', sName, null);
+}
+
+Core.extend(ActiveBreadCrumb, BreadCrumb);
+
+module.exports = ActiveBreadCrumb;

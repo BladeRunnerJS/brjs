@@ -1,37 +1,40 @@
+'use strict';
+
+var Errors = require('br/Errors');
+var KnockoutObservable = require('br/presenter/view/knockout/KnockoutObservable');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/view/knockout/KnockoutProperty
  */
 
-br.Core.thirdparty("presenter-knockout");
+var presenter_knockout = require('presenter-knockout');
 
 /**
  * @private
  * @class
  * @alias module:br/presenter/view/knockout/KnockoutProperty
  */
-br.presenter.view.knockout.KnockoutProperty = function()
-{
+function KnockoutProperty() {
 	// call super constructor
-	br.presenter.view.knockout.KnockoutObservable.call(this);
-};
-br.Core.extend(br.presenter.view.knockout.KnockoutProperty, br.presenter.view.knockout.KnockoutObservable);
+	KnockoutObservable.call(this);
+}
+
+Core.extend(KnockoutProperty, KnockoutObservable);
 
 /**
  * @private
  */
-br.presenter.view.knockout.KnockoutProperty.prototype.getValueForKnockout = function ()
-{
-	if (arguments.length > 0)
-	{
-		throw new br.Errors.InvalidParametersError("getValueForKnockout cannot write as this is not an EditableProperty");
+KnockoutProperty.prototype.getValueForKnockout = function() {
+	if (arguments.length > 0) {
+		throw new Errors.InvalidParametersError('getValueForKnockout cannot write as this is not an EditableProperty');
 	}
-	
+
 	presenter_knockout.dependencyDetection.registerDependency(this); // The caller only needs to be notified of changes if they did a "read" operation
 	return this.getFormattedValue();
 };
 
-br.presenter.view.knockout.KnockoutProperty.prototype.peek = function ()
-{
+KnockoutProperty.prototype.peek = function() {
 	return this.getFormattedValue();
 };
 
@@ -39,10 +42,8 @@ br.presenter.view.knockout.KnockoutProperty.prototype.peek = function ()
  * @private
  * @static
  */
-br.presenter.view.knockout.KnockoutProperty.createArrayMethod = function(sMethod)
-{
-	return function()
-	{
+KnockoutProperty.createArrayMethod = function(sMethod) {
+	return function() {
 		var pUnderlyingArray = this.getValue();
 		var pNewArray = pUnderlyingArray.splice(0, pUnderlyingArray.length);
 		Array.prototype[sMethod].apply(pNewArray, arguments);
@@ -51,10 +52,12 @@ br.presenter.view.knockout.KnockoutProperty.createArrayMethod = function(sMethod
 };
 
 // TODO: we need some presenter CTs that interact with the view while the view is connected since otherwise this code is not being tested
-br.presenter.view.knockout.KnockoutProperty.prototype.pop = br.presenter.view.knockout.KnockoutProperty.createArrayMethod("pop");
-br.presenter.view.knockout.KnockoutProperty.prototype.push = br.presenter.view.knockout.KnockoutProperty.createArrayMethod("push");
-br.presenter.view.knockout.KnockoutProperty.prototype.reverse = br.presenter.view.knockout.KnockoutProperty.createArrayMethod("reverse");
-br.presenter.view.knockout.KnockoutProperty.prototype.shift = br.presenter.view.knockout.KnockoutProperty.createArrayMethod("shift");
-br.presenter.view.knockout.KnockoutProperty.prototype.sort = br.presenter.view.knockout.KnockoutProperty.createArrayMethod("sort");
-br.presenter.view.knockout.KnockoutProperty.prototype.splice = br.presenter.view.knockout.KnockoutProperty.createArrayMethod("splice");
-br.presenter.view.knockout.KnockoutProperty.prototype.unshift = br.presenter.view.knockout.KnockoutProperty.createArrayMethod("unshift");
+KnockoutProperty.prototype.pop = KnockoutProperty.createArrayMethod('pop');
+KnockoutProperty.prototype.push = KnockoutProperty.createArrayMethod('push');
+KnockoutProperty.prototype.reverse = KnockoutProperty.createArrayMethod('reverse');
+KnockoutProperty.prototype.shift = KnockoutProperty.createArrayMethod('shift');
+KnockoutProperty.prototype.sort = KnockoutProperty.createArrayMethod('sort');
+KnockoutProperty.prototype.splice = KnockoutProperty.createArrayMethod('splice');
+KnockoutProperty.prototype.unshift = KnockoutProperty.createArrayMethod('unshift');
+
+module.exports = KnockoutProperty;

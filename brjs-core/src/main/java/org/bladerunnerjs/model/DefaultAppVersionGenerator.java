@@ -30,7 +30,8 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 	@Override
 	public String getVersionPattern()
 	{
-		return "([a-zA-Z0-9\\.\\-]+)";
+		// "\\-" must appear last otherwise the escape characters get lost and its treated as a character range
+		return "([a-zA-Z0-9\\._\\-]+)";
 	}
 
 	@Override

@@ -1,23 +1,29 @@
-br.component.TestSerializableComponent = function()
+var br = require("br/Core");
+var Component = require("br/component/Component");
+var Serializable = require("br/component/Serializable");
+
+
+var TestSerializableComponent = function()
 {
 
-}
-br.Core.implement(br.component.TestSerializableComponent, br.component.Component);
-br.Core.implement(br.component.TestSerializableComponent, br.component.Serializable);
+};
 
-br.component.TestSerializableComponent.prototype.setDisplayFrame = function(frame)
+br.implement(TestSerializableComponent, Component);
+br.implement(TestSerializableComponent, Serializable);
+
+TestSerializableComponent.prototype.setDisplayFrame = function(frame)
 {
 	// do nothing
 };
 
-br.component.TestSerializableComponent.prototype.serialize = function()
+TestSerializableComponent.prototype.serialize = function()
 {
 	// do nothing
 };
 
-br.component.TestSerializableComponent.deserialize = function(serializedForm)
+TestSerializableComponent.deserialize = function(serializedForm)
 {
-	return new br.component.TestSerializableComponent();
+	return new TestSerializableComponent();
 };
 
-
+module.exports = TestSerializableComponent;

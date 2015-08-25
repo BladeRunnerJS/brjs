@@ -1,3 +1,10 @@
+'use strict';
+
+var SelectionField = require('br/presenter/node/SelectionField');
+var Errors = require('br/Errors');
+var AutoCompleteProvider = require('br/presenter/node/AutoCompleteProvider');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/node/AutoCompleteSelectionField
  */
@@ -13,30 +20,28 @@
  * @param {module:br/presenter/property/Property} oProperty The initial value of the auto complete field.
  * @param {module:br/presenter/node/AutoCompleteProvider} oAutoCompleteProvider The provider of the auto complete information.
  */
-br.presenter.node.AutoCompleteSelectionField = function(oProperty, oAutoCompleteProvider)
-{
-	if (!br.Core.fulfills(oAutoCompleteProvider, br.presenter.node.AutoCompleteProvider))
-	{
-		throw new br.Errors.InvalidParametersError("oAutoCompleteProvider must implement br.presenter.node.AutoCompleteProvider");
+function AutoCompleteSelectionField(oProperty, oAutoCompleteProvider) {
+	if (!Core.fulfills(oAutoCompleteProvider, AutoCompleteProvider)) {
+		throw new Errors.InvalidParametersError('oAutoCompleteProvider must implement br.presenter.node.AutoCompleteProvider');
 	}
-	br.presenter.node.SelectionField.call(this, [], oProperty);
+	SelectionField.call(this, [], oProperty);
 	this.m_oAutoCompleteProvider = oAutoCompleteProvider;
-};
+}
 
-br.Core.extend(br.presenter.node.AutoCompleteSelectionField, br.presenter.node.SelectionField);
+Core.extend(AutoCompleteSelectionField, SelectionField);
 
 /**
  * @private
  */
-br.presenter.node.AutoCompleteSelectionField.prototype.getAutoCompleteList = function(sTerm, fCallback)
-{
+AutoCompleteSelectionField.prototype.getAutoCompleteList = function(sTerm, fCallback) {
 	this.m_oAutoCompleteProvider.getList(sTerm, fCallback);
 };
 
 /**
  * @private
  */
-br.presenter.node.AutoCompleteSelectionField.prototype.isValidOption = function(sOption)
-{
+AutoCompleteSelectionField.prototype.isValidOption = function(sOption) {
 	return this.m_oAutoCompleteProvider.isValidOption(sOption);
 };
+
+module.exports = AutoCompleteSelectionField;

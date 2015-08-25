@@ -14,8 +14,14 @@
 		<script type="text/javascript" src="<@unbundled-resources@/>/releaseNoteUtils.js"></script>
 
 		<script type="text/javascript">
-			br.Core.thirdparty("jquery");
-			br.Core.thirdparty("wolf-simple-box");
+			var jquery = ("jquery");
+			var wolfSimpleBox = ("wolf-simple-box");
+			var DashboardApp = require("brjs/dashboard/app/DashboardApp");
+			var DashboardProvider = require("brjs/dashboard/app/service/dashboard/DashboardProvider");
+			var XHRFactory = require("brjs/dashboard/app/service/request/XHRFactory");
+			var PageUrlProvider = require("brjs/dashboard/app/service/url/PageUrlProvider");
+			var WindowOpenerProvider = require("brjs/dashboard/app/service/window/WindowOpenerProvider");
+			var BrowserDetector = require("brjs/dashboard/app/service/browserdetector/BrowserDetector");
 			
 			var oApp;
 			
@@ -26,15 +32,13 @@
 					return false;
 				}
 				
-				brjs.dashboard.app.DashboardApp.initializeLibrary();
+				var oDashboardService = new DashboardProvider(
+					new XHRFactory(), "servlet/app-manager");
+				var oPageUrlService = new PageUrlProvider();
+				var oWindowOpenerService = new WindowOpenerProvider();
+				var oBrowserDetector = new BrowserDetector();
 				
-				var oDashboardService = new brjs.dashboard.app.service.dashboard.DashboardProvider(
-					new brjs.dashboard.app.service.request.XHRFactory(), "servlet/app-manager");
-				var oPageUrlService = new brjs.dashboard.app.service.url.PageUrlProvider();
-				var oWindowOpenerService = new brjs.dashboard.app.service.window.WindowOpenerProvider();
-				var oBrowserDetector = new brjs.dashboard.app.service.browserdetector.BrowserDetector();
-				
-				oApp = new brjs.dashboard.app.DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, localStorage, oBrowserDetector);
+				oApp = new DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, localStorage, oBrowserDetector);
 			});
 		</script>
 	</head>

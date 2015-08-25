@@ -1,12 +1,16 @@
-br.test.TestFixtureFactory = function()
+var brCore = require("br/Core");
+var Fixture = require("br/test/Fixture");
+var FixtureFactory = require("br/test/FixtureFactory");
+
+var TestFixtureFactory = function()
 {
 	this.m_mFixtures = {};
 };
-br.Core.implement(br.test.TestFixtureFactory, br.test.FixtureFactory);
+brCore.implement(TestFixtureFactory, FixtureFactory);
 
-br.test.TestFixtureFactory.createMockFixture = function(bCanHandleExactMatch, bApplyTearDownStub)
+TestFixtureFactory.createMockFixture = function(bCanHandleExactMatch, bApplyTearDownStub)
 {
-	var oMockFixture = mock(br.test.Fixture);
+	var oMockFixture = mock(Fixture);
 	oMockFixture.stubs().canHandleProperty(ANYTHING).will(returnValue(false));
 	oMockFixture.stubs().canHandleProperty("prop").will(returnValue(true));
 	oMockFixture.stubs().canHandleExactMatch().will(returnValue(bCanHandleExactMatch));
@@ -20,28 +24,33 @@ br.test.TestFixtureFactory.createMockFixture = function(bCanHandleExactMatch, bA
 	return oMockFixture;
 };
 
-br.test.TestFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
+TestFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {
-	this.addMockFixtureToRegistry(oFixtureRegistry, "fixture", br.test.TestFixtureFactory.createMockFixture(false, false));
-	this.addMockFixtureToRegistry(oFixtureRegistry, "propertyFixture", br.test.TestFixtureFactory.createMockFixture(true));
-	this.addFixtureToRegistry(oFixtureRegistry, "parentFixture", new br.test.ParentTestFixture());
-	this.addFixtureToRegistry(oFixtureRegistry, "grandParentFixture", new br.test.GrandParentTestFixture());
-	this.addMockFixtureToRegistry(oFixtureRegistry, "another=fixture", br.test.TestFixtureFactory.createMockFixture(false));
+	var ParentTestFixture = require("br/test/ParentTestFixture");
+	var GrandParentTestFixture = require("br/test/GrandParentTestFixture");
+	
+	this.addMockFixtureToRegistry(oFixtureRegistry, "fixture", TestFixtureFactory.createMockFixture(false, false));
+	this.addMockFixtureToRegistry(oFixtureRegistry, "propertyFixture", TestFixtureFactory.createMockFixture(true));
+	this.addFixtureToRegistry(oFixtureRegistry, "parentFixture", new ParentTestFixture());
+	this.addFixtureToRegistry(oFixtureRegistry, "grandParentFixture", new GrandParentTestFixture());
+	this.addMockFixtureToRegistry(oFixtureRegistry, "another=fixture", TestFixtureFactory.createMockFixture(false));
 };
 
-br.test.TestFixtureFactory.prototype.getFixture = function(sFixtureName)
+TestFixtureFactory.prototype.getFixture = function(sFixtureName)
 {
 	return this.m_mFixtures[sFixtureName];
 };
 
-br.test.TestFixtureFactory.prototype.addFixtureToRegistry = function(oFixtureRegistry, sFixtureName, oFixture)
+TestFixtureFactory.prototype.addFixtureToRegistry = function(oFixtureRegistry, sFixtureName, oFixture)
 {
 	this.m_mFixtures[sFixtureName] = oFixture;
 	oFixtureRegistry.addFixture(sFixtureName, oFixture);
 };
 
-br.test.TestFixtureFactory.prototype.addMockFixtureToRegistry = function(oFixtureRegistry, sFixtureName, oMockFixture)
+TestFixtureFactory.prototype.addMockFixtureToRegistry = function(oFixtureRegistry, sFixtureName, oMockFixture)
 {
 	this.m_mFixtures[sFixtureName] = oMockFixture;
 	oFixtureRegistry.addFixture(sFixtureName, oMockFixture.proxy());
 };
+
+module.exports = TestFixtureFactory;

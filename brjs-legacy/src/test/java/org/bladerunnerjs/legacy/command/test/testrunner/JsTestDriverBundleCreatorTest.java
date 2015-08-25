@@ -1,7 +1,6 @@
 package org.bladerunnerjs.legacy.command.test.testrunner;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.naming.InvalidNameException;
@@ -10,11 +9,7 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
-import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.spec.utility.LogMessageStore;
 import org.bladerunnerjs.api.spec.utility.TestLoggerFactory;
 import org.bladerunnerjs.legacy.command.test.testrunner.JsTestDriverBundleCreator;
@@ -22,8 +17,6 @@ import org.bladerunnerjs.model.BRJSTestModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.commons.io.FileUtils;
-
-import com.esotericsoftware.yamlbeans.YamlException;
 
 public class JsTestDriverBundleCreatorTest {
 
@@ -49,7 +42,7 @@ public class JsTestDriverBundleCreatorTest {
 	}
 	
 	@Test
-	public void logAWarningWhenCommonJsTestsAreNotWrappedWithinAnIIFE() throws FileNotFoundException, YamlException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException {
+	public void logAWarningWhenCommonJsTestsAreNotWrappedWithinAnIIFE() throws Exception {
 		// given
 		FileUtils.writeStringToFile(aspectTestConfig, "basepath: .", "UTF-8");		
 		FileUtils.writeStringToFile(aspectTest, "var foo = function(){ /* code */ }", "UTF-8");
@@ -58,11 +51,11 @@ public class JsTestDriverBundleCreatorTest {
 		JsTestDriverBundleCreator.createRequiredBundles(brjs, memoizedConfigFile);
 		
 		// then
-		logMessageStore.verifyWarnLogMessage("The CommonJS test '%s' is not wrapped within an IIFE, which may cause unreliability in tests.", "AppTest.js");
+		logMessageStore.verifyWarnLogMessage("The CommonJS test '%s' is not wrapped within an IIFE (or doesn't have one in the first 5 lines), which may cause unreliability in tests.", "AppTest.js");
 	}
 	
 	@Test
-	public void iifeWarningIsNotLoggedForNamespacedJsTests() throws FileNotFoundException, YamlException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException {
+	public void iifeWarningIsNotLoggedForNamespacedJsTests() throws Exception {
 		// given
 		FileUtils.writeStringToFile(aspectTestConfig, "basepath: .", "UTF-8");
 		FileUtils.writeStringToFile(new File(aspectTestPack.dir(), ".js-style"), "namespaced-js");
@@ -72,11 +65,11 @@ public class JsTestDriverBundleCreatorTest {
 		JsTestDriverBundleCreator.createRequiredBundles(brjs, memoizedConfigFile);
 		
 		// then
-		logMessageStore.verifyNoWarnLogMessage("The CommonJS test '%s' is not wrapped within an IIFE, which may cause unreliability in tests.", "AppTest.js");
+		logMessageStore.verifyNoWarnLogMessage("The CommonJS test '%s' is not wrapped within an IIFE (or doesn't have one in the first 5 lines), which may cause unreliability in tests.", "AppTest.js");
 	}
 	
 	@Test
-	public void logAWarningWhenNestedCommonJsTestsAreNotWrappedWithinAnIIFE() throws FileNotFoundException, YamlException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException {
+	public void logAWarningWhenNestedCommonJsTestsAreNotWrappedWithinAnIIFE() throws Exception {
 		// given
 		FileUtils.writeStringToFile(aspectTestConfig, "basepath: .", "UTF-8");		
 		nestedAspectTest.getParentFile().mkdirs();
@@ -86,11 +79,11 @@ public class JsTestDriverBundleCreatorTest {
 		JsTestDriverBundleCreator.createRequiredBundles(brjs, memoizedConfigFile);
 		
 		// then
-		logMessageStore.verifyWarnLogMessage("The CommonJS test '%s' is not wrapped within an IIFE, which may cause unreliability in tests.", "foo/bar/AppTest.js");
+		logMessageStore.verifyWarnLogMessage("The CommonJS test '%s' is not wrapped within an IIFE (or doesn't have one in the first 5 lines), which may cause unreliability in tests.", "foo/bar/AppTest.js");
 	}
 	
 	@Test
-	public void doNotLogAWarningWhenCommonJsTestsAreWrappedWithinAnIIFE() throws FileNotFoundException, YamlException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException, ModelOperationException {
+	public void doNotLogAWarningWhenCommonJsTestsAreWrappedWithinAnIIFE() throws Exception {
 		// given
 		FileUtils.writeStringToFile(aspectTestConfig, "basepath: .", "UTF-8");		
 		FileUtils.writeStringToFile(aspectTest, "(function() {\n 'use strict'; \n require( 'jasmine' );\n}())", "UTF-8");
