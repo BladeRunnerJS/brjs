@@ -1,6 +1,7 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
 
+import java.io.File;
 import java.net.ServerSocket;
 
 import org.bladerunnerjs.api.App;
@@ -543,6 +544,21 @@ public class ServedAppTest extends SpecTest
 			.and(brjs).hasVersion("123")
 			.and(appServer).started();
 		then(appServer).requestForUrlContains("/app/v/123/js/prod/combined/bundle.js", "en");
+	}
+	
+	@Test
+	public void imagesArentCorrupt() throws Exception
+	{
+		given(app).hasBeenCreated()
+    		.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    			+ "locales: en,de\n"
+    			+ "requirePrefix: appns")
+    		.and(aspect).containsFileWithContents("src/App.js", "@BRJS.APP.LOCALE@")
+    		.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+    		.and(aspect).containsFileCopiedFrom("resources/br-logo.png", "src/test/resources/br-logo.png")
+    		.and(brjs).hasVersion("123")
+    		.and(appServer).started();
+		then(appServer).requestIsSameAsFileContents("/app/v/123/cssresource/aspect_default_resource/resources/br-logo.png", new File("src/test/resources/br-logo.png"));
 	}
 	
 }

@@ -377,9 +377,6 @@ public class AppRequestHandler
 	}
 	
 	public static ResponseContent getTokenFilteredResponseContent(App app, Locale appLocale, String version, ResponseContent wrappedResponse, MissingTokenHandler handler) {
-		if (wrappedResponse instanceof TokenReplacingResponseContentWrapper) {
-			return wrappedResponse;
-		}
 		String environment = getPropertiesEnvironment(app.root());
 		TokenFinder brjsTokenFinder = new BrjsPropertyTokenFinder(app, appLocale, version);
 		TokenFinder tokenFinder = new PropertyFileTokenFinder(app.file("app-properties"), environment);
