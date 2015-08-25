@@ -25,8 +25,12 @@ import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 public class TokenisingServletFilter implements Filter
 {
 	private JndiTokenFinder tokenFinder;
-	private final Pattern validUrl = Pattern.compile("^.*(/|/[a-z]{2}|/[a-z]{2}_[A-Z]{2}|\\.(xml|json|html|htm|jsp))$");
+	
+	private static final String LOCALE_REGEX = "/|/[a-z]{2}|/[a-z]{2}_[A-Z]{2}";
+	private static final String DEFAULT_FILE_EXTENSION_REGEX = "js|xml|json|html|htm|jsp";
+	
 	private String appName;
+	private Pattern processUrlPattern;
 	
 	public TokenisingServletFilter() throws ServletException
 	{
@@ -43,6 +47,10 @@ public class TokenisingServletFilter implements Filter
 	{
 		String[] pathSplit = filterConfig.getServletContext().getContextPath().split("/");
 		appName = pathSplit[pathSplit.length - 1];
+		
+		String regexParam = filterConfig.getInitParameter("extensionRegex");
+		String fileExtensionRegex = (regexParam != null) ? regexParam : DEFAULT_FILE_EXTENSION_REGEX;
+		processUrlPattern = Pattern.compile("^.*("+LOCALE_REGEX+"|\\.("+fileExtensionRegex+"))$");
 	}
 	
 	@Override
@@ -97,7 +105,7 @@ public class TokenisingServletFilter implements Filter
 		HttpServletRequest theRequest = (HttpServletRequest) request;
 		String requestUrl = theRequest.getRequestURL().toString();
 		
-		return validUrl.matcher(requestUrl).matches();
+		return processUrlPattern.matcher(requestUrl).matches();
 	}
 	
 	private Reader getStreamTokeniser(Reader reader) throws ServletException {

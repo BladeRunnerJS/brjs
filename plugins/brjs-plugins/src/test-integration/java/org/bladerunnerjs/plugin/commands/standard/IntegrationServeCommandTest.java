@@ -297,7 +297,7 @@ public class IntegrationServeCommandTest extends SpecTest
 				.and(brjs).hasVersion("dev")
 				.and(logging).enabled();
 		when(brjs).runThreadedCommand("serve", "-e", "prod");
-		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "@SOME.TOKEN@")
+		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "An error occurred when the token finder 'JndiTokenFinder' attempted to locate a replacement for the the token 'SOME.TOKEN'.") // exception thrown when the JNDI filter tries to replace the same token
 			.and(logging).unorderedInfoMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" );
 	}
 	

@@ -1,14 +1,11 @@
 package org.bladerunnerjs.appserver.filter;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -96,6 +93,32 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertEquals("text/plain", response.get("responseContentType"));
 	}
 	
+	@Test
+	public void testJndiIsLookupPerformedForTokenInLocalePage() throws Exception
+	{
+		dummyServlet.setResponseText("@A.TOKEN@");
+		when(mockJndiContext.lookup("java:comp/env/A.TOKEN")).thenReturn("token replacement");
+
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/en/");
+		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
+		assertEquals("200", response.get("responseCode"));
+		assertEquals("token replacement", response.get("responseText"));
+		assertEquals("text/plain", response.get("responseContentType"));
+	}
+	
+	@Test
+	public void testJndiIsLookupPerformedForTokenInLocaleAndLanguagePage() throws Exception
+	{
+		dummyServlet.setResponseText("@A.TOKEN@");
+		when(mockJndiContext.lookup("java:comp/env/A.TOKEN")).thenReturn("token replacement");
+
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/en_GB/");
+		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
+		assertEquals("200", response.get("responseCode"));
+		assertEquals("token replacement", response.get("responseText"));
+		assertEquals("text/plain", response.get("responseContentType"));
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void test500ResponseCodeIfTokenCannotBeReplaced() throws Exception
@@ -109,14 +132,27 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 	}
 	
 	@Test
-	public void testTokenisingFilterOnlyProcessesXmlAndJsonFiles() throws Exception
+	public void testTokenisingFilterProcessesJsFiles() throws Exception
 	{
-		dummyServlet.setResponseText("this token @A.TOKEN@ should not be processed");
+		dummyServlet.setResponseText("@A.TOKEN@");
+		when(mockJndiContext.lookup("java:comp/env/A.TOKEN")).thenReturn("token replacement");
 
 		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/file.js");
-		verify(mockJndiContext, never()).lookup("java:comp/env/A.TOKEN");
+		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
 		assertEquals("200", response.get("responseCode"));
-		assertEquals("this token @A.TOKEN@ should not be processed", response.get("responseText"));
+		assertEquals("token replacement", response.get("responseText"));
+	}
+	
+	@Test
+	public void testTokenisingFilterProcessesJsonFiles() throws Exception
+	{
+		dummyServlet.setResponseText("@A.TOKEN@");
+		when(mockJndiContext.lookup("java:comp/env/A.TOKEN")).thenReturn("token replacement");
+
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/file.json");
+		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
+		assertEquals("200", response.get("responseCode"));
+		assertEquals("token replacement", response.get("responseText"));
 	}
 	
 	@Test
@@ -183,4 +219,23 @@ public class TokenisingServletFilterTest extends ServletFilterTest
 		assertTrue( response.get("responseText").contains(TokenReplacingReader.NO_BRJS_TOKEN_CONFIGURED_MESSAGE) );
 	}
 
+	@Test
+	public void testFilteredExtentionsCanBeConfigured() throws Exception
+	{
+		appServer.stop();
+		
+		Map<String,String> filterInitParams = new HashMap<String,String>();
+		filterInitParams.put("extensionRegex", "1234");
+		
+		appServer = createAndStartAppServer(dummyServlet, new TokenisingServletFilter(new JndiTokenFinder(mockJndiContext)), filterInitParams);
+		
+		dummyServlet.setResponseText("@A.TOKEN@");
+		when(mockJndiContext.lookup("java:comp/env/A.TOKEN")).thenReturn("token replacement");
+
+		Map<String, String> response = makeRequest("http://localhost:"+serverPort+"/file.1234");
+		verify(mockJndiContext, times(1)).lookup("java:comp/env/A.TOKEN");
+		assertEquals("200", response.get("responseCode"));
+		assertEquals("token replacement", response.get("responseText"));
+	}
+	
 }

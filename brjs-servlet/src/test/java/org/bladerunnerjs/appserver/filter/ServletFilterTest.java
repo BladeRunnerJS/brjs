@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.SocketException;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -74,13 +75,18 @@ public class ServletFilterTest {
 	}
 	
 	protected Server createAndStartAppServer(Servlet servlet, Filter filter) throws Exception {
+		Map<String,String> emptyMap = Collections.emptyMap();
+		return createAndStartAppServer(servlet, filter, emptyMap);
+	}
+	
+	protected Server createAndStartAppServer(Servlet servlet, Filter filter, Map<String,String> filterInitParams) throws Exception {
 		Server appServer;
 		int attempts = 0;
 		while (true) {
 			attempts++;
 			try {
 				serverPort = generatePortNumber();
-				appServer = createAppServer(servlet, filter);
+				appServer = createAppServer(servlet, filter, filterInitParams);
 				appServer.start();
 				return appServer;
 			} catch (SocketException ex) {
@@ -92,7 +98,7 @@ public class ServletFilterTest {
 		
 	}
 	
-	protected Server createAppServer(Servlet servlet, Filter filter) throws Exception
+	protected Server createAppServer(Servlet servlet, Filter filter, Map<String,String> filterInitParams) throws Exception
 	{
 		Server appServer = new Server(serverPort);
 		WebAppContext webappContext = new WebAppContext();
@@ -103,7 +109,9 @@ public class ServletFilterTest {
 		webappContext.setResourceBase(contextDir.getPath());
 		webappContext.setContextPath("/");
 		webappContext.addServlet(new ServletHolder(servlet), "/*");
-		webappContext.addFilter(new FilterHolder(filter), "/*", null);
+		FilterHolder filterHolder = new FilterHolder(filter);
+		webappContext.addFilter(filterHolder, "/*", null);
+		filterHolder.setInitParameters(filterInitParams);
 		appServer.setHandler(webappContext);
 		
 		return appServer;
