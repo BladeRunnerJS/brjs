@@ -26,6 +26,8 @@ public class TokenisingServletFilter implements Filter
 {
 	private JndiTokenFinder tokenFinder;
 	
+	public static final String IGNORE_REQUEST_ATTRIBUTE = "brjs-dont-tokenise-request";
+	
 	private static final String LOCALE_REGEX = "/|/[a-z]{2}|/[a-z]{2}_[A-Z]{2}";
 	private static final String DEFAULT_FILE_EXTENSION_REGEX = "js|xml|json|html|htm|jsp";
 	
@@ -105,7 +107,7 @@ public class TokenisingServletFilter implements Filter
 		HttpServletRequest theRequest = (HttpServletRequest) request;
 		String requestUrl = theRequest.getRequestURL().toString();
 		
-		return processUrlPattern.matcher(requestUrl).matches();
+		return processUrlPattern.matcher(requestUrl).matches() && request.getAttribute(IGNORE_REQUEST_ATTRIBUTE) == null;
 	}
 	
 	private Reader getStreamTokeniser(Reader reader) throws ServletException {

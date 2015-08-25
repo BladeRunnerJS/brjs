@@ -316,5 +316,33 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(appServer).requestIsMadeFor("/app1/v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsText("The token finder 'PropertyFileTokenFinder' could not find a replacement for the token 'SOME.TOKEN'.");
 	}
+	
+	@Test
+	public void tokensCanBeReplacedFromPropertyFilesInAspectIndexHtml() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+			+ "locales: en\n"	
+			+ "requirePrefix: appns")
+			.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageHasContent("@SOME.TOKEN@");
+		when(brjs).runThreadedCommand("serve");
+		then(appServer).requestForUrlReturns("/app1/", "token replacement");
+	}
+	
+	@Test
+	public void tokensCanBeReplacedFromPropertyFilesInAspectIndexJsp() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+			+ "locales: en\n"	
+			+ "requirePrefix: appns")
+			.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("index.jsp","@SOME.TOKEN@ <%= 1 + 2 %>");
+		when(brjs).runThreadedCommand("serve");
+		then(appServer).requestForUrlReturns("/app1/", "token replacement 3");
+	}
 
 }
