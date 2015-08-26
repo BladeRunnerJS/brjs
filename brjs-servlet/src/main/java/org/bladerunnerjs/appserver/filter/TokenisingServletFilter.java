@@ -11,7 +11,6 @@ import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -66,7 +65,6 @@ public class TokenisingServletFilter implements Filter
 		if (shouldProcessResponse(request))
 		{
 			request.setAttribute(IGNORE_REQUEST_ATTRIBUTE, true); // set this so we don't handle requests twice
-			ServletOutputStream out = response.getOutputStream();
 			CommitedResponseCharResponseWrapper responseWrapper = new CommitedResponseCharResponseWrapper((HttpServletResponse) response);
 			chain.doFilter(request, responseWrapper);
 			
@@ -84,7 +82,7 @@ public class TokenisingServletFilter implements Filter
 				    byte[] filteredData = filteredDataStringBuilder.toString().getBytes();
 					
 					response.setContentLength(filteredData.length);
-					out.write(filteredData);
+					response.getWriter().write(filteredDataStringBuilder.toString());
 					response.flushBuffer();
 				}
 			}
