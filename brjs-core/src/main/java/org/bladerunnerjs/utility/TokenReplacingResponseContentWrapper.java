@@ -2,6 +2,7 @@ package org.bladerunnerjs.utility;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.plugin.BinaryResponseContent;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.appserver.util.MissingTokenHandler;
@@ -36,7 +37,7 @@ public class TokenReplacingResponseContentWrapper implements ResponseContent {
     
             Reader reader = new InputStreamReader(new ByteArrayInputStream(wrappedContentByteOutput.toByteArray()));
             Reader tokenReplacingReader = new TokenReplacingReader(app.getName(), brjsTokenFinder, tokenFinder, reader, replacementHandler);
-            IOUtils.copy(tokenReplacingReader, outputStream);
+            IOUtils.copy(tokenReplacingReader, outputStream, BladerunnerConf.OUTPUT_ENCODING);
 		}
     }
 
