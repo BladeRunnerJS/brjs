@@ -344,5 +344,39 @@ public class IntegrationServeCommandTest extends SpecTest
 		when(brjs).runThreadedCommand("serve");
 		then(appServer).requestForUrlReturns("/app1/", "token replacement 3");
 	}
+	
+	@Test
+	public void weCanUseUTF8() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(app).hasBeenCreated()
+    		.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    		+ "locales: en\n"
+    		+ "requirePrefix: appns")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+    		.and(aspect).hasBeenCreated()
+    		.and(aspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@ // $£€")
+    		.and(aspect).indexPageRequires("appns/App")
+    		.and(brjs).hasVersion("dev");
+		when(brjs).runThreadedCommand("serve");
+    	then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "token replacement // $£€");
+	}
+	
+	@Test
+	public void weCanUseLatin1() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("ISO-8859-1")
+    		.and().activeEncodingIs("ISO-8859-1")
+    		.and(app).hasBeenCreated()
+    		.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    		+ "locales: en\n"
+    		+ "requirePrefix: appns")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+    		.and(aspect).hasBeenCreated()
+    		.and(aspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@ // $£")
+    		.and(aspect).indexPageRequires("appns/App")
+    		.and(brjs).hasVersion("dev");
+    	when(brjs).runThreadedCommand("serve");
+    	then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "token replacement // $£");
+	}
 
 }

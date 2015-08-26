@@ -265,7 +265,6 @@ public class TestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void tokensAreReplaced() throws Exception {
-		given(logging).echoEnabled();
 		given(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
     		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@")
     		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement");
@@ -275,11 +274,32 @@ public class TestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void exceptionIsThrownIfTokensCantBeReplaced() throws Exception {
-		given(logging).echoEnabled();
 		given(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
     		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@");
     	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(exceptions).verifyException(TokenReplacementException.class, "PropertyFileTokenFinder", "SOME.TOKEN");
+	}
+	
+	@Test
+	public void weCanUseUTF8() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@ // $£€")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsText("token replacement // $£€");
+	}
+	
+	@Test
+	public void weCanUseLatin1() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("ISO-8859-1")
+    		.and().activeEncodingIs("ISO-8859-1")
+    		.and(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@ // $£")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsText("token replacement // $£");
 	}
 	
 }

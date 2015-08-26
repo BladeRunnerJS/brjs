@@ -1,6 +1,6 @@
 package org.bladerunnerjs.appserver.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.Reader;
@@ -332,5 +332,14 @@ public class TokenReplacingReaderTest
         IOUtils.toString(tokenisingReader);
         verify(mockTokenReplacementHandler, times(0)).handleNoTokenFound( eq(APP_NAME), any(String.class), any(TokenReplacementException.class) );
     }
+    
+    @Test
+	public void asciiCharactersArentCorrupt() throws Exception
+	{
+    	Reader tokenisingReader = new TokenReplacingReader( APP_NAME, mockTokenFinder, new StringReader("@A.TOKEN@ $£€") );
+		String replacedContent = IOUtils.toString( tokenisingReader );
+		assertEquals("token replacement $£€", replacedContent);
+		verify(mockTokenFinder, times(1)).findTokenValue("A.TOKEN");
+	}
     
 }

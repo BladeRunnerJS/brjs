@@ -392,4 +392,38 @@ public class BuildAppTest extends SpecTest {
 		then(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "en");
 	}
 	
+	@Test
+	public void weCanUseUTF8() throws Exception {
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(app).hasBeenCreated()
+    		.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    			+ "locales: en\n"
+    			+ "requirePrefix: appns")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+    		.and(defaultAspect).hasBeenCreated()
+    		.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@ // $£€")
+    		.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+    		.and(brjs).hasVersion("dev")
+    		.and(app).hasBeenBuilt(targetDir);
+    	then(targetDir).containsFileWithContents("v/dev/js/prod/combined/bundle.js", "token replacement // $£€");
+	}
+	
+	@Test
+	public void weCanUseLatin1() throws Exception {
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
+			.and().activeEncodingIs("ISO-8859-1")
+    		.and(app).hasBeenCreated()
+    		.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    			+ "locales: en\n"
+    			+ "requirePrefix: appns")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+    		.and(defaultAspect).hasBeenCreated()
+    		.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@ // $£")
+    		.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+    		.and(brjs).hasVersion("dev")
+    		.and(app).hasBeenBuilt(targetDir);
+    	then(targetDir).containsFileWithContents("v/dev/js/prod/combined/bundle.js", "token replacement // $£");
+	}
+	
 }
