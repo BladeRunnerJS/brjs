@@ -65,6 +65,7 @@ public class TokenisingServletFilter implements Filter
 	{
 		if (shouldProcessResponse(request))
 		{
+			request.setAttribute(IGNORE_REQUEST_ATTRIBUTE, true); // set this so we don't handle requests twice
 			ServletOutputStream out = response.getOutputStream();
 			CommitedResponseCharResponseWrapper responseWrapper = new CommitedResponseCharResponseWrapper((HttpServletResponse) response);
 			chain.doFilter(request, responseWrapper);
