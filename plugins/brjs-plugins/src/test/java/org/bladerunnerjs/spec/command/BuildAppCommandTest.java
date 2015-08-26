@@ -6,6 +6,7 @@ import java.io.File;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
@@ -37,6 +38,10 @@ public class BuildAppCommandTest extends SpecTest
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated();
+		createModelObjects();
+	}
+	
+	private void createModelObjects() {
 		app = brjs.app("app");
 		defaultAspect = app.defaultAspect();
 		otherApp = brjs.app("other-app");
@@ -45,6 +50,15 @@ public class BuildAppCommandTest extends SpecTest
 		badBlade = bladeset.blade("!$%$^");
 	}
 
+	private void recreateBrjsWithMockVersionGenerator() throws Exception
+	{
+		brjs.close();
+		brjs = null;
+		given(brjs).automaticallyFindsAllPlugins()
+			.and(brjs).hasBeenCreated();
+		createModelObjects();
+	}
+	
 	@Test
 	public void exceptionIsThrownIfThereAreTooFewArguments() throws Exception
 	{
@@ -268,6 +282,7 @@ public class BuildAppCommandTest extends SpecTest
 	@Test
 	public void staticBRJSAppTokensAreReplacedInWebXml() throws Exception
 	{
+		recreateBrjsWithMockVersionGenerator();
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@BRJS.APP.VERSION@ @BRJS.APP.NAME@</web-xml>");
 		when(brjs).runCommand("build-app", "app", "-v", "1234");
@@ -383,6 +398,7 @@ public class BuildAppCommandTest extends SpecTest
 	@Test
 	public void tokensFromPropertiesFilesCanBeReplacedInBundles() throws Exception
 	{
+		recreateBrjsWithMockVersionGenerator();
 		given(app).hasBeenCreated()
 				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
 				+ "locales: en\n"
@@ -399,6 +415,7 @@ public class BuildAppCommandTest extends SpecTest
 	@Test
 	public void environmenShortFlagCanBeUsedToSetTheEnvironmentForTokens() throws Exception
 	{
+		recreateBrjsWithMockVersionGenerator();
 		given(app).hasBeenCreated()
 				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
 				+ "locales: en\n"
@@ -416,6 +433,7 @@ public class BuildAppCommandTest extends SpecTest
 	@Test
 	public void environmenLongFlagCanBeUsedToSetTheEnvironmentForTokens() throws Exception
 	{
+		recreateBrjsWithMockVersionGenerator();
 		given(app).hasBeenCreated()
 				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
 				+ "locales: en\n"
