@@ -146,7 +146,9 @@ public class AppBuilderUtilis
 				}
 				
 				ResponseContent tokenFilteredContent = AppRequestHandler.getTokenFilteredResponseContent(app, AppRequestHandler.appLocale(app, null), version, new CharResponseContent(app, new StringReader(webXmlContents)));
-				tokenFilteredContent.write( new FileOutputStream(exportedWebXml, false) );
+				try (OutputStream fileOutputStream = new FileOutputStream(exportedWebXml, false)) {
+					tokenFilteredContent.write( fileOutputStream );
+				}
 			}
 		}
 	}

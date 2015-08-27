@@ -37,6 +37,7 @@ public class TokenReplacingResponseContentWrapper implements ResponseContent {
             Reader reader = new InputStreamReader(new ByteArrayInputStream(wrappedContentByteOutput.toByteArray()));
             Reader tokenReplacingReader = new TokenReplacingReader(app.getName(), brjsTokenFinder, tokenFinder, reader, replacementHandler);
             IOUtils.copy(tokenReplacingReader, outputStream);
+            tokenReplacingReader.close();
 		}
     }
 

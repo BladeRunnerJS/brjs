@@ -68,11 +68,11 @@ public class TokenisingServletFilter implements Filter
 			CommitedResponseCharResponseWrapper responseWrapper = new CommitedResponseCharResponseWrapper((HttpServletResponse) response);
 			chain.doFilter(request, responseWrapper);
 			
-			try
-			{
-				if (!response.isCommitted()) { // only write the content if the headers havent been commited (an error code hasnt been sent)
-					Reader streamTokeniserReader = getStreamTokeniser(responseWrapper.getReader());
-					
+			if (!response.isCommitted()) { // only write the content if the headers havent been commited (an error code hasnt been sent)
+				Reader streamTokeniserReader = null;
+				try
+				{
+					streamTokeniserReader = getStreamTokeniser(responseWrapper.getReader());
 					char[] charArray = new char[8 * 1024];
 				    StringBuilder filteredDataStringBuilder = new StringBuilder();
 				    int numCharsRead;
@@ -85,14 +85,21 @@ public class TokenisingServletFilter implements Filter
 					response.getWriter().write(filteredDataStringBuilder.toString());
 					response.flushBuffer();
 				}
-			}
-			catch(EOFException e) {
-				// the browser has closed it's connection early -- re-throw
-				throw e;
-			}
-			catch(Exception e)
-			{
-				throw new ServletException(e);
+    			catch(EOFException e) {
+    				// the browser has closed it's connection early -- re-throw
+    				throw e;
+    			}
+    			catch(Exception e)
+    			{
+    				throw new ServletException(e);
+    			}
+				finally {
+					if (streamTokeniserReader != null) {
+						streamTokeniserReader.close();
+					}
+				}
+			} else {
+				// don't filter the response, for some reason it's been committed
 			}
 		}
 		else
