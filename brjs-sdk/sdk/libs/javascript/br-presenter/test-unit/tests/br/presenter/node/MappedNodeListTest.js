@@ -67,4 +67,35 @@
         assertUndefined(oMapList["node2"]);
         assertEquals("n3", oMapList["node3"].property.getValue());
     };
+
+	MappedNodeListTest.prototype.test_addingAValueDoesntBreakExistingPaths = function()
+	{
+		var pNodes = {
+		"node1": this._createAChildNode("n1"), 
+		"node2": this._createAChildNode("n2")
+		};
+		var oMapList = new MappedNodeList(pNodes);
+		
+		this.rootPresentationNode.oMapList = oMapList;
+		this.rootPresentationNode._$setPath(null);
+		
+		assertEquals("oMapList.node1", oMapList["node1"].getPath());
+		assertEquals("oMapList.node2", oMapList["node2"].getPath());
+		assertUndefined(oMapList["node3"]);
+		
+		pNodes["node3"] = this._createAChildNode("n3");
+		oMapList.updateList(pNodes);
+		
+		assertEquals("oMapList.node1", oMapList["node1"].getPath());
+		assertEquals("oMapList.node2", oMapList["node2"].getPath());
+		assertEquals("oMapList.node3", oMapList["node3"].getPath());
+		
+		delete pNodes["node1"];
+		oMapList.updateList(pNodes);
+		
+		assertUndefined(oMapList["node1"]);
+		assertEquals("oMapList.node2", oMapList["node2"].getPath());
+		assertEquals("oMapList.node3", oMapList["node3"].getPath());
+	};
+    
 })();
