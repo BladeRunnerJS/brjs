@@ -21,7 +21,7 @@ fi
 SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
 BRJS_CLASSPATH="$SCRIPT_DIR/libs/java/system/*:$SCRIPT_DIR/../conf/java/*"
 
-if [ "$(echo $(uname -s) | cut -c 1-6)" = "CYGWIN" ]; then
+if [[ "$(echo $(uname -s) | cut -c 1-6)" = "CYGWIN" || "$(echo $(uname -s) | cut -c 1-6)" = "MINGW6" ]]; then
 	# Cygwin version
 	java $JAVA_OPTS -cp "`cygpath -wp $BRJS_CLASSPATH`" org.bladerunnerjs.runner.CommandRunner "`cygpath -wp $SCRIPT_DIR`" "$@"
 else
