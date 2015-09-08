@@ -36,8 +36,6 @@ function Translator(messageDefinitions, useLocale) {
 
 	/** @private */
 	this.localizationPrefs = {};
-	/** @private */
-	this.testMode = false;
 	this.setLocale(useLocale);
 };
 
@@ -372,14 +370,6 @@ Translator.prototype._getTranslationForKey = function(token) {
 /** @private */
 Translator.prototype._getTranslationForKeyOrUndefinedIfKeyIsUnknown = function(token) {
 	token = token.toLowerCase();
-	if (this.testMode === true) {
-		if (token == "br.i18n.date.format") {
-			return TEST_DATE_FORMAT_SHORT;
-		} else if (token == "br.i18n.date.format.long") {
-			return TEST_DATE_FORMAT_LONG;
-		}
-		return ".";
-	}
 	return this.messages[token];
 };
 
