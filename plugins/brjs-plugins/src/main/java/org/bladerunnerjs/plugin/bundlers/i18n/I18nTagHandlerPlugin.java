@@ -7,6 +7,7 @@ import java.util.Map;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
@@ -36,23 +37,32 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-			ContentPathParser i18nContentPathParser = i18nContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
-			String contentPath = "";
-			
-			if (locale.isCompleteLocale()) {
-				contentPath = i18nContentPathParser.createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, locale.getLanguageCode(), locale.getCountryCode());
-			} else {
-				contentPath = i18nContentPathParser.createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale.getLanguageCode());				
+			Locale defaultLocale = bundleSet.bundlableNode().app().appConf().getDefaultLocale();
+			String scriptTags = getScriptTagForLocale(bundleSet, locale, version);
+			if (!locale.equals(defaultLocale)) {
+				scriptTags += getScriptTagForLocale(bundleSet, defaultLocale, version);
 			}
-			App app = bundleSet.bundlableNode().app();
-			String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
-			
-			writer.write("<script type=\"text/javascript\" src=\"" + requestPath + "\"></script>\n");
+			writer.write(scriptTags);
 		}
 		catch (Exception ex)
 		{
 			throw new IOException(ex);
 		}
+	}
+
+	private String getScriptTagForLocale(BundleSet bundleSet, Locale locale, String version) throws MalformedTokenException {
+		ContentPathParser i18nContentPathParser = i18nContentPlugin.castTo(RoutableContentPlugin.class).getContentPathParser();
+		String contentPath = "";
+		
+		if (locale.isCompleteLocale()) {
+			contentPath = i18nContentPathParser.createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, locale.getLanguageCode(), locale.getCountryCode());
+		} else {
+			contentPath = i18nContentPathParser.createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale.getLanguageCode());				
+		}
+		App app = bundleSet.bundlableNode().app();
+		String requestPath = app.requestHandler().createRelativeBundleRequest(contentPath, version);
+		
+		return "<script type=\"text/javascript\" src=\"" + requestPath + "\"></script>\n";
 	}
 
 }
