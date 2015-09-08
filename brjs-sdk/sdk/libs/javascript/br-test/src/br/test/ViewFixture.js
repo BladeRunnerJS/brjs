@@ -267,7 +267,7 @@ ViewFixture.prototype._getHandler = function(propertyName, value) {
 		if (handler.elements.length === 1) {
 			handler.selectedElement = handler.elements[0];
 		} else {
-			this._verifyOnlyOneElementSelected(handler.elements, handler.property);
+			this._verifyOnlyOneElementSelected(handler.elements, handler.property, propertyName, value);
 		}
 	}
 
@@ -291,11 +291,13 @@ ViewFixture.prototype._getViewElements = function(propertyName) {
 };
 
 /** @private */
-ViewFixture.prototype._verifyOnlyOneElementSelected = function(elements, selector) {
+ViewFixture.prototype._verifyOnlyOneElementSelected = function(elements, selector, propertyName, value) {
 	if (elements.length === 0) {
-		throw 'No view element found for "' + selector + '"';
+		throw 'No view element found for "' + selector + '". Processing property "' + propertyName +
+			'" and looking for value "' + value + '"';
 	} else if (elements.length > 1) {
-		throw 'More than one view element found for "' + selector + '"';
+		throw 'More than one view element found for "' + selector + '". Processing property "' + propertyName +
+			'" and looking for value "' + value + '"';
 	}
 };
 
