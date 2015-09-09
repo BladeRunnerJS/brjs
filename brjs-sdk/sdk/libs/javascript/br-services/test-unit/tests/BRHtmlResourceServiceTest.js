@@ -96,13 +96,8 @@
 
 	var getService = function(sUrl)
 	{
-		var templatesLoadedIndicator = document.querySelector('#brjs-html-templates-loaded');
-		if (templatesLoadedIndicator) {
-			templatesLoadedIndicator.parentNode.removeChild(templatesLoadedIndicator);
-		}
-		
 		if (!sUrl) { sUrl = "/test/bundles/html.bundle"; }
-		return new BRHtmlResourceService(sUrl);
+		return new BRHtmlResourceService(sUrl, true);
 	};
 
 	var assertTemplateContentsMatch = function(templateId, expected) {
