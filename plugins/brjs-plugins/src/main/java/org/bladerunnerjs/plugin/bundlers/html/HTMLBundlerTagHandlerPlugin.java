@@ -34,7 +34,7 @@ public class HTMLBundlerTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		try {
 			writer.write("<script>document.createElement(\"template\");</script>\n");
 			writer.write("<style>template{display:none;}</style>\n");
-			writer.write("<template id=\"brjs-html-templates-loaded\"></template>\n");
+			writer.write("<template id=\"brjs-html-templates-inline\"></template>\n");
 			
 			StringBuffer untranslatedContent = new StringBuffer();
 			

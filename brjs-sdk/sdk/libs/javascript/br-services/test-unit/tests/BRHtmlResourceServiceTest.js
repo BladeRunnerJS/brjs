@@ -17,6 +17,7 @@
 			var templateElem = templateElems[i];
 			templateElem.parentNode.removeChild(templateElem);
 		}
+		
 	};
 
 	BRHtmlResourceServiceTest.prototype.test_scriptTagsAreParsedByTheBrowser = function()
@@ -95,6 +96,11 @@
 
 	var getService = function(sUrl)
 	{
+		var templatesLoadedIndicator = document.querySelector('#brjs-html-templates-loaded');
+		if (templatesLoadedIndicator) {
+			templatesLoadedIndicator.parentNode.removeChild(templatesLoadedIndicator);
+		}
+		
 		if (!sUrl) { sUrl = "/test/bundles/html.bundle"; }
 		return new BRHtmlResourceService(sUrl);
 	};

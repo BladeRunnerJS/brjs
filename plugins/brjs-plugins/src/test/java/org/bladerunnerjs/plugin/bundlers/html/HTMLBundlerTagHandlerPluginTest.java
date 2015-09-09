@@ -36,7 +36,7 @@ public class HTMLBundlerTagHandlerPluginTest extends SpecTest
 		then(indexPageResponse.toString().replace("\n", "")).textEquals( 
 				("<script>document.createElement(\"template\");</script>\n"+
 					"<style>template{display:none;}</style>\n"+
-					"<template id=\"brjs-html-templates-loaded\"></template>\n"+
+					"<template id=\"brjs-html-templates-inline\"></template>\n"+
 					response.toString()).replace("\n","") );
 	}
 	
