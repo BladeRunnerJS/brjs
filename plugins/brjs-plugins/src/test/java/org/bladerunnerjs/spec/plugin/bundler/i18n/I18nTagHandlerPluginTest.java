@@ -32,12 +32,13 @@ public class I18nTagHandlerPluginTest extends SpecTest
 	}
 
 	@Test
-	public void i18nTokenPluginContainsJsRequestForBothCurrentAndDefaultLocales() throws Exception {
+	public void i18nTokenPluginContainsJsRequestForBothCurrentAndDefaultLocalesInTheCorrectOrder() throws Exception {
 		given(aspect).indexPageHasContent("<@i18n.bundle@/>")
 			.and(app.appConf()).supportsLocales("en_GB","de_DE");
 		when(aspect).indexPageLoadedInDev(response, "de_DE");
-		then(response).containsText("<script type=\"text/javascript\" src=\"v/dev/i18n/en_GB.js\"></script>")
-			.and(response).containsText("<script type=\"text/javascript\" src=\"v/dev/i18n/de_DE.js\"></script>");
+		then(response).containsOrderedTextFragments(
+				"<script type=\"text/javascript\" src=\"v/dev/i18n/en_GB.js\"></script>",
+				"<script type=\"text/javascript\" src=\"v/dev/i18n/de_DE.js\"></script>");
 	}
 	
 }

@@ -38,10 +38,11 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 		try
 		{
 			Locale defaultLocale = bundleSet.bundlableNode().app().appConf().getDefaultLocale();
-			String scriptTags = getScriptTagForLocale(bundleSet, locale, version);
+			String scriptTags = "";
 			if (!locale.equals(defaultLocale)) {
 				scriptTags += getScriptTagForLocale(bundleSet, defaultLocale, version);
 			}
+			scriptTags += getScriptTagForLocale(bundleSet, locale, version);
 			writer.write(scriptTags);
 		}
 		catch (Exception ex)
