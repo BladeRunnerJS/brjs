@@ -46,7 +46,7 @@
     NodeListTest.prototype.test_properties = function()
     {
         var oNode = new RootPresentationNodeContainingList();
-        var oProperties = oNode.children.properties();
+        var oProperties = oNode.properties();
         assertEquals(4, oProperties.getSize());
     };
 
