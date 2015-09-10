@@ -291,13 +291,20 @@ ViewFixture.prototype._getViewElements = function(propertyName) {
 };
 
 /** @private */
-ViewFixture.prototype._verifyOnlyOneElementSelected = function(elements, selector, propertyName, value) {
+ViewFixture.prototype._verifyOnlyOneElementSelected = function(elements, viewHandler, propertyName, value) {
+	var exceptionMessage = '';
 	if (elements.length === 0) {
-		throw 'No view element found for "' + selector + '". Processing property "' + propertyName +
-			'" and looking for value "' + value + '"';
+		exceptionMessage = 'No view element found for "' + viewHandler + '".';
 	} else if (elements.length > 1) {
-		throw 'More than one view element found for "' + selector + '". Processing property "' + propertyName +
-			'" and looking for value "' + value + '"';
+		exceptionMessage = 'More than one view element found for "' + viewHandler + '".';
+	}
+
+	if (exceptionMessage !== '') {
+		if (typeof propertyName !== 'undefined') {
+			exceptionMessage += ' Processing property "' + propertyName + '" and looking for value "' + value + '".';
+		}
+
+		throw exceptionMessage;
 	}
 };
 
