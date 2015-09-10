@@ -17,6 +17,7 @@
 			var templateElem = templateElems[i];
 			templateElem.parentNode.removeChild(templateElem);
 		}
+		
 	};
 
 	BRHtmlResourceServiceTest.prototype.test_scriptTagsAreParsedByTheBrowser = function()
@@ -96,7 +97,7 @@
 	var getService = function(sUrl)
 	{
 		if (!sUrl) { sUrl = "/test/bundles/html.bundle"; }
-		return new BRHtmlResourceService(sUrl);
+		return new BRHtmlResourceService(sUrl, true);
 	};
 
 	var assertTemplateContentsMatch = function(templateId, expected) {
