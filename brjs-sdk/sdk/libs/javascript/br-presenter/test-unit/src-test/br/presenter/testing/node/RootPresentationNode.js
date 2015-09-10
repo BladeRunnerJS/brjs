@@ -6,6 +6,7 @@ var WritableProperty = require("br/presenter/property/WritableProperty");
 var RootPresentationNode = function()
 {
 	this.m_oPrivateProperty1 = new WritableProperty();
+	this._oAnotherPrivateProperty1 = new WritableProperty();
 	
 	this.property1 = new WritableProperty("p1");
 	this.child = new ChildPresentationNode();
