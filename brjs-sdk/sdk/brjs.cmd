@@ -20,7 +20,9 @@ exit /B 1
 
 :runBrjs
 set THIS_DIR=%CD%
+set THIS_DIR=%THIS_DIR:\=/%
 set SCRIPT_DIR=%~dp0
+set SCRIPT_DIR=%SCRIPT_DIR:\=/%
 cd %SCRIPT_DIR%
 set filename="%SCRIPT_DIR%"
 FOR /F "delims=" %%I in ('echo %filename%') do set SHORT_SCRIPT_DIR=%%~sI
@@ -28,4 +30,4 @@ FOR /F "delims=" %%I in ('echo %filename%') do set SHORT_SCRIPT_DIR=%%~sI
 cd %THIS_DIR%
 set BRJS_CLASSPATH="%SCRIPT_DIR%/libs/java/system/*;%SCRIPT_DIR%/../conf/java/*;"
 
-java %JAVA_OPTS% -cp %BRJS_CLASSPATH% org.bladerunnerjs.runner.CommandRunner "%SCRIPT_DIR% " %*
+java %JAVA_OPTS% -cp %BRJS_CLASSPATH% org.bladerunnerjs.runner.CommandRunner "%SCRIPT_DIR%" "%THIS_DIR%" %*
