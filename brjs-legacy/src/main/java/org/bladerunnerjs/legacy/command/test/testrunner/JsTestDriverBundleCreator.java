@@ -11,11 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
@@ -34,7 +36,7 @@ public class JsTestDriverBundleCreator
 	private static Logger logger;
 	
 	public static void createRequiredBundles(BRJS brjs, MemoizedFile jsTestDriverConf)
-			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
+			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException, ConfigException
 	{
 		logger = brjs.logger(JsTestDriverBundleCreator.class);
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
@@ -81,22 +83,24 @@ public class JsTestDriverBundleCreator
 		brjs.getFileModificationRegistry().incrementAllFileVersions();
 	}
 
-	private static void checkTestsForIife(BRJS brjs, MemoizedFile rootTestDir, MemoizedFile testsDir) throws IOException
+	private static void checkTestsForIife(BRJS brjs, MemoizedFile rootTestDir, MemoizedFile testsDir) throws IOException, ConfigException
 	{
 		if (!brjs.jsStyleAccessor().getJsStyle(testsDir).equals(DefaultCommonJsSourceModule.JS_STYLE)) {
 			return;
 		}
-		for (MemoizedFile listedFile : testsDir.listFiles())
+		for (MemoizedFile listedFile : testsDir.nestedFiles())
 		{
-			if (listedFile.isFile())
+			LineIterator fileLineIterator = org.apache.commons.io.FileUtils.lineIterator(listedFile, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+			StringBuilder firstLinesOfFile = new StringBuilder();
+			int lineScanLimit = 5;
+			for (int i = 0; i < lineScanLimit && fileLineIterator.hasNext(); i++) { // only read the first 5 lines since it'll be more performant and use less memory
+				firstLinesOfFile.append(fileLineIterator.nextLine());
+			}
+						
+			Matcher m = JsCodeBlockStrippingDependenciesReader.SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(firstLinesOfFile.toString());
+			if (!m.find())
 			{
-				Matcher m = JsCodeBlockStrippingDependenciesReader.SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(listedFile));
-				if (!m.find())
-				{
-					logger.warn("The CommonJS test '%s' is not wrapped within an IIFE, which may cause unreliability in tests.", rootTestDir.getRelativePath(listedFile));
-				}
-			} else {
-				checkTestsForIife(brjs, rootTestDir, listedFile);
+				logger.warn("The CommonJS test '%s' is not wrapped within an IIFE (or doesn't have one in the first "+lineScanLimit+" lines), which may cause unreliability in tests.", rootTestDir.getRelativePath(listedFile));
 			}
 		}
 	}

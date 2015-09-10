@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @module br/presenter/workbench/ui/PresenterModelTree
  */
@@ -9,5 +11,7 @@
  * @class
  * @alias module:br/presenter/workbench/ui/PresenterModelTree
  */
-br.presenter.workbench.ui.PresenterModelTree = function() {
-};
+function PresenterModelTree() {
+}
+
+module.exports = PresenterModelTree;

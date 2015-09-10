@@ -1,55 +1,47 @@
-brjs.dashboard.app.testing.BrowserDetectorFixture = function()
-{
-	this.m_oBrowserDetector = null;
-};
-br.Core.inherit(brjs.dashboard.app.testing.BrowserDetectorFixture, br.test.Fixture);
+'use strict';
 
-brjs.dashboard.app.testing.BrowserDetectorFixture.prototype.setBrowserDetector = function(oBrowserDetector) 
-{
+var Fixture = require('br/test/Fixture');
+var Core = require('br/Core');
+
+function BrowserDetectorFixture() {
+	this.m_oBrowserDetector = null;
+}
+
+Core.inherit(BrowserDetectorFixture, Fixture);
+
+BrowserDetectorFixture.prototype.setBrowserDetector = function(oBrowserDetector) {
 	this.m_oBrowserDetector = oBrowserDetector;
 };
 
-brjs.dashboard.app.testing.BrowserDetectorFixture.prototype.canHandleExactMatch = function() 
-{
+BrowserDetectorFixture.prototype.canHandleExactMatch = function() {
 	return false;
 };
 
-brjs.dashboard.app.testing.BrowserDetectorFixture.prototype.canHandleProperty = function(sProperty) 
-{
-	 return sProperty == "name" || sProperty == "version";
+BrowserDetectorFixture.prototype.canHandleProperty = function(sProperty) {
+	return sProperty == 'name' || sProperty == 'version';
 };
 
-brjs.dashboard.app.testing.BrowserDetectorFixture.prototype._doGivenAndDoWhen = function(sPropertyName, vValue)
-{
-	if (sPropertyName == "name")
-	{
+BrowserDetectorFixture.prototype._doGivenAndDoWhen = function(sPropertyName, vValue) {
+	if (sPropertyName == 'name') {
 		this.m_oBrowserDetector.browserName = vValue;
-	}
-	else if (sPropertyName == "version")
-	{
+	} else if (sPropertyName == 'version') {
 		this.m_oBrowserDetector.browserVersion = vValue;
-	}
-	else
-	{
-		fail("Unknown property " + sPropertyName);
+	} else {
+		fail('Unknown property ' + sPropertyName);
 	}
 };
-brjs.dashboard.app.testing.BrowserDetectorFixture.prototype.doGiven = brjs.dashboard.app.testing.BrowserDetectorFixture.prototype._doGivenAndDoWhen;
-brjs.dashboard.app.testing.BrowserDetectorFixture.prototype.doWhen = brjs.dashboard.app.testing.BrowserDetectorFixture.prototype._doGivenAndDoWhen;
+BrowserDetectorFixture.prototype.doGiven = BrowserDetectorFixture.prototype._doGivenAndDoWhen;
+BrowserDetectorFixture.prototype.doWhen = BrowserDetectorFixture.prototype._doGivenAndDoWhen;
 
-brjs.dashboard.app.testing.BrowserDetectorFixture.prototype.doThen = function(sPropertyName, vValue)
-{
-	if (sPropertyName == "name")
-	{
+BrowserDetectorFixture.prototype.doThen = function(sPropertyName, vValue) {
+	if (sPropertyName == 'name') {
 		assertEquals(vValue, this.m_oBrowserDetector.getBrowserName());
-	}
-	else if (sPropertyName == "version")
-	{
+	} else if (sPropertyName == 'version') {
 		assertEquals(vValue, this.m_oBrowserDetector.getBrowserVersion());
-	}
-	else
-	{
-		fail("Unknown property " + sPropertyName);
+	} else {
+		fail('Unknown property ' + sPropertyName);
 	}
 };
+
+module.exports = BrowserDetectorFixture;
 

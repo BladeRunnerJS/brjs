@@ -21,17 +21,14 @@ var NumericValidator = function(sFailureMessage)
 	this.m_oRegex = new RegExp(/^[-+]?(([\d]*\.?[\d]+)|([\d]+\.))$/);
 };
 
-br.Core.implement(NumericValidator, Validator);
+brCore.implement(NumericValidator, Validator);
 
 NumericValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {
+	var bIsValid = false;
 	if((typeof vValue === 'string' || typeof vValue === 'number') && this.m_oRegex.test(vValue))
 	{
-		var bIsValid = true;
-	}
-	else
-	{
-		var bIsValid = false;
+		bIsValid = true;
 	}
 
 	var oTranslator = require("br/I18n").getTranslator();

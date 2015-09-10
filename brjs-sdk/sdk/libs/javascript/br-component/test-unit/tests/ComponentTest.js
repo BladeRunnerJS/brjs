@@ -1,5 +1,6 @@
 (function() {
 	var Component = require('br/component/Component');
+	var br = require("br/Core");
 
 	ComponentTest = TestCase("ComponentTest");
 
@@ -9,7 +10,7 @@
 		{
 			this.hasBeenInvoked = false;
 		};
-		br.Core.extend(fSetDisplayFrameComponent, Component);
+		br.extend(fSetDisplayFrameComponent, Component);
 
 		fSetDisplayFrameComponent.prototype.setDisplayFrame = function(oContainer)
 		{
@@ -27,4 +28,5 @@
 		oSetDisplayFrameComponent.setDisplayFrame();
 		assertTrue(oSetDisplayFrameComponent.hasBeenInvoked);
 	};
+	
 }());

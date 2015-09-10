@@ -1,3 +1,14 @@
+'use strict';
+
+var EventUtility = require('br/util/EventUtility');
+var OptionsNodeList = require('br/presenter/node/OptionsNodeList');
+var ElementUtility = require('br/util/ElementUtility');
+var InvalidControlModelError = require('br/presenter/control/InvalidControlModelError');
+var SelectionField = require('br/presenter/node/SelectionField');
+var ControlAdaptor = require('br/presenter/control/ControlAdaptor');
+var PropertyListener = require('br/presenter/property/PropertyListener');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/control/selectionfield/ToggleSwitchControl
  */
@@ -23,12 +34,11 @@
  * <p>The toggle-switch control can only be used to display <code>SelectionField</code> instances
  * having exactly two options.</p>
  */
-br.presenter.control.selectionfield.ToggleSwitchControl = function()
-{
-};
+function ToggleSwitchControl() {
+}
 
-br.Core.inherit(br.presenter.control.selectionfield.ToggleSwitchControl, br.presenter.property.PropertyListener);
-br.Core.inherit(br.presenter.control.selectionfield.ToggleSwitchControl, br.presenter.control.ControlAdaptor);
+Core.inherit(ToggleSwitchControl, PropertyListener);
+Core.inherit(ToggleSwitchControl, ControlAdaptor);
 
 // *********************** PropertyListener Interface ***********************
 
@@ -36,8 +46,7 @@ br.Core.inherit(br.presenter.control.selectionfield.ToggleSwitchControl, br.pres
  * @private
  * @see br.presenter.property.PropertyListener#onPropertyChanged
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype.onPropertyChanged = function()
-{
+ToggleSwitchControl.prototype.onPropertyChanged = function() {
 	this._refresh();
 };
 
@@ -48,8 +57,7 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype.onPropertyChan
  * @private
  * @see br.presenter.control.ControlAdaptor#setElement
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setElement = function(eElement)
-{
+ToggleSwitchControl.prototype.setElement = function(eElement) {
 	this.m_eElement = eElement;
 };
 
@@ -57,8 +65,7 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setElement = f
  * @private
  * @see br.presenter.control.ControlAdaptor#setOptions
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setOptions = function(newValue)
-{
+ToggleSwitchControl.prototype.setOptions = function(newValue) {
 	// do nothing -- this control doesn't support options to change its behaviour
 };
 
@@ -66,49 +73,47 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setOptions = f
  * @private
  * @see br.presenter.control.ControlAdaptor#setPresentationNode
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setPresentationNode = function(oPresentationNode)
-{
-	if(!(oPresentationNode instanceof br.presenter.node.SelectionField)) {
-		throw new br.presenter.control.InvalidControlModelError("ToggleSwitchControl", "SelectionField");
+ToggleSwitchControl.prototype.setPresentationNode = function(oPresentationNode) {
+	if (!(oPresentationNode instanceof SelectionField)) {
+		throw new InvalidControlModelError('ToggleSwitchControl', 'SelectionField');
 	}
 
 	this.m_oPresentationNode = oPresentationNode;
 
-	if(!this.m_eElement) {
-		this.m_eElement = document.createElement("div");
+	if (!this.m_eElement) {
+		this.m_eElement = document.createElement('div');
 	}
 
-	br.util.ElementUtility.addClassName(this.m_eElement, "toggleSwitch");
-	this.m_eFirstElementContainer = document.createElement("label");
-	br.util.ElementUtility.addClassName(this.m_eFirstElementContainer, "choiceA");
+	ElementUtility.addClassName(this.m_eElement, 'toggleSwitch');
+	this.m_eFirstElementContainer = document.createElement('label');
+	ElementUtility.addClassName(this.m_eFirstElementContainer, 'choiceA');
 
-	this.m_eSecondElementContainer = document.createElement("label");
-	br.util.ElementUtility.addClassName(this.m_eSecondElementContainer, "choiceB");
+	this.m_eSecondElementContainer = document.createElement('label');
+	ElementUtility.addClassName(this.m_eSecondElementContainer, 'choiceB');
 
 	this._updateOptions();
-	
+
 	this.m_eElement.appendChild(this.m_eFirstElementContainer);
 	this.m_eElement.appendChild(this.m_eSecondElementContainer);
-	
+
 	this._refresh();
-	
+
 	oPresentationNode.value.addListener(this);
-	oPresentationNode.options.addChangeListener(this,"_updateOptions");
-	oPresentationNode.enabled.addChangeListener(this, "_updateEnabled", true);
-	oPresentationNode.visible.addChangeListener(this, "_updateVisible", true);
+	oPresentationNode.options.addChangeListener(this, '_updateOptions');
+	oPresentationNode.enabled.addChangeListener(this, '_updateEnabled', true);
+	oPresentationNode.visible.addChangeListener(this, '_updateVisible', true);
 };
 
 /**
  * @private
  * @see br.presenter.control.ControlAdaptor#destroy
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype.destroy = function()
-{
+ToggleSwitchControl.prototype.destroy = function() {
 	this.m_oPresentationNode.removeChildListeners();
-	br.util.ElementUtility.discardChild(this.m_eFirstElementContainer);
-	br.util.ElementUtility.discardChild(this.m_eSecondElementContainer);
-	br.util.ElementUtility.discardChild(this.m_eElement);
-	
+	ElementUtility.discardChild(this.m_eFirstElementContainer);
+	ElementUtility.discardChild(this.m_eSecondElementContainer);
+	ElementUtility.discardChild(this.m_eElement);
+
 	this.m_eElement = null;
 	this.m_fFirstClick = null;
 	this.m_fSecondClick = null;
@@ -125,23 +130,19 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype.destroy = func
 /**
  * @private
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateOptions = function()
-{
+ToggleSwitchControl.prototype._updateOptions = function() {
 	var oOptions = this.m_oPresentationNode.options;
 	var pNewOptions = oOptions.getOptions();
 
-	if(pNewOptions.length != 2) {
-		throw new br.presenter.control.InvalidControlModelError("ToggleSwitchControl",
-			"SelectionField (having exactly two elements)");
+	if (pNewOptions.length != 2) {
+		throw new InvalidControlModelError('ToggleSwitchControl',
+			'SelectionField (having exactly two elements)');
 	}
 
-	if(oOptions instanceof br.presenter.node.OptionsNodeList)
-	{
+	if (oOptions instanceof OptionsNodeList) {
 		this.m_eFirstElementContainer.innerHTML = pNewOptions[0].label.getValue();
 		this.m_eSecondElementContainer.innerHTML = pNewOptions[1].label.getValue();
-	}
-	else
-	{
+	} else {
 		this.m_eFirstElementContainer.innerHTML = pNewOptions[0];
 		this.m_eSecondElementContainer.innerHTML = pNewOptions[1];
 	}
@@ -152,65 +153,60 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateOptions
 /**
  * @private
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateEnabled = function() {
+ToggleSwitchControl.prototype._updateEnabled = function() {
 	var bIsEnabled = this.m_oPresentationNode.enabled.getValue();
-	if(bIsEnabled) {
-		br.util.ElementUtility.removeClassName(this.m_eElement, "disabled");
+	if (bIsEnabled) {
+		ElementUtility.removeClassName(this.m_eElement, 'disabled');
 		this._bindClickEventHandlers();
-	}
-	else {
-		br.util.ElementUtility.addClassName(this.m_eElement, "disabled");
-		br.util.EventUtility.removeEventListener(this.m_nFirstClickListenerId);
-		br.util.EventUtility.removeEventListener(this.m_nSecondClickListenerId);
+	} else {
+		ElementUtility.addClassName(this.m_eElement, 'disabled');
+		EventUtility.removeEventListener(this.m_nFirstClickListenerId);
+		EventUtility.removeEventListener(this.m_nSecondClickListenerId);
 	}
 };
 
 /**
  * @private
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateVisible = function() {
+ToggleSwitchControl.prototype._updateVisible = function() {
 	var bIsVisible = this.m_oPresentationNode.visible.getValue();
-	this.m_eElement.style.display = (bIsVisible) ? "" : "none";
+	this.m_eElement.style.display = (bIsVisible) ? '' : 'none';
 };
 
 /**
  * @private
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype._refresh = function()
-{
-	if(this.m_oPresentationNode.value.getValue() === this.m_oPresentationNode.options.getOptions()[0].value.getValue())
-	{
-		br.util.ElementUtility.addClassName(this.m_eElement, "choiceASelected");
-		br.util.ElementUtility.removeClassName(this.m_eElement, "choiceBSelected");
-	}
-	else
-	{
-		br.util.ElementUtility.addClassName(this.m_eElement, "choiceBSelected");
-		br.util.ElementUtility.removeClassName(this.m_eElement, "choiceASelected");
+ToggleSwitchControl.prototype._refresh = function() {
+	if (this.m_oPresentationNode.value.getValue() === this.m_oPresentationNode.options.getOptions()[0].value.getValue()) {
+		ElementUtility.addClassName(this.m_eElement, 'choiceASelected');
+		ElementUtility.removeClassName(this.m_eElement, 'choiceBSelected');
+	} else {
+		ElementUtility.addClassName(this.m_eElement, 'choiceBSelected');
+		ElementUtility.removeClassName(this.m_eElement, 'choiceASelected');
 	}
 };
 
 /**
  * @private
  */
-br.presenter.control.selectionfield.ToggleSwitchControl.prototype._bindClickEventHandlers = function() {
+ToggleSwitchControl.prototype._bindClickEventHandlers = function() {
 	var oSelf = this;
-	
-	this.m_fFirstClick = function()
-	{
-		br.util.ElementUtility.addClassName(oSelf.m_eElement, "choiceASelected");
-		br.util.ElementUtility.removeClassName(oSelf.m_eElement, "choiceBSelected");
+
+	this.m_fFirstClick = function() {
+		ElementUtility.addClassName(oSelf.m_eElement, 'choiceASelected');
+		ElementUtility.removeClassName(oSelf.m_eElement, 'choiceBSelected');
 		oSelf.m_oPresentationNode.value.setValue(oSelf.m_oPresentationNode.options.getOptions()[0].value.getValue());
 	};
-	
-	this.m_fSecondClick = function()
-	{
-		br.util.ElementUtility.addClassName(oSelf.m_eElement, "choiceBSelected");
-		br.util.ElementUtility.removeClassName(oSelf.m_eElement, "choiceASelected");
+
+	this.m_fSecondClick = function() {
+		ElementUtility.addClassName(oSelf.m_eElement, 'choiceBSelected');
+		ElementUtility.removeClassName(oSelf.m_eElement, 'choiceASelected');
 		oSelf.m_oPresentationNode.value.setValue(oSelf.m_oPresentationNode.options.getOptions()[1].value.getValue());
 	};
 
 	// TODO: find out why tests fail when these events are added without the final "true" parameter (direct attachment), which attaches the events as .onclick attributes
-	this.m_nFirstClickListenerId = br.util.EventUtility.addEventListener(this.m_eFirstElementContainer, "click", this.m_fFirstClick, true);
-	this.m_nSecondClickListenerId = br.util.EventUtility.addEventListener(this.m_eSecondElementContainer, "click", this.m_fSecondClick, true);
+	this.m_nFirstClickListenerId = EventUtility.addEventListener(this.m_eFirstElementContainer, 'click', this.m_fFirstClick, true);
+	this.m_nSecondClickListenerId = EventUtility.addEventListener(this.m_eSecondElementContainer, 'click', this.m_fSecondClick, true);
 };
+
+module.exports = ToggleSwitchControl;

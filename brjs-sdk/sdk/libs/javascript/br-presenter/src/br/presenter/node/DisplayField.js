@@ -1,3 +1,10 @@
+'use strict';
+
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var Core = require('br/Core');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+var Property = require('br/presenter/property/Property');
+
 /**
  * @module br/presenter/node/DisplayField
  */
@@ -14,29 +21,30 @@
  * @param {Object} vValue (optional) The initial value of the field, either using a
  * primitive type or as a {@link module:br/presenter/property/Property}.
  */
-br.presenter.node.DisplayField = function(vValue)
-{
-	if(!(vValue instanceof br.presenter.property.Property)) {
-		vValue = new br.presenter.property.WritableProperty(vValue);
+function DisplayField(vValue) {
+	if (!(vValue instanceof Property)) {
+		vValue = new WritableProperty(vValue);
 	}
-	
+
 	/**
 	 * The textual label associated with the field.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.label = new br.presenter.property.WritableProperty("");
-	
+	this.label = new WritableProperty('');
+
 	/**
 	 * A boolean property representing whether the field is visible or not.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.visible = new br.presenter.property.WritableProperty(true);
-	
+	this.visible = new WritableProperty(true);
+
 	/**
 	 * The current value displayed within the field.
 	 * @type br.presenter.property.WritableProperty
 	 */
 	this.value = vValue;
-};
+}
 
-br.Core.extend(br.presenter.node.DisplayField, br.presenter.node.PresentationNode);
+Core.extend(DisplayField, PresentationNode);
+
+module.exports = DisplayField;

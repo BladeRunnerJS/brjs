@@ -1,24 +1,24 @@
-brjs.dashboard.app.model.dialog.validator.AppNamespaceValidator = function()
-{
-};
-br.Core.extend(brjs.dashboard.app.model.dialog.validator.AppNamespaceValidator, br.presenter.validator.Validator);
+'use strict';
 
-brjs.dashboard.app.model.dialog.validator.AppNamespaceValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
-{
-	if(!brjs.dashboard.app.NameValidator.isValidPackageName(vValue))
-	{
-		oValidationResult.setResult(false, brjs.dashboard.app.NameValidator.INVALID_PACKAGE_NAME_MESSAGE);
-	}
-	else if(brjs.dashboard.app.NameValidator.isReservedJsWord(vValue))
-	{
-		oValidationResult.setResult(false, brjs.dashboard.app.NameValidator.RESERVED_JS_WORD_MESSAGE);
-	}
-	else if((vValue == "brjs") || (vValue == "br"))
-	{
+var Validator = require('br/presenter/validator/Validator');
+var Core = require('br/Core');
+var NameValidator = require("brjs/dashboard/app/NameValidator");
+
+function AppNamespaceValidator() {
+}
+
+Core.extend(AppNamespaceValidator, Validator);
+
+AppNamespaceValidator.prototype.validate = function(vValue, mAttributes, oValidationResult) {
+	if (!NameValidator.isValidPackageName(vValue)) {
+		oValidationResult.setResult(false, NameValidator.INVALID_PACKAGE_NAME_MESSAGE);
+	} else if (NameValidator.isReservedJsWord(vValue)) {
+		oValidationResult.setResult(false, NameValidator.RESERVED_JS_WORD_MESSAGE);
+	} else if ((vValue == 'brjs') || (vValue == 'br')) {
 		oValidationResult.setResult(false, "'" + vValue + "' is a reserved namespace.");
-	}
-	else
-	{
+	} else {
 		oValidationResult.setResult(true);
 	}
 };
+
+module.exports = AppNamespaceValidator;

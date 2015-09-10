@@ -1,15 +1,16 @@
-brjs.dashboard.app.testing.BrowserDetectorStub = function()
-{
-	this.browserName = "chrome";
-	this.browserVersion = "18";
+'use strict';
+
+function BrowserDetectorStub() {
+	this.browserName = 'chrome';
+	this.browserVersion = '18';
 }
 
-brjs.dashboard.app.testing.BrowserDetectorStub.prototype.getBrowserName = function()
-{
+BrowserDetectorStub.prototype.getBrowserName = function() {
 	return this.browserName;
-}
+};
 
-brjs.dashboard.app.testing.BrowserDetectorStub.prototype.getBrowserVersion = function()
-{
+BrowserDetectorStub.prototype.getBrowserVersion = function() {
 	return this.browserVersion;
-}
+};
+
+module.exports = BrowserDetectorStub;

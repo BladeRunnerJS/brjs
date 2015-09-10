@@ -1,8 +1,16 @@
+'use strict';
+
+var jQuery = require('jquery');
+var InvalidControlModelError = require('br/presenter/control/InvalidControlModelError');
+var DateField = require('br/presenter/node/DateField');
+var ControlAdaptor = require('br/presenter/control/ControlAdaptor');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/control/datefield/JQueryDatePickerControl
  */
 
-br.Core.thirdparty('jquery');
+var jQuery = require('jquery');
 
 var MapUtility = require('br/util/MapUtility');
 
@@ -10,15 +18,15 @@ var MapUtility = require('br/util/MapUtility');
  * @class
  * @alias module:br/presenter/control/datefield/JQueryDatePickerControl
  * @implements module:br/presenter/control/ControlAdaptor
- * 
+ *
  * @classdesc
  * A control adaptor that allows the JQuery Calendar control to be used to render instances
  * of {@link module:br/presenter/node/DateField} within presenter.
  * This class is constructed by presenter automatically on your behalf.
- * 
+ *
  * <p>The jQuery date picker control is aliased by <em>br.date-picker</em>, and can
  * be used within templates as follows:</p>
- * 
+ *
  * <pre>
  *   &lt;span data-bind="controlNode:dateFieldProperty, control:'br.date-picker'"&gt;&lt;/span&gt;
  * </pre>
@@ -29,8 +37,7 @@ var MapUtility = require('br/util/MapUtility');
  *   &lt;input type="hidden" data-bind="controlNode:dateFieldProperty, control:'br.date-picker'"/&gt;
  * </pre>
  */
-br.presenter.control.datefield.JQueryDatePickerControl = function()
-{
+function JQueryDatePickerControl() {
 	/** @private */
 	this.m_oJQueryNode = {};
 
@@ -39,9 +46,9 @@ br.presenter.control.datefield.JQueryDatePickerControl = function()
 
 	/** @private */
 	this.m_eElement = null;
-};
+}
 
-br.Core.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.presenter.control.ControlAdaptor);
+Core.inherit(JQueryDatePickerControl, ControlAdaptor);
 
 // *********************** ControlAdaptor Interface ***********************
 
@@ -49,8 +56,7 @@ br.Core.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.prese
  * @private
  * @see br.presenter.control.ControlAdaptor#setElement
  */
-br.presenter.control.datefield.JQueryDatePickerControl.prototype.setElement = function(eElement)
-{
+JQueryDatePickerControl.prototype.setElement = function(eElement) {
 	this.m_eElement = eElement;
 };
 
@@ -58,8 +64,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.setElement = fu
  * @private
  * @see br.presenter.control.ControlAdaptor#setOptions
  */
-br.presenter.control.datefield.JQueryDatePickerControl.prototype.setOptions = function(mOptions)
-{
+JQueryDatePickerControl.prototype.setOptions = function(mOptions) {
 	this.m_mOptions = mOptions;
 };
 
@@ -67,10 +72,9 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.setOptions = fu
  * @private
  * @see br.presenter.control.ControlAdaptor#setPresentationNode
  */
-br.presenter.control.datefield.JQueryDatePickerControl.prototype.setPresentationNode = function(oPresentationNode)
-{
-	if(!(oPresentationNode instanceof br.presenter.node.DateField)) {
-		throw new br.presenter.control.InvalidControlModelError('JQueryDatePickerControl', 'DateField');
+JQueryDatePickerControl.prototype.setPresentationNode = function(oPresentationNode) {
+	if (!(oPresentationNode instanceof DateField)) {
+		throw new InvalidControlModelError('JQueryDatePickerControl', 'DateField');
 	}
 
 	this.m_oPresentationNode = oPresentationNode;
@@ -83,8 +87,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.setPresentation
  * @private
  * @see br.presenter.control.ControlAdaptor#destroy
  */
-br.presenter.control.datefield.JQueryDatePickerControl.prototype.destroy = function()
-{
+JQueryDatePickerControl.prototype.destroy = function() {
 	this.m_oJQueryNode.remove();
 	this.m_oPresentationNode.removeChildListeners();
 
@@ -95,9 +98,8 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.destroy = funct
  * @private
  * @see br.presenter.control.ControlAdaptor#onViewReady
  */
-br.presenter.control.datefield.JQueryDatePickerControl.prototype.onViewReady = function()
-{
-	if(this.m_mOptions.inline || this.m_eElement.type && this.m_eElement.type === 'hidden') {
+JQueryDatePickerControl.prototype.onViewReady = function() {
+	if (this.m_mOptions.inline || this.m_eElement.type && this.m_eElement.type === 'hidden') {
 		// if the passed element is a hidden input box use that to bind to it
 		this.m_oJQueryNode = jQuery(this.m_eElement);
 	} else {
@@ -118,16 +120,14 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype.onViewReady = f
 /**
  * @private
  */
-br.presenter.control.datefield.JQueryDatePickerControl.prototype._setDisabled = function()
-{
+JQueryDatePickerControl.prototype._setDisabled = function() {
 	this.m_oJQueryNode.datepicker('option', 'disabled', !this.m_oPresentationNode.enabled.getValue());
 };
 
 /**
  * @private
  */
-br.presenter.control.datefield.JQueryDatePickerControl.prototype._setVisible = function()
-{
+JQueryDatePickerControl.prototype._setVisible = function() {
 	var bVisible = this.m_oPresentationNode.visible.getValue();
 	this.m_oJQueryNode[0].parentNode.style.display = (bVisible) ? 'block' : 'none';
 };
@@ -135,8 +135,7 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._setVisible = f
 /**
  * @private
  */
-br.presenter.control.datefield.JQueryDatePickerControl.prototype._setValue = function()
-{
+JQueryDatePickerControl.prototype._setValue = function() {
 	if (this.m_oPresentationNode.value.hasValidationError() === false) {
 		this.m_oJQueryNode.datepicker('setDate', this.m_oPresentationNode.value.getValue());
 	}
@@ -145,22 +144,21 @@ br.presenter.control.datefield.JQueryDatePickerControl.prototype._setValue = fun
 /**
  * @private
  */
-br.presenter.control.datefield.JQueryDatePickerControl.prototype._generateCalendarHtml = function()
-{
+JQueryDatePickerControl.prototype._generateCalendarHtml = function() {
 	var oThis = this;
 	var oOptions = MapUtility.mergeMaps([{
 		showOn: 'button',
 		dateFormat: 'yy-mm-dd',
 		disabled: !this.m_oPresentationNode.enabled.getValue(),
-		onSelect: function(dateText)
-		{
+		onSelect: function(dateText) {
 			oThis.m_oPresentationNode.value.setValue(dateText);
 		},
-		beforeShow:function()
-		{
+		beforeShow: function() {
 			oThis._setValue();
 		}
 	}, this.m_mOptions], true);
 
 	this.m_oJQueryNode.datepicker(oOptions);
 };
+
+module.exports = JQueryDatePickerControl;
