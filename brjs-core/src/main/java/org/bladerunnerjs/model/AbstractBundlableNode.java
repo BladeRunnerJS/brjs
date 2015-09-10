@@ -100,7 +100,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		return linkedAsset;
 	}
 	
-	@Override
+	@Override 
 	public BundleSet getBundleSet() throws ModelOperationException {
 		return bundleSet.value(() -> {
 			return BundleSetCreator.createBundleSet(this);
@@ -110,7 +110,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	@Override
 	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
-			return handle(this.getBundleSet(), logicalRequestPath, contentAccessor, version);
+			return handleLogicalRequest(logicalRequestPath, getBundleSet(), contentAccessor, version);
 		}
 		catch (ModelOperationException e) {
 			throw new ContentProcessingException(e);
@@ -118,18 +118,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<Asset> assets(Asset asset, List<String> requirePaths) throws RequirePathException {
-		List<Asset> assets = new ArrayList<Asset>();
-		
-		for(String requirePath : requirePaths) {				
-			String canonicalRequirePath = asset.assetContainer().canonicaliseRequirePath(asset, requirePath);
-			assets.add(getLinkedAsset(canonicalRequirePath));
-		}
-		
-		return assets;
-	}
-	
-	private static ResponseContent handle(BundleSet bundleSet, String logicalRequestpath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public ResponseContent handleLogicalRequest(String logicalRequestpath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		App app = bundlableNode.app();
 		Logger logger = app.root().logger(AbstractBundlableNode.class);
@@ -154,6 +143,18 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		} catch (ConfigException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+	
+	@Override
+	public List<Asset> assets(Asset asset, List<String> requirePaths) throws RequirePathException {
+		List<Asset> assets = new ArrayList<Asset>();
+		
+		for(String requirePath : requirePaths) {				
+			String canonicalRequirePath = asset.assetContainer().canonicaliseRequirePath(asset, requirePath);
+			assets.add(getLinkedAsset(canonicalRequirePath));
+		}
+		
+		return assets;
 	}
 	
 }

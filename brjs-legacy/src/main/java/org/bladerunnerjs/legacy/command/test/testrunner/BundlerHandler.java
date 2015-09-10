@@ -59,7 +59,7 @@ public class BundlerHandler
 		createBundleFile(brjs, bundleFile);
 		
 		try (OutputStream bundleFileOutputStream = new FileOutputStream(bundleFile, false);
-			ResponseContent content = bundlableNode.handleLogicalRequest(modelRequestPath, new StaticContentAccessor(app), version); )
+			ResponseContent content = bundlableNode.handleLogicalRequest(modelRequestPath, new JsTestDriverBundlableNode(bundlableNode).getBundleSet(), new StaticContentAccessor(app), version); )
 		{
 			content.write( bundleFileOutputStream );
 			bundleFileOutputStream.flush();
