@@ -73,16 +73,18 @@ public class TokenisingServletFilter implements Filter
 				try
 				{
 					streamTokeniserReader = getStreamTokeniser(responseWrapper.getReader());
-					char[] charArray = new char[8 * 1024];
 				    StringBuilder filteredDataStringBuilder = new StringBuilder();
+				    
+				    char[] charArray = new char[8 * 1024];
 				    int numCharsRead;
 				    while ((numCharsRead = streamTokeniserReader.read(charArray, 0, charArray.length)) != -1) {
 				        filteredDataStringBuilder.append(charArray, 0, numCharsRead);
 				    }
-				    byte[] filteredData = filteredDataStringBuilder.toString().getBytes();
+				    
+				    byte[] filteredData = filteredDataStringBuilder.toString().getBytes("UTF-8");
 					
 					response.setContentLength(filteredData.length);
-					response.getWriter().write(filteredDataStringBuilder.toString());
+					response.getOutputStream().write(filteredData);
 					response.flushBuffer();
 				}
     			catch(EOFException e) {
