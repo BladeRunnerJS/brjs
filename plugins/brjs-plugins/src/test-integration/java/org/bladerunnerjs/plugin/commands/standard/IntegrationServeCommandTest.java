@@ -378,5 +378,22 @@ public class IntegrationServeCommandTest extends SpecTest
     	when(brjs).runThreadedCommand("serve");
     	then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "token replacement // $£");
 	}
+	
+	@Test
+	public void tokenReplacementValuesCanBeChangedWhileTheServerIsRunning() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+			+ "locales: en\n"	
+			+ "requirePrefix: appns")
+			.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageHasContent("@SOME.TOKEN@");
+		when(brjs).runThreadedCommand("serve")
+			.and(appServer).requestIsMadeFor("/app1/", response)
+			.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "new token replacement value");
+		then(response).textEquals("token replacement") /* the first response */
+			.and(appServer).requestForUrlReturns("/app1/", "new token replacement value"); /* response after the new token value */
+	}
 
 }
