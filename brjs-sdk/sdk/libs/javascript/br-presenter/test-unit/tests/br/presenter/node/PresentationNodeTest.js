@@ -92,7 +92,8 @@
     {
         var node = new RootPresentationNode();
         var oProperties = node.properties();
-        assertEquals(6, oProperties.getSize());
+		// 1 in the root, 2 in the child, 1 in the grandchild (excludes m_* private properties)
+        assertEquals(4, oProperties.getSize());
     };
     
     PresentationNodeTest.prototype.test_propertiesWithNameFilter = function()
@@ -118,8 +119,7 @@
     PresentationNodeTest.prototype.test_nodesTraversingNodeLists = function()
     {
         var oNode = new RootPresentationNodeContainingList();
-        var pResult = oNode.nodes().getNodesArray();
-        assertEquals([oNode.m_oOnlyChild, oNode.m_oOnlyChild.grandchild, oNode.children, oNode.m_oOnlyChild], pResult);
+		assertEquals([oNode.children, oNode.m_oOnlyChild, oNode.m_oOnlyChild.grandchild], oNode.nodes().getNodesArray());
     };
     
     PresentationNodeTest.prototype.test_nodesTraversingNodeListsWithNameFilter = function()
@@ -134,14 +134,14 @@
         var oNode = new RootPresentationNodeContainingList();
     
         var oProperties = oNode.properties();
-        assertEquals(9, oProperties.getSize());
+        assertEquals(4, oProperties.getSize());
     };
     
     PresentationNodeTest.prototype.test_propertiesTraversingNodeListsWithNameFilter = function()
     {
         var oNode = new RootPresentationNodeContainingList();
         var oProperties = oNode.properties("property2");
-        assertEquals(2, oProperties.getSize());
+        assertEquals(1, oProperties.getSize());
     };
     
     PresentationNodeTest.prototype.test_paths = function()
@@ -185,9 +185,9 @@
         var node = new RootPresentationNode();
         this._addPrivateDependencies(node);
     
-        assertEquals(3, node.nodes().getNodesArray().length);
-        assertEquals(3, node.child.nodes().getNodesArray().length);
-        assertEquals(3, node.child.grandchild.nodes().getNodesArray().length);
+        assertEquals(2, node.nodes().getNodesArray().length);
+		assertEquals(1, node.child.nodes().getNodesArray().length);
+		assertEquals(0, node.child.grandchild.nodes().getNodesArray().length);
     };
     
     PresentationNodeTest.prototype.test_privateDependenciesDontBreakPropertiesMethod = function()
@@ -196,9 +196,9 @@
         this._addPrivateDependencies(node);
     
     
-        assertEquals(11, node.properties().getSize());
-        assertEquals(11, node.child.properties().getSize());
-        assertEquals(10, node.child.grandchild.properties().getSize());
+        assertEquals(4, node.properties().getSize());
+		assertEquals(3, node.child.properties().getSize());
+		assertEquals(1, node.child.grandchild.properties().getSize());
     };
     
     PresentationNodeTest.prototype._addWrappedDependencies = function(node)
@@ -224,9 +224,9 @@
         var node = new RootPresentationNode();
         this._addWrappedDependencies(node);
     
-        assertEquals(6, node.properties().getSize());
-        assertEquals(4, node.child.properties().getSize());
-        assertEquals(1, node.child.grandchild.properties().getSize());
+        assertEquals(4, node.properties().getSize());
+		assertEquals(3, node.child.properties().getSize());
+		assertEquals(1, node.child.grandchild.properties().getSize());
     };
     
     PresentationNodeTest.prototype.test_NodePathsAreCleared = function()
@@ -251,8 +251,9 @@
         var oPresentationModel = new RootPresentationNode();
     
         oPresentationModel._$setPath("");
-        assertEquals("1a", "child.m_oPrivateProperty2", oPresentationModel.child.m_oPrivateProperty2.getPath());
-        assertEquals("1b", "child.grandchild", oPresentationModel.child.grandchild.getPath());
+        assertEquals("1a", undefined, oPresentationModel.child.m_oPrivateProperty2.getPath());
+        assertEquals("1b", "child", oPresentationModel.child.getPath());
+        assertEquals("1c", "child.grandchild", oPresentationModel.child.grandchild.getPath());
     };
     
     PresentationNodeTest.prototype.test_FailIfWeHaveTwoPublicReferenceToTheSamePresentationNodeInAPresentationModel = function()
@@ -292,10 +293,8 @@
         oPresentationNode.child.property2.addListener();
         oPresentationNode.child.property3.addListener();
         oPresentationNode.child.grandchild.property4.addListener();
-        oPresentationNode.m_oPrivateProperty1.addListener();
-        oPresentationNode.child.m_oPrivateProperty2.addListener();
         
-        assertEquals("There should be 6 listeners", 6, nListeners);
+        assertEquals("There should be 4 listeners", 4, nListeners);
         
         oPresentationNode.removeChildListeners();
         

@@ -275,6 +275,12 @@ public class MockRootNode implements RootNode
 	}
 	
 	@Override
+	public MemoizedFile getMemoizedFile(String filePath)
+	{
+		return getMemoizedFile( new File(filePath) );
+	}
+	
+	@Override
 	public MemoizedFile getMemoizedFile(File file)
 	{
 		return memoizedFileAccessor.getMemoizedFile(file);

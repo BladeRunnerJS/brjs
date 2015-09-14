@@ -75,7 +75,7 @@ PresentationModel.prototype._$setPath = function(oPresenterComponent) {
 	for (var sChildToBeSet in this) {
 		var oChildToBeSet = this[sChildToBeSet];
 
-		if (this._isPresenterChild(sChildToBeSet, oChildToBeSet)) {
+		if (!PresentationNode.isPrivateKey(sChildToBeSet) && this._isPresenterChild(sChildToBeSet, oChildToBeSet)) {
 			var sCurrentPath = oChildToBeSet.getPath();
 
 			if (sCurrentPath === undefined) {

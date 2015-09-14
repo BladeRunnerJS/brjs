@@ -118,7 +118,7 @@ public class TestRunnerController
 			{
 				try
 				{
-					success = testRunner.runTests( brjs.getMemoizedFile(new File(config.getString("dir"))), getTestTypeEnum(config.getString("testType")));
+					success = testRunner.runTests( brjs.getMemoizedFile(config.getString("dir")), getTestTypeEnum(config.getString("testType")));
 				}
 				catch (Exception ex)
 				{

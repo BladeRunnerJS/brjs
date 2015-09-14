@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -92,22 +91,30 @@ public class CommandRunner {
 		return byteStreamOutputStream.toString().trim();
 	}
 	
-	public int run(File workingDir, String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
-		AbstractRootNode.allowInvalidRootDirectories = false;
-		BRJS brjs = null;
-		
-		if (args.length < 1 || args[0] == null) throw new NoSdkArgumentException("No SDK base directory was provided");
-		
-		File sdkBaseDir = new File(args[0]);
+	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {		
+		if (args.length < 1 || args[0] == null) throw new NoSdkArgumentException();
+		if (args.length < 2 || args[1] == null) throw new NoWorkingDirArgumentException();
+				
+		File brjsDir = new File(args[0]).getAbsoluteFile();
 		args = ArrayUtils.subarray(args, 1, args.length);
 		
-		if (!sdkBaseDir.exists() || !sdkBaseDir.isDirectory()) throw new InvalidDirectoryException("'" + sdkBaseDir.getPath() + "' is not a directory");
-		sdkBaseDir = sdkBaseDir.getAbsoluteFile();
+		File workingDir = new File(args[0]).getAbsoluteFile();  // still arg[0] since we removed the previous first element above
+		args = ArrayUtils.subarray(args, 1, args.length);
+		
+		return run(brjsDir.getAbsoluteFile(), workingDir, args);
+	}
+	
+	public int run(File brjsDir, File workingDir, String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
+		AbstractRootNode.allowInvalidRootDirectories = false;
+		
+		if (!brjsDir.exists() || !brjsDir.isDirectory()) throw new InvalidDirectoryException("'" + brjsDir.getPath() + "' is not a directory");
+		if (!workingDir.exists() || !workingDir.isDirectory()) throw new InvalidDirectoryException("'" + workingDir.getPath() + "' is not a directory");
 		
 		args = processGlobalCommandFlags(args);
 		
+		BRJS brjs;
 		try {
-			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir, workingDir.getAbsoluteFile());
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel(brjsDir, workingDir.getAbsoluteFile());
 			brjs.populate("default");
 			setBrjsAllowStats(brjs);
 		}
@@ -117,10 +124,6 @@ public class CommandRunner {
 		
 		injectLegacyCommands(brjs);
 		return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
-	}
-	
-	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException, IOException {
-		return run(Paths.get(".").toAbsolutePath().normalize().toFile(), args);
 	}
 	
 	private void setBrjsAllowStats(BRJS brjs) throws ConfigException
@@ -216,8 +219,16 @@ public class CommandRunner {
 	class NoSdkArgumentException extends CommandOperationException {
 		private static final long serialVersionUID = 1L;
 		
-		public NoSdkArgumentException(String msg) {
-			super(msg);
+		public NoSdkArgumentException() {
+			super("No SDK base directory was provided");
+		}
+	}
+	
+	class NoWorkingDirArgumentException extends CommandOperationException {
+		private static final long serialVersionUID = 1L;
+		
+		public NoWorkingDirArgumentException() {
+			super("No current working directory was provided");
 		}
 	}
 	
