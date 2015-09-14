@@ -1,3 +1,0 @@
-js: dist/topiarist.js
-exports: topiarist
-commonjsDefinition: true
