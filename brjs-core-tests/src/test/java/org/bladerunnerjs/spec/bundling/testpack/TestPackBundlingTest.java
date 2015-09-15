@@ -281,7 +281,7 @@ public class TestPackBundlingTest extends SpecTest
 	}
 	
 	@Test
-	public void weCanUseUTF8() throws Exception {
+	public void weCanUseUTF8WithAppTokens() throws Exception {
 		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("UTF-8")
 			.and().activeEncodingIs("UTF-8")
 			.and(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
@@ -292,7 +292,7 @@ public class TestPackBundlingTest extends SpecTest
 	}
 	
 	@Test
-	public void weCanUseLatin1() throws Exception {
+	public void weCanUseLatin1WithAppTokens() throws Exception {
 		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("ISO-8859-1")
     		.and().activeEncodingIs("ISO-8859-1")
     		.and(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
