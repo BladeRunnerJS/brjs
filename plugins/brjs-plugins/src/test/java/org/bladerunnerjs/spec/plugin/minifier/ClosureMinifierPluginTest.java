@@ -41,17 +41,12 @@ public class ClosureMinifierPluginTest extends SpecTest
 			blade = app.bladeset("bs").blade("b1");
 			bladerunnerConf = brjs.bladerunnerConf();
 			targetDir = FileUtils.createTemporaryDirectory( this.getClass() );
-			
-		/* only closure compiler service used to calculate responses - http://closure-compiler.appspot.com/home */
-		unminifiedContent = "function _hello(name) {\n"+
-				"  alert('Hello, ' + name);\n"+
-				"}\n"+
-				"_hello('New user');\n"+
-				"\n";
-		minifyWhitespaceContent 	= "function _hello(name){alert(\"Hello, \"+name)}_hello(\"New user\")";
-		minifySimpleContent			= "function(b,c,a){alert(\"Hello, New user\")";
-		minifyMediumContent			= "function d(a){alert(\"Hello, \"+a)}d(\"New user\")";
-		minifyAdvancedContent		= "alert(\"Hello, New user\")";
+
+		unminifiedContent       = "var foo={}; foo.publicProperty=1; foo._privateProperty1=2; foo['_privateProperty2']=3; alert(foo);";
+		minifyWhitespaceContent = "var foo={};foo.publicProperty=1;foo._privateProperty1=2;foo[\"_privateProperty2\"]=3;alert(foo)";
+		minifySimpleContent     = "alert({publicProperty:1,_privateProperty1:2,_privateProperty2:3})})";
+		minifyMediumContent     = "alert({publicProperty:1,a:2,_privateProperty2:3})})";
+		minifyAdvancedContent   = "alert({g:1,f:2,_privateProperty2:3})})";
 
 		unminifiedClass = "var MyClass = function() {\n" +
 				"	this.m_nCount = 0;\n" +
