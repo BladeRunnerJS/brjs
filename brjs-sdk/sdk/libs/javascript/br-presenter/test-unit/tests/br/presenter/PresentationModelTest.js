@@ -23,11 +23,7 @@
         var oPresentationModel = new RootPresentationNode();
         
         oPresentationModel._$setPath("");
-        if(PresentationNode.IGNORE_PRIVATE === true){
-            assertEquals("1a", undefined, oPresentationModel.m_oPrivateProperty1.getPath());
-        }else{
-            assertEquals("1b", "m_oPrivateProperty1", oPresentationModel.m_oPrivateProperty1.getPath());
-        }
+		assertEquals("1a", undefined, oPresentationModel.m_oPrivateProperty1.getPath());
         assertEquals("1c", "child.grandchild", oPresentationModel.child.grandchild.getPath());
     };
 
