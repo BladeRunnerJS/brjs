@@ -496,6 +496,25 @@ public class BuildAppCommandTest extends SpecTest
 	}
 	
 	@Test
+	public void jndiTokenWarningIsOnlyPrintedOnceForEachToken() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en, de\n"
+				+ "requirePrefix: appns")
+				.and(app).containsFolder("WEB-INF")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@ @SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123")
+				.and(logging).enabled();
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(logging).unorderedWarnMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "default" )
+			.and(logging).doesNotContainWarnMessage(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "default")
+			.and(logging).otherMessagesIgnored();
+	}
+	
+	@Test
 	public void warningIsPrintedIfWarAppTokenCannotBeReplacedUsingADefinedEnvironment() throws Exception
 	{
 		given(app).hasBeenCreated()
