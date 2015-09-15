@@ -10,10 +10,12 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.utility.MissingAppJarsException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -308,7 +310,29 @@ public class BuildAppCommandTest extends SpecTest
 		when(brjs).runCommand("build-app", "app1", "-v", "myversion");
 		then(brjs).hasDirectoryWithFormat("generated/built-apps/app1/v/", "myversion\\-.*", filePath)
 			.and(new File(filePath.toString())).containsFileWithContents("/js/prod/combined/bundle.js", "module.exports.APP_VERSION = '"+new File(filePath.toString()).getName()+"';");
-			
+	}
+	
+	@Test
+	public void exceptionIsThrownIfWarIsBuiltAndWebInfJarsAreMissing() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFolder("WEB-INF/lib")
+			.and(brjs).containsFileWithContents("sdk/libs/java/application/brjs-servlet-1.2.2.jar", "new jar contents");
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(exceptions).verifyException(MissingAppJarsException.class, "app", "brjs-", "sdk/libs/java/application")
+			.whereTopLevelExceptionContainsString(CommandOperationException.class);
+	}
+	
+	@Test
+	public void exceptionIsThrownIfWarIsBuiltAndWebInfJarsAreOutdated() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFolder("WEB-INF/lib")
+			.and(app).containsFileWithContents("WEB-INF/lib/brjs-servlet-1.2.2.jar", "some jar contents")
+			.and(brjs).containsFileWithContents("sdk/libs/java/application/brjs-servlet-1.2.3.jar", "new jar contents");
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(exceptions).verifyException(MissingAppJarsException.class, "app", "brjs-", "sdk/libs/java/application")
+			.whereTopLevelExceptionContainsString(CommandOperationException.class);
 	}
 	
 }
