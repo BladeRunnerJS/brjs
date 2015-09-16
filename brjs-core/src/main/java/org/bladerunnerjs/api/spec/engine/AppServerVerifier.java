@@ -1,7 +1,12 @@
 package org.bladerunnerjs.api.spec.engine;
 
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 
@@ -84,6 +89,22 @@ public class AppServerVerifier
 		return verifierChainer;
 	}
 
+	public VerifierChainer requestIsSameAsFileContents(String urlPath, File sameAsFile) throws ClientProtocolException, IOException
+	{
+		String url = getUrl(urlPath);
+		
+		File responseFile = File.createTempFile(this.getClass().getSimpleName(), ".temp");
+		specTest.webappTester.whenRequestMadeTo(url, new FileOutputStream(responseFile));
+		
+		try {
+			assertTrue("file contents weren't the same", FileUtils.contentEquals(sameAsFile, responseFile));
+		} finally {
+			FileUtils.deleteQuietly(responseFile);
+		}
+		
+		return verifierChainer;
+	}
+	
 	public VerifierChainer contentTypeForRequestIs(String urlPath, String mimeType) throws ClientProtocolException, IOException
 	{
 		String url = getUrl(urlPath);

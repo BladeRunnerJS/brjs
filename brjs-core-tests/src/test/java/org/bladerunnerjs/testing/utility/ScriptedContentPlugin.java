@@ -41,7 +41,7 @@ public class ScriptedContentPlugin extends AbstractContentPlugin implements Rout
 	
 	@Override
 	public String getRequestPrefix() {
-		return "ScriptedContentPlugin";
+		return "scripted";
 	}
 	
 	@Override
