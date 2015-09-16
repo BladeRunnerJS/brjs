@@ -2,7 +2,7 @@ package org.bladerunnerjs.utility;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.App;
-import org.bladerunnerjs.api.plugin.BinaryResponseContent;
+import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.appserver.util.MissingTokenHandler;
 import org.bladerunnerjs.appserver.util.TokenReplacingReader;
@@ -28,16 +28,13 @@ public class TokenReplacingResponseContentWrapper implements ResponseContent {
 
     @Override
     public void write(OutputStream outputStream) throws IOException {
-    	if (wrappedResponse instanceof TokenReplacingResponseContentWrapper || wrappedResponse instanceof BinaryResponseContent) {
-    		wrappedResponse.write(outputStream);
+    	if (wrappedResponse instanceof CharResponseContent) {
+    		CharResponseContent wrappedCharResponse = (CharResponseContent) wrappedResponse;
+    		Reader tokenReplacingReader = new TokenReplacingReader(app.getName(), brjsTokenFinder, tokenFinder, wrappedCharResponse.getReader(), replacementHandler);
+    		IOUtils.copy(tokenReplacingReader, outputStream, "UTF-8");
+    		tokenReplacingReader.close();    	
 		} else {
-            ByteArrayOutputStream wrappedContentByteOutput = new ByteArrayOutputStream();
-            wrappedResponse.write( wrappedContentByteOutput );
-    
-            Reader reader = new InputStreamReader(new ByteArrayInputStream(wrappedContentByteOutput.toByteArray()));
-            Reader tokenReplacingReader = new TokenReplacingReader(app.getName(), brjsTokenFinder, tokenFinder, reader, replacementHandler);
-            IOUtils.copy(tokenReplacingReader, outputStream);
-            tokenReplacingReader.close();
+			wrappedResponse.write(outputStream);
 		}
     }
 
