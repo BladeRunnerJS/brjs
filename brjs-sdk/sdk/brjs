@@ -22,10 +22,11 @@ SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
 BRJS_CLASSPATH="$SCRIPT_DIR/libs/java/system/*:$SCRIPT_DIR/../conf/java/*"
 
 # if using cygwin or the latest versions of gitbash
-if [[ "$(echo $(uname -s) | cut -c 1-6)" = "CYGWIN" || "$(uname -a)" = *"Msys"* ]]; then
-	# Cygwin version
+uname -a | grep -E "(^CYGWIN|^MINGW32.*MSys$)"
+if [ $? -eq 0 ]; then
+	# Cygwin & newer GitBash versions
 	java $JAVA_OPTS -cp "`cygpath -wp $BRJS_CLASSPATH`" org.bladerunnerjs.runner.CommandRunner "`cygpath -wp $SCRIPT_DIR`" "`pwd`" "$@"
 else
-	# UNIX & GitBash version
+	# UNIX & older GitBash versions
 	java $JAVA_OPTS -cp "$BRJS_CLASSPATH" org.bladerunnerjs.runner.CommandRunner "$SCRIPT_DIR" "`pwd`" "$@"
 fi
