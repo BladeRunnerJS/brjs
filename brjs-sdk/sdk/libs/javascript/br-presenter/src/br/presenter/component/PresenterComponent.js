@@ -18,7 +18,6 @@ var Core = require('br/Core');
 var presenter_knockout = require('presenter-knockout');
 
 var Errors = require('br/Errors');
-var ServiceRegistry = require('br/ServiceRegistry');
 
 /**
  * Constructs a new instance of <code>PresenterComponent</code>. Instances of <code>PresenterComponent</code> can also
@@ -323,7 +322,7 @@ PresenterComponent.prototype.removeLifeCycleListener = function(listener) {
  */
 PresenterComponent.prototype._getTemplate = function() {
 	if (!this.m_eTemplate) {
-		var eTemplateNode = ServiceRegistry.getService('br.html-service').getTemplateElement(this.m_sTemplateId);
+		var eTemplateNode = require('service!br.html-service').getTemplateElement(this.m_sTemplateId);
 
 		if (!eTemplateNode) {
 			throw new PresenterComponent.TemplateNotFoundError("Template with ID '" + this.m_sTemplateId + "' couldn't be found");
