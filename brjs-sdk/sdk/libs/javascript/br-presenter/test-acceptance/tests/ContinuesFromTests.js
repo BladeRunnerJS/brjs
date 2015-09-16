@@ -3,7 +3,7 @@
     GwtTestRunner.initialize();
 
 	// test for https://github.com/BladeRunnerJS/brjs/issues/1523 to make sure IE8 doesnt get a stackoverflow if there are multiple 'continuesFrom'
-    describe("multiple continue from using a PresentaionModel with an EditableProperty", function() {
+    describe("multiple continue from using a PresentaionModel with an EditableProperty dont cause a stackoverflow", function() {
 
         fixtures( require("br/presenter/PresenterFixtureFactory") );
 
@@ -61,7 +61,6 @@
             then("demo.model.plainProperty = 'a'");
         });  
 
-		// we expect a stackoverflow during this test
         it("new test 10", function()
         {
             given("test.continuesFrom = 'new test 9'");
