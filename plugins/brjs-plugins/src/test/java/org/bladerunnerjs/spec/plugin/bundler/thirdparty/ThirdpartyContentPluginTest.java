@@ -331,4 +331,16 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(jsResponse).containsText("thirdparty-lib2 js file");
 	}
 	
+	@Test
+	public void cssCanLiveInNestedDirectoriesWithTheSameName() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+    		.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"css: \"**/*.css\"")
+    		.and(thirdpartyLib).containsFileWithContents("dir1/styles/style.css", "dir1 style")
+    		.and(thirdpartyLib).containsFileWithContents("dir2/styles/style.css", "dir2 style")
+    		.and(aspect).indexPageRequires("thirdparty-lib");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", cssResponse);
+    	then(cssResponse).containsText("dir1 style")
+    		.and(cssResponse).containsText("dir2 style");
+	}
+	
 }

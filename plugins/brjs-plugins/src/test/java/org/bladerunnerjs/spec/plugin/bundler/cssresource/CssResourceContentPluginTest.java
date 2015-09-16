@@ -37,6 +37,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	private Blade bladeInDefaultBladeset;
 	private File targetDir;
 	private JsLib appLib;
+	private Aspect anotherAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -44,6 +45,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			anotherAspect = app.aspect("another");
 			defaultAspect = app.defaultAspect();
 			bladeset = app.bladeset("bs");
 			bladesetWorkbench = bladeset.workbench();
@@ -427,7 +429,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 		.and(sdkJsLib).containsFileWithContents("thirdparty-lib.manifest", "depends:");
 		then(aspect).prodRequestsForContentPluginsAre("cssresource", 
-				"cssresource/lib_sdkLib/thirdparty-lib.manifest, cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt, cssresource/aspect_default_resource/index.html");
+				"cssresource/aspect_default_resource/index.html", "cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", "cssresource/lib_sdkLib/thirdparty-lib.manifest");
 	}
 	
 	@Test
@@ -488,10 +490,52 @@ public class CssResourceContentPluginTest extends SpecTest {
 	@Test // This is to protect against .less or .sass files referencing the file where we wont detect it
 	public void cssResourcesWithCommonExtensionsAreIncludedInContentPathsEvenIfTheyArentUsed() throws Exception {
 		given(defaultAspect).indexPageHasContent("")
-			.and(defaultAspect).containsFiles("themes/common/unusedFile.png")
+			.and(defaultAspect).containsFiles(
+				"themes/common/unusedFile.png",
+				"themes/common/unusedFile.jpg",
+				"themes/common/unusedFile.jpeg",
+				"themes/common/unusedFile.gif"
+			)
 			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasVersion("1234");
-		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default/theme_common/unusedFile.png");
+		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", 
+				"cssresource/aspect_default/theme_common/unusedFile.gif",
+				"cssresource/aspect_default/theme_common/unusedFile.jpeg",
+			"cssresource/aspect_default/theme_common/unusedFile.jpg",
+			"cssresource/aspect_default/theme_common/unusedFile.png"
+		);
+	}
+	
+	@Test
+	public void cssResourcesInBrLibsWithCommonExtensionsAreIncludedInContentPathsEvenIfTheyArentUsed() throws Exception {
+		given(appLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
+    		.and(appLib).containsFileWithContents("src/Class.js", "BR Lib")
+    		.and(appLib).containsFiles(
+				"themes/common/usedFile.png", "themes/common/images/usedFile.png", 
+				"themes/common/unusedFile.png", "themes/common//images/unusedFile.png"
+    		)
+    		.and(defaultAspect).indexPageHasContent("require('lib/Class')")
+    		.and(brjs).localeSwitcherHasContents("")
+    		.and(brjs).hasVersion("1234")
+    		.and(app).hasBeenBuilt(targetDir);
+    	then(targetDir).containsFile("v/1234/cssresource/lib_lib/themes/common/unusedFile.png")
+    		.and(targetDir).containsFile("v/1234/cssresource/lib_lib/themes/common/images/unusedFile.png");
+	}
+	
+	@Test
+	public void cssResourcesInThirdpartyLibsWithCommonExtensionsAreIncludedInContentPathsEvenIfTheyArentUsed() throws Exception {
+		given(appLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"**/*.css\"\n"+"exports: null")
+			.and(appLib).containsFileWithContents("src.js", "Thirdparty Lib")
+			.and(appLib).containsFiles( 
+				"unusedFile.png", "myCoolStyles/unusedFile.png", "myCoolStyles/images/unusedFile.png"
+			)
+			.and(defaultAspect).indexPageHasContent("require('lib')")
+    		.and(brjs).localeSwitcherHasContents("")
+    		.and(brjs).hasVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFile("v/1234/cssresource/lib_lib/unusedFile.png")
+			.and(targetDir).containsFile("v/1234/cssresource/lib_lib/myCoolStyles/unusedFile.png")
+			.and(targetDir).containsFile("v/1234/cssresource/lib_lib/myCoolStyles/images/unusedFile.png");
 	}
 	
 	@Test
@@ -501,7 +545,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(defaultAspect).containsFileWithContents("themes/common/style.css", ".style { background:url('usedFile.ext'); background:url('../../resources/css/usedFile.ext');")
 			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasVersion("1234");
-		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default_resource/resources/css/usedFile.ext", "cssresource/aspect_default/theme_common/usedFile.ext");
+		then(defaultAspect).usedProdContentPathsForPluginsAre("cssresource", "cssresource/aspect_default/theme_common/usedFile.ext", "cssresource/aspect_default_resource/resources/css/usedFile.ext");
 	}
 	
 	@Test
@@ -526,6 +570,121 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default_resource/resources/css/unusedFile.ext")
 			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default_resource/resources/some-dir/unusedFile.ext")
 			.and(targetDir).doesNotContainFile("v/1234/cssresource/aspect_default/theme_common/style.css");
+	}
+	
+	@Test
+	public void cssResourcesInBrLibsAreIncludedInTheBuiltArtifact() throws Exception {
+		given(appLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
+    		.and(appLib).containsFileWithContents("src/Class.js", "BR Lib")
+    		.and(appLib).containsFileWithContents("themes/common/styles.css", 
+    			".style { background:url('../usedFile.ext'); }\n"+
+    			".style { background:url('usedFile.ext'); }\n"+
+    			".style { background:url('images/usedFile.ext'); }\n"
+    		)
+    		.and(appLib).containsFiles(
+				"themes/common/usedFile.ext", "themes/common/images/usedFile.ext", 
+				"themes/common/unusedFile.ext", "themes/common//images/unusedFile.ext"
+    		)
+    		.and(defaultAspect).indexPageHasContent("require('lib/Class')")
+    		.and(brjs).localeSwitcherHasContents("")
+    		.and(brjs).hasVersion("1234")
+    		.and(app).hasBeenBuilt(targetDir);
+    	then(targetDir).containsFile("v/1234/cssresource/lib_lib/themes/common/usedFile.ext")
+    		.and(targetDir).containsFile("v/1234/cssresource/lib_lib/themes/common/images/usedFile.ext")
+    		.and(targetDir).doesNotContainFile("v/1234/cssresource/lib_lib/themes/common/unusedFile.ext")
+    		.and(targetDir).doesNotContainFile("v/1234/cssresource/lib_lib/themes/common/images/unusedFile.ext");
+	}
+	
+	@Test
+	public void cssResourcesInThirdpartyLibsAreIncludedInTheBuiltArtifact() throws Exception {
+		given(appLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"**/*.css\"\n"+"exports: null")
+			.and(appLib).containsFileWithContents("src.js", "Thirdparty Lib")
+			.and(appLib).containsFileWithContents("myCoolStyles/styles.css", 
+				".style { background-image: url('../usedFile.ext'); }\n"+
+				".style { background-image: url('usedFile.ext'); }\n"+
+				".style { background-image: url('images/usedFile.ext'); }\n"
+			)
+			.and(appLib).containsFiles(
+				"usedFile.ext", "myCoolStyles/usedFile.ext", "myCoolStyles/images/usedFile.ext", 
+				"unusedFile.ext", "myCoolStyles/unusedFile.ext", "myCoolStyles/images/unusedFile.ext"
+			)
+			.and(defaultAspect).indexPageHasContent("require('lib')")
+    		.and(brjs).localeSwitcherHasContents("")
+    		.and(brjs).hasVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFile("v/1234/cssresource/lib_lib/usedFile.ext")
+			.and(targetDir).containsFile("v/1234/cssresource/lib_lib/myCoolStyles/usedFile.ext")
+			.and(targetDir).containsFile("v/1234/cssresource/lib_lib/myCoolStyles/images/usedFile.ext")
+			.and(targetDir).doesNotContainFile("v/1234/cssresource/lib_lib/unusedFile.ext")
+			.and(targetDir).doesNotContainFile("v/1234/cssresource/lib_lib/myCoolStyles/unusedFile.ext")
+			.and(targetDir).doesNotContainFile("v/1234/cssresource/lib_lib/myCoolStyles/images/unusedFile.ext");
+	}
+	
+	@Test
+	public void cssResourcesInBrLibsAreIncludedInTheBuiltArtifactWhenReferencedFromANonDefaultAspect() throws Exception {
+		given(appLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
+    		.and(appLib).containsFileWithContents("src/Class.js", "BR Lib")
+    		.and(appLib).containsFileWithContents("themes/common/styles.css", 
+    			".style { background:url('../usedFile.ext'); }\n"+
+    			".style { background:url('usedFile.ext'); }\n"+
+    			".style { background:url('images/usedFile.ext'); }\n"
+    		)
+    		.and(appLib).containsFiles(
+				"themes/common/usedFile.ext", "themes/common/images/usedFile.ext", 
+				"themes/common/unusedFile.ext", "themes/common//images/unusedFile.ext"
+    		)
+    		.and(anotherAspect).indexPageHasContent("require('lib/Class')")
+    		.and(brjs).localeSwitcherHasContents("")
+    		.and(brjs).hasVersion("1234")
+    		.and(app).hasBeenBuilt(targetDir);
+    	then(targetDir).containsFile("another/v/1234/cssresource/lib_lib/themes/common/usedFile.ext")
+    		.and(targetDir).containsFile("another/v/1234/cssresource/lib_lib/themes/common/images/usedFile.ext")
+    		.and(targetDir).doesNotContainFile("another/v/1234/cssresource/lib_lib/themes/common/unusedFile.ext")
+    		.and(targetDir).doesNotContainFile("another/v/1234/cssresource/lib_lib/themes/common/images/unusedFile.ext");
+	}
+	
+	@Test
+	public void cssResourcesInThirdpartyLibsAreIncludedInTheBuiltArtifactWhenReferencedFromANonDefaultAspect() throws Exception {
+		given(appLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"**/*.css\"\n"+"exports: null")
+			.and(appLib).containsFileWithContents("src.js", "Thirdparty Lib")
+			.and(appLib).containsFileWithContents("myCoolStyles/styles.css", 
+				".style { background-image: url('../usedFile.ext'); }\n"+
+				".style { background-image: url('usedFile.ext'); }\n"+
+				".style { background-image: url('images/usedFile.ext'); }\n"
+			)
+			.and(appLib).containsFiles(
+				"usedFile.ext", "myCoolStyles/usedFile.ext", "myCoolStyles/images/usedFile.ext", 
+				"unusedFile.ext", "myCoolStyles/unusedFile.ext", "myCoolStyles/images/unusedFile.ext"
+			)
+			.and(anotherAspect).indexPageHasContent("require('lib')")
+    		.and(brjs).localeSwitcherHasContents("")
+    		.and(brjs).hasVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFile("another/v/1234/cssresource/lib_lib/usedFile.ext")
+			.and(targetDir).containsFile("another/v/1234/cssresource/lib_lib/myCoolStyles/usedFile.ext")
+			.and(targetDir).containsFile("another/v/1234/cssresource/lib_lib/myCoolStyles/images/usedFile.ext")
+			.and(targetDir).doesNotContainFile("another/v/1234/cssresource/lib_lib/unusedFile.ext")
+			.and(targetDir).doesNotContainFile("another/v/1234/cssresource/lib_lib/myCoolStyles/unusedFile.ext")
+			.and(targetDir).doesNotContainFile("another/v/1234/cssresource/lib_lib/myCoolStyles/images/unusedFile.ext");
+	}
+	
+	@Test
+	public void nestedCssResourcesInThirdpartyLibsThatLiveInADirectoryWithTheSameNameAsAnotherAreIncludedInTheBuiltApp() throws Exception {
+		given(appLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"**/*.css\"\n"+"exports: null")
+			.and(appLib).containsFileWithContents("src.js", "Thirdparty Lib")
+			.and(appLib).containsFileWithContents("styles.css", 
+				".style { background-image: url('dir1/foo/images/usedFile.ext'); }\n"+
+				".style { background-image: url('dir2/foo/images/usedFile.ext'); }\n"
+			)
+			.and(appLib).containsFiles(
+				"dir1/foo/images/usedFile.ext", "dir2/foo/images/usedFile.ext"
+			)
+			.and(defaultAspect).indexPageHasContent("require('lib')")
+    		.and(brjs).localeSwitcherHasContents("")
+    		.and(brjs).hasVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFile("v/1234/cssresource/lib_lib/dir1/foo/images/usedFile.ext")
+			.and(targetDir).containsFile("v/1234/cssresource/lib_lib/dir2/foo/images/usedFile.ext");
 	}
 	
 	@Test // test for https://github.com/BladeRunnerJS/brjs/issues/1443 - "'themes' dirs in libs cause `request form name 'null' hasn't been registered` when building apps"
