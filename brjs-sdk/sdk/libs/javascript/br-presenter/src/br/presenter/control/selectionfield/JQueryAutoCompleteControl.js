@@ -11,8 +11,6 @@ var Core = require('br/Core');
  * @module br/presenter/control/selectionfield/JQueryAutoCompleteControl
  */
 
-var jQuery = require('jquery');
-
 /**
  * @class
  * @alias module:br/presenter/control/selectionfield/JQueryAutoCompleteControl
@@ -51,6 +49,7 @@ function JQueryAutoCompleteControl() {
 	this.m_eElement = {};
 	this.m_bOpenOnFocus = false;
 	this.m_sAppendTo = 'body';
+	this._viewOpened = false;
 }
 
 Core.inherit(JQueryAutoCompleteControl, ControlAdaptor);
@@ -79,13 +78,14 @@ JQueryAutoCompleteControl.prototype.setPresentationNode = function(oPresentation
 	}
 
 	this.m_eElement.value = oPresentationNode.value.getValue();
-	oPresentationNode.value.addUpdateListener(this, '_valueChanged');
+	this._valueChangedListener = oPresentationNode.value.addUpdateListener(this, '_valueChanged');
 	this.m_oPresentationNode = oPresentationNode;
 };
 
 JQueryAutoCompleteControl.prototype.onViewReady = function() {
 	var oJqueryInput = jQuery(this.m_eElement);
 	var self = this;
+	this._viewOpened = true;
 
 	oJqueryInput.keydown(function(event, oUi) {
 		if (event.which == 13) // Enter.
@@ -162,5 +162,17 @@ JQueryAutoCompleteControl.prototype.setOptions = function(mOptions) {
 		this.m_bBlurAfterClick = mOptions.blurAfterClick;
 	}
 };
+
+/**
+ * Destroy created listeners and jQuery autocomplete plugin
+ */
+JQueryAutoCompleteControl.prototype.destroy = function() {
+	if (this._valueChangedListener) {
+		this.m_oPresentationNode.value.removeListener(this._valueChangedListener);
+	}
+	if (this._viewOpened === true) {
+		jQuery(this.m_eElement).autocomplete('destroy').off();
+	}
+}
 
 module.exports = JQueryAutoCompleteControl;
