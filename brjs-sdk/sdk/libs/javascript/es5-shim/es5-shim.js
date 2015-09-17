@@ -501,11 +501,19 @@ if (!Object.getPrototypeOf) {
     // http://ejohn.org/blog/objectgetprototypeof/
     // recommended by fschaefer on github
     Object.getPrototypeOf = function getPrototypeOf(object) {
-        return object.__proto__ || (
-            object.constructor
-                ? object.constructor.prototype
-                : prototypeOfObject
-        );
+        // this is what most shams do, but sometimes it's wrong.
+        if (object.constructor && object.constructor.prototype && object.constructor.prototype !== object) {
+            return object.constructor.prototype;
+        }
+
+        // this works only if we've been kind enough to supply a superclass property
+        // (which we do when we extend classes).
+        if (object.constructor && object.constructor.superclass) {
+            return object.constructor.superclass.prototype;
+        }
+
+        // can't find a good prototype.
+        return null;
     };
 }
 
