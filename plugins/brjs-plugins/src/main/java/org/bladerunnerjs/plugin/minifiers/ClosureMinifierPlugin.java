@@ -25,6 +25,7 @@ import org.bladerunnerjs.api.plugin.MinifierPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractMinifierPlugin;
 
 import com.Ostermiller.util.ConcatReader;
+import com.google.javascript.jscomp.AnonymousFunctionNamingPolicy;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
@@ -43,8 +44,11 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	
 	public static final String CLOSURE_WHITESPACE = "closure-whitespace";
 	public static final String CLOSURE_SIMPLE = "closure-simple";
+	public static final String CLOSURE_SIMPLE_DEBUG = "closure-simple-debug";
 	public static final String CLOSURE_MEDIUM = "closure-medium";
+	public static final String CLOSURE_MEDIUM_DEBUG = "closure-medium-debug";
 	public static final String CLOSURE_ADVANCED = "closure-advanced";
+	public static final String CLOSURE_ADVANCED_DEBUG = "closure-advanced-debug";
 	
 	private Logger logger;
 	
@@ -53,8 +57,11 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	{
 		settingNames.add(CLOSURE_WHITESPACE);
 		settingNames.add(CLOSURE_SIMPLE);
+		settingNames.add(CLOSURE_SIMPLE_DEBUG);
 		settingNames.add(CLOSURE_MEDIUM);
+		settingNames.add(CLOSURE_MEDIUM_DEBUG);
 		settingNames.add(CLOSURE_ADVANCED);
+		settingNames.add(CLOSURE_ADVANCED_DEBUG);
 	}
 	
 	@Override
@@ -138,24 +145,31 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 		{
 			CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options);
 		}
-		else if (settingName.equals(CLOSURE_SIMPLE))
+		else if (settingName.equals(CLOSURE_SIMPLE) || settingName.equals(CLOSURE_SIMPLE_DEBUG))
 		{
 			CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
 		}
-		else if (settingName.equals(CLOSURE_MEDIUM))
+		else if (settingName.equals(CLOSURE_MEDIUM) || settingName.equals(CLOSURE_MEDIUM_DEBUG))
 		{
 			CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
 			options.setRenamingPolicy(VariableRenamingPolicy.LOCAL, PropertyRenamingPolicy.ALL_UNQUOTED);
 			options.setRenamePrivatePropertiesOnly(true);
 			options.setCodingConvention(new BRJSCodingConvention());
 		}
-		else if (settingName.equals(CLOSURE_ADVANCED))
+		else if (settingName.equals(CLOSURE_ADVANCED) || settingName.equals(CLOSURE_ADVANCED_DEBUG))
 		{
 			CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
 		}
 		else
 		{
 			throw new RuntimeException("Closure compile does not support the seting " + settingName);
+		}
+		
+		if(settingName.equals(CLOSURE_SIMPLE_DEBUG) || settingName.equals(CLOSURE_MEDIUM_DEBUG) || settingName.equals(CLOSURE_ADVANCED_DEBUG)) {
+			options.setAnonymousFunctionNaming(AnonymousFunctionNamingPolicy.UNMAPPED);
+			options.setGeneratePseudoNames(true);
+			options.setRemoveClosureAsserts(false);
+			options.setShadowVariables(false);
 		}
 		
 		return options;
