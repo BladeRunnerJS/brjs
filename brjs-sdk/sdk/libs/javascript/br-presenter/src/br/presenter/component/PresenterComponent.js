@@ -18,7 +18,6 @@ var Core = require('br/Core');
 var presenter_knockout = require('presenter-knockout');
 
 var Errors = require('br/Errors');
-var ServiceRegistry = require('br/ServiceRegistry');
 
 /**
  * Constructs a new instance of <code>PresenterComponent</code>. Instances of <code>PresenterComponent</code> can also
@@ -37,7 +36,7 @@ var ServiceRegistry = require('br/ServiceRegistry');
  */
 function PresenterComponent(sTemplateId, vPresentationModel) {
 	this.m_sTemplateId = sTemplateId;
-	this.m_eTemplate = this._getTemplate(sTemplateId);
+	this.m_eTemplate = null;
 	this.m_sPresentationModel = null;
 	this.m_oPresentationModel = null;
 	this.m_bViewAttached = false;
@@ -129,14 +128,14 @@ PresenterComponent.prototype.setDisplayFrame = function(frame) {
 	}, this);
 
 	frame.on('attach', function() {
-		presenter_knockout.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
+		presenter_knockout.applyBindings(this.m_oPresentationModel, this._getTemplate());
 	}.bind(this));
 
 	frame.setContent(this.getElement());
 };
 
 PresenterComponent.prototype.getElement = function() {
-	return this.m_eTemplate;
+	return this._getTemplate();
 };
 
 // It is the responsibility of the containing system to call serialize and then persist the resultant string.
@@ -222,7 +221,7 @@ PresenterComponent.prototype.onAttach = function() {
  */
 PresenterComponent.prototype.onClose = function() {
 	this._propagateComponentEvent('onClose', arguments);
-	presenter_knockout.cleanNode(this.m_eTemplate);
+	presenter_knockout.cleanNode(this._getTemplate());
 	this.m_oPresentationModel.removeChildListeners();
 	this._nullObject(this.m_oPresentationModel);
 	this.m_oPresentationModel = null;
@@ -318,18 +317,19 @@ PresenterComponent.prototype.removeLifeCycleListener = function(listener) {
 };
 
 /**
+ * We lazilly get the template element so no elements are loaded if tests don't bind the model to the view
  * @private
- * @param {String} sTemplateId
- * @type Element
  */
-PresenterComponent.prototype._getTemplate = function(sTemplateId) {
-	var eTemplateNode = ServiceRegistry.getService('br.html-service').getTemplateElement(sTemplateId);
+PresenterComponent.prototype._getTemplate = function() {
+	if (!this.m_eTemplate) {
+		var eTemplateNode = require('service!br.html-service').getTemplateElement(this.m_sTemplateId);
 
-	if (!eTemplateNode) {
-		throw new PresenterComponent.TemplateNotFoundError("Template with ID '" + sTemplateId + "' couldn't be found");
+		if (!eTemplateNode) {
+			throw new PresenterComponent.TemplateNotFoundError("Template with ID '" + this.m_sTemplateId + "' couldn't be found");
+		}
+		this.m_eTemplate = eTemplateNode;
 	}
-
-	return eTemplateNode;
+	return this.m_eTemplate;
 };
 
 module.exports = PresenterComponent;
