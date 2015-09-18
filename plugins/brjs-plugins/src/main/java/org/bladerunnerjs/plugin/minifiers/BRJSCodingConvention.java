@@ -16,6 +16,6 @@ public class BRJSCodingConvention extends CodingConventions.Proxy implements Cod
 
 	@Override
 	public boolean isPrivate(String name) {
-		return (name.startsWith("_") || name.startsWith("m_")) && !isExported(name);
+		return (!name.startsWith("__") && name.startsWith("_") || name.startsWith("m_")) && !isExported(name);
 	}
 }
