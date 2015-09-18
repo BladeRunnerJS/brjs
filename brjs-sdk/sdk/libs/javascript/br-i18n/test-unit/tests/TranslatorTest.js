@@ -16,13 +16,24 @@
 			
 			module.exports = MockLocalisedTime;
 		});
+
+		require('service!br.app-meta-service').setVersion('1.2.3');
 		
 		this.messages = {
+			'default' : {
+				"caplin.test.key": "default value for test key",
+				"other.key": "default value for other key",
+				"untranslated.key": "default value for untranslated key",
+				"template.key": "default value for key that uses [template.key.first] and [template.key.second]",
+				"untranslated.template.key": "default value for key that is both untranslated and uses [value]"
+			},
 			'locale' : {
 				"caplin.test.key": "key 1 value.",
 				"other.key": "value 2",
 				"template.key": "this key has a [template.key.first] value and a [template.key.second] value"
 		}};
+
+		require('service!br.app-meta-service').setLocales(this.messages);
 
 		this.moreMessages = {
 			'locale' : {
@@ -80,6 +91,8 @@
 	TranslatorTest.prototype.tearDown = function()
 	{
 		this.subrealm.uninstall();
+
+		require('service!br.app-meta-service').resetAllValues();
 		
 		Mock4JS.verifyAllMocks();
 	};
@@ -132,28 +145,15 @@
 
 	// TODO: Add Test for Translator.setLocalizationPreferences()
 
-	TranslatorTest.prototype.test_missingMessage = function()
-	{
-		var text = "<test name='@{caplin.missing.key}'>values</test><blah>@{other.key}</blah>";
-		var expected = "<test name='??? caplin.missing.key ???'>values</test><blah>value 2</blah>";
-
-		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.messages, 'locale');
-
-		var result = translator.translate(text, "text");
-
-		assertEquals(expected, result);
-	};
-
 	TranslatorTest.prototype.test_multiLineReplace = function()
 	{
 		var text =
-			"<test name='@{caplin.missing.key}'>values</test><blah>@{other.key}</blah>\n" +
+			"<test name='@{caplin.test.key}'>values</test><blah>@{other.key}</blah>\n" +
 			"caplin.missing.key <@{23412.test.key}\n" +
 			"something else !!\"£@{utf8.key}^^\n";
 
 		var expected =
-			"<test name='??? caplin.missing.key ???'>values</test><blah>value 2</blah>\n" +
+			"<test name='key 1 value.'>values</test><blah>value 2</blah>\n" +
 			"caplin.missing.key <numeric key value\n" +
 			"something else !!\"£ΕΥΣΕΒΙΟΥ ΚΑΙΣΑΡΕΙΑΣ^^\n";
 
@@ -175,7 +175,7 @@
 		assertEquals(expected, result);
 	};
 
-	{
+	TranslatorTest.prototype.test_tokenTest = function() {
 		var sTest = "This [token] should be replaced as should this [token]";
 		var mTokens = { token: "replaced-token" };
 		var sExpected = "This replaced-token should be replaced as should this replaced-token";
@@ -274,26 +274,50 @@
 		_assertGetMessageReturnsCorrectValue(sTest, mTokens, sExpected);
 	};
 
-	TranslatorTest.prototype.test_getMessageForAnUnknownKeyReturnsAKeyWithQuestionMarks = function()
+	TranslatorTest.prototype.test_getMessageForAnUnknownKeyThrowsAnError = function()
 	{
 		var sKey = "unknown.key";
 		var sExpected = "??? " + sKey + " ???";
 
 		var Translator = require('br/i18n/Translator');
 		var oTranslator = new Translator({});
-		var sResult = oTranslator.getMessage(sKey, {});
+
+		assertException(function() {
+			oTranslator.getMessage(sKey, {});
+		}, "InvalidParametersError");
+	};
+
+	TranslatorTest.prototype.test_getMessageForAnUntranslatedKeyReturnsDefaultLocaleMessageInProd = function()
+	{
+		var Translator = require('br/i18n/Translator');
+		var oTranslator = new Translator(this.messages, 'locale');
+
+		var sResult = oTranslator.getMessage('untranslated.key', {});
+
+		assertEquals(this.messages.default['untranslated.key'], sResult);
+	};
+
+	TranslatorTest.prototype.test_getMessageForAnUntranslatedKeyReturnsTheKeyWithQuestionMarksInDev = function()
+	{
+		var sKey = "untranslated.key";
+		var sExpected = "??? " + sKey + " ???";
+		require('service!br.app-meta-service').setVersion('dev');
+		var Translator = require('br/i18n/Translator');
+		var oTranslator = new Translator(this.messages, 'locale');
+
+		var sResult = oTranslator.getMessage('untranslated.key', {});
 
 		assertEquals(sExpected, sResult);
 	};
 
-	TranslatorTest.prototype.test_getMessageForAnUnknownKeyThatContainsATokenReturnsAKeyWithQuestionMarks = function()
+	TranslatorTest.prototype.test_getMessageForAnUntranslatedKeyThatContainsATokenReturnsDefaultLocaleInProd = function()
 	{
-		var sKey = "unknown[token]";
-		var mTokens = { token: "bad" };
-		var sExpected = "??? " + sKey + " ???";
-
+		var sKey = "untranslated.template.key";
+		var mTokens = { value: "my value" };
+		var sExpected = "default value for key that is both untranslated and uses my value";
 		var Translator = require('br/i18n/Translator');
-		var oTranslator = new Translator({});
+		var oTranslator = new Translator(this.messages, 'locale');
+
 		var sResult = oTranslator.getMessage(sKey, mTokens);
 
 		assertEquals(sExpected, sResult);
