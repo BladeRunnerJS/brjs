@@ -20,7 +20,7 @@ function NewBladeDialog(oPresentationModel) {
 
 	this.bladeName.value.addValidator(this.m_oBladeNameValidator);
 
-	this.bladeName.value.addValidationCompleteListener(this, '_updateDialog');
+	this.bladeName.value.addValidationCompleteListener(this._updateDialog.bind(this));
 }
 
 Core.extend(NewBladeDialog, DialogViewNode);

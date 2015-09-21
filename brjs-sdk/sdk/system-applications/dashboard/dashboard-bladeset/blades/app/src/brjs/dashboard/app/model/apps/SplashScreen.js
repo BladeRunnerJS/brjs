@@ -9,7 +9,7 @@ function SplashScreen(oPresentationModel) {
 
 	this.isVisible = new EditableProperty(true);
 	this.permanentlyHideSplashScreen = new EditableProperty(false);
-	this.permanentlyHideSplashScreen.addChangeListener(this, '_toggleLocalStoragePermanentHide');
+	this.permanentlyHideSplashScreen.addChangeListener(this._toggleLocalStoragePermanentHide.bind(this));
 
 
 	this.m_sLocalStoragePermanentlyHideSplashScreen = 'dashboard_permanentlyHideSplashScreen';

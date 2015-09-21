@@ -15,7 +15,7 @@ function SelectableBladesetNodeList(oAppSelectionField, oPresentationModel, fNew
 	this.m_fOnServiceError = this._onServiceError.bind(this);
 	this.m_fNewBladesetNameValidationListener = fNewBladesetNameValidationListener;
 
-	oAppSelectionField.value.addChangeListener(this, '_onSelectedAppChanged');
+	oAppSelectionField.value.addChangeListener(this._onSelectedAppChanged.bind(this));
 }
 
 Core.extend(SelectableBladesetNodeList, NodeList);

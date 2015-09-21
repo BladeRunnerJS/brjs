@@ -10,7 +10,7 @@ function ConditionalChangeListener(oListener, sMethod, oConditionProperty, vCond
 	this.m_oConditionProperty = oConditionProperty;
 	this.m_vConditionValue = vConditionValue;
 
-	this.m_oConditionProperty.addChangeListener(this, '_onConditionPropertyChanged');
+	this.m_oConditionProperty.addChangeListener(this._onConditionPropertyChanged.bind(this));
 }
 
 Core.inherit(ConditionalChangeListener, PropertyListener);

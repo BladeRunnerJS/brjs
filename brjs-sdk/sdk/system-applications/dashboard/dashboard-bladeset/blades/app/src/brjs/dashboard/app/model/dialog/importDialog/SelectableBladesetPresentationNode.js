@@ -24,8 +24,8 @@ function SelectableBladesetPresentationNode(oPresentationModel, sBladeset, pBlad
 	this.newBladesetName.value.addValidationCompleteListener(this, '_updateDialog');
 	this.m_fNewBladesetNameValidationListener = fNewBladesetNameValidationListener;
 
-	this.isSelected.addChangeListener(this, '_onSelectedChanged');
-	this.blades.properties('isSelected').addChangeListener(this, '_onChildSelectedChanged');
+	this.isSelected.addChangeListener(this._onSelectedChanged.bind(this));
+	this.blades.properties('isSelected').addChangeListener(this._onChildSelectedChanged.bind(this));
 
 	this.isSelected.setValue(false);
 }

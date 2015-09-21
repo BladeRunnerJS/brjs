@@ -7,6 +7,7 @@ var ListenerFactory = require('br/util/ListenerFactory');
 var Observable = require('br/util/Observable');
 var PresentationNode = require('br/presenter/node/PresentationNode');
 var KnockoutNodeList = require('br/presenter/view/knockout/KnockoutNodeList');
+var ListenerCompatUtil = require('../util/ListenerCompatUtil');
 
 /**
  * @module br/presenter/node/NodeList
@@ -156,13 +157,12 @@ NodeList.prototype.removeAllListeners = function() {
  * using this method is that objects can choose to listen to call-back events on multiple
  * node lists.</p>
  *
- * @param {Object} oListener The listener to be added.
- * @param {String} sMethod The name of the method on the listener that will be invoked each time the property changes.
+ * @param {Function} fCallback The call-back that will be invoked each time the property changes.
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.node.NodeListListener
  */
-NodeList.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmediately) {
-	var oNodeListListener = this.m_oChangeListenerFactory.createListener(oListener, sMethod);
+NodeList.prototype.addChangeListener = function(fCallback, bNotifyImmediately) {
+	var oNodeListListener = this.m_oChangeListenerFactory.createListener(fCallback);
 	this.addListener(oNodeListListener, bNotifyImmediately);
 
 	return oNodeListListener;
@@ -253,5 +253,7 @@ NodeList.prototype._setPathsOfNewlyAddedNodes = function() {
 		}
 	}
 };
+
+NodeList.prototype.addChangeListener = ListenerCompatUtil.enhance(NodeList.prototype.addChangeListener);
 
 module.exports = NodeList;

@@ -19,7 +19,7 @@ function ImportBladesFromAppDialog(oPresentationModel) {
 	this.bladesets = new SelectableBladesetNodeList(this.selectedApp, oPresentationModel, this.m_fNewBladesetNameValidationListener);
 	this.importBladesButton = new Button('Import');
 
-	this.bladesets.addChangeListener(this, '_onBladesetsChanged', true);
+	this.bladesets.addChangeListener(this._onBladesetsChanged.bind(this), true);
 }
 
 Core.extend(ImportBladesFromAppDialog, DialogViewNode);
@@ -39,7 +39,7 @@ ImportBladesFromAppDialog.prototype.importBlades = function() {
 };
 
 ImportBladesFromAppDialog.prototype._onBladesetsChanged = function() {
-	this.bladesets.properties('isSelected').addChangeListener(this, '_onSelectionChanged', true);
+	this.bladesets.properties('isSelected').addChangeListener(this._onSelectionChanged.bind(this), true);
 };
 
 ImportBladesFromAppDialog.prototype._onSelectionChanged = function() {
