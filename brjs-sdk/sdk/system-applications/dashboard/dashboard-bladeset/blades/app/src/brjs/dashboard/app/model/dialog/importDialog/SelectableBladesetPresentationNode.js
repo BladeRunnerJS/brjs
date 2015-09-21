@@ -21,7 +21,7 @@ function SelectableBladesetPresentationNode(oPresentationModel, sBladeset, pBlad
 	this.displayNewBladesetField = new WritableProperty(true);
 	this.newBladesetName = new Field('-- Please name your bladeset --', sBladeset);
 	this.newBladesetName.value.addValidator(new BladesetNameValidator(oPresentationModel));
-	this.newBladesetName.value.addValidationCompleteListener(this, '_updateDialog');
+	this.newBladesetName.value.addValidationCompleteListener(this._updateDialog.bind(this));
 	this.m_fNewBladesetNameValidationListener = fNewBladesetNameValidationListener;
 
 	this.isSelected.addChangeListener(this._onSelectedChanged.bind(this));
