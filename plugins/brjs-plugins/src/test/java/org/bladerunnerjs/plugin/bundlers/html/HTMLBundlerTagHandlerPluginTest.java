@@ -7,6 +7,8 @@ import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.bladerunnerjs.plugin.bundlers.html.HTMLBundlerTagHandlerPlugin.Messages.*;
+
 
 public class HTMLBundlerTagHandlerPluginTest extends SpecTest
 {
@@ -91,9 +93,11 @@ public class HTMLBundlerTagHandlerPluginTest extends SpecTest
 		given(aspect).containsResourceFileWithContents("html/view.html", "<template id='appns.view'>@{appns.i18n.token}</template>")
 			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.i18n.token=i18n replacement")
 			.and(aspect).indexPageHasContent("<@html.bundle@/>")
-			.and(app.appConf()).supportsLocales("en_GB","de_DE");
+			.and(app.appConf()).supportsLocales("en_GB","de_DE")
+			.and(logging).enabled();
 		when(aspect).indexPageLoadedInProd(indexPageResponse, "de_DE");
-		then(indexPageResponse).containsText("i18n replacement");
+		then(indexPageResponse).containsText("i18n replacement")
+			.and(logging).warnMessageReceived(UNTRANSLATED_TOKEN_LOG_MSG, "appns.i18n.token", "de_DE");
 	}
 	
 	@Test
@@ -101,9 +105,11 @@ public class HTMLBundlerTagHandlerPluginTest extends SpecTest
 		given(aspect).containsResourceFileWithContents("html/view.html", "<template id='appns.view'>@{appns.i18n.token}</template>")
 			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.i18n.token=i18n replacement")
 			.and(aspect).indexPageHasContent("<@html.bundle@/>")
-			.and(app.appConf()).supportsLocales("en_GB","de_DE");
+			.and(app.appConf()).supportsLocales("en_GB","de_DE")
+			.and(logging).enabled();
 		when(aspect).indexPageLoadedInDev(indexPageResponse, "de_DE");
-		then(indexPageResponse).containsText("??? appns.i18n.token ???");
+		then(indexPageResponse).containsText("??? appns.i18n.token ???")
+			.and(logging).warnMessageReceived(UNTRANSLATED_TOKEN_LOG_MSG, "appns.i18n.token", "de_DE");
 	}
 	
 }
