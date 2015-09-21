@@ -16,7 +16,7 @@
 
     ConditionalChangeListenerTest.prototype.getListener = function(vConditionValue)
     {
-        return new ConditionalChangeListener(this, "onChange", this.m_oConditionProperty, vConditionValue);
+        return new ConditionalChangeListener(this.onChange.bind(this), this.m_oConditionProperty, vConditionValue);
     };
 
     ConditionalChangeListenerTest.prototype.onChange = function()

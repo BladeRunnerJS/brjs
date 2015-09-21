@@ -23,7 +23,7 @@ function AppDetailScreen(oPresentationModel) {
 	this.exportWarButton = new Button('Export WAR', this, 'exportWar');
 
 	oPresentationModel.appsScreen.apps.addListener(new ConditionalChangeListener(
-		this, '_updateImportBladesFromAppButton', this.visible, true), true);
+		this._updateImportBladesFromAppButton.bind(this), this.visible, true), true);
 }
 
 Core.extend(AppDetailScreen, PresentationNode);
