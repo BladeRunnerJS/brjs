@@ -1,13 +1,25 @@
 (function() {
+
+	require("jsmockito");
+
+	var store;
+	var fell;
+
 	TranslatorTest = TestCase("TranslatorTest");
 	TranslatorTest.prototype.setUp = function() {
-		var Mock4JS = require('mock4js');
-
-		Mock4JS.addMockSupport(window);
-		Mock4JS.clearMocksToVerify();
+		JsHamcrest.Integration.JsTestDriver();
+		JsMockito.Integration.JsTestDriver();
 		
 		this.subrealm = realm.subrealm();
 		this.subrealm.install();
+
+		fell = require('fell');
+
+		store = mock({
+			onLog: function(){}
+		});
+
+		fell.configure("warn", {}, [store]);
 		
 		var oThis = this;
 		define('br/I18n/LocalisedTime', function(require, exports, module) {
@@ -93,8 +105,6 @@
 		this.subrealm.uninstall();
 
 		require('service!br.app-meta-service').resetAllValues();
-		
-		Mock4JS.verifyAllMocks();
 	};
 
 	TranslatorTest.prototype.test_translateXMLString = function()
@@ -321,6 +331,17 @@
 		var sResult = oTranslator.getMessage(sKey, mTokens);
 
 		assertEquals(sExpected, sResult);
+	};
+
+	TranslatorTest.prototype.test_getMessageForAnUntranslatedKeyLogsAWarning = function()
+	{
+		var Translator = require('br/i18n/Translator');
+		var oTranslator = new Translator(this.messages, 'locale');
+
+		oTranslator.getMessage('untranslated.key', {});
+
+		verify(store, once()).onLog('br.i18n.Translator', 'warn',
+			[Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG, 'untranslated.key', 'locale']);
 	};
 
 	TranslatorTest.prototype.test_utfForeignScriptTest = function() {

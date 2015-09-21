@@ -6,6 +6,8 @@
 
 var Errors = require('br/Errors');
 var LocalisedNumber = require('./LocalisedNumber');
+var fell = require('fell');
+var log = fell.getLogger('br.i18n.Translator');
 // LocalisedDate and LocalisedTime use br/i18n which depends on this class,
 // so they have to be required where they are used or there would be a circular
 // dependency.
@@ -36,6 +38,8 @@ function Translator(messageDefinitions, useLocale) {
 	this.defaultLocaleMessages = {};
 	/** @private */
 	this.messageDefinitions = messageDefinitions;
+	/** @private */
+	this.locale = null;
 
 	var defaultLocale = Object.keys(require('service!br.app-meta-service').getLocales())[0];
 	this._setMessages(this.defaultLocaleMessages, defaultLocale);
@@ -45,8 +49,13 @@ function Translator(messageDefinitions, useLocale) {
 	this.setLocale(useLocale);
 }
 
+Translator.MESSAGES = {
+	UNTRANSLATED_TOKEN_LOG_MSG: 'A translation has not been provided for the i18n key "{0}" in the "{1}" locale'
+};
+
 Translator.prototype.setLocale = function(locale) {
 	this.messages = {};
+	this.locale = locale;
 
 	this._setMessages(this.messages, locale);
 };
@@ -381,8 +390,11 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 	}
 
 	var message = this.messages[token];
-	if (typeof message === 'undefined' && require('service!br.app-meta-service').getVersion() !== 'dev') {
-		message = this.defaultLocaleMessages[token];
+	if (typeof message === 'undefined') {
+		log.warn(Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG, token, this.locale);
+		if (require('service!br.app-meta-service').getVersion() !== 'dev') {
+			message = this.defaultLocaleMessages[token];
+		}
 	}
 	return message;
 };
