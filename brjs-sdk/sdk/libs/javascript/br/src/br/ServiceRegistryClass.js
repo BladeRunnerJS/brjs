@@ -129,6 +129,29 @@ ServiceRegistryClass.prototype.legacyClear = function() {
 	this.registry = {};
 };
 
+ServiceRegistryClass.prototype.dispose = function() {
+	for (var serviceName in this.registry) {
+		if (this.registry.hasOwnProperty(serviceName)) {
+			var service = this.registry[serviceName];
+			if (typeof service.dispose !== "undefined") {
+				if (service.dispose.length == 0) {
+					try {
+						service.dispose();
+						console.info("dispose() called on service registered for '"+serviceName);
+					} catch (e) {
+						console.error("error thrown when calling dispose() on service registered for '"+serviceName+"'. The error was: "+e);
+					}
+				} else {
+					console.info("dispose() not called on service registered for '"+serviceName+"' since it's dispose() method requires more than 0 arguments");
+				}
+			} else {
+				console.info("dispose() not called on service registered for '"+serviceName+"' since no dispose() method was defined");
+			}
+		}
+	}
+	this.registry = {};
+}
+
 /** @private */
 ServiceRegistryClass.prototype._initializeServiceIfRequired = function(alias) {
 	if (alias in this.registry === false) {
