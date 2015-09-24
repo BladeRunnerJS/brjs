@@ -56,17 +56,19 @@ PresentationNode.prototype.properties = function(sPropertyName, vValue) {
 		var oNode = pNodes[i];
 
 		for (var sKey in oNode) {
-			var vItem = oNode[sKey];
-			if (this._isPresenterChild(sKey, vItem)) {
-				if (vItem instanceof Property) {
-					var oProperty = vItem;
-
-					if ((!sPropertyName || (sKey == sPropertyName)) && (!vValue || (oProperty.getValue() == vValue))) {
-						pProperties.push(oProperty);
+			if (!PresentationNode.isPrivateKey(sKey)) {
+				var vItem = oNode[sKey];
+				if (this._isPresenterChild(sKey, vItem)) {
+					if (vItem instanceof Property) {
+						var oProperty = vItem;
+	
+						if ((!sPropertyName || (sKey == sPropertyName)) && (!vValue || (oProperty.getValue() == vValue))) {
+							pProperties.push(oProperty);
+						}
 					}
+				} else {
+					continue;
 				}
-			} else {
-				continue;
 			}
 		}
 	}
@@ -151,16 +153,18 @@ PresentationNode.prototype._$setPath = function(sPath, oPresenterComponent) {
 	this.m_sPath = sPath;
 
 	for (var sChildToBeSet in this) {
-		var oChildToBeSet = this[sChildToBeSet];
-
-		if (this._isPresenterChild(sChildToBeSet, oChildToBeSet)) {
-			var sCurrentPath = oChildToBeSet.getPath();
-			var sChildPath = sPath + '.' + sChildToBeSet;
-
-			if (sCurrentPath === undefined) {
-				oChildToBeSet._$setPath(sChildPath, oPresenterComponent);
-			} else if (sCurrentPath !== sChildPath) {
-				this._checkAncestor(sCurrentPath, sChildPath);
+		if (!PresentationNode.isPrivateKey(sChildToBeSet)) {
+			var oChildToBeSet = this[sChildToBeSet];
+	
+			if (this._isPresenterChild(sChildToBeSet, oChildToBeSet)) {
+				var sCurrentPath = oChildToBeSet.getPath();
+				var sChildPath = sPath + '.' + sChildToBeSet;
+	
+				if (sCurrentPath === undefined) {
+					oChildToBeSet._$setPath(sChildPath, oPresenterComponent);
+				} else if (sCurrentPath !== sChildPath) {
+					this._checkAncestor(sCurrentPath, sChildPath);
+				}
 			}
 		}
 	}
@@ -223,26 +227,28 @@ PresentationNode.prototype._$clearNodePaths = function() {
  */
 PresentationNode.prototype._getNodes = function(sNodeName, mProperties, pNodes) {
 	for (var sKey in this) {
-		var vItem = this[sKey];
-		if (!this._isPresenterChild(sKey, vItem)) {
-			continue;
-		}
-
-		if (vItem instanceof PresentationNode) {
-			if (this._isUpwardReference(this, vItem)) {
+		if (!PresentationNode.isPrivateKey(sKey)) {
+			var vItem = this[sKey];
+			if (!this._isPresenterChild(sKey, vItem)) {
 				continue;
 			}
-
-			var oPresentationNode = vItem;
-			if (this._containsNode(pNodes, oPresentationNode)) {
-				continue;
+	
+			if (vItem instanceof PresentationNode) {
+				if (this._isUpwardReference(this, vItem)) {
+					continue;
+				}
+	
+				var oPresentationNode = vItem;
+				if (this._containsNode(pNodes, oPresentationNode)) {
+					continue;
+				}
+	
+				if (this._nodeMatchesQuery(oPresentationNode, sKey, sNodeName, mProperties)) {
+					pNodes.push(oPresentationNode);
+				}
+	
+				oPresentationNode._getNodes(sNodeName, mProperties, pNodes);
 			}
-
-			if (this._nodeMatchesQuery(oPresentationNode, sKey, sNodeName, mProperties)) {
-				pNodes.push(oPresentationNode);
-			}
-
-			oPresentationNode._getNodes(sNodeName, mProperties, pNodes);
 		}
 	}
 };
@@ -296,6 +302,10 @@ PresentationNode.prototype._nodeMatchesQuery = function(oPresentationNode, sActu
 
 	return true;
 };
+
+PresentationNode.isPrivateKey = function(sKey) {
+	return (sKey.substr(0, 2) === 'm_' || sKey.charAt(0) === '_');
+}
 
 module.exports = PresentationNode;
 

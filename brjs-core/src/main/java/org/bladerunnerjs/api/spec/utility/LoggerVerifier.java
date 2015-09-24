@@ -94,6 +94,32 @@ public class LoggerVerifier
 		return verifierChainer;
 	}
 	
+	public VerifierChainer unorderedErrorMessageReceived(String message, Object... params)
+	{
+		logStore.verifyUnorderedErrorLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+
+	public VerifierChainer unorderedWarnMessageReceived(String message, Object... params)
+	{
+		logStore.verifyUnorderedWarnLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer unorderedInfoMessageReceived(String message, Object... params)
+	{
+		logStore.verifyUnorderedInfoLogMessage(message, params);
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer unorderedDebugMessageReceived(String message, Object... params)
+	{
+		return debugMessageReceived(message, params);
+	}
+	
 	public VerifierChainer containsFormattedConsoleMessage(String message, Object... params)
 	{
 		logStore.verifyFormattedConsoleLogMessage(message, params);

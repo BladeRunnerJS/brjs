@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -385,18 +386,29 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(response).containsText(elem(id));
 	}
 	
-	@Test public void bundlePathTagIsReplacedForDev() throws Exception {
+	@Test
+	public void bundlePathTagIsReplaced() throws Exception {
 		given(brjs).hasVersion("dev")
 			.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path"));
 		when(aspect).requestReceivedInDev("xml/bundle.xml", response);
 		then(response).containsText(bundleElem("\n",templateElem("v/dev/some/path")));
 	}
 	
-	@Test public void bundlePathTagIsReplacedForProd() throws Exception {
+	@Test
+	public void newBrjsBundlePathTokenIsReplaced() throws Exception {
+		given(brjs).hasVersion("dev")
+			.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@BRJS.BUNDLE.PATH@/some/path"));
+		when(app).requestReceived("v/dev/xml/bundle.xml", response);
+		then(response).containsText(bundleElem("\n",templateElem("v/dev/some/path")));
+	}
+	
+	@Test
+	public void deprecationWarningIsLoggedWhenLegacyBundlePathIsUsed() throws Exception {
 		given(brjs).hasVersion("1234")
-		.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path"));
-		when(aspect).requestReceivedInProd("xml/bundle.xml", response);
-		then(response).containsText(bundleElem("\n", templateElem("v/1234/some/path")));
+    		.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@/some/path"))
+    		.and(logging).enabled();
+    	when(aspect).requestReceivedInProd("xml/bundle.xml", response);
+    	then(logging).warnMessageReceived(AppMetadataUtility.DEPRECATED_TOKEN_WARNING, "@bundlePath@", "@BRJS.BUNDLE.PATH@");
 	}
 	
 	@Test
