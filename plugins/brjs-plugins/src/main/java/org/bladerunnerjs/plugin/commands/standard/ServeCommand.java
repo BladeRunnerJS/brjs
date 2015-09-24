@@ -68,7 +68,7 @@ public class ServeCommand extends JSAPArgsParsingCommandPlugin
 		argsParser.registerParameter(new FlaggedOption("port").setShortFlag('p').setLongFlag("port").setRequired(false).setHelp("the port number to run the BRJS application (overrides config)"));
 		argsParser.registerParameter(new FlaggedOption("version").setShortFlag('v').setLongFlag("version").setRequired(false).setDefault("dev").setHelp("the version number for the app"));
 		argsParser.registerParameter(new FlaggedOption("environment").setShortFlag('e').setLongFlag("environment").setRequired(false)
-				.setDefault("dev").setHelp("the environment to use when locating app properties. defaults to 'dev' if no environment is provided"));
+				.setDefault("dev").setHelp("the environment to use when locating app properties"));
 	}
 
 	@Override
