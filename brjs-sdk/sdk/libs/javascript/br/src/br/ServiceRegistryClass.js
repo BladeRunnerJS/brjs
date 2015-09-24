@@ -137,7 +137,7 @@ ServiceRegistryClass.prototype.dispose = function() {
 				if (service.dispose.length == 0) {
 					try {
 						service.dispose();
-						console.info("dispose() called on service registered for '"+serviceName);
+						console.info("dispose() called on service registered for '"+serviceName+"'");
 					} catch (e) {
 						console.error("error thrown when calling dispose() on service registered for '"+serviceName+"'. The error was: "+e);
 					}
