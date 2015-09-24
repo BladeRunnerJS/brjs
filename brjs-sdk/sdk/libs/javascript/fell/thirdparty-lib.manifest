@@ -1,4 +1,0 @@
-depends: emitr
-js: dist/fell.js
-exports: fell
-commonjsDefinition: true
