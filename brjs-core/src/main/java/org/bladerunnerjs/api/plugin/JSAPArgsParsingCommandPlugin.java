@@ -69,7 +69,7 @@ public abstract class JSAPArgsParsingCommandPlugin extends AbstractCommandPlugin
 	}
 	
 	@Override
-	public String getCommandHelp() {
+	public final String getCommandHelp() {
 		return argsParser.getHelp();
 	}
 	

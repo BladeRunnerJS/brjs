@@ -61,12 +61,6 @@ public class ServeCommand extends JSAPArgsParsingCommandPlugin
 	{
 		return "Starts the embedded application server.";
 	}
-	
-	
-	@Override
-	public String getCommandHelp() {
-		return getCommandUsage();
-	}
 
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException
