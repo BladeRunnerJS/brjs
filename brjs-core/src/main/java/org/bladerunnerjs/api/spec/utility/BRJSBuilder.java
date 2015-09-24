@@ -226,6 +226,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS>
 		automaticallyFindsCommandPlugins();
 		automaticallyFindsModelObservers();
 		automaticallyFindsRequirePlugins();
+		automaticallyFindsMinifierPlugins();
 
 		return builderChainer;
 	}

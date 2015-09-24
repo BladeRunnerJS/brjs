@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -79,15 +80,20 @@ public class WebappTester
 	
 	public WebappTester whenRequestMadeTo(String url, boolean followRedirects) throws ClientProtocolException, IOException
 	{
-		return whenRequestMadeTo(url, defaultSocketTimeout, defaultConnectionTimeout, followRedirects);
+		return whenRequestMadeTo(url, defaultSocketTimeout, defaultConnectionTimeout, followRedirects, null);
 	}
 	
 	public WebappTester whenRequestMadeTo(String url) throws ClientProtocolException, IOException
 	{
-		return whenRequestMadeTo(url, defaultSocketTimeout, defaultConnectionTimeout, true);
+		return whenRequestMadeTo(url, defaultSocketTimeout, defaultConnectionTimeout, true, null);
 	}
 	
-	public WebappTester whenRequestMadeTo(String url, int socketTimeout, int connectionTimeout, boolean followRedirects) throws ClientProtocolException, IOException {
+	public WebappTester whenRequestMadeTo(String url, OutputStream outputStream) throws ClientProtocolException, IOException
+	{
+		return whenRequestMadeTo(url, defaultSocketTimeout, defaultConnectionTimeout, true, outputStream);
+	}
+	
+	public WebappTester whenRequestMadeTo(String url, int socketTimeout, int connectionTimeout, boolean followRedirects, OutputStream outputStream) throws ClientProtocolException, IOException {
 		this.url = url;
 		CloseableHttpClient httpClient = new DefaultHttpClient();
 		httpClient.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, socketTimeout);
@@ -102,7 +108,11 @@ public class WebappTester
 		httpResponse = httpClient.execute( get );
 		statusCode = httpResponse.getStatusLine().getStatusCode();
 		statusText = httpResponse.getStatusLine().getReasonPhrase();
-		response = EntityUtils.toString(httpResponse.getEntity());
+		if (outputStream != null) {
+			IOUtils.copy(httpResponse.getEntity().getContent(), outputStream);			
+		} else {
+			response = EntityUtils.toString(httpResponse.getEntity()); 
+		}
 		contentType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
 		
 		Header[] headers = httpResponse.getAllHeaders();
@@ -123,7 +133,7 @@ public class WebappTester
 	public WebappTester requestTimesOut(String url) throws IOException
 	{
 		try {
-			whenRequestMadeTo(url, 150, 150, false);
+			whenRequestMadeTo(url, 150, 150, false, null);
 			fail("Expected request to " + url + " to timeout, but came back with status code " + statusCode);
 		}
 		catch (SocketTimeoutException | ConnectTimeoutException | ConnectException ex)

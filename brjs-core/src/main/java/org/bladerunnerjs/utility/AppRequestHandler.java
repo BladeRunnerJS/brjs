@@ -14,11 +14,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.api.App;
-import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.BladerunnerConf;
-import org.bladerunnerjs.api.BrowsableNode;
-import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.api.*;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
@@ -32,6 +28,9 @@ import org.bladerunnerjs.api.plugin.ContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
+import org.bladerunnerjs.appserver.util.MissingTokenHandler;
+import org.bladerunnerjs.appserver.util.TokenFinder;
+import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
@@ -41,6 +40,9 @@ import com.google.common.base.Joiner;
 
 public class AppRequestHandler
 {
+	private static final String NO_TOKEN_FOUND_HANDLER_PROPERTY_KEY = "NO_TOKEN_FOUND_HANDLER";
+	private static final String ENVIRONMENT_PROPERTY_KEY = "ENVIRONMENT";
+
 	private static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
 	private static final String INDEX_PAGE_REQUEST = "index-page-request";
 	private static final String UNVERSIONED_BUNDLE_REQUEST = "unversioned-bundle-request";
@@ -94,48 +96,67 @@ public class AppRequestHandler
 		}
 	}
 	
-	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException {
+	public ResponseContent handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor, RequestMode requestMode) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException {
 		ParsedContentPath parsedContentPath = parseRequest(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
+		Locale appLocale = appLocale(app, pathProperties.get("locale"));
 
-		String devVersion = app.root().getAppVersionGenerator().getVersion();
+		String version = app.root().getAppVersionGenerator().getVersion();
+		ResponseContent response = null;
 
 		switch (parsedContentPath.formName)
 		{
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, devVersion);
+				response = getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, version);
+				break;
 				
 			case WORKBENCH_BLADESET_LOCALE_FORWARDING_REQUEST:
-				return getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, devVersion);
+				response = getLocaleForwardingPageContent(app.aspect(aspectName), contentAccessor, version);
+				break;
 
 			case INDEX_PAGE_REQUEST:
-				return getIndexPageContent(app.aspect(aspectName), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				response = getIndexPageContent(app.aspect(aspectName), appLocale, version, contentAccessor, requestMode);
+				break;
 
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), appLocale, version, contentAccessor, requestMode);
+				break;
 			
 			case WORKBENCH_BLADESET_INDEX_PAGE_REQUEST:
-				return getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), appLocale(pathProperties.get("locale")), devVersion, contentAccessor, RequestMode.Dev);
+				response = getIndexPageContent(app.bladeset(pathProperties.get("bladeset")).workbench(), appLocale, version, contentAccessor, requestMode);
+				break;
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
-				return app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), contentAccessor, devVersion);
+				String contentPath = pathProperties.get("content-path");
+				if (contentPath.startsWith("/")) {
+					contentPath = contentPath.substring(1);
+				}
+				response = app.aspect(aspectName).handleLogicalRequest("/"+contentPath, contentAccessor, version);
+				break;
 				
 			case BUNDLE_REQUEST:
-				return app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+				response = app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, version);
+				break;
 
 			case WORKBENCH_BUNDLE_REQUEST:
-				return app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+				response = app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, version);
+				break;
 			
 			case WORKBENCH_BLADESET_BUNDLE_REQUEST:
-				return app.bladeset(pathProperties.get("bladeset")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, devVersion);
+				response = app.bladeset(pathProperties.get("bladeset")).workbench().handleLogicalRequest(pathProperties.get("content-path"), contentAccessor, version);
+				break;
 				
 		}
-		
-		throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
-	}
 
+		if (response == null) {
+			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
+		}
+		
+		return getTokenFilteredResponseContent(app, appLocale, version, response);
+	}
+	
 	public String createRelativeBundleRequest(String contentPath, String version) throws MalformedTokenException
 	{
 		if (contentPath.startsWith("/")) {
@@ -164,7 +185,7 @@ public class AppRequestHandler
 	public String createIndexPageRequest(Aspect aspect, Locale locale) throws MalformedTokenException
 	{
 		if(!aspect.app().isMultiLocaleApp()) {
-			return createRequest(aspect, INDEX_PAGE_REQUEST) + "index";
+			return createRequest(aspect, INDEX_PAGE_REQUEST);
 		}
 		else {
 			return createRequest(aspect, INDEX_PAGE_REQUEST, locale.toString());
@@ -268,7 +289,7 @@ public class AppRequestHandler
 		ResponseContent brLocaleBundleResponse = compositeJsContentPlugin.handleRequest(jsBundleContentPath, localeForwarderAspectWrapper.getBundleSet(), contentAccessor, version);
 		
 		ByteArrayOutputStream brLocaleBundleContent = new ByteArrayOutputStream();
-		brLocaleBundleResponse.write( brLocaleBundleContent );
+		brLocaleBundleResponse.write(brLocaleBundleContent);
 		
 		return brLocaleBundleContent.toString();
 	}
@@ -290,25 +311,24 @@ public class AppRequestHandler
 			 * - <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
 			 * - ordering is important here, if two URLs share a similar format, the first type wins
 			 */
-			if(!app.isMultiLocaleApp()) {
+			if (!app.isMultiLocaleApp()) {
 				contentPathParserBuilder
-					.accepts("<aspect>").as(INDEX_PAGE_REQUEST)
+						.accepts("<aspect>").as(INDEX_PAGE_REQUEST)
 						.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_INDEX_PAGE_REQUEST)
 						.and("<aspect><bladeset>/<blade>/workbench/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
 						.and("<aspect><bladeset>/workbench/").as(WORKBENCH_BLADESET_INDEX_PAGE_REQUEST)
 						.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
 						.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
 						.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
-					.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
+						.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
 						.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 						.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 						.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-						.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
+						.and("version").hasForm(app.root().getAppVersionGenerator().getVersionPattern())
 						.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
-			}
-			else {
+			} else {
 				contentPathParserBuilder
-					.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
+						.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
 						.and("<aspect><locale>").as(INDEX_PAGE_REQUEST)
 						.and("<aspect><bladeset>/<blade>/workbench/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
 						.and("<aspect><bladeset>/<blade>/workbench/<locale>").as(WORKBENCH_INDEX_PAGE_REQUEST)
@@ -318,26 +338,17 @@ public class AppRequestHandler
 						.and("<aspect><bladeset>/workbench/v/<version>/<content-path>").as(WORKBENCH_BLADESET_BUNDLE_REQUEST)
 						.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
 						.and("<aspect><content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
-					.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
+						.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
 						.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 						.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 						.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-						.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
+						.and("version").hasForm(app.root().getAppVersionGenerator().getVersionPattern())
 						.and("locale").hasForm(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT)
 						.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 			}
-			
+
 			return contentPathParserBuilder.build();
 		});
-	}
-
-	private Locale appLocale(String locale) {
-		try {
-			return (locale != null) ? new Locale(locale) : app.appConf().getLocales()[0];
-		}
-		catch (ConfigException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	private String getAspectNames()
@@ -350,5 +361,52 @@ public class AppRequestHandler
 		}
 
 		return Joiner.on("|").join(aspectNames);
+	}
+
+	public static Locale appLocale(App app, String locale) {
+		try {
+			return (locale != null) ? new Locale(locale) : app.appConf().getLocales()[0];
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static ResponseContent getTokenFilteredResponseContent(App app, Locale appLocale, String version, ResponseContent wrappedResponse) {
+		return getTokenFilteredResponseContent( app, appLocale, version, wrappedResponse, getNoTokenExNoTokenReplacementHandler(app.root()) );
+	}
+	
+	public static ResponseContent getTokenFilteredResponseContent(App app, Locale appLocale, String version, ResponseContent wrappedResponse, MissingTokenHandler handler) {
+		String environment = getPropertiesEnvironment(app.root());
+		TokenFinder brjsTokenFinder = new BrjsPropertyTokenFinder(app, appLocale, version);
+		TokenFinder tokenFinder = new PropertyFileTokenFinder(app.file("app-properties"), environment);
+		if (handler == null) {
+			handler = getNoTokenExNoTokenReplacementHandler(app.root());
+		}
+		return new TokenReplacingResponseContentWrapper( app, wrappedResponse, brjsTokenFinder, tokenFinder, handler );
+	}
+
+	public static void setNoTokenExceptionHandler(BRJS brjs, MissingTokenHandler handler) {
+		brjs.nodeProperties(AppRequestHandler.class.getSimpleName()).setTransientProperty(NO_TOKEN_FOUND_HANDLER_PROPERTY_KEY, handler);
+	}
+
+	public static MissingTokenHandler getNoTokenExNoTokenReplacementHandler(BRJS brjs) {
+		MissingTokenHandler handler = (MissingTokenHandler) brjs.nodeProperties(AppRequestHandler.class.getSimpleName()).getTransientProperty(NO_TOKEN_FOUND_HANDLER_PROPERTY_KEY);
+		if (handler == null) {
+			return new LoggingMissingTokenHandler(brjs, AppRequestHandler.class, getPropertiesEnvironment(brjs), LogLevel.INFO );
+		}
+		return handler;
+	}
+
+	public static void setPropertiesEnvironment(BRJS brjs, String environment) {
+		brjs.nodeProperties(AppRequestHandler.class.getSimpleName()).setTransientProperty(ENVIRONMENT_PROPERTY_KEY, environment);
+	}
+
+	public static String getPropertiesEnvironment(BRJS brjs) {
+		String environment = (String) brjs.nodeProperties(AppRequestHandler.class.getSimpleName()).getTransientProperty(ENVIRONMENT_PROPERTY_KEY);
+		if (environment == null) {
+			return "default";
+		}
+		return environment;
 	}
 }

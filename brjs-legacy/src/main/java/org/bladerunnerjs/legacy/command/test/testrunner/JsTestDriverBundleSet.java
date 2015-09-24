@@ -10,13 +10,15 @@ import org.bladerunnerjs.api.BundlableNode;
 
 public class JsTestDriverBundleSet implements BundleSet {
 	private BundleSet bundleSet;
+	private JsTestDriverBundlableNode bundlableNode;
 	
-	public JsTestDriverBundleSet(BundleSet bundleSet) {
+	public JsTestDriverBundleSet(JsTestDriverBundlableNode bundlableNode, BundleSet bundleSet) {
+		this.bundlableNode = bundlableNode;
 		this.bundleSet = bundleSet;
 	}
 	
 	public BundlableNode bundlableNode() {
-		return new JsTestDriverBundlableNode(bundleSet.bundlableNode());
+		return bundlableNode;
 	}
 	
 	@Override

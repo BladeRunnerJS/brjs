@@ -56,6 +56,21 @@ public interface BundlableNode extends Node, AssetContainer {
 	ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 	
 	/**
+	 * Handle a given request using the {@link BundleSet} provided.
+	 * See #handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
+	 * 
+	 * @param logicalRequestPath the path the request is being made for
+	 * @param bundleSet handle the request using the provided BundleSet
+	 * @param contentAccessor the output stream the content will be written to
+	 * @param version the version of the bundle being retrieved
+	 * @return the ResponseContent corresponding to the bundled resources
+	 * @throws MalformedRequestException if the request does not adhere to the expected format
+	 * @throws ResourceNotFoundException if the request may not be handled due to the indicated resource not being found
+	 * @throws ContentProcessingException for non-BRJS-specific issues
+	 */
+	ResponseContent handleLogicalRequest(String logicalRequestPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
+	
+	/**
 	 * The method returns all the {@link Asset}s that are required by the parameter {@link Asset} through the contained
 	 * require paths.
 	 * 
