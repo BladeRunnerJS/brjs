@@ -16,6 +16,7 @@ import org.bladerunnerjs.api.spec.engine.CommanderChainer;
 import org.bladerunnerjs.api.spec.engine.NodeCommander;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.spec.engine.ValueCommand;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.utility.FileUtils;
 
@@ -71,7 +72,7 @@ public class AppCommander extends NodeCommander<App> {
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				ResponseContent contentOutput = app.requestHandler().handleLogicalRequest(requestPath, new StaticContentAccessor(app));
+				ResponseContent contentOutput = app.requestHandler().handleLogicalRequest(requestPath, new StaticContentAccessor(app), RequestMode.Dev);
 				ByteArrayOutputStream pluginContent = new ByteArrayOutputStream();
 				contentOutput.write(pluginContent);
 				response.append( pluginContent );

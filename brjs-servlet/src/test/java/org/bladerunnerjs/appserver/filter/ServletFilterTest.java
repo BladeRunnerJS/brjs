@@ -2,8 +2,10 @@ package org.bladerunnerjs.appserver.filter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.SocketException;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -11,6 +13,7 @@ import java.util.Random;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -49,21 +52,41 @@ public class ServletFilterTest {
 		Map<String, String> responseMap = new HashMap<String, String>();
 		HttpGet httpget = new HttpGet(url);
 		HttpResponse response = httpclient.execute(httpget);
-		responseMap.put("responseCode", Integer.toString(response.getStatusLine().getStatusCode()));
+		populateResponseDetails(response, responseMap);
 		responseMap.put("responseText", EntityUtils.toString(response.getEntity()));
-		String contentType = (ContentType.get(response.getEntity()) != null) ? ContentType.get(response.getEntity()).getMimeType().toString() : "";
-		responseMap.put("responseContentType", contentType);
 		return responseMap;
 	}
 	
+	protected Map<String, String> makeBinaryRequest(String url, OutputStream outputStream) throws ClientProtocolException, IOException
+	{
+		Map<String, String> responseMap = new HashMap<String, String>();
+		HttpGet httpget = new HttpGet(url);
+		HttpResponse response = httpclient.execute(httpget);
+		populateResponseDetails(response, responseMap);
+		IOUtils.copy(response.getEntity().getContent(), outputStream);
+		outputStream.flush();
+		return responseMap;
+	}
+	
+	private void populateResponseDetails(HttpResponse response, Map<String, String> responseMap) {
+		responseMap.put("responseCode", Integer.toString(response.getStatusLine().getStatusCode()));
+		String contentType = (ContentType.get(response.getEntity()) != null) ? ContentType.get(response.getEntity()).getMimeType().toString() : "";
+		responseMap.put("responseContentType", contentType);
+	}
+	
 	protected Server createAndStartAppServer(Servlet servlet, Filter filter) throws Exception {
+		Map<String,String> emptyMap = Collections.emptyMap();
+		return createAndStartAppServer(servlet, filter, emptyMap);
+	}
+	
+	protected Server createAndStartAppServer(Servlet servlet, Filter filter, Map<String,String> filterInitParams) throws Exception {
 		Server appServer;
 		int attempts = 0;
 		while (true) {
 			attempts++;
 			try {
 				serverPort = generatePortNumber();
-				appServer = createAppServer(servlet, filter);
+				appServer = createAppServer(servlet, filter, filterInitParams);
 				appServer.start();
 				return appServer;
 			} catch (SocketException ex) {
@@ -75,7 +98,7 @@ public class ServletFilterTest {
 		
 	}
 	
-	protected Server createAppServer(Servlet servlet, Filter filter) throws Exception
+	protected Server createAppServer(Servlet servlet, Filter filter, Map<String,String> filterInitParams) throws Exception
 	{
 		Server appServer = new Server(serverPort);
 		WebAppContext webappContext = new WebAppContext();
@@ -86,7 +109,9 @@ public class ServletFilterTest {
 		webappContext.setResourceBase(contextDir.getPath());
 		webappContext.setContextPath("/");
 		webappContext.addServlet(new ServletHolder(servlet), "/*");
-		webappContext.addFilter(new FilterHolder(filter), "/*", null);
+		FilterHolder filterHolder = new FilterHolder(filter);
+		webappContext.addFilter(filterHolder, "/*", null);
+		filterHolder.setInitParameters(filterInitParams);
 		appServer.setHandler(webappContext);
 		
 		return appServer;

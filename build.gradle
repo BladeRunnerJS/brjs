@@ -26,15 +26,6 @@ if (project.hasProperty(overrideMajorVersionPropertyName)) {
 	projectBuildMajorVersion = project.property(overrideMajorVersionPropertyName)
 }
 
-
-[ "JAVA8_HOME", "JAVA7_HOME" ].each { envName ->
-	def property = System.getenv()[envName]
-	if (property == null)
-	{
-		throw new GradleException("The environment variable '${envName} must be set for the build to work correctly, please make sure it is set. Refer to README.md for info on the dev environment setup.")
-	}
-}
-
 ext {
 	RELEASE_BRANCH = "master"
 }
@@ -47,6 +38,14 @@ allprojects {
 		buildDate = projectBuildDate
 		buildHostname = projectBuildHostname
 	}
+	["JAVA7_HOME", "JAVA8_HOME"].each { propName ->
+		def propertyValue = project.hasProperty(propName) ? project.property(propName) : System.getenv()[propName]
+		project.ext.set(propName, propertyValue);
+		if (propertyValue == null) {
+			throw new GradleException("The property variable '$propName' is null and must be set either via an environment variable or as a Gradle property.")
+		}
+	}
+
 
 	def projectContainingSharedLogic = project
 	while (projectContainingSharedLogic != null) {
@@ -59,7 +58,6 @@ allprojects {
 	}
 
 	apply plugin: 'eclipse'
-	apply plugin: 'idea'
 	apply plugin: 'base'
 
 	repositories {
