@@ -10,6 +10,7 @@ import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.appserver.util.TokenReplacementException;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.junit.Before;
 import org.junit.Test;
@@ -260,6 +261,45 @@ public class TestPackBundlingTest extends SpecTest
 		then(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_DIR_WARNING, "apps/app1/bs-bladeset/blades/b1")
 			.and(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_USING_TESTS_DIR)
 			.and(app).hasFile("bs-bladeset/blades/b1/tests/test-unit/test-dir-location");
+	}
+	
+	@Test
+	public void tokensAreReplaced() throws Exception {
+		given(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsText("token replacement");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTokensCantBeReplaced() throws Exception {
+		given(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(exceptions).verifyException(TokenReplacementException.class, "PropertyFileTokenFinder", "SOME.TOKEN");
+	}
+	
+	@Test
+	public void weCanUseUTF8WithAppTokens() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@ // $£€")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsText("token replacement // $£€");
+	}
+	
+	@Test
+	public void weCanUseLatin1WithAppTokens() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("ISO-8859-1")
+    		.and().activeEncodingIs("ISO-8859-1")
+    		.and(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@ // $£")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsText("token replacement // $£");
 	}
 	
 }

@@ -8,6 +8,7 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 {
 	private String version = null;
 	private boolean appendTimetamp = true;
+	private String timestamp;
 	
 	@Override
 	public String getVersion()
@@ -49,6 +50,9 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 	}
 
 	private String getTimestamp() {
-		return new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+		if (timestamp == null) {
+			timestamp = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+		}
+		return timestamp;
 	}
 }

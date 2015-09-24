@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.bundling.aspect;
 
-import static org.bladerunnerjs.utility.BundleSetRequestHandler.Messages.*;
 import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
+import static org.bladerunnerjs.model.AbstractBundlableNode.Messages.*;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
