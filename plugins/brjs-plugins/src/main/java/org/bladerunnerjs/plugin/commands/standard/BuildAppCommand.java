@@ -50,7 +50,8 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
 		argsParser.registerParameter(new UnflaggedOption(Parameters.TARGET_DIR).setHelp("the directory within which the exported app will be built"));
 		argsParser.registerParameter(new FlaggedOption("version").setShortFlag('v').setLongFlag("version").setRequired(false).setHelp("the version number for the app"));
-		argsParser.registerParameter(new FlaggedOption("environment").setShortFlag('e').setLongFlag("environment").setRequired(false).setHelp("the environment to use when locating app properties"));
+		argsParser.registerParameter(new FlaggedOption("environment").setShortFlag('e').setLongFlag("environment").setRequired(false)
+				.setDefault("prod").setHelp("the environment to use when locating app properties. defaults to 'prod' if none is specified"));
 		argsParser.registerParameter(new Switch("war").setShortFlag('w').setLongFlag("war").setDefault("false").setHelp("whether the exported files should be placed into a war archive"));
 	}
 	
@@ -80,8 +81,8 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		}
 		boolean warExport = parsedArgs.getBoolean("war");
 		boolean hasExplicitExportDirArg = (targetDirPath != null);
-		String environment = parsedArgs.getString("environment");		
-		String archiveName = (environment != null) ? appName + "_"+environment : appName;
+		String environment = parsedArgs.getString("environment");	
+		String archiveName = (parsedArgs.userSpecified("environment")) ? appName + "_"+environment : appName;
 		
 		App app = brjs.app(appName);
 		
