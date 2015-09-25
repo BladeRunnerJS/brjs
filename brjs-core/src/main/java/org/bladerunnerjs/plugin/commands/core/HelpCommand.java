@@ -104,7 +104,11 @@ public class HelpCommand extends JSAPArgsParsingCommandPlugin
 		logger.println("");
 		
 		logger.println("Help:");
-		logger.println(command.getCommandHelp());
+		String commandHelp = command.getCommandHelp();
+		if (commandHelp.length() > 0 && !Character.isWhitespace(commandHelp.charAt(0))) {
+			commandHelp = "  "+commandHelp;
+		}
+		logger.println(commandHelp);
 	}
 	
 	public String getHelpMessageFormatString()

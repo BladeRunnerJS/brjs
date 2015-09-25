@@ -19,8 +19,8 @@ public class HelpCommandTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		command1 = new MockCommandPlugin("command1", "Command #1 description.", "command-usage", "  Command #1 help.");
-		command2 = new MockCommandPlugin("command2", "Command #2 description.", "command-usage", "  Command #2 help.");
+		command1 = new MockCommandPlugin("command1", "Command #1 description.", "command-usage", "Command #1 help.");
+		command2 = new MockCommandPlugin("command2", "Command #2 description.", "command-usage", "Command #2 help.");
 	}
 	
 	@Test
