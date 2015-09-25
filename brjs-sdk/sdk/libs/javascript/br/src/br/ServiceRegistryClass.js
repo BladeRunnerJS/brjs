@@ -5,6 +5,9 @@
  */
 
 var Errors = require('./Errors');
+var fell = require('fell');
+var log = fell.getLogger('br.ServiceRegistry');
+
 var AliasRegistry;
 var legacyWarningLogged = false;
 
@@ -137,15 +140,15 @@ ServiceRegistryClass.prototype.dispose = function() {
 				if (service.dispose.length == 0) {
 					try {
 						service.dispose();
-						console.info("dispose() called on service registered for '"+serviceName+"'");
+						log.debug(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_CALLED, serviceName);
 					} catch (e) {
-						console.error("error thrown when calling dispose() on service registered for '"+serviceName+"'. The error was: "+e);
+						log.error(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_ERROR, serviceName, e);
 					}
 				} else {
-					console.info("dispose() not called on service registered for '"+serviceName+"' since it's dispose() method requires more than 0 arguments");
+					log.info(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_0_ARG, serviceName);
 				}
 			} else {
-				console.info("dispose() not called on service registered for '"+serviceName+"' since no dispose() method was defined");
+				log.debug(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_MISSING, serviceName);
 			}
 		}
 	}
@@ -164,6 +167,13 @@ ServiceRegistryClass.prototype._initializeServiceIfRequired = function(alias) {
 		}
 	}
 };
+
+ServiceRegistryClass.LOG_MESSAGES = {
+	DISPOSE_CALLED: "dispose() called on service registered for '{0}",
+	DISPOSE_ERROR: "error thrown when calling dispose() on service registered for '{0}'. The error was: {1}",
+	DISPOSE_0_ARG: "dispose() not called on service registered for '{0}' since it's dispose() method requires more than 0 arguments",
+	DISPOSE_MISSING: "dispose() not called on service registered for '{0}' since no dispose() method was defined"
+}
 
 module.exports = ServiceRegistryClass;
 
