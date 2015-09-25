@@ -37,6 +37,21 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 	}
 	
 	
+	@Test
+	public void testsAreNotOutputToJsTestDriverBundles() throws Exception
+	{
+		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
+			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "/* some test code */ require('appns/srcFile');");
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/combined/bundle.js" );
+		thenJstdTests(aspectTestPack).testBundleContainsText(
+					"bundles/js/dev/combined/bundle.js",
+					"// some SDK src code" );
+		/* and */ thenJstdTests(aspectTestPack).testBundleDoesNotContainText(
+					"bundles/js/dev/combined/bundle.js",
+					"/* some test code */" );
+			
+	}
+	
 	
 	// New model request path tests
 	

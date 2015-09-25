@@ -209,11 +209,11 @@ public class RestApiService
 		String bladesetPath;
 		if (isDefaultBladeset(brjs.app(appName).bladeset(bladesetName)))
 		{
-			bladesetPath = brjs.app(appName).bladeset(bladesetName).dir().getAbsolutePath() + File.separator + Bladeset.BLADES_DIRNAME;
+			bladesetPath = brjs.app(appName).bladeset(bladesetName).file(Bladeset.BLADES_DIRNAME).getPath();
 		}
 		else 
 		{
-			bladesetPath = brjs.app(appName).bladeset(bladesetName).dir().getAbsolutePath();
+			bladesetPath = brjs.app(appName).bladeset(bladesetName).dir().getPath();
 		}
 		String[] args = new String[]{ bladesetPath, testType, JS_TEST_REPORT_SWITCH };	
 		OutputStream out = doCommand( cmd, args );

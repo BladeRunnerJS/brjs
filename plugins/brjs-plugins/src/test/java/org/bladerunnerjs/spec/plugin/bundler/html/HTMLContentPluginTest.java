@@ -10,6 +10,7 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.junit.Before;
 import org.junit.Test;
@@ -175,7 +176,7 @@ public class HTMLContentPluginTest extends SpecTest
 	}
 	
 	@Test
-	public void bundlePathTagIsReplacedForDev() throws Exception {
+	public void bundlePathTagIsReplaced() throws Exception {
 		given(aspect).containsResourceFileWithContents("html/view.html", "<template id='some.id'>@bundlePath@/some/path</template>")
 			.and(brjs).hasVersion("dev");
 		when(aspect).requestReceivedInDev("html/bundle.html", response);
@@ -183,11 +184,19 @@ public class HTMLContentPluginTest extends SpecTest
 	}
 	
 	@Test
-	public void bundlePathTagIsReplacedForProd() throws Exception {
+	public void newBrjsBundlePathTokenIsReplaced() throws Exception {
+		given(brjs).hasVersion("dev")
+			.and(aspect).containsResourceFileWithContents("html/view.html", "<template id='some.id'>@BRJS.BUNDLE.PATH@/some/path</template>");
+		when(app).requestReceived("v/dev/html/bundle.html", response);
+		then(response).containsText("v/dev/some/path");
+	}
+	
+	@Test
+	public void deprecationWarningIsLoggedWhenLegacyBundlePathIsUsed() throws Exception {
 		given(aspect).containsResourceFileWithContents("html/view.html", "<template id='some.id'>@bundlePath@/some/path</template>")
-		.and(brjs).hasVersion("1234");
+    		.and(logging).enabled();
 		when(aspect).requestReceivedInProd("html/bundle.html", response);
-		then(response).containsText("v/1234/some/path");
+    	then(logging).warnMessageReceived(AppMetadataUtility.DEPRECATED_TOKEN_WARNING, "@bundlePath@", "@BRJS.BUNDLE.PATH@");
 	}
 	
 	@Test

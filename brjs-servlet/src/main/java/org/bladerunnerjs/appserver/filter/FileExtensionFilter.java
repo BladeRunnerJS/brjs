@@ -28,19 +28,18 @@ public class FileExtensionFilter implements Filter {
 		String requestPath = path(request.getServletPath()) + path(request.getPathInfo());
 		File resourceFile = new File(servletContext.getRealPath(requestPath));
 
-		if(!resourceFile.exists()) {
-			File htmlResourceFile = new File(resourceFile.getAbsolutePath() + ".html");
-			File jspResourceFile = new File(resourceFile.getAbsolutePath() + ".jsp");
-
-			if((htmlResourceFile.exists()) && (htmlResourceFile.isFile())) {
+		if (!requestPath.matches("\\.[a-zA-Z0-9]+$") && !resourceFile.exists()) {
+			if (new File(resourceFile.getAbsolutePath() + ".html").isFile()) {
 				request.getRequestDispatcher(requestPath + ".html").forward(request, response);
 			}
-			else if((jspResourceFile.exists()) && (jspResourceFile.isFile())) {
+			else if (new File(resourceFile.getAbsolutePath() + ".jsp").isFile()) {
 				request.getRequestDispatcher(requestPath + ".jsp").forward(request, response);
+			} else {
+				chain.doFilter(request, response);				
 			}
+		} else {
+			chain.doFilter(request, response);
 		}
-
-		chain.doFilter(request, response);
 	}
 
 	@Override

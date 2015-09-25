@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
 import org.bladerunnerjs.model.StaticContentAccessor;
 
 
@@ -39,6 +40,7 @@ public class ServletContentAccessor extends StaticContentAccessor
 			if (urlPath.endsWith(".jsp")) {
 				urlPath = (!urlPath.startsWith("/")) ? "/"+urlPath : urlPath;
 				request.setAttribute(BRJSDevServletFilter.IGNORE_REQUEST_ATTRIBUTE, true);
+				request.setAttribute(TokenisingServletFilter.IGNORE_REQUEST_ATTRIBUTE, true);
 				CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
     			servletContext.getRequestDispatcher(urlPath).forward(request, responseWrapper);
     			IOUtils.copy(responseWrapper.getReader(), output);

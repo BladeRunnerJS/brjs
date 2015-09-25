@@ -14,6 +14,8 @@ buildscript {
 
 retrolambda {
 	javaVersion JavaVersion.VERSION_1_7
+	oldJdk JAVA7_HOME
+	jdk JAVA8_HOME
 }
 project.afterEvaluate {
 	compileTestJava.dependsOn compileRetrolambdaMain
@@ -74,7 +76,7 @@ javadoc {
 	options.overview = "${sourceSets.main.java.srcDirs.toArray()[0]}/overview-summary.html"
 	include '**/org/bladerunnerjs/api/**'
 	maxMemory = "128m"
-	executable = "$System.env.JAVA8_HOME/bin/javadoc"
+	executable = "$JAVA8_HOME/bin/javadoc"
 }
 
 task javadocZip, type:Zip, dependsOn:javadoc, {
