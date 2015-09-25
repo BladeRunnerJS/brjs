@@ -83,6 +83,10 @@ public class HelpCommand extends JSAPArgsParsingCommandPlugin
 		logger.println("  --show-pkg (show which class each log line comes from)");
 		logger.println("  --no-stats (permenantly disable anonymous tracking)");
 		logger.println("  --stats (permenantly enable anonymous tracking)");
+		logger.println("");
+		
+		logger.println("You can get detailed help for any command by typing:");
+		logger.println("  brjs help <command-name>");
 	}
 
 	private void getHelpForSpecificCommand(String commandName) throws CommandArgumentsException
