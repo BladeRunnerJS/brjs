@@ -1,9 +1,12 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.io.filefilter.DelegateFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -11,10 +14,15 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 public class IO {
 	private final Map<FileAccessLimitScope, File[]> activeScopes = new LinkedHashMap<>();
 	private final SecurityManager securityManager;
-	private final IOFileFilter jvmCoreFileFilter = new SuffixFileFilter( new String[] { ".class", ".jar", ".dat" } );
+	private final IOFileFilter classFileAndJarFileFilter = new SuffixFileFilter( new String[] { ".class", ".jar" } );
+	private final IOFileFilter jrePathFileFilter = new DelegateFileFilter(new FileFilter() {
+		public boolean accept(File pathname) {
+			return pathname.getAbsolutePath().replace("\\", "/").contains("jre/lib");
+		}
+	});;
 	
 	public IO(IOFileFilter globalFileFilter) {
-		securityManager = new BRJSSecurityManager( new OrFileFilter(jvmCoreFileFilter, globalFileFilter), activeScopes);
+		securityManager = new BRJSSecurityManager( new OrFileFilter(Arrays.asList(jrePathFileFilter, classFileAndJarFileFilter, globalFileFilter)), activeScopes);
 	}
 	
 	public FileAccessLimitScope limitAccessToWithin(String scopeIdentifier, File[] watchItems) {
