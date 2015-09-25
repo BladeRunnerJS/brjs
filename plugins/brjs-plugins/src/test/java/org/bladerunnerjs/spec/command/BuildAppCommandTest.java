@@ -182,6 +182,25 @@ public class BuildAppCommandTest extends SpecTest
 	}
 	
 	@Test
+	public void defaultProdPropertyIsNotApendedToWarName() throws Exception
+	{
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(brjs).doesNotHaveDir("sdk/app")
+			.and(brjs).hasFile("generated/built-apps/app.war")
+			.and(logging).containsFormattedConsoleMessage(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getAbsolutePath());
+	}
+	
+	@Test
+	public void defaultProdPropertyIsNotApendedToStaticAppDirName() throws Exception
+	{
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).doesNotHaveDir("sdk/app")
+			.and(brjs).hasDir("generated/built-apps/app");
+	}
+	
+	@Test
 	public void propertyIsApendedToWarNameIfSetViaCommandLine() throws Exception
 	{
 		given(app).hasBeenCreated();
@@ -307,8 +326,8 @@ public class BuildAppCommandTest extends SpecTest
 			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml>@MY.TOKEN@</web-xml>")
 			.and(app).hasDefaultEnvironmentProperties("MY.TOKEN", "token replacement")
 			.and(app).hasDefaultEnvironmentProperties("MY.TOKEN", "prod replacement");
-		when(brjs).runCommand("build-app", "app", "-v", "1234", "-e", "prod");
-		then(brjs).fileContentsContains("generated/built-apps/app_prod/WEB-INF/web.xml", "<web-xml>prod replacement");
+		when(brjs).runCommand("build-app", "app", "-v", "1234", "-e", "myprod");
+		then(brjs).fileContentsContains("generated/built-apps/app_myprod/WEB-INF/web.xml", "<web-xml>prod replacement");
 	}
 	
 	/*
@@ -410,9 +429,9 @@ public class BuildAppCommandTest extends SpecTest
 		when(brjs).runCommand("build-app", "app");
 		then(brjs).fileContentsContains("generated/built-apps/app/v/123/js/prod/combined/bundle.js", "token replacement");
 	}
-
+	
 	@Test
-	public void environmenShortFlagCanBeUsedToSetTheEnvironmentForTokens() throws Exception
+	public void prodIsTheDefaultEnvironmentIfNoneIsSpecified() throws Exception
 	{
 		recreateBrjsWithMockVersionGenerator();
 		given(app).hasBeenCreated()
@@ -425,8 +444,26 @@ public class BuildAppCommandTest extends SpecTest
 				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
 				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
 				.and(brjs).hasVersion("123");
-		when(brjs).runCommand("build-app", "app", "-e", "prod");
-		then(brjs).fileContentsContains("generated/built-apps/app_prod/v/123/js/prod/combined/bundle.js", "prod replacement");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).fileContentsContains("generated/built-apps/app/v/123/js/prod/combined/bundle.js", "prod replacement");
+	}
+
+	@Test
+	public void environmenShortFlagCanBeUsedToSetTheEnvironmentForTokens() throws Exception
+	{
+		recreateBrjsWithMockVersionGenerator();
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+				.and(app).hasEnvironmentProperties("myprod", "SOME.TOKEN", "prod replacement")
+				.and(defaultAspect).hasBeenCreated()
+				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+				.and(brjs).hasVersion("123");
+		when(brjs).runCommand("build-app", "app", "-e", "myprod");
+		then(brjs).fileContentsContains("generated/built-apps/app_myprod/v/123/js/prod/combined/bundle.js", "prod replacement");
 	}
 
 	@Test
@@ -473,7 +510,7 @@ public class BuildAppCommandTest extends SpecTest
 				.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
 				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
 				.and(brjs).hasVersion("123");
-		when(brjs).runCommand("build-app", "app", "-e", "prod");
+		when(brjs).runCommand("build-app", "app", "-e", "myprod");
 		then(exceptions).verifyException(TokenReplacementException.class, "PropertyFileTokenFinder", "SOME.TOKEN");
 	}
 	
@@ -491,7 +528,7 @@ public class BuildAppCommandTest extends SpecTest
 				.and(brjs).hasVersion("123")
 				.and(logging).enabled();
 		when(brjs).runCommand("build-app", "app", "-w");
-		then(logging).unorderedWarnMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "default" )
+		then(logging).unorderedWarnMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" )
 			.and(logging).otherMessagesIgnored();
 	}
 	
@@ -509,8 +546,8 @@ public class BuildAppCommandTest extends SpecTest
 				.and(brjs).hasVersion("123")
 				.and(logging).enabled();
 		when(brjs).runCommand("build-app", "app", "-w");
-		then(logging).unorderedWarnMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "default" )
-			.and(logging).doesNotContainWarnMessage(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "default")
+		then(logging).unorderedWarnMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" )
+			.and(logging).doesNotContainWarnMessage(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod")
 			.and(logging).otherMessagesIgnored();
 	}
 	
@@ -527,8 +564,8 @@ public class BuildAppCommandTest extends SpecTest
 				.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
 				.and(brjs).hasVersion("123")
 				.and(logging).enabled();
-		when(brjs).runCommand("build-app", "app", "-e", "prod", "-w");
-		then(logging).unorderedWarnMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" )
+		when(brjs).runCommand("build-app", "app", "-e", "myprod", "-w");
+		then(logging).unorderedWarnMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "myprod" )
 			.and(logging).otherMessagesIgnored();
 	}
 	
