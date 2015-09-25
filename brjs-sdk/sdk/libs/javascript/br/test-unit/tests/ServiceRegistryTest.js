@@ -107,8 +107,6 @@
 		ServiceRegistry.registerService('mock.service.1', mockService1);
 		ServiceRegistry.registerService('mock.service.2', mockService2);
 		
-		debugger;
-		
 		ServiceRegistry.dispose();
 
 		verify(mockService1).dispose();
@@ -117,52 +115,50 @@
 		verify(logStore).onLog(anything(), 'debug', [ServiceRegistryClass.LOG_MESSAGES.DISPOSE_CALLED, 'mock.service.2']);
 	};
 	
-	
-	
-	// ServiceRegistryTest.test_disposeCallsDisposeOnAllServicesIfTheFirstThrowsAnError = function() {
-	// 	var serviceInterface = { dispose: function(){} };
-	// 	var mockService1 = mock(serviceInterface);
-	// 	var mockService2 = mock(serviceInterface);
+	ServiceRegistryTest.test_disposeCallsDisposeOnAllServicesIfTheFirstThrowsAnError = function() {
+		var serviceInterface = { dispose: function(){} };
+		var mockService1 = mock(serviceInterface);
+		var mockService2 = mock(serviceInterface);
 		
-	// 	ServiceRegistry.registerService('mock.service.1', mockService1);
-	// 	ServiceRegistry.registerService('mock.service.2', mockService2);
+		ServiceRegistry.registerService('mock.service.1', mockService1);
+		ServiceRegistry.registerService('mock.service.2', mockService2);
 		
-	// 	when(mockService1).dispose().thenThrow("ERROR!");
+		when(mockService1).dispose().thenThrow("ERROR!");
 		
-	// 	ServiceRegistry.dispose();
+		ServiceRegistry.dispose();
 
-	// 	verify(mockService1).dispose();
-	// 	verify(mockService2).dispose();
-	// 	verify(logStore).onLog(anything(), 'error', [ServiceRegistryClass.DISPOSE_ERROR, 'mock.service.1', "ERROR!"]);
-	// 	verify(logStore).onLog(anything(), 'debug', [ServiceRegistryClass.LOG_MESSAGES.DISPOSE_CALLED, 'mock.service.2']);
-	// };
+		verify(mockService1).dispose();
+		verify(mockService2).dispose();
+		verify(logStore).onLog(anything(), 'error', [ServiceRegistryClass.LOG_MESSAGES.DISPOSE_ERROR, 'mock.service.1', "ERROR!"]);
+		verify(logStore).onLog(anything(), 'debug', [ServiceRegistryClass.LOG_MESSAGES.DISPOSE_CALLED, 'mock.service.2']);
+	};
 	
-	// ServiceRegistryTest.test_disposeNotCalledOnServicesWhereItDoesntExist = function() {
-	// 	var serviceInterface = { };
-	// 	var mockService1 = mock(serviceInterface);
+	ServiceRegistryTest.test_disposeNotCalledOnServicesWhereItDoesntExist = function() {
+		var serviceInterface = { };
+		var mockService1 = mock(serviceInterface);
 		
-	// 	ServiceRegistry.registerService('mock.service.1', mockService1);
+		ServiceRegistry.registerService('mock.service.1', mockService1);
 		
-	// 	ServiceRegistry.dispose();
+		ServiceRegistry.dispose();
 		
-	// 	verifyZeroInteractions(mockService1);
-	// 	verify(logStore).onLog(anything(), 'debug', [ServiceRegistryClass.DISPOSE_MISSING, 'mock.service.1']);
-	// };
+		verifyZeroInteractions(mockService1);
+		verify(logStore).onLog(anything(), 'debug', [ServiceRegistryClass.LOG_MESSAGES.DISPOSE_MISSING, 'mock.service.1']);
+	};
 	
-	// ServiceRegistryTest.test_disposeIsOnlyCalledOnServicesThatHaveADisposeWith0Args = function() {
-	// 	var disposeCalled = false; // this has to be done with a real object rather than mocks so service.dispose.length has the correct value
-	// 	var service = {
-	// 		dispose: function(arg1) {
-	// 			disposeCalled = true;
-	// 		}
-	// 	}
+	ServiceRegistryTest.test_disposeIsOnlyCalledOnServicesThatHaveADisposeWith0Args = function() {
+		var disposeCalled = false; // this has to be done with a real object rather than mocks so service.dispose.length has the correct value
+		var service = {
+			dispose: function(arg1) {
+				disposeCalled = true;
+			}
+		}
 		
-	// 	ServiceRegistry.registerService('mock.service.1', service);
+		ServiceRegistry.registerService('mock.service.1', service);
 		
-	// 	ServiceRegistry.dispose();
+		ServiceRegistry.dispose();
 		
-	// 	assertFalse(disposeCalled);
-	// 	verify(logStore).onLog(anything(), 'info', [ServiceRegistryClass.DISPOSE_0_ARG, 'mock.service.1']);
-	// };
+		assertFalse(disposeCalled);
+		verify(logStore).onLog(anything(), 'info', [ServiceRegistryClass.LOG_MESSAGES.DISPOSE_0_ARG, 'mock.service.1']);
+	};
 	
 })();
