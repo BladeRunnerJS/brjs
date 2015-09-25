@@ -11,10 +11,10 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 public class IO {
 	private final Map<FileAccessLimitScope, File[]> activeScopes = new LinkedHashMap<>();
 	private final SecurityManager securityManager;
-	private final IOFileFilter classFileAndJarFileFilter = new SuffixFileFilter( new String[] { ".class", ".jar" } );
+	private final IOFileFilter jvmCoreFileFilter = new SuffixFileFilter( new String[] { ".class", ".jar", ".dat" } );
 	
 	public IO(IOFileFilter globalFileFilter) {
-		securityManager = new BRJSSecurityManager( new OrFileFilter(classFileAndJarFileFilter, globalFileFilter), activeScopes);
+		securityManager = new BRJSSecurityManager( new OrFileFilter(jvmCoreFileFilter, globalFileFilter), activeScopes);
 	}
 	
 	public FileAccessLimitScope limitAccessToWithin(String scopeIdentifier, File[] watchItems) {
