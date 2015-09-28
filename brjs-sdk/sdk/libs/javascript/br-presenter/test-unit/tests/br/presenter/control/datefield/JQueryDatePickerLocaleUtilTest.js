@@ -1,16 +1,17 @@
 (function() {
-	require('jsmockito');
+    var jQuery = require("jquery");
+    require('jsmockito');
 
-	var subrealm;
-	var spyI18n;
-	var capturedDefaults;
-	var translation = 'stock translation';
+    var subrealm;
+    var spyI18n;
+    var capturedDefaults;
+    var translation = 'stock translation';
 
-	var jQuery;
-	var JQueryDatePickerLocaleUtil;
+    var jQuery;
+    var JQueryDatePickerLocaleUtil;
 
-	var testCaseName = 'JQueryDatePickerLocaleUtilTest';
-	var testCase = {
+    var testCaseName = 'JQueryDatePickerLocaleUtilTest';
+    var testCase = {
 		'setUp': function() {
 			JsHamcrest.Integration.JsTestDriver();
 			JsMockito.Integration.JsTestDriver();
@@ -34,15 +35,14 @@
 					}
 				};
 			});
-
-			jQuery = require('jquery');
+            
+            jQuery = require('jquery');
 			JQueryDatePickerLocaleUtil = require('br/presenter/control/datefield/JQueryDatePickerLocaleUtil');
 		},
 
 		'tearDown': function() {
 			subrealm.uninstall();
 			subrealm = null;
-			globalizeSourceModules();
 		},
 
 		'test that JQueryDatePickerLocaleUtil.getDefaultLocales() provides valid defaults for date picker': function() {
@@ -68,6 +68,5 @@
 
 	};
 
-	TestCase(testCaseName, testCase);
-
+    TestCase(testCaseName, testCase);
 }());

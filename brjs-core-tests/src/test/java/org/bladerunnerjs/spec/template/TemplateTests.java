@@ -58,7 +58,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).populate();
 		then(brjs).hasFilesAndDirs(
 				Arrays.asList("conf/test-runner.conf", "conf/users.properties"),
-				Arrays.asList("brjs-apps", "conf", "sdk")
+				Arrays.asList("apps", "conf", "sdk")
 		);
 	}
 
@@ -66,7 +66,7 @@ public class TemplateTests extends SpecTest
 	public void appAndDefaultAspectHasCorrectTemplate() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appns");
 		then(app).hasFilesAndDirs(
-				Arrays.asList("app.conf", "index.html", "resources/aliases.xml", "src/App.js", "themes/common/style.css"),
+				Arrays.asList("app.conf", "index.html", "favicon.ico", "resources/aliases.xml", "src/App.js", "themes/common/style.css"),
 				Arrays.asList("libs", "resources", "src", "unbundled-resources", "themes", "test-unit", "test-acceptance", "blades")
 		);
 	}
@@ -75,7 +75,7 @@ public class TemplateTests extends SpecTest
 	public void defaultAspectSrcHasCorrectClasses() throws Exception {
 		when(brjs).runCommand("create-app", "app", "appns");
 		then(app).hasFilesAndDirs(
-				Arrays.asList("app.conf", "index.html", "src/App.js"),
+				Arrays.asList("app.conf", "favicon.ico", "index.html", "src/App.js"),
 				Arrays.asList("libs", "resources", "src", "unbundled-resources", "themes", "test-unit", "test-acceptance", "blades")
 		).and(app).doesNotHaveFile("src/DefaultClass.js");
 	}
@@ -85,7 +85,7 @@ public class TemplateTests extends SpecTest
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-aspect", "app", "another");
 		then(anotherAspect).hasFilesAndDirs(
-				Arrays.asList("index.html", "resources/aliases.xml", "src/App.js", "themes/common/style.css"),
+				Arrays.asList("index.html", "favicon.ico", "resources/aliases.xml", "src/App.js", "themes/common/style.css"),
 				Arrays.asList("resources", "src", "unbundled-resources", "themes", "test-unit", "test-acceptance")
 		);
 	}
@@ -144,7 +144,7 @@ public class TemplateTests extends SpecTest
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-blade", "app", "default", "b1");
 		then(app).hasFilesAndDirs(
-			Arrays.asList("app.conf", "index.html"),
+			Arrays.asList("app.conf", "favicon.ico", "index.html"),
 			Arrays.asList("src", "test-unit", "test-acceptance", "themes", "unbundled-resources", "libs", "resources", "blades")
 		).and(bladeInDefaultBladeset).hasFilesAndDirs(
 				Arrays.asList("src/B1ViewModel.js", "themes/common/style.css"),

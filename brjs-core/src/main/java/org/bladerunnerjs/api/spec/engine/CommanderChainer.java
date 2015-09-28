@@ -1,5 +1,7 @@
 package org.bladerunnerjs.api.spec.engine;
 
+import java.io.File;
+
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
@@ -10,6 +12,7 @@ import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
+import org.bladerunnerjs.api.plugin.EventObserver;
 import org.bladerunnerjs.api.spec.utility.AppCommander;
 import org.bladerunnerjs.api.spec.utility.AppConfCommander;
 import org.bladerunnerjs.api.spec.utility.AspectCommander;
@@ -46,6 +49,13 @@ public class CommanderChainer {
 	public NamedDirNodeCommander and(NamedDirNode namedDirNode) { return new NamedDirNodeCommander(modelTest, namedDirNode); }
 	public AppServerCommander and(ApplicationServer applicationServer) { return new AppServerCommander(modelTest, applicationServer); }
 	public JettyServerCommander and(Server jettyServer) { return new JettyServerCommander(modelTest, jettyServer); }
+	public NodeObserverCommander and(EventObserver observer) { return new NodeObserverCommander(modelTest, observer); }
+	
 	
 	public <C extends SpecTestCommander> C and(C commander) { return commander; }
+
+	public FileTestCommander and(File file) {
+		return new FileTestCommander(modelTest, file);
+	}
+
 }

@@ -32,6 +32,12 @@ public class LogMessageStore
 	private List<LogMessage> infoMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
 	private List<LogMessage> debugMessages = Collections.synchronizedList(new LinkedList<LogMessage>());
 
+	private enum LogMatchType {
+		MATCH_FIRST_EXACTLY,
+		MATCH_ANY_EXACTLY,
+		MATCH_ANY_MESSAGE_IGNORE_ARGS
+	}
+	
 	public LogMessageStore()
 	{
 		clearLogs();
@@ -95,19 +101,49 @@ public class LogMessageStore
 	public void verifyFatalLogMessage(String message, Object... params)
 	{
 		assertionMade = true;
-		verifyLogMessage("fatal", true, fatalMessages, new LogMessage(message, params));
+		verifyLogMessage("fatal", LogMatchType.MATCH_FIRST_EXACTLY, fatalMessages, new LogMessage(message, params));
 	}
 	
 	public void verifyErrorLogMessage(String message, Object... params)
 	{
 		assertionMade = true;
-		verifyLogMessage("error", true, errorMessages, new LogMessage(message, params));
+		verifyLogMessage("error", LogMatchType.MATCH_FIRST_EXACTLY, errorMessages, new LogMessage(message, params));
 	}
 	
 	public void verifyWarnLogMessage(String message, Object... params)
 	{
 		assertionMade = true;
-		verifyLogMessage("warn", true, warnMessages, new LogMessage(message, params));
+		verifyLogMessage("warn", LogMatchType.MATCH_FIRST_EXACTLY, warnMessages, new LogMessage(message, params));
+	}
+	
+	public void verifyInfoLogMessage(String message, Object... params)
+	{
+		assertionMade = true;
+		verifyLogMessage("info", LogMatchType.MATCH_FIRST_EXACTLY, infoMessages, new LogMessage(message, params));
+	}
+	
+	public void verifyDebugLogMessage(String message, Object... params)
+	{
+		assertionMade = true;
+		verifyLogMessage("debug", LogMatchType.MATCH_ANY_MESSAGE_IGNORE_ARGS, debugMessages, new LogMessage(message, params));
+	}
+	
+	public void verifyUnorderedErrorLogMessage(String message, Object... params)
+	{
+		assertionMade = true;
+		verifyLogMessage("error", LogMatchType.MATCH_ANY_EXACTLY, errorMessages, new LogMessage(message, params));
+	}
+	
+	public void verifyUnorderedWarnLogMessage(String message, Object... params)
+	{
+		assertionMade = true;
+		verifyLogMessage("warn", LogMatchType.MATCH_ANY_EXACTLY, warnMessages, new LogMessage(message, params));
+	}
+	
+	public void verifyUnorderedInfoLogMessage(String message, Object... params)
+	{
+		assertionMade = true;
+		verifyLogMessage("info", LogMatchType.MATCH_ANY_EXACTLY, infoMessages, new LogMessage(message, params));
 	}
 	
 	public void verifyFormattedConsoleLogMessage(String message, Object... params)
@@ -162,18 +198,6 @@ public class LogMessageStore
 	{
 		assertionMade = true;
 		verifyNoLogMessage("debug", debugMessages, new LogMessage(message, params));
-	}
-	
-	public void verifyInfoLogMessage(String message, Object... params)
-	{
-		assertionMade = true;
-		verifyLogMessage("info", true, infoMessages, new LogMessage(message, params));
-	}
-	
-	public void verifyDebugLogMessage(String message, Object... params)
-	{
-		assertionMade = true;
-		verifyLogMessage("debug", false, debugMessages, new LogMessage(message, params));
 	}
 	
 	public void addFatal(String loggerName, String message, Object... params)
@@ -243,27 +267,37 @@ public class LogMessageStore
 		else if (storeLogs)
 		{
 			messages.add(logMessage);
+		} else if (echoLogs) {
+			System.err.println( String.format("Log message '%s' was made but the log store has not been configured to store it.", logMessage) );
 		}
 	}
 
-	private void verifyLogMessage(String logLevel, boolean strictCheck, List<LogMessage> messages, LogMessage expectedMessage)
+	private void verifyLogMessage(String logLevel, LogMatchType logMatchType, List<LogMessage> messages, LogMessage expectedMessage)
 	{
 		assertTrue("log message can't be empty", expectedMessage.message.length() > 0);
 		
-		LogMessage foundMessage;
-		String isNullFailMessage;
-		if (strictCheck)
-		{
-			foundMessage = (!messages.isEmpty()) ? messages.remove(0) : null;
-			isNullFailMessage = NO_MESSAGES_RECEIVED;
-		} else {
-			foundMessage = findFirstMessageMatching(messages, expectedMessage.message);
-			isNullFailMessage = NO_MESSAGE_MATCHING_RECEIVED;
+		LogMessage foundMessage = null;
+		String isNullFailMessage = null;
+		switch (logMatchType) {
+			case MATCH_FIRST_EXACTLY:
+				foundMessage = (!messages.isEmpty()) ? messages.remove(0) : null;
+				isNullFailMessage = NO_MESSAGES_RECEIVED;
+				break;
+			case MATCH_ANY_EXACTLY:
+				foundMessage = findFirstMessageMatching(messages, expectedMessage.message, expectedMessage.params);
+				isNullFailMessage = NO_MESSAGE_MATCHING_RECEIVED;
+				break;
+			case MATCH_ANY_MESSAGE_IGNORE_ARGS:
+				foundMessage = findFirstMessageMatching(messages, expectedMessage.message, null);
+				isNullFailMessage = NO_MESSAGE_MATCHING_RECEIVED;
+				break;
+			
 		}
+		
 		assertNotNull( String.format(isNullFailMessage, logLevel, expectedMessage.message) , foundMessage );
 		
 		String failMessage = String.format(MESSAGE_NOT_LOGGED, logLevel, expectedMessage.message, ArrayUtils.toString(expectedMessage.params));
-		if (!strictCheck)
+		if (logMatchType == LogMatchType.MATCH_ANY_EXACTLY || logMatchType == LogMatchType.MATCH_FIRST_EXACTLY)
 		{
 			failMessage += "Got message: " + concatenateMessages(messages);
 		}
@@ -272,7 +306,7 @@ public class LogMessageStore
 	
 	private void verifyNoLogMessage(String logLevel, List<LogMessage> messages, LogMessage logMessage)
 	{
-		LogMessage foundMessage = findFirstMessageMatching(messages, logMessage.message);
+		LogMessage foundMessage = findFirstMessageMatching(messages, logMessage.message, null);
 		assertNull( String.format("found log message, expected not to", logLevel, logMessage.message) , foundMessage );
 	}
 
@@ -287,15 +321,20 @@ public class LogMessageStore
 		return s.toString().trim();
 	}
 
-	private LogMessage findFirstMessageMatching(List<LogMessage> messages, String message)
+	private LogMessage findFirstMessageMatching(List<LogMessage> messages, String message, Object[] matchArgs)
 	{
 		LogMessage foundMessage = null;
 		for (LogMessage m : messages)
 		{
 			if (m.message.equals(message))
 			{
-				foundMessage = m;
-				break;
+				if (matchArgs == null) {
+					foundMessage = m;
+					break;
+				} else if (matchArgs != null && StringUtils.join(m.params).equals(StringUtils.join(matchArgs))) {
+					foundMessage = m;
+					break;
+				}
 			}
 		}
 		messages.remove(foundMessage);

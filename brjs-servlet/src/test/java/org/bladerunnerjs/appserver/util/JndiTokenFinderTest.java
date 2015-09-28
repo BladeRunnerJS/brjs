@@ -1,19 +1,12 @@
 package org.bladerunnerjs.appserver.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 public class JndiTokenFinderTest
 {
@@ -57,20 +50,27 @@ public class JndiTokenFinderTest
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNullIsReturnedIfLookupThrowsException() throws Exception
+	public void testExceptionIsThrownIfLookupThrowsException() throws Exception
 	{
-		when(mockContext.lookup("java:comp/env/NON.EXISTANT.TOKEN")).thenThrow(NamingException.class);
-
-		assertNull("token value", tokenFinder.findTokenValue("NON.EXISTANT.TOKEN"));
-		verify(mockContext, times(1)).lookup("java:comp/env/NON.EXISTANT.TOKEN");
+        when(mockContext.lookup("java:comp/env/NON.EXISTENT.TOKEN")).thenThrow(NamingException.class);
+        try {
+            tokenFinder.findTokenValue("NON.EXISTENT.TOKEN");
+            fail("Expect an exception to be thrown");
+        } catch (TokenReplacementException ex) {
+            assertEquals("An error occurred when the token finder 'JndiTokenFinder' attempted to locate a replacement for the the token 'NON.EXISTENT.TOKEN'.", ex.getMessage());
+            assertEquals(NamingException.class, ex.getCause().getClass());
+        }
+        finally {
+		    verify(mockContext, times(1)).lookup("java:comp/env/NON.EXISTENT.TOKEN");
+        }
 	}
 
 	@Test
-	public void testNullIsReturnedIfLookupReturnsNull() throws Exception
+	public void testEmptyStringIsReturnedIfLookupReturnsNull() throws Exception
 	{
 		when(mockContext.lookup("java:comp/env/NON.EXISTANT.TOKEN")).thenReturn(null);
 
-		assertNull("token value", tokenFinder.findTokenValue("NON.EXISTANT.TOKEN"));
+		assertEquals("", tokenFinder.findTokenValue("NON.EXISTANT.TOKEN"));
 		verify(mockContext, times(1)).lookup("java:comp/env/NON.EXISTANT.TOKEN");
 	}
 

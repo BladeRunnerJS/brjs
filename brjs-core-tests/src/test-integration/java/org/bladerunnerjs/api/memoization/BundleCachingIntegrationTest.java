@@ -51,12 +51,12 @@ public class BundleCachingIntegrationTest extends SpecTest
 	}
 	
 	@After
-	public void deleteCreatedBrjsAppsDirFromTemp() throws IOException {
+	public void deleteCreatedAppsDirFromTemp() throws IOException {
 		if (secondaryTempFolder != null) FileUtils.deleteQuietly(secondaryTempFolder);
 	}
 	
 	@Test @Ignore //TODO: this test is unreliable - fix it
-	public void fileWatcherDetectsChangesWhenBrjsAppsAtTheSameLevelAsSdk() throws Exception {
+	public void fileWatcherDetectsChangesWhenAppsAtTheSameLevelAsSdk() throws Exception {
 		given(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThread();
 			App app = brjs.app("app1");
 			Aspect aspect = app.defaultAspect();
@@ -72,7 +72,7 @@ public class BundleCachingIntegrationTest extends SpecTest
 	}
 	
 	@Test @Ignore //TODO: this test is unreliable - fix it
-	public void fileWatcherPollsFolderBrjsAppsAtTheSameLevelAsSdk() throws Throwable {
+	public void fileWatcherPollsFolderAppsAtTheSameLevelAsSdk() throws Throwable {
 		given(brjs).hasBeenAuthenticallyCreatedWithFilePollingThread();
 		App app = brjs.app("app1");
 		Aspect aspect = app.defaultAspect();
@@ -148,10 +148,10 @@ public class BundleCachingIntegrationTest extends SpecTest
 	}
 	
 	@Test @Ignore
-	public void fileWatcherDetectsChangesWhenBrjsAppsAtAnotherLevelThanTheSdk() throws Exception {
+	public void fileWatcherDetectsChangesWhenAppsAtAnotherLevelThanTheSdk() throws Exception {
 		secondaryTempFolder = org.bladerunnerjs.utility.FileUtils.createTemporaryDirectory(BRJSTest.class);
-		given(secondaryTempFolder).containsFolder("brjs-apps")
-			.and(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThreadAndWorkingDir(new File(secondaryTempFolder, "brjs-apps"));
+		given(secondaryTempFolder).containsFolder("apps")
+			.and(brjs).hasBeenAuthenticallyCreatedWithFileWatcherThreadAndWorkingDir(new File(secondaryTempFolder, "apps"));
 			App app = brjs.app("app1");
 			Aspect aspect = app.defaultAspect();
 			given(app).hasBeenCreated()

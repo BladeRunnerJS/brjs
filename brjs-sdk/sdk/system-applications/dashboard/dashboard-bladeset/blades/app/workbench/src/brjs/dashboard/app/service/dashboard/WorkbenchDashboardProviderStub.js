@@ -1,4 +1,7 @@
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub = function()
+var brCore = require("br/Core");
+var DashboardService = require("brjs/dashboard/app/service/dashboard/DashboardService");
+
+WorkbenchDashboardProviderStub = function()
 {
 	this.m_mApps = {
 		"Example App #1":{
@@ -13,33 +16,33 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub = function()
 	this.RESPONSE_DELAY = 50;
 	this.TEST_CHUNK_DELAY = 2000;
 };
-br.Core.inherit(brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub, brjs.dashboard.app.service.dashboard.DashboardService);
+brCore.inherit(WorkbenchDashboardProviderStub, DashboardService);
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.setIsLoadingProperty = function() { }
+WorkbenchDashboardProviderStub.prototype.setIsLoadingProperty = function() { }
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.setLoadingTextProperty = function() { }
+WorkbenchDashboardProviderStub.prototype.setLoadingTextProperty = function() { }
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.setSuccessMode = function()
+WorkbenchDashboardProviderStub.prototype.setSuccessMode = function()
 {
 	this.m_bSuccessMode = true;
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.setFailureMode = function()
+WorkbenchDashboardProviderStub.prototype.setFailureMode = function()
 {
 	this.m_bSuccessMode = false;
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.getWarUrl = function(sApp)
+WorkbenchDashboardProviderStub.prototype.getWarUrl = function(sApp)
 {
 	return this.getAppImageUrl(sApp);
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.getAppImageUrl = function(sApp)
+WorkbenchDashboardProviderStub.prototype.getAppImageUrl = function(sApp)
 {
 	return "images/bladeset_dashboard-bladeset/blade_app/theme_standard/img/plchldrApp-img3.png_image.bundle";
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.getApps = function(fCallback, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.getApps = function(fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -59,7 +62,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.ge
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.getApp = function(sApp, fCallback, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.getApp = function(sApp, fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -75,7 +78,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.ge
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.importMotif = function(sNewApp, sNamespace, eFileInputElem, fCallback, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.importMotif = function(sNewApp, sNamespace, eFileInputElem, fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -91,7 +94,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.im
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.importBlades = function(sSourceApp, mBlades, sTargetApp, fCallback, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.importBlades = function(sSourceApp, mBlades, sTargetApp, fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -110,7 +113,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.im
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.createApp = function(sApp, sNamespace, fCallback, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.createApp = function(sApp, sNamespace, fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -126,7 +129,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.cr
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.createBladeset = function(sApp, sBladeset, fCallback, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.createBladeset = function(sApp, sBladeset, fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -142,7 +145,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.cr
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.createBlade = function(sApp, sBladeset, sBlade, fCallback, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.createBlade = function(sApp, sBladeset, sBlade, fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -158,7 +161,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.cr
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.runBladesetTests = function(sApp, sBladeset, fProgressListener, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.runBladesetTests = function(sApp, sBladeset, fProgressListener, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -173,7 +176,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.ru
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.runBladeTests = function(sApp, sBladeset, sBlade, fProgressListener, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.runBladeTests = function(sApp, sBladeset, sBlade, fProgressListener, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -188,7 +191,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.ru
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.getCurrentReleaseNote = function(fCallback, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.getCurrentReleaseNote = function(fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -207,7 +210,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.ge
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.getSdkVersion = function(fCallback, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype.getSdkVersion = function(fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
 	{
@@ -221,12 +224,12 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.ge
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.getTestResultsUrl = function()
+WorkbenchDashboardProviderStub.prototype.getTestResultsUrl = function()
 {
 	return "about:blank";
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype._sendTestOutput = function(fProgressListener, pBlades)
+WorkbenchDashboardProviderStub.prototype._sendTestOutput = function(fProgressListener, pBlades)
 {
 	var sBlade = pBlades.pop();
 	var bTestOutputComplete = pBlades.length == 0;
@@ -242,7 +245,7 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype._s
 	}
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype._getFakeTestResults = function(sBlade)
+WorkbenchDashboardProviderStub.prototype._getFakeTestResults = function(sBlade)
 {
 	var sTestResult =
 		"Testing " + sBlade + " (UTs):\n" +
@@ -262,9 +265,11 @@ brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype._g
 	return sTestResult;
 };
 
-brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype._invokeErrorCallback = function(sOperation, fErrorCallback)
+WorkbenchDashboardProviderStub.prototype._invokeErrorCallback = function(sOperation, fErrorCallback)
 {
 	window.setTimeout(function() {
 		fErrorCallback("There was an unexpected error invoking '" + sOperation + "'.");
 	}, this.RESPONSE_DELAY);
 };
+
+module.exports = WorkbenchDashboardProviderStub;

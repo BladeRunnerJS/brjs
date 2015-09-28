@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,18 +11,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRelativeRequirePathException;
-import org.bladerunnerjs.api.plugin.AssetContainerAssets;
+import org.bladerunnerjs.api.plugin.AssetRegistry;
+import org.bladerunnerjs.api.plugin.DefaultAssetRegistry;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	
-	protected final AssetContainerAssets assetDiscoveryInitiator = new AssetContainerAssets(this);
+	private final MemoizedValue<AssetRegistry> assetDiscoveryResult;
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
+		assetDiscoveryResult = new MemoizedValue<>("AssetContainerAssets.assetDiscoveryResult", this);
 	}
 	
 	@Override
@@ -44,12 +48,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public Set<Asset> assets() {
-		return assetDiscoveryInitiator.assets(); 
+		return assetDiscoveryResult().getRegisteredAssets();
 	}
 	
 	@Override
 	public Asset asset(String requirePath) {
-		return assetDiscoveryInitiator.assetsMap().get(requirePath);
+		return assetDiscoveryResult().getRegisteredAsset(requirePath);
 	}
 	
 	@Override
@@ -92,6 +96,14 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		}
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
+	}
+	
+	protected AssetRegistry assetDiscoveryResult() {
+		return assetDiscoveryResult.value(() -> {
+			AssetRegistry assetRegistry = new DefaultAssetRegistry(this);
+			assetRegistry.discoverFurtherAssets(dir(), requirePrefix(), Collections.emptyList());
+			return assetRegistry;
+		});
 	}
 	
 }

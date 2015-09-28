@@ -21,8 +21,10 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.utility.RequirePathUtility;
+import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.utility.AppMetadataUtility;
+import org.bladerunnerjs.utility.BrjsPropertyTokenFinder;
 
 public class HTMLTemplateUtility {
 	public static final String SCRIPT_TEMPLATE_WARNING = "A script tag was used for the '%s' template, but these are now deprecated in favor of template tags.";
@@ -45,6 +47,10 @@ public class HTMLTemplateUtility {
 
 					String htmlContent = IOUtils.toString(reader);
 					String replaced =  htmlContent.replace(xmlBundlePathToken, bundlePath);
+					
+					if (!htmlContent.toString().equals(replaced)) {
+						bundleSet.bundlableNode().root().logger(HTMLContentPlugin.class).warn(AppMetadataUtility.DEPRECATED_TOKEN_WARNING, AppMetadataUtility.XML_BUNDLE_PATH_TOKEN, TokenReplacingReader.TOKEN_START+BrjsPropertyTokenFinder.BUNDLE_PATH_KEY+TokenReplacingReader.TOKEN_END);
+					}
 					
 					if(templateInfo.requiresWrapping) {
 						readerList.add(new StringReader("<template id='" + templateInfo.identifier + "' data-auto-wrapped='true'>\n"));

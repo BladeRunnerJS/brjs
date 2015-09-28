@@ -58,7 +58,7 @@ public abstract class SpecTest
 	public boolean catchAndVerifyExceptions = true;
 	public boolean cleanupTestSdkDirectory = true;
 	public EventObserver observer;
-	public File testSdkDirectory;
+	public File testRootDirectory;
 	public MockPluginLocator pluginLocator;
 	public BRJS brjs;
 	public int appServerPort;
@@ -95,10 +95,10 @@ public abstract class SpecTest
 		logging = new LogMessageStore();
 		exceptions = new ArrayList<>();
 		observer = mock(EventObserver.class);
-		if (testSdkDirectory != null) FileUtils.deleteQuietly(testSdkDirectory);
-		testSdkDirectory = BRJSTestModelFactory.createTestSdkDirectory();
+		if (testRootDirectory != null) FileUtils.deleteQuietly(testRootDirectory);
+		testRootDirectory = BRJSTestModelFactory.createRootTestDir();
 		pluginLocator = new MockPluginLocator();
-		webappTester = new WebappTester(testSdkDirectory);
+		webappTester = new WebappTester(testRootDirectory);
 		appVersionGenerator = new MockAppVersionGenerator();
 	}
 	
@@ -117,8 +117,8 @@ public abstract class SpecTest
 			brjs.close();
 		}
 		
-		if (testSdkDirectory.exists() && cleanupTestSdkDirectory) {
-			org.apache.commons.io.FileUtils.deleteQuietly(testSdkDirectory);
+		if (testRootDirectory.exists() && cleanupTestSdkDirectory) {
+			org.apache.commons.io.FileUtils.deleteQuietly(testRootDirectory);
 		}
 		
 		try (ServerSocket socket = new ServerSocket(appServerPort))
@@ -134,28 +134,28 @@ public abstract class SpecTest
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
 		modelsCreated++;
-		return BRJSTestModelFactory.createModel(testSdkDirectory, testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
+		return BRJSTestModelFactory.createModel(getSdkDir(), getSdkDir(), pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createModelWithWorkingDir(File workingDir) throws InvalidSdkDirectoryException 
 	{	
 		modelsCreated++;
-		return BRJSTestModelFactory.createModel(testSdkDirectory, workingDir, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
+		return BRJSTestModelFactory.createModel(getSdkDir(), workingDir, pluginLocator, new TestLoggerFactory(logging), appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
 		modelsCreated++;
-		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging);
+		return BRJSTestModelFactory.createNonTestModel(getSdkDir(), logging);
 	}
 	
 	public BRJS createNonTestModel(File workingDir) throws InvalidSdkDirectoryException {
 		modelsCreated++;
-		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, workingDir, logging);
+		return BRJSTestModelFactory.createNonTestModel(getSdkDir(), workingDir, logging);
 	}
 	
 	public BRJS createNonTestModelWithTestFileObserver() throws InvalidSdkDirectoryException {
 		modelsCreated++;
-		return BRJSTestModelFactory.createNonTestModel(testSdkDirectory, logging, new TestLoggerFactory(logging));
+		return BRJSTestModelFactory.createNonTestModel(getSdkDir(), logging, new TestLoggerFactory(logging));
 	}
 	
 	public String getActiveCharacterEncoding() {
@@ -191,9 +191,9 @@ public abstract class SpecTest
 
 	// File
 	public FileTestBuilder given(MemoizedFile file) { return new FileTestBuilder(this, file); }
-	public FileTestBuilder when(MemoizedFile file) { return new FileTestBuilder(this, file); }
+	public FileTestCommander when(MemoizedFile file) { return new FileTestCommander(this, file); }
 	public FileTestBuilder given(File file) { return new FileTestBuilder(this, file); }
-	public FileTestBuilder when(File file) { return new FileTestBuilder(this, file); }
+	public FileTestCommander when(File file) { return new FileTestCommander(this, file); }
 	
 	// exceptions
 	protected ExceptionsBuilder given(List<Throwable> exceptions) { return new ExceptionsBuilder(this, exceptions); }
@@ -207,6 +207,7 @@ public abstract class SpecTest
 	
 	// node observer
 	public NodeObserverBuilder given(EventObserver observer) { return new NodeObserverBuilder(this, observer); }
+	public NodeObserverCommander when(EventObserver observer) { return new NodeObserverCommander(this, observer); }
 	public NodeObserverVerifier then(EventObserver observer) { return new NodeObserverVerifier(this, observer); }
 	
 	// NamedDirNode
@@ -311,4 +312,10 @@ public abstract class SpecTest
 	public <B extends SpecTestBuilder> B given(B builder) { return builder; }
 	public <C extends SpecTestCommander> C when(C commander) { return commander; }
 	public <V extends SpecTestVerifier> V then(V verifier) { return verifier; }
+	
+	
+	private File getSdkDir() {
+		return new File(testRootDirectory, "sdk");
+//		return testSdkDirectory;
+	}
 }

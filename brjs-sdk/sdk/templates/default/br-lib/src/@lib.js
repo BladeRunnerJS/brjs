@@ -1,10 +1,9 @@
-"use strict";
+'use strict';
 
-var @lib = {}
+var @lib = {};
 
 @lib.helloWorldUtil = function() {
-	return "Hello World!";
-}
-
+	return 'Hello World!';
+};
 
 module.exports = @lib;

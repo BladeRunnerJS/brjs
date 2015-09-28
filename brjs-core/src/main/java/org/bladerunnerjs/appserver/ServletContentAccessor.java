@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
 import org.bladerunnerjs.model.StaticContentAccessor;
 
 
@@ -30,18 +31,7 @@ public class ServletContentAccessor extends StaticContentAccessor
 	
 	@Override
 	public void writeLocalUrlContentsToOutputStream(String urlPath, OutputStream output) throws IOException {		
-		try {
-			if (urlPath.endsWith(".jsp")) {
-				urlPath = (!urlPath.startsWith("/")) ? "/"+urlPath : urlPath;
-    			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-    			servletContext.getRequestDispatcher(urlPath).include(request, responseWrapper);
-    			IOUtils.copy(responseWrapper.getReader(), output);
-    		} else {
-    			super.writeLocalUrlContentsToOutputStream(urlPath, output);
-    		}
-		} catch (ServletException ex) {
-			throw new IOException(ex);
-		}
+		handleRequest(urlPath, output);
 	}
 	
 	@Override
@@ -50,7 +40,10 @@ public class ServletContentAccessor extends StaticContentAccessor
 			if (urlPath.endsWith(".jsp")) {
 				urlPath = (!urlPath.startsWith("/")) ? "/"+urlPath : urlPath;
 				request.setAttribute(BRJSDevServletFilter.IGNORE_REQUEST_ATTRIBUTE, true);
-    			servletContext.getRequestDispatcher(urlPath).forward(request, response);
+				request.setAttribute(TokenisingServletFilter.IGNORE_REQUEST_ATTRIBUTE, true);
+				CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
+    			servletContext.getRequestDispatcher(urlPath).forward(request, responseWrapper);
+    			IOUtils.copy(responseWrapper.getReader(), output);
     		} else {
     			super.writeLocalUrlContentsToOutputStream(urlPath, output);
     		}

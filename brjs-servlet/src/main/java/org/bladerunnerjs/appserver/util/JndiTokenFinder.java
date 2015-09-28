@@ -4,12 +4,12 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-public class JndiTokenFinder
+public class JndiTokenFinder implements TokenFinder
 {
 	private final Context appServerContext;
 
 	public JndiTokenFinder() throws NamingException
-	{		
+	{
 		this.appServerContext = (Context) new InitialContext();
 	}
 
@@ -18,8 +18,7 @@ public class JndiTokenFinder
 		this.appServerContext = appServerContext;
 	}
 
-	public String findTokenValue(String tokenName)
-	{
+	public String findTokenValue(String tokenName) throws TokenReplacementException {
 		if (tokenName == null || tokenName.length() < 1)
 		{
 			return null;
@@ -27,17 +26,16 @@ public class JndiTokenFinder
 
 		try
 		{
-			Object theToken = appServerContext.lookup("java:comp/env/" + tokenName);
-			if (theToken != null)
+			Object tokenValue = appServerContext.lookup("java:comp/env/" + tokenName);
+			if (tokenValue != null)
 			{
-				return theToken.toString();
+				return tokenValue.toString();
 			}
+			return "";
 		}
 		catch (NamingException ex)
 		{
-			return null;
+			throw new TokenReplacementException(tokenName, this.getClass(), ex);
 		}
-		return null;
 	}
-
 }

@@ -1,10 +1,11 @@
 package org.bladerunnerjs.api.plugin;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.bladerunnerjs.api.Asset;
@@ -12,16 +13,15 @@ import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
 
-class DefaultAssetRegistry implements AssetRegistry {
+public class DefaultAssetRegistry implements AssetRegistry {
 
 	final Map<String,Asset> assets = new LinkedHashMap<>();
 	final List<LinkedAsset> seedAssets = new ArrayList<>();
 	private AssetContainer assetContainer;
 	private Stack<List<Asset>> currentDirectoryAssetList = new Stack<>();
 	
-	DefaultAssetRegistry(AssetContainer assetContainer) {
+	public DefaultAssetRegistry(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
-		discoverFurtherAssets(assetContainer.dir(), assetContainer.requirePrefix(), Collections.emptyList());
 	}
 	
 	@Override
@@ -75,6 +75,18 @@ class DefaultAssetRegistry implements AssetRegistry {
 	public Asset getRegisteredAsset(String requirePath)
 	{
 		return assets.get(requirePath);
+	}
+	
+	@Override
+	public Set<Asset> getRegisteredAssets()
+	{
+		return new LinkedHashSet<>( assets.values() );
+	}
+
+	@Override
+	public Set<LinkedAsset> getRegisteredSeedAssets()
+	{
+		return new LinkedHashSet<>( seedAssets );
 	}
 	
 	@Override

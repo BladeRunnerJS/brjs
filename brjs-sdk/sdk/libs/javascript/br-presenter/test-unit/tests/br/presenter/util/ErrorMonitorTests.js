@@ -1,28 +1,32 @@
-br.Core.thirdparty('jsmockito');
-
 (function() {
+    var ToolTipField = require("br/presenter/node/ToolTipField");
+    var Field = require("br/presenter/node/Field");
+    var ErrorMonitor = require("br/presenter/util/ErrorMonitor");
+    var ToolTipNode = require("br/presenter/node/ToolTipNode");
+    var Core = require("br/Core");
+    require('jsmockito');
 
-	"use strict";
+    "use strict";
 
-	var errorMonitor;
-	var tooltipNode;
+    var errorMonitor;
+    var tooltipNode;
 
-	var testCaseName = "ErrorMonitorTests";
-	var testCase = {
+    var testCaseName = "ErrorMonitorTests";
+    var testCase = {
 
 		setUp: function() {
 			JsHamcrest.Integration.JsTestDriver();
 			JsMockito.Integration.JsTestDriver();
 			
-			tooltipNode = new br.presenter.node.ToolTipNode();
-			errorMonitor = new br.presenter.util.ErrorMonitor(tooltipNode);
+			tooltipNode = new ToolTipNode();
+			errorMonitor = new ErrorMonitor(tooltipNode);
 		},
 
 		tearDown: function() {},
 
 		"test addErrorListeners ignores fields that are not ToolTipFields": function() {
 			//given
-			var field = new br.presenter.node.Field();
+			var field = new Field();
 			field.hasError = spy(field.hasError);
 
 			//when
@@ -34,7 +38,7 @@ br.Core.thirdparty('jsmockito');
 
 		"test addErrorListeners monitors fields that are ToolTipFields": function() {
 			//given
-			var toolTipField = new br.presenter.node.ToolTipField();
+			var toolTipField = new ToolTipField();
 			toolTipField.hasError = spy(toolTipField.hasError);
 
 			//when
@@ -46,7 +50,7 @@ br.Core.thirdparty('jsmockito');
 
 		"test monitorField fails when field passed in is not a ToolTipField": function() {
 			//given
-			var field = new br.presenter.node.Field();
+			var field = new Field();
 
 			//when
 			assertFails("A ToolTipField must be passed in.", function() { errorMonitor.monitorField(field) });
@@ -55,6 +59,5 @@ br.Core.thirdparty('jsmockito');
 
 	};
 
-	TestCase(testCaseName, testCase);
-
+    TestCase(testCaseName, testCase);
 })();

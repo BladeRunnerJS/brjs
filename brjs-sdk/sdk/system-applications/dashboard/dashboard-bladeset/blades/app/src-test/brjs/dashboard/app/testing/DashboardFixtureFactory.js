@@ -1,31 +1,40 @@
-brjs.dashboard.app.testing.DashboardFixtureFactory = function ()
-{
+'use strict';
+
+var ViewFixture = require('br/test/ViewFixture');
+var FixtureFactory = require('br/test/FixtureFactory');
+var Core = require('br/Core');
+
+var PageUrlFixture = require("brjs/dashboard/app/testing/PageUrlFixture");
+var RequestUrlFixture = require("brjs/dashboard/app/testing/RequestUrlFixture");
+var LocalStorageFixture = require("brjs/dashboard/app/testing/LocalStorageFixture");
+var BrowserDetectorFixture = require("brjs/dashboard/app/testing/BrowserDetectorFixture");
+var DashboardFixture = require("brjs/dashboard/app/testing/DashboardFixture");
+
+function DashboardFixtureFactory() {
+}
+
+Core.inherit(DashboardFixtureFactory, FixtureFactory);
+
+DashboardFixtureFactory.prototype.addFixtures = function(oTestRunner) {
+	var oViewFixture = new ViewFixture();
+	var oPageUrlFixture = new PageUrlFixture();
+	var oRequestUrlFixture = new RequestUrlFixture();
+	var oLocalStorageFixture = new LocalStorageFixture();
+	var oBrowserDetectorFixture = new BrowserDetectorFixture;
+	var oDashboardFixture = new DashboardFixture(oViewFixture, oPageUrlFixture, oRequestUrlFixture, oLocalStorageFixture, oBrowserDetectorFixture);
+
+	oRequestUrlFixture.addCannedResponse('DEFAULT_APPS', '200 ["Example App"]');
+
+	oTestRunner.addFixture('dash', oDashboardFixture);
+	oTestRunner.addFixture('page', oPageUrlFixture);
+	oTestRunner.addFixture('storage', oLocalStorageFixture);
+	oTestRunner.addFixture('browser', oBrowserDetectorFixture);
 };
-br.Core.inherit(brjs.dashboard.app.testing.DashboardFixtureFactory, br.test.FixtureFactory);
 
-brjs.dashboard.app.testing.DashboardFixtureFactory.prototype.addFixtures = function(oTestRunner)
-{
-	var oViewFixture = new br.test.ViewFixture();
-	var oPageUrlFixture = new brjs.dashboard.app.testing.PageUrlFixture();
-	var oRequestUrlFixture = new brjs.dashboard.app.testing.RequestUrlFixture();
-	var oLocalStorageFixture =  new brjs.dashboard.app.testing.LocalStorageFixture();
-	var oBrowserDetectorFixture =  new brjs.dashboard.app.testing.BrowserDetectorFixture;
-	var oDashboardFixture =  new brjs.dashboard.app.testing.DashboardFixture(oViewFixture, oPageUrlFixture, oRequestUrlFixture, oLocalStorageFixture, oBrowserDetectorFixture);
+DashboardFixtureFactory.prototype.resetFixtures = function() {};
 
-	oRequestUrlFixture.addCannedResponse("DEFAULT_APPS", '200 ["Example App"]');
-
-	oTestRunner.addFixture("dash", oDashboardFixture);
-	oTestRunner.addFixture("page", oPageUrlFixture);
-	oTestRunner.addFixture("storage", oLocalStorageFixture);
-	oTestRunner.addFixture("browser", oBrowserDetectorFixture);
-};
-
-brjs.dashboard.app.testing.DashboardFixtureFactory.prototype.resetFixtures = function()
-{
-
-};
-
-brjs.dashboard.app.testing.DashboardFixtureFactory.prototype.setUp = function()
-{
+DashboardFixtureFactory.prototype.setUp = function() {
 	document.body.focus();
 };
+
+module.exports = DashboardFixtureFactory;

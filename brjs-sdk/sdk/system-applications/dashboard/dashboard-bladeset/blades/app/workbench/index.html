@@ -9,22 +9,27 @@
 		<@js.bundle dev-minifier="combined"@/>
 		<link type="text/css" rel="stylesheet" media="screen" href="../../../<@unbundled-resources@/>/standard-theme/typography.css" />
 		<script type="text/javascript">
-			br.Core.thirdparty("jquery");
+			var jquery = ("jquery");
+			var wolfSimpleBox = ("wolf-simple-box");
+			var DashboardApp = require("brjs/dashboard/app/DashboardApp");
+			var WorkbenchDashboardProviderStub = require("brjs/dashboard/app/service/dashboard/WorkbenchDashboardProviderStub");
+			var PageUrlProviderStub = require("brjs/dashboard/app/service/url/PageUrlProviderStub");
+			var WindowOpenerProvider = require("brjs/dashboard/app/service/window/WindowOpenerProvider");
+			var DummyLocalStorage = require("brjs/dashboard/app/service/dashboard/DummyLocalStorage");
+			var BrowserDetector = require("brjs/dashboard/app/service/browserdetector/BrowserDetector");
 		
 			var oApp;
 			var oDashboardService;
 			
 			jQuery(document).ready(function() {
-				brjs.dashboard.app.DashboardApp.initializeLibrary();
-				
-				oDashboardService = new brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub();
+				var oDashboardService = new WorkbenchDashboardProviderStub();
 				var sRootUrl = window.location.href.replace(/dashboard\/dashboard-bladeset.*$/, "");
-				var oPageUrlService = new brjs.dashboard.app.service.url.PageUrlProviderStub(sRootUrl);
-				var oWindowOpenerService = new brjs.dashboard.app.service.window.WindowOpenerProvider();
-				var oDummyLocalStorage = new brjs.dashboard.app.service.dashboard.DummyLocalStorage();
-				var oDummyBrowserDetector = new brjs.dashboard.app.service.browserdetector.BrowserDetector();
+				var oPageUrlService = new PageUrlProviderStub(sRootUrl);
+				var oWindowOpenerService = new WindowOpenerProvider();
+				var oDummyLocalStorage = new DummyLocalStorage();
+				var oDummyBrowserDetector = new BrowserDetector();
 				
-				oApp = new brjs.dashboard.app.DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, oDummyLocalStorage, oDummyBrowserDetector);
+				oApp = new DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, oDummyLocalStorage, oDummyBrowserDetector);
 				
 				addModelViewer(oApp.m_oPresentationModel);
 			});
@@ -50,9 +55,12 @@
 			
 			function addModelViewer( model, workbench ) {
 				var PresenterJsTreeModelFactory = require('br/presenter/workbench/ui/PresenterJsTreeModelFactory');
-				var PresentationModelViewer2 = require('br/knockout/workbench/PresentationModelViewer');
-				var presentationModelViewer2 = new PresentationModelViewer2(PresenterJsTreeModelFactory.createTreeModelFromPresentationModel(model));
-				document.body.querySelector('.workbench-component').appendChild(presentationModelViewer2.getElement());
+				var PresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
+				var SimpleFrame = require("br/component/SimpleFrame");
+				var presentationModelViewer = new PresentationModelViewer(PresenterJsTreeModelFactory.createTreeModelFromPresentationModel(model));
+				var frame = new SimpleFrame(presentationModelViewer, null, null);
+				document.body.querySelector('.workbench-component').appendChild(frame.getElement());
+				frame.trigger('attach');
 			}
 		</script>
 	</head>

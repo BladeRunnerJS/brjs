@@ -8,7 +8,9 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.appserver.util.TokenReplacementException;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.junit.Before;
 import org.junit.Test;
@@ -89,7 +91,7 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void aspectTestsDirectoryCanStillBeUsed() throws Exception {
 		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
-		given(brjs).containsFileWithContents("brjs-apps/app/default-aspect/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
+		given(brjs).containsFileWithContents("apps/app/default-aspect/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
 			.and( brjs.app("app").aspect("default") ).hasClass("appns/Class1");
 		when( brjs.app("app").aspect("default").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("Class1");
@@ -98,7 +100,7 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void bladesetTestsDirectoryCanStillBeUsed() throws Exception {
 		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
-		given(brjs).containsFileWithContents("brjs-apps/app/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+		given(brjs).containsFileWithContents("apps/app/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
 			.and( brjs.app("app").bladeset("bs") ).hasClass("appns/bs/Class1");
 		when( brjs.app("app").bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns/bs/Class1");
@@ -107,7 +109,7 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void bladeTestsDirectoryCanStillBeUsed() throws Exception {
 		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
-		given(brjs).containsFileWithContents("brjs-apps/app/bs-bladeset/blades/b1/tests/test-type/tech/tests/myTest.js", "require('appns/bs/b1/Class1');")
+		given(brjs).containsFileWithContents("apps/app/bs-bladeset/blades/b1/tests/test-type/tech/tests/myTest.js", "require('appns/bs/b1/Class1');")
 			.and( brjs.app("app").bladeset("bs").blade("b1") ).hasClass("appns/bs/b1/Class1");
 		when( brjs.app("app").bladeset("bs").blade("b1").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns/bs/b1/Class1");
@@ -116,7 +118,7 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void workbenchTestsDirectoryCanStillBeUsed() throws Exception {
 		// we cant use the node instances before this point since the test nodes depend on the 'tests' directory being present when they are instantiated
-		given( brjs ).containsFileWithContents("brjs-apps/app/bs-bladeset/blades/b1/workbench/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
+		given( brjs ).containsFileWithContents("apps/app/bs-bladeset/blades/b1/workbench/tests/test-type/tech/tests/myTest.js", "require('appns/Class1');")
 			.and( brjs.app("app").bladeset("bs").blade("b1").workbench() ).hasClass("Class1");
 		when( brjs.app("app").bladeset("bs").blade("b1").workbench().testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns/Class1");
@@ -208,6 +210,96 @@ public class TestPackBundlingTest extends SpecTest
     		.and(brjs).hasBeenAuthenticallyReCreated();
 		when( appLib.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(response).containsText("Lib = {}");
+	}
+	
+	@Test
+	public void warningIsLoggedIfTestsDirAndTestHypenDirsExistInAnAssetContainer() throws Exception {
+		Blade b1 = brjs.app("app1").bladeset("bs").blade("b1");
+		given(b1).containsFolder("tests")
+			.and(b1).containsFolder("test-unit")
+    		.and(brjs).hasBeenAuthenticallyReCreated()
+    		.and(logging).enabled();
+		/* when */
+    		logging.enableStoringLogs();
+    		b1 = brjs.app("app1").bladeset("bs").blade("b1");
+    		b1.testType("unit").dir().mkdirs();
+    		b1.testType("unit").file("test-dir-location").createNewFile();
+    	then(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_DIR_WARNING, "apps/app1/bs-bladeset/blades/b1")
+    		.and(logging).otherMessagesIgnored()
+    		.and(app).hasFile("bs-bladeset/blades/b1/test-unit/test-dir-location");
+	}
+	
+	@Test
+	public void warningIsLoggedIfTestsDirAndTestHypenDirsExist_andTestsDirIsEmpty() throws Exception {
+		Blade b1 = brjs.app("app1").bladeset("bs").blade("b1");
+		given(b1).containsFolder("tests")
+			.and(b1).containsFolder("test-unit")
+    		.and(brjs).hasBeenAuthenticallyReCreated()
+    		.and(logging).enabled();
+		/* when */
+			logging.enableStoringLogs();
+			b1 = brjs.app("app1").bladeset("bs").blade("b1");
+			b1.testType("unit").dir().mkdirs();
+			b1.testType("unit").file("test-dir-location").createNewFile();
+		then(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_DIR_WARNING, "apps/app1/bs-bladeset/blades/b1")
+			.and(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_USING_TESTS_HYPHEN_DIR)
+			.and(app).hasFile("bs-bladeset/blades/b1/test-unit/test-dir-location");
+	}
+	
+	@Test
+	public void warningIsLoggedIfTestsDirAndTestHypenDirsExist_andTestsDirIsNotEmpty() throws Exception {
+		Blade b1 = brjs.app("app1").bladeset("bs").blade("b1");
+		given(b1).containsFolder("tests/foo")
+			.and(b1).containsFolder("test-unit")
+    		.and(brjs).hasBeenAuthenticallyReCreated()
+    		.and(logging).enabled();
+		/* when */
+    		logging.enableStoringLogs();
+    		b1 = brjs.app("app1").bladeset("bs").blade("b1");
+    		b1.testType("unit").dir().mkdirs();
+    		b1.testType("unit").file("test-dir-location").createNewFile();
+		then(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_DIR_WARNING, "apps/app1/bs-bladeset/blades/b1")
+			.and(logging).warnMessageReceived(TypedTestPack.AMBIGUOUS_TESTS_USING_TESTS_DIR)
+			.and(app).hasFile("bs-bladeset/blades/b1/tests/test-unit/test-dir-location");
+	}
+	
+	@Test
+	public void tokensAreReplaced() throws Exception {
+		given(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsText("token replacement");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTokensCantBeReplaced() throws Exception {
+		given(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(exceptions).verifyException(TokenReplacementException.class, "PropertyFileTokenFinder", "SOME.TOKEN");
+	}
+	
+	@Test
+	public void weCanUseUTF8WithAppTokens() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@ // $£€")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsText("token replacement // $£€");
+	}
+	
+	@Test
+	public void weCanUseLatin1WithAppTokens() throws Exception {
+		given(brjs.bladerunnerConf()).defaultFileCharacterEncodingIs("ISO-8859-1")
+    		.and().activeEncodingIs("ISO-8859-1")
+    		.and(brjs).containsFileWithContents("apps/app1/bs-bladeset/tests/test-type/tech/tests/myTest.js", "require('appns/bs/Class1');")
+    		.and( app.bladeset("bs") ).classFileHasContent("appns/bs/Class1", "@SOME.TOKEN@ // $£")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement");
+    	when( app.bladeset("bs").testType("type").testTech("tech") ).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsText("token replacement // $£");
 	}
 	
 }

@@ -8,13 +8,14 @@ public class JsDocModelObserverTest extends SpecTest {
 	
 	@Test 
 	public void placeholdersAreCreatedWhenANewAppIsDiscovered() throws Exception {
-		given(testSdkDirectory).containsFileWithContents("apps/app1/src/MyClass.js", "// my class")
-			.and(testSdkDirectory).containsFile("apps/app1/index.html")
-			.and(brjs).hasModelObserverPlugins(new JsDocObserver())
-			.and(testSdkDirectory).containsFileWithContents("sdk/jsdoc-toolkit-resources/jsdoc-placeholders/index.html", "PLACEHOLDER");
+		given(brjs).hasModelObserverPlugins(new JsDocObserver())
+			.and(testRootDirectory).containsFileWithContents("sdk/jsdoc-toolkit-resources/jsdoc-placeholders/index.html", "PLACEHOLDER");
 		when(brjs).hasBeenCreated()
-			.and(brjs).pluginsAreAccessed();
-			/* and */ brjs.apps();
+			.and(brjs).pluginsAreAccessed()
+			.and(testRootDirectory).containsFileWithContents("apps/app1/src/MyClass.js", "// my class")
+			.and(testRootDirectory).containsFiles("apps/app1/index.html", "apps/app1/app.conf");
+			brjs.getFileModificationRegistry().incrementAllFileVersions();
+			when(brjs).discoverUserApps();
 		then(brjs).hasDir("generated/app/app1/jsdoc")
 			.and(brjs.app("app1").storageDir("jsdoc")).containsFileWithContents("index.html", "PLACEHOLDER");
 	}
@@ -24,7 +25,7 @@ public class JsDocModelObserverTest extends SpecTest {
 		given(brjs).hasModelObserverPlugins(new JsDocObserver())
 			.and(brjs).hasBeenCreated()
 			.and(brjs.sdkTemplateGroup("default")).templateGroupCreated()
-    		.and(testSdkDirectory).containsFileWithContents("sdk/jsdoc-toolkit-resources/jsdoc-placeholders/index.html", "PLACEHOLDER")
+    		.and(testRootDirectory).containsFileWithContents("sdk/jsdoc-toolkit-resources/jsdoc-placeholders/index.html", "PLACEHOLDER")
 			.and(brjs).pluginsAccessed();
 		when( brjs.app("app1" ) ).create();
 		then(brjs).hasDir("generated/app/app1/jsdoc")

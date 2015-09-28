@@ -1,10 +1,4 @@
----
-layout: main
-permalink: /index.html
-title: emitr
----
-
-<script type="text/javascript" src="target/single/emitr.js"></script>
+<script type="text/javascript" src="dist/emitr.js"></script>
 
 emitr
 =====
@@ -12,11 +6,6 @@ emitr
 A simple emitter for node and the browser.
 
 [![Build Status](https://travis-ci.org/BladeRunnerJS/emitr.png)](https://travis-ci.org/BladeRunnerJS/emitr)
-
-* This document is available nicely formatted [here](http://BladeRunnerJS.github.io/emitr).
-* Tests are [here](http://BladeRunnerJS.github.io/emitr/spec).
-* Source code is [here](https://github.com/BladeRunnerJS/emitr).
-* JSDoc for the Emitter mixin is [here](http://BladeRunnerJS.github.io/emitr/doc/Emitter.html).
 
 The rendered form of this document includes the Emitter script so you can open a console and try it
 immediately.
@@ -51,11 +40,11 @@ With Bower
 
 In the browser (better to take a copy of the file and serve it from within your app)
 
-    <script type="text/javascript" src="http://bladerunnerjs.github.io/emitr/target/single/emitr.js"></script>
+    <script type="text/javascript" src="http://bladerunnerjs.github.io/emitr/dist/emitr.js"></script>
 
 With require.js (again, better to take a copy and serve it within your app)
 
-    require(["http://bladerunnerjs.github.io/emitr/target/single/emitr.js"], function(emitr) {
+    require(["http://bladerunnerjs.github.io/emitr/dist/emitr.js"], function(emitr) {
         // do your thing with emitr
     });
 

@@ -10,6 +10,7 @@ import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.FileObserver;
+import org.bladerunnerjs.api.FileObserverMessages;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.FileModificationRegistry;
 import org.bladerunnerjs.utility.FileObserverFactory;
@@ -17,8 +18,6 @@ import org.bladerunnerjs.utility.FileObserverFactory;
 
 public class PollingFileModificationObserver implements FileObserver
 {
-
-	public static final String FILE_CHANGED_MSG = PollingFileModificationObserver.class.getSimpleName()+" detected a '%s' event for '%s'. Incrementing the file version.";
 	public static final String INIT_MESSAGE = "%s configured with a polling interval of '%s'.";
 	
 	private List<File> directoriesToWatch;
@@ -82,27 +81,25 @@ public class PollingFileModificationObserver implements FileObserver
 	public class FileModificationRegistryAlterationListener extends FileAlterationListenerAdaptor implements FileAlterationListener
 	{
     	public void onDirectoryCreate(final File directory) {
-    		logger.debug(FILE_CHANGED_MSG, "NEW_DIRECTORY", directory.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(directory);
+    		onChange(FileObserverMessages.CREATE_DIRECTORY_EVENT, directory);
     	}
     	public void onDirectoryChange(final File directory) {
-    		logger.debug(FILE_CHANGED_MSG, "CHANGE_DIRECTORY", directory.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(directory);
+    		onChange(FileObserverMessages.CHANGE_DIRECTORY_EVENT, directory);
 		}
     	public void onDirectoryDelete(final File directory) {
-    		logger.debug(FILE_CHANGED_MSG, "DELETE_DIRECTORY", directory.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(directory);
+    		onChange(FileObserverMessages.DELETE_DIRECTORY_EVENT, directory);
     	}
     	public void onFileCreate(final File file) {
-    		logger.debug(FILE_CHANGED_MSG, "CREATE_FILE", file.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(file);
+    		onChange(FileObserverMessages.CREATE_FILE_EVENT, file);
     	}
     	public void onFileChange(final File file) {
-    		logger.debug(FILE_CHANGED_MSG, "CHANGE_FILE", file.getPath());
-    		fileModificationRegistry.incrementChildFileVersions(file);
+    		onChange(FileObserverMessages.CHANGE_FILE_EVENT, file);
     	}
     	public void onFileDelete(final File file) {
-    		logger.debug(FILE_CHANGED_MSG, "DELETE_FILE", file.getPath());
+    		onChange(FileObserverMessages.DELETE_FILE_EVENT, file);
+    	}
+    	public void onChange(String eventMessage, File file) {
+    		logger.debug(FileObserverMessages.FILE_CHANGED_MSG, PollingFileModificationObserver.class.getSimpleName(), eventMessage, file.getPath());
     		fileModificationRegistry.incrementChildFileVersions(file);
     	}
 	}

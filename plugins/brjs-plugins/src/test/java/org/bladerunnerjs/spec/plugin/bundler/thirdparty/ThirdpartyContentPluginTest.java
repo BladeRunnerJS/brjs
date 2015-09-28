@@ -174,7 +174,18 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: doesnt-exist.js\n"+"exports: lib");
 		when(aspect).requestReceivedInDev("thirdparty/thirdparty-lib/bundle.js", pageResponse);
-		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "brjs-apps/app1/libs/thirdparty-lib/thirdparty-lib.manifest");
+		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "apps/app1/libs/thirdparty-lib/thirdparty-lib.manifest");
+	}
+	
+	@Test
+	public void dependendLibrariesAreBundled() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: "+thirdpartyLib2.getName()+"\n"+"exports: lib")
+			.and(thirdpartyLib).containsFiles("lib1-file.js")
+			.and(thirdpartyLib2).containsFileWithContents("thirdparty-lib.manifest", "exports: lib")
+			.and(thirdpartyLib2).containsFiles("lib2-file.js")
+			.and(aspect).indexPageHasContent("require('"+thirdpartyLib.getName()+"')");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsOrderedTextFragments("lib2-file.js", "lib1-file.js");
 	}
 	
 	@Test
@@ -186,6 +197,28 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: invalid-lib\n"+"exports: lib");
 		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
 		then(exceptions).verifyException(ConfigException.class, "thirdparty-lib", "invalid-lib");
+	}
+	
+	@Test
+	public void dependendSourceModulesAreBundled() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: lib/Class\n"+"exports: lib")
+			.and(thirdpartyLib).containsFiles("lib1-file.js")
+			.and(thirdpartyLib2).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
+			.and(thirdpartyLib2).containsFiles("src/lib/Class.js")
+			.and(aspect).indexPageHasContent("require('"+thirdpartyLib.getName()+"')");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", pageResponse);
+		then(pageResponse).containsOrderedTextFragments("lib1-file.js", "lib/Class.js"); // the order here is correct, thirdparty content always appears before other types
+	}
+	
+	@Test
+	public void exceptionIsThrownIfADependentSourceModuleDoesntExist() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).indexPageRequires(thirdpartyLib)
+			.and(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "depends: foo/bar/baz\n"+"exports: lib");
+		when(aspect).requestReceivedInDev("thirdparty/bundle.js", pageResponse);
+		then(exceptions).verifyException(ConfigException.class, "thirdparty-lib", "foo/bar/baz");
 	}
 	
 	@Test
@@ -296,6 +329,18 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 			.and(aspect).requestReceivedInDev("js/dev/combined/bundle.js", jsResponse);
 		then(cssResponse).doesNotContainText("unused css file")
 			.and(jsResponse).containsText("thirdparty-lib2 js file");
+	}
+	
+	@Test
+	public void cssCanLiveInNestedDirectoriesWithTheSameName() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+    		.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib\n"+"css: \"**/*.css\"")
+    		.and(thirdpartyLib).containsFileWithContents("dir1/styles/style.css", "dir1 style")
+    		.and(thirdpartyLib).containsFileWithContents("dir2/styles/style.css", "dir2 style")
+    		.and(aspect).indexPageRequires("thirdparty-lib");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", cssResponse);
+    	then(cssResponse).containsText("dir1 style")
+    		.and(cssResponse).containsText("dir2 style");
 	}
 	
 }

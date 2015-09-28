@@ -11,15 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.bundlers.commonjs.DefaultCommonJsSourceModule;
 import org.bladerunnerjs.utility.FileUtils;
 import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
 
@@ -33,18 +36,17 @@ public class JsTestDriverBundleCreator
 	private static Logger logger;
 	
 	public static void createRequiredBundles(BRJS brjs, MemoizedFile jsTestDriverConf)
-			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException
+			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException, ConfigException
 	{
 		logger = brjs.logger(JsTestDriverBundleCreator.class);
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
-		FileUtils.deleteDirectoryFromBottomUp(bundlesDir);
-		FileUtils.deleteQuietly(brjs, bundlesDir);
-		bundlesDir.mkdir();
+		recreateBundlesDir(brjs, bundlesDir);
 		
 		Map<String, Object> configMap = getMapFromYamlConfig(jsTestDriverConf);
 		
 		File baseDirectory = getBaseDirectory(jsTestDriverConf, configMap);
 		
+		brjs.getFileModificationRegistry().incrementAllFileVersions();
 		TestPack testPack = brjs.locateAncestorNodeOfClass(jsTestDriverConf, TestPack.class);
 		if(testPack == null){
 			throw new RuntimeException("Unable to find test pack which represents the path " + jsTestDriverConf.getParentFile());
@@ -60,18 +62,45 @@ public class JsTestDriverBundleCreator
 			{
 				String bundlePath = StringUtils.substringAfterLast( requestedFile.getAbsolutePath(), BUNDLES_DIR_NAME+File.separator);
 				bundlePath = StringUtils.replace(bundlePath, "\\", "/");
-				bundlerHandler.createBundleFile(requestedFile, bundlePath, brjs.getAppVersionGenerator().getVersion());
+				bundlerHandler.createBundleFile(brjs, requestedFile, bundlePath, brjs.getAppVersionGenerator().getVersion());
 			}
 		}
-		for (File currentTestFile : jsTestDriverConf.getParentFile().file("tests").listFiles())
+		MemoizedFile testsDir = jsTestDriverConf.getParentFile().file("tests");
+		checkTestsForIife(brjs, testsDir, testsDir);
+	}
+
+	private static void recreateBundlesDir(BRJS brjs, File bundlesDir) throws IOException
+	{
+		FileUtils.deleteDirectoryFromBottomUp(bundlesDir);
+		if (bundlesDir.exists()) {
+			throw new IOException( String.format("Unable to delete the temporary '%s' directory at %s", bundlesDir.getName(), bundlesDir.getParentFile().getAbsolutePath()) );
+		}
+		
+		bundlesDir.mkdir();
+		if (!bundlesDir.isDirectory()) {
+			throw new IOException( String.format("The '%s' directory does not exist at %s as BRJS was unable to create it", bundlesDir.getName(), bundlesDir.getParentFile().getAbsolutePath()) );
+		}
+		brjs.getFileModificationRegistry().incrementAllFileVersions();
+	}
+
+	private static void checkTestsForIife(BRJS brjs, MemoizedFile rootTestDir, MemoizedFile testsDir) throws IOException, ConfigException
+	{
+		if (!brjs.jsStyleAccessor().getJsStyle(testsDir).equals(DefaultCommonJsSourceModule.JS_STYLE)) {
+			return;
+		}
+		for (MemoizedFile listedFile : testsDir.nestedFiles())
 		{
-			if (currentTestFile.isFile())
+			LineIterator fileLineIterator = org.apache.commons.io.FileUtils.lineIterator(listedFile, brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+			StringBuilder firstLinesOfFile = new StringBuilder();
+			int lineScanLimit = 5;
+			for (int i = 0; i < lineScanLimit && fileLineIterator.hasNext(); i++) { // only read the first 5 lines since it'll be more performant and use less memory
+				firstLinesOfFile.append(fileLineIterator.nextLine());
+			}
+						
+			Matcher m = JsCodeBlockStrippingDependenciesReader.SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(firstLinesOfFile.toString());
+			if (!m.find())
 			{
-				Matcher m = JsCodeBlockStrippingDependenciesReader.SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(org.apache.commons.io.FileUtils.readFileToString(currentTestFile));
-				if (!m.find())
-				{
-					logger.warn("The CommonJS test '" + currentTestFile.getName() + "' is not wrapped within an IIFE, which may cause unreliability in tests.");
-				}
+				logger.warn("The CommonJS test '%s' is not wrapped within an IIFE (or doesn't have one in the first "+lineScanLimit+" lines), which may cause unreliability in tests.", rootTestDir.getRelativePath(listedFile));
 			}
 		}
 	}

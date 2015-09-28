@@ -6,6 +6,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.model.events.AppDeployedEvent;
+import org.bladerunnerjs.api.model.events.NodeDiscoveredEvent;
 import org.bladerunnerjs.api.model.events.NodeReadyEvent;
 import org.bladerunnerjs.api.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
@@ -76,6 +77,16 @@ public class AppTest extends SpecTest {
 	}
 	
 	@Test
+	public void nodeReadyEventIsFiredWhenExistingAppIsDiscovered() throws Exception {
+		given(templates).templateGroupCreated()
+			.and(app).hasBeenPopulated("default")
+			.and(brjs).hasBeenAuthenticallyReCreated();
+		when(observer).observing(brjs)
+			.and(brjs).discoverUserApps();
+		then(observer).notified(NodeDiscoveredEvent.class, brjs.app("app"));
+	}
+	
+	@Test
 	public void theAppConfIsWrittenOnPopulate() throws Exception {
 		given(templates).templateGroupCreated();
 		when(app).populate("appx", "default");
@@ -114,8 +125,8 @@ public class AppTest extends SpecTest {
 	@Test
 	public void usingReservedKeywordAsAppNameSpaceThrowsException() throws Exception {
 		given(appTemplate).containsFile("some-file.blah");
-		when(app).populate("caplinx", "default");
-		then(exceptions).verifyException(InvalidRootPackageNameException.class, app.dir(), unquoted("'caplinx'"));
+		when(app).populate("br", "default");
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, app.dir(), unquoted("'br'"));
 	}
 	
 	@Test
@@ -200,7 +211,8 @@ public class AppTest extends SpecTest {
 			.and(brjs).hasBeenAuthenticallyCreated()
 			.and(brjs).appsHaveBeeniterated()
 			.and(brjs).hasBeenInactiveForOneMillisecond();
-		when(brjs.app("app1")).populate("default");
+		when(brjs.app("app1")).populate("default")
+			.and(brjs.app("app1")).containsFileWithContents("app.conf", "");
 		then(brjs).hasApps("app1");
 	}
 	

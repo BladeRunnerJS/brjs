@@ -1,3 +1,13 @@
+'use strict';
+
+var Errors = require('br/Errors');
+var Core = require('br/Core');
+var NodeListListener = require('br/presenter/node/NodeListListener');
+var ListenerFactory = require('br/util/ListenerFactory');
+var Observable = require('br/util/Observable');
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var KnockoutNodeList = require('br/presenter/view/knockout/KnockoutNodeList');
+
 /**
  * @module br/presenter/node/NodeList
  */
@@ -30,35 +40,34 @@
  * @param {Array} pPresentationNodes The initial array of {@link module:br/presenter/node/PresentationNode} instances
  * @param {Function} fNodeClass (optional) The class/interface that all nodes in this list should be an instance of
  */
-br.presenter.node.NodeList = function(pPresentationNodes, fNodeClass)
-{
+function NodeList(pPresentationNodes, fNodeClass) {
 	// call super constructor
-	br.presenter.view.knockout.KnockoutNodeList.call(this);
+	KnockoutNodeList.call(this);
 
 	/** @private */
-	this.m_fPermittedClass = fNodeClass || br.presenter.node.PresentationNode;
+	this.m_fPermittedClass = fNodeClass || PresentationNode;
 
 	/** @private */
 	this.m_pUpdateListeners = [];
 
 	/** @private */
-	this.m_oObservable = new br.util.Observable();
+	this.m_oObservable = new Observable();
 
 	/** @private */
-	this.m_oChangeListenerFactory = new br.util.ListenerFactory(br.presenter.node.NodeListListener, "onNodeListChanged");
+	this.m_oChangeListenerFactory = new ListenerFactory(NodeListListener, 'onNodeListChanged');
 
 	this._copiesAndChecksNodesAndClearsNodePaths(pPresentationNodes);
-};
-br.Core.extend(br.presenter.node.NodeList, br.presenter.node.PresentationNode);
-br.Core.inherit(br.presenter.node.NodeList, br.presenter.view.knockout.KnockoutNodeList);
+}
+
+Core.extend(NodeList, PresentationNode);
+Core.inherit(NodeList, KnockoutNodeList);
 
 /**
  * Returns the list of {@link module:br/presenter/node/PresentationNode} instances as an array.
  *
  * @type Array
  */
-br.presenter.node.NodeList.prototype.getPresentationNodesArray = function()
-{
+NodeList.prototype.getPresentationNodesArray = function() {
 	return this.m_pItems;
 };
 
@@ -68,8 +77,7 @@ br.presenter.node.NodeList.prototype.getPresentationNodesArray = function()
  * @param {module:br/presenter/node/PresentationNode} oPresentationNode The presentation node being queried.
  * @type String
  */
-br.presenter.node.NodeList.prototype.getTemplateForNode = function(oPresentationNode)
-{
+NodeList.prototype.getTemplateForNode = function(oPresentationNode) {
 	return oPresentationNode.getTemplateName();
 };
 
@@ -81,17 +89,16 @@ br.presenter.node.NodeList.prototype.getTemplateForNode = function(oPresentation
  *
  * @param {Array} pPresentationNodes The new list of {@link module:br/presenter/node/PresentationNode} instances.
  */
-br.presenter.node.NodeList.prototype.updateList = function(pPresentationNodes)
-{
+NodeList.prototype.updateList = function(pPresentationNodes) {
 	this._copiesAndChecksNodesAndClearsNodePaths(pPresentationNodes);
 	this._setPathsOfNewlyAddedNodes();
 
-	for(var i = 0; i < this.m_pUpdateListeners.length; i++){
-		 this.m_pUpdateListeners[i]();
+	for (var i = 0; i < this.m_pUpdateListeners.length; i++) {
+		this.m_pUpdateListeners[i]();
 	}
 
 	this.updateView(this.m_pItems);
-	this.m_oObservable.notifyObservers("onNodeListChanged");
+	this.m_oObservable.notifyObservers('onNodeListChanged');
 	return this;
 };
 
@@ -103,16 +110,14 @@ br.presenter.node.NodeList.prototype.updateList = function(pPresentationNodes)
  * @param {boolean} bNotifyImmediately Whether to invoke the listener immediately using the current node list.
  * @type br.presenter.node.NodeList
  */
-br.presenter.node.NodeList.prototype.addListener = function(oListener, bNotifyImmediately)
-{
-	if(!br.Core.fulfills(oListener, br.presenter.node.NodeListListener))
-	{
-		throw new br.Errors.InvalidParametersError("oListener was not an instance of NodeListListener");
+NodeList.prototype.addListener = function(oListener, bNotifyImmediately) {
+	if (!Core.fulfills(oListener, NodeListListener)) {
+		throw new Errors.InvalidParametersError('oListener was not an instance of NodeListListener');
 	}
 
 	this.m_oObservable.addObserver(oListener);
 
-	if(bNotifyImmediately) {
+	if (bNotifyImmediately) {
 		oListener.onNodeListChanged();
 	}
 
@@ -125,8 +130,7 @@ br.presenter.node.NodeList.prototype.addListener = function(oListener, bNotifyIm
  * @param {module:br/presenter/node/NodeListListener} oListener The listener being removed.
  * @type br.presenter.node.NodeList
  */
-br.presenter.node.NodeList.prototype.removeListener = function(oListener)
-{
+NodeList.prototype.removeListener = function(oListener) {
 	this.m_oObservable.removeObserver(oListener);
 	return this;
 };
@@ -136,8 +140,7 @@ br.presenter.node.NodeList.prototype.removeListener = function(oListener)
  *
  * @type br.presenter.node.NodeList
  */
-br.presenter.node.NodeList.prototype.removeAllListeners = function()
-{
+NodeList.prototype.removeAllListeners = function() {
 	this.m_oObservable.removeAllObservers();
 	return this;
 };
@@ -158,8 +161,7 @@ br.presenter.node.NodeList.prototype.removeAllListeners = function()
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.node.NodeListListener
  */
-br.presenter.node.NodeList.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmediately)
-{
+NodeList.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmediately) {
 	var oNodeListListener = this.m_oChangeListenerFactory.createListener(oListener, sMethod);
 	this.addListener(oNodeListListener, bNotifyImmediately);
 
@@ -169,16 +171,14 @@ br.presenter.node.NodeList.prototype.addChangeListener = function(oListener, sMe
 /**
  * @private
  */
-br.presenter.node.NodeList.prototype._$getObservable = function()
-{
+NodeList.prototype._$getObservable = function() {
 	return this.m_oObservable;
 };
 
 /**
  * @private
  */
-br.presenter.node.NodeList.prototype._$setPath = function(sPath, oPresenterComponent)
-{
+NodeList.prototype._$setPath = function(sPath, oPresenterComponent) {
 	this.m_sPath = sPath;
 	this.__oPresenterComponent = oPresenterComponent;
 	this._setPathsOfNewlyAddedNodes();
@@ -187,12 +187,11 @@ br.presenter.node.NodeList.prototype._$setPath = function(sPath, oPresenterCompo
 /**
  * @private
  */
-br.presenter.node.NodeList.prototype._$clearNodePaths = function()
-{
-	for(var i = 0; i < this.m_pItems.length; i++)
-	{
+NodeList.prototype._$clearNodePaths = function() {
+	for (var i = 0; i < this.m_pItems.length; i++) {
 		this.m_pItems[i]._$clearNodePaths();
 	}
+
 	this.m_sPath = undefined;
 };
 
@@ -202,14 +201,11 @@ br.presenter.node.NodeList.prototype._$clearNodePaths = function()
 /**
  * @private
  */
-br.presenter.node.NodeList.prototype._getNodes = function(sNodeName, pPropertyList, pNodes)
-{
-	for(var i = 0, l = this.m_pItems.length; i < l; ++i)
-	{
+NodeList.prototype._getNodes = function(sNodeName, pPropertyList, pNodes) {
+	for (var i = 0, l = this.m_pItems.length; i < l; ++i) {
 		var oPresentationNode = this.m_pItems[i];
 
-		if(this._nodeMatchesQuery(oPresentationNode, i, sNodeName, pPropertyList))
-		{
+		if (this._nodeMatchesQuery(oPresentationNode, i, sNodeName, pPropertyList)) {
 			pNodes.push(oPresentationNode);
 		}
 
@@ -220,31 +216,29 @@ br.presenter.node.NodeList.prototype._getNodes = function(sNodeName, pPropertyLi
 /**
  * @private
  */
-br.presenter.node.NodeList.prototype._copyAndCheckNodes = function(pNodes)
-{
+NodeList.prototype._copyAndCheckNodes = function(pNodes) {
 	var pResult = [];
 	if (!pNodes || !pNodes.length) return pResult;
 
-	for(var i = 0; i < pNodes.length; i++){
+	for (var i = 0; i < pNodes.length; i++) {
 		var oNode = pNodes[i];
-		if(this.m_fPermittedClass && !(oNode instanceof this.m_fPermittedClass)) {
-			var msg =  "Each nodelist item needs to implement br.presenter.node.PresentationNode or a valid fNodeClass";
-			throw new br.Errors.CustomError(Error.UNIMPLEMENTED_INTERFACE, msg);
+		if (this.m_fPermittedClass && !(oNode instanceof this.m_fPermittedClass)) {
+			var msg = 'Each nodelist item needs to implement br.presenter.node.PresentationNode or a valid fNodeClass';
+			throw new Errors.CustomError(Error.UNIMPLEMENTED_INTERFACE, msg);
 		}
 		pResult.push(oNode);
 	}
+
 	return pResult;
 };
 
 /**
  * @private
  */
-br.presenter.node.NodeList.prototype._copiesAndChecksNodesAndClearsNodePaths = function(pPresentationNodes)
-{
+NodeList.prototype._copiesAndChecksNodesAndClearsNodePaths = function(pPresentationNodes) {
 	this.m_pItems = this._copyAndCheckNodes(pPresentationNodes);
 
-	for(var i = 0; i < this.m_pItems.length; i++)
-	{
+	for (var i = 0; i < this.m_pItems.length; i++) {
 		this.m_pItems[i]._$clearNodePaths();
 	}
 };
@@ -252,13 +246,12 @@ br.presenter.node.NodeList.prototype._copiesAndChecksNodesAndClearsNodePaths = f
 /**
  * @private
  */
-br.presenter.node.NodeList.prototype._setPathsOfNewlyAddedNodes = function()
-{
-	if(this.getPath() !== undefined)
-	{
-		for(var i = 0; i < this.m_pItems.length; i++)
-		{
-			this.m_pItems[i]._$setPath(this.getPath() + "." + i, this.__oPresenterComponent);
+NodeList.prototype._setPathsOfNewlyAddedNodes = function() {
+	if (this.getPath() !== undefined) {
+		for (var i = 0; i < this.m_pItems.length; i++) {
+			this.m_pItems[i]._$setPath(this.getPath() + '.' + i, this.__oPresenterComponent);
 		}
 	}
 };
+
+module.exports = NodeList;

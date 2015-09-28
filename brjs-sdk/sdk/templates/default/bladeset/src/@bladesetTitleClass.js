@@ -1,11 +1,10 @@
-"use strict";
+'use strict';
 
-var @bladesetTitleClass = function()
-{
-};
+function @bladesetTitleClass() {
+}
 
 @bladesetTitleClass.prototype.sayHello = function() {
-	return "hello";
-}
+	return 'hello';
+};
 
 module.exports = @bladesetTitleClass;

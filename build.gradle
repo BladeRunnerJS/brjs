@@ -8,6 +8,7 @@ def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBui
 def projectCurrentBranch = org.bladerunnerjs.BuildVersionCalculator.calculateCurrentBranch(project)
 
 logger.info "Build version calculated as: ${projectBuildVersion}"
+logger.info "Build major version calculated as: ${projectBuildMajorVersion}"
 logger.info "Build date is: ${projectBuildDate}"
 logger.info "Build hostname is: ${projectBuildHostname}"
 logger.info "Build branch is: ${projectCurrentBranch}"
@@ -25,15 +26,6 @@ if (project.hasProperty(overrideMajorVersionPropertyName)) {
 	projectBuildMajorVersion = project.property(overrideMajorVersionPropertyName)
 }
 
-
-[ "JAVA8_HOME", "JAVA7_HOME" ].each { envName ->
-	def property = System.getenv()[envName]
-	if (property == null)
-	{
-		throw new GradleException("The environment variable '${envName} must be set for the build to work correctly, please make sure it is set. Refer to README.md for info on the dev environment setup.")
-	}
-}
-
 ext {
 	RELEASE_BRANCH = "master"
 }
@@ -42,9 +34,18 @@ allprojects {
 
 	ext {
 		buildVersion = projectBuildVersion
+		buildMajorVersion = projectBuildMajorVersion
 		buildDate = projectBuildDate
 		buildHostname = projectBuildHostname
 	}
+	["JAVA7_HOME", "JAVA8_HOME"].each { propName ->
+		def propertyValue = project.hasProperty(propName) ? project.property(propName) : System.getenv()[propName]
+		project.ext.set(propName, propertyValue);
+		if (propertyValue == null) {
+			throw new GradleException("The property variable '$propName' is null and must be set either via an environment variable or as a Gradle property.")
+		}
+	}
+
 
 	def projectContainingSharedLogic = project
 	while (projectContainingSharedLogic != null) {
@@ -57,7 +58,6 @@ allprojects {
 	}
 
 	apply plugin: 'eclipse'
-	apply plugin: 'idea'
 	apply plugin: 'base'
 
 	repositories {
@@ -94,7 +94,7 @@ subprojects { p ->
 	afterEvaluate { project ->
 
 		if (project.plugins.hasPlugin(JavaPlugin)) {
-			if(project.name == 'brjs-core' 
+			if(project.name == 'brjs-core'
 					|| project.name == 'brjs-core-tests'
 					|| project.name == 'brjs-plugins') {
 				sourceCompatibility = '1.8'
@@ -283,7 +283,7 @@ task githubRelease, dependsOn:[generateReleaseNotes, ':brjs-sdk:distZip', build]
 		def brjsZipPattern = "**/BladeRunnerJS-${projectBuildVersion}.zip"
 		def brjsZip = fileTree(dir:cutlassSdkProject.buildDir, include:brjsZipPattern).singleFile
 
-		if (!projectCurrentBranch.equals(RELEASE_BRANCH))
+		if (!projectCurrentBranch.equals(RELEASE_BRANCH) && !projectCurrentBranch.equals("HEAD"))
 		{
 			throw new GradleException("BladeRunnerJS ${projectBuildVersion} can only be released from '${RELEASE_BRANCH}' branch, you are currently on '${projectCurrentBranch}'.")
 		}

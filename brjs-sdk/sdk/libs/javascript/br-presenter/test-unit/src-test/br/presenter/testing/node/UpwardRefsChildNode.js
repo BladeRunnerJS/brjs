@@ -1,6 +1,12 @@
-br.presenter.testing.node.UpwardRefsChildNode = function(oParent)
+var brCore = require("br/Core");
+var PresentationNode = require("br/presenter/node/PresentationNode");
+var UpwardRefsGrandchildNode = require("br/presenter/testing/node/UpwardRefsGrandchildNode");
+
+var UpwardRefsChildNode = function(oParent)
 {
 	this.oParent = oParent;
-	this.oGrandChild = new br.presenter.testing.node.UpwardRefsGrandchildNode(this, oParent)
+	this.oGrandChild = new UpwardRefsGrandchildNode(this, oParent)
 };
-br.Core.extend(br.presenter.testing.node.UpwardRefsChildNode, br.presenter.node.PresentationNode);
+brCore.extend(UpwardRefsChildNode, PresentationNode);
+
+module.exports = UpwardRefsChildNode;

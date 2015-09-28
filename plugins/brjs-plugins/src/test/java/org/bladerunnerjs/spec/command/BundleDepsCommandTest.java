@@ -63,17 +63,20 @@ public class BundleDepsCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfABundlableNodeCantBeLocated() throws Exception {
 		given(app).hasBeenCreated();
-		when(brjs).runCommand("bundle-deps", "../brjs-apps");
-		then(exceptions).verifyException(InvalidBundlableNodeException.class, "brjs-apps")
+		when(brjs).runCommand("bundle-deps", "../apps");
+		then(exceptions).verifyException(InvalidBundlableNodeException.class, "apps")
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
-		given(aspect).hasBeenCreated()
+		given(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(aspect).hasBeenCreated()
 			.and(brjs).hasBeenAuthenticallyCreated();
-		when(brjs).runCommand("bundle-deps", "../brjs-apps/app/default-aspect");
+		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -82,9 +85,9 @@ public class BundleDepsCommandTest extends SpecTest {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).classRequires("appns/Class1", "./Class2");
-		when(brjs).runCommand("bundle-deps", "../brjs-apps/app/default-aspect");
+		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
 		then(logging).containsConsoleText(
-			"Bundle 'brjs-apps/app/default-aspect' dependencies found:",
+			"Bundle 'apps/app/default-aspect' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
@@ -95,9 +98,9 @@ public class BundleDepsCommandTest extends SpecTest {
 		given(blade.testType("unit").file("js-test-driver/tests")).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
 			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(blade).classRequires("appns/bs/b1/Class1", "./Class2");
-		when(brjs).runCommand("bundle-deps", "../brjs-apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver");
+		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver");
 		then(logging).containsConsoleText(
-				"Bundle 'brjs-apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
+				"Bundle 'apps/app/bs-bladeset/blades/b1/test-unit/js-test-driver' dependencies found:",
 				"    +--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'",
 				"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js' (static dep.)",
 				"    +--- 'bs-bladeset/blades/b1/test-unit/js-test-driver/tests/MyTest.js' (seed file)");
@@ -107,9 +110,9 @@ public class BundleDepsCommandTest extends SpecTest {
 	public void optionalPackageStructuresAreShownCorrectly() throws Exception {
 		given(aspect).indexPageRequires("appns/bs/b1/Class1")
     		.and(app.bladeset("bs").blade("b1")).hasClasses("Class1");
-    	when(brjs).runCommand("bundle-deps", "../brjs-apps/app/default-aspect/");
+    	when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect/");
     	then(logging).containsConsoleText(
-    		"Bundle 'brjs-apps/app/default-aspect' dependencies found:",
+    		"Bundle 'apps/app/default-aspect' dependencies found:",
 			"    +--- 'bs-bladeset/blades/b1/src/Class1.js'",
     		"    +--- 'default-aspect/index.html' (seed file)");
 	}
@@ -118,9 +121,9 @@ public class BundleDepsCommandTest extends SpecTest {
 	public void defaultBladesetsAreShownCorrectly() throws Exception {
 		given(aspect).indexPageRequires("appns/b1/Class1")
 			.and(bladeInDefaultBladeset).hasClasses("appns/b1/Class1");
-		when(brjs).runCommand("bundle-deps", "../brjs-apps/app/default-aspect/");
+		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect/");
 		then(logging).containsConsoleText(
-			"Bundle 'brjs-apps/app/default-aspect' dependencies found:",
+			"Bundle 'apps/app/default-aspect' dependencies found:",
 			"    +--- 'blades/b1/src/appns/b1/Class1.js'",
 			"    +--- 'default-aspect/index.html' (seed file)");
 	}
@@ -129,9 +132,9 @@ public class BundleDepsCommandTest extends SpecTest {
 	public void defaultAspectsAreShownCorrectly() throws Exception {
 		given(defaultAspect).indexPageRequires("appns/Class1")
 			.and(defaultAspect).hasClasses("appns/Class1");
-		when(brjs).runCommand("bundle-deps", "../brjs-apps/app");
+		when(brjs).runCommand("bundle-deps", "../apps/app");
 		then(logging).containsConsoleText(
-			"Bundle 'brjs-apps/app' dependencies found:",
+			"Bundle 'apps/app' dependencies found:",
 			"    +--- 'index.html' (seed file)",
 			"    |    \\--- 'src/appns/Class1.js'");
 	}

@@ -1,16 +1,17 @@
-br.Core.thirdparty('jsmockito');
-
 (function() {
+    var ToolTipField = require("br/presenter/node/ToolTipField");
+    var Core = require("br/Core");
+    require('jsmockito');
 
-	"use strict";
+    "use strict";
 
-	var toolTipField;
+    var toolTipField;
 
-	var testCaseName = "ToolTipFieldTests";
-	var testCase = {
+    var testCaseName = "ToolTipFieldTests";
+    var testCase = {
 
 		setUp: function() {
-			toolTipField = new br.presenter.node.ToolTipField();
+			toolTipField = new ToolTipField();
 		},
 
 		tearDown: function() {},
@@ -37,6 +38,5 @@ br.Core.thirdparty('jsmockito');
 
 	};
 
-	TestCase(testCaseName, testCase);
-
+    TestCase(testCaseName, testCase);
 })();

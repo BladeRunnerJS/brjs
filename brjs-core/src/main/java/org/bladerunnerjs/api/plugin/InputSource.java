@@ -5,6 +5,7 @@ import java.io.Reader;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.UrlContentAccessor;
 
 public class InputSource {
@@ -25,7 +26,7 @@ public class InputSource {
 		this.version = version;
 	}
 	
-	public Reader getContentPluginReader() throws ContentProcessingException {
+	public Reader getContentPluginReader() throws ContentProcessingException, ResourceNotFoundException {
 		try {
 			ResponseContent pluginContent = contentPlugin.handleRequest(requestPath, bundleSet, contentPluginUtility, version);
 			if (pluginContent instanceof CharResponseContent) {

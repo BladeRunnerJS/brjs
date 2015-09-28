@@ -21,7 +21,7 @@ import org.bladerunnerjs.utility.ObserverList;
 
 public class MockRootNode implements RootNode
 {
-	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(FalseFileFilter.INSTANCE, new File("."));
+	private FileModificationRegistry fileModificationRegistry = new FileModificationRegistry(FalseFileFilter.INSTANCE, FalseFileFilter.INSTANCE);
 	private MemoizedFileAccessor memoizedFileAccessor = new MemoizedFileAccessor(this);
 	private IO io = new IO( FalseFileFilter.INSTANCE );
 	
@@ -275,6 +275,12 @@ public class MockRootNode implements RootNode
 	}
 	
 	@Override
+	public MemoizedFile getMemoizedFile(String filePath)
+	{
+		return getMemoizedFile( new File(filePath) );
+	}
+	
+	@Override
 	public MemoizedFile getMemoizedFile(File file)
 	{
 		return memoizedFileAccessor.getMemoizedFile(file);
@@ -285,4 +291,5 @@ public class MockRootNode implements RootNode
 	{
 		return getMemoizedFile( new File(dir, filePath) );
 	}
+	
 }

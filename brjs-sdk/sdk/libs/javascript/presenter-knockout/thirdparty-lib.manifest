@@ -2,3 +2,4 @@
 js: brjs-knockout-3.0.js
 exports: ko
 commonjsDefinition: true
+depends: service!br.html-service

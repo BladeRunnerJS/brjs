@@ -8,6 +8,7 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 {
 	private String version = null;
 	private boolean appendTimetamp = true;
+	private String timestamp;
 	
 	@Override
 	public String getVersion()
@@ -30,7 +31,8 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 	@Override
 	public String getVersionPattern()
 	{
-		return "([a-zA-Z0-9\\.\\-]+)";
+		// "\\-" must appear last otherwise the escape characters get lost and its treated as a character range
+		return "([a-zA-Z0-9\\._\\-]+)";
 	}
 
 	@Override
@@ -48,6 +50,9 @@ public class DefaultAppVersionGenerator implements AppVersionGenerator
 	}
 
 	private String getTimestamp() {
-		return new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+		if (timestamp == null) {
+			timestamp = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+		}
+		return timestamp;
 	}
 }

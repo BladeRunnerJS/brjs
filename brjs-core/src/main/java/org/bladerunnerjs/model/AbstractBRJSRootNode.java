@@ -6,11 +6,11 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BRJSNode;
-import org.bladerunnerjs.api.logging.LoggerFactory;
 import org.bladerunnerjs.api.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
+import org.bladerunnerjs.utility.LoggerFactory;
 
 
 public abstract class AbstractBRJSRootNode extends AbstractRootNode implements BRJSNode {

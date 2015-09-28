@@ -28,7 +28,7 @@ public class ImportAppCommandTest extends SpecTest {
 	App importedApp;
 	Aspect importedAspect;
 	private Bladeset bladeset;
-	private Blade blade;
+	private Blade blade1, blade2;
 	private BladeWorkbench workbench;
 	DirNode appJars;
 	private BladesetWorkbench bladesetWorkbench;
@@ -43,8 +43,9 @@ public class ImportAppCommandTest extends SpecTest {
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			bladesetWorkbench = bladeset.workbench();
-			blade = bladeset.blade("b1");
-			workbench = blade.workbench();
+			blade1 = bladeset.blade("b1");
+			blade2 = bladeset.blade("b2");
+			workbench = blade1.workbench();
 			importedApp = brjs.app("imported-app");
 			importedAspect = importedApp.aspect("default");
 			appJars = brjs.appJars();
@@ -134,7 +135,7 @@ public class ImportAppCommandTest extends SpecTest {
 	public void directoriesAreNotDuplicatedWhenExportedAppsAreImportedWithNewNamespace() throws Exception {
 		given(aspect).containsFile("src/appns/AspectClass.js")
 			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
-			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(blade1).containsFile("src/appns/bs/b1/BladeClass.js")
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
@@ -198,7 +199,7 @@ public class ImportAppCommandTest extends SpecTest {
 	public void allSrcDirectoriesAreCorrectlyReNamespacedWhenImported() throws Exception {
 		given(aspect).containsFile("src/appns/AspectClass.js")
 			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
-			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(blade1).containsFile("src/appns/bs/b1/BladeClass.js")
 			.and(workbench).containsFile("src/appns/bs/b1/WorkbenchClass.js")
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
@@ -216,9 +217,9 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(aspect).containsFile("tests/test-unit/js-test-driver/tests/appns/AspectTest.js")
 			.and(bladeset).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/BladeTestClass.js")
 			.and(bladeset).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/BladeTest.js")
-			.and(blade).containsFile("src/appns/bs/b1/BladeClass.js")
-			.and(blade).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/b1/BladeTestClass.js")
-			.and(blade).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/b1/BladeTest.js")
+			.and(blade1).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(blade1).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/b1/BladeTestClass.js")
+			.and(blade1).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/b1/BladeTest.js")
 			.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
@@ -307,6 +308,9 @@ public class ImportAppCommandTest extends SpecTest {
 	@Test // This test attempts to reproduce a bug we were seeing in the product - https://github.com/BladeRunnerJS/brjs/issues/1238
 	public void bladesetWorkbenchCanBeLoadedWithoutClassCastExceptionAfterImportInANewBRJSProcess() throws Exception {
 		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+					+ "locales: en\n"
+					+ "requirePrefix: appns")
 			.and(bladeset).hasBeenCreated()
 			.and(bladesetWorkbench).containsFileWithContents("resources/css/style.css", "url('./file.png')")
 			.and(bladesetWorkbench).containsFileWithContents("resources/file.png", "my cool image")
@@ -354,7 +358,41 @@ public class ImportAppCommandTest extends SpecTest {
     		.and(brjs).commandHasBeenRun("export-app", "app")
 			.and(appJars).containsFile("brjs-lib1.jar");
 		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
-		then(aspect.file("resources/br-logo.png")).contentsTheSameAsFile("src/test/resources/br-logo.png");
+		then(importedAspect.file("resources/br-logo.png")).contentsTheSameAsFile("src/test/resources/br-logo.png");
+	}
+	
+	@Test
+	public void referencesToBladeCodeFromUnbundledResourcesIsReplaced() throws Exception {
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("unbundled-resources/file.txt", "appns.bs.b1.Class")
+    		.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedAspect).fileContentsEquals("unbundled-resources/file.txt", "importedns.bs.b1.Class");
+	}
+	
+	@Test // new apps shouldnt have Blade -> another Blade deps but we need to support this for backwards compatibility
+	public void referencesToAClassFromOneBladeToAnotherIsReplacead() throws Exception {
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenCreated()
+			.and(blade1).hasBeenCreated()
+			.and(blade2).classFileHasContent("appns/bs/b2/Blade2Class", "appns.bs.b1.Blade1Class")
+    		.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp.bladeset("bs").blade("b2")).fileContentsEquals("src/importedns/bs/b2/Blade2Class.js", "importedns.bs.b1.Blade1Class");
+	}
+	
+	@Test
+	public void referencesToAParentBladesetIsReplacead() throws Exception {
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenCreated()
+			.and(blade1).classFileHasContent("appns/bs/b1/BladeClass", "appns.bs.BladesetClass")
+    		.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "importedns");
+		then(importedApp.bladeset("bs").blade("b1")).fileContentsEquals("src/importedns/bs/b1/BladeClass.js", "importedns.bs.BladesetClass");
 	}
 	
 }

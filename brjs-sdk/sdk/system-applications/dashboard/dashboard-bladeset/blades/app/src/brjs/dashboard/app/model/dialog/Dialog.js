@@ -1,92 +1,100 @@
-br.Core.thirdparty("wolf-simple-box");
+'use strict';
 
-brjs.dashboard.app.model.dialog.Dialog = function(oPresentationModel)
-{
-	this.visible = new br.presenter.property.WritableProperty(false);
-	this.visible.addChangeListener(this, "_onVisibilityChanged");
-	this.type = new br.presenter.property.Property(null);
-	this.isClosable = new br.presenter.property.EditableProperty(true);
-	this.viewNode = new br.presenter.node.MappedNodeList({}, brjs.dashboard.app.model.dialog.DialogViewNode);
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var MappedNodeList = require('br/presenter/node/MappedNodeList');
+var EditableProperty = require('br/presenter/property/EditableProperty');
+var Property = require('br/presenter/property/Property');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+var Core = require('br/Core');
+var WolfSimpleBox = require('wolf-simple-box');
+
+var DialogViewNode = require("brjs/dashboard/app/model/dialog/DialogViewNode");
+var NewAppDialog = require("brjs/dashboard/app/model/dialog/newDialog/NewAppDialog");
+var NewBladesetDialog = require("brjs/dashboard/app/model/dialog/newDialog/NewBladesetDialog");
+var NewBladeDialog = require("brjs/dashboard/app/model/dialog/newDialog/NewBladeDialog");
+var ImportMotifDialog = require("brjs/dashboard/app/model/dialog/importDialog/ImportMotifDialog");
+var ImportBladesFromAppDialog = require("brjs/dashboard/app/model/dialog/importDialog/ImportBladesFromAppDialog");
+var TestRunnerDialog = require("brjs/dashboard/app/model/dialog/TestRunnerDialog");
+var NotificationDialog = require("brjs/dashboard/app/model/dialog/NotificationDialog");
+var BrowserWarningDialog = require("brjs/dashboard/app/model/dialog/BrowserWarningDialog");
+
+function Dialog(oPresentationModel) {
+	this.visible = new WritableProperty(false);
+	this.visible.addChangeListener(this, '_onVisibilityChanged');
+	this.type = new Property(null);
+	this.isClosable = new EditableProperty(true);
+	this.viewNode = new MappedNodeList({}, DialogViewNode);
 	this.m_oModal = new WolfSimpleBox();
-	this.m_oModal.callOnClose( this._onClose.bind( this ) );
+	this.m_oModal.callOnClose(this._onClose.bind(this));
 	this.m_oPresentationModel = oPresentationModel;
-	this.m_sAppNamespace = "";
-};
-br.Core.extend(brjs.dashboard.app.model.dialog.Dialog, br.presenter.node.PresentationNode);
+	this.m_sAppNamespace = '';
+}
 
-brjs.dashboard.app.model.dialog.Dialog.prototype.initialize = function()
-{
-	this.newAppDialog = new brjs.dashboard.app.model.dialog.newDialog.NewAppDialog(this.m_oPresentationModel);
-	this.newBladesetDialog = new brjs.dashboard.app.model.dialog.newDialog.NewBladesetDialog(this.m_oPresentationModel);
-	this.newBladeDialog = new brjs.dashboard.app.model.dialog.newDialog.NewBladeDialog(this.m_oPresentationModel);
-	this.importMotifDialog = new brjs.dashboard.app.model.dialog.importDialog.ImportMotifDialog(this.m_oPresentationModel);
-	this.importBladesFromAppDialog = new brjs.dashboard.app.model.dialog.importDialog.ImportBladesFromAppDialog(this.m_oPresentationModel);
-	this.testRunnerDialog = new brjs.dashboard.app.model.dialog.TestRunnerDialog(this.m_oPresentationModel);
-	this.notificationDialog = new brjs.dashboard.app.model.dialog.NotificationDialog(this.m_oPresentationModel);
-	this.browserWarningDialog = new brjs.dashboard.app.model.dialog.BrowserWarningDialog(this.m_oPresentationModel);
+Core.extend(Dialog, PresentationNode);
+
+Dialog.prototype.initialize = function() {
+	this.newAppDialog = new NewAppDialog(this.m_oPresentationModel);
+	this.newBladesetDialog = new NewBladesetDialog(this.m_oPresentationModel);
+	this.newBladeDialog = new NewBladeDialog(this.m_oPresentationModel);
+	this.importMotifDialog = new ImportMotifDialog(this.m_oPresentationModel);
+	this.importBladesFromAppDialog = new ImportBladesFromAppDialog(this.m_oPresentationModel);
+	this.testRunnerDialog = new TestRunnerDialog(this.m_oPresentationModel);
+	this.notificationDialog = new NotificationDialog(this.m_oPresentationModel);
+	this.browserWarningDialog = new BrowserWarningDialog(this.m_oPresentationModel);
 };
 
-brjs.dashboard.app.model.dialog.Dialog.prototype.showDialog = function(sDialog)
-{
-	if( this.m_oModal.hasContent() === false )
-	{
-		this.m_oModal.setContent( $('#modalDialog') );
+Dialog.prototype.showDialog = function(sDialog) {
+	if (this.m_oModal.hasContent() === false) {
+		this.m_oModal.setContent($('#modalDialog'));
 	}
 
-	
+
 	var oDialog = this[sDialog];
 	this.visible.setValue(true);
 	oDialog.initializeForm();
-	this.m_oModal.setHasBackground( oDialog.hasBackground.getValue() );
+	this.m_oModal.setHasBackground(oDialog.hasBackground.getValue());
 	this.isClosable.setValue(oDialog.isClosable.getValue());
 
 	this.type._$setInternalValue(sDialog);
-	this.viewNode.updateList({current:oDialog});
+	this.viewNode.updateList({
+		current: oDialog
+	});
 };
 
-brjs.dashboard.app.model.dialog.Dialog.prototype.displayNotification = function(sMessage)
-{
+Dialog.prototype.displayNotification = function(sMessage) {
 	var htmlMessage = sMessage.replace(/\n/g, '<br/>');
-	
+
 	this.notificationDialog.message.setValue(htmlMessage);
-	this.showDialog("notificationDialog");
+	this.showDialog('notificationDialog');
 };
 
-brjs.dashboard.app.model.dialog.Dialog.prototype.getAppNamespace = function()
-{
+Dialog.prototype.getAppNamespace = function() {
 	return this.m_sAppNamespace;
 };
 
-brjs.dashboard.app.model.dialog.Dialog.prototype.setAppNamespace = function(sAppNamespace)
-{
+Dialog.prototype.setAppNamespace = function(sAppNamespace) {
 	this.m_sAppNamespace = sAppNamespace;
 };
 
-brjs.dashboard.app.model.dialog.Dialog.prototype._onVisibilityChanged = function(sDialogClass)
-{
-	if(this.visible.getValue() === true)
-	{
+Dialog.prototype._onVisibilityChanged = function(sDialogClass) {
+	if (this.visible.getValue() === true) {
 		this._openDialog();
-	}
-	else
-	{
+	} else {
 		this.m_oModal.hide();
 	}
 };
 
-brjs.dashboard.app.model.dialog.Dialog.prototype._openDialog = function(bPreventClose)
-{
-	this.m_oModal.setClosable( this.isClosable.getValue() );
+Dialog.prototype._openDialog = function(bPreventClose) {
+	this.m_oModal.setClosable(this.isClosable.getValue());
 	this.m_oModal.show();
 };
 
-brjs.dashboard.app.model.dialog.Dialog.prototype._onClose = function(sDialogClass)
-{
-	if(this.m_oPresentationModel)
-	{
+Dialog.prototype._onClose = function(sDialogClass) {
+	if (this.m_oPresentationModel) {
 		this.m_oPresentationModel.appsScreen.updateApps();
 		this.visible.setValue(false);
 	}
 };
 
 
+module.exports = Dialog;

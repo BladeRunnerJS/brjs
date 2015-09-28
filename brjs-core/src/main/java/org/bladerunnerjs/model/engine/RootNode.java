@@ -20,6 +20,7 @@ public interface RootNode extends Node {
 	<N extends Node> N locateAncestorNodeOfClass(MemoizedFile file, Class<N> nodeClass);
 	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
 	IO io();
+	MemoizedFile getMemoizedFile(String filePath);
 	MemoizedFile getMemoizedFile(File file);
 	MemoizedFile getMemoizedFile(File dir, String filePath);
 	

@@ -6,8 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.utility.FileUtils;
-
 
 public abstract class AssetContainerBuilder<N extends AssetContainer> extends NodeBuilder<N>
 {
@@ -37,13 +35,6 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer containsResourceFileWithContents(String resourceFileName, String contents) throws Exception 
 	{
 		writeToFile(node.file("resources/"+resourceFileName), contents);
-		
-		return builderChainer;
-	}
-	
-	public BuilderChainer containsFileCopiedFrom(String resourceFileName, String srcFile) throws Exception 
-	{
-		FileUtils.copyFile( specTest.brjs, new File(srcFile), node.file(resourceFileName) );
 		
 		return builderChainer;
 	}

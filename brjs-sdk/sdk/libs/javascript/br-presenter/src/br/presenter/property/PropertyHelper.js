@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @module br/presenter/property/PropertyHelper
  */
@@ -11,10 +13,9 @@
  * <p>This is a useful class if you want to keep track of all the properties of certain node in a single place. It
  * will also provide some methods that give you extra functionality for handling call-backs from your properties.</p>
  */
-br.presenter.property.PropertyHelper = function ()
-{
+function PropertyHelper() {
 	this.m_pListeners = [];
-};
+}
 
 /**
  * Adds a change listener to the supplied property. The function handler will be called with three arguments: the new value
@@ -27,9 +28,8 @@ br.presenter.property.PropertyHelper = function ()
  * @param {Boolean} [bCallNow]
  * @return {br.presenter.property.PropertyHelper}
  */
-br.presenter.property.PropertyHelper.prototype.addChangeNotification = function(oProperty, oScope, vHandler, bCallNow)
-{
-	if(typeof vHandler == 'string') {
+PropertyHelper.prototype.addChangeNotification = function(oProperty, oScope, vHandler, bCallNow) {
+	if (typeof vHandler == 'string') {
 		vHandler = oScope[vHandler];
 	}
 
@@ -55,8 +55,7 @@ br.presenter.property.PropertyHelper.prototype.addChangeNotification = function(
  * @param {Boolean} [bCallNow]
  * @return {br.presenter.property.PropertyHelper}
  */
-br.presenter.property.PropertyHelper.prototype.addChangeListener = function(oProperty, oScope, vHandler, bCallNow)
-{
+PropertyHelper.prototype.addChangeListener = function(oProperty, oScope, vHandler, bCallNow) {
 	return this._addListener('addChangeListener', oProperty, oScope, vHandler, bCallNow);
 };
 
@@ -70,9 +69,8 @@ br.presenter.property.PropertyHelper.prototype.addChangeListener = function(oPro
  * @param {Boolean} [bCallNow]
  * @return {br.presenter.property.PropertyHelper}
  */
-br.presenter.property.PropertyHelper.prototype.addUpdateListener = function(oProperty, oScope, vHandler, bCallNow)
-{
-    return this._addListener('addUpdateListener', oProperty, oScope, vHandler, bCallNow);
+PropertyHelper.prototype.addUpdateListener = function(oProperty, oScope, vHandler, bCallNow) {
+	return this._addListener('addUpdateListener', oProperty, oScope, vHandler, bCallNow);
 };
 
 /**
@@ -85,8 +83,7 @@ br.presenter.property.PropertyHelper.prototype.addUpdateListener = function(oPro
  * @param {Boolean} [bCallNow]
  * @return {br.presenter.property.PropertyHelper}
  */
-br.presenter.property.PropertyHelper.prototype.addValidationSuccessListener = function(oProperty, oScope, vHandler, bCallNow)
-{
+PropertyHelper.prototype.addValidationSuccessListener = function(oProperty, oScope, vHandler, bCallNow) {
 	return this._addListener('addValidationSuccessListener', oProperty, oScope, vHandler, bCallNow);
 };
 
@@ -100,8 +97,7 @@ br.presenter.property.PropertyHelper.prototype.addValidationSuccessListener = fu
  * @param {Boolean} [bCallNow]
  * @return {br.presenter.property.PropertyHelper}
  */
-br.presenter.property.PropertyHelper.prototype.addValidationErrorListener = function(oProperty, oScope, vHandler, bCallNow)
-{
+PropertyHelper.prototype.addValidationErrorListener = function(oProperty, oScope, vHandler, bCallNow) {
 	return this._addListener('addValidationErrorListener', oProperty, oScope, vHandler, bCallNow);
 };
 
@@ -120,9 +116,8 @@ br.presenter.property.PropertyHelper.prototype.addValidationErrorListener = func
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
  */
-br.presenter.property.PropertyHelper.prototype.addValidationChangeListener = function(oProperty, oScope, vHandler, bCallNow)
-{
-	if(typeof vHandler == 'string') {
+PropertyHelper.prototype.addValidationChangeListener = function(oProperty, oScope, vHandler, bCallNow) {
+	if (typeof vHandler == 'string') {
 		vHandler = oScope[vHandler];
 	}
 
@@ -138,8 +133,7 @@ br.presenter.property.PropertyHelper.prototype.addValidationChangeListener = fun
 	this._addListener('addValidationSuccessListener', oProperty, oHandler, 'onSuccess', false);
 	this._addListener('addValidationErrorListener', oProperty, oHandler, 'onError', false);
 
-	if(bCallNow)
-	{
+	if (bCallNow) {
 		oProperty.hasValidationError() ? oHandler.onError() : oHandler.onSuccess();
 	}
 };
@@ -154,13 +148,12 @@ br.presenter.property.PropertyHelper.prototype.addValidationChangeListener = fun
  * @param {Boolean} bCallNow
  * @return {br.presenter.property.PropertyHelper}
  */
-br.presenter.property.PropertyHelper.prototype._addListener = function(listenerType, oProperty, oScope, vHandler, bCallNow)
-{
-	if("function" === typeof vHandler) {
+PropertyHelper.prototype._addListener = function(listenerType, oProperty, oScope, vHandler, bCallNow) {
+	if ('function' === typeof vHandler) {
 		oScope = {
-			"handler": vHandler.bind(oScope)
+			handler: vHandler.bind(oScope)
 		};
-		vHandler = "handler";
+		vHandler = 'handler';
 	}
 
 	this.m_pListeners.push({
@@ -179,13 +172,12 @@ br.presenter.property.PropertyHelper.prototype._addListener = function(listenerT
  * @param {String} [sType]
  * @return {br.presenter.property.PropertyHelper}
  */
-br.presenter.property.PropertyHelper.prototype.clearProperty = function(oProperty, sType)
-{
+PropertyHelper.prototype.clearProperty = function(oProperty, sType) {
 	var pListeners = this.m_pListeners;
-	for(var i = pListeners.length - 1; i >= 0; i--) {
+	for (var i = pListeners.length - 1; i >= 0; i--) {
 		var oListener = pListeners[i];
 
-		if(oListener.property === oProperty && (!sType || sType === oListener.type)) {
+		if (oListener.property === oProperty && (!sType || sType === oListener.type)) {
 			oProperty.removeListener(oListener.listener);
 			pListeners.splice(i, 1);
 		}
@@ -200,8 +192,7 @@ br.presenter.property.PropertyHelper.prototype.clearProperty = function(oPropert
  * @param {module:br/presenter/property/Property} oProperty
  * @return {br.presenter.property.PropertyHelper}
  */
-br.presenter.property.PropertyHelper.prototype.removeChangeListeners = function(oProperty)
-{
+PropertyHelper.prototype.removeChangeListeners = function(oProperty) {
 	return this.clearProperty(oProperty, 'addChangeListener');
 };
 
@@ -211,21 +202,21 @@ br.presenter.property.PropertyHelper.prototype.removeChangeListeners = function(
  * @param {module:br/presenter/property/Property} oProperty
  * @return {br.presenter.property.PropertyHelper}
  */
-br.presenter.property.PropertyHelper.prototype.removeValidationSuccessListeners = function(oProperty)
-{
+PropertyHelper.prototype.removeValidationSuccessListeners = function(oProperty) {
 	return this.clearProperty(oProperty, 'addValidationSuccessListener');
 };
 
 /**
  * Removes all listeners attached through this PropertyHelper
  */
-br.presenter.property.PropertyHelper.prototype.removeAllListeners = function()
-{
+PropertyHelper.prototype.removeAllListeners = function() {
 	var pListeners = this.m_pListeners;
-	for(var i = pListeners.length - 1; i >= 0; i--) {
+	for (var i = pListeners.length - 1; i >= 0; i--) {
 		pListeners[i].property.removeListener(pListeners[i].listener);
 	}
 
 	this.m_pListeners = [];
 	return this;
 };
+
+module.exports = PropertyHelper;
