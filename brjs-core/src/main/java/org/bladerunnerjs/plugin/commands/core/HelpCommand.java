@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.commands.core;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
@@ -104,13 +105,27 @@ public class HelpCommand extends JSAPArgsParsingCommandPlugin
 		logger.println("");
 		
 		logger.println("Help:");
-		String commandHelp = command.getCommandHelp();
-		if (commandHelp.length() > 0 && !Character.isWhitespace(commandHelp.charAt(0))) {
-			commandHelp = "  "+commandHelp;
-		}
-		logger.println(commandHelp);
+		logger.println( getFormattedHelpMessage(command) );
 	}
 	
+	private String getFormattedHelpMessage(CommandPlugin command)
+	{
+		String commandHelp = command.getCommandHelp();
+		StringBuilder formattedHelp = new StringBuilder();
+		for (String line : StringUtils.split(commandHelp, "\n")) {
+			formattedHelp.append( formatHelpMessageLine(line, 2) + "\n" );
+		}
+		return formattedHelp.toString();
+	}
+	
+	private String formatHelpMessageLine(String line, int expectedWhitespaceCount) {
+		int lineWhitespace = 0;
+		while (lineWhitespace < line.length() && line.charAt(lineWhitespace) == ' ') {
+			lineWhitespace++;
+		}
+		return StringUtils.repeat(' ', Math.max(0, expectedWhitespaceCount - lineWhitespace)) + line;
+	}
+
 	public String getHelpMessageFormatString()
 	{		
 		int commandNameSize = getLongestCommandName() + 5;
