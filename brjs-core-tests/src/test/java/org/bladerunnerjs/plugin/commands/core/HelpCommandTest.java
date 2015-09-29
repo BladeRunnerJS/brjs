@@ -1,22 +1,30 @@
 package org.bladerunnerjs.plugin.commands.core;
 
+import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.api.plugin.CommandPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.plugin.commands.core.HelpCommand;
 import org.bladerunnerjs.testing.utility.MockCommandPlugin;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPException;
+import com.martiansoftware.jsap.JSAPResult;
+import com.martiansoftware.jsap.UnflaggedOption;
 
 
 public class HelpCommandTest extends SpecTest
 {
 	HelpCommand helpCommand;
-	MockCommandPlugin command1;
-	MockCommandPlugin command2;
-	MockCommandPlugin command3;
-	MockCommandPlugin command4;
+	CommandPlugin command1;
+	CommandPlugin command2;
+	CommandPlugin command3;
+	CommandPlugin command4;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -122,7 +130,26 @@ public class HelpCommandTest extends SpecTest
 			"  \tand a tabbed line");
 	}
 	
-	@Ignore
+	@Test
+	public void jsapArgsParsingCommandHelpMessageIsCorrectlyFormatted() throws Exception
+	{
+		given(brjs).hasCommandPlugins(new MockJSAPArgsParsingCommandPlugin())
+		.and(brjs).hasBeenCreated();
+		when(brjs).runCommand("help", "jsapCommand");
+		then(logging).containsConsoleText(
+				"Description:",
+				"  mock jsap command",
+				"",
+				"Usage:",
+				"  brjs jsapCommand [<arg1>] [<arg2>]",
+				"",
+				"Help:",
+				"  [<arg1>]",
+				"        the 1st argument",
+				"  [<arg2>]",
+				"        the 2nd argument");
+	}
+	
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
@@ -130,4 +157,23 @@ public class HelpCommandTest extends SpecTest
 		when(brjs).runCommand("help");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
+	
+	
+	private class MockJSAPArgsParsingCommandPlugin extends JSAPArgsParsingCommandPlugin {
+		public void setBRJS(BRJS brjs) {}
+		public String getCommandName() {
+			return "jsapCommand";
+		}
+		public String getCommandDescription() {
+			return "mock jsap command";
+		}
+		protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+			return 0;
+		}
+		protected void configureArgsParser(JSAP argsParser) throws JSAPException {
+			argsParser.registerParameter(new UnflaggedOption("arg1").setHelp("the 1st argument"));
+			argsParser.registerParameter(new UnflaggedOption("arg2").setHelp("the 2nd argument"));
+		}
+	}
+	
 }
