@@ -43,7 +43,7 @@ public class HelpCommand extends JSAPArgsParsingCommandPlugin
 	@Override
 	public String getCommandDescription()
 	{
-		return "Prints this list of commands";
+		return "Prints this list of commands.";
 	}
 	
 	@Override

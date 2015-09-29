@@ -52,7 +52,7 @@ public class JsDocCommand extends JSAPArgsParsingCommandPlugin {
 	
 	@Override
 	public String getCommandDescription() {
-		return "Generate JsDocs for a given application";
+		return "Generate JsDocs for a given application.";
 	}
 	
 	@Override
