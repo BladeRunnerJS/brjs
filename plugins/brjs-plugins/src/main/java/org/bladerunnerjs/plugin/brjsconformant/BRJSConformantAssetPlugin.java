@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
@@ -125,7 +126,15 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin
 			String srcTestDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src-test");
 			dirs = createFilesForFilePaths(assetContainer,  Arrays.asList(srcTestDir) );
 		} else {
-			String srcDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src");
+			String compiledSrcDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "compiled");
+			String compiledSrcPath = assetContainer.file(compiledSrcDir).toString();
+			String srcDir = compiledSrcDir;
+			
+			File file = new File(compiledSrcPath);
+			if(!file.exists() || !file.isDirectory()) {
+				srcDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src");
+			}
+			
 			String srcTestDir = calculateImplicitOrExplicitRequirePrefixDirectory(assetContainer, "src-test");
 			dirs = createFilesForFilePaths(assetContainer, Arrays.asList(srcDir, srcTestDir) );
 		}
