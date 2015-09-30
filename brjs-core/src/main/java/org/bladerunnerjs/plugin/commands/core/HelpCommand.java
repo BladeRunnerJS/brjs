@@ -113,17 +113,9 @@ public class HelpCommand extends JSAPArgsParsingCommandPlugin
 		String commandHelp = command.getCommandHelp();
 		StringBuilder formattedHelp = new StringBuilder();
 		for (String line : StringUtils.split(commandHelp, "\n")) {
-			formattedHelp.append( formatHelpMessageLine(line, 2) + "\n" );
+			formattedHelp.append( StringUtils.repeat(' ', 2) + line + "\n" );
 		}
 		return formattedHelp.toString();
-	}
-	
-	private String formatHelpMessageLine(String line, int expectedWhitespaceCount) {
-		int lineWhitespace = 0;
-		while (lineWhitespace < line.length() && line.charAt(lineWhitespace) == ' ') {
-			lineWhitespace++;
-		}
-		return StringUtils.repeat(' ', Math.max(0, expectedWhitespaceCount - lineWhitespace)) + line;
 	}
 
 	public String getHelpMessageFormatString()
