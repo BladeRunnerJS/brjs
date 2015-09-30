@@ -35,7 +35,8 @@ public class BladerunnerConfTest extends SpecTest {
 				"   - AppMetadataContentPlugin",
 				"   - CommonJsContentPlugin",
 				"   - NamespacedJsContentPlugin",
-				"   - '*'");
+				"   - '*'",
+				"   - ThirdpartyGlobalizationContentPlugin");
 	}
 	
 	@Test
@@ -66,7 +67,8 @@ public class BladerunnerConfTest extends SpecTest {
 				"   - AppMetadataContentPlugin",
 				"   - CommonJsContentPlugin",
 				"   - NamespacedJsContentPlugin",
-				"   - '*'");
+				"   - '*'",
+				"   - ThirdpartyGlobalizationContentPlugin");
 	}
 	
 	@Test

@@ -9,7 +9,6 @@ import java.util.List;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
-import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
@@ -72,25 +71,21 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
 			if (parsedContentPath.formName.equals("bundle-request"))
 			{
-				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(bundleSet);
 				List<Reader> readerList = new ArrayList<Reader>();
 				for(ThirdpartySourceModule sourceFile : bundleSet.sourceModules(ThirdpartySourceModule.class)) 
 				{
 					readerList.add(new StringReader("// " + sourceFile.getPrimaryRequirePath() + "\n"));
 					readerList.add(sourceFile.getReader());
 					readerList.add(new StringReader("\n\n"));
-					readerList.add( new StringReader(getGlobalisedThirdpartyModuleContent(sourceFile, hasUnencapsulatedSourceModule)) );
 				}
 				return new CharResponseContent( brjs, readerList );
 			}
 			else if(parsedContentPath.formName.equals("single-module-request")) {
-				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(bundleSet);
 				LinkedAsset jsModule = bundleSet.bundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
 				return new CharResponseContent(brjs, 
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
 					jsModule.getReader(),
-					new StringReader("\n\n"),
-					new StringReader(getGlobalisedThirdpartyModuleContent(jsModule, hasUnencapsulatedSourceModule))
+					new StringReader("\n\n")
 				);
 			}
 			else {
@@ -100,15 +95,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 		catch(RequirePathException  | IOException ex) {
 			throw new ContentProcessingException(ex);
 		}
-	}
-
-	private String getGlobalisedThirdpartyModuleContent(LinkedAsset sourceFile, boolean hasUnencapsulatedSourceModule)
-	{
-		if (sourceFile instanceof ThirdpartySourceModule && hasUnencapsulatedSourceModule) {
-			ThirdpartySourceModule thirdpartyModule = (ThirdpartySourceModule) sourceFile;
-			return "window." + thirdpartyModule.getGlobalisedName() + " = System.syncImport('"+thirdpartyModule.getPrimaryRequirePath()+"');\n\n";
-		}
-		return "";
 	}
 
 	@Override
@@ -122,7 +108,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			} else {
 				for(ThirdpartySourceModule sourceModule : bundleSet.sourceModules(ThirdpartySourceModule.class)) {
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
-				}				
+				}
 			}
 		}
 		catch(MalformedTokenException e) {
@@ -130,16 +116,5 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 		}
 		
 		return requestPaths;
-	}
-
-	private boolean hasUnencapsulatedSourceModule(BundleSet bundleSet)
-	{
-		for(SourceModule sourceFile : bundleSet.sourceModules()) 
-		{
-			if (sourceFile.isGlobalisedModule()) {
-				return true;
-			}
-		}
-		return false;
 	}
 }
