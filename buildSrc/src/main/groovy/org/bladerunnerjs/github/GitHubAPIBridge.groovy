@@ -214,7 +214,10 @@ class GitHubAPIBridge
         			queryString : queryString,
     				body: requestBody
         		)
-        		logger.debug "GitHub response was: ${response.data.toString()}"
+				logger.debug "GitHub response was: ${response.data.toString()}"
+				if (response.status >= 300) {
+					throw new GradleException("Error making request, response code was ${response.status}");
+				}
         		return response
         	}
         	catch( ex ) {
