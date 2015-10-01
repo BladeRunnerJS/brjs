@@ -46,6 +46,10 @@ public class NonCircularTransitivePreExportDependencyGraphCreator {
 	}
 
 	private static boolean reachable(SourceModule fromSourceModule, SourceModule toSourceModule, Map<SourceModule, List<SourceModule>> combinedDefineTimeDependencyGraph, Set<SourceModule> visitedSourceModules) {
+		if(!combinedDefineTimeDependencyGraph.containsKey(fromSourceModule)) {
+			System.out.println("The following module is only ever used as a post-export define-time dependency: " + fromSourceModule.getPrimaryRequirePath());
+		}
+
 		for(SourceModule dependentSourceModule : combinedDefineTimeDependencyGraph.get(fromSourceModule)) {
 			if(dependentSourceModule == toSourceModule) {
 				return true;
