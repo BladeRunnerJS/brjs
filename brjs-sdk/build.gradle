@@ -154,18 +154,28 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 // "libs/javascript" is relative to the sdk directory
 [ "Chrome", "Firefox", "IE", "PhantomJS", "Safari" ].each {
 	def testJsTask = createTestTask "testJs${it}", "libs/javascript", "ALL", it.toLowerCase()
+	def testItAppTask = createTestTask "testItApp${it}", "../apps/it-app", "ALL", it.toLowerCase()
 	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase()
-	task "test${it}", dependsOn: [testJsTask, testSystemAppsTask]
+	task "test${it}", dependsOn: [testJsTask, testItAppTask, testSystemAppsTask]
 }
 
-task runIntegrationTests(type: Exec) {
+task integrationTestItApp(type: Exec, dependsOn: assemble) {
     workingDir './sdk'
     commandLine OSCalculator.getOSSpecificCommand('brjs test-integration ../apps/it-app')
 }
 gradle.addListener(new StartBRJSExecutionListener(
-        runIntegrationTests,
+        integrationTestItApp,
         file('sdk'),
         file('sdk/libs/java/system')
+))
+task integrationTestDashboard(type: Exec, dependsOn: assemble) {
+  workingDir './sdk'
+  commandLine OSCalculator.getOSSpecificCommand('brjs test-integration system-applications/dashboard')
+}
+gradle.addListener(new StartBRJSExecutionListener(
+	  integrationTestDashboard,
+	  file('sdk'),
+	  file('sdk/libs/java/system')
 ))
 
 task test, dependsOn: testPhantomJS
