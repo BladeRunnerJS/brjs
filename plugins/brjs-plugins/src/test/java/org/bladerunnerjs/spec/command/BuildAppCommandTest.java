@@ -335,4 +335,25 @@ public class BuildAppCommandTest extends SpecTest
 			.whereTopLevelExceptionContainsString(CommandOperationException.class);
 	}
 	
+	@Test
+	public void exceptionIsThrownIfStaticAppIsBuiltAndWebInfJarsAreOutdated() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFolder("WEB-INF/lib")
+			.and(app).containsFileWithContents("WEB-INF/lib/brjs-servlet-1.2.2.jar", "some jar contents")
+			.and(brjs).containsFileWithContents("sdk/libs/java/application/brjs-servlet-1.2.3.jar", "new jar contents");
+		when(brjs).runCommand("build-app", "app");
+		then(exceptions).verifyException(MissingAppJarsException.class, "app", "brjs-", "sdk/libs/java/application")
+			.whereTopLevelExceptionContainsString(CommandOperationException.class);
+	}
+
+	@Test
+	public void exceptionIsNotThrownIfStaticAppIsBuiltAndWebInfDoesntExistButJarsExistInSdk() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(brjs).containsFileWithContents("sdk/libs/java/application/brjs-servlet-1.2.3.jar", "new jar contents");
+		when(brjs).runCommand("build-app", "app");
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
 }
