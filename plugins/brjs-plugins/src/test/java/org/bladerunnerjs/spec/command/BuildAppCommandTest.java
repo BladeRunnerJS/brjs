@@ -10,10 +10,12 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.utility.MissingAppJarsException;
 import org.bladerunnerjs.appserver.util.TokenReplacementException;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.LoggingMissingTokenHandler;
@@ -400,6 +402,49 @@ public class BuildAppCommandTest extends SpecTest
 	}
 	
 	@Test
+	public void exceptionIsThrownIfWarIsBuiltAndWebInfJarsAreMissing() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFolder("WEB-INF/lib")
+			.and(brjs).containsFileWithContents("sdk/libs/java/application/brjs-servlet-1.2.2.jar", "new jar contents");
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(exceptions).verifyException(MissingAppJarsException.class, "app", "brjs-", "sdk/libs/java/application")
+			.whereTopLevelExceptionContainsString(CommandOperationException.class);
+	}
+	
+	@Test
+	public void exceptionIsThrownIfWarIsBuiltAndWebInfJarsAreOutdated() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFolder("WEB-INF/lib")
+			.and(app).containsFileWithContents("WEB-INF/lib/brjs-servlet-1.2.2.jar", "some jar contents")
+			.and(brjs).containsFileWithContents("sdk/libs/java/application/brjs-servlet-1.2.3.jar", "new jar contents");
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(exceptions).verifyException(MissingAppJarsException.class, "app", "brjs-", "sdk/libs/java/application")
+			.whereTopLevelExceptionContainsString(CommandOperationException.class);
+	}
+	
+	@Test
+	public void exceptionIsThrownIfStaticAppIsBuiltAndWebInfJarsAreOutdated() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFolder("WEB-INF/lib")
+			.and(app).containsFileWithContents("WEB-INF/lib/brjs-servlet-1.2.2.jar", "some jar contents")
+			.and(brjs).containsFileWithContents("sdk/libs/java/application/brjs-servlet-1.2.3.jar", "new jar contents");
+		when(brjs).runCommand("build-app", "app");
+		then(exceptions).verifyException(MissingAppJarsException.class, "app", "brjs-", "sdk/libs/java/application")
+			.whereTopLevelExceptionContainsString(CommandOperationException.class);
+	}
+
+	@Test
+	public void exceptionIsNotThrownIfStaticAppIsBuiltAndWebInfDoesntExistButJarsExistInSdk() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(brjs).containsFileWithContents("sdk/libs/java/application/brjs-servlet-1.2.3.jar", "new jar contents");
+		when(brjs).runCommand("build-app", "app");
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
+		
 	public void tokensCanBeReplacedFromDefaultEnvironmentPropertiesFile() throws Exception
 	{
 		given(app).hasBeenCreated()
