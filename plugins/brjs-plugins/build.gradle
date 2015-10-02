@@ -16,6 +16,8 @@ apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
 
 retrolambda {
 	javaVersion JavaVersion.VERSION_1_7
+	oldJdk JAVA7_HOME
+	jdk JAVA8_HOME
 }
 project.afterEvaluate {
 	compileTestJava.dependsOn compileRetrolambdaMain

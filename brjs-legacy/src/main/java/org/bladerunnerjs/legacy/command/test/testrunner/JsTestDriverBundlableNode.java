@@ -168,10 +168,10 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 		LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(requirePath);
 		
 		if (linkedAsset instanceof TestAsset) {
-			linkedAsset = new JsTestDriverEmptyTestSourceModule((SourceModule) linkedAsset);
+			return new JsTestDriverEmptyTestSourceModule((SourceModule) linkedAsset);
+		} else {	
+			return linkedAsset;
 		}
-		
-		return linkedAsset;
 	}
 	
 	@Override
@@ -191,11 +191,16 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 
 	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
-		return bundlableNode.getBundleSet();
+		return new JsTestDriverBundleSet(this, bundlableNode.getBundleSet());
 	}
 
 	@Override
 	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		return bundlableNode.handleLogicalRequest(logicalRequestPath, contentAccessor, version);
+	}
+	
+	@Override
+	public ResponseContent handleLogicalRequest(String logicalRequestPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		return bundlableNode.handleLogicalRequest(logicalRequestPath, contentAccessor, version);
 	}
 	

@@ -755,7 +755,9 @@ function Logger(emitter, component) {
 // creates a method for each of the log levels.
 Levels.forEach(function(level) {
 	Logger.prototype[level] = function() {
-		this.emitter.trigger('log', this.component, level, arguments, Date.now());
+		var argsArray = [];
+		argsArray.unshift.apply(argsArray, arguments);
+		this.emitter.trigger('log', this.component, level, argsArray, Date.now());
 	};
 });
 
@@ -1236,10 +1238,12 @@ var LogStore = require('./destination/LogStore');
 var ConsoleLog = require('./destination/ConsoleLog');
 
 var fell = new Log();
+fell.Log = fell;
 fell.destination = {
 	LogStore: LogStore,
 	ConsoleLog: ConsoleLog
 };
+fell.Log = fell;
 
 module.exports = fell;
 

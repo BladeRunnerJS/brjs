@@ -17,6 +17,10 @@ import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 
+import org.bladerunnerjs.logger.LogLevel;
+import org.bladerunnerjs.utility.AppRequestHandler;
+import org.bladerunnerjs.utility.J2EEAppLoggingMissingTokenHandler;
+
 public class ServeCommand extends JSAPArgsParsingCommandPlugin
 {
 	public class Messages {
@@ -57,18 +61,14 @@ public class ServeCommand extends JSAPArgsParsingCommandPlugin
 	{
 		return "Starts the embedded application server.";
 	}
-	
-	
-	@Override
-	public String getCommandHelp() {
-		return getCommandUsage();
-	}
 
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException
 	{
 		argsParser.registerParameter(new FlaggedOption("port").setShortFlag('p').setLongFlag("port").setRequired(false).setHelp("the port number to run the BRJS application (overrides config)"));
 		argsParser.registerParameter(new FlaggedOption("version").setShortFlag('v').setLongFlag("version").setRequired(false).setDefault("dev").setHelp("the version number for the app"));
+		argsParser.registerParameter(new FlaggedOption("environment").setShortFlag('e').setLongFlag("environment").setRequired(false)
+				.setDefault("dev").setHelp("the environment to use when locating app properties"));
 	}
 
 	@Override
@@ -87,7 +87,11 @@ public class ServeCommand extends JSAPArgsParsingCommandPlugin
 			}
 			brjs.getAppVersionGenerator().setVersion(version);
 			brjs.getAppVersionGenerator().appendTimetamp(false);
-			
+
+			String environment = parsedArgs.getString("environment");
+			AppRequestHandler.setPropertiesEnvironment(brjs, environment);
+			AppRequestHandler.setNoTokenExceptionHandler(brjs, new J2EEAppLoggingMissingTokenHandler(brjs, this.getPluginClass(), environment, LogLevel.INFO));
+
 			appServer.start();
 			brjs.fileObserver().start();
 			
