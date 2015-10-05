@@ -20,7 +20,7 @@ install:
 - TERM=dumb ./gradlew compileJava
 script:
 - TERM=dumb ./gradlew testJava
-- TERM=dumb ./gradlew :brjs-sdk:test
+- TERM=dumb ./gradlew :brjs-sdk:testFirefox
 notifications:
   hipchat:
     rooms:

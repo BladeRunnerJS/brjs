@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.commands.core;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
@@ -42,7 +43,7 @@ public class HelpCommand extends JSAPArgsParsingCommandPlugin
 	@Override
 	public String getCommandDescription()
 	{
-		return "Prints this list of commands";
+		return "Prints this list of commands.";
 	}
 	
 	@Override
@@ -83,6 +84,10 @@ public class HelpCommand extends JSAPArgsParsingCommandPlugin
 		logger.println("  --show-pkg (show which class each log line comes from)");
 		logger.println("  --no-stats (permenantly disable anonymous tracking)");
 		logger.println("  --stats (permenantly enable anonymous tracking)");
+		logger.println("");
+		
+		logger.println("You can get detailed help for any command by typing:");
+		logger.println("  brjs help <command-name>");
 	}
 
 	private void getHelpForSpecificCommand(String commandName) throws CommandArgumentsException
@@ -100,9 +105,19 @@ public class HelpCommand extends JSAPArgsParsingCommandPlugin
 		logger.println("");
 		
 		logger.println("Help:");
-		logger.println("  " + command.getCommandHelp());
+		logger.println( getFormattedHelpMessage(command) );
 	}
 	
+	private String getFormattedHelpMessage(CommandPlugin command)
+	{
+		String commandHelp = command.getCommandHelp();
+		StringBuilder formattedHelp = new StringBuilder();
+		for (String line : StringUtils.split(commandHelp, "\n")) {
+			formattedHelp.append( StringUtils.repeat(' ', 2) + line + "\n" );
+		}
+		return formattedHelp.toString();
+	}
+
 	public String getHelpMessageFormatString()
 	{		
 		int commandNameSize = getLongestCommandName() + 5;

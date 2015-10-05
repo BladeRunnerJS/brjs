@@ -53,7 +53,7 @@ public class J2eeifyCommandPlugin extends JSAPArgsParsingCommandPlugin
 	@Override
 	public String getCommandDescription()
 	{
-		return "Copies WEB-INF files into an application ready for adding servlets and other J2EE features";
+		return "Copies WEB-INF files into an application ready for adding servlets and other J2EE features.";
 	}
 	
 	@Override
