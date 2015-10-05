@@ -1,3 +1,9 @@
+'use strict';
+
+var ElementUtility = require('br/util/ElementUtility');
+var TooltipHelper = require('br/presenter/control/tooltip/TooltipHelper');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/control/tooltip/DefaultTooltipHelper
  */
@@ -7,23 +13,22 @@
  * @class
  * @alias module:br/presenter/control/tooltip/DefaultTooltipHelper
  */
-br.presenter.control.tooltip.DefaultTooltipHelper = function()
-{
+function DefaultTooltipHelper() {
 	this.m_eContainer = document.createElement('div');
-	this.m_eContainer.className = "tooltip-container";
+	this.m_eContainer.className = 'tooltip-container';
 	this.m_eMessage = document.createElement('div');
-	this.m_eMessage.className = "tooltip-content";
+	this.m_eMessage.className = 'tooltip-content';
 	this.m_eContainer.appendChild(this.m_eMessage);
 
 	this.m_vParent = document.body;
-};
-br.Core.implement(br.presenter.control.tooltip.DefaultTooltipHelper, br.presenter.control.tooltip.TooltipHelper);
+}
+
+Core.implement(DefaultTooltipHelper, TooltipHelper);
 
 /**
  * @private
  */
-br.presenter.control.tooltip.DefaultTooltipHelper.prototype.updateTooltip = function(sMessage)
-{
+DefaultTooltipHelper.prototype.updateTooltip = function(sMessage) {
 	this.m_eMessage.textContent = sMessage;
 	return this;
 };
@@ -31,8 +36,7 @@ br.presenter.control.tooltip.DefaultTooltipHelper.prototype.updateTooltip = func
 /**
  * @private
  */
-br.presenter.control.tooltip.DefaultTooltipHelper.prototype.containWithin = function(oContainer)
-{
+DefaultTooltipHelper.prototype.containWithin = function(oContainer) {
 	this.m_vParent = oContainer;
 	return this;
 };
@@ -40,9 +44,8 @@ br.presenter.control.tooltip.DefaultTooltipHelper.prototype.containWithin = func
 /**
  * @private
  */
-br.presenter.control.tooltip.DefaultTooltipHelper.prototype.pointTo = function(eErrorElement)
-{
-	if(eErrorElement.length > 1) {
+DefaultTooltipHelper.prototype.pointTo = function(eErrorElement) {
+	if (eErrorElement.length > 1) {
 		return this;
 	}
 	var eField = eErrorElement[0];
@@ -51,11 +54,11 @@ br.presenter.control.tooltip.DefaultTooltipHelper.prototype.pointTo = function(e
 	var oTooltipProperties = {};
 
 	oTooltipProperties.left = eField.offsetLeft + eField.offsetWidth / 2 - oTooltipDimensions.width / 2;
-	oTooltipProperties.top  = eField.offsetTop + eField.offsetHeight * 1.5;
+	oTooltipProperties.top = eField.offsetTop + eField.offsetHeight * 1.5;
 
-	br.util.ElementUtility.addClassName(this.m_eContainer, 'tooltip-visible');
-	this.m_eContainer.style.left = oTooltipProperties.left + "px";
-	this.m_eContainer.style.top = oTooltipProperties.top + "px";
+	ElementUtility.addClassName(this.m_eContainer, 'tooltip-visible');
+	this.m_eContainer.style.left = oTooltipProperties.left + 'px';
+	this.m_eContainer.style.top = oTooltipProperties.top + 'px';
 	this.m_vParent.appendChild(this.m_eContainer);
 
 	return this;
@@ -64,24 +67,23 @@ br.presenter.control.tooltip.DefaultTooltipHelper.prototype.pointTo = function(e
 /**
  * @private
  */
-br.presenter.control.tooltip.DefaultTooltipHelper.prototype.remove = function()
-{
+DefaultTooltipHelper.prototype.remove = function() {
 	this.m_vParent.removeChild(this.m_eContainer);
 };
 
 /**
  * @private
  */
+
 /*
  * Gets the dimensions of the tooltip, assuming the current content will not be changed. Do not call this function
  * in quick succession as it requires some heavy DOM lifting by the browser.
  */
-br.presenter.control.tooltip.DefaultTooltipHelper.prototype._getTooltipDimensions = function()
-{
+DefaultTooltipHelper.prototype._getTooltipDimensions = function() {
 	var eClone = this.m_eContainer.cloneNode(true);
-	eClone.style.visibility = "hidden";
-	eClone.style.position = "absolute";
-	eClone.style.display = "block";
+	eClone.style.visibility = 'hidden';
+	eClone.style.position = 'absolute';
+	eClone.style.display = 'block';
 	this.m_vParent.appendChild(eClone);
 
 	var oDimensions = {
@@ -92,3 +94,5 @@ br.presenter.control.tooltip.DefaultTooltipHelper.prototype._getTooltipDimension
 	this.m_vParent.removeChild(eClone);
 	return oDimensions;
 };
+
+module.exports = DefaultTooltipHelper;

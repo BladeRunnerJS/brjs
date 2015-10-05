@@ -343,4 +343,42 @@ public class AppServerTest extends SpecTest
 		then(appServer).requestForUrlContains("/app1/v/dev/no-such-content-plugin", "Error 404");
 	}
 	
+	@Test
+	public void customErrorPagesCanBeConfigured() throws Exception {
+		given(app1).hasBeenCreated()
+			.and(app1.defaultAspect()).indexPageHasContent("")
+			.and(app1Conf).supportsLocales("en")
+    		.and(app1).containsFileWithContents("WEB-INF/web.xml", 
+    				"<?xml version='1.0'?>\n"+
+    		"<web-app xmlns='http://java.sun.com/xml/ns/javaee' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'\n"+
+    		"	xsi:schemaLocation='http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd' version='2.5'>\n"+
+    		"	<servlet>\n"+
+    		"		<servlet-name>BRJSDevServlet</servlet-name>\n"+
+    		"		<servlet-class>org.bladerunnerjs.appserver.BRJSDevServlet</servlet-class>\n"+
+    		"		<load-on-startup>1</load-on-startup>\n"+
+    		"	</servlet>\n"+
+    		"	<servlet-mapping>\n"+
+    		"		<servlet-name>BRJSDevServlet</servlet-name>\n"+
+    		"		<url-pattern>/brjs/*</url-pattern>\n"+
+    		"	</servlet-mapping>\n"+
+    		"	<filter>\n"+
+    		"		<filter-name>BRJSDevServletFilter</filter-name>\n"+ 
+    		"		<filter-class>org.bladerunnerjs.appserver.BRJSDevServletFilter</filter-class>\n"+
+    		"	</filter>\n"+
+    		"	<filter-mapping>\n"+
+    		"		<filter-name>BRJSDevServletFilter</filter-name>\n"+ 
+    		"		<url-pattern>/*</url-pattern> \n"+
+    		"		<dispatcher>REQUEST</dispatcher>\n"+
+    		"		<dispatcher>FORWARD</dispatcher>\n"+
+    		"	</filter-mapping>\n"+
+    		"	<error-page>\n"+
+    		"    	<error-code>404</error-code>\n"+
+    		"    	<location>/WEB-INF/error-pages/404.html</location>\n"+
+    		"	</error-page>\n"+
+    		"</web-app>")
+			.and(app1).containsFileWithContents("WEB-INF/error-pages/404.html", "that's a 404!");
+    	when(appServer).started();
+		then(appServer).requestForUrlReturns("/app1/giveme404", "that's a 404!");
+	}
+	
 }

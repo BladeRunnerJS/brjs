@@ -8,4 +8,5 @@ org.bladerunnerjs.plugin.bundlers.i18n.I18nContentPlugin
 org.bladerunnerjs.plugin.bundlers.css.CssContentPlugin
 org.bladerunnerjs.plugin.bundlers.cssresource.CssResourceContentPlugin
 org.bladerunnerjs.plugin.bundlers.unbundledresources.UnbundledResourcesContentPlugin
+org.bladerunnerjs.plugin.bundlers.favicon.FavIconContentPlugin
 org.bladerunnerjs.plugin.bundlers.appmeta.AppMetadataContentPlugin

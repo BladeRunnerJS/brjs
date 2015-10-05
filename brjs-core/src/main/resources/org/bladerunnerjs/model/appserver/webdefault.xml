@@ -98,7 +98,7 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
   <servlet>
     <servlet-name>default</servlet-name>
-    <servlet-class>org.bladerunnerjs.appserver.NotFoundServlet</servlet-class>
+    <servlet-class>org.bladerunnerjs.appserver.BRJSDefaultServlet</servlet-class>
     <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>

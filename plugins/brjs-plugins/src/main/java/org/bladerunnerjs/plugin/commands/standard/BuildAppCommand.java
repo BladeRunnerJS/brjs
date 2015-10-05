@@ -16,7 +16,11 @@ import org.bladerunnerjs.api.model.exception.command.DirectoryDoesNotExistComman
 import org.bladerunnerjs.api.model.exception.command.DirectoryNotEmptyCommandException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
+import org.bladerunnerjs.appserver.util.ExceptionThrowingMissingTokenHandler;
+import org.bladerunnerjs.logger.LogLevel;
+import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtils;
+import org.bladerunnerjs.utility.LoggingMissingTokenHandler;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -46,7 +50,9 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
 		argsParser.registerParameter(new UnflaggedOption(Parameters.TARGET_DIR).setHelp("the directory within which the exported app will be built"));
 		argsParser.registerParameter(new FlaggedOption("version").setShortFlag('v').setLongFlag("version").setRequired(false).setHelp("the version number for the app"));
-		argsParser.registerParameter(new Switch("war").setShortFlag('w').setLongFlag("war").setDefault("false").setHelp("whether the exported files should be placed into a war zip."));
+		argsParser.registerParameter(new FlaggedOption("environment").setShortFlag('e').setLongFlag("environment").setRequired(false)
+				.setDefault("prod").setHelp("the environment to use when locating app properties"));
+		argsParser.registerParameter(new Switch("war").setShortFlag('w').setLongFlag("war").setDefault("false").setHelp("whether the exported files should be placed into a war archive"));
 	}
 	
 	@Override
@@ -75,6 +81,8 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		}
 		boolean warExport = parsedArgs.getBoolean("war");
 		boolean hasExplicitExportDirArg = (targetDirPath != null);
+		String environment = parsedArgs.getString("environment");	
+		String archiveName = (parsedArgs.userSpecified("environment")) ? appName + "_"+environment : appName;
 		
 		App app = brjs.app(appName);
 		
@@ -90,24 +98,24 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 				targetDir = brjs.file("sdk/" + targetDirPath);
 			}
 			appExportDir = targetDir;
-			warExportFile = targetDir.file(appName+".war");			
+			warExportFile = targetDir.file(archiveName+".war");			
 		} 
 		else {
-			appExportDir = targetDir.file(appName);
-			warExportFile = targetDir.file(appName+".war");
+			appExportDir = targetDir.file(archiveName);
+			warExportFile = targetDir.file(archiveName+".war");
 			
 			if (warExport && warExportFile.exists()) {
 				boolean deleted = FileUtils.deleteQuietly(warExportFile);
 				if (!deleted) {
 					MemoizedFile oldWarExportFile = warExportFile;
-					warExportFile = targetDir.file(appName+"_"+getBuiltAppTimestamp()+".war");
+					warExportFile = targetDir.file(archiveName+"_"+getBuiltAppTimestamp()+".war");
 					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, app.dir().getRelativePath(oldWarExportFile), app.dir().getRelativePath(warExportFile)); 
 				}
 			} else if (!warExport && appExportDir.exists()){
 				boolean deleted = FileUtils.deleteQuietly(appExportDir);			
 				if (!deleted) {
 					MemoizedFile oldAppExportDir = appExportDir;
-					appExportDir = targetDir.file(appName+"_"+getBuiltAppTimestamp());
+					appExportDir = targetDir.file(archiveName+"_"+getBuiltAppTimestamp());
 					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, app.dir().getRelativePath(oldAppExportDir), app.dir().getRelativePath(appExportDir));
 				}
 			}
@@ -116,6 +124,14 @@ public class BuildAppCommand extends JSAPArgsParsingCommandPlugin {
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		if(!targetDir.isDirectory()) throw new DirectoryDoesNotExistCommandException(targetDirPath, this);
+		
+		
+		AppRequestHandler.setPropertiesEnvironment(brjs, environment);
+		if (warExport && app.file("WEB-INF").isDirectory()) {
+			AppRequestHandler.setNoTokenExceptionHandler(brjs, new LoggingMissingTokenHandler(brjs, this.getPluginClass(), environment, LogLevel.WARN));
+		} else {
+			AppRequestHandler.setNoTokenExceptionHandler(brjs, new ExceptionThrowingMissingTokenHandler());
+		}
 		
 		try {
 			if (warExport) {

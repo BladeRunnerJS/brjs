@@ -37,43 +37,61 @@ if(!Element.prototype.setAttributeNS) {
 
 if(!document.importNode) {
 	document.importNode = function(node, deep) {
-		var a, i, il;
+		var sourceNodes = [{node:node, parentNode:null}];
+		var rootNode, targetNode;
 
-		switch (node.nodeType) {
-			case document.ELEMENT_NODE:
-				var newNode = document.createElementNS(node.namespaceURI, node.nodeName);
-				if (node.attributes && node.attributes.length > 0) {
-					for (i = 0, il = node.attributes.length; i < il; i++) {
-						a = node.attributes[i];
-						try {
-							newNode.setAttributeNS(a.namespaceURI, a.nodeName, node.getAttribute(a.nodeName));
-						}
-						catch (err) {
-							// ignore this error... doesn't seem to make a difference
+		while(sourceNodes.length > 0) {
+			var nodeInfo = sourceNodes.shift();
+			node = nodeInfo.node;
+			var parentNode = nodeInfo.parentNode;
+			var a, i, il;
+
+			switch (node.nodeType) {
+				case document.ELEMENT_NODE:
+					targetNode = document.createElementNS(node.namespaceURI, node.nodeName);
+					if (node.attributes && node.attributes.length > 0) {
+						for (i = 0, il = node.attributes.length; i < il; i++) {
+							a = node.attributes[i];
+							try {
+								targetNode.setAttributeNS(a.namespaceURI, a.nodeName, node.getAttribute(a.nodeName));
+							}
+							catch (err) {
+								// ignore this error... doesn't seem to make a difference
+							}
 						}
 					}
+					break;
+
+				case document.TEXT_NODE:
+				case document.CDATA_SECTION_NODE:
+					targetNode = document.createTextNode(node.nodeValue);
+					break;
+
+				case document.COMMENT_NODE:
+					targetNode = document.createComment(node.nodeValue);
+					break;
+
+				case document.DOCUMENT_FRAGMENT_NODE:
+					targetNode = document.createDocumentFragment();
+					break;
+			}
+
+			if(!rootNode) {
+				rootNode = targetNode;
+			}
+
+			if(deep && node.childNodes && node.childNodes.length > 0) {
+				for (i = 0, il = node.childNodes.length; i < il; i++) {
+					sourceNodes.push({node:node.childNodes[i], parentNode:targetNode});
 				}
-				if (deep && node.childNodes && node.childNodes.length > 0) {
-					for (i = 0, il = node.childNodes.length; i < il; i++) {
-						newNode.appendChild(document.importNode(node.childNodes[i], deep));
-					}
-				}
-				return newNode;
+			}
 
-			case document.TEXT_NODE:
-			case document.CDATA_SECTION_NODE:
-				return document.createTextNode(node.nodeValue);
-
-			case document.COMMENT_NODE:
-				return document.createComment(node.nodeValue);
-
-			case document.DOCUMENT_FRAGMENT_NODE:
-				docFragment = document.createDocumentFragment();
-
-				for (i = 0, il = node.childNodes.length; i < il; ++i) {
-					docFragment.appendChild(document.importNode(node.childNodes[i], deep));
-				}
-				return docFragment;
+			if(parentNode) {
+				parentNode.appendChild(targetNode);
+			}
 		}
+
+		return rootNode;
 	};
 }
+

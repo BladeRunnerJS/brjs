@@ -1,13 +1,15 @@
 apply plugin: 'java'
 apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
 
-/* do not add any dependencies here, this should be a very small project that is used in prod */
+/* do not add any 'compile' dependencies here, this should be a very small project that is used in prod */
 dependencies {
 	compileOnly dependency('servlet-api-v3')
 	
 	testCompile dependency('httpclient')
 	testCompile dependency("jetty-server-all-v9")
 	testCompile dependency("junit")
+    testCompile dependency("hamcrest-all")
 	testCompile dependency("mockito-core")
 	testCompile dependency("commons-io")
+	testCompile dependency("commons-lang3")
 }

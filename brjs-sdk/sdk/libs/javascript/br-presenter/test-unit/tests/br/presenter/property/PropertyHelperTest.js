@@ -1,7 +1,9 @@
 (function() {
+    var EditableProperty = require("br/presenter/property/EditableProperty");
+    var PropertyHelper = require("br/presenter/property/PropertyHelper");
 
-	var sTestCaseName = "PropertyHelperTest";
-	var oTestCase = {
+    var sTestCaseName = "PropertyHelperTest";
+    var oTestCase = {
 
 		testAttachesChangeListeners: function() {
 			givenPropertyHelper();
@@ -122,13 +124,13 @@
 		}
 	};
 
-	var propertyHelper, propertyEventHandlers, properties;
+    var propertyHelper, propertyEventHandlers, properties;
 
-	function givenPropertyHelper() {
-		return propertyHelper = new br.presenter.property.PropertyHelper;
+    function givenPropertyHelper() {
+		return propertyHelper = new PropertyHelper;
 	}
 
-	function whenThePropertyHelperAttaches(attachFunction, handler, callImmediately) {
+    function whenThePropertyHelperAttaches(attachFunction, handler, callImmediately) {
 		var attach = function(property) {
 			attachFunction.call(propertyHelper,
 				properties[properties.length] = property,
@@ -141,12 +143,12 @@
 		};
 
 		return {
-			toNewProperty: function() { attach(new br.presenter.property.EditableProperty("")); },
+			toNewProperty: function() { attach(new EditableProperty("")); },
 			to: function(property) { attach(property); }
 		}
 	}
 
-	function whenThePropertyHelperRemoves(eventType) {
+    function whenThePropertyHelperRemoves(eventType) {
 		var mapping = {all: propertyHelper.clearProperty, 'validation': propertyHelper.removeValidationSuccessListeners, change: propertyHelper.removeChangeListeners};
 		return {
 			eventsFromThe: function(property) {
@@ -158,15 +160,15 @@
 		}
 	}
 
-	function aChangeHandler() {
+    function aChangeHandler() {
 		return propertyHelper.addChangeListener;
 	}
 
-	function aValidationSuccessHandler() {
+    function aValidationSuccessHandler() {
 		return propertyHelper.addValidationSuccessListener;
 	}
 
-	function thatUsesStringMethodName(methodName) {
+    function thatUsesStringMethodName(methodName) {
 		var scope = {callCount: 0};
 		scope[methodName] = function() {
 			scope.callCount++;
@@ -175,7 +177,7 @@
 		return [scope, methodName];
 	}
 
-	function thatUsesAnAnonymousFunction() {
+    function thatUsesAnAnonymousFunction() {
 		var scope = {callCount: 0};
 		return [scope, function() {
 			scope.callCount++;
@@ -183,37 +185,37 @@
 		}];
 	}
 
-	function thatWillNotBeCalledImmediately() { return false; }
-	function thatWillBeCalledImmediately() { return true; }
+    function thatWillNotBeCalledImmediately() { return false; }
+    function thatWillBeCalledImmediately() { return true; }
 
-	function calledTimes(expected) {
+    function calledTimes(expected) {
 		return function(actual) {
 			return actual.callCount === expected;
 		}
 	}
-	var notCalled = calledTimes(0), calledOnce = calledTimes(1), calledTwice = calledTimes(2);
+    var notCalled = calledTimes(0), calledOnce = calledTimes(1), calledTwice = calledTimes(2);
 
-	function propertyGetter(index) {
+    function propertyGetter(index) {
 		return function() {
 			return properties[index];
 		}
 	}
-	var firstProperty = propertyGetter(0), secondProperty = propertyGetter(1), thirdProperty = propertyGetter(2);
+    var firstProperty = propertyGetter(0), secondProperty = propertyGetter(1), thirdProperty = propertyGetter(2);
 
-	function handlerGetter(index) {
+    function handlerGetter(index) {
 		return function() {
 			return propertyEventHandlers[index];
 		}
 	}
-	var firstHandler = handlerGetter(0), secondHandler = handlerGetter(1), thirdHandler = handlerGetter(2);
+    var firstHandler = handlerGetter(0), secondHandler = handlerGetter(1), thirdHandler = handlerGetter(2);
 
-	function calledOn(expected) {
+    function calledOn(expected) {
 		return function(actual) {
 			return expected === actual;
 		}
 	}
 
-	function whenThe(getter) {
+    function whenThe(getter) {
 		if(typeof getter === "function") {
 			getter = getter();
 		}
@@ -237,8 +239,7 @@
 		};
 		return bdd;
 	}
-	var andThe = whenThe, thenThe = whenThe;
+    var andThe = whenThe, thenThe = whenThe;
 
-	TestCase(sTestCaseName, oTestCase);
-
+    TestCase(sTestCaseName, oTestCase);
 }());

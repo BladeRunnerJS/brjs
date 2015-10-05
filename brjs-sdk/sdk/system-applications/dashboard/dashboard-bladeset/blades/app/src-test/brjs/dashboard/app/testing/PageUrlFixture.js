@@ -1,45 +1,42 @@
-brjs.dashboard.app.testing.PageUrlFixture = function()
-{
-	this.m_oPageUrlService = null;  
-};
-br.Core.inherit(brjs.dashboard.app.testing.PageUrlFixture, br.test.Fixture);
+'use strict';
 
-brjs.dashboard.app.testing.PageUrlFixture.prototype.setPageUrlService = function(oPageUrlService) {
+var Fixture = require('br/test/Fixture');
+var Core = require('br/Core');
+
+function PageUrlFixture() {
+	this.m_oPageUrlService = null;
+}
+
+Core.inherit(PageUrlFixture, Fixture);
+
+PageUrlFixture.prototype.setPageUrlService = function(oPageUrlService) {
 	this.m_oPageUrlService = oPageUrlService;
 };
 
-brjs.dashboard.app.testing.PageUrlFixture.prototype.canHandleExactMatch = function() 
-{
+PageUrlFixture.prototype.canHandleExactMatch = function() {
 	return false;
 };
 
-brjs.dashboard.app.testing.PageUrlFixture.prototype.canHandleProperty = function(sProperty) 
-{
-	 return sProperty == "url";
+PageUrlFixture.prototype.canHandleProperty = function(sProperty) {
+	return sProperty == 'url';
 };
 
-brjs.dashboard.app.testing.PageUrlFixture.prototype._doGivenAndDoWhen = function(sPropertyName, vValue)
-{
-	if (sPropertyName == "url")
-	{
+PageUrlFixture.prototype._doGivenAndDoWhen = function(sPropertyName, vValue) {
+	if (sPropertyName == 'url') {
 		this.m_oPageUrlService.setPageUrl(vValue);
-	}
-	else
-	{
-		fail("Unknown property " + sPropertyName);
+	} else {
+		fail('Unknown property ' + sPropertyName);
 	}
 };
-brjs.dashboard.app.testing.PageUrlFixture.prototype.doGiven = brjs.dashboard.app.testing.PageUrlFixture.prototype._doGivenAndDoWhen;
-brjs.dashboard.app.testing.PageUrlFixture.prototype.doWhen = brjs.dashboard.app.testing.PageUrlFixture.prototype._doGivenAndDoWhen;
+PageUrlFixture.prototype.doGiven = PageUrlFixture.prototype._doGivenAndDoWhen;
+PageUrlFixture.prototype.doWhen = PageUrlFixture.prototype._doGivenAndDoWhen;
 
-brjs.dashboard.app.testing.PageUrlFixture.prototype.doThen = function(sPropertyName, vValue)
-{
-	if (sPropertyName == "url")
-	{
+PageUrlFixture.prototype.doThen = function(sPropertyName, vValue) {
+	if (sPropertyName == 'url') {
 		assertEquals(vValue, this.m_oPageUrlService.getPageUrl());
-	}
-	else
-	{
-		fail("Unknown property " + sPropertyName);
+	} else {
+		fail('Unknown property ' + sPropertyName);
 	}
 };
+
+module.exports = PageUrlFixture;

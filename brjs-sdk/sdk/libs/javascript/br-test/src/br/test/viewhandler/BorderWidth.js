@@ -4,7 +4,7 @@
  * @module br/test/viewhandler/BorderWidth
  */
 
-require('jquery');
+var jQuery = require('jquery');
 
 var br = require('br/Core');
 var Errors = require('br/Errors');

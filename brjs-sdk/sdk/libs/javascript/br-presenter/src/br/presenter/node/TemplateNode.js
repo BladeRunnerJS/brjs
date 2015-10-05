@@ -1,3 +1,9 @@
+'use strict';
+
+var TemplateAware = require('br/presenter/node/TemplateAware');
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/node/TemplateNode
  */
@@ -17,19 +23,20 @@
  * 
  * @param {String} sTemplateName The name of the template to use.
  */
-br.presenter.node.TemplateNode = function(sTemplateName)
-{
+function TemplateNode(sTemplateName) {
 	/** @private */
 	this.m_sTemplateName = sTemplateName;
-};
+}
 
-br.Core.extend(br.presenter.node.TemplateNode, br.presenter.node.PresentationNode);
-br.Core.implement(br.presenter.node.TemplateNode, br.presenter.node.TemplateAware);
+Core.extend(TemplateNode, PresentationNode);
+Core.implement(TemplateNode, TemplateAware);
 
 /**
  * @private
  * @see br.presenter.node.TemplateAware#getTemplateName
  */
-br.presenter.node.TemplateNode.prototype.getTemplateName = function() {
+TemplateNode.prototype.getTemplateName = function() {
 	return this.m_sTemplateName;
 };
+
+module.exports = TemplateNode;

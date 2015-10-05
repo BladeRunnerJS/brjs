@@ -1,3 +1,15 @@
+'use strict';
+
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var Core = require('br/Core');
+var FieldValuePropertyListener = require('br/presenter/node/FieldValuePropertyListener');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+var ValidMultiSelectionValidator = require('br/presenter/validator/ValidMultiSelectionValidator');
+var OptionsNodeList = require('br/presenter/node/OptionsNodeList');
+var Errors = require('br/Errors');
+var EditableProperty = require('br/presenter/property/EditableProperty');
+var Property = require('br/presenter/property/Property');
+
 /**
  * @module br/presenter/node/MultiSelectionField
  */
@@ -27,79 +39,79 @@
  * @param {Object} vOptions The list of available options, either using an array, a map of strings or as a {@link module:br/presenter/node/OptionsNodeList}.
  * @param {Object} vValues (optional) The list of currently selected options, either using an array or as a {@link module:br/presenter/property/EditableProperty} containing an array.
  */
-br.presenter.node.MultiSelectionField = function(vOptions, vValues)
-{
-	if((vValues instanceof br.presenter.property.Property) && !(vValues instanceof br.presenter.property.EditableProperty))
-	{
-		throw new br.Errors.InvalidParametersError("MultiSelectionField constructor: can't pass non-editable property as parameter");
+function MultiSelectionField(vOptions, vValues) {
+	if ((vValues instanceof Property) && !(vValues instanceof EditableProperty)) {
+		throw new Errors.InvalidParametersError("MultiSelectionField constructor: can't pass non-editable property as parameter");
 	}
 	vValues = vValues || [];
-	
+
 	// allow arguments to be passed as either properties or primitives
-	var oProperty = (vValues instanceof br.presenter.property.EditableProperty) ? vValues : new br.presenter.property.EditableProperty(vValues);
+	var oProperty = (vValues instanceof EditableProperty) ? vValues : new EditableProperty(vValues);
+
 	/**
 	 * The current list of options the user can select from.
 	 * @type br.presenter.node.OptionsNodeList
 	 */
-	this.options = (vOptions instanceof br.presenter.node.OptionsNodeList) ? vOptions : new br.presenter.node.OptionsNodeList(vOptions);
-	this.options.addChangeListener(this, "_automaticallyUpdateValueOnOptionsChange");
-	
+	this.options = (vOptions instanceof OptionsNodeList) ? vOptions : new OptionsNodeList(vOptions);
+	this.options.addChangeListener(this, '_automaticallyUpdateValueOnOptionsChange');
+
 	/** @private */
 	this.m_bAutomaticallyUpdateValueWhenOptionsChange = true;
-	
+
 	/** @private */
-	this.m_oValidMultiSelectionValidator = new br.presenter.validator.ValidMultiSelectionValidator(this.options);
-	
+	this.m_oValidMultiSelectionValidator = new ValidMultiSelectionValidator(this.options);
+
 	/**
 	 * The textual label associated with the multi-selection field.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.label = new br.presenter.property.WritableProperty("");
-	
+	this.label = new WritableProperty('');
+
 	/**
 	 * The list of currently selected options.
 	 * @type br.presenter.property.WritableProperty
 	 */
 	this.value = oProperty;
 	this.value.addValidator(this.m_oValidMultiSelectionValidator);
-	
+
 	/**
 	 * A boolean property that is <code>true</code> if {@link #value} has any validation errors, and <code>false</code> otherwise.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.hasError = new br.presenter.property.WritableProperty(false);
-	
+	this.hasError = new WritableProperty(false);
+
 	/**
 	 * A textual description of the currently failing validation message when {@link #hasError} is <code>true</code>.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.failureMessage = new br.presenter.property.WritableProperty();
-	
+	this.failureMessage = new WritableProperty();
+
 	/**
 	 * A boolean property representing whether the multi-selection field is enabled or not.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.enabled = new br.presenter.property.WritableProperty(true);
-	
+	this.enabled = new WritableProperty(true);
+
 	/**
 	 * A boolean property representing whether the multi-selection field is visible or not.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.visible = new br.presenter.property.WritableProperty(true);
+	this.visible = new WritableProperty(true);
 
 	/**
 	 * The logical control-name the multi-selection field is being bound to &mdash; this
 	 * value will appear within the <code>name</code> attribute if being bound to a native HTML control.
 	 * @type br.presenter.property.WritableProperty
 	 */
-	this.controlName = new br.presenter.property.WritableProperty("");
+	this.controlName = new WritableProperty('');
 
 	/** @private */
-	this.m_oValueListener = new br.presenter.node.FieldValuePropertyListener(this);
+	this.m_oValueListener = new FieldValuePropertyListener(this);
 	// validate the initial values
 	this.value.forceValidation();
-};
-br.Core.extend(br.presenter.node.MultiSelectionField, br.presenter.node.PresentationNode);
+}
+
+Core.extend(MultiSelectionField, PresentationNode);
 
 /**
  * Whether the multi-selection field displays a validation error if the selected values (within {@link #value})
@@ -112,8 +124,7 @@ br.Core.extend(br.presenter.node.MultiSelectionField, br.presenter.node.Presenta
  * 
  * @param {boolean} bAllowInvalidSelections Invalid selections are allowed when set to <code>true</code>.
  */
-br.presenter.node.MultiSelectionField.prototype.allowInvalidSelections = function(bAllowInvalidSelections)
-{
+MultiSelectionField.prototype.allowInvalidSelections = function(bAllowInvalidSelections) {
 	this.m_oValidMultiSelectionValidator.allowInvalidSelections(bAllowInvalidSelections);
 };
 
@@ -130,39 +141,34 @@ br.presenter.node.MultiSelectionField.prototype.allowInvalidSelections = functio
  * @param {boolean} bAutomaticallyUpdate True to automatically update values
  * @see #allowInvalidSelections
  */
-br.presenter.node.MultiSelectionField.prototype.automaticallyUpdateValueWhenOptionsChange = function(bAutomaticallyUpdate)
-{
+MultiSelectionField.prototype.automaticallyUpdateValueWhenOptionsChange = function(bAutomaticallyUpdate) {
 	this.m_bAutomaticallyUpdateValueWhenOptionsChange = bAutomaticallyUpdate;
 };
 
 /**
  * @private
  */
-br.presenter.node.MultiSelectionField.prototype._automaticallyUpdateValueOnOptionsChange = function()
-{
-	if(!this.m_bAutomaticallyUpdateValueWhenOptionsChange)
-	{
+MultiSelectionField.prototype._automaticallyUpdateValueOnOptionsChange = function() {
+	if (!this.m_bAutomaticallyUpdateValueWhenOptionsChange) {
 		this.value.forceValidation();
-	}
-	else
-	{
+	} else {
 		var pOptions = this.options.getOptionValues();
 		var pCurrentlySelected = this.value.getValue();
 		var pSelected = [];
 		var Utility = require('br/core/Utility');
 		var mOptions = Utility.addValuesToSet({}, pOptions);
-		
-		for(var i = 0, l = pCurrentlySelected.length; i < l; ++i)
-		{
+
+		for (var i = 0, l = pCurrentlySelected.length; i < l; ++i) {
 			var sOption = pCurrentlySelected[i];
-			
-			if(mOptions[sOption])
-			{
+
+			if (mOptions[sOption]) {
 				pSelected.push(sOption);
 			}
 		}
-		
+
 		var oValueProperty = this.value;
 		oValueProperty.setUserEnteredValue(pSelected);
 	}
 };
+
+module.exports = MultiSelectionField;

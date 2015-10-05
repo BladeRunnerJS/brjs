@@ -1,9 +1,6 @@
 (function(){
 	"use strict";
 
-	// TODO: this line can be deleted once CommonJs supports aliases
-	require('br/workaround/CommonJsAliasWorkaround');
-
 	require("jsmockito");
 	var br = require('br/Core');
 	var Errors = require('br/Errors');
@@ -11,6 +8,9 @@
 	var Alias1Interface = require('br/Alias1Interface');
 	var Alias2Interface = require('br/Alias2Interface');
 	var Alias1AlternateInterface = require('br/Alias1AlternateInterface');
+
+	var Alias1 = require("alias!some.alias1");
+	var Alias2 = require("alias!some.alias2");
 
 	var AliasRegistry = require('br/AliasRegistryClass');
 	var AliasRegistryTest = TestCase("AliasRegistryTest").prototype;

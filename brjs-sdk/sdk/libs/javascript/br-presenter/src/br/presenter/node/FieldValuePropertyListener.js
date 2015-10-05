@@ -1,3 +1,8 @@
+'use strict';
+
+var PropertyListener = require('br/presenter/property/PropertyListener');
+var Core = require('br/Core');
+
 /**
  * @module br/presenter/node/FieldValuePropertyListener
  */
@@ -11,14 +16,13 @@
  * @param {module:br/presenter/node/Field} oField
  *
  */
-br.presenter.node.FieldValuePropertyListener = function(oField)
-{
+function FieldValuePropertyListener(oField) {
 	this.m_oField = oField;
 	oField.value.addListener(this, true);
 	// TODO: we need to invoke removeListener() in our destructor
-};
+}
 
-br.Core.inherit(br.presenter.node.FieldValuePropertyListener, br.presenter.property.PropertyListener);
+Core.inherit(FieldValuePropertyListener, PropertyListener);
 
 
 // *********************** PropertyListener Interface ***********************
@@ -27,18 +31,18 @@ br.Core.inherit(br.presenter.node.FieldValuePropertyListener, br.presenter.prope
  * @private
  * @see br.presenter.property.PropertyListener#onValidationSuccess
  */
-br.presenter.node.FieldValuePropertyListener.prototype.onValidationSuccess = function(vPropertyValue, sErrorMessage)
-{
+FieldValuePropertyListener.prototype.onValidationSuccess = function(vPropertyValue, sErrorMessage) {
 	this.m_oField.hasError.setValue(false);
-	this.m_oField.failureMessage.setValue("");
+	this.m_oField.failureMessage.setValue('');
 };
 
 /**
  * @private
  * @see br.presenter.property.PropertyListener#onValidationError
  */
-br.presenter.node.FieldValuePropertyListener.prototype.onValidationError = function(vPropertyValue, sErrorMessage)
-{
+FieldValuePropertyListener.prototype.onValidationError = function(vPropertyValue, sErrorMessage) {
 	this.m_oField.hasError.setValue(true);
 	this.m_oField.failureMessage.setValue(sErrorMessage);
 };
+
+module.exports = FieldValuePropertyListener;

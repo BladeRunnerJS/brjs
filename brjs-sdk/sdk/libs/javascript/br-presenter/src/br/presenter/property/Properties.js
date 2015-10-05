@@ -1,3 +1,11 @@
+'use strict';
+
+var Snapshot = require('br/presenter/property/Snapshot');
+var WritableProperty = require('br/presenter/property/WritableProperty');
+var Property = require('br/presenter/property/Property');
+var PropertyListener = require('br/presenter/property/PropertyListener');
+var ListenerFactory = require('br/util/ListenerFactory');
+
 /**
  * @module br/presenter/property/Properties
  */
@@ -15,17 +23,16 @@
  * 
  * @param {Array} pProperties (optional) The initial set of properties.
  */
-br.presenter.property.Properties = function(pProperties)
-{
+function Properties(pProperties) {
 	/** @private */
 	this.m_pProperties = pProperties || [];
-	
+
 	/** @private */
-	this.m_oChangeListenerFactory = new br.util.ListenerFactory(br.presenter.property.PropertyListener, "onPropertyChanged");
-	
+	this.m_oChangeListenerFactory = new ListenerFactory(PropertyListener, 'onPropertyChanged');
+
 	/** @private */
-	this.m_oUpdateListenerFactory = new br.util.ListenerFactory(br.presenter.property.PropertyListener, "onPropertyUpdated");
-};
+	this.m_oUpdateListenerFactory = new ListenerFactory(PropertyListener, 'onPropertyUpdated');
+}
 
 /**
  * Add the given properties to this collection.
@@ -40,16 +47,15 @@ br.presenter.property.Properties = function(pProperties)
  * 
  * @param {Object} vProperties The new properties to add.
  */
-br.presenter.property.Properties.prototype.add = function(vProperties)
-{
-	if( vProperties instanceof Array){
+Properties.prototype.add = function(vProperties) {
+	if (vProperties instanceof Array) {
 		this._addPropertyArray(vProperties);
-	}else if(vProperties instanceof br.presenter.property.Property){
+	} else if (vProperties instanceof Property) {
 		this._addPropertyArray([vProperties]);
-	}else if(vProperties instanceof br.presenter.property.Properties){
+	} else if (vProperties instanceof Properties) {
 		this._addPropertyArray(vProperties.m_pProperties);
-	}else{
-		throw "br.presenter.property.Properties.prototype.add() unknown type";
+	} else {
+		throw 'br.presenter.property.Properties.prototype.add() unknown type';
 	}
 };
 
@@ -58,8 +64,7 @@ br.presenter.property.Properties.prototype.add = function(vProperties)
  * 
  * @type int
  */
-br.presenter.property.Properties.prototype.getSize = function()
-{
+Properties.prototype.getSize = function() {
 	return this.m_pProperties.length;
 };
 
@@ -68,14 +73,11 @@ br.presenter.property.Properties.prototype.getSize = function()
  * 
  * @param {Object} vValue The value that all property instances will be set to.
  */
-br.presenter.property.Properties.prototype.setValue = function(vValue)
-{
-	for(var i = 0; i < this.m_pProperties.length; i++)
-	{
+Properties.prototype.setValue = function(vValue) {
+	for (var i = 0; i < this.m_pProperties.length; i++) {
 		var oProperty = this.m_pProperties[i];
-		
-		if(oProperty instanceof br.presenter.property.WritableProperty)
-		{
+
+		if (oProperty instanceof WritableProperty) {
 			oProperty.setValue(vValue);
 		}
 	}
@@ -86,18 +88,15 @@ br.presenter.property.Properties.prototype.setValue = function(vValue)
  * 
  * @type br.presenter.property.Snapshot
  */
-br.presenter.property.Properties.prototype.snapshot = function()
-{
-	return new br.presenter.property.Snapshot(this.m_pProperties);
+Properties.prototype.snapshot = function() {
+	return new Snapshot(this.m_pProperties);
 };
 
 /**
  * Add a listener to all properties
  */
-br.presenter.property.Properties.prototype.addListener = function(oListener, bNotifyImmediately)
-{
-	for(var i = 0, l = this.m_pProperties.length; i < l; i++)
-	{
+Properties.prototype.addListener = function(oListener, bNotifyImmediately) {
+	for (var i = 0, l = this.m_pProperties.length; i < l; i++) {
 		var bLastProperty = i == (l - 1);
 		this.m_pProperties[i].addListener(oListener, bNotifyImmediately && bLastProperty);
 	}
@@ -106,10 +105,8 @@ br.presenter.property.Properties.prototype.addListener = function(oListener, bNo
 /**
  * Removes all the listeners attached to the properties.
  */
-br.presenter.property.Properties.prototype.removeAllListeners = function()
-{
-	for(var i = 0; i < this.m_pProperties.length; i++)
-	{
+Properties.prototype.removeAllListeners = function() {
+	for (var i = 0; i < this.m_pProperties.length; i++) {
 		this.m_pProperties[i].removeAllListeners();
 	}
 };
@@ -130,11 +127,10 @@ br.presenter.property.Properties.prototype.removeAllListeners = function()
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-br.presenter.property.Properties.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmediately)
-{
+Properties.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmediately) {
 	var oPropertyListener = this.m_oChangeListenerFactory.createListener(oListener, sMethod);
 	this.addListener(oPropertyListener, bNotifyImmediately);
-	
+
 	return oPropertyListener;
 };
 
@@ -154,11 +150,10 @@ br.presenter.property.Properties.prototype.addChangeListener = function(oListene
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-br.presenter.property.Properties.prototype.addUpdateListener = function(oListener, sMethod, bNotifyImmediately)
-{
+Properties.prototype.addUpdateListener = function(oListener, sMethod, bNotifyImmediately) {
 	var oPropertyListener = this.m_oUpdateListenerFactory.createListener(oListener, sMethod);
 	this.addListener(oPropertyListener, bNotifyImmediately);
-	
+
 	return oPropertyListener;
 };
 
@@ -166,9 +161,10 @@ br.presenter.property.Properties.prototype.addUpdateListener = function(oListene
  * @private
  * @param pProperties
  */
-br.presenter.property.Properties.prototype._addPropertyArray = function(pProperties)
-{
-	for(var i = 0; i < pProperties.length; i++){
+Properties.prototype._addPropertyArray = function(pProperties) {
+	for (var i = 0; i < pProperties.length; i++) {
 		this.m_pProperties.push(pProperties[i]);
 	}
 };
+
+module.exports = Properties;

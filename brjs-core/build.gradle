@@ -56,7 +56,7 @@ javadoc {
 	options.overview = "${sourceSets.main.java.srcDirs.toArray()[0]}/overview-summary.html"
 	include '**/org/bladerunnerjs/api/**'
 	maxMemory = "128m"
-	executable = "$System.env.JAVA8_HOME/bin/javadoc"
+	executable = "$JAVA8_HOME/bin/javadoc"
 }
 
 task javadocZip, type:Zip, dependsOn:javadoc, {

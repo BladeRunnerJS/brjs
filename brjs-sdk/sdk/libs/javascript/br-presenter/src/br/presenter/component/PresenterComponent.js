@@ -1,14 +1,23 @@
-"use strict";
+'use strict';
+
+var PresentationNode = require('br/presenter/node/PresentationNode');
+var XmlParser = require('br/util/XmlParser');
+var SerializablePresentationModel = require('br/presenter/SerializablePresentationModel');
+var Frame = require('br/component/Frame');
+var TooltipPlugin = require('br/presenter/view/knockout/TooltipPlugin');
+var ControlPlugin = require('br/presenter/view/knockout/ControlPlugin');
+var Serializable = require('br/component/Serializable');
+var Component = require('br/component/Component');
+var PresentationModel = require('br/presenter/PresentationModel');
+var Core = require('br/Core');
 
 /**
  * @module br/presenter/component/PresenterComponent
  */
 
-br.Core.thirdparty("presenter-knockout");
+var presenter_knockout = require('presenter-knockout');
 
-var Utility = require('br/core/Utility');
 var Errors = require('br/Errors');
-var ServiceRegistry = require('br/ServiceRegistry');
 
 /**
  * Constructs a new instance of <code>PresenterComponent</code>. Instances of <code>PresenterComponent</code> can also
@@ -27,7 +36,7 @@ var ServiceRegistry = require('br/ServiceRegistry');
  */
 function PresenterComponent(sTemplateId, vPresentationModel) {
 	this.m_sTemplateId = sTemplateId;
-	this.m_eTemplate = this._getTemplate(sTemplateId);
+	this.m_eTemplate = null;
 	this.m_sPresentationModel = null;
 	this.m_oPresentationModel = null;
 	this.m_bViewAttached = false;
@@ -35,43 +44,44 @@ function PresenterComponent(sTemplateId, vPresentationModel) {
 	this.m_pLifecycleListeners = [];
 
 	var oPresentationModel;
-	if (typeof(vPresentationModel) == "string") {
+	if (typeof (vPresentationModel) == 'string') {
 		this.m_sPresentationModel = vPresentationModel;
-		var fPresentationModel = Utility.locate(this.m_sPresentationModel);
+		var requirePath = this.m_sPresentationModel.replace(/\./g, "/");
+		var fPresentationModel = require(requirePath);
 		oPresentationModel = new fPresentationModel();
 	} else {
 		oPresentationModel = vPresentationModel;
 	}
 
-	if (!(oPresentationModel instanceof br.presenter.PresentationModel)) {
-		throw new Errors.InvalidParametersError("Presentation Model passed to PresenterComponent is not a br.presenter.PresentationModel");
+	if (!(oPresentationModel instanceof PresentationModel)) {
+		throw new Errors.InvalidParametersError('Presentation Model passed to PresenterComponent is not a br/presenter/PresentationModel');
 	}
 	this.m_oPresentationModel = oPresentationModel;
 
 	PresenterComponent._initializePlugins();
 
 	this.m_oPresentationModel._$setPath(this);
-};
+}
 
-br.Core.implement(PresenterComponent, br.component.Component);
-br.Core.implement(PresenterComponent, br.component.Serializable);
+Core.implement(PresenterComponent, Component);
+Core.implement(PresenterComponent, Serializable);
 
 /**
  * @private
  */
-PresenterComponent.TEMPLATE_NOT_FOUND = "TemplateNotFound";
+PresenterComponent.TEMPLATE_NOT_FOUND = 'TemplateNotFound';
 PresenterComponent.TemplateNotFoundError = function(message, filename, lineNumber) {
 	Errors.CustomError.call(this, PresenterComponent.TEMPLATE_NOT_FOUND, message, filename, lineNumber);
 };
-br.Core.extend(PresenterComponent.TemplateNotFoundError, Errors.CustomError);
+Core.extend(PresenterComponent.TemplateNotFoundError, Errors.CustomError);
 
 /**
  * @private
  */
 PresenterComponent._initializePlugins = function() {
 	if (!presenter_knockout.bindingHandlers.control) {
-		presenter_knockout.bindingHandlers.control = new br.presenter.view.knockout.ControlPlugin();
-		presenter_knockout.bindingHandlers.tooltip = new br.presenter.view.knockout.TooltipPlugin();
+		presenter_knockout.bindingHandlers.control = new ControlPlugin();
+		presenter_knockout.bindingHandlers.tooltip = new TooltipPlugin();
 	}
 };
 
@@ -102,30 +112,30 @@ PresenterComponent.prototype.setDisplayFrame = function(frame) {
 	this.m_oPresentationModel.setComponentFrame(frame);
 
 	function getEventHandler(event) {
-		var handlerName = "on"+event.charAt(0).toUpperCase()+event.substring(1);
+		var handlerName = 'on' + event.charAt(0).toUpperCase() + event.substring(1);
 		if (this[handlerName]) {
 			return function() {
 				this[handlerName].apply(this, arguments);
-			}
+			};
 		}
 		return function() {
 			this._propagateComponentEvent(handlerName, arguments);
 		};
 	}
 
-	br.component.Frame.EVENTS.forEach(function(event) {
+	Frame.EVENTS.forEach(function(event) {
 		frame.on(event, getEventHandler.call(this, event), this);
 	}, this);
 
 	frame.on('attach', function() {
-		presenter_knockout.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
+		presenter_knockout.applyBindings(this.m_oPresentationModel, this._getTemplate());
 	}.bind(this));
 
 	frame.setContent(this.getElement());
 };
 
 PresenterComponent.prototype.getElement = function() {
-	return this.m_eTemplate;
+	return this._getTemplate();
 };
 
 // It is the responsibility of the containing system to call serialize and then persist the resultant string.
@@ -135,19 +145,19 @@ PresenterComponent.prototype.getElement = function() {
 // This class identifier should NOT be used by the containing system to map its serialized blobs to component type as
 // it is a private concern of this class and liable to change.
 PresenterComponent.prototype.serialize = function() {
-	var sSerializedState = "";
+	var sSerializedState = '';
 
 	if (!this.m_sPresentationModel) {
 		this.m_sPresentationModel = this.m_oPresentationModel.getClassName();
 	}
 
-	if (br.Core.fulfills(this.m_oPresentationModel, br.presenter.SerializablePresentationModel)) {
+	if (Core.fulfills(this.m_oPresentationModel, SerializablePresentationModel)) {
 		sSerializedState = this.m_oPresentationModel.serialize();
 	}
 
 	var sSerializedString = '<br.presenter.component.PresenterComponent templateId="' + this.m_sTemplateId + '" presentationModel="' + this.m_sPresentationModel + '">'
-							+ sSerializedState +
-							'</br.presenter.component.PresenterComponent>';
+		+ sSerializedState +
+		'</br.presenter.component.PresenterComponent>';
 
 	return sSerializedString;
 };
@@ -159,31 +169,30 @@ PresenterComponent.prototype.serialize = function() {
  * @param {String} sPresenterData The presenter xml node in string format
  */
 PresenterComponent.prototype.deserialize = function(sPresenterData) {
-	if (br.Core.fulfills(this.m_oPresentationModel, br.presenter.SerializablePresentationModel)) {
+	if (Core.fulfills(this.m_oPresentationModel, SerializablePresentationModel)) {
 		var vOffsetPresenterOpeningTag = sPresenterData.indexOf('>');
 		var vOffsetPresenterClosingTag = sPresenterData.indexOf('</br.presenter.component.PresenterComponent>');
 
-		//If it doesn't have a closing presenter tag means it has no serialized data
-		var sPresenterTagData = (vOffsetPresenterClosingTag !== -1) ? sPresenterData.substring(vOffsetPresenterOpeningTag+1, vOffsetPresenterClosingTag) : "";
+		// If it doesn't have a closing presenter tag means it has no serialized data
+		var sPresenterTagData = (vOffsetPresenterClosingTag !== -1) ? sPresenterData.substring(vOffsetPresenterOpeningTag + 1, vOffsetPresenterClosingTag) : '';
 		this.m_oPresentationModel.deserialize(sPresenterTagData);
 	}
 };
 
-PresenterComponent.deserialize = function(sXml)
-{
-	var oPresenterNode = br.util.XmlParser.parse( sXml );
+PresenterComponent.deserialize = function(sXml) {
+	var oPresenterNode = XmlParser.parse(sXml);
 	var sPresenterNodeName = oPresenterNode.nodeName;
 
-	if(sPresenterNodeName !== "br.presenter.component.PresenterComponent" ) {
+	if (sPresenterNodeName !== 'br.presenter.component.PresenterComponent') {
 		var sErrorMsg = "Nodename for Presenter Configuration XML must be 'br.presenter.component.PresenterComponent', but was:" + sPresenterNodeName;
 
 		throw new Errors.InvalidParametersError(sErrorMsg);
 	}
 
-	var sTemplateId = oPresenterNode.getAttribute("templateId");
-	var sPresentationModel = oPresenterNode.getAttribute("presentationModel");
+	var sTemplateId = oPresenterNode.getAttribute('templateId');
+	var sPresentationModel = oPresenterNode.getAttribute('presentationModel');
 
-	var oPresenterComponent = new br.presenter.component.PresenterComponent(sTemplateId, sPresentationModel);
+	var oPresenterComponent = new PresenterComponent(sTemplateId, sPresentationModel);
 	oPresenterComponent.deserialize(sXml);
 
 	return oPresenterComponent;
@@ -200,7 +209,7 @@ PresenterComponent.prototype.onAttach = function() {
 		return;
 	}
 	this.m_bViewAttached = true;
-	this._propagateComponentEvent("onOpen", [this.m_oFrame.width, this.m_oFrame.height]);
+	this._propagateComponentEvent('onOpen', [this.m_oFrame.width, this.m_oFrame.height]);
 };
 
 /**
@@ -211,8 +220,8 @@ PresenterComponent.prototype.onAttach = function() {
  * @see br/component/Component#onClose
  */
 PresenterComponent.prototype.onClose = function() {
-	this._propagateComponentEvent("onClose", arguments);
-	presenter_knockout.cleanNode(this.m_eTemplate);
+	this._propagateComponentEvent('onClose', arguments);
+	presenter_knockout.cleanNode(this._getTemplate());
 	this.m_oPresentationModel.removeChildListeners();
 	this._nullObject(this.m_oPresentationModel);
 	this.m_oPresentationModel = null;
@@ -233,7 +242,7 @@ PresenterComponent.prototype.onClose = function() {
  * @see br/component/Component#onResize
  */
 PresenterComponent.prototype.onResize = function() {
-	this._propagateComponentEvent("onResize", [this.m_oFrame.width, this.m_oFrame.height]);
+	this._propagateComponentEvent('onResize', [this.m_oFrame.width, this.m_oFrame.height]);
 };
 
 /**
@@ -244,7 +253,7 @@ PresenterComponent.prototype.onResize = function() {
  * @see br/component/Component#onActivate
  */
 PresenterComponent.prototype.onFocus = function() {
-	this._propagateComponentEvent("onActivate", arguments);
+	this._propagateComponentEvent('onActivate', arguments);
 };
 
 /**
@@ -257,7 +266,7 @@ PresenterComponent.prototype.onFocus = function() {
  * @see br/component/Component#onDeactivate
  */
 PresenterComponent.prototype.onBlur = function(nWidth, nHeight) {
-	this._propagateComponentEvent("onDeactivate", arguments);
+	this._propagateComponentEvent('onDeactivate', arguments);
 };
 
 // *********************** Private Methods ***********************
@@ -267,13 +276,13 @@ PresenterComponent.prototype.onBlur = function(nWidth, nHeight) {
  * @param {Object} oObjectToBeCleaned
  */
 PresenterComponent.prototype._nullObject = function(oObjectToBeCleaned) {
-	for(var sChildToBeCleaned in oObjectToBeCleaned) {
+	for (var sChildToBeCleaned in oObjectToBeCleaned) {
 		var oChildToBeCleaned = oObjectToBeCleaned[sChildToBeCleaned];
 
-		if (typeof oChildToBeCleaned === "object" && oChildToBeCleaned !== null) {
+		if (typeof oChildToBeCleaned === 'object' && oChildToBeCleaned !== null) {
 			oObjectToBeCleaned[sChildToBeCleaned] = null;
 
-			if (oChildToBeCleaned instanceof br.presenter.node.PresentationNode) {
+			if (oChildToBeCleaned instanceof PresentationNode) {
 				this._nullObject(oChildToBeCleaned);
 			}
 		}
@@ -289,7 +298,7 @@ PresenterComponent.prototype._propagateComponentEvent = function(sEvent, pArgume
 	if (this.m_oPresentationModel[sEvent]) {
 		this.m_oPresentationModel[sEvent].apply(this.m_oPresentationModel, pArguments);
 	}
-	this.m_pLifecycleListeners.forEach(function(listener){
+	this.m_pLifecycleListeners.forEach(function(listener) {
 		if (listener[sEvent]) {
 			listener[sEvent].apply(listener, pArguments);
 		}
@@ -305,24 +314,22 @@ PresenterComponent.prototype.removeLifeCycleListener = function(listener) {
 	if (index >= 0) {
 		this.m_pLifecycleListeners.splice(index, 1);
 	}
-}
+};
 
 /**
+ * We lazilly get the template element so no elements are loaded if tests don't bind the model to the view
  * @private
- * @param {String} sTemplateId
- * @type Element
  */
-PresenterComponent.prototype._getTemplate = function(sTemplateId) {
-	var eTemplateNode = ServiceRegistry.getService("br.html-service").getTemplateElement(sTemplateId);
+PresenterComponent.prototype._getTemplate = function() {
+	if (!this.m_eTemplate) {
+		var eTemplateNode = require('service!br.html-service').getTemplateElement(this.m_sTemplateId);
 
-	if(!eTemplateNode) {
-		throw new PresenterComponent.TemplateNotFoundError("Template with ID '" + sTemplateId + "' couldn't be found");
+		if (!eTemplateNode) {
+			throw new PresenterComponent.TemplateNotFoundError("Template with ID '" + this.m_sTemplateId + "' couldn't be found");
+		}
+		this.m_eTemplate = eTemplateNode;
 	}
-
-	return eTemplateNode;
+	return this.m_eTemplate;
 };
 
 module.exports = PresenterComponent;
-
-// TODO: delete this line once the package is CommonJs
-br.presenter.component.PresenterComponent = module.exports;

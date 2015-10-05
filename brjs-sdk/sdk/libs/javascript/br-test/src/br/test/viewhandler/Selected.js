@@ -4,7 +4,8 @@
  * @module br/test/viewhandler/Selected
  */
 
-require('jquery');
+var jQuery = require('jquery');
+var Utils = require("br/test/Utils");
 
 var br = require('br/Core');
 var Errors = require('br/Errors');
@@ -48,7 +49,7 @@ Selected.prototype.set = function(eElement, vValue) {
 			(eElement.previousSibling || eElement.nextSibling).selected = true;
 		}
 		
-		require("br/test/Utils").fireDomEvent(jQuery(eElement).parent('select'), "change");
+		Utils.fireDomEvent(jQuery(eElement).parent('select'), "change");
 	}
 };
 

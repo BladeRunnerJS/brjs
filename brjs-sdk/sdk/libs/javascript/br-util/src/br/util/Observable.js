@@ -22,7 +22,7 @@ var Errors = require('br/Errors');
  * 
  * <pre>
  *  function RecordDataProvider() {
- *   this.m_oObservable = new br.util.Observable();
+ *   this.m_oObservable = new Observable();
  *  }
  *
  *  RecordDataProvider.prototype.addListener = function(oListener) {

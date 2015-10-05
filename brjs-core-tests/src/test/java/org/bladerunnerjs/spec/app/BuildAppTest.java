@@ -228,87 +228,202 @@ public class BuildAppTest extends SpecTest {
 		
 		given(brjs).hasNotYetBeenCreated()
 			.and(brjs).automaticallyFindsBundlerPlugins()
-			.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
-			.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList("ScriptedContentPlugin"), Arrays.asList("/used/url")) )
+			.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/scripted/used/url", "/scripted/unused/url") )
+			.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList("scripted"), Arrays.asList("/scripted/used/url")) )
 			.and(brjs).hasBeenCreated()
 			.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("<@tag @/>")
 			.and(brjs).localeSwitcherHasContents("")
 			.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-		then(targetDir).containsFile("used/url")
-			.and(targetDir).doesNotContainFile("unused/url");
+		then(targetDir).containsFile("scripted/used/url")
+			.and(targetDir).doesNotContainFile("scripted/unused/url");
 	}
 	
 	@Test
 	public void allUrlsAreIncludedInTheBuiltAppIfACorrespondingTagHandlerPluginIsNotFound() throws Exception {
 		given(brjs).hasNotYetBeenCreated()
     		.and(brjs).automaticallyFindsBundlerPlugins()
-    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
-    		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList(), Arrays.asList("/used/url")) )
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/scripted/used/url", "/scripted/unused/url") )
+    		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList(), Arrays.asList("/scripted/used/url")) )
     		.and(brjs).hasBeenCreated()
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("<@tag @/>")
     		.and(brjs).localeSwitcherHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).containsFile("used/url")
-    		.and(targetDir).containsFile("unused/url");
+    	then(targetDir).containsFile("scripted/used/url")
+    		.and(targetDir).containsFile("scripted/unused/url");
 	}
 	
 	@Test
 	public void urlsOnlyHaveToBeIdentifiedByASingleTagHandlerIfMultipleCanSupportTheSameContentPlugin() throws Exception {
 		given(brjs).hasNotYetBeenCreated()
     		.and(brjs).automaticallyFindsBundlerPlugins()
-    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
-    		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag1", Arrays.asList("ScriptedContentPlugin"), Arrays.asList()), 
-    										new ScriptedRequestGeneratingTagHandlerPlugin("tag2", Arrays.asList("ScriptedContentPlugin"), Arrays.asList("/used/url")) )
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/scripted/used/url", "/scripted/unused/url") )
+    		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag1", Arrays.asList("scripted"), Arrays.asList()), 
+    										new ScriptedRequestGeneratingTagHandlerPlugin("tag2", Arrays.asList("scripted"), Arrays.asList("/scripted/used/url")) )
     		.and(brjs).hasBeenCreated()
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("<@tag1 @/> <@tag2 @/>")
     		.and(brjs).localeSwitcherHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).containsFile("used/url")
-    		.and(targetDir).doesNotContainFile("unused/url");
+    	then(targetDir).containsFile("scripted/used/url")
+    		.and(targetDir).doesNotContainFile("scripted/unused/url");
 	}
 	
 	@Test
 	public void contentPluginsIdentifiedByATagHandlerAreNotIncludedInTheBuiltAppIfTheTagIsntUsed() throws Exception {
 		given(brjs).hasNotYetBeenCreated()
     		.and(brjs).automaticallyFindsBundlerPlugins()
-    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
-    		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList("ScriptedContentPlugin"), Arrays.asList("/used/url")) )
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/scripted/used/url", "/scripted/unused/url") )
+    		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList("scripted"), Arrays.asList("/scripted/used/url")) )
     		.and(brjs).hasBeenCreated()
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("")
     		.and(brjs).localeSwitcherHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).doesNotContainFile("used/url")
-    		.and(targetDir).doesNotContainFile("unused/url");
+    	then(targetDir).doesNotContainFile("scripted/used/url")
+    		.and(targetDir).doesNotContainFile("scripted/unused/url");
 	}
 	
 	@Test
 	public void contentUrlsUsedInOtherAspectsAreStillContainedInTheBuiltApp() throws Exception {
 		given(brjs).hasNotYetBeenCreated()
     		.and(brjs).automaticallyFindsBundlerPlugins()
-    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/used/url", "/unused/url") )
-    		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList("ScriptedContentPlugin"), Arrays.asList("/used/url")) )
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(false, "/scripted/used/url", "/scripted/unused/url") )
+    		.and(brjs).hasTagHandlerPlugins( new ScriptedRequestGeneratingTagHandlerPlugin("tag", Arrays.asList("scripted"), Arrays.asList("/scripted/used/url")) )
     		.and(brjs).hasBeenCreated()
     		.and( brjs.app("app1").aspect("empty") ).indexPageHasContent("")
     		.and( brjs.app("app1").aspect("nonempty") ).indexPageHasContent("<@tag @/>")
     		.and(brjs).localeSwitcherHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).doesNotContainFile("empty/used/url")
-    		.and(targetDir).doesNotContainFile("empty/unused/url")
-    		.and(targetDir).containsFile("nonempty/used/url")
-    		.and(targetDir).doesNotContainFile("nonempty/unused/url");
+    	then(targetDir).doesNotContainFile("empty/scripted/used/url")
+    		.and(targetDir).doesNotContainFile("empty/scripted/unused/url")
+    		.and(targetDir).containsFile("nonempty/scripted/used/url")
+    		.and(targetDir).doesNotContainFile("nonempty/scripted/unused/url");
 	}
 	
 	@Test
 	public void bundlesFromContentPluginsThatOutputAllBundlesAreOutputRegardlessOfWhetherTheTagIsUsed() throws Exception {
 		given(brjs).hasNotYetBeenCreated()
     		.and(brjs).automaticallyFindsBundlerPlugins()
-    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(true, "/used/url", "/unused/url") )
+    		.and(brjs).hasContentPlugins( new ScriptedContentPlugin(true, "/scripted/used/url", "/scripted/unused/url") )
     		.and(brjs).hasBeenCreated()
     		.and( brjs.app("app1").defaultAspect() ).indexPageHasContent("")
     		.and(brjs).localeSwitcherHasContents("")
     		.and( brjs.app("app1") ).hasBeenBuilt(targetDir);
-    	then(targetDir).containsFile("used/url")
-    		.and(targetDir).containsFile("unused/url");
+    	then(targetDir).containsFile("scripted/used/url")
+    		.and(targetDir).containsFile("scripted/unused/url");
+	}
+	
+	@Test
+	public void userTokensCanBeReplaced() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@")
+			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("dev")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("v/dev/js/prod/combined/bundle.js", "token replacement");
+	}
+	
+	@Test
+	public void brjsTokensCanBeReplaced() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).containsFileWithContents("src/App.js", "@BRJS.BUNDLE.PATH@/some/path")
+			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("123")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "v/123/some/path");
+	}
+	
+	@Test
+	public void brjsTokensHaveTheCorrectValues() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).containsFileWithContents("src/App.js", 
+    				"name = @BRJS.APP.NAME@\n"+
+    				"version = @BRJS.APP.VERSION@\n"+
+    				"bundlepath = @BRJS.BUNDLE.PATH@\n"
+			)
+			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("123")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "name = app1\n")
+			.and(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "version = 123\n")
+			.and(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "bundlepath = v/123\n");
+	}
+	
+	@Test
+	public void brjsAppLocaleTokensCanBeReplacedForIndexPages() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en,de\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).hasBeenCreated()
+			.and(defaultAspect).indexPageHasContent("@BRJS.APP.LOCALE@")
+			.and(brjs).hasVersion("123")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("en.html", "en")
+			.and(targetDir).containsFileWithContents("de.html", "de");
+	}
+	
+	@Test
+	public void defaultAppLocaleTokensIsUsedForBundles() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en,de\n"
+				+ "requirePrefix: appns")
+			.and(defaultAspect).containsFileWithContents("src/App.js", "@BRJS.APP.LOCALE@")
+			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(brjs).hasVersion("123")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("v/123/js/prod/combined/bundle.js", "en");
+	}
+	
+	@Test
+	public void weCanUseUTF8() throws Exception {
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(app).hasBeenCreated()
+    		.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    			+ "locales: en\n"
+    			+ "requirePrefix: appns")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+    		.and(defaultAspect).hasBeenCreated()
+    		.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@ // $£€")
+    		.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+    		.and(brjs).hasVersion("dev")
+    		.and(app).hasBeenBuilt(targetDir);
+    	then(targetDir).containsFileWithContents("v/dev/js/prod/combined/bundle.js", "token replacement // $£€");
+	}
+	
+	@Test
+	public void weCanUseLatin1() throws Exception {
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
+			.and().activeEncodingIs("ISO-8859-1")
+    		.and(app).hasBeenCreated()
+    		.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+    			+ "locales: en\n"
+    			+ "requirePrefix: appns")
+    		.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+    		.and(defaultAspect).hasBeenCreated()
+    		.and(defaultAspect).containsFileWithContents("src/App.js", "@SOME.TOKEN@ // $£")
+    		.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+    		.and(brjs).hasVersion("dev")
+    		.and(app).hasBeenBuilt(targetDir);
+    	then(targetDir).containsFileWithContents("v/dev/js/prod/combined/bundle.js", "token replacement // $£");
 	}
 	
 }

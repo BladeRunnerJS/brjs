@@ -1,7 +1,9 @@
-br.presenter.testing.ElementInterface = function()
+var ElementInterface = function()
 {
 };
 
-br.presenter.testing.ElementInterface.prototype.appendChild = function()
+ElementInterface.prototype.appendChild = function()
 {
 };
+
+module.exports = ElementInterface;

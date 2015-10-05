@@ -1,14 +1,11 @@
 package org.bladerunnerjs.api.spec.utility;
 
-import java.io.File;
-
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.JsLib;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.spec.engine.BuilderChainer;
 import org.bladerunnerjs.api.spec.engine.BundlableNodeBuilder;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
-import org.junit.Assert;
 
 import com.google.common.base.Joiner;
 
@@ -63,15 +60,6 @@ public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 		}
 		
 		writeToFile(getIndexFile(), "require('" + Joiner.on("');\nrequire('").join(requirePaths) + "');");
-		
-		return builderChainer;
-	}
-	
-	public BuilderChainer doesNotContainFile(String filePath)
-	{
-		File file = aspect.file(filePath);
-		
-		Assert.assertFalse( "The file at "+file.getAbsolutePath()+" was not meant to exist", file.exists() );
 		
 		return builderChainer;
 	}

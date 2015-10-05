@@ -1,30 +1,29 @@
-br.Core.thirdparty("jquery-browser");
+'use strict';
 
-brjs.dashboard.app.service.browserdetector.BrowserDetector = function()
-{
+var jQuery = require('jquery');
+var Core = require('br/Core');
+Core.thirdparty('jquery-browser');
 
+function BrowserDetector() {
 }
 
-brjs.dashboard.app.service.browserdetector.BrowserDetector.prototype.getBrowserName = function()
-{
-	if (jQuery.browser.name) 
-	{
+BrowserDetector.prototype.getBrowserName = function() {
+	if (jQuery.browser.name) {
 		var sBrowser = jQuery.browser.name;
-		if (sBrowser == "msie") 
-		{
-			return "ie";
+		if (sBrowser == 'msie') {
+			return 'ie';
 		}
 		return sBrowser;
 	}
-	return "";
-}
+	return '';
+};
 
-brjs.dashboard.app.service.browserdetector.BrowserDetector.prototype.getBrowserVersion = function()
-{
-	if (jQuery.browser.versionNumber) 
-	{
+BrowserDetector.prototype.getBrowserVersion = function() {
+	if (jQuery.browser.versionNumber) {
 		return jQuery.browser.versionNumber;
 	}
-	return "";
-}
+	return '';
+};
+
+module.exports = BrowserDetector;
 
