@@ -75,6 +75,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	destinationDir projectDir
 	inputs.property "buildVersion", buildVersion
 	inputs.property "buildHostname", buildHostname
+	
 	from (configurations.system)
 	{
 		into "sdk/libs/java/system"
@@ -102,29 +103,27 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		}
 	}
 	file("sdk/system-applications").eachDir {
-    into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
-      from configurations.systemAppServlets
-      rename { String fileName ->
-        if ( !fileName.startsWith("brjs-") )
-        {
-          fileName = "brjs-"+fileName
-        }
-      }
-    }
+		into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
+			from configurations.systemAppServlets
+			rename { String fileName ->
+				if ( !fileName.startsWith("brjs-") ) {
+					fileName = "brjs-"+fileName
+				}
+			}
+		}
 	}
-  ["apps", "sdk/system-applications"].each { appsHome ->
-    file(appsHome).eachDir {
-      into ("${appsHome}/${it.name}/WEB-INF/lib") {
-        from configurations.application
-        rename { String fileName ->
-          if ( !fileName.startsWith("brjs-") )
-          {
-            fileName = "brjs-"+fileName
-          }
-        }
-      }
-    }
-  }
+	["apps", "sdk/system-applications"].each { appsHome ->
+		file(appsHome).eachDir {
+			into ("${appsHome}/${it.name}/WEB-INF/lib") {
+			from configurations.application
+				rename { String fileName ->
+					if ( !fileName.startsWith("brjs-") ) {
+						fileName = "brjs-"+fileName
+					}
+				}
+			}
+		}
+	}
 	from (configurations.testRunner)
 	{
 		into "sdk/libs/java/testRunner"
