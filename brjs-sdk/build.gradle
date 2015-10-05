@@ -101,23 +101,40 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
     		}
 		}
 	}
-	file("sdk/system-applications").listFiles().each {
-		if (it.isDirectory()) {
-			into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
-				from configurations.systemAppServlets
-				rename { String fileName ->
-					if ( !fileName.startsWith("brjs-") )
-					{
-						fileName = "brjs-"+fileName
-					}
-				}
-			}
-		}
+	file("sdk/system-applications").eachDir {
+    into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
+      from configurations.systemAppServlets
+      rename { String fileName ->
+        if ( !fileName.startsWith("brjs-") )
+        {
+          fileName = "brjs-"+fileName
+        }
+      }
+    }
 	}
+  ["apps", "sdk/system-applications"].each { appsHome ->
+    file(appsHome).eachDir {
+      into ("${appsHome}/${it.name}/WEB-INF/lib") {
+        from configurations.application
+        rename { String fileName ->
+          if ( !fileName.startsWith("brjs-") )
+          {
+            fileName = "brjs-"+fileName
+          }
+        }
+      }
+    }
+  }
 	from (configurations.testRunner)
 	{
 		into "sdk/libs/java/testRunner"
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
+	}
+	file("apps").eachDir { appDir ->
+		from ("sdk/libs/java/application"){
+			into "apps/${appDir.name}/WEB-INF/lib"
+			include "brjs-*.jar"
+		}
 	}
 
 	doFirst {
@@ -125,6 +142,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		delete file("sdk/phantomjs")
 		delete file("sdk/docs")
 		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
 		file("sdk/version.txt").text =  "{"+
