@@ -69,7 +69,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 		String interfaceCheck =
 			"	var InterfaceClass = require('" + aliasDefinition.getInterfaceRequirePath() + "');\n" +
 			"	var topiarist = require('topiarist');\n" +
-			"	if(!topiarist.isA(AliasClass, InterfaceClass)) throw new TypeError(\"'" + aliasDefinition.getRequirePath() + "' was not an instance of '" + aliasDefinition.getInterfaceRequirePath() + "'.\");\n";
+			"	if(!topiarist.classIsA(AliasClass, InterfaceClass)) throw new TypeError(\"'" + aliasDefinition.getRequirePath() + "' was not an instance of '" + aliasDefinition.getInterfaceRequirePath() + "'.\");\n";
 		
 		return new StringReader(
 			"System.registerDynamic('alias!" + aliasDefinition.getName() + "', [" + Joiner.on(", ").join(dependencies) + "], true, function(require, exports, module) {\n" +
