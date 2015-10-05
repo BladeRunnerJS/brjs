@@ -30,7 +30,7 @@ import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
 import org.bladerunnerjs.runner.CommandRunner.NoWorkingDirArgumentException;
 import org.bladerunnerjs.utility.FileUtils;
-import org.bladerunnerjs.utility.UserCommandRunner;
+import org.bladerunnerjs.utility.MissingAppJarsException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -244,7 +244,7 @@ public class CommandRunnerTest {
 		org.apache.commons.io.FileUtils.write( dirFile("valid-sdk-directory/apps/myApp/app.conf"), "" );
 		commandRunner.run(dirFile("valid-sdk-directory"), dirFile("valid-sdk-directory"), new String[] {"log-test"});
 		String output = outputStream.toString("UTF-8");
-		String warnMessage = String.format(UserCommandRunner.Messages.OUTDATED_JAR_MESSAGE, "myApp", "brjs-", "sdk/libs/java/application");
+		String warnMessage = String.format(MissingAppJarsException.OUTDATED_JAR_MESSAGE, "myApp", "brjs-", "sdk/libs/java/application");
 		assertContains(warnMessage, output);
 	}
 	

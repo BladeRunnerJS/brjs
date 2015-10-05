@@ -62,7 +62,7 @@ public class CopyThemeCommand extends JSAPArgsParsingCommandPlugin
 	@Override
 	public String getCommandDescription()
 	{
-		return "Duplicate an existing CSS theme";
+		return "Duplicate an existing CSS theme.";
 	}
 	
 	@Override

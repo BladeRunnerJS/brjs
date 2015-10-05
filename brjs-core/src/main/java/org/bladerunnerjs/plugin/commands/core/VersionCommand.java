@@ -46,7 +46,7 @@ public class VersionCommand extends JSAPArgsParsingCommandPlugin
 	@Override
 	public String getCommandDescription()
 	{
-		return "Displays the BladeRunnerJS version";
+		return "Displays the BladeRunnerJS version.";
 	}
 	
 	@Override
