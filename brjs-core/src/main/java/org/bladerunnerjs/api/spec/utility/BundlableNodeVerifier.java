@@ -2,6 +2,7 @@ package org.bladerunnerjs.api.spec.utility;
 
 import static org.junit.Assert.*;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.api.BundlableNode;
@@ -68,6 +69,8 @@ public class BundlableNodeVerifier<T extends BundlableNode> extends NodeVerifier
 		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentPlugin(contentPluginPrefix);
 		List<String> actualRequests = contentPlugin.getValidContentPaths(bundlableNode.getBundleSet(), RequestMode.Prod, bundlableNode.app().appConf().getLocales());
 		
+		Collections.sort(actualRequests);
+		
 		assertEquals("prod requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
 		
 		return verifierChainer;
@@ -76,6 +79,8 @@ public class BundlableNodeVerifier<T extends BundlableNode> extends NodeVerifier
 	public VerifierChainer usedProdContentPathsForPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
 		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentPlugin(contentPluginPrefix);
 		List<String> actualRequests = contentPlugin.getUsedContentPaths(bundlableNode.getBundleSet(), RequestMode.Prod, bundlableNode.app().appConf().getLocales());
+		
+		Collections.sort(actualRequests);
 		
 		assertEquals("prod requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
 		

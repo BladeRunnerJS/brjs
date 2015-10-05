@@ -5,6 +5,9 @@
  */
 
 var Errors = require('./Errors');
+var fell = require('fell');
+var log = fell.getLogger('br.ServiceRegistry');
+
 var AliasRegistry;
 var legacyWarningLogged = false;
 
@@ -129,6 +132,29 @@ ServiceRegistryClass.prototype.legacyClear = function() {
 	this.registry = {};
 };
 
+ServiceRegistryClass.prototype.dispose = function() {
+	for (var serviceName in this.registry) {
+		if (this.registry.hasOwnProperty(serviceName)) {
+			var service = this.registry[serviceName];
+			if (typeof service.dispose !== "undefined") {
+				if (service.dispose.length == 0) {
+					try {
+						service.dispose();
+						log.debug(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_CALLED, serviceName);
+					} catch (e) {
+						log.error(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_ERROR, serviceName, e);
+					}
+				} else {
+					log.info(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_0_ARG, serviceName);
+				}
+			} else {
+				log.debug(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_MISSING, serviceName);
+			}
+		}
+	}
+	this.registry = {};
+}
+
 /** @private */
 ServiceRegistryClass.prototype._initializeServiceIfRequired = function(alias) {
 	if (alias in this.registry === false) {
@@ -141,6 +167,13 @@ ServiceRegistryClass.prototype._initializeServiceIfRequired = function(alias) {
 		}
 	}
 };
+
+ServiceRegistryClass.LOG_MESSAGES = {
+	DISPOSE_CALLED: "dispose() called on service registered for '{0}",
+	DISPOSE_ERROR: "error thrown when calling dispose() on service registered for '{0}'. The error was: {1}",
+	DISPOSE_0_ARG: "dispose() not called on service registered for '{0}' since it's dispose() method requires more than 0 arguments",
+	DISPOSE_MISSING: "dispose() not called on service registered for '{0}' since no dispose() method was defined"
+}
 
 module.exports = ServiceRegistryClass;
 

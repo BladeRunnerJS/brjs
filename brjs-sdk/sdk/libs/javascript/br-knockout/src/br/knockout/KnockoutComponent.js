@@ -22,7 +22,7 @@ var Component = require( 'br/component/Component' );
 */
 function KnockoutComponent(sTemplateId, vPresentationModel) {
   this.m_sTemplateId = sTemplateId;
-  this.m_eTemplate = this._getTemplate(sTemplateId);
+  this.m_eTemplate = null;
   this.m_oPresentationModel = vPresentationModel;
 }
 br.implement( KnockoutComponent, Component );
@@ -46,25 +46,30 @@ KnockoutComponent.prototype.setDisplayFrame = function(frame) {
   this.m_oFrame = frame;
 
   frame.on('attach', function() {
-    ko.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
+    ko.applyBindings(this.m_oPresentationModel, this._getTemplate());
   }.bind(this));
 
   frame.setContent(this.getElement());
 };
 
 KnockoutComponent.prototype.getElement = function() {
-  return this.m_eTemplate;
+  return this._getTemplate();
 };
 
-/** @private */
-KnockoutComponent.prototype._getTemplate = function(sTemplateId) {
-	var eTemplateNode = require('service!br.html-service').getTemplateElement(sTemplateId);
+/** 
+ * We lazilly get the template element so no elements are loaded if tests don't bind the model to the view 
+ * @private
+ */
+KnockoutComponent.prototype._getTemplate = function() {
+	if (!this.m_eTemplate) {
+		var eTemplateNode = require('service!br.html-service').getTemplateElement(this.m_sTemplateId);
 
-	if(!eTemplateNode) {
-	    throw new KnockoutComponent.TemplateNotFoundError("Template with ID '" + sTemplateId + "' couldn't be found");
+		if (!eTemplateNode) {
+			throw new KnockoutComponent.TemplateNotFoundError("Template with ID '" + this.m_sTemplateId + "' couldn't be found");
+		}
+		this.m_eTemplate = eTemplateNode;
 	}
-
-	return eTemplateNode;
+	return this.m_eTemplate;
 };
 
 module.exports = KnockoutComponent;

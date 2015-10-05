@@ -8,7 +8,7 @@ Contributing to the BRJS codebase is really easy. We only have one hard rule: **
 * Check for unnecessary whitespace with `git diff --check` before committing
 * Run all the tests for the project before making the pull request
 
-When you submit a pull request please submit into `develop` rather than `master` - the BRJS uses develop for day to day work, only merging to master for releases. If you have built from a feature branch and want to submit a pull request into that feature branch feel free to submit a PR to that branch instead.
+Pull requests should be made against the `master` branch. If you have built from a feature branch and want to submit a pull request into that feature branch feel free to submit a PR to that branch instead.
 
 
 The following information will also be of use:
