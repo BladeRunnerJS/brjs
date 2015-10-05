@@ -1,12 +1,13 @@
 package org.bladerunnerjs.plugin.bundlers.appmeta;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
@@ -20,14 +21,9 @@ import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-import org.bladerunnerjs.utility.AppMetadataUtility;
-
-import com.google.common.base.Joiner;
-
 
 public class AppMetadataContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin
 {
-
 	private static final String APP_META_REQUEST = "app-meta-request";
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
@@ -65,20 +61,10 @@ public class AppMetadataContentPlugin extends AbstractContentPlugin implements C
 		{
 			try
 			{
-				App app = bundleSet.bundlableNode().app();
-				//NOTE: this metadata is used by the BRAppMetaService
-				// This can't be modeled as a SourceModule since it needs access to the version which is only available to ContentPlugins
-				return new CharResponseContent( brjs, 
-					"System.registerDynamic('app-meta!$data', [], true, function(require, exports, module) {\n"+ 
-						"\t// these variables should not be used directly but accessed via the 'br.app-meta-service' instead\n" + 
-						"\tmodule.exports.APP_VERSION = '"+version+"';\n" +
-						"\tmodule.exports.VERSIONED_BUNDLE_PATH = '"+AppMetadataUtility.getRelativeVersionedBundlePath(app, version, "")+"';\n" +
-						"\tmodule.exports.LOCALE_COOKIE_NAME = '"+app.appConf().getLocaleCookieName()+"';\n" +
-						"\tmodule.exports.APP_LOCALES = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n" +
-						"\treturn module.exports;\n" +
-					"});\n");
+				SourceModule metaDataSourceModule = (SourceModule) bundleSet.bundlableNode().getLinkedAsset(AppMetadataSourceModule.APP_META_DATA);
+				return new CharResponseContent(brjs, metaDataSourceModule.getReader());
 			}
-			catch (ConfigException ex)
+			catch (IOException | RequirePathException ex)
 			{
 				throw new ContentProcessingException(ex);
 			}
