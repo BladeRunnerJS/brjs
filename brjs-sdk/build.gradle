@@ -76,15 +76,15 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	inputs.property "buildVersion", buildVersion
 	inputs.property "buildHostname", buildHostname
 	
-	from (configurations.system)
-	{
-		into "sdk/libs/java/system"
-		rename { String fileName ->
-		if ( !fileName.startsWith("brjs-") )
-		{
+	def brjsJarRenamer = { String fileName ->
+		if ( !fileName.startsWith("brjs-") ) {
 			fileName = "brjs-"+fileName
 		}
 	}
+	
+	from (configurations.system) {
+		into "sdk/libs/java/system"
+		rename brjsJarRenamer
 	}
 	from (configurations.javadocs.collect { zipTree(it) }) {
 		eachFile {
@@ -92,40 +92,25 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		}
 		into "sdk/docs/java"
 	}
-	from (configurations.application)
-	{
+	from (configurations.application) {
 		into "sdk/libs/java/application"
-		rename { String fileName ->
-    		if ( !fileName.startsWith("brjs-") )
-    		{
-    			fileName = "brjs-"+fileName
-    		}
-		}
+		rename brjsJarRenamer
 	}
 	file("sdk/system-applications").eachDir {
 		into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
 			from configurations.systemAppServlets
-			rename { String fileName ->
-				if ( !fileName.startsWith("brjs-") ) {
-					fileName = "brjs-"+fileName
-				}
-			}
+			rename brjsJarRenamer
 		}
 	}
 	["apps", "sdk/system-applications"].each { appsHome ->
 		file(appsHome).eachDir {
 			into ("${appsHome}/${it.name}/WEB-INF/lib") {
-			from configurations.application
-				rename { String fileName ->
-					if ( !fileName.startsWith("brjs-") ) {
-						fileName = "brjs-"+fileName
-					}
-				}
+				from configurations.application
+				rename brjsJarRenamer
 			}
 		}
 	}
-	from (configurations.testRunner)
-	{
+	from (configurations.testRunner) {
 		into "sdk/libs/java/testRunner"
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
