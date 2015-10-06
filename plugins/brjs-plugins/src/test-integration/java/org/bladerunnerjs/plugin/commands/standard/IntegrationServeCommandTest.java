@@ -232,6 +232,21 @@ public class IntegrationServeCommandTest extends SpecTest
 		when(brjs).runThreadedCommand("serve");
 		then(appServer).requestForUrlReturns("/app1/", "token replacement");
 	}
+	
+	@Test
+	public void devIsTheDefaultEnvironmentIfNoneIsSpecified() throws Exception
+	{
+		given(app).hasBeenCreated()
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(app).hasDefaultEnvironmentProperties("SOME.TOKEN", "token replacement")
+				.and(app).hasEnvironmentProperties("dev", "SOME.TOKEN", "dev replacement")
+				.and(aspect).hasBeenCreated()
+				.and(aspect).indexPageHasContent("@SOME.TOKEN@");
+		when(brjs).runThreadedCommand("serve");
+		then(appServer).requestForUrlReturns("/app1/", "dev replacement");
+	}
 
 	@Test
 	public void tokensFromPropertiesFilesCanBeReplacedInBundles() throws Exception
