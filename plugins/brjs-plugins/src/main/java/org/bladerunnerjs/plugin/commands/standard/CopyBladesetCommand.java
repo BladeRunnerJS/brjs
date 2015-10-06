@@ -55,11 +55,6 @@ public class CopyBladesetCommand  extends JSAPArgsParsingCommandPlugin
 	}
 	
 	@Override
-	public String getCommandHelp() {
-		return getCommandUsage();
-	}
-	
-	@Override
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String sourceAppName = parsedArgs.getString("source-app-name");
 		String sourceBladesetName = parsedArgs.getString("source-bladeset-name");

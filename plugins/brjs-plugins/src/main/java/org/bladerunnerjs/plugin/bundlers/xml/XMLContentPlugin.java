@@ -17,9 +17,11 @@ import org.bladerunnerjs.api.plugin.CharResponseContent;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.appserver.util.TokenReplacingReader;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.utility.AppMetadataUtility;
+import org.bladerunnerjs.utility.BrjsPropertyTokenFinder;
 
 public class XMLContentPlugin extends AbstractContentPlugin
 {
@@ -72,6 +74,10 @@ public class XMLContentPlugin extends AbstractContentPlugin
 			String xmlBundlePathToken = AppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
 			//TODO: Can we do a streaming replacement rather than buffer into  string?
 			String result = bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath);
+			
+			if (!bufferedOutput.toString().equals(result)) {
+				bundleSet.bundlableNode().root().logger(XMLContentPlugin.class).warn(AppMetadataUtility.DEPRECATED_TOKEN_WARNING, AppMetadataUtility.XML_BUNDLE_PATH_TOKEN, TokenReplacingReader.TOKEN_START+BrjsPropertyTokenFinder.BUNDLE_PATH_KEY+TokenReplacingReader.TOKEN_END);
+			}
 			
 			return new CharResponseContent(brjs, result);
 		}

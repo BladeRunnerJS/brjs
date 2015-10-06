@@ -19,6 +19,7 @@ import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
@@ -81,7 +82,7 @@ public class BRJSDevServlet extends HttpServlet {
 		
 		ThreadSafeStaticBRJSAccessor.aquireModel();
 		UrlContentAccessor contentAccessor = new ServletContentAccessor(app, servletContext, request, response);
-		try ( ResponseContent content = app.requestHandler().handleLogicalRequest(requestPath, contentAccessor); )
+		try ( ResponseContent content = app.requestHandler().handleLogicalRequest(requestPath, contentAccessor, RequestMode.Dev); )
 		{
 			if (!response.isCommitted()) { // check the ServletContentAccessor hasnt been used to handle a request and sent headers
 				content.write( response.getOutputStream() );
