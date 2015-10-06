@@ -117,89 +117,6 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 	// Legacy bundle path tests
 	
 	@Test
-	public void legacyJsBundleUrlsCanBeUsedAsABundlePath() throws Exception
-	{
-		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
-			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/js.bundle" );
-		thenJstdTests(aspectTestPack).testBundleContainsText(
-					"bundles/js/js.bundle",
-					"// some SDK src code" );
-	}
-	
-	@Test
-	public void legacyXmlBundleUrlsCanBeUsedAsABundlePath() throws Exception
-	{
-		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
-			.and(aspect).containsFileWithContents("resources/file.xml", "<some xml>")
-    		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/xml.bundle" );
-    	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/xml.bundle",
-    				"<some xml>" );
-	}
-	
-	@Test
-	public void legacyHtmlBundleUrlsCanBeUsedAsABundlePath() throws Exception
-	{
-		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
-			.and(aspect).containsFileWithContents("resources/file.html", "<div id='appns.view'>TESTCONTENT</div>")
-    		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/html.bundle" );
-    	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/html.bundle",
-    				"<div id='appns.view'>TESTCONTENT</div>" );
-	}
-	
-	@Test
-	public void legacyCssBundleUrlsCanBeUsedAsABundlePath() throws Exception
-	{
-		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
-			.and(aspect).containsFileWithContents("resources/file.css", "some.css.styles { }")
-    		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/css.bundle" );
-    	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/css.bundle",
-    				"some.css.styles { }" );
-	}
-	
-	@Test
-	public void legacyI18nBundleUrlsCanBeUsedAsABundlePath() throws Exception
-	{
-		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
-			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.prop = some prop")
-    		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/i18n.bundle" );
-    	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/i18n/i18n.bundle",
-    				"\"appns.prop\": \"some prop\"" );
-	}
-	
-	@Test
-	public void legacyI18nBundleUrlsContainingTheLanguageInformationCanBeUsedAsABundlePath() throws Exception
-	{
-		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
-			.and(aspect).containsFileWithContents("resources/en.properties", "appns.prop = some prop")
-    		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_i18n.bundle" );
-    	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/i18n/en_i18n.bundle",
-    				"\"appns.prop\": \"some prop\"" );
-	}
-	
-	@Test
-	public void legacyI18nBundleUrlsContainingTheFullLocaleInformationCanBeUsedAsABundlePath() throws Exception
-	{
-		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
-		.and(aspect).containsFileWithContents("resources/en.properties", "appns.prop = some prop")
-		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-		whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_GB_i18n.bundle" );
-		thenJstdTests(aspectTestPack).testBundleContainsText(
-				"bundles/i18n/en_GB_i18n.bundle",
-				"\"appns.prop\": \"some prop\"" );
-	}
-	
-	@Test
 	public void logicalRequestPathsDontPreventUseOfFullModelPaths() throws Exception
 	{
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code\nvar a = function(){}")
@@ -275,12 +192,6 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 	public void allPossibleBundlePathAliasesAreValidModelRequests() throws Exception
 	{
 		whenJstdTests(aspectTestPack).runWithPaths( 
-				"bundles/js.bundle",
-				"bundles/css.bundle",
-				"bundles/i18n.bundle",
-				"bundles/en_i18n.bundle",
-				"bundles/xml.bundle",
-				"bundles/html.bundle",
 				"bundles/bundle.js",
 				"bundles/bundle.css",
 				"bundles/bundle.i18n",

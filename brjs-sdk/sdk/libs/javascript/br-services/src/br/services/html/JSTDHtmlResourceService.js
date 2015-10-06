@@ -19,7 +19,7 @@ var BRHtmlResourceService = require('./BRHtmlResourceService');
  * @param {String} sUrl A URL to load HTML from.
  */
 function JSTDHtmlResourceService(sUrl) {
-	var sDefaultUrl = (window.jstestdriver) ? "/test/bundles/html.bundle" : null;
+	var sDefaultUrl = (window.jstestdriver) ? "/test/bundles/bundle.html" : null;
 	BRHtmlResourceService.call(this, sUrl || sDefaultUrl);
 }
 
