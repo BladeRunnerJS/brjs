@@ -236,7 +236,7 @@ public class ThirdpartySourceModule implements SourceModule
 		{
 			for (String dependentLibName : manifest.getDepends())
 			{
-				dependentLibs.add( findDependentAsset(assetContainer.app(), dependentLibName) );
+				dependentLibs.add( findDependentAsset(app, dependentLibName) );
 			}
 		}
 		catch (ConfigException ex)
