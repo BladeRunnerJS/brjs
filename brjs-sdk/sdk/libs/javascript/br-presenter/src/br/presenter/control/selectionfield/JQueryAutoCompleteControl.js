@@ -115,7 +115,9 @@ JQueryAutoCompleteControl.prototype.onViewReady = function() {
 			event.preventDefault();
 			// if the selection is triggered by a click, not by pressing enter, then blur
 			if (self.m_bBlurAfterClick === true) {
-				if (event.which === 1) {
+				var ie8LeftClick = !event.button && !event.which;
+
+				if (event.which === 1 || ie8LeftClick) {
 					this.blur();
 				}
 			}

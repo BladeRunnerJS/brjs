@@ -118,7 +118,14 @@ public class TestRunnerController
 			{
 				try
 				{
-					success = testRunner.runTests( brjs.getMemoizedFile(config.getString("dir")), getTestTypeEnum(config.getString("testType")));
+					String dirArg = config.getString("dir");
+					MemoizedFile testDir;
+					if (new File(dirArg).getAbsolutePath().equals(dirArg)) {
+						testDir = brjs.getMemoizedFile(new File(dirArg));
+					} else {
+						testDir = brjs.getMemoizedFile(dirArg);
+					}
+					success = testRunner.runTests( testDir, getTestTypeEnum(config.getString("testType")) );
 				}
 				catch (Exception ex)
 				{

@@ -107,7 +107,12 @@ public class FileUtils {
 		String os;
 		
 		if(osNameProperty.startsWith("linux")) {
-			os = "linux";
+			if(System.getProperty("os.arch").equals("amd64")) {
+				os = "linux64";
+			}
+			else {
+				os = "linux";
+			}
 		}
 		else if(osNameProperty.startsWith("mac")) {
 			os = "mac";

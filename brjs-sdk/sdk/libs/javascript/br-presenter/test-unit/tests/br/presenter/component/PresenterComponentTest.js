@@ -61,7 +61,7 @@
     PresenterComponentTest.prototype.test_anExceptionIsThrownIfTheTemplateDoesNotExist = function()
     {
         assertException("1a", function() {
-            new PresenterComponent("template-does-not-exist", new PresenterComponentTest.MockPresentationModel());
+            new PresenterComponent("template-does-not-exist", new PresenterComponentTest.MockPresentationModel()).getElement();
         }, PresenterComponent.TEMPLATE_NOT_FOUND);
     };
 
