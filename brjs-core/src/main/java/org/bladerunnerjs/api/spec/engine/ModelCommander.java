@@ -16,7 +16,7 @@ public class ModelCommander {
 			specTest.logging.stopStoringLogs();
 		}
 		catch(Throwable e) {
-			if (specTest.catchAndVerifyExceptions && !(e instanceof NullPointerException)) 
+			if (specTest.catchAndVerifyExceptions && !(e instanceof NullPointerException) && !(e instanceof StackOverflowError)) 
 			{
 				specTest.exceptions.add(e);
 			}
