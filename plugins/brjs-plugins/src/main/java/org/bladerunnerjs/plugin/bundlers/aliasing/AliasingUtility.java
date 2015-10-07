@@ -17,13 +17,24 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.api.App;
-import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.BundlableNode;
 
 public class AliasingUtility
 {
 	
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
+	
+	public static boolean useLegacySchema(MemoizedFile aliaseFile, String defaultCharEncoding) throws IOException {
+		LineIterator it = IOUtils.lineIterator( new UnicodeReader(aliaseFile, defaultCharEncoding) );
+		for (int lineNumber = 0; it.hasNext() && lineNumber < 3; lineNumber++) {
+			if (it.nextLine().contains("schema.caplin.com")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/* Memoization Utilities */
 	
 	public static AliasesFile aliasesFile(AssetContainer assetContainer) {
 		return getNodeProperty(assetContainer, AliasesFile.class.getSimpleName(), AliasesFile.class, 
@@ -57,12 +68,14 @@ public class AliasingUtility
 		}
 	}
 	
+	/* Aliasing Utils */
+	
 	public static List<AliasDefinition> aliases(BundlableNode bundlableNode) {
 		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-		List<AliasDefinition> aliasDefinitionsOnlyFromBundlableNode = aliasesForBundlableNode(bundlableNode);
+		List<AliasDefinition> aliasDefinitionsOnlyFromBundlableNode = aliases(bundlableNode, aliasesFile(bundlableNode));
 		aliasDefinitions.addAll(aliasDefinitionsOnlyFromBundlableNode);
 		
-		List<AliasDefinition> aliasesFromAppAliases = aliasesForApp(bundlableNode);
+		List<AliasDefinition> aliasesFromAppAliases = aliases(bundlableNode, aliasesFile(bundlableNode.app()));
 		
 		for (AliasDefinition alias : aliasesFromAppAliases) {
 			if (aliasDefinitionsOnlyFromBundlableNode.isEmpty()) {
@@ -93,17 +106,6 @@ public class AliasingUtility
 		catch (ContentFileProcessingException ex) {
 			throw new RuntimeException(ex);
 		}
-	}
-	
-	
-	public static boolean useLegacySchema(MemoizedFile aliaseFile, String defaultCharEncoding) throws IOException {
-		LineIterator it = IOUtils.lineIterator( new UnicodeReader(aliaseFile, defaultCharEncoding) );
-		for (int lineNumber = 0; it.hasNext() && lineNumber < 3; lineNumber++) {
-			if (it.nextLine().contains("schema.caplin.com")) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public static AliasDefinition resolveAlias(String aliasName, BundlableNode bundlableNode) throws AliasException, ContentFileProcessingException {
@@ -145,52 +147,12 @@ public class AliasingUtility
 		});
 	}
 	
-	private static List<AliasDefinitionsFile> scopeAliasDefinitionFiles(Node node) {
-		List<AliasDefinitionsFile> scopeAliasDefinitions = new ArrayList<>();
-		if (node instanceof App) {
-			App app = (App) node;
-			for (Aspect aspect : app.aspects()) {
-				for (AssetContainer scopeAssetContainer : aspect.scopeAssetContainers()) {
-					scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
-				}
-			}
-		}
-		else {
-			BundlableNode bundlableNode = (BundlableNode) node;
-			for (AssetContainer scopeAssetContainer : bundlableNode.scopeAssetContainers()) {
-				scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
-			}
-		}
-		return scopeAliasDefinitions;
-	}
-	
-	private static List<AliasDefinition> aliasesForBundlableNode(BundlableNode bundlableNode)
-	{
-		try {
-			AliasesFile bundlableNodeAliasesFile = aliasesFile(bundlableNode);
-			
-			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-			
-			for (AliasOverride bundlableNodeAliasOverride : bundlableNodeAliasesFile.aliasOverrides()) {
-				aliasDefinitions.add( resolveAlias(bundlableNodeAliasOverride.getName(), bundlableNode) );
-			}
-			
-			return aliasDefinitions;
-		}
-		catch (ContentFileProcessingException | AliasException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-	
-	private static List<AliasDefinition> aliasesForApp(BundlableNode bundlableNode) {
-		AliasesFile appAliasesFile = aliasesFile(bundlableNode.app());
-		
+	private static List<AliasDefinition> aliases(BundlableNode bundlableNode, AliasesFile aliasesFile) {
 		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-		
 		try {
-			for (AliasOverride appAliasOverride : appAliasesFile.aliasOverrides()) {
+			for (AliasOverride appAliasOverride : aliasesFile.aliasOverrides()) {
 				try {
-					aliasDefinitions.add(resolveAlias(appAliasOverride.getName(), bundlableNode, appAliasesFile));
+					aliasDefinitions.add(resolveAlias(appAliasOverride.getName(), bundlableNode, aliasesFile));
 				}
 				catch (UnresolvableAliasException ex) {
 					// if unresolved don't add to alias definitions, because it could be for another bundlable node
@@ -267,7 +229,7 @@ public class AliasingUtility
 		String scenarioName = aliasesFile.scenarioName();
 		List<String> groupNames = aliasesFile.groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
+		for(AliasDefinitionsFile aliasDefinitionsFile : scopeAliasDefinitionFiles(bundlableNode)) {
 			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
 			
 			if (nextAliasDefinition != null)
@@ -281,6 +243,14 @@ public class AliasingUtility
 		}
 		
 		return aliasDefinition;
+	}
+	
+	private static List<AliasDefinitionsFile> scopeAliasDefinitionFiles(BundlableNode bundlableNode) {
+		List<AliasDefinitionsFile> scopeAliasDefinitions = new ArrayList<>();
+		for (AssetContainer scopeAssetContainer : bundlableNode.scopeAssetContainers()) {
+			scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
+		}
+		return scopeAliasDefinitions;
 	}
 	
 }
