@@ -41,55 +41,28 @@ public class AliasingUtility
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<AliasDefinitionsFile> aliasDefinitionFiles(AssetContainer assetContainer) {
-		MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesValue = getNodeProperty(assetContainer, "memoizedAliasDefinitionFiles", MemoizedValue.class, 
-				() -> { return new MemoizedValue<List<AliasDefinitionsFile>>(assetContainer.requirePrefix()+".aliasDefinitionFiles", assetContainer); });
-				
-		return aliasDefinitionFilesValue.value(() -> {
-			List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
-			
-			for ( MemoizedFile assetContainerAliasDir : Arrays.asList(assetContainer.file("src"), assetContainer.file("resources")) ) {
-				List<MemoizedFile> aliasDirs = new ArrayList<>();
-				aliasDirs.add(assetContainerAliasDir);
-				aliasDirs.addAll(assetContainerAliasDir.nestedDirs());
-				
-				for (MemoizedFile aliasDefinitionsDir : aliasDirs) {
-					AliasDefinitionsFile aliasDefinitionsFile = aliasDefinitionsFile(assetContainer, assetContainer.dir().getRelativePath(aliasDefinitionsDir));
-					if (aliasDefinitionsFile.getUnderlyingFile().isFile()) {
-						aliasDefinitionFiles.add(aliasDefinitionsFile);
-					}
-				} 
+	static <OT extends Object> OT getNodeProperty(Node node, String propertyKey, Class<? extends OT> valueType, Getter<Exception> valueGetter) {
+		NodeProperties nodeProperties = node.nodeProperties(AliasingUtility.class.getSimpleName());
+		Object nodeProperty = nodeProperties.getTransientProperty(propertyKey);
+		if (nodeProperty != null && nodeProperty.getClass().isAssignableFrom(valueType)) {
+			return (OT) nodeProperty;
+		} else {
+			try {
+				nodeProperty = valueGetter.get();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
 			}
-			
-			return aliasDefinitionFiles;
-		});
+			nodeProperties.setTransientProperty(propertyKey, nodeProperty);
+			return (OT) nodeProperty;
+		}
 	}
 	
-	public static List<AliasDefinitionsFile> scopeAliasDefinitionFiles(Node node) {
-		List<AliasDefinitionsFile> scopeAliasDefinitions = new ArrayList<>();
-		if (node instanceof App) {
-			App app = (App) node;
-			for (Aspect aspect : app.aspects()) {
-				for (AssetContainer scopeAssetContainer : aspect.scopeAssetContainers()) {
-					scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
-				}
-			}
-		}
-		else {
-			BundlableNode bundlableNode = (BundlableNode) node;
-			for (AssetContainer scopeAssetContainer : bundlableNode.scopeAssetContainers()) {
-				scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
-			}
-		}
-		return scopeAliasDefinitions;
-	}
-	
-	public static List<AliasDefinition> aliasesIncludingAppAliases(BundlableNode bundlableNode) {
+	public static List<AliasDefinition> aliases(BundlableNode bundlableNode) {
 		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-		List<AliasDefinition> aliasDefinitionsOnlyFromBundlableNode = aliases(bundlableNode);
+		List<AliasDefinition> aliasDefinitionsOnlyFromBundlableNode = aliasesForBundlableNode(bundlableNode);
 		aliasDefinitions.addAll(aliasDefinitionsOnlyFromBundlableNode);
 		
-		List<AliasDefinition> aliasesFromAppAliases = aliasesFromAppAliases(bundlableNode);
+		List<AliasDefinition> aliasesFromAppAliases = aliasesForApp(bundlableNode);
 		
 		for (AliasDefinition alias : aliasesFromAppAliases) {
 			if (aliasDefinitionsOnlyFromBundlableNode.isEmpty()) {
@@ -106,55 +79,11 @@ public class AliasingUtility
 		
 		return aliasDefinitions;
 	}
-
-	public static List<AliasDefinition> aliases(BundlableNode bundlableNode)
-	{
-		try {
-			AliasesFile bundlableNodeAliasesFile = aliasesFile(bundlableNode);
-			
-			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-			
-			for (AliasOverride bundlableNodeAliasOverride : bundlableNodeAliasesFile.aliasOverrides()) {
-				aliasDefinitions.add( resolveAlias(bundlableNodeAliasOverride.getName(), bundlableNode) );
-			}
-			
-			return aliasDefinitions;
-		}
-		catch (ContentFileProcessingException | AliasException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
-	public static List<AliasDefinition> aliasesFromAppAliases(BundlableNode bundlableNode) {
-		AliasesFile appAliasesFile = aliasesFile(bundlableNode.app());
-		
-		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-		
-		try {
-			for (AliasOverride appAliasOverride : appAliasesFile.aliasOverrides()) {
-				try {
-					aliasDefinitions.add(resolveAlias(appAliasOverride.getName(), bundlableNode, appAliasesFile));
-				}
-				catch (UnresolvableAliasException ex) {
-					// if unresolved don't add to alias definitions, because it could be for another bundlable node
-				}
-			}
-		} catch (ContentFileProcessingException | AliasException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return aliasDefinitions;
-	}
 	
 	public static List<AliasDefinition> aliases(AssetContainer assetContainer, MemoizedFile childDir)
 	{
-		return aliases(assetContainer, assetContainer.dir().getRelativePath(childDir));
-	}
-	
-	
-	public static List<AliasDefinition> aliases(AssetContainer assetContainer, String path)
-	{
 		try {
+			String path = assetContainer.dir().getRelativePath(childDir);
 			AliasDefinitionsFile aliasDefinitionsFile = aliasDefinitionsFile(assetContainer, path);
 			if (!aliasDefinitionsFile.getUnderlyingFile().isFile()) {
 				return Collections.emptyList();
@@ -163,23 +92,6 @@ public class AliasingUtility
 		}
 		catch (ContentFileProcessingException ex) {
 			throw new RuntimeException(ex);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	static <OT extends Object> OT getNodeProperty(Node node, String propertyKey, Class<? extends OT> valueType, Getter<Exception> valueGetter) {
-		NodeProperties nodeProperties = node.nodeProperties(AliasingUtility.class.getSimpleName());
-		Object nodeProperty = nodeProperties.getTransientProperty(propertyKey);
-		if (nodeProperty != null && nodeProperty.getClass().isAssignableFrom(valueType)) {
-			return (OT) nodeProperty;
-		} else {
-			try {
-				nodeProperty = valueGetter.get();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex);
-			}
-			nodeProperties.setTransientProperty(propertyKey, nodeProperty);
-			return (OT) nodeProperty;
 		}
 	}
 	
@@ -205,7 +117,93 @@ public class AliasingUtility
 		return resolvedAlias;
 	}
 	
-	public static AliasDefinition resolveAlias(String aliasName, BundlableNode bundlableNode, AliasesFile aliasesFile) throws AliasException, ContentFileProcessingException {
+	
+	/* Private Methods */
+	
+	@SuppressWarnings("unchecked")
+	private static List<AliasDefinitionsFile> aliasDefinitionFiles(AssetContainer assetContainer) {
+		MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesValue = getNodeProperty(assetContainer, "memoizedAliasDefinitionFiles", MemoizedValue.class, 
+				() -> { return new MemoizedValue<List<AliasDefinitionsFile>>(assetContainer.requirePrefix()+".aliasDefinitionFiles", assetContainer); });
+				
+		return aliasDefinitionFilesValue.value(() -> {
+			List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
+			
+			for ( MemoizedFile assetContainerAliasDir : Arrays.asList(assetContainer.file("src"), assetContainer.file("resources")) ) {
+				List<MemoizedFile> aliasDirs = new ArrayList<>();
+				aliasDirs.add(assetContainerAliasDir);
+				aliasDirs.addAll(assetContainerAliasDir.nestedDirs());
+				
+				for (MemoizedFile aliasDefinitionsDir : aliasDirs) {
+					AliasDefinitionsFile aliasDefinitionsFile = aliasDefinitionsFile(assetContainer, assetContainer.dir().getRelativePath(aliasDefinitionsDir));
+					if (aliasDefinitionsFile.getUnderlyingFile().isFile()) {
+						aliasDefinitionFiles.add(aliasDefinitionsFile);
+					}
+				} 
+			}
+			
+			return aliasDefinitionFiles;
+		});
+	}
+	
+	private static List<AliasDefinitionsFile> scopeAliasDefinitionFiles(Node node) {
+		List<AliasDefinitionsFile> scopeAliasDefinitions = new ArrayList<>();
+		if (node instanceof App) {
+			App app = (App) node;
+			for (Aspect aspect : app.aspects()) {
+				for (AssetContainer scopeAssetContainer : aspect.scopeAssetContainers()) {
+					scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
+				}
+			}
+		}
+		else {
+			BundlableNode bundlableNode = (BundlableNode) node;
+			for (AssetContainer scopeAssetContainer : bundlableNode.scopeAssetContainers()) {
+				scopeAliasDefinitions.addAll( aliasDefinitionFiles(scopeAssetContainer) );
+			}
+		}
+		return scopeAliasDefinitions;
+	}
+	
+	private static List<AliasDefinition> aliasesForBundlableNode(BundlableNode bundlableNode)
+	{
+		try {
+			AliasesFile bundlableNodeAliasesFile = aliasesFile(bundlableNode);
+			
+			List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+			
+			for (AliasOverride bundlableNodeAliasOverride : bundlableNodeAliasesFile.aliasOverrides()) {
+				aliasDefinitions.add( resolveAlias(bundlableNodeAliasOverride.getName(), bundlableNode) );
+			}
+			
+			return aliasDefinitions;
+		}
+		catch (ContentFileProcessingException | AliasException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	private static List<AliasDefinition> aliasesForApp(BundlableNode bundlableNode) {
+		AliasesFile appAliasesFile = aliasesFile(bundlableNode.app());
+		
+		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+		
+		try {
+			for (AliasOverride appAliasOverride : appAliasesFile.aliasOverrides()) {
+				try {
+					aliasDefinitions.add(resolveAlias(appAliasOverride.getName(), bundlableNode, appAliasesFile));
+				}
+				catch (UnresolvableAliasException ex) {
+					// if unresolved don't add to alias definitions, because it could be for another bundlable node
+				}
+			}
+		} catch (ContentFileProcessingException | AliasException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return aliasDefinitions;
+	}
+	
+	private static AliasDefinition resolveAlias(String aliasName, BundlableNode bundlableNode, AliasesFile aliasesFile) throws AliasException, ContentFileProcessingException {
 		AliasOverride aliasOverride = getLocalAliasOverride(aliasName, aliasesFile);
 		AliasDefinition aliasDefinition = getAliasDefinition(aliasName, aliasesFile, bundlableNode);
 		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName, aliasesFile, bundlableNode);
