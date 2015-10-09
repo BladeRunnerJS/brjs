@@ -8,7 +8,6 @@ var Errors = require('./Errors');
 var fell = require('fell');
 var log = fell.getLogger('br.ServiceRegistry');
 
-var AliasRegistry;
 var legacyWarningLogged = false;
 
 /**
@@ -157,6 +156,7 @@ ServiceRegistryClass.prototype.dispose = function() {
 
 /** @private */
 ServiceRegistryClass.prototype._initializeServiceIfRequired = function(alias) {
+	var AliasRegistry = require('./AliasRegistry');
 	if (alias in this.registry === false) {
 		var isIdentifierAlias = AliasRegistry.isAliasAssigned(alias);
 
@@ -176,5 +176,3 @@ ServiceRegistryClass.LOG_MESSAGES = {
 }
 
 module.exports = ServiceRegistryClass;
-
-AliasRegistry = require('./AliasRegistry');
