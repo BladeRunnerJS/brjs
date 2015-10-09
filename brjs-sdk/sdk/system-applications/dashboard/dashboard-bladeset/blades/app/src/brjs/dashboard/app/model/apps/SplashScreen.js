@@ -31,7 +31,7 @@ SplashScreen.prototype._toggleLocalStoragePermanentHide = function() {
 	this.m_oLocalStorage.setItem(this.m_sLocalStoragePermanentlyHideSplashScreen, this.permanentlyHideSplashScreen.getValue());
 };
 
-SplashScreen.prototype._closeSplashScreen = function() {
+SplashScreen.prototype.$closeSplashScreen = function() {
 	this.isVisible.setValue(false);
 };
 
