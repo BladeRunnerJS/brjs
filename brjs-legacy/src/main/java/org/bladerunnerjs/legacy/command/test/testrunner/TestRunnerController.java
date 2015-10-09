@@ -95,7 +95,7 @@ public class TestRunnerController
 					} else {
 						testDir = brjs.getMemoizedFile(dirArg);
 					}
-					success = testRunner.runTests( testDir, getTestTypeEnum(config.getString("testType")) );
+					success = testRunner.runTests( testDir, getTestTypeEnum(config.getString("testType")), config.getString("js-minifier") );
 				}
 				catch (Exception ex)
 				{

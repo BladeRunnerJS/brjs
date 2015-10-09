@@ -21,15 +21,18 @@ import org.bladerunnerjs.model.StaticContentAccessor;
 
 public class BundlerHandler
 {	
+	
+	public static final String JS_MINIFIER_PROPERTY = "jsMinifierSetting";
+	
 	private App app;
 	protected Map<String,String> legacyBundlerHandlerPaths = new LinkedHashMap<>();
 	protected Map<String,String> logicalBundlerHandlerPaths = new LinkedHashMap<>();
 	private BundlableNode bundlableNode;
 	
-	public BundlerHandler(BundlableNode bundlableNode)
+	public BundlerHandler(BundlableNode bundlableNode, String jsMinifierSetting)
 	{
 		// legacy paths - these are matched against the last part of the bundle path - e.g. js/js.bundle would match js.bundle
-		legacyBundlerHandlerPaths.put("js.bundle", "js/dev/combined/bundle.js");
+		legacyBundlerHandlerPaths.put("js.bundle", "js/dev/"+jsMinifierSetting+"/bundle.js");
 		legacyBundlerHandlerPaths.put("css.bundle", "css/common/bundle.css");
 		legacyBundlerHandlerPaths.put("i18n.bundle", "i18n/en_GB.js");
 		legacyBundlerHandlerPaths.put("(.*)_i18n.bundle", "i18n/$1.js"); // .* is a bad regex for a locale but since this is simply for legacy support we can get away with it
@@ -37,7 +40,7 @@ public class BundlerHandler
 		legacyBundlerHandlerPaths.put("html.bundle", "html/bundle.html");
 		
 		// logical/utility paths
-		logicalBundlerHandlerPaths.put("bundle.js", "js/dev/combined/bundle.js");
+		logicalBundlerHandlerPaths.put("bundle.js", "js/dev/"+jsMinifierSetting+"/bundle.js");
 		logicalBundlerHandlerPaths.put("bundle.css", "css/common/bundle.css");
 		logicalBundlerHandlerPaths.put("bundle.i18n", "i18n/en_GB.js");
 		logicalBundlerHandlerPaths.put("bundle.xml", "xml/bundle.xml");

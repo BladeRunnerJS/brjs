@@ -150,7 +150,7 @@ public class TestRunner {
 		}
 	}
 	
-	public boolean runTests(MemoizedFile directory, TestType testType) throws Exception {
+	public boolean runTests(MemoizedFile directory, TestType testType, String jsMinifierSetting) throws Exception {
 		execStartTime= System.currentTimeMillis();
 		
 		try {
@@ -161,7 +161,7 @@ public class TestRunner {
 				FileUtils.deleteDirectory(XML_TEST_RESULTS_DIR);
 			}
 			
-			runAllTestsInDirectory(directory, directory, testType, true);
+			runAllTestsInDirectory(directory, directory, testType, true, jsMinifierSetting);
 			if(testResultList.size() == 0) {
 				logger.warn("Could not find any tests of type '" +testType.toString() + "' inside " +directory);
 				return false;
@@ -328,10 +328,14 @@ public class TestRunner {
 	}
 	
 	public void runAllTestsInDirectory(MemoizedFile baseDirectory, MemoizedFile directory, TestType testType) throws Exception {
-		runAllTestsInDirectory(baseDirectory, directory, testType, false);
+		runAllTestsInDirectory(baseDirectory, directory, testType, "combined");
 	}
 	
-	public void runAllTestsInDirectory(MemoizedFile baseDirectory, MemoizedFile directory, TestType testType, boolean resetServer) throws Exception {
+	public void runAllTestsInDirectory(MemoizedFile baseDirectory, MemoizedFile directory, TestType testType, String jsMinifierSetting) throws Exception {
+		runAllTestsInDirectory(baseDirectory, directory, testType, false, jsMinifierSetting);
+	}
+	
+	public void runAllTestsInDirectory(MemoizedFile baseDirectory, MemoizedFile directory, TestType testType, boolean resetServer, String jsMinifierSetting) throws Exception {
 		if (baseDirectory == null || !baseDirectory.exists()) {
 			String failureMessage = "Base directory '" + baseDirectory +"' does not exist";
 			logger.warn(failureMessage);
@@ -345,12 +349,12 @@ public class TestRunner {
 					logger.debug("Found valid test directory : '" +file +"'");
 					
 					TestRunResult testRun = new TestRunResult(baseDirectory, file, getDirType(file));
-					runTestAndRecordDuration(baseDirectory, testRun, file, resetServer);
+					runTestAndRecordDuration(baseDirectory, testRun, file, resetServer, jsMinifierSetting);
 					testResultList.add(testRun);
 				}
 				else {
 					logger.debug("Skipping '" +directory +"', no tests found");
-					runAllTestsInDirectory(baseDirectory, file, testType, resetServer);
+					runAllTestsInDirectory(baseDirectory, file, testType, resetServer, jsMinifierSetting);
 				}
 			}
 		}
@@ -372,13 +376,13 @@ public class TestRunner {
 		}
 	}
 
-	private void runTestAndRecordDuration(MemoizedFile baseDirectory, TestRunResult testRun, MemoizedFile testDir, boolean resetServer) throws Exception {
+	private void runTestAndRecordDuration(MemoizedFile baseDirectory, TestRunResult testRun, MemoizedFile testDir, boolean resetServer, String jsMinifierSetting) throws Exception {
 		testRun.setStartTime(System.currentTimeMillis());
-		testRun.setSuccess(runTest(baseDirectory, getJsTestDriverConf(testDir), resetServer));
+		testRun.setSuccess(runTest(baseDirectory, getJsTestDriverConf(testDir), resetServer, jsMinifierSetting));
 		testRun.setEndTime(System.currentTimeMillis());
 	}
 	
-	private boolean runTest(MemoizedFile baseDirectory, MemoizedFile configFile, boolean resetServer) throws Exception  {
+	private boolean runTest(MemoizedFile baseDirectory, MemoizedFile configFile, boolean resetServer, String jsMinifierSetting) throws Exception  {
 		logger.warn("\n");
 		logger.warn("Testing " + getTestPath(configFile) + " " + getTestTypeFromDirectoryName(configFile.getParentFile()) + ":");
 		
@@ -387,7 +391,7 @@ public class TestRunner {
 			{
 				XML_TEST_RESULTS_DIR.mkdirs();
 			}
-			JsTestDriverBundleCreator.createRequiredBundles(brjs, configFile);
+			JsTestDriverBundleCreator.createRequiredBundles(brjs, configFile, jsMinifierSetting);
 			String javaOpts = getJavaOpts();
 			javaOpts += (!javaOpts.equals("")) ? "$$" : "";
 

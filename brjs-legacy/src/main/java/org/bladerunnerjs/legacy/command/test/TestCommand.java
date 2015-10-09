@@ -50,6 +50,7 @@ public class TestCommand extends JSAPArgsParsingCommandPlugin implements LegacyC
 		argsParser.registerParameter(new UnflaggedOption("testType").setDefault("UTsAndATs").setStringParser(EnumeratedStringParser.getParser("UTs;ATs;ITs;UTsAndATs;ALL;", true)).setHelp("(UTs|ATs|ITs|ALL)"));
 		argsParser.registerParameter(new FlaggedOption("browsers").setShortFlag('b').setList(true).setListSeparator(',').setHelp("you can use ALL to specify that the tests should be run on all browsers"));
 		argsParser.registerParameter(new Switch("report").setLongFlag("report").setDefault("false").setHelp("if supplied, generate the HTML reports after running tests"));
+		argsParser.registerParameter(new FlaggedOption("js-minifier").setLongFlag("js-minifier").setDefault("combined").setHelp("set the minifier used for JS bundles"));
 	}
 
 	@Override

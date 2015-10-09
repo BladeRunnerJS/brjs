@@ -343,6 +343,7 @@ public class LogMessageStore
 
 	private void verifyNoMoreMessageOnList(String logLevel, List<LogMessage> messages)
 	{
+		assertionMade = true;
 		assertTrue( String.format(UNEXPECTED_LOG_MESSAGES, logLevel, Joiner.on(",\n\t\t").join(messages)), messages.isEmpty() );
 	}
 
