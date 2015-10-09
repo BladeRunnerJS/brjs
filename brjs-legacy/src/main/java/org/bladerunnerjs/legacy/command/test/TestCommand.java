@@ -3,11 +3,19 @@ package org.bladerunnerjs.legacy.command.test;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.api.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.legacy.command.LegacyCommandPlugin;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunnerController;
 
-public class TestCommand extends AbstractPlugin implements LegacyCommandPlugin
+import com.martiansoftware.jsap.FlaggedOption;
+import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPException;
+import com.martiansoftware.jsap.JSAPResult;
+import com.martiansoftware.jsap.Switch;
+import com.martiansoftware.jsap.UnflaggedOption;
+import com.martiansoftware.jsap.stringparsers.EnumeratedStringParser;
+
+public class TestCommand extends JSAPArgsParsingCommandPlugin implements LegacyCommandPlugin
 {
 	private TestRunnerController testRunner;
 	private BRJS brjs;
@@ -34,37 +42,20 @@ public class TestCommand extends AbstractPlugin implements LegacyCommandPlugin
 	{
 		return "Run specified js-test-driver tests.";
 	}
-	
+
 	@Override
-	public String getCommandUsage()
+	protected void configureArgsParser(JSAP argsParser) throws JSAPException
 	{
-		return testRunner.getUsage();
+		argsParser.registerParameter(new UnflaggedOption("dir").setRequired(true).setHelp("the directory from which to start looking for tests"));
+		argsParser.registerParameter(new UnflaggedOption("testType").setDefault("UTsAndATs").setStringParser(EnumeratedStringParser.getParser("UTs;ATs;ITs;UTsAndATs;ALL;", true)).setHelp("(UTs|ATs|ITs|ALL)"));
+		argsParser.registerParameter(new FlaggedOption("browsers").setShortFlag('b').setList(true).setListSeparator(',').setHelp("you can use ALL to specify that the tests should be run on all browsers"));
+		argsParser.registerParameter(new Switch("report").setLongFlag("report").setDefault("false").setHelp("if supplied, generate the HTML reports after running tests"));
 	}
 
 	@Override
-	public String getCommandHelp() {
-		return testRunner.getHelp();
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException
+	{
+		return testRunner.run(brjs, parsedArgs, this);
 	}
 	
-	@Override
-	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
-	{
-		if (validArgs(args))
-		{
-			return testRunner.run(brjs, args, this);
-		}
-		else 
-		{
-			throw new CommandArgumentsException("Invalid arguments provided.", this);
-		}
-	}
-	
-	private boolean validArgs(String[] args)
-	{
-		if (args != null && args.length > 0)
-		{
-			return true;
-		}
-		return false;
-	}
 }
