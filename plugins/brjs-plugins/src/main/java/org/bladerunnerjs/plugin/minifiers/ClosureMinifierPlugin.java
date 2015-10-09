@@ -77,6 +77,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	
 	/* using ClosureCompiler API in Java taken from http://blog.bolinfest.com/2009/11/calling-closure-compiler-from-java.html 
 	 * 	and https://code.google.com/p/closure-compiler/wiki/FAQ#How_do_I_call_Closure_Compiler_from_the_Java_API? */
+	@SuppressWarnings("deprecation")
 	@Override
 	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException, ResourceNotFoundException {
 		ByteArrayOutputStream errorStream = new ByteArrayOutputStream();

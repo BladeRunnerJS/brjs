@@ -174,7 +174,7 @@ public class ServedWarTest extends SpecTest {
 	}
 	
 	@Test
-	public void jndiTokensAreReplaced() throws Exception
+	public void jndiTokensAreReplacedViaJndi() throws Exception
 	{
 		given(brjs).localeSwitcherHasContents("locale-forwarder.js")
 			.and(templates).templateGroupCreated()

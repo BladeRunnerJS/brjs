@@ -70,7 +70,14 @@ public abstract class JSAPArgsParsingCommandPlugin extends AbstractCommandPlugin
 	
 	@Override
 	public String getCommandHelp() {
-		return argsParser.getHelp();
+		StringBuilder help = new StringBuilder();
+		for (String line : argsParser.getHelp().split("\n")) {
+			if (line.length() >= 2 && Character.isWhitespace(line.charAt(0)) && Character.isWhitespace(line.charAt(1))) {
+				line = line.substring(2);
+			}
+			help.append(line+"\n");			
+		}
+		return help.toString();
 	}
 	
 	@Override

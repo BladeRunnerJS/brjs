@@ -60,7 +60,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
 	private List<Asset> createDirectoryAssets(AssetContainer assetContainer, MemoizedFile dir, String requirePrefix, AssetRegistry assetDiscoveryInitiator) {
 		List<Asset> assets = new ArrayList<>();
-		for (MemoizedFile assetDir : dir.nestedDirs()) {
+		for (MemoizedFile assetDir : dir.dirs()) {
 			Asset dirAsset;
 			String assetDirRequirePath = DirectoryAsset.getRequirePath(requirePrefix, assetDir);
 			if ( !assetDiscoveryInitiator.hasRegisteredAsset(assetDirRequirePath) ) {
@@ -70,6 +70,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 				dirAsset = assetDiscoveryInitiator.getRegisteredAsset(assetDirRequirePath);
 			}
 			assets.add(dirAsset);
+			assets.addAll( createDirectoryAssets(assetContainer, assetDir, requirePrefix+"/"+assetDir.getName(), assetDiscoveryInitiator) );
 		}
 		return assets;
 	}
