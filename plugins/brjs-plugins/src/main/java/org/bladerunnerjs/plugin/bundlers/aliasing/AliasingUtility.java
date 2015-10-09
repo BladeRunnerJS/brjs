@@ -24,7 +24,7 @@ public class AliasingUtility
 	
 	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
 	
-	public static boolean useLegacySchema(MemoizedFile aliaseFile, String defaultCharEncoding) throws IOException {
+	public static boolean usesLegacySchema(MemoizedFile aliaseFile, String defaultCharEncoding) throws IOException {
 		LineIterator it = IOUtils.lineIterator( new UnicodeReader(aliaseFile, defaultCharEncoding) );
 		for (int lineNumber = 0; it.hasNext() && lineNumber < 3; lineNumber++) {
 			if (it.nextLine().contains("schema.caplin.com")) {
@@ -112,28 +112,8 @@ public class AliasingUtility
 		AliasesFile bundlableNodeAliasesFile = aliasesFile(bundlableNode);
 		AliasesFile appAliasesFile = aliasesFile(bundlableNode.app());
 		
-		AliasDefinition aliasDefinition = getAliasDefinitionsFileAlias(aliasName, bundlableNode, bundlableNodeAliasesFile, appAliasesFile);
-		AliasOverride bundlableNodeAliasOverride = getAliasFileAliasOverride(aliasName, bundlableNodeAliasesFile);
-		AliasOverride bundlableNodeGroupAliasOverride = getAliasFileGroupOverride(aliasName, bundlableNode, bundlableNodeAliasesFile, appAliasesFile);
-		
-		AliasOverride appAliasOverride = getAliasFileAliasOverride(aliasName, appAliasesFile);
-		AliasOverride appGroupAliasOverride = getAliasFileGroupOverride(aliasName, bundlableNode, bundlableNodeAliasesFile, appAliasesFile);
-		
-		if ((bundlableNodeAliasOverride == null) && (bundlableNodeGroupAliasOverride != null)) {
-			bundlableNodeAliasOverride = bundlableNodeGroupAliasOverride;
-		}
-		
-		AliasOverride activeAliasOverride = null;
-		
-		if (bundlableNodeAliasOverride != null) {
-			activeAliasOverride = bundlableNodeAliasOverride;
-		} else if (bundlableNodeGroupAliasOverride != null) {
-			activeAliasOverride = bundlableNodeAliasOverride; 
-		} else if (appAliasOverride != null) {
-			activeAliasOverride = appAliasOverride;
-		} else if (appGroupAliasOverride != null) {
-			activeAliasOverride = appGroupAliasOverride; 
-		}
+		AliasDefinition aliasDefinition = aliasDefinitionsFileAlias(aliasName, bundlableNode, bundlableNodeAliasesFile, appAliasesFile);
+		AliasOverride activeAliasOverride = activeAliasOverride(aliasName, bundlableNode, bundlableNodeAliasesFile, appAliasesFile);
 		
 		if (aliasDefinition == null && activeAliasOverride == null) {
 			throw new UnresolvableAliasException(bundlableNodeAliasesFile, aliasName);
@@ -156,6 +136,29 @@ public class AliasingUtility
 	
 	/* Private Methods */
 	
+	private static AliasOverride activeAliasOverride(String aliasName, BundlableNode bundlableNode, AliasesFile bundlableNodeAliasesFile, AliasesFile appAliasesFile) throws ContentFileProcessingException, AmbiguousAliasException
+	{
+		AliasOverride bundlableNodeAliasOverride = aliasFileAliasOverride(aliasName, bundlableNodeAliasesFile);
+		AliasOverride bundlableNodeGroupAliasOverride = aliasFileGroupOverride(aliasName, bundlableNode, bundlableNodeAliasesFile, appAliasesFile);
+		
+		AliasOverride appAliasOverride = aliasFileAliasOverride(aliasName, appAliasesFile);
+		AliasOverride appGroupAliasOverride = aliasFileGroupOverride(aliasName, bundlableNode, bundlableNodeAliasesFile, appAliasesFile);
+		
+		if (bundlableNodeAliasOverride != null) {
+			return bundlableNodeAliasOverride;
+		}
+		if (bundlableNodeGroupAliasOverride != null) {
+			return bundlableNodeGroupAliasOverride; 
+		}
+		if (appAliasOverride != null) {
+			return appAliasOverride;
+		}
+		if (appGroupAliasOverride != null) {
+			return appGroupAliasOverride; 
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	private static List<AliasDefinitionsFile> aliasDefinitionFiles(AssetContainer assetContainer) {
 		MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesValue = getNodeProperty(assetContainer, "memoizedAliasDefinitionFiles", MemoizedValue.class, 
@@ -199,7 +202,7 @@ public class AliasingUtility
 		return aliasDefinitions;
 	}
 	
-	private static AliasOverride getAliasFileAliasOverride(String aliasName, AliasesFile aliasesFile) throws ContentFileProcessingException {
+	private static AliasOverride aliasFileAliasOverride(String aliasName, AliasesFile aliasesFile) throws ContentFileProcessingException {
 		AliasOverride aliasOverride = null;
 		
 		for(AliasOverride nextAliasOverride : aliasesFile.aliasOverrides()) {
@@ -212,19 +215,18 @@ public class AliasingUtility
 		return aliasOverride;
 	}
 	
-	private static AliasOverride getAliasFileGroupOverride(String aliasName, BundlableNode bundlableNode, AliasesFile bundlableNodeAliasesFile, AliasesFile appAliasesFile) throws ContentFileProcessingException, AmbiguousAliasException {
-		AliasOverride aliasOverride = null;
+	private static AliasOverride aliasFileGroupOverride(String aliasName, BundlableNode bundlableNode, AliasesFile bundlableNodeAliasesFile, AliasesFile appAliasesFile) throws ContentFileProcessingException, AmbiguousAliasException {
 		AliasesFile activeAliasFile = activeAliasesFile(bundlableNodeAliasesFile, appAliasesFile);
 		List<String> groupNames = activeAliasFile.groupNames();
 		
+		AliasOverride aliasOverride = null;
 		for(AliasDefinitionsFile aliasDefinitionsFile : AliasingUtility.scopeAliasDefinitionFiles(bundlableNode)) {
 			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
 			if(aliasOverride != null && nextAliasOverride != null) {
 				throw new AmbiguousAliasException(activeAliasFile.getUnderlyingFile(), aliasName, groupNames);
 			}
 			
-			if (nextAliasOverride != null)
-			{
+			if (nextAliasOverride != null) {
 				aliasOverride = nextAliasOverride;
 			}
 		}
@@ -232,21 +234,19 @@ public class AliasingUtility
 		return aliasOverride;
 	}
 	
-	private static AliasDefinition getAliasDefinitionsFileAlias(String aliasName, BundlableNode bundlableNode, AliasesFile bundlableNodeAliasesFile, AliasesFile appAliasesFile) throws ContentFileProcessingException, AliasException {
-		AliasDefinition aliasDefinition = null;
+	private static AliasDefinition aliasDefinitionsFileAlias(String aliasName, BundlableNode bundlableNode, AliasesFile bundlableNodeAliasesFile, AliasesFile appAliasesFile) throws ContentFileProcessingException, AliasException {
 		AliasesFile activeAliasFile = activeAliasesFile(bundlableNodeAliasesFile, appAliasesFile);
 		String scenarioName = activeAliasFile.scenarioName();
 		List<String> groupNames = activeAliasFile.groupNames();
 		
+		AliasDefinition aliasDefinition = null;
 		for(AliasDefinitionsFile aliasDefinitionsFile : scopeAliasDefinitionFiles(bundlableNode)) {
 			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
 			
-			if (nextAliasDefinition != null)
-			{    			
+			if (nextAliasDefinition != null) {    			
     			if (aliasDefinition != null && nextAliasDefinition != null) {
     				throw new AmbiguousAliasException(activeAliasFile.getUnderlyingFile(), aliasName, scenarioName);
     			}
-			
 				aliasDefinition = nextAliasDefinition;
 			}
 		}
