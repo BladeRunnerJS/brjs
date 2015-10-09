@@ -1,0 +1,3 @@
+<aliases xmlns="http://schema.bladerunnerjs.org/aliases">
+	<alias name="itapp.itbladeset.itblade.AppLevelOverrideAlias" class="itapp.AppAliasesOverride" />
+</aliases>
