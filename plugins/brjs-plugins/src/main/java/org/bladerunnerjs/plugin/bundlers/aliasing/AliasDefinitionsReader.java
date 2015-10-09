@@ -56,7 +56,7 @@ public class AliasDefinitionsReader {
 		if(aliasDefinitionsFile.exists()) {
 			try(Reader fileReader = new UnicodeReader(aliasDefinitionsFile, defaultFileCharacterEncoding)) {
 				XMLValidationSchema schema;
-				if (useLegacySchema(aliasDefinitionsFile, defaultFileCharacterEncoding)) {
+				if (usesLegacySchema(aliasDefinitionsFile, defaultFileCharacterEncoding)) {
 					schema = legacyAliasDefinitionsSchema;
 					if (!xmlnsWarningLogged(brjs, aliasDefinitionsFile)) {
 						 brjs.logger(AliasDefinitionsReader.class).warn(LEGACY_XMLNS_WARN_MSG, brjs.dir().getRelativePath(aliasDefinitionsFile));
