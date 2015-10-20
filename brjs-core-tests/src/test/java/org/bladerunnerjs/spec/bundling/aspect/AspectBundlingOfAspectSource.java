@@ -219,6 +219,27 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 		then(response).containsText("var App = function() {};  module.exports = App;");
 	}
 	
+	@Test // test for https://github.com/BladeRunnerJS/brjs/issues/1517
+	public void aNPEIsntThrownWhenACommonJSSourceModuleIsOnlyRequiredAsAPostExportDependency() throws Exception {
+		given(aspect).classFileHasContent("appns/App", "App = function() {\n"+"};\n"+"module.exports = App\n"+"require('appns/Util');")
+			.and(aspect).hasClass("appns/Util")
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyNoOutstandingExceptions()
+			.and(response).containsCommonJsClasses("appns/Util", "appns/App");
+	}
+	
+	@Test // test for https://github.com/BladeRunnerJS/brjs/issues/1517
+	public void aNPEIsntThrownWhenANamespacedJSSourceModuleIsOnlyRequiredAsAPostExportDependency() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).classFileHasContent("appns.App", "appns.App = function() {\n"+"appns.Util();\n"+"};\n")
+			.and(aspect).hasClass("appns.Util")
+			.and(aspect).indexPageRequires("appns/App");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(exceptions).verifyNoOutstandingExceptions()
+			.and(response).containsNamespacedJsClasses("appns.Util", "appns.App");
+	}
+	
 	@Test
 	public void circularDependenciesCauseAnExceptionToBeThrown() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
