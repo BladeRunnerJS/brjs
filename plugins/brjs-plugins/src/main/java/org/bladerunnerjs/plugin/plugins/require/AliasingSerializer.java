@@ -7,7 +7,6 @@ import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility;
 import org.bladerunnerjs.plugin.require.AliasCommonJsSourceModule;
 
@@ -34,7 +33,7 @@ public class AliasingSerializer {
 			jsonData.append("'" + aliasDefinition.getName() + "':{");
 			
 			boolean classesInfoWritten = false;
-			if(aliasDefinition.getClassName() != null && !aliasDefinition.getClassName().equals(AliasesFile.BR_UNKNOWN_CLASS_NAME))
+			if(aliasDefinition.getClassName() != null && !aliasDefinition.getClassName().equals(AliasingUtility.BR_UNKNOWN_CLASS_NAME))
 			{
 				jsonData.append("'class':'" + aliasDefinition.getRequirePath() + "','className':'" + aliasDefinition.getClassName() + "'");
 				classesInfoWritten = true;
@@ -61,15 +60,13 @@ public class AliasingSerializer {
 	private static List<AliasDefinition> getAliasDefinitions(BundleSet bundleSet) {
 		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 		
-		AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundleSet.bundlableNode());
-		
 		List<AliasCommonJsSourceModule> aliasModules = bundleSet.sourceModules(AliasCommonJsSourceModule.class);
 		
 		for (AliasCommonJsSourceModule aliasSourceModule : aliasModules) {
 			AliasDefinition aliasDefinition = aliasSourceModule.getAliasDefinition();
 			try
 			{
-				aliasDefinition = aliasesFile.getAlias(aliasDefinition.getName());
+				aliasDefinition = AliasingUtility.resolveAlias(aliasDefinition.getName(), bundleSet.bundlableNode());
 			}
 			catch (AliasException e)
 			{

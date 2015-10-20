@@ -46,6 +46,12 @@ public class NonCircularTransitivePreExportDependencyGraphCreator {
 	}
 
 	private static boolean reachable(SourceModule fromSourceModule, SourceModule toSourceModule, Map<SourceModule, List<SourceModule>> combinedDefineTimeDependencyGraph, Set<SourceModule> visitedSourceModules) {
+		
+		if (!combinedDefineTimeDependencyGraph.containsKey(fromSourceModule)) {
+			throw new RuntimeException("The source module '"+fromSourceModule.getPrimaryRequirePath()+"' does not exist within the 'combinedDefineTimeDependencyGraph'.\n"+
+					"To help debug this issue please add details of the exception and the source module's use to https://github.com/BladeRunnerJS/brjs/issues/1517.");
+		}
+		
 		for(SourceModule dependentSourceModule : combinedDefineTimeDependencyGraph.get(fromSourceModule)) {
 			if(dependentSourceModule == toSourceModule) {
 				return true;

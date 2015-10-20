@@ -131,7 +131,8 @@ class GitHubAPIBridge
 	void uploadAssetForRelease(File brjsZip, Release release)
 	{
 		logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
-		def response = doRequest(uploadsPrefix, "post", release.upload_url, "name=${brjsZip.name}", "application/zip", brjsZip)
+		def uploadUrl = release.upload_url.replaceFirst(/{\?[\S]+}/,'') // remove the {abc,xyz} templates at the end of the URL, see https://developer.github.com/v3/#hypermedia
+		def response = doRequest(uploadsPrefix, "post", uploadUrl, "name=${brjsZip.name}", "application/zip", brjsZip)
 		logger.quiet "successfully added release asset, ${brjsZip.toString()}"
 	}
 
@@ -213,7 +214,10 @@ class GitHubAPIBridge
         			queryString : queryString,
     				body: requestBody
         		)
-        		logger.debug "GitHub response was: ${response.data.toString()}"
+				logger.debug "GitHub response was: ${response.data.toString()}"
+				if (response.status >= 300) {
+					throw new GradleException("Error making request, response code was ${response.status}");
+				}
         		return response
         	}
         	catch( ex ) {
