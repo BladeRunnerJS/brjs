@@ -52,7 +52,7 @@ public class AliasesReader {
 		if(aliasesFile.exists()) {
 			try(Reader fileReader = new UnicodeReader(aliasesFile, defaultFileCharacterEncoding)) {
 				XMLValidationSchema schema;
-				 if (useLegacySchema(aliasesFile, defaultFileCharacterEncoding)) {
+				 if (usesLegacySchema(aliasesFile, defaultFileCharacterEncoding)) {
 					 schema = legacyAliasesSchema;
 					 if (!xmlnsWarningLogged(brjs, aliasesFile)) {
 						 brjs.logger(AliasesReader.class).warn(LEGACY_XMLNS_WARN_MSG, brjs.dir().getRelativePath(aliasesFile));

@@ -26,7 +26,7 @@ public class AliasesCommander extends ModelCommander implements SpecTestCommande
 	{
 		call(new Command() {
 			public void call() throws Exception {
-				AliasingUtility.aliasesFile(aspect).getAlias(aliasName);
+				AliasingUtility.resolveAlias(aliasName, aspect);
 			}
 		});
 		

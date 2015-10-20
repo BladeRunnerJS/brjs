@@ -38,6 +38,11 @@ public class ApplicationTest {
     public void aliasingImplementsConstraint() throws Exception {
         Assert.assertEquals("Aliasing successfully prevented", itapp.getTableValue("aliasing-implement-fail"));
     }
+	
+	@Test
+    public void appLevelAliasOverrides() throws Exception {
+        Assert.assertEquals("Hello from an app level aliased class", itapp.getTableValue("aliasing-app-override"));
+    }
 
     @Test
     public void namedspacedJS() throws Exception {

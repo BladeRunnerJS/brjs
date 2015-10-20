@@ -5,16 +5,17 @@ import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.engine.RootNode;
 
 public class PersistentAliasesData {
 	private final BRJS brjs;
 	private final MemoizedFile aliasesFile;
 	private final MemoizedValue<AliasesData> aliasesData;
 	
-	public PersistentAliasesData(BRJS brjs, MemoizedFile aliasesFile) {
-		this.brjs = brjs;
+	public PersistentAliasesData(RootNode rootNode, MemoizedFile aliasesFile) {
+		this.brjs = (BRJS) rootNode;
 		this.aliasesFile = aliasesFile;
-		aliasesData = new MemoizedValue<>("PersistentAliasesData.aliasesData", brjs, aliasesFile);
+		aliasesData = new MemoizedValue<>("PersistentAliasesData.aliasesData", rootNode, aliasesFile);
 	}
 	
 	public AliasesData getData() throws ContentFileProcessingException {
