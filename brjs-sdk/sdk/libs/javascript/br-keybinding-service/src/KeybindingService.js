@@ -10,8 +10,8 @@ var Errors = require('br/Errors');
 /**
  * @classdesc
  * A service that allows the binding of keyboard keys (shortcuts) to actions. The service is available under the alias
- *  `br.keybinding-service` and should be obtain trough the service registry and not constructed. This service uses the
- *  Mousetrap library to handle keyboard bindings. Refer to it's documentation to see what type of keys are supported.
+ *  `br.keybinding-service` and should be obtained through the service registry and not constructed. This service uses the
+ *  Mousetrap library to handle keyboard bindings. Refer to its documentation to see what type of keys are supported.
  *
  * @class
  *
@@ -22,7 +22,7 @@ function KeybindingService() {
 }
 
 /**
- * Register an action that can then be binded to a shortcut key. This method will typically be used by a component that
+ * Register an action that can then be bound to a shortcut key. This method will typically be used by a component that
  *  wishes to provide some functionality that will be invoked with a keyboard shortcut.
  * @param {String} actionId A unique string ID of the action. It is recommended that the ID is prefixed with the
  *  namespace of the component.
@@ -86,7 +86,7 @@ KeybindingService.prototype.bindAction = function(actionId, keyShortcut) {
 };
 
 /**
- * Unbind an action from a keyboard shortcut. The action will not be removed. To remove it completely `removeAtion`
+ * Unbind an action from a keyboard shortcut. The action will not be removed. To remove it completely `removeAction`
  *  should be used.
  * @param {String} actionId Action to remove.
  */

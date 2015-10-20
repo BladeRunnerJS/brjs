@@ -22,7 +22,7 @@
 			assertEquals(null, action.keyShortcut);
 		},
 
-		'test registerAction assigns a callback to a previously binded action': function() {
+		'test registerAction assigns a callback to a previously bound action': function() {
 			keybindingService.bindAction('action.foo', 'a');
 
 			var cb = function() {};
@@ -93,7 +93,7 @@
 			assertEquals(null, action.keyShortcut);
 		},
 
-		'test a binded action will be triggerable after calling registerAction': function() {
+		'test a bound action will be triggerable after calling registerAction': function() {
 			keybindingService.bindAction('action.foo', 'a');
 
 			var wasCalled = false;
@@ -133,7 +133,7 @@
 			assertFalse(wasCalled);
 		},
 
-		'test unbinded action will not be triggerable': function() {
+		'test unbound action will not be triggerable': function() {
 			var wasCalled = false;
 			keybindingService.registerAction('action.foo', function() {
 				wasCalled = true;
