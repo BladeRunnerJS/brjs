@@ -386,9 +386,7 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 	token = token.toLowerCase();
 
 	if (!this.tokenExists(token)) {
-		if (require('service!br.app-meta-service').getVersion() !== 'dev' || this._size() != 0) {
-			throw new Errors.InvalidParametersError('Unable to find a replacement for the i18n key "' + token + '"');
-		}
+		throw new Errors.InvalidParametersError('Unable to find a replacement for the i18n key "' + token + '"');
 	}
 
 	var message = this.messages[token];
@@ -400,16 +398,6 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 	}
 	return message;
 };
-
-/** @private */
-Translator.prototype._size = function(token) {
-	var size = 0, key;
-    for (key in this.messages) {
-        if (this.messages.hasOwnProperty(key)) size++;
-    }
-    return size;
-}
-
 
 function formatTranslationResponseIfTranslationWasUnknown(key, text) {
 	return (text) ? text : "??? " + key + " ???";

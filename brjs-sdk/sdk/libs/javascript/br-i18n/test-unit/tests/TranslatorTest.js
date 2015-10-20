@@ -307,26 +307,13 @@
 		assertEquals(this.messages.default['untranslated.key'], sResult);
 	};
 
-	TranslatorTest.prototype.test_getMessageForAnUntranslatedKeyReturnsTheKeyWithQuestionMarksInDevIfDefaultLocaleTranslationIsPresent = function()
+	TranslatorTest.prototype.test_getMessageForAnUntranslatedKeyReturnsTheKeyWithQuestionMarksInDev = function()
 	{
 		var sKey = "untranslated.key";
 		var sExpected = "??? " + sKey + " ???";
 		require('service!br.app-meta-service').setVersion('dev');
 		var Translator = require('br/i18n/Translator');
 		var oTranslator = new Translator(this.messages, 'locale');
-
-		var sResult = oTranslator.getMessage('untranslated.key', {});
-
-		assertEquals(sExpected, sResult);
-	};
-	
-	TranslatorTest.prototype.test_getMessageForAnUntranslatedKeyReturnsTheKeyWithQuestionMarksInDevAndThereAreNoTokensLoaded = function()
-	{
-		var sKey = "untranslated.key";
-		var sExpected = "??? " + sKey + " ???";
-		require('service!br.app-meta-service').setVersion('dev');
-		var Translator = require('br/i18n/Translator');
-		var oTranslator = new Translator({}, 'locale');
 
 		var sResult = oTranslator.getMessage('untranslated.key', {});
 
