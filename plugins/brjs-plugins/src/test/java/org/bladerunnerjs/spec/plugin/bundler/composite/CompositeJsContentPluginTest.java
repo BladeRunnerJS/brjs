@@ -145,7 +145,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 					"require('appLib');\n"+
 					"require('appns/node/Class');\n" );
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", requestResponse);
-		then(requestResponse).doesNotContainText("window._brjsI18nProperties = [{");
+		then(requestResponse).doesNotContainText("window.$_brjsI18nProperties = [{");
 	}
 	
 	@Test
