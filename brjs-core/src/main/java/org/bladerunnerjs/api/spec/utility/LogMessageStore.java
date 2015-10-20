@@ -355,6 +355,18 @@ public class LogMessageStore
 		verifyNoMoreInfoMessages();
 	}
 	
+	public void verifyNoUnhandledMessageAtTestTearDown()
+	{
+		boolean assertionMadeAtTestTearDown = assertionMade; // we need to do this because the 'verify' methods below set assertionMade = true
+		verifyNoMoreFatalMessages();
+		verifyNoMoreErrorMessages();
+		verifyNoMoreWarnMessages();
+		verifyNoMoreInfoMessages();
+		assertionMade = assertionMadeAtTestTearDown;
+	}
+	
+	
+	
 	public void noMessagesLogged()
 	{
 		assertionMade = true;
