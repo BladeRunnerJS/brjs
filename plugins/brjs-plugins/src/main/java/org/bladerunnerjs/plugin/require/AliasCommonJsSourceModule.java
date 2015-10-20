@@ -17,7 +17,6 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
-import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesFile;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility;
 import org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
@@ -102,8 +101,7 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 		List<Asset> dependencies = new ArrayList<>();
 		
 		try {
-			AliasesFile aliasesFile = AliasingUtility.aliasesFile(bundlableNode);
-			AliasDefinition resolvedAliasDefinition = aliasesFile.getAlias(aliasDefinition.getName());
+			AliasDefinition resolvedAliasDefinition = AliasingUtility.resolveAlias(aliasDefinition.getName(), bundlableNode);
 			
 			dependencies.add(bundlableNode.getLinkedAsset("br/AliasRegistry"));
 			dependencies.add(bundlableNode.getLinkedAsset(resolvedAliasDefinition.getRequirePath()));
