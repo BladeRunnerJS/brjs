@@ -29,11 +29,11 @@ brCore.implement(ISODateValidator, Validator);
 ISODateValidator.prototype.validate = function(value, mAttributes, validationResult) {
 	var isValid = false,
 		i18n = require("br/I18n"),
-		validationMessage = i18n('ct.presenter.validator.invalidISODateFormat', { value: value });
+		validationMessage = i18n('br.presenter.validator.invalidISODateFormat', { value: value });
 
 	if (typeof value === 'undefined' || value === null || value === '') {
 		isValid = true;
-		validationMessage = i18n('ct.presenter.validator.valueNullUndefinedOrEmptyString');
+		validationMessage = i18n('br.presenter.validator.valueNullUndefinedOrEmptyString');
 	} else if (typeof value.match === 'function') {
 		var match = value.match(this.m_oSplitterRegex);
 		if (!match) {
