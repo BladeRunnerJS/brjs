@@ -25,6 +25,7 @@ class RunJstdTests extends DefaultTask
 	String testArg = "test"
 	String browsers = ""
 	String command = "brjs"
+	String jsMinifier = null;
 	
 	def RunJstdTests()
 	{			
@@ -39,11 +40,15 @@ class RunJstdTests extends DefaultTask
 	{
 		def browserArgs = (!browsers.equals("")) ? ['-b', browsers] : []
 		def testArgs = (!testArg.equals("")) ? [testArg] : []
+		def minifierArgs = (jsMinifier != null) ? ["--js-minifier", jsMinifier] : []
+		if (jsMinifier != null) {
+			logger.warn("Running ${testDir} tests using ${jsMinifier} minifier")
+		}
 		
 		def commandToRun = org.bladerunnerjs.OSCalculator.getOSSpecificCommand(command) 
 		
 		project.exec {
-			commandLine commandToRun + testArgs + [testDir, testType] + browserArgs
+			commandLine commandToRun + testArgs + [testDir, testType] + browserArgs + minifierArgs
 			workingDir this.workingDir
 		}
 		taskOutputFile.createNewFile()
