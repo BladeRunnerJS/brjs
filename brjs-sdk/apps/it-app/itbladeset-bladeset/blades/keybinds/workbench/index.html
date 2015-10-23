@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Workbench</title>
+
+		<@css.bundle theme="standard" alternateTheme="alternate"@/>
+		<@html.bundle@/>
+		<@i18n.bundle@/>
+		<@js.bundle@/>
+	</head>
+	<body>
+		<script type="text/javascript">
+			function addEventHubLogger( workbench ) {
+				var eventHub = require('service!br.event-hub');
+				var EventHubViewer = require('br/workbench/tools/EventHubViewer');
+				var eventHubViewer = new EventHubViewer(eventHub);
+				workbench.addToLeftWing(eventHubViewer, 'EventHub Logging', false);
+			}
+
+			function addModelViewer(model, workbench) {
+				var KnockoutJsTreeModelFactory = require('br/knockout/workbench/KnockoutJsTreeModelFactory');
+				var PresentationModelViewer = require('br/knockout/workbench/PresentationModelViewer');
+				var presentationModelViewer = new PresentationModelViewer(
+					KnockoutJsTreeModelFactory.createTreeModelFromKnockoutViewModel(model)
+				);
+				workbench.addToRightWing(presentationModelViewer, 'Visualise Knockout View Model', false);
+			}
+
+			function addComponent(component, workbench) {
+				workbench.displayComponent(component, 200, 100);
+			}
+
+			var Workbench = require('br/workbench/ui/Workbench');
+			var workbench = new Workbench(250, 310);
+			addEventHubLogger(workbench);
+
+			// ViewModel that is being created in the workbench
+			var KeybindsViewModel = require('itapp/itbladeset/keybinds/KeybindsViewModel');
+			var KnockoutComponent = require('br/knockout/KnockoutComponent');
+
+			var model = new KeybindsViewModel();
+			var component = new KnockoutComponent('itapp.itbladeset.keybinds.view-template', model);
+
+			addComponent(component, workbench);
+			addModelViewer(model, workbench);
+		</script>
+	</body>
+</html>
