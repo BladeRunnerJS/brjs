@@ -1,0 +1,2 @@
+js: mousetrap.min.js
+exports: Mousetrap
