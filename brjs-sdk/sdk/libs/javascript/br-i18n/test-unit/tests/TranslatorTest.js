@@ -32,7 +32,7 @@
 		require('service!br.app-meta-service').setVersion('1.2.3');
 		
 		this.messages = {
-			'default' : {
+			'defaultValue' : {
 				"caplin.test.key": "default value for test key",
 				"other.key": "default value for other key",
 				"untranslated.key": "default value for untranslated key",
@@ -304,7 +304,7 @@
 
 		var sResult = oTranslator.getMessage('untranslated.key', {});
 
-		assertEquals(this.messages.default['untranslated.key'], sResult);
+		assertEquals(this.messages.defaultValue['untranslated.key'], sResult);
 	};
 
 	TranslatorTest.prototype.test_getMessageForAnUntranslatedKeyReturnsTheKeyWithQuestionMarksInDev = function()
