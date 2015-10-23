@@ -5,7 +5,6 @@ var i18n = require('br/I18n');
 var keybindingService = require('service!br.keybinding-service');
 
 function KeybindsViewModel() {
-	this._eventHub = require('service!br.event-hub');
 	this.keyBindMessage = ko.observable('Press Shift+V to switch vegetables: ');
 	this.keyBoundVegetable = ko.observable('Carrot');
 	
@@ -21,8 +20,10 @@ KeybindsViewModel.prototype.switchVeg = function() {
 	if(this.keyBoundVegetable() === "Carrot"){
 		this.keyBoundVegetable("Tomato");
 	}
-	else
+	else {
 		this.keyBoundVegetable("Carrot");
+		this.colour
+	}
 }
 
 module.exports = KeybindsViewModel;
