@@ -54,6 +54,14 @@ public class BuildAppTest extends SpecTest {
 	}
 	
 	@Test
+	public void builtSingleLocaleAppHasNonDefaultAspectIndexPage() throws Exception {
+		given(nonDefaultAspect).containsFile("index.html")
+			.and(brjs).localeSwitcherHasContents("")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("aspect2/index.html", "index.html");
+	}
+	
+	@Test
 	public void builtMultiLocaleAppHasLocaleForwardingPage() throws Exception {
 		given(appConf).supportsLocales("en", "de")
 			.and(defaultAspect).containsFile("index.html")
@@ -69,6 +77,15 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeSwitcherHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("en.html", "index.html");
+	}
+	
+	@Test
+	public void builtMultiLocaleAppHasNonDefaultAspectIndexPage() throws Exception {
+		given(appConf).supportsLocales("en", "de")
+			.and(nonDefaultAspect).containsFile("index.html")
+			.and(brjs).localeSwitcherHasContents("")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("aspect2/en.html", "index.html");
 	}
 	
 	@Test
