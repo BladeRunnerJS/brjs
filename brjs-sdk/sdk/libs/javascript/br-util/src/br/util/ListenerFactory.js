@@ -36,17 +36,12 @@ function ListenerFactory(interfaceFunc, eventName) {
 /**
  * Returns a listener that will forward received events through to the given method on the given object.
  *
- * @param {Object} target The object that will be invoked when events are received.
- * @param {String} methodName The name of the method to invoke on the target object.
+ * @param {Function} call The call-back to use for the created listener.
  * @type Object
  */
-ListenerFactory.prototype.createListener = function(target, methodName) {
-	if(!target[methodName] || !(target[methodName] instanceof Function)) {
-		throw new TypeError("No such method '" + methodName + "' on the target object.");
-	}
-
+ListenerFactory.prototype.createListener = function(callback) {
 	var listenerProxy = new this.m_fInterface();
-	listenerProxy[this.m_sEvent] = target[methodName].bind(target);
+	listenerProxy[this.m_sEvent] = callback;
 
 	return listenerProxy;
 };

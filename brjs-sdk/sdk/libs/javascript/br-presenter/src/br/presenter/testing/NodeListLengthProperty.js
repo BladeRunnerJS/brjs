@@ -17,7 +17,7 @@ function NodeListLengthProperty(oNodeList) {
 	WritableProperty.call(this, oNodeList.getPresentationNodesArray().length);
 
 	this.m_oNodeList = oNodeList;
-	this.addChangeListener(this, '_onPropertyChanged');
+	this.addChangeListener(this._onPropertyChanged.bind(this));
 }
 
 Core.extend(NodeListLengthProperty, WritableProperty);

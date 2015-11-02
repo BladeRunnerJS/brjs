@@ -96,7 +96,7 @@ function SelectionField(vOptions, vValue) {
 	 * @type br.presenter.node.OptionsNodeList
 	 */
 	this.options = (vOptions instanceof OptionsNodeList) ? vOptions : new OptionsNodeList(vOptions);
-	this.options.addChangeListener(this, '_automaticallyUpdateValueOnOptionsChange');
+	this.options.addChangeListener(this._automaticallyUpdateValueOnOptionsChange.bind(this));
 
 	if ((vValue instanceof Property) && !(vValue instanceof EditableProperty)) {
 		throw new Errors.InvalidParametersError("SelectionField constructor: can't pass non-editable property as parameter");
@@ -134,7 +134,7 @@ function SelectionField(vOptions, vValue) {
 	 * @type {br.presenter.property.Property}
 	 */
 	this.selectedOptionLabel = new Property();
-	this.value.addChangeListener(this, '_updateSelectedOptionLabel', true);
+	this.value.addChangeListener(this._updateSelectedOptionLabel.bind(this), true);
 }
 
 Core.extend(SelectionField, PresentationNode);

@@ -139,7 +139,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	}
 }
 
-def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
+def createTestTask = { taskName, taskTestDir, taskTestType, browser, taskJsMinifier = null ->
 	task taskName, type: org.bladerunnerjs.gradle.tasks.RunJstdTests, dependsOn: assemble, {
 		description = "Run ${taskTestType} for ${taskTestDir} using ${browser}"
 		dependsOn = [assemble, copyBrowsers]
@@ -150,14 +150,15 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 		testType = taskTestType
 		browsers = browser
 		testDir = taskTestDir
+		jsMinifier = taskJsMinifier
 	}
 }
 
 // "libs/javascript" is relative to the sdk directory
 [ "Chrome", "Firefox", "IE", "PhantomJS", "Safari" ].each {
 	def testJsTask = createTestTask "testJs${it}", "libs/javascript", "ALL", it.toLowerCase()
-	def testItAppTask = createTestTask "testItApp${it}", "../apps/it-app", "ALL", it.toLowerCase()
-	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase()
+	def testItAppTask = createTestTask "testItApp${it}", "../apps/it-app", "ALL", it.toLowerCase(), "closure-medium"
+	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase(), "closure-medium"
 	task "test${it}", dependsOn: [testJsTask, testItAppTask, testSystemAppsTask]
 }
 

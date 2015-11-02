@@ -21,3 +21,9 @@ The handling of missing i18n translations has been changed to throw an error if 
 #### Backwards Compatability
 
 Due to the errors that are now thrown if a fallback translation can't be found this change will break backwards compatability for some tests and apps. All apps should include `<@i18n.bundle@/>` above the `<@js.bundle ...@/>` tag in each Aspect's `index.html`. Tests should include the i18n bundle by including `- bundles/i18n/i18n.bundle` above `bundles/js/js.bundle` in the load section of `jsTestDriver.conf`.
+
+### Added a `--js-minifier` setting to `test` command
+
+The `test` command now has the option of specifying the minifier used when building the `bundles/js/bundle.js` test bundle, previous `combined` was used implicitly. The minifier can be specified by using the `--js-minifier` flag when running tests, for example `brjs test myApp UTs --js-minifier closure-simple`, and can be any minifier option that is supported by the `@js.bundle ...@/>` tag in `index.html` pages.
+
+**Note:** The minifier flag will only specify the minified used with the logical path `bundles/js/bundle.js`. Full 'model' paths that are used within the app can also be used as a bundle path, for example `bundles/js/dev/closure-whitespace/bundle.js`, in this case the minifier specified within the path will be used. So given the example `bundles/js/dev/closure-whitespace/bundle.js`, `closure-whitespace` would be the minifier used regardless of the command line setting.

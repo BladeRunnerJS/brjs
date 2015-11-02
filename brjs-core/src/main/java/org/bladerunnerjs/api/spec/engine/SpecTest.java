@@ -176,7 +176,7 @@ public abstract class SpecTest
 	
 	@After
 	public void verifyLogs() {
-		then(logging).verifyNoUnhandledMessages()
+		then(logging).verifyNoUnhandledMessagesAtTestTearDown()
 			.and(logging).verifyLogsReceivedIfCaptureEnabled();
 	}
 	

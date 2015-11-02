@@ -20,7 +20,7 @@ var BrowserWarningDialog = require("brjs/dashboard/app/model/dialog/BrowserWarni
 
 function Dialog(oPresentationModel) {
 	this.visible = new WritableProperty(false);
-	this.visible.addChangeListener(this, '_onVisibilityChanged');
+	this.visible.addChangeListener(this._onVisibilityChanged.bind(this));
 	this.type = new Property(null);
 	this.isClosable = new EditableProperty(true);
 	this.viewNode = new MappedNodeList({}, DialogViewNode);

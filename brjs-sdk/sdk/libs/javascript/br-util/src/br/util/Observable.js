@@ -148,16 +148,6 @@ Observable.prototype.removeAllObservers = function() {
 };
 
 /**
- * Gets a list of all the observers that have been registered with this <code>Observable</code>.
- * @private
- *
- * @return {Array} A list of the observers that have been registered.
- */
-Observable.prototype._$getAllObservers = function() {
-	return this.m_pObservers;
-};
-
-/**
  * Invokes the specified method with specified array of parameters on each of the observers that have been added to
  *  this <code>Observable</code>. Please note that this method does not attempt to catch any exceptions that may be
  *  thrown by the caller.  If this is an issue then the {@link module:br/util/Observable#notifyObserversWithTryCatch} method

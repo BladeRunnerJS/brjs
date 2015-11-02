@@ -53,7 +53,7 @@ function MultiSelectionField(vOptions, vValues) {
 	 * @type br.presenter.node.OptionsNodeList
 	 */
 	this.options = (vOptions instanceof OptionsNodeList) ? vOptions : new OptionsNodeList(vOptions);
-	this.options.addChangeListener(this, '_automaticallyUpdateValueOnOptionsChange');
+	this.options.addChangeListener(this._automaticallyUpdateValueOnOptionsChange.bind(this));
 
 	/** @private */
 	this.m_bAutomaticallyUpdateValueWhenOptionsChange = true;

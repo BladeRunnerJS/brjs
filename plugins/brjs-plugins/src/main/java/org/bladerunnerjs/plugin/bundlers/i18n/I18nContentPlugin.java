@@ -125,9 +125,10 @@ public class I18nContentPlugin extends AbstractContentPlugin implements Routable
 		 */
 		jsonProperties = jsonProperties.replace("\\\\n", "\\n").replace("\\\\r", "\\r");
 		
-		return new CharResponseContent( brjs, "if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };\n"
-				+ "window._brjsI18nProperties['" + locale + "'] = " + jsonProperties + ";\n"
-						+ "window._brjsI18nUseLocale = '" + locale + "';");
+		// $_brjsI18nProperties starts with $ so that closure-medium doesn't obfuscate it
+		return new CharResponseContent( brjs, "if (!window.$_brjsI18nProperties) { window.$_brjsI18nProperties = {} };\n"
+				+ "window.$_brjsI18nProperties['" + locale + "'] = " + jsonProperties + ";\n"
+						+ "window.$_brjsI18nUseLocale = '" + locale + "';");
 	}	
 	
 }

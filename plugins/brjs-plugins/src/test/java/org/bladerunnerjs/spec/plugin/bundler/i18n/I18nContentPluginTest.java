@@ -66,7 +66,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
-		then(response).containsOrderedTextFragments("if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };", "window._brjsI18nProperties['en_GB'] = {};");
+		then(response).containsOrderedTextFragments("if (!window.$_brjsI18nProperties) { window.$_brjsI18nProperties = {} };", "window.$_brjsI18nProperties['en_GB'] = {};");
 	}
 	
 	@Test
@@ -75,7 +75,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
-		then(response).containsOrderedTextFragments("window._brjsI18nProperties['en_GB'] = {};", "window._brjsI18nUseLocale = 'en_GB';");
+		then(response).containsOrderedTextFragments("window.$_brjsI18nProperties['en_GB'] = {};", "window.$_brjsI18nUseLocale = 'en_GB';");
 	}
 	
 	@Test
@@ -84,7 +84,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
-		then(response).containsText("window._brjsI18nProperties['en_GB'] = ");
+		then(response).containsText("window.$_brjsI18nProperties['en_GB'] = ");
 	}
 	
 	@Test
@@ -94,7 +94,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
-		then(response).containsText("window._brjsI18nProperties['en_GB'] = {};");
+		then(response).containsText("window.$_brjsI18nProperties['en_GB'] = {};");
 	}
 	
 	@Test
@@ -106,7 +106,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -121,7 +121,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("de_DE.properties", "appns.property=a different value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -135,7 +135,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en'] = {\n"
+				"window.$_brjsI18nProperties['en'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -150,7 +150,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.property=another value");
 		when(aspect).requestReceivedInDev("i18n/en.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en'] = {\n"
+				"window.$_brjsI18nProperties['en'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -165,7 +165,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.another.property=another value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.another.property\": \"another value\",\n"
 				+ "  \"appns.some.property\": \"property value\"\n"
 				+ "};");
@@ -181,7 +181,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.property=another value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"another value\"\n"
 				+ "};");
 	}
@@ -195,7 +195,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -209,7 +209,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("i18n/en.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -224,7 +224,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsFileWithContents("src/appns/en.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -240,7 +240,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.bs.b1.property=aspect value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.bs.b1.property\": \"aspect value\"\n"
 				+ "};");
 	}
@@ -255,7 +255,7 @@ public class I18nContentPluginTest extends SpecTest
 		.and(workbench).containsResourceFileWithContents("en.properties", "appns.bs.b1.property=workbench value");
 		when(workbench).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.bs.b1.property\": \"workbench value\"\n"
 				+ "};");
 	}
@@ -288,7 +288,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.p3=v3\nappns.p1=v1\nappns.p2=v2\n");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.p1\": \"v1\",\n"
 				+ "  \"appns.p2\": \"v2\",\n"
 				+ "  \"appns.p3\": \"v3\"\n"
@@ -304,7 +304,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=v\\n1");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.p1\": \"v\\n1\"\n"
 				+ "};");
 	}
@@ -318,7 +318,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=\"quoted\"");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.p1\": \"\\\"quoted\\\"\"\n"
 				+ "};");
 	}
@@ -332,7 +332,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£€\"");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.p1\": \"\\\"$£€\\\"\"\n"
 				+ "};");
 	}
@@ -346,7 +346,7 @@ public class I18nContentPluginTest extends SpecTest
     		.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£\"");
     	when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
     	then(response).containsText(	
-    			"window._brjsI18nProperties['en_GB'] = {\n"
+    			"window.$_brjsI18nProperties['en_GB'] = {\n"
     			+ "  \"appns.p1\": \"\\\"$£\\\"\"\n"
     			+ "};");
 	}
@@ -361,7 +361,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(sdkLib).containsResourceFileWithContents("en_GB.properties", "foo.bar.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"foo.bar.property\": \"property value\"\n"
 				+ "};");
 	}

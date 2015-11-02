@@ -146,6 +146,12 @@ public class LoggerVerifier
 		
 		return verifierChainer;
 	}
+	
+	public VerifierChainer verifyNoUnhandledMessagesAtTestTearDown() {
+		logStore.verifyNoUnhandledMessageAtTestTearDown();
+		
+		return verifierChainer;
+	}
 
 	public VerifierChainer otherMessagesIgnored()
 	{

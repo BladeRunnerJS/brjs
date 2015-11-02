@@ -38,6 +38,12 @@ public class JsTestDriverBundleCreator
 	public static void createRequiredBundles(BRJS brjs, MemoizedFile jsTestDriverConf)
 			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException, ConfigException
 	{
+		createRequiredBundles(brjs, jsTestDriverConf, "combined");
+	}
+	
+	public static void createRequiredBundles(BRJS brjs, MemoizedFile jsTestDriverConf, String jsMinifierSetting)
+			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException, ModelOperationException, ConfigException
+	{
 		logger = brjs.logger(JsTestDriverBundleCreator.class);
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
 		recreateBundlesDir(brjs, bundlesDir);
@@ -52,7 +58,7 @@ public class JsTestDriverBundleCreator
 			throw new RuntimeException("Unable to find test pack which represents the path " + jsTestDriverConf.getParentFile());
 		}
 		
-		BundlerHandler bundlerHandler = new BundlerHandler(testPack);
+		BundlerHandler bundlerHandler = new BundlerHandler(testPack, jsMinifierSetting);
 		
 		for (String resourceToLoad : getListOfResourcesToLoad(configMap))
 		{
