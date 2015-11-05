@@ -147,6 +147,15 @@ Observable.prototype.removeAllObservers = function() {
 	this.m_pObservers = [];
 };
 
+ /**
+ * Gets a list of all the observers that have been registered with this <code>Observable</code>.
+ *
+ * @return {Array} A list of the observers that have been registered.
+ */
+Observable.prototype.getAllObservers = function() {
+	return this.m_pObservers;
+};
+
 /**
  * Invokes the specified method with specified array of parameters on each of the observers that have been added to
  *  this <code>Observable</code>. Please note that this method does not attempt to catch any exceptions that may be
