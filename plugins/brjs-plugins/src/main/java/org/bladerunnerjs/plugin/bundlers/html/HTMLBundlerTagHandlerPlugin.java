@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.api.App.Messages;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
