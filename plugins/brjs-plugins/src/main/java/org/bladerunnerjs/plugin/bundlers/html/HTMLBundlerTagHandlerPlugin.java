@@ -70,11 +70,12 @@ public class HTMLBundlerTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			String keyReplacement = propertiesMap.get(i18nKey);
 			if (keyReplacement == null) {
 				keyReplacement = defaultLocalpropertiesMap.get(i18nKey);
-				if (keyReplacement == null) {
-					throw new ContentProcessingException("Unable to find a replacement for the i18n key '"+i18nKey+"'");
-				}
 				if (requestMode.equals(RequestMode.Dev)) {
 					keyReplacement = "??? "+i18nKey+" ???";
+				} else {
+					if (keyReplacement == null) {
+						throw new ContentProcessingException("Unable to find a replacement for the i18n key '"+i18nKey+"'");
+					}
 				}
 				logger.warn(Messages.UNTRANSLATED_TOKEN_LOG_MSG, i18nKey, locale);
 			}
