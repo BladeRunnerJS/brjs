@@ -386,9 +386,6 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 	token = token.toLowerCase();
 
 	if (!this.tokenExists(token)) {
-		if (!require('service!br.app-meta-service').isDev()) {
-			throw new Errors.InvalidParametersError('Unable to find a replacement for the i18n key "' + token + '"');
-		}
 		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
 		logConsole.warn('Unable to find a replacement for the i18n key "' + token + '"');
 	}
