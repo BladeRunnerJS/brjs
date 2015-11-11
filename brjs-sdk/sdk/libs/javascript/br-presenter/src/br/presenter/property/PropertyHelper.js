@@ -7,11 +7,18 @@
 /**
  * @class
  * @alias module:br/presenter/property/PropertyHelper
- * 
+ *
  * @classdesc
- * The PropertyHelper is a utility to simplify the attaching and monitoring of property listeners. 
- * <p>This is a useful class if you want to keep track of all the properties of certain node in a single place. It
- * will also provide some methods that give you extra functionality for handling call-backs from your properties.</p>
+ * <code>PropertyHelper</code> is a utility that simplifies the attaching and removing of property listeners. Compared
+ * with adding and removing listeners on [Property]{@link module:br/presenter/property/Property} directly, using the
+ * equivalent <code>PropertyHelper</code> methods has a number of benefits:
+ *
+ * <ul>
+ *   <li>It allows an observer's complete set of property listeners to be referred to using a single object reference.</li>
+ *   <li>It allows every property listener to be removed using a single operation, without affecting the listeners of
+ *     other property observers.</li>
+ *   <li>It allows an observer's listeners for a single property to be removed.</li>
+ * </ul>
  */
 function PropertyHelper() {
 	this.m_pListeners = [];
@@ -26,7 +33,7 @@ function PropertyHelper() {
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
- * @return {br.presenter.property.PropertyHelper}
+ * @return {module:br/presenter/property/PropertyHelper}
  */
 PropertyHelper.prototype.addChangeNotification = function(oProperty, oScope, vHandler, bCallNow) {
 	if (typeof vHandler == 'string') {
@@ -53,7 +60,7 @@ PropertyHelper.prototype.addChangeNotification = function(oProperty, oScope, vHa
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
- * @return {br.presenter.property.PropertyHelper}
+ * @return {module:br/presenter/property/PropertyHelper}
  */
 PropertyHelper.prototype.addChangeListener = function(oProperty, oScope, vHandler, bCallNow) {
 	return this._addListener('addChangeListener', oProperty, oScope, vHandler, bCallNow);
@@ -67,7 +74,7 @@ PropertyHelper.prototype.addChangeListener = function(oProperty, oScope, vHandle
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
- * @return {br.presenter.property.PropertyHelper}
+ * @return {module:br/presenter/property/PropertyHelper}
  */
 PropertyHelper.prototype.addUpdateListener = function(oProperty, oScope, vHandler, bCallNow) {
 	return this._addListener('addUpdateListener', oProperty, oScope, vHandler, bCallNow);
@@ -81,7 +88,7 @@ PropertyHelper.prototype.addUpdateListener = function(oProperty, oScope, vHandle
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
- * @return {br.presenter.property.PropertyHelper}
+ * @return {module:br/presenter/property/PropertyHelper}
  */
 PropertyHelper.prototype.addValidationSuccessListener = function(oProperty, oScope, vHandler, bCallNow) {
 	return this._addListener('addValidationSuccessListener', oProperty, oScope, vHandler, bCallNow);
@@ -95,7 +102,7 @@ PropertyHelper.prototype.addValidationSuccessListener = function(oProperty, oSco
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} [bCallNow]
- * @return {br.presenter.property.PropertyHelper}
+ * @return {module:br/presenter/property/PropertyHelper}
  */
 PropertyHelper.prototype.addValidationErrorListener = function(oProperty, oScope, vHandler, bCallNow) {
 	return this._addListener('addValidationErrorListener', oProperty, oScope, vHandler, bCallNow);
@@ -141,12 +148,13 @@ PropertyHelper.prototype.addValidationChangeListener = function(oProperty, oScop
 /**
  * Utility function that will bind any type of listener and cache the property and listener for future removal
  *
+ * @private
  * @param {String} listenerType
  * @param {module:br/presenter/property/Property} oProperty
  * @param {Object} oScope
  * @param {Function|String} vHandler
  * @param {Boolean} bCallNow
- * @return {br.presenter.property.PropertyHelper}
+ * @return {module:br/presenter/property/PropertyHelper}
  */
 PropertyHelper.prototype._addListener = function(listenerType, oProperty, oScope, vHandler, bCallNow) {
 	if ('function' === typeof vHandler) {
@@ -170,7 +178,7 @@ PropertyHelper.prototype._addListener = function(listenerType, oProperty, oScope
  *
  * @param {module:br/presenter/property/Property} oProperty
  * @param {String} [sType]
- * @return {br.presenter.property.PropertyHelper}
+ * @return {module:br/presenter/property/PropertyHelper}
  */
 PropertyHelper.prototype.clearProperty = function(oProperty, sType) {
 	var pListeners = this.m_pListeners;
@@ -190,7 +198,7 @@ PropertyHelper.prototype.clearProperty = function(oProperty, sType) {
  * Remove change handlers from the selected property that have been attached through this PropertyHelper
  *
  * @param {module:br/presenter/property/Property} oProperty
- * @return {br.presenter.property.PropertyHelper}
+ * @return {module:br/presenter/property/PropertyHelper}
  */
 PropertyHelper.prototype.removeChangeListeners = function(oProperty) {
 	return this.clearProperty(oProperty, 'addChangeListener');
@@ -200,7 +208,7 @@ PropertyHelper.prototype.removeChangeListeners = function(oProperty) {
  * Remove validation success handlers from the selected property that have been attached through this PropertyHelper
  *
  * @param {module:br/presenter/property/Property} oProperty
- * @return {br.presenter.property.PropertyHelper}
+ * @return {module:br/presenter/property/PropertyHelper}
  */
 PropertyHelper.prototype.removeValidationSuccessListeners = function(oProperty) {
 	return this.clearProperty(oProperty, 'addValidationSuccessListener');

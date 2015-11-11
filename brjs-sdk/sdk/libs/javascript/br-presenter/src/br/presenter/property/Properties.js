@@ -61,6 +61,15 @@ Properties.prototype.add = function(vProperties) {
 };
 
 /**
+ * Returns array of properties in the collection.
+ *
+ * @type Array
+ */
+Properties.prototype.getProperties = function() {
+	return this.m_pProperties.slice(0);
+};
+
+/**
  * Returns the size of the collection.
  * 
  * @type int
