@@ -26,6 +26,10 @@ JSTDAppMetaService.prototype.getVersion = function() {
 	return this._testMetaData.APP_VERSION || BRAppMetaService.prototype.getVersion.call(this);
 };
 
+JSTDAppMetaService.prototype.isDev = function() {
+	return this.getVersion() === "dev";
+};
+
 /**
  * Sets the app version to be used in the test.
  * @param {String} version The app version.

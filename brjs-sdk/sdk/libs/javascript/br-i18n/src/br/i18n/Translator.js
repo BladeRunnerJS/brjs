@@ -386,7 +386,7 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 	token = token.toLowerCase();
 
 	if (!this.tokenExists(token)) {
-		if (require('service!br.app-meta-service').getVersion() !== 'dev') {
+		if (!require('service!br.app-meta-service').isDev()) {
 			throw new Errors.InvalidParametersError('Unable to find a replacement for the i18n key "' + token + '"');
 		}
 		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
@@ -396,7 +396,7 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 	var message = this.messages[token];
 	if (typeof message === 'undefined') {
 		log.warn(Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG, token, this.locale);
-		if (require('service!br.app-meta-service').getVersion() !== 'dev') {
+		if (!require('service!br.app-meta-service').isDev()) {
 			message = this.defaultLocaleMessages[token];
 		}
 	}
