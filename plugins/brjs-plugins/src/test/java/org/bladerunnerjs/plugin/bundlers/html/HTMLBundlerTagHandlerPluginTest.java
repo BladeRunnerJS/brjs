@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.bundlers.html;
 
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
-import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,11 +69,13 @@ public class HTMLBundlerTagHandlerPluginTest extends SpecTest
 	}
 	
 	@Test
-	public void exceptionIsThrownIfAnI18nReplacementCantBeFound() throws Exception {
+	public void questionMarkReplacementIsUsedIfAnI18nReplacementCantBeFoundAndTheresNoFallback() throws Exception {
 		given(aspect).containsResourceFileWithContents("html/view.html", "<template id='appns.view'>@{appns.i18n.token}</template>")
-			.and(aspect).indexPageHasContent("<@html.bundle@/>");
+			.and(aspect).indexPageHasContent("<@html.bundle@/>")
+			.and(logging).enabled();
 		when(aspect).indexPageLoadedInDev(indexPageResponse, "en_GB");
-		then(exceptions).verifyException(ContentProcessingException.class, "appns.i18n.token");
+		then(indexPageResponse).containsText("??? appns.i18n.token ???")
+			.and(logging).warnMessageReceived(UNTRANSLATED_TOKEN_LOG_MSG, "appns.i18n.token", "en_GB");
 	}
 	
 	@Test

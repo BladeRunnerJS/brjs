@@ -16,6 +16,7 @@ import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunner.TestType;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfLocator;
+import org.bladerunnerjs.model.DefaultAppVersionGenerator;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.api.DirNode;
 
@@ -39,6 +40,8 @@ public class TestRunnerController
 	
 	public int run(BRJS brjs, JSAPResult config, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
 	{
+		brjs.getAppVersionGenerator().setVersion( DefaultAppVersionGenerator.DEV_VERSION );
+		
 		assertValidTestDirectory(brjs, testCommand, config);
 		
 		MemoizedFile configFile = null;
