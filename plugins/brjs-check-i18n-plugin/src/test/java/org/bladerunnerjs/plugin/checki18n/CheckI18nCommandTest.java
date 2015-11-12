@@ -74,4 +74,15 @@ public class CheckI18nCommandTest extends SpecTest
 		then(logging).containsConsoleText("For the locale en, app1 has no missing translations");		
 	}	
 	
+	@Test
+	public void testWhenTokenUsedInXmlIsMissingItAppearsInList() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).indexPageHasContent("<p>@{appns.bs.b1.goodtoken}</p>")
+			.and(blade).containsResourceFileWithContents("file.xml", "<some-xml value=@{appns.bs.b1.missingtoken}></some-xml>")
+			.and(blade).containsResourceFileWithContents("en.properties", "appns.bs.b1.goodtoken=some value");	
+		when(brjs).runCommand("check-i18n", "app1");
+		then(logging).containsConsoleText("For the locale en, app1 has no translations defined for the following token:",
+										"appns.bs.b1.missingtoken");		
+	}
 }

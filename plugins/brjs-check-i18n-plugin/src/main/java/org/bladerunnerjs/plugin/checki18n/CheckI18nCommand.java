@@ -15,6 +15,8 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.Blade;
+import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
@@ -83,7 +85,6 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 
 	private void findMissingTranslationsForAppWithLocale(App app, String localeToBeChecked) {
 		//todo js assets... bundleset.sourceModules();
-		//todo xml
 		for(Aspect aspect : app.aspects()) {
 			//todo check tests
 			BundleSet bundleSet = null;
@@ -91,21 +92,32 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 				bundleSet = aspect.getBundleSet();
 			} catch (ModelOperationException e) {
 				e.printStackTrace();
-			}			
-			
-			List<Asset> htmlAssets = new ArrayList<>();
-			htmlAssets.addAll(bundleSet.seedAssets());
-			htmlAssets.addAll(bundleSet.assets("html!"));
-			for(Asset htmlAsset : htmlAssets){
-				String htmlContent = null;
-				try {
-					htmlContent = IOUtils.toString(htmlAsset.getReader());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				checkAssetForMissingTokens(bundleSet, htmlContent, localeToBeChecked);
-			}						
+			}	
+			checkBundletForMissingTokens(bundleSet, localeToBeChecked);						
 		}
+		for(Bladeset bladeset : app.bladesets()) {
+			//todo check bladeset content
+			for(Blade blade : bladeset.blades()) {
+				//todo check blade content
+			}
+		}
+	}
+
+	private void checkBundletForMissingTokens(BundleSet bundleSet, String localeToBeChecked) {
+		List<Asset> htmlAndXml = new ArrayList<>();
+		htmlAndXml.addAll(bundleSet.seedAssets());
+		htmlAndXml.addAll(bundleSet.assets("html!"));
+		htmlAndXml.addAll(bundleSet.assets("xml!"));
+		for(Asset asset : htmlAndXml){
+			String htmlContent = null;
+			try {
+				htmlContent = IOUtils.toString(asset.getReader());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			checkAssetForMissingTokens(bundleSet, htmlContent, localeToBeChecked);
+		}
+		
 	}
 
 	//todo write a version that works for js

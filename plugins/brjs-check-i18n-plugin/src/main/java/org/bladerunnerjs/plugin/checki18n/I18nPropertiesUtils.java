@@ -13,6 +13,7 @@ import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.plugin.bundlers.i18n.I18nFileAsset; //todo remove this when the deps are sorted
 
 
 public class I18nPropertiesUtils
@@ -50,7 +51,8 @@ public class I18nPropertiesUtils
 		
 		for (Asset asset : bundleSet.assets("i18n!"))
 		{
-			if (asset instanceof I18nFileAsset)
+			// todo - change back to typeof check when eclipse behaves
+			if (asset.getClass().getName().contains("I18nFileAsset"))
 			{
 				I18nFileAsset i18nAsset = (I18nFileAsset) asset;
 				Locale assetLocale = i18nAsset.getLocale();
