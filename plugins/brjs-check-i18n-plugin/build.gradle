@@ -25,4 +25,5 @@ dependencies {
 	retrolambdaConfig dependency('retrolambda')
 
 	compile project(path: ":brjs-core")
+	testCompile project(path: ":plugins:brjs-plugins")
 }
