@@ -25,6 +25,10 @@ BRAppMetaService.prototype.getVersion = function() {
 	return metaData.APP_VERSION;
 };
 
+BRAppMetaService.prototype.isDev = function() {
+	return this.getVersion() === "dev";
+};
+
 BRAppMetaService.prototype.getVersionedBundlePath = function(bundlePath) {
 	return getBundlePath(metaData.VERSIONED_BUNDLE_PATH, bundlePath);
 };

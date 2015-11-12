@@ -9,7 +9,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.bladerunnerjs.api.Asset;
+import org.bladerunnerjs.api.memoization.Getter;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
+import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.NamespaceException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
@@ -31,6 +33,7 @@ public class I18nFileAsset implements Asset
 	private Locale locale;
 	private AssetContainer assetContainer;
 	private String requirePath;
+	private MemoizedValue< Map<String,String> > memoizedLocaleProperties;
 	
 	public I18nFileAsset(MemoizedFile i18nFile, AssetContainer assetContainer, String requirePrefix)
 	{
@@ -47,6 +50,7 @@ public class I18nFileAsset implements Asset
 			throw new RuntimeException(ex);
 		}
 		locale = Locale.createLocaleFromFilepath(getAssetName());
+		memoizedLocaleProperties = new MemoizedValue<>(getAssetPath()+" - getLocaleProperties()", assetContainer.root(), file().getUnderlyingFile());
 	}
 
 	@Override
@@ -86,21 +90,40 @@ public class I18nFileAsset implements Asset
 
 	public Map<String,String> getLocaleProperties() throws IOException, RequirePathException, NamespaceException
 	{
-		Map<String, String> propertiesMap = new LinkedHashMap<String,String>();
-		Properties i18nProperties = new Properties();
-		
-		try(Reader propertiesReader = new UnicodeReader(assetFile, defaultFileCharacterEncoding)) {
-			i18nProperties.load( propertiesReader );
-			
-			for (String property : i18nProperties.stringPropertyNames())
-			{
-				RequirePathUtility.assertIdentifierCorrectlyNamespaced(assetContainer, property);
-				String value = i18nProperties.getProperty(property);
-				propertiesMap.put(property.toLowerCase(), value.replaceAll("\n", "\\\\n"));
+		try {
+    		return memoizedLocaleProperties.value(new Getter<Exception>() {
+    			@Override
+    			public Object get() throws Exception {
+        			Map<String, String> propertiesMap = new LinkedHashMap<String,String>();
+        			Properties i18nProperties = new Properties();
+        			
+        			try(Reader propertiesReader = new UnicodeReader(assetFile, defaultFileCharacterEncoding)) {
+        				i18nProperties.load( propertiesReader );
+        				
+        				for (String property : i18nProperties.stringPropertyNames())
+        				{
+        					RequirePathUtility.assertIdentifierCorrectlyNamespaced(assetContainer, property);
+        					String value = i18nProperties.getProperty(property);
+        					propertiesMap.put(property.toLowerCase(), value.replaceAll("\n", "\\\\n"));
+        				}
+        			}
+        			
+        			return propertiesMap;
+    			}
+    		});
+		} catch (Exception ex) { // we need to do this because the memoized values don't allow throwing multiple types of exception, so we throw and catch the generic 'Exception' type and cast it
+			if (ex instanceof IOException) {
+				throw (IOException) ex;
 			}
+			if (ex instanceof RequirePathException) {
+				throw (RequirePathException) ex;
+			}
+			if (ex instanceof NamespaceException) {
+				throw (NamespaceException) ex;
+			}
+			throw new RuntimeException(ex);
 		}
 		
-		return propertiesMap;
 	}
 	
 	public Locale getLocale() {
