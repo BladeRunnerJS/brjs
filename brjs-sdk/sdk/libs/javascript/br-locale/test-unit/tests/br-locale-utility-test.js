@@ -28,5 +28,9 @@ require('jasmine');
 		it('keeps the query string and anchor in the correct order for urls that contain an html suffix', function() {
 			expect(getLocalizedPageUrl('http://acme.com:1337/app/index.html?query=1#anchor', 'en_GB')).toBe('http://acme.com:1337/app/en_GB.html?query=1#anchor');
 		});
+
+        it('can deal with the special case when the normalized path should be empty', function() {
+            expect(getLocalizedPageUrl('http://acme.com', 'en_GB')).toBe('http://acme.com/en_GB');
+        });
 	});
 })();
