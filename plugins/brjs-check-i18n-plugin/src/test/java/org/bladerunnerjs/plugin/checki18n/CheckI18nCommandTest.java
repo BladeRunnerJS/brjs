@@ -57,7 +57,7 @@ public class CheckI18nCommandTest extends SpecTest
 	}
 
 	@Test
-	public void testAppWithAMissingToken() throws Exception
+	public void testAppWithAMissingTokenShowsCorrectMessage() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).indexPageHasContent("<p>@{appns.bs.b1.missingtoken}</p>")
@@ -65,6 +65,18 @@ public class CheckI18nCommandTest extends SpecTest
 		when(brjs).runCommand("check-i18n", "app1");
 		then(logging).containsConsoleText("For the locale en, app1 has no translations defined for the following token:",
 										"appns.bs.b1.missingtoken");		
+	}
+	
+	@Test
+	public void testAppWithADuplciateMissingTokenShowsCorrectMessage() throws Exception
+	{
+		given(app).hasBeenCreated()
+		.and(aspect).indexPageHasContent("<p>@{appns.bs.b1.missingtoken}</p>")
+		.and(blade).containsResourceFileWithContents("file.xml", "<some-xml value=@{appns.bs.b1.missingtoken}></some-xml>")
+		.and(blade).containsResourceFileWithContents("en.properties", "");	
+	when(brjs).runCommand("check-i18n", "app1");
+	then(logging).containsConsoleText("For the locale en, app1 has no translations defined for the following token:",
+									"appns.bs.b1.missingtoken");		
 	}
 	
 	@Test

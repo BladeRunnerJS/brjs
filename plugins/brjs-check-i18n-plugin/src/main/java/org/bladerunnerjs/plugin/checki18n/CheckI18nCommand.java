@@ -3,9 +3,11 @@ package org.bladerunnerjs.plugin.checki18n;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +45,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 
 	private BRJS brjs;
 	private Logger logger;
-	private List<String> missingTokens = new ArrayList<String>();
+	private Set<String> missingTokens = new HashSet<String>();
 	private Pattern I18N_HTML_XML_TOKEN_PATTERN = Pattern.compile("@\\{(.*?)\\}");
 	private Pattern JS_TOKEN_PATTERN = Pattern.compile("i18n\\([\\s]*[\'\"](.*?)[\'\"][\\s]*\\)");
 	                                                                           
