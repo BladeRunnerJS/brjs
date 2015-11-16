@@ -46,7 +46,7 @@ public class CssRewriterTest extends SpecTest
 		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png');");
 	}
-	
+
 	@Test
 	public void urlsAreCorrectlyRewritten() throws Exception
 	{
@@ -54,16 +54,33 @@ public class CssRewriterTest extends SpecTest
 		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png');");
 	}
-	
+
+	@Test
+	public void allReferencesToURLsAreCorrectlyRewritten() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css",
+				".my-class {\n" +
+				"    background: url(\"images/background.png\");\n" +
+				"    background-size: contain;\n" +
+				"    -ms-filter: \"progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/background.png', sizingMethod='scale')\";\n" +
+				"}");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
+		then(response).containsLines(
+				".my-class {",
+				"    background: url(\"../../cssresource/aspect_default/theme_common/images/background.png\");",
+				"    background-size: contain;",
+				"    -ms-filter: \"progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../../cssresource/aspect_default/theme_common/images/background.png', sizingMethod='scale')\";",
+				"}");
+	}
+
 	@Test
 	public void urlCanBeInCapitals() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:URL('image.png');");
 		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
 		then(response).containsText("background:URL('../../cssresource/aspect_default/theme_common/image.png');");
-		
 	}
-	
+
 	@Test
 	public void pathCanBeInDoubleQuotes() throws Exception
 	{
