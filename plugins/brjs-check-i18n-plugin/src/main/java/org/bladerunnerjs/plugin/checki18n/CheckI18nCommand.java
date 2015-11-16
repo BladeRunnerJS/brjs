@@ -17,7 +17,12 @@ import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.api.TestPack;
+import org.bladerunnerjs.api.TestableNode;
+import org.bladerunnerjs.api.TypedTestPack;
 import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
@@ -25,6 +30,7 @@ import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.model.AssetContainer;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -38,7 +44,10 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	private BRJS brjs;
 	private Logger logger;
 	private List<String> missingTokens = new ArrayList<String>();
-	private final static Pattern I18N_TOKEN_PATTERN = Pattern.compile("@\\{(.*?)\\}");
+	private Pattern I18N_HTML_XML_TOKEN_PATTERN = Pattern.compile("@\\{(.*?)\\}");
+	private Pattern JS_TOKEN_PATTERN = Pattern.compile("i18n\\([\\s]*[\'\"](.*?)[\'\"][\\s]*\\)");
+	                                                                           
+	//todo require\\([\\s]*['"]i18n!(.*?)['"][\\s]*\\)
 
 	@Override
 	public String getCommandName() {
@@ -84,23 +93,38 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	}
 
 	private void findMissingTranslationsForAppWithLocale(App app, String localeToBeChecked) {
-		//todo js assets... bundleset.sourceModules();
 		for(Aspect aspect : app.aspects()) {
-			//todo check tests
-			BundleSet bundleSet = null;
-			try {
-				bundleSet = aspect.getBundleSet();
-			} catch (ModelOperationException e) {
-				e.printStackTrace();
-			}	
-			checkBundletForMissingTokens(bundleSet, localeToBeChecked);						
+			checkMissingLocalsForBundlableNode(localeToBeChecked, aspect);
+			
+			checkMissingLocales(localeToBeChecked, aspect);
 		}
 		for(Bladeset bladeset : app.bladesets()) {
-			//todo check bladeset content
-			for(Blade blade : bladeset.blades()) {
-				//todo check blade content
+			checkMissingLocales(localeToBeChecked, bladeset);
+			for(Blade blade : bladeset.blades()) {				
+				checkMissingLocales(localeToBeChecked, blade);
+				checkMissingLocales(localeToBeChecked, blade.workbench());
+				checkMissingLocalsForBundlableNode(localeToBeChecked, blade.workbench());	
 			}
 		}
+	}
+
+	private void checkMissingLocales(String localeToBeChecked, TestableNode testableNode) {
+		for(TypedTestPack typedTestPack : testableNode.testTypes()){
+			for(TestPack testPack : typedTestPack.testTechs()){
+				checkMissingLocalsForBundlableNode(localeToBeChecked, testPack);
+			}
+		}
+	}
+
+	private void checkMissingLocalsForBundlableNode(String localeToBeChecked, BundlableNode bundlableNode) {
+		BundleSet bundleSet = null;
+		try {
+			bundleSet = bundlableNode.getBundleSet();
+			//bundleSet.sourceModules();
+		} catch (ModelOperationException e) {
+			e.printStackTrace();
+		}	
+		checkBundletForMissingTokens(bundleSet, localeToBeChecked);
 	}
 
 	private void checkBundletForMissingTokens(BundleSet bundleSet, String localeToBeChecked) {
@@ -109,28 +133,37 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		htmlAndXml.addAll(bundleSet.assets("html!"));
 		htmlAndXml.addAll(bundleSet.assets("xml!"));
 		for(Asset asset : htmlAndXml){
-			String htmlContent = null;
+			String content = null;
 			try {
-				htmlContent = IOUtils.toString(asset.getReader());
+				content = IOUtils.toString(asset.getReader());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			checkAssetForMissingTokens(bundleSet, htmlContent, localeToBeChecked);
+			checkAssetForMissingTokens(bundleSet, content, localeToBeChecked, I18N_HTML_XML_TOKEN_PATTERN);
+		}
+		
+		List<SourceModule> sourcceModules = bundleSet.sourceModules();
+		for(SourceModule sourceModule : sourcceModules){
+			String srcContent = null;
+			try {
+				srcContent = IOUtils.toString(sourceModule.getReader());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			checkAssetForMissingTokens(bundleSet, srcContent, localeToBeChecked, JS_TOKEN_PATTERN);			
 		}
 		
 	}
 
-	//todo write a version that works for js
-	private void checkAssetForMissingTokens(BundleSet bundleSet, String content, String localeToBeChecked) {
+	private void checkAssetForMissingTokens(BundleSet bundleSet, String content, String localeToBeChecked, Pattern pattern) {
 		Locale locale = new Locale(localeToBeChecked);
 		Map<String,String> propertiesMap = null;
 		try {
-			//todo - not retrieving properties
 			propertiesMap = I18nPropertiesUtils.getI18nProperties(bundleSet, locale);
 		} catch (ContentProcessingException e) {
 			e.printStackTrace();
 		}
-		Matcher i18nTokenMatcher = I18N_TOKEN_PATTERN.matcher(content);
+		Matcher i18nTokenMatcher = pattern.matcher(content); //replace with variable - one for js one for html/xml
 		
 		while (i18nTokenMatcher.find()) {
 			String i18nKey = i18nTokenMatcher.group(1).toLowerCase();
