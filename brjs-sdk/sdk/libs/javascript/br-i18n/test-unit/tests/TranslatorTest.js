@@ -284,17 +284,28 @@
 		_assertGetMessageReturnsCorrectValue(sTest, mTokens, sExpected);
 	};
 
-	TranslatorTest.prototype.test_getMessageForAnUnknownKeyThrowsAnError = function()
+	TranslatorTest.prototype.test_getMessageForAnUnknownKeyReturnsAnEmptyTranslationInDev = function()
 	{
 		var sKey = "unknown.key";
 		var sExpected = "??? " + sKey + " ???";
+		require('service!br.app-meta-service').setVersion('dev');
 
 		var Translator = require('br/i18n/Translator');
 		var oTranslator = new Translator({});
 
-		assertException(function() {
-			oTranslator.getMessage(sKey, {});
-		}, "InvalidParametersError");
+		assertEquals(oTranslator.getMessage(sKey, {}), sExpected);
+	};
+	
+	TranslatorTest.prototype.test_getMessageForAnUnknownKeyThrowsAnErrorInProd = function()
+	{
+		var sKey = "unknown.key";
+		var sExpected = "??? " + sKey + " ???";
+		require('service!br.app-meta-service').setVersion('1.2.3');
+
+		var Translator = require('br/i18n/Translator');
+		var oTranslator = new Translator({});
+		
+		assertEquals(oTranslator.getMessage(sKey, {}), sExpected);
 	};
 
 	TranslatorTest.prototype.test_getMessageForAnUntranslatedKeyReturnsDefaultLocaleMessageInProd = function()
