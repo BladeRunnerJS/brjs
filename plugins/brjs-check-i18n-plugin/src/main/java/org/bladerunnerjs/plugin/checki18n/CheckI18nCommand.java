@@ -1,14 +1,12 @@
 package org.bladerunnerjs.plugin.checki18n;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,7 +30,6 @@ import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
-import org.bladerunnerjs.model.AssetContainer;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -165,18 +162,30 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		Matcher i18nTokenMatcher = pattern.matcher(content);
 		
 		while (i18nTokenMatcher.find()) {
-			Boolean isConstructedString = false; 
+			Boolean tokenIsNotComplete = false;
+			Boolean propertiesFileContainPartialMatch = false;
 			
 			if(i18nTokenMatcher.groupCount() > 1){
-				isConstructedString = i18nTokenMatcher.group(2) != null && i18nTokenMatcher.group(2).indexOf('+') != -1;
+				tokenIsNotComplete = i18nTokenMatcher.group(2) != null && i18nTokenMatcher.group(2).indexOf('+') != -1;
+				propertiesFileContainPartialMatch = mapContainsPartialToken(propertiesMap, i18nTokenMatcher.group(1)) && tokenIsNotComplete;
 			}
 			String i18nKey = i18nTokenMatcher.group(1).toLowerCase();
 			String keyReplacement = propertiesMap.get(i18nKey);
-			if (keyReplacement == null) {
-				String missingToken = isConstructedString ? i18nKey + "* (partial match)" : i18nKey;
+			
+			if (keyReplacement == null && !propertiesFileContainPartialMatch) {				
+				String missingToken = tokenIsNotComplete ? i18nKey + "*" : i18nKey;
 				this.missingTokens.add(missingToken);
 			}
 		}		
+	}
+
+	private boolean mapContainsPartialToken(Map<String, String> propertiesMap, String partialToken) {
+		for(Entry<String, String> entry : propertiesMap.entrySet()) {
+			  String i18nToken = entry.getKey();
+			  if(i18nToken.contains(partialToken))
+				  return true;
+			}
+		return false;
 	}
 
 	private String getLocaleToBeChecked(App app, String locale) {
