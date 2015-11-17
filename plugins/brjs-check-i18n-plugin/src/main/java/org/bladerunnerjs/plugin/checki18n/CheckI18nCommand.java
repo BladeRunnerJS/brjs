@@ -47,9 +47,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	private Logger logger;
 	private Set<String> missingTokens = new HashSet<String>();
 	private Pattern I18N_HTML_XML_TOKEN_PATTERN = Pattern.compile("@\\{(.*?)\\}");
-	private Pattern JS_TOKEN_PATTERN = Pattern.compile("i18n\\([\\s]*[\'\"](.*?)[\'\"][\\s]*\\)");
-	                                                                           
-	//todo require\\([\\s]*['"]i18n!(.*?)['"][\\s]*\\)
+	private Pattern JS_TOKEN_PATTERN = Pattern.compile("i18n\\([\\s]*[\'\"](.*?)[\'\"]([\\s]*[,+].*)?[\\s]*\\)");
 
 	@Override
 	public String getCommandName() {
@@ -59,7 +57,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the application to search for missing translations"));
-		argsParser.registerParameter(new UnflaggedOption("locale").setDefault("default").setHelp("the locale used to search tokens"));		
+		argsParser.registerParameter(new UnflaggedOption("locale").setDefault("default").setHelp("the locale used to search tokens"));	
 	}	
 
 	@Override
@@ -86,8 +84,8 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		
 		findMissingTranslationsForAppWithLocale(app, localeToBeChecked);
 		
-		String missingTokensMessage = this.missingTokens.size() == 0 ? " has no missing translations" : " has no translations defined for the following token:";
-		String firstLogLine = "For the locale " + localeToBeChecked + ", " + appName + missingTokensMessage;
+		String missingTokensMessage = this.missingTokens.size() == 0 ? " has no missing translations" : " has no translations defined for the following tokens:";
+		String firstLogLine = "\n" + "For the locale " + localeToBeChecked + ", " + appName + missingTokensMessage + "\n";
 		logger.println(firstLogLine);
 		for (String missingToken : missingTokens) {
 			logger.println(missingToken);
@@ -122,7 +120,6 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		BundleSet bundleSet = null;
 		try {
 			bundleSet = bundlableNode.getBundleSet();
-			//bundleSet.sourceModules();
 		} catch (ModelOperationException e) {
 			e.printStackTrace();
 		}	
@@ -165,13 +162,19 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		} catch (ContentProcessingException e) {
 			e.printStackTrace();
 		}
-		Matcher i18nTokenMatcher = pattern.matcher(content); //replace with variable - one for js one for html/xml
+		Matcher i18nTokenMatcher = pattern.matcher(content);
 		
 		while (i18nTokenMatcher.find()) {
+			Boolean isConstructedString = false; 
+			
+			if(i18nTokenMatcher.groupCount() > 1){
+				isConstructedString = i18nTokenMatcher.group(2) != null && i18nTokenMatcher.group(2).indexOf('+') != -1;
+			}
 			String i18nKey = i18nTokenMatcher.group(1).toLowerCase();
 			String keyReplacement = propertiesMap.get(i18nKey);
 			if (keyReplacement == null) {
-				this.missingTokens.add(i18nKey);
+				String missingToken = isConstructedString ? i18nKey + "* (partial match)" : i18nKey;
+				this.missingTokens.add(missingToken);
 			}
 		}		
 	}
