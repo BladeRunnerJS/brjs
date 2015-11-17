@@ -39,20 +39,31 @@ public class CheckI18nCommandTest extends SpecTest
 	@Test
 	public void testCheckI18nCommandExists() throws Exception
 	{
+		given(app).hasBeenCreated();
 		when(brjs).runCommand("check-i18n", "app1");
 		then(exceptions).verifyNoOutstandingExceptions();		
 	}
-	
+
 	@Test
 	public void exceptionIsThrownIfThereAreTooFewArguments() throws Exception {
+		given(app).hasBeenCreated();
 		when(brjs).runCommand("check-i18n");
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'app-name' is required"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
 	@Test
+	public void exceptionIsThrownWhenAppDoesNotExist() throws Exception {
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("check-i18n", "unknownApp");
+		then(exceptions).verifyException(CommandArgumentsException.class, unquoted("The app 'unknownApp' does not exist"))
+			.whereTopLevelExceptionIs(CommandArgumentsException.class);
+	}
+	
+	@Test
 	public void testAppWithNoTokensReportsNoMissingTranslations() throws Exception
 	{
+		given(app).hasBeenCreated();
 		when(brjs).runCommand("check-i18n", "app1");
 		then(logging).containsConsoleText("For the locale en, app1 has no missing translations");		
 	}
@@ -75,8 +86,8 @@ public class CheckI18nCommandTest extends SpecTest
 		.and(aspect).indexPageHasContent("<p>@{appns.bs.b1.missingtoken}</p>")
 		.and(blade).containsResourceFileWithContents("file.xml", "<some-xml value=@{appns.bs.b1.missingtoken}></some-xml>")
 		.and(blade).containsResourceFileWithContents("en.properties", "");	
-	when(brjs).runCommand("check-i18n", "app1");
-	then(logging).containsConsoleText("\n" + "For the locale en, app1 has no translations defined for the following tokens:" + "\n",
+		when(brjs).runCommand("check-i18n", "app1");
+		then(logging).containsConsoleText("\n" + "For the locale en, app1 has no translations defined for the following tokens:" + "\n",
 									"appns.bs.b1.missingtoken");		
 	}
 	

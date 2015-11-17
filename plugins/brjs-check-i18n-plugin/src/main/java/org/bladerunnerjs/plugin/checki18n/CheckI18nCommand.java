@@ -30,6 +30,7 @@ import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.plugin.commands.standard.J2eeifyCommandPlugin.Messages;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -39,7 +40,12 @@ import com.martiansoftware.jsap.UnflaggedOption;
 import org.bladerunnerjs.api.logging.Logger;
 
 public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
-
+	
+	public class Messages {
+		public static final String APP_DOES_NOT_EXIST_EXCEPTION = "The app '%s' does not exist";
+		public static final String NO_LOCALE_FOR_APP = "The app specified does not contain a default locale";
+	}
+	
 	private BRJS brjs;
 	private Logger logger;
 	private Set<String> missingTokens = new HashSet<String>();
@@ -66,18 +72,20 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
 		String locale = parsedArgs.getString("locale");
-		
+				
 		listMissingTokens(appName, locale);
 		return 0;
 	}
 	
-	private void listMissingTokens(String appName, String locale) {		
+	private void listMissingTokens(String appName, String locale) throws CommandArgumentsException {		
 		App app = brjs.app(appName);
 		String localeToBeChecked = getLocaleToBeChecked(app, locale);
-		if(localeToBeChecked == "no locale specified"){
-			logger.println(appName + " has no default locale");
-			return;
-		}
+		
+		if(localeToBeChecked == "no locale specified.")
+			throw new CommandArgumentsException( String.format(Messages.NO_LOCALE_FOR_APP), this );
+		
+		if(!app.dirExists()) 
+			throw new CommandArgumentsException( String.format(Messages.APP_DOES_NOT_EXIST_EXCEPTION, appName), this );
 		
 		findMissingTranslationsForAppWithLocale(app, localeToBeChecked);
 		
