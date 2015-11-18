@@ -15,8 +15,8 @@ import org.eclipse.jetty.util.URIUtil;
 public class CssRewriter {
 	
 
-	private static final String URL_PATTERN_START = "(url[\\s]*\\([\\s]*['\"]?)"; // start of the pattern - matches a ( followed by an optional ' or "
-	private static final String URL_PATTERN_END = "(['\"]?[\\s]*\\))"; // end of the pattern - matches an optional ' or " followed by a )
+	private static final String URL_PATTERN_START = "(url[\\s]*\\([\\s]*['\"]?|src=')"; // start of the pattern - matches an optional ( followed by an optional ' or ",
+	private static final String URL_PATTERN_END = "(['\"]?[\\s]*\\)|['\"])"; // end of the pattern - matches an optional ' or " followed by a ), or just an optional ' or "
 	private static final String PRE_PATTERN_NEGATIVE_LOOKAHEADS = 
 			"(?!['\"])" + // prevent matching a ' or " at the start of the URL (needed because the " and ' in the above regex are optional
 			"(?![a-zA-Z]+://)" +	// prevent matching URLs with protocols		
