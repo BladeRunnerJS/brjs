@@ -25,7 +25,8 @@ uname -a | grep -E "(^CYGWIN|^MINGW32.*Msys$)" > /dev/null
 if [ $? -eq 0 ]; then
 	# Cygwin & newer GitBash versions
 	PWD=`pwd`
-	java $JAVA_OPTS -cp "`cygpath -wp $BRJS_CLASSPATH`" org.bladerunnerjs.runner.CommandRunner "`cygpath -wp $SCRIPT_DIR`" "`cygpath -wp $PWD`" "$@"
+    # All paths must be sourrounded by " in order to prevent issues with paths that contain spaces
+	java $JAVA_OPTS -cp "`cygpath -wp "$BRJS_CLASSPATH"`" org.bladerunnerjs.runner.CommandRunner "`cygpath -wp "$SCRIPT_DIR"`" "`cygpath -wp "$PWD"`" "$@"
 else
 	# UNIX & older GitBash versions
 	java $JAVA_OPTS -cp "$BRJS_CLASSPATH" org.bladerunnerjs.runner.CommandRunner "$SCRIPT_DIR" "`pwd`" "$@"
