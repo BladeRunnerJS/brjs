@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.checki18n;
 
 import org.bladerunnerjs.api.App;
-import org.bladerunnerjs.api.AppConf;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
@@ -10,17 +9,15 @@ import org.bladerunnerjs.api.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CheckI18nCommandTest extends SpecTest
 {
 	private App app;
-	private AppConf appConf;
 	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
-	private TestPack bladeUTs, bladeATs;
+	private TestPack bladeUTs;
 
 	@Before
 	public void initTestObjects() throws Exception
@@ -28,12 +25,10 @@ public class CheckI18nCommandTest extends SpecTest
 		given(brjs).automaticallyFindsAllPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
-			appConf = app.appConf();
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			bladeUTs = blade.testType("unit").testTech("TEST_TECH");
-			bladeATs = blade.testType("acceptance").testTech("TEST_TECH");
 	}	
 	
 	@Test
@@ -63,7 +58,8 @@ public class CheckI18nCommandTest extends SpecTest
 	@Test
 	public void testAppWithNoTokensReportsNoMissingTranslations() throws Exception
 	{
-		given(app).hasBeenCreated();
+		given(app).hasBeenCreated()
+			.and(aspect).indexPageHasContent("<p>no tokens</p>");
 		when(brjs).runCommand("check-i18n", "app1");
 		then(logging).containsConsoleText("For the locale en, app1 has no missing translations");		
 	}
@@ -72,11 +68,11 @@ public class CheckI18nCommandTest extends SpecTest
 	public void testAppWithAMissingTokenShowsCorrectMessage() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(aspect).indexPageHasContent("<p>@{appns.bs.b1.missingtoken}</p>")
-			.and(aspect).containsResourceFileWithContents("en.properties", "appns.bs.b1.dummytoken=dummy value");	
+			.and(aspect).indexPageHasContent("<p>@{appns.ns.missingtoken}</p>")
+			.and(aspect).containsResourceFileWithContents("en.properties", "appns.ns.dummytoken=dummy value");	
 		when(brjs).runCommand("check-i18n", "app1");
-		then(logging).containsConsoleText("\n" + "For the locale en, app1 has no translations defined for the following tokens:" + "\n",
-										"appns.bs.b1.missingtoken");		
+		then(logging).containsConsoleText("checking default aspect\n\n" + "For the locale en, app1 has no translations defined for the following tokens:" + "\n",
+										"appns.ns.missingtoken");		
 	}
 	
 	@Test
@@ -203,7 +199,7 @@ public class CheckI18nCommandTest extends SpecTest
 	}
 
 	@Test
-	public void testAsteriskIsAddedForMissingTokensThatAreConstructedInThreeParts() throws Exception
+	public void testAdditionalMessageIsAddedForMissingTokensThatAreConstructedInThreeParts() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasCommonJsPackageStyle()
@@ -216,7 +212,7 @@ public class CheckI18nCommandTest extends SpecTest
 	}
 	
 	@Test
-	public void testAsteriskIsAddedForMissingTokensThatAreConcatenated() throws Exception
+	public void testAddiotionalMessageIsAddedForMissingTokensThatAreConcatenated() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasCommonJsPackageStyle()
@@ -226,5 +222,35 @@ public class CheckI18nCommandTest extends SpecTest
 		when(brjs).runCommand("check-i18n", "app1");
 		then(logging).containsConsoleText("\n" + "For the locale en, app1 has no translations defined for the following tokens:" + "\n",
 						"appns.bs.b1.missing.* a token beginning with this prefix could not be found");
+	}
+	
+	@Test
+	public void testAppWithMultipleLocalesShowsMissingTokensForAllLocales() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: app1\nlocales: en_GB, de_DE")
+			.and(aspect).indexPageHasContent("<p>@{appns.missingtoken}</p>")
+			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.property=property value")
+			.and(aspect).containsResourceFileWithContents("de_DE.properties", "appns.property=a different value");	
+		when(brjs).runCommand("check-i18n", "app1");
+		then(logging).containsConsoleText("\n" + "For the locale de, app1 has no translations defined for the following tokens:" + "\n",
+										"appns.missingtoken",
+										"\n" + "For the locale en, app1 has no translations defined for the following tokens:" + "\n",
+										"appns.missingtoken");
+	}
+	
+	@Test
+	public void testAppWithMultipleLocalesOnlyMissingLocalesForSpecifiedLocaleAreLogged() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: app1\nlocales: en_GB, de_DE")
+			.and(aspect).indexPageHasContent("<p>@{appns.missingtoken}</p>")
+			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.property=property value")
+			.and(aspect).containsResourceFileWithContents("de_DE.properties", "appns.property=a different value");	
+		when(brjs).runCommand("check-i18n", "app1", "de");
+		then(logging).containsConsoleText("\n" + "For the locale de, app1 has no translations defined for the following tokens:" + "\n",
+										"appns.missingtoken");		
 	}
 }

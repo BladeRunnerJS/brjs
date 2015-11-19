@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.checki18n;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,6 @@ import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
-import org.bladerunnerjs.plugin.commands.standard.J2eeifyCommandPlugin.Messages;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -48,7 +48,9 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	
 	private BRJS brjs;
 	private Logger logger;
-	private Set<String> missingTokens = new HashSet<String>();
+	private String locale;
+	private HashMap<String, Set<String>> missingTokensMap = new HashMap<String, Set<String>>();
+	private Locale[] appLocales;
 	private Pattern I18N_HTML_XML_TOKEN_PATTERN = Pattern.compile("@\\{(.*?)\\}");
 	private Pattern JS_TOKEN_PATTERN = Pattern.compile("i18n\\([\\s]*[\'\"](.*?)[\'\"]([\\s]*[,+].*)?[\\s]*\\)");
 
@@ -60,7 +62,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the application to search for missing translations"));
-		argsParser.registerParameter(new UnflaggedOption("locale").setDefault("default").setHelp("the locale used to search tokens"));	
+		argsParser.registerParameter(new UnflaggedOption("locale").setDefault("All").setHelp("the locale used to search tokens"));	
 	}	
 
 	@Override
@@ -71,82 +73,90 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	@Override
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
-		String locale = parsedArgs.getString("locale");
+		locale = parsedArgs.getString("locale");
 				
-		listMissingTokens(appName, locale);
+		listMissingTokens(appName);
 		return 0;
 	}
 	
-	private void listMissingTokens(String appName, String locale) throws CommandArgumentsException {		
+	private void listMissingTokens(String appName) throws CommandArgumentsException {		
 		App app = brjs.app(appName);
-		String localeToBeChecked = getLocaleToBeChecked(app, locale);
 		
-		if(localeToBeChecked == "no locale specified.")
-			throw new CommandArgumentsException( String.format(Messages.NO_LOCALE_FOR_APP), this );
+		try {
+			appLocales = app.appConf().getLocales();
+		} catch (ConfigException e) {
+			e.printStackTrace();
+		}
 		
 		if(!app.dirExists()) 
 			throw new CommandArgumentsException( String.format(Messages.APP_DOES_NOT_EXIST_EXCEPTION, appName), this );
 		
-		findMissingTranslationsForAppWithLocale(app, localeToBeChecked);
+		findMissingTranslationsForAppWithLocale(app);
 		
-		String missingTokensMessage = this.missingTokens.size() == 0 ? " has no missing translations" : " has no translations defined for the following tokens:";
-		String firstLogLine = "\n" + "For the locale " + localeToBeChecked + ", " + appName + missingTokensMessage + "\n";
+		for (Entry<String, Set<String>> tokensList : missingTokensMap.entrySet()) {
+		    logMissingLocalesToConsole(appName, tokensList.getKey(), tokensList);
+		}
+	}
+
+	private void logMissingLocalesToConsole(String appName, String localeToBeChecked, Entry<String, Set<String>> tokensList) {
+		String missingTokensMessage = tokensList.getValue().size() == 0 ? " has no missing translations" : " has no translations defined for the following tokens:";
+		String firstLogLine = "\n" + "For the locale " + tokensList.getKey() + ", " + appName + missingTokensMessage + "\n";
 		logger.println(firstLogLine);
-		for (String missingToken : missingTokens) {
+		for (String missingToken : tokensList.getValue()) {
 			logger.println(missingToken);
 		}
 	}
 
-	private void findMissingTranslationsForAppWithLocale(App app, String localeToBeChecked) {
+	private void findMissingTranslationsForAppWithLocale(App app) {
 		for(Aspect aspect : app.aspects()) {
 			logger.println("checking " + aspect.getName() + " aspect");
-			checkMissingLocalsForBundlableNode(localeToBeChecked, aspect);
+			checkMissingLocalsForBundlableNode(aspect);
 			
-			checkMissingLocales(localeToBeChecked, aspect);
+			checkMissingLocales(aspect);
 		}
 		for(Bladeset bladeset : app.bladesets()) {
 			logger.println("checking " + bladeset.getName() + " bladeset");
-			checkMissingLocales(localeToBeChecked, bladeset);
+			checkMissingLocales(bladeset);
 			for(Blade blade : bladeset.blades()) {
 				logger.println("checking " + blade.getName() + " blade");
-				checkMissingLocales(localeToBeChecked, blade);
-				checkMissingLocales(localeToBeChecked, blade.workbench());
-				checkMissingLocalsForBundlableNode(localeToBeChecked, blade.workbench());	
+				checkMissingLocales(blade);
+				checkMissingLocales(blade.workbench());
+				checkMissingLocalsForBundlableNode(blade.workbench());	
 			}
 		}
 	}
 
-	private void checkMissingLocales(String localeToBeChecked, TestableNode testableNode) {
+	private void checkMissingLocales(TestableNode testableNode) {
 		for(TypedTestPack typedTestPack : testableNode.testTypes()){
 			for(TestPack testPack : typedTestPack.testTechs()){
-				checkMissingLocalsForBundlableNode(localeToBeChecked, testPack);
+				checkMissingLocalsForBundlableNode(testPack);
 			}
 		}
 	}
 
-	private void checkMissingLocalsForBundlableNode(String localeToBeChecked, BundlableNode bundlableNode) {
+	private void checkMissingLocalsForBundlableNode(BundlableNode bundlableNode) {
 		BundleSet bundleSet = null;
 		try {
 			bundleSet = bundlableNode.getBundleSet();
 		} catch (ModelOperationException e) {
 			e.printStackTrace();
 		}	
-		checkBundletForMissingTokens(bundleSet, localeToBeChecked);
+		checkBundletForMissingTokens(bundleSet);
 	}
 
-	private void checkBundletForMissingTokens(BundleSet bundleSet, String localeToBeChecked) {
-		List<Asset> htmlAndXml = new ArrayList<>();
-		htmlAndXml.addAll(bundleSet.seedAssets());
-		htmlAndXml.addAll(bundleSet.assets("html!"));
-		htmlAndXml.addAll(bundleSet.assets("xml!"));
-		for(Asset asset : htmlAndXml){
+	private void checkBundletForMissingTokens(BundleSet bundleSet) {
+		List<Asset> assetList = new ArrayList<>();
+		assetList.addAll(bundleSet.seedAssets());
+		assetList.addAll(bundleSet.assets("html!"));
+		assetList.addAll(bundleSet.assets("xml!"));
+		for(Asset asset : assetList){
 			String content = null;
 			try {
 				content = IOUtils.toString(asset.getReader());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			checkAssetForMissingTokens(bundleSet, content, localeToBeChecked, I18N_HTML_XML_TOKEN_PATTERN);
+			checkAssetForMissingTokens(bundleSet, content, I18N_HTML_XML_TOKEN_PATTERN);
 		}
 		
 		List<SourceModule> sourcceModules = bundleSet.sourceModules();
@@ -157,21 +167,27 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			checkAssetForMissingTokens(bundleSet, srcContent, localeToBeChecked, JS_TOKEN_PATTERN);			
+			checkAssetForMissingTokens(bundleSet, srcContent, JS_TOKEN_PATTERN);
 		}
-		
 	}
 
-	private void checkAssetForMissingTokens(BundleSet bundleSet, String content, String localeToBeChecked, Pattern pattern) {
-		Locale locale = new Locale(localeToBeChecked);
-		Map<String,String> propertiesMap = null;
-		try {
-			propertiesMap = I18nPropertiesUtils.getI18nProperties(bundleSet, locale);
-		} catch (ContentProcessingException e) {
-			e.printStackTrace();
+	private void checkAssetForMissingTokens(BundleSet bundleSet, String content, Pattern pattern) {
+		Locale[] appLocalesToBeChecked;
+		appLocalesToBeChecked = locale == "All" ? appLocales : new Locale[] { new Locale(locale) };
+		for(Locale localeToCheck: appLocalesToBeChecked ){
+			Map<String,String> propertiesMap = null;
+			try {
+				propertiesMap = I18nPropertiesUtils.getI18nProperties(bundleSet, localeToCheck);
+			} catch (ContentProcessingException e) {
+				e.printStackTrace();
+			}
+			matchTokensForLocale(content, pattern, propertiesMap, localeToCheck.getLanguageCode());
 		}
+	}
+
+	private void matchTokensForLocale(String content, Pattern pattern, Map<String, String> propertiesMap, String localeCode) {
 		Matcher i18nTokenMatcher = pattern.matcher(content);
-		
+		Set<String> missingTokens = new HashSet<String>();
 		while (i18nTokenMatcher.find()) {
 			Boolean tokenIsNotComplete = false;
 			Boolean propertiesFileContainPartialMatch = false;
@@ -182,12 +198,17 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 			}
 			String i18nKey = i18nTokenMatcher.group(1).toLowerCase();
 			String keyReplacement = propertiesMap.get(i18nKey);
-			
 			if (keyReplacement == null && !propertiesFileContainPartialMatch) {				
 				String missingToken = tokenIsNotComplete ? i18nKey + "* a token beginning with this prefix could not be found" : i18nKey;
-				this.missingTokens.add(missingToken);
+				missingTokens.add(missingToken);
 			}
-		}		
+		}
+		if(missingTokensMap.get(localeCode) == null){
+			missingTokensMap.put(localeCode, missingTokens);
+		}
+		else{
+			missingTokensMap.get(localeCode).addAll(missingTokens);
+		}
 	}
 
 	private boolean mapContainsPartialToken(Map<String, String> propertiesMap, String partialToken) {
@@ -197,20 +218,6 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 				  return true;
 			}
 		return false;
-	}
-
-	private String getLocaleToBeChecked(App app, String locale) {
-		String localeToBeChecked = "";
-		if(locale == "default"){			
-			try {
-				localeToBeChecked = app.appConf().getDefaultLocale().toString();
-			} catch (ConfigException e) {
-				return "no locale specified";
-			}
-		} else {
-			localeToBeChecked = locale;
-		}				
-		return localeToBeChecked;
 	}
 
 	@Override
