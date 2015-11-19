@@ -99,13 +99,16 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 
 	private void findMissingTranslationsForAppWithLocale(App app, String localeToBeChecked) {
 		for(Aspect aspect : app.aspects()) {
+			logger.println("checking " + aspect.getName() + " aspect");
 			checkMissingLocalsForBundlableNode(localeToBeChecked, aspect);
 			
 			checkMissingLocales(localeToBeChecked, aspect);
 		}
 		for(Bladeset bladeset : app.bladesets()) {
+			logger.println("checking " + bladeset.getName() + " bladeset");
 			checkMissingLocales(localeToBeChecked, bladeset);
-			for(Blade blade : bladeset.blades()) {				
+			for(Blade blade : bladeset.blades()) {
+				logger.println("checking " + blade.getName() + " blade");
 				checkMissingLocales(localeToBeChecked, blade);
 				checkMissingLocales(localeToBeChecked, blade.workbench());
 				checkMissingLocalsForBundlableNode(localeToBeChecked, blade.workbench());	
@@ -181,7 +184,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 			String keyReplacement = propertiesMap.get(i18nKey);
 			
 			if (keyReplacement == null && !propertiesFileContainPartialMatch) {				
-				String missingToken = tokenIsNotComplete ? i18nKey + "*" : i18nKey;
+				String missingToken = tokenIsNotComplete ? i18nKey + "* a token beginning with this prefix could not be found" : i18nKey;
 				this.missingTokens.add(missingToken);
 			}
 		}		

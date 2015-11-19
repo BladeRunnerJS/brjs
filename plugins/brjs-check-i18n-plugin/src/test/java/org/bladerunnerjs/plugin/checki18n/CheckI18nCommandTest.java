@@ -185,7 +185,7 @@ public class CheckI18nCommandTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.bs.b1.validtoken=some value");
 		when(brjs).runCommand("check-i18n", "app1");
 		then(logging).containsConsoleText("\n" + "For the locale en, app1 has no translations defined for the following tokens:" + "\n",
-				"appns.bs.b1.unknownending.*");				
+				"appns.bs.b1.unknownending.* a token beginning with this prefix could not be found");
 	}
 	
 	@Test
@@ -212,7 +212,7 @@ public class CheckI18nCommandTest extends SpecTest
 			.and(aspect).classFileHasContent("appns.Class1", "i18n('appns.bs.b1.missing.' + value + '.token')");
 		when(brjs).runCommand("check-i18n", "app1");
 		then(logging).containsConsoleText("\n" + "For the locale en, app1 has no translations defined for the following tokens:" + "\n",
-				"appns.bs.b1.missing.*");
+				"appns.bs.b1.missing.* a token beginning with this prefix could not be found");
 	}
 	
 	@Test
@@ -225,6 +225,6 @@ public class CheckI18nCommandTest extends SpecTest
 			.and(aspect).classFileHasContent("appns.Class1", "i18n('appns.bs.b1.missing.' + value)");
 		when(brjs).runCommand("check-i18n", "app1");
 		then(logging).containsConsoleText("\n" + "For the locale en, app1 has no translations defined for the following tokens:" + "\n",
-						"appns.bs.b1.missing.*");
+						"appns.bs.b1.missing.* a token beginning with this prefix could not be found");
 	}
 }
