@@ -6,12 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -84,6 +79,7 @@ public class RestApiServlet extends HttpServlet
 	private BRJS brjs;
 	private Logger logger;
 	private ConcurrentMap<String, Lock> applicationLockMap = null; 
+	private List<String> allowedIPs;
 
 	public RestApiServlet()
 	{
@@ -100,6 +96,15 @@ public class RestApiServlet extends HttpServlet
 		try {
 			context = config.getServletContext();
 			
+			if (config.getInitParameter("allowedIPs") == null)
+			{
+				allowedIPs = Collections.singletonList("127.0.0.1");
+			}
+			else
+			{
+				allowedIPs = Arrays.asList(config.getInitParameter("allowedIPs").split(";"));
+			}
+
 			File contextDir = new File( context.getRealPath("/") );
 			brjs = ThreadSafeStaticBRJSAccessor.initializeModel( contextDir, contextDir );
 			
@@ -127,6 +132,11 @@ public class RestApiServlet extends HttpServlet
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException
 	{
+		if (!requestHasAllowedIP(request)) {
+			send403Response(response);
+			return;
+		}
+
 		boolean responseHandled = false;
 		String serviceResponse = "";
 		String requestPath = getRequestPath(request);
@@ -204,6 +214,11 @@ public class RestApiServlet extends HttpServlet
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException
 	{
+		if (!requestHasAllowedIP(request)) {
+			send403Response(response);
+			return;
+		}
+
 		boolean responseHandled = false;
 		String serviceResponse = "";
 		try
@@ -333,6 +348,11 @@ public class RestApiServlet extends HttpServlet
 		{
 			send404Response(request.getRequestURL().toString(),response);
 		}
+	}
+
+	private boolean requestHasAllowedIP(HttpServletRequest request)
+	{
+		return allowedIPs.contains(request.getRemoteAddr());
 	}
 
 	private Lock getAppLock(String appName) {
@@ -478,4 +498,15 @@ public class RestApiServlet extends HttpServlet
 		response.getOutputStream().println(jsonBody);
 	}
 	
+	private void send403Response(HttpServletResponse response) throws IOException
+	{
+		Map<String,String> responseMap = new LinkedHashMap<String,String>();
+		responseMap.put("cause", "This IP is not allowed to perform this action.");
+
+		String jsonBody = new Gson().toJson(responseMap);
+
+		response.setStatus(403);
+		response.getOutputStream().println(jsonBody);
+	}
+
 }
