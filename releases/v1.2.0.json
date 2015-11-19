@@ -1,5 +1,5 @@
 {
-    "milestone": "*.*.*",
-    "name": "BladeRunnerJS *.*.*",
+    "milestone": "1.2.0",
+    "name": "BladeRunnerJS 1.2.0",
     "prerelease": false
 }

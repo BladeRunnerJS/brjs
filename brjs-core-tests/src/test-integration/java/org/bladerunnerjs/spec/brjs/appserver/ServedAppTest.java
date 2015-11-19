@@ -32,6 +32,7 @@ public class ServedAppTest extends SpecTest
 	StringBuffer response = new StringBuffer();
 	DirNode sdkLibsDir;
 	private Aspect anotherAspect;
+	private Aspect anotherAspectWithSpace;
 	private Bladeset bladeset;
 	private Aspect defaultAspect;
 	private App appWithDefaultAspect;
@@ -55,6 +56,7 @@ public class ServedAppTest extends SpecTest
 			appWithDefaultAspect = brjs.app("anotherApp");
 			defaultAspect = appWithDefaultAspect.defaultAspect();
 			anotherAspect = app.aspect("another");
+			anotherAspectWithSpace = app.aspect("another-space");
 			systemAspect = systemApp.defaultAspect();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
@@ -154,7 +156,19 @@ public class ServedAppTest extends SpecTest
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/another", "/app/another/");
 	}
-	
+
+	@Test
+	public void localeForwarderPageOfANonDefaultAspectWithSpaceCanBeAccessedWithoutEndingInForwardSlash() throws Exception
+	{
+		given(app).hasBeenPopulated("default")
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(anotherAspectWithSpace).hasBeenPopulated()
+				.and(appServer).started();
+		then(appServer).requestIs302Redirected("/app/another-space", "/app/another-space/");
+	}
+
 	@Test
 	public void localeRequestsAreOnlyRedirectedIfTheyAreValidModelRequests() throws Exception
 	{
