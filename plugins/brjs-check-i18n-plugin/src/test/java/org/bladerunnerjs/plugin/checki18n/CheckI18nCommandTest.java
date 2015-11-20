@@ -253,4 +253,24 @@ public class CheckI18nCommandTest extends SpecTest
 		then(logging).containsConsoleText("\n" + "For the locale de, app1 has no translations defined for the following tokens:" + "\n",
 										"appns.missingtoken");		
 	}
+	
+	@Test
+	public void testCommandGeneratesCSVFileWithCorrectContents() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: app1\nlocales: en_GB, de_DE")
+			.and(aspect).indexPageHasContent("<p>@{appns.missingtoken}</p>")
+			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.property=english words")
+			.and(aspect).containsResourceFileWithContents("de_DE.properties", "appns.property=german words");	
+		when(brjs).runCommand("check-i18n", "app1");
+		then(brjs).hasDir("generated/CheckI18nCommand")
+			.and(brjs).hasFile("generated/CheckI18nCommand/app1-tokens.csv")
+			.and(brjs).fileHasContents("generated/CheckI18nCommand/app1-tokens.csv", "Token,de,en,IsUsed",
+																"appns.missingtoken,,,true",
+																"appns.property,german words,english words,false",
+																"** the 'used' column only relates to tokens which have been used"
+																+ " in their entirety and will not include tokens which are concatentated");
+	}
+	
 }

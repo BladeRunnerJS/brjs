@@ -1,6 +1,10 @@
 package org.bladerunnerjs.plugin.checki18n;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,10 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
@@ -31,6 +38,7 @@ import org.bladerunnerjs.api.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.plugin.JSAPArgsParsingCommandPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.plugin.commands.standard.BuildAppCommand.Messages;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -42,6 +50,7 @@ import org.bladerunnerjs.api.logging.Logger;
 public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	
 	public class Messages {
+		public static final String APP_CHECK_I18N_CONSOLE_MSG = "I18N tokens for the app '%s' available at '%s'";
 		public static final String APP_DOES_NOT_EXIST_EXCEPTION = "The app '%s' does not exist";
 		public static final String NO_LOCALE_FOR_APP = "The app specified does not contain a default locale";
 	}
@@ -49,6 +58,8 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	private BRJS brjs;
 	private Logger logger;
 	private String locale;
+	boolean missingTokensExist = false;
+	private TreeMap<String, HashMap<String, String>> allExistingTokens = new TreeMap<String, HashMap<String, String>>();
 	private HashMap<String, Set<String>> missingTokensMap = new HashMap<String, Set<String>>();
 	private Locale[] appLocales;
 	private Pattern I18N_HTML_XML_TOKEN_PATTERN = Pattern.compile("@\\{(.*?)\\}");
@@ -62,7 +73,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the application to search for missing translations"));
-		argsParser.registerParameter(new UnflaggedOption("locale").setDefault("All").setHelp("the locale used to search tokens"));	
+		argsParser.registerParameter(new UnflaggedOption("locale").setDefault("All").setHelp("the locale used to search tokens"));
 	}	
 
 	@Override
@@ -76,7 +87,8 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		locale = parsedArgs.getString("locale");
 				
 		listMissingTokens(appName);
-		return 0;
+		generateAllTranslationsCSV(appName);
+		return missingTokensExist ? -1 : 0;
 	}
 	
 	private void listMissingTokens(String appName) throws CommandArgumentsException {		
@@ -98,6 +110,49 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		}
 	}
 
+	private void generateAllTranslationsCSV(String appName) {	
+		logger.println("\ngenerating CSV\n");
+		
+		TreeSet<String> localeNames = new TreeSet<String>();
+		for(Locale locale : appLocales ){
+			localeNames.add(locale.getLanguageCode());
+		}
+				
+		List<String> headings = new ArrayList<String>();
+		headings.add("Token");
+		for(String localeName : localeNames){
+			headings.add(localeName);
+		}
+		headings.add("IsUsed");
+		
+		List<List<String>> rows = new ArrayList<List<String>>();
+		rows.add(headings);
+		
+		for(Entry<String, HashMap<String, String>> translationMap : allExistingTokens.entrySet()){
+			List<String> newEntry = new ArrayList<String>();
+			newEntry.add(translationMap.getKey());
+			for(String localeName : localeNames){
+				newEntry.add(translationMap.getValue().get(localeName));
+			}
+			newEntry.add(translationMap.getValue().get("used"));
+			rows.add(newEntry);
+		}
+		
+		File file = brjs.storageFile(this.getClass().getSimpleName(), appName + "-tokens.csv" );
+		file.getParentFile().mkdirs();
+		
+		try(Writer writer = new BufferedWriter(new FileWriter(file));) {
+			for(List<String> row : rows){
+				writer.append(StringUtils.join(row, ",")+"\n");
+			}
+			writer.append("** the 'used' column only relates to tokens which have been used in their entirety"
+				+ " and will not include tokens which are concatentated");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.println(Messages.APP_CHECK_I18N_CONSOLE_MSG, appName, file.getAbsolutePath());		
+	}		
+		
 	private void logMissingLocalesToConsole(String appName, String localeToBeChecked, Entry<String, Set<String>> tokensList) {
 		String missingTokensMessage = tokensList.getValue().size() == 0 ? " has no missing translations" : " has no translations defined for the following tokens:";
 		String firstLogLine = "\n" + "For the locale " + tokensList.getKey() + ", " + appName + missingTokensMessage + "\n";
@@ -196,19 +251,48 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 				tokenIsNotComplete = i18nTokenMatcher.group(2) != null && i18nTokenMatcher.group(2).indexOf('+') != -1;
 				propertiesFileContainPartialMatch = mapContainsPartialToken(propertiesMap, i18nTokenMatcher.group(1)) && tokenIsNotComplete;
 			}
-			String i18nKey = i18nTokenMatcher.group(1).toLowerCase();
+			String i18nKey = i18nTokenMatcher.group(1).toLowerCase();			
 			String keyReplacement = propertiesMap.get(i18nKey);
 			if (keyReplacement == null && !propertiesFileContainPartialMatch) {				
 				String missingToken = tokenIsNotComplete ? i18nKey + "* a token beginning with this prefix could not be found" : i18nKey;
-				missingTokens.add(missingToken);
+				missingTokens.add(missingToken);	
+				populateAllTokensMap(localeCode, i18nKey, "", true);
+				missingTokensExist = true;
+			}
+			else if (keyReplacement != null) {
+				populateAllTokensMap(localeCode, i18nKey, keyReplacement, true);
 			}
 		}
-		if(missingTokensMap.get(localeCode) == null){
+		if(!missingTokensMap.containsKey(localeCode)){
 			missingTokensMap.put(localeCode, missingTokens);
 		}
 		else{
 			missingTokensMap.get(localeCode).addAll(missingTokens);
 		}
+		
+		addUnusedTokensToAllTokensMap(propertiesMap, localeCode);		
+	}
+
+	private void addUnusedTokensToAllTokensMap(Map<String, String> propertiesMap, String localeCode) {
+		for (Map.Entry<String, String> i18nPair : propertiesMap.entrySet())
+		{
+			String i18nKey = i18nPair.getKey();
+			String translation = i18nPair.getValue();
+			
+			if(!allExistingTokens.containsKey(i18nKey)){
+				populateAllTokensMap(localeCode, i18nKey, translation, false);					
+			}
+			allExistingTokens.get(i18nKey).put(localeCode, translation);
+		}
+	}
+
+	private void populateAllTokensMap(String localeCode, String i18nKey, String keyReplacement, Boolean isUSed) {
+		if(!allExistingTokens.containsKey(i18nKey)){
+			HashMap<String, String> translations = new HashMap<String, String>();					
+			allExistingTokens.put(i18nKey, translations);
+		}
+		allExistingTokens.get(i18nKey).put("used", isUSed.toString());
+		allExistingTokens.get(i18nKey).put(localeCode, keyReplacement);
 	}
 
 	private boolean mapContainsPartialToken(Map<String, String> propertiesMap, String partialToken) {
