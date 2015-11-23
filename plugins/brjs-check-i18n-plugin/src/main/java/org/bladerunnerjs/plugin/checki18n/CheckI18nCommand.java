@@ -132,7 +132,9 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 			List<String> newEntry = new ArrayList<String>();
 			newEntry.add(translationMap.getKey());
 			for(String localeName : localeNames){
-				newEntry.add(translationMap.getValue().get(localeName));
+				String translation = translationMap.getValue().get(localeName);
+				String translationWithoutCommas = translation instanceof String ? translation.replaceAll(",", "(comma)") : "";
+				newEntry.add(translationWithoutCommas);
 			}
 			newEntry.add(translationMap.getValue().get("used"));
 			rows.add(newEntry);
@@ -142,11 +144,11 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		file.getParentFile().mkdirs();
 		
 		try(Writer writer = new BufferedWriter(new FileWriter(file));) {
+			writer.append("** the 'IsUsed' column only relates to tokens identified in their entirety and"
+					+ " will not include tokens which are concatentated e.g. i18n('a.token.' + value);\n");
 			for(List<String> row : rows){
 				writer.append(StringUtils.join(row, ",")+"\n");
-			}
-			writer.append("** the 'used' column only relates to tokens which have been used in their entirety"
-				+ " and will not include tokens which are concatentated");
+			}			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

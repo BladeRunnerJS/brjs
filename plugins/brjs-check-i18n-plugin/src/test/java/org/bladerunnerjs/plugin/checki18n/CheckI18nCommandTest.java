@@ -266,11 +266,12 @@ public class CheckI18nCommandTest extends SpecTest
 		when(brjs).runCommand("check-i18n", "app1");
 		then(brjs).hasDir("generated/CheckI18nCommand")
 			.and(brjs).hasFile("generated/CheckI18nCommand/app1-tokens.csv")
-			.and(brjs).fileHasContents("generated/CheckI18nCommand/app1-tokens.csv", "Token,de,en,IsUsed",
+			.and(brjs).fileHasContents("generated/CheckI18nCommand/app1-tokens.csv", "** the 'IsUsed' column only relates to tokens identified"
+																+ " in their entirety and will not include tokens which are concatentated e.g. i18n('a.token.' + value);",
+																"Token,de,en,IsUsed",
 																"appns.missingtoken,,,true",
-																"appns.property,german words,english words,false",
-																"** the 'used' column only relates to tokens which have been used"
-																+ " in their entirety and will not include tokens which are concatentated");
+																"appns.property,german words,english words,false\n"
+																);
 	}
 	
 }
