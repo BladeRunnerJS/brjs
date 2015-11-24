@@ -78,7 +78,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 
 	@Override
 	public String getCommandDescription() {
-		return "Show missing i18n translations for a given application/locale.";
+		return "Shows missing i18n translations for a given application/locale and generates a CSV file with all results.";
 	}
 
 	@Override
