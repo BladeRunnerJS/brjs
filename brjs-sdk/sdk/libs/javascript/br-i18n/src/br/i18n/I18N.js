@@ -19,6 +19,10 @@ I18N.create = function(translator) {
 	* @see {@link br/i18n/Translator:#getMessage}
 	*/
 	var i18n = function(thingToFormat, mTemplateArgs) {
+		if(typeof thingToFormat !== "string" || thingToFormat === ""){
+			return thingToFormat;
+		}
+
 		return translator.getMessage(thingToFormat, mTemplateArgs);
 	};
 
