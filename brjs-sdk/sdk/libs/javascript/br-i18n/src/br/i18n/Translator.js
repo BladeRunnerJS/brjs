@@ -386,6 +386,10 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 	token = token.toLowerCase();
 
 	if (!this.tokenExists(token)) {
+		if (typeof window.console === "undefined") {
+			window.console = {};
+			window.console.warn = function(){};
+		}
 		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
 		logConsole.warn('Unable to find a replacement for the i18n key "' + token + '"');
 	}
