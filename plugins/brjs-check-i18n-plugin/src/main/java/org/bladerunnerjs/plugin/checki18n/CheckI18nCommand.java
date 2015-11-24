@@ -145,7 +145,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		
 		try(Writer writer = new BufferedWriter(new FileWriter(file));) {
 			writer.append("** the 'IsUsed' column only relates to tokens identified in their entirety and"
-					+ " will not include tokens which are concatentated e.g. i18n('a.token.' + value);\n");
+					+ " will not include tokens which are concatenated e.g. i18n('a.token.' + value);\n");
 			for(List<String> row : rows){
 				writer.append(StringUtils.join(row, ",")+"\n");
 			}			
