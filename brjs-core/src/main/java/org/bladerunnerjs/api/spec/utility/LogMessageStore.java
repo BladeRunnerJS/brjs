@@ -307,7 +307,7 @@ public class LogMessageStore
 	private void verifyNoLogMessage(String logLevel, List<LogMessage> messages, LogMessage logMessage)
 	{
 		LogMessage foundMessage = findFirstMessageMatching(messages, logMessage.message, null);
-		assertNull( String.format("found log message, expected not to", logLevel, logMessage.message) , foundMessage );
+		assertNull( "found log message, expected not to. Log level: " + logLevel + ", message: " + logMessage.message, foundMessage );
 	}
 
 	private String concatenateMessages(List<LogMessage> messages)
