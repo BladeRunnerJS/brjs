@@ -297,7 +297,7 @@ public class WatchingFileModificationObserverThreadTest
 			checkForUpdates(1);
 			boolean foundFileChange = (mustBeIndex0) ? fileChanges.indexOf(expectedFile) == 0 : fileChanges.contains(expectedFile);
 			if (fileChanges.size() > 0 && foundFileChange) {
-				fileChanges.remove(foundFileChange);
+				fileChanges.remove(expectedFile);
 				return true;
 			}
 			Thread.sleep(THREAD_SLEEP_INTEVAL);
