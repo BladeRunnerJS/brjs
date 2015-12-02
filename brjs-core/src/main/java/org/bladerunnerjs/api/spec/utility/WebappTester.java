@@ -65,7 +65,7 @@ public class WebappTester
 		
 		try {
 			this.defaultSocketTimeout = defaultSocketTimeout;
-			this.defaultSocketTimeout = defaultConnectionTimeout;
+			this.defaultConnectionTimeout = defaultConnectionTimeout;
 			defaultFileCharacterEncoding = brjs.bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
