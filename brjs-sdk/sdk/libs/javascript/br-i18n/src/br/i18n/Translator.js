@@ -387,7 +387,9 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 
 	if (!this.tokenExists(token)) {
 		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
-		logConsole.warn('Unable to find a replacement for the i18n key "' + token + '"');
+		if (logConsole && logConsole.warn) {
+		    logConsole.warn('Unable to find a replacement for the i18n key "' + token + '"');
+		}
 	}
 
 	var message = this.messages[token];
