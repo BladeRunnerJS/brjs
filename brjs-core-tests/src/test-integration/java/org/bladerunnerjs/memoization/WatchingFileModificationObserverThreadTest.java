@@ -241,15 +241,7 @@ public class WatchingFileModificationObserverThreadTest
 		verifyNoMoreInteractions(mockWatchKeyService);
 	}
 	
-	
-	
-	
-	/*
-	 * #### The following 2 tests are Ignored because they are unreliable on Travis and Linux ####
-	 * TODO: investigate the unreliability
-	 */
-	
-	@Test @Ignore // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
+	@Test
 	public void usingTheRealWatchServiceDetectsFileChanges() throws Exception {
 		modificationWatcherThread = new WatchingFileModificationObserverThread(mockBrjs, new WatchKeyServiceFactory());
 		
@@ -262,7 +254,7 @@ public class WatchingFileModificationObserverThreadTest
 		}
 	}
 	
-	@Test @Ignore // we use the package private methods on FileModificationWatcherThread here to avoid having a multithreaded test
+	@Test
 	public void usingTheRealWatchServiceDetectsFileNestedChanges() throws Exception {
 		modificationWatcherThread = new WatchingFileModificationObserverThread(mockBrjs, new WatchKeyServiceFactory());
 		
