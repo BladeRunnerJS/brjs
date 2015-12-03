@@ -251,7 +251,7 @@ public class WebappTester
 	
 	public WebappTester redirectUrlIs(String redirectPath)
 	{
-		httpResponse.getFirstHeader("Location").equals(redirectPath);
+		assertThat("Location " + httpResponse.getFirstHeader("Location") + " does not end with " + redirectPath, httpResponse.getFirstHeader("Location").toString().endsWith(redirectPath));
 		return this;
 	}
 	
