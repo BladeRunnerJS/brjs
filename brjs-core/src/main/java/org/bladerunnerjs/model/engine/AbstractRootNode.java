@@ -86,13 +86,6 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
-	public void clearRegisteredNode(Node node) {
-		String normalizedPath = node.dir().getAbsolutePath();
-		List<Node> nodesForPath = nodeCache.get(normalizedPath);
-		nodesForPath.remove(node);
-	}
-	
-	@Override
 	public List<Node> getRegisteredNodes(MemoizedFile childPath)
 	{
 		String normalizedPath = childPath.getAbsolutePath();
