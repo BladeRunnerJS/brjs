@@ -7,10 +7,9 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractRequirePlugin;
 import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
-import org.bladerunnerjs.plugin.plugins.require.ServiceDataSourceModule;
 
 
-public class AliasDataRequirePlugin extends AbstractRequirePlugin implements RequirePlugin
+public class ServiceDataRequirePlugin extends AbstractRequirePlugin implements RequirePlugin
 {
 	
 	private RequirePlugin defaultRequirePlugin;
@@ -24,14 +23,14 @@ public class AliasDataRequirePlugin extends AbstractRequirePlugin implements Req
 	@Override
 	public String getPluginName()
 	{
-		return "service";
+		return "alias";
 	}
 
 	@Override
 	public Asset getAsset(BundlableNode bundlableNode, String requirePathSuffix) throws RequirePathException
 	{
 		String requirePath = getPluginName()+"!"+requirePathSuffix;
-		if (requirePath.equals(ServiceDataSourceModule.PRIMARY_REQUIRE_PATH)) {
+		if (requirePath.equals(AliasDataSourceModule.PRIMARY_REQUIRE_PATH)) {
 			return bundlableNode.asset(requirePath);
 		}
 		return defaultRequirePlugin.getAsset(bundlableNode, requirePath);
