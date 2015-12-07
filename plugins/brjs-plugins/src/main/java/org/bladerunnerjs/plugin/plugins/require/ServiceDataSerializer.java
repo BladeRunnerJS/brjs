@@ -24,7 +24,7 @@ public class ServiceDataSerializer
 	{
 		final String sourceModuleJsonSeparator = ",\n";
 		
-		StringBuffer output = new StringBuffer();
+		StringBuilder output = new StringBuilder();
 		
 		List<AliasDefinition> aliasDefinitions = getAliasDefinitions(bundleSet);
 		BundlableNode bundlableNode = bundleSet.bundlableNode();
@@ -39,8 +39,10 @@ public class ServiceDataSerializer
 			}
 			
 			SourceModule serviceSourceModule = (SourceModule) asset;
-			addSourceModuleData(output, bundlableNode, aliasDefinitions, serviceSourceModule);
-			output.append(sourceModuleJsonSeparator);
+			boolean wroteData = addSourceModuleData(output, bundlableNode, aliasDefinitions, serviceSourceModule);
+			if (wroteData) {
+				output.append(sourceModuleJsonSeparator);
+			}
 		}
 		if (output.length() > 0) {
 			output.setLength( output.length() - sourceModuleJsonSeparator.length() ); // remove the final separator that was added above
@@ -49,7 +51,7 @@ public class ServiceDataSerializer
 		return "{ }";	
 	}
 
-	private static void addSourceModuleData(StringBuffer output, BundlableNode bundlableNode, List<AliasDefinition> aliasDefinitions, SourceModule serviceSourceModule) throws ModelOperationException
+	private static boolean addSourceModuleData(StringBuilder output, BundlableNode bundlableNode, List<AliasDefinition> aliasDefinitions, SourceModule serviceSourceModule) throws ModelOperationException
 	{
 		SourceModule resolvedServiceSourceModule = resolveService(aliasDefinitions, serviceSourceModule, bundlableNode);
 		if (resolvedServiceSourceModule != null) {
@@ -60,9 +62,9 @@ public class ServiceDataSerializer
 			"		\"dependencies\": [%s]\n"+
 			"	}", serviceSourceModule.getPrimaryRequirePath(), resolvedServiceSourceModule.getPrimaryRequirePath(), stringifyDependantAssets(dependantAssets) 
 			) );
-		} else {
-			System.err.println(serviceSourceModule.getAssetPath());
+    		return true;
 		}
+		return false;
 	}
 	
 	private static Object stringifyDependantAssets(List<Asset> dependantAssets)
@@ -90,7 +92,7 @@ public class ServiceDataSerializer
 		for (AliasDefinition aliasDefinition : aliasDefinitions) {
 			String serviceRequireSuffix = serviceSourceModule.getPrimaryRequirePath().replaceFirst("service!", "");
 			
-			if (aliasDefinition.getName().equals(serviceRequireSuffix)) {
+			if (aliasDefinition.getRequirePath() != null && aliasDefinition.getName().equals(serviceRequireSuffix)) {
 				Asset asset =  bundlableNode.asset(aliasDefinition.getRequirePath());
 				if (asset instanceof SourceModule) {
 					return (SourceModule) asset;
