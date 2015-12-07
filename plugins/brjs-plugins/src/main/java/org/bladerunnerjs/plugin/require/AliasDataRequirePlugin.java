@@ -6,7 +6,6 @@ import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractRequirePlugin;
-import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 import org.bladerunnerjs.plugin.plugins.require.ServiceDataSourceModule;
 
 

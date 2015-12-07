@@ -1,12 +1,12 @@
 package org.bladerunnerjs.plugin.plugins.require;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
@@ -27,7 +27,6 @@ public class ServiceDataSerializer
 		StringBuilder output = new StringBuilder();
 		
 		List<AliasDefinition> aliasDefinitions = getAliasDefinitions(bundleSet);
-		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		List<Asset> serviceAssets = bundleSet.assets("service!");
 		for (Asset asset : serviceAssets) {
 			
@@ -39,7 +38,7 @@ public class ServiceDataSerializer
 			}
 			
 			SourceModule serviceSourceModule = (SourceModule) asset;
-			boolean wroteData = addSourceModuleData(output, bundlableNode, aliasDefinitions, serviceSourceModule);
+			boolean wroteData = addSourceModuleData(output, bundleSet, aliasDefinitions, serviceSourceModule);
 			if (wroteData) {
 				output.append(sourceModuleJsonSeparator);
 			}
@@ -51,11 +50,11 @@ public class ServiceDataSerializer
 		return "{ }";	
 	}
 
-	private static boolean addSourceModuleData(StringBuilder output, BundlableNode bundlableNode, List<AliasDefinition> aliasDefinitions, SourceModule serviceSourceModule) throws ModelOperationException
+	private static boolean addSourceModuleData(StringBuilder output, BundleSet bundleSet, List<AliasDefinition> aliasDefinitions, SourceModule serviceSourceModule) throws ModelOperationException
 	{
-		SourceModule resolvedServiceSourceModule = resolveService(aliasDefinitions, serviceSourceModule, bundlableNode);
+		SourceModule resolvedServiceSourceModule = resolveService(aliasDefinitions, serviceSourceModule, bundleSet);
 		if (resolvedServiceSourceModule != null) {
-			List<Asset> dependantAssets = resolvedServiceSourceModule.getDependentAssets(bundlableNode);
+			List<Asset> dependantAssets = resolvedServiceSourceModule.getDependentAssets(bundleSet.bundlableNode());
     		output.append( String.format(
 			"	\"%s\": {\n"+
 			"		\"requirePath\": \"%s\",\n"+
@@ -87,15 +86,19 @@ public class ServiceDataSerializer
 		return "\n"+StringUtils.join(assetStrings, ",\n")+"\n		"; // whitespace is intentional so we can output well formatted JSON
 	}
 
-	private static SourceModule resolveService(List<AliasDefinition> aliasDefinitions, SourceModule serviceSourceModule, BundlableNode bundlableNode)
+	private static SourceModule resolveService(List<AliasDefinition> aliasDefinitions, SourceModule serviceSourceModule, BundleSet bundleSet)
 	{
 		for (AliasDefinition aliasDefinition : aliasDefinitions) {
 			String serviceRequireSuffix = serviceSourceModule.getPrimaryRequirePath().replaceFirst("service!", "");
 			
 			if (aliasDefinition.getRequirePath() != null && aliasDefinition.getName().equals(serviceRequireSuffix)) {
-				Asset asset =  bundlableNode.asset(aliasDefinition.getRequirePath());
-				if (asset instanceof SourceModule) {
-					return (SourceModule) asset;
+				// TODO: there's no way to get a single Asset matching a given require path, only those that match a 'prefix'
+				List<Asset> matchingAssets = bundleSet.assets(Arrays.asList(SourceModule.class), aliasDefinition.getRequirePath());
+				if (matchingAssets.size() > 0) {
+					Asset asset = matchingAssets.get(0);
+					if (asset instanceof SourceModule && !asset.getPrimaryRequirePath().equals(AliasDefinition.UNKNOWN_CLASS_REQUIRE_PATH)) {
+						return (SourceModule) asset;
+					}
 				}
 			}
 		}

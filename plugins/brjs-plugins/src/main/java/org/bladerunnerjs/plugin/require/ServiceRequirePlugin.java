@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractRequirePlugin;

@@ -17,10 +17,12 @@ public class ServiceDataTest extends SpecTest
 
 	private App app;
 	private Aspect aspect;
+	private SdkJsLib lib;
 	private SdkJsLib servicesLib;
 	private AliasesFileBuilder aspectAliasesFile;
 	private StringBuffer response = new StringBuffer();
 	private AliasDefinitionsFileBuilder aspectAliasDefinitionsFile;
+	private AliasDefinitionsFileBuilder libAliasDefinitionsFile;
 
 	@Before
 	public void initTestObjects() throws Exception
@@ -31,9 +33,11 @@ public class ServiceDataTest extends SpecTest
 			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
 		aspect = app.defaultAspect();
+		lib = brjs.sdkLib("lib");
 		
 		aspectAliasesFile = new AliasesFileBuilder(this, aliasesFile(aspect));
 		aspectAliasDefinitionsFile = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(aspect, "resources"));
+		libAliasDefinitionsFile = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(lib, "resources"));
 		
 		servicesLib = brjs.sdkLib("ServicesLib");
 		given(servicesLib).containsFileWithContents("br-lib.conf", "requirePrefix: br")
@@ -76,7 +80,7 @@ public class ServiceDataTest extends SpecTest
 	}
 	
 	@Test
-	public void serviceDataListsASingleUsedService_whenServiceDefinedViaAliases() throws Exception {
+	public void serviceDataListsASingleUsedService_whenServiceDefinedViaAspectAliases() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
 			.and(aspect).classRequires("App", "service!some-service")
 			.and(aspect).hasClass("ServiceClass")
@@ -90,7 +94,7 @@ public class ServiceDataTest extends SpecTest
 	}
 	
 	@Test
-	public void serviceDataListsASingleUsedService_whenServiceDefinedViaAliaseDefinitions() throws Exception {
+	public void serviceDataListsASingleUsedService_whenServiceDefinedViaAspectAliasDefinitions() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
 			.and(aspect).classRequires("App", "service!some-service")
 			.and(aspect).hasClass("ServiceClass")
@@ -104,7 +108,7 @@ public class ServiceDataTest extends SpecTest
 	}
 	
 	@Test
-	public void serviceDataListsAllServices_whenServiceDefinedViaAliases() throws Exception {
+	public void serviceDataListsAllServices_whenServiceDefinedViaAspectAliases() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
 			.and(aspect).classFileHasContent("App", "require('service!some-service'); require('service!another-service');")
 			.and(aspect).hasClass("ServiceClass")
@@ -127,7 +131,7 @@ public class ServiceDataTest extends SpecTest
 	}
 	
 	@Test
-	public void serviceDataListsAllServices_whenServiceDefinedViaAliaseDefinitions() throws Exception {
+	public void serviceDataListsAllServices_whenServiceDefinedViaAspectAliasDefinitions() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
 			.and(aspect).classFileHasContent("App", "require('service!some-service'); require('service!another-service');")
 			.and(aspect).hasClass("ServiceClass")
@@ -150,7 +154,7 @@ public class ServiceDataTest extends SpecTest
 	}
 	
 	@Test
-	public void serviceDataListsAServicesServiceDependencies_whenServiceDefinedViaAliases() throws Exception {
+	public void serviceDataListsAServicesServiceDependencies_whenServiceDefinedViaAspectAliases() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
 			.and(aspect).classRequires("App", "service!some-service")
 			.and(aspect).classFileHasContent("ServiceClass", "require('service!dependent-service-1'); require('service!dependent-service-2'); require('service!dependent-service-3');")
@@ -189,7 +193,7 @@ public class ServiceDataTest extends SpecTest
 	}
 	
 	@Test
-	public void serviceDataListsAServicesServiceDependencies_whenServiceDefinedViaAliaseDefinitions() throws Exception {
+	public void serviceDataListsAServicesServiceDependencies_whenServiceDefinedViaAspectAliasDefinitions() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
 			.and(aspect).classRequires("App", "service!some-service")
 			.and(aspect).classFileHasContent("ServiceClass", "require('service!dependent-service-1'); require('service!dependent-service-2'); require('service!dependent-service-3');")
@@ -227,7 +231,20 @@ public class ServiceDataTest extends SpecTest
 		);
 	}
 
-
+	@Test
+	public void serviceDataListsASingleUsedService_whenServiceDefinedViaLibraryAliasDefinitions() throws Exception {
+		given(aspect).indexPageRequires("appns/App", "service!$data")
+			.and(aspect).classRequires("App", "service!lib.service")
+			.and(lib).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
+			.and(lib).hasClass("ServiceClass")
+			.and(libAliasDefinitionsFile).hasAlias("lib.service", "lib/ServiceClass");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsLines(
+			"module.exports = {",
+			"	\"service!lib.service\": {",
+			"		\"requirePath\": \"lib/ServiceClass\""
+		);
+	}
 	
 	
 }
