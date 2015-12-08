@@ -65,7 +65,7 @@ public class WebappTester
 		
 		try {
 			this.defaultSocketTimeout = defaultSocketTimeout;
-			this.defaultSocketTimeout = defaultConnectionTimeout;
+			this.defaultConnectionTimeout = defaultConnectionTimeout;
 			defaultFileCharacterEncoding = brjs.bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
@@ -251,7 +251,7 @@ public class WebappTester
 	
 	public WebappTester redirectUrlIs(String redirectPath)
 	{
-		httpResponse.getFirstHeader("Location").equals(redirectPath);
+		assertThat("Location " + httpResponse.getFirstHeader("Location") + " does not end with " + redirectPath, httpResponse.getFirstHeader("Location").toString().endsWith(redirectPath));
 		return this;
 	}
 	
