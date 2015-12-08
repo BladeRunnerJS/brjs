@@ -12,22 +12,23 @@ import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 public class DefineTimeDependencyGraphCreator {
-	public static Map<SourceModule, List<SourceModule>> createGraph(BundlableNode bundlableNode, Set<SourceModule> sourceModules, boolean isPreExport) throws ModelOperationException {
-		Map<SourceModule, List<SourceModule>> dependencyGraph = new LinkedHashMap<>();
+	public static Map<String, List<String>> createGraph(BundlableNode bundlableNode, Set<SourceModule> sourceModules, boolean isPreExport) throws ModelOperationException {
+		
+		Map<String, List<String>> dependencyGraph = new LinkedHashMap<>();
 		
 		for(SourceModule sourceModule : sourceModules) {
 			List<Asset> dependentAssets = (isPreExport) ? sourceModule.getPreExportDefineTimeDependentAssets(bundlableNode) : sourceModule.getPostExportDefineTimeDependentAssets(bundlableNode);
-			dependencyGraph.put(sourceModule, extractSourceModules(dependentAssets));
+			dependencyGraph.put(sourceModule.getPrimaryRequirePath(), extractSourceModules(dependentAssets));
 		}
 		
 		return dependencyGraph;
 	}
 	
-	private static List<SourceModule> extractSourceModules(List<Asset> assets){
-		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
+	private static List<String> extractSourceModules(List<Asset> assets){
+		List<String> sourceModules = new ArrayList<String>();
 		for(Asset asset : assets){
 			if(asset instanceof SourceModule){
-				sourceModules.add((SourceModule)asset);
+				sourceModules.add(asset.getPrimaryRequirePath());
 			}
 		}
 		return sourceModules;

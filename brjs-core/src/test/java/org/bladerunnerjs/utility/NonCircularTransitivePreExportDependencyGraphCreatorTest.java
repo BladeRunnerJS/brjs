@@ -2,10 +2,10 @@ package org.bladerunnerjs.utility;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Set;
-
+import java.util.List;
+import java.util.Map;
 import org.bladerunnerjs.api.SourceModule;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,9 +17,17 @@ public class NonCircularTransitivePreExportDependencyGraphCreatorTest {
 	private FakeSourceModule d = new FakeSourceModule("d");
 	
 	private DependencyGraph dependencyGraph(SourceModule... sourceModuleArray) throws Exception {
-		Set<SourceModule> sourceModules = new LinkedHashSet<>(Arrays.asList(sourceModuleArray));
-		return new DependencyGraph(NonCircularTransitivePreExportDependencyGraphCreator.createGraph(
-			DefineTimeDependencyGraphCreator.createGraph(null, sourceModules, true), DefineTimeDependencyGraphCreator.createGraph(null, sourceModules, false)));
+		Map<String,SourceModule> sourceModules = new LinkedHashMap<>();
+		for (SourceModule module : sourceModuleArray) {
+			sourceModules.put(module.getPrimaryRequirePath(), module);
+		}
+		
+		Map<String, List<String>> postExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(null, new LinkedHashSet<>(sourceModules.values()), false);
+		Map<String, List<String>> preExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(null, new LinkedHashSet<>(sourceModules.values()), true);
+		Map<String, List<String>> nonCircularTransitivePreExportDependencyGraph = NonCircularTransitivePreExportDependencyGraphCreator.createGraph(
+				sourceModules, preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
+		
+		return new DependencyGraph(nonCircularTransitivePreExportDependencyGraph);
 		
 	}
 	
