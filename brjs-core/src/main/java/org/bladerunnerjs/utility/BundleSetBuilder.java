@@ -65,7 +65,7 @@ public class BundleSetBuilder {
 			addBootstrapAndDependencies(bootstrappingSourceModules);
 		}
 		
-		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, new ArrayList<>(bootstrappingSourceModules.values()), new LinkedHashSet<>(sourceModules.values()));
+		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		List<Asset> assetList = orderAssetsByAssetContainer( new LinkedHashSet<>(assets.values()) );
 		
 		return new StandardBundleSet(bundlableNode, new ArrayList<>(seedAssets.values()), assetList, orderedSourceModules);

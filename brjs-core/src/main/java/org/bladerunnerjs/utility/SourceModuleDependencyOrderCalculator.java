@@ -1,6 +1,7 @@
 package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,45 +14,48 @@ import org.bladerunnerjs.api.model.exception.CircularDependencyException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 public class SourceModuleDependencyOrderCalculator {
-	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules) throws ModelOperationException {
-		Map<SourceModule, List<SourceModule>> sourceModuleDependencies = NonCircularTransitivePreExportDependencyGraphCreator.createGraph(
-			DefineTimeDependencyGraphCreator.createGraph(bundlableNode, unorderedSourceModules, true), DefineTimeDependencyGraphCreator.createGraph(bundlableNode, unorderedSourceModules, false));
-		Set<SourceModule> orderedSourceModules = new LinkedHashSet<>();
-		Set<SourceModule> metDependencies = new LinkedHashSet<>();		
+	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, Map<String,SourceModule> bootstrappingSourceModules, Map<String,SourceModule> unorderedSourceModules) throws ModelOperationException {
 		
-		for (SourceModule bootstrapModule : bootstrappingSourceModules) {
-			orderedSourceModules.add(bootstrapModule);
-			metDependencies.add(bootstrapModule);
-		}
+		Map<SourceModule, List<SourceModule>> preExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(bundlableNode, new LinkedHashSet<>(unorderedSourceModules.values()), true);
+		Map<SourceModule, List<SourceModule>> postExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(bundlableNode, new LinkedHashSet<>(unorderedSourceModules.values()), false);
+		Map<SourceModule, List<SourceModule>> sourceModuleDependencies = 
+				NonCircularTransitivePreExportDependencyGraphCreator.createGraph(preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
+		
+		Map<String,SourceModule> orderedSourceModules = new LinkedHashMap<>();
+		Set<String> metDependencies = new LinkedHashSet<>();		
+		
+		orderedSourceModules.putAll(bootstrappingSourceModules);
+		metDependencies.addAll(bootstrappingSourceModules.keySet());
 		
 		while (!unorderedSourceModules.isEmpty()) {
-			Set<SourceModule> unprocessedSourceModules = new LinkedHashSet<>();
+			Map<String,SourceModule> unprocessedSourceModules = new LinkedHashMap<>();
 			boolean progressMade = false;
 			
-			for(SourceModule sourceModule : unorderedSourceModules) {
+			for (String sourceModuleRequirePath : unorderedSourceModules.keySet()) {
+				SourceModule sourceModule = unorderedSourceModules.get(sourceModuleRequirePath);
 				if (dependenciesHaveBeenMet(sourceModuleDependencies.get(sourceModule), metDependencies)) {
 					progressMade = true;
-					orderedSourceModules.add(sourceModule);
-					metDependencies.add(sourceModule);
+					orderedSourceModules.put(sourceModuleRequirePath, sourceModule);
+					metDependencies.add(sourceModuleRequirePath);
 				}
 				else {
-					unprocessedSourceModules.add(sourceModule);
+					unprocessedSourceModules.put(sourceModuleRequirePath, sourceModule);
 				}
 			}
 			
 			if (!progressMade) {
-				throw new CircularDependencyException(bundlableNode, unprocessedSourceModules);
+				throw new CircularDependencyException(bundlableNode, new LinkedHashSet<>(unprocessedSourceModules.values()));
 			}
 			
 			unorderedSourceModules = unprocessedSourceModules;
 		}
 		
-		return new ArrayList<>(orderedSourceModules);
+		return new ArrayList<>(orderedSourceModules.values());
 	}
 	
-	private static boolean dependenciesHaveBeenMet(List<SourceModule> dependencies, Set<SourceModule> metDependencies) throws ModelOperationException {
+	private static boolean dependenciesHaveBeenMet(List<SourceModule> dependencies, Set<String> metDependencies) throws ModelOperationException {
 		for (LinkedAsset dependentSourceModule : dependencies) {
-			if(!metDependencies.contains(dependentSourceModule)) {
+			if(!metDependencies.contains(dependentSourceModule.getPrimaryRequirePath())) {
 				return false;
 			}
 		}
