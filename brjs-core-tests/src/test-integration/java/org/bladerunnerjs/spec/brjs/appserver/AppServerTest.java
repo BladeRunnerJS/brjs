@@ -102,7 +102,7 @@ public class AppServerTest extends SpecTest
 			.and(app1Conf).supportsLocales("en", "de");
 		when(appServer).started();
 		then(appServer).requestCanBeMadeFor("/app1")
-			.and(appServer).requestIs302Redirected("/","/dashboard")
+			.and(appServer).requestIs302Redirected("/","/dashboard/")
 			.and(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(BRJS.Messages.NO_APPS_DISCOVERED, "system")
 			.and(logging).infoMessageReceived(BRJS.Messages.APPS_DISCOVERED, "User", "app1")
@@ -201,7 +201,7 @@ public class AppServerTest extends SpecTest
 	public void rootContextRedirectsToDashboard() throws Exception
 	{
 		given(appServer).started();
-		then(appServer).requestIs302Redirected("/","/dashboard");
+		then(appServer).requestIs302Redirected("/","/dashboard/");
 	}
 	
 	@Test

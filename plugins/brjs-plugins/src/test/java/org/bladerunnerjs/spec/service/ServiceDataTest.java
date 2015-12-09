@@ -7,6 +7,7 @@ import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
 import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.*;
@@ -244,6 +245,47 @@ public class ServiceDataTest extends SpecTest
 			"	\"service!lib.service\": {",
 			"		\"requirePath\": \"lib/ServiceClass\""
 		);
+	}
+	
+	@Test @Ignore
+	public void serviceDataListsServicesUsedViaNamespacedJSCode() throws Exception {
+		given(aspect).indexPageRequires("appns/App", "service!$data")
+			.and(aspect).hasNamespacedJsPackageStyle()
+    		.and(aspect).classFileHasContent("App", "br.ServiceRegistry.getService('some-service');")
+    		.and(aspect).hasClass("ServiceClass")
+    		.and(aspectAliasesFile).hasAlias("some-service", "appns/ServiceClass");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsLines(
+    		"module.exports = {",
+    		"	\"service!some-service\": {",
+    		"		\"requirePath\": \"appns/ServiceClass\""
+    	);
+	}
+	
+	@Test
+	public void serviceDataListsServicesRequiredViaIndexPage() throws Exception {
+		given(aspect).indexPageHasContent("require('service!$data'); require('service!some-service');")
+    		.and(aspect).hasClass("ServiceClass")
+    		.and(aspectAliasesFile).hasAlias("some-service", "appns/ServiceClass");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsLines(
+    		"module.exports = {",
+    		"	\"service!some-service\": {",
+    		"		\"requirePath\": \"appns/ServiceClass\""
+    	);
+	}
+	
+	@Test
+	public void serviceDataListsServicesUsedViaIndexPage() throws Exception {
+		given(aspect).indexPageHasContent("require('service!$data'); br.ServiceRegistry.getService('some-service');")
+    		.and(aspect).hasClass("ServiceClass")
+    		.and(aspectAliasesFile).hasAlias("some-service", "appns/ServiceClass");
+    	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+    	then(response).containsLines(
+    		"module.exports = {",
+    		"	\"service!some-service\": {",
+    		"		\"requirePath\": \"appns/ServiceClass\""
+    	);
 	}
 	
 	
