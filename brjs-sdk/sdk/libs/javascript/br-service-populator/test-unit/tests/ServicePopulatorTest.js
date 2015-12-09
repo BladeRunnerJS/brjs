@@ -5,9 +5,10 @@ describe('service populator', function() {
 	var flag;
 	var ServiceA = require('br/servicepopulator/ServiceA');
 	var ServiceB = require('br/servicepopulator/ServiceB');
+	var ServicePopulator = require('br/servicepopulator/ServicePopulator');
 	var servicePopulator;
 
-	var serviceData = {
+	var mockServiceData = {
 		"serviceA": {
 			"dependencies": [],
 			"requirePath": "br/servicepopulator/ServiceA"
@@ -24,9 +25,7 @@ describe('service populator', function() {
 
 	beforeEach(function() {
 		flag = false;
-		var ServicePopulator = require('br/servicepopulator/ServicePopulator');
-		servicePopulator = new ServicePopulator(serviceData);
-		servicePopulator.populate();
+		servicePopulator = new ServicePopulator(mockServiceData);
 	});
 
 	afterEach(function() {
@@ -34,7 +33,9 @@ describe('service populator', function() {
 		serviceBox.services = {};
 	});
 
-	it('can retrieve services with no dependencies', function() {
+	it('populates the services with no dependencies correctly', function() {
+		servicePopulator.populate();
+
 		var serviceA;
 
 		runs(function() {
@@ -46,14 +47,16 @@ describe('service populator', function() {
 
 		waitsFor(function() {
 			return flag;
-		}, "The Value should be incremented", 500);
+		}, "The flag should be true", 500);
 
 		runs(function() {
 			expect(serviceA instanceof ServiceA).toBe(true);
 		});
 	});
 
-	it('can retrieve services with dependencies', function() {
+	it('populates the services with dependencies correctly', function() {
+		servicePopulator.populate();
+
 		var serviceB;
 
 		runs(function() {
@@ -65,14 +68,16 @@ describe('service populator', function() {
 
 		waitsFor(function() {
 			return flag;
-		}, "The Value should be incremented", 500);
+		}, "The flag should be true", 500);
 
 		runs(function() {
 			expect(serviceB instanceof ServiceB).toBe(true);
 		});
 	});
 
-	it('fails to return services not registered', function() {
+	it('fails to return unregistered services', function() {
+		servicePopulator.populate();
+
 		var unregisteredService;
 
 		runs(function() {
@@ -87,10 +92,40 @@ describe('service populator', function() {
 
 		waitsFor(function() {
 			return flag;
-		}, "The Value should be incremented", 500);
+		}, "The flag should be true", 500);
 
 		runs(function() {
 			expect(unregisteredService).toBe(undefined);
+		});
+	});
+
+	it('fails to return services when the dependencies have not been resolved', function() {
+		servicePopulator.populate();
+
+		var getServiceA = function() {
+			serviceBox.get("serviceA");
+			flag = true;
+		}
+
+		expect(getServiceA).toThrow();
+	});
+
+	it ('fails to return services when the populate method has not been called', function() {
+		var serviceA;
+
+		runs(function() {
+			serviceBox.resolve(["serviceA"]).then(function() {
+				serviceA = serviceBox.get("serviceA");
+				flag = true;
+			});
+		});
+
+		waitsFor(function() {
+			return flag;
+		}, "The flag should be true", 500);
+
+		runs(function() {
+			expect(serviceA).toBe(undefined);
 		});
 	});
 
