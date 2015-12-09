@@ -83,9 +83,9 @@ public class NamespacedJsSourceModule implements SourceModule {
 			
 			Reader[] readers = new Reader[] { 
 				new StringReader( String.format(defineBlockHeader, getPrimaryRequirePath()) ), 
-				getUnalteredContentReader(),
 				new StringReader( "\n" ),
-				new StringReader( "module.exports = " + getPrimaryRequirePath().replaceAll("/", ".") + ";" ),
+				getUnalteredContentReader(),
+				new StringReader( "if('" + getPrimaryRequirePath() + "'.split('/').reduce(function(prevVal, curVal) {return (prevVal) ? prevVal[curVal] : undefined}, window)) module.exports = " + getPrimaryRequirePath().replaceAll("/", ".") + ";" ),
 				new StringReader( requireAllInvocation ),
 				new StringReader(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER), 
 			};
