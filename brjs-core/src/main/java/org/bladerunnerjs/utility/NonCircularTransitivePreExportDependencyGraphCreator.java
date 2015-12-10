@@ -7,14 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 public class NonCircularTransitivePreExportDependencyGraphCreator {
 	
-	public static Map<String, List<String>> createGraph(Map<String,SourceModule> allSourceModules,
-			Map<String, List<String>> preExportDependencyGraph, Map<String, List<String>> postExportDependencyGraph) throws ModelOperationException {
-		
+	public static Map<String, List<String>> createGraph(Map<String, List<String>> preExportDependencyGraph, Map<String, List<String>> postExportDependencyGraph) throws ModelOperationException {
 		
 		Map<String, List<String>> combinedDefineTimeDependencyGraph = new LinkedHashMap<>();
 		
@@ -25,23 +22,21 @@ public class NonCircularTransitivePreExportDependencyGraphCreator {
 			combinedDefineTimeDependencyGraph.put(sourceModuleRequirePath, combinedDefineTimeDependencies);
 		}
 		
-		Map<String, List<String>> nonCircularPostExportDependencyGraph = nonCircularPostExportDependencies(allSourceModules, postExportDependencyGraph, combinedDefineTimeDependencyGraph);
+		Map<String, List<String>> nonCircularPostExportDependencyGraph = nonCircularPostExportDependencies(postExportDependencyGraph, combinedDefineTimeDependencyGraph);
 		
 		return growDependencyGraph(preExportDependencyGraph, nonCircularPostExportDependencyGraph);
 	}
 
-	private static Map<String, List<String>> nonCircularPostExportDependencies(Map<String,SourceModule> allSourceModules, Map<String, List<String>> postExportDependencyGraph, Map<String, List<String>> combinedDefineTimeDependencyGraph) {
+	private static Map<String, List<String>> nonCircularPostExportDependencies(Map<String, List<String>> postExportDependencyGraph, Map<String, List<String>> combinedDefineTimeDependencyGraph) {
 		
 		Map<String, List<String>> nonCircularPostExportDependencyGraph = new LinkedHashMap<>();
 		
-		for(String sourceModuleRequirePath : postExportDependencyGraph.keySet()) {
-			SourceModule sourceModule = allSourceModules.get(sourceModuleRequirePath);
+		for (String sourceModuleRequirePath : postExportDependencyGraph.keySet()) {
 			List<String> dependentSourceModules = postExportDependencyGraph.get(sourceModuleRequirePath);
 			List<String> nonCircularDependentSourceModules = new ArrayList<>();
 			
-			for(String dependentSourceModuleRequirePath : dependentSourceModules) {
-				SourceModule dependentSourceModule = allSourceModules.get(dependentSourceModuleRequirePath);
-				if (!reachable(dependentSourceModule, sourceModule, allSourceModules, combinedDefineTimeDependencyGraph, new LinkedHashSet<>())) {
+			for (String dependentSourceModuleRequirePath : dependentSourceModules) {
+				if (!reachable(dependentSourceModuleRequirePath, sourceModuleRequirePath, combinedDefineTimeDependencyGraph, new LinkedHashSet<>())) {
 					nonCircularDependentSourceModules.add(dependentSourceModuleRequirePath);
 				}
 			}
@@ -52,20 +47,18 @@ public class NonCircularTransitivePreExportDependencyGraphCreator {
 		return nonCircularPostExportDependencyGraph;
 	}
 
-	private static boolean reachable(SourceModule fromSourceModule, SourceModule toSourceModule, 
-			Map<String,SourceModule> allSourceModules, Map<String, List<String>> combinedDefineTimeDependencyGraph, Set<String> visitedSourceModules) {
+	private static boolean reachable(String fromSourceModuleRequirePath, String toSourceModuleRequirePath, Map<String, List<String>> combinedDefineTimeDependencyGraph, Set<String> visitedSourceModules) {
 		
-		for(String dependentSourceModuleRequirePath : combinedDefineTimeDependencyGraph.get(fromSourceModule.getPrimaryRequirePath())) {
-			SourceModule dependentSourceModule = allSourceModules.get(dependentSourceModuleRequirePath);
+		for(String dependentSourceModuleRequirePath : combinedDefineTimeDependencyGraph.get(fromSourceModuleRequirePath)) {
 			
-			if (dependentSourceModule.getPrimaryRequirePath().equals(toSourceModule.getPrimaryRequirePath())) {
+			if (dependentSourceModuleRequirePath.equals(toSourceModuleRequirePath)) {
 				return true;
 			}
 			
-			if(!visitedSourceModules.contains(dependentSourceModule.getPrimaryRequirePath())) {
-				visitedSourceModules.add(dependentSourceModule.getPrimaryRequirePath());
+			if(!visitedSourceModules.contains(dependentSourceModuleRequirePath)) {
+				visitedSourceModules.add(dependentSourceModuleRequirePath);
 				
-				if(reachable(dependentSourceModule, toSourceModule, allSourceModules, combinedDefineTimeDependencyGraph, visitedSourceModules)) {
+				if(reachable(dependentSourceModuleRequirePath, toSourceModuleRequirePath, combinedDefineTimeDependencyGraph, visitedSourceModules)) {
 					return true;
 				}
 			}

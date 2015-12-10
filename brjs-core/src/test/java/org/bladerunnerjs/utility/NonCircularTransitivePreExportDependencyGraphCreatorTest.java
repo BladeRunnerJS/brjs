@@ -24,7 +24,7 @@ public class NonCircularTransitivePreExportDependencyGraphCreatorTest {
 		Map<String, List<String>> postExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(null, sourceModules, false);
 		Map<String, List<String>> preExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(null, sourceModules, true);
 		Map<String, List<String>> nonCircularTransitivePreExportDependencyGraph = NonCircularTransitivePreExportDependencyGraphCreator.createGraph(
-				sourceModules, preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
+				preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
 		
 		return new DependencyGraph(nonCircularTransitivePreExportDependencyGraph);
 		

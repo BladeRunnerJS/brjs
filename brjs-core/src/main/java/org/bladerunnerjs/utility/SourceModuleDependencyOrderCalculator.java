@@ -20,7 +20,7 @@ public class SourceModuleDependencyOrderCalculator {
 		Map<String, List<String>> postExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(bundlableNode, allSourceModules.internalMap, false);
 		
 		Map<String, List<String>> sourceModuleDependencies = 
-				NonCircularTransitivePreExportDependencyGraphCreator.createGraph(allSourceModules.internalMap, preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
+				NonCircularTransitivePreExportDependencyGraphCreator.createGraph(preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
 		
 		Map<String,SourceModule> orderedSourceModules = new LinkedHashMap<>();
 		Set<String> metDependencies = new LinkedHashSet<>();		
