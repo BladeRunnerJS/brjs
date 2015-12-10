@@ -2,10 +2,8 @@ package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.api.Asset;
@@ -37,9 +35,9 @@ public class BundleSetBuilder {
 	public static final String INVALID_REQUIRE_MSG = "The class '%s' depends on the class '%s' which is outside of it's scope - this dependency should be broken using Services.";
 	
 	// use Maps rather than Lists and Sets so we're in control of what's used as the key rather than relying on #equals being implemented properly
-	private final Map<String,LinkedAsset> seedAssets = new LinkedHashMap<>();
-	private final Map<String,Asset> assets = new LinkedHashMap<>();
-	private final Map<String,SourceModule> sourceModules = new LinkedHashMap<>();
+	private final AssetMap<LinkedAsset> seedAssets = new AssetMap<>();
+	private final AssetMap<Asset> assets = new AssetMap<>();
+	private final AssetMap<SourceModule> sourceModules = new AssetMap<>();
 	private final Set<String> processedAssets = new LinkedHashSet<>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
@@ -59,7 +57,7 @@ public class BundleSetBuilder {
 			}
 		}
 		
-		Map<String,SourceModule> bootstrappingSourceModules = new LinkedHashMap<>();
+		AssetMap<SourceModule> bootstrappingSourceModules = new AssetMap<>();
 		if (!sourceModules.isEmpty())
 		{
 			addBootstrapAndDependencies(bootstrappingSourceModules);
@@ -82,7 +80,7 @@ public class BundleSetBuilder {
 	
 	
 	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
-		if (addToAssetMap(sourceModules, sourceModule)) {
+		if (sourceModules.put(sourceModule)) {
 			addLinkedAsset(sourceModule);
 		}
 	}
@@ -90,7 +88,7 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		if(processedAssets.add(linkedAsset.getPrimaryRequirePath())) {
 			if (linkedAsset.isRequirable()) {
-				addToAssetMap(assets, linkedAsset);
+				assets.put(linkedAsset);
 			}
 			
 			List<Asset> moduleDependencies = getModuleDependencies(linkedAsset);
@@ -112,7 +110,7 @@ public class BundleSetBuilder {
 				}
 				
 				if (dependantAsset.isRequirable()) {
-					addToAssetMap(assets, dependantAsset);
+					assets.put(dependantAsset);
 				}
 			}
 			
@@ -182,9 +180,9 @@ public class BundleSetBuilder {
 	
 	
 	private void addUnscopedAsset(LinkedAsset asset) throws ModelOperationException {
-		if (addToAssetMap(assets, asset)) {
+		if (assets.put(asset)) {
 			for (Asset dependentAsset : getModuleDependencies(asset)) {
-				addToAssetMap(assets, dependentAsset);
+				assets.put(dependentAsset);
 			}
 		}
 	}
@@ -200,12 +198,12 @@ public class BundleSetBuilder {
 	}
 	
 	
-	private void addAllSourceModuleDependencies(SourceModule sourceModule, Map<String,SourceModule> sourceModules) throws ModelOperationException
+	private void addAllSourceModuleDependencies(SourceModule sourceModule, AssetMap<SourceModule> sourceModules) throws ModelOperationException
 	{
 		addAllSourceModuleDependencies(sourceModule, sourceModules, new ArrayList<SourceModule>());
 	}
 	
-	private void addAllSourceModuleDependencies(SourceModule sourceModule, Map<String,SourceModule> sourceModules, List<SourceModule> processedModules) throws ModelOperationException
+	private void addAllSourceModuleDependencies(SourceModule sourceModule, AssetMap<SourceModule> sourceModules, List<SourceModule> processedModules) throws ModelOperationException
 	{
 		if (processedModules.contains(sourceModule))
 		{
@@ -224,7 +222,7 @@ public class BundleSetBuilder {
 		sourceModules.put(sourceModule.getPrimaryRequirePath(), sourceModule);
 	}
 	
-	private void addBootstrapAndDependencies(Map<String,SourceModule> bootstrappingSourceModules) throws ModelOperationException
+	private void addBootstrapAndDependencies(AssetMap<SourceModule> bootstrappingSourceModules) throws ModelOperationException
 	{
 		JsLib boostrapLib = bundlableNode.app().jsLib(BOOTSTRAP_LIB_NAME);
 		for (Asset asset : boostrapLib.assets()) {
@@ -264,14 +262,6 @@ public class BundleSetBuilder {
 			currentDir = currentDir.getParentFile();
 		}
 		return false;
-	}
-
-	private static <AT extends Asset> boolean addToAssetMap(Map<String,AT> map, AT asset) {
-		if (map.containsKey(asset.getPrimaryRequirePath())) {
-			return false;
-		}
-		map.put(asset.getPrimaryRequirePath(), asset);
-		return true;
 	}
 	
 }

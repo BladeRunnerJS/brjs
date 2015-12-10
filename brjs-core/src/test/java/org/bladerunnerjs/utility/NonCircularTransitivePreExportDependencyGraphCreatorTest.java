@@ -3,7 +3,6 @@ package org.bladerunnerjs.utility;
 import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import org.bladerunnerjs.api.SourceModule;
@@ -22,8 +21,8 @@ public class NonCircularTransitivePreExportDependencyGraphCreatorTest {
 			sourceModules.put(module.getPrimaryRequirePath(), module);
 		}
 		
-		Map<String, List<String>> postExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(null, new LinkedHashSet<>(sourceModules.values()), false);
-		Map<String, List<String>> preExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(null, new LinkedHashSet<>(sourceModules.values()), true);
+		Map<String, List<String>> postExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(null, sourceModules, false);
+		Map<String, List<String>> preExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(null, sourceModules, true);
 		Map<String, List<String>> nonCircularTransitivePreExportDependencyGraph = NonCircularTransitivePreExportDependencyGraphCreator.createGraph(
 				sourceModules, preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
 		

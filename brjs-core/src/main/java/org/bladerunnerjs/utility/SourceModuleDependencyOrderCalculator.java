@@ -13,20 +13,22 @@ import org.bladerunnerjs.api.model.exception.CircularDependencyException;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 public class SourceModuleDependencyOrderCalculator {
-	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, Map<String,SourceModule> bootstrappingSourceModules, Map<String,SourceModule> allSourceModules) throws ModelOperationException {
+	
+	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, AssetMap<SourceModule> bootstrappingSourceModules, AssetMap<SourceModule> allSourceModules) throws ModelOperationException {
 		
-		Map<String, List<String>> preExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(bundlableNode, new LinkedHashSet<>(allSourceModules.values()), true);
-		Map<String, List<String>> postExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(bundlableNode, new LinkedHashSet<>(allSourceModules.values()), false);
+		Map<String, List<String>> preExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(bundlableNode, allSourceModules.internalMap, true);
+		Map<String, List<String>> postExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(bundlableNode, allSourceModules.internalMap, false);
+		
 		Map<String, List<String>> sourceModuleDependencies = 
-				NonCircularTransitivePreExportDependencyGraphCreator.createGraph(allSourceModules, preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
+				NonCircularTransitivePreExportDependencyGraphCreator.createGraph(allSourceModules.internalMap, preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
 		
 		Map<String,SourceModule> orderedSourceModules = new LinkedHashMap<>();
 		Set<String> metDependencies = new LinkedHashSet<>();		
 		
-		orderedSourceModules.putAll(bootstrappingSourceModules);
+		orderedSourceModules.putAll(bootstrappingSourceModules.internalMap);
 		metDependencies.addAll(bootstrappingSourceModules.keySet());
 		
-		Map<String,SourceModule> unorderedSourceModules = new LinkedHashMap<>(allSourceModules);
+		Map<String,SourceModule> unorderedSourceModules = new LinkedHashMap<>(allSourceModules.internalMap);
 		
 		while (!unorderedSourceModules.isEmpty()) {
 			Map<String,SourceModule> unprocessedSourceModules = new LinkedHashMap<>();
@@ -62,4 +64,5 @@ public class SourceModuleDependencyOrderCalculator {
 		}
 		return true;
 	}
+	
 }
