@@ -1,3 +1,4 @@
+
 require('jasmine');
 
 describe('service populator', function() {
@@ -5,10 +6,14 @@ describe('service populator', function() {
 	var flag;
 	var ServiceA = require('br/servicepopulator/ServiceA');
 	var ServiceB = require('br/servicepopulator/ServiceB');
-	var ServicePopulator = require('br/servicepopulator/ServicePopulator');
+
+	var ServicePopulatorClass = require('br/servicepopulator/ServicePopulatorClass');
 	var servicePopulator;
 
-	var mockServiceData = {
+	var ServiceBoxClass = require('br/servicebox/ServiceBoxClass');
+	var serviceBox = new ServiceBoxClass();
+
+	var serviceData = {
 		"serviceA": {
 			"dependencies": [],
 			"requirePath": "br/servicepopulator/ServiceA"
@@ -25,12 +30,8 @@ describe('service populator', function() {
 
 	beforeEach(function() {
 		flag = false;
-		servicePopulator = new ServicePopulator(mockServiceData);
-	});
-
-	afterEach(function() {
-		serviceBox.factories = {};
-		serviceBox.services = {};
+		serviceBox = new ServiceBoxClass();
+		servicePopulator = new ServicePopulatorClass(serviceBox, serviceData);
 	});
 
 	it('populates the services with no dependencies correctly', function() {
@@ -111,22 +112,14 @@ describe('service populator', function() {
 	});
 
 	it ('fails to return services when the populate method has not been called', function() {
-		var serviceA;
 
-		runs(function() {
+		var getServiceA = function() {
 			serviceBox.resolve(["serviceA"]).then(function() {
 				serviceA = serviceBox.get("serviceA");
-				flag = true;
 			});
-		});
+		};
 
-		waitsFor(function() {
-			return flag;
-		}, "The flag should be true", 500);
-
-		runs(function() {
-			expect(serviceA).toBe(undefined);
-		});
+		expect(getServiceA).toThrow();
 	});
 
 });

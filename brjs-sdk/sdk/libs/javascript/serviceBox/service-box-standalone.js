@@ -1,6 +1,6 @@
 (function(f) {
 	if (typeof exports === "object" && typeof module !== "undefined") {
-		module.exports = new (f().default)()
+		module.exports = f()
 	} else if (typeof define === "function" && define.amd) {
 		define([], f)
 	} else {
@@ -14,7 +14,7 @@
 		} else {
 			g = this
 		}
-		g.serviceBox = new (f().default)()
+		g.serviceBox = f()
 	}
 })(function() {
 	var define, module, exports;
