@@ -63,10 +63,10 @@ public class BundleSetBuilder {
 			addBootstrapAndDependencies(bootstrappingSourceModules);
 		}
 		
-		List<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
-		List<Asset> assetList = orderAssetsByAssetContainer( new LinkedHashSet<>(assets.values()) );
+		AssetMap<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
+		AssetMap<Asset> assetList = orderAssetsByAssetContainer(assets);
 		
-		return new StandardBundleSet(bundlableNode, new ArrayList<>(seedAssets.values()), assetList, orderedSourceModules);
+		return new StandardBundleSet(bundlableNode, seedAssets, assetList, orderedSourceModules);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
@@ -233,18 +233,18 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private <AT extends Asset> List<AT> orderAssetsByAssetContainer(Set<? extends AT> assets) {
-		List<AT> orderedAssets = new ArrayList<>();
-		List<AT> unorderedAssets = new ArrayList<>(assets);
+	private <AT extends Asset> AssetMap<AT> orderAssetsByAssetContainer(AssetMap<AT> assets) {
+		AssetMap<AT> orderedAssets = new AssetMap<>();
+		AssetMap<AT> unorderedAssets = new AssetMap<>(assets);
 		for (AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
-			for (AT asset : assets) {
+			for (AT asset : assets.values()) {
 				if (asset.assetContainer() == assetContainer) {
-					orderedAssets.add(asset);
+					orderedAssets.put(asset);
 					unorderedAssets.remove(asset);
 				}
 			}
 		}
-		orderedAssets.addAll(0, unorderedAssets);
+		orderedAssets.putFirst(unorderedAssets);
 		return orderedAssets;
 	}	
 	

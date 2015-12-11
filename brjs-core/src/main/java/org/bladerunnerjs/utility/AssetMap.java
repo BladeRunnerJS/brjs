@@ -1,7 +1,8 @@
 package org.bladerunnerjs.utility;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -13,6 +14,13 @@ public class AssetMap<AT extends Asset>
 {
 
 	Map<String,AT> internalMap = new LinkedHashMap<>();
+	
+	public AssetMap() {
+	}
+	
+	public AssetMap(AssetMap<AT> assets) {
+		putAll(assets);
+	}
 	
 	public int size()
 	{
@@ -46,6 +54,7 @@ public class AssetMap<AT extends Asset>
 	
 	public boolean put(String key, AT value)
 	{
+//		return (internalMap.putIfAbsent(key, value) == null);
 		if (containsKey(key)) {
 			return false;
 		}
@@ -58,14 +67,32 @@ public class AssetMap<AT extends Asset>
 		return put(asset.getPrimaryRequirePath(), asset);
 	}
 	
+	public void putFirst(AssetMap<AT> assetMap)
+	{
+		Map<String,AT> newInternalMap = new LinkedHashMap<>();
+		newInternalMap.putAll(assetMap.internalMap);
+		newInternalMap.putAll(internalMap);
+		internalMap = newInternalMap;
+	}
+	
 	public AT remove(String key)
 	{
 		return internalMap.remove(key);
 	}
 	
+	public AT remove(AT asset)
+	{
+		return remove(asset.getPrimaryRequirePath());
+	}
+	
 	public void putAll(Map<? extends String, ? extends AT> m)
 	{
 		internalMap.putAll(m);
+	}
+	
+	public void putAll(AssetMap<AT> assetMap)
+	{
+		internalMap.putAll(assetMap.internalMap);
 	}
 	
 	public void clear()
@@ -78,9 +105,9 @@ public class AssetMap<AT extends Asset>
 		return internalMap.keySet();
 	}
 	
-	public Collection<AT> values()
+	public List<AT> values()
 	{
-		return internalMap.values();
+		return new ArrayList<>(internalMap.values());
 	}
 
 	public Set<Entry<String, AT>> entrySet()

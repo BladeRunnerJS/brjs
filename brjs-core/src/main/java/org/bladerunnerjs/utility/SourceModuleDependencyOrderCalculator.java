@@ -1,7 +1,5 @@
 package org.bladerunnerjs.utility;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +12,7 @@ import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 public class SourceModuleDependencyOrderCalculator {
 	
-	public static List<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, AssetMap<SourceModule> bootstrappingSourceModules, AssetMap<SourceModule> allSourceModules) throws ModelOperationException {
+	public static AssetMap<SourceModule> getOrderedSourceModules(BundlableNode bundlableNode, AssetMap<SourceModule> bootstrappingSourceModules, AssetMap<SourceModule> allSourceModules) throws ModelOperationException {
 		
 		Map<String, List<String>> preExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(bundlableNode, allSourceModules.internalMap, true);
 		Map<String, List<String>> postExportDefineTimeDependencyGraph = DefineTimeDependencyGraphCreator.createGraph(bundlableNode, allSourceModules.internalMap, false);
@@ -22,27 +20,27 @@ public class SourceModuleDependencyOrderCalculator {
 		Map<String, List<String>> sourceModuleDependencies = 
 				NonCircularTransitivePreExportDependencyGraphCreator.createGraph(preExportDefineTimeDependencyGraph, postExportDefineTimeDependencyGraph);
 		
-		Map<String,SourceModule> orderedSourceModules = new LinkedHashMap<>();
+		AssetMap<SourceModule> orderedSourceModules = new AssetMap<>();
 		Set<String> metDependencies = new LinkedHashSet<>();		
 		
-		orderedSourceModules.putAll(bootstrappingSourceModules.internalMap);
+		orderedSourceModules.putAll(bootstrappingSourceModules);
 		metDependencies.addAll(bootstrappingSourceModules.keySet());
 		
-		Map<String,SourceModule> unorderedSourceModules = new LinkedHashMap<>(allSourceModules.internalMap);
+		AssetMap<SourceModule> unorderedSourceModules = new AssetMap<>(allSourceModules);
 		
 		while (!unorderedSourceModules.isEmpty()) {
-			Map<String,SourceModule> unprocessedSourceModules = new LinkedHashMap<>();
+			AssetMap<SourceModule> unprocessedSourceModules = new AssetMap<>();
 			boolean progressMade = false;
 			
 			for (String sourceModuleRequirePath : unorderedSourceModules.keySet()) {
 				SourceModule sourceModule = unorderedSourceModules.get(sourceModuleRequirePath);
 				if (dependenciesHaveBeenMet(sourceModuleDependencies.get(sourceModuleRequirePath), metDependencies)) {
 					progressMade = true;
-					orderedSourceModules.put(sourceModuleRequirePath, sourceModule);
+					orderedSourceModules.put(sourceModule);
 					metDependencies.add(sourceModuleRequirePath);
 				}
 				else {
-					unprocessedSourceModules.put(sourceModuleRequirePath, sourceModule);
+					unprocessedSourceModules.put(sourceModule);
 				}
 			}
 			
@@ -53,7 +51,7 @@ public class SourceModuleDependencyOrderCalculator {
 			unorderedSourceModules = unprocessedSourceModules;
 		}
 		
-		return new ArrayList<>(orderedSourceModules.values());
+		return orderedSourceModules;
 	}
 	
 	private static boolean dependenciesHaveBeenMet(List<String> dependencies, Set<String> metDependencies) throws ModelOperationException {
