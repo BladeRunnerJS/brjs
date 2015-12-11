@@ -7,10 +7,10 @@ function syncResolve(code) {
 	var origScheduler = bluebird.setScheduler(function(fn) {
 		return scheduledFuncs.push(fn);
 	});
-	var origPromise = global.Promise;
+	var origPromise = window.Promise;
 
 	try {
-		global.Promise = bluebird;
+		window.Promise = bluebird;
 		var promise = code();
 
 		var _iteratorNormalCompletion = true;
@@ -18,9 +18,8 @@ function syncResolve(code) {
 		var _iteratorError = undefined;
 
 		try {
-			for (var _iterator = scheduledFuncs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-				var fn = _step.value;
-
+			for(var i = 0, l = scheduledFuncs.length; i < l; ++i) {
+				var fn = scheduledFuncs[i];
 				fn();
 			}
 		} catch (err) {
@@ -41,8 +40,6 @@ function syncResolve(code) {
 		return promise.value();
 	} finally {
 		bluebird.setScheduler(origScheduler);
-		global.Promise = origPromise;
+		window.Promise = origPromise;
 	}
 }
-
-module.exports = syncResolve;
