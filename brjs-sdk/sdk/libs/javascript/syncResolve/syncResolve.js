@@ -1,29 +1,16 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.default = syncResolve;
-
-var _bluebird = require('bluebird');
-
-var _bluebird2 = _interopRequireDefault(_bluebird);
-
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : {
-		default: obj
-	};
-}
+var bluebird = require('bluebird');
 
 function syncResolve(code) {
 	var scheduledFuncs = [];
-	var origScheduler = _bluebird2.default.setScheduler(function(fn) {
+	var origScheduler = bluebird.setScheduler(function(fn) {
 		return scheduledFuncs.push(fn);
 	});
 	var origPromise = global.Promise;
 
 	try {
-		global.Promise = _bluebird2.default;
+		global.Promise = bluebird;
 		var promise = code();
 
 		var _iteratorNormalCompletion = true;
@@ -53,7 +40,9 @@ function syncResolve(code) {
 
 		return promise.value();
 	} finally {
-		_bluebird2.default.setScheduler(origScheduler);
+		bluebird.setScheduler(origScheduler);
 		global.Promise = origPromise;
 	}
 }
+
+module.exports = syncResolve;
