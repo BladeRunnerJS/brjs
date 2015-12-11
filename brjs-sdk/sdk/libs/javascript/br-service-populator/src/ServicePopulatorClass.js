@@ -1,15 +1,12 @@
-
-var ServicePopulatorClass = function(serviceBox, serviceData){
+var ServicePopulatorClass = function(serviceBox, serviceData) {
 	if (typeof serviceData == 'undefined') {
 		this._serviceData = require('service!$data');
-	}
-	else {
+	} else {
 		this._serviceData = serviceData;
 	}
 	if (typeof serviceBox == 'undefined') {
 		this._serviceBox = require('br/servicebox/serviceBox');
-	}
-	else {
+	} else {
 		this._serviceBox = serviceBox;
 	}
 }
@@ -23,19 +20,20 @@ ServicePopulatorClass.prototype.populate = function() {
 	}
 }
 
-ServicePopulatorClass.prototype.register = function (name, factory) {
+ServicePopulatorClass.prototype.register = function(name, factory) {
 	var serviceInfo = this._serviceData[name];
 
 	if (factory.dependencies === undefined) {
-		factory  = function(ConstructorFunction) {
+		factory = function(ConstructorFunction) {
 			return function() {
 				return Promise.resolve(new ConstructorFunction());
-			} ;
+			};
 		}(factory)
 
 		factory.dependencies = serviceInfo.dependencies;
 	}
 
+	name = name.substring(0, 8) === 'service!' ? name.substring(8, name.length) : name;
 	this._serviceBox.register(name, factory);
 }
 

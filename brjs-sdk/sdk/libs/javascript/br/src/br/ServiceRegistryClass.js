@@ -4,7 +4,7 @@
  * @module br/ServiceRegistryClass
  */
 
-var Errors = require('./Errors');
+var Errors = require('br/Errors');
 var fell = require('fell');
 var log = fell.getLogger('br.ServiceRegistry');
 
@@ -51,8 +51,13 @@ var legacyWarningLogged = false;
 * @see {@link http://bladerunnerjs.org/docs/concepts/service_registry/}
 * @see {@link http://bladerunnerjs.org/docs/use/service_registry/}
 */
-function ServiceRegistryClass() {
-	this.registry = {};
+function ServiceRegistryClass(serviceBox) {
+	if (typeof serviceBox == 'undefined') {
+		this._serviceBox = require('br/servicebox/serviceBox');
+	}
+	else {
+		this._serviceBox = serviceBox;
+	}
 };
 
 // Main API //////////////////////////////////////////////////////////////////////////////////////
@@ -71,11 +76,19 @@ ServiceRegistryClass.prototype.registerService = function(alias, serviceInstance
 		throw new Errors.InvalidParametersError("The service instance is undefined.");
 	}
 
-	if (alias in this.registry) {
+	if (alias in this._serviceBox.factories) {
 		throw new Errors.IllegalStateError("Service: " + alias + " has already been registered.");
 	}
 
-	this.registry[alias] = serviceInstance;
+	var serviceFactory  = function(service) {
+		return function() {
+			return Promise.resolve(service);
+		};
+	}(serviceInstance);
+	serviceFactory.dependencies = [];
+
+	this._serviceBox.factories[alias] = serviceFactory;
+	this._serviceBox.services[alias] = serviceInstance;
 };
 
 /**
@@ -84,7 +97,8 @@ ServiceRegistryClass.prototype.registerService = function(alias, serviceInstance
 * @param {String} sIdentifier The alias or interface name used to uniquely identify the service.
 */
 ServiceRegistryClass.prototype.deregisterService = function(alias) {
-	delete this.registry[alias];
+	delete this._serviceBox.factories[alias];
+	delete this._serviceBox.services[alias];
 };
 
 /**
@@ -96,13 +110,15 @@ ServiceRegistryClass.prototype.deregisterService = function(alias) {
 * @type Object
 */
 ServiceRegistryClass.prototype.getService = function(alias) {
-	this._initializeServiceIfRequired(alias);
-
-	if (this.registry[alias] === undefined){
+	if (!(alias in this._serviceBox.factories)) {
 		throw new Errors.InvalidParametersError("br/ServiceRegistryClass could not locate a service for: " + alias);
 	}
 
-	return this.registry[alias];
+	if (!(alias in this._serviceBox.services)) {
+		throw new Errors.InvalidParametersError("The dependencies need to be resoleved before getting a service");
+	}
+
+	return this._serviceBox.services[alias];
 };
 
 /**
@@ -112,7 +128,7 @@ ServiceRegistryClass.prototype.getService = function(alias) {
 * @type boolean
 */
 ServiceRegistryClass.prototype.isServiceRegistered = function(alias) {
-	return alias in this.registry;
+	return alias in this._serviceBox.factories;
 };
 
 /**
@@ -128,13 +144,14 @@ ServiceRegistryClass.prototype.legacyClear = function() {
 		logConsole.warn('ServiceRegistry.legacyClear() is deprecated. Please use sub-realms instead.');
 	}
 
-	this.registry = {};
+	this._serviceBox.factories = {};
+	this._serviceBox.services = {};
 };
 
 ServiceRegistryClass.prototype.dispose = function() {
-	for (var serviceName in this.registry) {
-		if (this.registry.hasOwnProperty(serviceName)) {
-			var service = this.registry[serviceName];
+	for (var serviceName in this._serviceBox.services) {
+		if (this._serviceBox.services.hasOwnProperty(serviceName)) {
+			var service = this._serviceBox.services[serviceName];
 			if (typeof service.dispose !== "undefined") {
 				if (service.dispose.length == 0) {
 					try {
@@ -151,22 +168,9 @@ ServiceRegistryClass.prototype.dispose = function() {
 			}
 		}
 	}
-	this.registry = {};
+	this._serviceBox.factories = {}
+	this._serviceBox.services = {};
 }
-
-/** @private */
-ServiceRegistryClass.prototype._initializeServiceIfRequired = function(alias) {
-	var AliasRegistry = require('./AliasRegistry');
-	if (alias in this.registry === false) {
-		var isIdentifierAlias = AliasRegistry.isAliasAssigned(alias);
-
-		if (isIdentifierAlias) {
-			var ServiceClass = AliasRegistry.getClass(alias);
-
-			this.registry[alias] = new ServiceClass();
-		}
-	}
-};
 
 ServiceRegistryClass.LOG_MESSAGES = {
 	DISPOSE_CALLED: "dispose() called on service registered for '{0}",
