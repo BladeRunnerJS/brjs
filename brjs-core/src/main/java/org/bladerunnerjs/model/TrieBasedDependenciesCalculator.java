@@ -3,40 +3,48 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BladerunnerConf;
+import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.memoization.Getter;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.memoization.MemoizedValue;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
-import org.bladerunnerjs.utility.trie.AliasReference;
-import org.bladerunnerjs.utility.trie.AssetReference;
-import org.bladerunnerjs.utility.trie.LinkedAssetReference;
 import org.bladerunnerjs.utility.trie.Trie;
 import org.bladerunnerjs.utility.trie.TrieFactory;
 
 public class TrieBasedDependenciesCalculator
 {
+	private static final Pattern getServiceMatcherPattern = Pattern.compile("getService\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
+	
 	private App app;
 	private Asset asset;
 	private final AssetReaderFactory readerFactory;
 	private final TrieFactory trieFactory;
 	
 	private MemoizedValue<ComputedValue> computedValue;
+
+	private AssetContainer assetContainer;
 	
 	public TrieBasedDependenciesCalculator(AssetContainer assetContainer, Asset asset, AssetReaderFactory readerFactory, MemoizedFile... readerFiles)
 	{
 		this.asset = asset;
 		this.readerFactory = readerFactory;
+		this.assetContainer = assetContainer;
 		app = assetContainer.app();
 		trieFactory = TrieFactory.getFactoryForAssetContainer(assetContainer);
 		
@@ -64,11 +72,6 @@ public class TrieBasedDependenciesCalculator
 		return requirePaths;
 	}
 	
-	public List<String> getAliases() throws ModelOperationException
-	{
-		return getComputedValue().aliases;
-	}
-	
 	private ComputedValue getComputedValue() throws ModelOperationException {
 		return computedValue.value(new Getter<ModelOperationException>() {
 			@Override
@@ -76,27 +79,25 @@ public class TrieBasedDependenciesCalculator
 				ComputedValue computedValue = new ComputedValue();
 				
 				try(Reader reader = readerFactory.createReader()) {
-					Trie<AssetReference> trie = trieFactory.createTrie();
+					Trie<Asset> trie = trieFactory.createTrie();
 					
-					List<AssetReference> trieMatches = trie.getMatches(reader);
-					for(Object match : trieMatches) {
-						if (match instanceof LinkedAssetReference){
-							LinkedAssetReference reference = (LinkedAssetReference)match;
-							if(!asset.getAssetPath().equals(reference.getAssetPath())) {
-								computedValue.requirePaths.put(reference.getRequirePath(), reference.getAssetClass());
-							}
+					StringWriter readerContents = new StringWriter();
+					IOUtils.copy(reader, readerContents);
+					String contents = readerContents.toString();
+					
+					List<Asset> trieMatches = trie.getMatches( new StringReader(contents));
+					for (Asset match : trieMatches) {
+						if(!asset.getAssetPath().equals(match.getAssetPath())) {
+							computedValue.requirePaths.put(match.getPrimaryRequirePath(), match.getClass());
 						}
-						else if (match instanceof AliasReference) {
-							AliasReference aliasReference = (AliasReference) match;
-							String alias = aliasReference.getName();
-							if (alias.length() > 0)
-							{
-								computedValue.aliases.add(alias);							
-							}
-						}
-						else {
-							throw new RuntimeException("Unknown match type returned from Trie.");
-						}
+					}
+					
+					if (serviceRegistryPresent()) {
+    					Matcher m = getServiceMatcherPattern.matcher(contents);
+    					while (m.find()) {
+    						String serviceName = m.group(1);
+    						computedValue.requirePaths.put("service!"+serviceName, SourceModule.class);
+    					}
 					}
 				}
 				catch (IOException ex)
@@ -109,8 +110,16 @@ public class TrieBasedDependenciesCalculator
 		});
  	}
 	
+	private boolean serviceRegistryPresent() {
+		for (AssetContainer assetContainer : assetContainer.scopeAssetContainers()) {
+			if (assetContainer.asset("br/ServiceRegistry") != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private class ComputedValue {
 		public Map<String, Class<? extends Asset>> requirePaths = new LinkedHashMap<>();
-		public List<String> aliases = new ArrayList<>();
 	}
 }

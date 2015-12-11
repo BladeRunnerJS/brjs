@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
 import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.*;
@@ -247,7 +246,7 @@ public class ServiceDataTest extends SpecTest
 		);
 	}
 	
-	@Test @Ignore
+	@Test
 	public void serviceDataListsServicesUsedViaNamespacedJSCode() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
 			.and(aspect).hasNamespacedJsPackageStyle()
