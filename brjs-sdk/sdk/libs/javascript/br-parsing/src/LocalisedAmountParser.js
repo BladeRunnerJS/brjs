@@ -47,34 +47,27 @@ topiarist.implement(LocalisedAmountParser, Parser);
  *
  * @param {Variant} sValue  the amount with tokens
  * @param {Object} mAttributes  the map of attributes.
- * @return  the numeric amount if converted, the original string if not conversion required or null if the value
+ * @return  the numeric amount if converted, the original string if no conversion required or null if the value
  * was not recognized.
  * @type  String
  */
-LocalisedAmountParser.prototype.parse = function(sValue, mAttributes)
-{
-	if(typeof sValue != "string")
-	{
+LocalisedAmountParser.prototype.parse = function(sValue, mAttributes) {
+	if(typeof sValue != "string") {
 		return sValue;
 	}
 
-	if(sValue.length < 1)
-	{
+	if(sValue.length < 1) {
 		return null;
 	}
 
 	var nMultiplier = 1;
 	var sLastChar = sValue.charAt( (sValue.length - 1));
-	if(isNaN(sLastChar))
-	{
+	if(isNaN(sLastChar)) {
 		nMultiplier = this._getShortcutMultiplier(sLastChar);
 
-		if(nMultiplier != null)
-		{
+		if(nMultiplier != null)	{
 			sValue = sValue.substr(0, (sValue.length - 1));
-		}
-		else
-		{
+		} else {
 			return null;
 		}
 	}
@@ -83,8 +76,7 @@ LocalisedAmountParser.prototype.parse = function(sValue, mAttributes)
 		var oTranslator = require("br/I18n").getTranslator();
 		var sValue = oTranslator.parseNumber(sValue);
 
-		if(!sValue)
-		{
+		if(!sValue)	{
 			return null;
 		}
 
@@ -101,15 +93,12 @@ LocalisedAmountParser.prototype.isSingleUseParser = function() {
 	return false;
 };
 
-LocalisedAmountParser.prototype._getShortcutMultiplier = function(sShortcutSymbol)
-{
+LocalisedAmountParser.prototype._getShortcutMultiplier = function(sShortcutSymbol) {
 	var sToken = "br.parsing.number.formatting.multiplier." + sShortcutSymbol.toLowerCase();
 	var oTranslator = require("br/I18n").getTranslator();
-	if (oTranslator.tokenExists(sToken))
-	{
+	if (oTranslator.tokenExists(sToken)) {
 		var multiplier = oTranslator.getMessage(sToken);
-		if (!isNaN(multiplier))
-		{
+		if (!isNaN(multiplier))	{
 			return multiplier*1;
 		}
 	}
