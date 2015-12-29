@@ -1,6 +1,7 @@
 package org.bladerunnerjs.logging;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.IllegalFormatException;
 
@@ -71,7 +72,7 @@ public class SLF4JLogger implements Logger
 		{
 			slf4jLogger.error("Attempted to log a message but received a " + ex.getClass().getCanonicalName() + ".\n"+
 					"Message: " + message + "\n"+
-					"Params: " + params);
+					"Params: " + Arrays.toString(params));
 			throw ex;
 		}
 	}
