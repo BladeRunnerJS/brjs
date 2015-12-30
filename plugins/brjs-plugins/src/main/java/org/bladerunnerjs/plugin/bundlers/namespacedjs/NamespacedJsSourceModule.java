@@ -79,7 +79,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 			String requireAllInvocation = (requirePaths.size() == 0) ? "" : "\n" + calculateDependenciesRequireDefinition(requirePaths) + "\n";
 			List<String> staticRequirePaths = getPreExportDefineTimeDependencyCalculator().getRequirePaths(SourceModule.class);
 			String staticRequireAllInvocation = (staticRequirePaths.size() == 0) ? "" : " " + calculateDependenciesRequireDefinition(staticRequirePaths);
-			String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticRequireAllInvocation + "\n";
+			String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER + staticRequireAllInvocation;
 			
 			Reader[] readers = new Reader[] { 
 				new StringReader( String.format(defineBlockHeader, getPrimaryRequirePath()) ), 

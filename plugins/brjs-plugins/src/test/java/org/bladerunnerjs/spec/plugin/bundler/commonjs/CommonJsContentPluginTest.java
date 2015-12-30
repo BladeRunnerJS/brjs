@@ -59,8 +59,7 @@ public class CommonJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("common-js/module/appns/Class1.js", requestResponse);
 		then(requestResponse).containsLines(
-			"define('appns/Class1', function(require, exports, module) {",
-			"Class1 = function() {",
+			"define('appns/Class1', function(require, exports, module) {Class1 = function() {",
 			"};\n",
 			"module.exports = Class1;\n",
 			"});");

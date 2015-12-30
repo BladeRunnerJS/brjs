@@ -169,11 +169,6 @@ public class MockRootNode implements RootNode
 	}	
 	
 	@Override
-	public void clearRegisteredNode(Node node)
-	{
-	}
-	
-	@Override
 	public Node getRegisteredNode(MemoizedFile childPath)
 	{
 		return null;

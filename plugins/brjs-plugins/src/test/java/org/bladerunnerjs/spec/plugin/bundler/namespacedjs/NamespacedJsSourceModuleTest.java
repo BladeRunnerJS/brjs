@@ -80,4 +80,14 @@ public class NamespacedJsSourceModuleTest extends SpecTest {
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(response).doesNotContainText("requireAll(require, ['alias!some.service'])");
 	}
+
+	@Test
+	public void wrappingFunctionShouldNotAddNewLine() throws Exception
+	{
+		given(aspect).hasNamespacedJsPackageStyle();
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).doesNotContainText("define('br/AliasRegistry', function(require, exports, module) {\n");
+		then(response).doesNotContainText("define('alias!$data', function(require, exports, module) {\n");
+		then(response).doesNotContainText("define('alias!$data', function(require, exports, module) {\n");
+	}
 }
