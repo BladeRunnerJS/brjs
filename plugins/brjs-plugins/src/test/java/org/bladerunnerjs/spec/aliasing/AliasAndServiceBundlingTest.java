@@ -544,8 +544,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	@Test
 	public void servicesRetrievedViaGetServiceAreBundled() throws Exception
 	{
-		given(brLib).hasClasses("br/ServiceRegistry")
-            .and(aspect).hasNamespacedJsPackageStyle()
+		given(aspect).hasNamespacedJsPackageStyle()
             .and(aspectAliasesFile).hasAlias("some.service", "appns.ServiceClass")
             .and(aspect).hasClass("appns.ServiceClass")
             .and(aspect).classDependsOn("appns.App", "ServiceRegistry.getService('some.service')")
@@ -572,8 +571,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	@Test
 	public void aliasDataIsIncludedInTheBundleWhenServicesAreUsedInANamespacedJsAspect() throws Exception
 	{
-		given(brLib).hasClasses("br/ServiceRegistry")
-            .and(aspect).hasNamespacedJsPackageStyle()
+		given(aspect).hasNamespacedJsPackageStyle()
             .and(aspectAliasesFile).hasAlias("some.service", "appns.ServiceClass")
             .and(aspect).hasClass("appns.ServiceClass")
             .and(aspect).classFileHasContent("appns.App", "ServiceRegistry.getService('some.service')")
@@ -586,8 +584,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	@Test
 	public void aliasesAndDataIsIncludedInTheBundleWhenServicesFromACommonJSLibraryAreUsed() throws Exception
 	{
-		given(brLib).hasClasses("br/ServiceRegistry")
-            .and(brLibAliasDefinitionsFile).hasAlias("br.service", "appns.ServiceClass")
+		given(brLibAliasDefinitionsFile).hasAlias("br.service", "appns.ServiceClass")
             .and(aspect).hasNamespacedJsPackageStyle()
             .and(aspect).hasClass("appns.ServiceClass")
             .and(aspect).classFileHasContent("appns.App", "ServiceRegistry.getService('br.service')")
@@ -601,7 +598,6 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	public void aliasesAndDataIsIncludedInTheBundleWhenServicesFromANamespacedSLibraryAreUsed() throws Exception
 	{
 		given(brLib).hasNamespacedJsPackageStyle()
-            .and(brLib).hasClasses("br.ServiceRegistry")
             .and(brLib).hasClass("br.ServiceClass")
             .and(brLibAliasDefinitionsFile).hasAlias("br.service", "br.ServiceClass")
             .and(aspect).hasNamespacedJsPackageStyle()

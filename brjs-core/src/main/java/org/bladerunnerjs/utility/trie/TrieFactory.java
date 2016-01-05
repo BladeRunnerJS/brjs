@@ -14,7 +14,7 @@ import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
 
 public class TrieFactory {
-	private final MemoizedValue<Trie<AssetReference>> trie;
+	private final MemoizedValue<Trie<Asset>> trie;
 	private final AssetContainer assetContainer;
 	
 	private static final Pattern ALIAS_MATCHER_PATTERN = Pattern.compile("[\"'][\\S ]+[\"']|<\\S+[\\s/>]");
@@ -36,11 +36,11 @@ public class TrieFactory {
 		trie = new MemoizedValue<>(assetContainer.dir()+" - TrieFactory.trie", assetContainer);
 	}
 	
-	public Trie<AssetReference> createTrie() throws ModelOperationException {
+	public Trie<Asset> createTrie() throws ModelOperationException {
 		return trie.value(new Getter<ModelOperationException>() {
 			@Override
 			public Object get() throws RuntimeException, ModelOperationException {
-				Trie<AssetReference> trie = new Trie<AssetReference>( '/', new Character[]{'.', '/'} );
+				Trie<Asset> trie = new Trie<>( '/', new Character[]{'.', '/'} );
 				
 				for (AssetContainer scopeAssetContainer : assetContainer.scopeAssetContainers()) {
 					try {						
@@ -53,16 +53,15 @@ public class TrieFactory {
 							
 							for(String requirePath : requirePaths) {								
 								if (requirePath.contains("/")) {
-									addToTrie(trie, requirePath, new LinkedAssetReference(asset), SOURCE_MODULE_MATCHER_PATTERN);
+									addToTrie(trie, requirePath, asset, SOURCE_MODULE_MATCHER_PATTERN);
 								} else {
 									// the asset is one that can only be referred to via a string
-									addToTrie(trie, requirePath, new LinkedAssetReference(asset), QUOTED_SOURCE_MODULE_MATCHER_PATTERN);
+									addToTrie(trie, requirePath, asset, QUOTED_SOURCE_MODULE_MATCHER_PATTERN);
 								}
 								
-								boolean requirePathStartsWithAlias = requirePath.startsWith("alias!");
 								String requirePathAfterAlias = StringUtils.substringAfter(requirePath, "alias!");
-								if (requirePathStartsWithAlias) {
-									addToTrie(trie, requirePathAfterAlias, new LinkedAssetReference(asset), ALIAS_MATCHER_PATTERN);										
+								if ( requirePath.startsWith("alias!") ) {
+									addToTrie(trie, requirePathAfterAlias, asset, ALIAS_MATCHER_PATTERN);										
 								}
 							}
 						}
@@ -77,7 +76,7 @@ public class TrieFactory {
 		});
 	}
 	
-	private void addToTrie(Trie<AssetReference> trie, String key, AssetReference value, Pattern matchPattern) throws EmptyTrieKeyException {
+	private void addToTrie(Trie<Asset> trie, String key, Asset value, Pattern matchPattern) throws EmptyTrieKeyException {
 		if (!trie.containsKey(key)) {
 			try
 			{

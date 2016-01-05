@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.plugin.RequirePlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractRequirePlugin;
 import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.plugin.plugins.require.ServiceDataSourceModule;
 
 public class ServiceRequirePlugin extends AbstractRequirePlugin implements RequirePlugin {
 	// TODO: update to be a bundlableNodeSourceModules as has been done in AliasRequirePlugin
@@ -28,11 +29,16 @@ public class ServiceRequirePlugin extends AbstractRequirePlugin implements Requi
 		return getSourceModule(bundlableNode, requirePathSuffix);
 	}
 	
-	private ServiceCommonJsSourceModule getSourceModule(BundlableNode bundlableNode, String requirePath) {
-		if(!sourceModules.containsKey(requirePath)) {
-			sourceModules.put(requirePath, new ServiceCommonJsSourceModule(bundlableNode, requirePath));
+	private Asset getSourceModule(BundlableNode bundlableNode, String requirePathSuffix) {
+		String requirePath = getPluginName()+"!"+requirePathSuffix;
+		if ( requirePath.equals(ServiceDataSourceModule.PRIMARY_REQUIRE_PATH) ) {
+			return bundlableNode.asset(requirePath);
 		}
 		
-		return sourceModules.get(requirePath);
+		if(!sourceModules.containsKey(requirePathSuffix)) {
+			sourceModules.put(requirePathSuffix, new ServiceCommonJsSourceModule(bundlableNode, requirePathSuffix));
+		}
+		
+		return sourceModules.get(requirePathSuffix);
 	}
 }

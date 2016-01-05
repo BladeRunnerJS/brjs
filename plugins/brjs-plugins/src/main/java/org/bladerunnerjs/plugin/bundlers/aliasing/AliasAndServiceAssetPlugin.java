@@ -12,6 +12,7 @@ import org.bladerunnerjs.api.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
+import org.bladerunnerjs.plugin.plugins.require.ServiceDataSourceModule;
 import org.bladerunnerjs.plugin.require.AliasCommonJsSourceModule;
 
 
@@ -24,7 +25,7 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 		if (assetContainer.dir() == dir) {
 			if (assetContainer instanceof BundlableNode) {
 				BundlableNode bundlableNode = (BundlableNode) assetContainer;
-				createAliasDataSourceModule(assetDiscoveryInitiator, bundlableNode);
+				createAliasAndServiceDataSourceModules(assetDiscoveryInitiator, bundlableNode);
 				addBundlableNodeAliases(implicitDependencies, assetDiscoveryInitiator, bundlableNode);
 			}
 			
@@ -54,11 +55,17 @@ public class AliasAndServiceAssetPlugin extends AbstractAssetPlugin
 		}
 	}
 
-	private void createAliasDataSourceModule(AssetRegistry assetDiscoveryInitiator, BundlableNode bundlableNode)
+	private void createAliasAndServiceDataSourceModules(AssetRegistry assetDiscoveryInitiator, BundlableNode bundlableNode)
 	{
-		Asset aliasDataAsset = new AliasDataSourceModule(bundlableNode);
-		if (!assetDiscoveryInitiator.hasRegisteredAsset(aliasDataAsset.getPrimaryRequirePath())) {
-			assetDiscoveryInitiator.registerAsset(aliasDataAsset);
+		List<Asset> dataAssets = Arrays.asList(
+			new AliasDataSourceModule(bundlableNode),
+			new ServiceDataSourceModule(bundlableNode)
+		);
+		
+		for (Asset asset : dataAssets) {
+			if (!assetDiscoveryInitiator.hasRegisteredAsset(asset.getPrimaryRequirePath())) {
+				assetDiscoveryInitiator.registerAsset(asset);
+			}
 		}
 	}
 
