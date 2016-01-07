@@ -67,13 +67,12 @@ public class TestRunnerConfiguration {
 	public Map<String, String> getBrowserPathsForOS() throws NoBrowsersDefinedException, IOException
 	{
 		Map<String, String> paths = null;
-		try {
-			paths = browserPaths.get(getOperatingSystem());
+		paths = browserPaths.get(getOperatingSystem());
+
+		if(paths == null){
+			throw new NoBrowsersDefinedException(getRelativeDir().getAbsolutePath(), getOperatingSystem());
 		}
-		catch (ClassCastException e) 
-		{
-			throw new NoBrowsersDefinedException(getRelativeDir().getAbsolutePath());
-		}
+
 		return paths;
 	}
 	
