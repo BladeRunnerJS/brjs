@@ -125,7 +125,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLib).containsFile("test-unit/src-test/foo/Util.js")
 			.and(sdkLib).containsFileWithContents("test-unit/tests/Test.js", "require('foo/Util')");
 		when(sdkLibUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('foo/Util', function(require, exports, module) {\n");
+		then(response).containsText("define('foo/Util', function(require, exports, module) {");
 	}
 	
 }

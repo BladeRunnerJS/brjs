@@ -219,7 +219,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function() {\n};");
 		when(aspect).requestReceivedInDev("namespaced-js/module/appns/Class1.js", requestResponse);
-		then(requestResponse).textEquals("define('appns/Class1', function(require, exports, module) {\nappns.Class1 = function() {\n};\nmodule.exports = appns.Class1;\n});\n");
+		then(requestResponse).textEquals("define('appns/Class1', function(require, exports, module) {appns.Class1 = function() {\n};\nmodule.exports = appns.Class1;\n});\n");
 	}
 	
 	@Test
