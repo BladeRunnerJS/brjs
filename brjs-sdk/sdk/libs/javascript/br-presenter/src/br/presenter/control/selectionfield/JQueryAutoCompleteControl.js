@@ -47,6 +47,7 @@ function JQueryAutoCompleteControl() {
 
 	/** @private */
 	this.m_eElement = {};
+	this.m_jQueryInput = null;
 	this.m_bOpenOnFocus = false;
 	this.m_sAppendTo = 'body';
 	this._viewOpened = false;
@@ -83,13 +84,11 @@ JQueryAutoCompleteControl.prototype.setPresentationNode = function(oPresentation
 };
 
 JQueryAutoCompleteControl.prototype.onViewReady = function() {
-	var oJqueryInput = jQuery(this.m_eElement);
+	this.m_jQueryInput = jQuery(this.m_eElement);
 	var self = this;
-	this._viewOpened = true;
 
-	oJqueryInput.keydown(function(event, oUi) {
-		if (event.which == 13) // Enter.
-		{
+	this.m_jQueryInput.keydown(function(event, oUi) {
+		if (event.which === 13) { // enter
 			self._setValue(self.m_oPresentationNode, this, oUi);
 			event.stopImmediatePropagation();
 			event.preventDefault();
@@ -98,7 +97,7 @@ JQueryAutoCompleteControl.prototype.onViewReady = function() {
 		}
 	});
 
-	oJqueryInput.autocomplete({
+	this.m_jQueryInput.autocomplete({
 		minLength: self.m_nMinCharAmount || 0,
 		autoFocus: true,
 		appendTo: self.m_sAppendTo,
@@ -126,10 +125,17 @@ JQueryAutoCompleteControl.prototype.onViewReady = function() {
 		}
 	});
 
+	this._onDocumentFocus = this._onDocumentFocus.bind(this);
+	this.m_jQueryInput.on('focus', this._onDocumentFocus);
+
+	this._viewOpened = true;
+};
+
+JQueryAutoCompleteControl.prototype._onDocumentFocus = function() {
+	this.m_jQueryInput.select();
+
 	if (this.m_bOpenOnFocus) {
-		oJqueryInput.focus(function(e) {
-			jQuery(this).autocomplete('search', oJqueryInput.val() || '');
-		});
+		this.m_jQueryInput.autocomplete('search', this.m_jQueryInput.val() || '');
 	}
 };
 
@@ -171,12 +177,20 @@ JQueryAutoCompleteControl.prototype.setOptions = function(mOptions) {
  * Destroy created listeners and jQuery autocomplete plugin
  */
 JQueryAutoCompleteControl.prototype.destroy = function() {
+	// if onOpen is never called the control wouldn't be initialised, hence we must guard against that
+	if(this._viewOpened) {
+		this.m_jQueryInput.off('focus', this._onDocumentFocus);
+		this.m_jQueryInput.autocomplete('destroy');
+		this.m_jQueryInput.off();
+	}
+
 	if (this._valueChangedListener) {
 		this.m_oPresentationNode.value.removeListener(this._valueChangedListener);
 	}
-	if (this._viewOpened === true) {
-		jQuery(this.m_eElement).autocomplete('destroy').off();
-	}
-}
+
+	this._valueChangedListener = null;
+	this.m_jQueryInput = null;
+	this.m_eElement = null;
+};
 
 module.exports = JQueryAutoCompleteControl;
