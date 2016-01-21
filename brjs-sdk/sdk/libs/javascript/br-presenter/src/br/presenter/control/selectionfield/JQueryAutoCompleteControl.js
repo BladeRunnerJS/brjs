@@ -150,12 +150,13 @@ JQueryAutoCompleteControl.prototype._onDocumentFocus = function() {
 };
 
 JQueryAutoCompleteControl.prototype._setValue = function(oPresentationNode, oInput, oUi) {
-	if (oPresentationNode.isValidOption(oInput.value)) {
-		oPresentationNode.value.setValue(oInput.value);
-		this.m_eElement.value = oInput.value;
-	} else if (oUi) {
-		oPresentationNode.value.setValue(oUi.item.value);
-		this.m_eElement.value = oUi.item.value;
+	var isValidOption = oPresentationNode.isValidOption( oInput.value );
+
+	if ( isValidOption || oUi ) {
+		var presentationNodeValue = isValidOption ? oInput.value : oUi.item.value;
+
+		oPresentationNode.value.setValue( presentationNodeValue );
+		this.m_eElement.value = ( this.clearTextAfterValidInput ? '' : presentationNodeValue);
 	}
 };
 
@@ -183,6 +184,9 @@ JQueryAutoCompleteControl.prototype.setOptions = function(mOptions) {
 	}
 	if (mOptions.delay !== undefined) {
 		this.delay = mOptions.delay;
+	}
+	if (mOptions.clearTextAfterValidInput !== undefined) {
+		this.clearTextAfterValidInput = mOptions.clearTextAfterValidInput;
 	}
 };
 

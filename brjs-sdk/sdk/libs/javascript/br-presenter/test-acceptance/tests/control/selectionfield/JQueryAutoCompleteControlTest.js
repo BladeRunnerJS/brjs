@@ -111,5 +111,14 @@
                 and("demo.view.(#autocomplete-container4 li:eq(0)).text = 'AA'");
         });
 
+        it('clears the textbox after a valid option was chosen', function() {
+            given("demo.viewOpened = true");
+            when("demo.model.jquerySelectionField.value => ''");
+                and("demo.view.(#jqueryAutoCompleteBox5).typedValue => 'A'");
+                and("demo.view.(#autocomplete-container5 li:eq(0) a).clicked => true");
+            then("demo.model.jquerySelectionField.value = 'AA'");
+                and("demo.view.(#jqueryAutoCompleteBox5).value = ''");
+        });
+
     });
 })();
