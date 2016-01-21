@@ -76,6 +76,16 @@
             then("demo.view.(#autocomplete-container2 li:eq(0)).text = 'AA'");
         });
 
+        it("does not blur the input after selection if blurAfterClick is not provided", function() {
+            given("demo.viewOpened = true");
+            when("demo.model.jquerySelectionField.value => ''");
+                and("demo.view.(#jqueryAutoCompleteBox).typedValue => 'A'");
+                and("demo.view.(#autocomplete-container li:eq(0) a).clicked => true");
+            then("demo.model.jquerySelectionField.value = 'AA'");
+                and("demo.view.(#jqueryAutoCompleteBox).value = 'AA'");
+                and("demo.view.(#jqueryAutoCompleteBox).focused = true");
+        });
+
         it("does blur the input after selection is made by click if blurAfterClick is set to true", function() {
             given("demo.viewOpened = true");
             when("demo.model.jquerySelectionField.value => ''");

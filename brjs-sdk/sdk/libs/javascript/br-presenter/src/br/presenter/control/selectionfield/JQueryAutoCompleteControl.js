@@ -87,16 +87,6 @@ JQueryAutoCompleteControl.prototype.onViewReady = function() {
 	this.m_jQueryInput = jQuery(this.m_eElement);
 	var self = this;
 
-	this.m_jQueryInput.keydown(function(event, oUi) {
-		if (event.which === 13) { // enter
-			self._setValue(self.m_oPresentationNode, this, oUi);
-			event.stopImmediatePropagation();
-			event.preventDefault();
-			this.blur();
-			return false;
-		}
-	});
-
 	this.m_jQueryInput.autocomplete({
 		delay: this.delay || 0,
 		minLength: self.m_nMinCharAmount || 0,
@@ -121,9 +111,6 @@ JQueryAutoCompleteControl.prototype.onViewReady = function() {
 		},
 		select: function(event, oUi) {
 			self._setValue(self.m_oPresentationNode, this, oUi);
-			// don't propagate this to the keydown (if it's triggered by an enter)
-			event.stopImmediatePropagation();
-			event.preventDefault();
 			// if the selection is triggered by a click, not by pressing enter, then blur
 			if (self.m_bBlurAfterClick === true) {
 				var ie8LeftClick = !event.button && !event.which;
