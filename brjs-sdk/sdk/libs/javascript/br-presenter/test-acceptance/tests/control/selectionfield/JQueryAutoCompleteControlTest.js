@@ -65,15 +65,30 @@
             then("demo.view.(#autocomplete-container2 li:eq(0)).text = 'AA'");
         });
 
-		it("does blur the input after selection is made by click if blurAfterClick is set to true", function() {
-			given("demo.viewOpened = true");
-			when("demo.model.jquerySelectionField.value => ''");
-				and("demo.view.(#jqueryAutoCompleteBox3).typedValue => 'A'");
-				and("demo.view.(#autocomplete-container li:eq(0) a).clicked => true");
-			then("demo.model.jquerySelectionField.value = 'AA'");
-				and("demo.view.(#jqueryAutoCompleteBox3).value = 'AA'");
-				and("demo.view.(#jqueryAutoCompleteBox3).focused = false");
-		});
+        it("does blur the input after selection is made by click if blurAfterClick is set to true", function() {
+            given("demo.viewOpened = true");
+            when("demo.model.jquerySelectionField.value => ''");
+                and("demo.view.(#jqueryAutoCompleteBox3).typedValue => 'A'");
+                and("demo.view.(#autocomplete-container3 li:eq(0) a).clicked => true");
+            then("demo.model.jquerySelectionField.value = 'AA'");
+                and("demo.view.(#jqueryAutoCompleteBox3).value = 'AA'");
+                and("demo.view.(#jqueryAutoCompleteBox3).focused = false");
+        });
+
+        it("does not show the menu immediately when a delay option is given", function() {
+            given("demo.viewOpened = true");
+                and("time.timeMode = 'Manual'");
+            when("demo.model.jquerySelectionField.value => ''");
+                and("demo.view.(#jqueryAutoCompleteBox4).typedValue => 'A'");
+            then("demo.view.(#autocomplete-container4 li).count = '0'");
+        });
+
+        it("shows the menu after some time when a delay option is given", function() {
+            given("test.continuesFrom = 'does not show the menu immediately when a delay option is given'");
+            when("time.passedBy => 200");
+            then("demo.view.(#autocomplete-container4 li).isVisible = true");
+                and("demo.view.(#autocomplete-container4 li:eq(0)).text = 'AA'");
+        });
 
     });
 })();

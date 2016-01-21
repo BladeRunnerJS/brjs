@@ -98,6 +98,7 @@ JQueryAutoCompleteControl.prototype.onViewReady = function() {
 	});
 
 	this.m_jQueryInput.autocomplete({
+		delay: this.delay || 0,
 		minLength: self.m_nMinCharAmount || 0,
 		autoFocus: true,
 		appendTo: self.m_sAppendTo,
@@ -181,6 +182,9 @@ JQueryAutoCompleteControl.prototype.setOptions = function(mOptions) {
 	}
 	if (mOptions.blurAfterClick !== undefined) {
 		this.m_bBlurAfterClick = mOptions.blurAfterClick;
+	}
+	if (mOptions.delay !== undefined) {
+		this.delay = mOptions.delay;
 	}
 };
 
