@@ -151,16 +151,18 @@ JQueryAutoCompleteControl.prototype._valueChanged = function() {
  * @private
  */
 JQueryAutoCompleteControl.prototype.setOptions = function(mOptions) {
-	if (mOptions && mOptions.openOnFocus !== undefined && mOptions.openOnFocus !== 'false') {
+	mOptions = mOptions || {};
+
+	if (mOptions.openOnFocus !== undefined && mOptions.openOnFocus !== 'false')	{
 		this.m_bOpenOnFocus = true;
 	}
-	if (mOptions && mOptions.appendTo !== undefined) {
+	if (mOptions.appendTo !== undefined) {
 		this.m_sAppendTo = mOptions.appendTo;
 	}
-	if (mOptions && mOptions.minCharAmount !== undefined) {
+	if (mOptions.minCharAmount !== undefined) {
 		this.m_nMinCharAmount = mOptions.minCharAmount;
 	}
-	if ( mOptions && mOptions.blurAfterClick !== undefined) {
+	if (mOptions.blurAfterClick !== undefined) {
 		this.m_bBlurAfterClick = mOptions.blurAfterClick;
 	}
 };
