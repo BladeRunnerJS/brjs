@@ -40,6 +40,14 @@
                 and("demo.view.(#jqueryAutoCompleteBox).value = 'AA'");
         });
 
+        it("sets the formatted value to the textbox", function() {
+            given("demo.viewOpened = true");
+            when("demo.model.jquerySelectionField.value => ''");
+                and("demo.view.(#jqueryAutoCompleteBox).typedValue => 'F'");
+                and("demo.view.(#autocomplete-container li:eq(0) a).clicked => true");
+            then("demo.view.(#jqueryAutoCompleteBox).value = 'Formatted'");
+        });
+
         it("hides the dropdown when the page is scrolled", function() {
             given("test.continuesFrom = 'correctly auto completes a valid input option'");
             when("test.page.(div:first).mouseWheel => '20'");

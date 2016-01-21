@@ -78,7 +78,7 @@ JQueryAutoCompleteControl.prototype.setPresentationNode = function(oPresentation
 		throw new InvalidControlModelError('JQueryAutoCompleteControl', 'AutoCompleteSelectionField');
 	}
 
-	this.m_eElement.value = oPresentationNode.value.getValue();
+	this.m_eElement.value = oPresentationNode.value.getFormattedValue();
 	this._valueChangedListener = oPresentationNode.value.addUpdateListener(this, '_valueChanged');
 	this.m_oPresentationNode = oPresentationNode;
 };
@@ -156,12 +156,12 @@ JQueryAutoCompleteControl.prototype._setValue = function(oPresentationNode, oInp
 		var presentationNodeValue = isValidOption ? oInput.value : oUi.item.value;
 
 		oPresentationNode.value.setValue( presentationNodeValue );
-		this.m_eElement.value = ( this.clearTextAfterValidInput ? '' : presentationNodeValue);
+		this.m_eElement.value = ( this.clearTextAfterValidInput ? '' : oPresentationNode.value.getFormattedValue());
 	}
 };
 
 JQueryAutoCompleteControl.prototype._valueChanged = function() {
-	this.m_eElement.value = this.m_oPresentationNode.value.getValue();
+	this.m_eElement.value = this.m_oPresentationNode.value.getFormattedValue();
 };
 
 /**
