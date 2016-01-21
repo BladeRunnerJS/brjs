@@ -14,6 +14,7 @@
         it("has the correct initial value", function() {
             given("demo.viewOpened = true");
             then("demo.view.(#jqueryAutoCompleteBox).value = 'BB'");
+                and("demo.view.(#jqueryAutoCompleteBox).doesNotHaveClass = 'autocomplete-menu-open'");
         });
 
         it("correctly auto completes a valid input option", function() {
@@ -49,6 +50,16 @@
             given("test.continuesFrom = 'correctly auto completes a valid input option'");
             when("demo.view.(#autocomplete-container .ui-menu-item:first).mouseWheel => '20'");
             then("demo.view.(#autocomplete-container li).isVisible = true");
+        });
+
+        it("adds a class to the input and when it opens", function() {
+            given("test.continuesFrom = 'correctly auto completes a valid input option'");
+            then("demo.view.(#jqueryAutoCompleteBox).hasClass = 'autocomplete-menu-open'");
+        });
+
+        it("removes a class from the input when it closes", function() {
+            given("test.continuesFrom = 'hides the dropdown when the page is scrolled'");
+            then("demo.view.(#jqueryAutoCompleteBox).doesNotHaveClass = 'autocomplete-menu-open'");
         });
 
         it("does not display any options if minCharAmount is set to 2", function() {

@@ -102,6 +102,17 @@ JQueryAutoCompleteControl.prototype.onViewReady = function() {
 		minLength: self.m_nMinCharAmount || 0,
 		autoFocus: true,
 		appendTo: self.m_sAppendTo,
+		open: function() {
+			// ensure menu is on top of elements
+			self.m_jQueryInput.autocomplete('widget').css('z-index', 999999);
+
+			self.m_jQueryInput.addClass('autocomplete-menu-open');
+
+			return false;
+		},
+		close: function() {
+			self.m_jQueryInput.removeClass('autocomplete-menu-open');
+		},
 		source: function(request, response) {
 			var sTerm = request.term;
 			self.m_oPresentationNode.getAutoCompleteList(sTerm, function(pValues) {
