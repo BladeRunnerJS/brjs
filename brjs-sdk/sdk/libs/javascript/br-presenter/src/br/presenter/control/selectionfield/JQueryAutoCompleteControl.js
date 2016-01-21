@@ -128,7 +128,18 @@ JQueryAutoCompleteControl.prototype.onViewReady = function() {
 	this._onDocumentFocus = this._onDocumentFocus.bind(this);
 	this.m_jQueryInput.on('focus', this._onDocumentFocus);
 
+	this._onScroll = this._onScroll.bind(this);
+	jQuery( document.body ).on('mousewheel wheel', this._onScroll);
+
 	this._viewOpened = true;
+};
+
+JQueryAutoCompleteControl.prototype._onScroll = function(wheelEvent) {
+	var isEventTargetChildOfAutoComplete = this.m_jQueryInput.autocomplete('widget')[0].contains(wheelEvent.target);
+
+	if( isEventTargetChildOfAutoComplete === false ) {
+		this.m_jQueryInput.autocomplete('close');
+	}
 };
 
 JQueryAutoCompleteControl.prototype._onDocumentFocus = function() {
@@ -180,6 +191,7 @@ JQueryAutoCompleteControl.prototype.destroy = function() {
 	// if onOpen is never called the control wouldn't be initialised, hence we must guard against that
 	if(this._viewOpened) {
 		this.m_jQueryInput.off('focus', this._onDocumentFocus);
+		jQuery( document.body ).off('mousewheel wheel', this._onScroll);
 		this.m_jQueryInput.autocomplete('destroy');
 		this.m_jQueryInput.off();
 	}
