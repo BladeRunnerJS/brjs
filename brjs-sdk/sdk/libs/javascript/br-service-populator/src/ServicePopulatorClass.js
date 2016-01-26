@@ -12,26 +12,22 @@ var ServicePopulatorClass = function(serviceBox, serviceData) {
 }
 
 ServicePopulatorClass.prototype.populate = function() {
-
 	for (var serviceName in this._serviceData) {
-		var serviceInfo = this._serviceData[serviceName];
-		var serviceFactory = require(serviceInfo.requirePath);
-		this.register(serviceName, serviceFactory);
+		this.register(serviceName);
 	}
 }
 
-ServicePopulatorClass.prototype.register = function(name, factory) {
+ServicePopulatorClass.prototype.register = function(name) {
 	var serviceInfo = this._serviceData[name];
 
-	if (factory.dependencies === undefined) {
-		factory = function(ConstructorFunction) {
-			return function() {
-				return Promise.resolve(new ConstructorFunction());
-			};
-		}(factory)
+	var factory = function(requirePath) {
+		return function() {
+			var constructorFunction = require(requirePath);
+			return Promise.resolve(new constructorFunction());
+		};
+	}(serviceInfo.requirePath);
 
-		factory.dependencies = serviceInfo.dependencies;
-	}
+	factory.dependencies = serviceInfo.dependencies;
 
 	name = name.substring(0, 8) === 'service!' ? name.substring(8, name.length) : name;
 	this._serviceBox.register(name, factory);
