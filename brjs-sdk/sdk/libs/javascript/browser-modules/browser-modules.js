@@ -1,3 +1,5 @@
+// THIS IS THE ONE
+
 (function() {
 	"use strict";
 
@@ -191,6 +193,18 @@
 				return Realm.prototype.require.apply(self, arguments);
 			}
 			target.activeRealm = this;
+
+			if(this.constructor.name === "SubRealm") {
+				debugger;
+				var serviceBox = target.require('br/servicebox/serviceBox');
+				var ServicePopulatorClass = target.require('br/servicepopulator/ServicePopulatorClass');
+				var servicePopulator = new ServicePopulatorClass(serviceBox);
+				var syncResolve = target.require('syncResolve');
+				servicePopulator.populate();
+				syncResolve(function() {
+					return serviceBox.resolveAll();
+				});
+			}
 		} else {
 			throw new Error("Can only install to one place at once.");
 		}

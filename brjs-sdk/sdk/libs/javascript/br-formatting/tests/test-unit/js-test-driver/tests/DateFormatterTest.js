@@ -2,9 +2,13 @@
 	DateFormatterTest = TestCase("DateFormatterTest");
 
 	var DateFormatter = require('br/presenter/formatter/DateFormatter');
+	var serviceBox = require('br/servicebox/serviceBox');
+	var syncResolve = require('syncResolve');
+	var ThousandsFormatter = require('br/presenter/formatter/ThousandsFormatter');
 
 	DateFormatterTest.prototype.setUp = function() {
 
+		debugger;
 		this.m_oDate = Date;
 
 		this.oFormatter = new DateFormatter();

@@ -1,3 +1,4 @@
 
-var ServiceBoxClass = require('br/servicebox/ServiceBoxClass');
-module.exports = new ServiceBoxClass();
+var _ServiceBoxClass = require('br/servicebox/ServiceBoxClass');
+var  serviceBox = _ServiceBoxClass.factories ? _ServiceBoxClass : new _ServiceBoxClass();
+module.exports = serviceBox;
