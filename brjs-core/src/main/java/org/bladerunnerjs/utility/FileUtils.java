@@ -161,6 +161,9 @@ public class FileUtils {
 		moveDirectory(brjsNode.root().getMemoizedFile(srcFile), destFile);		
 	}
 	public static void moveDirectory(MemoizedFile srcFile, MemoizedFile destFile) throws IOException {
+		if (srcFile.getAbsolutePath().equals(destFile.getAbsolutePath())) {
+			return;
+		}
 		org.apache.commons.io.FileUtils.moveDirectory(srcFile.getUnderlyingFile(), destFile.getUnderlyingFile());
 		srcFile.incrementChildFileVersions();
 		destFile.incrementChildFileVersions();
