@@ -28,17 +28,17 @@ public class BRJSDevServlet extends HttpServlet {
 	private static final long serialVersionUID = 1964608537461568895L;
 
 	private static final String CONTENT_TYPE = "Content-Type";
-	
+
 	private App app;
 	private ServletContext servletContext;
 	private BRJS brjs;
-	
+
 	@Override
 	public void init(ServletConfig config) throws ServletException
 	{
 		super.init(config);
 		servletContext = config.getServletContext();
-		
+
 		try {
 			File brjsDir = new File(servletContext.getRealPath("/"));
 			ThreadSafeStaticBRJSAccessor.initializeModel(brjsDir, brjsDir);
@@ -46,16 +46,16 @@ public class BRJSDevServlet extends HttpServlet {
 		catch (InvalidSdkDirectoryException e) {
 			throw new ServletException(e);
 		}
-		
+
 		try {
-			brjs = ThreadSafeStaticBRJSAccessor.aquireModel();
+			brjs = ThreadSafeStaticBRJSAccessor.acquireModel();
 			app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
 		}
 		finally {
 			ThreadSafeStaticBRJSAccessor.releaseModel();
 		}
 	}
-	
+
 	@Override
 	public void destroy() {
 		try
@@ -67,11 +67,11 @@ public class BRJSDevServlet extends HttpServlet {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath() + request.getServletPath() + "/", "");
-		
+
 		if (!requestPath.endsWith("/")) {
 			String fileName = (requestPath.contains("/")) ? StringUtils.substringAfterLast(requestPath, "/") : requestPath;
 			String mimeType = servletContext.getMimeType(fileName);
@@ -79,8 +79,8 @@ public class BRJSDevServlet extends HttpServlet {
 				response.setHeader(CONTENT_TYPE, mimeType);
 			}
 		}
-		
-		ThreadSafeStaticBRJSAccessor.aquireModel();
+
+		ThreadSafeStaticBRJSAccessor.acquireModel();
 		UrlContentAccessor contentAccessor = new ServletContentAccessor(app, servletContext, request, response);
 		try ( ResponseContent content = app.requestHandler().handleLogicalRequest(requestPath, contentAccessor, RequestMode.Dev); )
 		{
@@ -102,7 +102,7 @@ public class BRJSDevServlet extends HttpServlet {
 		}
 		finally {
 			ThreadSafeStaticBRJSAccessor.releaseModel();
-		} 
+		}
 	}
-	
+
 }
