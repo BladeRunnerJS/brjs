@@ -2,6 +2,7 @@
 
 var ToolTipField = require('br/presenter/node/ToolTipField');
 var PropertyHelper = require('br/presenter/property/PropertyHelper');
+var EditableProperty = require('br/presenter/property/EditableProperty');
 var Errors = require('br/Errors');
 var ToolTipNode = require('br/presenter/node/ToolTipNode');
 
@@ -30,6 +31,8 @@ function ErrorMonitor(oTooltipNode) {
 	this.oTooltipNode = oTooltipNode;
 
 	this.m_pErrorStack = [];
+
+	this.hasError = new EditableProperty(false);
 }
 
 /**
@@ -79,7 +82,9 @@ ErrorMonitor.prototype.monitorField = function(oField) {
 
 	var oTicketErrorProperty = this;
 	var fValidationSuccessHandler = function() {
-		if (!this.hasError.getValue()) {
+		if (this.hasError.getValue() === true && oField.failureMessage.getValue() !== '') {
+			oTicketErrorProperty._addError(oField);
+		} else {
 			oTicketErrorProperty._removeError(this);
 		}
 	};
@@ -115,6 +120,7 @@ ErrorMonitor.prototype.removeAllErrors = function() {
 
 ErrorMonitor.prototype._addError = function(oField) {
 	this._removeFromStack(oField);
+	this.hasError.setValue(true);
 
 	var sFailureMessage = oField.failureMessage.getValue();
 	this.m_pErrorStack.push({
@@ -182,6 +188,7 @@ ErrorMonitor.prototype._notifyObserversOfErrorChange = function() {
  */
 ErrorMonitor.prototype._removeLastError = function() {
 	this.oTooltipNode.setMessage('');
+	this.hasError.setValue(false);
 };
 
 /**
@@ -189,7 +196,10 @@ ErrorMonitor.prototype._removeLastError = function() {
  * @private
  */
 ErrorMonitor.prototype._updateErrorMessage = function() {
-	this.oTooltipNode.setMessage(this._getNextErrorMessage());
+	var oErrorMessage = this._getNextErrorMessage();
+	if (oErrorMessage) {
+		this.oTooltipNode.setMessage(oErrorMessage);
+	}
 };
 
 /**
@@ -239,7 +249,9 @@ ErrorMonitor.prototype._addTooltipToTopOfStack = function() {
  * @private
  */
 ErrorMonitor.prototype._addTooltipTo = function(oField) {
-	oField.tooltipClassName.setValue(this.oTooltipNode.getTooltipClassName());
+	if (oField.failureMessage.getValue() !== '') {
+		oField.tooltipClassName.setValue(this.oTooltipNode.getTooltipClassName());
+	}
 };
 
 /**

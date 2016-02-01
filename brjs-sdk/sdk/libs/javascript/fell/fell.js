@@ -1236,15 +1236,17 @@ module.exports = LogStore;
 var Log = require('./Log');
 var LogStore = require('./destination/LogStore');
 var ConsoleLog = require('./destination/ConsoleLog');
+var Utils = require('./Utils');
 
 var fell = new Log();
-fell.Log = fell;
 fell.destination = {
 	LogStore: LogStore,
-	ConsoleLog: ConsoleLog
+	ConsoleLog: ConsoleLog,
+	Utils: Utils
 };
+fell.Log = fell;
 
 module.exports = fell;
 
-},{"./Log":8,"./destination/ConsoleLog":12,"./destination/LogStore":13}]},{},[14])(14)
+},{"./Log":8,"./Utils":11,"./destination/ConsoleLog":12,"./destination/LogStore":13}]},{},[14])(14)
 });
