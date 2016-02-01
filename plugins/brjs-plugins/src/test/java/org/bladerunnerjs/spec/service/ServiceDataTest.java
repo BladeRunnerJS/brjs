@@ -10,6 +10,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.PrintStream;
+
 import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.*;
 
 
@@ -287,6 +290,31 @@ public class ServiceDataTest extends SpecTest
     		"		\"requirePath\": \"appns/ServiceClass\""
     	);
 	}
-	
-	
+
+	@Test
+	public void serviceDataListsAServicesServiceDependencies_whenServiceHasNestedDependencies() throws Exception {
+		given(aspect).indexPageHasContent("require('service!$data'); br.ServiceRegistry.getService('service1');")
+				.and(aspect).classRequires("appns/ServiceClass1", "appns/Class")
+				.and(aspect).classRequires("appns/Class", "service!service2")
+				.and(aspect).hasClass("appns/ServiceClass2")
+				.and(aspectAliasDefinitionsFile).hasAlias("service1", "appns/ServiceClass1")
+				.and(aspectAliasDefinitionsFile).hasAlias("service2", "appns/ServiceClass2");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		System.setOut(new PrintStream(new File("response.js")));
+		System.out.print(response);
+		then(response).containsLines(
+			"module.exports = {",
+			"	\"service!service2\": {",
+			"		\"requirePath\": \"appns/ServiceClass2\",",
+			"		\"dependencies\": []",
+			"	},",
+			"	\"service!service1\": {",
+			"		\"requirePath\": \"appns/ServiceClass1\",",
+			"		\"dependencies\": [",
+			"			\"service2\"",
+			"		]",
+			"	}",
+			"};"
+		);
+	}
 }
