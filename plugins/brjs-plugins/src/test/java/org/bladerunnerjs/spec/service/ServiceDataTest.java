@@ -300,21 +300,94 @@ public class ServiceDataTest extends SpecTest
 				.and(aspectAliasDefinitionsFile).hasAlias("service1", "appns/ServiceClass1")
 				.and(aspectAliasDefinitionsFile).hasAlias("service2", "appns/ServiceClass2");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsLines(
+				"module.exports = {",
+				"	\"service!service2\": {",
+				"		\"requirePath\": \"appns/ServiceClass2\",",
+				"		\"dependencies\": []",
+				"	},",
+				"	\"service!service1\": {",
+				"		\"requirePath\": \"appns/ServiceClass1\",",
+				"		\"dependencies\": [",
+				"			\"service2\"",
+				"		]",
+				"	}",
+				"};"
+		);
+	}
+
+	@Test
+	public void serviceDataListsAServicesServiceDependencies_whenServiceHasNestedDependenciesThroughServices() throws Exception {
+		given(aspect).indexPageHasContent("require('service!$data'); br.ServiceRegistry.getService('service1');")
+				.and(aspect).classRequires("appns/ServiceClass1", "service!service2")
+				.and(aspect).classRequires("appns/ServiceClass2", "service!service3")
+				.and(aspect).hasClass("appns/ServiceClass3")
+				.and(aspectAliasDefinitionsFile).hasAlias("service1", "appns/ServiceClass1")
+				.and(aspectAliasDefinitionsFile).hasAlias("service2", "appns/ServiceClass2")
+				.and(aspectAliasDefinitionsFile).hasAlias("service3", "appns/ServiceClass3");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).containsLines(
+				"module.exports = {",
+				"	\"service!service2\": {",
+				"		\"requirePath\": \"appns/ServiceClass2\",",
+				"		\"dependencies\": [",
+				"			\"service3\"",
+				"		]",
+				"	},",
+				"	\"service!service3\": {",
+				"		\"requirePath\": \"appns/ServiceClass3\",",
+				"		\"dependencies\": []",
+				"	},",
+				"	\"service!service1\": {",
+				"		\"requirePath\": \"appns/ServiceClass1\",",
+				"		\"dependencies\": [",
+				"			\"service2\",",
+				"			\"service3\"",
+				"		]",
+				"	}",
+				"};"
+		);
+	}
+
+	@Test
+	public void serviceDataListsServiceDependencies_whenServiceHasDependencyInTheConstructor() throws Exception {
+		given(aspect).indexPageHasContent("require('service!$data'); br.ServiceRegistry.getService('br.locale-service');")
+			.and(aspect).classFileHasContent("appns/BRLocaleService",
+				"BRLocaleService = function() {\n" +
+				"	this.localeProvider = require('service!br.locale-provider');\n" +
+				"};\n")
+			.and(aspect).classFileHasContent("appns/BRLocaleProvider",
+				"BRLocaleProvider = function() {\n" +
+				"	require('service!br.app-meta-service');\n" +
+				"};\n")
+			.and(aspect).hasClass("appns/BRAppMetaService")
+			.and(aspectAliasDefinitionsFile).hasAlias("br.app-meta-service", "appns/BRAppMetaService")
+			.and(aspectAliasDefinitionsFile).hasAlias("br.locale-service", "appns/BRLocaleService")
+			.and(aspectAliasDefinitionsFile).hasAlias("br.locale-provider", "appns/BRLocaleProvider");
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		System.setOut(new PrintStream(new File("response.js")));
 		System.out.print(response);
 		then(response).containsLines(
 			"module.exports = {",
-			"	\"service!service2\": {",
-			"		\"requirePath\": \"appns/ServiceClass2\",",
+			"	\"service!br.locale-provider\": {",
+			"		\"requirePath\": \"appns/BRLocaleProvider\",",
+			"		\"dependencies\": [",
+			"			\"br.app-meta-service\"",
+			"		]",
+			"	},",
+			"	\"service!br.app-meta-service\": {",
+			"		\"requirePath\": \"appns/BRAppMetaService\",",
 			"		\"dependencies\": []",
 			"	},",
-			"	\"service!service1\": {",
-			"		\"requirePath\": \"appns/ServiceClass1\",",
+			"	\"service!br.locale-service\": {",
+			"		\"requirePath\": \"appns/BRLocaleService\",",
 			"		\"dependencies\": [",
-			"			\"service2\"",
+			"			\"br.locale-provider\",",
+			"			\"br.app-meta-service\"",
 			"		]",
 			"	}",
 			"};"
 		);
 	}
+
 }
