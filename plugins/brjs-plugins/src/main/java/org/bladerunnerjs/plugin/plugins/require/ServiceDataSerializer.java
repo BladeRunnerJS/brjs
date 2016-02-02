@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.Asset;
 import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.api.model.exception.RequirePathException;
@@ -58,7 +59,13 @@ public class ServiceDataSerializer
 	private static void addDependentAssets(BundleSet bundleSet, Asset asset, List<Asset> acc) throws ModelOperationException {
 		List<Asset> dependentAssets = new ArrayList<>();
 		try {
-			dependentAssets = bundleSet.bundlableNode().getLinkedAsset(asset.getPrimaryRequirePath()).getDependentAssets(bundleSet.bundlableNode());
+			Asset dependentAsset = bundleSet.bundlableNode().getAsset(asset.getPrimaryRequirePath());
+			if (dependentAsset instanceof LinkedAsset) {
+				dependentAssets = ((LinkedAsset) dependentAsset).getDependentAssets(bundleSet.bundlableNode());
+			}
+			else{
+				dependentAssets.add(dependentAsset);
+			}
 		} catch (RequirePathException e) {
 //			e.printStackTrace();
 		}

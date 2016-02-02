@@ -103,13 +103,13 @@ public class AliasCommonJsSourceModule implements CommonJsSourceModule {
 		try {
 			AliasDefinition resolvedAliasDefinition = AliasingUtility.resolveAlias(aliasDefinition.getName(), bundlableNode);
 			
-			dependencies.add(bundlableNode.getLinkedAsset("br/AliasRegistry"));
-			dependencies.add(bundlableNode.getLinkedAsset(resolvedAliasDefinition.getRequirePath()));
+			dependencies.add(bundlableNode.getAsset("br/AliasRegistry"));
+			dependencies.add(bundlableNode.getAsset(resolvedAliasDefinition.getRequirePath()));
 			if (aliasDefinition.getInterfaceRequirePath() != null) {
-				dependencies.add(bundlableNode.getLinkedAsset(resolvedAliasDefinition.getInterfaceRequirePath()));
+				dependencies.add(bundlableNode.getAsset(resolvedAliasDefinition.getInterfaceRequirePath()));
 			}
 			
-			Asset aliasData = bundlableNode.getLinkedAsset(AliasDataSourceModule.PRIMARY_REQUIRE_PATH);
+			Asset aliasData = bundlableNode.getAsset(AliasDataSourceModule.PRIMARY_REQUIRE_PATH);
 			if (aliasData != null) {
 				dependencies.add(aliasData);
 			}
