@@ -253,8 +253,7 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 				"// lib",
 				"some lib content",
 				"",
-				"define('lib', function(require, exports, module) {",		
-				"module.exports = {};")
+				"define('lib', function(require, exports, module) {module.exports = {};")
 			.and(pageResponse).doesNotContainText("{} = require('lib');");
 	}
 	

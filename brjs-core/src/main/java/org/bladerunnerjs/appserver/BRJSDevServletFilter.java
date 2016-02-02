@@ -38,7 +38,7 @@ public class BRJSDevServletFilter implements Filter {
 			ThreadSafeStaticBRJSAccessor.initializeModel(brjsDir, brjsDir);
 			
 			try {
-				brjs = ThreadSafeStaticBRJSAccessor.aquireModel();
+				brjs = ThreadSafeStaticBRJSAccessor.acquireModel();
 				app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
 			}
 			finally {
