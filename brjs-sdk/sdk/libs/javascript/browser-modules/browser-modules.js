@@ -195,7 +195,6 @@
 			target.activeRealm = this;
 
 			if(this.constructor.name === "SubRealm") {
-				debugger;
 				var serviceBox = target.require('br/servicebox/serviceBox');
 				var ServicePopulatorClass = target.require('br/servicepopulator/ServicePopulatorClass');
 				var servicePopulator = new ServicePopulatorClass(serviceBox);

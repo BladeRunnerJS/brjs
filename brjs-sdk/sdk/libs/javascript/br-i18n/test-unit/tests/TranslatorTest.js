@@ -7,7 +7,6 @@
 
 	TranslatorTest = TestCase("TranslatorTest");
 	TranslatorTest.prototype.setUp = function() {
-		debugger;
 		JsHamcrest.Integration.JsTestDriver();
 		JsMockito.Integration.JsTestDriver();
 		
@@ -399,7 +398,6 @@
 	};
 
 	TranslatorTest.prototype.test_parseNumberWorks = function() {
-		debugger;
 		var Translator = require('br/i18n/Translator');
 		var translator = new Translator(this.i18nTimeDateNumberMessages, 'locale');
 

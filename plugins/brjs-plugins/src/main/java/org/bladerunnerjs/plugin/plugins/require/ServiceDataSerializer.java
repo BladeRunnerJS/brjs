@@ -45,11 +45,7 @@ public class ServiceDataSerializer
 			}
 
 			final ArrayList<Asset> dependencies = new ArrayList<>();
-			try {
-				addDependentAssets(bundleSet, resolvedServiceSourceModule, dependencies);
-			} catch (RequirePathException e) {
-				e.printStackTrace();
-			}
+			addDependentAssets(bundleSet, resolvedServiceSourceModule, dependencies);
 			appendServiceToJSON(output, serviceSourceModule, resolvedServiceSourceModule, dependencies);
 		}
 		if (output.length() > 0) {
@@ -59,8 +55,13 @@ public class ServiceDataSerializer
 		return "{ }";
 	}
 
-	private static void addDependentAssets(BundleSet bundleSet, Asset asset, List<Asset> acc) throws ModelOperationException, RequirePathException {
-		List<Asset> dependentAssets = bundleSet.bundlableNode().getLinkedAsset(asset.getPrimaryRequirePath()).getDependentAssets(bundleSet.bundlableNode());
+	private static void addDependentAssets(BundleSet bundleSet, Asset asset, List<Asset> acc) throws ModelOperationException {
+		List<Asset> dependentAssets = new ArrayList<>();
+		try {
+			dependentAssets = bundleSet.bundlableNode().getLinkedAsset(asset.getPrimaryRequirePath()).getDependentAssets(bundleSet.bundlableNode());
+		} catch (RequirePathException e) {
+//			e.printStackTrace();
+		}
 		for (Asset dependentAsset : dependentAssets) {
 			if (acc.contains(dependentAsset)) {
 				continue;
@@ -87,6 +88,9 @@ public class ServiceDataSerializer
 		for (Asset asset : dependantAssets) {
 			String assetPrimaryRequirePath = asset.getPrimaryRequirePath();
 			if (!assetPrimaryRequirePath.startsWith("service!")) {
+				continue;
+			}
+			if (assetPrimaryRequirePath.endsWith("$data")) {
 				continue;
 			}
 			String assetRequireSuffix = StringUtils.substringAfter(assetPrimaryRequirePath, "service!");

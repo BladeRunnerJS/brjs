@@ -81,14 +81,13 @@ public class ServicePopulatorContentPlugin extends AbstractContentPlugin impleme
             {
                 List<Reader> readerList = new ArrayList<Reader>();
                 readerList.add(new StringReader(
-                    "debugger;\n" +
                     "var serviceBox = require('br/servicebox/serviceBox');\n" +
                     "var ServicePopulatorClass = require('br/servicepopulator/ServicePopulatorClass');\n" +
                     "var servicePopulator = new ServicePopulatorClass(serviceBox);\n" +
                     "var syncResolve = require('syncResolve');\n" +
                     "servicePopulator.populate();\n" +
                     "syncResolve(function() {\n" +
-                    "\treturn serviceBox.resolveAll();\n" +
+                    "    return serviceBox.resolveAll();\n" +
                     "});")
                 );
                 return new CharResponseContent( brjs, readerList );

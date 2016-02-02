@@ -12,7 +12,6 @@ var ServicePopulatorClass = function(serviceBox, serviceData) {
 }
 
 ServicePopulatorClass.prototype.populate = function() {
-	debugger;
 	for (var serviceName in this._serviceData) {
 		var name = serviceName;
 		var name = name.substring(0, 8) === 'service!' ? name.substring(8, name.length) : name;
