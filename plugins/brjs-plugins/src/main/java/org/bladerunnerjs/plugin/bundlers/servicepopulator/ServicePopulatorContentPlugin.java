@@ -81,14 +81,19 @@ public class ServicePopulatorContentPlugin extends AbstractContentPlugin impleme
             {
                 List<Reader> readerList = new ArrayList<Reader>();
                 readerList.add(new StringReader(
-                    "var serviceBox = require('br/servicebox/serviceBox');\n" +
-                    "var ServicePopulatorClass = require('br/servicepopulator/ServicePopulatorClass');\n" +
-                    "var servicePopulator = new ServicePopulatorClass(serviceBox);\n" +
-                    "var syncResolve = require('syncResolve');\n" +
-                    "servicePopulator.populate();\n" +
-                    "syncResolve(function() {\n" +
-                    "    return serviceBox.resolveAll();\n" +
-                    "});")
+                    "try {\n" +
+                    "    var serviceBox = require('br/servicebox/serviceBox');\n" +
+                    "    var ServicePopulatorClass = require('br/servicepopulator/ServicePopulatorClass');\n" +
+                    "    var servicePopulator = new ServicePopulatorClass(serviceBox);\n" +
+                    "    var syncResolve = require('syncResolve');\n" +
+                    "    servicePopulator.populate();\n" +
+                    "    syncResolve(function() {\n" +
+                    "        return serviceBox.resolveAll();\n" +
+                    "    });\n" +
+                    "}\n" +
+                    "catch(e) {\n" +
+                    "    console.log('The exception is probably caused by the fact that no asset requires the service registry');\n" +
+                    "}")
                 );
                 return new CharResponseContent( brjs, readerList );
             }
