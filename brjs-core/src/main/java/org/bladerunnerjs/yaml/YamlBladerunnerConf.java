@@ -93,6 +93,7 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 		addDefaultActivePlugin(activePlugins, ContentPlugin.class, "org.bladerunnerjs.plugin.bundlers.thirdparty.ThirdpartyContentPlugin");
 		addDefaultActivePlugin(activePlugins, ContentPlugin.class, "org.bladerunnerjs.plugin.bundlers.appmeta.AppMetadataContentPlugin");
 		addDefaultActivePlugin(activePlugins, ContentPlugin.class, "org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsContentPlugin");
+		addDefaultActivePlugin(activePlugins, ContentPlugin.class, "org.bladerunnerjs.plugin.bundlers.servicepopulator.ServicePopulatorContentPlugin");
 		addDefaultActivePlugin(activePlugins, ContentPlugin.class, "org.bladerunnerjs.plugin.bundlers.namespacedjs.NamespacedJsContentPlugin");
 		addDefaultActivePlugin(activePlugins, ContentPlugin.class, "*");
 		
