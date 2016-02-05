@@ -46,7 +46,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		minifyWhitespaceContent = "var foo={};foo.publicProperty=1;foo._privateProperty1=2;foo[\"_privateProperty2\"]=3;alert(foo)";
 		minifySimpleContent     = "alert({publicProperty:1,_privateProperty1:2,_privateProperty2:3})})";
 		minifyMediumContent     = "alert({publicProperty:1,a:2,_privateProperty2:3})})";
-		minifyAdvancedContent   = "alert({g:1,f:2,_privateProperty2:3})})";
+		minifyAdvancedContent   = "alert({b:1,a:2,_privateProperty2:3})})";
 
 		unminifiedClass = "var MyClass = function() {\n" +
 				"	this.m_nCount = 0;\n" +

@@ -17,6 +17,7 @@ import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.utility.MissingAppJarsException;
 import org.bladerunnerjs.appserver.util.TokenReplacementException;
+import org.bladerunnerjs.plugin.plugins.require.AppMetaDataSourceModule;
 import org.bladerunnerjs.utility.AppMetadataUtility;
 import org.bladerunnerjs.utility.LoggingMissingTokenHandler;
 import org.junit.Before;
@@ -395,7 +396,10 @@ public class BuildAppCommandTest extends SpecTest
     		Aspect aspect = app.defaultAspect();
     		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasClass("appns/Class2")
-			.and(aspect).indexPageHasContent("<@js.bundle@/>\nrequire('appns/Class1');");
+			.and(aspect).indexPageHasContent(
+					"<@js.bundle@/>\nrequire('appns/Class1');\n" +
+					"require('" + AppMetaDataSourceModule.PRIMARY_REQUIRE_PATH + "');"
+			);
 		when(brjs).runCommand("build-app", "app1", "-v", "myversion");
 		then(brjs).hasDirectoryWithFormat("generated/built-apps/app1/v/", "myversion\\-.*", filePath)
 			.and(new File(filePath.toString())).containsFileWithContents("/js/prod/combined/bundle.js", "module.exports.APP_VERSION = '"+new File(filePath.toString()).getName()+"';");
