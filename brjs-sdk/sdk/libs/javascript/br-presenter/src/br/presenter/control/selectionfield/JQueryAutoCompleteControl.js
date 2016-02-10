@@ -133,13 +133,14 @@ JQueryAutoCompleteControl.prototype.onViewReady = function() {
 	}
 };
 
-JQueryAutoCompleteControl.prototype._setValue = function(oPresentationNode, oInput, oUi) {
-	if (oPresentationNode.isValidOption(oInput.value)) {
-		oPresentationNode.value.setValue(oInput.value);
-		this.m_eElement.value = oInput.value;
-	} else if (oUi) {
-		oPresentationNode.value.setValue(oUi.item.value);
-		this.m_eElement.value = oUi.item.value;
+JQueryAutoCompleteControl.prototype._setValue = function( oPresentationNode, oInput, oUi ) {
+	var isValidOption = oPresentationNode.isValidOption( oInput.value );
+
+	if ( isValidOption || oUi ) {
+		var presentationNodeValue = isValidOption ? oInput.value : oUi.item.value;
+
+		oPresentationNode.value.setValue( presentationNodeValue );
+		this.m_eElement.value = ( this.clearTextAfterValidInput ? '' : presentationNodeValue );
 	}
 };
 
@@ -150,17 +151,25 @@ JQueryAutoCompleteControl.prototype._valueChanged = function() {
 /**
  * @private
  */
-JQueryAutoCompleteControl.prototype.setOptions = function(mOptions) {
-	if (mOptions && mOptions.openOnFocus !== undefined && mOptions.openOnFocus !== 'false') {
+JQueryAutoCompleteControl.prototype.setOptions = function( mOptions ) {
+	mOptions = mOptions || {};
+
+	if (mOptions.openOnFocus !== undefined && mOptions.openOnFocus !== 'false')	{
 		this.m_bOpenOnFocus = true;
 	}
-	if (mOptions && mOptions.appendTo !== undefined) {
+	if (mOptions.appendTo !== undefined) {
 		this.m_sAppendTo = mOptions.appendTo;
 	}
-	if (mOptions && mOptions.minCharAmount !== undefined) {
+	if (mOptions.minCharAmount !== undefined)	{
 		this.m_nMinCharAmount = mOptions.minCharAmount;
 	}
-	if ( mOptions && mOptions.blurAfterClick !== undefined) {
+	if (mOptions.clearTextAfterValidInput !== undefined)	{
+		this.clearTextAfterValidInput = mOptions.clearTextAfterValidInput;
+	}
+	if (mOptions.delay !== undefined) {
+		this.delay = mOptions.delay;
+	}
+	if (mOptions.blurAfterClick !== undefined) {
 		this.m_bBlurAfterClick = mOptions.blurAfterClick;
 	}
 };
