@@ -1,10 +1,19 @@
 
 (function() {
+	// JsTestDriver needs to call AliasRegistry.clear and
+	// ServiceRegistry.clear before the setUp. But since
+	// this happens at the moment of JsTestDriver
+	// Initialization, in order to ensure this it is
+	// necessary to create some side-effect. For that
+	// reason this test appears to do nothing, because
+	// everything happens inside JsTestDriver.
+
 	var aliasRegistryClearHasBeenCalled = false;
 	var serviceRegistryClearHasBeenCalled = false;
 	var AliasRegistry = require('br/AliasRegistry');
 	var ServiceRegistry = require('br/ServiceRegistry');
 	var originalAliasRegistryClear = AliasRegistry.clear;
+	var originalServiceRegistryClear = ServiceRegistry.clear;
 
 	if (AliasRegistry.clear) {
 		AliasRegistry.clear = function() {
@@ -19,7 +28,7 @@
 
 	if (ServiceRegistry.clear) {
 		ServiceRegistry.clear = function() {
-			ServiceRegistry.clear();
+			originalServiceRegistryClear();
 			serviceRegistryClearHasBeenCalled = true;
 		}
 	} else {
