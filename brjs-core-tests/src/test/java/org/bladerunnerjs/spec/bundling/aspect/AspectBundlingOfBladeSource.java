@@ -9,6 +9,7 @@ import org.bladerunnerjs.api.model.exception.OutOfScopeRequirePathException;
 import org.bladerunnerjs.api.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 import org.bladerunnerjs.utility.BundleSetBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -373,7 +374,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	@Test
 	public void badRequiresAreNotLoggedForNoneScopeEnforcedSourceModules() throws Exception {
 		given(aspect).indexPageRequires("appns/b1/Blade1Class")
-    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", "alias!$data")
+    		.and(blade1InDefaultBladeset).classRequires("Blade1Class", AliasDataSourceModule.PRIMARY_REQUIRE_PATH)
     		.and(logging).enabled();
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
     	then(logging).doesNotContainWarnMessage(BundleSetBuilder.INVALID_REQUIRE_MSG);
