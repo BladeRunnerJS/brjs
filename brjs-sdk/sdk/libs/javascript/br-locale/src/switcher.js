@@ -32,7 +32,7 @@ module.exports = {
 		var normalizedPath = path === "/" ? "" : path.replace(/^\/?(.*?)(\/|\/index\.html)?$/, '/$1');
 		var localizedPath = normalizedPath + '/' + locale + ((fullyQualifiedPath) ? '.html' : '');
 
-		if (navigator.appName == 'Microsoft Internet Explorer') {
+		if (navigator.userAgent.indexOf("MSIE ") > -1 || navigator.userAgent.match(/Trident.*rv\:11\./)) {
 			if (pageUrl.indexOf(":80") > -1) {
 				localizedPath = localizedPath.substring(1, localizedPath.length);
 			}
