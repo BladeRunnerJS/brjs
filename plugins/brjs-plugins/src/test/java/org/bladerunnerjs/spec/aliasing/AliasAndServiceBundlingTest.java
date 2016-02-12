@@ -18,6 +18,7 @@ import org.bladerunnerjs.plugin.bundlers.aliasing.AliasesReader;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.UnresolvableAliasException;
+import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 import org.bladerunnerjs.utility.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -336,7 +337,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	@Test
 	public void theAliasBlobIsEmptyIfNoAliasesAreUsed() throws Exception
 	{
-		given(aspect).classRequires("appns/Class1", "alias!$data")
+		given(aspect).classRequires("appns/Class1", AliasDataSourceModule.PRIMARY_REQUIRE_PATH)
             .and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
             .and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
@@ -346,7 +347,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	@Test
 	public void theAliasBlobContainsAClassReferencedByAlias() throws Exception
 	{
-		given(aspect).classRequires("appns/Class1", "alias!$data")
+		given(aspect).classRequires("appns/Class1", AliasDataSourceModule.PRIMARY_REQUIRE_PATH)
             .and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
             .and(aspect).indexPageHasAliasReferences("the-alias");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
@@ -564,7 +565,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).hasClass("appns.ServiceClass")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
+		then(response).containsText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "'")
 			.and(response).containsText("define('alias!some.service'");
 	}
 
@@ -577,7 +578,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "ServiceRegistry.getService('some.service')")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
+		then(response).containsText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "'")
 			.and(response).containsText("define('alias!some.service'");
 	}
 
@@ -590,7 +591,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "ServiceRegistry.getService('br.service')")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
+		then(response).containsText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "'")
 			.and(response).containsText("define('alias!br.service'");
 	}
 
@@ -604,7 +605,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "ServiceRegistry.getService('br.service')")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
+		then(response).containsText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "'")
 			.and(response).containsText("define('alias!br.service'");
 	}
 
@@ -621,7 +622,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "otherBrLib.ServiceUser();")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
+		then(response).containsText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "'")
             .and(response).containsText("define('alias!lib.service'")
             .and(response).containsText("otherBrLib.ServiceUser();");
 	}
@@ -640,7 +641,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
             .and(aspect).classFileHasContent("appns.App", "otherBrLib.ServiceUser();")
             .and(aspect).indexPageRefersTo("appns.App");
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
+		then(response).containsText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "'")
             .and(response).containsText("define('alias!lib.service'")
             .and(response).containsText("otherBrLib.ServiceUser();");
 	}
@@ -663,7 +664,7 @@ public class AliasAndServiceBundlingTest extends SpecTest
 		brLibAliasDefinitionsFile = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(brLib, "resources"));
 		given(brLocaleLib).classFileHasContent("switcher", "require('service!br.locale-switcher').switchLocale();")
     		.and(servicesLib).classFileHasContent("br/ServiceRegistry", "require('./AliasRegistry');")
-    		.and(servicesLib).classFileHasContent("br/AliasRegistry", "require('alias!$data');")
+    		.and(servicesLib).classFileHasContent("br/AliasRegistry", "require('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "');")
 			.and(brLib).hasClasses("br/services/LocaleSwitcher")
 			.and(brLib).classFileHasContent("br/services/BRLocaleLoadingSwitcher", "require('br/services/LocaleSwitcher');")
 			.and(brLib).classFileHasContent("br/services/BRLocaleForwardingSwitcher", "require('br/services/LocaleSwitcher');")
@@ -1026,13 +1027,13 @@ public class AliasAndServiceBundlingTest extends SpecTest
 	
 	@Test
 	public void testPackBundlesCanBeCreatedForAspectDefaultTechTestsWhereAliasRegistryIsUsed() throws Exception {
-		given(aspect).classRequires("appns/Class1", "alias!$data")
+		given(aspect).classRequires("appns/Class1", AliasDataSourceModule.PRIMARY_REQUIRE_PATH)
 			.and( aspect.testType("unit").defaultTestTech() ).hasNamespacedJsPackageStyle()
 			.and( aspect.testType("unit").defaultTestTech() ).testRefersTo("pkg/test.js", "appns.Class1")
 			.and( aspect.testType("unit").defaultTestTech() ).containsResourceFileWithContents("en.properties", "appns.prop=val")
 			.and(sdkLib).hasClass("br/AliasRegistry");
 		when( aspect.testType("unit").defaultTestTech() ).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('alias!$data'")
+		then(response).containsText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "'")
 			.and(response).containsText("define('appns/Class1'");
 	}
 	
