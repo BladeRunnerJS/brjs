@@ -13,6 +13,7 @@ import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.plugin.commands.standard.ApplicationDepsCommand;
+import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
 import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.junit.Before;
@@ -270,7 +271,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 				"    +--- '../../libs/javascript/br/src/br/UnknownClass.js'",
 			    "    +--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
 			    "    |    \\--- 'default-aspect/src/appns/Interface.js' (static dep.)",
-				"    |    \\--- 'alias!$data' (static dep.)",
+				"    |    \\--- '" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "' (static dep.)",
 				"    +--- 'default-aspect/index.html' (seed file)");
 	}
 	
