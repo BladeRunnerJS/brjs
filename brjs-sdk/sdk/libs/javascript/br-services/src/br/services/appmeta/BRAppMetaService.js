@@ -1,12 +1,10 @@
 "use strict";
 
-// use a variable to store this so the modle doesn't try to find the source module that represents it during the dependency analysis
-var metaDataRequirePath = "app-meta!$data";
-var metaData;
-
 /**
 * @module br/services/bundlepath/BRAppMetaService
 */
+
+var metaData = require("app-meta!$app-metadata");
 
 var br = require('br/Core');
 var AppMetaService = require('br/services/AppMetaService');
@@ -54,5 +52,3 @@ function getBundlePath(prefix, bundlePath) {
 }
 
 module.exports = BRAppMetaService;
-
-metaData = require(metaDataRequirePath);
