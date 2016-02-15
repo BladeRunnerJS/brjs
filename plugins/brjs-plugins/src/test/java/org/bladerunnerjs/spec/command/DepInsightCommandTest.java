@@ -13,6 +13,7 @@ import org.bladerunnerjs.api.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.api.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.plugin.commands.standard.DepInsightCommand;
+import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
 import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.junit.Before;
@@ -272,7 +273,7 @@ public class DepInsightCommandTest extends SpecTest {
 			"    |    \\--- 'alias!alias-ref' (alias dep.)",
 			"    |    |    \\--- 'default-aspect/index.html' (seed file)",
 			"    +--- 'default-aspect/src/appns/Class.js'",
-			"    +--- 'alias!$data' (alias dep.)");
+			"    +--- '" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "' (alias dep.)");
 	}
 	
 	@Test
@@ -287,7 +288,7 @@ public class DepInsightCommandTest extends SpecTest {
 			    "    |    \\--- 'alias!alias-ref' (alias dep.)",
 			    "    |    |    \\--- 'default-aspect/index.html' (seed file)",
 				"    +--- 'default-aspect/src/appns/Class.js'",
-				"    +--- 'alias!$data' (alias dep.)");
+				"    +--- '" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "' (alias dep.)");
 	}
 	
 	@Test
@@ -302,7 +303,7 @@ public class DepInsightCommandTest extends SpecTest {
 			    "    |    \\--- 'alias!alias ref' (alias dep.)",
 				"    |    |    \\--- 'default-aspect/index.html' (seed file)",
 				"    +--- 'default-aspect/src/appns/Class.js'",
-				"    +--- 'alias!$data' (alias dep.)");
+				"    +--- '" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "' (alias dep.)");
 	}
 	
 	@Ignore
