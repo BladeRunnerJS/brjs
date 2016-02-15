@@ -49,7 +49,7 @@ TestPresentationModel = function()
     this.labelValueSelectionField.visible.setValue(true);
     
     this.jquerySelectionField = new AutoCompleteSelectionField("BB", {
-        list: ["AA", "BB", "CC"],
+        list: ["AA", "BB", "CC", "FormatMe"],
         getList: function(sTerm, fCallback) {
             var pResult = [];
             for (var i = 0; i < this.list.length; i++)
@@ -65,7 +65,13 @@ TestPresentationModel = function()
             return ArrayUtility.inArray(this.list, sOption);
         }
     });
-    
+
+    this.jquerySelectionField.value.addFormatter({
+        format: function (value) {
+            return value === "FormatMe" ? "Formatted" : value;
+        }
+    })
+
     this.multiSelectBox = new MultiSelectionField(["a","b","c", "d"], ["a","c"]);
     this.multiSelectBox.controlName.setValue("aMultiSelectionField");
 

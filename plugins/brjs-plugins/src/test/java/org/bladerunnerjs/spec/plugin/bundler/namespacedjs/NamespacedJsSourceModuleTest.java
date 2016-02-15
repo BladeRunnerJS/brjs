@@ -6,6 +6,7 @@ import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
+import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,7 +88,7 @@ public class NamespacedJsSourceModuleTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle();
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainText("define('br/AliasRegistry', function(require, exports, module) {\n");
-		then(response).doesNotContainText("define('alias!$data', function(require, exports, module) {\n");
-		then(response).doesNotContainText("define('alias!$data', function(require, exports, module) {\n");
+		then(response).doesNotContainText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "', function(require, exports, module) {\n");
+		then(response).doesNotContainText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "', function(require, exports, module) {\n");
 	}
 }

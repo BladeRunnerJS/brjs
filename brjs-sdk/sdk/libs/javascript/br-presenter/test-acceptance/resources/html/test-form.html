@@ -13,7 +13,10 @@
 
 	<input type="text" id="jqueryAutoCompleteBox" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container'}, controlNode:jquerySelectionField"/>
 	<input type="text" id="jqueryAutoCompleteBox2" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container2', minCharAmount: 2}, controlNode:jquerySelectionField"/>
-	<input type="text" id="jqueryAutoCompleteBox3" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container', blurAfterClick: true}, controlNode:jquerySelectionField"/>
+	<input type="text" id="jqueryAutoCompleteBox3" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container3', blurAfterClick: true}, controlNode:jquerySelectionField"/>
+	<input type="text" id="jqueryAutoCompleteBox4" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container4', delay: 100}, controlNode:jquerySelectionField"/>
+	<input type="text" id="jqueryAutoCompleteBox5" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container5', clearTextAfterValidInput: true}, controlNode:jquerySelectionField"/>
+
 
 	<div id="datePicker" data-bind="control:'br.date-picker',value:date"></div>
 	<div id="datePicker2" data-bind="control:'br.date-picker',value:dateInitiallyDisabledAndHidden"></div>
@@ -32,9 +35,10 @@
 		<span id="alias-plain" data-bind="text:aliasPlain"></span>
 		<span id="alias-formatted" data-bind="text:aliasFormatted"></span>
 	</div>
-	<div id="autocomplete-container">
-	</div>
-	<div id="autocomplete-container2">
-	</div>
+	<div id="autocomplete-container"></div>
+	<div id="autocomplete-container2"></div>
+	<div id="autocomplete-container3"></div>
+	<div id="autocomplete-container4"></div>
+	<div id="autocomplete-container5"></div>
 
 </div>
