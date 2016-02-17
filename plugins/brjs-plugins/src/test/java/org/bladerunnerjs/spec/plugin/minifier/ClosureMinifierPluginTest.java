@@ -9,7 +9,6 @@ import org.bladerunnerjs.api.BladerunnerConf;
 import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtils;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +17,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	private App app;
 	private Aspect aspect;
 	private Blade blade;
-	
+
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer response = new StringBuffer();
 	private String unminifiedContent;
@@ -29,7 +28,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	private String minifyAdvancedContent;
 	private String unminifiedClass;
 	private File targetDir;
-	
+
 	@Before
 	public void initTestObjects() throws Exception
 	{
@@ -46,7 +45,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		minifyWhitespaceContent = "var foo={};foo.publicProperty=1;foo._privateProperty1=2;foo[\"_privateProperty2\"]=3;alert(foo)";
 		minifySimpleContent     = "alert({publicProperty:1,_privateProperty1:2,_privateProperty2:3})})";
 		minifyMediumContent     = "alert({publicProperty:1,a:2,_privateProperty2:3})})";
-		minifyAdvancedContent   = "alert({i:1,f:2,_privateProperty2:3})})";
+		minifyAdvancedContent   = "alert({d:1,a:2,_privateProperty2:3})})";
 
 		unminifiedClass = "var MyClass = function() {\n" +
 				"	this.m_nCount = 0;\n" +
@@ -59,7 +58,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 				"	this.someProp = false;\n" +
 				"};\n" +
 				"window.obj = new MyClass();\n";
-		
+
 		// for closure compiler test using reserved words as var names
 		unminifiedContentReserved = "function _hello(name) {\n" +
 				"  var while = 1000;\n" +
@@ -68,7 +67,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 				"_hello('New user');\n" +
 				"\n";
 	}
-	
+
 	@Test
 	public void closureMinifierThrowsExceptionWhenReservedWordsAreVariableNames() throws Exception
 	{
@@ -78,7 +77,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("js/prod/closure-whitespace/bundle.js", response);
 		then(exceptions).verifyException(ContentProcessingException.class);
 	}
-	
+
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureWhitespaceOption() throws Exception
 	{
@@ -88,7 +87,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsText(minifyWhitespaceContent);
 	}
-	
+
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureSimpleOption() throws Exception
 	{
@@ -98,7 +97,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("js/prod/closure-simple/bundle.js", response);
 		then(response).containsText(minifySimpleContent);
 	}
-	
+
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureMediumOption() throws Exception
 	{
@@ -108,7 +107,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("js/prod/closure-medium/bundle.js", response);
 		then(response).containsText(minifyMediumContent);
 	}
-	
+
 	@Test
 	public void mediumOptionDoesntRenamePrivateMembers() throws Exception
 	{
@@ -131,7 +130,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("js/prod/closure-advanced/bundle.js", response);
 		then(response).containsText(minifyAdvancedContent);
 	}
-	
+
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
@@ -142,7 +141,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 	}
-	
+
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
@@ -154,7 +153,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.cjs.Class", "CommonJsClass"); //TODO: have better CommonJs minified class handling
 	}
-	
+
 	@Test
 	public void closureMinifierStillAddsPackageDefinitionsBlock() throws Exception
 	{
@@ -165,7 +164,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		then(response).containsMinifiedClasses("appns.cjs.Class")
 			.and(response).containsText("mergePackageBlock(window,{\"appns\":{\"cjs\":{}}});");
 	}
-	
+
 	@Test
 	public void responseIsEncodedProperlyAsUTF8() throws Exception {
 		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
@@ -176,7 +175,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		when(aspect).requestReceivedInDev("js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsText("{prop=\"$\\u00a3\\u20ac\\u00f8\"}");
 	}
-	
+
 	@Test
 	public void builtJsOutputFilesAreEncodedProperlyAsUTF8() throws Exception {
 		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
@@ -189,5 +188,5 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("/v/1234/js/prod/closure-whitespace/bundle.js", "{prop=\"$\\u00a3\\u20ac\\u00f8\"}");
 	}
-	
+
 }

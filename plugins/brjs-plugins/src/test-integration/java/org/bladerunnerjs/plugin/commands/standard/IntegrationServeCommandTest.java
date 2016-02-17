@@ -13,6 +13,7 @@ import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.TemplateGroup;
 import org.bladerunnerjs.plugin.commands.standard.ServeCommand;
+import org.bladerunnerjs.plugin.plugins.require.AppMetaDataSourceModule;
 import org.bladerunnerjs.utility.LoggingMissingTokenHandler;
 import org.junit.After;
 import org.junit.Before;
@@ -176,7 +177,8 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(aspect).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
 					+ "locales: en\n"
 					+ "requirePrefix: appns")
-			.and(aspect).indexPageRefersTo("appns.Class1");
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).indexPageHasContent("require('" + AppMetaDataSourceModule.PRIMARY_REQUIRE_PATH + "');");
 		when(brjs).runThreadedCommand("serve", "-v", "myversion");
 		then(appServer).requestCanEventuallyBeMadeWhereResponseMatches("/app1/v/myversion/js/dev/combined/bundle.js", new Predicate<String>() {
 			@Override
@@ -201,7 +203,8 @@ public class IntegrationServeCommandTest extends SpecTest
 					+ "locales: en\n"
 					+ "requirePrefix: appns")
 			.and(aspect).hasClass("appns/Class2")
-			.and(aspect).indexPageRefersTo("appns.Class1");
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).indexPageHasContent("require('" + AppMetaDataSourceModule.PRIMARY_REQUIRE_PATH + "');");
 		when(brjs).runThreadedCommand("serve", "-v", "myversion");
 		then(appServer).requestCanEventuallyBeMadeWhereResponseMatches("/app1/v/myversion/js/dev/combined/bundle.js", new Predicate<String>()
 		{
