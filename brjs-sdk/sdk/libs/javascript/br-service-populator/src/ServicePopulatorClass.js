@@ -1,4 +1,6 @@
-var ServicePopulatorClass = function(serviceBox, serviceData) {
+'use strict';
+
+function ServicePopulatorClass(serviceBox, serviceData) {
 	if (typeof serviceData == 'undefined') {
 		this._serviceData = require('service!$data');
 	} else {
@@ -11,15 +13,22 @@ var ServicePopulatorClass = function(serviceBox, serviceData) {
 	}
 }
 
+function normalizeName(name) {
+	return name.substring(0, 8) === 'service!' ? name.substring(8, name.length) : name;
+}
+
 ServicePopulatorClass.prototype.populate = function() {
-	for (var serviceName in this._serviceData) {
-		var name = serviceName;
-		var name = name.substring(0, 8) === 'service!' ? name.substring(8, name.length) : name;
-		if (this._serviceBox.factories[name]) {
-			continue;
-		}
-		this.register(serviceName);
-	}
+	var factories = this._serviceBox.factories;
+	Object.keys(this._serviceData).forEach(
+		function(_name) {
+			var name = normalizeName(_name);
+			if (typeof factories[name] !== 'undefined') {
+				return;
+			}
+			this.register(_name)
+		},
+		this
+	);
 }
 
 ServicePopulatorClass.prototype.register = function(name) {
@@ -27,15 +36,14 @@ ServicePopulatorClass.prototype.register = function(name) {
 
 	var factory = function(requirePath) {
 		return function() {
-			var constructorFunction = require(requirePath);
-			return Promise.resolve(new constructorFunction());
+			var ConstructorFn = require(requirePath);
+			return Promise.resolve(new ConstructorFn());
 		};
 	}(serviceInfo.requirePath);
 
 	factory.dependencies = serviceInfo.dependencies;
 
-	name = name.substring(0, 8) === 'service!' ? name.substring(8, name.length) : name;
-	this._serviceBox.register(name, factory);
+	this._serviceBox.register(normalizeName(name), factory);
 }
 
 module.exports = ServicePopulatorClass;

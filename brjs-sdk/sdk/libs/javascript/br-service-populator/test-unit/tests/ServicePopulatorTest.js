@@ -14,17 +14,17 @@ describe('service populator', function() {
 	var serviceBox = new ServiceBoxClass();
 
 	var serviceData = {
-		"serviceA": {
-			"dependencies": [],
-			"requirePath": "br/servicepopulator/ServiceA"
+		'serviceA': {
+			'dependencies': [],
+			'requirePath': 'br/servicepopulator/ServiceA'
 		},
-		"serviceB": {
-			"dependencies": ["serviceA", "serviceC"],
-			"requirePath": "br/servicepopulator/ServiceB"
+		'serviceB': {
+			'dependencies': ['serviceA', 'serviceC'],
+			'requirePath': 'br/servicepopulator/ServiceB'
 		},
-		"serviceC": {
-			"dependencies": [],
-			"requirePath": "br/servicepopulator/ServiceC"
+		'serviceC': {
+			'dependencies': [],
+			'requirePath': 'br/servicepopulator/ServiceC'
 		}
 	};
 
@@ -40,15 +40,15 @@ describe('service populator', function() {
 		var serviceA;
 
 		runs(function() {
-			serviceBox.resolve(["serviceA"]).then(function() {
-				serviceA = serviceBox.get("serviceA");
+			serviceBox.resolve(['serviceA']).then(function() {
+				serviceA = serviceBox.get('serviceA');
 				flag = true;
 			});
 		});
 
 		waitsFor(function() {
 			return flag;
-		}, "The flag should be true", 500);
+		}, 'The flag should be true', 500);
 
 		runs(function() {
 			expect(serviceA instanceof ServiceA).toBe(true);
@@ -61,15 +61,15 @@ describe('service populator', function() {
 		var serviceB;
 
 		runs(function() {
-			serviceBox.resolve(["serviceB"]).then(function() {
-				serviceB = serviceBox.get("serviceB");
+			serviceBox.resolve(['serviceB']).then(function() {
+				serviceB = serviceBox.get('serviceB');
 				flag = true;
 			});
 		});
 
 		waitsFor(function() {
 			return flag;
-		}, "The flag should be true", 500);
+		}, 'The flag should be true', 500);
 
 		runs(function() {
 			expect(serviceB instanceof ServiceB).toBe(true);
@@ -84,7 +84,7 @@ describe('service populator', function() {
 		runs(function() {
 			serviceBox.resolveAll().then(function() {
 				try {
-					unregisteredService = serviceBox.get("unregisteredService");
+					unregisteredService = serviceBox.get('unregisteredService');
 				} catch (e) {
 					flag = true;
 				}
@@ -93,7 +93,7 @@ describe('service populator', function() {
 
 		waitsFor(function() {
 			return flag;
-		}, "The flag should be true", 500);
+		}, 'The flag should be true', 500);
 
 		runs(function() {
 			expect(unregisteredService).toBe(undefined);
@@ -104,7 +104,7 @@ describe('service populator', function() {
 		servicePopulator.populate();
 
 		var getServiceA = function() {
-			serviceBox.get("serviceA");
+			serviceBox.get('serviceA');
 			flag = true;
 		}
 
@@ -114,8 +114,8 @@ describe('service populator', function() {
 	it ('fails to return services when the populate method has not been called', function() {
 
 		var getServiceA = function() {
-			serviceBox.resolve(["serviceA"]).then(function() {
-				serviceA = serviceBox.get("serviceA");
+			serviceBox.resolve(['serviceA']).then(function() {
+				serviceA = serviceBox.get('serviceA');
 			});
 		};
 

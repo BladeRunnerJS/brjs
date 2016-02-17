@@ -1,15 +1,15 @@
 (function(f) {
-	if (typeof exports === "object" && typeof module !== "undefined") {
+	if (typeof exports === 'object' && typeof module !== 'undefined') {
 		module.exports = f()
-	} else if (typeof define === "function" && define.amd) {
+	} else if (typeof define === 'function' && define.amd) {
 		define([], f)
 	} else {
 		var g;
-		if (typeof window !== "undefined") {
+		if (typeof window !== 'undefined') {
 			g = window
-		} else if (typeof global !== "undefined") {
+		} else if (typeof global !== 'undefined') {
 			g = global
-		} else if (typeof self !== "undefined") {
+		} else if (typeof self !== 'undefined') {
 			g = self
 		} else {
 			g = this
@@ -22,11 +22,11 @@
 		function s(o, u) {
 			if (!n[o]) {
 				if (!t[o]) {
-					var a = typeof require == "function" && require;
+					var a = typeof require == 'function' && require;
 					if (!u && a) return a(o, !0);
 					if (i) return i(o, !0);
-					var f = new Error("Cannot find module '" + o + "'");
-					throw f.code = "MODULE_NOT_FOUND", f
+					var f = new Error('Cannot find module `' + o + '`');
+					throw f.code = 'MODULE_NOT_FOUND', f
 				}
 				var l = n[o] = {
 					exports: {}
@@ -38,12 +38,12 @@
 			}
 			return n[o].exports
 		}
-		var i = typeof require == "function" && require;
+		var i = typeof require == 'function' && require;
 		for (var o = 0; o < r.length; o++) s(r[o]);
 		return s
 	})({
 		1: [function(require, module, exports) {
-			"use strict";
+			'use strict';
 
 			var _createClass = (function() {
 				function defineProperties(target, props) {
@@ -51,7 +51,7 @@
 						var descriptor = props[i];
 						descriptor.enumerable = descriptor.enumerable || false;
 						descriptor.configurable = true;
-						if ("value" in descriptor) descriptor.writable = true;
+						if ('value' in descriptor) descriptor.writable = true;
 						Object.defineProperty(target, descriptor.key, descriptor);
 					}
 				}
@@ -62,13 +62,13 @@
 				};
 			})();
 
-			Object.defineProperty(exports, "__esModule", {
+			Object.defineProperty(exports, '__esModule', {
 				value: true
 			});
 
 			function _classCallCheck(instance, Constructor) {
 				if (!(instance instanceof Constructor)) {
-					throw new TypeError("Cannot call a class as a function");
+					throw new TypeError('Cannot call a class as a function');
 				}
 			}
 
@@ -117,10 +117,10 @@
 				}
 
 				_createClass(ServiceBox, [{
-					key: "register",
+					key: 'register',
 					value: function register(name, factory) {
 						if (this.factories[name]) {
-							throw new Error("A factory with the name '" + name + "' has already been registered.");
+							throw new Error('A factory with the name `' + name + '` has already been registered.`');
 						}
 
 						if (!factory.dependencies) {
@@ -130,7 +130,7 @@
 						this.factories[name] = factory;
 					}
 				}, {
-					key: "resolve",
+					key: 'resolve',
 					value: function resolve(names) {
 						var _this = this;
 
@@ -145,18 +145,18 @@
 						}
 					}
 				}, {
-					key: "resolveAll",
+					key: 'resolveAll',
 					value: function resolveAll() {
 						return this.resolve(Object.keys(this.factories));
 					}
 				}, {
-					key: "get",
+					key: 'get',
 					value: function get(name) {
 						if (!this.services[name]) {
 							if (this.factories[name]) {
-								throw new Error("The '" + name + "' service needs to be resolved before you can retrieve it.");
+								throw new Error('The `' + name + '` service needs to be resolved before you can retrieve it.`');
 							} else {
-								throw new Error("No service called '" + name + "' has been registered.");
+								throw new Error('No service called `' + name + '` has been registered.');
 							}
 						}
 
@@ -173,7 +173,7 @@
 		2: [function(require, module, exports) {
 			'use strict';
 
-			Object.defineProperty(exports, "__esModule", {
+			Object.defineProperty(exports, '__esModule', {
 				value: true
 			});
 
@@ -196,13 +196,13 @@
 			});
 
 		}, {
-			"./ServiceBox.js": 1,
-			"./serviceFactory.js": 3
+			'./ServiceBox.js': 1,
+			'./serviceFactory.js': 3
 		}],
 		3: [function(require, module, exports) {
-			"use strict";
+			'use strict';
 
-			Object.defineProperty(exports, "__esModule", {
+			Object.defineProperty(exports, '__esModule', {
 				value: true
 			});
 			exports.default = serviceFactory;

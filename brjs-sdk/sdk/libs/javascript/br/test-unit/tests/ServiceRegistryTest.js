@@ -1,7 +1,7 @@
 (function() {
 
 	'use strict';
-	require("jsmockito");
+	require('jsmockito');
 	var ServiceRegistryClass = require('br/ServiceRegistryClass');
 	var ServiceRegistry;
 
@@ -19,7 +19,7 @@
 		subrealm = realm.subrealm();
 		subrealm.install();
 
-		fell = require("fell");
+		fell = require('fell');
 		Errors = require('br/Errors');
 		ServiceRegistry = new ServiceRegistryClass(new ServiceBoxClass());
 
@@ -129,13 +129,13 @@
 		ServiceRegistry.registerService('mock.service.1', mockService1);
 		ServiceRegistry.registerService('mock.service.2', mockService2);
 
-		when(mockService1).dispose().thenThrow("ERROR!");
+		when(mockService1).dispose().thenThrow('ERROR!');
 
 		ServiceRegistry.dispose();
 
 		verify(mockService1).dispose();
 		verify(mockService2).dispose();
-		verify(logStore).onLog(anything(), 'error', [ServiceRegistryClass.LOG_MESSAGES.DISPOSE_ERROR, 'mock.service.1', "ERROR!"]);
+		verify(logStore).onLog(anything(), 'error', [ServiceRegistryClass.LOG_MESSAGES.DISPOSE_ERROR, 'mock.service.1', 'ERROR!']);
 		verify(logStore).onLog(anything(), 'debug', [ServiceRegistryClass.LOG_MESSAGES.DISPOSE_CALLED, 'mock.service.2']);
 	};
 

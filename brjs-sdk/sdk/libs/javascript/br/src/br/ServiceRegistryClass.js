@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * @module br/ServiceRegistryClass
@@ -32,7 +32,7 @@ var legacyWarningLogged = false;
 *	<li>Once {@link module:br/ServiceRegistryClass/initializeServices} has finished (once one of the
 *		call-backs fire), the application should then register any services that can't be created
 *		lazily using zero-arg constructors.</li>
-*	<li>The application can now start doing it's proper work.</li>
+*	<li>The application can now start doing its proper work.</li>
 * </ol>
 *
 * <p>Because blades aren't allowed to depend directly on classes in other blades, interface
@@ -52,10 +52,9 @@ var legacyWarningLogged = false;
 * @see {@link http://bladerunnerjs.org/docs/use/service_registry/}
 */
 function ServiceRegistryClass(serviceBox) {
-	if (typeof serviceBox == 'undefined') {
+	if (typeof serviceBox === 'undefined') {
 		this._serviceBox = require('br/servicebox/serviceBox');
-	}
-	else {
+	} else {
 		this._serviceBox = serviceBox;
 	}
 };
@@ -66,21 +65,21 @@ function ServiceRegistryClass(serviceBox) {
 * Register an object that will be responsible for implementing the given interface within the
 * application.
 *
-* @param {String} identifier The alias used to uniquely identify the service.
+* @param {String} alias The alias used to uniquely identify the service.
 * @param {Object} serviceInstance The object responsible for providing the service.
 * @throws {Error} If a service has already been registered for the given interface or if no
 * 		instance object is provided.
 */
 ServiceRegistryClass.prototype.registerService = function(alias, serviceInstance) {
 	if (serviceInstance === undefined) {
-		throw new Errors.InvalidParametersError("The service instance is undefined.");
+		throw new Errors.InvalidParametersError('The service instance is undefined.');
 	}
 
-	if (alias in this._serviceBox.factories) {
-		throw new Errors.IllegalStateError("Service: " + alias + " has already been registered.");
+	if (this.isServiceRegistered(alias)) {
+		throw new Errors.IllegalStateError('Service: ' + alias + ' has already been registered.');
 	}
 
-	var serviceFactory  = function(service) {
+	var serviceFactory = function(service) {
 		return function() {
 			return Promise.resolve(service);
 		};
@@ -94,7 +93,7 @@ ServiceRegistryClass.prototype.registerService = function(alias, serviceInstance
 /**
 * De-register a service that is currently registered in the <code>ServiceRegistryClass</code>.
 *
-* @param {String} sIdentifier The alias or interface name used to uniquely identify the service.
+* @param {String} alias The alias or interface name used to uniquely identify the service.
 */
 ServiceRegistryClass.prototype.deregisterService = function(alias) {
 	delete this._serviceBox.factories[alias];
@@ -105,17 +104,17 @@ ServiceRegistryClass.prototype.deregisterService = function(alias) {
 * Retrieve the service linked to the identifier within the application. The identifier could be a
 * service alias or a service interface.
 *
-* @param {String} identifier The alias or interface name used to uniquely identify the service.
+* @param {String} alias The alias or interface name used to uniquely identify the service.
 * @throws {Error} If no service could be found for the given identifier.
 * @type Object
 */
 ServiceRegistryClass.prototype.getService = function(alias) {
-	if (!(alias in this._serviceBox.factories)) {
-		throw new Errors.InvalidParametersError("br/ServiceRegistryClass could not locate a service for: " + alias);
+	if (!this.isServiceRegistered(alias)) {
+		throw new Errors.InvalidParametersError('br/ServiceRegistryClass could not locate a service for: ' + alias);
 	}
 
 	if (!(alias in this._serviceBox.services)) {
-		throw new Errors.InvalidParametersError("The dependencies need to be resoleved before getting a service");
+		throw new Errors.InvalidParametersError('The dependencies need to be resolved before getting a service');
 	}
 
 	return this._serviceBox.services[alias];
@@ -124,7 +123,7 @@ ServiceRegistryClass.prototype.getService = function(alias) {
 /**
 * Determine whether a service has been registered for a given identifier.
 *
-* @param {String} identifier The alias or interface name used to uniquely identify the service.
+* @param {String} alias The alias or interface name used to uniquely identify the service.
 * @type boolean
 */
 ServiceRegistryClass.prototype.isServiceRegistered = function(alias) {
@@ -138,10 +137,10 @@ ServiceRegistryClass.prototype.isServiceRegistered = function(alias) {
 * each test is run.</p>
 */
 ServiceRegistryClass.prototype.legacyClear = function() {
-	if(!legacyWarningLogged) {
+	if (!legacyWarningLogged) {
 		legacyWarningLogged = true;
 		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
-		logConsole.warn('ServiceRegistry.legacyClear() is deprecated. Please use sub-realms instead.');
+		logConsole.warn('ServiceRegistry#legacyClear is deprecated. Please use sub-realms instead.');
 	}
 
 	this._serviceBox.factories = {};
@@ -149,31 +148,32 @@ ServiceRegistryClass.prototype.legacyClear = function() {
 };
 
 ServiceRegistryClass.prototype.dispose = function() {
-	for (var serviceName in this._serviceBox.services) {
-		if (this._serviceBox.services.hasOwnProperty(serviceName)) {
-			var service = this._serviceBox.services[serviceName];
-			if (typeof service.dispose !== "undefined") {
-				if (service.dispose.length == 0) {
+	var services = this._serviceBox.services;
+	Object.keys(services).forEach(
+		function(name) {
+			var service = services[name];
+			if (typeof service.dispose === 'function') {
+				if (service.dispose.length === 0) {
 					try {
 						service.dispose();
-						log.debug(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_CALLED, serviceName);
+						log.debug(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_CALLED, name);
 					} catch (e) {
-						log.error(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_ERROR, serviceName, e);
+						log.error(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_ERROR, name, e);
 					}
 				} else {
-					log.info(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_0_ARG, serviceName);
+					log.info(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_0_ARG, name);
 				}
 			} else {
-				log.debug(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_MISSING, serviceName);
+				log.debug(ServiceRegistryClass.LOG_MESSAGES.DISPOSE_MISSING, name);
 			}
 		}
-	}
-	this._serviceBox.factories = {}
+	);
+	this._serviceBox.factories = {};
 	this._serviceBox.services = {};
 }
 
 ServiceRegistryClass.LOG_MESSAGES = {
-	DISPOSE_CALLED: "dispose() called on service registered for '{0}",
+	DISPOSE_CALLED: "dispose() called on service registered for '{0}'",
 	DISPOSE_ERROR: "error thrown when calling dispose() on service registered for '{0}'. The error was: {1}",
 	DISPOSE_0_ARG: "dispose() not called on service registered for '{0}' since it's dispose() method requires more than 0 arguments",
 	DISPOSE_MISSING: "dispose() not called on service registered for '{0}' since no dispose() method was defined"
