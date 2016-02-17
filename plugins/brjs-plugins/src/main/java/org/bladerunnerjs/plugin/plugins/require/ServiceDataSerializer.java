@@ -11,7 +11,6 @@ import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
-import org.bladerunnerjs.api.model.exception.RequirePathException;
 import org.bladerunnerjs.api.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinition;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasException;
@@ -53,22 +52,21 @@ public class ServiceDataSerializer
 			output.setLength( output.length() - sourceModuleJsonSeparator.length() ); // remove the final separator that was added above
 			return "{\n"+output.toString()+"\n}";
 		}
+
 		return "{ }";
 	}
 
 	private static void addDependentAssets(BundleSet bundleSet, Asset asset, List<Asset> acc) throws ModelOperationException {
 		List<Asset> dependentAssets = new ArrayList<>();
-		try {
-			Asset dependentAsset = bundleSet.bundlableNode().getAsset(asset.getPrimaryRequirePath());
-			if (dependentAsset instanceof LinkedAsset) {
-				dependentAssets = ((LinkedAsset) dependentAsset).getDependentAssets(bundleSet.bundlableNode());
+
+		if (asset instanceof LinkedAsset) {
+			dependentAssets = ((LinkedAsset) asset).getDependentAssets(bundleSet.bundlableNode());
+		} else{
+			if (!dependentAssets.contains(asset)) {
+				dependentAssets.add(asset);
 			}
-			else{
-				dependentAssets.add(dependentAsset);
-			}
-		} catch (RequirePathException e) {
-//			e.printStackTrace();
 		}
+
 		for (Asset dependentAsset : dependentAssets) {
 			if (acc.contains(dependentAsset)) {
 				continue;
@@ -78,31 +76,29 @@ public class ServiceDataSerializer
 		}
 	}
 
-	private static void appendServiceToJSON(StringBuilder output, SourceModule serviceSourceModule, SourceModule resolvedServiceSourceModule, List<Asset> dependantAssets) throws ModelOperationException {
+	private static void appendServiceToJSON(StringBuilder output, SourceModule serviceSourceModule, SourceModule resolvedServiceSourceModule, List<Asset> dependentAssets) throws ModelOperationException {
 		output.append(String.format(
 			"	\"%s\": {\n" +
 			"		\"requirePath\": \"%s\",\n" +
 			"		\"dependencies\": [%s]\n" +
-			"	}", serviceSourceModule.getPrimaryRequirePath(), resolvedServiceSourceModule.getPrimaryRequirePath(), stringifyDependantAssets(dependantAssets)
+			"	}", serviceSourceModule.getPrimaryRequirePath(), resolvedServiceSourceModule.getPrimaryRequirePath(), stringifyDependentAssets(dependentAssets)
 		));
 		output.append(sourceModuleJsonSeparator);
 	}
 
-	private static Object stringifyDependantAssets(List<Asset> dependantAssets)
+	private static Object stringifyDependentAssets(List<Asset> dependentAssets)
 	{
 		List<String> assetStrings = new LinkedList<>();
 
-		for (Asset asset : dependantAssets) {
-			String assetPrimaryRequirePath = asset.getPrimaryRequirePath();
-			if (!assetPrimaryRequirePath.startsWith("service!")) {
+		for (Asset asset : dependentAssets) {
+			String primaryRequirePath = asset.getPrimaryRequirePath();
+			if (!primaryRequirePath.startsWith("service!") || primaryRequirePath.endsWith("$data")) {
 				continue;
 			}
-			if (assetPrimaryRequirePath.endsWith("$data")) {
-				continue;
-			}
-			String assetRequireSuffix = StringUtils.substringAfter(assetPrimaryRequirePath, "service!");
 
-			assetStrings.add("			\""+assetRequireSuffix+"\"");
+			String serviceAlias = StringUtils.substringAfter(primaryRequirePath, "service!");
+
+			assetStrings.add("			\""+serviceAlias+"\"");
 		}
 
 		if (assetStrings.isEmpty()) {
@@ -115,18 +111,30 @@ public class ServiceDataSerializer
 	{
 		for (AliasDefinition aliasDefinition : aliasDefinitions) {
 			String serviceRequireSuffix = serviceSourceModule.getPrimaryRequirePath().replaceFirst("service!", "");
+			String aliasDefinitionRequirePath = aliasDefinition.getRequirePath();
 
-			if (aliasDefinition.getRequirePath() != null && aliasDefinition.getName().equals(serviceRequireSuffix)) {
+			if (aliasDefinitionRequirePath != null && aliasDefinition.getName().equals(serviceRequireSuffix)) {
 				// TODO: there's no way to get a single Asset matching a given require path, only those that match a 'prefix'
-				List<Asset> matchingAssets = bundleSet.assets(Arrays.asList(SourceModule.class), aliasDefinition.getRequirePath());
-				if (matchingAssets.size() > 0) {
-					Asset asset = matchingAssets.get(0);
-					if (asset instanceof SourceModule && !asset.getPrimaryRequirePath().equals(AliasDefinition.UNKNOWN_CLASS_REQUIRE_PATH)) {
-						return (SourceModule) asset;
+				List<Asset> matchingAssets = bundleSet.assets(Arrays.asList(SourceModule.class), aliasDefinitionRequirePath);
+
+				Asset asset = null;
+				for(Asset _asset: matchingAssets) {
+					if (!_asset.getPrimaryRequirePath().equals(aliasDefinitionRequirePath)) {
+						continue;
 					}
+					asset = _asset;
+				}
+
+				if (asset == null) {
+					continue;
+				}
+
+				if (asset instanceof SourceModule && !asset.getPrimaryRequirePath().equals(AliasDefinition.UNKNOWN_CLASS_REQUIRE_PATH)) {
+					return (SourceModule) asset;
 				}
 			}
 		}
+
 		return null;
 	}
 
