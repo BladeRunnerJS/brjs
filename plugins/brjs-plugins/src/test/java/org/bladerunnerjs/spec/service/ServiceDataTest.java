@@ -95,21 +95,6 @@ public class ServiceDataTest extends SpecTest
 	}
 
 	@Test
-	public void serviceDataListsTheCorrectServiceRequirePathWhenThatPathIsAPrefixOfAnotherClassRequirePath_whenServiceDefinedViaAspectAliases() throws Exception {
-		given(aspect).indexPageRequires("appns/ServiceClassWithSuffix", "appns/App", "service!$data")
-			.and(aspect).classRequires("App", "service!some-service")
-			.and(aspect).hasClass("ServiceClass")
-			.and(aspect).hasClass("ServiceClassWithSuffix")
-			.and(aspectAliasesFile).hasAlias("some-service", "appns/ServiceClass");
-		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsLines(
-			"module.exports = {",
-			"	\"service!some-service\": {",
-			"		\"requirePath\": \"appns/ServiceClass\""
-		);
-	}
-
-	@Test
 	public void serviceDataListsASingleUsedService_whenServiceDefinedViaAspectAliasDefinitions() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
 			.and(aspect).classRequires("App", "service!some-service")

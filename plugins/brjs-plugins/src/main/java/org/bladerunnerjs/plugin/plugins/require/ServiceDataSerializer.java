@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.require;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -113,25 +112,22 @@ public class ServiceDataSerializer
 			String serviceRequireSuffix = serviceSourceModule.getPrimaryRequirePath().replaceFirst("service!", "");
 			String aliasDefinitionRequirePath = aliasDefinition.getRequirePath();
 
-			if (aliasDefinitionRequirePath != null && aliasDefinition.getName().equals(serviceRequireSuffix)) {
-				// TODO: there's no way to get a single Asset matching a given require path, only those that match a 'prefix'
-				List<Asset> matchingAssets = bundleSet.assets(Arrays.asList(SourceModule.class), aliasDefinitionRequirePath);
+			if (aliasDefinitionRequirePath == null || !aliasDefinition.getName().equals(serviceRequireSuffix)) {
+				continue;
+			}
 
-				Asset asset = null;
-				for(Asset _asset: matchingAssets) {
-					if (!_asset.getPrimaryRequirePath().equals(aliasDefinitionRequirePath)) {
-						continue;
-					}
-					asset = _asset;
-				}
+			List<SourceModule> sourceModules = bundleSet.sourceModules(SourceModule.class);
 
-				if (asset == null) {
+			SourceModule module = null;
+			for(SourceModule _module: sourceModules) {
+				if (!_module.getPrimaryRequirePath().equals(aliasDefinitionRequirePath)) {
 					continue;
 				}
+				module = _module;
+			}
 
-				if (asset instanceof SourceModule && !asset.getPrimaryRequirePath().equals(AliasDefinition.UNKNOWN_CLASS_REQUIRE_PATH)) {
-					return (SourceModule) asset;
-				}
+			if (!module.getPrimaryRequirePath().equals(AliasDefinition.UNKNOWN_CLASS_REQUIRE_PATH)) {
+				return module;
 			}
 		}
 
