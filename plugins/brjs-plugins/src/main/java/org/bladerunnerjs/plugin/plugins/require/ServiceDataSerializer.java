@@ -20,82 +20,88 @@ import org.bladerunnerjs.plugin.require.AliasCommonJsSourceModule;
 public class ServiceDataSerializer
 {
 
+	private static final String servicePrefix = "service!";
 	private static final String sourceModuleJsonSeparator = ",\n";
+	private static final String sourceModuleJsonTemplate = "	\"%s\": {\n" +
+			"		\"requirePath\": \"%s\",\n" +
+			"		\"dependencies\": [%s]\n" +
+			"	}";
 
 	public static String createJson(BundleSet bundleSet) throws ModelOperationException
 	{
 		StringBuilder output = new StringBuilder();
 
 		List<AliasDefinition> aliasDefinitions = getAliasDefinitions(bundleSet);
-		List<Asset> serviceAssets = bundleSet.assets("service!");
+		List<Asset> serviceAssets = bundleSet.assets(servicePrefix);
+
 		for (Asset asset : serviceAssets) {
 			if (!(asset instanceof SourceModule)) {
 				continue;
 			}
+
 			if (asset.getPrimaryRequirePath().equals(ServiceDataSourceModule.PRIMARY_REQUIRE_PATH)) {
 				continue;
 			}
 
-			final SourceModule serviceSourceModule = (SourceModule) asset;
-			final SourceModule resolvedServiceSourceModule = resolveService(aliasDefinitions, serviceSourceModule, bundleSet);
+			final SourceModule serviceDefinition = (SourceModule) asset;
+			final SourceModule serviceImplementation = resolveService(aliasDefinitions, serviceDefinition, bundleSet);
 
-			if (resolvedServiceSourceModule == null) {
+			if (serviceImplementation == null) {
 				continue;
 			}
 
 			final ArrayList<Asset> dependencies = new ArrayList<>();
-			addDependentAssets(bundleSet, resolvedServiceSourceModule, dependencies);
-			appendServiceToJSON(output, serviceSourceModule, resolvedServiceSourceModule, dependencies);
+			addDependentAssets(bundleSet, serviceDefinition.getPrimaryRequirePath(), serviceImplementation, dependencies);
+			appendServiceToJSON(output, serviceDefinition, serviceImplementation, dependencies);
 		}
+
 		if (output.length() > 0) {
-			output.setLength( output.length() - sourceModuleJsonSeparator.length() ); // remove the final separator that was added above
-			return "{\n"+output.toString()+"\n}";
+			return "{\n" + output.toString() + "\n}";
 		}
 
 		return "{ }";
 	}
 
-	private static void addDependentAssets(BundleSet bundleSet, Asset asset, List<Asset> acc) throws ModelOperationException {
-		List<Asset> dependentAssets = new ArrayList<>();
-
-		if (asset instanceof LinkedAsset) {
-			dependentAssets = ((LinkedAsset) asset).getDependentAssets(bundleSet.bundlableNode());
-		} else{
-			if (!dependentAssets.contains(asset)) {
-				dependentAssets.add(asset);
-			}
+	private static void addDependentAssets(BundleSet bundleSet, String serviceAssetPrimaryRequirePath, Asset currentAsset, List<Asset> acc) throws ModelOperationException {
+		if (!(currentAsset instanceof LinkedAsset)) {
+			return;
 		}
 
+		List<Asset> dependentAssets = ((LinkedAsset) currentAsset).getDependentAssets(bundleSet.bundlableNode());
+
 		for (Asset dependentAsset : dependentAssets) {
-			if (acc.contains(dependentAsset)) {
+			if (acc.contains(dependentAsset) || dependentAsset.getPrimaryRequirePath().equals(serviceAssetPrimaryRequirePath)) {
 				continue;
 			}
 			acc.add(dependentAsset);
-			addDependentAssets(bundleSet, dependentAsset, acc);
+			addDependentAssets(bundleSet, serviceAssetPrimaryRequirePath, dependentAsset, acc);
 		}
 	}
 
 	private static void appendServiceToJSON(StringBuilder output, SourceModule serviceSourceModule, SourceModule resolvedServiceSourceModule, List<Asset> dependentAssets) throws ModelOperationException {
+		if (output.length() > 0) {
+			output.append(sourceModuleJsonSeparator);
+		}
+
 		output.append(String.format(
-			"	\"%s\": {\n" +
-			"		\"requirePath\": \"%s\",\n" +
-			"		\"dependencies\": [%s]\n" +
-			"	}", serviceSourceModule.getPrimaryRequirePath(), resolvedServiceSourceModule.getPrimaryRequirePath(), stringifyDependentAssets(dependentAssets)
+			sourceModuleJsonTemplate,
+			serviceSourceModule.getPrimaryRequirePath(),
+			resolvedServiceSourceModule.getPrimaryRequirePath(),
+			stringifyDependentServices(dependentAssets)
 		));
-		output.append(sourceModuleJsonSeparator);
 	}
 
-	private static Object stringifyDependentAssets(List<Asset> dependentAssets)
+	private static Object stringifyDependentServices(List<Asset> dependentAssets)
 	{
 		List<String> assetStrings = new LinkedList<>();
 
 		for (Asset asset : dependentAssets) {
 			String primaryRequirePath = asset.getPrimaryRequirePath();
-			if (!primaryRequirePath.startsWith("service!") || primaryRequirePath.endsWith("$data")) {
+			if (!primaryRequirePath.startsWith(servicePrefix) || primaryRequirePath.endsWith("$data")) {
 				continue;
 			}
 
-			String serviceAlias = StringUtils.substringAfter(primaryRequirePath, "service!");
+			String serviceAlias = primaryRequirePath.replaceFirst(servicePrefix, "");
 
 			assetStrings.add("			\""+serviceAlias+"\"");
 		}
@@ -103,13 +109,14 @@ public class ServiceDataSerializer
 		if (assetStrings.isEmpty()) {
 			return "";
 		}
-		return "\n"+StringUtils.join(assetStrings, ",\n")+"\n		"; // whitespace is intentional so we can output well formatted JSON
+		// whitespace is intentional so we can output well formatted JSON
+		return "\n"+StringUtils.join(assetStrings, ",\n")+"\n		";
 	}
 
 	private static SourceModule resolveService(List<AliasDefinition> aliasDefinitions, SourceModule serviceSourceModule, BundleSet bundleSet)
 	{
 		for (AliasDefinition aliasDefinition : aliasDefinitions) {
-			String serviceRequireSuffix = serviceSourceModule.getPrimaryRequirePath().replaceFirst("service!", "");
+			String serviceRequireSuffix = serviceSourceModule.getPrimaryRequirePath().replaceFirst(servicePrefix, "");
 			String aliasDefinitionRequirePath = aliasDefinition.getRequirePath();
 
 			if (aliasDefinitionRequirePath == null || !aliasDefinition.getName().equals(serviceRequireSuffix)) {
@@ -119,11 +126,12 @@ public class ServiceDataSerializer
 			List<SourceModule> sourceModules = bundleSet.sourceModules(SourceModule.class);
 
 			SourceModule module = null;
-			for(SourceModule _module: sourceModules) {
+			for (SourceModule _module: sourceModules) {
 				if (!_module.getPrimaryRequirePath().equals(aliasDefinitionRequirePath)) {
 					continue;
 				}
 				module = _module;
+				break;
 			}
 
 			if (!module.getPrimaryRequirePath().equals(AliasDefinition.UNKNOWN_CLASS_REQUIRE_PATH)) {
