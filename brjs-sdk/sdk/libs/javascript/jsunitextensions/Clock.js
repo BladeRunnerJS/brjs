@@ -10,7 +10,7 @@ ClockClass.prototype.install = function() {
 	this.origSetInterval = setInterval;
 	this.origClearTimeout = clearTimeout;
 	this.origClearInteval = clearInterval;
-	
+
 	setTimeout = function(funcToCall, millis) {
 			Clock.timeoutsMade = Clock.timeoutsMade + 1;
 			Clock.scheduleFunction(Clock.timeoutsMade, funcToCall, millis, false);
@@ -42,7 +42,7 @@ ClockClass.prototype.uninstall = function() {
 
 ClockClass.prototype.reset = function() {
 		this._verifyInstalled();
-		
+
 		this.scheduledFunctions = {};
 		this.nowMillis = 0;
 		this.timeoutsMade = 0;
@@ -51,7 +51,7 @@ ClockClass.prototype.reset = function() {
 
 ClockClass.prototype.tick = function(millis) {
 		this._verifyInstalled();
-		
+
 		var oldMillis = this.nowMillis;
 		var newMillis = oldMillis + millis;
 		this.runFunctionsWithinRange(oldMillis, newMillis);
@@ -112,3 +112,4 @@ ClockClass.prototype._verifyInstalled = function() {
 
 var Clock = new ClockClass();
 
+jsunitextensions.Clock = Clock;
