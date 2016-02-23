@@ -28,12 +28,12 @@ import org.bladerunnerjs.model.StandardBundleSet;
 import com.google.common.base.Joiner;
 
 public class BundleSetBuilder {
-	
+
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	public static final String STRICT_CHECKING_DISABLED_MSG = "Strict checking has been disabled for the directory '%s' and for the Asset '%s'."+
 			" This allows the Blade class to directly depend on another Blade class when the App loaded. This dependency should be broken using Services and the file '%s' should be removed to re-enable the scope enforcement.";
 	public static final String INVALID_REQUIRE_MSG = "The class '%s' depends on the class '%s' which is outside of it's scope - this dependency should be broken using Services.";
-	
+
 	// use Maps rather than Lists and Sets so we're in control of what's used as the key rather than relying on #equals being implemented properly
 	private final AssetMap<LinkedAsset> seedAssets = new AssetMap<>();
 	private final AssetMap<Asset> assets = new AssetMap<>();
@@ -42,29 +42,29 @@ public class BundleSetBuilder {
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
 	private Set<Asset> strictCheckingAssetsLogged = new HashSet<>();
-	
+
 	public BundleSetBuilder(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
 		logger = bundlableNode.root().logger(BundleSetCreator.class);
 	}
-	
+
 	public BundleSet createBundleSet() throws ModelOperationException {
-		
+
 		if (bundlableNode instanceof Workbench) {
-			Asset rootAsset = bundlableNode.app().defaultAspect().asset(bundlableNode.app().getRequirePrefix());
+			Asset rootAsset = bundlableNode.app().defaultAspect().asset(bundlableNode.app().getRequirePrefix() + "@root");
 			if (rootAsset instanceof LinkedAsset) {
 				addUnscopedAsset( (LinkedAsset)rootAsset );
 			}
 		}
-		
+
 		AssetMap<SourceModule> bootstrappingSourceModules = new AssetMap<>();
 		if (!sourceModules.isEmpty()) {
 			addBootstrapAndDependencies(bootstrappingSourceModules);
 		}
-		
+
 		AssetMap<SourceModule> orderedSourceModules = SourceModuleDependencyOrderCalculator.getOrderedSourceModules(bundlableNode, bootstrappingSourceModules, sourceModules);
 		AssetMap<Asset> assetList = orderAssetsByAssetContainer(assets);
-		
+
 		return new StandardBundleSet(bundlableNode, seedAssets, assetList, orderedSourceModules);
 	}
 
@@ -77,8 +77,8 @@ public class BundleSetBuilder {
 			addLinkedAsset(seedFile);
 		}
 	}
-	
-	
+
+
 	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
 		if (sourceModules.put(sourceModule)) {
 			addLinkedAsset(sourceModule);
@@ -91,13 +91,13 @@ public class BundleSetBuilder {
 			if (linkedAsset.isRequirable()) {
 				assets.put(linkedAsset);
 			}
-			
+
 			List<Asset> moduleDependencies = getModuleDependencies(linkedAsset);
-			
+
 			if (linkedAsset instanceof SourceModule) {
 				addSourceModule((SourceModule) linkedAsset);
 			}
-			
+
 			BRJS brjs = linkedAsset.assetContainer().root();
 			for (Asset dependantAsset : moduleDependencies) {
 				boolean assetIsInScope = ensureDependentAssetIsInScope(linkedAsset, dependantAsset);
@@ -110,7 +110,7 @@ public class BundleSetBuilder {
 				} else if (dependantAsset instanceof LinkedAsset) {
 					addLinkedAsset((LinkedAsset) dependantAsset);
 				}
-				
+
 				if (dependantAsset.isRequirable()) {
 					assets.put(dependantAsset);
 				}
@@ -124,12 +124,12 @@ public class BundleSetBuilder {
 				strictCheckingDisabled(asset) || strictCheckingDisabled(dependantAsset)) {
 			throwExceptionOnFailure = false;
 		}
-		
+
 		StringBuilder scopedLocations = new StringBuilder();
 		AssetContainer sourceAssetContainer = asset.assetContainer();
 		AssetContainer dependantAssetContainer = dependantAsset.assetContainer();
 		BRJS brjs = sourceAssetContainer.root();
-		
+
 		for (AssetContainer sourceAssetContainerScope : sourceAssetContainer.scopeAssetContainers()) {
 			if (assetContainerMatchesScope(sourceAssetContainerScope, dependantAssetContainer)) {
 				return true;
@@ -142,7 +142,7 @@ public class BundleSetBuilder {
 		RequirePathException scopeException = new OutOfScopeRequirePathException(asset, dependantAsset);
 		throw new ModelOperationException(scopeException);
 	}
-	
+
 	private boolean assetContainerMatchesScope(AssetContainer sourceAssetContainer, AssetContainer dependantAssetContainer) {
 		// check the dir is equals as well in case the asset container is wrapped
 		if (sourceAssetContainer == dependantAssetContainer) {
@@ -167,7 +167,7 @@ public class BundleSetBuilder {
 			}
 			throw ex;
 		}
-		
+
 		if(moduleDependencies.isEmpty()) {
 			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
 		}
@@ -176,8 +176,8 @@ public class BundleSetBuilder {
 		}
 		return moduleDependencies;
 	}
-	
-	
+
+
 	private void addUnscopedAsset(LinkedAsset asset) throws ModelOperationException {
 		if (assets.put(asset)) {
 			for (Asset dependentAsset : getModuleDependencies(asset)) {
@@ -185,28 +185,28 @@ public class BundleSetBuilder {
 			}
 		}
 	}
-	
+
 	private String assetFilePaths(List<Asset> assets) {
 		List<String> sourceFilePaths = new ArrayList<>();
-		
+
 		for (Asset asset : assets) {
 			sourceFilePaths.add(asset.getAssetPath());
 		}
-		
+
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
 	}
-	
-	
+
+
 	private void addAllSourceModuleDependencies(SourceModule sourceModule, AssetMap<SourceModule> sourceModules) throws ModelOperationException {
 		addAllSourceModuleDependencies(sourceModule, sourceModules, new ArrayList<SourceModule>());
 	}
-	
+
 	private void addAllSourceModuleDependencies(SourceModule sourceModule, AssetMap<SourceModule> sourceModules, List<SourceModule> processedModules) throws ModelOperationException {
 		if (processedModules.contains(sourceModule)) {
 			return;
 		}
 		processedModules.add(sourceModule);
-		
+
 		for (Asset asset : sourceModule.getDependentAssets(bundlableNode)) {
 			if (!sourceModules.containsKey(asset.getPrimaryRequirePath())) {
 				if(asset instanceof SourceModule) {
@@ -216,17 +216,17 @@ public class BundleSetBuilder {
 		}
 		sourceModules.put(sourceModule.getPrimaryRequirePath(), sourceModule);
 	}
-	
+
 	private void addBootstrapAndDependencies(AssetMap<SourceModule> bootstrappingSourceModules) throws ModelOperationException {
 		JsLib boostrapLib = bundlableNode.app().jsLib(BOOTSTRAP_LIB_NAME);
 		for (Asset asset : boostrapLib.assets()) {
 			if (asset instanceof SourceModule) {
 				addSourceModule( (SourceModule) asset );
-				addAllSourceModuleDependencies( (SourceModule) asset, bootstrappingSourceModules );						
+				addAllSourceModuleDependencies( (SourceModule) asset, bootstrappingSourceModules );
 			}
 		}
 	}
-	
+
 	private <AT extends Asset> AssetMap<AT> orderAssetsByAssetContainer(AssetMap<AT> assets) {
 		AssetMap<AT> orderedAssets = new AssetMap<>();
 		AssetMap<AT> unorderedAssets = new AssetMap<>(assets);
@@ -240,8 +240,8 @@ public class BundleSetBuilder {
 		}
 		orderedAssets.putFirst(unorderedAssets);
 		return orderedAssets;
-	}	
-	
+	}
+
 	private boolean strictCheckingDisabled(Asset asset) {
 		MemoizedFile currentDir = asset.file().isDirectory() ? asset.file() : asset.file().getParentFile();
 		while (currentDir != null && currentDir != asset.assetContainer().dir().getParentFile()) {
