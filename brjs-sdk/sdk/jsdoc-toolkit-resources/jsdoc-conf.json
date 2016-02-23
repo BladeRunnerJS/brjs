@@ -9,6 +9,8 @@
             "sdk/libs/javascript"
         ],
         "exclude": [
+            "sdk/libs/javascript/angular",
+            "sdk/libs/javascript/angular-mocks",
             "sdk/libs/javascript/es5-shim",
             "sdk/libs/javascript/br-ie8-shim",
             "sdk/libs/javascript/extjs",
