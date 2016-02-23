@@ -219,7 +219,10 @@ public class DefaultCommonJsSourceModule implements CommonJsSourceModule {
 
 	public static String calculateRequirePath(String requirePrefix, MemoizedFile assetFile)
 	{
-		return requirePrefix+"/"+assetFile.requirePathName();
+		if (assetFile.getName().equals("index.js")) {
+			return requirePrefix;
+		}
+		return requirePrefix + "/" + assetFile.requirePathName();
 	}
 
 }

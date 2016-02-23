@@ -27,15 +27,15 @@ public class DirectoryAsset implements DirectoryLinkedAsset
 		this.assetContainer = assetContainer;
 		this.dir = dir;
 		this.implicitDependencies.addAll(implicitDependencies);
-		
+
 		primaryRequirePath = getRequirePath(requirePrefix, dir);
 	}
-	
+
 	@Override
 	public void addImplicitDependencies(List<Asset> implicitDependencies) {
 		this.implicitDependencies.addAll(implicitDependencies);
 	}
-	
+
 	@Override
 	public Reader getReader() throws IOException
 	{
@@ -85,12 +85,12 @@ public class DirectoryAsset implements DirectoryLinkedAsset
 	{
 		return assetContainer;
 	}
-	
+
 	@Override
 	public boolean isScopeEnforced() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean isRequirable()
 	{
@@ -98,10 +98,11 @@ public class DirectoryAsset implements DirectoryLinkedAsset
 	}
 
 	public static String getRequirePath(String requirePrefix, MemoizedFile dir) {
-		if (requirePrefix == "") {
-			return dir.getName();
+		if (requirePrefix.equals("")) {
+			return dir.getName() + "@dir";
 		}
-		return requirePrefix+"/"+dir.getName();
+
+		return requirePrefix + "/" + dir.getName() + "@dir";
 	}
-	
+
 }
