@@ -12808,7 +12808,7 @@ function $LocationProvider() {
   /**
    * @ngdoc method
    * @name $locationProvider#hashPrefix
-   * @description
+   *
    * @param {string=} prefix Prefix for hash part (containing path and search)
    * @returns {*} current value if used as getter or itself (chaining) if used as setter
    */
@@ -12824,7 +12824,7 @@ function $LocationProvider() {
   /**
    * @ngdoc method
    * @name $locationProvider#html5Mode
-   * @description
+   *
    * @param {(boolean|Object)=} mode If boolean, sets `html5Mode.enabled` to value.
    *   If object, sets `enabled`, `requireBase` and `rewriteLinks` to respective values. Supported
    *   properties:
@@ -13138,7 +13138,7 @@ function $LogProvider() {
   /**
    * @ngdoc method
    * @name $logProvider#debugEnabled
-   * @description
+   *
    * @param {boolean=} flag enable or disable debug level messages
    * @returns {*} current value if used as getter or itself (chaining) if used as setter
    */
