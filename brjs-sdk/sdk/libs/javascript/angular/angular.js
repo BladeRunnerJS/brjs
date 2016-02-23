@@ -19652,11 +19652,11 @@ function roundNumber(parsedNumber, fractionSize, minFrac, maxFrac) {
  * @param  {string } pattern
  * @param  {string} groupSep     The string to separate groups of number (e.g. `,`)
  * @param  {string} decimalSep   The string to act as the decimal separator (e.g. `.`)
- * @param  {[type]} fractionSize The size of the fractional part of the number
+ * @param  {string} fractionSize [type] The size of the fractional part of the number
  * @return {string}              The number formatted as a string
  */
 function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
-    /* where pattern is: 
+    /* where pattern is:
             minFrac, // the minimum number of digits required in the fraction part of the number
            maxFrac, // the maximum number of digits required in the fraction part of the number
            gSize,   // number of digits in each group of separated digits
