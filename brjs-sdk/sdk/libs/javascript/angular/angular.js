@@ -241,10 +241,11 @@ msie = document.documentMode;
 
 
 /**
- * @private
+ *
  * @param {*} obj
  * @return {boolean} Returns true if `obj` is an array or array-like object (NodeList, Arguments,
  *                   String ...)
+ * @private
  */
 function isArrayLike(obj) {
 
@@ -677,9 +678,10 @@ function isFunction(value) {return typeof value === 'function';}
 /**
  * Determines if a value is a regular expression object.
  *
- * @private
+ *
  * @param {*} value Reference to check.
  * @returns {boolean} True if `value` is a `RegExp`.
+ * @private
  */
 function isRegExp(value) {
   return toString.call(value) === '[object RegExp]';
@@ -689,9 +691,10 @@ function isRegExp(value) {
 /**
  * Checks if `obj` is a window object.
  *
- * @private
+ *
  * @param {*} obj Object to check
  * @returns {boolean} True if `obj` is a window obj.
+ * @private
  */
 function isWindow(obj) {
   return obj && obj.window === obj;
@@ -1336,10 +1339,11 @@ function startingTag(element) {
 /**
  * Tries to decode the URI component without throwing an exception.
  *
- * @private
+ *
  * @param str value potential URI component to check.
  * @returns {boolean} True if `value` can be decoded
  * with the decodeURIComponent function.
+ * @private
  */
 function tryDecodeURIComponent(value) {
   try {
@@ -5822,10 +5826,9 @@ function Browser(window, document, $log, $sniffer) {
   }
 
   /**
-   * @private
-   * Note: this method is used only by scenario runner
-   * TODO(vojta): prefix this method with $$ ?
+   *
    * @param {function()} callback Function that will be called when no outstanding request
+   * @private
    */
   self.notifyWhenNoOutstandingRequests = function(callback) {
     if (outstandingRequestCount === 0) {
@@ -6025,10 +6028,11 @@ function Browser(window, document, $log, $sniffer) {
   };
 
   /**
-   * @private
+   *
    * Remove popstate and hashchange handler from window.
    *
    * NOTE: this api is intended for use only by $rootScope.
+   * @private
    */
   self.$$applicationDestroyed = function() {
     jqLite(window).off('hashchange popstate', cacheStateAndFireUrlChange);
@@ -7352,7 +7356,7 @@ var $compileMinErr = minErr('$compile');
  * @ngdoc provider
  * @name $compileProvider
  *
- * @description
+ *
  */
 $CompileProvider.$inject = ['$provide', '$$sanitizeUriProvider'];
 function $CompileProvider($provide, $$sanitizeUriProvider) {
