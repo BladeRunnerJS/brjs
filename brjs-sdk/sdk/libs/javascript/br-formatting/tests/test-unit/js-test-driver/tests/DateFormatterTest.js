@@ -6,7 +6,6 @@
 
 	DateFormatterTest.prototype.setUp = function() {
 
-		debugger;
 		this.m_oDate = Date;
 
 		this.oFormatter = new DateFormatter();

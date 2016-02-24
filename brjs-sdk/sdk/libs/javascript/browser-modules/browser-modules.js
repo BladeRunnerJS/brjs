@@ -1,4 +1,3 @@
-// THIS IS THE ONE
 
 (function() {
 	"use strict";
