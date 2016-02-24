@@ -164,8 +164,8 @@ public class JsTestDriverBundlableNode implements BundlableNode {
 	}
 
 	@Override
-	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
-		LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(requirePath);
+	public Asset getAsset(String requirePath) throws RequirePathException {
+		LinkedAsset linkedAsset = (LinkedAsset) bundlableNode.getAsset(requirePath);
 		
 		if (linkedAsset instanceof TestAsset) {
 			return new JsTestDriverEmptyTestSourceModule((SourceModule) linkedAsset);

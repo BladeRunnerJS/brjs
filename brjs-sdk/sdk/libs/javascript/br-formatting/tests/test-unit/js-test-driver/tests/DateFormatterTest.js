@@ -2,6 +2,7 @@
 	DateFormatterTest = TestCase("DateFormatterTest");
 
 	var DateFormatter = require('br/presenter/formatter/DateFormatter');
+	var ThousandsFormatter = require('br/presenter/formatter/ThousandsFormatter');
 
 	DateFormatterTest.prototype.setUp = function() {
 

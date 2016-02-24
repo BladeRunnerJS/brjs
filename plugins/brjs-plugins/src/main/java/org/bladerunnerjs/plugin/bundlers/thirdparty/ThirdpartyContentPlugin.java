@@ -85,7 +85,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin implements Co
 			}
 			else if(parsedContentPath.formName.equals("single-module-request")) {
 				boolean hasUnencapsulatedSourceModule = hasUnencapsulatedSourceModule(bundleSet);
-				LinkedAsset jsModule = bundleSet.bundlableNode().getLinkedAsset(parsedContentPath.properties.get("module"));
+				LinkedAsset jsModule = (LinkedAsset) bundleSet.bundlableNode().getAsset(parsedContentPath.properties.get("module"));
 				return new CharResponseContent(brjs, 
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
 					jsModule.getReader(),

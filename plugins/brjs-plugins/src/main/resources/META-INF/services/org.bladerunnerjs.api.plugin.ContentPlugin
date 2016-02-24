@@ -1,3 +1,4 @@
+org.bladerunnerjs.plugin.bundlers.servicepopulator.ServicePopulatorContentPlugin
 org.bladerunnerjs.plugin.bundlers.compositejs.CompositeJsContentPlugin
 org.bladerunnerjs.plugin.bundlers.thirdparty.ThirdpartyContentPlugin
 org.bladerunnerjs.plugin.bundlers.commonjs.CommonJsContentPlugin

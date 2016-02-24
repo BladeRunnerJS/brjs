@@ -13,6 +13,8 @@ Thumbs.db
 *.iml
 .classpath
 .project
+*.sublime-project
+*.sublime-workspace
 
 
 .gradle
