@@ -3,7 +3,7 @@
 import static groovy.io.FileVisitResult.*  
 import static groovy.io.FileType.*
 
-def skipDirs = ~/^(build|\..*|src|out|bin)/  
+def skipDirs = ~/^(build|\..*|src|out|bin|wrapper)/
 def preDir = {  
 	if (skipDirs.matcher(it.name).matches())  
 		return SKIP_SUBTREE  
