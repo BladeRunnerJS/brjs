@@ -1,6 +1,0 @@
-
-<aliasDefinitions xmlns="http://schema.bladerunnerjs.org/aliasDefinitions">
-	<alias name="aliasA" defaultClass="br.servicepopulator.AliasA" />
-	<alias name="aliasB" defaultClass="br.servicepopulator.AliasB" />
-	<alias name="aliasC" defaultClass="br.servicepopulator.AliasC" />
-</aliasDefinitions>

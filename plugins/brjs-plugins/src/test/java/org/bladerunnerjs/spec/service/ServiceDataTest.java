@@ -1,8 +1,5 @@
 package org.bladerunnerjs.spec.service;
 
-import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasDefinitionsFile;
-import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.aliasesFile;
-
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
@@ -11,6 +8,8 @@ import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
 import org.bladerunnerjs.spec.aliasing.AliasesFileBuilder;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.bladerunnerjs.plugin.bundlers.aliasing.AliasingUtility.*;
 
 
 public class ServiceDataTest extends SpecTest
@@ -30,22 +29,22 @@ public class ServiceDataTest extends SpecTest
 	{
 		given(brjs)
 			.automaticallyFindsBundlerPlugins()
-			.and(brjs).automaticallyFindsMinifierPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()			
 			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
 		aspect = app.defaultAspect();
 		lib = brjs.sdkLib("lib");
-
+		
 		aspectAliasesFile = new AliasesFileBuilder(this, aliasesFile(aspect));
 		aspectAliasDefinitionsFile = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(aspect, "resources"));
 		libAliasDefinitionsFile = new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile(lib, "resources"));
-
+		
 		servicesLib = brjs.sdkLib("ServicesLib");
 		given(servicesLib).containsFileWithContents("br-lib.conf", "requirePrefix: br")
 			.and(servicesLib).hasClasses("br/AliasRegistry", "br/ServiceRegistry")
 			.and(servicesLib).hasClass("br/UnknownClass");
 	}
-
+	
 	@Test
 	public void serviceDataIsEmptyIfNoServicesUsed() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -57,7 +56,7 @@ public class ServiceDataTest extends SpecTest
 			"module.exports = { }"
 		);
 	}
-
+	
 	@Test
 	public void serviceDataIsEmptyIfNoServiceAreDefinedViaAliasesAreUsed() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -67,7 +66,7 @@ public class ServiceDataTest extends SpecTest
 			"module.exports = { }"
 		);
 	}
-
+	
 	@Test
 	public void serviceDataIsEmptyIfNoServiceAreDefinedViaAliasesWithAnImplementation() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -79,7 +78,7 @@ public class ServiceDataTest extends SpecTest
 			"module.exports = { }"
 		);
 	}
-
+	
 	@Test
 	public void serviceDataListsASingleUsedService_whenServiceDefinedViaAspectAliases() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -93,7 +92,7 @@ public class ServiceDataTest extends SpecTest
 			"		\"requirePath\": \"appns/ServiceClass\""
 		);
 	}
-
+	
 	@Test
 	public void serviceDataListsASingleUsedService_whenServiceDefinedViaAspectAliasDefinitions() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -107,7 +106,7 @@ public class ServiceDataTest extends SpecTest
 			"		\"requirePath\": \"appns/ServiceClass\""
 		);
 	}
-
+	
 	@Test
 	public void serviceDataListsAllServices_whenServiceDefinedViaAspectAliases() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -130,7 +129,7 @@ public class ServiceDataTest extends SpecTest
 			"}"
 		);
 	}
-
+	
 	@Test
 	public void serviceDataListsAllServices_whenServiceDefinedViaAspectAliasDefinitions() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -153,7 +152,7 @@ public class ServiceDataTest extends SpecTest
 			"}"
 		);
 	}
-
+	
 	@Test
 	public void serviceDataListsAServicesServiceDependencies_whenServiceDefinedViaAspectAliases() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -192,7 +191,7 @@ public class ServiceDataTest extends SpecTest
 			"}"
 		);
 	}
-
+	
 	@Test
 	public void serviceDataListsAServicesServiceDependencies_whenServiceDefinedViaAspectAliasDefinitions() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -246,7 +245,7 @@ public class ServiceDataTest extends SpecTest
 			"		\"requirePath\": \"lib/ServiceClass\""
 		);
 	}
-
+	
 	@Test
 	public void serviceDataListsServicesUsedViaNamespacedJSCode() throws Exception {
 		given(aspect).indexPageRequires("appns/App", "service!$data")
@@ -261,7 +260,7 @@ public class ServiceDataTest extends SpecTest
     		"		\"requirePath\": \"appns/ServiceClass\""
     	);
 	}
-
+	
 	@Test
 	public void serviceDataListsServicesRequiredViaIndexPage() throws Exception {
 		given(aspect).indexPageHasContent("require('service!$data'); require('service!some-service');")
@@ -274,7 +273,7 @@ public class ServiceDataTest extends SpecTest
     		"		\"requirePath\": \"appns/ServiceClass\""
     	);
 	}
-
+	
 	@Test
 	public void serviceDataListsServicesUsedViaIndexPage() throws Exception {
 		given(aspect).indexPageHasContent("require('service!$data'); br.ServiceRegistry.getService('some-service');")
@@ -287,117 +286,6 @@ public class ServiceDataTest extends SpecTest
     		"		\"requirePath\": \"appns/ServiceClass\""
     	);
 	}
-
-	@Test
-	public void serviceDataListsAServicesServiceDependencies_whenServiceHasNestedDependencies() throws Exception {
-		given(aspect).indexPageHasContent("require('service!$data'); br.ServiceRegistry.getService('service1');")
-			.and(aspect).classRequires("appns/ServiceClass1", "appns/Class")
-			.and(aspect).classRequires("appns/Class", "service!service2")
-			.and(aspect).hasClass("appns/ServiceClass2")
-			.and(aspectAliasDefinitionsFile).hasAlias("service1", "appns/ServiceClass1")
-			.and(aspectAliasDefinitionsFile).hasAlias("service2", "appns/ServiceClass2");
-		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsLines(
-			"module.exports = {",
-			"	\"service!service2\": {",
-			"		\"requirePath\": \"appns/ServiceClass2\",",
-			"		\"dependencies\": []",
-			"	},",
-			"	\"service!service1\": {",
-			"		\"requirePath\": \"appns/ServiceClass1\",",
-			"		\"dependencies\": [",
-			"			\"service2\"",
-			"		]",
-			"	}",
-			"};"
-		);
-	}
-
-	@Test
-	public void serviceDataShouldNotBeADependencyOfAService() throws Exception {
-		given(aspect).indexPageHasContent("require('service!$data'); br.ServiceRegistry.getService('service');")
-			.and(aspect).hasClass("appns/ServiceClass")
-			.and(aspect).classRequires("appns/ServiceClass", "service!$data")
-			.and(aspectAliasDefinitionsFile).hasAlias("service", "appns/ServiceClass");
-		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsLines(
-			"	\"service!service\": {",
-			"		\"requirePath\": \"appns/ServiceClass\",",
-			"		\"dependencies\": []",
-			"	}"
-		);
-	}
-
-	@Test
-	public void serviceDataListsAServicesServiceDependencies_whenServiceHasNestedDependenciesThroughServices() throws Exception {
-		given(aspect).indexPageHasContent("require('service!$data'); br.ServiceRegistry.getService('service1');")
-			.and(aspect).classRequires("appns/ServiceClass1", "service!service2")
-			.and(aspect).classRequires("appns/ServiceClass2", "service!service3")
-			.and(aspect).hasClass("appns/ServiceClass3")
-			.and(aspectAliasDefinitionsFile).hasAlias("service1", "appns/ServiceClass1")
-			.and(aspectAliasDefinitionsFile).hasAlias("service2", "appns/ServiceClass2")
-			.and(aspectAliasDefinitionsFile).hasAlias("service3", "appns/ServiceClass3");
-		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsLines(
-			"module.exports = {",
-			"	\"service!service2\": {",
-			"		\"requirePath\": \"appns/ServiceClass2\",",
-			"		\"dependencies\": [",
-			"			\"service3\"",
-			"		]",
-			"	},",
-			"	\"service!service3\": {",
-			"		\"requirePath\": \"appns/ServiceClass3\",",
-			"		\"dependencies\": []",
-			"	},",
-			"	\"service!service1\": {",
-			"		\"requirePath\": \"appns/ServiceClass1\",",
-			"		\"dependencies\": [",
-			"			\"service2\",",
-			"			\"service3\"",
-			"		]",
-			"	}",
-			"};"
-		);
-	}
-
-	@Test
-	public void serviceDataListsServiceDependencies_whenServiceHasDependencyInTheConstructor() throws Exception {
-		given(aspect).indexPageHasContent("require('service!$data'); br.ServiceRegistry.getService('br.locale-service');")
-			.and(aspect).classFileHasContent("appns/BRLocaleService",
-				"BRLocaleService = function() {\n" +
-				"	this.localeProvider = require('service!br.locale-provider');\n" +
-				"};\n")
-			.and(aspect).classFileHasContent("appns/BRLocaleProvider",
-				"BRLocaleProvider = function() {\n" +
-				"	require('service!br.app-meta-service');\n" +
-				"};\n")
-			.and(aspect).hasClass("appns/BRAppMetaService")
-			.and(aspectAliasDefinitionsFile).hasAlias("br.app-meta-service", "appns/BRAppMetaService")
-			.and(aspectAliasDefinitionsFile).hasAlias("br.locale-service", "appns/BRLocaleService")
-			.and(aspectAliasDefinitionsFile).hasAlias("br.locale-provider", "appns/BRLocaleProvider");
-		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsLines(
-			"module.exports = {",
-			"	\"service!br.locale-provider\": {",
-			"		\"requirePath\": \"appns/BRLocaleProvider\",",
-			"		\"dependencies\": [",
-			"			\"br.app-meta-service\"",
-			"		]",
-			"	},",
-			"	\"service!br.app-meta-service\": {",
-			"		\"requirePath\": \"appns/BRAppMetaService\",",
-			"		\"dependencies\": []",
-			"	},",
-			"	\"service!br.locale-service\": {",
-			"		\"requirePath\": \"appns/BRLocaleService\",",
-			"		\"dependencies\": [",
-			"			\"br.locale-provider\",",
-			"			\"br.app-meta-service\"",
-			"		]",
-			"	}",
-			"};"
-		);
-	}
-
+	
+	
 }

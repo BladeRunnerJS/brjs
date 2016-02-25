@@ -36,8 +36,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	
 	public void write() throws ConfigException {
 		try {
-			CF conf = getConf();
-			conf.write();
+			getConf().write();
 			node.root().getFileModificationRegistry().incrementFileVersion(confFile);
 		}
 		catch (IOException e) {
