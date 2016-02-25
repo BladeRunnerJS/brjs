@@ -206,7 +206,7 @@ public class ThirdpartySourceModule implements SourceModule
 		}
 		
 		try {
-			Asset dependentAsset = bundlableNode.getAsset(dependentLibName);
+			Asset dependentAsset = bundlableNode.getLinkedAsset(dependentLibName);
 			if (dependentAsset.isRequirable()) {
 				return dependentAsset;
 			}
