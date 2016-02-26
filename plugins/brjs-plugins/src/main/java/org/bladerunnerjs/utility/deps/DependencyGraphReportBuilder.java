@@ -44,7 +44,7 @@ public class DependencyGraphReportBuilder {
 	
 	public static String createReport(BrowsableNode browsableNode, String requirePath, boolean showAllDependencies) throws ModelOperationException {
 		try {
-			SourceModule sourceModule =  (SourceModule)browsableNode.getAsset(requirePath);
+			SourceModule sourceModule =  (SourceModule)browsableNode.getLinkedAsset(requirePath);
 			List<LinkedAsset> linkedAssets = new ArrayList<>();
 			linkedAssets.add(sourceModule);
 			
