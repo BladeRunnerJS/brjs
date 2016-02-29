@@ -79,7 +79,7 @@ Utility.performOnce = function(obj, methodName) {
 	}
 
 	if (!obj.__objId) {
-		obj.__objId = br.util.Utility.nextObjectIdentifier++;
+		obj.__objId = Utility.nextObjectIdentifier++;
 	}
 
 	if (!this.m_mObjects[obj.__objId]) {
