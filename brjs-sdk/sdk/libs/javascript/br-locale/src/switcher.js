@@ -15,7 +15,7 @@ module.exports = {
 	switchToActiveLocale: function() {
 		var activeLocale = require('service!br.locale-provider').getActiveLocale();
 		var localePageUrl = this.getLocalizedPageUrl(window.location.href, activeLocale);
-		
+
 		require('service!br.locale-switcher').switchLocale(localePageUrl);
 	},
 
@@ -32,17 +32,23 @@ module.exports = {
 		var normalizedPath = path === "/" ? "" : path.replace(/^\/?(.*?)(\/|\/index\.html)?$/, '/$1');
 		var localizedPath = normalizedPath + '/' + locale + ((fullyQualifiedPath) ? '.html' : '');
 
-		if (navigator.userAgent.indexOf("MSIE ") > -1 || navigator.userAgent.match(/Trident.*rv\:11\./)) {
-			if (pageUrl.indexOf(":80") > -1) {
-				localizedPath = localizedPath.substring(1, localizedPath.length);
-			} else if (host.indexOf(":80") > -1){
-				host = host.substring(0, host.length - 3);
-				localizedPath = localizedPath.substring(1, localizedPath.length);
+		var port80isExplicitlyRequested = pageUrl.match(/:80$/) || pageUrl.match(/:80\//);
+		var hostContainsPort80 = host.match(/:80$/);
+
+		if (port80isExplicitlyRequested) {
+			if (!hostContainsPort80) {
+				// Append port 80 to the host, since it was explicitly requested but it is not there
+				host += ":80/";
 			}
-		} else if (pageUrl.indexOf(":80") > -1) {
-			host += ":80";
+		} else {
+			if (hostContainsPort80) {
+				// Remove port 80 from the host, since it was not explicitly requested in the URL
+				host = host.replace(":80", "");
+			}
 		}
 
+		// Remove possible double slashes from IE
+		localizedPath = localizedPath.replace("//", "/");
 		return protocol + '//' + host + localizedPath + query + hash;
 	}
 };
