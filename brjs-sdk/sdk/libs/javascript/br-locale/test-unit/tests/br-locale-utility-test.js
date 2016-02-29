@@ -29,8 +29,13 @@ require('jasmine');
 			expect(getLocalizedPageUrl('http://acme.com:1337/app/index.html?query=1#anchor', 'en_GB')).toBe('http://acme.com:1337/app/en_GB.html?query=1#anchor');
 		});
 
-        it('appends the locale to the end of page urls that have no folder', function() {
-            expect(getLocalizedPageUrl('http://acme.com', 'en_GB')).toBe('http://acme.com/en_GB');
-        });
+		it('appends the locale to the end of page urls that have no folder', function() {
+			expect(getLocalizedPageUrl('http://acme.com', 'en_GB')).toBe('http://acme.com/en_GB');
+		});
+
+		it('appends the locale to the end when the url starts with 80 but is not 80', function() {
+			expect(getLocalizedPageUrl('http://acme.com:8080/app/index.html?query=1#anchor', 'en_GB')).toBe('http://acme.com:8080/app/en_GB.html?query=1#anchor');
+		});
+
 	});
 })();
