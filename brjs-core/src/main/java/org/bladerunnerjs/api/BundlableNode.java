@@ -25,7 +25,7 @@ public interface BundlableNode extends Node, AssetContainer {
 	 * @return the LinkedAsset object retrieved
 	 * @throws RequirePathException if the require path is invalid or the resource is out of scope
 	 */
-	LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException;
+	Asset getAsset(String requirePath) throws RequirePathException;
 	
 	/**
 	 * The method retrieves the a List of {@link LinkedAsset} that are located within the current BundableNode.

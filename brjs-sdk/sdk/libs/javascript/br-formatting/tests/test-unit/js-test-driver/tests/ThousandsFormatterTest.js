@@ -1,5 +1,8 @@
 (function() {
 	ThousandsFormatterTest = TestCase("ThousandsFormatterTest");
+	var servicePopulator = require('br/servicepopulator/ServicePopulatorClass');
+	var serviceBox = require('br/servicebox/serviceBox');
+	var syncResolve = require('syncResolve');
 	var ThousandsFormatter = require('br/presenter/formatter/ThousandsFormatter');
 
 	ThousandsFormatterTest.prototype.setUp = function()

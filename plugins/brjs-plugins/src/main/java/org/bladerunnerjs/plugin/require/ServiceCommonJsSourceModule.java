@@ -90,14 +90,14 @@ public class ServiceCommonJsSourceModule implements CommonJsSourceModule {
 		
 		try
 		{
-			dependencies.add(bundlableNode.getLinkedAsset("br/ServiceRegistry"));
+			dependencies.add(bundlableNode.getAsset("br/ServiceRegistry"));
 		}
 		catch (RequirePathException ex)
 		{
 			throw new ModelOperationException(ex);
 		}
 		try {
-			dependencies.add(bundlableNode.getLinkedAsset("alias!" + requirePath));
+			dependencies.add(bundlableNode.getAsset("alias!" + requirePath));
 		}
 		catch(RequirePathException e) {
 			// ignore exception here since services are allowed to have their aliases defined on the client
