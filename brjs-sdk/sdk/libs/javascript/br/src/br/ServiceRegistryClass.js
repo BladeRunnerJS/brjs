@@ -109,6 +109,8 @@ ServiceRegistryClass.prototype.deregisterService = function(alias) {
 * @type Object
 */
 ServiceRegistryClass.prototype.getService = function(alias) {
+	this._initializeServiceIfRequired(alias);
+
 	if (!this.isServiceRegistered(alias)) {
 		throw new Errors.InvalidParametersError('br/ServiceRegistryClass could not locate a service for: ' + alias);
 	}
@@ -171,6 +173,23 @@ ServiceRegistryClass.prototype.dispose = function() {
 	this._serviceBox.factories = {};
 	this._serviceBox.services = {};
 }
+
+/** @private */
+ServiceRegistryClass.prototype._initializeServiceIfRequired = function(alias) {
+	var AliasRegistry = require('./AliasRegistry');
+	if (!(alias in this._serviceBox.services)) {
+		var isIdentifierAlias = AliasRegistry.isAliasAssigned(alias);
+
+		if (isIdentifierAlias) {
+			var ServiceClass = AliasRegistry.getClass(alias);
+
+			this._serviceBox.factories[alias] = function() {
+				Promise.resolve(new ServiceClass());
+			};
+			this._serviceBox.services[alias] = new ServiceClass();
+		}
+	}
+};
 
 ServiceRegistryClass.LOG_MESSAGES = {
 	DISPOSE_CALLED: "dispose() called on service registered for '{0}'",
