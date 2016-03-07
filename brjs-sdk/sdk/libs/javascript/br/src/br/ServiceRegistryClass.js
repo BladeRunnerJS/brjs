@@ -61,6 +61,18 @@ function ServiceRegistryClass(serviceBox) {
 
 // Main API //////////////////////////////////////////////////////////////////////////////////////
 
+ServiceRegistryClass.prototype.overrideService = function(alias, serviceInstance) {
+	var serviceFactory = function(service) {
+		return function() {
+			return Promise.resolve(service);
+		};
+	}(serviceInstance);
+	serviceFactory.dependencies = [];
+
+	this._serviceBox.factories[alias] = serviceFactory;
+	this._serviceBox.services[alias] = serviceInstance;
+};
+
 /**
 * Register an object that will be responsible for implementing the given interface within the
 * application.
@@ -79,15 +91,7 @@ ServiceRegistryClass.prototype.registerService = function(alias, serviceInstance
 		throw new Errors.IllegalStateError('Service: ' + alias + ' has already been registered.');
 	}
 
-	var serviceFactory = function(service) {
-		return function() {
-			return Promise.resolve(service);
-		};
-	}(serviceInstance);
-	serviceFactory.dependencies = [];
-
-	this._serviceBox.factories[alias] = serviceFactory;
-	this._serviceBox.services[alias] = serviceInstance;
+	this.overrideService(alias, serviceInstance);
 };
 
 /**
