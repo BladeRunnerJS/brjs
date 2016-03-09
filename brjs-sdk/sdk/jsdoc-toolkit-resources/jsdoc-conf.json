@@ -11,6 +11,11 @@
         "exclude": [
             "sdk/libs/javascript/angular",
             "sdk/libs/javascript/angular-mocks",
+            "sdk/libs/javascript/angular2",
+            "sdk/libs/javascript/angular2-polyfills",
+            "sdk/libs/javascript/rx",
+            "sdk/libs/javascript/es6-promise",
+            "sdk/libs/javascript/es6-shim",
             "sdk/libs/javascript/es5-shim",
             "sdk/libs/javascript/br-ie8-shim",
             "sdk/libs/javascript/extjs",
