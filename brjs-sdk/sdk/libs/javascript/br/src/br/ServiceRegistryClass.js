@@ -61,18 +61,6 @@ function ServiceRegistryClass(serviceBox) {
 
 // Main API //////////////////////////////////////////////////////////////////////////////////////
 
-ServiceRegistryClass.prototype.overrideService = function(alias, serviceInstance) {
-	var serviceFactory = function(service) {
-		return function() {
-			return Promise.resolve(service);
-		};
-	}(serviceInstance);
-	serviceFactory.dependencies = [];
-
-	this._serviceBox.factories[alias] = serviceFactory;
-	this._serviceBox.services[alias] = serviceInstance;
-};
-
 /**
 * Register an object that will be responsible for implementing the given interface within the
 * application.
@@ -91,7 +79,13 @@ ServiceRegistryClass.prototype.registerService = function(alias, serviceInstance
 		throw new Errors.IllegalStateError('Service: ' + alias + ' has already been registered.');
 	}
 
-	this.overrideService(alias, serviceInstance);
+	var serviceFactory = function() {
+		return Promise.resolve(serviceInstance);
+	};
+	serviceFactory.dependencies = [];
+
+	this._serviceBox.factories[alias] = serviceFactory;
+	this._serviceBox.services[alias] = serviceInstance;
 };
 
 /**
@@ -113,17 +107,35 @@ ServiceRegistryClass.prototype.deregisterService = function(alias) {
 * @type Object
 */
 ServiceRegistryClass.prototype.getService = function(alias) {
-	this._initializeServiceIfRequired(alias);
+	var services = this._serviceBox.services;
 
-	if (!this.isServiceRegistered(alias)) {
+	if (alias in services) {
+		return services[alias];
+	}
+
+	return this._initializeService(alias);
+};
+
+/** @private */
+ServiceRegistryClass.prototype._initializeService = function(alias) {
+
+	var AliasRegistry = require('./AliasRegistry');
+	var services = this._serviceBox.services;
+	if (!AliasRegistry.isAliasAssigned(alias)) {
 		throw new Errors.InvalidParametersError('br/ServiceRegistryClass could not locate a service for: ' + alias);
 	}
 
-	if (!(alias in this._serviceBox.services)) {
-		throw new Errors.InvalidParametersError('The dependencies need to be resolved before getting a service');
+	var ServiceCtor = AliasRegistry.getClass(alias);
+
+	if (typeof this._serviceBox.factories[alias] === 'undefined') {
+		this._serviceBox.factories[alias] = function() {
+			Promise.resolve(new ServiceCtor());
+		};
 	}
 
-	return this._serviceBox.services[alias];
+	services[alias] = new ServiceCtor();
+
+	return services[alias];
 };
 
 /**
@@ -149,8 +161,7 @@ ServiceRegistryClass.prototype.legacyClear = function() {
 		logConsole.warn('ServiceRegistry#legacyClear is deprecated. Please use sub-realms instead.');
 	}
 
-	this._serviceBox.factories = {};
-	this._serviceBox.services = {};
+	this.dispose();
 };
 
 ServiceRegistryClass.prototype.dispose = function() {
@@ -174,26 +185,10 @@ ServiceRegistryClass.prototype.dispose = function() {
 			}
 		}
 	);
+
 	this._serviceBox.factories = {};
 	this._serviceBox.services = {};
 }
-
-/** @private */
-ServiceRegistryClass.prototype._initializeServiceIfRequired = function(alias) {
-	var AliasRegistry = require('./AliasRegistry');
-	if (!(alias in this._serviceBox.services)) {
-		var isIdentifierAlias = AliasRegistry.isAliasAssigned(alias);
-
-		if (isIdentifierAlias) {
-			var ServiceClass = AliasRegistry.getClass(alias);
-
-			this._serviceBox.factories[alias] = function() {
-				Promise.resolve(new ServiceClass());
-			};
-			this._serviceBox.services[alias] = new ServiceClass();
-		}
-	}
-};
 
 ServiceRegistryClass.LOG_MESSAGES = {
 	DISPOSE_CALLED: "dispose() called on service registered for '{0}'",
