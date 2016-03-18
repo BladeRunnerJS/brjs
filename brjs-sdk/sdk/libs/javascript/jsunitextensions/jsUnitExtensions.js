@@ -364,7 +364,7 @@ var _isMessageSupplied = function(oArguments, nExpectedArgumentCount) {
 	if (oArguments.length >= nExpectedArgumentCount) {
 		var sMsg = oArguments[0];   // first argument is always the message
 		if (typeof sMsg != "string") {
-			caplin.core.Logger.log(caplin.core.LogLevel.ERROR, "assert incorrectly invoked: first argument needs to be a string message");
+            require('fell').getLogger("jsunitextensions").error("assert incorrectly invoked: first argument needs to be a string message");
 		}
 		return true;
 	}
