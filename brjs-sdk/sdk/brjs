@@ -21,7 +21,7 @@ fi
 SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
 BRJS_CLASSPATH="$SCRIPT_DIR/libs/java/system/*:$SCRIPT_DIR/../conf/java/*"
 
-uname -a | grep -E "(^CYGWIN|^MINGW32.*Msys$)" > /dev/null
+uname -a | grep -E "(^CYGWIN|^MINGW32.*Msys$|^MINGW64.*Msys$)" > /dev/null
 if [ $? -eq 0 ]; then
 	# Cygwin & newer GitBash versions
 	PWD=`pwd`
