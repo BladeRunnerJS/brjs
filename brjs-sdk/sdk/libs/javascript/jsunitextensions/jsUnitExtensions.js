@@ -355,23 +355,23 @@ function getMouseEventIENonStandard(canBubble, cancelable, view, detail, screenX
 
 //if (!_isMessageSupplied(arguments, 2)) return _reinvokeWithMessage(arguments);
 
-_reinvokeWithMessage = function(oArguments) {
-	var pArgumentsWithMessage = _prependBlankMessageToArgument(oArguments);
+var _reinvokeWithMessage = function(oArguments) {
+	var pArgumentsWithMessage = _prependTheBlankMessageToArgument(oArguments);
 	return oArguments.callee.apply(this, pArgumentsWithMessage);
 };
 
-_isMessageSupplied = function(oArguments, nExpectedArgumentCount) {
+var _isMessageSupplied = function(oArguments, nExpectedArgumentCount) {
 	if (oArguments.length >= nExpectedArgumentCount) {
 		var sMsg = oArguments[0];   // first argument is always the message
 		if (typeof sMsg != "string") {
-			caplin.core.Logger.log(caplin.core.LogLevel.ERROR, "assert incorrectly invoked: first argument needs to be a string message");
+            require('fell').getLogger("jsunitextensions").error("assert incorrectly invoked: first argument needs to be a string message");
 		}
 		return true;
 	}
 	return false;
 };
 
-_prependBlankMessageToArgument = function(oArguments) {
+var _prependTheBlankMessageToArgument = function(oArguments) {
 	var pArgumentsWithBlankMessage = [""];
 	for (var i = 0; i < oArguments.length; ++i) {
 		pArgumentsWithBlankMessage.push(oArguments[i]);
