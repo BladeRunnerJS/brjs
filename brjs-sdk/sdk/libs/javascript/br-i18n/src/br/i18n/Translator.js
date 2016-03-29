@@ -54,6 +54,10 @@ Translator.MESSAGES = {
 };
 
 Translator.prototype.registerTranslations = function(locale, translations) {
+	if (this.messageDefinitions[locale] === undefined) {
+		this.messageDefinitions[locale] = {};
+	}
+
 	for (var token in translations) {
 		var lowerCasedToken = token.toLowerCase();
 
