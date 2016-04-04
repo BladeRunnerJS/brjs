@@ -185,6 +185,17 @@ public class BladeWorkbenchBundlingTest extends SpecTest {
  		then(response).containsText("BLADE theme content");
  	}
 	
+	@Test
+	public void resourcesCanExistInBothTheRootSrcDirectoryAndTheResourcesDirectoryCommonJS() throws Exception {
+    	given(aspect).indexPageRequires("appns/bs/b1/Class")
+			.and(bladeset).containsResourceFileWithContents("resource.css", "/* bladeset-resource.css */")
+			.and(blade).hasClass("Class")
+			.and(blade).containsResourceFileWithContents("resource.css", "/* blade-resource.css */")
+			.and(blade).containsFileWithContents("src/css.css", "/* src-css.css */");
+		when(aspect).requestReceivedInDev("css/common/bundle.css", response);
+		then(response).containsOrderedTextFragments("/* src-css.css */", "/* blade-resource.css */", "/* bladeset-resource.css */");
+	}
+
 	// TODO This was the previous behaviour for bladerunner - this will now be opt-in?
 	@Ignore
 	@Test
@@ -216,5 +227,43 @@ public class BladeWorkbenchBundlingTest extends SpecTest {
 		when(workbench).requestReceivedInDev("js/dev/combined/bundle.js", response);
 		then(response).containsText("appns.bs.b1.BladeClass =")
 			.and(response).doesNotContainText("appns.WorkbenchClass =");
+	}
+
+	
+	// ------------------------------------ X M L ---------------------------------------
+	@Test
+	public void multipleResourcesWithEqualPrimaryRequirePathsAreBundledCommonJS() throws Exception {
+		given(bladeset).hasClass("appns/bs/b1/BladeSetClass")
+			.and(blade).hasClass("appns/bs/b1/BladeClass")
+			.and(blade).classRequires("appns/bs/b1/BladeClass", "appns/bs/b1/BladeSetClass")
+			.and(workbench).hasClass("appns/bs/b1/workbench/WorkBenchClass")
+			.and(workbench).classRequires("appns/bs/b1/workbench/WorkBenchClass", "appns/bs/b1/BladeClass")
+			.and(bladeset).containsResourceFileWithContents("xml/BladesetResource.xml", "<bladeset-resource />")
+			.and(blade).containsResourceFileWithContents("xml/BladeResource.xml", "<blade-resource />")
+			.and(workbench).containsResourceFileWithContents("xml/WorkBenchResource.xml", "<workbench-resource />")
+			.and(workbench).indexPageRequires("appns/bs/b1/workbench/WorkBenchClass");
+		when(workbench).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText("<bladeset-resource />")
+			.and(response).containsText("<blade-resource />")
+			.and(response).containsText("<workbench-resource />");
+	}
+
+	@Test
+	public void multipleResourcesWithEqualPrimaryRequirePathsAreBundledNamespacedJS() throws Exception {
+		given(bladeset).hasNamespacedJsPackageStyle()
+			.and(bladeset).hasClass("appns.bs.b1.BladeSetClass")
+			.and(blade).hasClass("appns.bs.b1.BladeClass")
+			.and(blade).classDependsOn("appns.bs.b1.BladeClass", "appns.bs.b1.BladeSetClass")
+			.and(workbench).hasClass("appns.bs.b1.workbench.WorkBenchClass")
+			.and(workbench).classDependsOn("appns.bs.b1.workbench.WorkBenchClass", "appns.bs.b1.BladeClass")
+			.and(bladeset).containsResourceFileWithContents("xml/BladesetResource.xml", "<bladeset-resource />")
+			.and(blade).containsResourceFileWithContents("xml/BladeResource.xml", "<blade-resource />")
+			.and(workbench).containsResourceFileWithContents("xml/WorkBenchResource.xml", "<workbench-resource />")
+			.and(workbench).indexPageRefersTo("appns.bs.b1.workbench.WorkBenchClass");
+		when(workbench).requestReceivedInDev("xml/bundle.xml", response);
+		then(response).containsText("<bladeset-resource />")
+			.and(response).containsText("<blade-resource />")
+			.and(response).containsText("<workbench-resource />");
+
 	}
 }

@@ -54,6 +54,33 @@
 
 			//when
 			assertFails("A ToolTipField must be passed in.", function() { errorMonitor.monitorField(field) });
+		},
+
+		"test if hasError is set when any of the fields has error": function() {
+			//given
+			var toolTipField1 = new ToolTipField();
+			var toolTipField2 = new ToolTipField();
+
+			errorMonitor.hasError = spy(errorMonitor.hasError);
+
+			//when
+			errorMonitor.addErrorListeners([toolTipField1, toolTipField2]);
+			toolTipField2.hasError.setValue(true);
+
+			//then
+			assertTrue(errorMonitor.hasError.getValue(), true);
+		},
+
+		"test if hasError isn't set when field hasn't error": function() {
+			//given
+			var toolTipField = new ToolTipField();
+			errorMonitor.hasError = spy(errorMonitor.hasError);
+
+			//when
+			errorMonitor.addErrorListeners([toolTipField]);
+
+			//then
+			assertFalse(errorMonitor.hasError.getValue(), false);
 		}
 
 

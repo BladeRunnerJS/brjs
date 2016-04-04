@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>My Application</title>
+
+		<@css.bundle theme="standard" alternateTheme="alternate"@/>
+
+		<@html.bundle@/>
+
+		<@i18n.bundle@/>
+
+		<!-- dev-minifier can be set to "combined" for all JS content to be bundled with a single request -->
+		<@js.bundle dev-minifier="none" prod-minifier="combined"@/>
+	</head>
+	<body>
+		<div class="app" ng-app="brApp" ng-controller="appController">
+			<h1 ng-bind="hello_world"></h1>
+			<p>Add any new code for your app to src/AppController.js</p>
+			<div class="br-logo">
+				<!-- 'unbundled-resources' can be used for any assets you don't want part of the BRJS bundling process. -->
+				<img src="<@unbundled-resources@/>/br-logo.png" />
+			</div>
+		</div>
+
+		<script>
+			var angular = require('angular');
+			var AppController = require( '@appns/AppController' );
+
+			angular.module('brApp', [])
+				.controller('appController', ['$scope', function($scope){
+					return new AppController($scope)}]);
+		</script>
+	</body>
+</html>

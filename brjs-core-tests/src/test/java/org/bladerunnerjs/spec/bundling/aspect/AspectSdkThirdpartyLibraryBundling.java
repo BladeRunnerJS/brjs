@@ -278,7 +278,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
     		.and(aspect).indexPageRequires(thirdpartyLib);
     	when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-    	then(response).containsOrderedTextFragments("define('thirdparty-lib1', function(require, exports, module) {\n",
+    	then(response).containsOrderedTextFragments("define('thirdparty-lib1', function(require, exports, module) {",
     						"module.exports = thirdpartyLib");
 	}
 
@@ -292,7 +292,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
     		.and(aspect).indexPageRequires(thirdpartyLib);
 		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('thirdparty-lib1', function(require, exports, module) {\n");
+		then(response).containsText("define('thirdparty-lib1', function(require, exports, module) {");
 	}
 	
 	@Test

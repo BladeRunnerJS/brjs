@@ -1,2 +1,2 @@
 js : jsUnitExtensions.js, Clock.js
-exports: "{}"
+exports: jsunitextensions

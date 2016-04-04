@@ -84,10 +84,10 @@ public interface Asset {
 	boolean isScopeEnforced();
 	
 	/**
-	 * BRJS distinguishes between Assets that may be required and those they may not. Those that may not include Assets on the
+	 * BRJS distinguishes between Assets that may be required and those that may not. Those that may not include Assets on the
 	 * root directory level or directories. The method returns true if the current Asset may be required and false otherwise.
 	 * 
-	 * @return a boolean object stating whether the Asset may be required by another one.
+	 * @return a boolean stating whether the Asset may be required by another one.
 	 */
 	boolean isRequirable();
 }

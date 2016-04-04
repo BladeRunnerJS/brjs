@@ -3,12 +3,14 @@ package org.bladerunnerjs.spec.plugin.bundler.commonjs;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 import org.junit.Before;
 import org.junit.Test;
 
 public class CommonJsSourceModuleTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
+	private StringBuffer response = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -36,5 +38,15 @@ public class CommonJsSourceModuleTest extends SpecTest {
 		then(aspect).classHasPreExportDependencies("appns/Class1", "appns/Class2")
 			.and(aspect).classHasPostExportDependencies("appns/Class1", "appns/Class3")
 			.and(aspect).classHasUseTimeDependencies("appns/Class1", "appns/Class4");
+	}
+
+	@Test
+	public void wrappingFunctionShouldNotAddNewLine() throws Exception
+	{
+		given(aspect).hasCommonJsPackageStyle();
+		when(aspect).requestReceivedInDev("js/dev/combined/bundle.js", response);
+		then(response).doesNotContainText("define('br/AliasRegistry', function(require, exports, module) {\n");
+		then(response).doesNotContainText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "', function(require, exports, module) {\n");
+		then(response).doesNotContainText("define('" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "', function(require, exports, module) {\n");
 	}
 }

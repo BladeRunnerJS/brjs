@@ -71,6 +71,7 @@ function ViewFixture(viewSelector) {
 	var MouseOut = require('br/test/viewhandler/MouseOut');
 	var MouseOver = require('br/test/viewhandler/MouseOver');
 	var MouseUp = require('br/test/viewhandler/MouseUp');
+	var MouseWheel = require('br/test/viewhandler/MouseWheel');
 	var OnKeyUp = require('br/test/viewhandler/OnKeyUp');
 	var Options = require('br/test/viewhandler/Options');
 	var Readonly = require('br/test/viewhandler/Readonly');
@@ -112,6 +113,7 @@ function ViewFixture(viewSelector) {
 		mouseOut: new MouseOut(),
 		mouseOver: new MouseOver(),
 		mouseUp: new MouseUp(),
+		mouseWheel: new MouseWheel(),
 		onKeyUp: new OnKeyUp(),
 		options: new Options(),
 		readonly: new Readonly(),

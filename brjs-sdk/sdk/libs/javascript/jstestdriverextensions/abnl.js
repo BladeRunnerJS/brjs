@@ -3,7 +3,7 @@ function defineTestCase(name, setUp, tearDown) {
 	var testCase = TestCase(name);
 	testCase.prototype.setUp = setUp;
 	testCase.prototype.tearDown = tearDown;
-	
+
 	var definitionErrors = [];
 
 	var aliases = {};
@@ -16,7 +16,7 @@ function defineTestCase(name, setUp, tearDown) {
 			}
 		}
 	}
-	
+
 	testCase.prototype.continuesFrom = function(testName) {
 		var realTestName = aliases[testName] || testName;
 		if ( ! testCase.prototype[realTestName]) {
@@ -53,7 +53,7 @@ function defineTestCase(name, setUp, tearDown) {
 			}
 			return aliasFunc;
 		}
-		
+
 		return {
 			alsoKnownAs: aliasFunc
 		};
@@ -72,3 +72,5 @@ function defineTestCase(name, setUp, tearDown) {
 		testThat: testThat
 	};
 }
+
+jstestdriverextensions.defineTestCase = defineTestCase;

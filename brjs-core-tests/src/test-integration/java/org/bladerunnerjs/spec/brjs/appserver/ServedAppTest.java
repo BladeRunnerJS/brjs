@@ -10,6 +10,7 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.require.AppMetaDataSourceModule;
 import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.junit.After;
@@ -553,8 +554,12 @@ public class ServedAppTest extends SpecTest
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
 				+ "locales: en,de\n"
 				+ "requirePrefix: appns")
-			.and(defaultAspect).containsFileWithContents("src/App.js", "@BRJS.APP.LOCALE@")
-			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(aspect).containsFileWithContents(
+					"src/App.js",
+					"@BRJS.APP.LOCALE@" +
+					"require('" + AppMetaDataSourceModule.PRIMARY_REQUIRE_PATH + "');"
+			)
+			.and(aspect).indexPageHasContent("<@js.bundle@/>\n" + "require('appns/App');")
 			.and(brjs).hasVersion("123")
 			.and(appServer).started();
 		then(appServer).requestForUrlContains("/app/v/123/js/prod/combined/bundle.js", "en");

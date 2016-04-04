@@ -14,6 +14,7 @@ import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.bladerunnerjs.plugin.bundlers.aliasing.AliasDefinitionsFile;
 import org.bladerunnerjs.plugin.commands.standard.WorkbenchDepsCommand;
+import org.bladerunnerjs.plugin.plugins.require.AliasDataSourceModule;
 import org.bladerunnerjs.spec.aliasing.AliasDefinitionsFileBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -191,7 +192,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 				"    +--- 'alias!br.alias' (alias dep.)",
 				"    |    \\--- '../../libs/javascript/ServicesLib/src/br/AliasRegistry.js' (static dep.)",
 				"    |    \\--- '../../libs/javascript/br/src/br/Class2.js' (static dep.)",
-				"    |    \\--- 'alias!$data' (static dep.)",
+				"    |    \\--- '" + AliasDataSourceModule.PRIMARY_REQUIRE_PATH + "' (static dep.)",
 				"    +--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
 				"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)");
 

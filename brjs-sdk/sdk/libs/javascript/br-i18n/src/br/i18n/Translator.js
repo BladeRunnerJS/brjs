@@ -20,12 +20,12 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 /**
 * @class
 * @alias module:br/i18n/Translator
-* 
+*
 * @classdesc
 * <p>The class within the <code>br.I18N</code> package that is responsible
 * for translating localization tokens in the form of
 * <code>&#64;{key.name}</code> into translated text.</p>
-* 
+*
 * <p>This class should not be instantiated directly. To access i18n functions
 * use the [br/i18n]{@link module:br/i18n} class which returns the
 * [br/i18n/I18N]{@link module:br/i18n/I18N} accessor class.
@@ -51,6 +51,24 @@ function Translator(messageDefinitions, useLocale) {
 
 Translator.MESSAGES = {
 	UNTRANSLATED_TOKEN_LOG_MSG: 'A translation has not been provided for the i18n key "{0}" in the "{1}" locale'
+};
+
+Translator.prototype.registerTranslations = function(locale, translations) {
+	if (this.messageDefinitions[locale] === undefined) {
+		this.messageDefinitions[locale] = {};
+	}
+
+	for (var token in translations) {
+		var lowerCasedToken = token.toLowerCase();
+
+		if (this.messageDefinitions[locale][lowerCasedToken] === undefined) {
+			this.messageDefinitions[locale][lowerCasedToken] = translations[token];
+		}
+
+		if (this.locale === locale && this.messages[lowerCasedToken] === undefined) {
+			this.messages[lowerCasedToken] = translations[token];
+		}
+	}
 };
 
 Translator.prototype.setLocale = function(locale) {
@@ -387,7 +405,9 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 
 	if (!this.tokenExists(token)) {
 		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
-		logConsole.warn('Unable to find a replacement for the i18n key "' + token + '"');
+		if (logConsole && logConsole.warn) {
+		    logConsole.warn('Unable to find a replacement for the i18n key "' + token + '"');
+		}
 	}
 
 	var message = this.messages[token];

@@ -17,4 +17,9 @@ public class NoBrowsersDefinedException extends Exception {
 	{
 		super("Could not find any configured browsers. Please check your test configuration file inside \n\t'" + confPath + "'");
 	}
+
+	public NoBrowsersDefinedException(String confPath, String operatingSystem)
+	{
+		super("Could not find any configured browsers for this Operating System (" + operatingSystem + "). Please check your test configuration file inside \n\t'" + confPath + "'");
+	}
 }
