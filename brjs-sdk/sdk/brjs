@@ -32,5 +32,11 @@ if [ $? -eq 0 ]; then
 	fi
 else
 	# UNIX & older GitBash versions
-	java $JAVA_OPTS -cp "$BRJS_CLASSPATH" org.bladerunnerjs.runner.CommandRunner "$SCRIPT_DIR" "`pwd`" "$@"
+	if [ $1 = "debug" ]
+	then
+		shift
+		java $JAVA_OPTS -cp "$BRJS_CLASSPATH" -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=n org.bladerunnerjs.runner.CommandRunner "$SCRIPT_DIR" "`pwd`" "$@"
+	else
+		java $JAVA_OPTS -cp "$BRJS_CLASSPATH" org.bladerunnerjs.runner.CommandRunner "$SCRIPT_DIR" "`pwd`" "$@"
+	fi
 fi
