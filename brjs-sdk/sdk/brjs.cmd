@@ -17,7 +17,6 @@ echo Please install Java 7 or Java 8 and ensure it's available on the PATH.
 echo You can find more information about how to do this at 'http://bladerunnerjs.org/docs/use/install/'.
 exit /B 1
 
-
 :runBrjs
 set THIS_DIR=%CD%
 set THIS_DIR=%THIS_DIR:\=/%
@@ -30,4 +29,9 @@ FOR /F "delims=" %%I in ('echo %filename%') do set SHORT_SCRIPT_DIR=%%~sI
 cd %THIS_DIR%
 set BRJS_CLASSPATH="%SCRIPT_DIR%/libs/java/system/*;%SCRIPT_DIR%/../conf/java/*;"
 
-java %JAVA_OPTS% -cp %BRJS_CLASSPATH% org.bladerunnerjs.runner.CommandRunner "%SCRIPT_DIR%" "%THIS_DIR%" %*
+IF "%1"=="debug" (
+	for /f "tokens=1,* delims= " %%a in ("%*") do set ALL_ARGS_BUT_FIRST=%%b
+	java %JAVA_OPTS% -cp %BRJS_CLASSPATH% -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=n org.bladerunnerjs.runner.CommandRunner "%SCRIPT_DIR%" "%THIS_DIR%" %ALL_ARGS_BUT_FIRST%
+	) ELSE (
+	java %JAVA_OPTS% -cp %BRJS_CLASSPATH% org.bladerunnerjs.runner.CommandRunner "%SCRIPT_DIR%" "%THIS_DIR%" %*
+	)
