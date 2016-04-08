@@ -46,7 +46,7 @@ function Translator(messageDefinitions, useLocale) {
 
 	/** @private */
 	this.localizationPrefs = {};
-	this.setLocale(useLocale);
+	this.setLocale(useLocale || 'en');
 }
 
 Translator.MESSAGES = {
