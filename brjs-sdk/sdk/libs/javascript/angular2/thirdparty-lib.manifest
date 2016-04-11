@@ -1,0 +1,4 @@
+css:
+depends: angular2-polyfills, rx, es6-shim, es6-promise
+exports: ng
+js:
