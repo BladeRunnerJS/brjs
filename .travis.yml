@@ -5,10 +5,6 @@ jdk:
 git:
  depth: 200
 sudo: false
-addons:
-  apt:
-    packages:
-    - libgd2-xpm
 before_install:
 - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
 - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
