@@ -11,6 +11,7 @@ var Property = require('br/presenter/property/Property');
 var KnockoutInvocationCountPlugin = require('br/presenter/testing/KnockoutInvocationCountPlugin');
 var ComponentModelFixture = require('br/component/testing/ComponentModelFixture');
 var Core = require('br/Core');
+var topiarist = require('topiarist');
 
 /**
  * @module br/presenter/testing/PresentationModelFixture
@@ -100,7 +101,7 @@ PresentationModelFixture.prototype.doWhen = function(sProperty, vValue) {
 };
 
 function _assertEquals(msg, expected, actual) {
-	if (expected instanceof Array) {
+	if (isDefinedAndInstanceOf(expected, Array)) {
 		assertEquals(msg, expected, actual);
 	} else {
 		assertSame(msg, expected, actual);
@@ -122,11 +123,11 @@ PresentationModelFixture.prototype.doThen = function(sProperty, vValue) {
 
 	var oItem = this._getItem(sProperty);
 
-	if (oItem instanceof Property) {
+	if (isDefinedAndInstanceOf(oItem, Property)) {
 		_assertEquals("'" + sProperty + "' should equal '" + vValue + "'", vValue, oItem.getFormattedValue());
-	} else if (oItem instanceof OptionsNodeList) {
+	} else if (isDefinedAndInstanceOf(oItem, OptionsNodeList)) {
 		_assertEquals("'" + sProperty + "' should equal '" + vValue + "'", vValue, oItem.getOptionLabels());
-	} else if (oItem instanceof NodeList) {
+	} else if (isDefinedAndInstanceOf(oItem, NodeList)) {
 		if (!Array.isArray(vValue)) {
 			throw new Errors.InvalidTestError('Validating a NodeList must supply an array of options as the test value.');
 		}
@@ -140,9 +141,9 @@ PresentationModelFixture.prototype.doThen = function(sProperty, vValue) {
 			var sErrorMessage = sProperty + "' index " + nIndex + " : '" + vActual + "' should equal '" + vValue + "'";
 			_assertEquals(sErrorMessage, vExpected, vActual);
 		});
-	} else if (oItem instanceof PresentationModelFixture.MethodInvocation) {
+	} else if (isDefinedAndInstanceOf(oItem, PresentationModelFixture.MethodInvocation)) {
 		throw new Errors.InvalidTestError("the 'invoked' property can only be used in given and when clauses");
-	} else if (oItem instanceof PresentationModelFixture.InvocationCountSetter) {
+	} else if (isDefinedAndInstanceOf(oItem, PresentationModelFixture.InvocationCountSetter)) {
 		oItem.verifyInvocationCount(vValue);
 	} else {
 		throw new Errors.InvalidTestError('unable to handle: ' + sProperty + ' = ' + vValue);
@@ -153,28 +154,34 @@ PresentationModelFixture.prototype.doThen = function(sProperty, vValue) {
 // *							  Private methods
 // **********************************************************************************
 
+function isDefinedAndInstanceOf(item) {
+	return item !== undefined && item !== null && topiarist.fulfills.apply(null, arguments);
+}
+
 /**
  * @private
  */
 PresentationModelFixture.prototype._doGivenAndDoWhen = function(sProperty, vValue) {
 	var oItem = this._getItem(sProperty);
 
-	if (oItem instanceof EditableProperty) {
+	if (isDefinedAndInstanceOf(oItem, EditableProperty)) {
 		oItem.setUserEnteredValue(vValue);
-	} else if (oItem instanceof WritableProperty) {
+	} else if (isDefinedAndInstanceOf(oItem, WritableProperty)) {
 		oItem.setValue(vValue);
-	} else if (oItem instanceof Property) {
+	} else if (isDefinedAndInstanceOf(oItem, Property)) {
 		oItem._$setInternalValue(vValue);
-	} else if (oItem instanceof OptionsNodeList) {
+	} else if (isDefinedAndInstanceOf(oItem, OptionsNodeList)) {
 		oItem.setOptions(vValue);
-	} else if (oItem instanceof PresentationModelFixture.MethodInvocation) {
+	} else if (isDefinedAndInstanceOf(oItem, PresentationModelFixture.MethodInvocation)) {
 		oItem.invokeMethod(vValue);
-	} else if (oItem instanceof PresentationModelFixture.InvocationCountSetter) {
+	} else if (isDefinedAndInstanceOf(oItem, PresentationModelFixture.InvocationCountSetter)) {
 		oItem.setInvocationCount(vValue);
 	} else {
 		throw new BrErrors.CustomError(BrErrors.INVALID_TEST, 'unable to handle: ' + sProperty + ' = ' + vValue);
 	}
 };
+
+
 
 /**
  * @private
@@ -187,7 +194,7 @@ PresentationModelFixture.prototype._getItem = function(sItemName, nDistanceFromE
 	for (var i = 0, l = pParts.length - nDistanceFromEnd; i < l; ++i) {
 		var sPartName = pParts[i];
 
-		if (((sPartName == 'invoked') || (sPartName == 'invocationCount')) && (oItem instanceof Function)) {
+		if (((sPartName == 'invoked') || (sPartName == 'invocationCount')) && (isDefinedAndInstanceOf(oItem, Function))) {
 			var oPresentationNode = this._getItem(sItemName, 2);
 
 			if (sPartName == 'invoked') {
@@ -197,10 +204,10 @@ PresentationModelFixture.prototype._getItem = function(sItemName, nDistanceFromE
 				var sMethod = pParts[i - 1];
 				oItem = new PresentationModelFixture.InvocationCountSetter(oPresentationNode, sMethod);
 			}
-		} else if ((sPartName == 'length') && (oItem instanceof NodeList)) {
+		} else if ((sPartName == 'length') && (isDefinedAndInstanceOf(oItem, NodeList))) {
 			oItem = new NodeListLengthProperty(oItem);
 		} else {
-			if (oItem instanceof NodeList && !(oItem instanceof MappedNodeList)) {
+			if (isDefinedAndInstanceOf(oItem, NodeList) && !(isDefinedAndInstanceOf(oItem, MappedNodeList))) {
 				oItem = oItem.getPresentationNodesArray()[this._getNodeListIndex(sPartName)];
 			} else {
 				oItem = oItem[sPartName];
