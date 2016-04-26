@@ -16,11 +16,11 @@ var Property = require('br/presenter/property/Property');
  * @class
  * @alias module:br/presenter/node/Field
  * @extends module:br/presenter/node/PresentationNode
- * 
+ *
  * @classdesc
  * A <code>PresentationNode</code> containing all of the attributes necessary to
  * model an input field on screen.
- * 
+ *
  * @param {Object} vValue (optional) The initial value of the field, either using a
  * primitive type or as a {@link module:br/presenter/property/EditableProperty}.
  */
@@ -50,6 +50,12 @@ function Field(vValue) {
 	 * @type br.presenter.property.WritableProperty
 	 */
 	this.hasError = new WritableProperty(false);
+
+	/**
+	 * A boolean property that is <code>true</code> if {@link #value} is waiting for validation, and <code>false</code> otherwise.
+	 * @type br.presenter.property.WritableProperty
+	 */
+	this.pending = new WritableProperty(false);
 
 	/**
 	 * A textual description of the currently failing validation message when {@link #hasError} is <code>true</code>.
