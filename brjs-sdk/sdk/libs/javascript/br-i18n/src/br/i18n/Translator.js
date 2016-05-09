@@ -405,7 +405,7 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 
 	if (!this.tokenExists(token)) {
 		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
-		if (logConsole && logConsole.warn) {
+		if (logConsole && logConsole.warn && !window.suppressI18nWarnings) {
 		    logConsole.warn('Unable to find a replacement for the i18n key "' + token + '"');
 		}
 	}
