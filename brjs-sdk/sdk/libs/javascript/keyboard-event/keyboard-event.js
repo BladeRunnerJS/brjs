@@ -54,7 +54,11 @@
 
     // chrome polyfill
     if(evt.keyIdentifier) {
-      evt.key = evt.keyIdentifier;
+      try {
+        evt.key = evt.keyIdentifier;
+      } catch(e) {
+        // read-only in chrome 51+
+      }
     }
 
     return evt;
