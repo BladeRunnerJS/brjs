@@ -8,6 +8,7 @@ var jQuery = require('jquery');
 var ko = require('presenter-knockout');
 var FileUtility = require('br/core/File');
 var Utility = require('br/core/Utility');
+var Errors = require('br/Errors');
 
 /**
  * @class
@@ -68,8 +69,8 @@ Utils.fireDomEvent = function(eElement, eventString, character) {
 */
 Utils.getKeyCodeForChar = function(character) {
 	if (character.toString().length !== 1){
-		throw br.Errors.CustomError(
-			br.Errors.INVALID_TEST,
+		throw Errors.CustomError(
+			Errors.INVALID_TEST,
 			'getKeyCodeForChar Error! ' + character + ' should only be a single Character'
 		);
 	}
