@@ -37,28 +37,28 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 
 	private final MemoizedValue<BundleSet> bundleSet;
 	private RequirePlugin defaultRequirePlugin;
-
+	
 	// TODO: these messages need to be covered off in a spec test (a single test would be perfect)
 	public class Messages {
 		public static final String REQUEST_HANDLED_MSG = "Handling logical request '%s' for app '%s'.";
 		public static final String CONTEXT_IDENTIFIED_MSG = "%s '%s' identified as context for request '%s'.";
 		public static final String BUNDLER_IDENTIFIED_MSG = "Bundler '%s' identified as handler for request '%s'.";
 	}
-
+	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, MemoizedFile dir) {
 		super(rootNode, parent, dir);
 		defaultRequirePlugin = root().plugins().requirePlugin("default");
 		bundleSet = new MemoizedValue<>(this.getClass().getSimpleName()+" bundleSet", root(), root().dir(), app().dir());
 	}
-
+	
 	@Override
 	public List<LinkedAsset> seedAssets() {
 		List<LinkedAsset> seedAssets = new ArrayList<>();
 		seedAssets.addAll( assetDiscoveryResult().getRegisteredSeedAssets() );
 		for (AssetContainer scopeAssetContainer : scopeAssetContainers()) {
-			if (scopeAssetContainer instanceof Aspect || scopeAssetContainer instanceof Bladeset
+			if (scopeAssetContainer instanceof Aspect || scopeAssetContainer instanceof Bladeset 
 						|| scopeAssetContainer instanceof Blade || scopeAssetContainer instanceof Workbench<?>) {
-				Asset assetContainerRootAsset = scopeAssetContainer.asset(scopeAssetContainer.requirePrefix() + "@root");
+				Asset assetContainerRootAsset = scopeAssetContainer.asset(scopeAssetContainer.requirePrefix());
 				if (assetContainerRootAsset instanceof LinkedAsset) {
 					seedAssets.add( (LinkedAsset) assetContainerRootAsset );
 				}
@@ -66,7 +66,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		}
 		return seedAssets;
 	}
-
+		
 	@Override
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
 		LinkedAsset linkedAsset;
@@ -74,7 +74,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		RequirePlugin requirePlugin;
 		String pluginName;
 		String requirePathSuffix;
-
+		
 		if(requirePath.contains("!")) {
 			pluginName = StringUtils.substringBefore(requirePath, "!");
 			requirePathSuffix = StringUtils.substringAfter(requirePath, "!");
@@ -84,7 +84,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 			pluginName = "default";
 			requirePathSuffix = requirePath;
 		}
-
+		
 		if (requirePlugin == null) {
 			linkedAsset = (LinkedAsset) defaultRequirePlugin.getAsset(this, requirePath);
 			noLinkedAssetException = new RuntimeException("Unable to find a require plugin for the prefix '"+pluginName+"' and there is no asset registered for the require path '"+requirePath+"'.");
@@ -92,21 +92,21 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 			linkedAsset = (LinkedAsset) requirePlugin.getAsset(this, requirePathSuffix);
 			noLinkedAssetException = new RuntimeException("There is no asset registered for the require path '"+requirePathSuffix+"'.");
 		}
-
+		
 		if (linkedAsset == null) {
 			throw noLinkedAssetException;
 		}
-
+		
 		return linkedAsset;
 	}
-
-	@Override
+	
+	@Override 
 	public BundleSet getBundleSet() throws ModelOperationException {
 		return bundleSet.value(() -> {
 			return BundleSetCreator.createBundleSet(this);
 		});
 	}
-
+	
 	@Override
 	public ResponseContent handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
@@ -116,26 +116,26 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 			throw new ContentProcessingException(e);
 		}
 	}
-
+	
 	@Override
 	public ResponseContent handleLogicalRequest(String logicalRequestpath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		App app = bundlableNode.app();
 		Logger logger = app.root().logger(AbstractBundlableNode.class);
-
+		
 		logger.debug(Messages.REQUEST_HANDLED_MSG, logicalRequestpath, app.getName());
-
+		
 		String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 		logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getTypeName(), name, logicalRequestpath);
-
+		
 		ContentPlugin contentProvider = app.root().plugins().contentPluginForLogicalPath(logicalRequestpath);
-
+		
 		if(contentProvider == null) {
 			throw new ResourceNotFoundException("No content provider could be found found the logical request path '" + logicalRequestpath + "'");
 		}
-
+		
 		logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), logicalRequestpath);
-
+		
 		ResponseContent pluginResponseContent = contentProvider.handleRequest(logicalRequestpath, bundleSet, contentAccessor, version);
 		try {
 			MissingTokenHandler missingTokenHandler = (bundleSet.bundlableNode() instanceof TestPack) ? new ExceptionThrowingMissingTokenHandler() : null;
@@ -144,17 +144,17 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 			throw new RuntimeException(ex);
 		}
 	}
-
+	
 	@Override
 	public List<Asset> assets(Asset asset, List<String> requirePaths) throws RequirePathException {
 		List<Asset> assets = new ArrayList<Asset>();
-
-		for(String requirePath : requirePaths) {
+		
+		for(String requirePath : requirePaths) {				
 			String canonicalRequirePath = asset.assetContainer().canonicaliseRequirePath(asset, requirePath);
 			assets.add(getLinkedAsset(canonicalRequirePath));
 		}
-
+		
 		return assets;
 	}
-
+	
 }

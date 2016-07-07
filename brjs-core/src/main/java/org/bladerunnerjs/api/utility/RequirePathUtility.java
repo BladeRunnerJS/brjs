@@ -21,48 +21,44 @@ public class RequirePathUtility
 {
 
 	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias|getAlias|getService)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
-
-	public static void assertIdentifierCorrectlyNamespaced(Asset asset, String identifier) throws NamespaceException
-	{
+	
+	public static void assertIdentifierCorrectlyNamespaced(Asset asset, String identifier) throws NamespaceException 
+	{	
 		AssetContainer assetContainer = asset.assetContainer();
 		if (asset.file().isChildOf(assetContainer.file("resources"))) {
 			assertIdentifierCorrectlyNamespaced(assetContainer, identifier);
 			return;
 		}
-
+		
 		String assetParentRequirePath = StringUtils.substringBeforeLast(calculateRequireSuffix(asset), "/");
 		Asset parentAsset;
 		while (assetParentRequirePath.length() > 0) {
-			String[] suffixes = { "@dir", "@root" };
-			for (String suffix: suffixes) {
-				parentAsset = assetContainer.asset(assetParentRequirePath + suffix);
-				if (parentAsset instanceof DirectoryLinkedAsset) {
-					String namespace = calculateNamespace(assetParentRequirePath)+".";
-					assertIdentifierCorrectlyNamespaced(assetContainer, namespace, identifier);
-					return;
-				}
+			parentAsset = assetContainer.asset(assetParentRequirePath);
+			if (parentAsset instanceof DirectoryLinkedAsset) {
+				String namespace = calculateNamespace(assetParentRequirePath)+".";
+				assertIdentifierCorrectlyNamespaced(assetContainer, namespace, identifier);
+				return;
 			}
-
 			assetParentRequirePath = StringUtils.substringBeforeLast(assetParentRequirePath, "/");
-		}
+		}	
 	}
-
-	public static void assertIdentifierCorrectlyNamespaced(AssetContainer assetContainer, String identifier) throws NamespaceException
-	{
+	
+	public static void assertIdentifierCorrectlyNamespaced(AssetContainer assetContainer, String identifier) throws NamespaceException 
+	{	
 		String namespace = calculateNamespace(assetContainer.requirePrefix())+".";
 		assertIdentifierCorrectlyNamespaced(assetContainer, namespace, identifier);
 	}
-
+	
 	private static void assertIdentifierCorrectlyNamespaced(AssetContainer assetContainer, String namespace, String identifier) throws NamespaceException {
 		if (assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace)) {
 			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + "*' was expected.");
 		}
 	}
-
+	
 	public static String calculateRequireSuffix(Asset asset) {
 		return calculateRequireSuffix(asset.getPrimaryRequirePath());
 	}
-
+	
 	public static String calculateRequireSuffix(String requirePath)
 	{
 		String requirePathSuffix = requirePath;
@@ -73,29 +69,29 @@ public class RequirePathUtility
 		}
 		return requirePathSuffix;
 	}
-
+	
 	public static String calculateNamespace(AssetContainer assetContainer) {
 		return calculateNamespace(assetContainer.requirePrefix());
 	}
-
+	
 	public static String calculateNamespace(Asset asset) {
 		return calculateNamespace(asset.getPrimaryRequirePath());
 	}
-
-	public static String calculateNamespace(String requirePath)
+	
+	public static String calculateNamespace(String requirePath) 
 	{
 		return calculateRequireSuffix(requirePath).replace("/", ".");
 	}
-
-
+	
+	
 	public static void addRequirePathsFromReader(Reader reader, Set<String> dependencies, List<String> aliases) throws IOException {
 		StringWriter stringWriter = new StringWriter();
 		IOUtils.copy(reader, stringWriter);
-
+		
 		Matcher m = matcherPattern.matcher(stringWriter.toString());
 		while (m.find()) {
 			String methodArgument = m.group(2);
-
+			
 			if (m.group(1).startsWith("require")) {
 				String requirePath = methodArgument;
 				dependencies.add(requirePath);
@@ -110,5 +106,5 @@ public class RequirePathUtility
 			}
 		}
 	}
-
+	
 }
