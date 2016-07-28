@@ -66,7 +66,8 @@ ISODateValidator.prototype.validate = function(value, mAttributes, validationRes
  * @type Boolean
  */
 ISODateValidator.prototype.isValidISODate = function (ISODateString) {
-	var validationResult = new require("br/validation/ValidationResult")();
+	var ValidationResult = require("br/validation/ValidationResult");
+	var validationResult = new ValidationResult();
 	this.validate(ISODateString, {}, validationResult);
 	return validationResult.isValid();
 };
